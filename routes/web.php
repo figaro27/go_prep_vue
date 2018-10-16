@@ -23,5 +23,5 @@ Route::get('role/routes', 'HomeController@role')->middleware('role');
 
 Route::get('role/admin', 'HomeController@admin')->middleware('role');
 
-Route::resource('user', 'UserController');
 
+Route::resource('user', 'UserController');

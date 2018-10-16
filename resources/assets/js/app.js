@@ -15,11 +15,11 @@ import AdminApp from './containers/AdminContainer';
 import BootstrapVue from 'bootstrap-vue'
 import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 
+
 window.Vue = Vue;
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
-
 
 
 const customerapp = new Vue({
