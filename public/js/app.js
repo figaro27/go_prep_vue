@@ -65489,7 +65489,9 @@ var render = function() {
     _c("div", { staticClass: "col-md-12" }, [
       _c("div", { staticClass: "card" }, [
         _c("div", { staticClass: "card-header" }, [
-          _vm._v("\n                        Dashboard\n                    ")
+          _vm._v(
+            "\n                        Dashboard Test\n                    "
+          )
         ]),
         _vm._v(" "),
         _c(
