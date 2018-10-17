@@ -3,7 +3,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        Dashboard Test
+                        Dashboard
                     </div>
                     <div class="card-body">
 
@@ -24,18 +24,21 @@
         },
         data(){
             return {
-                columns: ['id', 'email', 'password'],
+                columns: ['user_detail.firstname', 'user_detail.lastname', 'user_detail.phone', 'user_detail.city', 'user_detail.state', 'created_at'],
                 tableData: [],
                 options: {
-                    headings: {
-                        id: 'Welcome',
-                        email: 'Back'
-                    },
-                    sortable: ['id', 'email'],
-                    filterable: ['id', 'email']
-                }           
+                  headings: {
+                    'user_detail.firstname': 'First',
+                    'user_detail.lastname': 'Last',
+                    'user_detail.phone': 'Phone',
+                    'user_detail.city': 'City',
+                    'user_detail.state': 'State',
+                    'created_at': 'Customer Since'
+                  },
+                  columnsDropdown: true 
                 }
-            },
+            }
+        },
         created(){
         let self = this
         axios.get('user')

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Carbon;
 
 class User extends Authenticatable
 {
@@ -33,8 +34,16 @@ class User extends Authenticatable
         return $this->hasOne('App\UserRole');
     }
 
-    public function userMeta(){
-        return $this->hasMany('App\UserMeta');
+    public function userDetail(){
+        return $this->hasOne('App\UserDetail');
+    }
+
+    public function userPayment(){
+        return $this->hasMany('App\UserPayment');
+    }
+
+    public function getCreatedAtAttribute($date){
+        return Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('M d Y');
     }
 
 }

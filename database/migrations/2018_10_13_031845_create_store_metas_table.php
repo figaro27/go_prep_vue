@@ -15,7 +15,7 @@ class CreateStoreMetasTable extends Migration
     {
         Schema::create('store_metas', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('store_id')->references('id')->on('store');
+            $table->integer('store_id')->references('id')->on('stores');
             $table->string('meta_key');
             $table->text('meta_value');
             $table->timestamps();

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\UserMeta;
+use App\UserDetail;
 use Illuminate\Http\Request;
 
-class UserMetaController extends Controller
+class UserDetailController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class UserMetaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\UserMeta  $userMeta
+     * @param  \App\UserDetail  $userDetail
      * @return \Illuminate\Http\Response
      */
-    public function show(UserMeta $userMeta)
+    public function show(UserDetail $userDetail)
     {
         //
     }
@@ -52,10 +52,10 @@ class UserMetaController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\UserMeta  $userMeta
+     * @param  \App\UserDetail  $userDetail
      * @return \Illuminate\Http\Response
      */
-    public function edit(UserMeta $userMeta)
+    public function edit(UserDetail $userDetail)
     {
         //
     }
@@ -64,10 +64,10 @@ class UserMetaController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\UserMeta  $userMeta
+     * @param  \App\UserDetail  $userDetail
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UserMeta $userMeta)
+    public function update(Request $request, UserDetail $userDetail)
     {
         //
     }
@@ -75,10 +75,10 @@ class UserMetaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\UserMeta  $userMeta
+     * @param  \App\UserDetail  $userDetail
      * @return \Illuminate\Http\Response
      */
-    public function destroy(UserMeta $userMeta)
+    public function destroy(UserDetail $userDetail)
     {
         //
     }

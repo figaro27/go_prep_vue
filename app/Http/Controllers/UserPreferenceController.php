@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\UserPaymentInfo;
+use App\UserPreference;
 use Illuminate\Http\Request;
 
-class UserPaymentInfoController extends Controller
+class UserPreferenceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class UserPaymentInfoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\UserPaymentInfo  $userPaymentInfo
+     * @param  \App\UserPreference  $userPreference
      * @return \Illuminate\Http\Response
      */
-    public function show(UserPaymentInfo $userPaymentInfo)
+    public function show(UserPreference $userPreference)
     {
         //
     }
@@ -52,10 +52,10 @@ class UserPaymentInfoController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\UserPaymentInfo  $userPaymentInfo
+     * @param  \App\UserPreference  $userPreference
      * @return \Illuminate\Http\Response
      */
-    public function edit(UserPaymentInfo $userPaymentInfo)
+    public function edit(UserPreference $userPreference)
     {
         //
     }
@@ -64,10 +64,10 @@ class UserPaymentInfoController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\UserPaymentInfo  $userPaymentInfo
+     * @param  \App\UserPreference  $userPreference
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UserPaymentInfo $userPaymentInfo)
+    public function update(Request $request, UserPreference $userPreference)
     {
         //
     }
@@ -75,10 +75,10 @@ class UserPaymentInfoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\UserPaymentInfo  $userPaymentInfo
+     * @param  \App\UserPreference  $userPreference
      * @return \Illuminate\Http\Response
      */
-    public function destroy(UserPaymentInfo $userPaymentInfo)
+    public function destroy(UserPreference $userPreference)
     {
         //
     }

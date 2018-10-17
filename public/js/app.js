@@ -65454,15 +65454,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     components: {},
     data: function data() {
         return {
-            columns: ['id', 'email', 'password'],
+            columns: ['user_detail.firstname', 'user_detail.lastname', 'user_detail.phone', 'user_detail.city', 'user_detail.state', 'created_at'],
             tableData: [],
             options: {
                 headings: {
-                    id: 'Welcome',
-                    email: 'Back'
+                    'user_detail.firstname': 'First',
+                    'user_detail.lastname': 'Last',
+                    'user_detail.phone': 'Phone',
+                    'user_detail.city': 'City',
+                    'user_detail.state': 'State',
+                    'created_at': 'Customer Since'
                 },
-                sortable: ['id', 'email'],
-                filterable: ['id', 'email']
+                columnsDropdown: true
             }
         };
     },
@@ -65489,9 +65492,7 @@ var render = function() {
     _c("div", { staticClass: "col-md-12" }, [
       _c("div", { staticClass: "card" }, [
         _c("div", { staticClass: "card-header" }, [
-          _vm._v(
-            "\n                        Dashboard Test\n                    "
-          )
+          _vm._v("\n                        Dashboard\n                    ")
         ]),
         _vm._v(" "),
         _c(
