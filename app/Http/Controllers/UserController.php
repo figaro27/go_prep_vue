@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 
+
 class UserController extends Controller
 {
     /**
@@ -14,9 +15,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::with("userDetail")->get();
+        return User::getCustomers();
+    }
 
-
+    public function storeIndex(){
+        return User::getStoreCustomers();
     }
 
     /**
@@ -48,7 +51,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        return User::getCustomer($id);
     }
 
     /**

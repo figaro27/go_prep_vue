@@ -24,4 +24,13 @@ Route::get('role/routes', 'HomeController@role')->middleware('role');
 Route::get('role/admin', 'HomeController@admin')->middleware('role');
 
 
+//Admin Routes
 Route::resource('user', 'UserController');
+Route::resource('store', 'StoreController');
+
+
+
+
+//Store Routes
+Route::get('storeCustomers', 'UserController@storeIndex');
+

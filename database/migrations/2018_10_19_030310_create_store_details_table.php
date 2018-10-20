@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStoreMetasTable extends Migration
+class CreateStoreDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,16 @@ class CreateStoreMetasTable extends Migration
      */
     public function up()
     {
-        Schema::create('store_metas', function (Blueprint $table) {
+        Schema::create('store_details', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('store_id')->references('id')->on('stores');
-            $table->string('meta_key');
-            $table->text('meta_value');
+            $table->string('name');
+            $table->string('phone');
+            $table->string('address');
+            $table->string('city');
+            $table->string('state');
+            $table->string('logo');
+            $table->string('domain');
             $table->timestamps();
         });
     }
@@ -29,6 +34,6 @@ class CreateStoreMetasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('store_metas');
+        Schema::dropIfExists('store_details');
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\StoreMeta;
+use App\StoreDetail;
 use Illuminate\Http\Request;
 
-class StoreMetaController extends Controller
+class StoreDetailController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class StoreMetaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\StoreMeta  $storeMeta
+     * @param  \App\StoreDetail  $storeDetail
      * @return \Illuminate\Http\Response
      */
-    public function show(StoreMeta $storeMeta)
+    public function show(StoreDetail $storeDetail)
     {
         //
     }
@@ -52,10 +52,10 @@ class StoreMetaController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\StoreMeta  $storeMeta
+     * @param  \App\StoreDetail  $storeDetail
      * @return \Illuminate\Http\Response
      */
-    public function edit(StoreMeta $storeMeta)
+    public function edit(StoreDetail $storeDetail)
     {
         //
     }
@@ -64,10 +64,10 @@ class StoreMetaController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\StoreMeta  $storeMeta
+     * @param  \App\StoreDetail  $storeDetail
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, StoreMeta $storeMeta)
+    public function update(Request $request, StoreDetail $storeDetail)
     {
         //
     }
@@ -75,10 +75,10 @@ class StoreMetaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\StoreMeta  $storeMeta
+     * @param  \App\StoreDetail  $storeDetail
      * @return \Illuminate\Http\Response
      */
-    public function destroy(StoreMeta $storeMeta)
+    public function destroy(StoreDetail $storeDetail)
     {
         //
     }

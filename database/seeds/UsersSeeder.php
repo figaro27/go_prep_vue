@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class UsersTableSeeder extends Seeder
+class UsersSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -40,6 +40,7 @@ class UsersTableSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
 
         factory(App\User::class, 50)->create()->each(function($u) {
             $u->userDetail()->save(factory(App\UserDetail::class)->make());

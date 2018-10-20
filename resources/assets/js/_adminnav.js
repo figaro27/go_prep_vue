@@ -6,6 +6,11 @@ export default {
       icon: 'icon-speedometer',
     },
     {
+      name: 'Stores',
+      url: '/admin/stores',
+      icon: 'icon-drop'
+    },
+    {
       name: 'Customers',
       url: '/admin/customers',
       icon: 'icon-drop'
@@ -25,6 +30,7 @@ export default {
       name: 'Payments',
       url: '/admin/payments',
       icon: 'icon-cursor',
-    }
+    },
+
     ]
 }

@@ -6,11 +6,13 @@
                         Dashboard
                     </div>
                     <div class="card-body">
-
-<v-client-table :columns="columns" :data="tableData" :options="options">
-    
-</v-client-table>
-
+                        <v-client-table :columns="columns" :data="data" :options="options">
+                            <a slot="email" slot-scope="props" :href="'mailto:${props.row.email}'">
+                                {{ props.row.email }}
+                            </a>
+                            <a slot="edit" slot-scope="props" class="fa fa-edit" :href="edit(props.row.id)">
+                            </a>
+                        </v-client-table>
                     </div>
                 </div>
             </div>
@@ -24,35 +26,43 @@
         },
         data(){
             return {
-                columns: ['user_detail.firstname', 'user_detail.lastname', 'user_detail.phone', 'user_detail.city', 'user_detail.state', 'created_at'],
-                tableData: [],
+                columns: [
+                'id',
+                'name',
+                'email',
+                'edit'
+                ],
+                data: [
+                    {'id': 1, 'name': 'mike', 'email': 'michaelcsoldano@yahoo.com'}
+                ],
                 options: {
-                  headings: {
-                    'user_detail.firstname': 'First',
-                    'user_detail.lastname': 'Last',
-                    'user_detail.phone': 'Phone',
-                    'user_detail.city': 'City',
-                    'user_detail.state': 'State',
-                    'created_at': 'Customer Since'
-                  },
-                  columnsDropdown: true 
+                    headings: {
+                        id: 'id',
+                        name: 'name',
+                        email: 'email'
+                    },
+                    sortable: [
+                    'id', 'name'
+                    ],
+                    texts: {
+                        filterPlaceholder: 'filter'
+                    }
                 }
+
             }
-        },
-        created(){
-        let self = this
-        axios.get('user')
-              .then(function(response){    
-             self.tableData = response.data;
-              })
         },
         mounted()
         {
-
         },
         methods: {
-
+            getData: function(){
+                const arr = []
+                return arr;
+            },
+            edit($id){
+                return 'http://google.com';
             }
-        }
 
+        }
+    }
 </script>

@@ -15,6 +15,9 @@ import AdminApp from './containers/AdminContainer';
 import BootstrapVue from 'bootstrap-vue'
 import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 
+//import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
 
 window.Vue = Vue;
 Vue.use(VueRouter);

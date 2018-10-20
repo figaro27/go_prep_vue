@@ -29,6 +29,9 @@ import AdminOrders from './components/Admin/Orders.vue';
 import AdminPayments from './components/Admin/Payments.vue';
 import AdminStores from './components/Admin/Stores.vue';
 
+import ShowCustomer from './components/Admin/Modals/ShowCustomer.vue';
+import EditCustomer from './components/Admin/Modals/EditCustomer.vue';
+
 
 let routes = [
     {
@@ -126,7 +129,16 @@ let routes = [
     {
         path: '/admin/stores',
         component: AdminStores
+    },
+    {
+        path: '/admin/modals/showcustomer',
+        component: ShowCustomer
+    },
+    {
+        path: '/admin/modals/editcustomer',
+        component: EditCustomer
     }
+
 
 ];
 

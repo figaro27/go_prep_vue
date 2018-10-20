@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
             $table->integer('user_id')->references('id')->on('users');
             $table->integer('store_id')->references('id')->on('stores');
             $table->integer('delivery_status')->references('id')->on('delivery_statuses');
+            $table->integer('amount');
             $table->timestamps();
         });
     }
