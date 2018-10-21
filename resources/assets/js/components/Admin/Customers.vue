@@ -10,15 +10,15 @@
                     </ShowCustomer> -->
                     <!-- <EditCustomer></EditCustomer> -->
 
-                    <ShowCustomer :id="id"></ShowCustomer>
-
+                    <ShowCustomer :userId="selectedUserId"></ShowCustomer>
+                    <h1>{{ selectedUserId }}</h1>
                     <div class="card-header">
                         Customers
                     </div>
                     <div class="card-body">
                         <v-client-table :columns="columns" :data="tableData" :options="options">
                             <div slot="actions" class="text-nowrap" slot-scope="props">
-                                <button class="btn btn-primary btn-sm" @click="view(props.row.id)">View</button>
+                                <button class="btn btn-primary btn-sm" @click="selectedUserId = props.row.id">View</button>
                                 <button class="btn btn-warning btn-sm view" @click="edit(props.row.id)">Edit</button>
                             </div>
                         </v-client-table>
@@ -45,7 +45,7 @@
         },
         data(){
             return {
-                id: '',
+                selectedUserId: '',
                 columns: ['Name', 'phone', 'address', 'city', 'state', 'Joined', 'TotalPayments', 'TotalPaid', 'LastOrder.date', 'actions' ],
                 tableData: [],
                 options: {
@@ -88,20 +88,13 @@
 
         },
         methods: {
-            view(id){
-                axios.get('/user/' + id).then(
-                    response => {
-                        this.id = response.data.id;
-                    }
-                    );
-            },
-            edit(id){
-                axios.get('/user/' + id).then(function(response) {
+            // edit(id){
+            //     axios.get('/user/' + id).then(function(response) {
                     
-            });
-            }
+            //     });
+            // }
 
-            }
         }
+    }
 
 </script>

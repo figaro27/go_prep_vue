@@ -65924,7 +65924,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     data: function data() {
         return {
-            id: '',
+            selectedUserId: '',
             columns: ['Name', 'phone', 'address', 'city', 'state', 'Joined', 'TotalPayments', 'TotalPaid', 'LastOrder.date', 'actions'],
             tableData: [],
             options: {
@@ -65963,16 +65963,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     mounted: function mounted() {},
 
     methods: {
-        view: function view(id) {
-            var _this = this;
+        // edit(id){
+        //     axios.get('/user/' + id).then(function(response) {
 
-            axios.get('/user/' + id).then(function (response) {
-                _this.id = response.data.id;
-            });
-        },
-        edit: function edit(id) {
-            axios.get('/user/' + id).then(function (response) {});
-        }
+        //     });
+        // }
+
     }
 });
 
@@ -66010,13 +66006,36 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['id'],
+  props: ['userId', 'selectedUserId'],
   data: function data() {
     return {
       showCustomerModal: false
     };
+  },
+
+  methods: {
+    view: function view(id) {
+      var _this = this;
+
+      axios.get('/user/' + id).then(function (response) {
+        _this.id = response.data.id;
+      });
+      this.showCustomerModal = true;
+    }
+  },
+  watch: {
+    userId: function userId(selectedUserId) {
+      var _this2 = this;
+
+      axios.get('/user/' + selectedUserId).then(function (response) {
+        _this2.selectedUserId = response.data;
+      });
+      this.showCustomerModal = true;
+    }
   }
 });
 
@@ -66032,21 +66051,9 @@ var render = function() {
     "div",
     [
       _c(
-        "b-button",
-        {
-          on: {
-            click: function($event) {
-              _vm.showCustomerModal = !_vm.showCustomerModal
-            }
-          }
-        },
-        [_vm._v("\n        Show Customer Modal\n      ")]
-      ),
-      _vm._v(" "),
-      _c(
         "b-modal",
         {
-          attrs: { title: "Bootstrap-Vue" },
+          attrs: { title: "Customer" },
           model: {
             value: _vm.showCustomerModal,
             callback: function($$v) {
@@ -66055,7 +66062,7 @@ var render = function() {
             expression: "showCustomerModal"
           }
         },
-        [_c("p", { staticClass: "my-4" }, [_vm._v("ID: " + _vm._s(_vm.id))])]
+        [_c("p", { staticClass: "my-4" }, [_vm._v(_vm._s(_vm.selectedUserId))])]
       )
     ],
     1
@@ -66166,7 +66173,9 @@ var render = function() {
           "div",
           { staticClass: "card" },
           [
-            _c("ShowCustomer", { attrs: { id: _vm.id } }),
+            _c("ShowCustomer", { attrs: { userId: _vm.selectedUserId } }),
+            _vm._v(" "),
+            _c("h1", [_vm._v(_vm._s(_vm.selectedUserId))]),
             _vm._v(" "),
             _c("div", { staticClass: "card-header" }, [
               _vm._v("\n                    Customers\n                ")
@@ -66193,7 +66202,7 @@ var render = function() {
                               staticClass: "btn btn-primary btn-sm",
                               on: {
                                 click: function($event) {
-                                  _vm.view(props.row.id)
+                                  _vm.selectedUserId = props.row.id
                                 }
                               }
                             },

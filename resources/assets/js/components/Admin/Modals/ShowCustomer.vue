@@ -14,13 +14,15 @@
     
     <h2><slot name="y"></slot></h2> -->
 
-    <b-button @click="showCustomerModal = !showCustomerModal">
+    <!-- <b-button @click="showCustomerModal = !showCustomerModal">
         Show Customer Modal
-      </b-button>
-      <b-modal v-model="showCustomerModal" title="Bootstrap-Vue">
-        <p class="my-4">ID: {{ id }}</p>
-    </b-modal>
-
+      </b-button> -->
+    <!-- <b-button @click="view(1)">
+      Show Customer Modal
+    </b-button> -->
+      <b-modal v-model="showCustomerModal" title="Customer">
+        <p class="my-4">{{ selectedUserId }}</p>
+      </b-modal>
 
 
     </div>
@@ -28,12 +30,32 @@
 
 <script>
 export default {
-  props: ['id'],
+  props: ['userId', 'selectedUserId'],
   data () {
     return {
       showCustomerModal: false,
     }
-  }
+  },
+  methods: {
+      view(id){
+        axios.get('/user/' + id).then(
+          response => {
+              this.id = response.data.id;
+          }
+        );
+        this.showCustomerModal = true
+      }
+    },
+    watch: {
+    userId: function(selectedUserId) {
+      axios.get('/user/' + selectedUserId).then(
+          response => {
+              this.selectedUserId = response.data;
+          }
+        );
+        this.showCustomerModal = true
+      }
+    }
 }
 </script>
 
