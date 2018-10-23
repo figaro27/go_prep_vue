@@ -29,7 +29,7 @@ import AdminOrders from './components/Admin/Orders.vue';
 import AdminPayments from './components/Admin/Payments.vue';
 import AdminStores from './components/Admin/Stores.vue';
 
-import ShowCustomer from './components/Admin/Modals/ShowCustomer.vue';
+import ViewCustomer from './components/Admin/Modals/ViewCustomer.vue';
 import EditCustomer from './components/Admin/Modals/EditCustomer.vue';
 
 
@@ -131,8 +131,8 @@ let routes = [
         component: AdminStores
     },
     {
-        path: '/admin/modals/showcustomer',
-        component: ShowCustomer
+        path: '/admin/modals/viewcustomer',
+        component: ViewCustomer
     },
     {
         path: '/admin/modals/editcustomer',
