@@ -35281,7 +35281,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources/assets/js/components/Admin/Modals/ShowCustomer.vue"
+Component.options.__file = "resources/assets/js/components/Admin/Modals/ViewCustomer.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -35290,9 +35290,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-cebfd1c6", Component.options)
+    hotAPI.createRecord("data-v-76f18a76", Component.options)
   } else {
-    hotAPI.reload("data-v-cebfd1c6", Component.options)
+    hotAPI.reload("data-v-76f18a76", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -63142,8 +63142,8 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__components_Admin_Payments_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_23__components_Admin_Payments_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__components_Admin_Stores_vue__ = __webpack_require__(219);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__components_Admin_Stores_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_24__components_Admin_Stores_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__components_Admin_Modals_ShowCustomer_vue__ = __webpack_require__(62);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__components_Admin_Modals_ShowCustomer_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_25__components_Admin_Modals_ShowCustomer_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__components_Admin_Modals_ViewCustomer_vue__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__components_Admin_Modals_ViewCustomer_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_25__components_Admin_Modals_ViewCustomer_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__components_Admin_Modals_EditCustomer_vue__ = __webpack_require__(63);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__components_Admin_Modals_EditCustomer_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_26__components_Admin_Modals_EditCustomer_vue__);
 
@@ -63251,8 +63251,8 @@ var routes = [{
     path: '/admin/stores',
     component: __WEBPACK_IMPORTED_MODULE_24__components_Admin_Stores_vue___default.a
 }, {
-    path: '/admin/modals/showcustomer',
-    component: __WEBPACK_IMPORTED_MODULE_25__components_Admin_Modals_ShowCustomer_vue___default.a
+    path: '/admin/modals/viewcustomer',
+    component: __WEBPACK_IMPORTED_MODULE_25__components_Admin_Modals_ViewCustomer_vue___default.a
 }, {
     path: '/admin/modals/editcustomer',
     component: __WEBPACK_IMPORTED_MODULE_26__components_Admin_Modals_EditCustomer_vue___default.a
@@ -65862,7 +65862,7 @@ exports = module.exports = __webpack_require__(14)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -65873,17 +65873,10 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Modals_ShowCustomer__ = __webpack_require__(62);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Modals_ShowCustomer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Modals_ShowCustomer__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Modals_ViewCustomer__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Modals_ViewCustomer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Modals_ViewCustomer__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Modals_EditCustomer__ = __webpack_require__(63);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Modals_EditCustomer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Modals_EditCustomer__);
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -65919,12 +65912,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     components: {
-        ShowCustomer: __WEBPACK_IMPORTED_MODULE_0__Modals_ShowCustomer___default.a,
+        ViewCustomer: __WEBPACK_IMPORTED_MODULE_0__Modals_ViewCustomer___default.a,
         EditCustomer: __WEBPACK_IMPORTED_MODULE_1__Modals_EditCustomer___default.a
     },
     data: function data() {
         return {
-            selectedUserId: '',
+            viewUserId: '',
+            editUserId: '',
             columns: ['Name', 'phone', 'address', 'city', 'state', 'Joined', 'TotalPayments', 'TotalPaid', 'LastOrder.date', 'actions'],
             tableData: [],
             options: {
@@ -65962,14 +65956,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     mounted: function mounted() {},
 
-    methods: {
-        // edit(id){
-        //     axios.get('/user/' + id).then(function(response) {
-
-        //     });
-        // }
-
-    }
+    methods: {}
 });
 
 /***/ }),
@@ -66004,37 +65991,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['userId', 'selectedUserId'],
+  props: ['userId'],
   data: function data() {
     return {
-      showCustomerModal: false
+      viewCustomerModal: false,
+      user: {},
+      orders: []
     };
   },
 
-  methods: {
-    view: function view(id) {
+  methods: {},
+  watch: {
+    userId: function userId(viewUserId) {
       var _this = this;
 
-      axios.get('/user/' + id).then(function (response) {
-        _this.id = response.data.id;
+      axios.get('/user/' + viewUserId).then(function (response) {
+        _this.user = response.data;
+        _this.orders = response.data.user_payment;
       });
-      this.showCustomerModal = true;
-    }
-  },
-  watch: {
-    userId: function userId(selectedUserId) {
-      var _this2 = this;
-
-      axios.get('/user/' + selectedUserId).then(function (response) {
-        _this2.selectedUserId = response.data;
-      });
-      this.showCustomerModal = true;
+      this.viewCustomerModal = true;
     }
   }
 });
@@ -66055,14 +66032,72 @@ var render = function() {
         {
           attrs: { title: "Customer" },
           model: {
-            value: _vm.showCustomerModal,
+            value: _vm.viewCustomerModal,
             callback: function($$v) {
-              _vm.showCustomerModal = $$v
+              _vm.viewCustomerModal = $$v
             },
-            expression: "showCustomerModal"
+            expression: "viewCustomerModal"
           }
         },
-        [_c("p", { staticClass: "my-4" }, [_vm._v(_vm._s(_vm.selectedUserId))])]
+        [
+          _c(
+            "ul",
+            [
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v(
+                  "Name: " +
+                    _vm._s(_vm.user.user_detail.firstname) +
+                    " " +
+                    _vm._s(_vm.user.user_detail.lastname)
+                )
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("Email: " + _vm._s(_vm.user.email))
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("Customer Since: " + _vm._s(_vm.user.created_at))
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("Address: " + _vm._s(_vm.user.user_detail.address))
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("City: " + _vm._s(_vm.user.user_detail.city))
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("State: " + _vm._s(_vm.user.user_detail.state))
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("Phone: " + _vm._s(_vm.user.user_detail.phone))
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v(
+                  "Delivery Instructions: " +
+                    _vm._s(_vm.user.user_detail.delivery)
+                )
+              ]),
+              _vm._v(" "),
+              _vm._l(_vm.orders, function(order) {
+                return _c("li", { staticClass: "my-4" }, [
+                  _c("ul", [
+                    _c("li", [_vm._v("Order ID: " + _vm._s(order.id))]),
+                    _vm._v(" "),
+                    _c("li", [_vm._v("Total: " + _vm._s(order.amount))]),
+                    _vm._v(" "),
+                    _c("li", [_vm._v("Date: " + _vm._s(order.created_at))])
+                  ])
+                ])
+              })
+            ],
+            2
+          )
+        ]
       )
     ],
     1
@@ -66074,7 +66109,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-cebfd1c6", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-76f18a76", module.exports)
   }
 }
 
@@ -66098,12 +66133,50 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['userId'],
   data: function data() {
     return {
-      editCustomerModal: false
+      viewCustomerModal: false,
+      user: {},
+      orders: [],
+      id: ''
     };
+  },
+
+  methods: {
+    updateUser: function updateUser(viewUserId) {
+      axios.put('/user/' + viewUserId, {
+        user: this.user
+      });
+    }
+  },
+  watch: {
+    userId: function userId(viewUserId) {
+      var _this = this;
+
+      axios.get('/user/' + viewUserId).then(function (response) {
+        _this.user = response.data;
+        _this.orders = response.data.user_payment;
+      });
+      this.viewCustomerModal = true;
+      this.id = viewUserId;
+    }
   }
 });
 
@@ -66119,30 +66192,346 @@ var render = function() {
     "div",
     [
       _c(
-        "b-button",
-        {
-          on: {
-            click: function($event) {
-              _vm.editCustomerModal = !_vm.editCustomerModal
-            }
-          }
-        },
-        [_vm._v("\n\t      Edit Customer Modal\n\t    ")]
-      ),
-      _vm._v(" "),
-      _c(
         "b-modal",
         {
-          attrs: { title: "Bootstrap-Vue" },
+          attrs: { title: "Customer" },
           model: {
-            value: _vm.editCustomerModal,
+            value: _vm.viewCustomerModal,
             callback: function($$v) {
-              _vm.editCustomerModal = $$v
+              _vm.viewCustomerModal = $$v
             },
-            expression: "editCustomerModal"
+            expression: "viewCustomerModal"
           }
         },
-        [_c("p", { staticClass: "my-4" }, [_vm._v("Hello from modal!")])]
+        [
+          _c(
+            "ul",
+            [
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("First Name: "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.user_detail.firstname,
+                      expression: "user.user_detail.firstname"
+                    }
+                  ],
+                  domProps: { value: _vm.user.user_detail.firstname },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(
+                        _vm.user.user_detail,
+                        "firstname",
+                        $event.target.value
+                      )
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("Last Name: "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.user_detail.lastname,
+                      expression: "user.user_detail.lastname"
+                    }
+                  ],
+                  domProps: { value: _vm.user.user_detail.lastname },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(
+                        _vm.user.user_detail,
+                        "lastname",
+                        $event.target.value
+                      )
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("Email: "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.email,
+                      expression: "user.email"
+                    }
+                  ],
+                  domProps: { value: _vm.user.email },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.user, "email", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("Customer Since: "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.created_at,
+                      expression: "user.created_at"
+                    }
+                  ],
+                  domProps: { value: _vm.user.created_at },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.user, "created_at", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("Address: "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.user_detail.address,
+                      expression: "user.user_detail.address"
+                    }
+                  ],
+                  domProps: { value: _vm.user.user_detail.address },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(
+                        _vm.user.user_detail,
+                        "address",
+                        $event.target.value
+                      )
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("City: "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.user_detail.city,
+                      expression: "user.user_detail.city"
+                    }
+                  ],
+                  domProps: { value: _vm.user.user_detail.city },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(
+                        _vm.user.user_detail,
+                        "city",
+                        $event.target.value
+                      )
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("State: "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.user_detail.state,
+                      expression: "user.user_detail.state"
+                    }
+                  ],
+                  domProps: { value: _vm.user.user_detail.state },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(
+                        _vm.user.user_detail,
+                        "state",
+                        $event.target.value
+                      )
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("Phone: "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.user_detail.phone,
+                      expression: "user.user_detail.phone"
+                    }
+                  ],
+                  domProps: { value: _vm.user.user_detail.phone },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(
+                        _vm.user.user_detail,
+                        "phone",
+                        $event.target.value
+                      )
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "my-4" }, [
+                _vm._v("Delivery Instructions: "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.user_detail.delivery,
+                      expression: "user.user_detail.delivery"
+                    }
+                  ],
+                  domProps: { value: _vm.user.user_detail.delivery },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(
+                        _vm.user.user_detail,
+                        "delivery",
+                        $event.target.value
+                      )
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _vm._l(_vm.orders, function(order) {
+                return _c("li", { staticClass: "my-4" }, [
+                  _c("ul", [
+                    _c("li", [
+                      _vm._v("Order ID: "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: order.id,
+                            expression: "order.id"
+                          }
+                        ],
+                        domProps: { value: order.id },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(order, "id", $event.target.value)
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("li", [
+                      _vm._v("Total: "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: order.amount,
+                            expression: "order.amount"
+                          }
+                        ],
+                        domProps: { value: order.amount },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(order, "amount", $event.target.value)
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("li", [
+                      _vm._v("Date: "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: order.created_at,
+                            expression: "order.created_at"
+                          }
+                        ],
+                        domProps: { value: order.created_at },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(order, "created_at", $event.target.value)
+                          }
+                        }
+                      })
+                    ])
+                  ])
+                ])
+              })
+            ],
+            2
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              on: {
+                click: function($event) {
+                  _vm.updateUser(_vm.id)
+                }
+              }
+            },
+            [_vm._v("Save")]
+          )
+        ]
       )
     ],
     1
@@ -66173,9 +66562,9 @@ var render = function() {
           "div",
           { staticClass: "card" },
           [
-            _c("ShowCustomer", { attrs: { userId: _vm.selectedUserId } }),
+            _c("ViewCustomer", { attrs: { userId: _vm.viewUserId } }),
             _vm._v(" "),
-            _c("h1", [_vm._v(_vm._s(_vm.selectedUserId))]),
+            _c("EditCustomer", { attrs: { userId: _vm.editUserId } }),
             _vm._v(" "),
             _c("div", { staticClass: "card-header" }, [
               _vm._v("\n                    Customers\n                ")
@@ -66202,7 +66591,7 @@ var render = function() {
                               staticClass: "btn btn-primary btn-sm",
                               on: {
                                 click: function($event) {
-                                  _vm.selectedUserId = props.row.id
+                                  _vm.viewUserId = props.row.id
                                 }
                               }
                             },
@@ -66212,10 +66601,10 @@ var render = function() {
                           _c(
                             "button",
                             {
-                              staticClass: "btn btn-warning btn-sm view",
+                              staticClass: "btn btn-warning btn-sm",
                               on: {
                                 click: function($event) {
-                                  _vm.edit(props.row.id)
+                                  _vm.editUserId = props.row.id
                                 }
                               }
                             },
