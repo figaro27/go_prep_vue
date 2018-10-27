@@ -44,9 +44,9 @@ class StoreController extends Controller
      * @param  \App\Store  $store
      * @return \Illuminate\Http\Response
      */
-    public function show(Store $store)
+    public function show($id)
     {
-        //
+        return Store::getStore($id);
     }
 
     /**
@@ -67,9 +67,18 @@ class StoreController extends Controller
      * @param  \App\Store  $store
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Store $store)
+    public function update(Request $request, $id)
     {
-        //
+        $store = Store::with('storeDetail', 'order')->find($id);
+       
+        $store->storeDetail->update([
+            'logo' => $request->store['store_detail']['logo'],
+            'name' => $request->store['store_detail']['name'],
+            'phone' => $request->store['store_detail']['phone'],
+            'address' => $request->store['store_detail']['address'],
+            'city' => $request->store['store_detail']['city'],
+            'state' => $request->store['store_detail']['state'],
+        ]);
     }
 
     /**

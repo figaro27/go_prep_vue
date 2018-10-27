@@ -50,6 +50,7 @@
         "vue2-google-maps": "0.9.8"
     },
     "dependencies": {
+        "moment": "^2.22.2",
         "vue-tables-2": "^1.4.70"
     }
 }

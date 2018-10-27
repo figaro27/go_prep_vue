@@ -29,8 +29,12 @@ import AdminOrders from './components/Admin/Orders.vue';
 import AdminPayments from './components/Admin/Payments.vue';
 import AdminStores from './components/Admin/Stores.vue';
 
-import ViewCustomer from './components/Admin/Modals/ViewCustomer.vue';
-import EditCustomer from './components/Admin/Modals/EditCustomer.vue';
+
+
+
+import Spinner from './components/Admin/Spinner.vue';
+
+
 
 
 let routes = [
@@ -131,15 +135,9 @@ let routes = [
         component: AdminStores
     },
     {
-        path: '/admin/modals/viewcustomer',
-        component: ViewCustomer
-    },
-    {
-        path: '/admin/modals/editcustomer',
-        component: EditCustomer
+        path: '/admin/spinner',
+        component: Spinner
     }
-
-
 ];
 
 

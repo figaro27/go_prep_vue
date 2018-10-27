@@ -10,12 +10,12 @@ class Order extends Model
 		return $this->belongsTo('App\User');
 	}
 
-	public function store(){
-		return $this->belongsTo('App\Store');
+	public function userPaymentMethod(){
+		return $this->hasOne('App\UserPaymentMethod');
 	}
 
-	public function userPayment(){
-		return $this->hasOne('App\UserPayment');
+	public function store(){
+		return $this->belongsTo('App\Store');
 	}
 
 	public function deliveryStatus(){

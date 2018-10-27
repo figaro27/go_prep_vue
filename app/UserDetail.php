@@ -8,7 +8,7 @@ class UserDetail extends Model
 {
 
 	protected $fillable = [
-        'firstname', 'lastname', 'address'
+        'firstname', 'lastname', 'address', 'city', 'state'
     ];
 
     public function user(){

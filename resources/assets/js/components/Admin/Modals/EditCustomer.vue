@@ -1,6 +1,6 @@
 <template>
     <div>
-      <b-modal v-model="viewCustomerModal" title="Customer">
+      <b-modal title="Customer" v-model="viewCustomerModal" v-if="viewCustomerModal" @hide="resetUserId" @hidden="toggleModalVisibility">
         <ul>
           <li class="my-4">First Name: <input v-model="user.user_detail.firstname"></input></li>
           <li class="my-4">Last Name: <input v-model="user.user_detail.lastname"></input></li>
@@ -11,13 +11,6 @@
           <li class="my-4">State: <input v-model="user.user_detail.state"></input></li>
           <li class="my-4">Phone: <input v-model="user.user_detail.phone"></input></li>
           <li class="my-4">Delivery Instructions: <input v-model="user.user_detail.delivery"></input></li>
-          <li class="my-4" v-for="order in orders">
-            <ul>
-              <li>Order ID: <input v-model="order.id"></input></li>
-              <li>Total: <input v-model="order.amount"></input></li>
-              <li>Date: <input v-model="order.created_at"></input></li>
-            </ul>
-          </li>
         </ul>
         <button @click="updateUser(id)">Save</button>
       </b-modal>
@@ -38,22 +31,29 @@ export default {
     }
   },
   methods: {
+      resetUserId(){
+        this.$parent.resetUserId();
+      },
+      toggleModalVisibility(){
+        this.viewCustomerModal = false;
+      },
       updateUser: function(viewUserId){
         axios.put('/user/' + viewUserId, {
               user: this.user
             }
           );
+        this.$parent.getTableData();
       }
     },
     watch: {
     userId: function(viewUserId) {
+      this.viewCustomerModal = true
       axios.get('/user/' + viewUserId).then(
           response => {
               this.user = response.data;
-              this.orders = response.data.user_payment;
+              this.orders = response.data.order;
           }
         );
-        this.viewCustomerModal = true
         this.id = viewUserId
       }
     }

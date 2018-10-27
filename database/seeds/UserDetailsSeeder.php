@@ -53,5 +53,122 @@ class UserDetailsSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+        DB::table('user_details')->insert([
+            'user_id' => 4,
+            'firstname' => 'Mike',
+            'lastname' => 'Soldano',
+            'phone' => '(347) 526-9628',
+            'address' => '1622 Bay Ridge Ave',
+            'city' => 'Brooklyn',
+            'state' => 'NY',
+            'country' => 'USA',
+            'delivery' => 'Call Phone',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('user_details')->insert([
+            'user_id' => 5,
+            'firstname' => 'Mike',
+            'lastname' => 'Soldano',
+            'phone' => '(347) 526-9628',
+            'address' => '1622 Bay Ridge Ave',
+            'city' => 'Brooklyn',
+            'state' => 'NY',
+            'country' => 'USA',
+            'delivery' => 'Call Phone',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('user_details')->insert([
+            'user_id' => 6,
+            'firstname' => 'Mike',
+            'lastname' => 'Soldano',
+            'phone' => '(347) 526-9628',
+            'address' => '1622 Bay Ridge Ave',
+            'city' => 'Brooklyn',
+            'state' => 'NY',
+            'country' => 'USA',
+            'delivery' => 'Call Phone',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('user_details')->insert([
+            'user_id' => 7,
+            'firstname' => 'Mike',
+            'lastname' => 'Soldano',
+            'phone' => '(347) 526-9628',
+            'address' => '1622 Bay Ridge Ave',
+            'city' => 'Brooklyn',
+            'state' => 'NY',
+            'country' => 'USA',
+            'delivery' => 'Call Phone',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('user_details')->insert([
+            'user_id' => 8,
+            'firstname' => 'Mike',
+            'lastname' => 'Soldano',
+            'phone' => '(347) 526-9628',
+            'address' => '1622 Bay Ridge Ave',
+            'city' => 'Brooklyn',
+            'state' => 'NY',
+            'country' => 'USA',
+            'delivery' => 'Call Phone',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('user_details')->insert([
+            'user_id' => 9,
+            'firstname' => 'Mike',
+            'lastname' => 'Soldano',
+            'phone' => '(347) 526-9628',
+            'address' => '1622 Bay Ridge Ave',
+            'city' => 'Brooklyn',
+            'state' => 'NY',
+            'country' => 'USA',
+            'delivery' => 'Call Phone',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('user_details')->insert([
+            'user_id' => 10,
+            'firstname' => 'Mike',
+            'lastname' => 'Soldano',
+            'phone' => '(347) 526-9628',
+            'address' => '1622 Bay Ridge Ave',
+            'city' => 'Brooklyn',
+            'state' => 'NY',
+            'country' => 'USA',
+            'delivery' => 'Call Phone',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('user_details')->insert([
+            'user_id' => 11,
+            'firstname' => 'John',
+            'lastname' => 'Buckwith',
+            'phone' => '(555) 123-1234',
+            'address' => '1874 95th St',
+            'city' => 'Manhattan',
+            'state' => 'NY',
+            'country' => 'USA',
+            'delivery' => 'Call Phone',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('user_details')->insert([
+            'user_id' => 12,
+            'firstname' => 'Mike',
+            'lastname' => 'Soldano',
+            'phone' => '(347) 526-9628',
+            'address' => '1622 Bay Ridge Ave',
+            'city' => 'Brooklyn',
+            'state' => 'NY',
+            'country' => 'USA',
+            'delivery' => 'Call Phone',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
     }
 }

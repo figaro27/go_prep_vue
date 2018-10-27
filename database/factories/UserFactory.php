@@ -22,4 +22,5 @@ $factory->define(App\User::class, function (Faker $faker) {
         'remember_token' => str_random(10),
         'created_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now')
     ];
+    
 });

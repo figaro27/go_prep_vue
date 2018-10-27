@@ -3,20 +3,14 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    
-                    <!-- <ShowCustomer :condition="condition" :idk="id">
-                        <template slot="h"></template>
-                        <template slot="y">You</template>
-                    </ShowCustomer> 
-                 <EditCustomer></EditCustomer>-->
-
+                    <ViewCustomer :userId="viewUserId"></ViewCustomer> 
                     <div class="card-header">
                         Customers
                     </div>
                     <div class="card-body">
                         <v-client-table :columns="columns" :data="tableData" :options="options">
                             <div slot="actions" class="text-nowrap" slot-scope="props">
-                                <button class="btn btn-primary btn-sm" @click="view(props.row.id)">View</button>
+                                <button class="btn btn-primary btn-sm" @click="viewUserId = props.row.id">View</button>
                             </div>
                         </v-client-table>
                     </div>
@@ -32,22 +26,23 @@
 
 </style>
 <script>
-    // import ShowCustomer from './Modals/ShowCustomer';
-    // import EditCustomer from './Modals/EditCustomer';
+    import ViewCustomer from './Modals/ViewCustomer';
 
     export default {
         components: {
-            // ShowCustomer,
-            // EditCustomer
+            ViewCustomer
         },
         data(){
             return {
+                isLoading: true,
+                viewUserId: '',
+                editUserId: '',
                 id: '',
-                columns: ['Name', 'phone', 'address', 'city', 'state', 'Joined', 'TotalPayments', 'TotalPaid', 'LastOrder.date', 'actions' ],
+                columns: ['Name', 'phone', 'address', 'city', 'state', 'Joined', 'TotalPayments', 'TotalPaid', 'LastOrder', 'actions' ],
                 tableData: [],
                 options: {
                   headings: {
-                    'LastOrder.date': 'Last Order',
+                    'LastOrder': 'Last Order',
                     'TotalPayments': 'Total Orders',
                     'TotalPaid': 'Total Paid',
                     'Name': 'Name',
@@ -74,26 +69,27 @@
             }
         },
         created(){
-        let self = this
-        axios.get('storeCustomers')
-              .then(function(response){    
-             self.tableData = response.data;
-              })
+
         },
         mounted()
         {
-
+            this.getTableData();
         },
         methods: {
-            view(id){
-                axios.get('/user/' + id).then(
-                    response => {
-                        this.id = response.data.id;
-                    }
-                    );
+            getTableData(){
+                let self = this;
+                axios.get('storeCustomers')
+                .then(function(response){    
+                self.tableData = response.data;
+                self.isLoading = false;
+              })
+                
+            },
+            resetUserId(){
+                this.viewUserId = 0;
+                this.editUserId = 0;
             }
-
-            }
+        }
         }
 
 </script>

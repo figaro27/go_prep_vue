@@ -7,7 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
 use Auth;
-use Carbon;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -31,7 +31,6 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-
      public function userRole(){
         return $this->hasOne('App\UserRole');
     }
@@ -40,18 +39,15 @@ class User extends Authenticatable
         return $this->hasOne('App\UserDetail');
     }
 
-    public function userPayment(){
-        return $this->hasMany('App\UserPayment');
+    public function order(){
+        return $this->hasMany('App\Order');
     }
 
-    public function getCreatedAtAttribute($date){
-        return Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('M d Y');
-    }
 
 // Admin Methods
 
     public static function getCustomers(){
-        return User::with('userPayment', 'userDetail')->get()->map(function($user){
+        return User::with('userDetail', 'order')->where('user_role_id', '=', 1)->get()->map(function($user){
             return [
                       "id" => $user->id,
                       "Name" => $user->userDetail->firstname .' '. $user->userDetail->lastname,
@@ -59,16 +55,16 @@ class User extends Authenticatable
                       "address" => $user->userDetail->address,
                       "city" => $user->userDetail->city,
                       "state" => $user->userDetail->state,
-                      "Joined" => $user->created_at,
-                      "LastOrder" => $user->userPayment->max("created_at"),
-                      "TotalPayments" => $user->userPayment->count(),
-                      "TotalPaid" => $user->userPayment->sum("amount")
+                      "Joined" => $user->created_at->format('m-d-Y'),
+                      "LastOrder" =>  optional($user->order->max("created_at"))->format('m d Y'),
+                      "TotalPayments" => $user->order->count(),
+                      "TotalPaid" => '$'.number_format($user->order->sum("amount"), 2, '.', ',')
             ];                         
         });
     }
 
     public static function getCustomer($id){
-        return User::with('userPayment', 'userDetail')->where('id', $id)->first();
+        return User::with('userDetail', 'order')->where('id', $id)->first();
     }
 
 
@@ -78,7 +74,7 @@ class User extends Authenticatable
     public static function getStoreCustomers(){
           $id = Auth::user()->id;
           $customers = Order::all()->unique('user_id')->where('store_id', $id)->pluck('user_id');
-          return User::with('userDetail', 'userPayment')->whereIn('id', $customers)->get()->map(function($user){
+          return User::with('userDetail', 'order')->whereIn('id', $customers)->get()->map(function($user){
             return [
                   "id" => $user->id,
                   "Name" => $user->userDetail->firstname .' '. $user->userDetail->lastname,
@@ -86,10 +82,10 @@ class User extends Authenticatable
                   "address" => $user->userDetail->address,
                   "city" => $user->userDetail->city,
                   "state" => $user->userDetail->state,
-                  "Joined" => $user->created_at,
-                  "LastOrder" => $user->userPayment->max("created_at"),
-                  "TotalPayments" => $user->userPayment->count(),
-                  "TotalPaid" => $user->userPayment->sum("amount")
+                  "Joined" => $user->created_at->format('m-d-Y'),
+                  "LastOrder" => $user->order->max("created_at")->format('m-d-Y'),
+                  "TotalPayments" => $user->order->count(),
+                  "TotalPaid" => '$'.number_format($user->order->sum("amount"), 2, '.', ',')
             ];
           });
     }

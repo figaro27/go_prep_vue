@@ -74,12 +74,9 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // return $request->user['user_detail']['firstname'];
 
-        $user = User::with('userDetail', 'userPayment')->find($id);
+        $user = User::with('userDetail', 'order')->find($id);
        
-        // $user->email = $request->user['email'];
-        // $user->userDetail->firstname = $request->user['user_detail'];
         $user->userDetail->update([
             'firstname' => $request->user['user_detail']['firstname'],
             'lastname' => $request->user['user_detail']['lastname'],
@@ -89,15 +86,6 @@ class UserController extends Controller
             'phone' => $request->user['user_detail']['phone'],
             'delivery' => $request->user['user_detail']['delivery'],
         ]);
-        // $user->userDetail->firstname = $request->user['user_detail']['firstname'];
-        // $user->userDetail->lastname = $request->user->user_detail['lastname'];
-        // $user->userDetail->address = $request->user->user_detail['address'];
-        // $user->userDetail->city = $request->user->user_detail['city'];
-        // $user->userDetail->state = $request->user->user_detail['state'];
-        // $user->userDetail->phone = $request->user->user_detail['phone'];
-        // $user->userDetail->delivery = $request->user->user_detail['delivery'];
-        
-        // $user->save();
     }
 
     /**
