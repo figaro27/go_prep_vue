@@ -1,1 +1,13 @@
-// Here you can add other styles
+
+.navbar {
+  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, .35) !important;
+}
+
+.card {
+  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .05) !important;
+  border-radius: 7px !important;
+}
+
+.VueTables__columns-dropdown{
+	margin-right:20px
+}

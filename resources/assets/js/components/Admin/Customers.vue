@@ -10,7 +10,7 @@
                     </div>
                     <div class="card-body">
                         <Spinner v-if="isLoading"/>
-                        <v-client-table :columns="columns" :data="tableData" :options="options">
+                        <v-client-table :columns="columns" :data="tableData" :options="options" >                           
                             <div slot="actions" class="text-nowrap" slot-scope="props">
                                 <button class="btn btn-primary btn-sm" @click="viewUserId = props.row.id">View</button>
                                 <button class="btn btn-warning btn-sm" @click="editUserId = props.row.id">Edit</button>

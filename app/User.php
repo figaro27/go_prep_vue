@@ -50,13 +50,14 @@ class User extends Authenticatable
         return User::with('userDetail', 'order')->where('user_role_id', '=', 1)->get()->map(function($user){
             return [
                       "id" => $user->id,
+                      "user_role_id" => $user->user_role_id,
                       "Name" => $user->userDetail->firstname .' '. $user->userDetail->lastname,
                       "phone" => $user->userDetail->phone,
                       "address" => $user->userDetail->address,
                       "city" => $user->userDetail->city,
                       "state" => $user->userDetail->state,
                       "Joined" => $user->created_at->format('m-d-Y'),
-                      "LastOrder" =>  optional($user->order->max("created_at"))->format('m d Y'),
+                      "LastOrder" =>  optional($user->order->max("created_at"))->format('m-d-Y'),
                       "TotalPayments" => $user->order->count(),
                       "TotalPaid" => '$'.number_format($user->order->sum("amount"), 2, '.', ',')
             ];                         

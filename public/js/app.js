@@ -57155,6 +57155,52 @@ var adminapp = new __WEBPACK_IMPORTED_MODULE_1_vue___default.a({
     }
 });
 
+// Trying to only load the Vue instances above depending on the logged in role & remove console errors
+
+// var role;
+
+// function getRole(){
+//         axios.get('user')
+//         .then(function(response){    
+//             this.role = response.data.user_role_id;
+//             console.log(role);
+//         });
+// }
+
+// if (role == 1){
+
+// const customerapp = new Vue({
+//     el: '#customerapp',
+//     router,
+//     template: '<CustomerApp/>',
+//     components: {
+//         CustomerApp
+//     }
+// });
+// }
+// else if (role == 2){
+
+// const storeapp = new Vue({
+//     el: '#storeapp',
+//     router,
+//     template: '<StoreApp/>',
+//     components: {
+//         StoreApp
+//     }
+// });
+// }
+// else if (role == 3){
+
+// const adminapp = new Vue({
+//     el: '#adminapp',
+//     router,
+//     template: '<AdminApp/>',
+//     components: {
+//         AdminApp
+//     }
+// });
+// }
+
 /***/ }),
 /* 240 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -105283,9 +105329,9 @@ module.exports = function () {
       count: "Showing {from} to {to} of {count} records|{count} records|One record",
       first: 'First',
       last: 'Last',
-      filter: "Filter:",
-      filterPlaceholder: "Search query",
-      limit: "Records:",
+      filter: "",
+      filterPlaceholder: "Search",
+      limit: "",
       page: "Page:",
       noResults: "No matching records",
       filterBy: "Filter by {column}",

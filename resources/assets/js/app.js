@@ -25,6 +25,7 @@ Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
 
 
+
 const customerapp = new Vue({
     el: '#customerapp',
     router,
@@ -51,5 +52,53 @@ const adminapp = new Vue({
         AdminApp
     }
 });
+
+
+
+// Trying to only load the Vue instances above depending on the logged in role & remove console errors
+
+// var role;
+
+// function getRole(){
+//         axios.get('user')
+//         .then(function(response){    
+//             this.role = response.data.user_role_id;
+//             console.log(role);
+//         });
+// }
+
+// if (role == 1){
+
+// const customerapp = new Vue({
+//     el: '#customerapp',
+//     router,
+//     template: '<CustomerApp/>',
+//     components: {
+//         CustomerApp
+//     }
+// });
+// }
+// else if (role == 2){
+
+// const storeapp = new Vue({
+//     el: '#storeapp',
+//     router,
+//     template: '<StoreApp/>',
+//     components: {
+//         StoreApp
+//     }
+// });
+// }
+// else if (role == 3){
+
+// const adminapp = new Vue({
+//     el: '#adminapp',
+//     router,
+//     template: '<AdminApp/>',
+//     components: {
+//         AdminApp
+//     }
+// });
+// }
 
 
