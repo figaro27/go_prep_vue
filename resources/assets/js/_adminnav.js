@@ -8,28 +8,28 @@ export default {
     {
       name: 'Stores',
       url: '/admin/stores',
-      icon: 'icon-drop'
+      icon: 'icon-home'
     },
     {
       name: 'Customers',
       url: '/admin/customers',
-      icon: 'icon-drop'
+      icon: 'icon-people'
     },
     {
       name: 'Meals',
       url: '/admin/meals',
-      icon: 'icon-pencil'
+      icon: 'icon-book-open'
     },
     {
       name: 'Orders',
       url: '/admin/orders',
-      icon: 'icon-puzzle',
+      icon: 'icon-basket',
 
     },
     {
       name: 'Payments',
       url: '/admin/payments',
-      icon: 'icon-cursor',
+      icon: 'icon-credit-card',
     },
 
     ]

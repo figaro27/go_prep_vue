@@ -1,10 +1,10 @@
 <template>
   <b-tabs>
-    <b-tab>
+     <b-tab>
       <template slot="title">
         <i class='icon-list'></i>
       </template>
-      <b-list-group class="list-group-accent">
+      <!--<b-list-group class="list-group-accent">
         <b-list-group-item class="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">
           Today
         </b-list-group-item>
@@ -91,13 +91,13 @@
             </div>
           </div>
         </b-list-group-item>
-      </b-list-group>
+      </b-list-group> -->
     </b-tab>
-    <b-tab>
+   <b-tab>
       <template slot="title">
         <i class='icon-speech'></i>
       </template>
-      <div class="p-3">
+       <!-- <div class="p-3">
         <div class="message">
           <div class="py-3 pb-5 mr-3 float-left">
             <div class="avatar">
@@ -172,7 +172,7 @@
           <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>
           <small class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</small>
         </div>
-      </div>
+      </div> -->
     </b-tab>
     <b-tab>
       <template slot="title">
@@ -186,25 +186,25 @@
             <c-switch color="success" label variant="pill" size="sm" class="float-right" checked />
           </div>
           <div>
-            <small class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</small>
+            <small class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor.</small>
           </div>
         </div>
         <div class="aside-options">
           <div class="clearfix mt-3">
             <small><b>Option 2</b></small>
-            <c-switch color="success" label variant="pill" size="sm" class="float-right" />
+            <c-switch color="success" label variant="pill" size="sm" class="float-right" checked/>
           </div>
           <div>
-            <small class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</small>
+            <small class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor.</small>
           </div>
         </div>
         <div class="aside-options">
           <div class="clearfix mt-3">
             <small><b>Option 3</b></small>
-            <c-switch color="success" label variant="pill" size="sm" class="float-right" disabled defaultChecked/>
+            <c-switch color="success" label variant="pill" size="sm" class="float-right"/>
           </div>
           <div>
-            <small class="text-muted">Disabled option.</small>
+            <small class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor.</small>
           </div>
         </div>
         <div class="aside-options">
@@ -212,8 +212,11 @@
             <small><b>Option 4</b></small>
             <c-switch color="success" label variant="pill" size="sm" class="float-right" checked />
           </div>
+          <div>
+            <small class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor.</small>
+          </div>
         </div>
-        <hr>
+<!--         <hr>
         <h6>System Utilization</h6>
         <div class="text-uppercase mb-1 mt-4">
           <small><b>CPU Usage</b></small>
@@ -234,7 +237,7 @@
           <small><b>SSD 2 Usage</b></small>
         </div>
         <b-progress height={} class="progress-xs" variant="success" :value="10"></b-progress>
-        <small class="text-muted">25GB/256GB</small>
+        <small class="text-muted">25GB/256GB</small> -->
       </div>
     </b-tab>
   </b-tabs>

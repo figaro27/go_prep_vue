@@ -20,34 +20,33 @@
                 </div>
             </div>
         </div>
-        <b-modal title="Customer" v-model="viewStoreModal" v-if="viewStoreModal">
-            <ul>
-                <li class="my-4">Logo: {{ store.store_detail.logo }}</li>
-                <li class="my-4">Name: {{ store.store_detail.name }}</li>
-                <li class="my-4">Phone: {{ store.store_detail.phone }}</li>
-                <li class="my-4">Address: {{ store.store_detail.address }}</li>
-                <li class="my-4">City: {{ store.store_detail.city }}</li>
-                <li class="my-4">State: {{ store.store_detail.state }}</li>
-                <li class="my-4" v-for="order in orders">
-                    <ul>
-                        <li>Order ID: {{ order.id }}</li>
-                        <li>Total: {{ order.amount }}</li>
-                        <li>Date: {{ order.created_at }}</li>
-                    </ul>
-                </li>
-            </ul>
+        <b-modal size="lg" title="Customer" v-model="viewStoreModal" v-if="viewStoreModal">
+            <b-list-group>
+                <b-list-group-item>Logo: {{ store.store_detail.logo }}</b-list-group-item>
+                <b-list-group-item>Name: {{ store.store_detail.name }}</b-list-group-item>
+                <b-list-group-item>Phone: {{ store.store_detail.phone }}</b-list-group-item>
+                <b-list-group-item>Address: {{ store.store_detail.address }}</b-list-group-item>
+                <b-list-group-item>City: {{ store.store_detail.city }}</b-list-group-item>
+                <b-list-group-item>State: {{ store.store_detail.state }}</b-list-group-item>
+            </b-list-group>
+            <hr/>
+            <b-list-group v-for="order in orders" :key="order.id">
+                <b-list-group-item>Order ID: {{ order.id }}</b-list-group-item>
+                <b-list-group-item>Total: {{ order.amount }}</b-list-group-item>
+                <b-list-group-item>Date: {{ order.created_at }}</b-list-group-item>
+            </b-list-group>
         </b-modal>
 
         <b-modal title="Customer" v-model="editStoreModal" v-if="editStoreModal">
-            <ul>
-              <li class="my-4">Logo: <input v-model="store.store_detail.logo"></input></li>
-              <li class="my-4">Name: <input v-model="store.store_detail.name"></input></li>
-              <li class="my-4">Phone: <input v-model="store.store_detail.phone"></input></li>
-              <li class="my-4">Address: <input v-model="store.store_detail.address"></input></li>
-              <li class="my-4">City: <input v-model="store.store_detail.city"></input></li>
-              <li class="my-4">State: <input v-model="store.store_detail.state"></input></li>
-            </ul>
-        <button @click="updateStore">Save</button>
+            <b-list-group>
+              <b-list-group-item><b-form-input v-model="store.store_detail.logo"></b-form-input></b-list-group-item>
+              <b-list-group-item><b-form-input v-model="store.store_detail.name"></b-form-input></b-list-group-item>
+              <b-list-group-item><b-form-input v-model="store.store_detail.phone"></b-form-input></b-list-group-item>
+              <b-list-group-item><b-form-input v-model="store.store_detail.address"></b-form-input></b-list-group-item>
+              <b-list-group-item><b-form-input v-model="store.store_detail.city"></b-form-input></b-list-group-item>
+              <b-list-group-item><b-form-input v-model="store.store_detail.state"></b-form-input></b-list-group-item>
+            </b-list-group>
+        <button class="btn btn-primary mt-3 float-right" @click="updateStore">Save</button>
         </b-modal>
     </div>
 </template>

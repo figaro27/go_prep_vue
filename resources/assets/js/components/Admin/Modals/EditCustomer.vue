@@ -1,18 +1,19 @@
 <template>
     <div>
       <b-modal title="Customer" v-model="viewCustomerModal" v-if="viewCustomerModal" @hide="resetUserId" @hidden="toggleModalVisibility">
-        <ul>
-          <li class="my-4">First Name: <input v-model="user.user_detail.firstname"></input></li>
-          <li class="my-4">Last Name: <input v-model="user.user_detail.lastname"></input></li>
-          <li class="my-4">Email: <input v-model="user.email"></input></li>
-          <li class="my-4">Customer Since: <input v-model="user.created_at"></input></li>
-          <li class="my-4">Address: <input v-model="user.user_detail.address"></input></li>
-          <li class="my-4">City: <input v-model="user.user_detail.city"></input></li>
-          <li class="my-4">State: <input v-model="user.user_detail.state"></input></li>
-          <li class="my-4">Phone: <input v-model="user.user_detail.phone"></input></li>
-          <li class="my-4">Delivery Instructions: <input v-model="user.user_detail.delivery"></input></li>
-        </ul>
-        <button @click="updateUser(id)">Save</button>
+        <b-list-group>
+          <b-list-group-item><b-form-input v-model="user.user_detail.firstname"></b-form-input></b-list-group-item>
+          <b-list-group-item><b-form-input v-model="user.user_detail.lastname"></b-form-input></b-list-group-item>
+          <b-list-group-item><b-form-input v-model="user.email"></b-form-input></b-list-group-item>
+          <!-- <b-list-group-item>Customer Since: <b-form-input v-model="user.created_at"></b-form-input></b-list-group-item> -->
+          <b-list-group-item><b-form-input v-model="user.user_detail.address"></b-form-input></b-list-group-item>
+          <b-list-group-item><b-form-input v-model="user.user_detail.city"></b-form-input></b-list-group-item>
+          <b-list-group-item><b-form-input v-model="user.user_detail.state"></b-form-input></b-list-group-item>
+          <b-list-group-item><b-form-input v-model="user.user_detail.phone"></b-form-input></b-list-group-item>
+          <b-list-group-item><b-form-input v-model="user.user_detail.delivery"></b-form-input></b-list-group-item>
+        </b-list-group>
+
+        <button class="btn btn-primary mt-3 float-right" @click="updateUser(id)">Save</button>
       </b-modal>
 
 

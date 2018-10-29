@@ -1,23 +1,23 @@
 <template>
     <div>
-      <b-modal title="Customer" v-model="viewCustomerModal" v-if="viewCustomerModal" @hide="resetUserId" @hidden="toggleModalVisibility">
-        <ul>
-          <li class="my-4">Name: {{ user.user_detail.firstname }} {{ user.user_detail.lastname }}</li>
-          <li class="my-4">Email: {{ user.email }}</li>
-          <li class="my-4">Customer Since: {{ user.created_at }}</li>
-          <li class="my-4">Address: {{ user.user_detail.address }}</li>
-          <li class="my-4">City: {{ user.user_detail.city }}</li>
-          <li class="my-4">State: {{ user.user_detail.state }}</li>
-          <li class="my-4">Phone: {{ user.user_detail.phone }}</li>
-          <li class="my-4">Delivery Instructions: {{ user.user_detail.delivery }}</li>
-          <li class="my-4" v-for="order in orders">
-            <ul>
-              <li>Order ID: {{ order.id }}</li>
-              <li>Total: {{ order.amount }}</li>
-              <li>Date: {{ order.created_at }}</li>
-            </ul>
-          </li>
-        </ul>
+      <b-modal size="lg" title="Customer" v-model="viewCustomerModal" v-if="viewCustomerModal" @hide="resetUserId" @hidden="toggleModalVisibility">
+        <b-list-group>
+          <b-list-group-item>Name: {{ user.user_detail.firstname }} {{ user.user_detail.lastname }}</b-list-group-item>
+          <b-list-group-item>Email: {{ user.email }}</b-list-group-item>
+          <b-list-group-item>Customer Since: {{ user.created_at }}</b-list-group-item>
+          <b-list-group-item>Address: {{ user.user_detail.address }}</b-list-group-item>
+          <b-list-group-item>City: {{ user.user_detail.city }}</b-list-group-item>
+          <b-list-group-item>State: {{ user.user_detail.state }}</b-list-group-item>
+          <b-list-group-item>Phone: {{ user.user_detail.phone }}</b-list-group-item>
+          <b-list-group-item>Delivery Instructions: {{ user.user_detail.delivery }}</b-list-group-item>
+        </b-list-group>
+        <hr/>
+        <b-list-group v-for="order in orders" :key="order.id">
+              <b-list-group-item>Order ID: {{ order.id }}</b-list-group-item>
+              <b-list-group-item>Total: {{ order.amount }}</b-list-group-item>
+              <b-list-group-item>Date: {{ order.created_at }}</b-list-group-item>
+        </b-list-group>
+
       </b-modal>
 
 

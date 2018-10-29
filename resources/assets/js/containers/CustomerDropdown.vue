@@ -1,10 +1,7 @@
 <template>
   <AppHeaderDropdown right no-caret>
     <template slot="header">
-      <img
-        src="img/avatars/6.jpg"
-        class="img-avatar"
-        alt="admin@bootstrapmaster.com" />
+      <div class="m-3">customer@goprep.com</div>
     </template>\
     <template slot="dropdown">
       <b-dropdown-item><i class="fa fa-bell-o" /><router-link to="/customer/account/settings"> Settings</router-link>

@@ -1,10 +1,7 @@
-<template>
+  <template>
   <AppHeaderDropdown right no-caret>
     <template slot="header">
-      <img
-        src="img/avatars/6.jpg"
-        class="img-avatar"
-        alt="admin@bootstrapmaster.com" />
+      <div class="m-3">admin@goprep.com</div>
     </template>\
     <template slot="dropdown">
       <b-dropdown-item @click="logout()"><i class="fa fa-lock" /> Logout</b-dropdown-item>

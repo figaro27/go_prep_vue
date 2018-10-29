@@ -3,8 +3,8 @@
     <AppHeader fixed>
       <SidebarToggler class="d-lg-none" display="md" mobile />
       <b-link class="navbar-brand" to="#">
-        <img class="navbar-brand-full" src="img/brand/logo.svg" width="89" height="25" alt="CoreUI Logo">
-        <img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="CoreUI Logo">
+        <img class="navbar-brand-full" src="images/logo.jpg" width="90" height="40" alt="GoPrep Logo">
+        <img class="navbar-brand-minimized" src="images/logo-min.jpg" width="33" height="40" alt="CoreUI Logo">
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" />
 
@@ -12,7 +12,7 @@
         <b-nav-item class="d-md-down-none">
           <DefaultHeaderDropdownNotif/>
         </b-nav-item>
-        <b-nav-item class="d-md-down-none">
+        <!-- <b-nav-item class="d-md-down-none">
           <DefaultHeaderDropdownTasks/>
         </b-nav-item>
         <b-nav-item class="d-md-down-none">
@@ -20,7 +20,7 @@
         </b-nav-item>
         <b-nav-item class="d-md-down-none">
           <DefaultHeaderDropdown/>
-        </b-nav-item>
+        </b-nav-item> -->
         <StoreDropdown/>
       </b-navbar-nav>
       <AsideToggler class="d-none d-lg-block" />
