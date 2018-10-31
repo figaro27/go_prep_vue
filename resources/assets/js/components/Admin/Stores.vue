@@ -111,7 +111,7 @@
         methods: {
                 getTableData(){
                     let self = this
-                    axios.get('store')
+                    axios.get('../stores')
                     .then(function(response){    
                     self.tableData = response.data;
                     self.isLoading = false;

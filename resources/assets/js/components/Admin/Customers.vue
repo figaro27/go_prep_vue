@@ -120,7 +120,7 @@
         methods: {
             getTableData(){
                 let self = this;
-                axios.get('user')
+                axios.get('../user')
                 .then(function(response){    
                 self.tableData = response.data;
                 self.isLoading = false;

@@ -19,18 +19,15 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('role/routes', 'HomeController@role')->middleware('role');
-
-Route::get('role/admin', 'HomeController@admin')->middleware('role');
 
 
 //Admin Routes
 Route::resource('user', 'UserController');
-Route::resource('store', 'StoreController');
-
-
+Route::get('stores', 'StoreController@index');
 
 
 //Store Routes
 Route::get('storeCustomers', 'UserController@storeIndex');
 
+
+Route::fallback('SpaController@index');
