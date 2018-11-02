@@ -55,7 +55,7 @@
 
 </style>
 <script>
-    import Spinner from './Spinner';
+    import Spinner from '../../components/Spinner';
 
     export default {
         components: {

@@ -30,7 +30,7 @@
 </style>
 
 <script>
-    import Spinner from './Spinner';
+    import Spinner from '../../components/Spinner';
     import ViewCustomer from './Modals/ViewCustomer';
     import EditCustomer from './Modals/EditCustomer';
     import moment from 'moment';

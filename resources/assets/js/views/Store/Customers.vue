@@ -2,13 +2,14 @@
     <div class="store-customer-container">
         <div class="row">
             <div class="col-md-12">
+                <Spinner v-if="isLoading"/>
                 <div class="card">
                     <ViewCustomer :userId="viewUserId"></ViewCustomer> 
                     <div class="card-header">
                         Customers
                     </div>
                     <div class="card-body">
-                        <v-client-table :columns="columns" :data="tableData" :options="options">
+                        <v-client-table :columns="columns" :data="tableData" :options="options" v-show="!isLoading">
                             <div slot="actions" class="text-nowrap" slot-scope="props">
                                 <button class="btn btn-primary btn-sm" @click="viewUserId = props.row.id">View</button>
                             </div>
@@ -26,10 +27,12 @@
 
 </style>
 <script>
+    import Spinner from '../../components/Spinner';
     import ViewCustomer from './Modals/ViewCustomer';
 
     export default {
         components: {
+            Spinner,
             ViewCustomer
         },
         data(){

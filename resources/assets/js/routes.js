@@ -1,38 +1,38 @@
 import VueRouter from 'vue-router';
 
 
-import Survey from './components/Customer/Survey.vue';
-import CustomerBag from './components/Customer/Bag.vue';
-import CustomerMenu from './components/Customer/Menu.vue';
-import CustomerBilling from './components/Customer/Account/Billing.vue';
-import CustomerContact from './components/Customer/Account/Contact.vue';
-import CustomerOrders from './components/Customer/Account/Orders.vue';
-import CustomerSettings from './components/Customer/Account/Settings.vue';
-import CustomerSubscriptions from './components/Customer/Account/Subscriptions.vue';
+import Survey from './views/Customer/Survey.vue';
+import CustomerBag from './views/Customer/Bag.vue';
+import CustomerMenu from './views/Customer/Menu.vue';
+import CustomerBilling from './views/Customer/Account/Billing.vue';
+import CustomerContact from './views/Customer/Account/Contact.vue';
+import CustomerOrders from './views/Customer/Account/Orders.vue';
+import CustomerSettings from './views/Customer/Account/Settings.vue';
+import CustomerSubscriptions from './views/Customer/Account/Subscriptions.vue';
 
 
-import StoreCustomers from './components/Store/Customers.vue';
-import StoreDashboard from './components/Store/Dashboard.vue';
-import StoreIngredients from './components/Store/Ingredients.vue';
-import StoreLabels from './components/Store/Labels.vue';
-import StoreMeals from './components/Store/Meals.vue';
-import StoreOrders from './components/Store/Orders.vue';
-import StorePayments from './components/Store/Payments.vue';
-import StoreBilling from './components/Store/Account/Billing.vue';
-import StoreContact from './components/Store/Account/Contact.vue';
-import StoreSettings from './components/Store/Account/Settings.vue';
+import StoreCustomers from './views/Store/Customers.vue';
+import StoreDashboard from './views/Store/Dashboard.vue';
+import StoreIngredients from './views/Store/Ingredients.vue';
+import StoreLabels from './views/Store/Labels.vue';
+import StoreMeals from './views/Store/Meals.vue';
+import StoreOrders from './views/Store/Orders.vue';
+import StorePayments from './views/Store/Payments.vue';
+import StoreBilling from './views/Store/Account/Billing.vue';
+import StoreContact from './views/Store/Account/Contact.vue';
+import StoreSettings from './views/Store/Account/Settings.vue';
 
-import AdminCustomers from './components/Admin/Customers.vue';
-import AdminDashboard from './components/Admin/Dashboard.vue';
-import AdminMeals from './components/Admin/Meals.vue';
-import AdminOrders from './components/Admin/Orders.vue';
-import AdminPayments from './components/Admin/Payments.vue';
-import AdminStores from './components/Admin/Stores.vue';
-
-
+import AdminCustomers from './views/Admin/Customers.vue';
+import AdminDashboard from './views/Admin/Dashboard.vue';
+import AdminMeals from './views/Admin/Meals.vue';
+import AdminOrders from './views/Admin/Orders.vue';
+import AdminPayments from './views/Admin/Payments.vue';
+import AdminStores from './views/Admin/Stores.vue';
 
 
-import Spinner from './components/Admin/Spinner.vue';
+
+
+import Spinner from './components/Spinner.vue';
 
 
 
@@ -135,7 +135,7 @@ let routes = [
         component: AdminStores
     },
     {
-        path: '/admin/spinner',
+        path: '/spinner',
         component: Spinner
     }
 ];
