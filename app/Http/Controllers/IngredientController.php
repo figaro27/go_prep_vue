@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\MealMeta;
+use App\Ingredient;
 use Illuminate\Http\Request;
 
-class MealMetaController extends Controller
+class IngredientController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class MealMetaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\MealMeta  $mealMeta
+     * @param  \App\Ingredient  $ingredient
      * @return \Illuminate\Http\Response
      */
-    public function show(MealMeta $mealMeta)
+    public function show(Ingredient $ingredient)
     {
         //
     }
@@ -52,10 +52,10 @@ class MealMetaController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\MealMeta  $mealMeta
+     * @param  \App\Ingredient  $ingredient
      * @return \Illuminate\Http\Response
      */
-    public function edit(MealMeta $mealMeta)
+    public function edit(Ingredient $ingredient)
     {
         //
     }
@@ -64,10 +64,10 @@ class MealMetaController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\MealMeta  $mealMeta
+     * @param  \App\Ingredient  $ingredient
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, MealMeta $mealMeta)
+    public function update(Request $request, Ingredient $ingredient)
     {
         //
     }
@@ -75,10 +75,10 @@ class MealMetaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\MealMeta  $mealMeta
+     * @param  \App\Ingredient  $ingredient
      * @return \Illuminate\Http\Response
      */
-    public function destroy(MealMeta $mealMeta)
+    public function destroy(Ingredient $ingredient)
     {
         //
     }

@@ -24,10 +24,14 @@ Route::get('/home', 'HomeController@index')->name('home');
 //Admin Routes
 Route::resource('user', 'UserController');
 Route::get('stores', 'StoreController@index');
-
+Route::resource('meals', 'MealController');
 
 //Store Routes
 Route::get('storeCustomers', 'UserController@storeIndex');
 
 
+
 Route::fallback('SpaController@index');
+
+Route::post('nutrients', 'NutritionController@getNutrients');
+Route::post('searchInstant', 'NutritionController@searchInstant');

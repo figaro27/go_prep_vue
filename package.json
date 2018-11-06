@@ -51,6 +51,7 @@
     },
     "dependencies": {
         "moment": "^2.22.2",
+        "nutrition-label-jquery-plugin": "^8.0.14",
         "vue-tables-2": "^1.4.70"
     }
 }
