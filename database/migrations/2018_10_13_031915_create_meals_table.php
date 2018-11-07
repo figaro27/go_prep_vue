@@ -20,7 +20,7 @@ class CreateMealsTable extends Migration
             $table->string('title');
             $table->string('category');
             $table->text('description');
-            $table->integer('price');
+            $table->decimal('price', 4, 2);
             $table->timestamps();
         });
     }

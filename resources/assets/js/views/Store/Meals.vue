@@ -7,12 +7,12 @@
                         Meals
                     </div>
                     <div class="card-body">
-                        <button class="btn btn-success btn-sm" @click="createMeal">Add New</button>
+                        <button class="btn btn-success btn-sm" @click="showCreateMealModal">Add New</button>
                         <Spinner v-if="isLoading"/>
                         <v-client-table :columns="columns" :data="tableData" :options="options" >
                         <div slot="featured_image" slot-scope="props">
-                            <img :src="tableData[props.row.id].featured_image">
-                        </div>                      
+                            <img :src="tableData[props.index].featured_image">
+                        </div>                       
                             <div slot="actions" class="text-nowrap" slot-scope="props">
                                 <button class="btn btn-primary btn-sm" @click="viewMeal(props.row.id)">View</button>
                                 <button class="btn btn-warning btn-sm" @click="editMeal(props.row.id)">Edit</button>
@@ -117,13 +117,13 @@
         methods: {
             getTableData(){
                 let self = this;
-                axios.get('../meals')
+                axios.get('../storeMeals')
                 .then(function(response){    
                 self.tableData = response.data;
                 self.isLoading = false;
               })   
             },
-            createMeal(){
+            showCreateMealModal(){
                 this.createMealModal = true
             },
             storeMeal(){

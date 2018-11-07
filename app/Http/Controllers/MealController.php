@@ -17,6 +17,11 @@ class MealController extends Controller
         return Meal::getMeals();
     }
 
+    public function getStoreMeals()
+    {
+        return Meal::getStoreMeals();
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -35,15 +40,12 @@ class MealController extends Controller
      */
     public function store(Request $request)
     {
-        $meal = new Meal;
-        $meal->store_id = 1;
-        $meal->featured_image = $request->featured_image;
-        $meal->title = $request->title;
-        $meal->category = $request->category;
-        $meal->description = $request->description;
-        $meal->price = $request->price;
+        return Meal::storeMeal($request);
+    }
 
-        $meal->save();
+    public function storeAdmin(Request $request)
+    {
+        return Meal::storeMealAdmin($request);
     }
 
     /**
@@ -77,16 +79,7 @@ class MealController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $meal = Meal::where('id', $id)->first();
-       
-        $meal->update([
-            'featured_image' => $request->meal['featured_image'],
-            'title' => $request->meal['title'],
-            'category' => $request->meal['category'],
-            'description' => $request->meal['description'],
-            'price' => $request->meal['price'],
-            'created_at' => $request->meal['created_at'],
-        ]);
+        return Meal::updateMeal($request, $id);
     }
 
     /**
@@ -97,7 +90,6 @@ class MealController extends Controller
      */
     public function destroy($id)
     {
-        $meal = Meal::find($id);
-        $meal->delete();
+        return Meal::deleteMeal($id);
     }
 }

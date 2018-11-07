@@ -25,6 +25,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('user', 'UserController');
 Route::get('stores', 'StoreController@index');
 Route::resource('meals', 'MealController');
+Route::post('storeMealAdmin', 'MealController@storeAdmin');
+Route::get('storeMeals', 'MealController@getStoreMeals');
 
 //Store Routes
 Route::get('storeCustomers', 'UserController@storeIndex');
