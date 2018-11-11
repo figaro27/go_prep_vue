@@ -51,13 +51,13 @@ class Meal extends Model
                   "category" => $meal->category,
                   "description" => $meal->description,
                   "price" => '$'.$meal->price,
-                  "created_at" => $meal->created_at
+                  "created_at" => $meal->created_at,
             ];                         
         });
 	 }
 
 	 public static function getMeal($id){
-        return Meal::where('id', $id)->first();
+        return Meal::with('ingredient')->where('id', $id)->first();
     }
 
     public static function storeMeal($request){

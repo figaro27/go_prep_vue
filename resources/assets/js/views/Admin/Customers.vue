@@ -155,57 +155,8 @@
             resetUserId(){
                 this.viewUserId = 0;
                 this.editUserId = 0;
-            },
-            getNutrition: function(){
-                axios.post('../nutrients', {
-                    query: this.query 
-                })
-                .then((response) => {
-                    this.nutrients = response.data.foods[0]
-                });
-        },
-            searchInstant: function(){
-                axios.post('../searchInstant', {
-                    search: this.search 
-                })
-                .then((response) =>{
-                    this.searchResults = response.data.common
-                });
-            },
-            getNutritionFacts: function(){
-                $('#test2').nutritionLabel({
-                showServingUnitQuantity : false,
-                itemName : this.nutrients.food_name,
-                ingredientList : 'Bleu Cheese Dressing',
-
-                decimalPlacesForQuantityTextbox : 2,
-                valueServingUnitQuantity : 1,
-
-                allowFDARounding : true,
-                decimalPlacesForNutrition : 2,
-
-                showPolyFat : false,
-                showMonoFat : false,
-
-                valueCalories : this.nutrients.nf_calories,
-                valueFatCalories : 430,
-                valueTotalFat : 48,
-                valueSatFat : 6,
-                valueTransFat : 0,
-                valueCholesterol : 30,
-                valueSodium : 780,
-                valueTotalCarb : 3,
-                valueFibers : 0,
-                valueSugars : 3,
-                valueProteins : this.nutrients.nf_protein,
-                valueVitaminD : 12.22,
-                valuePotassium_2018 : 4.22,
-                valueCalcium : 7.22,
-                valueIron : 11.22,
-                valueAddedSugars : 17,
-                showLegacyVersion : false
-             });
             }
+            
     }
 }
 

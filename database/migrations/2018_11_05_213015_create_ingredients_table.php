@@ -17,9 +17,25 @@ class CreateIngredientsTable extends Migration
             $table->increments('id');
             $table->integer('meal_id')->references('id')->on('meals');
             $table->integer('store_id')->references('id')->on('stores');
-            $table->string('name');
-            $table->string('measurement');
-            $table->integer('quantity');
+            $table->string('food_name');
+            $table->integer('serving_qty');
+            $table->string('serving_unit');
+            $table->integer('calories');
+            $table->integer('fatcalories');
+            $table->integer('totalfat');
+            $table->integer('satfat');
+            $table->integer('transfat');
+            $table->integer('cholesterol');
+            $table->integer('sodium');
+            $table->integer('totalcarb');
+            $table->integer('fibers');
+            $table->integer('sugars');
+            $table->integer('proteins');
+            $table->integer('vitamind');
+            $table->integer('potassium');
+            $table->integer('calcium');
+            $table->integer('iron');
+            $table->integer('addedsugars');
             $table->timestamps();
         });
     }
@@ -34,3 +50,4 @@ class CreateIngredientsTable extends Migration
         Schema::dropIfExists('ingredients');
     }
 }
+

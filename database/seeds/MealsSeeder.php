@@ -11,6 +11,12 @@ class MealsSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Meal::class, 200)->create();
+
+        factory(App\Meal::class, 50)->create()->each(function($u) {
+        	for ($i=0;$i<6;$i++)
+            $u->ingredient()->save(factory(App\Ingredient::class)->make());
+
+          });
+
     }
 }

@@ -54,7 +54,7 @@ class User extends Authenticatable
                       "Name" => $user->userDetail->firstname .' '. $user->userDetail->lastname,
                       "phone" => $user->userDetail->phone,
                       "address" => $user->userDetail->address,
-                      "city" => '$user->userDetail->city',
+                      "city" => $user->userDetail->city,
                       "state" => $user->userDetail->state,
                       "Joined" => $user->created_at->format('m-d-Y'),
                       "LastOrder" =>  optional($user->order->max("created_at"))->format('m-d-Y'),
