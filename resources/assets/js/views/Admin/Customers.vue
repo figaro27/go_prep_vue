@@ -1,26 +1,4 @@
 <template>
-
-    <div class="admin-customer-container">
-<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Archivo+Black" />
-        <div style="width:50%;margin-top:20px;margin-bottom:20px">
-        <input class="form-control input-lg" v-model="query" style="margin-bottom:10px" placeholder="Type ingredients here">
-        <button class="btn btn-primary btn-sm" @click="getNutrition" >Get Nutrition</button>
-        <p>{{ nutrients.food_name }}</p>
-        <p>{{ nutrients.nf_calories }}</p>
-        <p>{{ nutrients.nf_total_fat }}</p>
-        <p>{{ nutrients.nf_protein }}</p>
-        <hr/><hr/><hr/>
-
-
-        <input class="form-control input-lg" v-model="search" style="margin-bottom:10px" placeholder="Search Ingredients">
-        <p>{{ search }}</p>
-        <button class="btn btn-primary btn-sm" @click="searchInstant">Search Ingredients</button>
-        <p>{{ searchResults }}</p>
-
-        <hr/><hr/><hr/>
-        <button class="btn btn-primary btn-sm" @click="getNutritionFacts">Get Nutrition Facts</button>
-        <div id="test2"></div>
-
     </div>
         <div class="row">
             <div class="col-md-12">
@@ -47,20 +25,12 @@
     </div>
 </template>
 
-<style>
-@import '~nutrition-label-jquery-plugin/dist/css/nutritionLabel-min.css';
-</style>
-
 <script>
 
     import Spinner from '../../components/Spinner';
     import ViewCustomer from './Modals/ViewCustomer';
     import EditCustomer from './Modals/EditCustomer';
     import moment from 'moment';
-    import nutritionFacts from 'nutrition-label-jquery-plugin';
-
-
-
     
 
     export default {
@@ -97,24 +67,6 @@
                   },
                   columnsDropdown: true,
                   customSorting: {
-                    TotalPaid: function(ascending) {
-                            return function(a, b) {
-                                var n1 = a.TotalPaid.toString();
-                                var n1a = n1.replace("$", "");
-                                var n1a1 = n1a.replace(",", "");
-
-                                var n2 = b.TotalPaid.toString();
-                                var n2a = n1.replace("$", "");
-                                var n2a2 = n1a.replace(",", "");
-
-
-                                var numA = parseInt(n1a1);
-                                var numB = parseInt(n2a2);
-                                if (ascending)
-                                    return numA >= numB ? 1 : -1;
-                                return numA <= numB ? 1 : -1;
-                        }
-                    },
                     Joined: function(ascending) {
                         return function(a, b){
                             var n1 = a.Joined.toString();
@@ -126,7 +78,6 @@
                             if (ascending)
                                 return numA >= numB ? 1 : -1;
                             return numA <= numB ? 1 : -1;
-
                         }
                     }
                   } 
@@ -139,8 +90,6 @@
         mounted()
         {
             this.getTableData();
-
-
         },
         methods: {
             getTableData(){
@@ -149,8 +98,7 @@
                 .then(function(response){    
                 self.tableData = response.data;
                 self.isLoading = false;
-              })
-                
+              })       
             },
             resetUserId(){
                 this.viewUserId = 0;

@@ -14,29 +14,22 @@
 Route::get('/', function () {
     return view('welcome');
 });
-
-Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
 
-
-
-//Admin Routes
-Route::resource('user', 'UserController');
-Route::get('stores', 'StoreController@index');
-Route::resource('meals', 'MealController');
-Route::post('storeMealAdmin', 'MealController@storeAdmin');
-Route::get('storeMeals', 'MealController@getStoreMeals');
-Route::post('updateActive', 'MealController@updateActive');
-
-//Store Routes
-Route::get('storeCustomers', 'UserController@storeIndex');
-
-
-
+Auth::routes();
 Route::fallback('SpaController@index');
+
+Route::resource('user', 'UserController');
+Route::resource('meals', 'MealController');
+Route::resource('ingredients', 'IngredientController');
+Route::resource('stores', 'StoreController');
+
+Route::get('storeCustomers', 'UserController@storeIndex');
+Route::get('storeMeals', 'MealController@getStoreMeals');
+
+Route::post('storeMealAdmin', 'MealController@storeAdmin');
+Route::post('updateActive', 'MealController@updateActive');
 
 Route::post('nutrients', 'NutritionController@getNutrients');
 Route::post('searchInstant', 'NutritionController@searchInstant');
 
-Route::resource('ingredients', 'IngredientController');

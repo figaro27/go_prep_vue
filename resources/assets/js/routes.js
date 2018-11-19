@@ -1,7 +1,5 @@
 import VueRouter from 'vue-router';
 
-
-import Survey from './views/Customer/Survey.vue';
 import CustomerBag from './views/Customer/Bag.vue';
 import CustomerMenu from './views/Customer/Menu.vue';
 import CustomerBilling from './views/Customer/Account/Billing.vue';
@@ -9,7 +7,6 @@ import CustomerContact from './views/Customer/Account/Contact.vue';
 import CustomerOrders from './views/Customer/Account/Orders.vue';
 import CustomerSettings from './views/Customer/Account/Settings.vue';
 import CustomerSubscriptions from './views/Customer/Account/Subscriptions.vue';
-
 
 import StoreCustomers from './views/Store/Customers.vue';
 import StoreDashboard from './views/Store/Dashboard.vue';
@@ -29,19 +26,9 @@ import AdminOrders from './views/Admin/Orders.vue';
 import AdminPayments from './views/Admin/Payments.vue';
 import AdminStores from './views/Admin/Stores.vue';
 
-
-
-
 import Spinner from './components/Spinner.vue';
 
-
-
-
 let routes = [
-    {
-        path: '/customer/survey',
-        component: Survey
-    },
     {
         path: '/customer/bag',
         component: CustomerBag
@@ -139,7 +126,6 @@ let routes = [
         component: Spinner
     }
 ];
-
 
 export default new VueRouter({
     mode: 'history',

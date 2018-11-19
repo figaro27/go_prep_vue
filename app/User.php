@@ -44,7 +44,7 @@ class User extends Authenticatable
     }
 
 
-// Admin Methods
+// Admin View
 
     public static function getCustomers(){
         return User::with('userDetail', 'order')->where('user_role_id', '=', 1)->get()->map(function($user){
@@ -70,7 +70,7 @@ class User extends Authenticatable
 
 
 
-// Store Methods
+//Store View
     
     public static function getStoreCustomers(){
           $id = Auth::user()->id;

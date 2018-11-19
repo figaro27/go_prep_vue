@@ -11,7 +11,7 @@
                         <div class="row">
                             <div class="col-sm form-group">
                                 <h6>Returns Ingredient & Nutrition Data</h6>
-                                <input class="input-lg form-control" v-model="ingredientQuery" style="margin-bottom:10px" placeholder="Type Ingredients Here">
+                                <input class="input-lg form-control mb-2" v-model="ingredientQuery" placeholder="Type Ingredients Here">
                                 <button class="btn btn-primary btn-sm form-control" @click="getNutrition" >Get Nutrition</button>
                             </div>
                             <div class="col-sm">
@@ -63,7 +63,6 @@
 
 
 
-
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
@@ -100,8 +99,7 @@
                                 <button class="btn btn-danger btn-sm" @click="deleteMeal(props.row.id)">Delete</button>
                             </div>
 
-
-                             <div slot="child_row" slot-scope="props">
+                            <div slot="child_row" slot-scope="props">
                                 <div class="row">
                                     <div class="col-sm">
                                         <h3>Tags</h3>

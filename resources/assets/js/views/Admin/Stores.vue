@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-12">
                 <Spinner v-if="isLoading"/>
-                <div class="card" style="height: 100;">
+                <div class="card">
                     <div class="card-header" >
                         Stores
                     </div>
@@ -116,10 +116,9 @@
                     self.tableData = response.data;
                     self.isLoading = false;
                 })
-            },
-          
+            },       
                 viewStore($id){
-                    axios.get('/store/' + $id).then(
+                    axios.get('/stores/' + $id).then(
                     response => {
                     this.store = response.data;
                     this.orders = response.data.order;
@@ -128,7 +127,7 @@
                     );
                 },
                 editStore($id){
-                    axios.get('/store/' + $id).then(
+                    axios.get('/stores/' + $id).then(
                     response => {
                     this.store = response.data;
                     this.orders = response.data.order;

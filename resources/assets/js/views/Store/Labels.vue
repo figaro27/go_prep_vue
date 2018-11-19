@@ -6,8 +6,7 @@
                         Labels
                     </div>
                     <div class="card-body">
-                        <text-editors></text-editors>
-                        <button-groups></button-groups>
+
                     </div>
                 </div>
             </div>
