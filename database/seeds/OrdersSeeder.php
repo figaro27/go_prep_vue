@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class OrdersSeeder extends Seeder
 {
@@ -17,8 +18,8 @@ class OrdersSeeder extends Seeder
 	        'store_id' => rand(1,10),
 	        'delivery_status' => rand(1,5),
 	        'amount' => rand(100, 200),
-            'created_at' => now(),
-            'updated_at' => now()
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ]);
 
         DB::table('orders')->insert([
@@ -27,8 +28,8 @@ class OrdersSeeder extends Seeder
 	        'store_id' => rand(1,10),
 	        'delivery_status' => rand(1,5),
 	        'amount' => rand(100, 200),
-            'created_at' => now(),
-            'updated_at' => now()
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ]);
 
         DB::table('orders')->insert([
@@ -37,8 +38,8 @@ class OrdersSeeder extends Seeder
 	        'store_id' => rand(1,10),
 	        'delivery_status' => rand(1,5),
 	        'amount' => rand(100, 200),
-            'created_at' => now(),
-            'updated_at' => now()
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ]);
 
         DB::table('orders')->insert([
@@ -47,8 +48,8 @@ class OrdersSeeder extends Seeder
 	        'store_id' => rand(1,10),
 	        'delivery_status' => rand(1,5),
 	        'amount' => rand(100, 200),
-            'created_at' => now(),
-            'updated_at' => now()
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ]);
 
         DB::table('orders')->insert([
@@ -57,8 +58,8 @@ class OrdersSeeder extends Seeder
 	        'store_id' => rand(1,10),
 	        'delivery_status' => rand(1,5),
 	        'amount' => rand(100, 200),
-            'created_at' => now(),
-            'updated_at' => now()
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ]);
 
 

@@ -82,6 +82,11 @@ class MealController extends Controller
         return Meal::updateMeal($request, $id);
     }
 
+    public function updateActive(Request $request)
+    {
+        return Meal::updateActive($request);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

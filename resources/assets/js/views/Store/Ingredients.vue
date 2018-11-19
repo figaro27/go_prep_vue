@@ -6,8 +6,10 @@
                         Ingredients
                     </div>
                     <div class="card-body">
-                        <text-editors></text-editors>
-                        <button-groups></button-groups>
+                        <v-client-table :columns="columns" :data="tableData" :options="options">
+                            
+
+                        </v-client-table>
                     </div>
                 </div>
             </div>
@@ -20,11 +22,32 @@
 
         },
         data(){
-            return {}
+            return {
+                columns: ['ingredient', 'total', 'unit'],
+                tableData: [],
+                options: {
+                  headings: {
+                    'ingredient': 'Ingredient',
+                    'total': 'Quantity',
+                    'unit': 'Unit'
+                  }
+                }
+            }
         },
         mounted()
         {
+            this.getTableData();
         },
-        methods: {}
+        methods: {
+            getTableData(){
+                let self = this;
+                axios.get('../ingredients')
+                .then(function(response){    
+                self.tableData = response.data;
+                self.isLoading = false;
+              })   
+            }
+
+        }
     }
 </script>

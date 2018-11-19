@@ -27,6 +27,7 @@ Route::get('stores', 'StoreController@index');
 Route::resource('meals', 'MealController');
 Route::post('storeMealAdmin', 'MealController@storeAdmin');
 Route::get('storeMeals', 'MealController@getStoreMeals');
+Route::post('updateActive', 'MealController@updateActive');
 
 //Store Routes
 Route::get('storeCustomers', 'UserController@storeIndex');
@@ -37,3 +38,5 @@ Route::fallback('SpaController@index');
 
 Route::post('nutrients', 'NutritionController@getNutrients');
 Route::post('searchInstant', 'NutritionController@searchInstant');
+
+Route::resource('ingredients', 'IngredientController');

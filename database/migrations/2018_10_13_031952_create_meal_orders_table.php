@@ -15,6 +15,7 @@ class CreateMealOrdersTable extends Migration
     {
         Schema::create('meal_orders', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('store_id')->references('id')->on('stores');
             $table->integer('order_id')->references('id')->on('orders');
             $table->integer('meal_id')->references('id')->on('meals');
             $table->timestamps();

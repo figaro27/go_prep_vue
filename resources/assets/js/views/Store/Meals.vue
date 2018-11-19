@@ -1,5 +1,69 @@
 <template>
+
     <div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        Test Area
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm form-group">
+                                <h6>Returns Ingredient & Nutrition Data</h6>
+                                <input class="input-lg form-control" v-model="ingredientQuery" style="margin-bottom:10px" placeholder="Type Ingredients Here">
+                                <button class="btn btn-primary btn-sm form-control" @click="getNutrition" >Get Nutrition</button>
+                            </div>
+                            <div class="col-sm">
+                               <h6>Suggests Ingredients</h6>
+                               <input list="ingredientResults" class="input-lg form-control" v-model="ingredientSearch" @input="searchInstant" placeholder="Search Ingredients">
+                               <table class="table table-bordered">
+                                    <tr>
+                                        <th>Food Name</th>
+                                    </tr>
+                                    <tr v-for="ingredientResult in ingredientResults">
+                                        <td>{{ ingredientResult.food_name }}</td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                            <div class="col-sm">
+                                <h6>Tags Used for Meal Tags</h6>
+                                <input type="text" value="test1,test2" data-role="tagsinput"/>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="row">
+                            <div class="col-sm">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>Food Name</th>
+                                        <th>Serving Quantity</th>
+                                        <th>Serving Unit</th>
+                                    </tr>
+                                    <tr v-for="ingredient in ingredients">
+                                        <td>{{ ingredient.food_name }}</td>
+                                        <td>{{ ingredient.serving_qty }}</td>
+                                        <td>{{ ingredient.serving_unit }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-sm">
+                                <button class="btn btn-primary btn-sm form-control" @click="getNutritionFacts">Get Nutrition Facts</button>
+                                <div id="nutritionFacts"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
@@ -7,46 +71,58 @@
                         Meals
                     </div>
                     <div class="card-body">
-
-                        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Archivo+Black" />
-                        <div style="width:50%;margin-top:20px;margin-bottom:20px">
-                        <input class="form-control input-lg" v-model="query" style="margin-bottom:10px" placeholder="Type ingredients here">
-                        <button class="btn btn-primary btn-sm" @click="getNutrition" >Get Nutrition</button>
-                        <table>
-                            <tr v-for="ingredient in ingredients">
-                            <td>{{ ingredient.food_name }}</td>
-                            <td>{{ ingredient.serving_qty }}</td>
-                            <td>{{ ingredient.serving_unit }}</td>
-                            </tr>
-                        </table>
-
-
-                        <input class="form-control input-lg" v-model="search" style="margin-bottom:10px" placeholder="Search Ingredients">
-                        <p>{{ search }}</p>
-                        <button class="btn btn-primary btn-sm" @click="searchInstant">Search Ingredients</button>
-                        <p>{{ searchResults }}</p>
-
-                        </div>
                         
                         <Spinner v-if="isLoading"/>
+                        
                         <v-client-table :columns="columns" :data="tableData" :options="options" >
+                            
                             <div slot="beforeTable">
-                                <button class="btn btn-success btn-sm" @click="createMeal">Add New</button>
+                                <button class="btn btn-success btn-sm mb-2" @click="createMeal">Add Meal</button>
                             </div>
 
+                            <div slot="active" slot-scope="props">
+                                <b-form-checkbox
+                                            type="checkbox"
+                                            v-model="active[props.index-1]"
+                                            value="true"
+                                            unchecked-value="false"
+                                            @change="updateActive(props.row.id, props.index-1)">
+                                </b-form-checkbox>
+                            </div>
 
-                            <template slot="child_row" slot-scope="props">
-                              <div><b>First name:</b></div>
-                              <div><b>Last name:</b></div>
-                            </template>
-
-                        <div slot="featured_image" slot-scope="props">
-                            <img :src="tableData[props.index].featured_image">
-                        </div>                       
+                            <div slot="featured_image" slot-scope="props">
+                                <img :class="{ 'faded': !JSON.parse(active[props.index-1].toLowerCase()) }" :src="tableData[props.index].featured_image">
+                            </div>
+                        
                             <div slot="actions" class="text-nowrap" slot-scope="props">
                                 <button class="btn btn-primary btn-sm" @click="viewMeal(props.row.id)">View</button>
                                 <button class="btn btn-warning btn-sm" @click="editMeal(props.row.id)">Edit</button>
                                 <button class="btn btn-danger btn-sm" @click="deleteMeal(props.row.id)">Delete</button>
+                            </div>
+
+
+                             <div slot="child_row" slot-scope="props">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <h3>Tags</h3>
+                                        <b-list-group>
+                                            <b-list-group-item v-for="meal_tag in props.row.meal_tags" :key="meal_tag.id">
+                                            {{ meal_tag.tag }}
+                                            </b-list-group-item>
+                                        </b-list-group>
+                                    </div>
+                                    <div class="col-sm">
+                                        <h3>Ingredients</h3>
+                                        <b-list-group>
+                                        <b-list-group-item v-for="ingredient in props.row.ingredients" :key="ingredient.id">
+                                        {{ ingredient.food_name }}
+                                        </b-list-group-item>
+                                        </b-list-group>     
+                                    </div>
+                                    <div class="col-sm">
+                                      <h3>Nutrition Facts</h3>
+                                    </div>
+                                  </div>
                             </div>
                         </v-client-table>
                     </div>
@@ -54,25 +130,35 @@
             </div>
         </div>
 
+
+
+
+
         <b-modal size="lg" title="Meal" v-model="createMealModal" v-if="createMealModal">
             <b-list-group>
               <b-list-group-item><b-form-input v-model="newMeal.featured_image" placeholder="Featured Image"></b-form-input></b-list-group-item>
               <b-list-group-item><b-form-input v-model="newMeal.title" placeholder="Title"></b-form-input></b-list-group-item>
-              <b-list-group-item><b-form-input v-model="newMeal.category" placeholder="Category"></b-form-input></b-list-group-item>
               <b-list-group-item><b-form-input v-model="newMeal.description" placeholder="Description"></b-form-input></b-list-group-item>
               <b-list-group-item><b-form-input v-model="newMeal.price" placeholder="Price"></b-form-input></b-list-group-item>
             </b-list-group>
-            <button class="btn btn-primary mt-3 float-right" @click="storeMeal">Add Meal</button>
+            <button class="btn btn-primary mt-3 float-right" @click="storeMeal">Save</button>
         </b-modal>
+
+
+
+
 
         <b-modal size="lg" title="Meal" v-model="viewMealModal" v-if="viewMealModal">
             <b-list-group>
                 <b-list-group-item>Logo: {{ meal.featured_image }}</b-list-group-item>
                 <b-list-group-item>Title: {{ meal.title }}</b-list-group-item>
-                <b-list-group-item>Category: {{ meal.category }}</b-list-group-item>
                 <b-list-group-item>Description: {{ meal.description }}</b-list-group-item>
                 <b-list-group-item>Price: {{ meal.price }}</b-list-group-item>
                 <b-list-group-item>Created: {{ meal.created_at.date }}</b-list-group-item>
+            </b-list-group>
+            <h3>Tags</h3>
+            <b-list-group>
+                <b-list-group-item v-for="tag in tags" :key="tag.id">{{ tag.tag }}</b-list-group-item>
             </b-list-group>
             <div>
                 <h3>Ingredients</h3>
@@ -87,19 +173,25 @@
                 </table>
             </div>
             <button class="btn btn-primary btn-sm" @click="getNutritionFacts">Get Nutrition Facts</button>
-                        <div id="test2"></div>
+                        <div id="nutritionFacts"></div>
         </b-modal>
+
+
+
+
 
         <b-modal title="Meal" v-model="editMealModal" v-if="editMealModal">
             <b-list-group>
               <b-list-group-item><b-form-input v-model="meal.featured_image"></b-form-input></b-list-group-item>
               <b-list-group-item><b-form-input v-model="meal.title"></b-form-input></b-list-group-item>
-              <b-list-group-item><b-form-input v-model="meal.category"></b-form-input></b-list-group-item>
               <b-list-group-item><b-form-input v-model="meal.description"></b-form-input></b-list-group-item>
               <b-list-group-item><b-form-input v-model="meal.price"></b-form-input></b-list-group-item>
               <b-list-group-item><b-form-input v-model="meal.created_at"></b-form-input></b-list-group-item>
             </b-list-group>
 
+            <h3>Tags</h3>
+                    <input type="text" :value="meal_tag" data-role="tagsinput"/>
+                        <button class="button btn-primary">Add Tag</button>
             <div>
                 <h3>Ingredients</h3>
                 <table>
@@ -109,11 +201,13 @@
                       <td><b-form-input v-model="ingredient.serving_unit"></b-form-input></td>
                   </tr>
               </table>
-
             </div>
-
         <button class="btn btn-primary mt-3 float-right" @click="updateMeal(mealID)">Save</button>
         </b-modal>
+
+
+
+
 
         <b-modal title="Meal" v-model="deleteMealModal" v-if="deleteMealModal">
             <center>
@@ -122,16 +216,73 @@
             </center>
         </b-modal>
 
+
+
+
     </div>
 </template>
 
 <style>
+@import '~bootstrap-tagsinput/dist/bootstrap-tagsinput.css';
 @import '~nutrition-label-jquery-plugin/dist/css/nutritionLabel-min.css';
+
+
+.label-info{
+    background-color:#28A745;
+    border-radius:5px;
+    padding:3px;
+}
+
+.faded{
+opacity: .5
+}
+
+.VuePagination {
+  text-align: center;
+}
+
+.vue-title {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.vue-pagination-ad {
+  text-align: center;
+}
+
+.glyphicon.glyphicon-eye-open {
+  width: 16px;
+  display: block;
+  margin: 0 auto;
+}
+
+th:nth-child(3) {
+  text-align: center;
+}
+
+.VueTables__child-row-toggler {
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  display: block;
+  margin: auto;
+  text-align: center;
+}
+
+.VueTables__child-row-toggler--closed::before {
+  content: "+";
+}
+
+.VueTables__child-row-toggler--open::before {
+  content: "-";
+}
 </style>
+
 
 <script>
     import Spinner from '../../components/Spinner';
     import moment from 'moment';
+    import tags from 'bootstrap-tagsinput';
     import nutritionFacts from 'nutrition-label-jquery-plugin';
 
     export default {
@@ -140,42 +291,50 @@
         },
         data(){
             return {
-                search: '',
-                searchResults: {},
-                query: '',
-                nutrients: [],
-                ingredients: [],
                 isLoading: true,
                 createMealModal: false,
                 viewMealModal: false,
                 editMealModal: false,
                 deleteMealModal: false,
-                meal: {},
+
+                tags: [],
+                newTags: [],
+                ingredientSearch: '',
+                ingredientResults: [],
+                ingredientQuery: '',
+                ingredients: [],
+                meal: [],
+                mealID: null,
+                newMeal: ['featured_image', 'title', 'description', 'price'],
                 ingredients: [],
                 ingredientList: '',
-                nutrition: {'calories': null, 'fatCalories': null, 'totalFat': null, 'satFat': null, 'transFat': null, 'cholesterol': null, 'sodium': null, 'totalCarb': null, 'fibers': null, 'sugars': null, 'proteins': null, 'vitaminD': null, 'potassium': null, 'calcium': null, 'iron': null, 'addedSugars': null},
-                newMeal: ['featured_image', 'title', 'category', 'description', 'price'],
-                mealID: null,
-                columns: ['featured_image', 'title', 'category', 'description', 'price', 'current_orders', 'past_orders', 'created_at.date', 'actions'],
+                nutrition: {'calories': null, 'totalFat': null, 'satFat': null, 'transFat': null, 'cholesterol': null, 'sodium': null, 'totalCarb': null, 'fibers': null, 'sugars': null, 'proteins': null, 'vitaminD': null, 'potassium': null, 'calcium': null, 'iron': null, 'addedSugars': null},
+                
+                active: [],
                 tableData: [],
+                columns: ['active', 'featured_image', 'title', 'description', 'price', 'current_orders', 'created_at.date', 'actions'],
                 options: {
                   headings: {
+                    'active': 'Active',
                     'featured_image': 'Image',
                     'title': 'Title',
-                    'category': 'Category',
                     'description': 'Description',
                     'price': 'Price',
                     'current_orders': 'Current Orders',
-                    'past_orders': 'Past Orders',
-                    'created_at.date': 'Created',
+                    'created_at.date': 'Added',
                     'actions': 'Actions'
                   },
+                  rowClassCallback: function(row) {
+                    if (row.active == "false")
+                    return 'faded';
+                }
             }
         }
     },
         mounted()
         {
             this.getTableData();
+            
         },
         methods: {
             getTableData(){
@@ -184,8 +343,21 @@
                 .then(function(response){    
                 self.tableData = response.data;
                 self.isLoading = false;
+                self.active = response.data.map(row => row.active);
               })   
             },
+            updateActive: function($id, $row){
+                this.$nextTick(function()
+                    {
+                        let row = $row
+                        axios.post('/updateActive', {
+                        id: $id,
+                        active: this.active[row]
+                    });
+                })    
+            },
+
+
             createMeal(){
                 this.createMealModal = true
             },
@@ -193,7 +365,6 @@
                 axios.post('../meals', {
                     featured_image: this.newMeal.featured_image,
                     title: this.newMeal.title,
-                    category: this.newMeal.category,
                     description: this.newMeal.description,
                     price: this.newMeal.price,
                 });
@@ -205,16 +376,18 @@
                 response => {
                 this.meal = response.data;
                 this.ingredients = response.data.ingredient;
-                this.viewMealModal = true
+                this.tags = response.data.meal_tag;
+                this.viewMealModal = true;
                 }
-                );
-                
+                );         
             },
             editMeal($id){
+                this.addTag = false
                 axios.get('/meals/' + $id).then(
                 response => {
                 this.meal = response.data;
                 this.ingredients = response.data.ingredient;
+                this.tags = response.data.meal_tag;
                 this.editMealModal = true;
                 this.mealID = response.data.id;
                 }
@@ -238,24 +411,20 @@
             },
 
 
-
-
-
-
             getNutrition: function(){
                 axios.post('../nutrients', {
-                    query: this.query 
+                    query: this.ingredientQuery 
                 })
                 .then((response) => {
                     this.ingredients = response.data.foods
                 });
-        },
+            },
             searchInstant: function(){
                 axios.post('../searchInstant', {
-                    search: this.search 
+                    search: this.ingredientSearch 
                 })
                 .then((response) =>{
-                    this.searchResults = response.data.common
+                    this.ingredientResults = response.data.common
                 });
             },
             getIngredientList: function(){
@@ -267,28 +436,27 @@
             getNutritionTotals: function(){
                 let self = this;
                 this.ingredients.forEach(function(ingredient) {
-                  self.nutrition.calories += ingredient.calories                  
-                  self.nutrition.fatCalories += ingredient.fatcalories
-                  self.nutrition.totalFat += ingredient.totalfat
-                  self.nutrition.satFat += ingredient.satfat
-                  self.nutrition.transFat += ingredient.transfat
-                  self.nutrition.cholesterol += ingredient.cholesterol
-                  self.nutrition.sodium += ingredient.sodium
-                  self.nutrition.totalCarb += ingredient.totalcarb
-                  self.nutrition.fibers += ingredient.fibers
-                  self.nutrition.sugars += ingredient.sugars
-                  self.nutrition.proteins += ingredient.proteins
-                  self.nutrition.vitaminD += ingredient.vitamind
-                  self.nutrition.potassium += ingredient.potassium
-                  self.nutrition.calcium += ingredient.calcium
-                  self.nutrition.iron += ingredient.iron
-                  self.nutrition.addedSugars += ingredient.addedsugars
+                  self.nutrition.calories += ingredient.nf_calories                  
+                  self.nutrition.totalFat += ingredient.nf_total_fat
+                  self.nutrition.satFat += ingredient.nf_saturated_fat
+                  self.nutrition.transFat += ingredient.nf_trans_fat
+                  self.nutrition.cholesterol += ingredient.nf_cholesterol
+                  self.nutrition.sodium += ingredient.nf_sodium
+                  self.nutrition.totalCarb += ingredient.nf_total_carbohydrate
+                  self.nutrition.fibers += ingredient.nf_dietary_fiber
+                  self.nutrition.sugars += ingredient.nf_sugars
+                  self.nutrition.proteins += ingredient.nf_protein
+                  self.nutrition.vitaminD += ingredient.nf_vitamind
+                  self.nutrition.potassium += ingredient.nf_potassium
+                  self.nutrition.calcium += ingredient.nf_calcium
+                  self.nutrition.iron += ingredient.nf_iron
+                  self.nutrition.addedSugars += ingredient.nf_addedsugars
                 });
             },
             getNutritionFacts(){
                 this.getNutritionTotals();
                 this.getIngredientList();
-                $('#test2').nutritionLabel({
+                $('#nutritionFacts').nutritionLabel({
                 showServingUnitQuantity : false,
                 itemName : this.meal.title,
                 ingredientList : this.ingredientList,
