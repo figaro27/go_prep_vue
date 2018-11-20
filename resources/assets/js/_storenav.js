@@ -3,37 +3,37 @@ export default {
     {
       name: 'Dashboard',
       url: '/store/dashboard',
-      icon: 'icon-speedometer',
+      icon: 'fa fa-dashboard',
     },
     {
       name: 'Customers',
       url: '/store/customers',
-      icon: 'icon-drop'
+      icon: 'fa fa-users'
     },
     {
       name: 'Meals',
       url: '/store/meals',
-      icon: 'icon-pencil'
+      icon: 'fa fa-cutlery'
     },
     {
       name: 'Orders',
       url: '/store/orders',
-      icon: 'icon-pencil'
+      icon: 'fa fa-shopping-bag'
     },
     {
       name: 'Payments',
       url: '/store/payments',
-      icon: 'icon-pencil'
+      icon: 'fa fa-money'
     },
     {
       name: 'Ingredients',
       url: '/store/ingredients',
-      icon: 'icon-pencil'
+      icon: 'fa fa-lemon-o'
     },
     {
-      name: 'Label Printer',
+      name: 'Print',
       url: '/store/labels',
-      icon: 'icon-pencil'
+      icon: 'fa fa-print'
     }
     ]
 }

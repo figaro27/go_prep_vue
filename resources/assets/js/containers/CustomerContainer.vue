@@ -3,8 +3,8 @@
     <AppHeader fixed>
       
       <b-link class="navbar-brand" to="#">
-        <img class="navbar-brand-full" src="/images/logo.jpg" width="90" height="40" alt="GoPrep Logo">
-        <img class="navbar-brand-minimized" src="/images/logo-min.jpg" width="33" height="40" alt="GoPrep Logo">
+        <img class="navbar-brand-full" src="/images/logo.png" width="90" height="40" alt="GoPrep Logo">
+        <img class="navbar-brand-minimized" src="/images/logo-min.png" width="33" height="40" alt="GoPrep Logo">
       </b-link>
       <b-navbar-nav class="d-md-down-none">
         <b-nav-item class="px-3" to="/customer/menu">Menu</b-nav-item>

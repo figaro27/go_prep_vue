@@ -1,11 +1,21 @@
 
 .navbar {
   -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, .35) !important;
+  background-color:#ffffff;
+  border-bottom:0px;
+}
+
+.nav-icon{
+	color:#ffffff !important;
+}
+
+.nav-link{
+	margin-bottom:10px;
 }
 
 .card {
   -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .05) !important;
-  border-radius: 7px !important;
+  border-radius: 12px !important;
 }
 
 .VueTables__columns-dropdown{

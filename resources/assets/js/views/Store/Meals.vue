@@ -300,12 +300,11 @@ th:nth-child(3) {
                 ingredientSearch: '',
                 ingredientResults: [],
                 ingredientQuery: '',
+                ingredientList: '',
                 ingredients: [],
                 meal: [],
                 mealID: null,
                 newMeal: ['featured_image', 'title', 'description', 'price'],
-                ingredients: [],
-                ingredientList: '',
                 nutrition: {'calories': null, 'totalFat': null, 'satFat': null, 'transFat': null, 'cholesterol': null, 'sodium': null, 'totalCarb': null, 'fibers': null, 'sugars': null, 'proteins': null, 'vitaminD': null, 'potassium': null, 'calcium': null, 'iron': null, 'addedSugars': null},
                 
                 active: [],
@@ -428,7 +427,7 @@ th:nth-child(3) {
             getIngredientList: function(){
                 let self = this;
                 this.ingredients.forEach(function(ingredient){
-                    self.ingredientList += ingredient.food_name + ', '
+                    self.ingredientList += ingredient.food_name.charAt(0).toUpperCase() + ingredient.food_name.slice(1) + ', '
                 })
             },
             getNutritionTotals: function(){
