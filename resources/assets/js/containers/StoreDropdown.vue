@@ -8,7 +8,7 @@
       </b-dropdown-item>
       <b-dropdown-item><i class="fa fa-bell-o" /><router-link to="/store/account/billing"> Billing</router-link>
       </b-dropdown-item>
-      <b-dropdown-item><i class="fa fa-bell-o" /><router-link to="/customer/account/contact"> Contact Us</router-link>
+      <b-dropdown-item><i class="fa fa-bell-o" /><router-link to="/store/account/contact"> Contact Us</router-link>
       </b-dropdown-item>
       <b-dropdown-item @click="logout()"><i class="fa fa-lock" /> Logout</b-dropdown-item>
     </template>

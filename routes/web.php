@@ -33,3 +33,4 @@ Route::post('updateActive', 'MealController@updateActive');
 Route::post('nutrients', 'NutritionController@getNutrients');
 Route::post('searchInstant', 'NutritionController@searchInstant');
 
+Route::post('/submit', 'ContactFormController@submit');
