@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\UserController;
 
-use App\User;
+use App\Store;
 use Illuminate\Http\Request;
 
-
-class UserController extends Controller
+class UserMenuController extends UserController
 {
     /**
      * Display a listing of the resource.
@@ -15,11 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::getCustomers();
-    }
-
-    public function storeIndex(){
-        return User::getStoreCustomers();
+        
     }
 
     /**
@@ -46,21 +41,21 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Store  $store
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        return User::getCustomer($id);
+       
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Store  $store
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Store $store)
     {
         //
     }
@@ -69,33 +64,22 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Store  $store
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-
-        $user = User::with('userDetail', 'order')->find($id);
        
-        $user->userDetail->update([
-            'firstname' => $request->user['user_detail']['firstname'],
-            'lastname' => $request->user['user_detail']['lastname'],
-            'address' => $request->user['user_detail']['address'],
-            'city' => $request->user['user_detail']['city'],
-            'state' => $request->user['user_detail']['state'],
-            'phone' => $request->user['user_detail']['phone'],
-            'delivery' => $request->user['user_detail']['delivery'],
-        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Store  $store
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Store $store)
     {
-        
+        //
     }
 }

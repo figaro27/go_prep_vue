@@ -54,6 +54,10 @@ return [
 
     'url' => env('APP_URL', 'http://goprep.localhost'),
 
+
+    // Domain
+    'domain' => env('APP_DOMAIN', 'goprep.localhost'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

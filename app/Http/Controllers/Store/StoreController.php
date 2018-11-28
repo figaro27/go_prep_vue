@@ -7,10 +7,14 @@ use App\Http\Controllers\Controller;
 class StoreController extends Controller
 {
     protected $store;
+    protected $storeName;
 
-    public function __constructor() {
-      parent::__constructor();
-
-      $this->store = \Auth::user()->store;
+    public function __construct()
+    {
+      $user = \Auth::user();
+      if(isset($user->store)) {
+        $this->store = $user->store;
+      }
+      
     }
 }

@@ -15,7 +15,6 @@ class MealController extends StoreController
      */
     public function index()
     {
-        print_r($this->store); exit;
         return $this->store->meals;
     }
 

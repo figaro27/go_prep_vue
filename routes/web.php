@@ -41,7 +41,7 @@ Route::group(['middleware' => ['auth']], function ($router) {
 });
 
 // All logged in stores
-Route::group(['middleware' => ['auth', 'admin']], function ($router) {
+Route::group(['middleware' => ['auth'/*, 'store'*/]], function ($router) {
 
 });
 
