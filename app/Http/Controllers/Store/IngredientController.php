@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Store;
 
-use App\Meal;
+use App\Ingredient;
 use Illuminate\Http\Request;
 
-class MealController extends Controller
+class IngredientController extends StoreController
 {
     /**
      * Display a listing of the resource.
@@ -14,15 +14,7 @@ class MealController extends Controller
      */
     public function index()
     {
-        return Meal::getMeals();
-    }
-
-    public function getStoreMeals()
-    {
-        $id = auth()->id;
-        $storeID = Store::where('user_id', $id)->pluck('id')->first();
-
-        return Meal::getStoreMeals($storeId);
+        return Ingredient::getIngredients();
     }
 
     /**
@@ -43,32 +35,27 @@ class MealController extends Controller
      */
     public function store(Request $request)
     {
-        return Meal::storeMeal($request);
-    }
-
-    public function storeAdmin(Request $request)
-    {
-        return Meal::storeMealAdmin($request);
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Meal  $meal
+     * @param  \App\Ingredient  $ingredient
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Ingredient $ingredient)
     {
-        return Meal::getMeal($id);
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Meal  $meal
+     * @param  \App\Ingredient  $ingredient
      * @return \Illuminate\Http\Response
      */
-    public function edit(Meal $meal)
+    public function edit(Ingredient $ingredient)
     {
         //
     }
@@ -77,27 +64,22 @@ class MealController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Meal  $meal
+     * @param  \App\Ingredient  $ingredient
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Ingredient $ingredient)
     {
-        return Meal::updateMeal($request, $id);
-    }
-
-    public function updateActive(Request $request)
-    {
-        return Meal::updateActive($request);
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Meal  $meal
+     * @param  \App\Ingredient  $ingredient
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Ingredient $ingredient)
     {
-        return Meal::deleteMeal($id);
+        //
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Store extends Model
 {
-    public function user(){
+  public function user(){
 		return $this->hasOne('App\User');
 	}
 

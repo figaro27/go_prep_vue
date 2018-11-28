@@ -15,6 +15,9 @@ import AdminApp from './containers/AdminContainer';
 import BootstrapVue from 'bootstrap-vue'
 import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import VueI18n from 'vue-i18n';
+import store from './store';
+import lang from './lang';
 
 
 window.Vue = Vue;
@@ -22,33 +25,39 @@ Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
 
-
-const customerapp = new Vue({
+if($('#customerapp').length) {
+  const app = new Vue({
     el: '#customerapp',
     router,
+    store,
     template: '<CustomerApp/>',
     components: {
-        CustomerApp
+      CustomerApp
     }
-});
-
-const storeapp = new Vue({
+  });
+}
+else if($('#storeapp').length) {
+  const app = new Vue({
     el: '#storeapp',
     router,
+    store,
     template: '<StoreApp/>',
     components: {
-        StoreApp
+      StoreApp
     }
-});
-
-const adminapp = new Vue({
+  });
+}
+else if ($('#adminapp').length) {
+  const app = new Vue({
     el: '#adminapp',
     router,
+    store,
     template: '<AdminApp/>',
     components: {
-        AdminApp
+      AdminApp
     }
-});
+  });
+}
 
 
 // Trying to only load the Vue instances above depending on the logged in role & remove console errors

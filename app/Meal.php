@@ -48,10 +48,7 @@ class Meal extends Model
    }
 
   //Store View
-  public static function getStoreMeals(){
-
-  $id = Auth::user()->id;
-  $storeID = Store::where('user_id', $id)->pluck('id')->first();
+  public static function getStoreMeals($storeID = null) {
 
  	return Meal::with('meal_order', 'ingredient', 'meal_tag')->where('store_id', $storeID)->orderBy('active', 'desc')->orderBy('created_at', 'desc')->get()->map(function($meal){
     // Fix redundancy of getting the authenticated Store ID twice
