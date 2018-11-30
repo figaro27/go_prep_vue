@@ -18,7 +18,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import VueI18n from 'vue-i18n';
 import store from './store';
 import lang from './lang';
-
+import modal from './lib/modal';
 
 window.Vue = Vue;
 Vue.use(VueRouter);
@@ -59,6 +59,8 @@ else if ($('#adminapp').length) {
   });
 }
 
+
+modal.init();
 
 // Trying to only load the Vue instances above depending on the logged in role & remove console errors
 

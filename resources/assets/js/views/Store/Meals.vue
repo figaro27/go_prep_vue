@@ -182,7 +182,7 @@
       <div id="nutritionFacts"></div>
     </b-modal>
 
-    <b-modal title="Meal" v-model="editMealModal" v-if="editMealModal" class="modal-full">
+    <b-modal title="Meal" v-model="editMealModal" class="modal-full" no-fade>
 
       <b-list-group>
         <b-list-group-item>
