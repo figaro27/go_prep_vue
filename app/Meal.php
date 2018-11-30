@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Auth;
 use App\Store;
 
@@ -111,9 +112,24 @@ class Meal extends Model
         'description',
         'price',
         'created_at',
-      ])->toArray();
+      ]);
+
+      if($props->has('featured_image')) {
+        $imageRaw = $props->get('featured_image');
+        $imageRaw = str_replace(' ', '+', $imageRaw);
+        $image = base64_decode($imageRaw);
+
+        $ext = [];
+        preg_match('/^data:image\/(.{3,9});/i', $imageRaw, $ext);
+        
+        $imagePath = 'images/meals/' . self::generateImageFilename($image, $ext[1]);
+        \Storage::put($imagePath, $image);
+        $imageUrl = \Storage::url($imagePath);
+        
+        $props->put('featured_image', $imagePath);
+      }
      
-      $meal->update($props);
+      $meal->update($props->toArray());
       
       return $meal;
   }
@@ -129,6 +145,10 @@ class Meal extends Model
   public static function deleteMeal($id){
       $meal = Meal::find($id);
       $meal->delete();
+  }
+
+  public static function generateImageFilename($image, $ext) {
+    return sha1($image).'.'.$ext;
   }
 
 }

@@ -12,7 +12,8 @@ import router from './routes';
 import CustomerApp from './containers/CustomerContainer';
 import StoreApp from './containers/StoreContainer';
 import AdminApp from './containers/AdminContainer';
-import BootstrapVue from 'bootstrap-vue'
+import BootstrapVue from 'bootstrap-vue';
+import InputTag from 'vue-input-tag';
 import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import VueI18n from 'vue-i18n';
@@ -24,6 +25,7 @@ window.Vue = Vue;
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
+Vue.component('input-tag', InputTag)
 
 if($('#customerapp').length) {
   const app = new Vue({
@@ -61,6 +63,10 @@ else if ($('#adminapp').length) {
 
 
 modal.init();
+
+setInterval(() => {
+  $(window).trigger('resize');
+}, 1000);
 
 // Trying to only load the Vue instances above depending on the logged in role & remove console errors
 

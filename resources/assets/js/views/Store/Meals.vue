@@ -162,7 +162,8 @@
         <b-list-group-item>Price: {{ meal.price }}</b-list-group-item>
         <b-list-group-item>Created: {{ meal.created_at.date }}</b-list-group-item>
       </b-list-group>
-      <h3>Tags</h3>
+
+      <h3 class="mt-3">Tags</h3>
       <b-list-group>
         <b-list-group-item v-for="tag in tags" :key="tag.id">{{ tag.tag }}</b-list-group-item>
       </b-list-group>
@@ -182,46 +183,104 @@
       <div id="nutritionFacts"></div>
     </b-modal>
 
-    <b-modal title="Meal" v-model="editMealModal" class="modal-full" no-fade>
+    <b-modal title="Meal" v-model="editMealModal" v-if="editMealModal" class="modal-full" no-fade>
+      <b-form>
 
-      <b-list-group>
-        <b-list-group-item>
-          <b-form-input v-model="meal.featured_image"></b-form-input>
-        </b-list-group-item>
-        <b-list-group-item>
-          <b-form-input v-model="meal.title"></b-form-input>
-        </b-list-group-item>
-        <b-list-group-item>
-          <b-form-input v-model="meal.description"></b-form-input>
-        </b-list-group-item>
-        <b-list-group-item>
-          <b-form-input v-model="meal.price"></b-form-input>
-        </b-list-group-item>
-        <b-list-group-item>
-          <b-form-input v-model="meal.created_at"></b-form-input>
-        </b-list-group-item>
-      </b-list-group>
+        <b-row>
+          <b-col cols="9">
+            <b-form-group label="Title">
+              <b-form-input
+                  v-model="meal.title"
+                  required
+                  placeholder="Enter email">
+              </b-form-input>
+            </b-form-group>
 
-      <h3>Tags</h3>
-      <input type="text" :value="meal_tag" data-role="tagsinput">
-      <button class="button btn-primary">Add Tag</button>
-      <div>
-        <h3>Ingredients</h3>
-        <table>
-          <tr v-for="ingredient in ingredients" :key="ingredient.id">
-            <td>
-              <b-form-input v-model="ingredient.food_name"></b-form-input>
-            </td>
-            <td>
-              <b-form-input v-model="ingredient.serving_qty"></b-form-input>
-            </td>
-            <td>
-              <b-form-input v-model="ingredient.serving_unit"></b-form-input>
-            </td>
-          </tr>
-        </table>
-      </div>
-      <button class="btn btn-primary mt-3 float-right" @click="updateMeal(mealID)">Save</button>
+            <b-form-row>
+              <b-col>
+                <b-form-group label="Description">
+                  <b-form-input
+                      v-model="meal.description"
+                      required
+                      placeholder="Enter description">
+                  </b-form-input>
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group label="Price">
+                  <b-form-input
+                      v-model="meal.price"
+                      type="number"
+                      required
+                      placeholder="Enter price">
+                  </b-form-input>
+                </b-form-group>
+              </b-col>
+            </b-form-row>
+
+            <h3 class="mt-3">Ingredients</h3>
+            <table>
+              <thead>
+                <th>Name</th>
+                <th>Weight</th>
+                <th></th>
+              </thead>
+              <tbody>
+                <tr v-for="ingredient in ingredients" :key="ingredient.id">
+                  <td>
+                    <b-form-group>
+                      <b-form-input placeholder="Name" v-model="ingredient.food_name"></b-form-input>
+                    </b-form-group>
+                  </td>
+                  <td>
+                    <b-form-group>
+                      <b-form-input placeholder="Weight" v-model="ingredient.serving_qty"></b-form-input>
+                    </b-form-group>
+                  </td>
+                  <td>
+                    <b-form-group>
+                      <b-select v-model="ingredient.serving_unit" :options="weightUnitOptions">
+                        <option slot="top" disabled>-- Select unit --</option>
+                      </b-select>
+                    </b-form-group>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3" class="text-right">
+                    <a href="#" @click="onClickAddIngredient"><i class="fas fa-plus-circle"></i></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+          </b-col>
+          <b-col>
+            <h3>Tags</h3>
+            <div>
+              <input-tag ref="editMealTagsInput" v-model="meal.tags" />
+            </div>
+
+            <h3 class="mt-3">Image</h3>
+            <picture-input 
+              ref="editMealImageInput"
+              width="600" 
+              height="600" 
+              margin="0" 
+              accept="image/jpeg,image/png" 
+              size="10"
+              button-class="btn"
+              :custom-strings="{
+                //upload: '<h1>Bummer!</h1>',
+                //drag: 'Drag a 😺 GIF or GTFO'
+              }"
+              @change="onChangeImage">
+            </picture-input>
+          </b-col>
+        </b-row>
+        
+        <button class="btn btn-primary mt-3 float-right" @click="updateMeal(mealID)">Save</button>
+      
+      </b-form>
     </b-modal>
 
     <b-modal title="Meal" v-model="deleteMealModal" v-if="deleteMealModal">
@@ -233,7 +292,7 @@
   </div>
 </template>
 
-<style>
+<style lang="scss">
 @import "~bootstrap-tagsinput/dist/bootstrap-tagsinput.css";
 @import "~nutrition-label-jquery-plugin/dist/css/nutritionLabel-min.css";
 
@@ -286,6 +345,11 @@ th:nth-child(3) {
 .VueTables__child-row-toggler--open::before {
   content: "-";
 }
+
+.picture-input {
+  .preview-container {
+  }
+}
 </style>
 
 
@@ -294,10 +358,13 @@ import Spinner from "../../components/Spinner";
 import moment from "moment";
 import tags from "bootstrap-tagsinput";
 import nutritionFacts from "nutrition-label-jquery-plugin";
+import PictureInput from 'vue-picture-input'
+import units from '../../data/units';
 
 export default {
   components: {
-    Spinner
+    Spinner,
+    PictureInput,
   },
   data() {
     return {
@@ -364,6 +431,11 @@ export default {
       }
     };
   },
+  computed: {
+    weightUnitOptions() {
+      return units.weight.selectOptions();
+    }
+  },
   mounted() {
     this.getTableData();
   },
@@ -404,6 +476,10 @@ export default {
         this.ingredients = response.data.ingredient;
         this.tags = response.data.meal_tag;
         this.viewMealModal = true;
+        
+        this.$nextTick(function () {
+          window.dispatchEvent(new Event('resize'));
+        });
       });
     },
     editMeal($id) {
@@ -414,6 +490,12 @@ export default {
         this.tags = response.data.meal_tag;
         this.editMealModal = true;
         this.mealID = response.data.id;
+
+        setTimeout(() => {
+          this.$refs.editMealImageInput.onResize();
+          //$(this.$refs.editMealTagsInput).tagsinput();
+
+        }, 50);
       });
     },
     updateMeal: function($id) {
@@ -512,7 +594,17 @@ export default {
         valueAddedSugars: this.nutrition.addedSugars,
         showLegacyVersion: false
       });
-    }
+    },
+    onChangeImage(image) {
+      if (image) {
+        this.meal.featured_image = image;
+      } else {
+        console.log('FileReader API not supported: use the <form>, Luke!')
+      }
+    },
+    onClickAddIngredient() {
+      this.ingredients.push({});
+    },
   }
 };
 </script>
