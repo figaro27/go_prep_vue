@@ -12,7 +12,12 @@ class Store extends Model
 
 	public function order(){
 		return $this->hasMany('App\Order');
-	}
+  }
+
+  public function meals()
+  {
+    return $this->hasMany('App\Meal');
+  }
 
 	public function storeDetail(){
       return $this->hasOne('App\StoreDetail');

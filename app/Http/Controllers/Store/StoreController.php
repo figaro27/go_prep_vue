@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+
 
 class StoreController extends Controller
 {
@@ -11,10 +13,10 @@ class StoreController extends Controller
 
     public function __construct()
     {
-      $user = \Auth::user();
-      if(isset($user->store)) {
+      $user = auth('api')->user();
+
+      if($user && $user->has('store')) {
         $this->store = $user->store;
       }
-      
     }
 }

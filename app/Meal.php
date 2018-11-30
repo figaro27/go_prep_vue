@@ -100,24 +100,29 @@ class Meal extends Model
       $meal->save();
   }
 
-  public static function updateMeal($request, $id){
-      $meal = Meal::where('id', $id)->first();
+  public static function updateMeal($id, $props) {
+
+      $meal = Meal::findOrFail($id);
+
+      $props = collect($props)->only([
+        'active',
+        'featured_image',
+        'title',
+        'description',
+        'price',
+        'created_at',
+      ])->toArray();
      
-      $meal->update([
-          'active' => $request->meal['active'],
-          'featured_image' => $request->meal['featured_image'],
-          'title' => $request->meal['title'],
-          'description' => $request->meal['description'],
-          'price' => $request->meal['price'],
-          'created_at' => $request->meal['created_at'],
-      ]);
+      $meal->update($props);
+      
+      return $meal;
   }
 
-  public static function updateActive($request){
-    $meal = Meal::where('id', $request->id)->first();
+  public static function updateActive($id, $active){
+    $meal = Meal::where('id', $id)->first();
 
     $meal->update([
-      'active' => $request->active
+      'active' => $active
     ]);
   }
 

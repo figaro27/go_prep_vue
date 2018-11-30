@@ -82320,6 +82320,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -82402,11 +82403,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
 
-    updateActive: function updateActive($id, $row) {
+    updateActive: function updateActive(id, row) {
       this.$nextTick(function () {
         var row = $row;
-        axios.post("/updateActive", {
-          id: $id,
+        axios.patch("/api/me/meals/" + id, {
           active: this.active[row]
         });
       });
@@ -82416,7 +82416,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.createMealModal = true;
     },
     storeMeal: function storeMeal() {
-      axios.post("../meals", {
+      axios.post("/api/me/meals", {
         featured_image: this.newMeal.featured_image,
         title: this.newMeal.title,
         description: this.newMeal.description,
@@ -82428,7 +82428,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     viewMeal: function viewMeal($id) {
       var _this = this;
 
-      axios.get("/meals/" + $id).then(function (response) {
+      axios.get("/api/me/meals/" + $id).then(function (response) {
         _this.meal = response.data;
         _this.ingredients = response.data.ingredient;
         _this.tags = response.data.meal_tag;
@@ -82439,7 +82439,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var _this2 = this;
 
       this.addTag = false;
-      axios.get("/meals/" + $id).then(function (response) {
+      axios.get("/api/me/meals/" + $id).then(function (response) {
         _this2.meal = response.data;
         _this2.ingredients = response.data.ingredient;
         _this2.tags = response.data.meal_tag;
@@ -82449,9 +82449,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     updateMeal: function updateMeal($id) {
-      axios.put("/meals/" + $id, {
-        meal: this.meal
-      });
+      axios.patch("/api/me/meals/" + $id, this.meal);
       this.getTableData();
     },
     deleteMeal: function deleteMeal($id) {
@@ -82459,7 +82457,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.deleteMealModal = true;
     },
     destroyMeal: function destroyMeal($id) {
-      axios.delete("/meals/" + $id);
+      axios.delete("/api/me/meals/" + $id);
       this.getTableData();
       this.deleteMealModal = false;
     },
@@ -84021,6 +84019,7 @@ var render = function() {
         ? _c(
             "b-modal",
             {
+              staticClass: "modal-full",
               attrs: { title: "Meal" },
               model: {
                 value: _vm.editMealModal,
@@ -89979,6 +89978,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__DefaultHeaderDropdownMssgs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__DefaultHeaderDropdownMssgs__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__DefaultHeaderDropdownTasks__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__DefaultHeaderDropdownTasks___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__DefaultHeaderDropdownTasks__);
+//
 //
 //
 //

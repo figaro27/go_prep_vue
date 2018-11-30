@@ -15,12 +15,12 @@ class MealController extends StoreController
      */
     public function index()
     {
-        return $this->store->meals;
+        return $this->store->has('meals') ? $this->store->meals : [];
     }
 
     public function getStoreMeals()
     {
-        $id = auth()->id;
+        $id = auth()->id; 
         $storeID = Store::where('user_id', $id)->pluck('id')->first();
 
         return Meal::getStoreMeals($storeId);
@@ -83,12 +83,14 @@ class MealController extends StoreController
      */
     public function update(Request $request, $id)
     {
-        return Meal::updateMeal($request, $id);
+        return Meal::updateMeal($id, $request->all());
     }
 
-    public function updateActive(Request $request)
+    public function updateActive(Request $request, $id)
     {
-        return Meal::updateActive($request);
+        if($request->has('active')) {
+          return Meal::updateActive($id, $request->get('active'));
+        }
     }
 
     /**
