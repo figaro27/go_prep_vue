@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 Auth::routes();
@@ -34,3 +32,5 @@ Route::post('nutrients', 'NutritionController@getNutrients');
 Route::post('searchInstant', 'NutritionController@searchInstant');
 
 Route::post('/submit', 'ContactFormController@submit');
+
+Route::get('/payment/process', 'PaymentController@process')->name('payment.process');
