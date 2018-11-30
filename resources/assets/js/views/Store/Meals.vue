@@ -182,7 +182,8 @@
       <div id="nutritionFacts"></div>
     </b-modal>
 
-    <b-modal title="Meal" v-model="editMealModal" v-if="editMealModal">
+    <b-modal title="Meal" v-model="editMealModal" v-if="editMealModal" class="modal-full">
+
       <b-list-group>
         <b-list-group-item>
           <b-form-input v-model="meal.featured_image"></b-form-input>
@@ -375,11 +376,10 @@ export default {
         self.active = response.data.map(row => row.active);
       });
     },
-    updateActive: function($id, $row) {
+    updateActive: function(id, row) {
       this.$nextTick(function() {
         let row = $row;
-        axios.post("/updateActive", {
-          id: $id,
+        axios.patch(`/api/me/meals/${id}`, {
           active: this.active[row]
         });
       });
@@ -389,7 +389,7 @@ export default {
       this.createMealModal = true;
     },
     storeMeal() {
-      axios.post("../meals", {
+      axios.post("/api/me/meals", {
         featured_image: this.newMeal.featured_image,
         title: this.newMeal.title,
         description: this.newMeal.description,
@@ -399,7 +399,7 @@ export default {
       this.createMealModal = false;
     },
     viewMeal($id) {
-      axios.get("/meals/" + $id).then(response => {
+      axios.get(`/api/me/meals/${$id}`).then(response => {
         this.meal = response.data;
         this.ingredients = response.data.ingredient;
         this.tags = response.data.meal_tag;
@@ -408,7 +408,7 @@ export default {
     },
     editMeal($id) {
       this.addTag = false;
-      axios.get("/meals/" + $id).then(response => {
+      axios.get(`/api/me/meals/${$id}`).then(response => {
         this.meal = response.data;
         this.ingredients = response.data.ingredient;
         this.tags = response.data.meal_tag;
@@ -417,9 +417,7 @@ export default {
       });
     },
     updateMeal: function($id) {
-      axios.put("/meals/" + $id, {
-        meal: this.meal
-      });
+      axios.patch(`/api/me/meals/${$id}`, this.meal);
       this.getTableData();
     },
     deleteMeal: function($id) {
@@ -427,7 +425,7 @@ export default {
       this.deleteMealModal = true;
     },
     destroyMeal: function($id) {
-      axios.delete("/meals/" + $id);
+      axios.delete(`/api/me/meals/${$id}`);
       this.getTableData();
       this.deleteMealModal = false;
     },
