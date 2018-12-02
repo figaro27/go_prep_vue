@@ -176,29 +176,100 @@
               </div>
 
               <div slot="child_row" slot-scope="props">
-                <div class="row">
-                  <div class="col-sm">
+                <b-row>
+                  <b-col cols="9">
+                    <b-form-group label="Title">
+                      <b-form-input v-model="editing[props.row.id].title" required placeholder="Enter email"></b-form-input>
+                    </b-form-group>
+
+                    <b-form-row>
+                      <b-col>
+                        <b-form-group label="Description">
+                          <b-form-input
+                            v-model="editing[props.row.id].description"
+                            required
+                            placeholder="Enter description"
+                          ></b-form-input>
+                        </b-form-group>
+                      </b-col>
+                      <b-col>
+                        <b-form-group label="Price">
+                          <b-form-input
+                            v-model="editing[props.row.id].price"
+                            type="number"
+                            required
+                            placeholder="Enter price"
+                          ></b-form-input>
+                        </b-form-group>
+                      </b-col>
+                    </b-form-row>
+
+                    <h3 class="mt-3">Ingredients</h3>
+                    <table>
+                      <thead>
+                        <th>Name</th>
+                        <th>Weight</th>
+                        <th></th>
+                      </thead>
+                      <tbody>
+                        <tr v-for="ingredient in ingredients" :key="ingredient.id">
+                          <td>
+                            <b-form-group>
+                              <b-form-input placeholder="Name" v-model="ingredient.food_name"></b-form-input>
+                            </b-form-group>
+                          </td>
+                          <td>
+                            <b-form-group>
+                              <b-form-input placeholder="Weight" v-model="ingredient.serving_qty"></b-form-input>
+                            </b-form-group>
+                          </td>
+                          <td>
+                            <b-form-group>
+                              <b-select
+                                v-model="ingredient.serving_unit"
+                                :options="weightUnitOptions"
+                              >
+                                <option slot="top" disabled>-- Select unit --</option>
+                              </b-select>
+                            </b-form-group>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="3" class="text-right">
+                            <a href="#" @click="onClickAddIngredient">
+                              <i class="fas fa-plus-circle"></i>
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </b-col>
+                  <b-col>
                     <h3>Tags</h3>
-                    <b-list-group>
-                      <b-list-group-item
-                        v-for="meal_tag in props.row.meal_tags"
-                        :key="meal_tag.id"
-                      >{{ meal_tag.tag }}</b-list-group-item>
-                    </b-list-group>
-                  </div>
-                  <div class="col-sm">
-                    <h3>Ingredients</h3>
-                    <b-list-group>
-                      <b-list-group-item
-                        v-for="ingredient in props.row.ingredients"
-                        :key="ingredient.id"
-                      >{{ ingredient.food_name }}</b-list-group-item>
-                    </b-list-group>
-                  </div>
-                  <div class="col-sm">
-                    <h3>Nutrition Facts</h3>
-                  </div>
-                </div>
+                    <div>
+                      <input-tag ref="editMealTagsInput" v-model="editing[props.row.id].tags"/>
+                    </div>
+
+                    <h3 class="mt-3">Image</h3>
+                    <picture-input
+                      :key="'editMealImageInput' + props.row.id"
+                      ref="editMealImageInput"
+                      v-if="editMealModal"
+                      :prefill="editing[props.row.id].featured_image ? editing[props.row.id].featured_image : false"
+                      @prefill="$refs.editMealImageInput.onResize()"
+                      :alertOnError="false"
+                      :autoToggleAspectRatio="true"
+                      width="600"
+                      height="600"
+                      margin="0"
+                      size="10"
+                      button-class="btn"
+                      @change="onChangeImage"
+                    ></picture-input>
+                  </b-col>
+                </b-row>
+
+                <button class="btn btn-primary mt-3 float-right" @click="updateMeal(props.row.id)">Save</button>
               </div>
             </v-client-table>
           </div>
@@ -565,6 +636,7 @@ export default {
           meal.num_orders = meal.orders.length;
           return meal;
         });
+        this.syncEditables();
         self.isLoading = false;
         self.active = response.data.map(row => row.active);
       });
@@ -573,6 +645,9 @@ export default {
       return _.findIndex(this.tableData, o => {
         return o.id === id;
       });
+    },
+    syncEditables() {
+      this.editing = _.keyBy({...this.tableData}, 'id');
     },
     toggleEditing(id) {
       const i = this.getTableDataIndexById(id);
@@ -586,6 +661,8 @@ export default {
         this.$set(this.tableData, i, this.tableData[i]);
         _.unset(this.editing, id);
       }
+
+      this.syncEditables();
     },
     isEditing(id) {
       const i = this.getTableDataIndexById(id);
@@ -603,8 +680,13 @@ export default {
         return this.getTableData();
       }
 
+      if(_.isEmpty(changes)) {
+        changes = this.editing[id];
+      }
+
       axios.patch(`/api/me/meals/${id}`, changes).then(resp => {
-        this.tableData[i] = resp.data;
+        this.$set(this.tableData, i, resp.data);
+        this.syncEditables();
         this.refreshTable();
       });
     },
@@ -626,6 +708,7 @@ export default {
         })
         .then(resp => {
           this.tableData[i] = { ...resp.data };
+          this.syncEditables();
           this.refreshTable();
         });
     },

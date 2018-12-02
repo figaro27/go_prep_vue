@@ -147,11 +147,13 @@ class Meal extends Model
             $ext = [];
             preg_match('/^data:image\/(.{3,9});/i', $imageRaw, $ext);
 
-            $imagePath = 'images/meals/' . self::generateImageFilename($image, $ext[1]);
-            \Storage::put($imagePath, $image);
-            $imageUrl = \Storage::url($imagePath);
+            if(count($ext) > 1) {
+              $imagePath = 'images/meals/' . self::generateImageFilename($image, $ext[1]);
+              \Storage::put($imagePath, $image);
+              $imageUrl = \Storage::url($imagePath);
 
-            $props->put('featured_image', $imagePath);
+              $props->put('featured_image', $imagePath);
+            }
         }
 
         $meal->update($props->toArray());

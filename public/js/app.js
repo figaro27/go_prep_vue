@@ -82494,6 +82494,77 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -82628,6 +82699,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           meal.num_orders = meal.orders.length;
           return meal;
         });
+        _this2.syncEditables();
         self.isLoading = false;
         self.active = response.data.map(function (row) {
           return row.active;
@@ -82638,6 +82710,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       return _.findIndex(this.tableData, function (o) {
         return o.id === id;
       });
+    },
+    syncEditables: function syncEditables() {
+      this.editing = _.keyBy(_extends({}, this.tableData), 'id');
     },
     toggleEditing: function toggleEditing(id) {
       var i = this.getTableDataIndexById(id);
@@ -82651,6 +82726,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         this.$set(this.tableData, i, this.tableData[i]);
         _.unset(this.editing, id);
       }
+
+      this.syncEditables();
     },
     isEditing: function isEditing(id) {
       var i = this.getTableDataIndexById(id);
@@ -82670,8 +82747,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         return this.getTableData();
       }
 
+      if (_.isEmpty(changes)) {
+        changes = this.editing[id];
+      }
+
       axios.patch("/api/me/meals/" + id, changes).then(function (resp) {
-        _this3.tableData[i] = resp.data;
+        _this3.$set(_this3.tableData, i, resp.data);
+        _this3.syncEditables();
         _this3.refreshTable();
       });
     },
@@ -82693,6 +82775,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         active: active
       }).then(function (resp) {
         _this4.tableData[i] = _extends({}, resp.data);
+        _this4.syncEditables();
         _this4.refreshTable();
       });
     },
@@ -95134,57 +95217,396 @@ var render = function() {
                       {
                         key: "child_row",
                         fn: function(props) {
-                          return _c("div", {}, [
-                            _c("div", { staticClass: "row" }, [
+                          return _c(
+                            "div",
+                            {},
+                            [
                               _c(
-                                "div",
-                                { staticClass: "col-sm" },
+                                "b-row",
                                 [
-                                  _c("h3", [_vm._v("Tags")]),
+                                  _c(
+                                    "b-col",
+                                    { attrs: { cols: "9" } },
+                                    [
+                                      _c(
+                                        "b-form-group",
+                                        { attrs: { label: "Title" } },
+                                        [
+                                          _c("b-form-input", {
+                                            attrs: {
+                                              required: "",
+                                              placeholder: "Enter email"
+                                            },
+                                            model: {
+                                              value:
+                                                _vm.editing[props.row.id].title,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.editing[props.row.id],
+                                                  "title",
+                                                  $$v
+                                                )
+                                              },
+                                              expression:
+                                                "editing[props.row.id].title"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-form-row",
+                                        [
+                                          _c(
+                                            "b-col",
+                                            [
+                                              _c(
+                                                "b-form-group",
+                                                {
+                                                  attrs: {
+                                                    label: "Description"
+                                                  }
+                                                },
+                                                [
+                                                  _c("b-form-input", {
+                                                    attrs: {
+                                                      required: "",
+                                                      placeholder:
+                                                        "Enter description"
+                                                    },
+                                                    model: {
+                                                      value:
+                                                        _vm.editing[
+                                                          props.row.id
+                                                        ].description,
+                                                      callback: function($$v) {
+                                                        _vm.$set(
+                                                          _vm.editing[
+                                                            props.row.id
+                                                          ],
+                                                          "description",
+                                                          $$v
+                                                        )
+                                                      },
+                                                      expression:
+                                                        "editing[props.row.id].description"
+                                                    }
+                                                  })
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "b-col",
+                                            [
+                                              _c(
+                                                "b-form-group",
+                                                { attrs: { label: "Price" } },
+                                                [
+                                                  _c("b-form-input", {
+                                                    attrs: {
+                                                      type: "number",
+                                                      required: "",
+                                                      placeholder: "Enter price"
+                                                    },
+                                                    model: {
+                                                      value:
+                                                        _vm.editing[
+                                                          props.row.id
+                                                        ].price,
+                                                      callback: function($$v) {
+                                                        _vm.$set(
+                                                          _vm.editing[
+                                                            props.row.id
+                                                          ],
+                                                          "price",
+                                                          $$v
+                                                        )
+                                                      },
+                                                      expression:
+                                                        "editing[props.row.id].price"
+                                                    }
+                                                  })
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c("h3", { staticClass: "mt-3" }, [
+                                        _vm._v("Ingredients")
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("table", [
+                                        _c("thead", [
+                                          _c("th", [_vm._v("Name")]),
+                                          _vm._v(" "),
+                                          _c("th", [_vm._v("Weight")]),
+                                          _vm._v(" "),
+                                          _c("th")
+                                        ]),
+                                        _vm._v(" "),
+                                        _c(
+                                          "tbody",
+                                          [
+                                            _vm._l(_vm.ingredients, function(
+                                              ingredient
+                                            ) {
+                                              return _c(
+                                                "tr",
+                                                { key: ingredient.id },
+                                                [
+                                                  _c(
+                                                    "td",
+                                                    [
+                                                      _c(
+                                                        "b-form-group",
+                                                        [
+                                                          _c("b-form-input", {
+                                                            attrs: {
+                                                              placeholder:
+                                                                "Name"
+                                                            },
+                                                            model: {
+                                                              value:
+                                                                ingredient.food_name,
+                                                              callback: function(
+                                                                $$v
+                                                              ) {
+                                                                _vm.$set(
+                                                                  ingredient,
+                                                                  "food_name",
+                                                                  $$v
+                                                                )
+                                                              },
+                                                              expression:
+                                                                "ingredient.food_name"
+                                                            }
+                                                          })
+                                                        ],
+                                                        1
+                                                      )
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "td",
+                                                    [
+                                                      _c(
+                                                        "b-form-group",
+                                                        [
+                                                          _c("b-form-input", {
+                                                            attrs: {
+                                                              placeholder:
+                                                                "Weight"
+                                                            },
+                                                            model: {
+                                                              value:
+                                                                ingredient.serving_qty,
+                                                              callback: function(
+                                                                $$v
+                                                              ) {
+                                                                _vm.$set(
+                                                                  ingredient,
+                                                                  "serving_qty",
+                                                                  $$v
+                                                                )
+                                                              },
+                                                              expression:
+                                                                "ingredient.serving_qty"
+                                                            }
+                                                          })
+                                                        ],
+                                                        1
+                                                      )
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "td",
+                                                    [
+                                                      _c(
+                                                        "b-form-group",
+                                                        [
+                                                          _c(
+                                                            "b-select",
+                                                            {
+                                                              attrs: {
+                                                                options:
+                                                                  _vm.weightUnitOptions
+                                                              },
+                                                              model: {
+                                                                value:
+                                                                  ingredient.serving_unit,
+                                                                callback: function(
+                                                                  $$v
+                                                                ) {
+                                                                  _vm.$set(
+                                                                    ingredient,
+                                                                    "serving_unit",
+                                                                    $$v
+                                                                  )
+                                                                },
+                                                                expression:
+                                                                  "ingredient.serving_unit"
+                                                              }
+                                                            },
+                                                            [
+                                                              _c(
+                                                                "option",
+                                                                {
+                                                                  attrs: {
+                                                                    slot: "top",
+                                                                    disabled: ""
+                                                                  },
+                                                                  slot: "top"
+                                                                },
+                                                                [
+                                                                  _vm._v(
+                                                                    "-- Select unit --"
+                                                                  )
+                                                                ]
+                                                              )
+                                                            ]
+                                                          )
+                                                        ],
+                                                        1
+                                                      )
+                                                    ],
+                                                    1
+                                                  )
+                                                ]
+                                              )
+                                            }),
+                                            _vm._v(" "),
+                                            _c("tr", [
+                                              _c(
+                                                "td",
+                                                {
+                                                  staticClass: "text-right",
+                                                  attrs: { colspan: "3" }
+                                                },
+                                                [
+                                                  _c(
+                                                    "a",
+                                                    {
+                                                      attrs: { href: "#" },
+                                                      on: {
+                                                        click:
+                                                          _vm.onClickAddIngredient
+                                                      }
+                                                    },
+                                                    [
+                                                      _c("i", {
+                                                        staticClass:
+                                                          "fas fa-plus-circle"
+                                                      })
+                                                    ]
+                                                  )
+                                                ]
+                                              )
+                                            ])
+                                          ],
+                                          2
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  ),
                                   _vm._v(" "),
                                   _c(
-                                    "b-list-group",
-                                    _vm._l(props.row.meal_tags, function(
-                                      meal_tag
-                                    ) {
-                                      return _c(
-                                        "b-list-group-item",
-                                        { key: meal_tag.id },
-                                        [_vm._v(_vm._s(meal_tag.tag))]
-                                      )
-                                    })
+                                    "b-col",
+                                    [
+                                      _c("h3", [_vm._v("Tags")]),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        [
+                                          _c("input-tag", {
+                                            ref: "editMealTagsInput",
+                                            model: {
+                                              value:
+                                                _vm.editing[props.row.id].tags,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.editing[props.row.id],
+                                                  "tags",
+                                                  $$v
+                                                )
+                                              },
+                                              expression:
+                                                "editing[props.row.id].tags"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c("h3", { staticClass: "mt-3" }, [
+                                        _vm._v("Image")
+                                      ]),
+                                      _vm._v(" "),
+                                      _vm.editMealModal
+                                        ? _c("picture-input", {
+                                            key:
+                                              "editMealImageInput" +
+                                              props.row.id,
+                                            ref: "editMealImageInput",
+                                            attrs: {
+                                              prefill: _vm.editing[props.row.id]
+                                                .featured_image
+                                                ? _vm.editing[props.row.id]
+                                                    .featured_image
+                                                : false,
+                                              alertOnError: false,
+                                              autoToggleAspectRatio: true,
+                                              width: "600",
+                                              height: "600",
+                                              margin: "0",
+                                              size: "10",
+                                              "button-class": "btn"
+                                            },
+                                            on: {
+                                              prefill: function($event) {
+                                                _vm.$refs.editMealImageInput.onResize()
+                                              },
+                                              change: _vm.onChangeImage
+                                            }
+                                          })
+                                        : _vm._e()
+                                    ],
+                                    1
                                   )
                                 ],
                                 1
                               ),
                               _vm._v(" "),
                               _c(
-                                "div",
-                                { staticClass: "col-sm" },
-                                [
-                                  _c("h3", [_vm._v("Ingredients")]),
-                                  _vm._v(" "),
-                                  _c(
-                                    "b-list-group",
-                                    _vm._l(props.row.ingredients, function(
-                                      ingredient
-                                    ) {
-                                      return _c(
-                                        "b-list-group-item",
-                                        { key: ingredient.id },
-                                        [_vm._v(_vm._s(ingredient.food_name))]
-                                      )
-                                    })
-                                  )
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "col-sm" }, [
-                                _c("h3", [_vm._v("Nutrition Facts")])
-                              ])
-                            ])
-                          ])
+                                "button",
+                                {
+                                  staticClass:
+                                    "btn btn-primary mt-3 float-right",
+                                  on: {
+                                    click: function($event) {
+                                      _vm.updateMeal(props.row.id)
+                                    }
+                                  }
+                                },
+                                [_vm._v("Save")]
+                              )
+                            ],
+                            1
+                          )
                         }
                       }
                     ])
