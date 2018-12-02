@@ -77,7 +77,12 @@
           <div class="card-body">
             <Spinner v-if="isLoading"/>
 
-            <v-client-table ref="mealsTable" :columns="columns" :data="tableData" :options="options">
+            <v-client-table
+              ref="mealsTable"
+              :columns="columns"
+              :data="tableData"
+              :options="options"
+            >
               <div slot="beforeTable" class="mb-2">
                 <button class="btn btn-success btn-sm" @click="createMeal">Add Meal</button>
 
@@ -127,9 +132,10 @@
                 <div v-else>
                   <b-form-input
                     :key="`title${props.row.id}`"
-                    name="title" v-model.lazy="props.row.title"
-                    @change="(e) => { updateMeal(props.row.id, {title: editing[props.row.id].title}) }">
-                  </b-form-input>
+                    name="title"
+                    v-model.lazy="props.row.title"
+                    @change="(e) => { updateMeal(props.row.id, {title: editing[props.row.id].title}) }"
+                  ></b-form-input>
                 </div>
               </div>
 
@@ -156,15 +162,16 @@
                 <div v-else>
                   <b-form-input
                     v-model="editing[props.row.id].price"
-                    @change="(e) => { updateMeal(props.row.id, {price: editing[props.row.id].price}) }">
-                  </b-form-input>
+                    @change="(e) => { updateMeal(props.row.id, {price: editing[props.row.id].price}) }"
+                  ></b-form-input>
                 </div>
               </div>
 
               <div slot="current_orders" slot-scope="props">{{ props.row.orders.length }}</div>
 
               <div slot="actions" class="text-nowrap" slot-scope="props">
-                <button class="btn btn-warning btn-sm" @click="editMeal(props.row.id)">Edit</button>
+                <!--<button class="btn btn-warning btn-sm" @click="editMeal(props.row.id)">Edit</button>-->
+                <button class="btn btn-warning btn-sm" @click="toggleEditing(props.row.id)">Edit</button>
                 <button class="btn btn-danger btn-sm" @click="deleteMeal(props.row.id)">Delete</button>
               </div>
 
@@ -405,6 +412,10 @@ th:nth-child(3) {
   .preview-container {
   }
 }
+
+textarea {
+  width: 100%;
+}
 </style>
 
 
@@ -526,7 +537,7 @@ export default {
   mounted() {
     this.getTableData();
 
-    $(document).on("dblclick", ".VueTables__table tr", (e) => {
+    $(document).on("dblclick", ".VueTables__table tr", e => {
       let tr = $(e.target).closest("tr");
 
       if (tr.hasClass("meal")) {
@@ -534,17 +545,7 @@ export default {
 
         if (matches && matches.length > 1) {
           const id = parseInt(matches[1]);
-          const i = this.getTableDataIndexById(id);
-
-          if (i !== -1 && !this.isEditing(id)) {
-            this.editing[id] = { ...this.tableData[i] };
-            this.tableData[i].editing = true;
-            this.$set(this.tableData, i, this.tableData[i]);
-          } else {
-            this.tableData[i].editing = false;
-            this.$set(this.tableData, i, this.tableData[i]);
-            _.unset(this.editing, id);
-          }
+          this.toggleEditing(id);
 
           //this.refreshTable();
         }
@@ -558,7 +559,7 @@ export default {
     },
     getTableData() {
       let self = this;
-      axios.get("/api/me/meals").then((response) => {
+      axios.get("/api/me/meals").then(response => {
         this.tableData = response.data.map(meal => {
           meal.editing = false;
           meal.num_orders = meal.orders.length;
@@ -573,9 +574,22 @@ export default {
         return o.id === id;
       });
     },
+    toggleEditing(id) {
+      const i = this.getTableDataIndexById(id);
+
+      if (i !== -1 && !this.isEditing(id)) {
+        this.editing[id] = { ...this.tableData[i] };
+        this.tableData[i].editing = true;
+        this.$set(this.tableData, i, this.tableData[i]);
+      } else {
+        this.tableData[i].editing = false;
+        this.$set(this.tableData, i, this.tableData[i]);
+        _.unset(this.editing, id);
+      }
+    },
     isEditing(id) {
       const i = this.getTableDataIndexById(id);
-      if(i !== -1) {
+      if (i !== -1) {
         return this.tableData[i].editing;
       }
 

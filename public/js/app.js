@@ -81998,7 +81998,7 @@ exports.i(__webpack_require__(313), "");
 exports.i(__webpack_require__(64), "");
 
 // module
-exports.push([module.i, "\n.label-info {\n  background-color: #28a745;\n  border-radius: 5px;\n  padding: 3px;\n}\n.faded {\n  opacity: 0.5;\n}\n.VuePagination {\n  text-align: center;\n}\n.vue-title {\n  text-align: center;\n  margin-bottom: 10px;\n}\n.vue-pagination-ad {\n  text-align: center;\n}\n.glyphicon.glyphicon-eye-open {\n  width: 16px;\n  display: block;\n  margin: 0 auto;\n}\nth:nth-child(3) {\n  text-align: center;\n}\n.VueTables__child-row-toggler {\n  width: 16px;\n  height: 16px;\n  line-height: 16px;\n  display: block;\n  margin: auto;\n  text-align: center;\n}\n.VueTables__child-row-toggler--closed::before {\n  content: \"+\";\n}\n.VueTables__child-row-toggler--open::before {\n  content: \"-\";\n}\n", ""]);
+exports.push([module.i, "\n.label-info {\n  background-color: #28a745;\n  border-radius: 5px;\n  padding: 3px;\n}\n.faded {\n  opacity: 0.5;\n}\n.VuePagination {\n  text-align: center;\n}\n.vue-title {\n  text-align: center;\n  margin-bottom: 10px;\n}\n.vue-pagination-ad {\n  text-align: center;\n}\n.glyphicon.glyphicon-eye-open {\n  width: 16px;\n  display: block;\n  margin: 0 auto;\n}\nth:nth-child(3) {\n  text-align: center;\n}\n.VueTables__child-row-toggler {\n  width: 16px;\n  height: 16px;\n  line-height: 16px;\n  display: block;\n  margin: auto;\n  text-align: center;\n}\n.VueTables__child-row-toggler--closed::before {\n  content: \"+\";\n}\n.VueTables__child-row-toggler--open::before {\n  content: \"-\";\n}\ntextarea {\n  width: 100%;\n}\n", ""]);
 
 // exports
 
@@ -82073,6 +82073,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__lib_format__ = __webpack_require__(498);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -82594,17 +82605,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
         if (matches && matches.length > 1) {
           var id = parseInt(matches[1]);
-          var i = _this.getTableDataIndexById(id);
-
-          if (i !== -1 && !_this.isEditing(id)) {
-            _this.editing[id] = _extends({}, _this.tableData[i]);
-            _this.tableData[i].editing = true;
-            _this.$set(_this.tableData, i, _this.tableData[i]);
-          } else {
-            _this.tableData[i].editing = false;
-            _this.$set(_this.tableData, i, _this.tableData[i]);
-            _.unset(_this.editing, id);
-          }
+          _this.toggleEditing(id);
 
           //this.refreshTable();
         }
@@ -82637,6 +82638,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       return _.findIndex(this.tableData, function (o) {
         return o.id === id;
       });
+    },
+    toggleEditing: function toggleEditing(id) {
+      var i = this.getTableDataIndexById(id);
+
+      if (i !== -1 && !this.isEditing(id)) {
+        this.editing[id] = _extends({}, this.tableData[i]);
+        this.tableData[i].editing = true;
+        this.$set(this.tableData, i, this.tableData[i]);
+      } else {
+        this.tableData[i].editing = false;
+        this.$set(this.tableData, i, this.tableData[i]);
+        _.unset(this.editing, id);
+      }
     },
     isEditing: function isEditing(id) {
       var i = this.getTableDataIndexById(id);
@@ -95095,7 +95109,7 @@ var render = function() {
                                 staticClass: "btn btn-warning btn-sm",
                                 on: {
                                   click: function($event) {
-                                    _vm.editMeal(props.row.id)
+                                    _vm.toggleEditing(props.row.id)
                                   }
                                 }
                               },
