@@ -254,7 +254,6 @@
                     <picture-input
                       :key="'editMealImageInput' + props.row.id"
                       ref="editMealImageInput"
-                      v-if="editMealModal"
                       :prefill="editing[props.row.id].featured_image ? editing[props.row.id].featured_image : false"
                       @prefill="$refs.editMealImageInput.onResize()"
                       :alertOnError="false"

@@ -82564,7 +82564,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
 
 
 
@@ -95556,34 +95555,31 @@ var render = function() {
                                         _vm._v("Image")
                                       ]),
                                       _vm._v(" "),
-                                      _vm.editMealModal
-                                        ? _c("picture-input", {
-                                            key:
-                                              "editMealImageInput" +
-                                              props.row.id,
-                                            ref: "editMealImageInput",
-                                            attrs: {
-                                              prefill: _vm.editing[props.row.id]
+                                      _c("picture-input", {
+                                        key:
+                                          "editMealImageInput" + props.row.id,
+                                        ref: "editMealImageInput",
+                                        attrs: {
+                                          prefill: _vm.editing[props.row.id]
+                                            .featured_image
+                                            ? _vm.editing[props.row.id]
                                                 .featured_image
-                                                ? _vm.editing[props.row.id]
-                                                    .featured_image
-                                                : false,
-                                              alertOnError: false,
-                                              autoToggleAspectRatio: true,
-                                              width: "600",
-                                              height: "600",
-                                              margin: "0",
-                                              size: "10",
-                                              "button-class": "btn"
-                                            },
-                                            on: {
-                                              prefill: function($event) {
-                                                _vm.$refs.editMealImageInput.onResize()
-                                              },
-                                              change: _vm.onChangeImage
-                                            }
-                                          })
-                                        : _vm._e()
+                                            : false,
+                                          alertOnError: false,
+                                          autoToggleAspectRatio: true,
+                                          width: "600",
+                                          height: "600",
+                                          margin: "0",
+                                          size: "10",
+                                          "button-class": "btn"
+                                        },
+                                        on: {
+                                          prefill: function($event) {
+                                            _vm.$refs.editMealImageInput.onResize()
+                                          },
+                                          change: _vm.onChangeImage
+                                        }
+                                      })
                                     ],
                                     1
                                   )
