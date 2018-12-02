@@ -77,7 +77,7 @@
           <div class="card-body">
             <Spinner v-if="isLoading"/>
 
-            <v-client-table :columns="columns" :data="tableData" :options="options">
+            <v-client-table ref="mealsTable" :columns="columns" :data="tableData" :options="options">
               <div slot="beforeTable" class="mb-2">
                 <button class="btn btn-success btn-sm" @click="createMeal">Add Meal</button>
 
@@ -97,23 +97,73 @@
                   v-model="props.row.active"
                   :value="1"
                   :unchecked-value="0"
-                  @change="(val) => { updateActive(props.row.id, val) }"
+                  @change="(val) => updateActive(props.row.id, val)"
                 ></b-form-checkbox>
               </div>
 
               <div slot="featured_image" slot-scope="props">
-                <img
-                  :class="{ 'faded': !props.row.active }"
-                  :src="props.row.featured_image"
-                >
+                <div v-if="!props.row.editing">
+                  <img :src="props.row.featured_image" v-if="props.row.featured_image">
+                </div>
+                <div v-else>
+                  <picture-input
+                    :ref="`featuredImageInput${props.row.id}`"
+                    :prefill="props.row.featured_image ? props.row.featured_image : false"
+                    @prefill="$refs[`featuredImageInput${props.row.id}`].onResize()"
+                    :alertOnError="false"
+                    :autoToggleAspectRatio="true"
+                    width="100"
+                    height="100"
+                    margin="0"
+                    size="10"
+                    button-class="btn"
+                    @change="(val) => updateImage(props.row.id, val)"
+                  ></picture-input>
+                </div>
               </div>
 
-              <div slot="current_orders" slot-scope="props">
-                {{ props.row.orders.length }}
+              <div slot="title" slot-scope="props">
+                <div v-if="!props.row.editing">{{ props.row.title }}</div>
+                <div v-else>
+                  <b-form-input
+                    :key="`title${props.row.id}`"
+                    name="title" v-model.lazy="props.row.title"
+                    @change="(e) => { updateMeal(props.row.id, {title: editing[props.row.id].title}) }">
+                  </b-form-input>
+                </div>
               </div>
+
+              <div slot="description" slot-scope="props">
+                <div v-if="!isEditing(props.row.id)">{{ props.row.description }}</div>
+                <div v-else>
+                  <textarea
+                    v-model.lazy="editing[props.row.id].description"
+                    :rows="4"
+                    @change="(e) => { updateMeal(props.row.id, {description: editing[props.row.id].description}) }"
+                  ></textarea>
+                </div>
+              </div>
+
+              <div slot="tags" slot-scope="props">
+                <div v-if="!props.row.editing">{{ props.row.tag_titles.join(', ') }}</div>
+                <div v-else>
+                  <input-tag v-model="editing[props.row.id].tag_titles"/>
+                </div>
+              </div>
+
+              <div slot="price" slot-scope="props">
+                <div v-if="!props.row.editing">{{ formatMoney(props.row.price) }}</div>
+                <div v-else>
+                  <b-form-input
+                    v-model="editing[props.row.id].price"
+                    @change="(e) => { updateMeal(props.row.id, {price: editing[props.row.id].price}) }">
+                  </b-form-input>
+                </div>
+              </div>
+
+              <div slot="current_orders" slot-scope="props">{{ props.row.orders.length }}</div>
 
               <div slot="actions" class="text-nowrap" slot-scope="props">
-                <button class="btn btn-primary btn-sm" @click="viewMeal(props.row.id)">View</button>
                 <button class="btn btn-warning btn-sm" @click="editMeal(props.row.id)">Edit</button>
                 <button class="btn btn-danger btn-sm" @click="deleteMeal(props.row.id)">Delete</button>
               </div>
@@ -267,17 +317,18 @@
 
             <h3 class="mt-3">Image</h3>
             <picture-input
+              :key="'editMealImageInput' + meal.id"
               ref="editMealImageInput"
+              v-if="editMealModal"
+              :prefill="meal.featured_image ? meal.featured_image : false"
+              @prefill="$refs.editMealImageInput.onResize()"
+              :alertOnError="false"
+              :autoToggleAspectRatio="true"
               width="600"
               height="600"
               margin="0"
-              accept="image/jpeg, image/png"
               size="10"
               button-class="btn"
-              :custom-strings="{
-                //upload: '<h1>Bummer!</h1>',
-                //drag: 'Drag a 😺 GIF or GTFO'
-              }"
               @change="onChangeImage"
             ></picture-input>
           </b-col>
@@ -365,11 +416,15 @@ import { Event } from "vue-tables-2";
 import nutritionFacts from "nutrition-label-jquery-plugin";
 import PictureInput from "vue-picture-input";
 import units from "../../data/units";
+import format from "../../lib/format";
 
 export default {
   components: {
     Spinner,
     PictureInput
+  },
+  render() {
+    //$(window).trigger("resize");
   },
   data() {
     return {
@@ -381,6 +436,8 @@ export default {
       viewMealModal: false,
       editMealModal: false,
       deleteMealModal: false,
+
+      editing: [], // inline editing
 
       tags: [],
       newTags: [],
@@ -417,8 +474,9 @@ export default {
         "featured_image",
         "title",
         "description",
+        "tags",
         "price",
-        "current_orders",
+        "num_orders",
         "created_at",
         "actions"
       ],
@@ -428,13 +486,16 @@ export default {
           featured_image: "Image",
           title: "Title",
           description: "Description",
+          tags: "Tags",
           price: "Price",
-          current_orders: "# Orders",
+          num_orders: "# Orders",
           created_at: "Added",
           actions: "Actions"
         },
         rowClassCallback: function(row) {
-          return row.active ? "" : "faded";
+          let classes = `meal meal-${row.id}`;
+          classes += row.active ? "" : " faded";
+          return classes;
         },
         customFilters: [
           {
@@ -464,14 +525,71 @@ export default {
   },
   mounted() {
     this.getTableData();
+
+    $(document).on("dblclick", ".VueTables__table tr", (e) => {
+      let tr = $(e.target).closest("tr");
+
+      if (tr.hasClass("meal")) {
+        const matches = /meal-([0-9]+)/.exec(tr.attr("class"));
+
+        if (matches && matches.length > 1) {
+          const id = parseInt(matches[1]);
+          const i = this.getTableDataIndexById(id);
+
+          if (i !== -1 && !this.isEditing(id)) {
+            this.editing[id] = { ...this.tableData[i] };
+            this.tableData[i].editing = true;
+          } else {
+            this.tableData[i].editing = false;
+            _.unset(this.editing, id);
+          }
+
+          //this.refreshTable();
+        }
+      }
+    });
   },
   methods: {
+    formatMoney: format.money,
+    refreshTable() {
+      //this.$refs.mealsTable.render();
+    },
     getTableData() {
       let self = this;
       axios.get("/api/me/meals").then(function(response) {
-        self.tableData = response.data;
+        self.tableData = response.data.map(meal => {
+          meal.editing = false;
+          meal.num_orders = meal.orders.length;
+          return meal;
+        });
         self.isLoading = false;
         self.active = response.data.map(row => row.active);
+      });
+    },
+    getTableDataIndexById(id) {
+      return _.findIndex(this.tableData, o => {
+        return o.id === id;
+      });
+    },
+    isEditing(id) {
+      const i = this.getTableDataIndexById(id);
+      if(i !== -1) {
+        return this.tableData[i].editing;
+      }
+
+      return false;
+    },
+    updateMeal(id, changes) {
+      const i = this.getTableDataIndexById(id);
+
+      // None found
+      if (i === -1) {
+        return this.getTableData();
+      }
+
+      axios.patch(`/api/me/meals/${id}`, changes).then(resp => {
+        this.tableData[i] = resp.data;
+        this.refreshTable();
       });
     },
     updateActive(id, active, props) {
@@ -492,7 +610,7 @@ export default {
         })
         .then(resp => {
           this.tableData[i] = { ...resp.data };
-          this.$forceUpdate();
+          this.refreshTable();
         });
     },
 
@@ -532,13 +650,8 @@ export default {
 
         setTimeout(() => {
           this.$refs.editMealImageInput.onResize();
-          //$(this.$refs.editMealTagsInput).tagsinput();
         }, 50);
       });
-    },
-    updateMeal: function($id) {
-      axios.patch(`/api/me/meals/${$id}`, this.meal);
-      this.getTableData();
     },
     deleteMeal: function($id) {
       this.mealID = $id;

@@ -14,6 +14,12 @@ class Meal extends Model
         'active', 'featured_image', 'title', 'description', 'price', 'created_at',
     ];
 
+    protected $casts = [
+        'price' => 'double'
+    ];
+
+    protected $appends = ['tag_titles'];
+
     public function store()
     {
         return $this->belongsTo('App\Store');
@@ -34,9 +40,15 @@ class Meal extends Model
         return $this->belongsToMany('App\Order', 'meal_orders');
     }
 
-    public function meal_tags()
+    public function tags()
     {
         return $this->hasMany('App\MealTag');
+    }
+
+    public function getTagTitlesAttribute() {
+        return collect($this->tags)->map(function($meal) {
+          return $meal->tag;
+        });
     }
 
     //Admin View
@@ -60,7 +72,7 @@ class Meal extends Model
     public static function getStoreMeals($storeID = null)
     {
 
-        return Meal::with('meal_order', 'ingredient', 'meal_tag')->where('store_id', $storeID)->orderBy('active', 'desc')->orderBy('created_at', 'desc')->get()->map(function ($meal) {
+        return Meal::with('meal_order', 'ingredients', 'meal_tags')->where('store_id', $storeID)->orderBy('active', 'desc')->orderBy('created_at', 'desc')->get()->map(function ($meal) {
             // Fix redundancy of getting the authenticated Store ID twice
             $id = Auth::user()->id;
             $storeID = Store::where('user_id', $id)->pluck('id')->first();
@@ -73,15 +85,15 @@ class Meal extends Model
                 "price" => '$' . $meal->price,
                 "current_orders" => $meal->meal_order->where('store_id', $storeID)->count(),
                 "created_at" => $meal->created_at,
-                'ingredients' => $meal->ingredient,
-                'meal_tags' => $meal->meal_tag,
+                'ingredients' => $meal->ingredients,
+                'meal_tags' => $meal->meal_tags,
             ];
         });
     }
 
     public static function getMeal($id)
     {
-        return Meal::with('ingredient', 'meal_tag')->where('id', $id)->first();
+        return Meal::with('ingredients', 'meal_tags')->where('id', $id)->first();
     }
 
     //Considering renaming "Store" to "Company" to not cause confusion with store methods.
