@@ -75,7 +75,7 @@
         <div class="card">
           <div class="card-header">Meals</div>
           <div class="card-body">
-            <Spinner v-if="isLoading"/>
+            <Spinner/>
 
             <v-client-table
               ref="mealsTable"

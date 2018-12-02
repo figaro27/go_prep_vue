@@ -1,28 +1,26 @@
 <template>
-      <div>
-        <div id="cooking">
-          <div class="bubble"></div>
-          <div class="bubble"></div>
-          <div class="bubble"></div>
-          <div class="bubble"></div>
-          <div class="bubble"></div>
-          <div id="area">
-            <div id="sides">
-              <div id="pan"></div>
-              <div id="handle"></div>
-            </div>
-            <div id="pancake">
-              <div id="pastry"></div>
-            </div>
-          </div>
+  <div>
+    <div id="cooking">
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div id="area">
+        <div id="sides">
+          <div id="pan"></div>
+          <div id="handle"></div>
+        </div>
+        <div id="pancake">
+          <div id="pastry"></div>
         </div>
       </div>
-
+    </div>
+  </div>
 </template>
 
 <style lang="scss">
-
-@import url('https://fonts.googleapis.com/css?family=Amatic+SC');
+@import url("https://fonts.googleapis.com/css?family=Amatic+SC");
 
 $anim_time: 1.5; // main pan/pancake animation (in seconds)
 $flatten_deg: 85; // how round will the pancake be at the top/peak (in deg), affecting general animation though so not really adjustable
@@ -44,27 +42,30 @@ h1 {
   top: 25vh;
   width: 100vw;
   text-align: center;
-  font-family: 'Amatic SC';
+  font-family: "Amatic SC";
   font-size: 6vh;
   color: $color;
-  opacity: .75;
+  opacity: 0.75;
   animation: pulse 2.5s linear infinite;
 }
 
 #cooking {
-  position: absolute;
-  margin: 0 auto;
-  top: 15vh;
-  left: 70vh;
+  position: fixed;
+  margin: auto;
+  top: 0;
+  left: 200px;
+  right: 0;
+  bottom: 0;
   width: 25vh;
   height: 25vh;
   overflow: hidden;
+
   .bubble {
     position: absolute;
     bottom: 100vh;
     height: 25vh;
     border-radius: 100%;
-    box-shadow: 0 0 .25vh lighten($color, 10%);
+    box-shadow: 0 0 0.25vh lighten($color, 10%);
     opacity: 0;
   }
   .bubble:nth-child(1) {
@@ -73,7 +74,7 @@ h1 {
     width: 2.5vh;
     height: 2.5vh;
     background-color: lighten($color, 7%);
-    animation: bubble 2s cubic-bezier(.53, .16, .39, .96) infinite;
+    animation: bubble 2s cubic-bezier(0.53, 0.16, 0.39, 0.96) infinite;
   }
   .bubble:nth-child(2) {
     margin-top: -3vh;
@@ -81,7 +82,7 @@ h1 {
     width: 2vh;
     height: 2vh;
     background-color: lighten($color, 4%);
-    animation: bubble 2s ease-in-out .35s infinite;
+    animation: bubble 2s ease-in-out 0.35s infinite;
   }
   .bubble:nth-child(3) {
     margin-top: -1.8vh;
@@ -89,7 +90,7 @@ h1 {
     width: 1.5vh;
     height: 1.5vh;
     background-color: $color;
-    animation: bubble 1.5s cubic-bezier(.53, .16, .39, .96) .55s infinite;
+    animation: bubble 1.5s cubic-bezier(0.53, 0.16, 0.39, 0.96) 0.55s infinite;
   }
   .bubble:nth-child(4) {
     margin-top: -4.7vh;
@@ -97,7 +98,7 @@ h1 {
     width: 1.2vh;
     height: 1.2vh;
     background-color: darken($color, 3%);
-    animation: bubble 1.8s cubic-bezier(.53, .16, .39, .96) .9s infinite;
+    animation: bubble 1.8s cubic-bezier(0.53, 0.16, 0.39, 0.96) 0.9s infinite;
   }
   .bubble:nth-child(5) {
     margin-top: -2.7vh;
@@ -132,7 +133,7 @@ h1 {
         border-top: 1vh solid $color;
         border-left: 1vh solid transparent;
         border-radius: 100%;
-        transform: rotate(20deg) rotateX(0deg) scale(1.3, .9);
+        transform: rotate(20deg) rotateX(0deg) scale(1.3, 0.9);
       }
       #pan {
         position: absolute;
@@ -158,7 +159,7 @@ h1 {
         right: 37%;
         width: 40%;
         height: 45%;
-        background-color: #F08B17;
+        background-color: #f08b17;
         box-shadow: 0 0 1px 0 $color;
         border-radius: 100%;
         transform-origin: -20% 0;
@@ -246,7 +247,7 @@ h1 {
 
 @keyframes bubble {
   0% {
-    transform: scale(.15, .15);
+    transform: scale(0.15, 0.15);
     top: 80%;
     opacity: 0;
   }
@@ -255,7 +256,7 @@ h1 {
     opacity: 1;
   }
   100% {
-    transform: scale(.33, .33);
+    transform: scale(0.33, 0.33);
     top: 60%;
     opacity: 0;
   }
@@ -264,7 +265,7 @@ h1 {
 @keyframes pulse {
   0% {
     transform: scale(1, 1);
-    opacity: .25;
+    opacity: 0.25;
   }
   50% {
     transform: scale(1.2, 1);
@@ -272,23 +273,18 @@ h1 {
   }
   100% {
     transform: scale(1, 1);
-    opacity: .25;
+    opacity: 0.25;
   }
 }
-
 </style>
 
 <script>
-    export default {
-        components: {
-
-        },
-        data(){
-            return {}
-        },
-        mounted()
-        {
-        },
-        methods: {}
-    }
+export default {
+  components: {},
+  data() {
+    return {};
+  },
+  mounted() {},
+  methods: {}
+};
 </script>
