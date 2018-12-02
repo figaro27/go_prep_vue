@@ -8,10 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
 use Auth;
 use Carbon\Carbon;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -41,6 +42,11 @@ class User extends Authenticatable
 
     public function order(){
         return $this->hasMany('App\Order');
+    }
+
+    public function store()
+    {
+      return $this->hasOne('App\Store');
     }
 
 

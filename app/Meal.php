@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Auth;
 use App\Store;
 
@@ -48,10 +49,7 @@ class Meal extends Model
    }
 
   //Store View
-  public static function getStoreMeals(){
-
-  $id = Auth::user()->id;
-  $storeID = Store::where('user_id', $id)->pluck('id')->first();
+  public static function getStoreMeals($storeID = null) {
 
  	return Meal::with('meal_order', 'ingredient', 'meal_tag')->where('store_id', $storeID)->orderBy('active', 'desc')->orderBy('created_at', 'desc')->get()->map(function($meal){
     // Fix redundancy of getting the authenticated Store ID twice
@@ -103,30 +101,54 @@ class Meal extends Model
       $meal->save();
   }
 
-  public static function updateMeal($request, $id){
-      $meal = Meal::where('id', $id)->first();
-     
-      $meal->update([
-          'active' => $request->meal['active'],
-          'featured_image' => $request->meal['featured_image'],
-          'title' => $request->meal['title'],
-          'description' => $request->meal['description'],
-          'price' => $request->meal['price'],
-          'created_at' => $request->meal['created_at'],
+  public static function updateMeal($id, $props) {
+
+      $meal = Meal::findOrFail($id);
+
+      $props = collect($props)->only([
+        'active',
+        'featured_image',
+        'title',
+        'description',
+        'price',
+        'created_at',
       ]);
+
+      if($props->has('featured_image')) {
+        $imageRaw = $props->get('featured_image');
+        $imageRaw = str_replace(' ', '+', $imageRaw);
+        $image = base64_decode($imageRaw);
+
+        $ext = [];
+        preg_match('/^data:image\/(.{3,9});/i', $imageRaw, $ext);
+        
+        $imagePath = 'images/meals/' . self::generateImageFilename($image, $ext[1]);
+        \Storage::put($imagePath, $image);
+        $imageUrl = \Storage::url($imagePath);
+        
+        $props->put('featured_image', $imagePath);
+      }
+     
+      $meal->update($props->toArray());
+      
+      return $meal;
   }
 
-  public static function updateActive($request){
-    $meal = Meal::where('id', $request->id)->first();
+  public static function updateActive($id, $active){
+    $meal = Meal::where('id', $id)->first();
 
     $meal->update([
-      'active' => $request->active
+      'active' => $active
     ]);
   }
 
   public static function deleteMeal($id){
       $meal = Meal::find($id);
       $meal->delete();
+  }
+
+  public static function generateImageFilename($image, $ext) {
+    return sha1($image).'.'.$ext;
   }
 
 }

@@ -19,6 +19,8 @@ $simple-line-font-path: '~simple-line-icons/fonts/';
 /* Import Bootstrap Vue Styles */
 @import '~bootstrap-vue/dist/bootstrap-vue.css';
 
+@import '~perfect-scrollbar/css/perfect-scrollbar.css';
+
 // Import styles with dark layout
 // If you want to use dark layout uncomment next line
 //@import "~@coreui/coreui-pro/scss/themes/dark/coreui-dark";
@@ -29,3 +31,5 @@ $simple-line-font-path: '~simple-line-icons/fonts/';
 // ie fixes
 @import "ie-fix";
 
+
+@import "components/modal.scss";

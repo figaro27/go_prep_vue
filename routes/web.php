@@ -11,26 +11,41 @@
 |
 */
 
-
+Route::get('/', function () {
+    return view('welcome');
+});
 Route::get('/home', 'HomeController@index')->name('home');
 
 Auth::routes();
 Route::fallback('SpaController@index');
 
-Route::resource('user', 'UserController');
-Route::resource('meals', 'MealController');
-Route::resource('ingredients', 'IngredientController');
-Route::resource('stores', 'StoreController');
 
-Route::get('storeCustomers', 'UserController@storeIndex');
-Route::get('storeMeals', 'MealController@getStoreMeals');
+// All logged in users
+Route::group(['middleware' => ['auth']], function ($router) {
 
-Route::post('storeMealAdmin', 'MealController@storeAdmin');
-Route::post('updateActive', 'MealController@updateActive');
+  Route::resource('user', 'UserController');
+  Route::resource('stores', 'StoreController');
 
-Route::post('nutrients', 'NutritionController@getNutrients');
-Route::post('searchInstant', 'NutritionController@searchInstant');
+  Route::get('storeCustomers', 'UserController@storeIndex');
+  Route::get('storeMeals', 'MealController@getStoreMeals');
 
-Route::post('/submit', 'ContactFormController@submit');
+  Route::post('storeMealAdmin', 'MealController@storeAdmin');
+  Route::post('updateActive', 'MealController@updateActive');
 
-Route::get('/payment/process', 'PaymentController@process')->name('payment.process');
+  Route::post('nutrients', 'NutritionController@getNutrients');
+  Route::post('searchInstant', 'NutritionController@searchInstant');
+
+  Route::post('/submitStore', 'ContactFormController@submitStore');
+  Route::post('/submitCustomer', 'ContactFormController@submitCustomer');
+
+});
+
+// All logged in stores
+Route::group(['middleware' => ['auth'/*, 'store'*/]], function ($router) {
+
+});
+
+// All logged in admin
+Route::group(['middleware' => ['auth', 'admin']], function ($router) {
+
+});

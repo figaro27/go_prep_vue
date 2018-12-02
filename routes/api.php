@@ -18,3 +18,13 @@ use Illuminate\Http\Request;
 // });
 
 
+Route::group(['middleware' => ['auth:api']], function($router) {
+
+  Route::group(['prefix' => 'me', 'middleware' => ['role.store']], function ($router) {
+    Route::resource('meals', 'Store\\MealController');
+    Route::resource('ingredients', 'Store\\IngredientController');
+    Route::get('customers', 'Store\\CustomerController@index');
+
+  });
+
+});

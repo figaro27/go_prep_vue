@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Store;
 
 use App\User;
 use Illuminate\Http\Request;
 
 
-class UserController extends Controller
+class CustomerController extends StoreController
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -15,11 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::getCustomers();
-    }
-
-    public function storeIndex(){
-        return User::getStoreCustomers();
+        return $this->store->customers;
     }
 
     /**
@@ -75,17 +72,6 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
 
-        $user = User::with('userDetail', 'order')->find($id);
-       
-        $user->userDetail->update([
-            'firstname' => $request->user['user_detail']['firstname'],
-            'lastname' => $request->user['user_detail']['lastname'],
-            'address' => $request->user['user_detail']['address'],
-            'city' => $request->user['user_detail']['city'],
-            'state' => $request->user['user_detail']['state'],
-            'phone' => $request->user['user_detail']['phone'],
-            'delivery' => $request->user['user_detail']['delivery'],
-        ]);
     }
 
     /**

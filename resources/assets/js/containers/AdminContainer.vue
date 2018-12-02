@@ -7,6 +7,7 @@
         <img class="navbar-brand-minimized" src="/images/logo-min.png" width="33" height="40" alt="GoPrep Logo">
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" />
+      
 
       <b-navbar-nav class="ml-auto">
         <b-nav-item class="d-md-down-none">

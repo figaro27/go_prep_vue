@@ -14,12 +14,6 @@
                             </div>
                         
                             <div class="form-group">
-                                <label for="email">E-mail</label>
-                                <input type="email" class="form-control" name="email" id="email" v-model="fields.email" />
-                                <div v-if="errors && errors.email" class="text-danger">{{ errors.email[0] }}</div>
-                            </div>
-                        
-                            <div class="form-group">
                                 <label for="message">Message</label>
                                 <textarea class="form-control" id="message" name="message" rows="5" v-model="fields.message"></textarea>
                                 <div v-if="errors && errors.message" class="text-danger">{{ errors.message[0] }}</div>
@@ -59,7 +53,7 @@
                 this.loaded = false;
                 this.success = false;
                 this.errors = {};
-                axios.post('/submit', this.fields).then(response => {
+                axios.post('/submitStore', this.fields).then(response => {
                   this.fields = {};
                   this.loaded = true;
                   this.success = true;

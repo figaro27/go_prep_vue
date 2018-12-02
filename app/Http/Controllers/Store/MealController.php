@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Store;
 
-use App\Store;
+use App\Meal;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Store\StoreController;
 
-class StoreController extends Controller
+class MealController extends StoreController
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +15,15 @@ class StoreController extends Controller
      */
     public function index()
     {
-        return Store::getStores();
+        return $this->store->has('meals') ? $this->store->meals : [];
+    }
+
+    public function getStoreMeals()
+    {
+        $id = auth()->id; 
+        $storeID = Store::where('user_id', $id)->pluck('id')->first();
+
+        return Meal::getStoreMeals($storeId);
     }
 
     /**
@@ -35,27 +44,32 @@ class StoreController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return Meal::storeMeal($request);
+    }
+
+    public function storeAdmin(Request $request)
+    {
+        return Meal::storeMealAdmin($request);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Store  $store
+     * @param  \App\Meal  $meal
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        return Store::getStore($id);
+        return Meal::getMeal($id);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Store  $store
+     * @param  \App\Meal  $meal
      * @return \Illuminate\Http\Response
      */
-    public function edit(Store $store)
+    public function edit(Meal $meal)
     {
         //
     }
@@ -64,31 +78,29 @@ class StoreController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Store  $store
+     * @param  \App\Meal  $meal
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $store = Store::with('storeDetail', 'order')->find($id);
-       
-        $store->storeDetail->update([
-            'logo' => $request->store['store_detail']['logo'],
-            'name' => $request->store['store_detail']['name'],
-            'phone' => $request->store['store_detail']['phone'],
-            'address' => $request->store['store_detail']['address'],
-            'city' => $request->store['store_detail']['city'],
-            'state' => $request->store['store_detail']['state'],
-        ]);
+        return Meal::updateMeal($id, $request->all());
+    }
+
+    public function updateActive(Request $request, $id)
+    {
+        if($request->has('active')) {
+          return Meal::updateActive($id, $request->get('active'));
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Store  $store
+     * @param  \App\Meal  $meal
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Store $store)
+    public function destroy($id)
     {
-        //
+        return Meal::deleteMeal($id);
     }
 }

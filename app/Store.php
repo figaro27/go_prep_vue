@@ -6,13 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Store extends Model
 {
-    public function user(){
+  public function user(){
 		return $this->hasOne('App\User');
 	}
 
 	public function order(){
 		return $this->hasMany('App\Order');
-	}
+  }
+
+  public function meals()
+  {
+    return $this->hasMany('App\Meal');
+  }
 
 	public function storeDetail(){
       return $this->hasOne('App\StoreDetail');

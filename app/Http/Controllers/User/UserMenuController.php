@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\UserController;
 
-use App\Ingredient;
+use App\Store;
 use Illuminate\Http\Request;
 
-class IngredientController extends Controller
+class UserMenuController extends UserController
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class IngredientController extends Controller
      */
     public function index()
     {
-        return Ingredient::getIngredients();
+        
     }
 
     /**
@@ -41,21 +41,21 @@ class IngredientController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Ingredient  $ingredient
+     * @param  \App\Store  $store
      * @return \Illuminate\Http\Response
      */
-    public function show(Ingredient $ingredient)
+    public function show($id)
     {
-        //
+       
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Ingredient  $ingredient
+     * @param  \App\Store  $store
      * @return \Illuminate\Http\Response
      */
-    public function edit(Ingredient $ingredient)
+    public function edit(Store $store)
     {
         //
     }
@@ -64,21 +64,21 @@ class IngredientController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Ingredient  $ingredient
+     * @param  \App\Store  $store
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ingredient $ingredient)
+    public function update(Request $request, $id)
     {
-        //
+       
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Ingredient  $ingredient
+     * @param  \App\Store  $store
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Ingredient $ingredient)
+    public function destroy(Store $store)
     {
         //
     }
