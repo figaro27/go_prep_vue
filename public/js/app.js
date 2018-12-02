@@ -82599,8 +82599,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           if (i !== -1 && !_this.isEditing(id)) {
             _this.editing[id] = _extends({}, _this.tableData[i]);
             _this.tableData[i].editing = true;
+            _this.$set(_this.tableData, i, _this.tableData[i]);
           } else {
             _this.tableData[i].editing = false;
+            _this.$set(_this.tableData, i, _this.tableData[i]);
             _.unset(_this.editing, id);
           }
 
@@ -82616,9 +82618,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       //this.$refs.mealsTable.render();
     },
     getTableData: function getTableData() {
+      var _this2 = this;
+
       var self = this;
       axios.get("/api/me/meals").then(function (response) {
-        self.tableData = response.data.map(function (meal) {
+        _this2.tableData = response.data.map(function (meal) {
           meal.editing = false;
           meal.num_orders = meal.orders.length;
           return meal;
@@ -82643,7 +82647,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       return false;
     },
     updateMeal: function updateMeal(id, changes) {
-      var _this2 = this;
+      var _this3 = this;
 
       var i = this.getTableDataIndexById(id);
 
@@ -82653,12 +82657,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
 
       axios.patch("/api/me/meals/" + id, changes).then(function (resp) {
-        _this2.tableData[i] = resp.data;
-        _this2.refreshTable();
+        _this3.tableData[i] = resp.data;
+        _this3.refreshTable();
       });
     },
     updateActive: function updateActive(id, active, props) {
-      var _this3 = this;
+      var _this4 = this;
 
       var i = _.findIndex(this.tableData, function (o) {
         return o.id === id;
@@ -82674,8 +82678,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       axios.patch("/api/me/meals/" + id, {
         active: active
       }).then(function (resp) {
-        _this3.tableData[i] = _extends({}, resp.data);
-        _this3.refreshTable();
+        _this4.tableData[i] = _extends({}, resp.data);
+        _this4.refreshTable();
       });
     },
     createMeal: function createMeal() {
@@ -82692,32 +82696,32 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       this.createMealModal = false;
     },
     viewMeal: function viewMeal(id) {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.get("/api/me/meals/" + id).then(function (response) {
-        _this4.meal = response.data;
-        _this4.ingredients = response.data.ingredient;
-        _this4.tags = response.data.meal_tag;
-        _this4.viewMealModal = true;
+        _this5.meal = response.data;
+        _this5.ingredients = response.data.ingredient;
+        _this5.tags = response.data.meal_tag;
+        _this5.viewMealModal = true;
 
-        _this4.$nextTick(function () {
+        _this5.$nextTick(function () {
           window.dispatchEvent(new __WEBPACK_IMPORTED_MODULE_3_vue_tables_2__["Event"]("resize"));
         });
       });
     },
     editMeal: function editMeal(id) {
-      var _this5 = this;
+      var _this6 = this;
 
       this.addTag = false;
       axios.get("/api/me/meals/" + id).then(function (response) {
-        _this5.meal = response.data;
-        _this5.ingredients = response.data.ingredient;
-        _this5.tags = response.data.meal_tag;
-        _this5.editMealModal = true;
-        _this5.mealID = response.data.id;
+        _this6.meal = response.data;
+        _this6.ingredients = response.data.ingredient;
+        _this6.tags = response.data.meal_tag;
+        _this6.editMealModal = true;
+        _this6.mealID = response.data.id;
 
         setTimeout(function () {
-          _this5.$refs.editMealImageInput.onResize();
+          _this6.$refs.editMealImageInput.onResize();
         }, 50);
       });
     },
@@ -82733,21 +82737,21 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     getNutrition: function getNutrition() {
-      var _this6 = this;
+      var _this7 = this;
 
       axios.post("../nutrients", {
         query: this.ingredientQuery
       }).then(function (response) {
-        _this6.ingredients = response.data.foods;
+        _this7.ingredients = response.data.foods;
       });
     },
     searchInstant: function searchInstant() {
-      var _this7 = this;
+      var _this8 = this;
 
       axios.post("../searchInstant", {
         search: this.ingredientSearch
       }).then(function (response) {
-        _this7.ingredientResults = response.data.common;
+        _this8.ingredientResults = response.data.common;
       });
     },
     getIngredientList: function getIngredientList() {

@@ -539,8 +539,10 @@ export default {
           if (i !== -1 && !this.isEditing(id)) {
             this.editing[id] = { ...this.tableData[i] };
             this.tableData[i].editing = true;
+            this.$set(this.tableData, i, this.tableData[i]);
           } else {
             this.tableData[i].editing = false;
+            this.$set(this.tableData, i, this.tableData[i]);
             _.unset(this.editing, id);
           }
 
@@ -556,8 +558,8 @@ export default {
     },
     getTableData() {
       let self = this;
-      axios.get("/api/me/meals").then(function(response) {
-        self.tableData = response.data.map(meal => {
+      axios.get("/api/me/meals").then((response) => {
+        this.tableData = response.data.map(meal => {
           meal.editing = false;
           meal.num_orders = meal.orders.length;
           return meal;
