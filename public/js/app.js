@@ -94923,7 +94923,7 @@ var render = function() {
               "div",
               { staticClass: "card-body" },
               [
-                _c("Spinner"),
+                _vm.isLoading ? _c("Spinner") : _vm._e(),
                 _vm._v(" "),
                 _c(
                   "v-client-table",
