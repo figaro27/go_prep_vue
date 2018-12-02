@@ -3,14 +3,17 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class MealOrder extends Model
+class MealOrder extends Pivot
 {
-    public function meal(){
+  protected $table = 'meal_orders';
+
+  public function meals() {
 		return $this->hasMany('App\Meal');
 	}
 
-	public function order(){
+	public function orders() {
 		return $this->hasMany('App\Order');
 	}
 }

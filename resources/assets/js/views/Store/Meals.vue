@@ -78,25 +78,38 @@
             <Spinner v-if="isLoading"/>
 
             <v-client-table :columns="columns" :data="tableData" :options="options">
-              <div slot="beforeTable">
-                <button class="btn btn-success btn-sm mb-2" @click="createMeal">Add Meal</button>
+              <div slot="beforeTable" class="mb-2">
+                <button class="btn btn-success btn-sm" @click="createMeal">Add Meal</button>
+
+                <b-form-radio-group
+                  buttons
+                  button-variant="primary"
+                  size="sm"
+                  v-model="filter.status"
+                  @change="onChangeStatusFilter"
+                  :options="statusFilterOptions"
+                />
               </div>
 
               <div slot="active" slot-scope="props">
                 <b-form-checkbox
                   type="checkbox"
-                  v-model="active[props.index-1]"
-                  value="true"
-                  unchecked-value="false"
-                  @change="updateActive(props.row.id, props.index-1)"
+                  v-model="props.row.active"
+                  :value="1"
+                  :unchecked-value="0"
+                  @change="(val) => { updateActive(props.row.id, val) }"
                 ></b-form-checkbox>
               </div>
 
               <div slot="featured_image" slot-scope="props">
                 <img
-                  :class="{ 'faded': !JSON.parse(active[props.index-1].toLowerCase()) }"
-                  :src="tableData[props.index].featured_image"
+                  :class="{ 'faded': !props.row.active }"
+                  :src="props.row.featured_image"
                 >
+              </div>
+
+              <div slot="current_orders" slot-scope="props">
+                {{ props.row.orders.length }}
               </div>
 
               <div slot="actions" class="text-nowrap" slot-scope="props">
@@ -185,35 +198,26 @@
 
     <b-modal title="Meal" v-model="editMealModal" v-if="editMealModal" class="modal-full" no-fade>
       <b-form>
-
         <b-row>
           <b-col cols="9">
             <b-form-group label="Title">
-              <b-form-input
-                  v-model="meal.title"
-                  required
-                  placeholder="Enter email">
-              </b-form-input>
+              <b-form-input v-model="meal.title" required placeholder="Enter email"></b-form-input>
             </b-form-group>
 
             <b-form-row>
               <b-col>
                 <b-form-group label="Description">
-                  <b-form-input
-                      v-model="meal.description"
-                      required
-                      placeholder="Enter description">
-                  </b-form-input>
+                  <b-form-input v-model="meal.description" required placeholder="Enter description"></b-form-input>
                 </b-form-group>
               </b-col>
               <b-col>
                 <b-form-group label="Price">
                   <b-form-input
-                      v-model="meal.price"
-                      type="number"
-                      required
-                      placeholder="Enter price">
-                  </b-form-input>
+                    v-model="meal.price"
+                    type="number"
+                    required
+                    placeholder="Enter price"
+                  ></b-form-input>
                 </b-form-group>
               </b-col>
             </b-form-row>
@@ -247,39 +251,39 @@
                 </tr>
                 <tr>
                   <td colspan="3" class="text-right">
-                    <a href="#" @click="onClickAddIngredient"><i class="fas fa-plus-circle"></i></a>
+                    <a href="#" @click="onClickAddIngredient">
+                      <i class="fas fa-plus-circle"></i>
+                    </a>
                   </td>
                 </tr>
               </tbody>
             </table>
-
           </b-col>
           <b-col>
             <h3>Tags</h3>
             <div>
-              <input-tag ref="editMealTagsInput" v-model="meal.tags" />
+              <input-tag ref="editMealTagsInput" v-model="meal.tags"/>
             </div>
 
             <h3 class="mt-3">Image</h3>
-            <picture-input 
+            <picture-input
               ref="editMealImageInput"
-              width="600" 
-              height="600" 
-              margin="0" 
-              accept="image/jpeg,image/png" 
+              width="600"
+              height="600"
+              margin="0"
+              accept="image/jpeg, image/png"
               size="10"
               button-class="btn"
               :custom-strings="{
                 //upload: '<h1>Bummer!</h1>',
                 //drag: 'Drag a 😺 GIF or GTFO'
               }"
-              @change="onChangeImage">
-            </picture-input>
+              @change="onChangeImage"
+            ></picture-input>
           </b-col>
         </b-row>
-        
+
         <button class="btn btn-primary mt-3 float-right" @click="updateMeal(mealID)">Save</button>
-      
       </b-form>
     </b-modal>
 
@@ -357,17 +361,21 @@ th:nth-child(3) {
 import Spinner from "../../components/Spinner";
 import moment from "moment";
 import tags from "bootstrap-tagsinput";
+import { Event } from "vue-tables-2";
 import nutritionFacts from "nutrition-label-jquery-plugin";
-import PictureInput from 'vue-picture-input'
-import units from '../../data/units';
+import PictureInput from "vue-picture-input";
+import units from "../../data/units";
 
 export default {
   components: {
     Spinner,
-    PictureInput,
+    PictureInput
   },
   data() {
     return {
+      filter: {
+        status: "all"
+      },
       isLoading: true,
       createMealModal: false,
       viewMealModal: false,
@@ -411,7 +419,7 @@ export default {
         "description",
         "price",
         "current_orders",
-        "created_at.date",
+        "created_at",
         "actions"
       ],
       options: {
@@ -421,19 +429,37 @@ export default {
           title: "Title",
           description: "Description",
           price: "Price",
-          current_orders: "Current Orders",
-          "created_at.date": "Added",
+          current_orders: "# Orders",
+          created_at: "Added",
           actions: "Actions"
         },
         rowClassCallback: function(row) {
-          if (row.active == "false") return "faded";
-        }
+          return row.active ? "" : "faded";
+        },
+        customFilters: [
+          {
+            name: "status",
+            callback: function(row, val) {
+              if (val === "all") return true;
+              else if (val === "active") return row.active;
+              else if (val === "inactive") return !row.active;
+              return false;
+            }
+          }
+        ]
       }
     };
   },
   computed: {
     weightUnitOptions() {
       return units.weight.selectOptions();
+    },
+    statusFilterOptions() {
+      return [
+        { text: "All", value: "all" },
+        { text: "Active", value: "active" },
+        { text: "Inactive", value: "inactive" }
+      ];
     }
   },
   mounted() {
@@ -448,13 +474,26 @@ export default {
         self.active = response.data.map(row => row.active);
       });
     },
-    updateActive: function(id, row) {
-      this.$nextTick(function() {
-        let row = $row;
-        axios.patch(`/api/me/meals/${id}`, {
-          active: this.active[row]
-        });
+    updateActive(id, active, props) {
+      const i = _.findIndex(this.tableData, o => {
+        return o.id === id;
       });
+
+      // None found
+      if (i === -1) {
+        return this.getTableData();
+      }
+
+      this.tableData[i].active = active;
+
+      axios
+        .patch(`/api/me/meals/${id}`, {
+          active: active
+        })
+        .then(resp => {
+          this.tableData[i] = { ...resp.data };
+          this.$forceUpdate();
+        });
     },
 
     createMeal() {
@@ -470,21 +509,21 @@ export default {
       this.getTableData();
       this.createMealModal = false;
     },
-    viewMeal($id) {
-      axios.get(`/api/me/meals/${$id}`).then(response => {
+    viewMeal(id) {
+      axios.get(`/api/me/meals/${id}`).then(response => {
         this.meal = response.data;
         this.ingredients = response.data.ingredient;
         this.tags = response.data.meal_tag;
         this.viewMealModal = true;
-        
-        this.$nextTick(function () {
-          window.dispatchEvent(new Event('resize'));
+
+        this.$nextTick(function() {
+          window.dispatchEvent(new Event("resize"));
         });
       });
     },
-    editMeal($id) {
+    editMeal(id) {
       this.addTag = false;
-      axios.get(`/api/me/meals/${$id}`).then(response => {
+      axios.get(`/api/me/meals/${id}`).then(response => {
         this.meal = response.data;
         this.ingredients = response.data.ingredient;
         this.tags = response.data.meal_tag;
@@ -494,7 +533,6 @@ export default {
         setTimeout(() => {
           this.$refs.editMealImageInput.onResize();
           //$(this.$refs.editMealTagsInput).tagsinput();
-
         }, 50);
       });
     },
@@ -599,12 +637,15 @@ export default {
       if (image) {
         this.meal.featured_image = image;
       } else {
-        console.log('FileReader API not supported: use the <form>, Luke!')
+        console.log("FileReader API not supported: use the <form>, Luke!");
       }
     },
     onClickAddIngredient() {
       this.ingredients.push({});
     },
+    onChangeStatusFilter(val) {
+      Event.$emit("vue-tables.filter::status", val);
+    }
   }
 };
 </script>
