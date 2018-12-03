@@ -5,7 +5,7 @@ use Faker\Generator as Faker;
 
 $factory->define(App\Meal::class, function (Faker $faker) {
     return [
-    	'active' => 'true',
+    	'active' => 1,
     	'store_id' => 1,
         'featured_image' => $faker->imageUrl($width = 100, $height = 100),
         'title' => $faker->sentence($nbWords = 3, $variableNbWords = true),

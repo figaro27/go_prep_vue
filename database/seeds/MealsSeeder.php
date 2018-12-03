@@ -13,7 +13,7 @@ class MealsSeeder extends Seeder
     {
 
         factory(App\Meal::class, 50)->create()->each(function($u) {
-            $u->meal_tags()->save(factory(App\MealTag::class)->make());
+            $u->tags()->save(factory(App\MealTag::class)->make());
         	for ($i=0;$i<6;$i++)
             $u->ingredients()->save(factory(App\Ingredient::class)->make());
           });
