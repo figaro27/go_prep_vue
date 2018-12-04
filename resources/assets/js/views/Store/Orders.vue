@@ -6,7 +6,8 @@
                         Orders
                     </div>
                     <div class="card-body">
-
+                        <v-client-table :columns="columns" :data="tableData" :options="options">
+                        </v-client-table>
                     </div>
                 </div>
             </div>
@@ -19,7 +20,10 @@
 
         },
         data(){
-            return {}
+            return {
+                tableData: [{Order: "test"}],
+                columns: ['Order']
+            }
         },
         mounted()
         {
