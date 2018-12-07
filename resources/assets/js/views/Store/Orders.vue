@@ -21,11 +21,16 @@
                                 </div>
                                 <div class="col-3">
                                   <h3>Delivery Notes</h3>
+                                   <textarea type="text" id="form7" class="md-textarea form-control" rows="3" v-model="notes">
                                     {{ tableData[1].notes }}
+                                    </textarea>
+                                    <button class="btn btn-primary btn-sm" @click="saveNotes(props.row.id)">Save</button>
                                 </div>
                                 <div class="col-6">
                                   <h3>Meals</h3>
-                                    
+                                    <li v-for="meal in tableData[1].meals">
+                                    {{ meal.title }}
+                                    </li>
                                 </div>
                                 
                               </div>
@@ -98,6 +103,7 @@ import format from "../../lib/format";
                 }
             },
             orderID: '',
+            notes: ''
         }
     },
         mounted()
@@ -118,6 +124,16 @@ import format from "../../lib/format";
             axios
                 .patch(`/api/me/orders/${id}`, {
                   fulfilled: 1
+                })
+                .then(resp => {
+                  this.getTableData();
+                });
+            },
+            saveNotes(id){
+              let self = this;
+              axios
+                .patch(`/api/me/orders/${id}`, {
+                  notes: self.notes
                 })
                 .then(resp => {
                   this.getTableData();
