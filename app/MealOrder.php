@@ -16,4 +16,11 @@ class MealOrder extends Pivot
 	public function orders() {
 		return $this->hasMany('App\Order');
 	}
+
+	//This does not work yet
+	public function getMealNameAttribute(){
+    	return "{$this->meal}";
+    }
+
+    protected $appends = ['meal_name'];
 }
