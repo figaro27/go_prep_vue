@@ -15,7 +15,7 @@ class CreateMealsTable extends Migration
     {
         Schema::create('meals', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('active');
+            $table->boolean('active');
             $table->integer('store_id')->references('id')->on('stores');
             $table->string('featured_image');
             $table->string('title');

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Store;
 
 use App\Order;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Store\StoreController;
 
-class OrderController extends Controller
+class OrderController extends StoreController
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +15,10 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        return $this->store->has('orders') ?
+            $this->store->orders()->with(['user', 'user.user_detail', 'meal_orders'])->get() : [];
     }
+
 
     /**
      * Show the form for creating a new resource.
