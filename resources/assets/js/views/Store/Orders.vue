@@ -9,9 +9,26 @@
                                 <button class="btn btn-primary btn-sm" @click="">Mark As Delivered</button>
                             </div>
 
+                            <div slot="amount" slot-scope="props">
+                              <div>{{ formatMoney(props.row.amount) }}</div>
+                            </div>
 
                             <div slot="child_row" slot-scope="props">
-                                {{ tableData[props.row.id].user.email }}
+                              <div class="row">
+                                <div class="col-3">
+                                  <h3>Delivery Instructions</h3>
+                                    {{ tableData[props.row.id].user.user_detail.delivery }}
+                                </div>
+                                <div class="col-3">
+                                  <h3>Delivery Notes</h3>
+                                    {{ tableData[props.row.id].notes }}
+                                </div>
+                                <div class="col-6">
+                                  <h3>Meals</h3>
+                                    
+                                </div>
+                                
+                              </div>
                             </div>
 
 
@@ -48,6 +65,8 @@ th:nth-child(3) {
 
 <script>
 import Spinner from "../../components/Spinner";
+import format from "../../lib/format";
+
     export default {
         components: {
             Spinner
@@ -57,7 +76,10 @@ import Spinner from "../../components/Spinner";
                 isLoading: true,
                 columns: [
                     "id",
-                    "user.email",
+                    "user.user_detail.full_name",
+                    "user.user_detail.address",
+                    "user.user_detail.zip",
+                    "user.user_detail.phone",
                     "amount",
                     "created_at",
                     "actions"
@@ -66,12 +88,16 @@ import Spinner from "../../components/Spinner";
             options: {
                 headings: {
                   id: "Order #",
-                  "order.user.emai": "Email",
+                  "user.user_detail.full_name": "Name",
+                  "user.user_detail.address": "Address",
+                  "user.user_detail.zip": "Zip Code",
+                  "user.user_detail.phone": "Phone",
                   amount: "Total",
                   created_at: "Order Placed",
                   actions: "Actions"
                 }
             },
+            orderID: '' 
         }
     },
         mounted()
@@ -79,6 +105,7 @@ import Spinner from "../../components/Spinner";
             this.getTableData();
         },
         methods: {
+          formatMoney: format.money,
             getTableData() {
               let self = this;
               axios.get("/api/me/orders")
