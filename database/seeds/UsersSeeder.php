@@ -55,7 +55,7 @@ class UsersSeeder extends Seeder
         ]);
 
         factory(App\User::class, 188)->create()->each(function($u) {
-            $u->userDetail()->save(factory(App\UserDetail::class)->make());
+            $u->user_detail()->save(factory(App\UserDetail::class)->make());
             for ($i=0;$i<4;$i++)
                     {
                 $u->Order()->save(factory(App\Order::class)->make());
