@@ -9,8 +9,8 @@ class MealOrder extends Pivot
 {
   protected $table = 'meal_orders';
 
-  public function meals() {
-		return $this->hasMany('App\Meal');
+  public function meal() {
+		return $this->hasOne('App\Meal');
 	}
 
 	public function orders() {
@@ -18,9 +18,11 @@ class MealOrder extends Pivot
 	}
 
 	//This does not work yet
-	public function getMealNameAttribute(){
-    	return "{$this->meal}";
-    }
+// 	public function getMealNameAttribute(){
+// 		foreach ($this->meal->title as $title) {
+//     	return "{$title}";
+//     }
+// }
 
-    protected $appends = ['meal_name'];
+//     protected $appends = ['meal_name'];
 }

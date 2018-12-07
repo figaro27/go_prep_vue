@@ -6,7 +6,7 @@
                         <Spinner v-if="isLoading"/>
                         <v-client-table :columns="columns" :data="tableData" :options="options" v-show="!isLoading">
                             <div slot="actions" class="text-nowrap" slot-scope="props">
-                                <button class="btn btn-primary btn-sm" @click="">Mark As Delivered</button>
+                                <button class="btn btn-primary btn-sm" @click="fulfill(props.row.id)">Mark As Delivered</button>
                             </div>
 
                             <div slot="amount" slot-scope="props">
@@ -17,11 +17,11 @@
                               <div class="row">
                                 <div class="col-3">
                                   <h3>Delivery Instructions</h3>
-                                    {{ tableData[props.row.id].user.user_detail.delivery }}
+                                    {{ tableData[1].user.user_detail.delivery }}
                                 </div>
                                 <div class="col-3">
                                   <h3>Delivery Notes</h3>
-                                    {{ tableData[props.row.id].notes }}
+                                    {{ tableData[1].notes }}
                                 </div>
                                 <div class="col-6">
                                   <h3>Meals</h3>
@@ -97,7 +97,7 @@ import format from "../../lib/format";
                   actions: "Actions"
                 }
             },
-            orderID: '' 
+            orderID: '',
         }
     },
         mounted()
@@ -114,6 +114,15 @@ import format from "../../lib/format";
                 self.isLoading = false;
               });
             },
+            fulfill(id){
+            axios
+                .patch(`/api/me/orders/${id}`, {
+                  fulfilled: 1
+                })
+                .then(resp => {
+                  this.getTableData();
+                });
+            }
         }
     }
 </script>

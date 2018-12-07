@@ -32,7 +32,7 @@ class Meal extends Model
 
     public function meal_orders()
     {
-        return $this->hasMany('App\MealOrder');
+        return $this->belongsTo('App\MealOrder');
     }
 
     public function orders()

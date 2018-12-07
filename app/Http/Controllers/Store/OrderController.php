@@ -16,7 +16,7 @@ class OrderController extends StoreController
     public function index()
     {
         return $this->store->has('orders') ?
-            $this->store->orders()->with(['user', 'user.user_detail', 'meal_orders'])->get() : [];
+            $this->store->orders()->with(['user', 'user.user_detail', 'meal_orders'])->where('fulfilled', 0)->get() : [];
     }
 
 
@@ -70,9 +70,11 @@ class OrderController extends StoreController
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Order $order)
+    public function update($id)
     {
-        //
+        $order = Order::findOrFail($id);
+        $order->update(['fulfilled' => 1]);
+        $order->save();
     }
 
     /**
