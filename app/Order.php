@@ -34,7 +34,7 @@ class Order extends Model
 
         $props = collect($props)->only([
         	'fulfilled',
-            'notes'
+          'notes'
         ]);
 
         $order->update($props->toArray());
