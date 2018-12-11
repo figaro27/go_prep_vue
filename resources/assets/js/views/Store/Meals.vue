@@ -135,6 +135,7 @@
                     name="title"
                     v-model.lazy="props.row.title"
                     @change="(e) => { updateMeal(props.row.id, {title: editing[props.row.id].title}) }"
+                    :formatter="(val) => val.substring(0, 20)"
                   ></b-form-input>
                 </div>
               </div>
@@ -146,6 +147,7 @@
                     v-model.lazy="editing[props.row.id].description"
                     :rows="4"
                     @change="(e) => { updateMeal(props.row.id, {description: editing[props.row.id].description}) }"
+                    :maxlength="100"
                   ></textarea>
                 </div>
               </div>
@@ -173,13 +175,24 @@
                 <!--<button class="btn btn-warning btn-sm" @click="editMeal(props.row.id)">Edit</button>-->
                 <button class="btn btn-warning btn-sm" @click="toggleEditing(props.row.id)">Edit</button>
                 <button class="btn btn-danger btn-sm" @click="deleteMeal(props.row.id)">Delete</button>
+
+                <div v-if="isEditing(props.row.id)">
+                  <button
+                    class="btn btn-primary btn-sm mt-1 d-block w-100"
+                    @click="updateMeal(props.row.id)"
+                  >Save</button>
+                </div>
               </div>
 
               <div slot="child_row" slot-scope="props">
                 <b-row>
                   <b-col cols="9">
                     <b-form-group label="Title">
-                      <b-form-input v-model="editing[props.row.id].title" required placeholder="Enter email"></b-form-input>
+                      <b-form-input
+                        v-model="editing[props.row.id].title"
+                        required
+                        placeholder="Enter title"
+                      ></b-form-input>
                     </b-form-group>
 
                     <b-form-row>
@@ -205,49 +218,15 @@
                     </b-form-row>
 
                     <h3 class="mt-3">Ingredients</h3>
-                    <table>
-                      <thead>
-                        <th>Name</th>
-                        <th>Weight</th>
-                        <th></th>
-                      </thead>
-                      <tbody>
-                        <tr v-for="ingredient in ingredients" :key="ingredient.id">
-                          <td>
-                            <b-form-group>
-                              <b-form-input placeholder="Name" v-model="ingredient.food_name"></b-form-input>
-                            </b-form-group>
-                          </td>
-                          <td>
-                            <b-form-group>
-                              <b-form-input placeholder="Weight" v-model="ingredient.serving_qty"></b-form-input>
-                            </b-form-group>
-                          </td>
-                          <td>
-                            <b-form-group>
-                              <b-select
-                                v-model="ingredient.serving_unit"
-                                :options="weightUnitOptions"
-                              >
-                                <option slot="top" disabled>-- Select unit --</option>
-                              </b-select>
-                            </b-form-group>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td colspan="3" class="text-right">
-                            <a href="#" @click="onClickAddIngredient">
-                              <i class="fas fa-plus-circle"></i>
-                            </a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <ingredient-picker v-model="editing[props.row.id].ingredients"/>
                   </b-col>
                   <b-col>
                     <h3>Tags</h3>
                     <div>
-                      <input-tag ref="editMealTagsInput" v-model="editing[props.row.id].tags"/>
+                      <input-tag
+                        ref="editMealTagsInput"
+                        v-model="editing[props.row.id].tag_titles"
+                      />
                     </div>
 
                     <h3 class="mt-3">Image</h3>
@@ -267,8 +246,6 @@
                     ></picture-input>
                   </b-col>
                 </b-row>
-
-                <button class="btn btn-primary mt-3 float-right" @click="updateMeal(props.row.id)">Save</button>
               </div>
             </v-client-table>
           </div>
@@ -276,23 +253,7 @@
       </div>
     </div>
 
-    <b-modal size="lg" title="Meal" v-model="createMealModal" v-if="createMealModal">
-      <b-list-group>
-        <b-list-group-item>
-          <b-form-input v-model="newMeal.featured_image" placeholder="Featured Image"></b-form-input>
-        </b-list-group-item>
-        <b-list-group-item>
-          <b-form-input v-model="newMeal.title" placeholder="Title"></b-form-input>
-        </b-list-group-item>
-        <b-list-group-item>
-          <b-form-input v-model="newMeal.description" placeholder="Description"></b-form-input>
-        </b-list-group-item>
-        <b-list-group-item>
-          <b-form-input v-model="newMeal.price" placeholder="Price"></b-form-input>
-        </b-list-group-item>
-      </b-list-group>
-      <button class="btn btn-primary mt-3 float-right" @click="storeMeal">Save</button>
-    </b-modal>
+    <create-meal-modal v-if="createMealModal" v-on:created="refreshTable()" />
 
     <b-modal size="lg" title="Meal" v-model="viewMealModal" v-if="viewMealModal">
       <b-list-group>
@@ -350,41 +311,7 @@
             </b-form-row>
 
             <h3 class="mt-3">Ingredients</h3>
-            <table>
-              <thead>
-                <th>Name</th>
-                <th>Weight</th>
-                <th></th>
-              </thead>
-              <tbody>
-                <tr v-for="ingredient in ingredients" :key="ingredient.id">
-                  <td>
-                    <b-form-group>
-                      <b-form-input placeholder="Name" v-model="ingredient.food_name"></b-form-input>
-                    </b-form-group>
-                  </td>
-                  <td>
-                    <b-form-group>
-                      <b-form-input placeholder="Weight" v-model="ingredient.serving_qty"></b-form-input>
-                    </b-form-group>
-                  </td>
-                  <td>
-                    <b-form-group>
-                      <b-select v-model="ingredient.serving_unit" :options="weightUnitOptions">
-                        <option slot="top" disabled>-- Select unit --</option>
-                      </b-select>
-                    </b-form-group>
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="3" class="text-right">
-                    <a href="#" @click="onClickAddIngredient">
-                      <i class="fas fa-plus-circle"></i>
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <IngredientPicker/>
           </b-col>
           <b-col>
             <h3>Tags</h3>
@@ -491,6 +418,8 @@ textarea {
 
 <script>
 import Spinner from "../../components/Spinner";
+import IngredientPicker from "../../components/IngredientPicker";
+import CreateMealModal from "./Modals/CreateMeal";
 import moment from "moment";
 import tags from "bootstrap-tagsinput";
 import { Event } from "vue-tables-2";
@@ -502,9 +431,11 @@ import format from "../../lib/format";
 export default {
   components: {
     Spinner,
-    PictureInput
+    PictureInput,
+    IngredientPicker,
+    CreateMealModal,
   },
-  render() {
+  updated() {
     //$(window).trigger("resize");
   },
   data() {
@@ -529,7 +460,13 @@ export default {
       ingredients: [],
       meal: [],
       mealID: null,
-      newMeal: ["featured_image", "title", "description", "price"],
+      newMeal: {
+        featured_image: "",
+        title: "",
+        description: "",
+        price: "",
+        ingredients: []
+      },
       nutrition: {
         calories: null,
         totalFat: null,
@@ -606,26 +543,12 @@ export default {
   },
   mounted() {
     this.getTableData();
-
-    $(document).on("dblclick", ".VueTables__table tr", e => {
-      let tr = $(e.target).closest("tr");
-
-      if (tr.hasClass("meal")) {
-        const matches = /meal-([0-9]+)/.exec(tr.attr("class"));
-
-        if (matches && matches.length > 1) {
-          const id = parseInt(matches[1]);
-          this.toggleEditing(id);
-
-          //this.refreshTable();
-        }
-      }
-    });
   },
   methods: {
     formatMoney: format.money,
     refreshTable() {
       //this.$refs.mealsTable.render();
+      this.getTableData();
     },
     getTableData() {
       let self = this;
@@ -635,9 +558,12 @@ export default {
           meal.num_orders = meal.orders.length;
           return meal;
         });
-        this.syncEditables();
         self.isLoading = false;
         self.active = response.data.map(row => row.active);
+
+        this.$nextTick(() => {
+          this.syncEditables();
+        });
       });
     },
     getTableDataIndexById(id) {
@@ -646,22 +572,25 @@ export default {
       });
     },
     syncEditables() {
-      this.editing = _.keyBy({...this.tableData}, 'id');
+      this.editing = _.keyBy({ ...this.tableData }, "id");
     },
     toggleEditing(id) {
       const i = this.getTableDataIndexById(id);
 
       if (i !== -1 && !this.isEditing(id)) {
-        this.editing[id] = { ...this.tableData[i] };
+        //this.editing[id] = { ...this.tableData[i] };
         this.tableData[i].editing = true;
         this.$set(this.tableData, i, this.tableData[i]);
       } else {
         this.tableData[i].editing = false;
         this.$set(this.tableData, i, this.tableData[i]);
-        _.unset(this.editing, id);
+        //_.unset(this.editing, id);
       }
 
-      this.syncEditables();
+      this.$nextTick(() => {
+        this.syncEditables();
+        this.$refs.mealsTable.toggleChildRow(i + 1);
+      });
     },
     isEditing(id) {
       const i = this.getTableDataIndexById(id);
@@ -679,12 +608,13 @@ export default {
         return this.getTableData();
       }
 
-      if(_.isEmpty(changes)) {
+      if (_.isEmpty(changes)) {
         changes = this.editing[id];
       }
 
       axios.patch(`/api/me/meals/${id}`, changes).then(resp => {
         this.$set(this.tableData, i, resp.data);
+        this.$refs.mealsTable.toggleChildRow(i + 1);
         this.syncEditables();
         this.refreshTable();
       });
@@ -715,16 +645,7 @@ export default {
     createMeal() {
       this.createMealModal = true;
     },
-    storeMeal() {
-      axios.post("/api/me/meals", {
-        featured_image: this.newMeal.featured_image,
-        title: this.newMeal.title,
-        description: this.newMeal.description,
-        price: this.newMeal.price
-      });
-      this.getTableData();
-      this.createMealModal = false;
-    },
+    
     viewMeal(id) {
       axios.get(`/api/me/meals/${id}`).then(response => {
         this.meal = response.data;
@@ -781,6 +702,7 @@ export default {
     },
     getIngredientList: function() {
       let self = this;
+      self.ingredientList = '';
       this.ingredients.forEach(function(ingredient) {
         self.ingredientList +=
           ingredient.food_name.charAt(0).toUpperCase() +
@@ -790,6 +712,25 @@ export default {
     },
     getNutritionTotals: function() {
       let self = this;
+
+      this.nutrition = {
+        calories: null,
+        totalFat: null,
+        satFat: null,
+        transFat: null,
+        cholesterol: null,
+        sodium: null,
+        totalCarb: null,
+        fibers: null,
+        sugars: null,
+        proteins: null,
+        vitaminD: null,
+        potassium: null,
+        calcium: null,
+        iron: null,
+        addedSugars: null
+      };
+      
       this.ingredients.forEach(function(ingredient) {
         self.nutrition.calories += ingredient.nf_calories;
         self.nutrition.totalFat += ingredient.nf_total_fat;

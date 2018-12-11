@@ -82564,6 +82564,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -82663,24 +82667,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     }
   },
   mounted: function mounted() {
-    var _this = this;
-
     this.getTableData();
-
-    $(document).on("dblclick", ".VueTables__table tr", function (e) {
-      var tr = $(e.target).closest("tr");
-
-      if (tr.hasClass("meal")) {
-        var matches = /meal-([0-9]+)/.exec(tr.attr("class"));
-
-        if (matches && matches.length > 1) {
-          var id = parseInt(matches[1]);
-          _this.toggleEditing(id);
-
-          //this.refreshTable();
-        }
-      }
-    });
   },
 
   methods: {
@@ -82689,16 +82676,16 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       //this.$refs.mealsTable.render();
     },
     getTableData: function getTableData() {
-      var _this2 = this;
+      var _this = this;
 
       var self = this;
       axios.get("/api/me/meals").then(function (response) {
-        _this2.tableData = response.data.map(function (meal) {
+        _this.tableData = response.data.map(function (meal) {
           meal.editing = false;
           meal.num_orders = meal.orders.length;
           return meal;
         });
-        _this2.syncEditables();
+        _this.syncEditables();
         self.isLoading = false;
         self.active = response.data.map(function (row) {
           return row.active;
@@ -82726,6 +82713,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         _.unset(this.editing, id);
       }
 
+      this.$refs.mealsTable.toggleChildRow(i + 1);
+
       this.syncEditables();
     },
     isEditing: function isEditing(id) {
@@ -82737,7 +82726,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       return false;
     },
     updateMeal: function updateMeal(id, changes) {
-      var _this3 = this;
+      var _this2 = this;
 
       var i = this.getTableDataIndexById(id);
 
@@ -82751,13 +82740,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
 
       axios.patch("/api/me/meals/" + id, changes).then(function (resp) {
-        _this3.$set(_this3.tableData, i, resp.data);
-        _this3.syncEditables();
-        _this3.refreshTable();
+        _this2.$set(_this2.tableData, i, resp.data);
+        _this2.$refs.mealsTable.toggleChildRow(i + 1);
+        _this2.syncEditables();
+        _this2.refreshTable();
       });
     },
     updateActive: function updateActive(id, active, props) {
-      var _this4 = this;
+      var _this3 = this;
 
       var i = _.findIndex(this.tableData, function (o) {
         return o.id === id;
@@ -82773,9 +82763,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       axios.patch("/api/me/meals/" + id, {
         active: active
       }).then(function (resp) {
-        _this4.tableData[i] = _extends({}, resp.data);
-        _this4.syncEditables();
-        _this4.refreshTable();
+        _this3.tableData[i] = _extends({}, resp.data);
+        _this3.syncEditables();
+        _this3.refreshTable();
       });
     },
     createMeal: function createMeal() {
@@ -82792,32 +82782,32 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       this.createMealModal = false;
     },
     viewMeal: function viewMeal(id) {
-      var _this5 = this;
+      var _this4 = this;
 
       axios.get("/api/me/meals/" + id).then(function (response) {
-        _this5.meal = response.data;
-        _this5.ingredients = response.data.ingredient;
-        _this5.tags = response.data.meal_tag;
-        _this5.viewMealModal = true;
+        _this4.meal = response.data;
+        _this4.ingredients = response.data.ingredient;
+        _this4.tags = response.data.meal_tag;
+        _this4.viewMealModal = true;
 
-        _this5.$nextTick(function () {
+        _this4.$nextTick(function () {
           window.dispatchEvent(new __WEBPACK_IMPORTED_MODULE_3_vue_tables_2__["Event"]("resize"));
         });
       });
     },
     editMeal: function editMeal(id) {
-      var _this6 = this;
+      var _this5 = this;
 
       this.addTag = false;
       axios.get("/api/me/meals/" + id).then(function (response) {
-        _this6.meal = response.data;
-        _this6.ingredients = response.data.ingredient;
-        _this6.tags = response.data.meal_tag;
-        _this6.editMealModal = true;
-        _this6.mealID = response.data.id;
+        _this5.meal = response.data;
+        _this5.ingredients = response.data.ingredient;
+        _this5.tags = response.data.meal_tag;
+        _this5.editMealModal = true;
+        _this5.mealID = response.data.id;
 
         setTimeout(function () {
-          _this6.$refs.editMealImageInput.onResize();
+          _this5.$refs.editMealImageInput.onResize();
         }, 50);
       });
     },
@@ -82833,21 +82823,21 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     getNutrition: function getNutrition() {
-      var _this7 = this;
+      var _this6 = this;
 
       axios.post("../nutrients", {
         query: this.ingredientQuery
       }).then(function (response) {
-        _this7.ingredients = response.data.foods;
+        _this6.ingredients = response.data.foods;
       });
     },
     searchInstant: function searchInstant() {
-      var _this8 = this;
+      var _this7 = this;
 
       axios.post("../searchInstant", {
         search: this.ingredientSearch
       }).then(function (response) {
-        _this8.ingredientResults = response.data.common;
+        _this7.ingredientResults = response.data.common;
       });
     },
     getIngredientList: function getIngredientList() {
@@ -95026,7 +95016,12 @@ var render = function() {
                                   [
                                     _c("b-form-input", {
                                       key: "title" + props.row.id,
-                                      attrs: { name: "title" },
+                                      attrs: {
+                                        name: "title",
+                                        formatter: function(val) {
+                                          return val.substring(0, 20)
+                                        }
+                                      },
                                       on: {
                                         change: function(e) {
                                           _vm.updateMeal(props.row.id, {
@@ -95070,7 +95065,7 @@ var render = function() {
                                         modifiers: { lazy: true }
                                       }
                                     ],
-                                    attrs: { rows: 4 },
+                                    attrs: { rows: 4, maxlength: 100 },
                                     domProps: {
                                       value:
                                         _vm.editing[props.row.id].description
@@ -95209,7 +95204,25 @@ var render = function() {
                                 }
                               },
                               [_vm._v("Delete")]
-                            )
+                            ),
+                            _vm._v(" "),
+                            _vm.isEditing(props.row.id)
+                              ? _c("div", [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass:
+                                        "btn btn-primary btn-sm mt-1 d-block w-100",
+                                      on: {
+                                        click: function($event) {
+                                          _vm.updateMeal(props.row.id)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("Save")]
+                                  )
+                                ])
+                              : _vm._e()
                           ])
                         }
                       },
@@ -95585,20 +95598,6 @@ var render = function() {
                                   )
                                 ],
                                 1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "button",
-                                {
-                                  staticClass:
-                                    "btn btn-primary mt-3 float-right",
-                                  on: {
-                                    click: function($event) {
-                                      _vm.updateMeal(props.row.id)
-                                    }
-                                  }
-                                },
-                                [_vm._v("Save")]
                               )
                             ],
                             1

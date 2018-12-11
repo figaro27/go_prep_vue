@@ -16,6 +16,7 @@ import BootstrapVue from 'bootstrap-vue';
 import InputTag from 'vue-input-tag';
 import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import vSelect from 'vue-select';
 import VueI18n from 'vue-i18n';
 import store from './store';
 import lang from './lang';
@@ -26,6 +27,7 @@ Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
 Vue.component('input-tag', InputTag)
+Vue.component('v-select', vSelect)
 
 if($('#customerapp').length) {
   const app = new Vue({

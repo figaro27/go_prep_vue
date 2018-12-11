@@ -15,7 +15,7 @@ class Meal extends Model
     ];
 
     protected $casts = [
-        'price' => 'double'
+        'price' => 'double',
     ];
 
     protected $appends = ['tag_titles'];
@@ -45,9 +45,10 @@ class Meal extends Model
         return $this->hasMany('App\MealTag');
     }
 
-    public function getTagTitlesAttribute() {
-        return collect($this->tags)->map(function($meal) {
-          return $meal->tag;
+    public function getTagTitlesAttribute()
+    {
+        return collect($this->tags)->map(function ($meal) {
+            return $meal->tag;
         });
     }
 
@@ -104,12 +105,40 @@ class Meal extends Model
         $meal = new Meal;
         $meal->active = true;
         $meal->store_id = $storeID;
-        $meal->featured_image = $request->featured_image;
+        $meal->featured_image = '';
         $meal->title = $request->title;
         $meal->description = $request->description;
         $meal->price = $request->price;
 
+        if ($request->has('featured_image')) {
+            $imageRaw = $request->get('featured_image');
+            $imageRaw = str_replace(' ', '+', $imageRaw);
+            $image = base64_decode($imageRaw);
+
+            $ext = [];
+            preg_match('/^data:image\/(.{3,9});/i', $imageRaw, $ext);
+
+            if (count($ext) > 1) {
+                $imagePath = 'images/meals/' . self::generateImageFilename($image, $ext[1]);
+                \Storage::put($imagePath, $image);
+                $imageUrl = \Storage::url($imagePath);
+
+                $meal->featured_image = $imagePath;
+            }
+        }
+
         $meal->save();
+
+        if ($tagTitles = $request->get('tag_titles') && is_array($tagTitles)) {
+            $tags = [];
+            foreach ($tagTitles as $tagTitle) {
+                $tag = new MealTag(['meal_id' => $meal->id, 'tag' => $tagTitle]);
+                $tag->save();
+                $tags[] = $tag;
+            }
+            $meal->tags()->saveMany($tags);
+        }
+
     }
 
     public static function storeMealAdmin($request)
@@ -147,12 +176,12 @@ class Meal extends Model
             $ext = [];
             preg_match('/^data:image\/(.{3,9});/i', $imageRaw, $ext);
 
-            if(count($ext) > 1) {
-              $imagePath = 'images/meals/' . self::generateImageFilename($image, $ext[1]);
-              \Storage::put($imagePath, $image);
-              $imageUrl = \Storage::url($imagePath);
+            if (count($ext) > 1) {
+                $imagePath = 'images/meals/' . self::generateImageFilename($image, $ext[1]);
+                \Storage::put($imagePath, $image);
+                $imageUrl = \Storage::url($imagePath);
 
-              $props->put('featured_image', $imagePath);
+                $props->put('featured_image', $imagePath);
             }
         }
 

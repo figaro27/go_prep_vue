@@ -7,6 +7,12 @@
   }
 }
 
+.modal-header .close {
+  position: absolute;
+  right: 15px;
+  top: 0;
+}
+
 .modal-full {
   .modal {
     position: fixed;
@@ -28,6 +34,9 @@
   .close {
     font-size: 2rem;
     padding: 5px 20px;
+    position: absolute;
+    right: 0;
+    top: 0;
   }
 
   .modal-dialog {
@@ -55,7 +64,7 @@
     right: 0;
     left: 0;
     height: 50px;
-    padding: 10px;
+    padding: 10px 1rem;
     border: 0;
   }
 
