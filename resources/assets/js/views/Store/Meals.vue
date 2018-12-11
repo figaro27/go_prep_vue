@@ -702,6 +702,7 @@ export default {
     },
     getIngredientList: function() {
       let self = this;
+      self.ingredientList = '';
       this.ingredients.forEach(function(ingredient) {
         self.ingredientList +=
           ingredient.food_name.charAt(0).toUpperCase() +
@@ -711,6 +712,25 @@ export default {
     },
     getNutritionTotals: function() {
       let self = this;
+
+      this.nutrition = {
+        calories: null,
+        totalFat: null,
+        satFat: null,
+        transFat: null,
+        cholesterol: null,
+        sodium: null,
+        totalCarb: null,
+        fibers: null,
+        sugars: null,
+        proteins: null,
+        vitaminD: null,
+        potassium: null,
+        calcium: null,
+        iron: null,
+        addedSugars: null
+      };
+      
       this.ingredients.forEach(function(ingredient) {
         self.nutrition.calories += ingredient.nf_calories;
         self.nutrition.totalFat += ingredient.nf_total_fat;
