@@ -40,7 +40,9 @@
                 </div>
                 <div class="col-6">
                   <h3>Meals</h3>
-                  <li v-for="meal in props.row.meals">{{ meal.title }}</li>
+                  <ul class="meal-quantities">
+                    <li v-for="(quantity, meal_title) in getMealQuantities(props.row.meals)">{{ meal_title }} x {{quantity}}</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -51,7 +53,7 @@
   </div>
 </template>
 
-<style>
+<style lang="scss">
 th:nth-child(3) {
   text-align: center;
 }
@@ -71,6 +73,24 @@ th:nth-child(3) {
 
 .VueTables__child-row-toggler--open::before {
   content: "-";
+}
+
+.meal-quantities {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -5px;
+  margin-right: -5px;
+
+  li {
+    flex: 0 1 calc(33% - 10px);
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    min-height: 2em;
+  }
 }
 </style>
 
@@ -148,7 +168,10 @@ export default {
         .then(resp => {
           this.getTableData();
         });
-    }
+    },
+    getMealQuantities(meals) {
+      return _.countBy(meals, 'title');
+    },
   }
 };
 </script>
