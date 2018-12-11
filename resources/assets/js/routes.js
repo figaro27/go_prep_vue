@@ -18,6 +18,8 @@ import StorePayments from './views/Store/Payments.vue';
 import StoreBilling from './views/Store/Account/Billing.vue';
 import StoreContact from './views/Store/Account/Contact.vue';
 import StoreSettings from './views/Store/Account/Settings.vue';
+//Will move to customers
+import StoreMenu from './views/Store/Menu.vue';
 
 import AdminCustomers from './views/Admin/Customers.vue';
 import AdminDashboard from './views/Admin/Dashboard.vue';
@@ -96,6 +98,10 @@ let routes = [
     {
         path: '/store/account/settings',
         component: StoreSettings
+    },
+    {
+        path: '/store/menu',
+        component: StoreMenu
     },
     {
         path: '/admin/dashboard',
