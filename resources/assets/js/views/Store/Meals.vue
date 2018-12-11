@@ -135,6 +135,7 @@
                     name="title"
                     v-model.lazy="props.row.title"
                     @change="(e) => { updateMeal(props.row.id, {title: editing[props.row.id].title}) }"
+                    :formatter="(val) => val.substring(0, 20)"
                   ></b-form-input>
                 </div>
               </div>
@@ -146,6 +147,7 @@
                     v-model.lazy="editing[props.row.id].description"
                     :rows="4"
                     @change="(e) => { updateMeal(props.row.id, {description: editing[props.row.id].description}) }"
+                    :maxlength="100"
                   ></textarea>
                 </div>
               </div>
@@ -173,6 +175,10 @@
                 <!--<button class="btn btn-warning btn-sm" @click="editMeal(props.row.id)">Edit</button>-->
                 <button class="btn btn-warning btn-sm" @click="toggleEditing(props.row.id)">Edit</button>
                 <button class="btn btn-danger btn-sm" @click="deleteMeal(props.row.id)">Delete</button>
+
+                <div v-if="isEditing(props.row.id)">
+                  <button class="btn btn-primary btn-sm mt-1 d-block w-100" @click="updateMeal(props.row.id)">Save</button>
+                </div>
               </div>
 
               <div slot="child_row" slot-scope="props">
@@ -267,8 +273,6 @@
                     ></picture-input>
                   </b-col>
                 </b-row>
-
-                <button class="btn btn-primary mt-3 float-right" @click="updateMeal(props.row.id)">Save</button>
               </div>
             </v-client-table>
           </div>
@@ -606,21 +610,6 @@ export default {
   },
   mounted() {
     this.getTableData();
-
-    $(document).on("dblclick", ".VueTables__table tr", e => {
-      let tr = $(e.target).closest("tr");
-
-      if (tr.hasClass("meal")) {
-        const matches = /meal-([0-9]+)/.exec(tr.attr("class"));
-
-        if (matches && matches.length > 1) {
-          const id = parseInt(matches[1]);
-          this.toggleEditing(id);
-
-          //this.refreshTable();
-        }
-      }
-    });
   },
   methods: {
     formatMoney: format.money,
@@ -661,6 +650,8 @@ export default {
         _.unset(this.editing, id);
       }
 
+      this.$refs.mealsTable.toggleChildRow(i + 1);
+
       this.syncEditables();
     },
     isEditing(id) {
@@ -685,9 +676,12 @@ export default {
 
       axios.patch(`/api/me/meals/${id}`, changes).then(resp => {
         this.$set(this.tableData, i, resp.data);
+        this.$refs.mealsTable.toggleChildRow(i + 1);
         this.syncEditables();
         this.refreshTable();
       });
+
+
     },
     updateActive(id, active, props) {
       const i = _.findIndex(this.tableData, o => {
