@@ -129,14 +129,28 @@ class Meal extends Model
 
         $meal->save();
 
-        if ($tagTitles = $request->get('tag_titles') && is_array($tagTitles)) {
-            $tags = [];
+        $tagTitles = $request->get('tag_titles');
+        if (is_array($tagTitles)) {
+
+            $tags = collect();
+
             foreach ($tagTitles as $tagTitle) {
-                $tag = new MealTag(['meal_id' => $meal->id, 'tag' => $tagTitle]);
-                $tag->save();
-                $tags[] = $tag;
+                try {
+                    $tag = MealTag::create([
+                        'tag' => $tagTitle,
+                        'slug' => str_slug($tagTitle),
+                        'store_id' => $meal->store_id,
+                    ]);
+                    $tags->push($tag->id);
+                } catch (\Exception $e) {
+                    $tags->push(MealTag::where([
+                        'tag' => $tagTitle,
+                        'store_id' => $meal->store_id,
+                    ])->first()->id);
+                }
             }
-            $meal->tags()->saveMany($tags);
+
+            $meal->tags()->sync($tags);
         }
 
     }
@@ -192,14 +206,14 @@ class Meal extends Model
             $tags = collect();
 
             foreach ($tagTitles as $tagTitle) {
-                if (!$meal->tag_titles->contains($tagTitle)) {
+                try {
                     $tag = MealTag::create([
                         'tag' => $tagTitle,
                         'slug' => str_slug($tagTitle),
                         'store_id' => $meal->store_id,
                     ]);
                     $tags->push($tag->id);
-                } else {
+                } catch (\Exception $e) {
                     $tags->push(MealTag::where([
                         'tag' => $tagTitle,
                         'store_id' => $meal->store_id,
