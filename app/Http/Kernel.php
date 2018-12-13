@@ -63,6 +63,10 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'role' => \App\Http\Middleware\Role::class,
         'role.store' => \App\Http\Middleware\IsStore::class,
+        
+        // General context middleware
+        'view.front' => \App\Http\Middleware\Front::class,
+        'view.api' => \App\Http\Middleware\Api::class,
     ];
 
     /**

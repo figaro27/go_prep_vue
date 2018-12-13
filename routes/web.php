@@ -11,10 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::domain('{store_slug}.'.config('app.domain'))
+->group(function ($router) {
+
 });
-Route::get('/home', 'HomeController@index')->name('home');
 
 Auth::routes();
 Route::fallback('SpaController@index');

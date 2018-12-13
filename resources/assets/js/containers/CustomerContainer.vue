@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from 'vuex';
 import nav from './../_customernav'
 import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarForm, SidebarHeader, SidebarMinimizer, SidebarNav, Aside as AppAside, AsideToggler, Footer as TheFooter, Breadcrumb } from '@coreui/vue'
 import DefaultAside from './DefaultAside'
@@ -76,6 +77,17 @@ export default {
     list () {
       return this.$route.matched.filter((route) => route.name || route.meta.label )
     }
-  }
+  },
+  created() {
+    // Get initial state
+    axios.get('/api').then(resp => {
+      if(_.isObject(resp.data.store) && !_.isEmpty(resp.data.store)) {
+        this.setViewedStore(resp.data.store);
+      }
+    });
+  },
+  methods: {
+    ...mapMutations(['setViewedStore']),
+  },
 }
 </script>
