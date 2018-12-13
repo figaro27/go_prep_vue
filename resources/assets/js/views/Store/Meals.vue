@@ -191,40 +191,6 @@
 
               <div slot="child_row" slot-scope="props">
                 <b-row>
-                  <b-col cols="9">
-                    <b-form-group label="Title">
-                      <b-form-input
-                        v-model="editing[props.row.id].title"
-                        required
-                        placeholder="Enter title"
-                      ></b-form-input>
-                    </b-form-group>
-
-                    <b-form-row>
-                      <b-col>
-                        <b-form-group label="Description">
-                          <b-form-input
-                            v-model="editing[props.row.id].description"
-                            required
-                            placeholder="Enter description"
-                          ></b-form-input>
-                        </b-form-group>
-                      </b-col>
-                      <b-col>
-                        <b-form-group label="Price">
-                          <b-form-input
-                            v-model="editing[props.row.id].price"
-                            type="number"
-                            required
-                            placeholder="Enter price"
-                          ></b-form-input>
-                        </b-form-group>
-                      </b-col>
-                    </b-form-row>
-
-                    <h3 class="mt-3">Ingredients</h3>
-                    <ingredient-picker v-model="editing[props.row.id].ingredients"/>
-                  </b-col>
                   <b-col>
                     <h3>Tags</h3>
                     <div>
@@ -235,22 +201,21 @@
                         @tags-changed="tags => onChangeTags(props.row.id, tags)"
                       />
                     </div>
+                  </b-col>
 
-                    <h3 class="mt-3">Image</h3>
-                    <picture-input
-                      :key="'editMealImageInput' + props.row.id"
-                      ref="editMealImageInput"
-                      :prefill="editing[props.row.id].featured_image ? editing[props.row.id].featured_image : false"
-                      @prefill="$refs.editMealImageInput.onResize()"
-                      :alertOnError="false"
-                      :autoToggleAspectRatio="true"
-                      width="600"
-                      height="600"
-                      margin="0"
-                      size="10"
-                      button-class="btn"
-                      @change="onChangeImage"
-                    ></picture-input>
+                  <b-col>
+                    <h3>Categories</h3>
+                    <div></div>
+                  </b-col>
+
+                  <b-col>
+                    <h3 class="mt-3">Ingredients</h3>
+                    <ingredient-picker v-model="editing[props.row.id].ingredients" v-on:input="ingredients => getNutritionFacts(ingredients, props.row)"/>
+                  </b-col>
+
+                  <b-col>
+                    <h3 class="mt-3">Nutrition</h3>
+                    <div :id="`nutritionFacts${props.row.id}`"></div>
                   </b-col>
                 </b-row>
               </div>
@@ -318,7 +283,7 @@
             </b-form-row>
 
             <h3 class="mt-3">Ingredients</h3>
-            <IngredientPicker/>
+            <IngredientPicker />
           </b-col>
           <b-col>
             <h3>Tags</h3>
@@ -724,62 +689,63 @@ export default {
           this.ingredientResults = response.data.common;
         });
     },
-    getIngredientList: function() {
-      let self = this;
-      self.ingredientList = "";
-      this.ingredients.forEach(function(ingredient) {
-        self.ingredientList +=
+    getIngredientList: function(ingredients) {
+      let ingredientList = "";
+      ingredients.forEach(function(ingredient) {
+        ingredientList +=
           ingredient.food_name.charAt(0).toUpperCase() +
           ingredient.food_name.slice(1) +
           ", ";
       });
+      return ingredientList
     },
-    getNutritionTotals: function() {
-      let self = this;
-
-      this.nutrition = {
-        calories: null,
-        totalFat: null,
-        satFat: null,
-        transFat: null,
-        cholesterol: null,
-        sodium: null,
-        totalCarb: null,
-        fibers: null,
-        sugars: null,
-        proteins: null,
-        vitaminD: null,
-        potassium: null,
-        calcium: null,
-        iron: null,
-        addedSugars: null
+    getNutritionTotals: function(ingredients) {
+      let nutrition = {
+        calories: 0,
+        totalFat: 0,
+        satFat: 0,
+        transFat: 0,
+        cholesterol: 0,
+        sodium: 0,
+        totalCarb: 0,
+        fibers: 0,
+        sugars: 0,
+        proteins: 0,
+        vitaminD: 0,
+        potassium: 0,
+        calcium: 0,
+        iron: 0,
+        addedSugars: 0
       };
 
-      this.ingredients.forEach(function(ingredient) {
-        self.nutrition.calories += ingredient.nf_calories;
-        self.nutrition.totalFat += ingredient.nf_total_fat;
-        self.nutrition.satFat += ingredient.nf_saturated_fat;
-        self.nutrition.transFat += ingredient.nf_trans_fat;
-        self.nutrition.cholesterol += ingredient.nf_cholesterol;
-        self.nutrition.sodium += ingredient.nf_sodium;
-        self.nutrition.totalCarb += ingredient.nf_total_carbohydrate;
-        self.nutrition.fibers += ingredient.nf_dietary_fiber;
-        self.nutrition.sugars += ingredient.nf_sugars;
-        self.nutrition.proteins += ingredient.nf_protein;
-        self.nutrition.vitaminD += ingredient.nf_vitamind;
-        self.nutrition.potassium += ingredient.nf_potassium;
-        self.nutrition.calcium += ingredient.nf_calcium;
-        self.nutrition.iron += ingredient.nf_iron;
-        self.nutrition.addedSugars += ingredient.nf_addedsugars;
+      ingredients.forEach((ingredient) => {
+        nutrition.calories += ingredient.nf_calories;
+        nutrition.totalFat += ingredient.nf_total_fat;
+        nutrition.satFat += ingredient.nf_saturated_fat;
+        nutrition.transFat += ingredient.nf_trans_fat;
+        nutrition.cholesterol += ingredient.nf_cholesterol;
+        nutrition.sodium += ingredient.nf_sodium;
+        nutrition.totalCarb += ingredient.nf_total_carbohydrate;
+        nutrition.fibers += ingredient.nf_dietary_fiber;
+        nutrition.sugars += ingredient.nf_sugars;
+        nutrition.proteins += ingredient.nf_protein;
+        nutrition.vitaminD += ingredient.nf_vitamind;
+        nutrition.potassium += ingredient.nf_potassium;
+        nutrition.calcium += ingredient.nf_calcium;
+        nutrition.iron += ingredient.nf_iron;
+        nutrition.addedSugars += ingredient.nf_addedsugars;
       });
+
+      return nutrition;
     },
-    getNutritionFacts() {
-      this.getNutritionTotals();
-      this.getIngredientList();
-      $("#nutritionFacts").nutritionLabel({
+    getNutritionFacts(ingredients, meal) {
+      const nutrition = this.getNutritionTotals(ingredients);
+      const ingredientList = this.getIngredientList(ingredients);
+
+      $(`#nutritionFacts${meal.id}`).nutritionLabel({
         showServingUnitQuantity: false,
-        itemName: this.meal.title,
-        ingredientList: this.ingredientList,
+        itemName: meal.title,
+        ingredientList: ingredientList,
 
         decimalPlacesForQuantityTextbox: 2,
         valueServingUnitQuantity: 1,
@@ -790,22 +756,22 @@ export default {
         showPolyFat: false,
         showMonoFat: false,
 
-        valueCalories: this.nutrition.calories,
-        valueFatCalories: this.nutrition.fatCalories,
-        valueTotalFat: this.nutrition.totalFat,
-        valueSatFat: this.nutrition.satFat,
-        valueTransFat: this.nutrition.transFat,
-        valueCholesterol: this.nutrition.cholesterol,
-        valueSodium: this.nutrition.sodium,
-        valueTotalCarb: this.nutrition.totalCarb,
-        valueFibers: this.nutrition.fibers,
-        valueSugars: this.nutrition.sugars,
-        valueProteins: this.nutrition.proteins,
-        valueVitaminD: this.nutrition.vitaminD,
-        valuePotassium_2018: this.nutrition.potassium,
-        valueCalcium: this.nutrition.calcium,
-        valueIron: this.nutrition.iron,
-        valueAddedSugars: this.nutrition.addedSugars,
+        valueCalories: nutrition.calories,
+        valueFatCalories: nutrition.fatCalories,
+        valueTotalFat: nutrition.totalFat,
+        valueSatFat: nutrition.satFat,
+        valueTransFat: nutrition.transFat,
+        valueCholesterol: nutrition.cholesterol,
+        valueSodium: nutrition.sodium,
+        valueTotalCarb: nutrition.totalCarb,
+        valueFibers: nutrition.fibers,
+        valueSugars: nutrition.sugars,
+        valueProteins: nutrition.proteins,
+        valueVitaminD: nutrition.vitaminD,
+        valuePotassium_2018: nutrition.potassium,
+        valueCalcium: nutrition.calcium,
+        valueIron: nutrition.iron,
+        valueAddedSugars: nutrition.addedSugars,
         showLegacyVersion: false
       });
     },
