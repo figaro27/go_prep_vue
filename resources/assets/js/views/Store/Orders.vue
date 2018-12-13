@@ -34,7 +34,7 @@
                     id="form7"
                     class="md-textarea form-control"
                     rows="3"
-                    v-model="getTableDataById(props.row.id).notes"
+                    v-model="editing[props.row.id].notes"
                   ></textarea>
                   <button class="btn btn-primary btn-sm" @click="saveNotes(props.row.id)">Save</button>
                 </div>
@@ -117,6 +117,7 @@ export default {
         "actions"
       ],
       tableData: [],
+      editing: {},
       options: {
         headings: {
           id: "Order #",
@@ -139,10 +140,14 @@ export default {
   methods: {
     formatMoney: format.money,
     getTableData() {
-      let self = this;
-      axios.get("/api/me/orders").then(function(response) {
-        (self.tableData = response.data), (self.isLoading = false);
+      axios.get("/api/me/orders").then((response) => {
+        this.tableData = response.data;
+        this.isLoading = false;
+        this.syncEditables();
       });
+    },
+    syncEditables() {
+      this.editing = _.keyBy({ ...this.tableData }, "id");
     },
     getTableDataIndexById(id) {
       return _.findIndex(this.tableData, ["id", id]);
@@ -160,10 +165,9 @@ export default {
         });
     },
     saveNotes(id) {
-      let self = this;
       axios
         .patch(`/api/me/orders/${id}`, {
-          notes: self.notes
+          notes: this.editing[id].notes
         })
         .then(resp => {
           this.getTableData();
