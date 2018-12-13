@@ -13,7 +13,7 @@ import CustomerApp from './containers/CustomerContainer';
 import StoreApp from './containers/StoreContainer';
 import AdminApp from './containers/AdminContainer';
 import BootstrapVue from 'bootstrap-vue';
-import InputTag from 'vue-input-tag';
+import InputTag from '@johmun/vue-tags-input';
 import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import vSelect from 'vue-select';

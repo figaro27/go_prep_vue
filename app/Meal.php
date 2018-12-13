@@ -42,7 +42,7 @@ class Meal extends Model
 
     public function tags()
     {
-        return $this->hasMany('App\MealTag');
+        return $this->belongsToMany('App\MealTag', 'meal_meal_tag');
     }
 
     public function getTagTitlesAttribute()
@@ -166,6 +166,7 @@ class Meal extends Model
             'description',
             'price',
             'created_at',
+            'tag_titles',
         ]);
 
         if ($props->has('featured_image')) {
@@ -183,6 +184,30 @@ class Meal extends Model
 
                 $props->put('featured_image', $imagePath);
             }
+        }
+
+        $tagTitles = $props->get('tag_titles');
+        if (is_array($tagTitles)) {
+
+            $tags = collect();
+
+            foreach ($tagTitles as $tagTitle) {
+                if (!$meal->tag_titles->contains($tagTitle)) {
+                    $tag = MealTag::create([
+                        'tag' => $tagTitle,
+                        'slug' => str_slug($tagTitle),
+                        'store_id' => $meal->store_id,
+                    ]);
+                    $tags->push($tag->id);
+                } else {
+                    $tags->push(MealTag::where([
+                        'tag' => $tagTitle,
+                        'store_id' => $meal->store_id,
+                    ])->first()->id);
+                }
+            }
+
+            $meal->tags()->sync($tags);
         }
 
         $meal->update($props->toArray());

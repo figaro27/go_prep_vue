@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class MealTag extends Model
 {
-    public function meal(){
-		return $this->belongsTo('App\Meal');
+  public $fillable = ['tag', 'slug', 'store_id'];
+
+  public function meals() {
+		return $this->belongsToMany('App\Meal', 'meal_meal_tag');
 	}
 }

@@ -155,7 +155,12 @@
               <div slot="tags" slot-scope="props">
                 <div v-if="!props.row.editing">{{ props.row.tag_titles.join(', ') }}</div>
                 <div v-else>
-                  <input-tag v-model="editing[props.row.id].tag_titles"/>
+                  <input-tag
+                    ref="editMealTagsInput"
+                    v-model="editing[props.row.id].tag_titles_flat"
+                    :tags="editing[props.row.id].tag_titles_input"
+                    @tags-changed="tags => onChangeTags(props.row.id, tags)"
+                  />
                 </div>
               </div>
 
@@ -225,7 +230,9 @@
                     <div>
                       <input-tag
                         ref="editMealTagsInput"
-                        v-model="editing[props.row.id].tag_titles"
+                        v-model="editing[props.row.id].tag_titles_flat"
+                        :tags="editing[props.row.id].tag_titles_input"
+                        @tags-changed="tags => onChangeTags(props.row.id, tags)"
                       />
                     </div>
 
@@ -253,7 +260,7 @@
       </div>
     </div>
 
-    <create-meal-modal v-if="createMealModal" v-on:created="refreshTable()" />
+    <create-meal-modal v-if="createMealModal" v-on:created="refreshTable()"/>
 
     <b-modal size="lg" title="Meal" v-model="viewMealModal" v-if="viewMealModal">
       <b-list-group>
@@ -433,13 +440,14 @@ export default {
     Spinner,
     PictureInput,
     IngredientPicker,
-    CreateMealModal,
+    CreateMealModal
   },
   updated() {
     //$(window).trigger("resize");
   },
   data() {
     return {
+      _,
       filter: {
         status: "all"
       },
@@ -539,6 +547,11 @@ export default {
         { text: "Active", value: "active" },
         { text: "Inactive", value: "inactive" }
       ];
+    },
+    tagsForInput() {
+      return _.map(["Breakfast", "Dinner"], tag => {
+        return { text: tag };
+      });
     }
   },
   mounted() {
@@ -572,7 +585,18 @@ export default {
       });
     },
     syncEditables() {
-      this.editing = _.keyBy({ ...this.tableData }, "id");
+      this.editing = _.keyBy(
+        _.map({ ...this.tableData }, row => {
+          // the tag input requires this format
+          row.tag_titles_input = row.tag_titles.map(title => {
+            return {
+              text: title
+            };
+          });
+          return row;
+        }),
+        "id"
+      );
     },
     toggleEditing(id) {
       const i = this.getTableDataIndexById(id);
@@ -645,7 +669,7 @@ export default {
     createMeal() {
       this.createMealModal = true;
     },
-    
+
     viewMeal(id) {
       axios.get(`/api/me/meals/${id}`).then(response => {
         this.meal = response.data;
@@ -702,7 +726,7 @@ export default {
     },
     getIngredientList: function() {
       let self = this;
-      self.ingredientList = '';
+      self.ingredientList = "";
       this.ingredients.forEach(function(ingredient) {
         self.ingredientList +=
           ingredient.food_name.charAt(0).toUpperCase() +
@@ -730,7 +754,7 @@ export default {
         iron: null,
         addedSugars: null
       };
-      
+
       this.ingredients.forEach(function(ingredient) {
         self.nutrition.calories += ingredient.nf_calories;
         self.nutrition.totalFat += ingredient.nf_total_fat;
@@ -797,6 +821,11 @@ export default {
     },
     onChangeStatusFilter(val) {
       Event.$emit("vue-tables.filter::status", val);
+    },
+    onChangeTags(id, newTags) {
+      this.editing[id].tag_titles_input = newTags;
+      this.editing[id].tag_titles = _.map(newTags, "text");
+      this.updateMeal(id, {tag_titles: this.editing[id].tag_titles})
     }
   }
 };
