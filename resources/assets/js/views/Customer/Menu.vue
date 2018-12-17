@@ -4,7 +4,6 @@
       <div class="card">
         <div class="card-header">Menu</div>
         <div class="card-body">
-
           <div v-if="store.meals">
             <b-row>
               <b-col v-for="meal in store.meals" :key="meal.id" cols="3">
@@ -12,7 +11,6 @@
               </b-col>
             </b-row>
           </div>
-
         </div>
       </div>
     </div>
@@ -23,42 +21,28 @@
 import { mapGetters } from "vuex";
 import MenuItem from "../../components/Menu/Item";
 
-<<<<<<< HEAD
 export default {
   components: {
-    MenuItem,
+    MenuItem
   },
   data() {
     return {};
   },
   computed: {
     ...mapGetters({
-      store: "viewedStore",
-    }),
+      store: "viewedStore"
+    })
   },
-  mounted() {},
-  methods: {}
+  mounted() {
+    this.getMeals();
+  },
+  methods: {
+    getMeals() {
+      let self = this;
+      axios.get("meals").then(response => {
+        this.meals = response.data;
+      });
+    }
+  }
 };
 </script>
-=======
-        },
-        data(){
-            return {
-                meals: []
-            }
-        },
-        mounted()
-        {
-            this.getMeals();
-        },
-        methods: {
-            getMeals(){
-                let self = this;
-                axios.get("meals").then(response =>{
-                    this.meals = response.data
-                })
-            }
-        }
-    }
-</script>
->>>>>>> feature/customer/menu
