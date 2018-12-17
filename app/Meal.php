@@ -18,7 +18,11 @@ class Meal extends Model
         'price' => 'double',
     ];
 
-    protected $appends = ['tag_titles'];
+    public function getQuantityAttribute(){
+        return 0;
+    }
+
+    protected $appends = ['tag_titles', 'quantity'];
 
     public function store()
     {

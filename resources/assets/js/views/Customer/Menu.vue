@@ -23,6 +23,7 @@
 import { mapGetters } from "vuex";
 import MenuItem from "../../components/Menu/Item";
 
+<<<<<<< HEAD
 export default {
   components: {
     MenuItem,
@@ -39,3 +40,25 @@ export default {
   methods: {}
 };
 </script>
+=======
+        },
+        data(){
+            return {
+                meals: []
+            }
+        },
+        mounted()
+        {
+            this.getMeals();
+        },
+        methods: {
+            getMeals(){
+                let self = this;
+                axios.get("meals").then(response =>{
+                    this.meals = response.data
+                })
+            }
+        }
+    }
+</script>
+>>>>>>> feature/customer/menu
