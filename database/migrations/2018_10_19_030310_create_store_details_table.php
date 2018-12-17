@@ -23,6 +23,7 @@ class CreateStoreDetailsTable extends Migration
             $table->string('state');
             $table->string('logo');
             $table->string('domain');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

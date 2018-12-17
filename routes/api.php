@@ -22,10 +22,10 @@ Route::group(['domain' => '{store_slug}.' . config('app.domain'), 'middleware' =
     Route::group(['middleware' => ['view.api']], function ($router) {
         Route::get('/', ['middleware' => ['view.api'], 'uses' => 'SpaController@index']);
 
-        Route::group(['prefix' => 'me', 'middleware' => ['role.store', 'auth:api']], function ($router) {
-
+        Route::group(['prefix' => 'me', 'middleware' => ['role.store']], function ($router) {
             Route::resource('meals', 'Store\\MealController');
             Route::resource('ingredients', 'Store\\IngredientController');
+            Route::resource('orders', 'Store\\OrderController');
             Route::get('customers', 'Store\\CustomerController@index');
         });
 

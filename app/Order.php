@@ -6,19 +6,40 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+
+    protected $fillable = [
+        'fulfilled', 'notes',
+    ];
+
     public function user(){
 		return $this->belongsTo('App\User');
-	}
-
-	public function userPaymentMethod(){
-		return $this->hasOne('App\UserPaymentMethod');
 	}
 
 	public function store(){
 		return $this->belongsTo('App\Store');
 	}
 
-	public function deliveryStatus(){
-		return $this->hasOne('App\DeliveryStatus');
+	public function meal_orders(){
+		return $this->hasMany('App\MealOrder');
 	}
+
+	public function meals(){
+		return $this->belongsToMany('App\Meal', 'meal_orders');
+	}
+
+	public static function updateOrder($id, $props)
+    {
+
+        $order = Order::findOrFail($id);
+
+        $props = collect($props)->only([
+        	'fulfilled',
+          'notes'
+        ]);
+
+        $order->update($props->toArray());
+
+    }
+
+
 }

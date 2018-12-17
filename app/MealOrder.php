@@ -10,7 +10,7 @@ class MealOrder extends Pivot
   protected $table = 'meal_orders';
 
   public function meals() {
-		return $this->hasMany('App\Meal');
+		return $this->hasOne('App\Meal');
 	}
 
 	public function orders() {

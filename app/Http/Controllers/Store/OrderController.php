@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Store;
 
 use App\Order;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Store\StoreController;
 
-class OrderController extends Controller
+class OrderController extends StoreController
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +15,10 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        return $this->store->has('orders') ?
+            $this->store->orders()->with(['user', 'user.user_detail', 'meals'])->where('fulfilled', 0)->get() : [];
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -67,9 +70,9 @@ class OrderController extends Controller
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, $id)
     {
-        //
+        return Order::updateOrder($id, $request->all());
     }
 
     /**

@@ -22,6 +22,7 @@ class CreateUserDetailsTable extends Migration
             $table->string('address');
             $table->string('city');
             $table->string('state');
+            $table->string('zip');
             $table->string('country');
             $table->text('delivery');
             $table->timestamps();
