@@ -14,7 +14,7 @@ class SpaController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('auth');
+        $this->middleware('store_slug');
     }
 
     /**
@@ -37,7 +37,7 @@ class SpaController extends Controller
             }
             
             return [
-                'store' => Store::with('meals')->find(STORE_ID),
+                'store' => defined('STORE_ID') ? Store::with('meals')->find(STORE_ID) : null,
                 'stores' => Store::all(),
             ];
         } else {

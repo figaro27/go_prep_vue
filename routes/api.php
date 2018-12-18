@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
-Route::group(['domain' => '{store_slug}.' . config('app.domain'), 'middleware' => ['view.api']], function ($router) {
+Route::group(['domain' => '{store_slug}.' . config('app.domain'), 'middleware' => ['view.api', 'store_slug']], function ($router) {
 
     Route::group(['middleware' => ['view.api']], function ($router) {
         Route::get('/', ['middleware' => ['view.api'], 'uses' => 'SpaController@index']);

@@ -61,10 +61,15 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+
+        // Role checking middleware
         'role' => \App\Http\Middleware\Role::class,
         'role.store' => \App\Http\Middleware\IsStore::class,
+
+        // Extract store from subdomain
+        'store_slug' => \App\Http\Middleware\StoreSlug::class,
         
-        // General context middleware
+        // General view context middleware
         'view.front' => \App\Http\Middleware\Front::class,
         'view.api' => \App\Http\Middleware\Api::class,
     ];

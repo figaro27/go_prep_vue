@@ -4,6 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 
+/**
+ * Handles all non-AJAX requests
+ */
 class Front
 {
   /**
