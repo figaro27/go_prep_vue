@@ -32,7 +32,7 @@ export default {
     },
     {
       name: 'Print',
-      url: '/store/labels',
+      url: '/store/print',
       icon: 'fa fa-print'
     },
     {
