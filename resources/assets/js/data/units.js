@@ -9,8 +9,11 @@ let units = {
       })
     },
     values: {
-      kg: 'Kg',
       oz: 'oz',
+      lb: 'lb',
+      grams: 'g',
+      kg: 'Kg',
+      cups: 'cups',
     }
   }
 }

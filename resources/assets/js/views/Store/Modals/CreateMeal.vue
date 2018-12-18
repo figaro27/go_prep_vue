@@ -34,7 +34,12 @@
       <b-col>
         <h3>Tags</h3>
         <div>
-          <input-tag ref="newMealTagsInput" v-model="newMeal.tag_titles"/>
+          <input-tag
+            ref="editMealTagsInput"
+            v-model="tag_titles_flat"
+            :tags="tag_titles_input"
+            @tags-changed="onChangeTags"
+          />
         </div>
 
         <h3 class="mt-3">Image</h3>
@@ -74,6 +79,8 @@ export default {
   data() {
     return {
       newMeal: {},
+      tag_titles_flat: '',
+      tag_titles_input: [],
     }
   },
   mounted() {
@@ -90,6 +97,10 @@ export default {
       } else {
         console.log("FileReader API not supported: use the <form>, Luke!");
       }
+    },
+    onChangeTags(newTags) {
+      this.tag_titles_input = newTags;
+      this.newMeal.tag_titles = _.map(newTags, "text");
     },
     storeMeal() {
       axios

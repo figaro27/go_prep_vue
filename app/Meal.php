@@ -46,7 +46,7 @@ class Meal extends Model
 
     public function tags()
     {
-        return $this->hasMany('App\MealTag');
+        return $this->belongsToMany('App\MealTag', 'meal_meal_tag');
     }
 
     public function getTagTitlesAttribute()
@@ -133,14 +133,28 @@ class Meal extends Model
 
         $meal->save();
 
-        if ($tagTitles = $request->get('tag_titles') && is_array($tagTitles)) {
-            $tags = [];
+        $tagTitles = $request->get('tag_titles');
+        if (is_array($tagTitles)) {
+
+            $tags = collect();
+
             foreach ($tagTitles as $tagTitle) {
-                $tag = new MealTag(['meal_id' => $meal->id, 'tag' => $tagTitle]);
-                $tag->save();
-                $tags[] = $tag;
+                try {
+                    $tag = MealTag::create([
+                        'tag' => $tagTitle,
+                        'slug' => str_slug($tagTitle),
+                        'store_id' => $meal->store_id,
+                    ]);
+                    $tags->push($tag->id);
+                } catch (\Exception $e) {
+                    $tags->push(MealTag::where([
+                        'tag' => $tagTitle,
+                        'store_id' => $meal->store_id,
+                    ])->first()->id);
+                }
             }
-            $meal->tags()->saveMany($tags);
+
+            $meal->tags()->sync($tags);
         }
 
     }
@@ -170,6 +184,7 @@ class Meal extends Model
             'description',
             'price',
             'created_at',
+            'tag_titles',
         ]);
 
         if ($props->has('featured_image')) {
@@ -187,6 +202,30 @@ class Meal extends Model
 
                 $props->put('featured_image', $imagePath);
             }
+        }
+
+        $tagTitles = $props->get('tag_titles');
+        if (is_array($tagTitles)) {
+
+            $tags = collect();
+
+            foreach ($tagTitles as $tagTitle) {
+                try {
+                    $tag = MealTag::create([
+                        'tag' => $tagTitle,
+                        'slug' => str_slug($tagTitle),
+                        'store_id' => $meal->store_id,
+                    ]);
+                    $tags->push($tag->id);
+                } catch (\Exception $e) {
+                    $tags->push(MealTag::where([
+                        'tag' => $tagTitle,
+                        'store_id' => $meal->store_id,
+                    ])->first()->id);
+                }
+            }
+
+            $meal->tags()->sync($tags);
         }
 
         $meal->update($props->toArray());
