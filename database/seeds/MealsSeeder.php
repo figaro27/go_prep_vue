@@ -11,18 +11,14 @@ class MealsSeeder extends Seeder
      */
     public function run()
     {
-      $tags = [];
-      foreach(['Low Carb', 'Low Calorie', 'Vegan', 'Breakfast'] as $tag) {
+        $tags = [];
+        foreach (['Low Carb', 'Low Calorie', 'Vegan', 'Breakfast'] as $tag) {
 
-        $tags[] = App\MealTag::create(['store_id' => 1, 'tag' => $tag, 'slug' => str_slug($tag)]);
-      }
-      
-      
-      factory(App\Meal::class, 50)->create()->each(function($u) use ($tags) {
-        $u->tags()->save($tags[rand(0, count($tags) - 1)]);
+            $tags[] = App\MealTag::create(['store_id' => 1, 'tag' => $tag, 'slug' => str_slug($tag)]);
+        }
 
-        for ($i=0;$i<6;$i++)
-          $u->ingredients()->save(factory(App\Ingredient::class)->make());
+        factory(App\Meal::class, 50)->create()->each(function ($u) use ($tags) {
+            $u->tags()->save($tags[rand(0, count($tags) - 1)]);
         });
 
     }

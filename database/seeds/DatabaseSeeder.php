@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(MealsSeeder::class);
         $this->call(MealOrdersSeeder::class);
+        $this->call(IngredientsSeeder::class);
 
     }
 }

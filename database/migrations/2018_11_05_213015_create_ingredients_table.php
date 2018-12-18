@@ -15,7 +15,6 @@ class CreateIngredientsTable extends Migration
     {
         Schema::create('ingredients', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('meal_id')->references('id')->on('meals');
             $table->integer('store_id')->references('id')->on('stores');
             $table->string('food_name');
             $table->integer('serving_qty');
