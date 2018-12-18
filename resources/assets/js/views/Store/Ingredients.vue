@@ -5,10 +5,14 @@
       <div class="card">
         <div class="card-header">Ingredients</div>
         <div class="card-body">
-          <b-select v-model="weightUnit" :options="weightUnitOptions">
-            <option slot="top" disabled>-- Select unit --</option>
-          </b-select>
-          <v-client-table :columns="columns" :data="tableData" :options="options"></v-client-table>
+          <v-client-table :columns="columns" :data="tableData" :options="options">
+            <span slot="beforeLimit">
+              <label>Weight unit:</label>
+              <b-select v-model="weightUnit" :options="weightUnitOptions">
+                <option slot="top" disabled>-- Select unit --</option>
+              </b-select>
+            </span>
+          </v-client-table>
         </div>
       </div>
     </div>
@@ -28,7 +32,7 @@ export default {
   data() {
     return {
       isLoading: true,
-      weightUnit: 'oz',
+      weightUnit: "oz",
       columns: ["food_name", "serving_qty", "serving_unit"],
       options: {
         headings: {
@@ -42,16 +46,22 @@ export default {
   computed: {
     ...mapGetters({
       ingredients: "ingredients",
-      defaultWeightUnit: "defaultWeightUnit",
+      defaultWeightUnit: "defaultWeightUnit"
     }),
     tableData() {
-      return Object.values(this.ingredients).map(ingredient => {
-        // Convert weight to selected unit
-        ingredient.serving_qty = format.unit(ingredient.serving_qty, ingredient.serving_unit, this.weightUnit);
-        ingredient.serving_unit = this.weightUnit;
-        
-        return ingredient;
-      }) || [];
+      return (
+        Object.values(this.ingredients).map(ingredient => {
+          // Convert weight to selected unit
+          ingredient.serving_qty = format.unit(
+            ingredient.serving_qty,
+            ingredient.serving_unit,
+            this.weightUnit
+          );
+          ingredient.serving_unit = this.weightUnit;
+
+          return ingredient;
+        }) || []
+      );
     },
     weightUnitOptions() {
       return units.weight.selectOptions();
@@ -59,7 +69,7 @@ export default {
   },
   mounted() {
     // Set initial weight unit to user default
-    this.weightUnit = this.defaultWeightUnit || 'oz';
+    this.weightUnit = this.defaultWeightUnit || "oz";
 
     this.refreshIngredients().finally(() => {
       this.isLoading = false;
