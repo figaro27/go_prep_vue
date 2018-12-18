@@ -14,7 +14,8 @@ class IngredientController extends StoreController
      */
     public function index()
     {
-        return Ingredient::getIngredients();
+        return $this->store->has('ingredients') ?
+        $this->store->ingredients()->with([])->get() : [];
     }
 
     /**
