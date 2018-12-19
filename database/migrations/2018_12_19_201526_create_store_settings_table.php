@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ChangeActiveColumnToBooleanOnMealsTable extends Migration
+class CreateStoreSettingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class ChangeActiveColumnToBooleanOnMealsTable extends Migration
      */
     public function up()
     {
-        Schema::table('meals', function (Blueprint $table) {
-            $table->boolean('active')->change();
+        Schema::create('store_settings', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('store_id')->references('id')->on('stores');
+            $table->integer('minimum');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ class ChangeActiveColumnToBooleanOnMealsTable extends Migration
      */
     public function down()
     {
-        Schema::table('meals', function (Blueprint $table) {
-            $table->string('active', 255)->change();
-        });
+        Schema::dropIfExists('store_settings');
     }
 }

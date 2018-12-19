@@ -23,6 +23,10 @@ class Store extends Model
       return $this->hasOne('App\StoreDetail');
   }
 
+  public function storeSetting(){
+      return $this->hasOne('App\StoreSetting');
+  }
+
   public static function getStore($id){
     return Store::with('storeDetail', 'order')->where('id', $id)->first();
   }
