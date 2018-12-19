@@ -20,9 +20,11 @@ class MealsSeeder extends Seeder
       
       factory(App\Meal::class, 50)->create()->each(function($u) use ($tags) {
         $u->tags()->save($tags[rand(0, count($tags) - 1)]);
+        $u->mealCategories()->save(factory(App\MealCategory::class)->make());
 
-        for ($i=0;$i<6;$i++)
+        for ($i=0;$i<6;$i++){
           $u->ingredients()->save(factory(App\Ingredient::class)->make());
+        }
         });
 
     }

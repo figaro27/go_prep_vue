@@ -34,6 +34,10 @@ class Meal extends Model
         return $this->hasMany('App\Ingredient');
     }
 
+    public function mealCategories(){
+        return $this->hasMany('App\MealCategory');
+    }
+
     public function meal_orders()
     {
         return $this->belongsTo('App\MealOrder');
