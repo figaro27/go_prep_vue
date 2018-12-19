@@ -3,7 +3,7 @@
     <AppHeader fixed>
       
       <b-link class="navbar-brand" to="#">
-        <img class="navbar-brand-full" src="/images/logo.png" width="90" height="40" alt="GoPrep Logo">
+        <img class="navbar-brand-full" src="http://store.goprep.localhost/storage/logo.jpg" width="90" height="40" alt="GoPrep Logo">
         <img class="navbar-brand-minimized" src="/images/logo-min.png" width="33" height="40" alt="GoPrep Logo">
       </b-link>
       <b-navbar-nav class="d-md-down-none">
@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from 'vuex';
 import nav from './../_customernav'
 import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarForm, SidebarHeader, SidebarMinimizer, SidebarNav, Aside as AppAside, AsideToggler, Footer as TheFooter, Breadcrumb } from '@coreui/vue'
 import DefaultAside from './DefaultAside'
@@ -76,6 +77,17 @@ export default {
     list () {
       return this.$route.matched.filter((route) => route.name || route.meta.label )
     }
-  }
+  },
+  created() {
+    // Get initial state
+    axios.get('/api').then(resp => {
+      if(_.isObject(resp.data.store) && !_.isEmpty(resp.data.store)) {
+        this.setViewedStore(resp.data.store);
+      }
+    });
+  },
+  methods: {
+    ...mapMutations(['setViewedStore']),
+  },
 }
 </script>

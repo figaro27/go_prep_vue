@@ -11,17 +11,17 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::domain('{store_slug}.'.config('app.domain'))
+->group(function ($router) {
+
 });
-Route::get('/home', 'HomeController@index')->name('home');
 
 Auth::routes();
 Route::fallback('SpaController@index');
 
 
 // All logged in users
-Route::group(['middleware' => ['auth']], function ($router) {
+Route::group(['middleware' => ['auth', 'store_slug']], function ($router) {
 
   Route::resource('user', 'UserController');
   Route::resource('stores', 'StoreController');

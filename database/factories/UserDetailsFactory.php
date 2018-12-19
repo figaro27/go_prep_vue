@@ -10,6 +10,7 @@ $factory->define(App\UserDetail::class, function (Faker $faker) {
     	'address' => $faker->streetAddress,
     	'city' => $faker->city,
     	'state' => $faker->stateAbbr,
+        'zip' => $faker->postcode,
     	'country' => 'USA',
     	'Delivery' => $faker->sentence($nbWords = 6, $variableNbWords = true)
     ];

@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\User;
+use App\Store;
 
-class UserController extends Controller
+class UserController
 {
     protected $store;
 
@@ -12,9 +13,8 @@ class UserController extends Controller
     {
         parent::__constructor();
 
-        // Try to find store by subdomain
-        //$root = Request::root();
-        //$this->storeName = str_replace(['http://', 'https://', config('app.domain')], '', $root);
-
+        if(defined('STORE_ID')) {
+          $this->store = Store::with(['meals'])->find(STORE_ID);
+        }
     }
 }

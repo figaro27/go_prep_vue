@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Store;
 
-use App\DeliveryStatus;
+use App\Order;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Store\StoreController;
 
-class DeliveryStatusController extends Controller
+class OrderController extends StoreController
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +15,10 @@ class DeliveryStatusController extends Controller
      */
     public function index()
     {
-        //
+        return $this->store->has('orders') ?
+            $this->store->orders()->with(['user', 'user.user_detail', 'meals'])->where('fulfilled', 0)->get() : [];
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -41,10 +44,10 @@ class DeliveryStatusController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\DeliveryStatus  $deliveryStatus
+     * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(DeliveryStatus $deliveryStatus)
+    public function show(Order $order)
     {
         //
     }
@@ -52,10 +55,10 @@ class DeliveryStatusController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\DeliveryStatus  $deliveryStatus
+     * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function edit(DeliveryStatus $deliveryStatus)
+    public function edit(Order $order)
     {
         //
     }
@@ -64,21 +67,21 @@ class DeliveryStatusController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\DeliveryStatus  $deliveryStatus
+     * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, DeliveryStatus $deliveryStatus)
+    public function update(Request $request, $id)
     {
-        //
+        return Order::updateOrder($id, $request->all());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\DeliveryStatus  $deliveryStatus
+     * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DeliveryStatus $deliveryStatus)
+    public function destroy(Order $order)
     {
         //
     }

@@ -15,10 +15,14 @@ class Meal extends Model
     ];
 
     protected $casts = [
-        'price' => 'double'
+        'price' => 'double',
     ];
 
-    protected $appends = ['tag_titles'];
+    public function getQuantityAttribute(){
+        return 0;
+    }
+
+    protected $appends = ['tag_titles', 'quantity'];
 
     public function store()
     {
@@ -30,9 +34,13 @@ class Meal extends Model
         return $this->hasMany('App\Ingredient');
     }
 
+    public function mealCategories(){
+        return $this->hasMany('App\MealCategory');
+    }
+
     public function meal_orders()
     {
-        return $this->hasMany('App\MealOrder');
+        return $this->belongsTo('App\MealOrder');
     }
 
     public function orders()
@@ -42,12 +50,13 @@ class Meal extends Model
 
     public function tags()
     {
-        return $this->hasMany('App\MealTag');
+        return $this->belongsToMany('App\MealTag', 'meal_meal_tag');
     }
 
-    public function getTagTitlesAttribute() {
-        return collect($this->tags)->map(function($meal) {
-          return $meal->tag;
+    public function getTagTitlesAttribute()
+    {
+        return collect($this->tags)->map(function ($meal) {
+            return $meal->tag;
         });
     }
 
@@ -104,12 +113,54 @@ class Meal extends Model
         $meal = new Meal;
         $meal->active = true;
         $meal->store_id = $storeID;
-        $meal->featured_image = $request->featured_image;
+        $meal->featured_image = '';
         $meal->title = $request->title;
         $meal->description = $request->description;
         $meal->price = $request->price;
 
+        if ($request->has('featured_image')) {
+            $imageRaw = $request->get('featured_image');
+            $imageRaw = str_replace(' ', '+', $imageRaw);
+            $image = base64_decode($imageRaw);
+
+            $ext = [];
+            preg_match('/^data:image\/(.{3,9});/i', $imageRaw, $ext);
+
+            if (count($ext) > 1) {
+                $imagePath = 'images/meals/' . self::generateImageFilename($image, $ext[1]);
+                \Storage::put($imagePath, $image);
+                $imageUrl = \Storage::url($imagePath);
+
+                $meal->featured_image = $imagePath;
+            }
+        }
+
         $meal->save();
+
+        $tagTitles = $request->get('tag_titles');
+        if (is_array($tagTitles)) {
+
+            $tags = collect();
+
+            foreach ($tagTitles as $tagTitle) {
+                try {
+                    $tag = MealTag::create([
+                        'tag' => $tagTitle,
+                        'slug' => str_slug($tagTitle),
+                        'store_id' => $meal->store_id,
+                    ]);
+                    $tags->push($tag->id);
+                } catch (\Exception $e) {
+                    $tags->push(MealTag::where([
+                        'tag' => $tagTitle,
+                        'store_id' => $meal->store_id,
+                    ])->first()->id);
+                }
+            }
+
+            $meal->tags()->sync($tags);
+        }
+
     }
 
     public static function storeMealAdmin($request)
@@ -137,6 +188,7 @@ class Meal extends Model
             'description',
             'price',
             'created_at',
+            'tag_titles',
         ]);
 
         if ($props->has('featured_image')) {
@@ -147,13 +199,37 @@ class Meal extends Model
             $ext = [];
             preg_match('/^data:image\/(.{3,9});/i', $imageRaw, $ext);
 
-            if(count($ext) > 1) {
-              $imagePath = 'images/meals/' . self::generateImageFilename($image, $ext[1]);
-              \Storage::put($imagePath, $image);
-              $imageUrl = \Storage::url($imagePath);
+            if (count($ext) > 1) {
+                $imagePath = 'images/meals/' . self::generateImageFilename($image, $ext[1]);
+                \Storage::put($imagePath, $image);
+                $imageUrl = \Storage::url($imagePath);
 
-              $props->put('featured_image', $imagePath);
+                $props->put('featured_image', $imagePath);
             }
+        }
+
+        $tagTitles = $props->get('tag_titles');
+        if (is_array($tagTitles)) {
+
+            $tags = collect();
+
+            foreach ($tagTitles as $tagTitle) {
+                try {
+                    $tag = MealTag::create([
+                        'tag' => $tagTitle,
+                        'slug' => str_slug($tagTitle),
+                        'store_id' => $meal->store_id,
+                    ]);
+                    $tags->push($tag->id);
+                } catch (\Exception $e) {
+                    $tags->push(MealTag::where([
+                        'tag' => $tagTitle,
+                        'store_id' => $meal->store_id,
+                    ])->first()->id);
+                }
+            }
+
+            $meal->tags()->sync($tags);
         }
 
         $meal->update($props->toArray());

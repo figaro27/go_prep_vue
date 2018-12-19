@@ -34,6 +34,11 @@ export default {
       name: 'Print',
       url: '/store/labels',
       icon: 'fa fa-print'
+    },
+    {
+      name: 'Menu',
+      url: '/store/menu',
+      icon: 'fa fa-book'
     }
     ]
 }

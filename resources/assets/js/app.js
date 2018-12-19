@@ -13,9 +13,10 @@ import CustomerApp from './containers/CustomerContainer';
 import StoreApp from './containers/StoreContainer';
 import AdminApp from './containers/AdminContainer';
 import BootstrapVue from 'bootstrap-vue';
-import InputTag from 'vue-input-tag';
+import InputTag from '@johmun/vue-tags-input';
 import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import vSelect from 'vue-select';
 import VueI18n from 'vue-i18n';
 import store from './store';
 import lang from './lang';
@@ -26,6 +27,7 @@ Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
 Vue.component('input-tag', InputTag)
+Vue.component('v-select', vSelect)
 
 if($('#customerapp').length) {
   const app = new Vue({
@@ -67,51 +69,5 @@ modal.init();
 setInterval(() => {
   $(window).trigger('resize');
 }, 1000);
-
-// Trying to only load the Vue instances above depending on the logged in role & remove console errors
-
-// var role;
-
-// function getRole(){
-//         axios.get('user')
-//         .then(function(response){    
-//             this.role = response.data.user_role_id;
-//             console.log(role);
-//         });
-// }
-
-// if (role == 1){
-
-// const customerapp = new Vue({
-//     el: '#customerapp',
-//     router,
-//     template: '<CustomerApp/>',
-//     components: {
-//         CustomerApp
-//     }
-// });
-// }
-// else if (role == 2){
-
-// const storeapp = new Vue({
-//     el: '#storeapp',
-//     router,
-//     template: '<StoreApp/>',
-//     components: {
-//         StoreApp
-//     }
-// });
-// }
-// else if (role == 3){
-
-// const adminapp = new Vue({
-//     el: '#adminapp',
-//     router,
-//     template: '<AdminApp/>',
-//     components: {
-//         AdminApp
-//     }
-// });
-// }
 
 

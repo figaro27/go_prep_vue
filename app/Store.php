@@ -10,7 +10,7 @@ class Store extends Model
 		return $this->hasOne('App\User');
 	}
 
-	public function order(){
+	public function orders(){
 		return $this->hasMany('App\Order');
   }
 

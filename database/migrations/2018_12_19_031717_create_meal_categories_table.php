@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDeliveryStatusesTable extends Migration
+class CreateMealCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateDeliveryStatusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('delivery_statuses', function (Blueprint $table) {
+        Schema::create('meal_categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('status');
+            $table->integer('meal_id')->references('id')->on('meals');
+            $table->string('category');
+            $table->timestamps();
         });
     }
 
@@ -26,6 +28,6 @@ class CreateDeliveryStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('delivery_statuses');
+        Schema::dropIfExists('meal_categories');
     }
 }

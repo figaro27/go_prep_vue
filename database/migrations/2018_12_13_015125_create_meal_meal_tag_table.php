@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStorePaymentInfosTable extends Migration
+class CreateMealMealTagTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateStorePaymentInfosTable extends Migration
      */
     public function up()
     {
-        Schema::create('store_payment_infos', function (Blueprint $table) {
+        Schema::create('meal_meal_tag', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('store_id')->references('id')->on('stores');
-            $table->string('bank_info');
+            $table->integer('meal_id')->references('id')->on('meals');
+            $table->integer('meal_tag_id')->references('id')->on('meal_tags');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateStorePaymentInfosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('store_payment_infos');
+        Schema::dropIfExists('meal_meal_tag');
     }
 }
