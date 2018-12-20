@@ -7,7 +7,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ingredient extends Model
 {
-    public $fillable = ['food_name', 'serving_qty', 'serving_unit'];
+    public $fillable = [
+        'food_name',
+        'serving_qty',
+        'serving_unit',
+        'calories',
+        'totalFat',
+        'satFat',
+        'transFat',
+        'cholesterol',
+        'sodium',
+        'totalCarb',
+        'fibers',
+        'sugars',
+        'proteins',
+        'vitaminD',
+        'potassium',
+        'calcium',
+        'iron',
+        'addedSugars',
+    ];
 
     public function meal()
     {

@@ -217,7 +217,7 @@
                       }"
                       v-on:input="ingredients => {
                         getNutritionFacts(ingredients, props.row);
-                        onChangeIngredients(props.row.id, ingredients)
+                        //onChangeIngredients(props.row.id, ingredients)
                       }"
                       v-on:save="onChangeIngredients(props.row.id, editing[props.row.id].ingredients)"
                     />
@@ -731,21 +731,21 @@ export default {
       };
 
       ingredients.forEach(ingredient => {
-        nutrition.calories += ingredient.nf_calories;
-        nutrition.totalFat += ingredient.nf_total_fat;
-        nutrition.satFat += ingredient.nf_saturated_fat;
-        nutrition.transFat += ingredient.nf_trans_fat;
-        nutrition.cholesterol += ingredient.nf_cholesterol;
-        nutrition.sodium += ingredient.nf_sodium;
-        nutrition.totalCarb += ingredient.nf_total_carbohydrate;
-        nutrition.fibers += ingredient.nf_dietary_fiber;
-        nutrition.sugars += ingredient.nf_sugars;
-        nutrition.proteins += ingredient.nf_protein;
-        nutrition.vitaminD += ingredient.nf_vitamind;
-        nutrition.potassium += ingredient.nf_potassium;
-        nutrition.calcium += ingredient.nf_calcium;
-        nutrition.iron += ingredient.nf_iron;
-        nutrition.addedSugars += ingredient.nf_addedsugars;
+        nutrition.calories += ingredient.nf_calories || ingredient.calories;
+        nutrition.totalFat += ingredient.nf_total_fat || ingredient.totalFat;
+        nutrition.satFat += ingredient.nf_saturated_fat || ingredient.satFat;
+        nutrition.transFat += ingredient.nf_trans_fat || ingredient.transFat;
+        nutrition.cholesterol += ingredient.nf_cholesterol || ingredient.cholesterol;
+        nutrition.sodium += ingredient.nf_sodium || ingredient.sodium;
+        nutrition.totalCarb += ingredient.nf_total_carbohydrate || ingredient.totalCarb;
+        nutrition.fibers += ingredient.nf_dietary_fiber || ingredient.fibers;
+        nutrition.sugars += ingredient.nf_sugars || ingredient.sugars;
+        nutrition.proteins += ingredient.nf_protein || ingredient.proteins;
+        nutrition.vitaminD += ingredient.nf_vitamind || ingredient.vitaminD;
+        nutrition.potassium += ingredient.nf_potassium || ingredient.potassium;
+        nutrition.calcium += ingredient.nf_calcium || ingredient.calcium;
+        nutrition.iron += ingredient.nf_iron || ingredient.iron;
+        nutrition.sugars += ingredient.nf_addedsugars || ingredient.sugars;
       });
 
       return nutrition;

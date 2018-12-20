@@ -66,9 +66,16 @@
         </tr>
         <tr>
           <td colspan="3" class="text-right">
-            <a href="#" @click="onClickAddIngredient">
-              <i class="fas fa-plus-circle"></i>
-            </a>
+            <b-row>
+              <b-col v-if="options.saveButton" class="text-left">
+                <b-button variant="primary" :disabled="!canSave" @click.prevent="save">Save</b-button>
+              </b-col>
+              <b-col class="text-right">
+                <a href="#" @click.prevent="onClickAddIngredient">
+                  <i class="fas fa-plus-circle"></i>
+                </a>
+              </b-col>
+            </b-row>
           </td>
         </tr>
       </tbody>
@@ -91,9 +98,9 @@ export default {
     value: {},
     options: {
       default: {
-        saveButton: false,
+        saveButton: false
       }
-    },
+    }
   },
   data() {
     return {
@@ -102,7 +109,7 @@ export default {
       newIngredients: [],
       ingredientOptions: [],
 
-      selectedExistingIngredients: [],
+      selectedExistingIngredients: []
     };
   },
   computed: {
@@ -114,17 +121,20 @@ export default {
       return Object.values(this.existingIngredients).map(ingredient => {
         return {
           value: ingredient,
-          label: ingredient.food_name,
+          label: ingredient.food_name
         };
       });
     },
     weightUnitOptions() {
       return units.weight.selectOptions();
     },
+    canSave() {
+      return this.ingredients.length > 0;
+    },
   },
   watch: {
     ingredients(newIngredients, oldIngredients) {
-      if(!_.isEqual(newIngredients, oldIngredients)) {
+      if (!_.isEqual(newIngredients, oldIngredients)) {
         this.update();
       }
     }
@@ -145,7 +155,7 @@ export default {
       });
     },
     onClickAddExistingIngredient() {
-      this.selectedExistingIngredients.forEach((ingredient) => {
+      this.selectedExistingIngredients.forEach(ingredient => {
         this.newIngredients.push(ingredient.value);
       });
 
@@ -164,10 +174,7 @@ export default {
           query: this.recipe
         })
         .then(response => {
-          let newIngredients = _.mapKeys(response.data.foods, (value, key) => {
-            
-          });
-          this.ingredients = _.concat(this.ingredients, newIngredients);
+          this.ingredients = _.concat(this.ingredients, response.data.foods);
           this.recipe = "";
         });
     },

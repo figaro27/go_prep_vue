@@ -242,22 +242,62 @@ class Meal extends Model
                     if (is_numeric($newIngredient) || isset($newIngredient->id)) {
                         $ingredientId = is_numeric($newIngredient) ? $newIngredient : $newIngredient->id;
                         $ingredient = Ingredient::where('store_id', $meal->store_id)->findOrFail($ingredientId);
-                        $ingredients->push($ingredient->id);
+                        $ingredients->push($ingredient);
                     } else {
-                        $newIngredient = collect($newIngredient)->only([
-                            'food_name', 'serving_qty', 'serving_unit'
-                        ]);
-                        $ingredient = new Ingredient($newIngredient->toArray());
-                        $ingredient->store_id = $meal->store_id;
-                        if($ingredient->save()) {
+                        // Check if ingredient with same name already exists
+                        $ingredient = Ingredient::where([
+                            'store_id' => $meal->store_id,
+                            'food_name' => $newIngredient['food_name'],
+                        ])->first();
+
+                        if($ingredient) {
                           $ingredients->push($ingredient);
                         }
-                        else throw new \Exception('Failed to create ingredient');
+                        // Nope. Create a new one
+                        else {
+                            $newIngredient = collect($newIngredient)->only([
+                                'food_name',
+                                'serving_qty',
+                                'serving_unit',
+                                'calories',
+                                'totalFat',
+                                'satFat',
+                                'transFat',
+                                'cholesterol',
+                                'sodium',
+                                'totalCarb',
+                                'fibers',
+                                'sugars',
+                                'proteins',
+                                'vitaminD',
+                                'potassium',
+                                'calcium',
+                                'iron',
+                                'sugars',
+                            ])->map(function($val) {
+                              return is_null($val) ? 0 : $val;
+                            });
+                            $ingredient = new Ingredient($newIngredient->toArray());
+                            $ingredient->store_id = $meal->store_id;
+                            if ($ingredient->save()) {
+                                $ingredients->push($ingredient);
+                            } else {
+                                throw new \Exception('Failed to create ingredient');
+                            }
+                        }
                     }
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                    die($e);
+                }
             }
 
-            $meal->ingredients()->sync($ingredients);
+            $syncIngredients = $ingredients->mapWithKeys(function($val, $key) {
+              return [$val->id => [
+                'quantity' => $val->serving_qty,
+              ]];
+            });
+
+            $meal->ingredients()->sync($syncIngredients);
         }
 
         $meal->update($props->toArray());
