@@ -210,7 +210,17 @@
 
                   <b-col>
                     <h3 class="mt-3">Ingredients</h3>
-                    <ingredient-picker v-model="editing[props.row.id].ingredients" v-on:input="ingredients => getNutritionFacts(ingredients, props.row)"/>
+                    <ingredient-picker
+                      v-model="editing[props.row.id].ingredients"
+                      :options="{
+                        saveButton: true,
+                      }"
+                      v-on:input="ingredients => {
+                        getNutritionFacts(ingredients, props.row);
+                        onChangeIngredients(props.row.id, ingredients)
+                      }"
+                      v-on:save="onChangeIngredients(props.row.id, editing[props.row.id].ingredients)"
+                    />
                   </b-col>
 
                   <b-col>
@@ -283,7 +293,9 @@
             </b-form-row>
 
             <h3 class="mt-3">Ingredients</h3>
-            <IngredientPicker />
+            <IngredientPicker
+              v-model="meal.ingredients"
+            />
           </b-col>
           <b-col>
             <h3>Tags</h3>
@@ -697,7 +709,7 @@ export default {
           ingredient.food_name.slice(1) +
           ", ";
       });
-      return ingredientList
+      return ingredientList;
     },
     getNutritionTotals: function(ingredients) {
       let nutrition = {
@@ -718,7 +730,7 @@ export default {
         addedSugars: 0
       };
 
-      ingredients.forEach((ingredient) => {
+      ingredients.forEach(ingredient => {
         nutrition.calories += ingredient.nf_calories;
         nutrition.totalFat += ingredient.nf_total_fat;
         nutrition.satFat += ingredient.nf_saturated_fat;
@@ -782,6 +794,14 @@ export default {
         console.log("FileReader API not supported: use the <form>, Luke!");
       }
     },
+    onChangeIngredients(mealId, ingredients) {
+      console.log('wat', mealId, ingredients)
+      if (!_.isNumber(mealId) || !_.isArray(ingredients)) {
+        throw new Exception("Invalid ingredients");
+      }
+
+      this.updateMeal(mealId, { ingredients });
+    },
     onClickAddIngredient() {
       this.ingredients.push({});
     },
@@ -791,7 +811,7 @@ export default {
     onChangeTags(id, newTags) {
       this.editing[id].tag_titles_input = newTags;
       this.editing[id].tag_titles = _.map(newTags, "text");
-      this.updateMeal(id, {tag_titles: this.editing[id].tag_titles})
+      this.updateMeal(id, { tag_titles: this.editing[id].tag_titles });
     }
   }
 };

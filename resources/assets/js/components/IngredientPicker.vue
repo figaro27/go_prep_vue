@@ -87,11 +87,19 @@ import format from "../lib/format";
 
 export default {
   //components: [],
-  props: ["value"],
+  props: {
+    value: {},
+    options: {
+      default: {
+        saveButton: false,
+      }
+    },
+  },
   data() {
     return {
       recipe: "",
       ingredients: [],
+      newIngredients: [],
       ingredientOptions: [],
 
       selectedExistingIngredients: [],
@@ -112,16 +120,17 @@ export default {
     },
     weightUnitOptions() {
       return units.weight.selectOptions();
-    }
+    },
   },
   watch: {
-    ingredients() {
-      this.update();
+    ingredients(newIngredients, oldIngredients) {
+      if(!_.isEqual(newIngredients, oldIngredients)) {
+        this.update();
+      }
     }
   },
   created() {
     this.ingredients = _.isArray(this.value) ? this.value : [];
-    this.update();
   },
   mounted() {
     this.refreshIngredients();
@@ -137,13 +146,16 @@ export default {
     },
     onClickAddExistingIngredient() {
       this.selectedExistingIngredients.forEach((ingredient) => {
-        this.ingredients.push(ingredient.value);
+        this.newIngredients.push(ingredient.value);
       });
 
       this.selectedExistingIngredients = [];
     },
     update() {
       this.$emit("input", this.ingredients);
+    },
+    save() {
+      this.$emit("save", this.ingredients);
     },
     searchInstant: function() {},
     searchRecipe: function() {
@@ -152,7 +164,10 @@ export default {
           query: this.recipe
         })
         .then(response => {
-          this.ingredients = _.concat(this.ingredients, response.data.foods);
+          let newIngredients = _.mapKeys(response.data.foods, (value, key) => {
+            
+          });
+          this.ingredients = _.concat(this.ingredients, newIngredients);
           this.recipe = "";
         });
     },

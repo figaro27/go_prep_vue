@@ -6,6 +6,7 @@ use App\Store;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Constraint\Exception;
 
 class Meal extends Model
 {
@@ -18,7 +19,8 @@ class Meal extends Model
         'price' => 'double',
     ];
 
-    public function getQuantityAttribute(){
+    public function getQuantityAttribute()
+    {
         return 0;
     }
 
@@ -31,7 +33,7 @@ class Meal extends Model
 
     public function ingredients()
     {
-        return $this->hasMany('App\Ingredient');
+        return $this->belongsToMany('App\Ingredient', 'ingredient_meal');
     }
 
     public function meal_orders()
@@ -185,6 +187,7 @@ class Meal extends Model
             'price',
             'created_at',
             'tag_titles',
+            'ingredients',
         ]);
 
         if ($props->has('featured_image')) {
@@ -226,6 +229,35 @@ class Meal extends Model
             }
 
             $meal->tags()->sync($tags);
+        }
+
+        $newIngredients = $props->get('ingredients');
+        if (is_array($newIngredients)) {
+
+            $ingredients = collect();
+
+            foreach ($newIngredients as $newIngredient) {
+                try {
+                    // Existing ingredient
+                    if (is_numeric($newIngredient) || isset($newIngredient->id)) {
+                        $ingredientId = is_numeric($newIngredient) ? $newIngredient : $newIngredient->id;
+                        $ingredient = Ingredient::where('store_id', $meal->store_id)->findOrFail($ingredientId);
+                        $ingredients->push($ingredient->id);
+                    } else {
+                        $newIngredient = collect($newIngredient)->only([
+                            'food_name', 'serving_qty', 'serving_unit'
+                        ]);
+                        $ingredient = new Ingredient($newIngredient->toArray());
+                        $ingredient->store_id = $meal->store_id;
+                        if($ingredient->save()) {
+                          $ingredients->push($ingredient);
+                        }
+                        else throw new \Exception('Failed to create ingredient');
+                    }
+                } catch (\Exception $e) {}
+            }
+
+            $meal->ingredients()->sync($ingredients);
         }
 
         $meal->update($props->toArray());
