@@ -1,7 +1,6 @@
 <template>
   <div class="container-fluid">
         <div class="row">
-          <p>{{ test }}</p>
             <div class="col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-body">
@@ -93,7 +92,7 @@ import nutritionFacts from "nutrition-label-jquery-plugin";
         },
         data(){
             return {
-                test: {},
+                groupedByCategory: {},
                 meals: [],
                 meal: null,
                 total: 0,
@@ -140,7 +139,7 @@ import nutritionFacts from "nutrition-label-jquery-plugin";
         methods: {
             groupByCategory(){
               let meals = this.store.meals;
-              this.test = _.groupBy(meals, "meal_categories")
+              this.groupedByCategory = _.groupBy(meals, "meal_categories")
             },
             minusOne(meal){
                 meal.quantity -= 1;
