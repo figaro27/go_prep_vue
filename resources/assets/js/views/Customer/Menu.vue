@@ -194,6 +194,10 @@ import nutritionFacts from "nutrition-label-jquery-plugin";
                 });
               this.meal = meal;
               this.mealModal = true;
+
+              this.$nextTick(() => {
+                this.getNutritionFacts(this.meal, this.meal.ingredients);
+              });
             },
             getNutritionFacts(meal, ingredients) {
               this.ingredientList = this.getIngredientList(ingredients);
