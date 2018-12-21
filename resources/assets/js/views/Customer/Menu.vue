@@ -223,6 +223,26 @@ export default {
       this.$nextTick(() => {
         this.getNutritionFacts(this.meal, this.meal.ingredients);
       });
+
+      this.$nextTick(() => {
+        ingredients.forEach(function(ingredient) {
+          self.calories = 0;
+          self.totalfat = 0;
+          self.satfat = 0;
+          self.transfat = 0;
+          self.cholesterol = 0;
+          self.sodium = 0;
+          self.totalcarb = 0;
+          self.fibers = 0;
+          self.sugars = 0;
+          self.proteins = 0;
+          self.vitamind = 0;
+          self.potassium = 0;
+          self.calcium = 0;
+          self.iron = 0;
+          self.addedsugars = 0;
+        });
+      });
     },
     getNutritionFacts(meal, ingredients) {
       this.ingredientList = this.getIngredientList(ingredients);
