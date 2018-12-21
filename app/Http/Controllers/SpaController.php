@@ -28,17 +28,32 @@ class SpaController extends Controller
         if ($request->wantsJson()) {
             //$this->middleware('view.api');
 
-            if (auth()->user()) {
-                if (auth()->user()->user_role_id == 2) {
+            $store = defined('STORE_ID') ? Store::with('meals')->find(STORE_ID) : null;
+
+            $user = auth('api')->user();
+
+            if ($user) {
+              /*
+                if ($user->role == 2) {
                     return [];
-                } elseif (auth()->user()->user_role_id == 3) {
+                } elseif ($user->role == 3) {
                     return [];
+                }*/
+
+                if($user->has('store')) {
+                  $store = $user->store()->with('meals')->first();
                 }
+            }
+
+
+            if($store) {
+              $orderIngredients = $store->getOrderIngredients();
             }
             
             return [
-                'store' => defined('STORE_ID') ? Store::with('meals')->find(STORE_ID) : null,
+                'store' => $store,
                 'stores' => Store::all(),
+                'order_ingredients' => $orderIngredients ?? [],
             ];
         } else {
             if (auth()->user()) {

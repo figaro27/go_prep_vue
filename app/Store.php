@@ -54,4 +54,23 @@ class Store extends Model
             ];
         });
     }
+
+    public function getOrderIngredients() {
+      $ingredients = [];
+
+      foreach($this->orders as $order) {
+        foreach($order->meals as $meal) {
+          foreach($meal->ingredients as $ingredient) {
+            if(!isset($ingredients[$ingredient->id])) {
+              $ingredients[$ingredient->id] = $ingredient->quantity;
+            }
+            else {
+              $ingredients[$ingredient->id] += $ingredient->quantity;
+            }
+          }
+        }
+      }
+
+      return $ingredients;
+    }
 }

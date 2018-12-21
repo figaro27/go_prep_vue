@@ -25,7 +25,11 @@ const state = {
     ingredients: {
       data: {},
       expries: 0
-    }
+    },
+    order_ingredients: {
+      data: {},
+      expires: 0
+    },
   }
 }
 
@@ -59,10 +63,28 @@ const actions = {
       state.store.ingredients.expires = moment()
         .add(ttl, 'seconds')
         .unix();
-    } else 
+    } else {
       throw new Exception('Failed to retrieve ingredients');
     }
+  },
+
+  async refreshOrderIngredients({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me/orders/ingredients");
+    const {data} = await res;
+
+    if (_.isArray(data)) {
+      state.store.ingredients.data = _.keyBy(data, 'id');
+      state.store.ingredients.expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    } else {
+      throw new Exception('Failed to retrieve order ingredients');
+    }
   }
+}
 
 // getters are functions
 const getters = {
@@ -89,9 +111,7 @@ const getters = {
     return state.user.weightUnit;
   },
 
-  // Getters for logged in customers
-  
-  // Getters for logged in stores
+  // Getters for logged in customers Getters for logged in stores
   ingredients(state) {
     return state.store.ingredients.data || {};
   }

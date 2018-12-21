@@ -99,6 +99,14 @@ export default {
     list () {
       return this.$route.matched.filter((route) => route.name || route.meta.label )
     }
+  },
+  created() {
+    // Get initial state
+    axios.get('/api').then(resp => {
+      if(_.isObject(resp.data.order_ingredients) && !_.isEmpty(resp.data.order_ingredients)) {
+        
+      }
+    });
   }
 }
 </script>
