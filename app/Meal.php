@@ -33,7 +33,7 @@ class Meal extends Model
 
     public function ingredients()
     {
-        return $this->belongsToMany('App\Ingredient', 'ingredient_meal');
+        return $this->belongsToMany('App\Ingredient')->withPivot('quantity', 'quantity_unit')->using('App\IngredientMeal');
     }
 
     public function meal_orders()
@@ -259,6 +259,7 @@ class Meal extends Model
                                 'food_name',
                                 'serving_qty',
                                 'serving_unit',
+                                'serving_weight_grams',
                                 'calories',
                                 'totalFat',
                                 'satFat',
@@ -277,7 +278,9 @@ class Meal extends Model
                             ])->map(function($val) {
                               return is_null($val) ? 0 : $val;
                             });
-                            $ingredient = new Ingredient($newIngredient->toArray());
+
+                            $ingredientArr = Ingredient::normalize($newIngredient->toArray());
+                            $ingredient = new Ingredient($ingredientArr);
                             $ingredient->store_id = $meal->store_id;
                             if ($ingredient->save()) {
                                 $ingredients->push($ingredient);
@@ -291,9 +294,10 @@ class Meal extends Model
                 }
             }
 
-            $syncIngredients = $ingredients->mapWithKeys(function($val, $key) {
+            $syncIngredients = $ingredients->mapWithKeys(function($val, $key) use ($newIngredients) {
               return [$val->id => [
-                'quantity' => $val->serving_qty,
+                'quantity' => $newIngredients[$key]['serving_qty'],
+                'quantity_unit' => $newIngredients[$key]['serving_unit'],
               ]];
             });
 

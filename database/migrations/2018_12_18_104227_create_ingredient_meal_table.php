@@ -18,6 +18,7 @@ class CreateIngredientMealTable extends Migration
             $table->integer('ingredient_id')->unsigned();
             $table->integer('meal_id')->unsigned();
             $table->float('quantity');
+            $table->string('quantity_unit');
             $table->timestamps();
 
             $table->foreign('ingredient_id')->references('id')->on('ingredients');

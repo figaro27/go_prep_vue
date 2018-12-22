@@ -29,7 +29,7 @@ const state = {
     order_ingredients: {
       data: {},
       expires: 0
-    },
+    }
   }
 }
 
@@ -76,8 +76,8 @@ const actions = {
     const {data} = await res;
 
     if (_.isArray(data)) {
-      state.store.ingredients.data = _.keyBy(data, 'id');
-      state.store.ingredients.expires = moment()
+      state.store.order_ingredients.data = _.keyBy(data, 'id');
+      state.store.order_ingredients.expires = moment()
         .add(ttl, 'seconds')
         .unix();
     } else {
@@ -111,9 +111,15 @@ const getters = {
     return state.user.weightUnit;
   },
 
-  // Getters for logged in customers Getters for logged in stores
+  // Getters for logged in customers
+  customerOrders(state) {},
+
+  //Getters for logged in stores
   ingredients(state) {
     return state.store.ingredients.data || {};
+  },
+  orderIngredients(state) {
+    return state.store.order_ingredients.data || {};
   }
 }
 

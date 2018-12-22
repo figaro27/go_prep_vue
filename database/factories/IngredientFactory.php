@@ -5,8 +5,6 @@ use Faker\Generator as Faker;
 $factory->define(App\Ingredient::class, function (Faker $faker) {
     return [
         'store_id' => 1,
-        'serving_qty' => rand(1, 20),
-        'serving_unit' => 'oz',
         'calories' => rand(10, 200),
         'fatcalories' => rand(10, 50),
         'totalfat' => rand(1, 50),

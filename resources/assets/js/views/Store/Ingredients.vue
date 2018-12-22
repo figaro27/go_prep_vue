@@ -33,31 +33,31 @@ export default {
     return {
       isLoading: true,
       weightUnit: "oz",
-      columns: ["food_name", "serving_qty", "serving_unit"],
+      columns: ["food_name", "quantity", "quantity_unit"],
       options: {
         headings: {
           food_name: "Ingredient",
-          serving_qty: "Quantity",
-          serving_unit: "Unit"
+          quantity: "Quantity",
+          quantity_unit: "Unit"
         }
       }
     };
   },
   computed: {
     ...mapGetters({
-      ingredients: "ingredients",
+      ingredients: "orderIngredients",
       defaultWeightUnit: "defaultWeightUnit"
     }),
     tableData() {
       return (
         Object.values(this.ingredients).map(ingredient => {
           // Convert weight to selected unit
-          ingredient.serving_qty = format.unit(
-            ingredient.serving_qty,
-            ingredient.serving_unit,
+          ingredient.quantity = format.unit(
+            ingredient.quantity,
+            ingredient.quantity_unit,
             this.weightUnit
           );
-          ingredient.serving_unit = this.weightUnit;
+          ingredient.quantity_unit = this.weightUnit;
 
           return ingredient;
         }) || []

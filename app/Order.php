@@ -11,35 +11,38 @@ class Order extends Model
         'fulfilled', 'notes',
     ];
 
-    public function user(){
-		return $this->belongsTo('App\User');
-	}
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 
-	public function store(){
-		return $this->belongsTo('App\Store');
-	}
+    public function store()
+    {
+        return $this->belongsTo('App\Store');
+    }
 
-	public function meal_orders(){
-		return $this->hasMany('App\MealOrder');
-	}
+    public function meal_orders()
+    {
+        return $this->hasMany('App\MealOrder');
+    }
 
-	public function meals(){
-		return $this->belongsToMany('App\Meal', 'meal_orders');
-	}
+    public function meals()
+    {
+        return $this->belongsToMany('App\Meal', 'meal_orders');
+    }
 
-	public static function updateOrder($id, $props)
+    public static function updateOrder($id, $props)
     {
 
         $order = Order::findOrFail($id);
 
         $props = collect($props)->only([
-        	'fulfilled',
-          'notes'
+            'fulfilled',
+            'notes',
         ]);
 
         $order->update($props->toArray());
 
     }
-
 
 }

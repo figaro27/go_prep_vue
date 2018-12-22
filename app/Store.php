@@ -58,14 +58,17 @@ class Store extends Model
     public function getOrderIngredients() {
       $ingredients = [];
 
-      foreach($this->orders as $order) {
+      $orders = $this->orders()->with(['meals'])->get();
+
+      foreach($orders as $order) {
         foreach($order->meals as $meal) {
-          foreach($meal->ingredients as $ingredient) {
+          foreach($meal->ingredients()->get() as $ingredient) {
+            $piv = $ingredient->pivot;
             if(!isset($ingredients[$ingredient->id])) {
-              $ingredients[$ingredient->id] = $ingredient->quantity;
+              $ingredients[$ingredient->id] = $ingredient->pivot->quantity;
             }
             else {
-              $ingredients[$ingredient->id] += $ingredient->quantity;
+              $ingredients[$ingredient->id] += $ingredient->pivot->quantity;
             }
           }
         }
