@@ -4,7 +4,7 @@ namespace App;
 
 use Auth;
 use Illuminate\Database\Eloquent\Model;
-use PhpUnitsOfMeasure\PhysicalQuantity\Weight;
+use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
 
 class Ingredient extends Model
 {
@@ -80,7 +80,8 @@ class Ingredient extends Model
         if (array_key_exists('serving_weight_grams', $mealArr)) {
             $grams = $mealArr['serving_weight_grams'];
         } elseif (array_key_exists('serving_qty', $mealArr) && array_key_exists('serving_unit', $mealArr)) {
-            $weight = new Weight($mealArr['serving_qty'], $mealArr['serving_unit']);
+            $weight = new Mass($mealArr['serving_qty'], $mealArr['serving_unit']);
+            $grams = $weight->toUnit('g');
         } else {
             throw new \Exception('Unable to determine base weight for ingredient');
         }

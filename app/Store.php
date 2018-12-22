@@ -63,12 +63,16 @@ class Store extends Model
       foreach($orders as $order) {
         foreach($order->meals as $meal) {
           foreach($meal->ingredients()->get() as $ingredient) {
-            $piv = $ingredient->pivot;
+            
+            $quantity = $ingredient->pivot->quantity;
+            $quantity_unit = $ingredient->pivot->quantity_unit;
+            $quantity_grams = $ingredient->pivot->quantity_grams;
+
             if(!isset($ingredients[$ingredient->id])) {
-              $ingredients[$ingredient->id] = $ingredient->pivot->quantity;
+              $ingredients[$ingredient->id] = $quantity_grams;
             }
             else {
-              $ingredients[$ingredient->id] += $ingredient->pivot->quantity;
+              $ingredients[$ingredient->id] += $quantity_grams;
             }
           }
         }
