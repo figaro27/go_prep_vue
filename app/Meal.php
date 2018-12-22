@@ -19,12 +19,30 @@ class Meal extends Model
         'price' => 'double',
     ];
 
+    protected $appends = ['tag_titles', 'quantity', 'nutrition'];
+
     public function getQuantityAttribute()
     {
         return 0;
     }
 
-    protected $appends = ['tag_titles', 'quantity'];
+    public function getNutritionAttribute() {
+
+      $nutrition = [];
+      
+      foreach($this->ingredients as $ingredient) {
+        foreach(Ingredient::NUTRITION_FIELDS as $field) {
+          if(!array_key_exists($field, $nutrition)) {
+            $nutrition[$field] = 0;
+          }
+
+          $nutrition[$field] += $ingredient[$field] * $ingredient->pivot->quantity_grams;
+        }
+      }
+
+      return $nutrition;
+    }
+
 
     public function store()
     {
