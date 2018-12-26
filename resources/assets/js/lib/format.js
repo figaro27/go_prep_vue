@@ -31,5 +31,8 @@ export default {
       .to(to);
 
     return Math.round(newVal * 100) / 100;
-  }
+  },
+  unitType(unit) {
+    return convert().describe(unit).measure;
+  },
 }

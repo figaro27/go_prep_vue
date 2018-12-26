@@ -45,15 +45,18 @@ export default {
   },
   computed: {
     ...mapGetters({
-      ingredients: "orderIngredients",
+      orderIngredients: "orderIngredients",
+      ingredient: "ingredients",
       defaultWeightUnit: "defaultWeightUnit"
     }),
     tableData() {
       return (
-        Object.values(this.ingredients).map(ingredient => {
+        _.map(this.orderIngredients, (quantity, id) => {
+          const ingredient = this.ingredient(id);
+
           // Convert weight to selected unit
           ingredient.quantity = format.unit(
-            ingredient.quantity,
+            quantity,
             ingredient.quantity_unit,
             this.weightUnit
           );
@@ -71,12 +74,12 @@ export default {
     // Set initial weight unit to user default
     this.weightUnit = this.defaultWeightUnit || "oz";
 
-    this.refreshIngredients().finally(() => {
+    this.refreshOrderIngredients().finally(() => {
       this.isLoading = false;
     });
   },
   methods: {
-    ...mapActions(["refreshIngredients"])
+    ...mapActions(["refreshOrderIngredients"])
   }
 };
 </script>

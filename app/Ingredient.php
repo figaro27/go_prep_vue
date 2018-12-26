@@ -5,6 +5,7 @@ namespace App;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
+use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
 
 class Ingredient extends Model
 {
@@ -65,7 +66,7 @@ class Ingredient extends Model
     }
 
     /**
-     * Normalizes all nutritional values to 1g
+     * Normalizes all nutritional values to a base unit of measure
      *
      * @param array|object $mealArr
      * @return void
@@ -75,15 +76,35 @@ class Ingredient extends Model
         if (!is_array($mealArr)) {
             throw new \Exception('Invalid meal array. It should be supplied in nutritionix format.');
         }
+        if (!array_key_exists('serving_qty', $mealArr)) {
+            throw new \Exception('No serving quantity provided.');
+        }
+        if (!array_key_exists('serving_unit', $mealArr)) {
+            throw new \Exception('No serving unit provided.');
+        }
 
-        // We already have the nutrition for a gram weight
-        if (array_key_exists('serving_weight_grams', $mealArr)) {
-            $grams = $mealArr['serving_weight_grams'];
-        } elseif (array_key_exists('serving_qty', $mealArr) && array_key_exists('serving_unit', $mealArr)) {
-            $weight = new Mass($mealArr['serving_qty'], $mealArr['serving_unit']);
-            $grams = $weight->toUnit('g');
+        // Find unit type
+        $mealArr['unit_type'] = Unit::getType($mealArr['serving_unit']);
+
+        if ($mealArr['unit_type'] === 'mass') {
+            // We already have the nutrition for a gram weight
+            if (array_key_exists('serving_weight_grams', $mealArr)) {
+                $unitFactor = $mealArr['serving_weight_grams'];
+            } elseif (array_key_exists('serving_qty', $mealArr) && array_key_exists('serving_unit', $mealArr)) {
+                $weight = new Mass($mealArr['serving_qty'], $mealArr['serving_unit']);
+                $unitFactor = $weight->toUnit('g');
+            } else {
+                throw new \Exception('Unable to determine base weight for ingredient');
+            }
+        } elseif ($mealArr['unit_type'] === 'volume') {
+            if (array_key_exists('serving_qty', $mealArr) && array_key_exists('serving_unit', $mealArr)) {
+                $volume = new Mass($mealArr['serving_qty'], $mealArr['serving_unit']);
+                $unitFactor = $volume->toUnit('ml');
+            } else {
+                throw new \Exception('Unable to determine base volume for ingredient');
+            }
         } else {
-            throw new \Exception('Unable to determine base weight for ingredient');
+            $unitFactor = 1;
         }
 
         foreach (self::NUTRITION_FIELDS as $field) {
@@ -91,13 +112,22 @@ class Ingredient extends Model
                 continue;
             }
 
-            $mealArr[$field] /= $grams;
+            $mealArr[$field] /= $unitFactor;
+        }
+
+        // Thumbnail
+        if (array_key_exists('photo', $mealArr)) {
+            $photo = $mealArr['photo']['highres'] ?? $mealArr['photo']['thumb'];
+            $photoThumb = $mealArr['photo']['thumb'] ?? $photo;
+            $mealArr['image'] = $photo;
+            $mealArr['image_thumb'] = $photoThumb;
         }
 
         // Clean up unneeded values
         unset($mealArr['serving_qty']);
         unset($mealArr['serving_unit']);
         unset($mealArr['serving_weight_grams']);
+        unset($mealArr['photo']);
 
         return $mealArr;
     }

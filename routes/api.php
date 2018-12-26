@@ -26,6 +26,7 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
             Route::group(['prefix' => 'me', 'middleware' => ['role.store']], function ($router) {
                 Route::resource('meals', 'Store\\MealController');
                 Route::resource('ingredients', 'Store\\IngredientController');
+                Route::get('orders/ingredients', 'Store\\OrderController@getIngredients');
                 Route::resource('orders', 'Store\\OrderController');
                 Route::get('customers', 'Store\\CustomerController@index');
             });

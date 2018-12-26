@@ -85,4 +85,8 @@ class OrderController extends StoreController
     {
         //
     }
+
+    public function getIngredients() {
+      return $this->store->getOrderIngredients();
+    }
 }

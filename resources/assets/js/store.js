@@ -29,7 +29,7 @@ const state = {
     order_ingredients: {
       data: {},
       expires: 0
-    }
+    },
   }
 }
 
@@ -42,15 +42,47 @@ const mutations = {
     state.viewed_store = {
       ...store
     };
-  }
+  },
+
+  ingredients(state, { ingredients, expires }) {
+    if(!expires) {
+      expires = moment()
+      .add(ttl, 'seconds')
+      .unix();
+    }
+
+    state.store.ingredients.data = ingredients;
+    state.store.ingredients.expires = expires;
+  },
+
+  orderIngredients(state, { ingredients, expires }) {
+    if(!expires) {
+      expires = moment()
+      .add(ttl, 'seconds')
+      .unix();
+    }
+
+    state.store.order_ingredients.data = ingredients;
+    state.store.order_ingredients.expires = expires;
+  },
 }
 
 // actions are functions that cause side effects and can involve asynchronous
 // operations.
 const actions = {
+  
+  async init({
+    commit,
+    state,
+  }, args = {}) {
+    const res = await axios.get('/api');
+    const {data} = await res;
+
+
+  },
+  
 
   // Actions for logged in stores
-
   async refreshIngredients({
     commit,
     state
@@ -59,10 +91,7 @@ const actions = {
     const {data} = await res;
 
     if (_.isArray(data)) {
-      state.store.ingredients.data = _.keyBy(data, 'id');
-      state.store.ingredients.expires = moment()
-        .add(ttl, 'seconds')
-        .unix();
+      commit('ingredients', {ingredients: _.keyBy(data, 'id')})
     } else {
       throw new Exception('Failed to retrieve ingredients');
     }
@@ -76,10 +105,7 @@ const actions = {
     const {data} = await res;
 
     if (_.isArray(data)) {
-      state.store.order_ingredients.data = _.keyBy(data, 'id');
-      state.store.order_ingredients.expires = moment()
-        .add(ttl, 'seconds')
-        .unix();
+      commit('orderIngredients', {ingredients: _.keyBy(data, 'id')})
     } else {
       throw new Exception('Failed to retrieve order ingredients');
     }
@@ -117,6 +143,9 @@ const getters = {
   //Getters for logged in stores
   ingredients(state) {
     return state.store.ingredients.data || {};
+  },
+  ingredient(state, id) {
+    return _.find(state.store.ingredients.data, { id: 'id' }) || null;
   },
   orderIngredients(state) {
     return state.store.order_ingredients.data || {};

@@ -3,8 +3,12 @@
 use Faker\Generator as Faker;
 
 $factory->define(App\Ingredient::class, function (Faker $faker) {
+    $unitTypes = ['mass', 'volume', 'unit'];
     return [
         'store_id' => 1,
+        'image' => $faker->imageUrl($width = 128, $height = 128),
+        'image_thumb' => $faker->imageUrl($width = 1024, $height = 1024),
+        'unit_type' => $unitTypes[rand(0, 2)],
         'calories' => rand(10, 200),
         'fatcalories' => rand(10, 50),
         'totalfat' => rand(1, 50),

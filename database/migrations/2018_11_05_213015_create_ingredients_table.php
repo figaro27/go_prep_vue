@@ -17,6 +17,9 @@ class CreateIngredientsTable extends Migration
             $table->increments('id');
             $table->integer('store_id')->references('id')->on('stores');
             $table->string('food_name');
+            $table->string('image')->nullable();
+            $table->string('image_thumb')->nullable();
+            $table->enum('unit_type', ['mass', 'volume', 'unit'])->default('mass');
             $table->double('calories')->default(0);
             $table->double('fatcalories')->default(0);
             $table->double('totalfat')->default(0);

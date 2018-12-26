@@ -262,10 +262,11 @@ class Meal extends Model
                         $ingredient = Ingredient::where('store_id', $meal->store_id)->findOrFail($ingredientId);
                         $ingredients->push($ingredient);
                     } else {
-                        // Check if ingredient with same name already exists
+                        // Check if ingredient with same name and unit type already exists
                         $ingredient = Ingredient::where([
                             'store_id' => $meal->store_id,
                             'food_name' => $newIngredient['food_name'],
+                            'unit_type' => Unit::getType('serving_unit'),
                         ])->first();
 
                         if($ingredient) {
@@ -275,6 +276,7 @@ class Meal extends Model
                         else {
                             $newIngredient = collect($newIngredient)->only([
                                 'food_name',
+                                'photo',
                                 'serving_qty',
                                 'serving_unit',
                                 'serving_weight_grams',
@@ -314,8 +316,8 @@ class Meal extends Model
 
             $syncIngredients = $ingredients->mapWithKeys(function($val, $key) use ($newIngredients) {
               return [$val->id => [
-                'quantity' => $newIngredients[$key]['serving_qty'],
-                'quantity_unit' => $newIngredients[$key]['serving_unit'],
+                'quantity' => $newIngredients[$key]['serving_qty'] ?? 1,
+                'quantity_unit' => $newIngredients[$key]['serving_unit'] ?? 'g',
               ]];
             });
 
