@@ -66,13 +66,18 @@ class Store extends Model
             
             $quantity = $ingredient->pivot->quantity;
             $quantity_unit = $ingredient->pivot->quantity_unit;
-            $quantity_grams = $ingredient->pivot->quantity_grams;
+            $quantity_base = $ingredient->pivot->quantity_base;
 
-            if(!isset($ingredients[$ingredient->id])) {
-              $ingredients[$ingredient->id] = $quantity;
+            $key = $ingredient->id;
+
+            if(!isset($ingredients[$key])) {
+              $ingredients[$key] = [
+                'id' => $ingredient->id,
+                'quantity' => $quantity_base
+              ];
             }
             else {
-              $ingredients[$ingredient->id] += $quantity;
+              $ingredients[$key]['quantity'] += $quantity_base;
             }
           }
         }
