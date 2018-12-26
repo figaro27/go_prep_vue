@@ -93,7 +93,7 @@ const actions = {
     if (_.isArray(data)) {
       commit('ingredients', {ingredients: _.keyBy(data, 'id')})
     } else {
-      throw new Exception('Failed to retrieve ingredients');
+      throw new Error('Failed to retrieve ingredients');
     }
   },
 
@@ -102,12 +102,16 @@ const actions = {
     state
   }, args = {}) {
     const res = await axios.get("/api/me/orders/ingredients");
-    const {data} = await res;
+    let {data} = await res;
+
+    if(_.isObject(data)) {
+      data = Object.values(data);
+    }
 
     if (_.isArray(data)) {
       commit('orderIngredients', {ingredients: _.keyBy(data, 'id')})
     } else {
-      throw new Exception('Failed to retrieve order ingredients');
+      throw new Error('Failed to retrieve order ingredients');
     }
   }
 }
@@ -144,8 +148,8 @@ const getters = {
   ingredients(state) {
     return state.store.ingredients.data || {};
   },
-  ingredient(state, id) {
-    return _.find(state.store.ingredients.data, { id: 'id' }) || null;
+  ingredient: (state) => id => {
+    return _.find(state.store.ingredients.data, { 'id': parseInt(id) });
   },
   orderIngredients(state) {
     return state.store.order_ingredients.data || {};

@@ -126,7 +126,7 @@ export default {
       });
     },
     weightUnitOptions() {
-      return units.weight.selectOptions();
+      return units.mass.selectOptions();
     },
     canSave() {
       return this.ingredients.length > 0;

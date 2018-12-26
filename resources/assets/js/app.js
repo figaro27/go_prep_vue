@@ -29,6 +29,11 @@ Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
 Vue.component('input-tag', InputTag)
 Vue.component('v-select', vSelect)
 
+const files = require.context('./components', true, /\.vue$/i)
+files
+  .keys()
+  .map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
+
 if($('#customerapp').length) {
   const app = new Vue({
     el: '#customerapp',

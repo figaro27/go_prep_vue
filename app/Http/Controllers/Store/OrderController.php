@@ -87,6 +87,15 @@ class OrderController extends StoreController
     }
 
     public function getIngredients() {
-      return $this->store->getOrderIngredients();
+      $ingredients = collect($this->store->getOrderIngredients());
+
+      $ingredients = $ingredients->map(function($quantity, $id) {
+        return [
+          'id' => $id,
+          'quantity' => $quantity,
+        ];
+      })->toArray();
+
+      return $ingredients;
     }
 }

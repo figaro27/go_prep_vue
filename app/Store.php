@@ -69,10 +69,10 @@ class Store extends Model
             $quantity_grams = $ingredient->pivot->quantity_grams;
 
             if(!isset($ingredients[$ingredient->id])) {
-              $ingredients[$ingredient->id] = $quantity_grams;
+              $ingredients[$ingredient->id] = $quantity;
             }
             else {
-              $ingredients[$ingredient->id] += $quantity_grams;
+              $ingredients[$ingredient->id] += $quantity;
             }
           }
         }

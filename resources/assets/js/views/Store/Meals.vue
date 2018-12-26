@@ -516,7 +516,7 @@ export default {
   },
   computed: {
     weightUnitOptions() {
-      return units.weight.selectOptions();
+      return units.mass.selectOptions();
     },
     statusFilterOptions() {
       return [
