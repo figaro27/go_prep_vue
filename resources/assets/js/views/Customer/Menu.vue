@@ -1,5 +1,12 @@
 <template>
   <div class="container-fluid">
+      <div v-for="category in categories" :key="category">
+        <button @click="filterByCategory(category)">{{ category }}</button>
+      </div>
+        <br/>
+      <div v-for="tag in tags" :key="tag">
+        <button @click="filterByTag(tag)">{{ tag }}</button>
+      </div>
     <div class="row">
       <div class="col-sm-12 mt-3">
         <div class="card">
@@ -21,7 +28,7 @@
             </b-modal>
             <div class="row">
               <div class="col-sm-10" style="max-height:800px;overflow-y:auto">
-                <div v-for="(meals, category) in mealsByCategory" :key="category">
+                <div v-for="(meals, category) in meals" :key="category">
                   <h3>{{category}}</h3>
                   <b-row>
                     <b-col v-for="meal in meals" :key="meal.id" cols="3">
@@ -110,6 +117,11 @@ export default {
   components: {},
   data() {
     return {
+      filteredView: false,
+      filters: {
+        categories: [],
+        tags: []
+      },
       bag: [],
       meal: null,
       ingredients: "",
@@ -148,19 +160,47 @@ export default {
       }
       return "meal";
     },
-    mealsByCategory() {
+    meals() {
+      let meals = this.store.meals
+      let filters = this.filters;
       let grouped = {};
 
+      if (!this.filteredView){
+          meals.forEach(meal => {
+            meal.meal_categories.forEach(category => {
+              if (!_.has(grouped, category.category)) {
+                grouped[category.category] = [meal];
+              } else {
+                grouped[category.category].push(meal);
+              }
+            });
+          });
+        }
+        else {
+          // Tried a bunch of unsuccessful code here to show filtered views. Used _.filter
+        }
+      return grouped;
+    },
+    categories(){
+      let grouped = [];
       this.store.meals.forEach(meal => {
         meal.meal_categories.forEach(category => {
-          if (!_.has(grouped, category.category)) {
-            grouped[category.category] = [meal];
-          } else {
-            grouped[category.category].push(meal);
+          if (!_.includes(grouped, category.category)){
+            grouped.push(category.category);
           }
         });
       });
-
+      return grouped;
+    },
+    tags(){
+      let grouped = [];
+      this.store.meals.forEach(meal => {
+        meal.tags.forEach(tag => {
+          if (!_.includes(grouped, tag.tag)){
+            grouped.push(tag.tag);
+          }
+        });
+      });
       return grouped;
     }
   },
@@ -171,14 +211,12 @@ export default {
       if (meal.quantity < 0) {
         meal.quantity += 1;
       }
-      // this.total -= 1;
       this.$store.commit('updateBagTotal', -1);
       this.preventNegative();
       this.bag.pop(meal);
     },
     addOne(meal) {
       meal.quantity += 1;
-      //this.total += 1;
       this.$store.commit('updateBagTotal', 1);
       this.preventNegative();
       this.bag.push(meal);
@@ -292,6 +330,14 @@ export default {
     },
     addBagItems(bag){
       this.$store.commit('addBagItems', bag);
+    },
+    filterByCategory(category){
+      this.filteredView = true;
+      this.filters.categories.push(category);
+    },
+    filterByTag(tag){
+      this.filteredView = true;
+      this.filters.tags.push(tag);
     }
   }
 };

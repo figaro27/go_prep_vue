@@ -10,8 +10,8 @@ const state = {
   stores: {},
   bag: {
     items: {},
-    total: 0
-  }
+  },
+  total: null
 }
 
 // mutations are operations that actually mutates the state. each mutation
@@ -28,7 +28,10 @@ const mutations = {
     state.bag.items = items;
   },
   updateBagTotal(state, total){
-    state.bag.total += total;
+    state.total += total;
+    if (state.total < 0) {
+        state.total += 1;
+      }
   }
 }
 
@@ -52,7 +55,7 @@ const getters = {
     return state.bag.items;
   },
   total(state) {
-    return state.bag.total;
+    return state.total;
   }
 }
 
