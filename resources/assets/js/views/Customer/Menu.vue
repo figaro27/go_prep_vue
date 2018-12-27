@@ -67,7 +67,7 @@
                 <hr>
                 <div>
                   <router-link to="/customer/bag">
-                    <img v-if="total >= minimum" src="/storage/next.jpg">
+                    <img v-if="total >= minimum" src="/storage/next.jpg" @click="addBagItems(bag)">
                   </router-link>
                 </div>
               </div>
@@ -110,9 +110,8 @@ export default {
   components: {},
   data() {
     return {
-      meals: [],
+      bag: [],
       meal: null,
-      total: 0,
       ingredients: "",
       mealModal: false,
       calories: null,
@@ -134,7 +133,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      store: "viewedStore"
+      store: "viewedStore",
+      total: "total"
     }),
     minimum() {
       return this.store.store_settings.minimum;
@@ -171,13 +171,17 @@ export default {
       if (meal.quantity < 0) {
         meal.quantity += 1;
       }
-      this.total -= 1;
+      // this.total -= 1;
+      this.$store.commit('updateBagTotal', -1);
       this.preventNegative();
+      this.bag.pop(meal);
     },
     addOne(meal) {
       meal.quantity += 1;
-      this.total += 1;
+      //this.total += 1;
+      this.$store.commit('updateBagTotal', 1);
       this.preventNegative();
+      this.bag.push(meal);
       this.mealModal = false;
     },
     clearMeal(meal) {
@@ -285,6 +289,9 @@ export default {
           ", ";
       });
       return ingredientList;
+    },
+    addBagItems(bag){
+      this.$store.commit('addBagItems', bag);
     }
   }
 };

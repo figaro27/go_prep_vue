@@ -6,7 +6,9 @@
                         Bag
                     </div>
                     <div class="card-body">
-
+                        <li v-for="item in $store.getters.bag">
+                        {{ item.title }}
+                        </li>
                     </div>
                 </div>
             </div>

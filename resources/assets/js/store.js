@@ -8,8 +8,9 @@ Vue.use(Vuex)
 const state = {
   viewed_store: {},
   stores: {},
-  cart: {
-    items: {}
+  bag: {
+    items: {},
+    total: 0
   }
 }
 
@@ -23,6 +24,12 @@ const mutations = {
       ...store
     };
   },
+  addBagItems(state, items){
+    state.bag.items = items;
+  },
+  updateBagTotal(state, total){
+    state.bag.total += total;
+  }
 }
 
 // actions are functions that cause side effects and can involve asynchronous
@@ -41,12 +48,11 @@ const getters = {
   viewedStore(state, getters) {
     return state.viewed_store;
   },
-
-  cart(state) {
-    return state.cart;
+  bag(state) {
+    return state.bag.items;
   },
-  cartItems(state) {
-    return state.cart.items;
+  total(state) {
+    return state.bag.total;
   }
 }
 
