@@ -23,11 +23,11 @@ class IngredientMeal extends Pivot
   ];
 
   public function meals() {
-		return $this->hasMany('App\Meal');
+		return $this->belongsTo('App\Meal');
 	}
 
-	public function ingredients() {
-		return $this->hasMany('App\Ingredients');
+	public function ingredient() {
+		return $this->belongsTo('App\Ingredient');
   }
 
   public function getQuantityBaseAttribute() {
@@ -42,7 +42,5 @@ class IngredientMeal extends Pivot
       return $volume->toUnit('ml');
     }
     else return $this->quantity;
-
-    
   }
 }
