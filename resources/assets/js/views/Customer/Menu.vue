@@ -1,12 +1,12 @@
 <template>
   <div class="container-fluid">
-      <div v-for="category in categories" :key="category">
-        <button @click="filterByCategory(category)">{{ category }}</button>
-      </div>
-        <br/>
-      <div v-for="tag in tags" :key="tag">
-        <button @click="filterByTag(tag)">{{ tag }}</button>
-      </div>
+    <div v-for="category in categories" :key="category">
+      <button @click="filterByCategory(category)">{{ category }}</button>
+    </div>
+    <br>
+    <div v-for="tag in tags" :key="tag">
+      <button @click="filterByTag(tag)">{{ tag }}</button>
+    </div>
     <div class="row">
       <div class="col-sm-12 mt-3">
         <div class="card">
@@ -43,7 +43,7 @@
                         name
                         id
                         class="quantity"
-                        v-model="meal.quantity"
+                        :value="quantity(meal)"
                         readonly
                       ></b-form-input>
                       <img src="/storage/plus.jpg" @click="addOne(meal)">
@@ -54,18 +54,18 @@
                 </div>
               </div>
               <div class="col-sm-2" style="max-height:800px;overflow-y:auto">
-                <b-col v-for="meal in store.meals" :key="meal.id" cols="12">
-                  <div v-if="meal.quantity > 0">
+                <b-col v-for="(item, mealId) in bag" :key="`bag-${mealId}`" cols="12">
+                  <div v-if="item.quantity > 0">
                     <p @click="clearAll">Clear All</p>
-                    <img :src="meal.featured_image" class="cart-item-img">
-                    <p>{{ meal.title }}</p>
-                    <img src="/storage/minus.jpg" @click="minusOne(meal)">
-                    {{ meal.quantity }}
+                    <img :src="item.meal.featured_image" class="cart-item-img">
+                    <p>{{ item.meal.title }}</p>
+                    <img src="/storage/minus.jpg" @click="minusOne(item.meal)">
+                    {{ item.quantity }}
                     <img
                       src="/storage/plus.jpg"
-                      @click="addOne(meal)"
+                      @click="addOne(item.meal)"
                     >
-                    <img src="/storage/x.png" @click="clearMeal(meal)">
+                    <img src="/storage/x.png" @click="clearMeal(item.meal)">
                   </div>
                 </b-col>
                 <p
@@ -110,7 +110,7 @@
 </style>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
 
 export default {
@@ -122,7 +122,7 @@ export default {
         categories: [],
         tags: []
       },
-      bag: [],
+      //bag: {},
       meal: null,
       ingredients: "",
       mealModal: false,
@@ -146,7 +146,9 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
-      total: "total"
+      total: "bagQuantity",
+      bag: "bagItems",
+      hasMeal: "bagHasMeal"
     }),
     minimum() {
       return this.store.store_settings.minimum;
@@ -161,42 +163,68 @@ export default {
       return "meal";
     },
     meals() {
-      let meals = this.store.meals
+      let meals = this.store.meals;
       let filters = this.filters;
       let grouped = {};
 
-      if (!this.filteredView){
-          meals.forEach(meal => {
-            meal.meal_categories.forEach(category => {
-              if (!_.has(grouped, category.category)) {
-                grouped[category.category] = [meal];
-              } else {
-                grouped[category.category].push(meal);
-              }
-            });
-          });
-        }
-        else {
-          // Tried a bunch of unsuccessful code here to show filtered views. Used _.filter
-        }
+      if (this.filteredView) {
+        meals = _.filter(meals, meal => {
+          let skip = false;
+
+          if(filters.categories.length > 0) {
+            let hasCat = _.reduce(meal.meal_categories, (has, cat) => {
+              if(has) return true;
+              let x = _.includes(filters.categories, cat.category);
+
+              return x;
+            }, false);
+
+            skip = skip || !hasCat;
+          }
+
+          if(filters.tags.length > 0) {
+            let hasTag = _.reduce(meal.tags, (has, tag) => {
+              if(has) return true;
+              let x = _.includes(filters.tags, tag.tag);
+
+              return x;
+            }, false);
+
+            skip = skip || !hasTag;
+          }
+
+          return !skip;
+        });
+      }
+
+      meals.forEach(meal => {
+        meal.meal_categories.forEach(category => {
+          if (!_.has(grouped, category.category)) {
+            grouped[category.category] = [meal];
+          } else {
+            grouped[category.category].push(meal);
+          }
+        });
+      });
+
       return grouped;
     },
-    categories(){
+    categories() {
       let grouped = [];
       this.store.meals.forEach(meal => {
         meal.meal_categories.forEach(category => {
-          if (!_.includes(grouped, category.category)){
+          if (!_.includes(grouped, category.category)) {
             grouped.push(category.category);
           }
         });
       });
       return grouped;
     },
-    tags(){
+    tags() {
       let grouped = [];
       this.store.meals.forEach(meal => {
         meal.tags.forEach(tag => {
-          if (!_.includes(grouped, tag.tag)){
+          if (!_.includes(grouped, tag.tag)) {
             grouped.push(tag.tag);
           }
         });
@@ -206,33 +234,22 @@ export default {
   },
   mounted() {},
   methods: {
-    minusOne(meal) {
-      meal.quantity -= 1;
-      if (meal.quantity < 0) {
-        meal.quantity += 1;
-      }
-      this.$store.commit('updateBagTotal', -1);
-      this.preventNegative();
-      this.bag.pop(meal);
+    quantity(meal) {
+      const qty = this.$store.getters.bagItemQuantity(meal);
+      return qty;
     },
     addOne(meal) {
-      meal.quantity += 1;
-      this.$store.commit('updateBagTotal', 1);
-      this.preventNegative();
-      this.bag.push(meal);
-      this.mealModal = false;
+      this.$store.commit("addToBag", { meal, quantity: 1 });
+    },
+    minusOne(meal) {
+      this.$store.commit("removeFromBag", { meal, quantity: 1 });
     },
     clearMeal(meal) {
-      this.total -= meal.quantity;
-      this.preventNegative();
-      meal.quantity = 0;
+      let quantity = this.quantity(meal);
+      this.$store.commit("removeFromBag", { meal, quantity });
     },
     clearAll() {
-      this.store.meals.forEach(function(meal) {
-        meal.quantity = 0;
-      });
-      this.total = 0;
-      this.preventNegative();
+      this.$store.commit("emptyBag");
     },
     preventNegative() {
       if (this.total < 0) {
@@ -328,14 +345,14 @@ export default {
       });
       return ingredientList;
     },
-    addBagItems(bag){
-      this.$store.commit('addBagItems', bag);
+    addBagItems(bag) {
+      this.$store.commit("addBagItems", bag);
     },
-    filterByCategory(category){
+    filterByCategory(category) {
       this.filteredView = true;
       this.filters.categories.push(category);
     },
-    filterByTag(tag){
+    filterByTag(tag) {
       this.filteredView = true;
       this.filters.tags.push(tag);
     }
