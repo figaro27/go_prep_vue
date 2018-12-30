@@ -120,7 +120,15 @@ const getters = {
     }
 
     return state.bag.items[meal].quantity;
-  }
+  },
+  totalBagPrice(state){
+    let items = _.toArray(state.bag.items);
+    let totalBagPrice = 0;
+    items.forEach(item => {
+      totalBagPrice += (item.quantity * item.meal.price);
+    })
+    return totalBagPrice.toFixed(2);
+  },
 }
 
 const plugins = [
