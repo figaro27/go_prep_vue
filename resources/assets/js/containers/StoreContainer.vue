@@ -63,6 +63,7 @@ import DefaultHeaderDropdownAccnt from './DefaultHeaderDropdownAccnt'
 import StoreDropdown from './StoreDropdown'
 import DefaultHeaderDropdownMssgs from './DefaultHeaderDropdownMssgs'
 import DefaultHeaderDropdownTasks from './DefaultHeaderDropdownTasks'
+import { mapActions } from 'vuex';
 
 export default {
   name: 'DefaultContainer',
@@ -102,11 +103,12 @@ export default {
   },
   created() {
     // Get initial state
-    axios.get('/api').then(resp => {
-      if(_.isObject(resp.data.order_ingredients) && !_.isEmpty(resp.data.order_ingredients)) {
-        
-      }
-    });
-  }
+    this.initState();
+  },
+  methods: {
+    ...mapActions({
+      initState: 'init'
+    }),
+  },
 }
 </script>

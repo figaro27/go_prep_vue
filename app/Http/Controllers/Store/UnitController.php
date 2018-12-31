@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Store;
 
 use App\Ingredient;
-use App\Utils\Data\ExportsData;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class IngredientController extends StoreController
+class UnitController extends StoreController
 {
-    use ExportsData;
 
     /**
      * Display a listing of the resource.
@@ -17,8 +16,8 @@ class IngredientController extends StoreController
      */
     public function index()
     {
-        return $this->store->has('ingredients') ?
-        $this->store->ingredients()->with([])->get() : [];
+        return $this->store->has('units') ?
+        $this->store->units()->with([])->get() : [];
     }
 
     /**
@@ -39,7 +38,35 @@ class IngredientController extends StoreController
      */
     public function store(Request $request)
     {
-        //
+        $units = $request->get('units');
+
+        if (!is_array($units)) {
+            return [];
+        }
+
+        foreach ($units as $id => $unit) {
+            if (!is_numeric($id)) {
+                continue;
+            }
+
+            $ingredient = Ingredient::where([
+                'id' => $id,
+                'store_id' => $this->store->id,
+            ])->first();
+
+            if (!$ingredient) {
+                continue;
+            }
+
+            $unit = DB::connection()->getPdo()->quote($unit);
+
+            DB::statement("
+        INSERT INTO store_units
+        (store_id, ingredient_id, unit, created_at, updated_at)
+        VALUES
+        ({$this->store->id}, {$ingredient->id}, {$unit}, NOW(), NOW())
+        ON DUPLICATE KEY UPDATE unit=VALUES(unit), updated_at=NOW()");
+        }
     }
 
     /**
@@ -87,7 +114,8 @@ class IngredientController extends StoreController
         //
     }
 
-    public function exportData() {
-      
+    public function exportData()
+    {
+
     }
 }

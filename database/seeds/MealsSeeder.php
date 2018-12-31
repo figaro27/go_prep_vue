@@ -18,16 +18,25 @@ class MealsSeeder extends Seeder
         }
 
         $ingredients = App\Ingredient::where('store_id', 1)->get();
-        $units = ['oz', 'g'];
 
-        factory(App\Meal::class, 50)->create()->each(function ($u) use ($tags, $ingredients, $units) {
+        factory(App\Meal::class, 50)->create()->each(function ($u) use ($tags, $ingredients) {
             $u->tags()->save($tags[rand(0, count($tags) - 1)]);
 
-            for($i=0; $i<10; $i++) {
-              $u->ingredients()->attach($ingredients[rand(0, count($ingredients) - 1)], [
-                'quantity' => rand(1, 15),
-                'quantity_unit' => $units[rand(0,1)],
-              ]);
+            $unitTypes = [
+                'mass' => ['oz', 'g'],
+                'volume' => ['ml', 'teaspoon'],
+                'unit' => ['unit'],
+            ];
+
+            for ($i = 0; $i < 10; $i++) {
+                $ingredient = $ingredients[rand(0, count($ingredients) - 1)];
+                $units = $unitTypes[$ingredient->unit_type];
+                $unit = $units[rand(0, count($units) - 1)];
+
+                $u->ingredients()->attach($ingredient, [
+                    'quantity' => rand(1, 15),
+                    'quantity_unit' => $unit,
+                ]);
             }
         });
 

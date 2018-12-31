@@ -26,6 +26,11 @@ class Store extends Model
         return $this->hasMany('App\Ingredient');
     }
 
+    public function units()
+    {
+        return $this->hasMany('App\StoreUnit');
+    }
+
     public function storeDetail()
     {
         return $this->hasOne('App\StoreDetail');
@@ -73,6 +78,7 @@ class Store extends Model
             if(!isset($ingredients[$key])) {
               $ingredients[$key] = [
                 'id' => $ingredient->id,
+                'ingredient' => $ingredient,
                 'quantity' => $quantity_base
               ];
             }

@@ -24,12 +24,16 @@ const state = {
   store: {
     ingredients: {
       data: {},
-      expries: 0
+      expires: 0
     },
     order_ingredients: {
       data: {},
       expires: 0
     },
+    ingredient_units: {
+      data: {},
+      expires: 0
+    }
   }
 }
 
@@ -44,43 +48,64 @@ const mutations = {
     };
   },
 
-  ingredients(state, { ingredients, expires }) {
-    if(!expires) {
+  ingredients(state, {ingredients, expires}) {
+    if (!expires) {
       expires = moment()
-      .add(ttl, 'seconds')
-      .unix();
+        .add(ttl, 'seconds')
+        .unix();
     }
 
     state.store.ingredients.data = ingredients;
     state.store.ingredients.expires = expires;
   },
 
-  orderIngredients(state, { ingredients, expires }) {
-    if(!expires) {
+  ingredientUnits(state, {units, expires}) {
+    if (!expires) {
       expires = moment()
-      .add(ttl, 'seconds')
-      .unix();
+        .add(ttl, 'seconds')
+        .unix();
+    }
+
+    state.store.ingredient_units.data = units;
+    state.store.ingredient_units.expires = expires;
+  },
+
+  orderIngredients(state, {ingredients, expires}) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
     }
 
     state.store.order_ingredients.data = ingredients;
     state.store.order_ingredients.expires = expires;
-  },
+  }
 }
 
 // actions are functions that cause side effects and can involve asynchronous
 // operations.
 const actions = {
-  
+
   async init({
     commit,
-    state,
+    state
   }, args = {}) {
     const res = await axios.get('/api');
     const {data} = await res;
 
+    try {
+      if (!_.isEmpty(data.store.units)) {
+        let units = {};
 
+        _.forEach(data.store.units, unit => {
+          units[unit.ingredient_id] = unit.unit;
+        });
+
+        commit('ingredientUnits', { units });
+      }
+    }
+    catch(e) {}
   },
-  
 
   // Actions for logged in stores
   async refreshIngredients({
@@ -91,7 +116,9 @@ const actions = {
     const {data} = await res;
 
     if (_.isArray(data)) {
-      commit('ingredients', {ingredients: _.keyBy(data, 'id')})
+      commit('ingredients', {
+        ingredients: _.keyBy(data, 'id')
+      })
     } else {
       throw new Error('Failed to retrieve ingredients');
     }
@@ -104,16 +131,39 @@ const actions = {
     const res = await axios.get("/api/me/orders/ingredients");
     let {data} = await res;
 
-    if(_.isObject(data)) {
+    if (_.isObject(data)) {
       data = Object.values(data);
     }
 
     if (_.isArray(data)) {
-      commit('orderIngredients', {ingredients: _.keyBy(data, 'id')})
+      commit('orderIngredients', {
+        ingredients: _.keyBy(data, 'id')
+      })
     } else {
       throw new Error('Failed to retrieve order ingredients');
     }
+  },
+
+  async refreshIngredientUnits({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me/units");
+    let {data} = await res;
+
+    if (_.isObject(data)) {
+      data = Object.values(data);
+    }
+
+    if (_.isArray(data)) {
+      commit('ingredientUnits', {
+        ingredients: _.keyBy(data, 'id')
+      })
+    } else {
+      throw new Error('Failed to retrieve ingredient units');
+    }
   }
+  
 }
 
 // getters are functions
@@ -149,7 +199,10 @@ const getters = {
     return state.store.ingredients.data || {};
   },
   ingredient: (state) => id => {
-    return _.find(state.store.ingredients.data, { 'id': parseInt(id) });
+    return _.find(state.store.ingredients.data, {'id': parseInt(id)});
+  },
+  ingredientUnit: (state) => id => {
+    return state.store.ingredient_units.data[parseInt(id)] || null;
   },
   orderIngredients(state) {
     return state.store.order_ingredients.data || {};
