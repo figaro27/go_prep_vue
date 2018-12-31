@@ -151,7 +151,7 @@ export default {
       hasMeal: "bagHasMeal"
     }),
     minimum() {
-      return this.store.store_settings.minimum;
+      return this.store.store_settings ? this.store.store_settings.minimum : 1;
     },
     remainingMeals() {
       return this.minimum - this.total;
@@ -171,24 +171,32 @@ export default {
         meals = _.filter(meals, meal => {
           let skip = false;
 
-          if(filters.categories.length > 0) {
-            let hasCat = _.reduce(meal.meal_categories, (has, cat) => {
-              if(has) return true;
-              let x = _.includes(filters.categories, cat.category);
+          if (filters.categories.length > 0) {
+            let hasCat = _.reduce(
+              meal.meal_categories,
+              (has, cat) => {
+                if (has) return true;
+                let x = _.includes(filters.categories, cat.category);
 
-              return x;
-            }, false);
+                return x;
+              },
+              false
+            );
 
             skip = skip || !hasCat;
           }
 
-          if(filters.tags.length > 0) {
-            let hasTag = _.reduce(meal.tags, (has, tag) => {
-              if(has) return true;
-              let x = _.includes(filters.tags, tag.tag);
+          if (filters.tags.length > 0) {
+            let hasTag = _.reduce(
+              meal.tags,
+              (has, tag) => {
+                if (has) return true;
+                let x = _.includes(filters.tags, tag.tag);
 
-              return x;
-            }, false);
+                return x;
+              },
+              false
+            );
 
             skip = skip || !hasTag;
           }
@@ -350,11 +358,27 @@ export default {
     },
     filterByCategory(category) {
       this.filteredView = true;
-      this.filters.categories.push(category);
+
+      // Check if filter already exists
+      const i = _.findIndex(this.filters.categories, cat => {
+        return cat === category;
+      });
+
+      i === -1
+        ? this.filters.categories.push(category)
+        : Vue.delete(this.filters.categories, i);
     },
     filterByTag(tag) {
       this.filteredView = true;
-      this.filters.tags.push(tag);
+
+      // Check if filter already exists
+      const i = _.findIndex(this.filters.tags, _tag => {
+        return tag === _tag;
+      });
+
+      i === -1
+        ? this.filters.tags.push(tag)
+        : Vue.delete(this.filters.tags, i);
     }
   }
 };
