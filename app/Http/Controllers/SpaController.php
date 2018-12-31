@@ -37,7 +37,7 @@ class SpaController extends Controller
             }
             
             return [
-                'store' => defined('STORE_ID') ? Store::with('meals')->find(STORE_ID) : null,
+                'store' => defined('STORE_ID') ? Store::with('meals', 'meals.ingredients', 'meals.mealCategories', 'storeSettings')->find(STORE_ID) : null,
                 'stores' => Store::all(),
             ];
         } else {

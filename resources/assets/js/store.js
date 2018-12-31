@@ -9,9 +9,11 @@ const ttl = 60; // 60 seconds
 
 // root state object. each Vuex instance is just a single state tree.
 const state = {
-  viewed_store: {},
+  viewed_store: {
+    meals: []
+  },
   stores: {},
-  cart: {
+  bag: {
     items: {}
   },
 
@@ -38,7 +40,56 @@ const mutations = {
     state.viewed_store = {
       ...store
     };
-  }
+  },
+  addBagItems(state, items) {
+    state.bag.items = items;
+  },
+  updateBagTotal(state, total) {
+    state.bag.total += total;
+    if (state.bag.total < 0) {
+      state.bag.total = 0;
+    }
+  },
+  addToBag(state, {
+    meal,
+    quantity = 1
+  }) {
+    let mealId = meal;
+    if (!_.isNumber(mealId)) {
+      mealId = meal.id;
+    }
+
+    if (!_.has(state.bag.items, mealId)) {
+      Vue.set(state.bag.items, mealId, {
+        quantity: 0,
+        meal
+      });
+    }
+
+    state.bag.items[mealId].quantity += quantity;
+  },
+  removeFromBag(state, {
+    meal,
+    quantity = 1
+  }) {
+    let mealId = meal;
+    if (!_.isNumber(mealId)) {
+      mealId = meal.id;
+    }
+
+    if (!_.has(state.bag.items, mealId)) {
+      return;
+    }
+
+    state.bag.items[mealId].quantity -= quantity;
+
+    if (state.bag.items[mealId].quantity <= 0) {
+      delete state.bag.items[mealId];
+    }
+  },
+  emptyBag(state) {
+    state.bag.items = {};
+  },
 }
 
 // actions are functions that cause side effects and can involve asynchronous
@@ -77,27 +128,49 @@ const getters = {
     return state.viewed_store;
   },
 
-  cart(state) {
-    return state.cart;
+  //
+  bag(state) {
+    return state.bag;
   },
-  cartItems(state) {
-    return state.cart.items;
+  bagItems(state) {
+    return state.bag.items;
   },
+  bagQuantity(state) {
+    return _.sumBy(_.toArray(state.bag.items), item => item.quantity);
+  },
+  bagHasMeal: (state) => (meal) => {
+    if (!_.isNumber(meal)) {
+      meal = meal.id;
+    }
 
-  // Getters for logged in users (of any role)
-  defaultWeightUnit(state) {
-    return state.user.weightUnit;
+    return _.has(state.bag.items, meal);
   },
+  bagItemQuantity: (state) => (meal) => {
+    if (!_.isNumber(meal)) {
+      meal = meal.id;
+    }
 
-  // Getters for logged in customers
-  
-  // Getters for logged in stores
-  ingredients(state) {
-    return state.store.ingredients.data || {};
-  }
+    if (!_.has(state.bag.items, meal)) {
+      return 0;
+    }
+
+    return state.bag.items[meal].quantity;
+  },
+  totalBagPrice(state){
+    let items = _.toArray(state.bag.items);
+    let totalBagPrice = 0;
+    items.forEach(item => {
+      totalBagPrice += (item.quantity * item.meal.price);
+    })
+    return totalBagPrice.toFixed(2);
+  },
 }
 
-const plugins = [createPersistedState({paths: []})]
+const plugins = [
+  createPersistedState({paths: [
+    'bag',
+  ]})
+];
 
 // A Vuex instance is created by combining the state, mutations, actions, and
 // getters.

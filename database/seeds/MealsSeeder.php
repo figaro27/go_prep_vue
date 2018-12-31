@@ -13,7 +13,6 @@ class MealsSeeder extends Seeder
     {
         $tags = [];
         foreach (['Low Carb', 'Low Calorie', 'Vegan', 'Breakfast'] as $tag) {
-
             $tags[] = App\MealTag::create(['store_id' => 1, 'tag' => $tag, 'slug' => str_slug($tag)]);
         }
 

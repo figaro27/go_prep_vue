@@ -1,9 +1,5 @@
 <template>
   <b-card :title="title" :img-src="imageUrl" :img-alt="title" img-top>
-
-    <div slot="footer">
-      <b-btn>Add to Cart</b-btn>
-    </div>
   </b-card>
 </template>
 <style lang="scss">
