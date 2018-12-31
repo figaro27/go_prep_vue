@@ -6,6 +6,7 @@ use App\Store;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Constraint\Exception;
 
 class Meal extends Model
 {
@@ -18,11 +19,30 @@ class Meal extends Model
         'price' => 'double',
     ];
 
-    public function getQuantityAttribute(){
+    protected $appends = ['tag_titles', 'quantity', 'nutrition'];
+
+    public function getQuantityAttribute()
+    {
         return 0;
     }
 
-    protected $appends = ['tag_titles', 'quantity'];
+    public function getNutritionAttribute() {
+
+      $nutrition = [];
+      
+      foreach($this->ingredients as $ingredient) {
+        foreach(Ingredient::NUTRITION_FIELDS as $field) {
+          if(!array_key_exists($field, $nutrition)) {
+            $nutrition[$field] = 0;
+          }
+
+          $nutrition[$field] += $ingredient[$field] * $ingredient->pivot->quantity_grams;
+        }
+      }
+
+      return $nutrition;
+    }
+
 
     public function store()
     {
@@ -31,7 +51,7 @@ class Meal extends Model
 
     public function ingredients()
     {
-        return $this->hasMany('App\Ingredient');
+        return $this->belongsToMany('App\Ingredient')->withPivot('quantity', 'quantity_unit')->using('App\IngredientMeal');
     }
 
     public function mealCategories(){
@@ -189,6 +209,7 @@ class Meal extends Model
             'price',
             'created_at',
             'tag_titles',
+            'ingredients',
         ]);
 
         if ($props->has('featured_image')) {
@@ -230,6 +251,81 @@ class Meal extends Model
             }
 
             $meal->tags()->sync($tags);
+        }
+
+        $newIngredients = $props->get('ingredients');
+        if (is_array($newIngredients)) {
+
+            $ingredients = collect();
+
+            foreach ($newIngredients as $newIngredient) {
+                try {
+                    // Existing ingredient
+                    if (is_numeric($newIngredient) || isset($newIngredient->id)) {
+                        $ingredientId = is_numeric($newIngredient) ? $newIngredient : $newIngredient->id;
+                        $ingredient = Ingredient::where('store_id', $meal->store_id)->findOrFail($ingredientId);
+                        $ingredients->push($ingredient);
+                    } else {
+                        // Check if ingredient with same name and unit type already exists
+                        $ingredient = Ingredient::where([
+                            'store_id' => $meal->store_id,
+                            'food_name' => $newIngredient['food_name'],
+                            'unit_type' => Unit::getType('serving_unit'),
+                        ])->first();
+
+                        if($ingredient) {
+                          $ingredients->push($ingredient);
+                        }
+                        // Nope. Create a new one
+                        else {
+                            $newIngredient = collect($newIngredient)->only([
+                                'food_name',
+                                'photo',
+                                'serving_qty',
+                                'serving_unit',
+                                'serving_weight_grams',
+                                'calories',
+                                'totalFat',
+                                'satFat',
+                                'transFat',
+                                'cholesterol',
+                                'sodium',
+                                'totalCarb',
+                                'fibers',
+                                'sugars',
+                                'proteins',
+                                'vitaminD',
+                                'potassium',
+                                'calcium',
+                                'iron',
+                                'sugars',
+                            ])->map(function($val) {
+                              return is_null($val) ? 0 : $val;
+                            });
+
+                            $ingredientArr = Ingredient::normalize($newIngredient->toArray());
+                            $ingredient = new Ingredient($ingredientArr);
+                            $ingredient->store_id = $meal->store_id;
+                            if ($ingredient->save()) {
+                                $ingredients->push($ingredient);
+                            } else {
+                                throw new \Exception('Failed to create ingredient');
+                            }
+                        }
+                    }
+                } catch (\Exception $e) {
+                    die($e);
+                }
+            }
+
+            $syncIngredients = $ingredients->mapWithKeys(function($val, $key) use ($newIngredients) {
+              return [$val->id => [
+                'quantity' => $newIngredients[$key]['serving_qty'] ?? 1,
+                'quantity_unit' => $newIngredients[$key]['serving_unit'] ?? 'g',
+              ]];
+            });
+
+            $meal->ingredients()->sync($syncIngredients);
         }
 
         $meal->update($props->toArray());

@@ -66,9 +66,16 @@
         </tr>
         <tr>
           <td colspan="3" class="text-right">
-            <a href="#" @click="onClickAddIngredient">
-              <i class="fas fa-plus-circle"></i>
-            </a>
+            <b-row>
+              <b-col v-if="options.saveButton" class="text-left">
+                <b-button variant="primary" :disabled="!canSave" @click.prevent="save">Save</b-button>
+              </b-col>
+              <b-col class="text-right">
+                <a href="#" @click.prevent="onClickAddIngredient">
+                  <i class="fas fa-plus-circle"></i>
+                </a>
+              </b-col>
+            </b-row>
           </td>
         </tr>
       </tbody>
@@ -87,14 +94,22 @@ import format from "../lib/format";
 
 export default {
   //components: [],
-  props: ["value"],
+  props: {
+    value: {},
+    options: {
+      default: {
+        saveButton: false
+      }
+    }
+  },
   data() {
     return {
       recipe: "",
       ingredients: [],
+      newIngredients: [],
       ingredientOptions: [],
 
-      selectedExistingIngredients: [],
+      selectedExistingIngredients: []
     };
   },
   computed: {
@@ -106,22 +121,26 @@ export default {
       return Object.values(this.existingIngredients).map(ingredient => {
         return {
           value: ingredient,
-          label: ingredient.food_name,
+          label: ingredient.food_name
         };
       });
     },
     weightUnitOptions() {
-      return units.weight.selectOptions();
-    }
+      return units.mass.selectOptions();
+    },
+    canSave() {
+      return this.ingredients.length > 0;
+    },
   },
   watch: {
-    ingredients() {
-      this.update();
+    ingredients(newIngredients, oldIngredients) {
+      if (!_.isEqual(newIngredients, oldIngredients)) {
+        this.update();
+      }
     }
   },
   created() {
     this.ingredients = _.isArray(this.value) ? this.value : [];
-    this.update();
   },
   mounted() {
     this.refreshIngredients();
@@ -136,14 +155,17 @@ export default {
       });
     },
     onClickAddExistingIngredient() {
-      this.selectedExistingIngredients.forEach((ingredient) => {
-        this.ingredients.push(ingredient.value);
+      this.selectedExistingIngredients.forEach(ingredient => {
+        this.newIngredients.push(ingredient.value);
       });
 
       this.selectedExistingIngredients = [];
     },
     update() {
       this.$emit("input", this.ingredients);
+    },
+    save() {
+      this.$emit("save", this.ingredients);
     },
     searchInstant: function() {},
     searchRecipe: function() {

@@ -63,6 +63,7 @@ import DefaultHeaderDropdownAccnt from './DefaultHeaderDropdownAccnt'
 import StoreDropdown from './StoreDropdown'
 import DefaultHeaderDropdownMssgs from './DefaultHeaderDropdownMssgs'
 import DefaultHeaderDropdownTasks from './DefaultHeaderDropdownTasks'
+import { mapActions } from 'vuex';
 
 export default {
   name: 'DefaultContainer',
@@ -99,6 +100,15 @@ export default {
     list () {
       return this.$route.matched.filter((route) => route.name || route.meta.label )
     }
-  }
+  },
+  created() {
+    // Get initial state
+    this.initState();
+  },
+  methods: {
+    ...mapActions({
+      initState: 'init'
+    }),
+  },
 }
 </script>

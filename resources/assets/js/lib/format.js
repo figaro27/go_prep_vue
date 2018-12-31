@@ -31,5 +31,31 @@ export default {
       .to(to);
 
     return Math.round(newVal * 100) / 100;
-  }
+  },
+  unitType(unit) {
+    return convert().describe(unit).measure;
+  },
+  baseUnit(unitType) {
+    switch(unitType) {
+      case 'mass':
+        return 'g';
+      case 'volume':
+        return 'ml';
+      case 'unit':
+        return 'unit';
+      default:
+        throw new Error('Unrecognized unit type');
+    }
+  },
+  bestUnit(val, unit, extended = false) {
+    return unit;
+
+    // todo: finish this
+    const best = convert(val).from(unit).toBest({
+      exclude: [
+        'msk',
+      ],
+    });
+    return extended ? best : best.unit;
+  },
 }

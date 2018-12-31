@@ -22,6 +22,6 @@ $factory->define(App\Meal::class, function (Faker $faker) {
         'title' => $faker->sentence($nbWords = 3, $variableNbWords = true),
         'description' => $faker->paragraph($nbSentences = 3, $variableNbSentences = true),
         'price' => mt_rand(80, 120) / 10,
-        'created_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now')
+        'created_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now')->format('Y-m-d H:i:s')
     ];
 });

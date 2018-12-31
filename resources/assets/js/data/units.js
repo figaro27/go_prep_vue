@@ -1,16 +1,16 @@
 let units = {
-  weight: {
+  mass: {
     selectOptions() {
       return Object
-        .keys(units.weight.values)
+        .keys(units.mass.values)
         .map((key) => {
-          return {value: key, text: units.weight.values[key]}
+          return {value: key, text: units.mass.values[key]}
         })
     },
     values: {
       oz: 'oz',
       lb: 'lb',
-      grams: 'g',
+      g: 'g',
       kg: 'Kg',
     }
   },
@@ -24,6 +24,8 @@ let units = {
     },
     values: {
       cups: 'cups',
+      ml: 'ml',
+      'fl-oz': 'fl. oz.',
     }
   }
 }

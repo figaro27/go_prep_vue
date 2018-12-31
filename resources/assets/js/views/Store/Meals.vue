@@ -210,7 +210,17 @@
 
                   <b-col>
                     <h3 class="mt-3">Ingredients</h3>
-                    <ingredient-picker v-model="editing[props.row.id].ingredients" v-on:input="ingredients => getNutritionFacts(ingredients, props.row)"/>
+                    <ingredient-picker
+                      v-model="editing[props.row.id].ingredients"
+                      :options="{
+                        saveButton: true,
+                      }"
+                      v-on:input="ingredients => {
+                        getNutritionFacts(ingredients, props.row);
+                        //onChangeIngredients(props.row.id, ingredients)
+                      }"
+                      v-on:save="onChangeIngredients(props.row.id, editing[props.row.id].ingredients)"
+                    />
                   </b-col>
 
                   <b-col>
@@ -283,7 +293,9 @@
             </b-form-row>
 
             <h3 class="mt-3">Ingredients</h3>
-            <IngredientPicker />
+            <IngredientPicker
+              v-model="meal.ingredients"
+            />
           </b-col>
           <b-col>
             <h3>Tags</h3>
@@ -504,7 +516,7 @@ export default {
   },
   computed: {
     weightUnitOptions() {
-      return units.weight.selectOptions();
+      return units.mass.selectOptions();
     },
     statusFilterOptions() {
       return [
@@ -697,7 +709,7 @@ export default {
           ingredient.food_name.slice(1) +
           ", ";
       });
-      return ingredientList
+      return ingredientList;
     },
     getNutritionTotals: function(ingredients) {
       let nutrition = {
@@ -718,22 +730,22 @@ export default {
         addedSugars: 0
       };
 
-      ingredients.forEach((ingredient) => {
-        nutrition.calories += ingredient.nf_calories;
-        nutrition.totalFat += ingredient.nf_total_fat;
-        nutrition.satFat += ingredient.nf_saturated_fat;
-        nutrition.transFat += ingredient.nf_trans_fat;
-        nutrition.cholesterol += ingredient.nf_cholesterol;
-        nutrition.sodium += ingredient.nf_sodium;
-        nutrition.totalCarb += ingredient.nf_total_carbohydrate;
-        nutrition.fibers += ingredient.nf_dietary_fiber;
-        nutrition.sugars += ingredient.nf_sugars;
-        nutrition.proteins += ingredient.nf_protein;
-        nutrition.vitaminD += ingredient.nf_vitamind;
-        nutrition.potassium += ingredient.nf_potassium;
-        nutrition.calcium += ingredient.nf_calcium;
-        nutrition.iron += ingredient.nf_iron;
-        nutrition.addedSugars += ingredient.nf_addedsugars;
+      ingredients.forEach(ingredient => {
+        nutrition.calories += ingredient.nf_calories || ingredient.calories;
+        nutrition.totalFat += ingredient.nf_total_fat || ingredient.totalFat;
+        nutrition.satFat += ingredient.nf_saturated_fat || ingredient.satFat;
+        nutrition.transFat += ingredient.nf_trans_fat || ingredient.transFat;
+        nutrition.cholesterol += ingredient.nf_cholesterol || ingredient.cholesterol;
+        nutrition.sodium += ingredient.nf_sodium || ingredient.sodium;
+        nutrition.totalCarb += ingredient.nf_total_carbohydrate || ingredient.totalCarb;
+        nutrition.fibers += ingredient.nf_dietary_fiber || ingredient.fibers;
+        nutrition.sugars += ingredient.nf_sugars || ingredient.sugars;
+        nutrition.proteins += ingredient.nf_protein || ingredient.proteins;
+        nutrition.vitaminD += ingredient.nf_vitamind || ingredient.vitaminD;
+        nutrition.potassium += ingredient.nf_potassium || ingredient.potassium;
+        nutrition.calcium += ingredient.nf_calcium || ingredient.calcium;
+        nutrition.iron += ingredient.nf_iron || ingredient.iron;
+        nutrition.sugars += ingredient.nf_addedsugars || ingredient.sugars;
       });
 
       return nutrition;
@@ -782,6 +794,14 @@ export default {
         console.log("FileReader API not supported: use the <form>, Luke!");
       }
     },
+    onChangeIngredients(mealId, ingredients) {
+      console.log('wat', mealId, ingredients)
+      if (!_.isNumber(mealId) || !_.isArray(ingredients)) {
+        throw new Exception("Invalid ingredients");
+      }
+
+      this.updateMeal(mealId, { ingredients });
+    },
     onClickAddIngredient() {
       this.ingredients.push({});
     },
@@ -791,7 +811,7 @@ export default {
     onChangeTags(id, newTags) {
       this.editing[id].tag_titles_input = newTags;
       this.editing[id].tag_titles = _.map(newTags, "text");
-      this.updateMeal(id, {tag_titles: this.editing[id].tag_titles})
+      this.updateMeal(id, { tag_titles: this.editing[id].tag_titles });
     }
   }
 };
