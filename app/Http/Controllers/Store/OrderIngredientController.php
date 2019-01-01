@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Store;
 
 use App\Utils\Data\ExportsData;
-use App\Ingredient;
+use App\Utils\Data\Format;
 
 class OrderIngredientController extends StoreController
 {
@@ -21,7 +21,7 @@ class OrderIngredientController extends StoreController
         $ingredients = $ingredients->map(function ($item, $id) {
             return [
                 'id' => $id,
-                'quantity' => $item['quantity']
+                'quantity' => $item['quantity'],
             ];
         })->toArray();
 
@@ -30,19 +30,28 @@ class OrderIngredientController extends StoreController
 
     public function exportData($type)
     {
-        $data = collect($this->index())->map(function($orderIngredient) {
-          return [
-            $orderIngredient->ingredient->food_name,
-            $orderIngredient->quantity,
-            $orderIngredient->ingredient->food_name,
-          ];
+        $ingredients = collect($this->store->getOrderIngredients());
+        $units = collect($this->store->units);
+
+        $data = $ingredients->map(function ($orderIngredient) use ($units) {
+            $ingredient = $orderIngredient['ingredient'];
+            return [
+                $ingredient->food_name,
+                ceil($orderIngredient['quantity']),
+                $units->has($ingredient->id) ? $units->get($ingredient->id)->unit : Format::baseUnit($ingredient->unit_type),
+            ];
         });
 
         $data = array_merge([
             [
                 'Ingredient', 'Quantity', 'Unit',
             ],
-        ], $data);
+        ], $data->toArray());
         return $data;
+    }
+
+    public function exportPdfView()
+    {
+        return 'reports.order_ingredients_pdf';
     }
 }

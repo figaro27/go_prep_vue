@@ -29,7 +29,7 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
                 Route::get('orders/ingredients/export/{type}', 'Store\\OrderIngredientController@export');
                 Route::get('orders/ingredients', 'Store\\OrderIngredientController@index');
                 Route::resource('orders', 'Store\\OrderController');
-                Route::get('customers', 'Store\\CustomerController@index');
+                Route::resource('customers', 'Store\\CustomerController');
                 Route::resource('units', 'Store\\UnitController');
             });
 

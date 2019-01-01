@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Store;
 use App\User;
 use Illuminate\Http\Request;
 
-
 class CustomerController extends StoreController
 {
 
@@ -16,6 +15,22 @@ class CustomerController extends StoreController
      */
     public function index()
     {
+        $customers = $this->store->orders->unique('user_id')->where('store_id', $this->store->id)->pluck('user_id');
+        return User::with('userDetail', 'order')->whereIn('id', $customers)->get()->map(function ($user) {
+            return [
+                "id" => $user->id,
+                "Name" => $user->userDetail->firstname . ' ' . $user->userDetail->lastname,
+                "phone" => $user->userDetail->phone,
+                "address" => $user->userDetail->address,
+                "city" => $user->userDetail->city,
+                "state" => $user->userDetail->state,
+                "Joined" => $user->created_at->format('m-d-Y'),
+                "LastOrder" => $user->order->max("created_at")->format('m-d-Y'),
+                "TotalPayments" => $user->order->count(),
+                "TotalPaid" => '$' . number_format($user->order->sum("amount"), 2, '.', ','),
+            ];
+        });
+
         return $this->store->customers;
     }
 
@@ -46,9 +61,10 @@ class CustomerController extends StoreController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        return User::getCustomer($id);
+        $id = $request->route()->parameter('customer');
+        return User::with('userDetail', 'order')->where('id', $id)->first();
     }
 
     /**
@@ -82,6 +98,6 @@ class CustomerController extends StoreController
      */
     public function destroy($id)
     {
-        
+
     }
 }

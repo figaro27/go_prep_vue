@@ -32,6 +32,7 @@
               >
                 <option slot="top" disabled>-- Select unit --</option>
               </b-select>
+              <span v-else>Unit</span>
             </div>
           </v-client-table>
         </div>
@@ -135,6 +136,7 @@ export default {
       return units[unitType].selectOptions();
     },
     saveUnit(id, unit) {
+      this.$store.commit('ingredientUnit', {id, unit});
       let data = {
         units: {}
       };
@@ -142,7 +144,7 @@ export default {
       axios
         .post(`/api/me/units`, data)
         .then(response => {
-          this.refreshIngredientUnits();
+          //this.refreshIngredientUnits();
         })
         .finally(() => {
           this.loading = false;
@@ -152,7 +154,12 @@ export default {
       axios
         .get(`/api/me/orders/ingredients/export/${type}`)
         .then(response => {
-          window.open(response.data.url);
+          if(!_.isEmpty(response.data.url)) {
+            window.open(response.data.url);
+          }
+        })
+        .catch(err => {
+
         })
         .finally(() => {
           this.loading = false;

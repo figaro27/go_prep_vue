@@ -3,13 +3,19 @@
 namespace App\Utils\Data;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use \XLSXWriter;
+use mikehaertl\wkhtmlto\Pdf;
 
 trait ExportsData
 {
     abstract function exportData();
+    abstract function exportPdfView();
 
-    public function export(Request $request, $type = 'csv')
+    public function export(Request $request)
     {
+        $type = $request->route('type');
+
         if (!in_array($type, ['pdf', 'csv', 'xls'])) {
             return response()->json([
                 'message' => 'Invalid export format',
@@ -36,7 +42,7 @@ trait ExportsData
 
     public function handleCsv($data)
     {
-        $filename = 'public/addresses-' . md5(time()) . '.csv';
+        $filename = 'public/' . md5(time()) . '.csv';
 
         /*
         $rows = array_merge([
@@ -79,7 +85,7 @@ trait ExportsData
 
     public function handleXls($data)
     {
-        $filename = 'public/addresses-' . md5(time()) . '.xlsx';
+        $filename = 'public/' . md5(time()) . '.xlsx';
 
         $writer = new XLSXWriter();
 
@@ -94,9 +100,9 @@ trait ExportsData
 
     public function handlePdf($data)
     {
-        $filename = 'public/addresses-' . md5(time()) . '.pdf';
+        $filename = 'public/' . md5(time()) . '.pdf';
 
-        $html = view('app.addresses.pdf', ['addresses' => $data])->render();
+        $html = view($this->exportPdfView(), ['data' => $data])->render();
 
         $pdf = new Pdf($html);
         $output = $pdf->toString();

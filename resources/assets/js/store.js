@@ -121,6 +121,10 @@ const mutations = {
     state.store.ingredient_units.expires = expires;
   },
 
+  ingredientUnit(state, {id, unit}) {
+    Vue.set(state.store.ingredient_units.data, id, unit);
+  },
+
   orderIngredients(state, {ingredients, expires}) {
     if (!expires) {
       expires = moment()
@@ -210,8 +214,15 @@ const actions = {
     }
 
     if (_.isArray(data)) {
+      let units = {};
+
+      data = _.keyBy(data, 'ingredient_id');
+      _.forEach(data, (unit, id) => {
+        units[id] = unit.unit;
+      });
+
       commit('ingredientUnits', {
-        ingredients: _.keyBy(data, 'id')
+        units
       })
     } else {
       throw new Error('Failed to retrieve ingredient units');

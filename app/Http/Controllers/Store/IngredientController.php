@@ -90,4 +90,8 @@ class IngredientController extends StoreController
     public function exportData() {
       
     }
+
+    public function exportPdfView() {
+      return 'reports.ingredients_pdf';
+    }
 }

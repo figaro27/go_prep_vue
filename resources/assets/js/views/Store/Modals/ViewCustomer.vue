@@ -43,7 +43,7 @@ export default {
     },
     watch: {
     userId: function(viewUserId) {
-      axios.get('/user/' + viewUserId).then(
+      axios.get('/api/me/customers/' + viewUserId).then(
           response => {
               this.user = response.data;
               this.orders = response.data.order;

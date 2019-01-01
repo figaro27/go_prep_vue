@@ -13,6 +13,8 @@
         "laravel/framework": "5.7.*",
         "laravel/passport": "^7.0",
         "laravel/tinker": "^1.0",
+        "mikehaertl/phpwkhtmltopdf": "^2.3",
+        "mk-j/php_xlsxwriter": "^0.37.0",
         "php-units-of-measure/php-units-of-measure": "^2.1",
         "predis/predis": "^1.1"
     },

@@ -108,7 +108,7 @@
 
               <div slot="featured_image" slot-scope="props">
                 <div v-if="!props.row.editing">
-                  <img :src="props.row.featured_image" v-if="props.row.featured_image">
+                  <img class="thumb" :src="props.row.featured_image" v-if="props.row.featured_image">
                 </div>
                 <div v-else>
                   <picture-input
@@ -387,6 +387,10 @@ th:nth-child(3) {
 
 .VueTables__child-row-toggler--open::before {
   content: "-";
+}
+
+.thumb {
+  max-width: 150px;
 }
 
 .picture-input {
