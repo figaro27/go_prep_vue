@@ -21,6 +21,11 @@ class MealsSeeder extends Seeder
         factory(App\Meal::class, 50)->create()->each(function ($u) use ($tags, $ingredients) {
             $u->tags()->save($tags[rand(0, count($tags) - 1)]);
 
+            $cat = factory(App\MealCategory::class)->create([
+              'meal_id' => $u->id,
+            ]);
+            $u->categories()->save($cat);
+
             $unitTypes = [
                 'mass' => ['oz', 'g'],
                 'volume' => ['ml', 'teaspoon'],

@@ -26,7 +26,6 @@ Route::group(['middleware' => ['auth', 'store_slug']], function ($router) {
   Route::resource('user', 'UserController');
   Route::resource('stores', 'StoreController');
 
-  Route::get('storeCustomers', 'UserController@storeIndex');
   Route::get('storeMeals', 'MealController@getStoreMeals');
 
   Route::post('storeMealAdmin', 'MealController@storeAdmin');

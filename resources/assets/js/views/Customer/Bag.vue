@@ -89,13 +89,14 @@ import { Switch as cSwitch } from '@coreui/vue'
         computed: {
             ...mapGetters({
               store: "viewedStore",
+              storeSetting: "viewedStoreSetting",
               total: "bagQuantity",
               bag: "bagItems",
               hasMeal: "bagHasMeal",
               totalBagPrice: "totalBagPrice"
             }),
             minimum() {
-              return this.store.store_settings.minimum;
+              return this.storeSetting('minimum', 1);
             },
             remainingMeals() {
               return this.minimum - this.total;

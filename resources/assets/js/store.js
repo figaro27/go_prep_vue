@@ -174,7 +174,7 @@ const actions = {
         .add(ttl, 'seconds')
         .unix();
     } else {
-      throw new Exception('Failed to retrieve ingredients');
+      throw new Error('Failed to retrieve ingredients');
     }
   },
 
@@ -230,6 +230,14 @@ const getters = {
   },
   viewedStore(state, getters) {
     return state.viewed_store;
+  },
+  viewedStoreSetting: (state, getters) => (key, defaultValue = '') => {
+    try {
+      return state.viewed_store.settings[key] || defaultValue;
+    }
+    catch(e) {
+      return defaultValue;
+    }
   },
 
   //

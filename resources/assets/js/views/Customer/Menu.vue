@@ -173,7 +173,7 @@ export default {
 
           if (filters.categories.length > 0) {
             let hasCat = _.reduce(
-              meal.meal_categories,
+              meal.categories,
               (has, cat) => {
                 if (has) return true;
                 let x = _.includes(filters.categories, cat.category);
@@ -206,7 +206,7 @@ export default {
       }
 
       meals.forEach(meal => {
-        meal.meal_categories.forEach(category => {
+        meal.categories.forEach(category => {
           if (!_.has(grouped, category.category)) {
             grouped[category.category] = [meal];
           } else {
@@ -220,7 +220,7 @@ export default {
     categories() {
       let grouped = [];
       this.store.meals.forEach(meal => {
-        meal.meal_categories.forEach(category => {
+        meal.categories.forEach(category => {
           if (!_.includes(grouped, category.category)) {
             grouped.push(category.category);
           }

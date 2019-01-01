@@ -54,7 +54,7 @@ class Meal extends Model
         return $this->belongsToMany('App\Ingredient')->withPivot('quantity', 'quantity_unit')->using('App\IngredientMeal');
     }
 
-    public function mealCategories(){
+    public function categories(){
         return $this->hasMany('App\MealCategory');
     }
 
