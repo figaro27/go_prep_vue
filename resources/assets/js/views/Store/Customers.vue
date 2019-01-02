@@ -67,7 +67,6 @@ export default {
           Joined: "Customer Since",
           actions: "Actions"
         },
-        columnsDropdown: true,
         customSorting: {
           TotalPaid: function(ascending) {
             return function(a, b) {
