@@ -2,8 +2,8 @@
 namespace App\Http\Controllers;
 
 use App\Store;
-use \Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use \Illuminate\Http\Request;
 
 class SpaController extends Controller
 {
@@ -52,8 +52,8 @@ class SpaController extends Controller
                 });
             }
 
-            $stores = Cache::remember('stores', 10, function() {
-              return Store::all();
+            $stores = Cache::remember('stores', 10, function () {
+                return Store::all();
             });
 
             return [
@@ -63,10 +63,12 @@ class SpaController extends Controller
             ];
 
         } else {
-            if (auth()->user()) {
-                if (auth()->user()->user_role_id == 2) {
+            $user = auth()->user();
+
+            if ($user) {
+                if ($user->user_role_id === 2) {
                     return view('store');
-                } elseif (auth()->user()->user_role_id == 3) {
+                } elseif ($user->user_role_id === 3) {
                     return view('admin');
                 }
             }
