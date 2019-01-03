@@ -101,29 +101,15 @@ import { Switch as cSwitch } from '@coreui/vue'
         },
         data(){
             return {
-                storeDetail: {
-                    name: '',
-                    logo: '',
-                    phone: '',
-                    address: '',
-                    city: '',
-                    state: '',
-                    zip: '',
-                    description: ''
-                },
-                storeSettings: {
-                    allowPickup: '',
-                    pickupInstructions: '',
-                    showNutrition: '',
-                    applyDeliveryFee: '',
-                    deliveryFee: '',
-                    minimum: ''
-                }
+              
             }
         },
         computed: {
             ...mapGetters({
-            store: "viewedStore"
+              store: "store",
+              storeDetail: "storeDetail",
+              storeSetting: "storeSetting",
+              storeSettings: "storeSettings",
             }),
             // storeDetail(){
             //     return this.store.store_detail;
@@ -131,17 +117,8 @@ import { Switch as cSwitch } from '@coreui/vue'
         },
         mounted()
         {
-            this.getStore();
         },
         methods: {
-            getStore(){
-                axios.get("/getStore").then(response =>{
-                    this.storeDetail = response.data;
-                })
-                axios.get("/getStoreSettings").then(response =>{
-                    this.storeSettings = response.data;
-                })
-            },
             updateStoreDetails(){
                 this.spliceZip();
                 axios.post("/updateStoreDetails", this.storeDetail).then(response => {

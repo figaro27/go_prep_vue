@@ -24,6 +24,10 @@ const state = {
 
   // State for logged in customers State for logged in stores
   store: {
+    detail: {
+      data: {},
+      expries: 0
+    },
     ingredients: {
       data: {},
       expries: 0
@@ -33,6 +37,10 @@ const state = {
       expries: 0
     },
     ingredient_units: {
+      data: {},
+      expires: 0
+    },
+    settings: {
       data: {},
       expires: 0
     }
@@ -134,6 +142,28 @@ const mutations = {
 
     state.store.order_ingredients.data = ingredients;
     state.store.order_ingredients.expires = expires;
+  },
+
+  storeDetail(state, {detail, expires}) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    }
+
+    state.store.detail.data = detail;
+    state.store.detail.expires = expires;
+  },
+
+  storeSettings(state, {settings, expires}) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    }
+
+    state.store.settings.data = settings;
+    state.store.settings.expires = expires;
   }
 }
 
@@ -149,6 +179,13 @@ const actions = {
     const {data} = await res;
 
     try {
+      if (!_.isEmpty(data.store.store_detail) && _.isObject(data.store.store_detail)) {
+        let detail = data.store.store_detail;
+        commit('storeDetail', {detail});
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.units)) {
         let units = {};
 
@@ -159,6 +196,13 @@ const actions = {
         if(!_.isEmpty(units)) {
           commit('ingredientUnits', {units});
         }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.settings) && _.isObject(data.store.settings)) {
+        let settings = data.store.settings;
+        commit('storeSettings', {settings});
       }
     } catch (e) {}
   },
@@ -285,8 +329,8 @@ const getters = {
     items.forEach(item => {
       totalBagPrice += (item.quantity * item.meal.price);
     })
-    if (getters.viewedStore.settings.applyDeliveryFee){
-    totalBagPrice += getters.viewedStore.settings.deliveryFee;
+    if (getters.viewedStoreSetting('applyDeliveryFee', false)) {
+      totalBagPrice += getters.viewedStore.settings.deliveryFee;
     }
 
     return totalBagPrice;
@@ -311,7 +355,31 @@ const getters = {
   },
   orderIngredients(state) {
     return state.store.order_ingredients.data || {};
-  }
+  },
+  storeDetail: (state, getters) => {
+    try {
+      return state.store.detail.data || {};
+    }
+    catch(e) {
+      return {};
+    }
+  },
+  storeSetting: (state, getters) => (key, defaultValue = '') => {
+    try {
+      return state.store.settings.data[key] || defaultValue;
+    }
+    catch(e) {
+      return defaultValue;
+    }
+  },
+  storeSettings: (state) => {
+    try {
+      return state.store.settings.data || {};
+    }
+    catch(e) {
+      return {};
+    }
+  },
 }
 
 const plugins = [createPersistedState({paths: ['bag']})];
