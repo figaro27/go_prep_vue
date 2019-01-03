@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Store;
+use App\Utils\Data\Format;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -26,23 +27,23 @@ class Meal extends Model
         return 0;
     }
 
-    public function getNutritionAttribute() {
+    public function getNutritionAttribute()
+    {
 
-      $nutrition = [];
-      
-      foreach($this->ingredients as $ingredient) {
-        foreach(Ingredient::NUTRITION_FIELDS as $field) {
-          if(!array_key_exists($field, $nutrition)) {
-            $nutrition[$field] = 0;
-          }
+        $nutrition = [];
 
-          $nutrition[$field] += $ingredient[$field] * $ingredient->pivot->quantity_grams;
+        foreach ($this->ingredients as $ingredient) {
+            foreach (Ingredient::NUTRITION_FIELDS as $field) {
+                if (!array_key_exists($field, $nutrition)) {
+                    $nutrition[$field] = 0;
+                }
+
+                $nutrition[$field] += $ingredient[$field] * $ingredient->pivot->quantity_grams;
+            }
         }
-      }
 
-      return $nutrition;
+        return $nutrition;
     }
-
 
     public function store()
     {
@@ -54,8 +55,14 @@ class Meal extends Model
         return $this->belongsToMany('App\Ingredient')->withPivot('quantity', 'quantity_unit')->using('App\IngredientMeal');
     }
 
-    public function categories(){
+    public function categories()
+    {
         return $this->hasMany('App\MealCategory');
+    }
+
+    public function allergies()
+    {
+        return $this->belongsToMany('App\Allergy')->using('App\MealAllergy');
     }
 
     public function meal_orders()
@@ -261,8 +268,8 @@ class Meal extends Model
             foreach ($newIngredients as $newIngredient) {
                 try {
                     // Existing ingredient
-                    if (is_numeric($newIngredient) || isset($newIngredient->id)) {
-                        $ingredientId = is_numeric($newIngredient) ? $newIngredient : $newIngredient->id;
+                    if (is_numeric($newIngredient) || isset($newIngredient['id'])) {
+                        $ingredientId = is_numeric($newIngredient) ? $newIngredient : $newIngredient['id'];
                         $ingredient = Ingredient::where('store_id', $meal->store_id)->findOrFail($ingredientId);
                         $ingredients->push($ingredient);
                     } else {
@@ -273,8 +280,8 @@ class Meal extends Model
                             'unit_type' => Unit::getType('serving_unit'),
                         ])->first();
 
-                        if($ingredient) {
-                          $ingredients->push($ingredient);
+                        if ($ingredient) {
+                            $ingredients->push($ingredient);
                         }
                         // Nope. Create a new one
                         else {
@@ -299,8 +306,8 @@ class Meal extends Model
                                 'calcium',
                                 'iron',
                                 'sugars',
-                            ])->map(function($val) {
-                              return is_null($val) ? 0 : $val;
+                            ])->map(function ($val) {
+                                return is_null($val) ? 0 : $val;
                             });
 
                             $ingredientArr = Ingredient::normalize($newIngredient->toArray());
@@ -318,11 +325,11 @@ class Meal extends Model
                 }
             }
 
-            $syncIngredients = $ingredients->mapWithKeys(function($val, $key) use ($newIngredients) {
-              return [$val->id => [
-                'quantity' => $newIngredients[$key]['serving_qty'] ?? 1,
-                'quantity_unit' => $newIngredients[$key]['serving_unit'] ?? 'g',
-              ]];
+            $syncIngredients = $ingredients->mapWithKeys(function ($val, $key) use ($newIngredients) {
+                return [$val->id => [
+                    'quantity' => $newIngredients[$key]['quantity'] ?? 1,
+                    'quantity_unit' => $newIngredients[$key]['quantity_unit'] ?? Format::baseUnit($val->unit_type),
+                ]];
             });
 
             $meal->ingredients()->sync($syncIngredients);
