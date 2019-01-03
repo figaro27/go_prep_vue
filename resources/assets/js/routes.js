@@ -1,5 +1,6 @@
 import VueRouter from 'vue-router';
 
+import CustomerHome from './views/Customer/Home.vue';
 import CustomerBag from './views/Customer/Bag.vue';
 import CustomerMenu from './views/Customer/Menu.vue';
 import CustomerBilling from './views/Customer/Account/Billing.vue';
@@ -31,6 +32,10 @@ import AdminStores from './views/Admin/Stores.vue';
 import Spinner from './components/Spinner.vue';
 
 let routes = [
+    {
+        path: '/customer/home',
+        component: CustomerHome
+    },
     {
         path: '/customer/bag',
         component: CustomerBag

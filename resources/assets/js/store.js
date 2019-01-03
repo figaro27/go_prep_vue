@@ -279,13 +279,17 @@ const getters = {
 
     return state.bag.items[meal].quantity;
   },
-  totalBagPrice(state) {
+  totalBagPrice(state, getters) {
     let items = _.toArray(state.bag.items);
     let totalBagPrice = 0;
     items.forEach(item => {
       totalBagPrice += (item.quantity * item.meal.price);
     })
-    return totalBagPrice.toFixed(2);
+    if (getters.viewedStore.settings.applyDeliveryFee){
+    totalBagPrice += getters.viewedStore.settings.deliveryFee;
+    }
+
+    return totalBagPrice;
   },
 
   // Getters for logged in users (of any role)

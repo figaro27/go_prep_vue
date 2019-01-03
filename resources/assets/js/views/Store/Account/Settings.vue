@@ -12,47 +12,60 @@
                 <p>Store</p>
                 <div class="card">
                     <div class="card-body">
-                        <p>Name</p>
-                        <hr/>
-                        <p>Logo</p>
-                        <hr/>
-                        <p>Phone</p>
-                        <hr/>
-                        <p>Address</p>
-                        <hr/>
-                        <p>City</p>
-                        <hr/>
-                        <p>State</p>
-                        <hr/>
-                        <p>Zip Code</p>
-                        <hr/>
-                        <p>About</p>
+
+                            <b-form @submit.prevent="updateStoreDetails">
+                                <b-form-input type="text" v-model="storeDetail.name" placeholder="Store Name" required></b-form-input> <hr>
+                                <b-form-input type="text" v-model="storeDetail.logo" placeholder="Logo" required></b-form-input> <hr>
+                                <b-form-input type="text" v-model="storeDetail.phone" placeholder="Phone" required></b-form-input> <hr>
+                                <b-form-input type="text" v-model="storeDetail.address" placeholder="Address" required></b-form-input> <hr>
+                                <b-form-input type="text" v-model="storeDetail.city" placeholder="City" required></b-form-input> <hr>
+                                <b-form-input type="text" v-model="storeDetail.state" placeholder="State" required></b-form-input> <hr>
+                                <b-form-input type="text" v-model="storeDetail.zip" placeholder="Zip Code" required></b-form-input> <hr>
+                                <b-form-input type="text" v-model="storeDetail.description" placeholder="About" required></b-form-input>
+                                <hr>               
+                          <b-button type="submit" variant="primary">Submit</b-button>
+                        </b-form>
+                        </div>
                     </div>
-                </div>
+
                 <p>Orders</p>
                 <div class="card">
                     <div class="card-body">
-                        <p>Cut Off Date(s)</p>
-                        <hr>
-                        <p>Delivery Date(s)</p>
-                        <hr>
-                        <p>Delivery Distance</p>
-                        <hr>
-                        <p>Minimum Requirement</p>
-                        <hr>
-                        <p>Delivery Fee</p>
-                        <hr>
-                        <p>Allow Pickup</p>
+                        <b-form @submit.prevent="updateStoreSettings">
+                            <p>Cut Off Period</p>
+                            <hr>
+                            <p>Delivery Day(s)</p>
+                            <hr>
+                            <p>Delivery Distance</p>
+                            <hr>
+                            <p>Minimum Meals Requirement</p>
+                            <b-form-input type="text" v-model="storeSettings.minimum" placeholder="Minimum Number of Meals" required></b-form-input>
+                            <hr>
+                            <p>Delivery Fee</p>
+                            <c-switch color="success" variant="pill" size="lg" v-model="storeSettings.applyDeliveryFee" />
+                            <b-form-input v-if="storeSettings.applyDeliveryFee" type="text" v-model="storeSettings.deliveryFee" placeholder="Delivery Fee" required></b-form-input>
+                            <hr>
+                            <p>Allow Pickup</p>
+                            <c-switch color="success" variant="pill" size="lg" v-model="storeSettings.allowPickup" />
+                            <b-form-input v-if="storeSettings.allowPickup" type="text" v-model="storeSettings.pickupInstructions" placeholder="Pickup Instructions (Include address, phone number, and time)" required></b-form-input>
+                            <hr>
+                            <b-button type="submit" variant="primary">Submit</b-button>
+                        </b-form>
                     </div>
                 </div>
                 <p>Menu</p>
                 <div class="card">
                     <div class="card-body">
-                        <p>Nutrition</p>
-                        <hr/>
-                        <p>Ingredients</p>
-                        <hr/>
-                        <p>Categories</p>
+                        <b-form @submit.prevent="updateStoreSettings">
+                            <p>Show Nutrition Facts</p>
+                            <c-switch color="success" variant="pill" size="lg" v-model="storeSettings.showNutrition" />
+                            <hr/>
+                            <p>Ingredients</p>
+                            <hr/>
+                            <p>Categories</p>
+                            <hr>
+                            <b-button type="submit" variant="primary">Submit</b-button>
+                        </b-form>
                     </div>
                 </div>
                 <p>Notifications</p>
@@ -80,16 +93,71 @@
 </template>
 
 <script>
+import { mapGetters, mapActions, mapMutations } from "vuex";
+import { Switch as cSwitch } from '@coreui/vue'
     export default {
         components: {
-
+            cSwitch
         },
         data(){
-            return {}
+            return {
+                storeDetail: {
+                    name: '',
+                    logo: '',
+                    phone: '',
+                    address: '',
+                    city: '',
+                    state: '',
+                    zip: '',
+                    description: ''
+                },
+                storeSettings: {
+                    allowPickup: '',
+                    pickupInstructions: '',
+                    showNutrition: '',
+                    applyDeliveryFee: '',
+                    deliveryFee: '',
+                    minimum: ''
+                }
+            }
+        },
+        computed: {
+            ...mapGetters({
+            store: "viewedStore"
+            }),
+            // storeDetail(){
+            //     return this.store.store_detail;
+            // } 
         },
         mounted()
         {
+            this.getStore();
         },
-        methods: {}
+        methods: {
+            getStore(){
+                axios.get("/getStore").then(response =>{
+                    this.storeDetail = response.data;
+                })
+                axios.get("/getStoreSettings").then(response =>{
+                    this.storeSettings = response.data;
+                })
+            },
+            updateStoreDetails(){
+                this.spliceZip();
+                axios.post("/updateStoreDetails", this.storeDetail).then(response => {
+              });
+            },
+            updateStoreSettings(){
+                axios.post("/updateStoreSettings", this.storeSettings).then(response => {
+              });
+            },
+            spliceZip(){
+                if (this.storeDetail.zip.toString().length > 5){
+                    let intToString = this.storeDetail.zip.toString();
+                    let newZip = parseInt(intToString.substring(0,5));
+                    this.storeDetail.zip = newZip;
+                }
+            }
+        }
     }
 </script>

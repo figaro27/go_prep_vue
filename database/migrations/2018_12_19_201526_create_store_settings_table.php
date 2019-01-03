@@ -16,7 +16,12 @@ class CreateStoreSettingsTable extends Migration
         Schema::create('store_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('store_id')->references('id')->on('stores');
-            $table->integer('minimum');
+            $table->integer('minimum')->default(5);
+            $table->boolean('showNutrition')->default(true);
+            $table->boolean('allowPickup')->default(false);
+            $table->text('pickupInstructions')->nullable();
+            $table->boolean('applyDeliveryFee')->default(false);
+            $table->integer('deliveryFee')->nullable();
             $table->timestamps();
         });
     }

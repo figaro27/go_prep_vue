@@ -42,7 +42,7 @@ class SpaController extends Controller
                 }*/
 
                 if ($user->has('store')) {
-                    $store = $user->store()->with(['meals', 'units'])->first();
+                    $store = $user->store()->with(['meals', 'units', 'settings', 'storeDetail'])->first();
                 }
             }
 

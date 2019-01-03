@@ -36,6 +36,10 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
             Route::get('store/{id}/meals', 'User\\StoreController@meals');
             Route::get('store/meals', 'User\\StoreController@meals');
 
+
+
+            
+
         });
     });
 

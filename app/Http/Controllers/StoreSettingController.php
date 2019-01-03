@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\StoreSetting;
 use Illuminate\Http\Request;
+use Auth;
 
 class StoreSettingController extends Controller
 {
@@ -46,7 +47,9 @@ class StoreSettingController extends Controller
      */
     public function show(StoreSetting $storeSetting)
     {
-        //
+        $id = Auth::user()->id;
+        $settings = StoreSetting::findOrFail($id);
+        return $settings;
     }
 
     /**
@@ -69,7 +72,9 @@ class StoreSettingController extends Controller
      */
     public function update(Request $request, StoreSetting $storeSetting)
     {
-        //
+        $id = Auth::user()->id;
+        $settings = StoreSetting::findOrFail($id);
+        $settings->update($request->toArray());
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\StoreDetail;
 use Illuminate\Http\Request;
+use Auth;
 
 class StoreDetailController extends Controller
 {
@@ -46,7 +47,9 @@ class StoreDetailController extends Controller
      */
     public function show(StoreDetail $storeDetail)
     {
-        //
+        $id = Auth::user()->id;
+        $store = StoreDetail::findOrFail($id);
+        return $store;
     }
 
     /**
@@ -67,9 +70,22 @@ class StoreDetailController extends Controller
      * @param  \App\StoreDetail  $storeDetail
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, StoreDetail $storeDetail)
+    public function update(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|string',
+            'logo' => 'required|string',
+            'phone' => 'required|string',
+            'address' => 'required|string',
+            'city' => 'required|string',
+            'state' => 'required|string',
+            'zip' => 'required|integer',
+            'description' => 'required|string',
+        ]);
+
+        $id = Auth::user()->id;
+        $store = StoreDetail::findOrFail($id);
+        $store->update($request->toArray());
     }
 
     /**

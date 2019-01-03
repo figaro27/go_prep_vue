@@ -23,8 +23,7 @@
               <img :src="meal.featured_image">
               <img src="/storage/add.jpg" @click="addOne(meal)">
               <p>{{ ingredients }}</p>
-              <button @click="getNutritionFacts(meal, meal.ingredients)">Get</button>
-              <div id="nutritionFacts"></div>
+              <div id="nutritionFacts" v-if="storeSettings.showNutrition"></div>
             </b-modal>
             <div class="row">
               <div class="col-sm-10" style="max-height:800px;overflow-y:auto">
@@ -150,8 +149,11 @@ export default {
       bag: "bagItems",
       hasMeal: "bagHasMeal"
     }),
+    storeSettings() {
+      return this.store.settings;
+    },
     minimum() {
-      return this.store.store_settings ? this.store.store_settings.minimum : 1;
+      return this.storeSettings.minimum;
     },
     remainingMeals() {
       return this.minimum - this.total;
@@ -240,7 +242,9 @@ export default {
       return grouped;
     }
   },
-  mounted() {},
+  mounted() {
+
+  },
   methods: {
     quantity(meal) {
       const qty = this.$store.getters.bagItemQuantity(meal);

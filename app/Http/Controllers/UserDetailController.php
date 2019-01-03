@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\UserDetail;
 use Illuminate\Http\Request;
+use Auth;
 
 class UserDetailController extends Controller
 {
@@ -46,7 +47,9 @@ class UserDetailController extends Controller
      */
     public function show(UserDetail $userDetail)
     {
-        //
+        $id = Auth::user()->id;
+        $customer = UserDetail::findOrFail($id);
+        return $customer;
     }
 
     /**
@@ -67,9 +70,22 @@ class UserDetailController extends Controller
      * @param  \App\UserDetail  $userDetail
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UserDetail $userDetail)
+    public function update(Request $request)
     {
-        //
+        $this->validate($request, [
+            'firstname' => 'required|string',
+            'lastname' => 'required|string',
+            'phone' => 'required|string',
+            'address' => 'required|string',
+            'city' => 'required|string',
+            'state' => 'required|string',
+            'zip' => 'required|integer',
+            'delivery' => 'required|string',
+        ]);
+
+        $id = Auth::user()->id;
+        $customer = UserDetail::findOrFail($id);
+        $customer->update($request->toArray());
     }
 
     /**

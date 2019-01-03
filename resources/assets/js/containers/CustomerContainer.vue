@@ -20,7 +20,7 @@
         <div class="container-fluid">
 
           <router-view></router-view>
-
+          
         </div>
       </main>
     </div>
@@ -67,7 +67,7 @@ export default {
   },
   data () {
     return {
-      nav: nav.items
+      nav: nav.items,
     }
   },
   computed: {

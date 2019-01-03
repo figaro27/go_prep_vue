@@ -37,6 +37,14 @@ Route::group(['middleware' => ['auth', 'store_slug']], function ($router) {
   Route::post('/submitStore', 'ContactFormController@submitStore');
   Route::post('/submitCustomer', 'ContactFormController@submitCustomer');
 
+  Route::get('/getCustomer', 'UserDetailController@show');
+  Route::post('/updateCustomer', 'UserDetailController@update');
+
+  Route::get('getStore', 'StoreDetailController@show');
+  Route::get('getStoreSettings', 'StoreSettingController@show');
+  Route::post('updateStoreDetails', 'StoreDetailController@update');
+  Route::post('updateStoreSettings', 'StoreSettingController@update');
+
 });
 
 // All logged in stores

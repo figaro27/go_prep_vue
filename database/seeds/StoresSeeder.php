@@ -21,6 +21,7 @@ class StoresSeeder extends Seeder
             'address' => $faker->streetAddress,
             'city' => $faker->city,
             'state' => $faker->stateAbbr,
+            'zip' => $faker->postCode,
             'logo' => $faker->word,
             'domain' => 'store',
             'created_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now')
