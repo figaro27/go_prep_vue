@@ -34,6 +34,8 @@ class StoreSlug
             define('STORE_ID', null);
         }
 
+        $request->route()->forgetParameter('store_slug');
+
         return $next($request);
     }
 }
