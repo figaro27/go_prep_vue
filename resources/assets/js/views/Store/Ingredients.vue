@@ -77,11 +77,11 @@ export default {
         _.map(this.orderIngredients, (orderIngredient, id) => {
           const ingredient = this.getIngredient(id);
 
-          const baseUnit = format.baseUnit(ingredient.unit_type);
+          const baseUnit = units.base(ingredient.unit_type);
 
           // Convert weight to selected unit
           if (baseUnit !== "unit") {
-            ingredient.quantity = format.unit(
+            ingredient.quantity = units.convert(
               orderIngredient.quantity,
               baseUnit,
               this.displayUnits[id] || baseUnit
@@ -103,9 +103,9 @@ export default {
           return unit;
         }
         const ingredient = this.getIngredient(id);
-        const baseUnit = format.baseUnit(ingredient.unit_type);
+        const baseUnit = units.base(ingredient.unit_type);
         if (baseUnit !== "unit") {
-          return format.bestUnit(orderIngredient.quantity, baseUnit);
+          return units.toBest(orderIngredient.quantity, baseUnit);
         } else return "unit";
       });
     }

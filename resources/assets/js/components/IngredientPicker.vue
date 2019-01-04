@@ -20,7 +20,7 @@
       <thead>
         <th>Name</th>
         <th>Weight</th>
-        <th></th>
+        <th>Unit</th>
       </thead>
       <tbody>
         <tr v-for="(ingredient, i) in ingredients" :key="ingredient.id">
@@ -53,14 +53,20 @@
           </td>
           <td>
             <b-form-group>
-              <b-form-input placeholder="Weight" v-model="ingredient.serving_qty"></b-form-input>
+              <b-form-input placeholder="Weight" :value="ingredient.quantity"></b-form-input>
             </b-form-group>
           </td>
           <td>
             <b-form-group>
-              <b-select v-model="ingredient.serving_unit" :options="weightUnitOptions">
+              <b-select
+                v-if="ingredient.unit_type !== 'unit'"
+                v-model="ingredient.quantity_unit"
+                :options="unitOptions(ingredient)"
+                style="width: 60px"
+              >
                 <option slot="top" disabled>-- Select unit --</option>
               </b-select>
+              <span v-else>Unit</span>
             </b-form-group>
           </td>
         </tr>
@@ -125,12 +131,13 @@ export default {
         };
       });
     },
-    weightUnitOptions() {
-      return units.mass.selectOptions();
+    unitOptions: () => ingredient => {
+      let type = ingredient.unit_type;
+      return units[type].selectOptions();
     },
     canSave() {
       return this.ingredients.length > 0;
-    },
+    }
   },
   watch: {
     ingredients(newIngredients, oldIngredients) {
@@ -174,7 +181,17 @@ export default {
           query: this.recipe
         })
         .then(response => {
-          this.ingredients = _.concat(this.ingredients, response.data.foods);
+          let newIngredients = _.map(response.data.foods, ingredient => {
+            // Get properly named unit
+            let unit = units.normalize(ingredient.serving_unit);
+            let measure = units.describe(unit);
+
+            ingredient.unit_type = units.type(unit);
+            ingredient.quantity = ingredient.serving_qty;
+            ingredient.quantity_unit = unit;
+            return ingredient;
+          });
+          this.ingredients = _.concat(this.ingredients, newIngredients);
           this.recipe = "";
         });
     },
