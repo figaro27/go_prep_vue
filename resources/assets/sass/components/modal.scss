@@ -11,6 +11,8 @@
   position: absolute;
   right: 15px;
   top: 0;
+
+
 }
 
 .modal-full {
@@ -21,14 +23,14 @@
     bottom: 0;
     left: 0;
     overflow: hidden;
-    transition: position 0.25s;
-    margin: 20px;
+    transition: all 0.25s;
+    margin: 30px 100px;
   }
 
   .modal-backdrop {
     top: 55px;
     left: 0;
-    transition: position 0.25s;
+    transition: all 0.25s;
   }
 
   .close {
@@ -37,6 +39,8 @@
     position: absolute;
     right: 0;
     top: 0;
+    margin-right: 0;
+    margin-top: 0;
   }
 
   .modal-dialog {

@@ -24,8 +24,8 @@ class CustomerController extends StoreController
                 "address" => $user->userDetail->address,
                 "city" => $user->userDetail->city,
                 "state" => $user->userDetail->state,
-                "Joined" => $user->created_at->format('m-d-Y'),
-                "LastOrder" => $user->order->max("created_at")->format('m-d-Y'),
+                "Joined" => $user->created_at->format('F d, Y'),
+                "LastOrder" => $user->order->max("created_at")->format('F d, Y'),
                 "TotalPayments" => $user->order->count(),
                 "TotalPaid" => '$' . number_format($user->order->sum("amount"), 2, '.', ','),
             ];

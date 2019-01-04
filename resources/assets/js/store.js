@@ -17,6 +17,8 @@ const state = {
     items: {}
   },
 
+  allergies: {},
+
   // State for logged in users (of any role)
   user: {
     weightUnit: 'oz'
@@ -24,6 +26,10 @@ const state = {
 
   // State for logged in customers State for logged in stores
   store: {
+    detail: {
+      data: {},
+      expries: 0
+    },
     ingredients: {
       data: {},
       expries: 0
@@ -35,6 +41,14 @@ const state = {
     ingredient_units: {
       data: {},
       expires: 0
+    },
+    settings: {
+      data: {},
+      expires: 0
+    },
+    meals: {
+      data: {},
+      expires: 0
     }
   }
 }
@@ -44,6 +58,9 @@ const state = {
 // additional payload arguments. mutations must be synchronous and can be
 // recorded by plugins for debugging purposes.
 const mutations = {
+  allergies(state, allergies) {
+    state.allergies = _.keyBy(allergies, 'id');
+  },
   setViewedStore(state, store) {
     state.viewed_store = {
       ...store
@@ -134,6 +151,39 @@ const mutations = {
 
     state.store.order_ingredients.data = ingredients;
     state.store.order_ingredients.expires = expires;
+  },
+
+  storeDetail(state, {detail, expires}) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    }
+
+    state.store.detail.data = detail;
+    state.store.detail.expires = expires;
+  },
+
+  storeSettings(state, {settings, expires}) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    }
+
+    state.store.settings.data = settings;
+    state.store.settings.expires = expires;
+  },
+
+  storeMeals(state, {meals, expires}) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    }
+
+    state.store.meals.data = meals;
+    state.store.meals.expires = expires;
   }
 }
 
@@ -149,6 +199,20 @@ const actions = {
     const {data} = await res;
 
     try {
+      if (!_.isEmpty(data.allergies) && _.isObject(data.allergies)) {
+        let allergies = data.allergies;
+        commit('allergies', allergies);
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.store_detail) && _.isObject(data.store.store_detail)) {
+        let detail = data.store.store_detail;
+        commit('storeDetail', {detail});
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.units)) {
         let units = {};
 
@@ -159,6 +223,20 @@ const actions = {
         if(!_.isEmpty(units)) {
           commit('ingredientUnits', {units});
         }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.settings) && _.isObject(data.store.settings)) {
+        let settings = data.store.settings;
+        commit('storeSettings', {settings});
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.meals) && _.isObject(data.store.meals)) {
+        let meals = data.store.meals;
+        commit('storeMeals', {meals});
       }
     } catch (e) {}
   },
@@ -227,12 +305,29 @@ const actions = {
     } else {
       throw new Error('Failed to retrieve ingredient units');
     }
-  }
+  },
+
+  async refreshMeals({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me/meals");
+    const {data} = await res;
+
+    if (_.isArray(data)) {
+      commit('storeMeals', {meals: data});
+    } else {
+      throw new Error('Failed to retrieve meals');
+    }
+  },
 }
 
 // getters are functions
 const getters = {
 
+  allergies(state) {
+    return state.allergies;
+  },
   stores(state) {
     return state.stores;
   },
@@ -285,8 +380,8 @@ const getters = {
     items.forEach(item => {
       totalBagPrice += (item.quantity * item.meal.price);
     })
-    if (getters.viewedStore.settings.applyDeliveryFee){
-    totalBagPrice += getters.viewedStore.settings.deliveryFee;
+    if (getters.viewedStoreSetting('applyDeliveryFee', false)) {
+      totalBagPrice += getters.viewedStore.settings.deliveryFee;
     }
 
     return totalBagPrice;
@@ -311,7 +406,39 @@ const getters = {
   },
   orderIngredients(state) {
     return state.store.order_ingredients.data || {};
-  }
+  },
+  storeDetail: (state, getters) => {
+    try {
+      return state.store.detail.data || {};
+    }
+    catch(e) {
+      return {};
+    }
+  },
+  storeSetting: (state, getters) => (key, defaultValue = '') => {
+    try {
+      return state.store.settings.data[key] || defaultValue;
+    }
+    catch(e) {
+      return defaultValue;
+    }
+  },
+  storeSettings: (state) => {
+    try {
+      return state.store.settings.data || {};
+    }
+    catch(e) {
+      return {};
+    }
+  },
+  storeMeals: (state) => {
+    try {
+      return state.store.meals.data || {};
+    }
+    catch(e) {
+      return {};
+    }
+  },
 }
 
 const plugins = [createPersistedState({paths: ['bag']})];

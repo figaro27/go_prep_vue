@@ -12,7 +12,7 @@ class MealsSeeder extends Seeder
     public function run()
     {
         $tags = [];
-        foreach (['Low Carb', 'Low Calorie', 'Vegan', 'Breakfast'] as $tag) {
+        foreach (['Low Carb', 'Low Calorie', 'Vegan'] as $tag) {
             $tags[] = App\MealTag::create(['store_id' => 1, 'tag' => $tag, 'slug' => str_slug($tag)]);
         }
 
@@ -25,6 +25,8 @@ class MealsSeeder extends Seeder
               'meal_id' => $u->id,
             ]);
             $u->categories()->save($cat);
+
+            $u->allergies()->attach(rand(1, 4));
 
             $unitTypes = [
                 'mass' => ['oz', 'g'],
