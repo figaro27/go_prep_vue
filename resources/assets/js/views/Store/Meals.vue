@@ -137,6 +137,7 @@ textarea {
                 v-model="meal.title"
                 placeholder="Meal Name"
                 required
+                @change="val => updateMeal(meal.id, {title: val})"
               ></b-form-input>
             </b-form-group>
 
@@ -147,6 +148,7 @@ textarea {
                 class="form-control"
                 :rows="4"
                 :maxlength="100"
+                @input="e => updateMealDescription(meal.id, e.target.value)"
               ></textarea>
             </b-form-group>
 
@@ -385,6 +387,11 @@ export default {
         return { text: tag };
       });
     }
+  },
+  created() {
+    this.updateMealDescription = _.debounce((id, description) => {
+      this.updateMeal(id, {description});
+    }, 300)
   },
   mounted() {},
   methods: {
