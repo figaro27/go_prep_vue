@@ -135,9 +135,30 @@ textarea {
 
     <create-meal-modal v-if="createMealModal" v-on:created="refreshTable()"/>
 
+
+
+
+
     <b-modal title="Meal" v-model="viewMealModal" v-if="viewMealModal">
-      Hey
+      <b-form-input type="text" v-model="meal.title" placeholder="Meal Name" required></b-form-input> <hr>
+      <img :src="meal.featured_image"/> <hr>
+      <b-form-input type="text" v-model="meal.description" placeholder="Meal Name" required></b-form-input> <hr>
+
+      <div v-for="tag in meal.tags" :key="tag">
+      <b-button @click="activate(tag.tag)">{{ tag.tag }}</b-button> <hr>
+      </div>
+
+      <li v-for="category in meal.categories">{{ category.category }}</li> <hr>
+      <b-form-input type="text" v-model="meal.price" placeholder="Meal Name" required></b-form-input> <hr>
+      <b-form-input type="text" v-model="meal.active_orders" placeholder="Meal Name" required></b-form-input> <hr>
+      <p> {{ meal.num_orders }} </p> <hr>
+      <b-form-input type="text" v-model="meal.created_at" placeholder="Meal Name" required></b-form-input> <hr>
     </b-modal>
+
+
+
+
+
 
     <b-modal title="Meal" v-model="deleteMealModal" v-if="deleteMealModal">
       <center>
@@ -176,6 +197,17 @@ export default {
       _,
       filter: {
         status: "all"
+      },
+      meal: {
+        title: '',
+        featured_image: '',
+        description: '',
+        categories: '',
+        tags: '',
+        price: '',
+        active_orders: '',
+        num_orders: '',
+        created_at: ''
       },
       isLoading: false,
       createMealModal: false,
@@ -223,10 +255,11 @@ export default {
         "featured_image",
         "title",
         "description",
+        "categories",
         "tags",
         "price",
         "active_orders",
-        "num_orders",
+        "lifetime_orders",
         "created_at",
         "actions"
       ],
@@ -236,10 +269,11 @@ export default {
           featured_image: "Image",
           title: "Title",
           description: "Description",
+          categories: "Categories",
           tags: "Tags",
           price: "Price",
           active_orders: "Active Orders",
-          num_orders: "Lifetime Orders",
+          lifetime_orders: "Lifetime Orders",
           created_at: "Added",
           actions: "Actions"
         },
@@ -491,6 +525,9 @@ export default {
       this.editing[id].tag_titles_input = newTags;
       this.editing[id].tag_titles = _.map(newTags, "text");
       this.updateMeal(id, { tag_titles: this.editing[id].tag_titles });
+    },
+    activate(tag){
+      alert(tag);
     }
   }
 };

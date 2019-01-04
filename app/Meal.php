@@ -22,11 +22,18 @@ class Meal extends Model
         'created_at' => 'date:F d, Y'
     ];
 
-    protected $appends = ['tag_titles', 'quantity', 'nutrition', 'active_orders'];
+    protected $appends = ['tag_titles', 'quantity', 'nutrition', 'active_orders', 'lifetime_orders'];
 
     public function getQuantityAttribute()
     {
         return 0;
+    }
+
+    public function getLifetimeOrdersAttribute()
+    {
+        // $lifetimeOrders = Meal::select(DB::raw('count(id) as count'))->whereHas('orders')->groupBy('title')->get();
+        $lifetimeOrders = 20;
+        return $lifetimeOrders;
     }
 
     public function getActiveOrdersAttribute()

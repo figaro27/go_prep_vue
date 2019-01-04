@@ -35,7 +35,7 @@ class SpaController extends Controller
 
             if ($user) {
                 if ($user->has('store')) {
-                    $store = $user->store()->with(['meals', 'units', 'settings', 'storeDetail'])->first();
+                    $store = $user->store()->with(['meals', 'meals.categories', 'units', 'settings', 'storeDetail'])->first();
                 }
             }
 
