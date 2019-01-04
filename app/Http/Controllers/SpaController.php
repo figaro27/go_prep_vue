@@ -34,13 +34,6 @@ class SpaController extends Controller
             $user = auth('api')->user();
 
             if ($user) {
-                /*
-                if ($user->role == 2) {
-                return [];
-                } elseif ($user->role == 3) {
-                return [];
-                }*/
-
                 if ($user->has('store')) {
                     $store = $user->store()->with(['meals', 'units', 'settings', 'storeDetail'])->first();
                 }

@@ -3,10 +3,12 @@
 namespace App;
 
 use App\Store;
+use App\Order;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Exception;
+use Illuminate\Support\Facades\DB;
 
 class Meal extends Model
 {
@@ -17,13 +19,21 @@ class Meal extends Model
 
     protected $casts = [
         'price' => 'double',
+        'created_at' => 'date:F d, Y'
     ];
 
-    protected $appends = ['tag_titles', 'quantity', 'nutrition'];
+    protected $appends = ['tag_titles', 'quantity', 'nutrition', 'active_orders'];
 
     public function getQuantityAttribute()
     {
         return 0;
+    }
+
+    public function getActiveOrdersAttribute()
+    {
+        // $activeOrders = Meal::select(DB::raw('count(id) as count'))->whereHas('orders', function($q) { $q->where('fulfilled', false); })->groupBy('title')->get();
+        $activeOrders = 5;
+        return $activeOrders;
     }
 
     public function getNutritionAttribute() {
@@ -122,7 +132,7 @@ class Meal extends Model
 
     public static function getMeal($id)
     {
-        return Meal::with('ingredients', 'meal_tags')->where('id', $id)->first();
+        return Meal::with('ingredients', 'tags')->where('id', $id)->first();
     }
 
     //Considering renaming "Store" to "Company" to not cause confusion with store methods.

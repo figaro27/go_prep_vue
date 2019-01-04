@@ -43,6 +43,10 @@ const state = {
     settings: {
       data: {},
       expires: 0
+    },
+    meals: {
+      data: {},
+      expires: 0
     }
   }
 }
@@ -164,6 +168,17 @@ const mutations = {
 
     state.store.settings.data = settings;
     state.store.settings.expires = expires;
+  },
+
+  storeMeals(state, {meals, expires}) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    }
+
+    state.store.meals.data = meals;
+    state.store.meals.expires = expires;
   }
 }
 
@@ -203,6 +218,13 @@ const actions = {
       if (!_.isEmpty(data.store.settings) && _.isObject(data.store.settings)) {
         let settings = data.store.settings;
         commit('storeSettings', {settings});
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.meals) && _.isObject(data.store.meals)) {
+        let meals = data.store.meals;
+        commit('storeMeals', {meals});
       }
     } catch (e) {}
   },
@@ -375,6 +397,14 @@ const getters = {
   storeSettings: (state) => {
     try {
       return state.store.settings.data || {};
+    }
+    catch(e) {
+      return {};
+    }
+  },
+  storeMeals: (state) => {
+    try {
+      return state.store.meals.data || {};
     }
     catch(e) {
       return {};

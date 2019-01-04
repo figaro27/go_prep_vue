@@ -11,6 +11,11 @@ class Order extends Model
         'fulfilled', 'notes',
     ];
 
+    protected $casts = [
+        'amount' => 'double',
+        'created_at' => 'date:F d, Y'
+    ];
+
     public function user()
     {
         return $this->belongsTo('App\User');

@@ -1,340 +1,3 @@
-<template>
-  <div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header">Test Area</div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-sm form-group">
-                <h6>Returns Ingredient & Nutrition Data</h6>
-                <input
-                  class="input-lg form-control mb-2"
-                  v-model="ingredientQuery"
-                  placeholder="Type Ingredients Here"
-                >
-                <button
-                  class="btn btn-primary btn-sm form-control"
-                  @click="getNutrition"
-                >Get Nutrition</button>
-              </div>
-              <div class="col-sm">
-                <h6>Suggests Ingredients</h6>
-                <input
-                  list="ingredientResults"
-                  class="input-lg form-control"
-                  v-model="ingredientSearch"
-                  @input="searchInstant"
-                  placeholder="Search Ingredients"
-                >
-                <table class="table table-bordered">
-                  <tr>
-                    <th>Food Name</th>
-                  </tr>
-                  <tr v-for="ingredientResult in ingredientResults">
-                    <td>{{ ingredientResult.food_name }}</td>
-                  </tr>
-                </table>
-              </div>
-              <div class="col-sm">
-                <h6>Tags Used for Meal Tags</h6>
-                <input type="text" value="test1,test2" data-role="tagsinput">
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-sm">
-                <table class="table table-bordered">
-                  <tr>
-                    <th>Food Name</th>
-                    <th>Serving Quantity</th>
-                    <th>Serving Unit</th>
-                  </tr>
-                  <tr v-for="ingredient in ingredients">
-                    <td>{{ ingredient.food_name }}</td>
-                    <td>{{ ingredient.serving_qty }}</td>
-                    <td>{{ ingredient.serving_unit }}</td>
-                  </tr>
-                </table>
-              </div>
-              <div class="col-sm">
-                <button
-                  class="btn btn-primary btn-sm form-control"
-                  @click="getNutritionFacts"
-                >Get Nutrition Facts</button>
-                <div id="nutritionFacts"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header">Meals</div>
-          <div class="card-body">
-            <Spinner v-if="isLoading"/>
-
-            <v-client-table
-              ref="mealsTable"
-              :columns="columns"
-              :data="tableData"
-              :options="options"
-            >
-              <div slot="beforeTable" class="mb-2">
-                <button class="btn btn-success btn-sm" @click="createMeal">Add Meal</button>
-
-                <b-form-radio-group
-                  buttons
-                  button-variant="primary"
-                  size="sm"
-                  v-model="filter.status"
-                  @change="onChangeStatusFilter"
-                  :options="statusFilterOptions"
-                />
-              </div>
-
-              <div slot="active" slot-scope="props">
-                <b-form-checkbox
-                  type="checkbox"
-                  v-model="props.row.active"
-                  :value="1"
-                  :unchecked-value="0"
-                  @change="(val) => updateActive(props.row.id, val)"
-                ></b-form-checkbox>
-              </div>
-
-              <div slot="featured_image" slot-scope="props">
-                <div v-if="!props.row.editing">
-                  <img class="thumb" :src="props.row.featured_image" v-if="props.row.featured_image">
-                </div>
-                <div v-else>
-                  <picture-input
-                    :ref="`featuredImageInput${props.row.id}`"
-                    :prefill="props.row.featured_image ? props.row.featured_image : false"
-                    @prefill="$refs[`featuredImageInput${props.row.id}`].onResize()"
-                    :alertOnError="false"
-                    :autoToggleAspectRatio="true"
-                    width="100"
-                    height="100"
-                    margin="0"
-                    size="10"
-                    button-class="btn"
-                    @change="(val) => updateImage(props.row.id, val)"
-                  ></picture-input>
-                </div>
-              </div>
-
-              <div slot="title" slot-scope="props">
-                <div v-if="!props.row.editing">{{ props.row.title }}</div>
-                <div v-else>
-                  <b-form-input
-                    :key="`title${props.row.id}`"
-                    name="title"
-                    v-model.lazy="props.row.title"
-                    @change="(e) => { updateMeal(props.row.id, {title: editing[props.row.id].title}) }"
-                    :formatter="(val) => val.substring(0, 20)"
-                  ></b-form-input>
-                </div>
-              </div>
-
-              <div slot="description" slot-scope="props">
-                <div v-if="!isEditing(props.row.id)">{{ props.row.description }}</div>
-                <div v-else>
-                  <textarea
-                    v-model.lazy="editing[props.row.id].description"
-                    :rows="4"
-                    @change="(e) => { updateMeal(props.row.id, {description: editing[props.row.id].description}) }"
-                    :maxlength="100"
-                  ></textarea>
-                </div>
-              </div>
-
-              <div slot="tags" slot-scope="props">
-                <div v-if="!props.row.editing">{{ props.row.tag_titles.join(', ') }}</div>
-                <div v-else>
-                  <input-tag
-                    ref="editMealTagsInput"
-                    v-model="editing[props.row.id].tag_titles_flat"
-                    :tags="editing[props.row.id].tag_titles_input"
-                    @tags-changed="tags => onChangeTags(props.row.id, tags)"
-                  />
-                </div>
-              </div>
-
-              <div slot="price" slot-scope="props">
-                <div v-if="!props.row.editing">{{ formatMoney(props.row.price) }}</div>
-                <div v-else>
-                  <b-form-input
-                    v-model="editing[props.row.id].price"
-                    @change="(e) => { updateMeal(props.row.id, {price: editing[props.row.id].price}) }"
-                  ></b-form-input>
-                </div>
-              </div>
-
-              <div slot="current_orders" slot-scope="props">{{ props.row.orders.length }}</div>
-
-              <div slot="actions" class="text-nowrap" slot-scope="props">
-                <!--<button class="btn btn-warning btn-sm" @click="editMeal(props.row.id)">Edit</button>-->
-                <button class="btn btn-warning btn-sm" @click="toggleEditing(props.row.id)">Edit</button>
-                <button class="btn btn-danger btn-sm" @click="deleteMeal(props.row.id)">Delete</button>
-
-                <div v-if="isEditing(props.row.id)">
-                  <button
-                    class="btn btn-primary btn-sm mt-1 d-block w-100"
-                    @click="updateMeal(props.row.id)"
-                  >Save</button>
-                </div>
-              </div>
-
-              <div slot="child_row" slot-scope="props">
-                <b-row>
-                  <b-col>
-                    <h3>Tags</h3>
-                    <div>
-                      <input-tag
-                        ref="editMealTagsInput"
-                        v-model="editing[props.row.id].tag_titles_flat"
-                        :tags="editing[props.row.id].tag_titles_input"
-                        @tags-changed="tags => onChangeTags(props.row.id, tags)"
-                      />
-                    </div>
-                  </b-col>
-
-                  <b-col>
-                    <h3>Categories</h3>
-                    <div></div>
-                  </b-col>
-
-                  <b-col>
-                    <h3 class="mt-3">Ingredients</h3>
-                    <ingredient-picker
-                      v-model="editing[props.row.id].ingredients"
-                      :options="{
-                        saveButton: true,
-                      }"
-                      v-on:input="ingredients => {
-                        getNutritionFacts(ingredients, props.row);
-                        //onChangeIngredients(props.row.id, ingredients)
-                      }"
-                      v-on:save="onChangeIngredients(props.row.id, editing[props.row.id].ingredients)"
-                    />
-                  </b-col>
-
-                  <b-col>
-                    <h3 class="mt-3">Nutrition</h3>
-                    <div :id="`nutritionFacts${props.row.id}`"></div>
-                  </b-col>
-                </b-row>
-              </div>
-            </v-client-table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <create-meal-modal v-if="createMealModal" v-on:created="refreshTable()"/>
-
-    <b-modal size="lg" title="Meal" v-model="viewMealModal" v-if="viewMealModal">
-      <b-list-group>
-        <b-list-group-item>Logo: {{ meal.featured_image }}</b-list-group-item>
-        <b-list-group-item>Title: {{ meal.title }}</b-list-group-item>
-        <b-list-group-item>Description: {{ meal.description }}</b-list-group-item>
-        <b-list-group-item>Price: {{ meal.price }}</b-list-group-item>
-        <b-list-group-item>Created: {{ meal.created_at.date }}</b-list-group-item>
-      </b-list-group>
-
-      <h3 class="mt-3">Tags</h3>
-      <b-list-group>
-        <b-list-group-item v-for="tag in tags" :key="tag.id">{{ tag.tag }}</b-list-group-item>
-      </b-list-group>
-      <div>
-        <h3>Ingredients</h3>
-        <table>
-          <tr v-for="ingredient in ingredients">
-            <td>{{ ingredient.food_name }}</td>
-            <td>{{ ingredient.serving_qty }}</td>
-            <td>{{ ingredient.serving_unit }}</td>
-            <td>Calories: {{ ingredient.calories}}</td>
-            <td>Protein: {{ ingredient.proteins}}</td>
-          </tr>
-        </table>
-      </div>
-      <button class="btn btn-primary btn-sm" @click="getNutritionFacts">Get Nutrition Facts</button>
-      <div id="nutritionFacts"></div>
-    </b-modal>
-
-    <b-modal title="Meal" v-model="editMealModal" v-if="editMealModal" class="modal-full" no-fade>
-      <b-form>
-        <b-row>
-          <b-col cols="9">
-            <b-form-group label="Title">
-              <b-form-input v-model="meal.title" required placeholder="Enter email"></b-form-input>
-            </b-form-group>
-
-            <b-form-row>
-              <b-col>
-                <b-form-group label="Description">
-                  <b-form-input v-model="meal.description" required placeholder="Enter description"></b-form-input>
-                </b-form-group>
-              </b-col>
-              <b-col>
-                <b-form-group label="Price">
-                  <b-form-input
-                    v-model="meal.price"
-                    type="number"
-                    required
-                    placeholder="Enter price"
-                  ></b-form-input>
-                </b-form-group>
-              </b-col>
-            </b-form-row>
-
-            <h3 class="mt-3">Ingredients</h3>
-            <IngredientPicker
-              v-model="meal.ingredients"
-            />
-          </b-col>
-          <b-col>
-            <h3>Tags</h3>
-            <div>
-              <input-tag ref="editMealTagsInput" v-model="meal.tags"/>
-            </div>
-
-            <h3 class="mt-3">Image</h3>
-            <picture-input
-              :key="'editMealImageInput' + meal.id"
-              ref="editMealImageInput"
-              v-if="editMealModal"
-              :prefill="meal.featured_image ? meal.featured_image : false"
-              @prefill="$refs.editMealImageInput.onResize()"
-              :alertOnError="false"
-              :autoToggleAspectRatio="true"
-              width="600"
-              height="600"
-              margin="0"
-              size="10"
-              button-class="btn"
-              @change="onChangeImage"
-            ></picture-input>
-          </b-col>
-        </b-row>
-
-        <button class="btn btn-primary mt-3 float-right" @click="updateMeal(mealID)">Save</button>
-      </b-form>
-    </b-modal>
-
-    <b-modal title="Meal" v-model="deleteMealModal" v-if="deleteMealModal">
-      <center>
-        <h5>Are you sure you want to delete this meal?</h5>
-        <button class="btn btn-danger mt-3" @click="destroyMeal(mealID)">Delete</button>
-      </center>
-    </b-modal>
-  </div>
-</template>
-
 <style lang="scss">
 @import "~bootstrap-tagsinput/dist/bootstrap-tagsinput.css";
 @import "~nutrition-label-jquery-plugin/dist/css/nutritionLabel-min.css";
@@ -404,6 +67,87 @@ textarea {
 </style>
 
 
+<template>
+  <div>
+    
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <Spinner v-if="isLoading"/>
+
+            <v-client-table
+              ref="mealsTable"
+              :columns="columns"
+              :data="tableData"
+              :options="options"
+            >
+              <div slot="beforeTable" class="mb-2">
+                <button class="btn btn-success btn-sm" @click="createMeal">Add Meal</button>
+
+                <b-form-radio-group
+                  buttons
+                  button-variant="primary"
+                  size="sm"
+                  v-model="filter.status"
+                  @change="onChangeStatusFilter"
+                  :options="statusFilterOptions"
+                />
+              </div>
+
+              <div slot="active" slot-scope="props">
+                <b-form-checkbox
+                  type="checkbox"
+                  v-model="props.row.active"
+                  :value="1"
+                  :unchecked-value="0"
+                  @change="(val) => updateActive(props.row.id, val)"
+                ></b-form-checkbox>
+              </div>
+
+              <div slot="featured_image" slot-scope="props">
+                  <img class="thumb" :src="props.row.featured_image" v-if="props.row.featured_image">
+              </div>
+
+              <div slot="tags" slot-scope="props">
+                {{ props.row.tag_titles.join(', ') }}
+              </div>
+
+              <div slot="price" slot-scope="props">
+                {{ formatMoney(props.row.price) }}
+              </div>
+
+              <div slot="current_orders" slot-scope="props">
+                {{ props.row.orders.length }}
+              </div>
+
+              <div slot="actions" class="text-nowrap" slot-scope="props">
+                <button class="btn btn-warning btn-sm" @click="viewMeal(props.row.id)">View</button>
+                <button class="btn btn-danger btn-sm" @click="deleteMeal(props.row.id)">Delete</button>
+              </div>
+
+            </v-client-table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <create-meal-modal v-if="createMealModal" v-on:created="refreshTable()"/>
+
+    <b-modal title="Meal" v-model="viewMealModal" v-if="viewMealModal">
+      Hey
+    </b-modal>
+
+    <b-modal title="Meal" v-model="deleteMealModal" v-if="deleteMealModal">
+      <center>
+        <h5>Are you sure you want to delete this meal?</h5>
+        <button class="btn btn-danger mt-3" @click="destroyMeal(mealID)">Delete</button>
+      </center>
+    </b-modal>
+  </div>
+</template>
+
 <script>
 import Spinner from "../../components/Spinner";
 import IngredientPicker from "../../components/IngredientPicker";
@@ -415,6 +159,7 @@ import nutritionFacts from "nutrition-label-jquery-plugin";
 import PictureInput from "vue-picture-input";
 import units from "../../data/units";
 import format from "../../lib/format";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   components: {
@@ -432,13 +177,10 @@ export default {
       filter: {
         status: "all"
       },
-      isLoading: true,
+      isLoading: false,
       createMealModal: false,
       viewMealModal: false,
-      editMealModal: false,
       deleteMealModal: false,
-
-      editing: [], // inline editing
 
       tags: [],
       newTags: [],
@@ -475,7 +217,7 @@ export default {
       },
 
       active: [],
-      tableData: [],
+
       columns: [
         "active",
         "featured_image",
@@ -483,6 +225,7 @@ export default {
         "description",
         "tags",
         "price",
+        "active_orders",
         "num_orders",
         "created_at",
         "actions"
@@ -495,7 +238,8 @@ export default {
           description: "Description",
           tags: "Tags",
           price: "Price",
-          num_orders: "# Orders",
+          active_orders: "Active Orders",
+          num_orders: "Lifetime Orders",
           created_at: "Added",
           actions: "Actions"
         },
@@ -519,6 +263,13 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      store: "viewedStore",
+      meals: "storeMeals"
+    }),
+    tableData(){
+      return this.meals;
+    },
     weightUnitOptions() {
       return units.mass.selectOptions();
     },
@@ -536,87 +287,25 @@ export default {
     }
   },
   mounted() {
-    this.getTableData();
   },
   methods: {
     formatMoney: format.money,
     refreshTable() {
-      //this.$refs.mealsTable.render();
       this.getTableData();
-    },
-    getTableData() {
-      let self = this;
-      axios.get("/api/me/meals").then(response => {
-        this.tableData = response.data.map(meal => {
-          meal.editing = false;
-          meal.num_orders = meal.orders.length;
-          return meal;
-        });
-        self.isLoading = false;
-        self.active = response.data.map(row => row.active);
-
-        this.$nextTick(() => {
-          this.syncEditables();
-        });
-      });
     },
     getTableDataIndexById(id) {
       return _.findIndex(this.tableData, o => {
         return o.id === id;
       });
     },
-    syncEditables() {
-      this.editing = _.keyBy(
-        _.map({ ...this.tableData }, row => {
-          // the tag input requires this format
-          row.tag_titles_input = row.tag_titles.map(title => {
-            return {
-              text: title
-            };
-          });
-          return row;
-        }),
-        "id"
-      );
-    },
-    toggleEditing(id) {
-      const i = this.getTableDataIndexById(id);
-
-      if (i !== -1 && !this.isEditing(id)) {
-        //this.editing[id] = { ...this.tableData[i] };
-        this.tableData[i].editing = true;
-        this.$set(this.tableData, i, this.tableData[i]);
-      } else {
-        this.tableData[i].editing = false;
-        this.$set(this.tableData, i, this.tableData[i]);
-        //_.unset(this.editing, id);
-      }
-
-      this.$nextTick(() => {
-        this.syncEditables();
-        this.$refs.mealsTable.toggleChildRow(i + 1);
-      });
-    },
-    isEditing(id) {
-      const i = this.getTableDataIndexById(id);
-      if (i !== -1) {
-        return this.tableData[i].editing;
-      }
-
-      return false;
-    },
     updateMeal(id, changes) {
       const i = this.getTableDataIndexById(id);
-
-      // None found
       if (i === -1) {
         return this.getTableData();
       }
-
       if (_.isEmpty(changes)) {
         changes = this.editing[id];
       }
-
       axios.patch(`/api/me/meals/${id}`, changes).then(resp => {
         this.$set(this.tableData, i, resp.data);
         this.$refs.mealsTable.toggleChildRow(i + 1);
@@ -629,7 +318,6 @@ export default {
         return o.id === id;
       });
 
-      // None found
       if (i === -1) {
         return this.getTableData();
       }
@@ -656,25 +344,12 @@ export default {
         this.meal = response.data;
         this.ingredients = response.data.ingredient;
         this.tags = response.data.meal_tag;
+        this.mealID = response.data.id;
         this.viewMealModal = true;
 
         this.$nextTick(function() {
           window.dispatchEvent(new Event("resize"));
         });
-      });
-    },
-    editMeal(id) {
-      this.addTag = false;
-      axios.get(`/api/me/meals/${id}`).then(response => {
-        this.meal = response.data;
-        this.ingredients = response.data.ingredient;
-        this.tags = response.data.meal_tag;
-        this.editMealModal = true;
-        this.mealID = response.data.id;
-
-        setTimeout(() => {
-          this.$refs.editMealImageInput.onResize();
-        }, 50);
       });
     },
     deleteMeal: function($id) {
