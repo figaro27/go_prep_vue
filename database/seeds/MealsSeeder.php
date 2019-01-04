@@ -26,6 +26,8 @@ class MealsSeeder extends Seeder
             ]);
             $u->categories()->save($cat);
 
+            $u->allergies()->attach(rand(1, 4));
+
             $unitTypes = [
                 'mass' => ['oz', 'g'],
                 'volume' => ['ml', 'teaspoon'],

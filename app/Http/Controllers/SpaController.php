@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Store;
 use Illuminate\Support\Facades\Cache;
 use \Illuminate\Http\Request;
+use App\Allergy;
 
 class SpaController extends Controller
 {
@@ -29,13 +30,13 @@ class SpaController extends Controller
         if ($request->wantsJson()) {
             //$this->middleware('view.api');
 
-            $store = defined('STORE_ID') ? Store::with(['meals', 'units', 'meals.categories', 'settings'])->find(STORE_ID) : null;
+            $store = defined('STORE_ID') ? Store::with(['meals', 'units', 'meals.categories', 'meals.allergies', 'settings'])->find(STORE_ID) : null;
 
             $user = auth('api')->user();
 
             if ($user) {
                 if ($user->has('store')) {
-                    $store = $user->store()->with(['meals', 'meals.categories', 'units', 'settings', 'storeDetail'])->first();
+                    $store = $user->store()->with(['meals', 'meals.categories', 'meals.allergies', 'units', 'settings', 'storeDetail'])->first();
                 }
             }
 
@@ -53,6 +54,7 @@ class SpaController extends Controller
                 'store' => $store,
                 'stores' => $stores,
                 'order_ingredients' => $orderIngredients ?? [],
+                'allergies' => Allergy::all(),
             ];
 
         } else {

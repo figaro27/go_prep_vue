@@ -17,6 +17,8 @@ const state = {
     items: {}
   },
 
+  allergies: {},
+
   // State for logged in users (of any role)
   user: {
     weightUnit: 'oz'
@@ -56,6 +58,9 @@ const state = {
 // additional payload arguments. mutations must be synchronous and can be
 // recorded by plugins for debugging purposes.
 const mutations = {
+  allergies(state, allergies) {
+    state.allergies = _.keyBy(allergies, 'id');
+  },
   setViewedStore(state, store) {
     state.viewed_store = {
       ...store
@@ -194,6 +199,13 @@ const actions = {
     const {data} = await res;
 
     try {
+      if (!_.isEmpty(data.allergies) && _.isObject(data.allergies)) {
+        let allergies = data.allergies;
+        commit('allergies', allergies);
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.store_detail) && _.isObject(data.store.store_detail)) {
         let detail = data.store.store_detail;
         commit('storeDetail', {detail});
@@ -293,12 +305,29 @@ const actions = {
     } else {
       throw new Error('Failed to retrieve ingredient units');
     }
-  }
+  },
+
+  async refreshMeals({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me/meals");
+    const {data} = await res;
+
+    if (_.isArray(data)) {
+      commit('storeMeals', {meals: data});
+    } else {
+      throw new Error('Failed to retrieve meals');
+    }
+  },
 }
 
 // getters are functions
 const getters = {
 
+  allergies(state) {
+    return state.allergies;
+  },
   stores(state) {
     return state.stores;
   },

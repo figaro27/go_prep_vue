@@ -3,12 +3,10 @@
 namespace App;
 
 use App\Store;
-use App\Order;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Exception;
-use Illuminate\Support\Facades\DB;
 
 class Meal extends Model
 {
@@ -19,10 +17,10 @@ class Meal extends Model
 
     protected $casts = [
         'price' => 'double',
-        'created_at' => 'date:F d, Y'
+        'created_at' => 'date:F d, Y',
     ];
 
-    protected $appends = ['tag_titles', 'quantity', 'nutrition', 'active_orders', 'lifetime_orders'];
+    protected $appends = ['tag_titles', 'quantity', 'nutrition', 'active_orders', 'lifetime_orders', 'allergy_ids'];
 
     public function getQuantityAttribute()
     {
@@ -43,23 +41,28 @@ class Meal extends Model
         return $activeOrders;
     }
 
-    public function getNutritionAttribute() {
+    public function getNutritionAttribute()
+    {
 
-      $nutrition = [];
-      
-      foreach($this->ingredients as $ingredient) {
-        foreach(Ingredient::NUTRITION_FIELDS as $field) {
-          if(!array_key_exists($field, $nutrition)) {
-            $nutrition[$field] = 0;
-          }
+        $nutrition = [];
 
-          $nutrition[$field] += $ingredient[$field] * $ingredient->pivot->quantity_grams;
+        foreach ($this->ingredients as $ingredient) {
+            foreach (Ingredient::NUTRITION_FIELDS as $field) {
+                if (!array_key_exists($field, $nutrition)) {
+                    $nutrition[$field] = 0;
+                }
+
+                $nutrition[$field] += $ingredient[$field] * $ingredient->pivot->quantity_grams;
+            }
         }
-      }
 
-      return $nutrition;
+        return $nutrition;
     }
 
+    public function getAllergyIdsAttribute()
+    {
+        return $this->allergies->pluck('id');
+    }
 
     public function store()
     {
@@ -71,7 +74,8 @@ class Meal extends Model
         return $this->belongsToMany('App\Ingredient')->withPivot('quantity', 'quantity_unit')->using('App\IngredientMeal');
     }
 
-    public function categories(){
+    public function categories()
+    {
         return $this->hasMany('App\MealCategory');
     }
 
@@ -95,6 +99,11 @@ class Meal extends Model
         return collect($this->tags)->map(function ($meal) {
             return $meal->tag;
         });
+    }
+
+    public function allergies()
+    {
+        return $this->belongsToMany('App\Allergy', 'allergy_meal', 'meal_id', 'allergy_id')->using('App\MealAllergy');
     }
 
     //Admin View
@@ -227,6 +236,7 @@ class Meal extends Model
             'created_at',
             'tag_titles',
             'ingredients',
+            'allergies',
         ]);
 
         if ($props->has('featured_image')) {
@@ -290,8 +300,8 @@ class Meal extends Model
                             'unit_type' => Unit::getType('serving_unit'),
                         ])->first();
 
-                        if($ingredient) {
-                          $ingredients->push($ingredient);
+                        if ($ingredient) {
+                            $ingredients->push($ingredient);
                         }
                         // Nope. Create a new one
                         else {
@@ -316,8 +326,8 @@ class Meal extends Model
                                 'calcium',
                                 'iron',
                                 'sugars',
-                            ])->map(function($val) {
-                              return is_null($val) ? 0 : $val;
+                            ])->map(function ($val) {
+                                return is_null($val) ? 0 : $val;
                             });
 
                             $ingredientArr = Ingredient::normalize($newIngredient->toArray());
@@ -335,14 +345,23 @@ class Meal extends Model
                 }
             }
 
-            $syncIngredients = $ingredients->mapWithKeys(function($val, $key) use ($newIngredients) {
-              return [$val->id => [
-                'quantity' => $newIngredients[$key]['serving_qty'] ?? 1,
-                'quantity_unit' => $newIngredients[$key]['serving_unit'] ?? 'g',
-              ]];
+            $syncIngredients = $ingredients->mapWithKeys(function ($val, $key) use ($newIngredients) {
+                return [$val->id => [
+                    'quantity' => $newIngredients[$key]['serving_qty'] ?? 1,
+                    'quantity_unit' => $newIngredients[$key]['serving_unit'] ?? 'g',
+                ]];
             });
 
             $meal->ingredients()->sync($syncIngredients);
+        }
+
+        $allergies = $props->get('allergies');
+        if (is_array($allergies)) {
+            $allergyIds = array_map(function ($allergy) {
+                return is_numeric($allergy) ? $allergy : $allergy->id;
+            }, $allergies);
+
+            $meal->allergies()->sync($allergyIds);
         }
 
         $meal->update($props->toArray());

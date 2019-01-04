@@ -69,8 +69,6 @@ textarea {
 
 <template>
   <div>
-    
-
     <div class="row">
       <div class="col-md-12">
         <div class="card">
@@ -107,26 +105,19 @@ textarea {
               </div>
 
               <div slot="featured_image" slot-scope="props">
-                  <img class="thumb" :src="props.row.featured_image" v-if="props.row.featured_image">
+                <img class="thumb" :src="props.row.featured_image" v-if="props.row.featured_image">
               </div>
 
-              <div slot="tags" slot-scope="props">
-                {{ props.row.tag_titles.join(', ') }}
-              </div>
+              <div slot="tags" slot-scope="props">{{ props.row.tag_titles.join(', ') }}</div>
 
-              <div slot="price" slot-scope="props">
-                {{ formatMoney(props.row.price) }}
-              </div>
+              <div slot="price" slot-scope="props">{{ formatMoney(props.row.price) }}</div>
 
-              <div slot="current_orders" slot-scope="props">
-                {{ props.row.orders.length }}
-              </div>
+              <div slot="current_orders" slot-scope="props">{{ props.row.orders.length }}</div>
 
               <div slot="actions" class="text-nowrap" slot-scope="props">
                 <button class="btn btn-warning btn-sm" @click="viewMeal(props.row.id)">View</button>
                 <button class="btn btn-danger btn-sm" @click="deleteMeal(props.row.id)">Delete</button>
               </div>
-
             </v-client-table>
           </div>
         </div>
@@ -135,30 +126,96 @@ textarea {
 
     <create-meal-modal v-if="createMealModal" v-on:created="refreshTable()"/>
 
+    <div class="modal-full">
+      <b-modal title="Meal" v-model="viewMealModal" v-if="viewMealModal">
+        <b-row>
+          <b-col>
+            <b-form-group label="Meal title" label-for="meal-title" :state="true">
+              <b-form-input
+                id="meal-title"
+                type="text"
+                v-model="meal.title"
+                placeholder="Meal Name"
+                required
+              ></b-form-input>
+            </b-form-group>
 
+            <b-form-group label="Meal description" label-for="meal-description" :state="true">
+              <textarea
+                v-model.lazy="meal.description"
+                id="meal-description"
+                class="form-control"
+                :rows="4"
+                :maxlength="100"
+              ></textarea>
+            </b-form-group>
 
+            <hr>
 
+            <h3>This meal contains</h3>
+            <b-form-checkbox-group
+              buttons
+              v-model="meal.allergy_ids"
+              :options="allergyOptions"
+              @change="val => updateMeal(meal.id, {allergies: val})"></b-form-checkbox-group>
+          </b-col>
 
-    <b-modal title="Meal" v-model="viewMealModal" v-if="viewMealModal">
-      <b-form-input type="text" v-model="meal.title" placeholder="Meal Name" required></b-form-input> <hr>
-      <img :src="meal.featured_image"/> <hr>
-      <b-form-input type="text" v-model="meal.description" placeholder="Meal Name" required></b-form-input> <hr>
+          <b-col cols="2">
+            <picture-input
+              :ref="`featuredImageInput${meal.id}`"
+              :prefill="meal.featured_image ? meal.featured_image : false"
+              @prefill="$refs[`featuredImageInput${meal.id}`].onResize()"
+              :alertOnError="false"
+              :autoToggleAspectRatio="true"
+              margin="0"
+              size="10"
+              button-class="btn"
+              @change="(val) => updateImage(meal.id, val)"
+            ></picture-input>
 
-      <div v-for="tag in meal.tags" :key="tag">
-      <b-button @click="activate(tag.tag)">{{ tag.tag }}</b-button> <hr>
-      </div>
+            <b-form-group label="Tags" label-for="meal-tags" :state="true">
+              <input-tag
+                ref="editMealTagsInput"
+                id="meal-tags"
+                v-model="meal.tag_titles_flat"
+                :tags="meal.tag_titles_input"
+                @tags-changed="tags => onChangeTags(meal.id, tags)"
+              />
+            </b-form-group>
 
-      <li v-for="category in meal.categories">{{ category.category }}</li> <hr>
-      <b-form-input type="text" v-model="meal.price" placeholder="Meal Name" required></b-form-input> <hr>
-      <b-form-input type="text" v-model="meal.active_orders" placeholder="Meal Name" required></b-form-input> <hr>
-      <p> {{ meal.num_orders }} </p> <hr>
-      <b-form-input type="text" v-model="meal.created_at" placeholder="Meal Name" required></b-form-input> <hr>
-    </b-modal>
+            <b-form-group label="Categories" label-for="meal-categories" :state="true">
+              <ul>
+                <li v-for="category in meal.categories">{{ category.category }}</li>
+              </ul>
+            </b-form-group>
+          </b-col>
+        </b-row>
 
+        <!--
 
+        <hr>
+        <img :src="meal.featured_image">
+        <hr>
+        <hr>
 
+        <div v-for="tag in meal.tags" :key="tag">
+          <b-button @click="activate(tag.tag)">{{ tag.tag }}</b-button>
+          <hr>
+        </div>
 
-
+        
+        <hr>
+        <b-form-input type="text" v-model="meal.price" placeholder="Meal Name" required></b-form-input>
+        <hr>
+        <b-form-input type="text" v-model="meal.active_orders" placeholder="Meal Name" required></b-form-input>
+        <hr>
+        <p>{{ meal.num_orders }}</p>
+        <hr>
+        <b-form-input type="text" v-model="meal.created_at" placeholder="Meal Name" required></b-form-input>
+        <hr>
+        -->
+      </b-modal>
+    </div>
 
     <b-modal title="Meal" v-model="deleteMealModal" v-if="deleteMealModal">
       <center>
@@ -199,15 +256,15 @@ export default {
         status: "all"
       },
       meal: {
-        title: '',
-        featured_image: '',
-        description: '',
-        categories: '',
-        tags: '',
-        price: '',
-        active_orders: '',
-        num_orders: '',
-        created_at: ''
+        title: "",
+        featured_image: "",
+        description: "",
+        categories: "",
+        tags: "",
+        price: "",
+        active_orders: "",
+        num_orders: "",
+        created_at: ""
       },
       isLoading: false,
       createMealModal: false,
@@ -299,10 +356,19 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
-      meals: "storeMeals"
+      meals: "storeMeals",
+      allergies: "allergies",
     }),
-    tableData(){
-      return this.meals;
+    tableData() {
+      return Object.values(this.meals);
+    },
+    allergyOptions() {
+      return Object.values(this.allergies).map(allergy => {
+        return {
+          text: allergy.title,
+          value: allergy.id
+        };
+      });
     },
     weightUnitOptions() {
       return units.mass.selectOptions();
@@ -320,12 +386,14 @@ export default {
       });
     }
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
+    ...mapActions({
+      refreshMeals: 'refreshMeals',
+    }),
     formatMoney: format.money,
     refreshTable() {
-      this.getTableData();
+      this.refreshMeals();
     },
     getTableDataIndexById(id) {
       return _.findIndex(this.tableData, o => {
@@ -342,8 +410,8 @@ export default {
       }
       axios.patch(`/api/me/meals/${id}`, changes).then(resp => {
         this.$set(this.tableData, i, resp.data);
-        this.$refs.mealsTable.toggleChildRow(i + 1);
-        this.syncEditables();
+        //this.$refs.mealsTable.toggleChildRow(i + 1);
+        //this.syncEditables();
         this.refreshTable();
       });
     },
@@ -364,7 +432,7 @@ export default {
         })
         .then(resp => {
           this.tableData[i] = { ...resp.data };
-          this.syncEditables();
+          //this.syncEditables();
           this.refreshTable();
         });
     },
@@ -382,7 +450,7 @@ export default {
         this.viewMealModal = true;
 
         this.$nextTick(function() {
-          window.dispatchEvent(new Event("resize"));
+          window.dispatchEvent(new window.Event("resize"));
         });
       });
     },
@@ -448,9 +516,11 @@ export default {
         nutrition.totalFat += ingredient.nf_total_fat || ingredient.totalFat;
         nutrition.satFat += ingredient.nf_saturated_fat || ingredient.satFat;
         nutrition.transFat += ingredient.nf_trans_fat || ingredient.transFat;
-        nutrition.cholesterol += ingredient.nf_cholesterol || ingredient.cholesterol;
+        nutrition.cholesterol +=
+          ingredient.nf_cholesterol || ingredient.cholesterol;
         nutrition.sodium += ingredient.nf_sodium || ingredient.sodium;
-        nutrition.totalCarb += ingredient.nf_total_carbohydrate || ingredient.totalCarb;
+        nutrition.totalCarb +=
+          ingredient.nf_total_carbohydrate || ingredient.totalCarb;
         nutrition.fibers += ingredient.nf_dietary_fiber || ingredient.fibers;
         nutrition.sugars += ingredient.nf_sugars || ingredient.sugars;
         nutrition.proteins += ingredient.nf_protein || ingredient.proteins;
@@ -508,7 +578,7 @@ export default {
       }
     },
     onChangeIngredients(mealId, ingredients) {
-      console.log('wat', mealId, ingredients)
+      console.log("wat", mealId, ingredients);
       if (!_.isNumber(mealId) || !_.isArray(ingredients)) {
         throw new Exception("Invalid ingredients");
       }
@@ -526,7 +596,7 @@ export default {
       this.editing[id].tag_titles = _.map(newTags, "text");
       this.updateMeal(id, { tag_titles: this.editing[id].tag_titles });
     },
-    activate(tag){
+    activate(tag) {
       alert(tag);
     }
   }

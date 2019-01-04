@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(StoresSeeder::class);
         $this->call(StoreSettingsSeeder::class);
 
+        $this->call(AllergiesSeeder::class);
         $this->call(IngredientsSeeder::class);
         $this->call(MealsSeeder::class);
         $this->call(MealOrdersSeeder::class);
