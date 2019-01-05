@@ -21,7 +21,9 @@ const state = {
 
   // State for logged in users (of any role)
   user: {
-    weightUnit: 'oz'
+    weightUnit: 'oz',
+
+    data: {},
   },
 
   // State for logged in customers State for logged in stores
@@ -58,6 +60,9 @@ const state = {
 // additional payload arguments. mutations must be synchronous and can be
 // recorded by plugins for debugging purposes.
 const mutations = {
+  user(state, user) {
+    state.user.data = user;
+  },
   allergies(state, allergies) {
     state.allergies = _.keyBy(allergies, 'id');
   },
@@ -199,6 +204,13 @@ const actions = {
     const {data} = await res;
 
     try {
+      if (!_.isEmpty(data.user) && _.isObject(data.user)) {
+        let user = data.user;
+        commit('user', user);
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.allergies) && _.isObject(data.allergies)) {
         let allergies = data.allergies;
         commit('allergies', allergies);
@@ -324,7 +336,9 @@ const actions = {
 
 // getters are functions
 const getters = {
-
+  user(state) {
+    return state.user.data;
+  },
   allergies(state) {
     return state.allergies;
   },

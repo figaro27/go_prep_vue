@@ -51,6 +51,7 @@ class SpaController extends Controller
             });
 
             return [
+                'user' => $user ?? null,
                 'store' => $store,
                 'stores' => $stores,
                 'order_ingredients' => $orderIngredients ?? [],
