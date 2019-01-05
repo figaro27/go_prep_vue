@@ -51,7 +51,7 @@ class LoginController extends Controller
         if ($user->hasRole('store')) {
           return redirect()->intended('/store/dashboard');
         } else {
-            return redirect()->intended('/home');
+            return redirect()->intended('/customer/home');
         }
     }
 }
