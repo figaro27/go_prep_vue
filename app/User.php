@@ -49,6 +49,16 @@ class User extends Authenticatable
       return $this->hasOne('App\Store');
     }
 
+    public function hasRole($role) {
+      $roleMap = [
+        'customer' => 1,
+        'store' => 2,
+        'admin' => 3,
+      ];
+
+      return $this->user_role_id === $roleMap[$role]; 
+    }
+
 
 // Admin View
 
