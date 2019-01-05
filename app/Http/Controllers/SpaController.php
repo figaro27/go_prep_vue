@@ -35,7 +35,7 @@ class SpaController extends Controller
             $user = auth('api')->user();
 
             if ($user) {
-                if ($user->has('store')) {
+                if ($user->hasRole('store') && $user->has('store')) {
                     $store = $user->store()->with(['meals', 'meals.categories', 'meals.allergies', 'units', 'settings', 'storeDetail'])->first();
                 }
             }
