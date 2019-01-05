@@ -69,11 +69,81 @@
       <div class="card">
         <div class="card-body">
           <b-form @submit.prevent="updateStoreSettings">
-            <p>Cut Off Period</p>
+            <b-form-group label="Cut Off Period" label-for="cut-off-period" :state="true" inline>
+              <b-select
+                v-model="storeSettings.cutoff_day"
+                class="d-inline w-auto mr-1"
+                :options="[
+                 { value: 'sun', text: 'Sunday' },
+                 { value: 'mon', text: 'Monday' },
+                 { value: 'tue', text: 'Tuesday' },
+                 { value: 'wed', text: 'Wednesday' },
+                 { value: 'thu', text: 'Thursday' },
+                 { value: 'fri', text: 'Friday' },
+                 { value: 'sat', text: 'Saturday' },
+              ]"
+              ></b-select>
+              <timepicker v-model="cutoffTime" format="HH:mm:ss"></timepicker>
+            </b-form-group>
             <hr>
-            <p>Delivery Day(s)</p>
+            <b-form-group label="Delivery Day(s)" label-for="delivery-days" :state="true">
+              <b-form-checkbox-group
+                buttons
+                button-variant="primary"
+                v-model="storeSettings.delivery_days"
+                :options="[
+                 { value: 'sun', text: 'Sunday' },
+                 { value: 'mon', text: 'Monday' },
+                 { value: 'tue', text: 'Tuesday' },
+                 { value: 'wed', text: 'Wednesday' },
+                 { value: 'thu', text: 'Thursday' },
+                 { value: 'fri', text: 'Friday' },
+                 { value: 'sat', text: 'Saturday' },
+              ]"
+              ></b-form-checkbox-group>
+            </b-form-group>
             <hr>
-            <p>Delivery Distance</p>
+            <b-form-group
+              label="Delivery Distance Type"
+              label-for="delivery-distance-type"
+              :state="true"
+            >
+              <b-form-radio-group
+                buttons
+                button-variant="primary"
+                v-model="storeSettings.delivery_distance_type"
+                :options="[
+                 { value: 'radius', text: 'Radius' },
+                 { value: 'zipcodes', text: 'Zipcodes' },
+              ]"
+              ></b-form-radio-group>
+            </b-form-group>
+            <b-form-group
+              v-if="storeSettings.delivery_distance_type === 'radius'"
+              label="Delivery Distance Radius"
+              label-for="delivery-distance-radius"
+              :state="true"
+            >
+              <b-form-input
+                type="number"
+                v-model="storeSettings.delivery_distance_radius"
+                placeholder="Radius (miles)"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group
+              v-if="storeSettings.delivery_distance_type === 'zipcodes'"
+              label="Delivery Zipcodes"
+              label-for="delivery-distance-zipcodes"
+              :state="true"
+            >
+              <textarea
+                :value="deliveryDistanceZipcodes"
+                @input="e => { updateZips(e.target.value) }"
+                placeholder="Comma-delimited list"
+                class="form-control"
+              ></textarea>
+            </b-form-group>
             <hr>
             <p>Minimum Meals Requirement</p>
             <b-form-input
@@ -164,7 +234,9 @@ export default {
     cSwitch
   },
   data() {
-    return {};
+    return {
+      zipcodes: [],
+    };
   },
   computed: {
     ...mapGetters({
@@ -173,10 +245,21 @@ export default {
       storeDetail: "storeDetail",
       storeSetting: "storeSetting",
       storeSettings: "storeSettings"
-    })
+    }),
     // storeDetail(){
     //     return this.store.store_detail;
     // }
+    cutoffTime() {
+      return {
+        HH: "10",
+        mm: "05",
+        ss: "00"
+      };
+      //storeSettings.cutoff_time
+    },
+    deliveryDistanceZipcodes() {
+      return this.storeSettings.delivery_distance_zipcodes.join(',');
+    },
   },
   mounted() {},
   methods: {
@@ -191,16 +274,19 @@ export default {
       }
 
       axios.patch("/api/me/user", data).then(response => {
-        this.$store.commit('user', response.data);
+        this.$store.commit("user", response.data);
       });
     },
     updateStoreDetails() {
       this.spliceZip();
-      axios.post("/updateStoreDetails", this.storeDetail).then(response => {});
+      axios.post("/api/updateStoreDetails", this.storeDetail).then(response => {});
     },
     updateStoreSettings() {
+      let settings = {...this.storeSettings};
+      settings.delivery_distance_zipcodes = this.zipcodes;
+
       axios
-        .post("/updateStoreSettings", this.storeSettings)
+        .post("/api/updateStoreSettings", settings)
         .then(response => {});
     },
     spliceZip() {
@@ -209,7 +295,12 @@ export default {
         let newZip = parseInt(intToString.substring(0, 5));
         this.storeDetail.zip = newZip;
       }
-    }
+    },
+    updateZips(zips) {
+      this.zipcodes = zips.split(',').map(zip => {
+        return zip.trim();
+      });
+    },
   }
 };
 </script>

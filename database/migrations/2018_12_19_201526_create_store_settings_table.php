@@ -22,6 +22,16 @@ class CreateStoreSettingsTable extends Migration
             $table->text('pickupInstructions')->nullable();
             $table->boolean('applyDeliveryFee')->default(false);
             $table->integer('deliveryFee')->nullable();
+            $table->json('delivery_days');
+            $table->enum('cutoff_day', [
+              'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'
+            ])->default('sun');
+            $table->string('cutoff_time', 5)->default('00:00');
+            $table->enum('delivery_distance_type', [
+              'radius', 'zipcodes',
+            ])->default('radius');
+            $table->double('delivery_distance_radius')->nullable();
+            $table->json('delivery_distance_zipcodes');
             $table->timestamps();
         });
     }

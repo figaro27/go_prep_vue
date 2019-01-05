@@ -58,6 +58,8 @@
         "vue-tables-2": "^1.4.70",
         "vue-text-mask": "^6.1.1",
         "vue2-google-maps": "0.9.8",
+        "vue2-timepicker": "^0.1.4",
+        "vuejs-timepicker": "^0.1.4",
         "vuex-persistedstate": "^2.5.4"
     },
     "dependencies": {}

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Store;
 
 use App\StoreSetting;
 use Illuminate\Http\Request;
 use Auth;
 
-class StoreSettingController extends Controller
+class StoreSettingController extends StoreController
 {
     /**
      * Display a listing of the resource.
@@ -72,9 +72,8 @@ class StoreSettingController extends Controller
      */
     public function update(Request $request, StoreSetting $storeSetting)
     {
-        $id = Auth::user()->id;
-        $settings = StoreSetting::findOrFail($id);
-        $settings->update($request->toArray());
+        $settings = StoreSetting::where('store_id', $this->store->id);
+        $settings->update($request->all());
     }
 
     /**

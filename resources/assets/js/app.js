@@ -7,6 +7,7 @@
 
 import './bootstrap';
 import Vue from 'vue'; // Importing Vue Library
+window.Vue = Vue;
 import VueRouter from 'vue-router'; // importing Vue router library
 import router from './routes';
 import CustomerApp from './containers/CustomerContainer';
@@ -18,16 +19,17 @@ import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import vSelect from 'vue-select';
 import VueI18n from 'vue-i18n';
+import VueTimepicker from 'vuejs-timepicker'
 import store from './store';
 import lang from './lang';
 import modal from './lib/modal';
 
-window.Vue = Vue;
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
 Vue.component('input-tag', InputTag)
 Vue.component('v-select', vSelect)
+Vue.component('timepicker', VueTimepicker)
 
 const files = require.context('./components', true, /\.vue$/i)
 files

@@ -19,6 +19,10 @@ class StoreSetting extends Model
 	protected $casts = [
         'showNutrition' => 'boolean',
         'applyDeliveryFee' => 'boolean',
-        'allowPickup' => 'boolean'
+        'allowPickup' => 'boolean',
+        'delivery_days' => 'json',
+        //'cutoff_day' => 'datetime:D',
+        //'cutoff_time' => 'datetime:H:i',
+        'delivery_distance_zipcodes' => 'json',
     ];
 }

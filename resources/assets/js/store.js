@@ -45,7 +45,10 @@ const state = {
       expires: 0
     },
     settings: {
-      data: {},
+      data: {
+        delivery_days: [],
+        delivery_distance_zipcodes: [],
+      },
       expires: 0
     },
     meals: {
