@@ -49,6 +49,10 @@ const state = {
     meals: {
       data: {},
       expires: 0
+    },
+    orders: {
+      data: {},
+      expires: 0
     }
   }
 }
@@ -184,7 +188,18 @@ const mutations = {
 
     state.store.meals.data = meals;
     state.store.meals.expires = expires;
-  }
+  },
+
+  storeOrders(state, {orders, expires}){
+    if (!expires) {
+      expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    }
+
+    state.store.orders.data = orders;
+    state.store.orders.expires = expires;
+  },
 }
 
 // actions are functions that cause side effects and can involve asynchronous
@@ -237,6 +252,13 @@ const actions = {
       if (!_.isEmpty(data.store.meals) && _.isObject(data.store.meals)) {
         let meals = data.store.meals;
         commit('storeMeals', {meals});
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
+        let orders = data.store.orders;
+        commit('storeOrders', {orders});
       }
     } catch (e) {}
   },
@@ -318,6 +340,20 @@ const actions = {
       commit('storeMeals', {meals: data});
     } else {
       throw new Error('Failed to retrieve meals');
+    }
+  },
+
+  async refreshOrders({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me/orders");
+    const {data} = await res;
+
+    if (_.isArray(data)) {
+      commit('storeOrders', {orders: data});
+    } else {
+      throw new Error('Failed to retrieve orders');
     }
   },
 }
@@ -434,6 +470,14 @@ const getters = {
   storeMeals: (state) => {
     try {
       return state.store.meals.data || {};
+    }
+    catch(e) {
+      return {};
+    }
+  },
+  storeOrders: (state) => {
+    try {
+      return state.store.orders.data || {};
     }
     catch(e) {
       return {};

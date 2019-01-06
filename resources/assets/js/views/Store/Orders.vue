@@ -1,58 +1,3 @@
-<template>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="card">
-        <div class="card-body">
-          <Spinner v-if="isLoading"/>
-          <v-client-table
-            :columns="columns"
-            :data="tableData"
-            :options="options"
-            v-show="!isLoading"
-          >
-            <div slot="actions" class="text-nowrap" slot-scope="props">
-              <button
-                class="btn btn-primary btn-sm"
-                @click="fulfill(props.row.id)"
-              >Mark As Delivered</button>
-            </div>
-
-            <div slot="amount" slot-scope="props">
-              <div>{{ formatMoney(props.row.amount) }}</div>
-            </div>
-
-            <div slot="child_row" slot-scope="props">
-              <div class="row">
-                <div class="col-3">
-                  <h3>Delivery Instructions</h3>
-                  {{ props.row.user.user_detail.delivery }}
-                </div>
-                <div class="col-3">
-                  <h3>Delivery Notes</h3>
-                  <textarea
-                    type="text"
-                    id="form7"
-                    class="md-textarea form-control"
-                    rows="3"
-                    v-model="editing[props.row.id].notes"
-                  ></textarea>
-                  <button class="btn btn-primary btn-sm" @click="saveNotes(props.row.id)">Save</button>
-                </div>
-                <div class="col-6">
-                  <h3>Meals</h3>
-                  <ul class="meal-quantities">
-                    <li v-for="(quantity, meal_title) in getMealQuantities(props.row.meals)">{{ meal_title }} x {{quantity}}</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </v-client-table>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <style lang="scss">
 th:nth-child(3) {
   text-align: center;
@@ -94,20 +39,114 @@ th:nth-child(3) {
 }
 </style>
 
+<template>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <Spinner v-if="isLoading"/>
+          <v-client-table
+            :columns="columns"
+            :data="tableData"
+            :options="options"
+            v-show="!isLoading"
+          >
+            <div slot="actions" class="text-nowrap" slot-scope="props">
+              <button
+                class="btn btn-primary btn-sm"
+                @click="fulfill(props.row.id)"
+              >Mark As Delivered</button>
+
+              <button
+                class="btn btn-success btn-sm"
+                @click="viewOrder(props.row.id)">
+                View
+              </button>
+            </div>
+
+            <div slot="amount" slot-scope="props">
+              <div>{{ formatMoney(props.row.amount) }}</div>
+            </div>
+          </v-client-table>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="modal-full">
+       <b-modal v-model="viewOrderModal">
+        <b-row>
+          <b-col>
+            <h3>Name</h3>
+            {{ user_detail.firstname }} {{ user_detail.lastname }}
+            
+            <h3>Address</h3>
+            {{ user_detail.address }}
+            <h3>Zip Code</h3>
+
+            {{ user_detail.zip }}
+            <h3>Phone</h3>
+
+            {{ user_detail.phone }}
+            <h3>Order Amount</h3>
+            ${{ order.amount }}
+
+
+
+             <h3>Delivery Instructions</h3>
+                  {{ user_detail.delivery }}
+
+              <h3>Delivery Notes</h3>
+                  <textarea
+                    type="text"
+                    id="form7"
+                    class="md-textarea form-control"
+                    rows="3"
+                    v-model="deliveryNotes"
+                  ></textarea>
+                  <button class="btn btn-primary btn-sm" @click="saveNotes(orderId)">Save</button>
+
+                <h3>Meals</h3>
+                  <ul class="meal-quantities">
+                    <li v-for="(quantity, meal_title) in getMealQuantities(meals)">{{ meal_title }} x {{quantity}}</li>
+                  </ul>
+          </b-col>
+        </b-row>
+      </b-modal>
+    </div>
+
+
+
+
+
+
+
+  </div>
+</template>
+
+
 
 <script>
 import Spinner from "../../components/Spinner";
 import format from "../../lib/format";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   components: {
     Spinner
   },
+
   data() {
     return {
-      isLoading: true,
+      isLoading: false,
+      viewOrderModal: false,
+      order: {},
+      orderId: '',
+      user_detail: {},
+      meals: {},
       columns: [
-        "id",
+        "order_number",
         "user.user_detail.full_name",
         "user.user_detail.address",
         "user.user_detail.zip",
@@ -116,11 +155,9 @@ export default {
         "created_at",
         "actions"
       ],
-      tableData: [],
-      editing: {},
       options: {
         headings: {
-          id: "Order #",
+          order_number: "Order #",
           "user.user_detail.full_name": "Name",
           "user.user_detail.address": "Address",
           "user.user_detail.zip": "Zip Code",
@@ -130,22 +167,23 @@ export default {
           actions: "Actions"
         }
       },
-      orderID: "",
-      notes: ""
+      deliveryNotes: ""
     };
   },
+  computed: {
+    ...mapGetters({
+      store: "viewedStore",
+      orders: "storeOrders",
+    }),
+    tableData() {
+      return Object.values(this.orders);
+    },
+  },
   mounted() {
-    this.getTableData();
+
   },
   methods: {
     formatMoney: format.money,
-    getTableData() {
-      axios.get("/api/me/orders").then((response) => {
-        this.tableData = response.data;
-        this.isLoading = false;
-        this.syncEditables();
-      });
-    },
     syncEditables() {
       this.editing = _.keyBy({ ...this.tableData }, "id");
     },
@@ -165,17 +203,28 @@ export default {
         });
     },
     saveNotes(id) {
-      axios
-        .patch(`/api/me/orders/${id}`, {
-          notes: this.editing[id].notes
-        })
+      let deliveryNotes = deliveryNotes;
+        axios.patch(`/api/me/orders/${id}`, {deliveryNotes: 'test'})
         .then(resp => {
-          this.getTableData();
+
+
         });
     },
     getMealQuantities(meals) {
       return _.countBy(meals, 'title');
     },
+    viewOrder(id){
+      axios.get(`/api/me/orders/${id}`).then(response => {
+        this.order = response.data;
+        this.user_detail = response.data.user.user_detail;
+        this.meals = response.data.meals;
+
+        this.$nextTick(function() {
+          window.dispatchEvent(new window.Event("resize"));
+        });
+      });
+      this.viewOrderModal = true;
+    }
   }
 };
 </script>

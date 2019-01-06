@@ -47,9 +47,9 @@ class OrderController extends StoreController
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(Order $order)
+    public function show($id)
     {
-        //
+        return $this->store->orders()->with(['user', 'user.userDetail', 'meals'])->where('id', $id)->first();
     }
 
     /**

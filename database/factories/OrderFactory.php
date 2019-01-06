@@ -4,7 +4,7 @@ use Faker\Generator as Faker;
 
 $factory->define(App\Order::class, function (Faker $faker) {
     return [
-    	'payment' => rand(1,300),
+    	'order_number' => uniqid(rand(100,999), false),
         'store_id' => 1,
         'fulfilled' => rand(0,1),
         'amount' => rand(100, 200),
