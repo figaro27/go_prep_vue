@@ -177,6 +177,15 @@ export default {
     }),
     tableData() {
       return Object.values(this.orders);
+      // return Object.values(this.orders).map(order =>{
+      //   return {
+      //     name: order.user.user_detail.full_name,
+      //     address: order.user_detail.address,
+      //     zip: order.user.user_detail.zip,
+      //     phone: order.user.user_detail.phone,
+      //     amount: order.amount
+      //   }
+      // })
     },
   },
   mounted() {
@@ -204,7 +213,9 @@ export default {
     },
     saveNotes(id) {
       let deliveryNotes = deliveryNotes;
-        axios.patch(`/api/me/orders/${id}`, {deliveryNotes: 'test'})
+        axios.patch(`/api/me/orders/${id}`, 
+          {notes: this.deliveryNotes}
+          )
         .then(resp => {
 
 
@@ -215,6 +226,8 @@ export default {
     },
     viewOrder(id){
       axios.get(`/api/me/orders/${id}`).then(response => {
+        this.orderId = response.data.id;
+        this.deliveryNotes = response.data.notes;
         this.order = response.data;
         this.user_detail = response.data.user.user_detail;
         this.meals = response.data.meals;
