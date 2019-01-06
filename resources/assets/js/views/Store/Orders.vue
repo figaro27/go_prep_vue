@@ -182,20 +182,7 @@ export default {
     }),
     tableData() {
       return Object.values(this.orders);
-      // return Object.values(this.orders).map(order =>{
-      //   return {
-      //     name: order.user.user_detail.full_name,
-      //     address: order.user_detail.address,
-      //     zip: order.user.user_detail.zip,
-      //     phone: order.user.user_detail.phone,
-      //     amount: order.amount
-      //   }
-      // })
-    },
-    deliveryNotes() {
-      return this.orders[0].amount;
     }
-
   },
   mounted() {
 
