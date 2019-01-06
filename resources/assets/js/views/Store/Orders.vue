@@ -51,6 +51,9 @@ th:nth-child(3) {
             :options="options"
             v-show="!isLoading"
           >
+            <div slot="notes" class="text-nowrap" slot-scope="props">
+              <p v-if="props.row.has_notes">!</p>
+            </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn btn-primary btn-sm"
@@ -103,7 +106,7 @@ th:nth-child(3) {
                     id="form7"
                     class="md-textarea form-control"
                     rows="3"
-                    v-model="deliveryNotes"
+                    v-model="deliveryNote"
                   ></textarea>
                   <button class="btn btn-primary btn-sm" @click="saveNotes(orderId)">Save</button>
 
@@ -146,6 +149,7 @@ export default {
       user_detail: {},
       meals: {},
       columns: [
+        "notes",
         "order_number",
         "user.user_detail.full_name",
         "user.user_detail.address",
@@ -157,6 +161,7 @@ export default {
       ],
       options: {
         headings: {
+          "notes": "Notes",
           order_number: "Order #",
           "user.user_detail.full_name": "Name",
           "user.user_detail.address": "Address",
@@ -167,7 +172,7 @@ export default {
           actions: "Actions"
         }
       },
-      deliveryNotes: ""
+      deliveryNote: ""
     };
   },
   computed: {
@@ -187,11 +192,21 @@ export default {
       //   }
       // })
     },
+    deliveryNotes() {
+      return this.orders[0].amount;
+    }
+
   },
   mounted() {
 
   },
   methods: {
+    ...mapActions({
+      refreshOrders: 'refreshOrders',
+    }),
+    refreshTable(){
+      this.refreshOrders();
+    },
     formatMoney: format.money,
     syncEditables() {
       this.editing = _.keyBy({ ...this.tableData }, "id");
@@ -212,14 +227,13 @@ export default {
         });
     },
     saveNotes(id) {
-      let deliveryNotes = deliveryNotes;
+      let deliveryNote = deliveryNote;
         axios.patch(`/api/me/orders/${id}`, 
-          {notes: this.deliveryNotes}
+          {notes: this.deliveryNote}
           )
         .then(resp => {
-
-
         });
+      this.refreshTable();
     },
     getMealQuantities(meals) {
       return _.countBy(meals, 'title');
@@ -227,7 +241,7 @@ export default {
     viewOrder(id){
       axios.get(`/api/me/orders/${id}`).then(response => {
         this.orderId = response.data.id;
-        this.deliveryNotes = response.data.notes;
+        this.deliveryNote = response.data.notes;
         this.order = response.data;
         this.user_detail = response.data.user.user_detail;
         this.meals = response.data.meals;
@@ -237,7 +251,8 @@ export default {
         });
       });
       this.viewOrderModal = true;
-    }
+    },
+
   }
 };
 </script>

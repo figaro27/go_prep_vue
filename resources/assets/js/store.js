@@ -50,11 +50,12 @@ const state = {
       data: {},
       expires: 0
     },
-    orders: {
+  },
+
+  orders: {
       data: {},
       expires: 0
     }
-  }
 }
 
 // mutations are operations that actually mutates the state. each mutation
@@ -197,8 +198,8 @@ const mutations = {
         .unix();
     }
 
-    state.store.orders.data = orders;
-    state.store.orders.expires = expires;
+    state.orders.data = orders;
+    state.orders.expires = expires;
   },
 }
 
@@ -255,9 +256,16 @@ const actions = {
       }
     } catch (e) {}
 
+    // try {
+    //   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
+    //     let orders = data.store.orders;
+    //     commit('storeOrders', {orders});
+    //   }
+    // } catch (e) {}
+
     try {
-      if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
-        let orders = data.store.orders;
+      if (!_.isEmpty(data.orders) && _.isObject(data.orders)) {
+        let orders = data.orders;
         commit('storeOrders', {orders});
       }
     } catch (e) {}
@@ -477,7 +485,7 @@ const getters = {
   },
   storeOrders: (state) => {
     try {
-      return state.store.orders.data || {};
+      return state.orders.data || {};
     }
     catch(e) {
       return {};

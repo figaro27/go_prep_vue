@@ -16,6 +16,8 @@ class Order extends Model
         'created_at' => 'date:F d, Y'
     ];
 
+    protected $appends = ['has_notes'];
+
     public function user()
     {
         return $this->belongsTo('App\User');
@@ -34,6 +36,15 @@ class Order extends Model
     public function meals()
     {
         return $this->belongsToMany('App\Meal', 'meal_orders');
+    }
+
+    public function getHasNotesAttribute()
+    {
+        if ($this->notes){
+            return true;
+        }
+        else
+            return false;
     }
 
     public static function updateOrder($id, $props)
