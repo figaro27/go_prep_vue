@@ -58,7 +58,7 @@ th:nth-child(3) {
               <button
                 class="btn btn-primary btn-sm"
                 @click="fulfill(props.row.id)"
-              >Mark As Fulfilled</button>
+              >Mark As Unfilfilled</button>
 
               <button
                 class="btn btn-success btn-sm"
@@ -181,7 +181,7 @@ export default {
       orders: "storeOrders",
     }),
     tableData() {
-      return _.filter(this.orders, {'fulfilled': 0});
+      return _.filter(this.orders, {'fulfilled': 1});
     }
   },
   mounted() {
@@ -207,7 +207,7 @@ export default {
     fulfill(id) {
       axios
         .patch(`/api/me/orders/${id}`, {
-          fulfilled: 1
+          fulfilled: 0
         })
         .then(resp => {
         });

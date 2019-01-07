@@ -48,7 +48,7 @@ class SpaController extends Controller
 
             if ($user) {
                 if ($user->has('store')) {
-                    $orders = $user->store->orders()->with(['user', 'user.userDetail', 'meals'])->where('fulfilled', 0)->get();
+                    $orders = $user->store->orders()->with(['user', 'user.userDetail', 'meals'])->get();
                 }
             }
 

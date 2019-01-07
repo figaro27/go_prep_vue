@@ -21,6 +21,11 @@ export default {
       icon: 'fa fa-shopping-bag'
     },
     {
+      name: 'Past Orders',
+      url: '/store/past-orders',
+      icon: 'fa fa-shopping-bag'
+    },
+    {
       name: 'Payments',
       url: '/store/payments',
       icon: 'fa fa-money'
