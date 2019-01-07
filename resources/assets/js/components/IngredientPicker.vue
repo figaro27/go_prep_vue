@@ -112,6 +112,15 @@
     }
   }
 }
+.ingredient-table {
+  th, td {
+    &:last-child {
+      padding-left: 0;
+      padding-right: 0;
+      width: 35px;
+    }
+  }
+}
 </style>
 
 <script>
