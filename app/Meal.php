@@ -149,7 +149,7 @@ class Meal extends Model
 
     public static function getMeal($id)
     {
-        return Meal::with('ingredients', 'tags')->where('id', $id)->first();
+        return Meal::with('ingredients', 'tags', 'categories')->where('id', $id)->first();
     }
 
     //Considering renaming "Store" to "Company" to not cause confusion with store methods.
@@ -236,6 +236,7 @@ class Meal extends Model
             'price',
             'created_at',
             'tag_titles',
+            'categories',
             'ingredients',
             'allergies',
         ]);
@@ -363,6 +364,46 @@ class Meal extends Model
             }, $allergies);
 
             $meal->allergies()->sync($allergyIds);
+        }
+
+        $newCategories = $props->get('categories');
+        if (is_array($newCategories)) {
+
+            $meal->categories()->delete();
+
+            $categories = collect();
+
+            foreach ($newCategories as $newCategory) {
+                try {
+                    // Existing ingredient
+                    /*if (is_numeric($newCategory) || isset($newCategory['id'])) {
+                        $categoryId = is_numeric($newCategory) ? $newCategory : $newCategory['id'];
+                        $category = MealCategory::where('meal_id', $meal->id)->findOrFail($categoryId);
+                        $categories->push($category);
+                    } else {*/
+                        // Check if category with same name and meal id already exists
+                        $category = MealCategory::where([
+                            'meal_id' => $meal->id,
+                            'category' => $newCategory['category'],
+                        ])->first();
+
+                        if ($category) {
+                            continue;
+                        }
+                        // Nope. Create a new one
+                        $category = new MealCategory([
+                            'meal_id' => $meal->id,
+                            'category' => $newCategory['category'],
+                        ]);
+                        //$category->save();
+                        $categories->push($category);
+                    //}
+                } catch (\Exception $e) {
+                    die($e);
+                }
+            }
+
+            $meal->categories()->saveMany($categories);
         }
 
         $meal->update($props->toArray());

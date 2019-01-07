@@ -20,6 +20,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import vSelect from 'vue-select';
 import VueI18n from 'vue-i18n';
 import VueTimepicker from 'vuejs-timepicker'
+import draggable from 'vuedraggable'
 import store from './store';
 import lang from './lang';
 import modal from './lib/modal';
@@ -30,6 +31,7 @@ Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
 Vue.component('input-tag', InputTag)
 Vue.component('v-select', vSelect)
 Vue.component('timepicker', VueTimepicker)
+Vue.component('draggable', draggable)
 
 const files = require.context('./components', true, /\.vue$/i)
 files

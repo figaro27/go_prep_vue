@@ -195,8 +195,14 @@ textarea {
 
             <b-form-group label="Categories" label-for="meal-categories" :state="true">
               <ul>
-                <li v-for="category in meal.categories">{{ category.category }}</li>
+                <draggable v-model="meal.categories" @change="onChangeCategories">
+                  <li v-for="category in meal.categories">{{ category.category }}</li>
+                </draggable>
               </ul>
+
+              <b-form @submit.prevent="onAddCategory">
+                <b-input v-model="meal.new_category" :type="text" placeholder="New category..."></b-input>
+              </b-form>
             </b-form-group>
           </b-col>
         </b-row>
@@ -270,6 +276,7 @@ export default {
         featured_image: "",
         description: "",
         categories: "",
+        new_category: "",
         tags: "",
         price: "",
         active_orders: "",
@@ -612,6 +619,19 @@ export default {
     },
     activate(tag) {
       alert(tag);
+    },
+    onAddCategory() {
+      this.meal.categories.push({
+        category: this.meal.new_category
+      });
+      this.meal.new_category = "";
+
+      this.updateMeal(this.meal.id, { categories: this.meal.categories });
+    },
+    onChangeCategories(e) {
+      if(_.isObject(e.moved)) {
+        this.updateMeal(this.meal.id, { categories: this.meal.categories });
+      }
     }
   }
 };
