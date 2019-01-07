@@ -19,14 +19,15 @@
         <b-button @click="onClickAddExistingIngredient" variant="primary">Add</b-button>
       </div>
     </b-form>
-    <table class="table w-100">
+    <table class="table w-100 ingredients-table">
       <thead>
         <th>Name</th>
         <th>Weight</th>
         <th>Unit</th>
+        <th style="width: 30px"></th>
       </thead>
       <tbody>
-        <tr v-for="(ingredient, i) in ingredients" :key="ingredient.id">
+        <tr v-for="(ingredient, i) in ingredients" :key="ingredient.food_name">
           <td>
             <b-form-group>
               <v-select
@@ -36,7 +37,7 @@
                 :options="ingredientOptions"
                 @search="onSearch"
                 :value="ingredient"
-                :onChange="(val) => { ingredients[i] = val }"
+                :onChange="(val) => onAddIngredient(val, i)"
               >
                 <template slot="no-options">type to search ingredients...</template>
                 <template slot="option" slot-scope="option">
@@ -59,7 +60,7 @@
               <b-form-input placeholder="Weight" :value="ingredient.quantity"></b-form-input>
             </b-form-group>
           </td>
-          <td>
+          <td class="text-center">
             <b-form-group>
               <b-select
                 v-if="ingredient.unit_type !== 'unit'"
@@ -72,9 +73,14 @@
               <span v-else>Unit</span>
             </b-form-group>
           </td>
+          <td>
+            <b-btn variant="link" @click="removeIngredient(i)">
+              <i class="fa fa-close"></i>
+            </b-btn>
+          </td>
         </tr>
         <tr>
-          <td colspan="3" class="text-right">
+          <td colspan="10" class="text-right">
             <b-row>
               <b-col v-if="options.saveButton" class="text-left">
                 <b-button variant="primary" :disabled="!canSave" @click.prevent="save">Save</b-button>
@@ -93,6 +99,18 @@
 </template>
 <style lang="scss">
 .ingredient-dropdown {
+  display: block;
+  width: 100%;
+}
+.ingredients-table {
+  th,
+  td {
+    &:last-child {
+      padding-left: 0;
+      padding-right: 0;
+      width: 30px;
+    }
+  }
 }
 </style>
 
@@ -161,6 +179,7 @@ export default {
       this.ingredients.push({
         food_name: "",
         quantity: 1,
+        unit_type: "mass",
         quantity_unit: "oz"
       });
     },
@@ -170,6 +189,26 @@ export default {
       });
 
       this.selectedExistingIngredients = [];
+    },
+    onAddIngredient(val, i) {
+      if (val) {
+        if (!val.unit_type) {
+          val.unit_type = units.type(units.normalize(val.serving_unit));
+        }
+        if (!val.quantity) {
+          val.quantity = 1;
+        }
+        if (!val.quantity_unit) {
+          val.quantity_unit = units.normalize(val.serving_unit);
+        }
+
+        this.ingredients[i] = val;
+      } else {
+        this.removeIngredient(i);
+      }
+    },
+    removeIngredient(i) {
+      Vue.delete(this.ingredients, i);
     },
     update() {
       this.$emit("input", this.ingredients);

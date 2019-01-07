@@ -126,40 +126,48 @@ textarea {
 
     <create-meal-modal v-if="createMealModal" v-on:created="refreshTable()"/>
 
-    <div class="modal-full">
+    <div class="modal-full modal-tabs">
       <b-modal title="Meal" v-model="viewMealModal" v-if="viewMealModal">
         <b-row>
           <b-col>
-            <b-form-group label="Meal title" label-for="meal-title" :state="true">
-              <b-form-input
-                id="meal-title"
-                type="text"
-                v-model="meal.title"
-                placeholder="Meal Name"
-                required
-                @change="val => updateMeal(meal.id, {title: val})"
-              ></b-form-input>
-            </b-form-group>
+            <b-tabs>
+              <b-tab title="General" active>
+                <b-form-group label="Meal title" label-for="meal-title" :state="true">
+                  <b-form-input
+                    id="meal-title"
+                    type="text"
+                    v-model="meal.title"
+                    placeholder="Meal Name"
+                    required
+                    @change="val => updateMeal(meal.id, {title: val})"
+                  ></b-form-input>
+                </b-form-group>
 
-            <b-form-group label="Meal description" label-for="meal-description" :state="true">
-              <textarea
-                v-model.lazy="meal.description"
-                id="meal-description"
-                class="form-control"
-                :rows="4"
-                :maxlength="100"
-                @input="e => updateMealDescription(meal.id, e.target.value)"
-              ></textarea>
-            </b-form-group>
-
-            <hr>
-
-            <h3>This meal contains</h3>
-            <b-form-checkbox-group
-              buttons
-              v-model="meal.allergy_ids"
-              :options="allergyOptions"
-              @change="val => updateMeal(meal.id, {allergies: val})"></b-form-checkbox-group>
+                <b-form-group label="Meal description" label-for="meal-description" :state="true">
+                  <textarea
+                    v-model.lazy="meal.description"
+                    id="meal-description"
+                    class="form-control"
+                    :rows="4"
+                    :maxlength="100"
+                    @input="e => updateMealDescription(meal.id, e.target.value)"
+                  ></textarea>
+                </b-form-group>
+              </b-tab>
+              <b-tab title="Allergies">
+                <h3>This meal contains</h3>
+                <b-form-checkbox-group
+                  buttons
+                  v-model="meal.allergy_ids"
+                  :options="allergyOptions"
+                  @change="val => updateMeal(meal.id, {allergies: val})"
+                ></b-form-checkbox-group>
+              </b-tab>
+              <b-tab title="Ingredients">
+                <h3>Ingredients</h3>
+                <ingredient-picker v-model="meal.ingredients" :options="{saveButton:true}" @save="val => onChangeIngredients(meal.id, val)"></ingredient-picker>
+              </b-tab>
+            </b-tabs>
           </b-col>
 
           <b-col cols="2">
@@ -359,7 +367,7 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       meals: "storeMeals",
-      allergies: "allergies",
+      allergies: "allergies"
     }),
     tableData() {
       return Object.values(this.meals);
@@ -390,13 +398,13 @@ export default {
   },
   created() {
     this.updateMealDescription = _.debounce((id, description) => {
-      this.updateMeal(id, {description});
-    }, 300)
+      this.updateMeal(id, { description });
+    }, 300);
   },
   mounted() {},
   methods: {
     ...mapActions({
-      refreshMeals: 'refreshMeals',
+      refreshMeals: "refreshMeals"
     }),
     formatMoney: format.money,
     refreshTable() {
@@ -585,7 +593,6 @@ export default {
       }
     },
     onChangeIngredients(mealId, ingredients) {
-      console.log("wat", mealId, ingredients);
       if (!_.isNumber(mealId) || !_.isArray(ingredients)) {
         throw new Exception("Invalid ingredients");
       }

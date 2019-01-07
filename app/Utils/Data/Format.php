@@ -11,6 +11,7 @@ class Format {
       case 'unit':
         return 'unit';
       default:
+        return 'unit';
         throw new Exception('Unrecognized unit type');
     }
   }
