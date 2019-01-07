@@ -23,7 +23,7 @@ const state = {
   user: {
     weightUnit: 'oz',
 
-    data: {},
+    data: {}
   },
 
   // State for logged in customers State for logged in stores
@@ -47,7 +47,7 @@ const state = {
     settings: {
       data: {
         delivery_days: [],
-        delivery_distance_zipcodes: [],
+        delivery_distance_zipcodes: []
       },
       expires: 0
     },
@@ -73,6 +73,9 @@ const mutations = {
     state.viewed_store = {
       ...store
     };
+  },
+  setViewedStoreDistance(state, distance) {
+    state.viewed_store.distance = distance;
   },
   addBagItems(state, items) {
     state.bag.items = items;
@@ -235,7 +238,7 @@ const actions = {
           units[unit.ingredient_id] = unit.unit;
         });
 
-        if(!_.isEmpty(units)) {
+        if (!_.isEmpty(units)) {
           commit('ingredientUnits', {units});
         }
       }
@@ -254,6 +257,18 @@ const actions = {
         commit('storeMeals', {meals});
       }
     } catch (e) {}
+
+    if (_.isObject(data.store) && !_.isEmpty(data.store)) {
+      commit('setViewedStore', data.store);
+    }
+
+    try {
+      if (data.store_distance) {
+        commit('setViewedStoreDistance', data.store_distance);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   },
 
   // Actions for logged in stores
@@ -314,9 +329,7 @@ const actions = {
         units[id] = unit.unit;
       });
 
-      commit('ingredientUnits', {
-        units
-      })
+      commit('ingredientUnits', {units})
     } else {
       throw new Error('Failed to retrieve ingredient units');
     }
@@ -334,7 +347,7 @@ const actions = {
     } else {
       throw new Error('Failed to retrieve meals');
     }
-  },
+  }
 }
 
 // getters are functions
@@ -357,10 +370,12 @@ const getters = {
   viewedStoreSetting: (state, getters) => (key, defaultValue = '') => {
     try {
       return state.viewed_store.settings[key] || defaultValue;
-    }
-    catch(e) {
+    } catch (e) {
       return defaultValue;
     }
+  },
+  viewedStoreWillDeliver(state, getters) {
+    return state.viewed_store.distance <= getters.viewedStoreSetting('delivery_distance_radius' - 1)
   },
 
   //
@@ -417,9 +432,9 @@ const getters = {
     return _.find(state.store.ingredients.data, {'id': parseInt(id)});
   },
   ingredientUnit: (state) => id => {
-    return _.has(state.store.ingredient_units.data, parseInt(id)) ?
-      state.store.ingredient_units.data[parseInt(id)] :
-      '';
+    return _.has(state.store.ingredient_units.data, parseInt(id))
+      ? state.store.ingredient_units.data[parseInt(id)]
+      : '';
   },
   orderIngredients(state) {
     return state.store.order_ingredients.data || {};
@@ -427,35 +442,31 @@ const getters = {
   storeDetail: (state, getters) => {
     try {
       return state.store.detail.data || {};
-    }
-    catch(e) {
+    } catch (e) {
       return {};
     }
   },
   storeSetting: (state, getters) => (key, defaultValue = '') => {
     try {
       return state.store.settings.data[key] || defaultValue;
-    }
-    catch(e) {
+    } catch (e) {
       return defaultValue;
     }
   },
   storeSettings: (state) => {
     try {
       return state.store.settings.data || {};
-    }
-    catch(e) {
+    } catch (e) {
       return {};
     }
   },
   storeMeals: (state) => {
     try {
       return state.store.meals.data || {};
-    }
-    catch(e) {
+    } catch (e) {
       return {};
     }
-  },
+  }
 }
 
 const plugins = [createPersistedState({paths: ['bag']})];

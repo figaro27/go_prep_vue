@@ -135,13 +135,14 @@
               v-if="storeSettings.delivery_distance_type === 'zipcodes'"
               label="Delivery Zipcodes"
               label-for="delivery-distance-zipcodes"
+              description="Comma-delimited list of zipcodes"
               :state="true"
             >
               <textarea
                 :value="deliveryDistanceZipcodes"
                 @input="e => { updateZips(e.target.value) }"
-                placeholder="Comma-delimited list"
                 class="form-control"
+                placeholder="Zipcodes"
               ></textarea>
             </b-form-group>
             <hr>

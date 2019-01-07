@@ -34,10 +34,22 @@ class SpaController extends Controller
 
             $user = auth('api')->user();
 
+            $distance = null;
+
             if ($user) {
+                // Store user
                 if ($user->hasRole('store') && $user->has('store')) {
                     $store = $user->store()->with(['meals', 'meals.categories', 'meals.allergies', 'units', 'settings', 'storeDetail'])->first();
                 }
+
+                // Customer user
+                if($user->hasRole('customer')) {
+                  $distance = $user->distanceFrom($store);
+                }
+            }
+            // Not logged in
+            else {
+              
             }
 
             if ($store) {
@@ -53,6 +65,7 @@ class SpaController extends Controller
             return [
                 'user' => $user ?? null,
                 'store' => $store,
+                'store_distance' => $distance,
                 'stores' => $stores,
                 'order_ingredients' => $orderIngredients ?? [],
                 'allergies' => Allergy::all(),

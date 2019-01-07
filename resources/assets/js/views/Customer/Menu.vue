@@ -1,5 +1,8 @@
 <template>
   <div class="container-fluid">
+    <div v-if="!willDeliver">
+      <b-alert variant="danger" show>You are out of the delivery bounds</b-alert>
+    </div>
     <div v-for="category in categories" :key="category">
       <button @click="filterByCategory(category)">{{ category }}</button>
     </div>
@@ -147,7 +150,8 @@ export default {
       store: "viewedStore",
       total: "bagQuantity",
       bag: "bagItems",
-      hasMeal: "bagHasMeal"
+      hasMeal: "bagHasMeal",
+      willDeliver: 'viewedStoreWillDeliver',
     }),
     storeSettings() {
       return this.store.settings;
