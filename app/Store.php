@@ -95,4 +95,8 @@ class Store extends Model
 
       return $ingredients;
     }
+
+    public function deliversToZip($zip) {
+      return in_array($zip, $this->settings->delivery_distance_zipcodes);
+    }
 }

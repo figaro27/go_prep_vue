@@ -71,19 +71,15 @@
           <b-form @submit.prevent="updateStoreSettings">
             <b-form-group label="Cut Off Period" label-for="cut-off-period" :state="true" inline>
               <b-select
-                v-model="storeSettings.cutoff_day"
+                v-model="storeSettings.cutoff_days"
                 class="d-inline w-auto mr-1"
-                :options="[
-                 { value: 'sun', text: 'Sunday' },
-                 { value: 'mon', text: 'Monday' },
-                 { value: 'tue', text: 'Tuesday' },
-                 { value: 'wed', text: 'Wednesday' },
-                 { value: 'thu', text: 'Thursday' },
-                 { value: 'fri', text: 'Friday' },
-                 { value: 'sat', text: 'Saturday' },
-              ]"
+                :options="cutoffDaysOptions"
               ></b-select>
-              <timepicker v-model="cutoffTime" format="HH:mm:ss"></timepicker>
+              <b-select
+                v-model="storeSettings.cutoff_hours"
+                class="d-inline w-auto mr-1"
+                :options="cutoffHoursOptions"
+              ></b-select>
             </b-form-group>
             <hr>
             <b-form-group label="Delivery Day(s)" label-for="delivery-days" :state="true">
@@ -236,7 +232,7 @@ export default {
   },
   data() {
     return {
-      zipcodes: [],
+      zipcodes: []
     };
   },
   computed: {
@@ -250,6 +246,20 @@ export default {
     // storeDetail(){
     //     return this.store.store_detail;
     // }
+    cutoffDaysOptions() {
+      let options = [];
+      for (let i = 0; i <= 7; i++) {
+        options.push({ value: i, text: i + " Days" });
+      }
+      return options;
+    },
+    cutoffHoursOptions() {
+      let options = [];
+      for (let i = 0; i <= 23; i++) {
+        options.push({ value: i, text: i + " Hours" });
+      }
+      return options;
+    },
     cutoffTime() {
       return {
         HH: "10",
@@ -259,8 +269,8 @@ export default {
       //storeSettings.cutoff_time
     },
     deliveryDistanceZipcodes() {
-      return this.storeSettings.delivery_distance_zipcodes.join(',');
-    },
+      return this.storeSettings.delivery_distance_zipcodes.join(",");
+    }
   },
   mounted() {},
   methods: {
@@ -280,15 +290,15 @@ export default {
     },
     updateStoreDetails() {
       this.spliceZip();
-      axios.post("/api/updateStoreDetails", this.storeDetail).then(response => {});
+      axios
+        .post("/api/updateStoreDetails", this.storeDetail)
+        .then(response => {});
     },
     updateStoreSettings() {
-      let settings = {...this.storeSettings};
+      let settings = { ...this.storeSettings };
       settings.delivery_distance_zipcodes = this.zipcodes;
 
-      axios
-        .post("/api/updateStoreSettings", settings)
-        .then(response => {});
+      axios.post("/api/updateStoreSettings", settings).then(response => {});
     },
     spliceZip() {
       if (this.storeDetail.zip.toString().length > 5) {
@@ -298,10 +308,10 @@ export default {
       }
     },
     updateZips(zips) {
-      this.zipcodes = zips.split(',').map(zip => {
+      this.zipcodes = zips.split(",").map(zip => {
         return zip.trim();
       });
-    },
+    }
   }
 };
 </script>

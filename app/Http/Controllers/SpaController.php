@@ -34,7 +34,7 @@ class SpaController extends Controller
 
             $user = auth('api')->user();
 
-            $distance = null;
+            $willDeliver = false;
 
             if ($user) {
                 // Store user
@@ -44,7 +44,13 @@ class SpaController extends Controller
 
                 // Customer user
                 if($user->hasRole('customer')) {
-                  $distance = $user->distanceFrom($store);
+                  if($store->settings->delivery_distance_type === 'radius') {
+                    $distance = $user->distanceFrom($store);
+                    $willDeliver = $distance < $store->settings->delivery_distance_radius;
+                  }
+                  else {
+                    $willDeliver = $store->deliversToZip($user->userDetail->zip);
+                  }
                 }
             }
             // Not logged in
@@ -65,7 +71,7 @@ class SpaController extends Controller
             return [
                 'user' => $user ?? null,
                 'store' => $store,
-                'store_distance' => $distance,
+                'will_deliver' => $willDeliver,
                 'stores' => $stores,
                 'order_ingredients' => $orderIngredients ?? [],
                 'allergies' => Allergy::all(),
