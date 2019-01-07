@@ -59,7 +59,7 @@ class MealController extends StoreController
      * @param  \App\Meal  $meal
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request)
+    public function show(Request $request, $id)
     {
         return Meal::getMeal($id);
     }
