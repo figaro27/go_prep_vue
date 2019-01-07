@@ -26,7 +26,7 @@
         <th>Unit</th>
       </thead>
       <tbody>
-        <tr v-for="(ingredient, i) in ingredients" :key="ingredient.id">
+        <tr v-for="(ingredient, i) in ingredients" :key="ingredient.food_name">
           <td>
             <b-form-group>
               <v-select
@@ -36,7 +36,7 @@
                 :options="ingredientOptions"
                 @search="onSearch"
                 :value="ingredient"
-                :onChange="(val) => { ingredients[i] = val }"
+                :onChange="(val) => onAddIngredient(val, i)"
               >
                 <template slot="no-options">type to search ingredients...</template>
                 <template slot="option" slot-scope="option">
@@ -59,7 +59,7 @@
               <b-form-input placeholder="Weight" :value="ingredient.quantity"></b-form-input>
             </b-form-group>
           </td>
-          <td>
+          <td class="text-center">
             <b-form-group>
               <b-select
                 v-if="ingredient.unit_type !== 'unit'"
@@ -71,6 +71,9 @@
               </b-select>
               <span v-else>Unit</span>
             </b-form-group>
+          </td>
+          <td>
+            <b-btn variant="link" @click="removeIngredient(i)"><i class="fa fa-close"></i></b-btn>
           </td>
         </tr>
         <tr>
@@ -161,6 +164,7 @@ export default {
       this.ingredients.push({
         food_name: "",
         quantity: 1,
+        unit_type: "mass",
         quantity_unit: "oz"
       });
     },
@@ -170,6 +174,27 @@ export default {
       });
 
       this.selectedExistingIngredients = [];
+    },
+    onAddIngredient(val, i) {
+      if (val) {
+        if(!val.unit_type) {
+          val.unit_type = units.type(units.normalize(val.serving_unit));
+        }
+        if(!val.quantity) {
+          val.quantity = 1;
+        }
+        if(!val.quantity_unit) {
+          val.quantity_unit = units.normalize(val.serving_unit);
+        }
+
+        this.ingredients[i] = val;
+
+      } else {
+        this.removeIngredient(i)
+      }
+    },
+    removeIngredient(i) {
+      Vue.delete(this.ingredients, i)
     },
     update() {
       this.$emit("input", this.ingredients);

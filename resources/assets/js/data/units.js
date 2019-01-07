@@ -11,6 +11,7 @@ let map = {
 convert().list().forEach(unit => {
   map[unit.singular.toLowerCase()] = unit.abbr;
   map[unit.plural.toLowerCase()] = unit.abbr;
+  map[unit.abbr] = unit.abbr;
 });
 
 let units = {
@@ -79,6 +80,10 @@ let units = {
   },
   normalize(unitName) {
     unitName = unitName.toLowerCase();
+
+    if(unitName === 'unit') {
+      return 'unit';
+    }
 
     if(unitName in map) {
       return map[unitName];

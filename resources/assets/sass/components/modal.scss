@@ -94,3 +94,20 @@
     padding: 10px;
   }
 }
+
+.modal-tabs {
+  .modal-body {
+    //padding: 0;
+
+    .nav.nav-tabs {
+      margin-left: -.5rem;
+      margin-right: -.5rem;
+    }
+
+    .tab-content {
+      border: none;
+      margin-left: -1rem;
+      margin-right: -1rem;
+    }
+  }
+}
