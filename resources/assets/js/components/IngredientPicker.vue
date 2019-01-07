@@ -1,6 +1,9 @@
 <template>
   <div>
     <b-form class="mb-2" @submit.prevent="searchRecipe">
+      <div class="mb-2">
+        <IngredientSearch @change="onSearchIngredient"/>
+      </div>
       <div class="d-flex mb-2">
         <b-input v-model="recipe" class="flex-grow-1 mr-1" placeholder="Type Ingredients Here"></b-input>
         <b-button @click="searchRecipe" variant="primary">Search</b-button>
@@ -157,8 +160,8 @@ export default {
     onClickAddIngredient() {
       this.ingredients.push({
         food_name: "",
-        serving_qty: 1,
-        serving_unit: "oz"
+        quantity: 1,
+        quantity_unit: "oz"
       });
     },
     onClickAddExistingIngredient() {
@@ -208,7 +211,17 @@ export default {
           vm.ingredientOptions = response.data.common;
           loading(false);
         });
-    }, 350)
+    }, 350),
+    onSearchIngredient(val) {
+      if (_.isObject(val)) {
+        this.ingredients.push({
+          food_name: val.food_name,
+          quantity: 1,
+          quantity_unit: units.base(units.type(val.serving_unit)),
+          unit_type: units.type(val.serving_unit)
+        });
+      }
+    }
   }
 };
 </script>

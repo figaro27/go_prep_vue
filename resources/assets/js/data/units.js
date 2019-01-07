@@ -124,7 +124,12 @@ let units = {
     return extended ? best : best.unit;
   },
   type(unit) {
-    return convert().describe(unit).measure;
+    try {
+      return convert().describe(unit).measure;
+    }
+    catch(e) {
+      return 'unit';
+    }
   },
   base(unitType) {
     switch(unitType) {
