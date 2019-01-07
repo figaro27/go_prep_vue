@@ -22,14 +22,14 @@ class CreateStoreSettingsTable extends Migration
             $table->text('pickupInstructions')->nullable();
             $table->boolean('applyDeliveryFee')->default(false);
             $table->integer('deliveryFee')->nullable();
-            $table->json('delivery_days');
+            $table->longtext('delivery_days');
             $table->tinyInteger('cutoff_days')->unsigned()->default(1);
             $table->integer('cutoff_hours')->unsigned()->default(0);
             $table->enum('delivery_distance_type', [
               'radius', 'zipcodes',
             ])->default('radius');
             $table->double('delivery_distance_radius')->nullable();
-            $table->json('delivery_distance_zipcodes');
+            $table->longtext('delivery_distance_zipcodes');
             $table->timestamps();
         });
     }
