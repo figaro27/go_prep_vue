@@ -11,6 +11,7 @@ const ttl = 60; // 60 seconds
 const state = {
   viewed_store: {
     meals: [],
+    will_deliver: true,
     settings: {
       applyDeliveryFee: 0,
       deliveryFee: 0,
@@ -77,8 +78,12 @@ const mutations = {
   },
   setViewedStore(state, store) {
     state.viewed_store = {
+      ...state.viewed_store,
       ...store
     };
+  },
+  setViewedStoreWillDeliver(state, willDeliver) {
+    state.viewed_store.will_deliver = willDeliver;
   },
   setViewedStoreDistance(state, distance) {
     state.viewed_store.distance = distance;
@@ -275,6 +280,16 @@ const actions = {
     } catch (e) {
       console.log(e);
     }
+
+    try {
+      if (_.isBoolean(data.will_deliver)) {
+        commit('setViewedStoreWillDeliver', data.will_deliver);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
+    
   },
 
   // Actions for logged in stores
@@ -381,7 +396,8 @@ const getters = {
     }
   },
   viewedStoreWillDeliver(state, getters) {
-    return state.viewed_store.distance <= getters.viewedStoreSetting('delivery_distance_radius' - 1)
+    return state.viewed_store.will_deliver;
+    //state.viewed_store.distance <= getters.viewedStoreSetting('delivery_distance_radius' - 1)
   },
 
   //

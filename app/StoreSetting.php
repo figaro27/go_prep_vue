@@ -30,17 +30,6 @@ class StoreSetting extends Model
         'delivery_distance_zipcodes' => 'json',
     ];
 
-    public static function boot()
-    {
-        parent::boot();
-
-        self::saving(function ($model) {
-            $model->delivery_days = json_encode($model->delivery_days);
-            return $model;
-        });
-
-    }
-
     public function getNextDeliveryDatesAttribute()
     {
         $dates = [];
