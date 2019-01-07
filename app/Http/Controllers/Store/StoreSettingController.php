@@ -73,7 +73,12 @@ class StoreSettingController extends StoreController
     public function update(Request $request, StoreSetting $storeSetting)
     {
         $settings = StoreSetting::where('store_id', $this->store->id);
-        $settings->update($request->all());
+
+        $values = $request->except('next_delivery_dates');
+        $values['delivery_days'] = json_encode($values['delivery_days']);
+        $values['delivery_distance_zipcodes'] = json_encode($values['delivery_distance_zipcodes']);
+
+        $settings->update($values);
     }
 
     /**

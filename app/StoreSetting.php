@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 class StoreSetting extends Model
 {
@@ -23,39 +23,49 @@ class StoreSetting extends Model
         'showNutrition' => 'boolean',
         'applyDeliveryFee' => 'boolean',
         'allowPickup' => 'boolean',
-        'delivery_days' => 'json',
+        'delivery_days' => 'array',
         'cutoff_days' => 'number',
         'cutoff_hours' => 'number',
         //'cutoff_time' => 'datetime:H:i',
         'delivery_distance_zipcodes' => 'json',
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        self::saving(function ($model) {
+            $model->delivery_days = json_encode($model->delivery_days);
+            return $model;
+        });
+
+    }
+
     public function getNextDeliveryDatesAttribute()
     {
-      $dates = [];
+        $dates = [];
 
-      $today = Carbon::today();
+        $today = Carbon::today();
 
-      $cutoff = $this->cutoff_days * (60*60*24) + $this->cutoff_hours * (60*60);
+        $cutoff = $this->cutoff_days * (60 * 60 * 24) + $this->cutoff_hours * (60 * 60);
 
-      foreach($this->delivery_days as $day) {
-        $date = Carbon::createFromFormat('D', $day);
+        foreach ($this->delivery_days as $day) {
+            $date = Carbon::createFromFormat('D', $day);
 
-        $diff = $date->getTimestamp() - $today->getTimestamp();
+            $diff = $date->getTimestamp() - $today->getTimestamp();
 
-        if($today->format('N') <= $date->format('N') && $diff >= $cutoff) {
-          $dates[] = $date;
+            if ($today->format('N') <= $date->format('N') && $diff >= $cutoff) {
+                $dates[] = $date;
+            } else {
+                $dates[] = $date->addWeek(1);
+            }
         }
-        else {
-          $dates[] = $date->addWeek(1);
-        }
-      }
 
-      usort($dates, function($a, $b) {
-        return $a->getTimestamp() - $b->getTimestamp();
-      });
+        usort($dates, function ($a, $b) {
+            return $a->getTimestamp() - $b->getTimestamp();
+        });
 
-      return $dates;
+        return $dates;
 
     }
 }

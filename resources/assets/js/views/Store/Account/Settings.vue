@@ -248,14 +248,14 @@ export default {
     // }
     cutoffDaysOptions() {
       let options = [];
-      for (i = 0; i <= 7; i++) {
+      for (let i = 0; i <= 7; i++) {
         options.push({ value: i, text: i + " Days" });
       }
       return options;
     },
     cutoffHoursOptions() {
       let options = [];
-      for (i = 0; i <= 23; i++) {
+      for (let i = 0; i <= 23; i++) {
         options.push({ value: i, text: i + " Hours" });
       }
       return options;
