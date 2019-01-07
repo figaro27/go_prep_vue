@@ -104,7 +104,10 @@ trait ExportsData
 
         $html = view($this->exportPdfView(), ['data' => $data])->render();
 
-        $pdf = new Pdf($html);
+        $pdf = new Pdf([
+          'encoding' => 'UTF-8',
+        ]);
+        $pdf->addPage($html);
         $output = $pdf->toString();
 
         Storage::disk('local')->put($filename, $output);

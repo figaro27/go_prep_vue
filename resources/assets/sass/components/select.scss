@@ -1,4 +1,4 @@
-.v-select {
+.dropdown.v-select {
   .dropdown-toggle {
     background-color: #fff !important;
   }
@@ -16,6 +16,11 @@
         color: #3c3c3c;
       }
     }
+  }
+
+  .dropdown-menu > .highlight > a {
+    background: #f5f5f5;
+    color: #000;
   }
 
   .dropdown-menu {

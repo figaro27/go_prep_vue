@@ -46,6 +46,22 @@ class Ingredient extends Model
         'sugars',
     ];
 
+    public $appends = ['quantity', 'quantity_unit'];
+
+    public function getQuantityAttribute() {
+      if($this->pivot && $this->pivot->quantity) {
+        return $this->pivot->quantity;
+      }
+      else return null;
+    }
+
+    public function getQuantityUnitAttribute() {
+      if($this->pivot && $this->pivot->quantity_unit) {
+        return $this->pivot->quantity_unit;
+      }
+      else return null;
+    }
+
     public function meals()
     {
         return $this->belongsToMany('App\Meal')->withPivot('quantity', 'quantity_unit')->using('App\IngredientMeal');

@@ -59,7 +59,7 @@ class MealController extends StoreController
      * @param  \App\Meal  $meal
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
         return Meal::getMeal($id);
     }
@@ -100,7 +100,7 @@ class MealController extends StoreController
      * @param  \App\Meal  $meal
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         return Meal::deleteMeal($id);
     }

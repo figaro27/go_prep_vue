@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Store;
+use App\Utils\Data\Format;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -288,8 +289,8 @@ class Meal extends Model
             foreach ($newIngredients as $newIngredient) {
                 try {
                     // Existing ingredient
-                    if (is_numeric($newIngredient) || isset($newIngredient->id)) {
-                        $ingredientId = is_numeric($newIngredient) ? $newIngredient : $newIngredient->id;
+                    if (is_numeric($newIngredient) || isset($newIngredient['id'])) {
+                        $ingredientId = is_numeric($newIngredient) ? $newIngredient : $newIngredient['id'];
                         $ingredient = Ingredient::where('store_id', $meal->store_id)->findOrFail($ingredientId);
                         $ingredients->push($ingredient);
                     } else {
@@ -347,8 +348,8 @@ class Meal extends Model
 
             $syncIngredients = $ingredients->mapWithKeys(function ($val, $key) use ($newIngredients) {
                 return [$val->id => [
-                    'quantity' => $newIngredients[$key]['serving_qty'] ?? 1,
-                    'quantity_unit' => $newIngredients[$key]['serving_unit'] ?? 'g',
+                    'quantity' => $newIngredients[$key]['quantity'] ?? 1,
+                    'quantity_unit' => $newIngredients[$key]['quantity_unit'] ?? Format::baseUnit($val->unit_type),
                 ]];
             });
 

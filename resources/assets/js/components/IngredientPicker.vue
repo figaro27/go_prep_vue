@@ -1,6 +1,9 @@
 <template>
   <div>
     <b-form class="mb-2" @submit.prevent="searchRecipe">
+      <div class="mb-2">
+        <IngredientSearch @change="onSearchIngredient"/>
+      </div>
       <div class="d-flex mb-2">
         <b-input v-model="recipe" class="flex-grow-1 mr-1" placeholder="Type Ingredients Here"></b-input>
         <b-button @click="searchRecipe" variant="primary">Search</b-button>
@@ -20,7 +23,7 @@
       <thead>
         <th>Name</th>
         <th>Weight</th>
-        <th></th>
+        <th>Unit</th>
       </thead>
       <tbody>
         <tr v-for="(ingredient, i) in ingredients" :key="ingredient.id">
@@ -53,14 +56,20 @@
           </td>
           <td>
             <b-form-group>
-              <b-form-input placeholder="Weight" v-model="ingredient.serving_qty"></b-form-input>
+              <b-form-input placeholder="Weight" :value="ingredient.quantity"></b-form-input>
             </b-form-group>
           </td>
           <td>
             <b-form-group>
-              <b-select v-model="ingredient.serving_unit" :options="weightUnitOptions">
+              <b-select
+                v-if="ingredient.unit_type !== 'unit'"
+                v-model="ingredient.quantity_unit"
+                :options="unitOptions(ingredient)"
+                style="width: 60px"
+              >
                 <option slot="top" disabled>-- Select unit --</option>
               </b-select>
+              <span v-else>Unit</span>
             </b-form-group>
           </td>
         </tr>
@@ -125,12 +134,13 @@ export default {
         };
       });
     },
-    weightUnitOptions() {
-      return units.mass.selectOptions();
+    unitOptions: () => ingredient => {
+      let type = ingredient.unit_type;
+      return units[type].selectOptions();
     },
     canSave() {
       return this.ingredients.length > 0;
-    },
+    }
   },
   watch: {
     ingredients(newIngredients, oldIngredients) {
@@ -150,8 +160,8 @@ export default {
     onClickAddIngredient() {
       this.ingredients.push({
         food_name: "",
-        serving_qty: 1,
-        serving_unit: "oz"
+        quantity: 1,
+        quantity_unit: "oz"
       });
     },
     onClickAddExistingIngredient() {
@@ -174,7 +184,17 @@ export default {
           query: this.recipe
         })
         .then(response => {
-          this.ingredients = _.concat(this.ingredients, response.data.foods);
+          let newIngredients = _.map(response.data.foods, ingredient => {
+            // Get properly named unit
+            let unit = units.normalize(ingredient.serving_unit);
+            let measure = units.describe(unit);
+
+            ingredient.unit_type = units.type(unit);
+            ingredient.quantity = ingredient.serving_qty;
+            ingredient.quantity_unit = unit;
+            return ingredient;
+          });
+          this.ingredients = _.concat(this.ingredients, newIngredients);
           this.recipe = "";
         });
     },
@@ -191,7 +211,17 @@ export default {
           vm.ingredientOptions = response.data.common;
           loading(false);
         });
-    }, 350)
+    }, 350),
+    onSearchIngredient(val) {
+      if (_.isObject(val)) {
+        this.ingredients.push({
+          food_name: val.food_name,
+          quantity: 1,
+          quantity_unit: units.base(units.type(val.serving_unit)),
+          unit_type: units.type(val.serving_unit)
+        });
+      }
+    }
   }
 };
 </script>
