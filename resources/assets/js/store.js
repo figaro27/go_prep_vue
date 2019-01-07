@@ -10,7 +10,13 @@ const ttl = 60; // 60 seconds
 // root state object. each Vuex instance is just a single state tree.
 const state = {
   viewed_store: {
-    meals: []
+    meals: [],
+    settings: {
+      applyDeliveryFee: 0,
+      deliveryFee: 0,
+      allowPickup: true,
+      pickupInstructions: '',
+    },
   },
   stores: {},
   bag: {

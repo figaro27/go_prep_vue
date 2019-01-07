@@ -51,7 +51,18 @@
                             <b-form-radio value=0>Delivery</b-form-radio>
                           </b-form-radio-group>
                         </b-form-group>
-                            <p v-if="pickup > 0">{{ storeSettings.pickupInstructions }} </p>
+                        <p v-if="pickup > 0">{{ storeSettings.pickupInstructions }} </p>
+                        
+                        </div>
+                        <div v-if="!storeSettings.allowPickup || pickup === 1">
+                          <b-form-group v-if="deliveryDaysOptions.length > 1" label="Delivery day" description="">
+                            <b-select :options="deliveryDaysOptions" v-model="deliveryDay" required>
+                              <option slot="top" disabled>-- Select delivery day --</option>
+                            </b-select>
+                          </b-form-group>
+                          <div v-else-if="deliveryDaysOptions.length === 1">
+                            Delivery day: {{ deliveryDaysOptions[0].text }}
+                          </div>
                         </div>
                         <div>
                           <router-link to="/customer/menu">
@@ -98,7 +109,8 @@ import { Switch as cSwitch } from '@coreui/vue'
             return {
                 deliveryPlan: false,
                 mealPlanDiscountPercent: 10, // Hard coding for now until we do Store Settings. Will also move to the store.,
-                pickup: ''
+                pickup: '',
+                deliveryDay: undefined,
             }
         },
         computed: {
@@ -114,7 +126,7 @@ import { Switch as cSwitch } from '@coreui/vue'
               return this.store.settings;
             },
             minimum() {
-              return this.storeSettings.minimum;
+              return this.storeSetting('minimum', 1);
             },
             remainingMeals() {
               return this.minimum - this.total;
@@ -142,6 +154,11 @@ import { Switch as cSwitch } from '@coreui/vue'
             },
             mealPlanDiscountAmount(){
                 return (this.totalBagPrice - (this.totalBagPrice * (100 - this.mealPlanDiscountPercent)/100)).toFixed(2);
+            },
+            deliveryDaysOptions() {
+              return this.storeSetting('next_delivery_dates', []).map((date) => {
+                return {value: date.date, text: moment(date.date).format('dddd MMM Do')}
+              })
             }
         },
         mounted()

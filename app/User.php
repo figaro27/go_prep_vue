@@ -121,6 +121,10 @@ class User extends Authenticatable
           $stores = [$stores];
         }
 
+        if(!is_array($stores)) {
+          return null;
+        }
+
         $origins = [];
         foreach ($stores as $store) {
             $origin = $store->storeDetail;
