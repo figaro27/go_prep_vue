@@ -109,6 +109,7 @@ textarea {
               </div>
 
               <div slot="tags" slot-scope="props">{{ props.row.tag_titles.join(', ') }}</div>
+              <div slot="categories" slot-scope="props">{{ props.row.categories.map(category => category.category).join(', ') }}</div>
 
               <div slot="price" slot-scope="props">{{ formatMoney(props.row.price) }}</div>
 
