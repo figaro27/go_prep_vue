@@ -19,7 +19,7 @@
         <b-button @click="onClickAddExistingIngredient" variant="primary">Add</b-button>
       </div>
     </b-form>
-    <table class="table w-100">
+    <table class="table w-100 ingredient-table">
       <thead>
         <th>Name</th>
         <th>Weight</th>
@@ -96,6 +96,15 @@
 </template>
 <style lang="scss">
 .ingredient-dropdown {
+}
+.ingredient-table {
+  th, td {
+    &:last-child {
+      padding-left: 0;
+      padding-right: 0;
+      width: 35px;
+    }
+  }
 }
 </style>
 
