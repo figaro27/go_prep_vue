@@ -62,12 +62,16 @@ const state = {
       data: {},
       expires: 0
     },
-  },
-
-  orders: {
+    customers: {
       data: {},
       expires: 0
     }
+  },
+  orders: {
+      data: {},
+      expires: 0
+    },
+  isLoading: true
 }
 
 // mutations are operations that actually mutates the state. each mutation
@@ -213,6 +217,17 @@ const mutations = {
     state.store.meals.expires = expires;
   },
 
+  storeCustomers(state, {customers, expires}) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    }
+
+    state.store.customers.data = customers;
+    state.store.customers.expires = expires;
+  },
+
   storeOrders(state, {orders, expires}){
     if (!expires) {
       expires = moment()
@@ -240,6 +255,7 @@ const actions = {
       if (!_.isEmpty(data.user) && _.isObject(data.user)) {
         let user = data.user;
         commit('user', user);
+        state.isLoading = false;
       }
     } catch (e) {}
 
@@ -282,6 +298,13 @@ const actions = {
       if (!_.isEmpty(data.store.meals) && _.isObject(data.store.meals)) {
         let meals = data.store.meals;
         commit('storeMeals', {meals});
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.customers) && _.isObject(data.store.customers)) {
+        let customers = data.store.customers;
+        commit('storeCustomers', {customers});
       }
     } catch (e) {}
 
@@ -444,6 +467,9 @@ const getters = {
   },
 
   //
+  isLoading(state) {
+    return state.isLoading;
+  },
   bag(state) {
     return state.bag;
   },
@@ -528,6 +554,13 @@ const getters = {
   storeMeals: (state) => {
     try {
       return state.store.meals.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeCustomers: (state) => {
+    try {
+      return state.store.customers.data || {};
     } catch (e) {
       return {};
     }

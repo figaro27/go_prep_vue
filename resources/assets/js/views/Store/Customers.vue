@@ -29,6 +29,7 @@
 <script>
 import Spinner from "../../components/Spinner";
 import ViewCustomer from "./Modals/ViewCustomer";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   components: {
@@ -37,7 +38,6 @@ export default {
   },
   data() {
     return {
-      isLoading: true,
       viewUserId: "",
       editUserId: "",
       id: "",
@@ -53,7 +53,6 @@ export default {
         "LastOrder",
         "actions"
       ],
-      tableData: [],
       options: {
         headings: {
           LastOrder: "Last Order",
@@ -80,17 +79,27 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapGetters({
+      store: "viewedStore",
+      customers: "storeCustomers",
+      isLoading: "isLoading"
+    }),
+    tableData() {
+      return Object.values(this.customers);
+    },
+  },
   created() {},
   mounted() {
-    this.getTableData();
+
   },
   methods: {
-    getTableData() {
-      axios.get("/api/me/customers").then(response => {
-        this.tableData = response.data;
-        this.isLoading = false;
-      });
-    },
+    // getTableData() {
+    //   axios.get("/api/me/customers").then(response => {
+    //     this.tableData = response.data;
+    //     this.isLoading = false;
+    //   });
+    // },
     resetUserId() {
       this.viewUserId = 0;
       this.editUserId = 0;

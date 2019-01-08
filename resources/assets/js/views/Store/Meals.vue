@@ -284,7 +284,6 @@ export default {
         num_orders: "",
         created_at: ""
       },
-      isLoading: false,
       createMealModal: false,
       viewMealModal: false,
       deleteMealModal: false,
@@ -375,7 +374,8 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       meals: "storeMeals",
-      allergies: "allergies"
+      allergies: "allergies",
+      isLoading: "isLoading"
     }),
     tableData() {
       return Object.values(this.meals);

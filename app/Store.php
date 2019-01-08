@@ -40,10 +40,37 @@ class Store extends Model
         return $this->hasOne('App\StoreSetting');
     }
 
+
+    protected $appends = ['customers'];
+
+    public function getCustomersAttribute()
+    {
+        $customers = $this->orders->unique('user_id')->where('store_id', $this->id)->pluck('user_id');
+        return User::with('userDetail', 'order')->whereIn('id', $customers)->get()->map(function ($user) {
+            return [
+                "id" => $user->id,
+                "Name" => $user->userDetail->firstname . ' ' . $user->userDetail->lastname,
+                "phone" => $user->userDetail->phone,
+                "address" => $user->userDetail->address,
+                "city" => $user->userDetail->city,
+                "state" => $user->userDetail->state,
+                "Joined" => $user->created_at->format('F d, Y'),
+                "LastOrder" => $user->order->max("created_at")->format('F d, Y'),
+                "TotalPayments" => $user->order->count(),
+                "TotalPaid" => '$' . number_format($user->order->sum("amount"), 2, '.', ','),
+            ];
+        });
+
+        return $this->store->customers;
+    }
+
+
+
     public static function getStore($id)
     {
         return Store::with('storeDetail', 'order')->where('id', $id)->first();
     }
+
 
     public static function getStores()
     {
