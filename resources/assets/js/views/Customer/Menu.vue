@@ -1,10 +1,37 @@
+<style lang="scss">
+@import "~nutrition-label-jquery-plugin/dist/css/nutritionLabel-min.css";
+
+.menu-item {
+  margin-bottom: 10px;
+}
+
+.menu-item-img {
+  width: 100%;
+}
+
+.cart-item-img {
+  height: 100px;
+}
+
+.quantity {
+  width: 75px;
+  border-radius: 10px;
+  opacity: 0.5;
+  text-align: center;
+}
+
+.categories{
+  padding-top:20px
+}
+</style>
+
 <template>
   <div class="container-fluid">
     <div v-if="!willDeliver">
       <b-alert variant="danger" show>You are out of the delivery bounds</b-alert>
     </div>
     <div v-for="category in categories" :key="category">
-      <button @click="filterByCategory(category)">{{ category }}</button>
+      <button @click="goToCategory(category)">{{ category }}</button>
     </div>
     <br>
     <div v-for="tag in tags" :key="tag">
@@ -34,7 +61,7 @@
             </b-modal>
             <div class="row">
               <div class="col-sm-10" style="max-height:800px;overflow-y:auto">
-                <div v-for="(meals, category) in meals" :key="category">
+                <div v-for="(meals, category) in meals" :key="category" :id="category" class="categories">
                   <h3>{{category}}</h3>
                   <b-row>
                     <b-col v-for="meal in meals" :key="meal.id" cols="3">
@@ -95,28 +122,6 @@
   </div>
 </template>
 
-<style lang="scss">
-@import "~nutrition-label-jquery-plugin/dist/css/nutritionLabel-min.css";
-
-.menu-item {
-  margin-bottom: 10px;
-}
-
-.menu-item-img {
-  width: 100%;
-}
-
-.cart-item-img {
-  height: 100px;
-}
-
-.quantity {
-  width: 75px;
-  border-radius: 10px;
-  opacity: 0.5;
-  text-align: center;
-}
-</style>
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
@@ -185,21 +190,6 @@ export default {
         meals = _.filter(meals, meal => {
           let skip = false;
 
-          if (filters.categories.length > 0) {
-            let hasCat = _.reduce(
-              meal.categories,
-              (has, cat) => {
-                if (has) return true;
-                let x = _.includes(filters.categories, cat.category);
-
-                return x;
-              },
-              false
-            );
-
-            skip = skip || !hasCat;
-          }
-
           if (filters.tags.length > 0) {
             let hasTag = _.reduce(
               meal.tags,
@@ -229,9 +219,6 @@ export default {
 
             skip = skip || hasAllergy;
           }
-
-
-
           return !skip;
         });
       }
@@ -435,6 +422,9 @@ export default {
       i === -1
         ? this.filters.allergies.push(allergy)
         : Vue.delete(this.filters.allergies, i);
+    },
+    goToCategory(category){
+      window.location.href = '#' + category;
     }
   }
 };
