@@ -51,20 +51,14 @@ th:nth-child(3) {
             :options="options"
             v-show="!isLoading"
           >
-
-          <div slot="beforeTable" class="mb-2">
-            <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
-          </div>
-
-
             <div slot="notes" class="text-nowrap" slot-scope="props">
               <p v-if="props.row.has_notes">!</p>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn btn-primary btn-sm"
-                @click="fulfill(props.row.id)"
-              >Mark As Fulfilled</button>
+                @click="unfulfill(props.row.id)"
+              >Mark As Unfulfilled</button>
 
               <button
                 class="btn btn-success btn-sm"
@@ -124,13 +118,6 @@ th:nth-child(3) {
         </b-row>
       </b-modal>
     </div>
-
-
-
-
-
-
-
   </div>
 </template>
 
@@ -148,7 +135,6 @@ export default {
 
   data() {
     return {
-      filter: false,
       isLoading: false,
       viewOrderModal: false,
       order: {},
@@ -179,7 +165,7 @@ export default {
           actions: "Actions"
         }
       },
-      deliveryNote: "",
+      deliveryNote: ""
     };
   },
   computed: {
@@ -188,11 +174,8 @@ export default {
       orders: "storeOrders",
     }),
     tableData() {
-      if (!this.filter)
-        return _.filter(this.orders, {'fulfilled': 0});
-      else
-        return _.filter(this.orders, {'fulfilled': 0, 'has_notes': true});
-    },
+      return _.filter(this.orders, {'fulfilled': 1});
+    }
   },
   mounted() {
 
@@ -214,10 +197,10 @@ export default {
     getTableDataById(id) {
       return _.find(this.tableData, ["id", id]);
     },
-    fulfill(id) {
+    unfulfill(id) {
       axios
         .patch(`/api/me/orders/${id}`, {
-          fulfilled: 1
+          fulfilled: 0
         })
         .then(resp => {
           this.refreshTable();
@@ -250,10 +233,6 @@ export default {
       });
       this.viewOrderModal = true;
     },
-    filterNotes(){
-      this.filter = !this.filter;
-      this.refreshTable();
-    }
 
   }
 };

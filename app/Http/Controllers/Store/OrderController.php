@@ -16,7 +16,7 @@ class OrderController extends StoreController
     public function index()
     {
         return $this->store->has('orders') ?
-            $this->store->orders()->with(['user', 'user.userDetail', 'meals'])->where('fulfilled', 0)->get() : [];
+            $this->store->orders()->with(['user', 'user.userDetail', 'meals'])->get() : [];
     }
 
 
@@ -47,9 +47,9 @@ class OrderController extends StoreController
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(Order $order)
+    public function show($id)
     {
-        //
+        return $this->store->orders()->with(['user', 'user.userDetail', 'meals'])->where('id', $id)->first();
     }
 
     /**

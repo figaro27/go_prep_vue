@@ -64,6 +64,12 @@ class SpaController extends Controller
                 });
             }
 
+            if ($user) {
+                if ($user->has('store')) {
+                    $orders = $user->store->orders()->with(['user', 'user.userDetail', 'meals'])->get();
+                }
+            }
+
             $stores = Cache::remember('stores', 10, function () {
                 return Store::all();
             });
@@ -75,6 +81,7 @@ class SpaController extends Controller
                 'stores' => $stores,
                 'order_ingredients' => $orderIngredients ?? [],
                 'allergies' => Allergy::all(),
+                'orders' => $orders,
             ];
 
         } else {

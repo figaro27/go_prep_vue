@@ -61,8 +61,13 @@ const state = {
     meals: {
       data: {},
       expires: 0
+    },
+  },
+
+  orders: {
+      data: {},
+      expires: 0
     }
-  }
 }
 
 // mutations are operations that actually mutates the state. each mutation
@@ -206,7 +211,18 @@ const mutations = {
 
     state.store.meals.data = meals;
     state.store.meals.expires = expires;
-  }
+  },
+
+  storeOrders(state, {orders, expires}){
+    if (!expires) {
+      expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    }
+
+    state.orders.data = orders;
+    state.orders.expires = expires;
+  },
 }
 
 // actions are functions that cause side effects and can involve asynchronous
@@ -289,7 +305,20 @@ const actions = {
       console.log(e);
     }
 
-    
+    // try {
+    //   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
+    //     let orders = data.store.orders;
+    //     commit('storeOrders', {orders});
+    //   }
+    // } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.orders) && _.isObject(data.orders)) {
+        let orders = data.orders;
+        commit('storeOrders', {orders});
+      }
+    } catch (e) {}
+>>>>>>> feature/store/orders
   },
 
   // Actions for logged in stores
@@ -369,6 +398,21 @@ const actions = {
       throw new Error('Failed to retrieve meals');
     }
   }
+  ,
+
+  async refreshOrders({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me/orders");
+    const {data} = await res;
+
+    if (_.isArray(data)) {
+      commit('storeOrders', {orders: data});
+    } else {
+      throw new Error('Failed to retrieve orders');
+    }
+  },
 }
 
 // getters are functions
@@ -488,7 +532,15 @@ const getters = {
     } catch (e) {
       return {};
     }
-  }
+  },
+  storeOrders: (state) => {
+    try {
+      return state.orders.data || {};
+    }
+    catch(e) {
+      return {};
+    }
+  },
 }
 
 const plugins = [createPersistedState({paths: ['bag']})];
