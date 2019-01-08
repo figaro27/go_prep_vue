@@ -57,8 +57,8 @@ th:nth-child(3) {
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn btn-primary btn-sm"
-                @click="fulfill(props.row.id)"
-              >Mark As Unfilfilled</button>
+                @click="unfulfill(props.row.id)"
+              >Mark As Unfulfilled</button>
 
               <button
                 class="btn btn-success btn-sm"
@@ -118,13 +118,6 @@ th:nth-child(3) {
         </b-row>
       </b-modal>
     </div>
-
-
-
-
-
-
-
   </div>
 </template>
 
@@ -204,14 +197,15 @@ export default {
     getTableDataById(id) {
       return _.find(this.tableData, ["id", id]);
     },
-    fulfill(id) {
+    unfulfill(id) {
       axios
         .patch(`/api/me/orders/${id}`, {
           fulfilled: 0
         })
         .then(resp => {
+          this.refreshTable();
         });
-      this.refreshTable();
+      
     },
     saveNotes(id) {
       let deliveryNote = deliveryNote;
@@ -219,8 +213,8 @@ export default {
           {notes: this.deliveryNote}
           )
         .then(resp => {
+          this.refreshTable();
         });
-      this.refreshTable();
     },
     getMealQuantities(meals) {
       return _.countBy(meals, 'title');

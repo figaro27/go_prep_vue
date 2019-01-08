@@ -51,6 +51,12 @@ th:nth-child(3) {
             :options="options"
             v-show="!isLoading"
           >
+
+          <div slot="beforeTable" class="mb-2">
+            <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
+          </div>
+
+
             <div slot="notes" class="text-nowrap" slot-scope="props">
               <p v-if="props.row.has_notes">!</p>
             </div>
@@ -142,6 +148,7 @@ export default {
 
   data() {
     return {
+      filter: false,
       isLoading: false,
       viewOrderModal: false,
       order: {},
@@ -172,7 +179,7 @@ export default {
           actions: "Actions"
         }
       },
-      deliveryNote: ""
+      deliveryNote: "",
     };
   },
   computed: {
@@ -181,8 +188,11 @@ export default {
       orders: "storeOrders",
     }),
     tableData() {
-      return _.filter(this.orders, {'fulfilled': 0});
-    }
+      if (!this.filter)
+        return _.filter(this.orders, {'fulfilled': 0});
+      else
+        return _.filter(this.orders, {'fulfilled': 0, 'has_notes': true});
+    },
   },
   mounted() {
 
@@ -210,8 +220,9 @@ export default {
           fulfilled: 1
         })
         .then(resp => {
+          this.refreshTable();
         });
-      this.refreshTable();
+      
     },
     saveNotes(id) {
       let deliveryNote = deliveryNote;
@@ -219,8 +230,8 @@ export default {
           {notes: this.deliveryNote}
           )
         .then(resp => {
+          this.refreshTable();
         });
-      this.refreshTable();
     },
     getMealQuantities(meals) {
       return _.countBy(meals, 'title');
@@ -239,6 +250,10 @@ export default {
       });
       this.viewOrderModal = true;
     },
+    filterNotes(){
+      this.filter = !this.filter;
+      this.refreshTable();
+    }
 
   }
 };
