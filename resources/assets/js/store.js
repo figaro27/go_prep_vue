@@ -318,7 +318,6 @@ const actions = {
         commit('storeOrders', {orders});
       }
     } catch (e) {}
->>>>>>> feature/store/orders
   },
 
   // Actions for logged in stores
