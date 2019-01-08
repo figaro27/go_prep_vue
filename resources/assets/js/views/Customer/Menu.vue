@@ -10,6 +10,10 @@
     <div v-for="tag in tags" :key="tag">
       <button @click="filterByTag(tag)">{{ tag }}</button>
     </div>
+    <br>
+    <div v-for="allergy in allergies" :key="allergy">
+      <button @click="filterByAllergy(allergy)">{{ allergy }}</button>
+    </div>
     <div class="row">
       <div class="col-sm-12 mt-3">
         <div class="card">
@@ -51,6 +55,9 @@
                       <img src="/storage/plus.jpg" @click="addOne(meal)">
                       <p>{{ meal.title }}</p>
                       <p>${{ meal.price }}</p>
+                      <p v-for="tag in meal.tags">{{ tag.tag }}</p>
+                      <hr>
+                      <p v-for="allergy in meal.allergies">{{ allergy.title }}</p>
                     </b-col>
                   </b-row>
                 </div>
@@ -122,7 +129,8 @@ export default {
       filteredView: false,
       filters: {
         categories: [],
-        tags: []
+        tags: [],
+        allergies: []
       },
       //bag: {},
       meal: null,
@@ -207,6 +215,23 @@ export default {
             skip = skip || !hasTag;
           }
 
+          if (filters.allergies.length > 0) {
+            let hasAllergy = _.reduce(
+              meal.allergies,
+              (has, allergy) => {
+                if (has) return true;
+                let x = _.includes(filters.allergies, allergy.title);
+
+                return x;
+              },
+              false
+            );
+
+            skip = skip || hasAllergy;
+          }
+
+
+
           return !skip;
         });
       }
@@ -240,6 +265,17 @@ export default {
         meal.tags.forEach(tag => {
           if (!_.includes(grouped, tag.tag)) {
             grouped.push(tag.tag);
+          }
+        });
+      });
+      return grouped;
+    },
+    allergies() {
+      let grouped = [];
+      this.store.meals.forEach(meal => {
+        meal.allergies.forEach(allergy => {
+          if (!_.includes(grouped, allergy.title)) {
+            grouped.push(allergy.title);
           }
         });
       });
@@ -387,6 +423,18 @@ export default {
       i === -1
         ? this.filters.tags.push(tag)
         : Vue.delete(this.filters.tags, i);
+    },
+    filterByAllergy(allergy) {
+      this.filteredView = true;
+
+      // Check if filter already exists
+      const i = _.findIndex(this.filters.allergies, _allergy => {
+        return allergy === _allergy;
+      });
+
+      i === -1
+        ? this.filters.allergies.push(allergy)
+        : Vue.delete(this.filters.allergies, i);
     }
   }
 };
