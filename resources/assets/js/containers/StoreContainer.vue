@@ -7,7 +7,6 @@
         <img class="navbar-brand-minimized" src="/images/logo-min.png" width="33" height="40" alt="GoPrep Logo">
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" />
-
       <b-navbar-nav class="ml-auto">
         <b-nav-item class="d-md-down-none">
           <DefaultHeaderDropdownNotif/>
@@ -35,7 +34,7 @@
         <SidebarMinimizer/>
       </AppSidebar>
       <main class="main">
-        <Breadcrumb :list="list"/>
+        <!-- <Breadcrumb :list="list"/> -->
         <div class="container-fluid">
 
           <router-view></router-view>
@@ -47,9 +46,9 @@
         <DefaultAside/>
       </AppAside>
     </div>
-    <TheFooter>
-      <!--footer-->
-    </TheFooter>
+    <!-- <TheFooter>
+      footer
+    </TheFooter> -->
   </div>
 </template>
 

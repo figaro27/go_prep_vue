@@ -1,32 +1,5 @@
 <style>
-.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
-   background-color: #f9f9f9;
-}
 
-thead{
-  background-color: #8a8a8a;
-}
-
-.VueTables__heading{
-  color:#ffffff;
-  font-family:'open sans';
-}
-
-tr{
-  line-height: 38px;
-}
-
-td, .VuePagination__count, .VueTables__search_kApIq {
-  font-family:'open sans';
-}
-
-th:first-child{
-  border-top-left-radius:7px;
-}
-
-th:last-child{
-  border-top-right-radius:7px;
-}
 
 
 </style>

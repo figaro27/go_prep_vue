@@ -5,16 +5,8 @@
     </template>\
     <template slot="dropdown">
       <b-dropdown-item>
-        <i class="fa fa-bell-o"/>
-        <router-link to="/store/account/settings">Settings</router-link>
-      </b-dropdown-item>
-      <b-dropdown-item>
-        <i class="fa fa-bell-o"/>
-        <router-link to="/store/account/billing">Billing</router-link>
-      </b-dropdown-item>
-      <b-dropdown-item>
-        <i class="fa fa-bell-o"/>
-        <router-link to="/store/account/contact">Contact Us</router-link>
+        <i class="fa fa-user"/>
+        <router-link to="/store/account/contact" class="link-remove">Contact Us</router-link>
       </b-dropdown-item>
       <b-dropdown-item @click="logout()">
         <i class="fa fa-lock"/> Logout
