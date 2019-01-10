@@ -88,7 +88,10 @@ class UserController  extends StoreController
 
         $user->save();
         
-        return $user;
+        if ($request->has('email') && $request->has('password'))
+            return 200;
+        else
+            return 500;
     }
 
     /**

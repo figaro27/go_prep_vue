@@ -14,13 +14,14 @@
                 required
               ></b-form-input>
             </b-form-group>
-            <hr>
+            
             <b-form-group label="Password" label-for="password" :state="true">
               <b-form-input
                 id="password"
                 type="password"
                 v-model="user.password"
                 placeholder="Password"
+                required
               ></b-form-input>
             </b-form-group>
             <b-form-group label="Confirm new password" label-for="password2" :state="true">
@@ -29,37 +30,55 @@
                 type="password"
                 v-model="user.password2"
                 placeholder="Confirm new password"
+                required
               ></b-form-input>
             </b-form-group>
-            <b-button type="submit" variant="primary">Submit</b-button>
+            <b-button type="submit" variant="primary" @click="updateLogin">Submit</b-button>
           </b-form>
+            <b-alert variant="success" class="alert" dismissible :show="loginAlertSuccess" @dismissed="loginAlert=false">
+                    Login Info Updated!
+            </b-alert>
+            <b-alert variant="danger" class="alert" dismissible :show="loginAlertFail" @dismissed="loginAlert=false">
+                    Error. Please make sure you typed in a correct email address and the same password in both fields.
+            </b-alert>
         </div>
       </div>
-      <p>Store</p>
+      <p>Company</p>
       <div class="card">
         <div class="card-body">
           <b-form @submit.prevent="updateStoreDetails">
-            <b-form-input type="text" v-model="storeDetail.name" placeholder="Store Name" required></b-form-input>
-            <hr>
-            <b-form-input type="text" v-model="storeDetail.logo" placeholder="Logo" required></b-form-input>
-            <hr>
-            <b-form-input type="text" v-model="storeDetail.phone" placeholder="Phone" required></b-form-input>
-            <hr>
-            <b-form-input type="text" v-model="storeDetail.address" placeholder="Address" required></b-form-input>
-            <hr>
-            <b-form-input type="text" v-model="storeDetail.city" placeholder="City" required></b-form-input>
-            <hr>
-            <b-form-input type="text" v-model="storeDetail.state" placeholder="State" required></b-form-input>
-            <hr>
-            <b-form-input type="text" v-model="storeDetail.zip" placeholder="Zip Code" required></b-form-input>
-            <hr>
-            <b-form-input
-              type="text"
-              v-model="storeDetail.description"
-              placeholder="About"
-              required
-            ></b-form-input>
-            <hr>
+            <b-form-group label="Company Name" :state="true">
+              <b-form-input type="text" v-model="storeDetail.name" placeholder="Company Name" required></b-form-input>
+            </b-form-group>
+            
+            <b-form-group label="Logo" :state="true">
+              <b-form-input type="text" v-model="storeDetail.logo" placeholder="Logo" required></b-form-input>
+            </b-form-group>
+            
+            <b-form-group label="Phone number" :state="true">
+              <b-form-input type="text" v-model="storeDetail.phone" placeholder="Phone" required></b-form-input>
+            </b-form-group>
+            
+            <b-form-group label="Address" :state="true">
+              <b-form-input type="text" v-model="storeDetail.address" placeholder="Address" required></b-form-input>
+            </b-form-group>
+            
+            <b-form-group label="City" :state="true">
+              <b-form-input type="text" v-model="storeDetail.city" placeholder="City" required></b-form-input>
+            </b-form-group>
+            
+            <b-form-group label="State" :state="true">
+              <b-form-input type="text" v-model="storeDetail.state" placeholder="State" required></b-form-input>
+            </b-form-group>
+            
+            <b-form-group label="Zip Code" :state="true">
+              <b-form-input type="text" v-model="storeDetail.zip" placeholder="Zip Code" required></b-form-input>
+            </b-form-group>
+            
+            <b-form-group label="About" :state="true">
+              <b-form-textarea :rows="3" v-model="storeDetail.description" placeholder="About" required></b-form-textarea :rows="3">
+            </b-form-group>
+            
             <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
         </div>
@@ -80,8 +99,10 @@
                 class="d-inline w-auto mr-1"
                 :options="cutoffHoursOptions"
               ></b-select>
+              <img v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'" title="Cut Off Period" src="/storage/popover.png">
             </b-form-group>
-            <hr>
+
+            
             <b-form-group label="Delivery Day(s)" label-for="delivery-days" :state="true">
               <b-form-checkbox-group
                 buttons
@@ -97,8 +118,9 @@
                  { value: 'sat', text: 'Saturday' },
               ]"
               ></b-form-checkbox-group>
+              <img v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'" title="Delivery Day(s)" src="/storage/popover.png">
             </b-form-group>
-            <hr>
+            
             <b-form-group
               label="Delivery Distance Type"
               label-for="delivery-distance-type"
@@ -113,6 +135,7 @@
                  { value: 'zipcodes', text: 'Zipcodes' },
               ]"
               ></b-form-radio-group>
+              <img v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'" title="Delivery Distance Type" src="/storage/popover.png">
             </b-form-group>
             <b-form-group
               v-if="storeSettings.delivery_distance_type === 'radius'"
@@ -141,40 +164,40 @@
                 placeholder="Zipcodes"
               ></textarea>
             </b-form-group>
-            <hr>
-            <p>Minimum Meals Requirement</p>
-            <b-form-input
-              type="text"
-              v-model="storeSettings.minimum"
-              placeholder="Minimum Number of Meals"
-              required
-            ></b-form-input>
-            <hr>
-            <p>Delivery Fee</p>
-            <c-switch
-              color="success"
-              variant="pill"
-              size="lg"
-              v-model="storeSettings.applyDeliveryFee"
-            />
-            <b-form-input
-              v-if="storeSettings.applyDeliveryFee"
-              type="text"
-              v-model="storeSettings.deliveryFee"
-              placeholder="Delivery Fee"
-              required
-            ></b-form-input>
-            <hr>
-            <p>Allow Pickup</p>
-            <c-switch color="success" variant="pill" size="lg" v-model="storeSettings.allowPickup"/>
-            <b-form-input
-              v-if="storeSettings.allowPickup"
-              type="text"
-              v-model="storeSettings.pickupInstructions"
-              placeholder="Pickup Instructions (Include address, phone number, and time)"
-              required
-            ></b-form-input>
-            <hr>
+            <b-form-group label="Minimum Meals Requirement" :state="true">
+              <b-form-input
+                type="text"
+                v-model="storeSettings.minimum"
+                placeholder="Minimum Number of Meals"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group label="Delivery Fee" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.applyDeliveryFee"
+              />
+              <b-form-input
+                v-if="storeSettings.applyDeliveryFee"
+                type="text"
+                v-model="storeSettings.deliveryFee"
+                placeholder="Delivery Fee"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group label="Allow Pickup" :state="true">
+              <c-switch color="success" variant="pill" size="lg" v-model="storeSettings.allowPickup"/>
+              <b-form-input
+                v-if="storeSettings.allowPickup"
+                type="text"
+                v-model="storeSettings.pickupInstructions"
+                placeholder="Please include pickup instructions to your customers (pickup address, phone number, and day/time)."
+                required
+              ></b-form-input>
+            </b-form-group>
+            
             <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
         </div>
@@ -183,18 +206,20 @@
       <div class="card">
         <div class="card-body">
           <b-form @submit.prevent="updateStoreSettings">
-            <p>Show Nutrition Facts</p>
-            <c-switch
-              color="success"
-              variant="pill"
-              size="lg"
-              v-model="storeSettings.showNutrition"
-            />
-            <hr>
-            <p>Ingredients</p>
-            <hr>
-            <p>Categories</p>
-            <hr>
+            <b-form-group label="Show Nutrition Facts" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.showNutrition"
+              />
+            </b-form-group>
+            <!-- <p>Ingredients</p> -->
+            
+            <b-form-group label="Categories" :state="true">
+
+            </b-form-group>
+            
             <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
         </div>
@@ -202,21 +227,22 @@
       <p>Notifications</p>
       <div class="card">
         <div class="card-body">
-          <p>New Orders</p>
+          
         </div>
       </div>
-      <p>Inventory</p>
-      <div class="card">
+      <!-- <div class="card">
         <div class="card-body">
           <p>Automatic Ordering</p>
-          <hr>
+          
           <p>Low Threshold</p>
         </div>
-      </div>
+      </div> -->
       <p>Payments</p>
       <div class="card">
         <div class="card-body">
-          <p>Payment Info</p>
+          <b-form-group label="Payment Info" :state="true">
+
+          </b-form-group>
         </div>
       </div>
     </div>
@@ -232,6 +258,8 @@ export default {
   },
   data() {
     return {
+      loginAlertSuccess: false,
+      loginAlertFail: false,
       zipcodes: []
     };
   },
@@ -286,7 +314,13 @@ export default {
 
       axios.patch("/api/me/user", data).then(response => {
         this.$store.commit("user", response.data);
+        if (response.data == 200)
+        this.loginAlertSuccess = true;
+        else
+        this.loginAlertFail = true;
       });
+
+
     },
     updateStoreDetails() {
       this.spliceZip();
@@ -311,7 +345,7 @@ export default {
       this.zipcodes = zips.split(",").map(zip => {
         return zip.trim();
       });
-    }
+    },
   }
 };
 </script>
