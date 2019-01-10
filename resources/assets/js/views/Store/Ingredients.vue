@@ -3,7 +3,6 @@
     <div class="col-md-12">
       <Spinner v-if="loading"/>
       <div class="card">
-        <div class="card-header">Ingredients</div>
         <div class="card-body">
           <v-client-table :columns="columns" :data="tableData" :options="options">
             <span slot="beforeLimit">
