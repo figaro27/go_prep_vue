@@ -31,10 +31,6 @@
   margin: 0 auto;
 }
 
-th:nth-child(3) {
-  text-align: center;
-}
-
 .VueTables__child-row-toggler {
   width: 16px;
   height: 16px;

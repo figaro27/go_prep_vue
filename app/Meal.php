@@ -30,16 +30,12 @@ class Meal extends Model
 
     public function getLifetimeOrdersAttribute()
     {
-        // $lifetimeOrders = Meal::select(DB::raw('count(id) as count'))->whereHas('orders')->groupBy('title')->get();
-        $lifetimeOrders = 20;
-        return $lifetimeOrders;
+        return $this->orders->count();
     }
 
     public function getActiveOrdersAttribute()
     {
-        // $activeOrders = Meal::select(DB::raw('count(id) as count'))->whereHas('orders', function($q) { $q->where('fulfilled', false); })->groupBy('title')->get();
-        $activeOrders = 5;
-        return $activeOrders;
+        return $this->orders->where('fulfilled', 0)->count();
     }
 
     public function getNutritionAttribute()

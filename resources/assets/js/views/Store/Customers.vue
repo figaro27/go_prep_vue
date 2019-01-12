@@ -10,7 +10,7 @@
       <div class="col-md-12">
         <Spinner v-if="isLoading"/>
         <div class="card">
-          <ViewCustomer :userId="viewUserId"></ViewCustomer>
+          <ViewCustomer :userId="viewUserId" :order="order"></ViewCustomer>
           <div class="card-body">
             <v-client-table
               :columns="columns"
@@ -43,7 +43,7 @@ export default {
   },
   data() {
     return {
-      viewUserId: "",
+      viewUserId: '',
       editUserId: "",
       id: "",
       columns: [
@@ -88,11 +88,15 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       customers: "storeCustomers",
+      orders: "storeOrders",
       isLoading: "isLoading"
     }),
     tableData() {
       return Object.values(this.customers);
     },
+    order(){
+      return _.filter(this.orders, {'user.id': this.viewUserId});
+    }
   },
   created() {},
   mounted() {
