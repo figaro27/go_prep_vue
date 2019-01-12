@@ -10,12 +10,13 @@
 }
 
 .cart-item-img {
-  height: 100px;
+  height: 80px;
+  width: 80px;
 }
 
 .quantity {
-  width: 75px;
-  border-radius: 10px;
+  width: 115px;
+  border-radius: 20px;
   opacity: 0.5;
   text-align: center;
 }
@@ -23,10 +24,36 @@
 .categories{
   padding-top:20px
 }
+
+.menu {
+  max-width: 1500px
+}
+
+.bag-item{
+  border-bottom:1px solid #e1e1e1;
+  margin-bottom:10px;
+  width:100%;
+}
+
+.bag-quantity{
+text-align:center;
+vertical-align: center;
+position:relative;
+top:10px;
+}
+
+.clear-meal{
+  width:10px;
+}
+
+li {
+  list-style-type: none;
+}
+
 </style>
 
 <template>
-  <div class="container-fluid">
+  <div class="menu container-fluid">
     <div v-if="!willDeliver">
       <b-alert variant="danger" show>You are out of the delivery bounds</b-alert>
     </div>
@@ -45,13 +72,7 @@
       <div class="col-sm-12 mt-3">
         <div class="card">
           <div class="card-body">
-            <b-modal
-              ref="mealModal"
-              size="lg"
-              :title="meal.title"
-              v-model="mealModal"
-              v-if="mealModal"
-            >
+            <b-modal ref="mealModal" size="lg" :title="meal.title" v-model="mealModal" v-if="mealModal">
               <p>${{ meal.price }}</p>
               <p>{{ meal.description }}</p>
               <img :src="meal.featured_image">
@@ -60,9 +81,9 @@
               <div id="nutritionFacts" v-if="storeSettings.showNutrition"></div>
             </b-modal>
             <div class="row">
-              <div class="col-sm-10" style="max-height:800px;overflow-y:auto">
+              <div class="col-sm-9" style="max-height:800px;overflow-y:auto">
                 <div v-for="(meals, category) in meals" :key="category" :id="category" class="categories">
-                  <h3>{{category}}</h3>
+                  <h2 class="text-center mb-3">{{category}}</h2>
                   <b-row>
                     <b-col v-for="meal in meals" :key="meal.id" cols="3">
                       <img
@@ -70,16 +91,11 @@
                         class="menu-item-img"
                         @click="showMealModal(meal)"
                       >
-                      <img src="/storage/minus.jpg" @click="minusOne(meal)">
-                      <b-form-input
-                        type="text"
-                        name
-                        id
-                        class="quantity"
-                        :value="quantity(meal)"
-                        readonly
-                      ></b-form-input>
-                      <img src="/storage/plus.jpg" @click="addOne(meal)">
+                      <div class="d-flex justify-content-between mb-2 mt-1">
+                        <img src="/storage/minus.jpg" @click="minusOne(meal)">
+                        <b-form-input type="text" name id class="quantity" :value="quantity(meal)" readonly></b-form-input>
+                        <img src="/storage/plus.jpg" @click="addOne(meal)">
+                      </div>
                       <p>{{ meal.title }}</p>
                       <p>${{ meal.price }}</p>
                       <p v-for="tag in meal.tags">{{ tag.tag }}</p>
@@ -89,25 +105,35 @@
                   </b-row>
                 </div>
               </div>
-              <div class="col-sm-2" style="max-height:800px;overflow-y:auto">
-                <b-col v-for="(item, mealId) in bag" :key="`bag-${mealId}`" cols="12">
-                  <div v-if="item.quantity > 0">
-                    <p @click="clearAll">Clear All</p>
-                    <img :src="item.meal.featured_image" class="cart-item-img">
-                    <p>{{ item.meal.title }}</p>
-                    <img src="/storage/minus.jpg" @click="minusOne(item.meal)">
-                    {{ item.quantity }}
-                    <img
-                      src="/storage/plus.jpg"
-                      @click="addOne(item.meal)"
-                    >
-                    <img src="/storage/x.png" @click="clearMeal(item.meal)">
-                  </div>
-                </b-col>
+
+
+              <div class="col-sm-3" style="max-height:800px;overflow-y:auto">
+                <p @click="clearAll">Clear All</p>
+                <ul class="list-group ">
+                  <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
+                    
+                    <div v-if="item.quantity > 0" class="row">
+                      <div class="col-sm-1">
+                        <img src="/storage/bag-plus.png" @click="addOne(item.meal)">
+                        <p class="bag-quantity">{{ item.quantity }}</p>
+                        <img src="/storage/bag-minus.png" @click="minusOne(item.meal)">
+                      </div>
+                      <div class="col-sm-2">
+                        <img :src="item.meal.featured_image" class="cart-item-img"/>
+                      </div>
+                      <div class="col-sm-5 offset-1">
+                        {{ item.meal.title }}
+                      </div>
+                      <div class="col-sm-2">
+                        <img src="/storage/x.png" @click="clearMeal(item.meal)" class="clear-meal">
+                      </div>
+                    </div>
+                  </li>
+
+                </ul>
                 <p
                   v-if="total < minimum"
                 >Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
-                <hr>
                 <div>
                   <router-link to="/customer/bag">
                     <img v-if="total >= minimum" src="/storage/next.jpg" @click="addBagItems(bag)">

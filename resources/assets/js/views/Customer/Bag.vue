@@ -8,11 +8,11 @@
                         <b-col v-for="(item, mealId) in bag" :key="`bag-${mealId}`" cols="12">
                         <img src="/storage/x.png" @click="clearMeal(item.meal)">
                         <img src="/storage/minus.jpg" @click="minusOne(item.meal)">
-                            {{ item.quantity }}
+                            <p>{{ item.quantity }}</p>
                         <img src="/storage/plus.jpg" @click="addOne(item.meal)">
                         <img :src="item.meal.featured_image" class="cart-item-img">
-                        {{ item.meal.title }}
-                        ${{ item.meal.price }}
+                        <p>{{ item.meal.title }}</p>
+                        <p>${{ item.meal.price }}</p>
                         <hr>
                         </b-col>
                         <b-button @click="clearAll">Empty Cart</b-button>
@@ -22,12 +22,12 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        Weekly Meal Plan
+                        <p>Weekly Meal Plan</p>
                         <div class="aside-options">
                         <c-switch color="success" variant="pill" size="lg" v-model="deliveryPlan" checked/>
                     </div>
                         <hr>
-                        {{ total }} {{ singOrPluralTotal }} {{ deliveryPlanText }}
+                        <p>{{ total }} {{ singOrPluralTotal }} {{ deliveryPlanText }}</p>
                         <hr>
                         <p v-if="total < minimum">
                         Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.`
@@ -36,12 +36,12 @@
                           Delivery Fee: ${{ storeSettings.deliveryFee }}
                         </p>
                         <hr>
-                        Price: ${{ totalBagPrice }}
+                        <p>Price: ${{ totalBagPrice }}</p>
                         <hr>
                         <div v-if="deliveryPlan">
-                            Weekly Meal Plan Discount ${{ mealPlanDiscountAmount }}
+                            <p>Weekly Meal Plan Discount ${{ mealPlanDiscountAmount }}</p>
                             <hr>
-                            Weekly Meal Plan Price: ${{ totalBagPriceAfterDiscount }}
+                            <p>Weekly Meal Plan Price: ${{ totalBagPriceAfterDiscount }}</p>
                         </div>
                         <div v-if="storeSettings.allowPickup">
                           <hr>
@@ -61,7 +61,7 @@
                             </b-select>
                           </b-form-group>
                           <div v-else-if="deliveryDaysOptions.length === 1">
-                            Delivery day: {{ deliveryDaysOptions[0].text }}
+                            <p>Delivery day: {{ deliveryDaysOptions[0].text }}</p>
                           </div>
                         </div>
                         <div>
