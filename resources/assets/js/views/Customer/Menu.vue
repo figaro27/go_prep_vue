@@ -76,7 +76,7 @@ li {
               <p>${{ meal.price }}</p>
               <p>{{ meal.description }}</p>
               <img :src="meal.featured_image">
-              <img src="/storage/add.jpg" @click="addOne(meal)">
+              <img src="/images/customer/add.jpg" @click="addOne(meal)">
               <p>{{ ingredients }}</p>
               <div id="nutritionFacts" v-if="storeSettings.showNutrition"></div>
             </b-modal>
@@ -92,9 +92,9 @@ li {
                         @click="showMealModal(meal)"
                       >
                       <div class="d-flex justify-content-between mb-2 mt-1">
-                        <img src="/storage/minus.jpg" @click="minusOne(meal)">
+                        <img src="/images/customer/minus.jpg" @click="minusOne(meal)">
                         <b-form-input type="text" name id class="quantity" :value="quantity(meal)" readonly></b-form-input>
-                        <img src="/storage/plus.jpg" @click="addOne(meal)">
+                        <img src="/images/customer/plus.jpg" @click="addOne(meal)">
                       </div>
                       <p>{{ meal.title }}</p>
                       <p>${{ meal.price }}</p>
@@ -114,9 +114,9 @@ li {
                     
                     <div v-if="item.quantity > 0" class="row">
                       <div class="col-sm-1">
-                        <img src="/storage/bag-plus.png" @click="addOne(item.meal)">
+                        <img src="/images/customer/bag-plus.png" @click="addOne(item.meal)">
                         <p class="bag-quantity">{{ item.quantity }}</p>
-                        <img src="/storage/bag-minus.png" @click="minusOne(item.meal)">
+                        <img src="/images/customer/bag-minus.png" @click="minusOne(item.meal)">
                       </div>
                       <div class="col-sm-2">
                         <img :src="item.meal.featured_image" class="cart-item-img"/>
@@ -125,7 +125,7 @@ li {
                         {{ item.meal.title }}
                       </div>
                       <div class="col-sm-2">
-                        <img src="/storage/x.png" @click="clearMeal(item.meal)" class="clear-meal">
+                        <img src="/images/customer/x.png" @click="clearMeal(item.meal)" class="clear-meal">
                       </div>
                     </div>
                   </li>
@@ -136,7 +136,7 @@ li {
                 >Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
                 <div>
                   <router-link to="/customer/bag">
-                    <img v-if="total >= minimum" src="/storage/next.jpg" @click="addBagItems(bag)">
+                    <img v-if="total >= minimum" src="/images/customer/next.jpg" @click="addBagItems(bag)">
                   </router-link>
                 </div>
               </div>

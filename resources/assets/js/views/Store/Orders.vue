@@ -16,6 +16,19 @@
     min-height: 2em;
   }
 }
+
+
+.modalMeal{
+  height:80px;
+  width:80px;
+}
+
+.order-quantity{
+  font-size:17px;
+  color:#838181;
+  position:relative;
+  top:2px;
+}
 </style>
 
 <template>
@@ -37,7 +50,9 @@
 
 
             <div slot="notes" class="text-nowrap" slot-scope="props">
-              <p v-if="props.row.has_notes">!</p>
+              <p v-if="props.row.has_notes">
+                <img src="/images/store/note.png">
+              </p>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
@@ -112,8 +127,13 @@
         <div class="row">
           <div class="col-md-12">
             <h4>Meals</h4>
+            <hr>
             <ul class="meal-quantities">
-              <li v-for="(quantity, meal_title) in getMealQuantities(meals)">{{ meal_title }} x {{quantity}}</li>
+              <li v-for="(order) in getMealQuantities(meals)"><span class="order-quantity">{{order.order}}</span> <img src="/images/store/x-modal.png"> 
+                  <img :src="order.featured_image" class="modalMeal"> 
+                    {{order.title}}
+                    ${{order.price * order.order}}
+              </li>
             </ul>
           </div>
         </div>
@@ -208,7 +228,7 @@ export default {
       return _.find(this.tableData, ["id", id]);
     },
     fulfill(id) {
-      $(".order-"+id).fadeOut(2000);
+      $(".order-"+id).fadeOut(1);
       axios
         .patch(`/api/me/orders/${id}`, {
           fulfilled: 1
@@ -228,14 +248,16 @@ export default {
         });
     },
     getMealQuantities(meals) {
-      let quantity = _.countBy(meals, 'id');
 
+      let order = _.toArray(_.countBy(meals, 'id'));
 
-      let foo = _.map(function(quantity, id) { 
-        return { quantity, meal: meals[id]}
-      })
+      return order.map((order, id) => { return { 
+        order, 
+        featured_image: meals[id].featured_image,
+        title: meals[id].title,
+        price: meals[id].price
+      }})
 
-      console.log(foo);
     },
     viewOrder(id){
       axios.get(`/api/me/orders/${id}`).then(response => {

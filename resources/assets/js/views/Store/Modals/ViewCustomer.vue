@@ -26,7 +26,7 @@
 
         <hr/>
         <div v-for="order in orders" :key="order.id">
-        <div v-b-toggle="'replace'">
+        <div v-b-toggle="'collapse' + order.id">
           
           <b-list-group-item>
             <div class="row">
@@ -45,7 +45,7 @@
           </b-list-group-item>
         
         </div>
-        <b-collapse id="replace" class="mt-2">
+        <b-collapse :id="'collapse' + order.id" class="mt-2">
           <b-card>
             <p class="card-text">
               Meals Info
@@ -82,8 +82,10 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
-      orders: "storeOrders",
     }),
+    modalOrders(){
+      return store.orders;
+    }
   },
   methods: {
       resetUserId(){

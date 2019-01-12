@@ -99,7 +99,7 @@
                 class="d-inline w-auto mr-1"
                 :options="cutoffHoursOptions"
               ></b-select>
-              <img v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'" title="Cut Off Period" src="/storage/popover.png">
+              <img v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'" title="Cut Off Period" src="/images/store/popover.png">
             </b-form-group>
 
             
@@ -118,7 +118,7 @@
                  { value: 'sat', text: 'Saturday' },
               ]"
               ></b-form-checkbox-group>
-              <img v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'" title="Delivery Day(s)" src="/storage/popover.png">
+              <img v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'" title="Delivery Day(s)" src="/images/store/popover.png">
             </b-form-group>
             
             <b-form-group
@@ -135,7 +135,7 @@
                  { value: 'zipcodes', text: 'Zipcodes' },
               ]"
               ></b-form-radio-group>
-              <img v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'" title="Delivery Distance Type" src="/storage/popover.png">
+              <img v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'" title="Delivery Distance Type" src="/images/store/popover.png">
             </b-form-group>
             <b-form-group
               v-if="storeSettings.delivery_distance_type === 'radius'"

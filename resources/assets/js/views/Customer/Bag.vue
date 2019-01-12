@@ -6,10 +6,10 @@
                     <div class="card-body">
                         <h3>Bag</h3>
                         <b-col v-for="(item, mealId) in bag" :key="`bag-${mealId}`" cols="12">
-                        <img src="/storage/x.png" @click="clearMeal(item.meal)">
-                        <img src="/storage/minus.jpg" @click="minusOne(item.meal)">
+                        <img src="/images/customer/x.png" @click="clearMeal(item.meal)">
+                        <img src="/images/customer/minus.jpg" @click="minusOne(item.meal)">
                             <p>{{ item.quantity }}</p>
-                        <img src="/storage/plus.jpg" @click="addOne(item.meal)">
+                        <img src="/images/customer/plus.jpg" @click="addOne(item.meal)">
                         <img :src="item.meal.featured_image" class="cart-item-img">
                         <p>{{ item.meal.title }}</p>
                         <p>${{ item.meal.price }}</p>
@@ -66,9 +66,9 @@
                         </div>
                         <div>
                           <router-link to="/customer/menu">
-                            <img v-if="total < minimum" src="/storage/back.jpg">
+                            <img v-if="total < minimum" src="/images/customer/back.jpg">
                           </router-link>
-                            <img v-if="total >= minimum" src="/storage/checkout.jpg">
+                            <img v-if="total >= minimum" src="/images/customer/checkout.jpg">
                         </div>
                     </div>
                 </div>
