@@ -81,7 +81,7 @@ class SpaController extends Controller
                 'stores' => $stores,
                 'order_ingredients' => $orderIngredients ?? [],
                 'allergies' => Allergy::all(),
-                'orders' => $orders,
+                'orders' => $orders ?? [],
             ];
 
         } else {
@@ -93,8 +93,12 @@ class SpaController extends Controller
                 } elseif ($user->user_role_id === 3) {
                     return view('admin');
                 }
+                else {
+                  return view('customer');
+                }
             }
-            return view('customer');
+            
+            return redirect('/login');
 
         }
 
