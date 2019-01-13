@@ -22,27 +22,34 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
 
         Route::group(['middleware' => ['view.api']], function ($router) {
             Route::get('/', ['middleware' => ['view.api'], 'uses' => 'SpaController@index']);
-
+            
             Route::group(['prefix' => 'me', 'middleware' => ['role.store']], function ($router) {
-                Route::patch('user', 'Store\\UserController@update');
-                Route::resource('meals', 'Store\\MealController');
-                Route::resource('ingredients', 'Store\\IngredientController');
-                Route::get('orders/ingredients/export/{type}', 'Store\\OrderIngredientController@export');
-                Route::get('orders/ingredients', 'Store\\OrderIngredientController@index');
-                Route::resource('orders', 'Store\\OrderController');
-                Route::resource('customers', 'Store\\CustomerController');
-                Route::resource('units', 'Store\\UnitController');
+              Route::patch('user', 'Store\\UserController@update');
+              Route::resource('meals', 'Store\\MealController');
+              Route::resource('ingredients', 'Store\\IngredientController');
+              Route::get('orders/ingredients/export/{type}', 'Store\\OrderIngredientController@export');
+              Route::get('orders/ingredients', 'Store\\OrderIngredientController@index');
+              Route::resource('orders', 'Store\\OrderController');
+              Route::resource('customers', 'Store\\CustomerController');
+              Route::resource('units', 'Store\\UnitController');
+              
+              Route::get('stripe/login', 'Store\\StripeController@getLoginLinks');
+              Route::resource('stripe', 'Store\\StripeController');
             });
-
+            
             Route::get('store/{id}/meals', 'User\\StoreController@meals');
             Route::get('store/meals', 'User\\StoreController@meals');
-
+            
             Route::get('getStore', 'StoreDetailController@show');
             Route::get('getStoreSettings', 'Store\\StoreSettingController@show');
             Route::post('updateStoreDetails', 'StoreDetailController@update');
             Route::post('updateStoreSettings', 'Store\\StoreSettingController@update');
-
-        });
+            
+            Route::post('bag/checkout', 'User\\CheckoutController@checkout');
+            Route::resource('me/subscriptions', 'User\\SubscriptionController');
+            Route::resource('me/orders', 'User\\OrderController');
+            
+          });
     });
 
 }

@@ -6,9 +6,29 @@ use Illuminate\Database\Eloquent\Model;
 
 class Store extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+    ];
+
+    protected $casts = [
+    ];
+
     public function user()
     {
-        return $this->hasOne('App\User');
+        return $this->belongsTo('App\User');
     }
 
     public function orders()
@@ -36,10 +56,10 @@ class Store extends Model
         return $this->hasOne('App\StoreDetail');
     }
 
-    public function settings() {
+    public function settings()
+    {
         return $this->hasOne('App\StoreSetting');
     }
-
 
     protected $appends = ['customers'];
 
@@ -64,13 +84,10 @@ class Store extends Model
         return $this->store->customers;
     }
 
-
-
     public static function getStore($id)
     {
         return Store::with('storeDetail', 'order')->where('id', $id)->first();
     }
-
 
     public static function getStores()
     {
@@ -91,39 +108,44 @@ class Store extends Model
         });
     }
 
-    public function getOrderIngredients() {
-      $ingredients = [];
+    public function getOrderIngredients()
+    {
+        $ingredients = [];
 
-      $orders = $this->orders()->with(['meals'])->get();
+        $orders = $this->orders()->with(['meals'])->get();
 
-      foreach($orders as $order) {
-        foreach($order->meals as $meal) {
-          foreach($meal->ingredients()->get() as $ingredient) {
-            
-            $quantity = $ingredient->pivot->quantity;
-            $quantity_unit = $ingredient->pivot->quantity_unit;
-            $quantity_base = $ingredient->pivot->quantity_base;
+        foreach ($orders as $order) {
+            foreach ($order->meals as $meal) {
+                foreach ($meal->ingredients()->get() as $ingredient) {
 
-            $key = $ingredient->id;
+                    $quantity = $ingredient->pivot->quantity;
+                    $quantity_unit = $ingredient->pivot->quantity_unit;
+                    $quantity_base = $ingredient->pivot->quantity_base;
 
-            if(!isset($ingredients[$key])) {
-              $ingredients[$key] = [
-                'id' => $ingredient->id,
-                'ingredient' => $ingredient,
-                'quantity' => $quantity_base
-              ];
+                    $key = $ingredient->id;
+
+                    if (!isset($ingredients[$key])) {
+                        $ingredients[$key] = [
+                            'id' => $ingredient->id,
+                            'ingredient' => $ingredient,
+                            'quantity' => $quantity_base,
+                        ];
+                    } else {
+                        $ingredients[$key]['quantity'] += $quantity_base;
+                    }
+                }
             }
-            else {
-              $ingredients[$key]['quantity'] += $quantity_base;
-            }
-          }
         }
-      }
 
-      return $ingredients;
+        return $ingredients;
     }
 
-    public function deliversToZip($zip) {
-      return in_array($zip, $this->settings->delivery_distance_zipcodes);
+    public function deliversToZip($zip)
+    {
+        return in_array($zip, $this->settings->delivery_distance_zipcodes);
+    }
+
+    public function hasStripe() {
+      return isset($this->settings->stripe_id) && $this->settings->stripe_id;
     }
 }

@@ -16,8 +16,8 @@ const state = {
       applyDeliveryFee: 0,
       deliveryFee: 0,
       allowPickup: true,
-      pickupInstructions: '',
-    },
+      pickupInstructions: ''
+    }
   },
   stores: {},
   bag: {
@@ -68,9 +68,16 @@ const state = {
     }
   },
   orders: {
-      data: {},
-      expires: 0
+    data: {},
+    expires: 0
+  },
+  customer: {
+    data: {
+      subscriptions: [],
+      orders: [],
     },
+    expires: 0
+  },
   isLoading: true
 }
 
@@ -228,7 +235,7 @@ const mutations = {
     state.store.customers.expires = expires;
   },
 
-  storeOrders(state, {orders, expires}){
+  storeOrders(state, {orders, expires}) {
     if (!expires) {
       expires = moment()
         .add(ttl, 'seconds')
@@ -238,6 +245,15 @@ const mutations = {
     state.orders.data = orders;
     state.orders.expires = expires;
   },
+
+  customerSubscriptions(state, {subscriptions, expires}) {
+    state.customer.data.subscriptions = subscriptions;
+  },
+
+  customerOrders(state, {orders, expires}) {
+    state.customer.data.orders = orders;
+  }
+
 }
 
 // actions are functions that cause side effects and can involve asynchronous
@@ -328,11 +344,8 @@ const actions = {
       console.log(e);
     }
 
-    // try {
-    //   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
-    //     let orders = data.store.orders;
-    //     commit('storeOrders', {orders});
-    //   }
+    // try {   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
+    //     let orders = data.store.orders;     commit('storeOrders', {orders});   }
     // } catch (e) {}
 
     try {
@@ -419,8 +432,7 @@ const actions = {
     } else {
       throw new Error('Failed to retrieve meals');
     }
-  }
-  ,
+  },
 
   async refreshOrders({
     commit,
@@ -435,6 +447,34 @@ const actions = {
       throw new Error('Failed to retrieve orders');
     }
   },
+
+  async refreshSubscriptions({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me/subscriptions");
+    const {data} = await res;
+
+    if (_.isArray(data)) {
+      commit('customerSubscriptions', {subscriptions: data});
+    } else {
+      throw new Error('Failed to retrieve orders');
+    }
+  },
+
+  async refreshOrders({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me/orders");
+    const {data} = await res;
+
+    if (_.isArray(data)) {
+      commit('customerOrders', {orders: data});
+    } else {
+      throw new Error('Failed to retrieve orders');
+    }
+  }
 }
 
 // getters are functions
@@ -463,7 +503,8 @@ const getters = {
   },
   viewedStoreWillDeliver(state, getters) {
     return state.viewed_store.will_deliver;
-    //state.viewed_store.distance <= getters.viewedStoreSetting('delivery_distance_radius' - 1)
+    // state.viewed_store.distance <=
+    // getters.viewedStoreSetting('delivery_distance_radius' - 1)
   },
 
   //
@@ -568,11 +609,17 @@ const getters = {
   storeOrders: (state) => {
     try {
       return state.orders.data || {};
-    }
-    catch(e) {
+    } catch (e) {
       return {};
     }
   },
+
+  subscriptions: (state) => {
+    return state.customer.data.subscriptions;
+  },
+  orders: (state) => {
+    return state.customer.data.orders;
+  }
 }
 
 const plugins = [createPersistedState({paths: ['bag']})];

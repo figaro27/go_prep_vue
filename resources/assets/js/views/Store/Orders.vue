@@ -30,21 +30,15 @@
             :options="options"
             v-show="!isLoading"
           >
-
-          <div slot="beforeTable" class="mb-2">
-            <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
-          </div>
-
+            <div slot="beforeTable" class="mb-2">
+              <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
+            </div>
 
             <div slot="notes" class="text-nowrap" slot-scope="props">
               <p v-if="props.row.has_notes">!</p>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
-              <button
-                class="btn btn-warning btn-sm"
-                @click="viewOrder(props.row.id)">
-                View Order
-              </button>
+              <button class="btn btn-warning btn-sm" @click="viewOrder(props.row.id)">View Order</button>
               <button
                 class="btn btn-primary btn-sm"
                 @click="fulfill(props.row.id)"
@@ -59,12 +53,8 @@
       </div>
     </div>
 
-
-
-
-
     <div class="modal-basic">
-       <b-modal v-model="viewOrderModal" size="lg" title="Order Information">
+      <b-modal v-model="viewOrderModal" size="lg" title="Order Information">
         <div class="row">
           <div class="col-md-4">
             <h4>Order ID</h4>
@@ -87,7 +77,7 @@
           <div class="col-md-4">
             <h4>Customer</h4>
             <p>{{ user_detail.firstname }} {{ user_detail.lastname }}</p>
- 
+
             <h4>Phone</h4>
             <p>{{ user_detail.phone }}</p>
           </div>
@@ -105,7 +95,14 @@
         <div class="row">
           <div class="col-md-12">
             <h4>Delivery Notes</h4>
-            <textarea type="text" id="form7" class="md-textarea form-control" rows="3" v-model="deliveryNote" placeholder="E.G. Customer didn't answer phone or doorbell."></textarea>
+            <textarea
+              type="text"
+              id="form7"
+              class="md-textarea form-control"
+              rows="3"
+              v-model="deliveryNote"
+              placeholder="E.G. Customer didn't answer phone or doorbell."
+            ></textarea>
             <button class="btn btn-primary btn-md pull-right mt-2" @click="saveNotes(orderId)">Save</button>
           </div>
         </div>
@@ -113,14 +110,15 @@
           <div class="col-md-12">
             <h4>Meals</h4>
             <ul class="meal-quantities">
-              <li v-for="(quantity, meal_title) in getMealQuantities(meals)">{{ meal_title }} x {{quantity}}</li>
+              <li
+                v-for="(quantity, meal_title) in getMealQuantities(meals)"
+              >{{ meal_title }} x {{quantity}}</li>
             </ul>
           </div>
         </div>
       </b-modal>
     </div>
   </div>
-
 </template>
 
 
@@ -140,7 +138,7 @@ export default {
       filter: false,
       viewOrderModal: false,
       order: {},
-      orderId: '',
+      orderId: "",
       user_detail: {},
       meals: {},
       columns: [
@@ -156,7 +154,7 @@ export default {
       ],
       options: {
         headings: {
-          "notes": "Notes",
+          notes: "Notes",
           order_number: "Order #",
           "user.user_detail.full_name": "Name",
           "user.user_detail.address": "Address",
@@ -169,9 +167,9 @@ export default {
         rowClassCallback: function(row) {
           let classes = `order-${row.id}`;
           return classes;
-        },
+        }
       },
-      deliveryNote: "",
+      deliveryNote: ""
     };
   },
   computed: {
@@ -181,20 +179,16 @@ export default {
       isLoading: "isLoading"
     }),
     tableData() {
-      if (!this.filter)
-        return _.filter(this.orders, {'fulfilled': 0});
-      else
-        return _.filter(this.orders, {'fulfilled': 0, 'has_notes': true});
-    },
+      if (!this.filter) return _.filter(this.orders, { fulfilled: 0 });
+      else return _.filter(this.orders, { fulfilled: 0, has_notes: true });
+    }
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
     ...mapActions({
-      refreshOrders: 'refreshOrders',
+      refreshOrders: "refreshOrders"
     }),
-    refreshTable(){
+    refreshTable() {
       this.refreshOrders();
     },
     formatMoney: format.money,
@@ -208,7 +202,7 @@ export default {
       return _.find(this.tableData, ["id", id]);
     },
     fulfill(id) {
-      $(".order-"+id).fadeOut(2000);
+      $(".order-" + id).fadeOut(2000);
       axios
         .patch(`/api/me/orders/${id}`, {
           fulfilled: 1
@@ -216,28 +210,25 @@ export default {
         .then(resp => {
           this.refreshTable();
         });
-      
     },
     saveNotes(id) {
       let deliveryNote = deliveryNote;
-        axios.patch(`/api/me/orders/${id}`, 
-          {notes: this.deliveryNote}
-          )
+      axios
+        .patch(`/api/me/orders/${id}`, { notes: this.deliveryNote })
         .then(resp => {
           this.refreshTable();
         });
     },
     getMealQuantities(meals) {
-      let quantity = _.countBy(meals, 'id');
+      let quantity = _.countBy(meals, "id");
 
-
-      let foo = _.map(function(quantity, id) { 
-        return { quantity, meal: meals[id]}
-      })
+      let foo = _.map(function(quantity, id) {
+        return { quantity, meal: meals[id] };
+      });
 
       console.log(foo);
     },
-    viewOrder(id){
+    viewOrder(id) {
       axios.get(`/api/me/orders/${id}`).then(response => {
         this.orderId = response.data.id;
         this.deliveryNote = response.data.notes;
@@ -251,11 +242,10 @@ export default {
       });
       this.viewOrderModal = true;
     },
-    filterNotes(){
+    filterNotes() {
       this.filter = !this.filter;
       this.refreshTable();
     }
-
   }
 };
 </script>

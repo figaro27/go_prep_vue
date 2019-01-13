@@ -43,8 +43,8 @@ Route::group(['middleware' => ['auth', 'store_slug']], function ($router) {
 });
 
 // All logged in stores
-Route::group(['middleware' => ['auth'/*, 'store'*/]], function ($router) {
-
+Route::group(['middleware' => ['auth']], function ($router) {
+  Route::get('/store/stripe/redirect', 'Store\\StripeController@connect');
 });
 
 // All logged in admin

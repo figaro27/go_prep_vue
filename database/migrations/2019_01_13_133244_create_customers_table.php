@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserSubscriptionsTable extends Migration
+class CreateCustomersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateUserSubscriptionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_subscriptions', function (Blueprint $table) {
+        Schema::create('customers', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->references('id')->on('users');
-            $table->integer('store_id')->references('id')->on('stores');
+            $table->unsignedInteger('store_id');
+            $table->unsignedInteger('user_id');
+            $table->string('stripe_id');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateUserSubscriptionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_subscriptions');
+        Schema::dropIfExists('customers');
     }
 }

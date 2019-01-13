@@ -240,9 +240,16 @@
       <p>Payments</p>
       <div class="card">
         <div class="card-body">
-          <b-form-group label="Payment Info" :state="true">
-
-          </b-form-group>
+          <div v-if="!storeSettings.stripe_id">
+            <b-form-group label="Payment Info" :state="true">
+              <b-button href="https://connect.stripe.com/express/oauth/authorize?redirect_uri=http://goprep.localhost/store/stripe/redirect&client_id=ca_EKiyZcHDxZPyExm41NqBFJ7kMAkDItAl&state={STATE_VALUE}">Create account</b-button>
+            </b-form-group>
+          </div>
+          <div v-else>
+            <b-form-group label="Stripe" :state="true">
+              <b-button @click="stripeLogIn">Log in</b-button>
+            </b-form-group>
+          </div>
         </div>
       </div>
     </div>
@@ -344,6 +351,18 @@ export default {
     updateZips(zips) {
       this.zipcodes = zips.split(",").map(zip => {
         return zip.trim();
+      });
+    },
+    createStripeAccount() {
+      axios.post('/api/me/stripe').then((resp) => {
+        
+      });
+    },
+    stripeLogIn() {
+      axios.get('/api/me/stripe/login').then((resp) => {
+        if(resp.data.url) {
+          window.location = resp.data.url;
+        }
       });
     },
   }

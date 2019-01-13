@@ -9,10 +9,25 @@ class StoreSetting extends Model
 {
 
     protected $fillable = [
-        'minimum', 'showNutrition', 'allowPickup', 'pickupInstructions', 'applyDeliveryFee', 'deliveryFee',
+        'minimum',
+        'showNutrition',
+        'allowPickup',
+        'pickupInstructions',
+        'applyDeliveryFee',
+        'deliveryFee',
+        'stripe_account',
     ];
 
-    public $appends = ['next_delivery_dates'];
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+      'stripe_account',
+    ];
+
+    public $appends = ['next_delivery_dates', 'stripe'];
 
     public function store()
     {
@@ -28,6 +43,7 @@ class StoreSetting extends Model
         'cutoff_hours' => 'number',
         //'cutoff_time' => 'datetime:H:i',
         'delivery_distance_zipcodes' => 'json',
+        'stripe_account' => 'json',
     ];
 
     public function getNextDeliveryDatesAttribute()
@@ -56,5 +72,12 @@ class StoreSetting extends Model
 
         return $dates;
 
+    }
+
+    public function getStripeAttribute() {
+      if($this->stripe_account && isset($this->stripe_account->id)) {
+        return $this->stripe_account;
+      }
+      return null;
     }
 }

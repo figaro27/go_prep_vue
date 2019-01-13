@@ -56,12 +56,14 @@
         "vue-router": "^3.0.1",
         "vue-select": "^2.4.0",
         "vue-simple-calendar": "^3.0.2",
-        "vue-tables-2": "https://github.com/msolda2/vue-tables-2/tarball/master",
+        "vue-stripe-elements-plus": "^0.2.9",
+        "vue-tables-2": "^1.4.70",
         "vue-text-mask": "^6.1.1",
         "vue2-google-maps": "0.9.8",
         "vue2-timepicker": "^0.1.4",
         "vuedraggable": "^2.17.0",
         "vuejs-timepicker": "^0.1.4",
+        "vuex": "^3.0.1",
         "vuex-persistedstate": "^2.5.4"
     },
     "dependencies": {}

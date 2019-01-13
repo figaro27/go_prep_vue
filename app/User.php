@@ -2,11 +2,13 @@
 
 namespace App;
 
+use App\Customer;
 use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Stripe;
 
 class User extends Authenticatable
 {
@@ -27,7 +29,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'stripe_id',
+    ];
+
+    protected $casts = [
+        'stripe_account' => 'json',
     ];
 
     public function userRole()
@@ -43,6 +49,16 @@ class User extends Authenticatable
     public function order()
     {
         return $this->hasMany('App\Order');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany('App\Order');
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany('App\UserSubscription');
     }
 
     public function store()
@@ -82,11 +98,6 @@ class User extends Authenticatable
         });
     }
 
-    public static function getCustomer($id)
-    {
-        return User::with('userDetail', 'order')->where('id', $id)->first();
-    }
-
 //Store View
 
     public static function getStoreCustomers()
@@ -117,12 +128,12 @@ class User extends Authenticatable
      */
     public function distanceFrom($stores)
     {
-        if(is_object($stores)) {
-          $stores = [$stores];
+        if (is_object($stores)) {
+            $stores = [$stores];
         }
 
-        if(!is_array($stores)) {
-          return null;
+        if (!is_array($stores)) {
+            return null;
         }
 
         $origins = [];
@@ -151,6 +162,31 @@ class User extends Authenticatable
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    public function hasCustomer($storeId)
+    {
+        $customer = Customer::where(['user_id' => $this->id, 'store_id' => $storeId])->first();
+        return !is_null($customer);
+    }
+
+    public function getCustomer($storeId)
+    {
+        $customer = Customer::where(['user_id' => $this->id, 'store_id' => $storeId])->first();
+        return $customer;
+    }
+
+    public function createCustomer($storeId, $token)
+    {
+        $stripeCustomer = \Stripe\Customer::create([
+            "source" => $token,
+        ]);
+
+        $customer = new Customer;
+        $customer->user_id = $this->id;
+        $customer->store_id = $storeId;
+        $customer->stripe_id = $stripeCustomer->id;
+        $customer->save();
     }
 
 }

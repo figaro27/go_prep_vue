@@ -30,6 +30,8 @@ class CreateStoreSettingsTable extends Migration
             ])->default('radius');
             $table->double('delivery_distance_radius')->nullable();
             $table->longtext('delivery_distance_zipcodes');
+            $table->string('stripe_id')->nullable();
+            $table->longText('stripe_account')->nullable();
             $table->timestamps();
         });
     }
