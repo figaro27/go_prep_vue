@@ -8,13 +8,14 @@ use App\Store;
 class UserController
 {
     protected $store;
+    protected $user;
 
-    public function __constructor()
+    public function __construct()
     {
-        parent::__constructor();
-
         if(defined('STORE_ID')) {
-          $this->store = Store::with(['meals'])->find(STORE_ID);
+          $this->store = Store::with(['meals', 'settings'])->find(STORE_ID);
         }
+
+        $this->user = auth('api')->user();
     }
 }

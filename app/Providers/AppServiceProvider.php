@@ -24,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
         Braintree_Configuration::publicKey(env('BRAINTREE_PUBLIC_KEY'));
         Braintree_Configuration::privateKey(env('BRAINTREE_PRIVATE_KEY'));
 
+        \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+
         MealTag::observe(MealTagObserver::class);
     }
 

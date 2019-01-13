@@ -2,6 +2,7 @@ import VueRouter from 'vue-router';
 
 import CustomerHome from './views/Customer/Home.vue';
 import CustomerBag from './views/Customer/Bag.vue';
+import CustomerCheckout from './views/Customer/Checkout.vue';
 import CustomerMenu from './views/Customer/Menu.vue';
 import CustomerBilling from './views/Customer/Account/Billing.vue';
 import CustomerContact from './views/Customer/Account/Contact.vue';
@@ -39,6 +40,10 @@ let routes = [
     {
         path: '/customer/bag',
         component: CustomerBag
+    },
+    {
+      path: '/customer/checkout',
+      component: CustomerCheckout
     },
     {
         path: '/customer/menu',

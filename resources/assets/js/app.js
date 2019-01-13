@@ -21,6 +21,7 @@ import vSelect from 'vue-select';
 import VueI18n from 'vue-i18n';
 import VueTimepicker from 'vuejs-timepicker'
 import draggable from 'vuedraggable'
+import { Card } from 'vue-stripe-elements-plus'
 import store from './store';
 import lang from './lang';
 import modal from './lib/modal';
@@ -32,6 +33,7 @@ Vue.component('input-tag', InputTag)
 Vue.component('v-select', vSelect)
 Vue.component('timepicker', VueTimepicker)
 Vue.component('draggable', draggable)
+Vue.component('card', Card)
 
 const files = require.context('./components', true, /\.vue$/i)
 files

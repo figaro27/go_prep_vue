@@ -91,4 +91,28 @@ class StoreSettingController extends StoreController
     {
         //
     }
+
+    /**
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function createStripeAccount(Request $request) {
+      
+      if($this->store->hasStripe()) {
+        return;
+      }
+      
+      $settings = $this->store->settings;
+
+      $account = Stripe\Account::create([
+        "type" => "standard",
+        "country" => "US",
+        "email" => $this->store->user->userDetail->email,
+      ]);
+
+      if(!isset($account->id)) {
+        return null;
+      }
+      
+    }
 }
