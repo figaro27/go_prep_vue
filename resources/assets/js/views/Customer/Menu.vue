@@ -57,19 +57,30 @@ li {
     <div v-if="!willDeliver">
       <b-alert variant="danger" show>You are out of the delivery bounds</b-alert>
     </div>
+
+
     <div v-for="category in categories" :key="category">
       <button @click="goToCategory(category)">{{ category }}</button>
     </div>
-    <br>
-    <div v-for="tag in tags" :key="tag">
-      <button @click="filterByTag(tag)">{{ tag }}</button>
-    </div>
-    <br>
-    <div v-for="allergy in allergies" :key="allergy">
-      <button @click="filterByAllergy(allergy)">{{ allergy }}</button>
-    </div>
+
+
+    <div class="modal-basic">
+            <b-modal size="lg" title="Meal Filters" v-model="viewFilterModal" v-if="viewFilterModal">
+                
+                <br>
+                <div v-for="tag in tags" :key="tag">
+                  <b-button :pressed="test" @click="filterByTag(tag)" variant="success">{{ tag }}</b-button>
+                </div>
+                <br>
+                <div v-for="allergy in allergies" :key="allergy">
+                  <b-button @click="filterByAllergy(allergy)" variant="success">{{ allergy }}</b-button>
+                </div>
+            </b-modal>
+          </div>
+    
     <div class="row">
       <div class="col-sm-12 mt-3">
+
         <div class="card">
           <div class="card-body">
             <b-modal ref="mealModal" size="lg" :title="meal.title" v-model="mealModal" v-if="mealModal">
@@ -82,6 +93,7 @@ li {
             </b-modal>
             <div class="row">
               <div class="col-sm-9" style="max-height:800px;overflow-y:auto">
+                <b-button @click="viewFilters" variant="primary" class="pull-right">Filters</b-button>
                 <div v-for="(meals, category) in meals" :key="category" :id="category" class="categories">
                   <h2 class="text-center mb-3">{{category}}</h2>
                   <b-row>
@@ -157,9 +169,10 @@ export default {
   components: {},
   data() {
     return {
+      test: false,
+      viewFilterModal: false,
       filteredView: false,
       filters: {
-        categories: [],
         tags: [],
         allergies: []
       },
@@ -426,6 +439,10 @@ export default {
         : Vue.delete(this.filters.categories, i);
     },
     filterByTag(tag) {
+
+       let test = _.includes(this.filters.tags, 'Vegan');
+       this.test = test;
+
       this.filteredView = true;
 
       // Check if filter already exists
@@ -451,6 +468,9 @@ export default {
     },
     goToCategory(category){
       window.location.href = '#' + category;
+    },
+    viewFilters(){
+      this.viewFilterModal = true;
     }
   }
 };

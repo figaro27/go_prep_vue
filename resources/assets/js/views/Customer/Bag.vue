@@ -1,8 +1,62 @@
+<style lang="scss">
+@import "~nutrition-label-jquery-plugin/dist/css/nutritionLabel-min.css";
+
+.menu-item {
+  margin-bottom: 10px;
+}
+
+.menu-item-img {
+  width: 100%;
+}
+
+.cart-item-img {
+  height: 160px;
+
+}
+
+.quantity {
+  width: 115px;
+  border-radius: 20px;
+  opacity: 0.5;
+  text-align: center;
+}
+
+.categories{
+  padding-top:20px
+}
+
+.bag {
+  max-width: 1500px
+}
+
+.bag-item{
+  border-bottom:1px solid #e1e1e1;
+  margin-bottom:10px;
+  width:100%;
+}
+
+.bag-quantity{
+text-align:center;
+vertical-align: center;
+position:relative;
+top:10px;
+}
+
+.clear-meal{
+  width:10px;
+}
+
+li {
+  list-style-type: none;
+}
+
+</style>
+
 <template>
-    <div class="container-fluid">
+    <div class="bag container-fluid">
         <div class="row">
             <div class="col-md-6">
-                <div class="card">
+                <!-- <div class="card">
                     <div class="card-body">
                         <h3>Bag</h3>
                         <b-col v-for="(item, mealId) in bag" :key="`bag-${mealId}`" cols="12">
@@ -17,7 +71,65 @@
                         </b-col>
                         <b-button @click="clearAll">Empty Cart</b-button>
                     </div>
-                </div>
+                </div> -->
+
+
+
+
+
+
+
+
+
+                <div class="card">
+                    <div class="card-body">
+                      <p @click="clearAll">Clear All</p>
+                      <ul class="list-group ">
+                        <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
+                          
+                          <div v-if="item.quantity > 0" class="row">
+                            <div class="col-sm-1">
+                              <img src="/images/customer/bag-plus.png" @click="addOne(item.meal)">
+                              <p class="bag-quantity">{{ item.quantity }}</p>
+                              <img src="/images/customer/bag-minus.png" @click="minusOne(item.meal)">
+                            </div>
+                            <div class="col-sm-2">
+                              <img :src="item.meal.featured_image" class="cart-item-img"/>
+                            </div>
+                            <div class="col-sm-5 offset-1">
+                              {{ item.meal.title }}
+                            </div>
+                            <div class="col-sm-2">
+                              <img src="/images/customer/x.png" @click="clearMeal(item.meal)" class="clear-meal">
+                            </div>
+                          </div>
+                        </li>
+
+                      </ul>
+                      <p
+                        v-if="total < minimum"
+                      >Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
+                      <div>
+                        <router-link to="/customer/bag">
+                          <img v-if="total >= minimum" src="/images/customer/next.jpg" @click="addBagItems(bag)">
+                        </router-link>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
             <div class="col-md-6">
                 <div class="card">

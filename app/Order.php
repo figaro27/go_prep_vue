@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\MealOrder;
+use App\Meal;
 
 class Order extends Model
 {
@@ -45,6 +47,15 @@ class Order extends Model
         }
         else
             return false;
+    }
+
+    public function getMealOrdersAttribute(){
+        // $mealIDs = MealOrder::where('order_id', $this->id)->pluck('meal_id');
+        // $meals = [];
+        // foreach ($mealIDs as $meal){
+        //     array_push($meals, Meal::where('id', $meal)->get());
+        // }
+        // return $meals;
     }
 
     public static function updateOrder($id, $props)
