@@ -36,6 +36,10 @@ class User extends Authenticatable
         'stripe_account' => 'json',
     ];
 
+    protected $appends = [
+      'name',
+    ];
+
     public function userRole()
     {
         return $this->hasOne('App\UserRole');
@@ -75,6 +79,10 @@ class User extends Authenticatable
         ];
 
         return $this->user_role_id === $roleMap[$role];
+    }
+
+    public function getNameAttribute() {
+      return $this->userDetail->full_name;
     }
 
 // Admin View

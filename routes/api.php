@@ -35,6 +35,8 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
               
               Route::get('stripe/login', 'Store\\StripeController@getLoginLinks');
               Route::resource('stripe', 'Store\\StripeController');
+
+              Route::get('print/{report}/{type}', 'Store\\PrintController@print');
             });
             
             Route::get('store/{id}/meals', 'User\\StoreController@meals');

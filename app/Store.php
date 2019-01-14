@@ -146,6 +146,50 @@ class Store extends Model
         return $ingredients;
     }
 
+    public function getOrderMeals()
+    {
+        $meals = [];
+
+        $orders = $this->orders()->with(['meals'])->get();
+
+        foreach ($orders as $order) {
+            foreach ($order->meals as $meal) {
+
+              $key = $meal->id;
+
+              if (!isset($meals[$key])) {
+                $meals[$key] = [
+                  'id' => $key,
+                  'meal' => $meal,
+                  'quantity' => 1,
+                ];
+              }
+              else {
+                $meals[$key]['quantity']++;
+              }
+            }
+        }
+
+        return $meals;
+    }
+
+    public function getNextDeliveryDate() {
+      return $this->settings->getNextDeliveryDates()[0] ?? null;
+    }
+
+    public function getOrdersForNextDelivery($groupBy = null) {
+      $date = $this->getNextDeliveryDate();
+      $orders = $this->orders()->with('meals')->where([
+        'delivery_date' => $date->format('Y-m-d'),
+      ])->get();
+
+      if($groupBy) {
+        $orders = $orders->groupBy($groupBy);
+      }
+
+      return $orders;
+    }
+
     public function deliversToZip($zip)
     {
         return in_array($zip, $this->settings->delivery_distance_zipcodes);

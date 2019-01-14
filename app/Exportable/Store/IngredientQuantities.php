@@ -1,34 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Store;
+namespace App\Exportable\Store;
 
-use App\Utils\Data\ExportsData;
+use App\Exportable\Exportable;
+use App\Store;
 use App\Utils\Data\Format;
 
-class OrderIngredientController extends StoreController
+class IngredientQuantities
 {
-    use ExportsData;
+    use Exportable;
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    protected $store;
+
+    public function __construct(Store $store)
     {
-        $ingredients = collect($this->store->getOrderIngredients());
-
-        $ingredients = $ingredients->map(function ($item, $id) {
-            return [
-                'id' => $id,
-                'quantity' => $item['quantity'],
-            ];
-        })->toArray();
-
-        return $ingredients;
+        $this->store = $store;
     }
 
-    public function exportData($type)
+    public function exportData()
     {
         $ingredients = collect($this->store->getOrderIngredients());
         $units = collect($this->store->units);
