@@ -22,6 +22,7 @@ class CreateUserSubscriptionsTable extends Migration
             $table->integer('quantity');
             $table->float('amount');
             $table->string('interval');
+            $table->tinyInteger('delivery_day');
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->timestamps();

@@ -1,0 +1,4 @@
+New order!
+
+{{ $order }}
+{{ $subscription }}

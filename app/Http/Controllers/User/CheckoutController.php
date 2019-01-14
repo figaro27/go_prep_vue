@@ -8,6 +8,8 @@ use App\StoreDetail;
 use App\UserSubscription;
 use App\Order;
 use App\MealOrder;
+use App\Mail\Customer\NewOrder;
+use Illuminate\Support\Facades\Mail;
 use Auth;
 
 class CheckoutController extends UserController
@@ -50,6 +52,7 @@ class CheckoutController extends UserController
             $order->order_number = $charge->id;
             $order->amount = $total;
             $order->fulfilled = false;
+            $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
             $order->save();
 
             foreach($bag->getItems() as $item) {
@@ -87,8 +90,16 @@ class CheckoutController extends UserController
             $userSubscription->quantity = 1;
             $userSubscription->amount = $total;
             $userSubscription->interval = 'week';
+            $userSubscription->delivery_day = date('N', strtotime($deliveryDay)); 
             $userSubscription->save();
         }
+
+        // Send notification
+        $email = new NewOrder([
+          'order' => $order ?? null,
+          'subscription' => $userSubscription ?? null,
+        ]);
+        Mail::to($user)->send($email);
 
         /*
     $subscription = $user->newSubscription('main', $plan->id)->create($stripeToken['id']);

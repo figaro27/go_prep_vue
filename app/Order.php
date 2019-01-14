@@ -8,7 +8,7 @@ class Order extends Model
 {
 
     protected $fillable = [
-        'fulfilled', 'notes',
+        'fulfilled', 'notes', 'delivery_day',
     ];
 
     protected $casts = [

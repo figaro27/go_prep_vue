@@ -19,6 +19,7 @@ class CreateOrdersTable extends Migration
             $table->integer('store_id')->references('id')->on('stores');
             $table->string('order_number')->unique();
             $table->integer('amount');
+            $table->date('delivery_date');
             $table->text('notes')->nullable();
             $table->boolean('fulfilled');
             $table->timestamps();
