@@ -2,7 +2,13 @@
 
 namespace App;
 
+use App\Mail\Store\CancelledSubscription;
+use App\Mail\Store\NewOrder;
+use App\Mail\Store\NewSubscription;
+use App\Mail\Store\ReadyToPrint;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
 
 class Store extends Model
 {
@@ -12,7 +18,7 @@ class Store extends Model
      * @var array
      */
     protected $fillable = [
-        
+
     ];
 
     /**
@@ -145,7 +151,75 @@ class Store extends Model
         return in_array($zip, $this->settings->delivery_distance_zipcodes);
     }
 
-    public function hasStripe() {
-      return isset($this->settings->stripe_id) && $this->settings->stripe_id;
+    public function hasStripe()
+    {
+        return isset($this->settings->stripe_id) && $this->settings->stripe_id;
+    }
+
+    public function notificationEnabled($notif)
+    {
+        if (!$this->settings) {
+            return false;
+        }
+        return $this->settings->notificationEnabled($notif);
+    }
+
+    public function sendNotification($notif, $data = [])
+    {
+        $email = null;
+
+        switch ($notif) {
+            case 'new_order':
+                $email = new NewOrder([
+                    'order' => $data,
+                ]);
+                break;
+
+            case 'new_subscription':
+                $email = new NewSubscription([
+                    'subscription' => $data,
+                ]);
+                break;
+
+            case 'cancelled_subscription':
+                $email = new CancelledSubscription([
+                    'subscription' => $data,
+                ]);
+                break;
+
+            case 'ready_to_print':
+                $email = new ReadyToPrint($data);
+                break;
+        }
+
+        if ($email) {
+            Mail::to($this->user)->send($email);
+            return true;
+        }
+
+        return false;
+    }
+
+    public function cutoffPassed()
+    {
+        if (!$this->settings || !is_array($this->settings->delivery_days)) {
+            return false;
+        }
+
+        $today = Carbon::today();
+
+        $cutoff = $this->settings->cutoff_days * (60 * 60 * 24) + $this->settings->cutoff_hours * (60 * 60);
+
+        foreach ($this->settings->delivery_days as $day) {
+            $date = Carbon::createFromFormat('D', $day);
+            $diff = $date->getTimestamp() - $today->getTimestamp();
+
+            // Cutoff passed less than an hour ago
+            if ($diff <= 60 * 60) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

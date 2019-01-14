@@ -32,6 +32,7 @@ class CreateStoreSettingsTable extends Migration
             $table->longtext('delivery_distance_zipcodes');
             $table->string('stripe_id')->nullable();
             $table->longText('stripe_account')->nullable();
+            $table->json('notifications');
             $table->timestamps();
         });
     }

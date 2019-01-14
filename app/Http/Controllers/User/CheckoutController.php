@@ -63,6 +63,11 @@ class CheckoutController extends UserController
               $mealOrder->save();
             }
 
+            // Send notification to store
+            if($store->settings->notificationEnabled('new_order')) {
+              $store->sendNotification('new_order', $order);
+            }
+
         } else {
             $plan = \Stripe\Plan::create([
                 "amount" => $total * 100,
@@ -92,6 +97,11 @@ class CheckoutController extends UserController
             $userSubscription->interval = 'week';
             $userSubscription->delivery_day = date('N', strtotime($deliveryDay)); 
             $userSubscription->save();
+
+            // Send notification to store
+            if($store->settings->notificationEnabled('new_subscription')) {
+              $store->sendNotification('new_subscription', $userSubscription);
+            }
         }
 
         // Send notification
@@ -100,6 +110,8 @@ class CheckoutController extends UserController
           'subscription' => $userSubscription ?? null,
         ]);
         Mail::to($user)->send($email);
+
+        
 
         /*
     $subscription = $user->newSubscription('main', $plan->id)->create($stripeToken['id']);

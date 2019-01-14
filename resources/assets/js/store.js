@@ -54,7 +54,13 @@ const state = {
     settings: {
       data: {
         delivery_days: [],
-        delivery_distance_zipcodes: []
+        delivery_distance_zipcodes: [],
+        notifications: {
+          new_order: true,
+          new_subscription: true,
+          cancelled_subscription: true,
+          ready_to_print: true,
+        },
       },
       expires: 0
     },

@@ -44,9 +44,10 @@ class StoreSetting extends Model
         //'cutoff_time' => 'datetime:H:i',
         'delivery_distance_zipcodes' => 'json',
         'stripe_account' => 'json',
+        'notifications' => 'json',
     ];
 
-    public function getNextDeliveryDatesAttribute()
+    public function getNextDeliveryDates()
     {
         $dates = [];
 
@@ -74,10 +75,18 @@ class StoreSetting extends Model
 
     }
 
+    public function getNextDeliveryDatesAttribute() {
+      return $this->getNextDeliveryDates();
+    }
+
     public function getStripeAttribute() {
       if($this->stripe_account && isset($this->stripe_account->id)) {
         return $this->stripe_account;
       }
       return null;
+    }
+
+    public function notificationEnabled($notif) {
+      return isset($this->notifications[$notif]) && $this->notifications[$notif];
     }
 }

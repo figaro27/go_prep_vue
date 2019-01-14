@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Mail\Customer\DeliveryToday;
 use App\Order;
+use App\Store;
 use App\UserSubscription;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;

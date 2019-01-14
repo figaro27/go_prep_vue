@@ -1,0 +1,3 @@
+New subscription!
+
+{{ $subscription }}

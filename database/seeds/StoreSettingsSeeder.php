@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class StoreSettingsSeeder extends Seeder
 {
@@ -13,18 +13,24 @@ class StoreSettingsSeeder extends Seeder
     public function run()
     {
         DB::table('store_settings')->insert([
-	        	'store_id' => 1,
-	            'minimum' => 5,
-	            'delivery_days' => '["mon", "wed", "fri"]',
-	            'cutoff_days' => 1,
-	            'cutoff_hours' => 0,
-	            'delivery_distance_type' => 'radius',
-	            'delivery_distance_radius' => 5,
-	            'delivery_distance_zipcodes' => '[10000,10001,10002]',
-	            'stripe_id' => 'acct_1DsNh6GjtVvEbWjh',
-	            'stripe_account' => '{"access_token":"sk_test_hKtcOHTpFM8KdQLjBlvYqTr8","livemode":false,"refresh_token":"rt_EL3ofmpyZNiFniC7w3PUahgbjHQf0sImSTs0mkKMssZr2G2p","token_type":"bearer","stripe_publishable_key":"pk_test_QqLPuymz1GAGAbkLUkEMnTaO","stripe_user_id":"acct_1DsNh6GjtVvEbWjh","scope":"express"}',
-	            'created_at' => Carbon::now(),
-	            'updated_at' => Carbon::now()
-	        ]);
+            'store_id' => 1,
+            'minimum' => 5,
+            'delivery_days' => '["mon", "wed", "fri"]',
+            'cutoff_days' => 1,
+            'cutoff_hours' => 0,
+            'delivery_distance_type' => 'radius',
+            'delivery_distance_radius' => 5,
+            'delivery_distance_zipcodes' => '[10000,10001,10002]',
+            'stripe_id' => 'acct_1DsNh6GjtVvEbWjh',
+            'stripe_account' => '{"access_token":"sk_test_hKtcOHTpFM8KdQLjBlvYqTr8","livemode":false,"refresh_token":"rt_EL3ofmpyZNiFniC7w3PUahgbjHQf0sImSTs0mkKMssZr2G2p","token_type":"bearer","stripe_publishable_key":"pk_test_QqLPuymz1GAGAbkLUkEMnTaO","stripe_user_id":"acct_1DsNh6GjtVvEbWjh","scope":"express"}',
+            'notifications' => [
+                'new_orders' => true,
+                'new_subscriptions' => true,
+                'cancelled_subscriptions' => true,
+                'ready_to_print' => true,
+            ],
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
     }
 }

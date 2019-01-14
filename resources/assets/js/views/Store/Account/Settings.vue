@@ -227,7 +227,45 @@
       <p>Notifications</p>
       <div class="card">
         <div class="card-body">
-          
+          <b-form @submit.prevent="updateStoreSettings">
+           <b-form-group label="New Orders" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.notifications.new_order"
+              />
+           </b-form-group>
+
+            <b-form-group label="New Subscriptions" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.notifications.new_subscription"
+              />
+           </b-form-group>
+
+           <b-form-group label="Cancelled Subscriptions" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.notifications.cancelled_subscription"
+              />
+           </b-form-group>
+
+           <b-form-group label="Ready to Print" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.notifications.ready_to_print"
+              />
+           </b-form-group>
+
+           <b-button type="submit" variant="primary" @click="updateStoreSettings">Submit</b-button>
+          </b-form>
         </div>
       </div>
       <!-- <div class="card">

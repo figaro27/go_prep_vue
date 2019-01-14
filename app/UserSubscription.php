@@ -15,4 +15,12 @@ class UserSubscription extends Model
     {
         return $this->belongsTo('App\Store');
     }
+
+    public function cancel() {
+      // todo: implement stripe logic
+
+      if($this->store->notificationEnabled('cancelled_subscription')) {
+        $this->store->sendNotification('cancelled_subscription', $this);
+      }
+    }
 }
