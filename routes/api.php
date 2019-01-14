@@ -22,6 +22,13 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
 
         Route::group(['middleware' => ['view.api']], function ($router) {
             Route::get('/', ['middleware' => ['view.api'], 'uses' => 'SpaController@index']);
+
+            Route::get('ping', function() {
+              if(!auth('api')->check()) {
+                return response('', 401);
+              }
+            });
+
             
             Route::group(['prefix' => 'me', 'middleware' => ['role.store']], function ($router) {
               Route::patch('user', 'Store\\UserController@update');

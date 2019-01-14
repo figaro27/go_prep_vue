@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -21,10 +20,11 @@ import vSelect from 'vue-select';
 import VueI18n from 'vue-i18n';
 import VueTimepicker from 'vuejs-timepicker'
 import draggable from 'vuedraggable'
-import { Card } from 'vue-stripe-elements-plus'
+import {Card} from 'vue-stripe-elements-plus'
 import store from './store';
 import lang from './lang';
 import modal from './lib/modal';
+import Axios from 'axios';
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -40,40 +40,19 @@ files
   .keys()
   .map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
 
-if($('#customerapp').length) {
-  const app = new Vue({
-    el: '#customerapp',
-    router,
-    store,
-    template: '<CustomerApp/>',
-    components: {
+if ($('#customerapp').length) {
+  const app = new Vue({el: '#customerapp', router, store, template: '<CustomerApp/>', components: {
       CustomerApp
-    }
-  });
-}
-else if($('#storeapp').length) {
-  const app = new Vue({
-    el: '#storeapp',
-    router,
-    store,
-    template: '<StoreApp/>',
-    components: {
+    }});
+} else if ($('#storeapp').length) {
+  const app = new Vue({el: '#storeapp', router, store, template: '<StoreApp/>', components: {
       StoreApp
-    }
-  });
-}
-else if ($('#adminapp').length) {
-  const app = new Vue({
-    el: '#adminapp',
-    router,
-    store,
-    template: '<AdminApp/>',
-    components: {
+    }});
+} else if ($('#adminapp').length) {
+  const app = new Vue({el: '#adminapp', router, store, template: '<AdminApp/>', components: {
       AdminApp
-    }
-  });
+    }});
 }
-
 
 modal.init();
 
@@ -81,4 +60,12 @@ setInterval(() => {
   $(window).trigger('resize');
 }, 1000);
 
-
+setInterval(() => {
+  if (!_.isEmpty(store.getters.user)) {
+    axios
+      .get('/api/ping')
+      .catch(e => {
+        window.location = '/login';
+      });
+  }
+}, 30 * 1000);
