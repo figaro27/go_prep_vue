@@ -21,7 +21,7 @@ class Meal extends Model
         'created_at' => 'date:F d, Y',
     ];
 
-    protected $appends = ['tag_titles', 'quantity', 'nutrition', 'active_orders', 'lifetime_orders', 'allergy_ids'];
+    protected $appends = ['tag_titles', 'quantity', 'nutrition', 'active_orders', 'lifetime_orders', 'allergy_ids', 'category_ids'];
 
     public function getQuantityAttribute()
     {
@@ -61,6 +61,11 @@ class Meal extends Model
         return $this->allergies->pluck('id');
     }
 
+    public function getCategoryIdsAttribute()
+    {
+        return $this->categories->pluck('id');
+    }
+
     public function store()
     {
         return $this->belongsTo('App\Store');
@@ -73,7 +78,7 @@ class Meal extends Model
 
     public function categories()
     {
-        return $this->hasMany('App\MealCategory');
+        return $this->belongsToMany('App\StoreCategory')->using('App\MealCategory');
     }
 
     public function meal_orders()
@@ -362,44 +367,13 @@ class Meal extends Model
             $meal->allergies()->sync($allergyIds);
         }
 
-        $newCategories = $props->get('categories');
-        if (is_array($newCategories)) {
+        $categories = $props->get('categories');
+        if (is_array($categories)) {
+            $categoryIds = array_map(function ($category) {
+                return is_numeric($category) ? $category : $category->id;
+            }, $categories);
 
-            $meal->categories()->delete();
-
-            $categories = collect();
-
-            foreach ($newCategories as $newCategory) {
-                try {
-                    // Existing ingredient
-                    /*if (is_numeric($newCategory) || isset($newCategory['id'])) {
-                        $categoryId = is_numeric($newCategory) ? $newCategory : $newCategory['id'];
-                        $category = MealCategory::where('meal_id', $meal->id)->findOrFail($categoryId);
-                        $categories->push($category);
-                    } else {*/
-                        // Check if category with same name and meal id already exists
-                        $category = MealCategory::where([
-                            'meal_id' => $meal->id,
-                            'category' => $newCategory['category'],
-                        ])->first();
-
-                        if ($category) {
-                            continue;
-                        }
-                        // Nope. Create a new one
-                        $category = new MealCategory([
-                            'meal_id' => $meal->id,
-                            'category' => $newCategory['category'],
-                        ]);
-                        //$category->save();
-                        $categories->push($category);
-                    //}
-                } catch (\Exception $e) {
-                    die($e);
-                }
-            }
-
-            $meal->categories()->saveMany($categories);
+            $meal->categories()->sync($categoryIds);
         }
 
         $meal->update($props->toArray());

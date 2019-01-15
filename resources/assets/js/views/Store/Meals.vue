@@ -164,6 +164,15 @@ textarea {
                 <h3>Ingredients</h3>
                 <ingredient-picker v-model="meal.ingredients" :options="{saveButton:true}" @save="val => onChangeIngredients(meal.id, val)"></ingredient-picker>
               </b-tab>
+              <b-tab title="Categories">
+                <h3>Categories</h3>
+                <b-form-checkbox-group
+                  buttons
+                  v-model="meal.category_ids"
+                  :options="categoryOptions"
+                  @change="val => updateMeal(meal.id, {categories: val})"
+                ></b-form-checkbox-group>
+              </b-tab>
             </b-tabs>
           </b-col>
 
@@ -190,7 +199,7 @@ textarea {
               />
             </b-form-group>
 
-            <b-form-group label="Categories" label-for="meal-categories" :state="true">
+            <!--<b-form-group label="Categories" label-for="meal-categories" :state="true">
               <ul>
                 <draggable v-model="meal.categories" @change="onChangeCategories">
                   <li v-for="category in meal.categories">{{ category.category }}</li>
@@ -201,6 +210,7 @@ textarea {
                 <b-input v-model="meal.new_category" :type="text" placeholder="New category..."></b-input>
               </b-form>
             </b-form-group>
+            -->
           </b-col>
         </b-row>
 
@@ -272,13 +282,13 @@ export default {
         title: "",
         featured_image: "",
         description: "",
-        categories: "",
         new_category: "",
         tags: "",
         price: "",
         active_orders: "",
         num_orders: "",
-        created_at: ""
+        created_at: "",
+        categories: [],
       },
       createMealModal: false,
       viewMealModal: false,
@@ -368,11 +378,20 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       meals: "storeMeals",
+      storeCategories: "storeCategories",
       allergies: "allergies",
       isLoading: "isLoading"
     }),
     tableData() {
       return Object.values(this.meals);
+    },
+    categoryOptions() {
+      return Object.values(this.storeCategories).map(cat => {
+        return {
+          text: cat.category,
+          value: cat.id
+        };
+      });
     },
     allergyOptions() {
       return Object.values(this.allergies).map(allergy => {
