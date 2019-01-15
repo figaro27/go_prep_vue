@@ -23,6 +23,9 @@ class CreateIngredientMealTable extends Migration
 
             $table->foreign('ingredient_id')->references('id')->on('ingredients');
             $table->foreign('meal_id')->references('id')->on('meals');
+
+            $table->unique(['ingredient_id', 'meal_id', 'quantity_unit']);
+
         });
     }
 
