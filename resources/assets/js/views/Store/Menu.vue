@@ -44,21 +44,6 @@
                                 
 </template>
 
-<style>
-.menu-item{
-    margin-bottom:10px;
-}
-
-.menu-item-img{
-    width:100%;
-}
-
-.cart-item{
-    width:100%;
-}
-
-</style>
-
 <script>
     export default {
         components: {

@@ -1,36 +1,3 @@
-<style lang="scss">
-.meal-quantities {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: -5px;
-  margin-right: -5px;
-
-  li {
-    flex: 0 1 calc(50% - 10px);
-    margin-left: 5px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    min-height: 2em;
-  }
-}
-
-
-.modalMeal{
-  height:80px;
-  width:80px;
-}
-
-.order-quantity{
-  font-size:17px;
-  color:#838181;
-  position:relative;
-  top:2px;
-}
-</style>
-
 <template>
   <div class="row">
     <div class="col-md-12">

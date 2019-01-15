@@ -1,86 +1,7 @@
-<style lang="scss">
-@import "~nutrition-label-jquery-plugin/dist/css/nutritionLabel-min.css";
-
-.menu-item {
-  margin-bottom: 10px;
-}
-
-.menu-item-img {
-  width: 100%;
-}
-
-.cart-item-img {
-  height: 160px;
-
-}
-
-.quantity {
-  width: 115px;
-  border-radius: 20px;
-  opacity: 0.5;
-  text-align: center;
-}
-
-.categories{
-  padding-top:20px
-}
-
-.bag {
-  max-width: 1500px
-}
-
-.bag-item{
-  border-bottom:1px solid #e1e1e1;
-  margin-bottom:10px;
-  width:100%;
-}
-
-.bag-quantity{
-text-align:center;
-vertical-align: center;
-position:relative;
-top:10px;
-}
-
-.clear-meal{
-  width:10px;
-}
-
-li {
-  list-style-type: none;
-}
-
-</style>
-
 <template>
     <div class="bag container-fluid">
         <div class="row">
             <div class="col-md-6">
-                <!-- <div class="card">
-                    <div class="card-body">
-                        <h3>Bag</h3>
-                        <b-col v-for="(item, mealId) in bag" :key="`bag-${mealId}`" cols="12">
-                        <img src="/images/customer/x.png" @click="clearMeal(item.meal)">
-                        <img src="/images/customer/minus.jpg" @click="minusOne(item.meal)">
-                            <p>{{ item.quantity }}</p>
-                        <img src="/images/customer/plus.jpg" @click="addOne(item.meal)">
-                        <img :src="item.meal.featured_image" class="cart-item-img">
-                        <p>{{ item.meal.title }}</p>
-                        <p>${{ item.meal.price }}</p>
-                        <hr>
-                        </b-col>
-                        <b-button @click="clearAll">Empty Cart</b-button>
-                    </div>
-                </div> -->
-
-
-
-
-
-
-
-
-
                 <div class="card">
                     <div class="card-body">
                       <p @click="clearAll">Clear All</p>
@@ -94,7 +15,7 @@ li {
                               <img src="/images/customer/bag-minus.png" @click="minusOne(item.meal)">
                             </div>
                             <div class="col-sm-2">
-                              <img :src="item.meal.featured_image" class="cart-item-img"/>
+                              <img :src="item.meal.featured_image" class="bag-item-img"/>
                             </div>
                             <div class="col-sm-5 offset-1">
                               {{ item.meal.title }}
@@ -188,27 +109,6 @@ li {
         </div>
     </div>
 </template>
-
-<style lang="scss">
-.menu-item {
-  margin-bottom: 10px;
-}
-
-.menu-item-img {
-  width: 100%;
-}
-
-.cart-item-img {
-  height: 100px;
-}
-
-.quantity {
-  width: 75px;
-  border-radius: 10px;
-  opacity: 0.5;
-  text-align: center;
-}
-</style>
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";

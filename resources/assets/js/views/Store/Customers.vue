@@ -4,7 +4,6 @@
       <div class="col-md-12">
         <Spinner v-if="isLoading"/>
         <div class="card">
-          <!-- <ViewCustomer :userId="userId" :order="order"></ViewCustomer> -->
           <div class="card-body">
             <v-client-table
               :columns="columns"
@@ -13,7 +12,6 @@
               v-show="!isLoading"
             >
               <div slot="actions" class="text-nowrap" slot-scope="props">
-                <!-- <button class="btn btn-primary btn-sm" @click="userId = props.row.id">View</button> -->
                 <button class="btn btn-primary btn-sm" @click="viewCustomer(props.row.id)">View Customer</button>
               </div>
             </v-client-table>
@@ -94,8 +92,6 @@
   </div>
 </template>
 
-<style>
-</style>
 <script>
 import Spinner from "../../components/Spinner";
 // import ViewCustomer from "./Modals/ViewCustomer";

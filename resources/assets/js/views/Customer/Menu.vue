@@ -1,57 +1,3 @@
-<style lang="scss">
-@import "~nutrition-label-jquery-plugin/dist/css/nutritionLabel-min.css";
-
-.menu-item {
-  margin-bottom: 10px;
-}
-
-.menu-item-img {
-  width: 100%;
-}
-
-.cart-item-img {
-  height: 80px;
-  width: 80px;
-}
-
-.quantity {
-  width: 115px;
-  border-radius: 20px;
-  opacity: 0.5;
-  text-align: center;
-}
-
-.categories{
-  padding-top:20px
-}
-
-.menu {
-  max-width: 1500px
-}
-
-.bag-item{
-  border-bottom:1px solid #e1e1e1;
-  margin-bottom:10px;
-  width:100%;
-}
-
-.bag-quantity{
-text-align:center;
-vertical-align: center;
-position:relative;
-top:10px;
-}
-
-.clear-meal{
-  width:10px;
-}
-
-li {
-  list-style-type: none;
-}
-
-</style>
-
 <template>
   <div class="menu container-fluid">
     <div v-if="!willDeliver">
@@ -92,7 +38,7 @@ li {
               <div id="nutritionFacts" v-if="storeSettings.showNutrition"></div>
             </b-modal>
             <div class="row">
-              <div class="col-sm-9" style="max-height:800px;overflow-y:auto">
+              <div class="col-sm-9 main-menu-area">
                 <b-button @click="viewFilters" variant="primary" class="pull-right">Filters</b-button>
                 <div v-for="(meals, category) in meals" :key="category" :id="category" class="categories">
                   <h2 class="text-center mb-3">{{category}}</h2>
@@ -119,7 +65,7 @@ li {
               </div>
 
 
-              <div class="col-sm-3" style="max-height:800px;overflow-y:auto">
+              <div class="col-sm-3 bag-area">
                 <p @click="clearAll">Clear All</p>
                 <ul class="list-group ">
                   <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
