@@ -51,6 +51,10 @@ const state = {
       data: {},
       expires: 0
     },
+    categories: {
+      data: {},
+      expries: 0
+    },
     settings: {
       data: {
         delivery_days: [],
@@ -59,8 +63,8 @@ const state = {
           new_order: true,
           new_subscription: true,
           cancelled_subscription: true,
-          ready_to_print: true,
-        },
+          ready_to_print: true
+        }
       },
       expires: 0
     },
@@ -80,7 +84,7 @@ const state = {
   customer: {
     data: {
       subscriptions: [],
-      orders: [],
+      orders: []
     },
     expires: 0
   },
@@ -230,6 +234,17 @@ const mutations = {
     state.store.meals.expires = expires;
   },
 
+  storeCategories(state, {categories, expires}) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    }
+
+    state.store.categories.data = categories;
+    state.store.categories.expires = expires;
+  },
+
   storeCustomers(state, {customers, expires}) {
     if (!expires) {
       expires = moment()
@@ -258,8 +273,18 @@ const mutations = {
 
   customerOrders(state, {orders, expires}) {
     state.customer.data.orders = orders;
-  }
+  },
 
+  categories(state, {categories, expires}) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    }
+
+    state.store.categories.data = units;
+    state.store.categories.expires = expires;
+  }
 }
 
 // actions are functions that cause side effects and can involve asynchronous
@@ -305,6 +330,16 @@ const actions = {
 
         if (!_.isEmpty(units)) {
           commit('ingredientUnits', {units});
+        }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.categories)) {
+        let categories = data.store.categories;
+
+        if (!_.isEmpty(categories)) {
+          commit('storeCategories', {categories});
         }
       }
     } catch (e) {}
@@ -363,6 +398,23 @@ const actions = {
   },
 
   // Actions for logged in stores
+
+  async refreshCategories({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me/categories");
+    const {data} = await res;
+
+    if (_.isArray(data)) {
+      state.store.categories.data = _.keyBy(data, 'id');
+      state.store.categories.expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    } else {
+      throw new Error('Failed to retrieve ingredients');
+    }
+  },
 
   async refreshIngredients({
     commit,
@@ -518,7 +570,9 @@ const getters = {
     return state.isLoading;
   },
   bag(state) {
-    let bag = {...state.bag};
+    let bag = {
+      ...state.bag
+    };
     bag.items = _.sortBy(bag.items, item => item.meal.title);
     return bag;
   },
@@ -603,6 +657,13 @@ const getters = {
   storeMeals: (state) => {
     try {
       return state.store.meals.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeCategories: (state) => {
+    try {
+      return state.store.categories.data || {};
     } catch (e) {
       return {};
     }

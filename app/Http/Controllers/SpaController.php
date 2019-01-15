@@ -30,7 +30,7 @@ class SpaController extends Controller
         if ($request->wantsJson()) {
             //$this->middleware('view.api');
 
-            $store = defined('STORE_ID') ? Store::with(['meals', 'units', 'meals.categories', 'meals.allergies', 'settings'])->find(STORE_ID) : null;
+            $store = defined('STORE_ID') ? Store::with(['meals', 'units', 'categories', 'meals.categories', 'meals.allergies', 'settings'])->find(STORE_ID) : null;
 
             $user = auth('api')->user();
 
@@ -39,7 +39,7 @@ class SpaController extends Controller
             if ($user) {
                 // Store user
                 if ($user->hasRole('store') && $user->has('store')) {
-                    $store = $user->store()->with(['meals', 'meals.categories', 'meals.allergies', 'units', 'settings', 'storeDetail'])->first();
+                    $store = $user->store()->with(['meals', 'categories', 'meals.categories', 'meals.allergies', 'units', 'settings', 'storeDetail'])->first();
                 }
 
                 // Customer user

@@ -215,13 +215,23 @@
               />
             </b-form-group>
             <!-- <p>Ingredients</p> -->
-            
-            <b-form-group label="Categories" :state="true">
-
-            </b-form-group>
-            
-            <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
+
+          <b-form-group label="Categories" :state="true">
+            <b-btn-group class="categories">
+              <draggable v-model="categories" @change="onChangeCategories">
+                <b-btn v-for="category in categories" :key="`category-${category.id}`">
+                  {{ category.category }}
+                  <i v-if="category.id" @click="deleteCategory(category.id)" class="fa fa-minus-circle text-danger"></i>
+                </b-btn>
+              </draggable>
+            </b-btn-group>
+
+            <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
+              <b-input v-model="new_category" :type="text" placeholder="New category..."></b-input>
+              <b-button type="submit" variant="primary">Create</b-button>
+            </b-form>
+          </b-form-group>
         </div>
       </div>
       <p>Notifications</p>
@@ -294,6 +304,28 @@
   </div>
 </template>
 
+<style lang="scss" scoped>
+.categories {
+  .btn {
+    position: relative;
+
+    i {
+      position: absolute;
+      top: 0;
+      right: 0;
+      opacity: 0;
+    }
+
+    &:hover {
+      i {
+        opacity: 1;
+      }
+    }
+  }
+}
+</style>
+
+
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
@@ -305,7 +337,8 @@ export default {
     return {
       loginAlertSuccess: false,
       loginAlertFail: false,
-      zipcodes: []
+      zipcodes: [],
+      new_category: "",
     };
   },
   computed: {
@@ -314,8 +347,12 @@ export default {
       store: "store",
       storeDetail: "storeDetail",
       storeSetting: "storeSetting",
-      storeSettings: "storeSettings"
+      storeSettings: "storeSettings",
+      storeCategories: "storeCategories"
     }),
+    categories() {
+      return _.chain(this.storeCategories).toArray().orderBy('order').value();
+    },
     // storeDetail(){
     //     return this.store.store_detail;
     // }
@@ -347,6 +384,7 @@ export default {
   },
   mounted() {},
   methods: {
+    ...mapActions(['refreshCategories']),
     updateLogin() {
       let data = {};
 
@@ -403,6 +441,28 @@ export default {
         }
       });
     },
+    onAddCategory() {
+      axios.post("/api/me/categories", {category: this.new_category}).then(response => {
+        this.refreshCategories();
+        this.new_category = "";
+      });
+    },
+    onChangeCategories(e) {
+      if(_.isObject(e.moved)) {
+        let newCats = _.toArray({...this.categories});
+        newCats[e.moved.oldIndex].order = e.moved.newIndex;
+        newCats[e.moved.newIndex].order = e.moved.oldIndex;
+
+        axios.post("/api/me/categories", {categories: newCats}).then(response => {
+          this.refreshCategories();
+        });
+      }
+    },
+    deleteCategory(id) {
+        axios.delete("/api/me/categories/" + id).then(response => {
+          this.refreshCategories();
+        });
+    }
   }
 };
 </script>

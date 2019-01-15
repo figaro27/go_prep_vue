@@ -67,6 +67,11 @@ class Store extends Model
         return $this->hasOne('App\StoreSetting');
     }
 
+    public function categories()
+    {
+        return $this->hasMany('App\StoreCategory')->orderBy('order');
+    }
+
     protected $appends = ['customers'];
 
     public function getCustomersAttribute()
