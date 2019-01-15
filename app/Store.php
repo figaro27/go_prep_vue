@@ -49,7 +49,7 @@ class Store extends Model
 
     public function ingredients()
     {
-        return $this->hasMany('App\Ingredient')->orderBy('title');
+        return $this->hasMany('App\Ingredient')->orderBy('food_name');
     }
 
     public function units()
