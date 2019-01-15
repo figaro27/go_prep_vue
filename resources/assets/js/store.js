@@ -518,13 +518,15 @@ const getters = {
     return state.isLoading;
   },
   bag(state) {
-    return state.bag;
+    let bag = {...state.bag};
+    bag.items = _.sortBy(bag.items, item => item.meal.title);
+    return bag;
   },
   bagItems(state) {
-    return state.bag.items;
+    return _.sortBy(state.bag.items, item => item.meal.title);
   },
   bagQuantity(state) {
-    return _.sumBy(_.toArray(state.bag.items), item => item.quantity);
+    return _.sumBy(_.compact(_.toArray(state.bag.items)), item => item.quantity);
   },
   bagHasMeal: (state) => (meal) => {
     if (!_.isNumber(meal)) {
@@ -538,14 +540,14 @@ const getters = {
       meal = meal.id;
     }
 
-    if (!_.has(state.bag.items, meal)) {
+    if (!_.has(state.bag.items, meal) || !_.isObject(state.bag.items[meal])) {
       return 0;
     }
 
-    return state.bag.items[meal].quantity;
+    return state.bag.items[meal].quantity || 0;
   },
   totalBagPrice(state, getters) {
-    let items = _.toArray(state.bag.items);
+    let items = _.compact(_.toArray(state.bag.items));
     let totalBagPrice = 0;
     items.forEach(item => {
       totalBagPrice += (item.quantity * item.meal.price);
