@@ -39,17 +39,17 @@ class Store extends Model
 
     public function orders()
     {
-        return $this->hasMany('App\Order');
+        return $this->hasMany('App\Order')->orderBy('created_at', 'desc');
     }
 
     public function meals()
     {
-        return $this->hasMany('App\Meal');
+        return $this->hasMany('App\Meal')->orderBy('title');
     }
 
     public function ingredients()
     {
-        return $this->hasMany('App\Ingredient');
+        return $this->hasMany('App\Ingredient')->orderBy('title');
     }
 
     public function units()
