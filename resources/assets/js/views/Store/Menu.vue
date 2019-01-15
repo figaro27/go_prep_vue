@@ -11,13 +11,13 @@
                                     <img :src="meal.featured_image" class="menu-item-img">
                                     <div class="row">
                                         <div class="col-3">
-                                            <img src="/storage/minus.jpg" @click="minusOne(meal)">
+                                            <img src="/images/customer/minus.jpg" @click="minusOne(meal)">
                                         </div>
                                         <div class="col-6">
                                             <b-form-input type="text" name="" id="" class="quantity" v-model="meal.quantity" readonly=""></b-form-input>
                                         </div>
                                         <div class="col-3">
-                                            <img src="/storage/plus.jpg" @click="addOne(meal)" class="pull-right">
+                                            <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="pull-right">
                                         </div>
                                     </div>
                                         <p> {{ meal.title }} </p>
@@ -43,21 +43,6 @@
 
                                 
 </template>
-
-<style>
-.menu-item{
-    margin-bottom:10px;
-}
-
-.menu-item-img{
-    width:100%;
-}
-
-.cart-item{
-    width:100%;
-}
-
-</style>
 
 <script>
     export default {
