@@ -1,12 +1,3 @@
-<style>
-
-.modalMeal{
-  height:80px;
-  width:80px;
-}
-
-</style>
-
 <template>
   <div class="store-customer-container">
     <div class="row">

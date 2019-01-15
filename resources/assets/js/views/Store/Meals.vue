@@ -477,7 +477,7 @@ export default {
     },
     destroyMeal: function($id) {
       axios.delete(`/api/me/meals/${$id}`);
-      this.getTableData();
+      this.refreshTable();
       this.deleteMealModal = false;
     },
 
