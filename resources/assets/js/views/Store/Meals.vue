@@ -86,8 +86,24 @@
                   ></textarea>
                 </b-form-group>
               </b-tab>
-              <b-tab title="Allergies">
-                <h3>This meal contains</h3>
+              <b-tab title="Categories">
+                <h3>Categories</h3>
+                <b-form-checkbox-group
+                  buttons
+                  v-model="meal.category_ids"
+                  :options="categoryOptions"
+                  @change="val => updateMeal(meal.id, {categories: val})"
+                ></b-form-checkbox-group>
+
+                <h3 class="mt-4">Tags</h3>
+                <b-form-checkbox-group
+                  buttons
+                  v-model="meal.tag_ids"
+                  :options="tagOptions"
+                  @change="val => updateMeal(meal.id, {tags: val})"
+                ></b-form-checkbox-group>
+
+                <h3 class="mt-4">This meal contains</h3>
                 <b-form-checkbox-group
                   buttons
                   v-model="meal.allergy_ids"
@@ -98,23 +114,6 @@
               <b-tab title="Ingredients">
                 <h3>Ingredients</h3>
                 <ingredient-picker v-model="meal.ingredients" :options="{saveButton:true}" :meal="meal" @save="val => onChangeIngredients(meal.id, val)"></ingredient-picker>
-              </b-tab>
-              <b-tab title="Categories">
-                <h3>Categories</h3>
-                <b-form-checkbox-group
-                  buttons
-                  v-model="meal.category_ids"
-                  :options="categoryOptions"
-                  @change="val => updateMeal(meal.id, {categories: val})"
-                ></b-form-checkbox-group>
-
-                <h3 class="mt-5">Tags</h3>
-                <b-form-checkbox-group
-                  buttons
-                  v-model="meal.tag_ids"
-                  :options="tagOptions"
-                  @change="val => updateMeal(meal.id, {tags: val})"
-                ></b-form-checkbox-group>
               </b-tab>
             </b-tabs>
           </b-col>
