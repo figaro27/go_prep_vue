@@ -19,19 +19,19 @@ class UsersSeeder extends Seeder
             'password' => bcrypt('secret'),
             'remember_token' => str_random(10),
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ]);
 
-        for ($i=2;$i<11;$i++){
+        for ($i = 2; $i < 11; $i++) {
             DB::table('users')->insert([
-            'user_role_id' => 2,
-            'email' => 'store'.$i.'@goprep.com',
-            'email_verified_at' => now(),
-            'password' => bcrypt('secret'),
-            'remember_token' => str_random(10),
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+                'user_role_id' => 2,
+                'email' => 'store' . $i . '@goprep.com',
+                'email_verified_at' => now(),
+                'password' => bcrypt('secret'),
+                'remember_token' => str_random(10),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
 
         DB::table('users')->insert([
@@ -41,7 +41,7 @@ class UsersSeeder extends Seeder
             'password' => bcrypt('secret'),
             'remember_token' => str_random(10),
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ]);
 
         DB::table('users')->insert([
@@ -51,17 +51,15 @@ class UsersSeeder extends Seeder
             'password' => bcrypt('secret'),
             'remember_token' => str_random(10),
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ]);
 
-        factory(App\User::class, 10)->create()->each(function($u) {
+        factory(App\User::class, 10)->create()->each(function ($u) {
             $u->userDetail()->save(factory(App\UserDetail::class)->make());
-            for ($i=0;$i<4;$i++)
-                    {
+            for ($i = 0; $i < 7; $i++) {
                 $u->Order()->save(factory(App\Order::class)->make());
-                }
-          });
-
+            }
+        });
 
     }
 }

@@ -15,7 +15,7 @@ class StoreSettingsSeeder extends Seeder
         DB::table('store_settings')->insert([
             'store_id' => 1,
             'minimum' => 5,
-            'delivery_days' => '["mon", "wed", "fri"]',
+            'delivery_days' => '["mon","wed","fri","tue","sun","thu","sat"]',
             'cutoff_days' => 1,
             'cutoff_hours' => 0,
             'delivery_distance_type' => 'radius',

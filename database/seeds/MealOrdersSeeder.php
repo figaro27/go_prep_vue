@@ -12,7 +12,7 @@ class MealOrdersSeeder extends Seeder
      */
     public function run()
     {
-    	for ($order=1;$order<=10;$order++)
+    	for ($order=1;$order<=70;$order++)
     	{
             for($i=1;$i<=5;$i++)
             {
@@ -20,6 +20,7 @@ class MealOrdersSeeder extends Seeder
     	        	  'store_id' => 1,
     	            'order_id' => $order,
     	            'meal_id' => rand(1,50),
+    	            'quantity' => rand(1,4),
     	            'created_at' => Carbon::now(),
     	            'updated_at' => Carbon::now()
     	        ]);

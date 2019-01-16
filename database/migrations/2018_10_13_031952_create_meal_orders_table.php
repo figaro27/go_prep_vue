@@ -18,6 +18,7 @@ class CreateMealOrdersTable extends Migration
             $table->integer('store_id')->references('id')->on('stores');
             $table->integer('order_id')->references('id')->on('orders');
             $table->integer('meal_id')->references('id')->on('meals');
+            $table->integer('quantity')->default(1);
             $table->timestamps();
         });
     }
