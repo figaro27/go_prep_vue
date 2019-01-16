@@ -62,6 +62,11 @@ class Store extends Model
         return $this->hasOne('App\StoreDetail');
     }
 
+    public function details()
+    {
+        return $this->hasOne('App\StoreDetail');
+    }
+
     public function settings()
     {
         return $this->hasOne('App\StoreSetting');
