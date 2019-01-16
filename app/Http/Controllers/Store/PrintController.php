@@ -31,8 +31,18 @@ class PrintController extends StoreController
         break;
       }
 
-      return [
-        'url' => $exportable->export($format)
-      ];
+      try {
+        $url = $exportable->export($format);
+        return [
+          'url' => $url
+        ];
+      }
+      catch(\Exception $e) {
+        return response()->json([
+          'error' => $e->getMessage(),
+        ], 500);
+      }
+
+      
     }
 }
