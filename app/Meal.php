@@ -78,7 +78,7 @@ class Meal extends Model
 
     public function categories()
     {
-        return $this->belongsToMany('App\StoreCategory')->using('App\MealCategory');
+        return $this->belongsToMany('App\Category')->using('App\MealCategory');
     }
 
     public function meal_orders()

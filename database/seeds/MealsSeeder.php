@@ -21,11 +21,7 @@ class MealsSeeder extends Seeder
         factory(App\Meal::class, 50)->create()->each(function ($u) use ($tags, $ingredients) {
             $u->tags()->save($tags[rand(0, count($tags) - 1)]);
 
-            $cat = factory(App\MealCategory::class)->create([
-              'meal_id' => $u->id,
-            ]);
-            $u->categories()->save($cat);
-
+            $u->categories()->attach(rand(1, 3));
             $u->allergies()->attach(rand(1, 4));
 
             $unitTypes = [

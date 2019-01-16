@@ -74,7 +74,7 @@ class Store extends Model
 
     public function categories()
     {
-        return $this->hasMany('App\StoreCategory')->orderBy('order');
+        return $this->hasMany('App\Category')->orderBy('order');
     }
 
     protected $appends = ['customers'];

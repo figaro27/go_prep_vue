@@ -5,11 +5,11 @@ namespace App;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class StoreCategory extends Model
+class Category extends Model
 {
 
     protected $fillable = [
-      'user_id',
+      'store_id',
       'category',
     ];
 
