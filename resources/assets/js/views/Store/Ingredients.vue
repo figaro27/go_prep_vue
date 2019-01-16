@@ -56,7 +56,7 @@ export default {
   },
   data() {
     return {
-      loading: true,
+      //loading: true,
       columns: ["image", "food_name", "quantity", "actions"],
       options: {
         headings: {
@@ -78,7 +78,11 @@ export default {
     tableData() {
       return (
         _.map(this.orderIngredients, (orderIngredient, id) => {
-          const ingredient = this.getIngredient(id);
+          let ingredient = this.getIngredient(id);
+
+          if(!ingredient) {
+            return {};
+          }
 
           const baseUnit = units.base(ingredient.unit_type);
 
@@ -102,10 +106,12 @@ export default {
     displayUnits() {
       return _.mapValues(this.orderIngredients, (orderIngredient, id) => {
         const unit = this.getIngredientUnit(id);
-        if (unit) {
+        const ingredient = this.getIngredient(id);
+
+        if (unit || !ingredient) {
           return unit;
         }
-        const ingredient = this.getIngredient(id);
+
         const baseUnit = units.base(ingredient.unit_type);
         if (baseUnit !== "unit") {
           return units.toBest(orderIngredient.quantity, baseUnit);
@@ -117,11 +123,11 @@ export default {
     // Set initial weight unit to user default
     this.weightUnit = this.defaultWeightUnit || "oz";
 
-    this.refreshIngredients().then(() => {
+    /*this.refreshIngredients().then(() => {
       this.refreshOrderIngredients().finally(() => {
-        this.loading = false;
+        //this.loading = false;
       });
-    });
+    });*/
   },
   methods: {
     ...mapActions([
@@ -136,6 +142,9 @@ export default {
       return this.$store.getters.ingredientUnit(id);
     },
     unitOptions(unitType) {
+      if(!unitType) {
+        return [];
+      }
       return units[unitType].selectOptions();
     },
     saveUnit(id, unit) {

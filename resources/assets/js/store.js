@@ -297,7 +297,8 @@ const actions = {
 
   async init({
     commit,
-    state
+    state,
+    dispatch,
   }, args = {}) {
     const res = await axios.get('/api');
     const {data} = await res;
@@ -409,6 +410,12 @@ const actions = {
         commit('storeOrders', {orders});
       }
     } catch (e) {}
+
+    /**
+     * Extra actions
+     */
+    dispatch('refreshIngredients');
+    dispatch('refreshOrderIngredients');
   },
 
   // Actions for logged in stores

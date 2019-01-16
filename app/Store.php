@@ -129,11 +129,11 @@ class Store extends Model
     {
         $ingredients = [];
 
-        $orders = $this->orders()->with(['meals'])->get();
+        $orders = $this->orders()->with(['meals', 'meals.ingredients'])->get();
 
         foreach ($orders as $order) {
             foreach ($order->meals as $meal) {
-                foreach ($meal->ingredients()->get() as $ingredient) {
+                foreach ($meal->ingredients as $ingredient) {
 
                     $quantity = $ingredient->pivot->quantity;
                     $quantity_unit = $ingredient->pivot->quantity_unit;
