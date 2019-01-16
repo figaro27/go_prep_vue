@@ -15,11 +15,11 @@
                 
                 <br>
                 <div v-for="tag in tags" :key="tag">
-                  <b-button :pressed="test" @click="filterByTag(tag)" variant="success">{{ tag }}</b-button>
+                  <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{ tag }}</b-button>
                 </div>
                 <br>
                 <div v-for="allergy in allergies" :key="allergy">
-                  <b-button @click="filterByAllergy(allergy)" variant="success">{{ allergy }}</b-button>
+                  <b-button :pressed="active[allergy]"" @click="filterByAllergy(allergy)">{{ allergy }}</b-button>
                 </div>
             </b-modal>
           </div>
@@ -115,7 +115,7 @@ export default {
   components: {},
   data() {
     return {
-      test: false,
+      active: {},
       viewFilterModal: false,
       filteredView: false,
       filters: {
@@ -241,6 +241,7 @@ export default {
         });
       });
       return grouped;
+
     },
     allergies() {
       let grouped = [];
@@ -254,10 +255,23 @@ export default {
       return grouped;
     }
   },
-  mounted() {
-
+  beforeDestroy() {
+    this.showActiveFilters();
   },
   methods: {
+    showActiveFilters(){
+    let tags = this.tags;
+    this.active = tags.reduce((acc, tag) => {
+      acc[tag] = false
+      return acc
+    }, {})
+
+    let allergies = this.allergies;
+    this.active = allergies.reduce((acc, allergy) => {
+      acc[allergy] = false
+      return acc
+    }, {})
+    },
     quantity(meal) {
       const qty = this.$store.getters.bagItemQuantity(meal);
       return qty;
@@ -385,10 +399,7 @@ export default {
         : Vue.delete(this.filters.categories, i);
     },
     filterByTag(tag) {
-
-       let test = _.includes(this.filters.tags, 'Vegan');
-       this.test = test;
-
+      this.active[tag] = !this.active[tag];
       this.filteredView = true;
 
       // Check if filter already exists
@@ -401,6 +412,7 @@ export default {
         : Vue.delete(this.filters.tags, i);
     },
     filterByAllergy(allergy) {
+      this.active[allergy] = !this.active[allergy];
       this.filteredView = true;
 
       // Check if filter already exists

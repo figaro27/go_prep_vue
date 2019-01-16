@@ -40,6 +40,11 @@ class User extends Authenticatable
       'name',
     ];
 
+    public function getId()
+    {
+      return $this->id;
+    }
+
     public function userRole()
     {
         return $this->hasOne('App\UserRole');
