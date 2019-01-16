@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Store;
 
 use App\Utils\Data\ExportsData;
 use App\Utils\Data\Format;
+use App\Unit;
 
 class OrderIngredientController extends StoreController
 {
@@ -30,15 +31,28 @@ class OrderIngredientController extends StoreController
 
     public function exportData($type)
     {
-        $ingredients = collect($this->store->getOrderIngredients());
-        $units = collect($this->store->units);
+        $orderIngredients = collect($this->store->getOrderIngredients());
+        $units = collect($this->store->units)->keyBy('ingredient_id');
+        $ingredients = $this->store->ingredients->keyBy('id');
 
-        $data = $ingredients->map(function ($orderIngredient) use ($units) {
-            $ingredient = $orderIngredient['ingredient'];
+        $data = $orderIngredients->map(function ($orderIngredient) use ($units, $ingredients) {
+            $ingredient = $ingredients->get($orderIngredient['id']);
+            if ($units->has($ingredient->id)) {
+                $unit = $units->get($ingredient->id)->unit;
+                $quantity = Unit::convert(
+                  $orderIngredient['quantity'],
+                  Format::baseUnit($ingredient->unit_type),
+                  $unit
+                );
+            } else {
+                $unit = Format::baseUnit($ingredient->unit_type);
+                $quantity = ceil($orderIngredient['quantity']);
+            }
+
             return [
                 $ingredient->food_name,
-                ceil($orderIngredient['quantity']),
-                $units->has($ingredient->id) ? $units->get($ingredient->id)->unit : Format::baseUnit($ingredient->unit_type),
+                ceil($quantity),
+                $unit,
             ];
         })->sortBy('0');
 

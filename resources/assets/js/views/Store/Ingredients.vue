@@ -6,6 +6,10 @@
         <div class="card-body">
           <v-client-table :columns="columns" :data="tableData" :options="options">
             <span slot="beforeLimit">
+              <b-btn variant="primary" @click="print('pdf')">
+                <i class="fa fa-print"></i>&nbsp;
+                Print
+              </b-btn>
               <b-dropdown class="mx-1" right text="Export as">
                 <b-dropdown-item @click="exportData('csv')">CSV</b-dropdown-item>
                 <b-dropdown-item @click="exportData('xls')">XLS</b-dropdown-item>
@@ -160,6 +164,22 @@ export default {
         .catch(err => {
 
         })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    print(format = "pdf") {
+      axios
+        .get(`/api/me/orders/ingredients/export/${format}`)
+        .then(response => {
+          if (!_.isEmpty(response.data.url)) {
+            let win = window.open(response.data.url);
+            win.addEventListener('load', () => {
+              win.print();
+            }, false);
+          }
+        })
+        .catch(err => {})
         .finally(() => {
           this.loading = false;
         });

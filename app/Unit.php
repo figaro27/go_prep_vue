@@ -29,4 +29,24 @@ class Unit
     {
       return self::getType($unitA) === self::getType($unitB);
     }
+
+    public static function convert($value, $unitA, $unitB)
+    {
+      if(!self::isSameType($unitA, $unitB)) {
+        return $value;
+      }
+
+      switch(self::getType($unitA)) {
+        case 'mass':
+          $value = new Mass($value, $unitA);
+          break;
+        case 'volume':
+          $value = new Volume($value, $unitA);
+          break;
+        default:
+          return $value;
+      }
+
+      return $value->toUnit($unitB);
+    }
 }
