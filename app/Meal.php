@@ -21,7 +21,7 @@ class Meal extends Model
         'created_at' => 'date:F d, Y',
     ];
 
-    protected $appends = ['tag_titles', 'quantity', 'nutrition', 'active_orders', 'lifetime_orders', 'allergy_ids', 'category_ids'];
+    protected $appends = ['tag_titles', 'quantity', 'nutrition', 'active_orders', 'lifetime_orders', 'allergy_ids', 'category_ids', 'tag_ids'];
 
     public function getQuantityAttribute()
     {
@@ -64,6 +64,11 @@ class Meal extends Model
     public function getCategoryIdsAttribute()
     {
         return $this->categories->pluck('id');
+    }
+
+    public function getTagIdsAttribute()
+    {
+        return $this->tags->pluck('id');
     }
 
     public function store()
@@ -236,7 +241,7 @@ class Meal extends Model
             'description',
             'price',
             'created_at',
-            'tag_titles',
+            'tags',
             'categories',
             'ingredients',
             'allergies',
@@ -259,6 +264,7 @@ class Meal extends Model
             }
         }
 
+        /*
         $tagTitles = $props->get('tag_titles');
         if (is_array($tagTitles)) {
 
@@ -281,7 +287,7 @@ class Meal extends Model
             }
 
             $meal->tags()->sync($tags);
-        }
+        }*/
 
         $newIngredients = $props->get('ingredients');
         if (is_array($newIngredients)) {
@@ -374,6 +380,15 @@ class Meal extends Model
             }, $categories);
 
             $meal->categories()->sync($categoryIds);
+        }
+
+        $tags = $props->get('tags');
+        if (is_array($tags)) {
+            $tagIds = array_map(function ($tag) {
+                return is_numeric($tag) ? $tag : $tag->id;
+            }, $tags);
+
+            $meal->tags()->sync($tagIds);
         }
 
         $meal->update($props->toArray());

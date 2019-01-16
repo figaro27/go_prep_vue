@@ -5,6 +5,7 @@ use App\Store;
 use Illuminate\Support\Facades\Cache;
 use \Illuminate\Http\Request;
 use App\Allergy;
+use App\MealTag;
 
 class SpaController extends Controller
 {
@@ -85,6 +86,7 @@ class SpaController extends Controller
                 'stores' => $stores,
                 'order_ingredients' => $orderIngredients ?? [],
                 'allergies' => Allergy::all(),
+                'tags' => MealTag::all(),
                 'orders' => $orders ?? [],
             ];
 

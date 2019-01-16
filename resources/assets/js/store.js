@@ -20,6 +20,7 @@ const state = {
     }
   },
   stores: {},
+  tags: [],
   bag: {
     items: {}
   },
@@ -107,6 +108,9 @@ const mutations = {
       ...state.viewed_store,
       ...store
     };
+  },
+  tags(state, {tags}) {
+    state.tags = tags;
   },
   setViewedStoreWillDeliver(state, willDeliver) {
     state.viewed_store.will_deliver = willDeliver;
@@ -345,6 +349,16 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.tags)) {
+        let tags = data.tags;
+
+        if (_.isArray(tags)) {
+          commit('tags', {tags});
+        }
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.settings) && _.isObject(data.store.settings)) {
         let settings = data.store.settings;
         commit('storeSettings', {settings});
@@ -537,6 +551,9 @@ const actions = {
 
 // getters are functions
 const getters = {
+  tags(state) {
+    return state.tags || [];
+  },
   user(state) {
     return state.user.data;
   },

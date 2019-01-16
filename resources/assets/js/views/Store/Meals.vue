@@ -107,6 +107,14 @@
                   :options="categoryOptions"
                   @change="val => updateMeal(meal.id, {categories: val})"
                 ></b-form-checkbox-group>
+
+                <h3 class="mt-5">Tags</h3>
+                <b-form-checkbox-group
+                  buttons
+                  v-model="meal.tag_ids"
+                  :options="tagOptions"
+                  @change="val => updateMeal(meal.id, {tags: val})"
+                ></b-form-checkbox-group>
               </b-tab>
             </b-tabs>
           </b-col>
@@ -123,29 +131,6 @@
               button-class="btn"
               @change="(val) => updateImage(meal.id, val)"
             ></picture-input>
-
-            <b-form-group label="Tags" label-for="meal-tags" :state="true">
-              <input-tag
-                ref="editMealTagsInput"
-                id="meal-tags"
-                v-model="meal.tag_titles_flat"
-                :tags="meal.tag_titles_input"
-                @tags-changed="tags => onChangeTags(meal.id, tags)"
-              />
-            </b-form-group>
-
-            <!--<b-form-group label="Categories" label-for="meal-categories" :state="true">
-              <ul>
-                <draggable v-model="meal.categories" @change="onChangeCategories">
-                  <li v-for="category in meal.categories">{{ category.category }}</li>
-                </draggable>
-              </ul>
-
-              <b-form @submit.prevent="onAddCategory">
-                <b-input v-model="meal.new_category" :type="text" placeholder="New category..."></b-input>
-              </b-form>
-            </b-form-group>
-            -->
           </b-col>
         </b-row>
 
@@ -229,7 +214,6 @@ export default {
       viewMealModal: false,
       deleteMealModal: false,
 
-      tags: [],
       newTags: [],
       ingredientSearch: "",
       ingredientResults: [],
@@ -313,12 +297,21 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       meals: "storeMeals",
+      tags: "tags",
       storeCategories: "storeCategories",
       allergies: "allergies",
       isLoading: "isLoading"
     }),
     tableData() {
       return Object.values(this.meals);
+    },
+    tagOptions() {
+      return Object.values(this.tags).map(tag => {
+        return {
+          text: tag.tag,
+          value: tag.id
+        };
+      });
     },
     categoryOptions() {
       return Object.values(this.storeCategories).map(cat => {
