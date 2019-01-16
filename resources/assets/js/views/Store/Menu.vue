@@ -21,7 +21,7 @@
                                         </div>
                                     </div>
                                         <p> {{ meal.title }} </p>
-                                        <p> {{ meal.description }}</p>
+                                        <p> {{ meal.price }}</p>
                                 </div>
                             </div>
                         </div>

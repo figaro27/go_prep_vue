@@ -83,7 +83,7 @@ class StoreDetailController extends Controller
             'description' => 'required|string',
         ]);
 
-        $id = Auth::user()->id;
+        $id = auth('api')->user()->id;
         $store = StoreDetail::findOrFail($id);
         $store->update($request->toArray());
     }
