@@ -561,7 +561,7 @@ const getters = {
   tags(state) {
     return state.tags || [];
   },
-  user(state) {
+  user(state, getters) {
     return state.user.data;
   },
   allergies(state) {

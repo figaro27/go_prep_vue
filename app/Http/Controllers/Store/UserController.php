@@ -47,7 +47,8 @@ class UserController  extends StoreController
      */
     public function show(Order $order)
     {
-        //
+        $email = auth('api')->user()->email;
+        return $email;
     }
 
     /**

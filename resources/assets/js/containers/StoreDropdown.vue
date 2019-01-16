@@ -1,7 +1,7 @@
 <template>
   <AppHeaderDropdown right no-caret>
     <template slot="header">
-      <div class="m-3">store@goprep.com</div>
+      <div class="m-3">{{ email }}</div>
     </template>\
     <template slot="dropdown">
       <b-dropdown-item>
@@ -17,18 +17,40 @@
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from "@coreui/vue";
+// import { mapGetters, mapActions, mapMutations } from "vuex";
+
 export default {
   name: "StoreDropdown",
   components: {
     AppHeaderDropdown
   },
-  data: () => {
-    return { itemsCount: 42 };
+  data() {
+    return { 
+      itemsCount: 42,
+      email: '' 
+    }
+  },
+  // computed: {
+  //   ...mapGetters({
+  //     user: "user",
+  //   }),
+  //   email(){
+  //     return this.user.email;
+  //   }
+  // },
+  created(){
+    this.getEmail();
   },
   methods: {
     logout() {
       axios.post("/logout").then(resp => {
         window.location.href = "/login";
+      });
+    },
+    getEmail() {
+      let self = this;
+      axios.get("/api/me/user").then(resp => {
+        self.email = resp.data;
       });
     }
   }
