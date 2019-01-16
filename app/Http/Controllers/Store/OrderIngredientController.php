@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Store;
 
+use Illuminate\Support\Facades\Cache;
 use App\Utils\Data\ExportsData;
 use App\Utils\Data\Format;
 use App\Unit;
@@ -17,7 +18,9 @@ class OrderIngredientController extends StoreController
      */
     public function index()
     {
-        $ingredients = collect($this->store->getOrderIngredients());
+        $ingredients = Cache::remember('store_order_ingredients'.$this->store->id, 10, function () {
+          return collect($this->store->getOrderIngredients());
+        });
 
         $ingredients = $ingredients->map(function ($item, $id) {
             return [
