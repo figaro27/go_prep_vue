@@ -47,7 +47,7 @@
               <div slot="current_orders" slot-scope="props">{{ props.row.orders.length }}</div>
 
               <div slot="actions" class="text-nowrap" slot-scope="props">
-                <button class="btn btn-warning btn-sm" @click="viewMeal(props.row.id)">View</button>
+                <button class="btn view btn-warning btn-sm" @click="viewMeal(props.row.id)">View</button>
                 <button class="btn btn-danger btn-sm" @click="deleteMeal(props.row.id)">Delete</button>
               </div>
             </v-client-table>

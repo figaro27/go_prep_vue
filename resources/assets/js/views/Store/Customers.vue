@@ -12,7 +12,7 @@
               v-show="!isLoading"
             >
               <div slot="actions" class="text-nowrap" slot-scope="props">
-                <button class="btn btn-primary btn-sm" @click="viewCustomer(props.row.id)">View Customer</button>
+                <button class="btn view btn-primary btn-sm" @click="viewCustomer(props.row.id)">View Customer</button>
               </div>
             </v-client-table>
           </div>

@@ -20,7 +20,7 @@
               </p>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
-              <button class="btn btn-warning btn-sm" @click="viewOrder(props.row.id)">View Order</button>
+              <button class="btn view btn-warning btn-sm" @click="viewOrder(props.row.id)">View Order</button>
               <button
                 class="btn btn-primary btn-sm"
                 @click="fulfill(props.row.id)"

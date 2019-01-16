@@ -69,3 +69,8 @@ setInterval(() => {
       });
   }
 }, 30 * 1000);
+
+$(document).on('dblclick', '.VueTables__table tbody > tr', function() {
+  $(this).find('.btn.view').click();
+  document.getSelection().removeAllRanges();
+});
