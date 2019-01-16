@@ -97,7 +97,7 @@
               </b-tab>
               <b-tab title="Ingredients">
                 <h3>Ingredients</h3>
-                <ingredient-picker v-model="meal.ingredients" :options="{saveButton:true}" @save="val => onChangeIngredients(meal.id, val)"></ingredient-picker>
+                <ingredient-picker v-model="meal.ingredients" :options="{saveButton:true}" :meal="meal" @save="val => onChangeIngredients(meal.id, val)"></ingredient-picker>
               </b-tab>
               <b-tab title="Categories">
                 <h3>Categories</h3>

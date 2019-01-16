@@ -2,7 +2,7 @@
   <div>
     <b-form class="mb-2" @submit.prevent="searchRecipe">
       <div class="mb-2">
-        <IngredientSearch @change="onSearchIngredient"/>
+        <!--<IngredientSearch @change="onSearchIngredient"/>-->
       </div>
       <div class="d-flex mb-2">
         <b-input v-model="recipe" class="flex-grow-1 mr-1" placeholder="Type Ingredients Here"></b-input>
@@ -19,82 +19,87 @@
         <b-button @click="onClickAddExistingIngredient" variant="primary">Add</b-button>
       </div>
     </b-form>
-    <table class="table w-100 ingredients-table">
-      <thead>
-        <th>Name</th>
-        <th>Weight</th>
-        <th>Unit</th>
-        <th style="width: 30px"></th>
-      </thead>
-      <tbody>
-        <tr v-for="(ingredient, i) in ingredients" :key="ingredient.food_name">
-          <td>
-            <b-form-group>
-              <v-select
-                class="ingredient-dropdown"
-                label="name"
-                :filterable="false"
-                :options="ingredientOptions"
-                @search="onSearch"
-                :value="ingredient"
-                :onChange="(val) => onAddIngredient(val, i)"
-              >
-                <template slot="no-options">type to search ingredients...</template>
-                <template slot="option" slot-scope="option">
-                  <div class="d-center">
-                    <img v-if="option.photo" :src="option.photo.thumb" class="thumb">
-                    {{ option.food_name }}
-                  </div>
-                </template>
-                <template slot="selected-option" slot-scope="option">
-                  <div class="selected">
-                    <img v-if="option.photo" :src="option.photo.thumb" class="thumb">
-                    {{ option.food_name }}
-                  </div>
-                </template>
-              </v-select>
-            </b-form-group>
-          </td>
-          <td>
-            <b-form-group>
-              <b-form-input placeholder="Weight" :value="ingredient.quantity"></b-form-input>
-            </b-form-group>
-          </td>
-          <td class="text-center">
-            <b-form-group>
-              <b-select
-                v-if="ingredient.unit_type !== 'unit'"
-                v-model="ingredient.quantity_unit"
-                :options="unitOptions(ingredient)"
-                style="width: 60px"
-              >
-                <option slot="top" disabled>-- Select unit --</option>
-              </b-select>
-              <span v-else>Unit</span>
-            </b-form-group>
-          </td>
-          <td>
-            <b-btn variant="link" @click="removeIngredient(i)">
-              <i class="fa fa-close"></i>
-            </b-btn>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="10" class="text-right">
-            <b-row>
-              <b-col v-if="options.saveButton" class="text-left">
-                <b-button variant="primary" :disabled="!canSave" @click.prevent="save">Save</b-button>
-              </b-col>
-              <b-col class="text-right">
-                <a href="#" @click.prevent="onClickAddIngredient">
-                  <i class="fas fa-plus-circle"></i>
-                </a>
-              </b-col>
-            </b-row>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+
+    <div class="d-flex">
+      <table class="table w-100 ingredients-table">
+        <thead>
+          <th>Name</th>
+          <th>Weight</th>
+          <th>Unit</th>
+          <th style="width: 30px"></th>
+        </thead>
+        <tbody>
+          <tr v-for="(ingredient, i) in ingredients" :key="ingredient.food_name">
+            <td>
+              <b-form-group>
+                <v-select
+                  class="ingredient-dropdown"
+                  label="name"
+                  :filterable="false"
+                  :options="ingredientOptions"
+                  @search="onSearch"
+                  :value="ingredient"
+                  :onChange="(val) => onAddIngredient(val, i)"
+                >
+                  <template slot="no-options">type to search ingredients...</template>
+                  <template slot="option" slot-scope="option">
+                    <div class="d-center">
+                      <img v-if="option.photo" :src="option.photo.thumb" class="thumb">
+                      {{ option.food_name }}
+                    </div>
+                  </template>
+                  <template slot="selected-option" slot-scope="option">
+                    <div class="selected">
+                      <img v-if="option.photo" :src="option.photo.thumb" class="thumb">
+                      {{ option.food_name }}
+                    </div>
+                  </template>
+                </v-select>
+              </b-form-group>
+            </td>
+            <td>
+              <b-form-group>
+                <b-form-input placeholder="Weight" v-model="ingredient.quantity"></b-form-input>
+              </b-form-group>
+            </td>
+            <td class="text-center">
+              <b-form-group>
+                <b-select
+                  v-if="ingredient.unit_type !== 'unit'"
+                  v-model="ingredient.quantity_unit"
+                  :options="unitOptions(ingredient)"
+                  style="width: 60px"
+                >
+                  <option slot="top" disabled>-- Select unit --</option>
+                </b-select>
+                <span v-else>Unit</span>
+              </b-form-group>
+            </td>
+            <td>
+              <b-btn variant="link" @click="removeIngredient(i)">
+                <i class="fa fa-close"></i>
+              </b-btn>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="10" class="text-right">
+              <b-row>
+                <b-col v-if="options.saveButton" class="text-left">
+                  <b-button variant="primary" :disabled="!canSave" @click.prevent="save">Save</b-button>
+                </b-col>
+                <b-col class="text-right">
+                  <a href="#" @click.prevent="onClickAddIngredient">
+                    <i class="fas fa-plus-circle"></i>
+                  </a>
+                </b-col>
+              </b-row>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="ml-5" ref="nutritionFacts"></div>
+    </div>
   </div>
 </template>
 <style lang="scss">
@@ -113,7 +118,8 @@
   }
 }
 .ingredient-table {
-  th, td {
+  th,
+  td {
     &:last-child {
       padding-left: 0;
       padding-right: 0;
@@ -135,6 +141,11 @@ export default {
     options: {
       default: {
         saveButton: false
+      }
+    },
+    meal: {
+      default: {
+        title: ""
       }
     }
   },
@@ -170,10 +181,14 @@ export default {
     }
   },
   watch: {
-    ingredients(newIngredients, oldIngredients) {
-      if (!_.isEqual(newIngredients, oldIngredients)) {
-        this.update();
-      }
+    ingredients: {
+      handler: function(newIngredients, oldIngredients) {
+        if (!_.isEqual(newIngredients, oldIngredients)) {
+          this.update();
+        }
+        this.getNutritionFacts(newIngredients);
+      },
+      deep: true
     }
   },
   created() {
@@ -269,6 +284,96 @@ export default {
           unit_type: units.type(val.serving_unit)
         });
       }
+    },
+    getIngredientList: function(ingredients) {
+      let ingredientList = "";
+      ingredients.forEach(function(ingredient) {
+        ingredientList +=
+          ingredient.food_name.charAt(0).toUpperCase() +
+          ingredient.food_name.slice(1) +
+          ", ";
+      });
+      return ingredientList;
+    },
+    getNutritionTotals: function(ingredients) {
+      let nutrition = {
+        calories: 0,
+        totalFat: 0,
+        satFat: 0,
+        transFat: 0,
+        cholesterol: 0,
+        sodium: 0,
+        totalCarb: 0,
+        fibers: 0,
+        sugars: 0,
+        proteins: 0,
+        vitaminD: 0,
+        potassium: 0,
+        calcium: 0,
+        iron: 0,
+        addedSugars: 0
+      };
+
+      ingredients.forEach(ingredient => {
+        nutrition.calories += (ingredient.nf_calories || ingredient.calories) * ingredient.quantity;
+        nutrition.totalFat += (ingredient.nf_total_fat || ingredient.totalFat) * ingredient.quantity;
+        nutrition.satFat += (ingredient.nf_saturated_fat || ingredient.satFat) * ingredient.quantity;
+        nutrition.transFat += (ingredient.nf_trans_fat || ingredient.transFat) * ingredient.quantity;
+        nutrition.cholesterol +=
+          (ingredient.nf_cholesterol || ingredient.cholesterol) * ingredient.quantity;
+        nutrition.sodium += (ingredient.nf_sodium || ingredient.sodium) * ingredient.quantity;
+        nutrition.totalCarb +=
+          (ingredient.nf_total_carbohydrate || ingredient.totalCarb) * ingredient.quantity;
+        nutrition.fibers += (ingredient.nf_dietary_fiber || ingredient.fibers) * ingredient.quantity;
+        nutrition.sugars += (ingredient.nf_sugars || ingredient.sugars) * ingredient.quantity;
+        nutrition.proteins += (ingredient.nf_protein || ingredient.proteins) * ingredient.quantity;
+        nutrition.vitaminD += (ingredient.nf_vitamind || ingredient.vitaminD) * ingredient.quantity;
+        nutrition.potassium += (ingredient.nf_potassium || ingredient.potassium) * ingredient.quantity;
+        nutrition.calcium += (ingredient.nf_calcium || ingredient.calcium) * ingredient.quantity;
+        nutrition.iron += (ingredient.nf_iron || ingredient.iron) * ingredient.quantity;
+        nutrition.sugars += (ingredient.nf_addedsugars || ingredient.sugars) * ingredient.quantity;
+      });
+
+      return nutrition;
+    },
+    getNutritionFacts(ingredients) {
+      const nutrition = this.getNutritionTotals(ingredients);
+      const ingredientList = this.getIngredientList(ingredients);
+
+      $(this.$refs.nutritionFacts).html('');
+
+      $(this.$refs.nutritionFacts).nutritionLabel({
+        showServingUnitQuantity: false,
+        itemName: this.meal.title,
+        ingredientList: ingredientList,
+
+        decimalPlacesForQuantityTextbox: 2,
+        valueServingUnitQuantity: 1,
+
+        allowFDARounding: true,
+        decimalPlacesForNutrition: 2,
+
+        showPolyFat: false,
+        showMonoFat: false,
+
+        valueCalories: nutrition.calories,
+        valueFatCalories: nutrition.fatCalories,
+        valueTotalFat: nutrition.totalFat,
+        valueSatFat: nutrition.satFat,
+        valueTransFat: nutrition.transFat,
+        valueCholesterol: nutrition.cholesterol,
+        valueSodium: nutrition.sodium,
+        valueTotalCarb: nutrition.totalCarb,
+        valueFibers: nutrition.fibers,
+        valueSugars: nutrition.sugars,
+        valueProteins: nutrition.proteins,
+        valueVitaminD: nutrition.vitaminD,
+        valuePotassium_2018: nutrition.potassium,
+        valueCalcium: nutrition.calcium,
+        valueIron: nutrition.iron,
+        valueAddedSugars: nutrition.addedSugars,
+        showLegacyVersion: false
+      });
     }
   }
 };
