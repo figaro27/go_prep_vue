@@ -30,8 +30,6 @@ class SpaController extends Controller
         if ($request->wantsJson()) {
             //$this->middleware('view.api');
 
-            $store = defined('STORE_ID') ? Store::with(['meals', 'units', 'categories', 'meals.categories', 'meals.allergies', 'settings'])->find(STORE_ID) : null;
-
             $user = auth('api')->user();
 
             $willDeliver = false;
@@ -40,6 +38,9 @@ class SpaController extends Controller
                 // Store user
                 if ($user->hasRole('store') && $user->has('store')) {
                     $store = $user->store()->with(['meals', 'categories', 'meals.categories', 'meals.allergies', 'units', 'settings', 'storeDetail'])->first();
+                }
+                else {
+                  
                 }
 
                 // Customer user
@@ -62,6 +63,9 @@ class SpaController extends Controller
                 $orderIngredients = Cache::remember('order_ingredients_' . $store->id, 10, function () use ($store) {
                     return $store->getOrderIngredients();
                 });
+            }
+            else {
+              $store = defined('STORE_ID') ? Store::with(['meals', 'units', 'categories', 'meals.categories', 'meals.allergies', 'settings'])->find(STORE_ID) : null;
             }
 
             if ($user) {

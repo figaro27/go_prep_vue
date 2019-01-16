@@ -27,6 +27,7 @@ class Store extends Model
      * @var array
      */
     protected $hidden = [
+      'orders',
     ];
 
     protected $casts = [
@@ -143,7 +144,7 @@ class Store extends Model
                     if (!isset($ingredients[$key])) {
                         $ingredients[$key] = [
                             'id' => $ingredient->id,
-                            'ingredient' => $ingredient,
+                            //'ingredient' => $ingredient,
                             'quantity' => $quantity_base,
                         ];
                     } else {

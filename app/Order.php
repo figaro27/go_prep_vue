@@ -13,12 +13,16 @@ class Order extends Model
         'fulfilled', 'notes', 'delivery_day',
     ];
 
+    protected $hidden = [
+      'meals',
+    ];
+
     protected $casts = [
         'amount' => 'double',
         'created_at' => 'date:F d, Y'
     ];
 
-    protected $appends = ['has_notes'];
+    protected $appends = ['has_notes', 'meal_ids'];
 
     public function user()
     {
@@ -56,6 +60,10 @@ class Order extends Model
         //     array_push($meals, Meal::where('id', $meal)->get());
         // }
         // return $meals;
+    }
+
+    public function getMealIdsAttribute() {
+      return $this->meals()->get()->pluck('id');
     }
 
     public static function updateOrder($id, $props)
