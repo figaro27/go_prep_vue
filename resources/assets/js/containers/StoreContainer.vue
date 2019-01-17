@@ -8,9 +8,9 @@
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" />
       <b-navbar-nav class="ml-auto">
-        <b-nav-item class="d-md-down-none">
+        <!-- <b-nav-item class="d-md-down-none">
           <DefaultHeaderDropdownNotif/>
-        </b-nav-item>
+        </b-nav-item> -->
         <!-- <b-nav-item class="d-md-down-none">
           <DefaultHeaderDropdownTasks/>
         </b-nav-item>
@@ -22,7 +22,7 @@
         </b-nav-item> -->
         <StoreDropdown/>
       </b-navbar-nav>
-      <AsideToggler class="d-none d-lg-block" />
+      <!-- <AsideToggler class="d-none d-lg-block" /> -->
       <!--<AsideToggler class="d-lg-none" mobile />-->
     </AppHeader>
     <div class="app-body">

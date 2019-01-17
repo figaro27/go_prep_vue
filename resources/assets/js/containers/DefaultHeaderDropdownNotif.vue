@@ -4,7 +4,7 @@
       <i class="icon-bell"></i><b-badge pill variant="danger">{{itemsCount}}</b-badge>
     </template>
     <template slot="dropdown">
-      <b-dropdown-header tag="div" class="dropdown-menu-lg text-center"><strong>You have {{itemsCount}} notifications</strong></b-dropdown-header>
+      <b-dropdown-header tag="div" class="dropdown-menu-lg text-center"><strong>You have {{itemsCount}} new orders.</strong></b-dropdown-header>
 <!--       <b-dropdown-item><i class="icon-user-follow text-success"></i> New user registered</b-dropdown-item>
       <b-dropdown-item><i class="icon-user-unfollow text-danger"></i> User deleted</b-dropdown-item>
       <b-dropdown-item><i class="icon-chart text-info"></i> Sales report is ready</b-dropdown-item> -->
@@ -41,13 +41,25 @@
 </template>
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
+import { mapGetters, mapActions, mapMutations } from "vuex";
+
 export default {
   name: 'DefaultHeaderDropdownNotif',
   components: {
     AppHeaderDropdown
   },
-  data: () => {
-    return { itemsCount: 5 }
-  }
+  data() {
+    return { 
+      itemsCount: 5 
+    }
+  },
+  computed: {
+    ...mapGetters({
+      orders: "storeOrders",
+    }),
+    orders() {
+      return this.orders;
+    }
+  },
 }
 </script>

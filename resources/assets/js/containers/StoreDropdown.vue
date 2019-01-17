@@ -1,7 +1,7 @@
 <template>
   <AppHeaderDropdown right no-caret>
     <template slot="header">
-      <div class="m-3">{{ email }}</div>
+      <div class="m-3 pr-4"><h6>{{ email }}</h6></div>
     </template>\
     <template slot="dropdown">
       <b-dropdown-item>
