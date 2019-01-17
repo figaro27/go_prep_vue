@@ -507,7 +507,7 @@ const getters = {
       totalBagPrice += getters.viewedStore.settings.deliveryFee;
     }
 
-    return totalBagPrice;
+    return totalBagPrice.toFixed(2);
   },
 
   // Getters for logged in users (of any role)

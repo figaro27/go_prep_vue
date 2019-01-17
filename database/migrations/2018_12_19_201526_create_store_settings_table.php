@@ -20,6 +20,8 @@ class CreateStoreSettingsTable extends Migration
             $table->boolean('showNutrition')->default(true);
             $table->boolean('allowPickup')->default(false);
             $table->text('pickupInstructions')->nullable();
+            $table->boolean('applyMealPlanDiscount')->default(false);
+            $table->integer('mealPlanDiscount')->nullable();
             $table->boolean('applyDeliveryFee')->default(false);
             $table->integer('deliveryFee')->nullable();
             $table->longtext('delivery_days');

@@ -1,18 +1,26 @@
 <template>
     <div class="bag container-fluid">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                      <p @click="clearAll">Clear All</p>
-                      <ul class="list-group ">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12">
+              <h2 class="center-text">Checkout</h2>
+            </div>
+            <div class="col-md-12 mb-2">
+              <b-button variant="primary" @click="clearAll" class="">Empty Bag</b-button>
+              <router-link to="/customer/menu"><b-button variant="success" class="m-3">Change Meals</b-button></router-link>
+            </div>
+          </div>
+            <div class="row">
+              <div class="col-md-5">
+                    <ul class="list-group ">
                         <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
                           
                           <div v-if="item.quantity > 0" class="row">
                             <div class="col-sm-1">
-                              <img src="/images/customer/bag-plus.png" @click="addOne(item.meal)">
+                              <img src="/images/customer/bag-plus.png" @click="addOne(item.meal)" class="pl-1">
                               <p class="bag-quantity">{{ item.quantity }}</p>
-                              <img src="/images/customer/bag-minus.png" @click="minusOne(item.meal)">
+                              <img src="/images/customer/bag-minus.png" @click="minusOne(item.meal)" class="pl-1">
                             </div>
                             <div class="col-sm-2">
                               <img :src="item.meal.featured_image" class="bag-item-img"/>
@@ -31,82 +39,82 @@
                         v-if="total < minimum"
                       >Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
                       <div>
-                        <router-link to="/customer/bag">
-                          <img v-if="total >= minimum" src="/images/customer/next.jpg" @click="addBagItems(bag)">
-                        </router-link>
                       </div>
                     </div>
-                  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <p>Weekly Meal Plan</p>
-                        <div class="aside-options">
-                        <c-switch color="success" variant="pill" size="lg" v-model="deliveryPlan" checked/>
-                    </div>
-                        <hr>
-                        <p>{{ total }} {{ singOrPluralTotal }} {{ deliveryPlanText }}</p>
-                        <hr>
-                        <p v-if="total < minimum">
-                        Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.`
-                        </p>
-                        <p v-if="storeSettings.applyDeliveryFee">
-                          Delivery Fee: ${{ storeSettings.deliveryFee }}
-                        </p>
-                        <hr>
-                        <p>Price: ${{ totalBagPrice }}</p>
-                        <hr>
-                        <div v-if="deliveryPlan">
-                            <p>Weekly Meal Plan Discount ${{ mealPlanDiscountAmount }}</p>
-                            <hr>
-                            <p>Weekly Meal Plan Price: ${{ totalBagPriceAfterDiscount }}</p>
-                        </div>
-                        <div v-if="storeSettings.allowPickup">
-                          <hr>
-                         <b-form-group>
-                          <b-form-radio-group v-model="pickup" name="pickupOrDelivery">
-                            <b-form-radio value=1>Pickup</b-form-radio>
-                            <b-form-radio value=0>Delivery</b-form-radio>
-                          </b-form-radio-group>
-                        </b-form-group>
-                        <p v-if="pickup > 0">{{ storeSettings.pickupInstructions }} </p>
-                        
-                        </div>
-                        <div v-if="!storeSettings.allowPickup || pickup === 1">
-                          <b-form-group v-if="deliveryDaysOptions.length > 1" label="Delivery day" description="">
-                            <b-select :options="deliveryDaysOptions" v-model="deliveryDay" required>
-                              <option slot="top" disabled>-- Select delivery day --</option>
-                            </b-select>
-                          </b-form-group>
-                          <div v-else-if="deliveryDaysOptions.length === 1">
-                            <p>Delivery day: {{ deliveryDaysOptions[0].text }}</p>
+                    <div class="col-md-6 offset-1">
+                      <ul class="list-group">
+                        <li class="bag-item">
+                          <div class="row">
+                            <div class="col-md-3">
+                              <p><strong>Weekly Meal Plan</strong></p>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="aside-options">
+                              <c-switch color="success" variant="pill" size="lg" v-model="deliveryPlan" checked/>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                        <div>
-                          <router-link to="/customer/menu">
-                            <img v-if="total < minimum" src="/images/customer/back.jpg">
-                          </router-link>
-                            <img v-if="total >= minimum" src="/images/customer/checkout.jpg">
-                        </div>
-                    </div>
-                </div>
+                        </li>
+                        <li class="checkout-item">
+                          <p><strong>{{ total }} {{ singOrPluralTotal }} {{ deliveryPlanText }}</strong></p>
+                        </li>
+                        <li class="checkout-item" v-if="total < minimum">
+                          <p>
+                          Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.`
+                          </p>
+                        </li>
+                        <li class="checkout-item" v-if="storeSettings.applyDeliveryFee">
+                          <p>
+                            <strong>Delivery Fee:</strong> ${{ storeSettings.deliveryFee }}
+                          </p>
+                        </li>
+                        <li class="checkout-item">
+                          <p><strong>Price:</strong> ${{ totalBagPrice }}</p>
+                        </li>
+                        <li class="checkout-item" v-if="deliveryPlan">
+                              <p><strong>Weekly Meal Plan Discount:</strong> ${{ mealPlanDiscountAmount }}</p>
+                        </li>
+                        <li class="checkout-item" v-if="deliveryPlan">
+                              <p><strong>Weekly Meal Plan Price:</strong> ${{ totalBagPriceAfterDiscount }}</p>
+                        </li>
+                        <li class="checkout-item" v-if="storeSettings.allowPickup">
+                           <b-form-group>
+                            <b-form-radio-group v-model="pickup" name="pickupOrDelivery">
+                              <b-form-radio value=0 checked=1><strong>Delivery</strong></b-form-radio>
+                              <b-form-radio value=1 @click="pickup = true"><strong>Pickup</strong></b-form-radio>
+                            </b-form-radio-group>
+                            </b-form-group>
+                          <p v-if="pickup > 0"><strong>Pickup Instructions:</strong> {{ storeSettings.pickupInstructions }} </p>
+                        </li>
+
+                          <div v-if="pickup != 1">
+                            <b-form-group description="">
+                              <p><strong>Delivery Day</strong></p>
+                              <b-select :options="deliveryDaysOptions" v-model="deliveryDay" required>
+                                <option slot="top" disabled>-- Select delivery day --</option>
+                              </b-select>
+                            </b-form-group>
+                            <!-- <div v-if="deliveryDaysOptions.length === 1">
+                              <p>Delivery day: {{ deliveryDaysOptions[0].text }}</p>
+                            </div> -->
+                          </div>
+
+
+                          <div>
+                            <router-link to="/customer/menu">
+                              <img v-if="total < minimum" src="/images/customer/back.jpg">
+                            </router-link>
+                            <div v-if="!willDeliver">
+                              <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
+                            </div>
+                              <img v-if="total >= minimum && willDeliver" src="/images/customer/checkout.jpg">
+                          </div>
+
+                    </ul>
+              </div>
             </div>
-        </div>
+            </div>
+          </div>
     </div>
 </template>
 
@@ -120,7 +128,6 @@ import { Switch as cSwitch } from '@coreui/vue'
         data(){
             return {
                 deliveryPlan: false,
-                mealPlanDiscountPercent: 10, // Hard coding for now until we do Store Settings. Will also move to the store.,
                 pickup: '',
                 deliveryDay: undefined,
             }
@@ -151,26 +158,33 @@ import { Switch as cSwitch } from '@coreui/vue'
             },
             singOrPluralTotal(){
                 if (this.total > 1){
-                    return "meals";
+                    return "Meals";
                 }
-                return "meal";
+                return "Meal";
             },
             deliveryPlanText(){
                 if (this.deliveryPlan)
-                    return "Prepared Weekly"
+                    return "Delivered Weekly"
                 else
-                    return "One Time Order"
+                    return "Delivered Once"
             },
             totalBagPriceAfterDiscount(){
-                return ((this.totalBagPrice * (100 - this.mealPlanDiscountPercent))/100).toFixed(2);
+              let total = ((this.totalBagPrice * (100 - this.mealPlanDiscount))/100)
+                return total.toFixed(2)
             },
             mealPlanDiscountAmount(){
-                return (this.totalBagPrice - (this.totalBagPrice * (100 - this.mealPlanDiscountPercent)/100)).toFixed(2);
+                return (this.totalBagPrice - (this.totalBagPrice * (100 - this.mealPlanDiscount)/100)).toFixed(2);
             },
             deliveryDaysOptions() {
               return this.storeSetting('next_delivery_dates', []).map((date) => {
                 return {value: date.date, text: moment(date.date).format('dddd MMM Do')}
               })
+            },
+            applyMealPlanDiscount() {
+              return this.storeSettings.applyMealPlanDiscount;
+            },
+            mealPlanDiscount() {
+              return this.storeSettings.mealPlanDiscount;
             }
         },
         mounted()

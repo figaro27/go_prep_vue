@@ -172,6 +172,21 @@
                 required
               ></b-form-input>
             </b-form-group>
+            <b-form-group label="Weekly Meal Plan Discount" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.applyMealPlanDiscount"
+              />
+              <b-form-input
+                v-if="storeSettings.applyMealPlanDiscount"
+                id="meal-plan-discount"
+                v-model="storeSettings.mealPlanDiscount"
+                placeholder="Weekly Meal Plan Discount %"
+                required
+              ></b-form-input>
+            </b-form-group>
             <b-form-group label="Delivery Fee" :state="true">
               <c-switch
                 color="success"
