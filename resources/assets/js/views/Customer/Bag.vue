@@ -58,11 +58,6 @@
                         <li class="checkout-item">
                           <p><strong>{{ total }} {{ singOrPluralTotal }} {{ deliveryPlanText }}</strong></p>
                         </li>
-                        <li class="checkout-item" v-if="total < minimum">
-                          <p>
-                          Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.`
-                          </p>
-                        </li>
                         <li class="checkout-item" v-if="storeSettings.applyDeliveryFee">
                           <p>
                             <strong>Delivery Fee:</strong> ${{ storeSettings.deliveryFee }}
@@ -79,15 +74,17 @@
                         </li>
                         <li class="checkout-item" v-if="storeSettings.allowPickup">
                            <b-form-group>
-                            <b-form-radio-group v-model="pickup" name="pickupOrDelivery">
-                              <b-form-radio value=0 checked=1><strong>Delivery</strong></b-form-radio>
-                              <b-form-radio value=1 @click="pickup = true"><strong>Pickup</strong></b-form-radio>
+                            <b-form-radio-group v-model="pickupOrDelivery" name="pickupOrDelivery">
+                              <b-form-radio value=0><strong>Delivery</strong></b-form-radio>
+                              <b-form-radio value=1 @click="pickupOrDelivery = 1"><strong>Pickup</strong></b-form-radio>
                             </b-form-radio-group>
                             </b-form-group>
-                          <p v-if="pickup > 0"><strong>Pickup Instructions:</strong> {{ storeSettings.pickupInstructions }} </p>
+                        </li>
+                        <li class="checkout-item" v-if="pickupOrDelivery != 0">
+                            <p><strong>Pickup Instructions:</strong> {{ storeSettings.pickupInstructions }} </p>
                         </li>
 
-                          <div v-if="pickup != 1">
+                          <div v-if="pickupOrDelivery != 1">
                             <b-form-group description="">
                               <p><strong>Delivery Day</strong></p>
                               <b-select :options="deliveryDaysOptions" v-model="deliveryDay" required>
@@ -98,7 +95,11 @@
                               <p>Delivery day: {{ deliveryDaysOptions[0].text }}</p>
                             </div> -->
                           </div>
-
+                          <li class="checkout-item" v-if="total < minimum">
+                            <p>
+                            Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.`
+                            </p>
+                          </li>
 
                           <div>
                             <router-link to="/customer/menu">
@@ -128,8 +129,9 @@ import { Switch as cSwitch } from '@coreui/vue'
         data(){
             return {
                 deliveryPlan: false,
-                pickup: '',
+                pickup: false,
                 deliveryDay: undefined,
+                pickupOrDelivery: 0
             }
         },
         computed: {
