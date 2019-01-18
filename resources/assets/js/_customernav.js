@@ -9,6 +9,11 @@ export default {
       name: 'Bag',
       url: '/customer/bag',
       icon: 'icon-speedometer',
+    },
+    {
+      name: 'Orders',
+      url: '/customer/orders',
+      icon: 'fa fa-shopping-bag'
     }
     ]
 }
