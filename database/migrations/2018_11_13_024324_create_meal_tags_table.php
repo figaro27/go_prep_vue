@@ -19,7 +19,6 @@ class CreateMealTagsTable extends Migration
             $table->string('tag');
             $table->string('slug');
             $table->timestamps();
-            $table->unique(['store_id', 'slug']);
         });
     }
 

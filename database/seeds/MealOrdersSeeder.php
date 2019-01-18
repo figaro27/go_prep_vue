@@ -19,7 +19,7 @@ class MealOrdersSeeder extends Seeder
     	        DB::table('meal_orders')->insert([
     	        	  'store_id' => 1,
     	            'order_id' => $order,
-    	            'meal_id' => rand(1,50),
+    	            'meal_id' => rand(1,20),
     	            'quantity' => rand(1,4),
     	            'created_at' => Carbon::now(),
     	            'updated_at' => Carbon::now()

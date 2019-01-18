@@ -13,14 +13,13 @@ class MealsSeeder extends Seeder
     {
         $tags = [];
         foreach (['Low Carb', 'Low Calorie', 'Vegan'] as $tag) {
-            $tags[] = App\MealTag::create(['store_id' => 1, 'tag' => $tag, 'slug' => str_slug($tag)]);
+            $tags[] = App\MealTag::create(['tag' => $tag, 'slug' => str_slug($tag)]);
         }
 
         $ingredients = App\Ingredient::where('store_id', 1)->get();
 
-        factory(App\Meal::class, 50)->create()->each(function ($u) use ($tags, $ingredients) {
-            $u->tags()->save($tags[rand(0, count($tags) - 1)]);
-
+        factory(App\Meal::class, 20)->create()->each(function ($u) use ($tags, $ingredients) {
+            $u->tags()->attach(rand(1, 3));
             $u->categories()->attach(rand(1, 3));
             $u->allergies()->attach(rand(1, 4));
 
@@ -30,8 +29,11 @@ class MealsSeeder extends Seeder
                 'unit' => ['unit'],
             ];
 
-            for ($i = 0; $i < 10; $i++) {
-                $ingredient = $ingredients[rand(0, count($ingredients) - 1)];
+            // Pick 10 ingredients at random
+            $ingredientKeys = array_rand($ingredients->toArray(), min(10, count($ingredients)));
+
+            foreach($ingredientKeys as $i) {
+                $ingredient = $ingredients[$i];
                 $units = $unitTypes[$ingredient->unit_type];
                 $unit = $units[rand(0, count($units) - 1)];
 
