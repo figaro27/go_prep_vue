@@ -32,6 +32,7 @@ class SpaController extends Controller
             //$this->middleware('view.api');
 
             $user = auth('api')->user();
+            $store = null;
 
             $willDeliver = false;
 
@@ -41,7 +42,7 @@ class SpaController extends Controller
                     $store = $user->store()->with(['meals', 'categories', 'ingredients', 'meals.categories', 'meals.allergies', 'units', 'settings', 'storeDetail'])->first();
                 }
                 else {
-                  
+                    $store = defined('STORE_ID') ? Store::with(['meals', 'units', 'categories', 'meals.categories', 'meals.allergies', 'settings'])->find(STORE_ID) : null;
                 }
 
                 // Customer user
@@ -60,10 +61,7 @@ class SpaController extends Controller
               
             }
 
-            if ($store) {
-    
-            }
-            else {
+            if (!$store) {
               $store = defined('STORE_ID') ? Store::with(['meals', 'units', 'categories', 'meals.categories', 'meals.allergies', 'settings'])->find(STORE_ID) : null;
             }
 

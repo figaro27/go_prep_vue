@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         // Role checking middleware
         'role' => \App\Http\Middleware\Role::class,
         'role.store' => \App\Http\Middleware\IsStore::class,
+        'role.customer' => \App\Http\Middleware\IsCustomer::class,
 
         // Extract store from subdomain
         'store_slug' => \App\Http\Middleware\StoreSlug::class,

@@ -48,17 +48,22 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
               Route::get('print/{report}/{type}', 'Store\\PrintController@print');
             });
             
-            Route::get('store/{id}/meals', 'User\\StoreController@meals');
-            Route::get('store/meals', 'User\\StoreController@meals');
+            Route::group(['middleware' => ['role.customer']], function ($router) {
+              //Route::resource('stores', 'User\\StoreController');
+              Route::resource('/user', 'User\\UserController');
+              Route::post('bag/checkout', 'User\\CheckoutController@checkout');
+              Route::resource('me/subscriptions', 'User\\SubscriptionController');
+              Route::resource('me/orders', 'User\\OrderController');
+              Route::get('store/{id}/meals', 'User\\StoreController@meals');
+              Route::get('store/meals', 'User\\StoreController@meals');
+            });
             
             Route::get('getStore', 'StoreDetailController@show');
             Route::get('getStoreSettings', 'Store\\StoreSettingController@show');
             Route::post('updateStoreDetails', 'StoreDetailController@update');
             Route::post('updateStoreSettings', 'Store\\StoreSettingController@update');
             
-            Route::post('bag/checkout', 'User\\CheckoutController@checkout');
-            Route::resource('me/subscriptions', 'User\\SubscriptionController');
-            Route::resource('me/orders', 'User\\OrderController');
+            
             
           });
     });

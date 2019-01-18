@@ -23,9 +23,6 @@ Route::fallback('SpaController@index');
 // All logged in users
 Route::group(['middleware' => ['auth', 'store_slug']], function ($router) {
 
-  Route::resource('user', 'UserController');
-  Route::resource('stores', 'StoreController');
-
   Route::get('storeMeals', 'MealController@getStoreMeals');
 
   Route::post('storeMealAdmin', 'MealController@storeAdmin');
