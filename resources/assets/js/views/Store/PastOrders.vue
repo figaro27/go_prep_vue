@@ -139,6 +139,7 @@ export default {
         "user.user_detail.phone",
         "amount",
         "created_at",
+        "delivery_date",
         "actions"
       ],
       options: {
@@ -151,6 +152,7 @@ export default {
           "user.user_detail.phone": "Phone",
           amount: "Total",
           created_at: "Order Placed",
+          delivery_date: "Delivery Date",
           actions: "Actions"
         },
         rowClassCallback: function(row) {

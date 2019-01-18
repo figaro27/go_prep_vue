@@ -19,7 +19,8 @@ class Order extends Model
 
     protected $casts = [
         'amount' => 'double',
-        'created_at' => 'date:F d, Y'
+        'created_at' => 'date:F d, Y',
+        'delivery_date' => 'date:F d, Y'
     ];
 
     protected $appends = ['has_notes', 'meal_ids'];
