@@ -685,6 +685,13 @@ const getters = {
       return {};
     }
   },
+  storeMeal: (state) => id => {
+    try {
+      return _.find(state.store.meals.data, ['id', id]) || null;
+    } catch (e) {
+      return {};
+    }
+  },
   storeCategories: (state) => {
     try {
       return state.store.categories.data || {};
@@ -706,13 +713,22 @@ const getters = {
       return {};
     }
   },
+  storeOrdersByCustomer: (state) => (userId) => {
+    try {
+      return _.filter(state.orders.data, {'user_id': userId}) || [];
+    } catch (e) {
+      return {};
+    }
+  },
 
   subscriptions: (state) => {
     return state.customer.data.subscriptions;
   },
   orders: (state) => {
     return state.customer.data.orders;
-  }
+  },
+
+  
 }
 
 const plugins = [createPersistedState({paths: ['bag']})];

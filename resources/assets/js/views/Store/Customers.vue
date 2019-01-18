@@ -68,10 +68,10 @@
           <b-collapse :id="'collapse' + order.id" class="mt-2">
             <b-card>
               <p class="card-text">
-                <div v-for="meal in meals" :key="meal.id">
-                    <img :src="meal.meals[meal.id].featured_image" class="modalMeal">
-                    {{ meal.meals[meal.id].title }}
-                    ${{ meal.meals[meal.id].price }}
+                <div v-for="mealId in order.meal_ids" :key="mealId">
+                    <img :src="meal(mealId).featured_image" class="modalMeal">
+                    {{ meal(mealId).title }}
+                    ${{ meal(mealId).price }}
                 </div>
               </p>
             </b-card>
@@ -151,16 +151,18 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
+      meal: "storeMeal",
       customers: "storeCustomers",
-      meals_order: "storeOrders",
-      isLoading: "isLoading"
+      //orders: "storeOrders",
+      isLoading: "isLoading",
+      _storeOrdersByCustomer: "storeOrdersByCustomer",
     }),
     tableData() {
       return Object.values(this.customers);
     },
-    meals(){
-      return _.filter(this.meals_order, {'user_id': this.userId});
-    }
+    customerOrders() {
+      let orders = this.userId ? this._storeOrdersByCustomer(this.userId) : [];
+    },
   },
   created() {},
   mounted() {
@@ -171,7 +173,7 @@ export default {
       this.userId = 0;
       this.editUserId = 0;
     },
-  viewCustomer(id){
+  viewCustomer(id) {
     this.userId = id;
     this.viewCustomerModal = true;
     axios.get(`/api/me/customers/${id}`).then(response => {
