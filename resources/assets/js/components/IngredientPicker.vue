@@ -168,6 +168,7 @@ export default {
       return Object.values(this.existingIngredients).map(ingredient => {
         return {
           value: ingredient,
+          text: ingredient.food_name,
           label: ingredient.food_name
         };
       });
@@ -209,13 +210,22 @@ export default {
     },
     onClickAddExistingIngredient() {
       this.selectedExistingIngredients.forEach(ingredient => {
-        this.newIngredients.push(ingredient.value);
+        let val = { ...ingredient.value };
+        val.quantity = 1;
+        val.quantity_unit = units.base(val.unit_type);
+
+        this.ingredients.push(val);
       });
 
       this.selectedExistingIngredients = [];
     },
+    // Adding ingredient from table.
     onAddIngredient(val, i) {
       if (val) {
+        // Already added or empty name
+        if (val.added || _.isEmpty(val.food_name)) {
+          return;
+        }
         if (!val.unit_type) {
           val.unit_type = units.type(units.normalize(val.serving_unit));
         }
@@ -224,6 +234,21 @@ export default {
         }
         if (!val.quantity_unit) {
           val.quantity_unit = units.normalize(val.serving_unit);
+        }
+
+        // Calculate nutrition for 1 baseunit
+        let multiplier = units.convert(
+          1,
+          units.base(val.unit_type),
+          val.quantity_unit,
+          false
+        );
+        let nutrition = this.getNutritionTotals([val], false);
+        if (nutrition) {
+          nutrition = _.mapValues(nutrition, prop => {
+            return prop * multiplier;
+          });
+          val = _.merge(val, nutrition);
         }
 
         this.ingredients[i] = val;
@@ -251,10 +276,26 @@ export default {
             // Get properly named unit
             let unit = units.normalize(ingredient.serving_unit);
             let measure = units.describe(unit);
-
             ingredient.unit_type = units.type(unit);
             ingredient.quantity = ingredient.serving_qty;
             ingredient.quantity_unit = unit;
+            ingredient.added = true;
+
+            // Calculate nutrition for 1 baseunit
+            let multiplier = units.convert(
+              1,
+              units.base(ingredient.unit_type),
+              ingredient.quantity_unit,
+              false
+            );
+            let nutrition = this.getNutritionTotals([ingredient], false);
+            if (nutrition) {
+              nutrition = _.mapValues(nutrition, prop => {
+                return prop * multiplier;
+              });
+              ingredient = _.merge(ingredient, nutrition);
+            }
+
             return ingredient;
           });
           this.ingredients = _.concat(this.ingredients, newIngredients);
@@ -295,7 +336,7 @@ export default {
       });
       return ingredientList;
     },
-    getNutritionTotals: function(ingredients) {
+    getNutritionTotals: function(ingredients, normalize = true) {
       let nutrition = {
         calories: 0,
         totalFat: 0,
@@ -315,23 +356,49 @@ export default {
       };
 
       ingredients.forEach(ingredient => {
-        nutrition.calories += (ingredient.nf_calories || ingredient.calories) * ingredient.quantity;
-        nutrition.totalFat += (ingredient.nf_total_fat || ingredient.totalFat) * ingredient.quantity;
-        nutrition.satFat += (ingredient.nf_saturated_fat || ingredient.satFat) * ingredient.quantity;
-        nutrition.transFat += (ingredient.nf_trans_fat || ingredient.transFat) * ingredient.quantity;
+        let multiplier = ingredient.quantity || 1;
+
+        if (
+          normalize &&
+          ingredient.quantity_unit != units.base(ingredient.unit_type)
+        ) {
+          multiplier *= units.convert(
+            1,
+            ingredient.quantity_unit,
+            units.base(ingredient.unit_type)
+          );
+        }
+
+        nutrition.calories +=
+          (ingredient.nf_calories || ingredient.calories) * multiplier;
+        nutrition.totalFat +=
+          (ingredient.nf_total_fat || ingredient.totalFat) * multiplier;
+        nutrition.satFat +=
+          (ingredient.nf_saturated_fat || ingredient.satFat) * multiplier;
+        nutrition.transFat +=
+          (ingredient.nf_trans_fat || ingredient.transFat) * multiplier;
         nutrition.cholesterol +=
-          (ingredient.nf_cholesterol || ingredient.cholesterol) * ingredient.quantity;
-        nutrition.sodium += (ingredient.nf_sodium || ingredient.sodium) * ingredient.quantity;
+          (ingredient.nf_cholesterol || ingredient.cholesterol) * multiplier;
+        nutrition.sodium +=
+          (ingredient.nf_sodium || ingredient.sodium) * multiplier;
         nutrition.totalCarb +=
-          (ingredient.nf_total_carbohydrate || ingredient.totalCarb) * ingredient.quantity;
-        nutrition.fibers += (ingredient.nf_dietary_fiber || ingredient.fibers) * ingredient.quantity;
-        nutrition.sugars += (ingredient.nf_sugars || ingredient.sugars) * ingredient.quantity;
-        nutrition.proteins += (ingredient.nf_protein || ingredient.proteins) * ingredient.quantity;
-        nutrition.vitaminD += (ingredient.nf_vitamind || ingredient.vitaminD) * ingredient.quantity;
-        nutrition.potassium += (ingredient.nf_potassium || ingredient.potassium) * ingredient.quantity;
-        nutrition.calcium += (ingredient.nf_calcium || ingredient.calcium) * ingredient.quantity;
-        nutrition.iron += (ingredient.nf_iron || ingredient.iron) * ingredient.quantity;
-        nutrition.sugars += (ingredient.nf_addedsugars || ingredient.sugars) * ingredient.quantity;
+          (ingredient.nf_total_carbohydrate || ingredient.totalCarb) *
+          multiplier;
+        nutrition.fibers +=
+          (ingredient.nf_dietary_fiber || ingredient.fibers) * multiplier;
+        nutrition.sugars +=
+          (ingredient.nf_sugars || ingredient.sugars) * multiplier;
+        nutrition.proteins +=
+          (ingredient.nf_protein || ingredient.proteins) * multiplier;
+        nutrition.vitaminD +=
+          (ingredient.nf_vitamind || ingredient.vitaminD) * multiplier;
+        nutrition.potassium +=
+          (ingredient.nf_potassium || ingredient.potassium) * multiplier;
+        nutrition.calcium +=
+          (ingredient.nf_calcium || ingredient.calcium) * multiplier;
+        nutrition.iron += (ingredient.nf_iron || ingredient.iron) * multiplier;
+        nutrition.sugars +=
+          (ingredient.nf_addedsugars || ingredient.sugars) * multiplier;
       });
 
       return nutrition;
@@ -340,7 +407,7 @@ export default {
       const nutrition = this.getNutritionTotals(ingredients);
       const ingredientList = this.getIngredientList(ingredients);
 
-      $(this.$refs.nutritionFacts).html('');
+      $(this.$refs.nutritionFacts).html("");
 
       $(this.$refs.nutritionFacts).nutritionLabel({
         showServingUnitQuantity: false,
