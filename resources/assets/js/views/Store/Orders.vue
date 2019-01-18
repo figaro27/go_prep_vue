@@ -189,16 +189,11 @@ export default {
     },
     async fulfill(id) {
       $(".order-" + id).fadeOut(2000);
-
       await this.updateOrder({id, data: {fulfilled: 1 }});
     },
-    saveNotes(id) {
+    async saveNotes(id) {
       let deliveryNote = deliveryNote;
-      axios
-        .patch(`/api/me/orders/${id}`, { notes: this.deliveryNote })
-        .then(resp => {
-          this.refreshTable();
-        });
+      await this.updateOrder({id, data: {notes: this.deliveryNote }});
     },
     getMealQuantities(meals) {
 

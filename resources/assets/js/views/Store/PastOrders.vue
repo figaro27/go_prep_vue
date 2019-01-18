@@ -180,6 +180,7 @@ export default {
   methods: {
     ...mapActions({
       refreshOrders: 'refreshOrders',
+      updateOrder: "updateOrder",
     }),
     refreshTable(){
       this.refreshOrders();
@@ -194,25 +195,13 @@ export default {
     getTableDataById(id) {
       return _.find(this.tableData, ["id", id]);
     },
-    unfulfill(id) {
+    async unfulfill(id) {
       $(".order-"+id).fadeOut(1);
-      axios
-        .patch(`/api/me/orders/${id}`, {
-          fulfilled: 0
-        })
-        .then(resp => {
-          this.refreshTable();
-        });
-      
+      await this.updateOrder({id, data: {fulfilled: 0 }});
     },
-    saveNotes(id) {
+    async saveNotes(id) {
       let deliveryNote = deliveryNote;
-        axios.patch(`/api/me/orders/${id}`, 
-          {notes: this.deliveryNote}
-          )
-        .then(resp => {
-          this.refreshTable();
-        });
+      await this.updateOrder({id, data: {notes: this.deliveryNote }});
     },
     getMealQuantities(meals) {
 
