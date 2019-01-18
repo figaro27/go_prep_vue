@@ -70,9 +70,8 @@ class OrderController extends StoreController
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $id = $request->route('order');
         return Order::updateOrder($id, $request->all());
     }
 

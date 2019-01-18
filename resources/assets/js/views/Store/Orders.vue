@@ -171,7 +171,8 @@ export default {
   mounted() {},
   methods: {
     ...mapActions({
-      refreshOrders: "refreshOrders"
+      refreshOrders: "refreshOrders",
+      updateOrder: "updateOrder",
     }),
     refreshTable() {
       this.refreshOrders();
@@ -186,15 +187,10 @@ export default {
     getTableDataById(id) {
       return _.find(this.tableData, ["id", id]);
     },
-    fulfill(id) {
+    async fulfill(id) {
       $(".order-" + id).fadeOut(2000);
-      axios
-        .patch(`/api/me/orders/${id}`, {
-          fulfilled: 1
-        })
-        .then(resp => {
-          this.refreshTable();
-        });
+
+      await this.updateOrder({id, data: {fulfilled: 1 }});
     },
     saveNotes(id) {
       let deliveryNote = deliveryNote;

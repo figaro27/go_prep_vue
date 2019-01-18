@@ -535,6 +535,28 @@ const actions = {
     }
   },
 
+  async updateOrder({
+    commit,
+    state,
+    getters,
+    dispatch
+  }, {id, data}) {
+
+    if (!id || !data) {
+      return;
+    }
+
+    const index = _.findIndex(getters.storeOrders, ['id', id]);
+
+    if (index === -1) {
+      return;
+    }
+
+    Vue.set(state.orders.data, index, _.merge(state.orders.data[index], data));
+    const resp = await axios.patch(`/api/me/orders/${id}`, data);
+    Vue.set(state.orders.data, index, resp.data);
+  },
+
   async refreshOrders({
     commit,
     state
