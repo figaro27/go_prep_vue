@@ -492,6 +492,28 @@ const actions = {
     }
   },
 
+  async updateMeal({
+    commit,
+    state,
+    getters,
+    dispatch
+  }, {id, data}) {
+
+    if (!id || !data) {
+      return;
+    }
+
+    const index = _.findIndex(getters.storeMeals, ['id', id]);
+
+    if (index === -1) {
+      return;
+    }
+
+    Vue.set(state.store.meals.data, index, _.merge(state.store.meals.data[index], data));
+    const resp = await axios.patch(`/api/me/meals/${id}`, data);
+    Vue.set(state.store.meals.data, index, resp.data);
+  },
+
   async refreshMeals({
     commit,
     state

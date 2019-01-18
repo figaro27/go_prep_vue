@@ -40,7 +40,10 @@
               </div>
 
               <div slot="tags" slot-scope="props">{{ props.row.tag_titles.join(', ') }}</div>
-              <div slot="categories" slot-scope="props">{{ props.row.categories.map(category => category.category).join(', ') }}</div>
+              <div
+                slot="categories"
+                slot-scope="props"
+              >{{ props.row.categories.map(category => category.category).join(', ') }}</div>
 
               <div slot="price" slot-scope="props">{{ formatMoney(props.row.price) }}</div>
 
@@ -113,7 +116,12 @@
               </b-tab>
               <b-tab title="Ingredients">
                 <h3>Ingredients</h3>
-                <ingredient-picker v-model="meal.ingredients" :options="{saveButton:true}" :meal="meal" @save="val => onChangeIngredients(meal.id, val)"></ingredient-picker>
+                <ingredient-picker
+                  v-model="meal.ingredients"
+                  :options="{saveButton:true}"
+                  :meal="meal"
+                  @save="val => onChangeIngredients(meal.id, val)"
+                ></ingredient-picker>
               </b-tab>
             </b-tabs>
           </b-col>
@@ -207,7 +215,7 @@ export default {
         active_orders: "",
         num_orders: "",
         created_at: "",
-        categories: [],
+        categories: []
       },
       createMealModal: false,
       viewMealModal: false,
@@ -352,7 +360,8 @@ export default {
   mounted() {},
   methods: {
     ...mapActions({
-      refreshMeals: "refreshMeals"
+      refreshMeals: "refreshMeals",
+      _updateMeal: "updateMeal"
     }),
     formatMoney: format.money,
     refreshTable() {
@@ -371,14 +380,9 @@ export default {
       if (_.isEmpty(changes)) {
         changes = this.editing[id];
       }
-      axios.patch(`/api/me/meals/${id}`, changes).then(resp => {
-        this.$set(this.tableData, i, resp.data);
-        //this.$refs.mealsTable.toggleChildRow(i + 1);
-        //this.syncEditables();
-        this.refreshTable();
-      });
+      this._updateMeal({id, data: changes});
     },
-    updateActive(id, active, props) {
+    async updateActive(id, active, props) {
       const i = _.findIndex(this.tableData, o => {
         return o.id === id;
       });
@@ -387,17 +391,8 @@ export default {
         return this.getTableData();
       }
 
-      this.tableData[i].active = active;
-
-      axios
-        .patch(`/api/me/meals/${id}`, {
-          active: active
-        })
-        .then(resp => {
-          this.tableData[i] = { ...resp.data };
-          //this.syncEditables();
-          this.refreshTable();
-        });
+      await this._updateMeal({ id, data: { active } });
+      //this.refreshTable();
     },
 
     createMeal() {
@@ -570,7 +565,7 @@ export default {
       this.updateMeal(this.meal.id, { categories: this.meal.categories });
     },
     onChangeCategories(e) {
-      if(_.isObject(e.moved)) {
+      if (_.isObject(e.moved)) {
         this.updateMeal(this.meal.id, { categories: this.meal.categories });
       }
     }
