@@ -61,7 +61,7 @@ let units = {
    * @param {String} from From unit
    * @param {String} to To unit
    */
-  convert(val, from, to) {
+  convert(val, from, to, round = true) {
     if (from === 'grams') 
       from = 'g';
     if (to === 'grams') 
@@ -72,11 +72,14 @@ let units = {
     if (to === 'cups') 
       to = 'cup';
     
-    const newVal = convert(val)
+    val = convert(val)
       .from(from)
       .to(to);
 
-    return Math.round(newVal * 100) / 100;
+    if(round) {
+      val = Math.round(val * 100) / 100;
+    }
+    return val;
   },
   normalize(unitName) {
     unitName = unitName.toLowerCase();
