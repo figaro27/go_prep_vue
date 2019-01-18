@@ -306,7 +306,7 @@ class Meal extends Model
                         $ingredient = Ingredient::where([
                             'store_id' => $meal->store_id,
                             'food_name' => $newIngredient['food_name'],
-                            'unit_type' => Unit::getType('serving_unit'),
+                            'unit_type' => Unit::getType($newIngredient['serving_unit']),
                         ])->first();
 
                         if ($ingredient) {
@@ -344,6 +344,13 @@ class Meal extends Model
                             $ingredient->store_id = $meal->store_id;
                             if ($ingredient->save()) {
                                 $ingredients->push($ingredient);
+
+                                $meal->store->units()->create([
+                                  'store_id' => $meal->store_id,
+                                  'ingredient_id' => $ingredient->id,
+                                  'unit' => Format::baseUnit($ingredient->unit_type),
+                                ]);
+
                             } else {
                                 throw new \Exception('Failed to create ingredient');
                             }

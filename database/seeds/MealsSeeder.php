@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Utils\Data\Format;
 
 class MealsSeeder extends Seeder
 {
@@ -25,7 +26,7 @@ class MealsSeeder extends Seeder
 
             $unitTypes = [
                 'mass' => ['oz', 'g'],
-                'volume' => ['ml', 'teaspoon'],
+                'volume' => ['ml', 'tsp', 'fl-oz'],
                 'unit' => ['unit'],
             ];
 
@@ -41,6 +42,17 @@ class MealsSeeder extends Seeder
                     'quantity' => rand(1, 15),
                     'quantity_unit' => $unit,
                 ]);
+                
+                try {
+                  $u->store->units()->create([
+                    'store_id' => $u->store_id,
+                    'ingredient_id' => $ingredient->id,
+                    'unit' => Format::baseUnit($ingredient->unit_type),
+                  ]);
+                }
+                catch(\Exception $e) {}
+
+
             }
         });
 

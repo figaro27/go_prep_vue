@@ -223,7 +223,7 @@ export default {
     onAddIngredient(val, i) {
       if (val) {
         // Already added or empty name
-        if (val.added || _.isEmpty(val.food_name)) {
+        if (val.id || val.added || _.isEmpty(val.food_name)) {
           return;
         }
         if (!val.unit_type) {
@@ -281,11 +281,12 @@ export default {
             ingredient.quantity_unit = unit;
             ingredient.added = true;
 
+            /*
             // Calculate nutrition for 1 baseunit
             let multiplier = units.convert(
               1,
               units.base(ingredient.unit_type),
-              ingredient.quantity_unit,
+              unit,
               false
             );
             let nutrition = this.getNutritionTotals([ingredient], false);
@@ -294,7 +295,7 @@ export default {
                 return prop * multiplier;
               });
               ingredient = _.merge(ingredient, nutrition);
-            }
+            }*/
 
             return ingredient;
           });

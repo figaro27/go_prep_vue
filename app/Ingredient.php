@@ -11,6 +11,7 @@ class Ingredient extends Model
 {
     public $fillable = [
         'food_name',
+        'unit_type',
         'calories',
         'totalFat',
         'satFat',
@@ -114,7 +115,7 @@ class Ingredient extends Model
             }
         } elseif ($mealArr['unit_type'] === 'volume') {
             if (array_key_exists('serving_qty', $mealArr) && array_key_exists('serving_unit', $mealArr)) {
-                $volume = new Mass($mealArr['serving_qty'], $mealArr['serving_unit']);
+                $volume = new Volume($mealArr['serving_qty'], $mealArr['serving_unit']);
                 $unitFactor = $volume->toUnit('ml');
             } else {
                 throw new \Exception('Unable to determine base volume for ingredient');

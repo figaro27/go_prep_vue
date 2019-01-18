@@ -5,8 +5,11 @@ let map = {
   'tablespoon': 'Tbs',
   'teaspoons': 'tsp',
   'teaspoon': 'tsp',
+  'tbsp': 'Tbs',
   'milligramme': 'mg',
   'milligrammes': 'mg',
+  'liter': 'l',
+  'liters': 'l',
 };
 convert().list().forEach(unit => {
   map[unit.singular.toLowerCase()] = unit.abbr;
