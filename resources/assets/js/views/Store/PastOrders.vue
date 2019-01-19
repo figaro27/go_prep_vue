@@ -10,11 +10,21 @@
             :options="options"
             v-show="!isLoading"
           >
+            <div slot="beforeTable" class="mb-2">
+              <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
+            </div>
 
-          <div slot="beforeTable" class="mb-2">
-            <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
-          </div>
-
+            <span slot="beforeLimit">
+              <b-btn variant="primary" @click="exportData('past_orders', 'pdf', true)">
+                <i class="fa fa-print"></i>&nbsp;
+                Print
+              </b-btn>
+              <b-dropdown class="mx-1" right text="Export as">
+                <b-dropdown-item @click="exportData('past_orders', 'csv')">CSV</b-dropdown-item>
+                <b-dropdown-item @click="exportData('past_orders', 'xls')">XLS</b-dropdown-item>
+                <b-dropdown-item @click="exportData('past_orders', 'pdf')">PDF</b-dropdown-item>
+              </b-dropdown>
+            </span>
 
             <div slot="notes" class="text-nowrap" slot-scope="props">
               <p v-if="props.row.has_notes">
@@ -24,9 +34,8 @@
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-warning btn-sm"
-                @click="viewOrder(props.row.id)">
-                View Order
-              </button>
+                @click="viewOrder(props.row.id)"
+              >View Order</button>
               <button
                 class="btn btn-primary btn-sm"
                 @click="unfulfill(props.row.id)"
@@ -41,12 +50,8 @@
       </div>
     </div>
 
-
-
-
-
     <div class="modal-basic">
-       <b-modal v-model="viewOrderModal" size="lg" title="Order Information">
+      <b-modal v-model="viewOrderModal" size="lg" title="Order Information">
         <div class="row">
           <div class="col-md-4">
             <h4>Order ID</h4>
@@ -69,7 +74,7 @@
           <div class="col-md-4">
             <h4>Customer</h4>
             <p>{{ user_detail.firstname }} {{ user_detail.lastname }}</p>
- 
+
             <h4>Phone</h4>
             <p>{{ user_detail.phone }}</p>
           </div>
@@ -87,7 +92,14 @@
         <div class="row">
           <div class="col-md-12">
             <h4>Delivery Notes</h4>
-            <textarea type="text" id="form7" class="md-textarea form-control" rows="3" v-model="deliveryNote" placeholder="E.G. Customer didn't answer phone or doorbell."></textarea>
+            <textarea
+              type="text"
+              id="form7"
+              class="md-textarea form-control"
+              rows="3"
+              v-model="deliveryNote"
+              placeholder="E.G. Customer didn't answer phone or doorbell."
+            ></textarea>
             <button class="btn btn-primary btn-md pull-right mt-2" @click="saveNotes(orderId)">Save</button>
           </div>
         </div>
@@ -96,10 +108,12 @@
             <h4>Meals</h4>
             <hr>
             <ul class="meal-quantities">
-              <li v-for="(order) in getMealQuantities(meals)"><span class="order-quantity">{{order.order}}</span> <img src="/images/store/x-modal.png"> 
-                  <img :src="order.featured_image" class="modalMeal"> 
-                    {{order.title}}
-                    ${{order.price * order.order}}
+              <li v-for="(order) in getMealQuantities(meals)">
+                <span class="order-quantity">{{order.order}}</span>
+                <img src="/images/store/x-modal.png">
+                <img :src="order.featured_image" class="modalMeal">
+                {{order.title}}
+                ${{order.price * order.order}}
               </li>
             </ul>
           </div>
@@ -107,7 +121,6 @@
       </b-modal>
     </div>
   </div>
-
 </template>
 
 
@@ -127,7 +140,7 @@ export default {
       filter: false,
       viewOrderModal: false,
       order: {},
-      orderId: '',
+      orderId: "",
       user_detail: {},
       meals: {},
       columns: [
@@ -144,7 +157,7 @@ export default {
       ],
       options: {
         headings: {
-          "notes": "Notes",
+          notes: "Notes",
           order_number: "Order #",
           "user.user_detail.full_name": "Name",
           "user.user_detail.address": "Address",
@@ -158,9 +171,9 @@ export default {
         rowClassCallback: function(row) {
           let classes = `order-${row.id}`;
           return classes;
-        },
+        }
       },
-      deliveryNote: "",
+      deliveryNote: ""
     };
   },
   computed: {
@@ -170,21 +183,17 @@ export default {
       isLoading: "isLoading"
     }),
     tableData() {
-      if (!this.filter)
-        return _.filter(this.orders, {'fulfilled': 1});
-      else
-        return _.filter(this.orders, {'fulfilled': 1, 'has_notes': true});
-    },
+      if (!this.filter) return _.filter(this.orders, { fulfilled: 1 });
+      else return _.filter(this.orders, { fulfilled: 1, has_notes: true });
+    }
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
     ...mapActions({
-      refreshOrders: 'refreshOrders',
-      updateOrder: "updateOrder",
+      refreshOrders: "refreshOrders",
+      updateOrder: "updateOrder"
     }),
-    refreshTable(){
+    refreshTable() {
       this.refreshOrders();
     },
     formatMoney: format.money,
@@ -198,26 +207,26 @@ export default {
       return _.find(this.tableData, ["id", id]);
     },
     async unfulfill(id) {
-      $(".order-"+id).fadeOut(1);
-      await this.updateOrder({id, data: {fulfilled: 0 }});
+      $(".order-" + id).fadeOut(1);
+      await this.updateOrder({ id, data: { fulfilled: 0 } });
     },
     async saveNotes(id) {
       let deliveryNote = deliveryNote;
-      await this.updateOrder({id, data: {notes: this.deliveryNote }});
+      await this.updateOrder({ id, data: { notes: this.deliveryNote } });
     },
     getMealQuantities(meals) {
+      let order = _.toArray(_.countBy(meals, "id"));
 
-      let order = _.toArray(_.countBy(meals, 'id'));
-
-      return order.map((order, id) => { return { 
-        order, 
-        featured_image: meals[id].featured_image,
-        title: meals[id].title,
-        price: meals[id].price
-      }})
-
+      return order.map((order, id) => {
+        return {
+          order,
+          featured_image: meals[id].featured_image,
+          title: meals[id].title,
+          price: meals[id].price
+        };
+      });
     },
-    viewOrder(id){
+    viewOrder(id) {
       axios.get(`/api/me/orders/${id}`).then(response => {
         this.orderId = response.data.id;
         this.deliveryNote = response.data.notes;
@@ -231,11 +240,32 @@ export default {
       });
       this.viewOrderModal = true;
     },
-    filterNotes(){
+    filterNotes() {
       this.filter = !this.filter;
       this.refreshTable();
+    },
+    exportData(report, format = "pdf", print = false) {
+      axios
+        .get(`/api/me/print/${report}/${format}`)
+        .then(response => {
+          if (!_.isEmpty(response.data.url)) {
+            let win = window.open(response.data.url);
+            if (print) {
+              win.addEventListener(
+                "load",
+                () => {
+                  win.print();
+                },
+                false
+              );
+            }
+          }
+        })
+        .catch(err => {})
+        .finally(() => {
+          this.loading = false;
+        });
     }
-
   }
 };
 </script>

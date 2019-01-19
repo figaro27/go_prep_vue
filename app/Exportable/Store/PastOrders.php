@@ -6,7 +6,7 @@ use App\Exportable\Exportable;
 use App\Store;
 use App\User;
 
-class Orders
+class PastOrders
 {
     use Exportable;
 
@@ -19,7 +19,7 @@ class Orders
 
     public function exportData()
     {
-        $orders = $this->store->getOrdersForNextDelivery()->map(function ($order) {
+        $orders = $this->store->getFulfilledOrders()->map(function ($order) {
           return [
             $order->delivery,
             $order->order_number,

@@ -11,6 +11,8 @@ use App\Exportable\Store\Orders;
 use App\Exportable\Store\PackingSlips;
 use App\Exportable\Store\Customers;
 use App\Exportable\Store\Meals;
+use App\Exportable\Store\OrdersByCustomer;
+use App\Exportable\Store\PastOrders;
 
 class PrintController extends StoreController
 {
@@ -26,6 +28,14 @@ class PrintController extends StoreController
 
         case 'orders':
           $exportable = new Orders($this->store);
+        break;
+
+        case 'past_orders':
+          $exportable = new PastOrders($this->store);
+        break;
+
+        case 'orders_by_customer':
+          $exportable = new OrdersByCustomer($this->store);
         break;
 
         case 'packing_slips':

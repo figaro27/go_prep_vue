@@ -206,6 +206,32 @@ class Store extends Model
       return $orders;
     }
 
+    public function getPastOrders($groupBy = null) {
+      $date = $this->getNextDeliveryDate();
+      $orders = $this->orders()->with('meals')->where(
+        'delivery_date', '<', $date->format('Y-m-d')
+      )->get();
+
+      if($groupBy) {
+        $orders = $orders->groupBy($groupBy);
+      }
+
+      return $orders;
+    }
+
+    public function getFulfilledOrders($groupBy = null) {
+      $date = $this->getNextDeliveryDate();
+      $orders = $this->orders()->with('meals')->where(
+        'fulfilled', '1'
+      )->get();
+
+      if($groupBy) {
+        $orders = $orders->groupBy($groupBy);
+      }
+
+      return $orders;
+    }
+
     public function deliversToZip($zip)
     {
         return in_array($zip, $this->settings->delivery_distance_zipcodes);

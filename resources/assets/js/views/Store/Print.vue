@@ -22,7 +22,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-body m-4">
-            <button @click="print('orders', 'pdf')" class="btn btn-primary btn-md form-control">Print Orders</button>
+            <button @click="print('orders_by_customer', 'pdf')" class="btn btn-primary btn-md form-control">Print Orders</button>
             <p class="mt-4">Shows which meals need to be packaged together for each customer.</p>
           </div>
         </div>

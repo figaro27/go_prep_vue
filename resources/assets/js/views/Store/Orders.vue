@@ -14,13 +14,28 @@
               <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
             </div>
 
+            <span slot="beforeLimit">
+              <b-btn variant="primary" @click="exportData('orders', 'pdf', true)">
+                <i class="fa fa-print"></i>&nbsp;
+                Print
+              </b-btn>
+              <b-dropdown class="mx-1" right text="Export as">
+                <b-dropdown-item @click="exportData('orders', 'csv')">CSV</b-dropdown-item>
+                <b-dropdown-item @click="exportData('orders', 'xls')">XLS</b-dropdown-item>
+                <b-dropdown-item @click="exportData('orders', 'pdf')">PDF</b-dropdown-item>
+              </b-dropdown>
+            </span>
+
             <div slot="notes" class="text-nowrap" slot-scope="props">
               <p v-if="props.row.has_notes">
                 <img src="/images/store/note.png">
               </p>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
-              <button class="btn view btn-warning btn-sm" @click="viewOrder(props.row.id)">View Order</button>
+              <button
+                class="btn view btn-warning btn-sm"
+                @click="viewOrder(props.row.id)"
+              >View Order</button>
               <button
                 class="btn btn-primary btn-sm"
                 @click="fulfill(props.row.id)"
@@ -93,10 +108,12 @@
             <h4>Meals</h4>
             <hr>
             <ul class="meal-quantities">
-              <li v-for="(order) in getMealQuantities(meals)"><span class="order-quantity">{{order.order}}</span> <img src="/images/store/x-modal.png"> 
-                  <img :src="order.featured_image" class="modalMeal"> 
-                    {{order.title}}
-                    ${{order.price * order.order}}
+              <li v-for="(order) in getMealQuantities(meals)">
+                <span class="order-quantity">{{order.order}}</span>
+                <img src="/images/store/x-modal.png">
+                <img :src="order.featured_image" class="modalMeal">
+                {{order.title}}
+                ${{order.price * order.order}}
               </li>
             </ul>
           </div>
@@ -174,7 +191,7 @@ export default {
   methods: {
     ...mapActions({
       refreshOrders: "refreshOrders",
-      updateOrder: "updateOrder",
+      updateOrder: "updateOrder"
     }),
     refreshTable() {
       this.refreshOrders();
@@ -191,23 +208,23 @@ export default {
     },
     async fulfill(id) {
       $(".order-" + id).fadeOut(2000);
-      await this.updateOrder({id, data: {fulfilled: 1 }});
+      await this.updateOrder({ id, data: { fulfilled: 1 } });
     },
     async saveNotes(id) {
       let deliveryNote = deliveryNote;
-      await this.updateOrder({id, data: {notes: this.deliveryNote }});
+      await this.updateOrder({ id, data: { notes: this.deliveryNote } });
     },
     getMealQuantities(meals) {
+      let order = _.toArray(_.countBy(meals, "id"));
 
-      let order = _.toArray(_.countBy(meals, 'id'));
-
-      return order.map((order, id) => { return { 
-        order, 
-        featured_image: meals[id].featured_image,
-        title: meals[id].title,
-        price: meals[id].price
-      }})
-
+      return order.map((order, id) => {
+        return {
+          order,
+          featured_image: meals[id].featured_image,
+          title: meals[id].title,
+          price: meals[id].price
+        };
+      });
     },
     viewOrder(id) {
       axios.get(`/api/me/orders/${id}`).then(response => {
@@ -226,6 +243,28 @@ export default {
     filterNotes() {
       this.filter = !this.filter;
       this.refreshTable();
+    },
+    exportData(report, format = "pdf", print = false) {
+      axios
+        .get(`/api/me/print/${report}/${format}`)
+        .then(response => {
+          if (!_.isEmpty(response.data.url)) {
+            let win = window.open(response.data.url);
+            if (print) {
+              win.addEventListener(
+                "load",
+                () => {
+                  win.print();
+                },
+                false
+              );
+            }
+          }
+        })
+        .catch(err => {})
+        .finally(() => {
+          this.loading = false;
+        });
     }
   }
 };
