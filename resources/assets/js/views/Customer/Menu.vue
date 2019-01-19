@@ -1,7 +1,7 @@
 <template>
   <div class="menu container-fluid">
     <div v-if="!willDeliver">
-      <b-alert variant="danger" show>You are out of the delivery bounds</b-alert>
+      <b-alert variant="danger center-text" show>You are out of the delivery bounds</b-alert>
     </div>
 
 

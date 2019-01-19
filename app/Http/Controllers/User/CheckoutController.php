@@ -11,6 +11,7 @@ use App\MealOrder;
 use App\Mail\Customer\NewOrder;
 use Illuminate\Support\Facades\Mail;
 use Auth;
+use App\Http\Controllers\User\UserController;
 
 class CheckoutController extends UserController
 {
@@ -29,7 +30,7 @@ class CheckoutController extends UserController
 
         $total = $bag->getTotal();
         if ($store->settings->applyDeliveryFee) {
-            $total += $this->store->settings->deliveryFee;
+            $total += $store->settings->deliveryFee;
         }
 
         \Stripe\Stripe::setApiKey($store->settings->stripe_account['access_token']);
