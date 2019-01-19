@@ -9,6 +9,7 @@ use App\Exportable\Store\MealQuantities;
 use App\Exportable\Store\IngredientQuantities;
 use App\Exportable\Store\Orders;
 use App\Exportable\Store\PackingSlips;
+use App\Exportable\Store\Customers;
 
 class PrintController extends StoreController
 {
@@ -28,6 +29,10 @@ class PrintController extends StoreController
 
         case 'packing_slips':
           $exportable = new PackingSlips($this->store);
+        break;
+
+        case 'customers':
+          $exportable = new Customers($this->store);
         break;
       }
 

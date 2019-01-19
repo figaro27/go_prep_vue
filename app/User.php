@@ -125,14 +125,19 @@ class User extends Authenticatable
         return User::with('userDetail', 'order')->whereIn('id', $customers)->get()->map(function ($user) {
             return [
                 "id" => $user->id,
+                "name" => $user->userDetail->firstname . ' ' . $user->userDetail->lastname,
                 "Name" => $user->userDetail->firstname . ' ' . $user->userDetail->lastname,
                 "phone" => $user->userDetail->phone,
                 "address" => $user->userDetail->address,
                 "city" => $user->userDetail->city,
                 "state" => $user->userDetail->state,
+                "joined" => $user->created_at->format('m-d-Y'),
                 "Joined" => $user->created_at->format('m-d-Y'),
+                "last_order" => $user->order->max("created_at")->format('m-d-Y'),
                 "LastOrder" => $user->order->max("created_at")->format('m-d-Y'),
+                "total_payments" => $user->order->count(),
                 "TotalPayments" => $user->order->count(),
+                "total_paid" => '$' . number_format($user->order->sum("amount"), 2, '.', ','),
                 "TotalPaid" => '$' . number_format($user->order->sum("amount"), 2, '.', ','),
             ];
         });
