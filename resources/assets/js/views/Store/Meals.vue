@@ -25,6 +25,18 @@
                 />
               </div>
 
+              <span slot="beforeLimit">
+                <b-btn variant="primary" @click="exportData('meals', 'pdf', true)">
+                  <i class="fa fa-print"></i>&nbsp;
+                  Print
+                </b-btn>
+                <b-dropdown class="mx-1" right text="Export as">
+                  <b-dropdown-item @click="exportData('meals', 'csv')">CSV</b-dropdown-item>
+                  <b-dropdown-item @click="exportData('meals', 'xls')">XLS</b-dropdown-item>
+                  <b-dropdown-item @click="exportData('meals', 'pdf')">PDF</b-dropdown-item>
+                </b-dropdown>
+              </span>
+
               <div slot="active" slot-scope="props">
                 <b-form-checkbox
                   type="checkbox"
@@ -568,6 +580,24 @@ export default {
       if (_.isObject(e.moved)) {
         this.updateMeal(this.meal.id, { categories: this.meal.categories });
       }
+    },
+    exportData(report, format = "pdf", print = false) {
+      axios
+        .get(`/api/me/print/${report}/${format}`)
+        .then(response => {
+          if (!_.isEmpty(response.data.url)) {
+            let win = window.open(response.data.url);
+            if(print) {
+              win.addEventListener('load', () => {
+                win.print();
+              }, false);
+            }
+          }
+        })
+        .catch(err => {})
+        .finally(() => {
+          this.loading = false;
+        });
     }
   }
 };
