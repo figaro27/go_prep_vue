@@ -11,7 +11,6 @@ import CustomerSubscriptions from './views/Customer/Account/Subscriptions.vue';
 import CustomerOrders from './views/Customer/Orders.vue';
 
 import StoreCustomers from './views/Store/Customers.vue';
-import StoreDashboard from './views/Store/Dashboard.vue';
 import StoreIngredients from './views/Store/Ingredients.vue';
 import StorePrint from './views/Store/Print.vue';
 import StoreMeals from './views/Store/Meals.vue';
@@ -67,12 +66,8 @@ let routes = [
         component: CustomerSubscriptions
     },
     {
-        path: '/customer/Orders',
+        path: '/customer/orders',
         component: CustomerOrders
-    },
-    {
-        path: '/store/dashboard',
-        component: StoreDashboard
     },
     {
         path: '/store/customers',

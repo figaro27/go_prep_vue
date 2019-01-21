@@ -49,7 +49,7 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         if ($user->hasRole('store')) {
-          return redirect()->intended('/store/dashboard');
+          return redirect()->intended('/store/orders');
         } else {
             return redirect()->intended('/customer/home');
         }

@@ -1,9 +1,15 @@
 export default {
   items: [
     {
-      name: 'Dashboard',
-      url: '/store/dashboard',
-      icon: 'fa fa-tachometer-alt',
+      name: 'Orders',
+      url: '/store/orders',
+      icon: 'fa fa-shopping-bag'
+    },
+    {
+      name: 'Past Orders',
+      url: '/store/past-orders',
+      icon: 'fa fa-shopping-bag',
+      class: 'nav-child'
     },
     {
       name: 'Meals',
@@ -27,17 +33,6 @@ export default {
       name: 'Menu',
       url: '/store/menu',
       icon: 'fa fa-book',
-      class: 'nav-child'
-    },
-    {
-      name: 'Orders',
-      url: '/store/orders',
-      icon: 'fa fa-shopping-bag'
-    },
-    {
-      name: 'Past Orders',
-      url: '/store/past-orders',
-      icon: 'fa fa-shopping-bag',
       class: 'nav-child'
     },
     {
