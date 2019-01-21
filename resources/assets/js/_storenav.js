@@ -12,6 +12,12 @@ export default {
 
     },
     {
+      name: 'Meal Orders',
+      url: '/store/meal-orders',
+      icon: 'fa fa-utensils'
+
+    },
+    {
       name: 'Ingredients',
       url: '/store/ingredients',
       icon: 'fa fa-lemon-o',

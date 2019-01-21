@@ -15,6 +15,7 @@ import StoreDashboard from './views/Store/Dashboard.vue';
 import StoreIngredients from './views/Store/Ingredients.vue';
 import StorePrint from './views/Store/Print.vue';
 import StoreMeals from './views/Store/Meals.vue';
+import StoreMealOrders from './views/Store/MealOrders.vue';
 import StoreOrders from './views/Store/Orders.vue';
 import StorePastOrders from './views/Store/PastOrders.vue';
 import StorePayments from './views/Store/Payments.vue';
@@ -88,6 +89,10 @@ let routes = [
     {
         path: '/store/meals',
         component: StoreMeals
+    },
+    {
+        path: '/store/meal-orders',
+        component: StoreMealOrders
     },
     {
         path: '/store/orders',
