@@ -85,17 +85,18 @@
               </li>
               <li class="checkout-item">
                 <p>
-                  <strong>Price:</strong>
+                  <span v-if="!applyMealPlanDiscount || !deliveryPlan"><strong>Price:</strong></span>
+                  <span v-if="applyMealPlanDiscount && deliveryPlan"><strong>Price Before Discount:</strong></span>
                   ${{ totalBagPrice }}
                 </p>
               </li>
-              <li class="checkout-item" v-if="deliveryPlan">
+              <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
                 <p>
                   <strong>Weekly Meal Plan Discount:</strong>
                   ${{ mealPlanDiscountAmount }}
                 </p>
               </li>
-              <li class="checkout-item" v-if="deliveryPlan">
+              <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
                 <p>
                   <strong>Weekly Meal Plan Price:</strong>
                   ${{ totalBagPriceAfterDiscount }}
@@ -113,7 +114,7 @@
                   </b-form-radio-group>
                 </b-form-group>
               </li>
-              <li class="checkout-item" v-if="pickupOrDelivery != 0">
+              <li class="checkout-item" v-if="storeSettings.allowPickup && pickupOrDelivery != 0">
                 <p>
                   <strong>Pickup Instructions:</strong>
                   {{ storeSettings.pickupInstructions }}
@@ -178,9 +179,9 @@ export default {
   data() {
     return {
       deliveryPlan: false,
-      mealPlanDiscountPercent: 10, // Hard coding for now until we do Store Settings. Will also move to the store.,
-      pickup: 0,
+      pickup: false,
       deliveryDay: undefined,
+      pickupOrDelivery: 0,
       stripeKey,
       stripeOptions,
       card: null
@@ -223,14 +224,14 @@ export default {
     },
     totalBagPriceAfterDiscount() {
       return (
-        (this.totalBagPrice * (100 - this.mealPlanDiscountPercent)) /
+        (this.totalBagPrice * (100 - this.mealPlanDiscount)) /
         100
       ).toFixed(2);
     },
     mealPlanDiscountAmount() {
       return (
         this.totalBagPrice -
-        (this.totalBagPrice * (100 - this.mealPlanDiscountPercent)) / 100
+        (this.totalBagPrice * (100 - this.mealPlanDiscount)) / 100
       ).toFixed(2);
     },
     deliveryDaysOptions() {
@@ -240,6 +241,12 @@ export default {
           text: moment(date.date).format("dddd MMM Do")
         };
       });
+    },
+    applyMealPlanDiscount() {
+      return this.storeSettings.applyMealPlanDiscount;
+            },
+    mealPlanDiscount() {
+      return this.storeSettings.mealPlanDiscount;
     }
   },
   mounted() {},
