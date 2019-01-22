@@ -10,18 +10,10 @@
             :options="options"
             v-show="!isLoading"
           >
-            <div slot="beforeTable" class="row mb-2">
-              <div class="col-md-1">
-                <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
-              </div>
-              <div class="col-md-1 pt-2">
-                <h6>Delivery Days:</h6>
-              </div>
-              <div class="col-md-10 pb-1">
-                <v-select multiple v-model="selected" :options="deliveryDates"></v-select>
-              </div>
-                  
+            <div slot="beforeTable" class="mb-2">
+              <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
 
+              <b-form-select :options="deliveryDates" required v-model="deliveryDate"></b-form-select>
             </div>
 
             <span slot="beforeLimit">
