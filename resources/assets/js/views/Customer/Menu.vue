@@ -14,12 +14,14 @@
             <b-modal size="lg" title="Meal Filters" v-model="viewFilterModal" v-if="viewFilterModal">
                 
                 <br>
+                Show meals with:
                 <div v-for="tag in tags" :key="tag">
                   <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{ tag }}</b-button>
                 </div>
                 <br>
+                Hide meals that contain:
                 <div v-for="allergy in allergies" :key="allergy">
-                  <b-button :pressed="active[allergy]"" @click="filterByAllergy(allergy)">{{ allergy }}</b-button>
+                  <b-button :pressed="active[allergy]" @click="filterByAllergy(allergy)">{{ allergy }}</b-button>
                 </div>
             </b-modal>
           </div>
@@ -175,22 +177,22 @@ export default {
         meals = _.filter(meals, meal => {
           let skip = false;
 
-          if (filters.tags.length > 0) {
-            let hasTag = _.reduce(
-              meal.tags,
+          if (!skip && filters.tags.length > 0) {
+            let hasAllTags = _.reduce(
+              filters.tags,
               (has, tag) => {
-                if (has) return true;
-                let x = _.includes(filters.tags, tag.tag);
+                if (!has) return false;
+                let x = _.includes(meal.tag_titles, tag);
 
                 return x;
               },
-              false
+              true
             );
 
-            skip = skip || !hasTag;
+            skip = !hasAllTags;
           }
 
-          if (filters.allergies.length > 0) {
+          if (!skip && filters.allergies.length > 0) {
             let hasAllergy = _.reduce(
               meal.allergies,
               (has, allergy) => {
@@ -202,7 +204,7 @@ export default {
               false
             );
 
-            skip = skip || hasAllergy;
+            skip = hasAllergy;
           }
           return !skip;
         });
