@@ -129,7 +129,8 @@ class Ingredient extends Model
                 continue;
             }
 
-            $mealArr[$field] /= $unitFactor;
+            // We already do this in the FE
+            //$mealArr[$field] /= $unitFactor;
         }
 
         // Thumbnail
