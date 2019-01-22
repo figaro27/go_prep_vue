@@ -287,7 +287,7 @@ export default {
               units.base(ingredient.unit_type),
               unit,
               false
-            );
+            ) / ingredient.quantity;
             let nutrition = this.getNutritionTotals([ingredient], false);
             if (nutrition) {
               nutrition = _.mapValues(nutrition, prop => {
