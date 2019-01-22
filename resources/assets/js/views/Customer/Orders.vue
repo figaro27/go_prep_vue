@@ -2,6 +2,7 @@
   <div class="row">
     <div class="col-md-12">
       <div class="card">
+        <div class="card-header">Orders</div>
         <div class="card-body">
           <div v-for="order in orders" :key="order.id">
             <div v-b-toggle="'collapse' + order.id">
@@ -32,7 +33,6 @@
                   </div>
                 </div>
 
-                <!-- Need to fix this bug & get meal quantities -->
                 <b-collapse :id="'collapse' + order.id" class="mt-2">
                   <b-table striped :items="getMealTableData(order)" foot-clone>
                     <template slot="image" slot-scope="row">

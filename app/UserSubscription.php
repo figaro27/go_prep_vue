@@ -16,6 +16,11 @@ class UserSubscription extends Model
         return $this->belongsTo('App\Store');
     }
 
+    public function orders()
+    {
+        return $this->hasMany('App\Order');
+    }
+
     public function cancel() {
       // todo: implement stripe logic
 

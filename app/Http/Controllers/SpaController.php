@@ -67,7 +67,7 @@ class SpaController extends Controller
 
             if ($user) {
                 if ($user->hasRole('store')) {
-                    $orders = $user->store->orders()->with(['user', 'user.userDetail', 'meals'])->get();
+                    $orders = $user->store->orders()->with(['user', 'user.userDetail'])->without(['meals'])->get();
                 }
             }
 

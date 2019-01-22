@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->references('id')->on('users');
             $table->integer('store_id')->references('id')->on('stores');
+            $table->integer('user_subscription_id')->references('id')->on('user_subscriptions')->nullable();
             $table->string('order_number')->unique();
             $table->integer('amount');
             $table->date('delivery_date');

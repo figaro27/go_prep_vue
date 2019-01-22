@@ -13,6 +13,6 @@ class SubscriptionController extends UserController
      */
     public function index()
     {
-        return $this->user->subscriptions;
+        return $this->user->subscriptions()->with(['orders', 'orders.meals'])->get();
     }
 }

@@ -100,6 +100,26 @@ class CheckoutController extends UserController
             $userSubscription->delivery_day = date('N', strtotime($deliveryDay)); 
             $userSubscription->save();
 
+            // Create initial order
+            $order = new Order;
+            $order->user_id = $user->id;
+            $order->store_id = $store->id;
+            $order->user_subscription_id = $userSubscription->id;
+            $order->order_number = $subscription->id.'_1';
+            $order->amount = $total;
+            $order->fulfilled = false;
+            $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
+            $order->save();
+
+            foreach($bag->getItems() as $item) {
+              $mealOrder = new MealOrder();
+              $mealOrder->order_id = $order->id;
+              $mealOrder->store_id = $store->id;
+              $mealOrder->meal_id = $item['meal']['id'];
+              $mealOrder->quantity = $item['quantity'];
+              $mealOrder->save();
+            }
+
             // Send notification to store
             if($store->settings->notificationEnabled('new_subscription')) {
               $store->sendNotification('new_subscription', $userSubscription);
