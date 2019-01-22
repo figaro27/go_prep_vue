@@ -632,6 +632,9 @@ const getters = {
     // state.viewed_store.distance <=
     // getters.viewedStoreSetting('delivery_distance_radius' - 1)
   },
+  viewedStoreCategories(state, getters) {
+    return _.sortBy(state.viewed_store.categories, 'order');
+  },
 
   //
   isLoading(state) {

@@ -4,34 +4,34 @@
       <b-alert variant="danger center-text" show>You are out of the delivery bounds</b-alert>
     </div>
 
-
     <div v-for="category in categories" :key="category">
       <button @click="goToCategory(category)">{{ category }}</button>
     </div>
 
-
     <div class="modal-basic">
-            <b-modal size="lg" title="Meal Filters" v-model="viewFilterModal" v-if="viewFilterModal">
-                
-                <br>
-                Show meals with:
-                <div v-for="tag in tags" :key="tag">
-                  <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{ tag }}</b-button>
-                </div>
-                <br>
-                Hide meals that contain:
-                <div v-for="allergy in allergies" :key="allergy">
-                  <b-button :pressed="active[allergy]" @click="filterByAllergy(allergy)">{{ allergy }}</b-button>
-                </div>
-            </b-modal>
-          </div>
-    
+      <b-modal size="lg" title="Meal Filters" v-model="viewFilterModal" v-if="viewFilterModal">
+        <br>Show meals with:
+        <div v-for="tag in tags" :key="tag">
+          <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{ tag }}</b-button>
+        </div>
+        <br>Hide meals that contain:
+        <div v-for="allergy in allergies" :key="allergy">
+          <b-button :pressed="active[allergy]" @click="filterByAllergy(allergy)">{{ allergy }}</b-button>
+        </div>
+      </b-modal>
+    </div>
+
     <div class="row">
       <div class="col-sm-12 mt-3">
-
         <div class="card">
           <div class="card-body">
-            <b-modal ref="mealModal" size="lg" :title="meal.title" v-model="mealModal" v-if="mealModal">
+            <b-modal
+              ref="mealModal"
+              size="lg"
+              :title="meal.title"
+              v-model="mealModal"
+              v-if="mealModal"
+            >
               <p>${{ meal.price }}</p>
               <p>{{ meal.description }}</p>
               <img :src="meal.featured_image">
@@ -42,10 +42,15 @@
             <div class="row">
               <div class="col-sm-9 main-menu-area">
                 <b-button @click="viewFilters" variant="primary" class="pull-right">Filters</b-button>
-                <div v-for="(meals, category) in meals" :key="category" :id="category" class="categories">
-                  <h2 class="text-center mb-3">{{category}}</h2>
+                <div
+                  v-for="group in meals"
+                  :key="group.category"
+                  :id="group.category"
+                  class="categories"
+                >
+                  <h2 class="text-center mb-3">{{group.category}}</h2>
                   <b-row>
-                    <b-col v-for="meal in meals" :key="meal.id" cols="3">
+                    <b-col v-for="meal in group.meals" :key="meal.id" cols="3">
                       <img
                         :src="meal.featured_image"
                         class="menu-item-img"
@@ -53,25 +58,30 @@
                       >
                       <div class="d-flex justify-content-between mb-2 mt-1">
                         <img src="/images/customer/minus.jpg" @click="minusOne(meal)">
-                        <b-form-input type="text" name id class="quantity" :value="quantity(meal)" readonly></b-form-input>
+                        <b-form-input
+                          type="text"
+                          name
+                          id
+                          class="quantity"
+                          :value="quantity(meal)"
+                          readonly
+                        ></b-form-input>
                         <img src="/images/customer/plus.jpg" @click="addOne(meal)">
                       </div>
                       <p>{{ meal.title }}</p>
                       <p>${{ meal.price }}</p>
-                      <p v-for="tag in meal.tags">{{ tag.tag }}</p>
+                      <p v-for="tag in meal.tags" :key="tag">{{ tag.tag }}</p>
                       <hr>
-                      <p v-for="allergy in meal.allergies">{{ allergy.title }}</p>
+                      <p v-for="allergy in meal.allergies" :key="allergy">{{ allergy.title }}</p>
                     </b-col>
                   </b-row>
                 </div>
               </div>
 
-
               <div class="col-sm-3 bag-area">
                 <p @click="clearAll">Clear All</p>
-                <ul class="list-group ">
+                <ul class="list-group">
                   <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
-                    
                     <div v-if="item && item.quantity > 0" class="row">
                       <div class="col-sm-1">
                         <img src="/images/customer/bag-plus.png" @click="addOne(item.meal)">
@@ -79,24 +89,29 @@
                         <img src="/images/customer/bag-minus.png" @click="minusOne(item.meal)">
                       </div>
                       <div class="col-sm-2">
-                        <img :src="item.meal.featured_image" class="cart-item-img"/>
+                        <img :src="item.meal.featured_image" class="cart-item-img">
                       </div>
-                      <div class="col-sm-5 offset-1">
-                        {{ item.meal.title }}
-                      </div>
+                      <div class="col-sm-5 offset-1">{{ item.meal.title }}</div>
                       <div class="col-sm-2">
-                        <img src="/images/customer/x.png" @click="clearMeal(item.meal)" class="clear-meal">
+                        <img
+                          src="/images/customer/x.png"
+                          @click="clearMeal(item.meal)"
+                          class="clear-meal"
+                        >
                       </div>
                     </div>
                   </li>
-
                 </ul>
                 <p
                   v-if="total < minimum"
                 >Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
                 <div>
                   <router-link to="/customer/bag">
-                    <img v-if="total >= minimum" src="/images/customer/next.jpg" @click="addBagItems(bag)">
+                    <img
+                      v-if="total >= minimum"
+                      src="/images/customer/next.jpg"
+                      @click="addBagItems(bag)"
+                    >
                   </router-link>
                 </div>
               </div>
@@ -151,7 +166,8 @@ export default {
       total: "bagQuantity",
       bag: "bagItems",
       hasMeal: "bagHasMeal",
-      willDeliver: 'viewedStoreWillDeliver',
+      willDeliver: "viewedStoreWillDeliver",
+      _categories: "viewedStoreCategories"
     }),
     storeSettings() {
       return this.store.settings;
@@ -220,9 +236,30 @@ export default {
         });
       });
 
-      return grouped;
+      // Find store-defined category sorting
+      let sorting = {};
+      this._categories.forEach(cat => {
+        sorting[cat.category] = cat.order.toString() + cat.category;
+      });
+
+      // Structure
+      grouped = _.map(grouped, (meals, cat) => {
+        return {
+          category: cat,
+          meals,
+          order: sorting[cat] || 9999
+        };
+      });
+
+      // Sort
+      return _.orderBy(grouped, 'order')
     },
     categories() {
+      let sorting = {};
+      this._categories.forEach(cat => {
+        sorting[cat.category] = cat.order.toString() + cat.category;
+      });
+
       let grouped = [];
       this.store.meals.forEach(meal => {
         meal.categories.forEach(category => {
@@ -231,7 +268,10 @@ export default {
           }
         });
       });
-      return grouped;
+
+      return _.orderBy(grouped, cat => {
+        return cat in sorting ? sorting[cat] : 9999;
+      });
     },
     tags() {
       let grouped = [];
@@ -243,7 +283,6 @@ export default {
         });
       });
       return grouped;
-
     },
     allergies() {
       let grouped = [];
@@ -261,18 +300,18 @@ export default {
     this.showActiveFilters();
   },
   methods: {
-    showActiveFilters(){
-    let tags = this.tags;
-    this.active = tags.reduce((acc, tag) => {
-      acc[tag] = false
-      return acc
-    }, {})
+    showActiveFilters() {
+      let tags = this.tags;
+      this.active = tags.reduce((acc, tag) => {
+        acc[tag] = false;
+        return acc;
+      }, {});
 
-    let allergies = this.allergies;
-    this.active = allergies.reduce((acc, allergy) => {
-      acc[allergy] = false
-      return acc
-    }, {})
+      let allergies = this.allergies;
+      this.active = allergies.reduce((acc, allergy) => {
+        acc[allergy] = false;
+        return acc;
+      }, {});
     },
     quantity(meal) {
       const qty = this.$store.getters.bagItemQuantity(meal);
@@ -409,9 +448,7 @@ export default {
         return tag === _tag;
       });
 
-      i === -1
-        ? this.filters.tags.push(tag)
-        : Vue.delete(this.filters.tags, i);
+      i === -1 ? this.filters.tags.push(tag) : Vue.delete(this.filters.tags, i);
     },
     filterByAllergy(allergy) {
       this.active[allergy] = !this.active[allergy];
@@ -426,10 +463,10 @@ export default {
         ? this.filters.allergies.push(allergy)
         : Vue.delete(this.filters.allergies, i);
     },
-    goToCategory(category){
-      window.location.href = '#' + category;
+    goToCategory(category) {
+      window.location.href = "#" + category;
     },
-    viewFilters(){
+    viewFilters() {
       this.viewFilterModal = true;
     }
   }
