@@ -224,7 +224,6 @@ export default {
         new_category: "",
         tags: "",
         price: "",
-        active_orders: "",
         num_orders: "",
         created_at: "",
         categories: []
@@ -275,7 +274,6 @@ export default {
         "categories",
         "tags",
         "price",
-        "active_orders",
         "lifetime_orders",
         "created_at",
         "actions"
@@ -288,7 +286,6 @@ export default {
           categories: "Categories",
           tags: "Tags",
           price: "Price",
-          active_orders: "Active Orders",
           lifetime_orders: "Lifetime Orders",
           created_at: "Added",
           actions: "Actions"

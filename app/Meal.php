@@ -18,10 +18,11 @@ class Meal extends Model
 
     protected $casts = [
         'price' => 'double',
+        'active_orders_price' => 'decimal:2',
         'created_at' => 'date:F d, Y',
     ];
 
-    protected $appends = ['tag_titles', 'nutrition', 'active_orders', 'lifetime_orders', 'allergy_ids', 'category_ids', 'tag_ids'];
+    protected $appends = ['tag_titles', 'nutrition', 'active_orders', 'active_orders_price', 'lifetime_orders', 'allergy_ids', 'category_ids', 'tag_ids'];
 
     public function getLifetimeOrdersAttribute()
     {
@@ -31,6 +32,11 @@ class Meal extends Model
     public function getActiveOrdersAttribute()
     {
         return $this->orders->where('fulfilled', 0)->count();
+    }
+
+    public function getActiveOrdersPriceAttribute()
+    {
+        return number_format($this->orders->where('fulfilled', 0)->count() * $this->price, 2);
     }
 
     public function getNutritionAttribute()

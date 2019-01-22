@@ -10,14 +10,16 @@
             :options="options"
             v-show="!isLoading"
           >
-            <div slot="beforeTable" class="mb-2">
-              <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
-
-                    <b-form-select
-                      :options="deliveryDates"
-                      required
-                      v-model="deliveryDate">
-                    </b-form-select>
+            <div slot="beforeTable" class="row mb-2">
+              <div class="col-md-1">
+                <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
+              </div>
+              <div class="col-md-1 pt-2">
+                <h6>Delivery Days:</h6>
+              </div>
+              <div class="col-md-10 pb-1">
+                <v-select multiple v-model="selected" :options="deliveryDates"></v-select>
+              </div>
                   
 
             </div>
@@ -136,16 +138,17 @@
 <script>
 import Spinner from "../../components/Spinner";
 import format from "../../lib/format";
+import vSelect from 'vue-select'
 import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   components: {
-    Spinner
+    Spinner,
+    vSelect
   },
 
   data() {
     return {
-      deliveryDate: 'All',
       filter: false,
       viewOrderModal: false,
       order: {},
@@ -198,9 +201,17 @@ export default {
       //   else return _.filter(this.orders, { fulfilled: 0, has_notes: true });
       // }
       // else {
-        if (!this.filter) return _.filter(this.orders, { fulfilled: 0, delivery_date: this.deliveryDate });
-        else return _.filter(this.orders, { fulfilled: 0, has_notes: true, delivery_date: this.deliveryDate });
+        if (!this.filter) {return _.filter(this.orders, function(){
+          return "'delivery_date': 'January 24, 2019'"
+         });
+        }
+      //   else { return _.filter(this.orders, function(){
+      //     return "'fulfilled': 0, 'has_notes': true, delivery_date': 'January 24, 2019'"
+      //    } );
       // }
+      // }
+      // if (!this.filter) return _.filter(this.orders, { fulfilled: 0 });
+      //   else return _.filter(this.orders, { fulfilled: 0, has_notes: true });
     },
     deliveryDates(){
       let grouped = [];
@@ -212,7 +223,10 @@ export default {
       grouped.push('All');
       this.deliveryDate = grouped[0];
       return grouped;
-  }
+    },
+    selected(){
+      return this.deliveryDates;
+    }
 },
   methods: {
     ...mapActions({
