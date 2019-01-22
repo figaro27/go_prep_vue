@@ -13,13 +13,7 @@
             <div slot="beforeTable" class="mb-2">
               <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
 
-                    <b-form-select
-                      :options="deliveryDates"
-                      required
-                      v-model="deliveryDate">
-                    </b-form-select>
-                  
-
+              <b-form-select :options="deliveryDates" required v-model="deliveryDate"></b-form-select>
             </div>
 
             <span slot="beforeLimit">
@@ -145,7 +139,7 @@ export default {
 
   data() {
     return {
-      deliveryDate: 'All',
+      deliveryDate: "All",
       filter: false,
       viewOrderModal: false,
       order: {},
@@ -198,22 +192,41 @@ export default {
       //   else return _.filter(this.orders, { fulfilled: 0, has_notes: true });
       // }
       // else {
-        if (!this.filter) return _.filter(this.orders, { fulfilled: 0, delivery_date: this.deliveryDate });
-        else return _.filter(this.orders, { fulfilled: 0, has_notes: true, delivery_date: this.deliveryDate });
+      let filters = { fulfilled: 0 };
+      if (this.deliveryDate !== "All") {
+        filters.delivery_date = this.deliveryDate;
+      }
+
+      if (this.filter) {
+        filters.has_notes = true;
+      }
       // }
+      return _.filter(this.orders, order => {
+
+        if('delivery_date' in filters) {
+          if(!moment(filters.delivery_date).isSame(order.delivery_date, 'day')) {
+            return false;
+          }
+        }
+
+        if('has_notes' in filters && order.has_notes !== filters.has_notes) return false;
+        if('fulfilled' in filters && order.fulfilled !== filters.fulfilled) return false;
+
+        return true;
+      });
     },
-    deliveryDates(){
+    deliveryDates() {
       let grouped = [];
       this.orders.forEach(order => {
-          if (!_.includes(grouped, order.delivery_date)) {
-            grouped.push(order.delivery_date);
+        if (!_.includes(grouped, order.delivery_date)) {
+          grouped.push(order.delivery_date);
         }
       });
-      grouped.push('All');
+      grouped.push("All");
       this.deliveryDate = grouped[0];
       return grouped;
-  }
-},
+    }
+  },
   methods: {
     ...mapActions({
       refreshOrders: "refreshOrders",
@@ -291,7 +304,7 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    },
+    }
   }
 };
 </script>
