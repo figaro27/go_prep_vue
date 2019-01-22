@@ -281,7 +281,6 @@ export default {
             ingredient.quantity_unit = unit;
             ingredient.added = true;
 
-            /*
             // Calculate nutrition for 1 baseunit
             let multiplier = units.convert(
               1,
@@ -295,7 +294,7 @@ export default {
                 return prop * multiplier;
               });
               ingredient = _.merge(ingredient, nutrition);
-            }*/
+            }
 
             return ingredient;
           });
@@ -357,7 +356,11 @@ export default {
       };
 
       ingredients.forEach(ingredient => {
-        let multiplier = ingredient.quantity || 1;
+        let multiplier = 1;
+
+        if(normalize) {
+          multiplier = ingredient.quantity || 1;
+        }
 
         if (
           normalize &&
