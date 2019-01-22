@@ -10,18 +10,10 @@
             :options="options"
             v-show="!isLoading"
           >
-            <div slot="beforeTable" class="row mb-2">
-              <div class="col-md-1">
-                <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
-              </div>
-              <div class="col-md-1 pt-2">
-                <h6>Delivery Days:</h6>
-              </div>
-              <div class="col-md-10 pb-1">
-                <v-select multiple v-model="selected" :options="deliveryDates"></v-select>
-              </div>
-                  
+            <div slot="beforeTable" class="mb-2">
+              <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
 
+              <b-form-select :options="deliveryDates" required v-model="deliveryDate"></b-form-select>
             </div>
 
             <span slot="beforeLimit">
@@ -149,6 +141,7 @@ export default {
 
   data() {
     return {
+      deliveryDate: "All",
       filter: false,
       viewOrderModal: false,
       order: {},
@@ -201,33 +194,41 @@ export default {
       //   else return _.filter(this.orders, { fulfilled: 0, has_notes: true });
       // }
       // else {
-        if (!this.filter) {return _.filter(this.orders, function(){
-          return "'delivery_date': 'January 24, 2019'"
-         });
+      let filters = { fulfilled: 0 };
+      if (this.deliveryDate !== "All") {
+        filters.delivery_date = this.deliveryDate;
+      }
+
+      if (this.filter) {
+        filters.has_notes = true;
+      }
+      // }
+      return _.filter(this.orders, order => {
+
+        if('delivery_date' in filters) {
+          if(!moment(filters.delivery_date).isSame(order.delivery_date, 'day')) {
+            return false;
+          }
         }
-      //   else { return _.filter(this.orders, function(){
-      //     return "'fulfilled': 0, 'has_notes': true, delivery_date': 'January 24, 2019'"
-      //    } );
-      // }
-      // }
-      // if (!this.filter) return _.filter(this.orders, { fulfilled: 0 });
-      //   else return _.filter(this.orders, { fulfilled: 0, has_notes: true });
+
+        if('has_notes' in filters && order.has_notes !== filters.has_notes) return false;
+        if('fulfilled' in filters && order.fulfilled !== filters.fulfilled) return false;
+
+        return true;
+      });
     },
-    deliveryDates(){
+    deliveryDates() {
       let grouped = [];
       this.orders.forEach(order => {
-          if (!_.includes(grouped, order.delivery_date)) {
-            grouped.push(order.delivery_date);
+        if (!_.includes(grouped, order.delivery_date)) {
+          grouped.push(order.delivery_date);
         }
       });
-      grouped.push('All');
+      grouped.push("All");
       this.deliveryDate = grouped[0];
       return grouped;
-    },
-    selected(){
-      return this.deliveryDates;
     }
-},
+  },
   methods: {
     ...mapActions({
       refreshOrders: "refreshOrders",
@@ -305,7 +306,7 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    },
+    }
   }
 };
 </script>
