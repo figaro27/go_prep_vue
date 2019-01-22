@@ -21,12 +21,7 @@ class Meal extends Model
         'created_at' => 'date:F d, Y',
     ];
 
-    protected $appends = ['tag_titles', 'quantity', 'nutrition', 'active_orders', 'lifetime_orders', 'allergy_ids', 'category_ids', 'tag_ids'];
-
-    public function getQuantityAttribute()
-    {
-        return 0;
-    }
+    protected $appends = ['tag_titles', 'nutrition', 'active_orders', 'lifetime_orders', 'allergy_ids', 'category_ids', 'tag_ids'];
 
     public function getLifetimeOrdersAttribute()
     {

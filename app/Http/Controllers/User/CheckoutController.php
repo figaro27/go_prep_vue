@@ -61,6 +61,7 @@ class CheckoutController extends UserController
               $mealOrder->order_id = $order->id;
               $mealOrder->store_id = $store->id;
               $mealOrder->meal_id = $item['meal']['id'];
+              $mealOrder->quantity = $item['quantity'];
               $mealOrder->save();
             }
 

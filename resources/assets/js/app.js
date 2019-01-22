@@ -23,6 +23,7 @@ import draggable from 'vuedraggable'
 import {Card} from 'vue-stripe-elements-plus'
 import store from './store';
 import lang from './lang';
+import format from './lib/format';
 import modal from './lib/modal';
 import Axios from 'axios';
 
@@ -34,6 +35,9 @@ Vue.component('v-select', vSelect)
 Vue.component('timepicker', VueTimepicker)
 Vue.component('draggable', draggable)
 Vue.component('card', Card)
+
+// For use in templates
+Vue.prototype.format = format;
 
 const files = require.context('./components', true, /\.vue$/i)
 files

@@ -585,7 +585,7 @@ const actions = {
     }
   },
 
-  async refreshOrders({
+  async refreshCustomerOrders({
     commit,
     state
   }, args = {}) {

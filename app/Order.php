@@ -14,7 +14,7 @@ class Order extends Model
     ];
 
     protected $hidden = [
-      'meals',
+
     ];
 
     protected $casts = [
@@ -42,7 +42,7 @@ class Order extends Model
 
     public function meals()
     {
-        return $this->belongsToMany('App\Meal', 'meal_orders');
+        return $this->belongsToMany('App\Meal', 'meal_orders')->withPivot('quantity');
     }
 
     public function getHasNotesAttribute()

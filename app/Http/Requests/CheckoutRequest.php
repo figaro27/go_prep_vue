@@ -27,7 +27,7 @@ class CheckoutRequest extends FormRequest
         return [
             'bag' => 'required|array',
             'plan' => 'required|boolean',
-            'pickup' => 'required|numeric|in:0,1',
+            'pickup' => 'required|boolean',
             'delivery_day' => 'required|date',
             'token' => 'required',
             'store_id' => 'required|numeric',

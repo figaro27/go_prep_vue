@@ -13,6 +13,6 @@ class OrderController extends UserController
      */
     public function index()
     {
-        return $this->user->orders;
+        return $this->user->orders()->with(['meals'])->get();
     }
 }

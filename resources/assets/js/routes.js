@@ -66,7 +66,7 @@ let routes = [
         component: CustomerSubscriptions
     },
     {
-        path: '/customer/orders',
+        path: '/customer/account/orders',
         component: CustomerOrders
     },
     {
