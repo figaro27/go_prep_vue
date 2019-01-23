@@ -2,7 +2,7 @@
   <div>
     <b-form class="mb-2" @submit.prevent="searchRecipe">
       <div class="mb-2">
-        <!--<IngredientSearch @change="onSearchIngredient"/>-->
+        <ingredient-search @change="onSearchIngredient"></ingredient-search>
       </div>
       <div class="d-flex mb-2">
         <b-input v-model="recipe" class="flex-grow-1 mr-1" placeholder="Type Ingredients Here"></b-input>
@@ -130,12 +130,12 @@
 </style>
 
 <script>
+
 import { mapGetters, mapActions } from "vuex";
 import units from "../data/units";
 import format from "../lib/format";
 
 export default {
-  //components: [],
   props: {
     value: {},
     options: {
@@ -317,13 +317,19 @@ export default {
         });
     }, 350),
     onSearchIngredient(val) {
+      console.log(val);
       if (_.isObject(val)) {
+        this.recipe = val.serving_qty + ' ' + val.serving_unit + ' ' + val.food_name;
+        this.searchRecipe();
+        this.recipe = "";
+        /*
         this.ingredients.push({
+
           food_name: val.food_name,
-          quantity: 1,
+          quantity: val.serving_qty,
           quantity_unit: units.base(units.type(val.serving_unit)),
           unit_type: units.type(val.serving_unit)
-        });
+        });*/
       }
     },
     getIngredientList: function(ingredients) {

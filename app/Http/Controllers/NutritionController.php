@@ -74,15 +74,18 @@ class NutritionController extends Controller
     {
         $food = $search->search;
         $client = new Client();
-        $response = $client->get($this->search_url . $food, [
+        $response = $client->post($this->search_url, [
             'headers' => [
-                'Content-Type' => 'application/json',
                 'x-app-id' => $this->app_id,
                 'x-app-key' => $this->app_key,
             ],
+            'form_params' => [
+              'query' => $food,
+              'detailed' => true,
+            ]
         ]);
 
-        $res = $response->getBody();
+        $res = (string) $response->getBody();
         return $res;
 
     }

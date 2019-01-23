@@ -36,6 +36,9 @@ Vue.component('timepicker', VueTimepicker)
 Vue.component('draggable', draggable)
 Vue.component('card', Card)
 
+import IngredientSearch from './components/IngredientSearch';
+Vue.component('ingredient-search', IngredientSearch);
+
 // For use in templates
 Vue.prototype.format = format;
 
