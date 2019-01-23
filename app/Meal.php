@@ -6,11 +6,14 @@ use App\Store;
 use App\Utils\Data\Format;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Exception;
 
 class Meal extends Model
 {
+    use SoftDeletes;
 
     protected $fillable = [
         'active', 'featured_image', 'title', 'description', 'price', 'created_at',
@@ -22,7 +25,19 @@ class Meal extends Model
         'created_at' => 'date:F d, Y',
     ];
 
-    protected $appends = ['tag_titles', 'nutrition', 'active_orders', 'active_orders_price', 'lifetime_orders', 'allergy_ids', 'category_ids', 'tag_ids'];
+    protected $appends = ['tag_titles', 'nutrition', 'active_orders', 'active_orders_price', 'lifetime_orders', 'allergy_ids', 'category_ids', 'tag_ids', 'substitute_ids'];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
+
+    public function getQuantityAttribute()
+    {
+        return 0;
+    }
 
     public function getLifetimeOrdersAttribute()
     {
@@ -70,6 +85,44 @@ class Meal extends Model
     public function getTagIdsAttribute()
     {
         return $this->tags->pluck('id');
+    }
+
+    public function getSubstituteIdsAttribute()
+    {
+        $ids = Cache::rememberForever('meal_substitutes_' . $this->id, function () {
+            $mealsQuery = $this->store->meals()->where([
+                ['id', '<>', $this->id],
+                ['price', '<=', $this->price * 1.2],
+                ['price', '>=', $this->price * 0.8],
+            ])
+                ->whereDoesntHave('allergies', function ($query) {
+                    $allergyIds = $this->allergies->pluck('id');
+                    $query->whereIn('allergies.id', $allergyIds);
+                });
+
+            $meals = $mealsQuery->get();
+            if ($meals->count() <= 5) {
+                return $meals->pluck('id');
+            }
+
+            $mealsQuery = $mealsQuery->whereNotIn('id', $meals->pluck('id'));
+
+            $mealsQuery = $mealsQuery->whereHas('categories', function ($query) {
+                $catIds = $this->categories->pluck('id');
+                return $query->whereIn('categories.id', $catIds);
+            }, '>=', 1)
+            ->orWhereHas('tags', function ($query) {
+                $tagIds = $this->tags->pluck('id');
+                return $query->whereIn('meal_tags.id', $tagIds);
+            }, '>=', 1);
+
+            $extraMeals = $mealsQuery->get();
+
+            return $meals->concat($extraMeals)->slice(0, 5)->pluck('id');
+        });
+
+        return $ids;
+
     }
 
     public function store()
@@ -270,25 +323,25 @@ class Meal extends Model
         $tagTitles = $props->get('tag_titles');
         if (is_array($tagTitles)) {
 
-            $tags = collect();
+        $tags = collect();
 
-            foreach ($tagTitles as $tagTitle) {
-                try {
-                    $tag = MealTag::create([
-                        'tag' => $tagTitle,
-                        'slug' => str_slug($tagTitle),
-                        'store_id' => $meal->store_id,
-                    ]);
-                    $tags->push($tag->id);
-                } catch (\Exception $e) {
-                    $tags->push(MealTag::where([
-                        'tag' => $tagTitle,
-                        'store_id' => $meal->store_id,
-                    ])->first()->id);
-                }
-            }
+        foreach ($tagTitles as $tagTitle) {
+        try {
+        $tag = MealTag::create([
+        'tag' => $tagTitle,
+        'slug' => str_slug($tagTitle),
+        'store_id' => $meal->store_id,
+        ]);
+        $tags->push($tag->id);
+        } catch (\Exception $e) {
+        $tags->push(MealTag::where([
+        'tag' => $tagTitle,
+        'store_id' => $meal->store_id,
+        ])->first()->id);
+        }
+        }
 
-            $meal->tags()->sync($tags);
+        $meal->tags()->sync($tags);
         }*/
 
         $newIngredients = $props->get('ingredients');
@@ -348,9 +401,9 @@ class Meal extends Model
                                 $ingredients->push($ingredient);
 
                                 $meal->store->units()->create([
-                                  'store_id' => $meal->store_id,
-                                  'ingredient_id' => $ingredient->id,
-                                  'unit' => Format::baseUnit($ingredient->unit_type),
+                                    'store_id' => $meal->store_id,
+                                    'ingredient_id' => $ingredient->id,
+                                    'unit' => Format::baseUnit($ingredient->unit_type),
                                 ]);
 
                             } else {
@@ -414,9 +467,24 @@ class Meal extends Model
         ]);
     }
 
-    public static function deleteMeal($id)
+    public static function deleteMeal($id, $subId)
     {
         $meal = Meal::find($id);
+        $sub = Meal::find($subId);
+
+        $mealOrders = MealOrder::with(['order'])
+            ->where([
+                'meal_id' => $meal->id,
+            ])
+            ->get()
+            ->filter(function ($mealOrder) {
+                return $mealOrder->order->user_subscription_id > 0;
+            });
+
+        $mealOrders->each(function ($mealOrder) use ($sub) {
+            $mealOrder->update(['meal_id' => $sub->id]);
+        });
+
         $meal->delete();
     }
 

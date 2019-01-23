@@ -63,7 +63,7 @@
 
               <div slot="actions" class="text-nowrap" slot-scope="props">
                 <button class="btn view btn-warning btn-sm" @click="viewMeal(props.row.id)">View</button>
-                <button class="btn btn-danger btn-sm" @click="deleteMeal(props.row.id)">Delete</button>
+                <button class="btn btn-danger btn-sm" @click="() => deleteMeal(props.row.id)">Delete</button>
               </div>
             </v-client-table>
           </div>
@@ -179,10 +179,36 @@
       </b-modal>
     </div>
 
-    <b-modal title="Meal" v-model="deleteMealModal" v-if="deleteMealModal">
+    <b-modal
+      title="Delete Meal"
+      v-model="deleteMealModal"
+      v-if="deleteMealModal"
+      :hide-footer="true"
+    >
       <center>
-        <h5>Are you sure you want to delete this meal?</h5>
-        <button class="btn btn-danger mt-3" @click="destroyMeal(mealID)">Delete</button>
+        <h5>This meal is tied to one or more subscriptions. Please select a recommended replacement meal.</h5>
+
+        <b-list-group>
+          <b-list-group-item
+            v-for="meal in mealSubstituteOptions(deletingMeal)"
+            :active="substitute_id === meal.id"
+            @click="() => { substitute_id = meal.id }"
+            :key="meal.id"
+          >
+            <div class="d-flex align-items-center text-left">
+              <img class="mr-2" style="width:65px" :src="meal.featured_image" v-if="meal.featured_image">
+              <div class="flex-grow-1 mr-2">{{meal.title}}</div>
+              <b-btn>Select</b-btn>
+            </div>
+          </b-list-group-item>
+        </b-list-group>
+
+        <!--<b-select v-model="deleteMeal.subtitute_id" :options="mealSubstituteOptions(deleteMeal)"></b-select>-->
+        <button
+          v-if="substitute_id"
+          class="btn btn-danger btn-lg mt-3"
+          @click="destroyMeal(deletingMeal.id, substitute_id)"
+        >Delete</button>
       </center>
     </b-modal>
   </div>
@@ -231,6 +257,9 @@ export default {
       createMealModal: false,
       viewMealModal: false,
       deleteMealModal: false,
+      deletingMeal: {
+      },
+      substitute_id: null,
 
       newTags: [],
       ingredientSearch: "",
@@ -323,6 +352,7 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       meals: "storeMeals",
+      getMeal: "storeMeal",
       tags: "tags",
       storeCategories: "storeCategories",
       allergies: "allergies",
@@ -368,6 +398,12 @@ export default {
     tagsForInput() {
       return _.map(["Breakfast", "Dinner"], tag => {
         return { text: tag };
+      });
+    },
+    mealSubstituteOptions: vm => meal => {
+      return meal.substitute_ids.map(id => {
+        const sub = vm.getMeal(id);
+        return sub;
       });
     }
   },
@@ -431,14 +467,18 @@ export default {
         });
       });
     },
-    deleteMeal: function($id) {
-      this.mealID = $id;
-      this.deleteMealModal = true;
+    deleteMeal: function(id) {
+      this.deletingMeal = this.getMeal(id);
+
+      if (this.deletingMeal) {
+        this.deleteMealModal = true;
+      }
     },
-    destroyMeal: function($id) {
-      axios.delete(`/api/me/meals/${$id}`);
-      this.refreshTable();
-      this.deleteMealModal = false;
+    destroyMeal: function(id, subId) {
+      axios.delete(`/api/me/meals/${id}?substitute_id=${subId}`).then(resp => {
+        this.refreshTable();
+        this.deleteMealModal = false;
+      });
     },
 
     getNutrition: function() {
