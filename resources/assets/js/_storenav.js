@@ -43,9 +43,10 @@ export default {
     },
     {
       name: 'Payments',
-      url: '/store/payments',
+      url: '#payments',
       icon: 'fa fa-money',
-      class: 'nav-child'
+      class: 'nav-child',
+      target: '_blank'
     },
     {
       name: 'Print',
