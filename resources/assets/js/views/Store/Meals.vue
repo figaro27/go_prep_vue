@@ -188,12 +188,26 @@
       <center>
         <h5>This meal is tied to one or more subscriptions. Please select a recommended replacement meal.</h5>
 
-        <b-select v-model="deleteMeal.subtitute_id" :options="mealSubstituteOptions(deleteMeal)"></b-select>
+        <b-list-group>
+          <b-list-group-item
+            v-for="meal in mealSubstituteOptions(deletingMeal)"
+            :active="substitute_id === meal.id"
+            @click="() => { substitute_id = meal.id }"
+            :key="meal.id"
+          >
+            <div class="d-flex align-items-center text-left">
+              <img class="mr-2" style="width:65px" :src="meal.featured_image" v-if="meal.featured_image">
+              <div class="flex-grow-1 mr-2">{{meal.title}}</div>
+              <b-btn>Select</b-btn>
+            </div>
+          </b-list-group-item>
+        </b-list-group>
 
+        <!--<b-select v-model="deleteMeal.subtitute_id" :options="mealSubstituteOptions(deleteMeal)"></b-select>-->
         <button
-          v-if="deleteMeal.subtitute_id"
-          class="btn btn-danger mt-3"
-          @click="destroyMeal(deleteMeal.id, deleteMeal.subtitute_id)"
+          v-if="substitute_id"
+          class="btn btn-danger btn-lg mt-3"
+          @click="destroyMeal(deletingMeal.id, substitute_id)"
         >Delete</button>
       </center>
     </b-modal>
@@ -243,6 +257,9 @@ export default {
       createMealModal: false,
       viewMealModal: false,
       deleteMealModal: false,
+      deletingMeal: {
+      },
+      substitute_id: null,
 
       newTags: [],
       ingredientSearch: "",
@@ -386,10 +403,7 @@ export default {
     mealSubstituteOptions: vm => meal => {
       return meal.substitute_ids.map(id => {
         const sub = vm.getMeal(id);
-        return {
-          text: `${sub.title} - ${format.money(sub.price)}`,
-          value: sub.id
-        };
+        return sub;
       });
     }
   },
@@ -454,19 +468,17 @@ export default {
       });
     },
     deleteMeal: function(id) {
-      this.deleteMeal = this.getMeal(id);
+      this.deletingMeal = this.getMeal(id);
 
-      if (this.deleteMeal) {
+      if (this.deletingMeal) {
         this.deleteMealModal = true;
       }
     },
     destroyMeal: function(id, subId) {
-      axios
-        .delete(`/api/me/meals/${id}?substitute_id=${subId}`)
-        .then(resp => {
-          this.refreshTable();
-          this.deleteMealModal = false;
-        });
+      axios.delete(`/api/me/meals/${id}?substitute_id=${subId}`).then(resp => {
+        this.refreshTable();
+        this.deleteMealModal = false;
+      });
     },
 
     getNutrition: function() {
