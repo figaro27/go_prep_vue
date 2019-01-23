@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Store\StoreController;
 use App\Meal;
-use App\StoreCategory;
+use App\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends StoreController
@@ -39,10 +39,10 @@ class CategoryController extends StoreController
     public function store(Request $request)
     {
         if ($request->has('category')) {
-            $newCat = new StoreCategory();
+            $newCat = new Category();
             $newCat->category = $request->get('category', '');
             $newCat->store_id = $this->store->id;
-            $newCat->order = $this->store->categories()->count();
+            $newCat->order = $this->store->categories()->count() + 1;
             $newCat->save();
             return $newCat;
         } else if ($request->has('categories')) {

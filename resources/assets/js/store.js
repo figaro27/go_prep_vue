@@ -741,7 +741,7 @@ const getters = {
   },
   storeCategories: (state) => {
     try {
-      return state.store.categories.data || {};
+      return _.orderBy(state.store.categories.data, 'order') || {};
     } catch (e) {
       return {};
     }
