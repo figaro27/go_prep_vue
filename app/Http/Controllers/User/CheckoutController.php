@@ -5,7 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Bag;
 use App\Store;
 use App\StoreDetail;
-use App\UserSubscription;
+use App\Subscription;
 use App\Order;
 use App\MealOrder;
 use App\Mail\Customer\NewOrder;
@@ -88,7 +88,7 @@ class CheckoutController extends UserController
                 'application_fee_percent' => 10,
             ], ['stripe_account' => $store->settings->stripe_id]);
 
-            $userSubscription = new UserSubscription();
+            $userSubscription = new Subscription();
             $userSubscription->user_id = $user->id;
             $userSubscription->store_id = $store->id;
             $userSubscription->name = "Weekly subscription (" . $store->storeDetail->name . ")";
@@ -104,7 +104,7 @@ class CheckoutController extends UserController
             $order = new Order;
             $order->user_id = $user->id;
             $order->store_id = $store->id;
-            $order->user_subscription_id = $userSubscription->id;
+            $order->subscription_id = $userSubscription->id;
             $order->order_number = $subscription->id.'_1';
             $order->amount = $total;
             $order->fulfilled = false;

@@ -72,7 +72,7 @@ class User extends Authenticatable
 
     public function subscriptions()
     {
-        return $this->hasMany('App\UserSubscription');
+        return $this->hasMany('App\Subscription');
     }
 
     public function store()

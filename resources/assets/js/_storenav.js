@@ -12,6 +12,12 @@ export default {
       class: 'nav-child'
     },
     {
+      name: 'Meal Plans',
+      url: '/store/meal-plans',
+      icon: 'fa fa-shopping-bag',
+      class: 'nav-child'
+    },
+    {
       name: 'Meals',
       url: '/store/meals',
       icon: 'fa fa-utensils'

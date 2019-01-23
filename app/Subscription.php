@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
-class UserSubscription extends Model
+class Subscription extends Model
 {
     protected $fillable = ['status', 'cancelled_at'];
 

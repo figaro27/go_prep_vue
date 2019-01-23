@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserSubscriptionsTable extends Migration
+class CreateSubscriptionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class CreateUserSubscriptionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_subscriptions', function ($table) {
+        Schema::create('subscriptions', function ($table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('store_id');
@@ -38,6 +38,6 @@ class CreateUserSubscriptionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_subscriptions');
+        Schema::dropIfExists('subscriptions');
     }
 }

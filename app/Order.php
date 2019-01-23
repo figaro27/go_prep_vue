@@ -47,7 +47,7 @@ class Order extends Model
 
     public function subscription()
     {
-        return $this->belongsTo('App\UserSubscription');
+        return $this->belongsTo('App\Subscription');
     }
 
     public function getHasNotesAttribute()

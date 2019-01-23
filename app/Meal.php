@@ -478,7 +478,7 @@ class Meal extends Model
             ])
             ->get()
             ->filter(function ($mealOrder) {
-                return $mealOrder->order->user_subscription_id > 0;
+                return $mealOrder->order->subscription_id > 0;
             });
 
         $mealOrders->each(function ($mealOrder) use ($sub) {

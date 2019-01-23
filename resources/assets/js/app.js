@@ -26,6 +26,7 @@ import lang from './lang';
 import format from './lib/format';
 import modal from './lib/modal';
 import Axios from 'axios';
+import moment from 'moment';
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -44,6 +45,7 @@ Vue.component('ingredient-search', IngredientSearch);
 
 // For use in templates
 Vue.prototype.format = format;
+Vue.prototype.moment = moment;
 
 const files = require.context('./components', true, /\.vue$/i)
 files

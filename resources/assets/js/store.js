@@ -86,6 +86,10 @@ const state = {
     data: {},
     expires: 0
   },
+  subscriptions: {
+    data: {},
+    expires: 0
+  },
   customer: {
     data: {
       subscriptions: [],
@@ -282,6 +286,17 @@ const mutations = {
     state.orders.expires = expires;
   },
 
+  storeSubscriptions(state, {subscriptions, expires}) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, 'seconds')
+        .unix();
+    }
+
+    state.subscriptions.data = _.keyBy(subscriptions, 'id');
+    state.subscriptions.expires = expires;
+  },
+
   customerSubscriptions(state, {subscriptions, expires}) {
     state.customer.data.subscriptions = subscriptions;
   },
@@ -422,12 +437,20 @@ const actions = {
       }
     } catch (e) {}
 
+    try {
+      if (!_.isEmpty(data.subscriptions) && _.isObject(data.subscriptions)) {
+        let subscriptions = data.subscriptions;
+        commit('storeSubscriptions', {subscriptions});
+      }
+    } catch (e) {}
+
     /**
      * Extra actions
      */
     dispatch('refreshIngredients');
     dispatch('refreshOrderIngredients');
     dispatch('refreshPayments');
+    dispatch('refreshStoreSubscriptions');
   },
 
   // Actions for logged in stores
@@ -446,6 +469,20 @@ const actions = {
         .unix();
     } else {
       throw new Error('Failed to retrieve payments');
+    }
+  },
+
+  async refreshStoreSubscriptions({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me/subscriptions");
+    const {data} = await res;
+
+    if (_.isArray(data)) {
+      commit('storeSubscriptions', {subscriptions: data });
+    } else {
+      throw new Error('Failed to retrieve subscriptions');
     }
   },
 
@@ -787,7 +824,7 @@ const getters = {
   },
   storeOrders: (state) => {
     try {
-      return state.orders.data || {};
+      return state.orders.data || [];
     } catch (e) {
       return {};
     }
@@ -797,6 +834,13 @@ const getters = {
       return _.filter(state.orders.data, {'user_id': userId}) || [];
     } catch (e) {
       return {};
+    }
+  },
+  storeSubscriptions: (state) => {
+    try {
+      return Object.values(state.subscriptions.data) || [];
+    } catch (e) {
+      return [];
     }
   },
 
