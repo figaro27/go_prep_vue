@@ -16,16 +16,26 @@
                     <h4>Placed On</h4>
                     <p>{{ subscription.created_at }}</p>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-4" v-if="subscription.status === 'active'">
                     <h2>{{ format.money(subscription.amount) }} per {{subscription.interval}}</h2>
+                    <b-btn variant="danger" @click="() => cancelSubscription(subscription)">Cancel</b-btn>
+                  </div>
+                  <div class="col-md-4" v-else>
+                    <h4>Cancelled On</h4>
+                    <p>{{ subscription.cancelled_at }}</p>
                   </div>
                 </div>
 
                 <b-collapse :id="'collapse' + subscription.id" class="mt-2">
-                  <b-table striped :items="getOrderTableData(subscription)">
+                  <b-table striped :items="getMealTableData(subscription)" foot-clone>
                     <template slot="image" slot-scope="row">
                       <img :src="row.value" class="modalMeal">
                     </template>
+
+                    <template
+                      slot="FOOT_subtotal"
+                      slot-scope="row"
+                    >{{ format.money(subscription.amount) }}</template>
                   </b-table>
                 </b-collapse>
               </b-list-group-item>
@@ -39,6 +49,8 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import format from "../../lib/format.js";
+
 export default {
   components: {},
   data() {
@@ -53,7 +65,7 @@ export default {
   methods: {
     ...mapActions(["refreshSubscriptions"]),
     getOrderTableData(subscription) {
-      if(!subscription || !_.isArray(subscription.orders)) {
+      if (!subscription || !_.isArray(subscription.orders)) {
         return [];
       }
 
@@ -61,11 +73,32 @@ export default {
         return {
           date: order.created_at,
           delivery_date: order.delivery_date,
-          delivered: order.fulfilled ? 'Yes' : 'No',
-          meals: order.meals.map(meal => {
-            return meal.title + ' x ' + meal.pivot.quantity
-          }).join(', ')
+          delivered: order.fulfilled ? "Yes" : "No",
+          meals: order.meals
+            .map(meal => {
+              return meal.title + " x " + meal.pivot.quantity;
+            })
+            .join(", ")
         };
+      });
+    },
+    getMealTableData(subscription) {
+      if (!subscription || !_.isArray(subscription.meals)) {
+        return [];
+      }
+
+      return subscription.meals.map(meal => {
+        return {
+          image: meal.featured_image,
+          meal: meal.title,
+          quantity: meal.pivot.quantity,
+          subtotal: format.money(meal.price * meal.pivot.quantity)
+        };
+      });
+    },
+    cancelSubscription(subscription) {
+      axios.delete(`/api/me/subscriptions/${subscription.id}`).then(resp => {
+        this.refreshSubscriptions();
       });
     }
   }

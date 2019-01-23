@@ -295,9 +295,9 @@ export default {
           })
           .then(resp => {
             if (this.deliveryPlan) {
-              this.$router.push("/customer/account/subscriptions");
+              this.$router.push("/customer/subscriptions");
             } else {
-              this.$router.push("/customer/account/orders");
+              this.$router.push("/customer/orders");
             }
           })
           .catch(e => {

@@ -9,8 +9,8 @@
       <b-navbar-nav class="d-md-down-none">
         <b-nav-item class="px-3" to="/customer/menu">Menu</b-nav-item>
         <b-nav-item class="px-3" to="/customer/bag">Bag</b-nav-item>
-        <b-nav-item class="px-3" to="/customer/account/orders">Orders</b-nav-item>
-        <b-nav-item class="px-3" to="/customer/account/subscriptions">Meal Plans</b-nav-item>
+        <b-nav-item class="px-3" to="/customer/orders">Orders</b-nav-item>
+        <b-nav-item class="px-3" to="/customer/subscriptions">Meal Plans</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <CustomerDropdown/>

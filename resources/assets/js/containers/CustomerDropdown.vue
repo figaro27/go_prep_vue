@@ -10,7 +10,7 @@
       </b-dropdown-item>
       <b-dropdown-item>
         <i class="fa fa-bell-o"/>
-        <router-link to="/customer/account/orders">Orders</router-link>
+        <router-link to="/customer/orders">Orders</router-link>
       </b-dropdown-item>
       <b-dropdown-item>
         <i class="fa fa-bell-o"/>
@@ -18,7 +18,7 @@
       </b-dropdown-item>
       <b-dropdown-item>
         <i class="fa fa-bell-o"/>
-        <router-link to="/customer/account/subscriptions">Subscriptions</router-link>
+        <router-link to="/customer/subscriptions">Subscriptions</router-link>
       </b-dropdown-item>
       <b-dropdown-item>
         <i class="fa fa-bell-o"/>
