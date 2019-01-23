@@ -4,6 +4,11 @@
       <p>My Account</p>
       <div class="card">
         <div class="card-body">
+          <!-- toastr -->
+          <b-btn @click="toast('s')">Success</b-btn>
+          <b-btn @click="toast('w')">Warning</b-btn>
+          <b-btn @click="toast('e')">Error</b-btn>
+          <!-- /toastr -->
           <b-form @submit.prevent="updateLogin">
             <b-form-group label="Email address" label-for="email" :state="true">
               <b-form-input
@@ -477,6 +482,21 @@ export default {
         axios.delete("/api/me/categories/" + id).then(response => {
           this.refreshCategories();
         });
+    },
+    toast(type) {
+      switch(type) {
+        case 's':
+          this.$toastr.s('message', 'Success');
+        break;
+
+        case 'w':
+          this.$toastr.w('message', 'Warning');
+        break;
+
+        case 'e':
+          this.$toastr.e('message', 'Error');
+        break;
+      }
     }
   }
 };

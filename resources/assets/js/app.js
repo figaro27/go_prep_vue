@@ -26,10 +26,12 @@ import lang from './lang';
 import format from './lib/format';
 import modal from './lib/modal';
 import Axios from 'axios';
+import Toastr from 'vue-toastr';
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
+Vue.use(Toastr, { /* options */ });
 Vue.component('input-tag', InputTag)
 Vue.component('v-select', vSelect)
 Vue.component('timepicker', VueTimepicker)
