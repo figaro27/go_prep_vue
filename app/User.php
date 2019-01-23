@@ -137,8 +137,8 @@ class User extends Authenticatable
                 "LastOrder" => $user->order->max("created_at")->format('m-d-Y'),
                 "total_payments" => $user->order->count(),
                 "TotalPayments" => $user->order->count(),
-                "total_paid" => '$' . number_format($user->order->sum("amount"), 2, '.', ','),
-                "TotalPaid" => '$' . number_format($user->order->sum("amount"), 2, '.', ','),
+                "total_paid" => $user->order->sum("amount"),
+                "TotalPaid" => $user->order->sum("amount"),
             ];
         });
     }

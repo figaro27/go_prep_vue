@@ -23,6 +23,10 @@
                 </b-dropdown>
               </span>
 
+              <div slot="total_paid" slot-scope="props">
+                <div>{{ format.money(props.row.total_paid) }}</div>
+              </div>
+
               <div slot="actions" class="text-nowrap" slot-scope="props">
                 <button
                   class="btn view btn-primary btn-sm"
@@ -76,7 +80,7 @@
                   <p>{{ order.created_at }}</p>
                 </div>
                 <div class="col-md-4">
-                  <h2>${{ order.amount }}</h2>
+                  <h2>{{ format.money(order.amount) }}</h2>
                 </div>
               </div>
 
@@ -87,7 +91,7 @@
                     <div v-for="mealId in order.meal_ids" :key="mealId">
                       <img :src="meal(mealId).featured_image" class="modalMeal" />
                       {{ meal(mealId).title }}
-                      ${{ meal(mealId).price }}
+                      {{ format.money(meal(mealId).price) }}
                     </div>
                   </p>
                 </b-card>
@@ -125,8 +129,8 @@ export default {
         "city",
         "state",
         "Joined",
-        "TotalPayments",
-        "TotalPaid",
+        "total_payments",
+        "total_paid",
         "LastOrder",
         "actions"
       ],
@@ -143,6 +147,7 @@ export default {
           Joined: "Customer Since",
           actions: "Actions"
         },
+        dateColumns: ['Joined'],
         customSorting: {
           TotalPaid: function(ascending) {
             return function(a, b) {
@@ -151,7 +156,23 @@ export default {
               if (ascending) return numA >= numB ? 1 : -1;
               return numA <= numB ? 1 : -1;
             };
-          }
+          },
+          Joined: function(ascending) {
+            return function(a, b) {
+              var numA = moment(a.Joined);
+              var numB = moment(b.Joined);
+              if (ascending) return numA.isBefore(numB, 'day') ? 1 : -1;
+              return numA.isAfter(numB, 'day') ? 1 : -1;
+            };
+          },
+          LastOrder: function(ascending) {
+            return function(a, b) {
+              var numA = moment(a.LastOrder);
+              var numB = moment(b.LastOrder);
+              if (ascending) return numA.isBefore(numB, 'day') ? 1 : -1;
+              return numA.isAfter(numB, 'day') ? 1 : -1;
+            };
+          },
         }
       }
     };
