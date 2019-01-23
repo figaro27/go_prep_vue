@@ -1,26 +1,27 @@
 <template>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body"></div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-    export default {
-        components: {
-
-        },
-        data(){
-            return {}
-        },
-        mounted()
-        {
-        },
-        methods: {}
-    }
+import { mapActions } from "vuex";
+export default {
+  components: {},
+  data() {
+    return {};
+  },
+  mounted() {
+    this.refreshPayments();
+  },
+  methods: {
+    ...mapActions({
+      refreshPayments: "refreshPayments"
+    })
+  }
+};
 </script>
