@@ -305,7 +305,17 @@ export default {
               return false;
             }
           }
-        ]
+        ],
+        customSorting: {
+          created_at: function(ascending) {
+            return function(a, b) {
+              var numA = moment(a.created_at);
+              var numB = moment(b.created_at);
+              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
+              return numA.isAfter(numB, "day") ? 1 : -1;
+            };
+          }
+        }
       }
     };
   },
@@ -389,7 +399,7 @@ export default {
       if (_.isEmpty(changes)) {
         changes = this.editing[id];
       }
-      this._updateMeal({id, data: changes});
+      this._updateMeal({ id, data: changes });
     },
     async updateActive(id, active, props) {
       const i = _.findIndex(this.tableData, o => {
@@ -584,10 +594,14 @@ export default {
         .then(response => {
           if (!_.isEmpty(response.data.url)) {
             let win = window.open(response.data.url);
-            if(print) {
-              win.addEventListener('load', () => {
-                win.print();
-              }, false);
+            if (print) {
+              win.addEventListener(
+                "load",
+                () => {
+                  win.print();
+                },
+                false
+              );
             }
           }
         })

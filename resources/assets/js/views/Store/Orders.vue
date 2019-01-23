@@ -185,6 +185,24 @@ export default {
         rowClassCallback: function(row) {
           let classes = `order-${row.id}`;
           return classes;
+        },
+        customSorting: {
+          created_at: function(ascending) {
+            return function(a, b) {
+              var numA = moment(a.created_at);
+              var numB = moment(b.created_at);
+              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
+              return numA.isAfter(numB, "day") ? 1 : -1;
+            };
+          },
+          delivery_date: function(ascending) {
+            return function(a, b) {
+              var numA = moment(a.delivery_date);
+              var numB = moment(b.delivery_date);
+              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
+              return numA.isAfter(numB, "day") ? 1 : -1;
+            };
+          }
         }
       },
       deliveryNote: ""

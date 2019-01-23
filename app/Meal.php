@@ -36,7 +36,7 @@ class Meal extends Model
 
     public function getActiveOrdersPriceAttribute()
     {
-        return number_format($this->orders->where('fulfilled', 0)->count() * $this->price, 2);
+        return $this->orders->where('fulfilled', 0)->count() * $this->price;
     }
 
     public function getNutritionAttribute()
