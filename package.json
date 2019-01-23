@@ -64,6 +64,7 @@
         "vue-tables-2": "https://github.com/msolda2/vue-tables-2.git",
         "vue-template-compiler": "^2.5.22",
         "vue-text-mask": "^6.1.1",
+        "vue-toastr": "^2.0.16",
         "vue2-google-maps": "0.9.8",
         "vue2-timepicker": "^0.1.4",
         "vuedraggable": "^2.17.0",
