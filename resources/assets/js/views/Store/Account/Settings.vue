@@ -310,8 +310,7 @@
           </div>
           <div v-else>
             <b-form-group label="Stripe" :state="true">
-              ID: {{ storeSettings.stripe_id }}<br /><br />
-              <b-button @click="stripeLogIn">Access Stripe</b-button>
+              ID: {{ storeSettings.stripe_id }}
             </b-form-group>
           </div>
         </div>
