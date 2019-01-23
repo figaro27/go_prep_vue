@@ -32,7 +32,7 @@
               v-model="mealModal"
               v-if="mealModal"
             >
-              <p>${{ meal.price }}</p>
+              <p>{{ format.money(meal.price) }}</p>
               <p>{{ meal.description }}</p>
               <img :src="meal.featured_image">
               <img src="/images/customer/add.jpg" @click="addOne(meal)">

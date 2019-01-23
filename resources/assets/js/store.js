@@ -143,11 +143,18 @@ const mutations = {
     if (!_.has(state.bag.items, mealId)) {
       Vue.set(state.bag.items, mealId, {
         quantity: 0,
-        meal
+        meal,
+        added: moment().unix()
       });
     }
 
-    state.bag.items[mealId].quantity += quantity;
+    let item = {...state.bag.items[mealId]};
+    item.quantity = (item.quantity || 0) + quantity;
+    if(!item.added) {
+      item.added = moment().unix();
+    }
+
+    Vue.set(state.bag.items, mealId, item);
   },
   removeFromBag(state, {
     meal,
@@ -666,11 +673,14 @@ const getters = {
     let bag = {
       ...state.bag
     };
-    bag.items = _.sortBy(bag.items, item => item.meal.title);
+    bag.items = _.filter(bag.items);
+    bag.items = _.sortBy(bag.items, 'added');
     return bag;
   },
   bagItems(state) {
-    return _.sortBy(state.bag.items, item => item.meal.title);
+    let items = _.filter(state.bag.items);
+    items = _.sortBy(items, 'added');
+    return items;
   },
   bagQuantity(state) {
     return _.sumBy(_.compact(_.toArray(state.bag.items)), item => item.quantity);
