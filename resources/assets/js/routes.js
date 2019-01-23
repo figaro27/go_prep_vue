@@ -19,6 +19,7 @@ import StoreOrders from './views/Store/Orders.vue';
 import StorePastOrders from './views/Store/PastOrders.vue';
 import StoreMealPlans from './views/Store/MealPlans.vue';
 import StorePayments from './views/Store/Payments.vue';
+import StoreMyAccount from './views/Store/Account/MyAccount.vue';
 import StoreContact from './views/Store/Account/Contact.vue';
 import StoreSettings from './views/Store/Account/Settings.vue';
 //Will move to customers
@@ -105,6 +106,10 @@ let routes = [
     {
         path: '/store/payments',
         component: StorePayments
+    },
+    {
+        path: '/store/account/my-account',
+        component: StoreMyAccount
     },
     {
         path: '/store/account/contact',

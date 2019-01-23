@@ -32,12 +32,15 @@ import Toastr from 'vue-toastr';
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
-Vue.use(Toastr, { /* options */ });
 Vue.component('input-tag', InputTag)
 Vue.component('v-select', vSelect)
 Vue.component('timepicker', VueTimepicker)
 Vue.component('draggable', draggable)
 Vue.component('card', Card)
+Vue.use(Toastr, { 
+  "defaultProgressBar": false,
+
+ });
 
 import Thumbnail from './components/Thumbnail';
 Vue.component('thumbnail', Thumbnail)

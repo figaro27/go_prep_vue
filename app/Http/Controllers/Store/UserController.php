@@ -79,20 +79,16 @@ class UserController  extends StoreController
 
         $user = auth('api')->user();
 
-        if ($request->has('email')) {
+        if ($request->has('email') && $request->has('password')) {
             $user->email = $request->get('email');
+            $user->password = bcrypt($request->get('password'));
+            $user->save();
+        }
+        else {
+            return 'error';
         }
 
-        if ($request->has('password')) {
-          $user->password = bcrypt($request->get('password'));
-        }
 
-        $user->save();
-        
-        if ($request->has('email') && $request->has('password'))
-            return 200;
-        else
-            return 500;
     }
 
     /**
