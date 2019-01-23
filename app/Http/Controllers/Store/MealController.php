@@ -102,6 +102,14 @@ class MealController extends StoreController
      */
     public function destroy(Request $request, $id)
     {
-        return Meal::deleteMeal($id);
+        $subId = $request->get('substitute_id', null);
+
+        if(!$subId || !$this->store->meals()->find($subId)) {
+          return response()->json([
+            'error' => 'Invalid substitute meal ID'
+          ], 400);
+        }
+
+        return Meal::deleteMeal($id, $subId);
     }
 }

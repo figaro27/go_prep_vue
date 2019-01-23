@@ -63,7 +63,7 @@
 
               <div slot="actions" class="text-nowrap" slot-scope="props">
                 <button class="btn view btn-warning btn-sm" @click="viewMeal(props.row.id)">View</button>
-                <button class="btn btn-danger btn-sm" @click="deleteMeal(props.row.id)">Delete</button>
+                <button class="btn btn-danger btn-sm" @click="() => deleteMeal(props.row.id)">Delete</button>
               </div>
             </v-client-table>
           </div>
@@ -179,10 +179,22 @@
       </b-modal>
     </div>
 
-    <b-modal title="Meal" v-model="deleteMealModal" v-if="deleteMealModal">
+    <b-modal
+      title="Delete Meal"
+      v-model="deleteMealModal"
+      v-if="deleteMealModal"
+      :hide-footer="true"
+    >
       <center>
-        <h5>Are you sure you want to delete this meal?</h5>
-        <button class="btn btn-danger mt-3" @click="destroyMeal(mealID)">Delete</button>
+        <h5>This meal is tied to one or more subscriptions. Please select a recommended replacement meal.</h5>
+
+        <b-select v-model="deleteMeal.subtitute_id" :options="mealSubstituteOptions(deleteMeal)"></b-select>
+
+        <button
+          v-if="deleteMeal.subtitute_id"
+          class="btn btn-danger mt-3"
+          @click="destroyMeal(deleteMeal.id, deleteMeal.subtitute_id)"
+        >Delete</button>
       </center>
     </b-modal>
   </div>
@@ -313,6 +325,7 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       meals: "storeMeals",
+      getMeal: "storeMeal",
       tags: "tags",
       storeCategories: "storeCategories",
       allergies: "allergies",
@@ -359,6 +372,15 @@ export default {
       return _.map(["Breakfast", "Dinner"], tag => {
         return { text: tag };
       });
+    },
+    mealSubstituteOptions: vm => meal => {
+      return meal.substitute_ids.map(id => {
+        const sub = vm.getMeal(id);
+        return {
+          text: `${sub.title} - ${format.money(sub.price)}`,
+          value: sub.id
+        };
+      });
     }
   },
   created() {
@@ -389,7 +411,7 @@ export default {
       if (_.isEmpty(changes)) {
         changes = this.editing[id];
       }
-      this._updateMeal({id, data: changes});
+      this._updateMeal({ id, data: changes });
     },
     async updateActive(id, active, props) {
       const i = _.findIndex(this.tableData, o => {
@@ -421,14 +443,20 @@ export default {
         });
       });
     },
-    deleteMeal: function($id) {
-      this.mealID = $id;
-      this.deleteMealModal = true;
+    deleteMeal: function(id) {
+      this.deleteMeal = this.getMeal(id);
+
+      if (this.deleteMeal) {
+        this.deleteMealModal = true;
+      }
     },
-    destroyMeal: function($id) {
-      axios.delete(`/api/me/meals/${$id}`);
-      this.refreshTable();
-      this.deleteMealModal = false;
+    destroyMeal: function(id, subId) {
+      axios
+        .delete(`/api/me/meals/${id}?substitute_id=${subId}`)
+        .then(resp => {
+          this.refreshTable();
+          this.deleteMealModal = false;
+        });
     },
 
     getNutrition: function() {
@@ -584,10 +612,14 @@ export default {
         .then(response => {
           if (!_.isEmpty(response.data.url)) {
             let win = window.open(response.data.url);
-            if(print) {
-              win.addEventListener('load', () => {
-                win.print();
-              }, false);
+            if (print) {
+              win.addEventListener(
+                "load",
+                () => {
+                  win.print();
+                },
+                false
+              );
             }
           }
         })

@@ -22,6 +22,7 @@ class CreateMealsTable extends Migration
             $table->text('description');
             $table->decimal('price', 4, 2);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

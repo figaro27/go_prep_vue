@@ -18,9 +18,9 @@ class StoreSettingsSeeder extends Seeder
             'delivery_days' => '["mon","wed","fri","tue","sun","thu","sat"]',
             'cutoff_days' => 1,
             'cutoff_hours' => 0,
-            'delivery_distance_type' => 'radius',
-            'delivery_distance_radius' => 5,
-            'delivery_distance_zipcodes' => '[10000,10001,10002]',
+            'delivery_distance_type' => 'zipcodes',
+            'delivery_distance_radius' => 500,
+            'delivery_distance_zipcodes' => '[11209]',
             'stripe_id' => 'acct_1DsNh6GjtVvEbWjh',
             'stripe_account' => '{"access_token":"sk_test_hKtcOHTpFM8KdQLjBlvYqTr8","livemode":false,"refresh_token":"rt_EL3ofmpyZNiFniC7w3PUahgbjHQf0sImSTs0mkKMssZr2G2p","token_type":"bearer","stripe_publishable_key":"pk_test_QqLPuymz1GAGAbkLUkEMnTaO","stripe_user_id":"acct_1DsNh6GjtVvEbWjh","scope":"express"}',
             'notifications' => json_encode([
