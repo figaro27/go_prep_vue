@@ -70,9 +70,9 @@ class NutritionController extends Controller
         ];
     }
 
-    public function searchInstant(Request $search)
+    public function searchInstant(Request $request)
     {
-        $food = $search->search;
+        $food = $request->get('search', '');
         $client = new Client();
         $response = $client->post($this->search_url, [
             'headers' => [

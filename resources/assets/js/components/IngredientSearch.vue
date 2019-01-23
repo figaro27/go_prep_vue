@@ -148,7 +148,7 @@ export default {
           vm.options = response.data.common;
           loading(false);
         });
-    }, 500),
+    }, 600),
     onChange(val) {
       this.ingredient = null;
       this.$refs.select.mutableValue = null;
