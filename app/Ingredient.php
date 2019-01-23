@@ -27,6 +27,8 @@ class Ingredient extends Model
         'calcium',
         'iron',
         'addedSugars',
+        'image',
+        'image_thumb',
     ];
 
     const NUTRITION_FIELDS = [

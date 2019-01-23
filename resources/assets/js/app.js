@@ -36,6 +36,9 @@ Vue.component('timepicker', VueTimepicker)
 Vue.component('draggable', draggable)
 Vue.component('card', Card)
 
+import Thumbnail from './components/Thumbnail';
+Vue.component('thumbnail', Thumbnail)
+
 import IngredientSearch from './components/IngredientSearch';
 Vue.component('ingredient-search', IngredientSearch);
 

@@ -238,6 +238,7 @@ class Meal extends Model
         $props = collect($props)->only([
             'active',
             'featured_image',
+            'photo',
             'title',
             'description',
             'price',

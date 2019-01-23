@@ -23,7 +23,7 @@
             </span>
 
             <div slot="image" slot-scope="props">
-              <thumbnail :src="props.row.image_thumb" :width="64"/>
+              <thumbnail :key="props.row.image_thumb" :src="props.row.image_thumb" :width="64"></thumbnail>
             </div>
 
             <div slot="actions" slot-scope="props">

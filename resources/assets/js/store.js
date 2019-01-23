@@ -438,7 +438,7 @@ const actions = {
         .add(ttl, 'seconds')
         .unix();
     } else {
-      throw new Error('Failed to retrieve ingredients');
+      throw new Error('Failed to retrieve payments');
     }
   },
 

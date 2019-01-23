@@ -1,5 +1,5 @@
 <template>
-  <img :src="src" :style="{width, height}" />
+  <img :src="src" :style="{display: 'inline-block', width, height}" />
 </template>
 
 <script>

@@ -45,12 +45,14 @@
                   <template slot="option" slot-scope="option">
                     <div class="d-center">
                       <img v-if="option.photo" :src="option.photo.thumb" class="thumb">
+                      <img v-if="option.image_thumb" :src="option.image_thumb" class="thumb">
                       {{ option.food_name }}
                     </div>
                   </template>
                   <template slot="selected-option" slot-scope="option">
                     <div class="selected">
                       <img v-if="option.photo" :src="option.photo.thumb" class="thumb">
+                      <img v-if="option.image_thumb" :src="option.image_thumb" class="thumb">
                       {{ option.food_name }}
                     </div>
                   </template>
