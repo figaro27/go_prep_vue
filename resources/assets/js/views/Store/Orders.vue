@@ -10,10 +10,16 @@
             :options="options"
             v-show="!isLoading"
           >
-            <div slot="beforeTable" class="mb-2">
-              <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
-
-              <b-form-select :options="deliveryDates" required v-model="deliveryDate"></b-form-select>
+            <div slot="beforeTable" class="row mb-2">
+              <div class="col-md-1">
+                <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
+              </div>
+              <div class="col-md-1 pt-2">
+                <h6>Delivery Days:</h6>
+              </div>
+              <div class="col-md-10 pb-1">
+                <v-select multiple v-model="filters.delivery_dates" :options="deliveryDates"></v-select>
+              </div>
             </div>
 
             <span slot="beforeLimit">
@@ -130,7 +136,7 @@
 <script>
 import Spinner from "../../components/Spinner";
 import format from "../../lib/format";
-import vSelect from 'vue-select'
+import vSelect from "vue-select";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
@@ -143,6 +149,9 @@ export default {
     return {
       deliveryDate: "All",
       filter: false,
+      filters: {
+        delivery_dates: ['All']
+      },
       viewOrderModal: false,
       order: {},
       orderId: "",
@@ -188,31 +197,41 @@ export default {
       isLoading: "isLoading"
     }),
     tableData() {
-      // let date = this.deliveryDate
-      // if (date = 'All'){
-      //   if (!this.filter) return _.filter(this.orders, { fulfilled: 0 });
-      //   else return _.filter(this.orders, { fulfilled: 0, has_notes: true });
-      // }
-      // else {
       let filters = { fulfilled: 0 };
-      if (this.deliveryDate !== "All") {
-        filters.delivery_date = this.deliveryDate;
+      if (_.isArray(this.filters.delivery_dates)) {
+        filters.delivery_dates = this.filters.delivery_dates;
       }
 
       if (this.filter) {
         filters.has_notes = true;
       }
       // }
+      // if (!this.filter) return _.filter(this.orders, { fulfilled: 0 });
+      //   else return _.filter(this.orders, { fulfilled: 0, has_notes: true });
       return _.filter(this.orders, order => {
+        if ("delivery_dates" in filters) {
+          let dateMatch = _.reduce(
+            filters.delivery_dates,
+            (match, date) => {
+              if(date === 'All') {
+                return true;
+              }
+              if (moment(date).isSame(order.delivery_date, "day")) {
+                return true 
+              }
 
-        if('delivery_date' in filters) {
-          if(!moment(filters.delivery_date).isSame(order.delivery_date, 'day')) {
-            return false;
-          }
+              return match;
+            },
+            false
+          );
+
+          if (!dateMatch) return false;
         }
 
-        if('has_notes' in filters && order.has_notes !== filters.has_notes) return false;
-        if('fulfilled' in filters && order.fulfilled !== filters.fulfilled) return false;
+        if ("has_notes" in filters && order.has_notes !== filters.has_notes)
+          return false;
+        if ("fulfilled" in filters && order.fulfilled !== filters.fulfilled)
+          return false;
 
         return true;
       });
@@ -227,6 +246,9 @@ export default {
       grouped.push("All");
       this.deliveryDate = grouped[0];
       return grouped;
+    },
+    selected() {
+      return this.deliveryDates;
     }
   },
   methods: {
