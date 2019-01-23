@@ -5,7 +5,12 @@
     </template>\
     <template slot="dropdown">
       <b-dropdown-item>
-        <i class="fa fa-user"/>
+      <i class="fa fa-user"/>
+        <router-link to="/store/account/my-account" class="link-remove">My Account</router-link>
+      </b-dropdown-item>
+
+      <b-dropdown-item>
+        <i class="fa fa-comment-dots"/>
         <router-link to="/store/account/contact" class="link-remove">Contact Us</router-link>
       </b-dropdown-item>
       <b-dropdown-item @click="logout()">
