@@ -56,8 +56,8 @@ h1 {
   left: 200px;
   right: 0;
   bottom: 0;
-  width: 25vh;
-  height: 25vh;
+  width: 20vh;
+  height: 20vh;
   overflow: hidden;
 
   .bubble {
