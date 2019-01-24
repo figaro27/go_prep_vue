@@ -12,7 +12,7 @@ class Customer extends Model
      * @var array
      */
     protected $fillable = [
-        
+
     ];
 
     /**
@@ -26,6 +26,10 @@ class Customer extends Model
     protected $casts = [
     ];
 
+    protected $appends = [
+      'cards',
+    ];
+
     public function user()
     {
         return $this->belongsTo('App\User');
@@ -35,4 +39,5 @@ class Customer extends Model
     {
         return $this->belongsTo('App\Store');
     }
+
 }

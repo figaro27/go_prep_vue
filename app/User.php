@@ -37,12 +37,13 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-      'name',
+        'name',
+        'cards',
     ];
 
     public function getId()
     {
-      return $this->id;
+        return $this->id;
     }
 
     public function userRole()
@@ -91,8 +92,14 @@ class User extends Authenticatable
         return $this->user_role_id === $roleMap[$role];
     }
 
-    public function getNameAttribute() {
-      return $this->userDetail->full_name;
+    public function getNameAttribute()
+    {
+        return $this->userDetail->full_name;
+    }
+
+    public function getCardsAttribute()
+    {
+        return \Stripe\Customer::retrieve($this->stripe_id)->sources->all(['object' => 'card']);
     }
 
 // Admin View
