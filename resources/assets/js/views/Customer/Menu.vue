@@ -1,6 +1,6 @@
 <template>
   <div class="menu container-fluid">
-    <div v-if="!willDeliver">
+    <div v-if="!willDeliver && !preview">
       <b-alert variant="danger center-text" show>You are out of the delivery bounds</b-alert>
     </div>
 
@@ -79,7 +79,7 @@
                 </div>
               </div>
 
-              <div class="col-sm-3 bag-area">
+              <div class="col-sm-3 bag-area" v-if="!preview">
                 <p @click="clearAll">Clear All</p>
                 <ul class="list-group">
                   <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
@@ -133,6 +133,11 @@ import Spinner from "../../components/Spinner";
 export default {
   components: {
     Spinner
+  },
+  props: {
+    preview: {
+      default: false,
+    }
   },
   data() {
     return {

@@ -26,7 +26,6 @@ export default {
       name: 'Meal Orders',
       url: '/store/meal-orders',
       icon: 'fa fa-utensils'
-
     },
     {
       name: 'Ingredients',
@@ -37,6 +36,12 @@ export default {
     {
       name: 'Menu',
       url: '/store/menu',
+      icon: 'fa fa-book',
+      class: 'nav-child'
+    },
+    {
+      name: 'Preview Menu',
+      url: '/store/menu/preview',
       icon: 'fa fa-book',
       class: 'nav-child'
     },

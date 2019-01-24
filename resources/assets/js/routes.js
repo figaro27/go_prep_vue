@@ -24,6 +24,7 @@ import StoreContact from './views/Store/Account/Contact.vue';
 import StoreSettings from './views/Store/Account/Settings.vue';
 //Will move to customers
 import StoreMenu from './views/Store/Menu.vue';
+import StoreMenuPreview from './views/Store/MenuPreview.vue';
 
 import AdminCustomers from './views/Admin/Customers.vue';
 import AdminDashboard from './views/Admin/Dashboard.vue';
@@ -35,147 +36,120 @@ import AdminStores from './views/Admin/Stores.vue';
 import Spinner from './components/Spinner.vue';
 
 let routes = [
-    {
-        path: '/customer/home',
-        component: CustomerHome,
-        name: 'customer-home'
-    },
-    {
-        path: '/customer/bag',
-        component: CustomerBag,
-        name: 'customer-bag'
-    },
-    {
-      path: '/customer/checkout',
-      component: CustomerCheckout,
-      name: 'customer-checkout'
-    },
-    {
-        path: '/customer/menu',
-        component: CustomerMenu,
-        name: 'customer-menu'
-    },
-    {
-        path: '/customer/account/billing',
-        component: CustomerBilling,
-        name: 'customer-billing'
-    },
-    {
-        path: '/customer/account/contact',
-        component: CustomerContact,
-        name: 'customer-contact'
-    },
-    {
-        path: '/customer/account/settings',
-        component: CustomerSettings,
-        name: 'customer-settings'
-    },
-    {
-        path: '/customer/subscriptions',
-        component: CustomerSubscriptions,
-        name: 'customer-subscriptions'
-    },
-    {
-        path: '/customer/orders',
-        component: CustomerOrders,
-        name: 'customer-orders'
-    },
-    {
-        path: '/store/customers',
-        component: StoreCustomers,
-        name: 'store-customers'
-    },
-    {
-        path: '/store/ingredients',
-        component: StoreIngredients,
-        name: 'store-ingredients'
-    },
-    {
-        path: '/store/print',
-        component: StorePrint,
-        name: 'store-print'
-    },
-    {
-        path: '/store/meals',
-        component: StoreMeals,
-        name: 'store-meals'
-    },
-    {
-        path: '/store/meal-orders',
-        component: StoreMealOrders,
-        name: 'store-meal-orders'
-    },
-    {
-        path: '/store/orders',
-        component: StoreOrders,
-        name: 'store-orders'
-    },
-    {
-        path: '/store/past-orders',
-        component: StorePastOrders,
-        name: 'store-past-orders'
-    },
-    {
-      path: '/store/meal-plans',
-      component: StoreMealPlans,
-      name: 'store-meal-plans'
-    },
-    {
-        path: '/store/payments',
-        component: StorePayments,
-        name: 'store-payments'
-    },
-    {
-        path: '/store/account/my-account',
-        component: StoreMyAccount,
-        name: 'store-my-account'
-    },
-    {
-        path: '/store/account/contact',
-        component: StoreContact,
-        name: 'store-contact'
-    },
-    {
-        path: '/store/account/settings',
-        component: StoreSettings,
-        name: 'store-settings'
-    },
-    {
-        path: '/store/menu',
-        component: StoreMenu,
-        name: 'store-menu'
-    },
-    {
-        path: '/admin/dashboard',
-        component: AdminDashboard
-    },
-    {
-        path: '/admin/customers',
-        component: AdminCustomers
-    },
-    {
-        path: '/admin/meals',
-        component: AdminMeals
-    },
-    {
-        path: '/admin/orders',
-        component: AdminOrders
-    },
-    {
-        path: '/admin/payments',
-        component: AdminPayments
-    },
-    {
-        path: '/admin/stores',
-        component: AdminStores
-    },
-    {
-        path: '/spinner',
-        component: Spinner
-    }
+  {
+    path: '/customer/home',
+    component: CustomerHome,
+    name: 'customer-home'
+  }, {
+    path: '/customer/bag',
+    component: CustomerBag,
+    name: 'customer-bag'
+  }, {
+    path: '/customer/checkout',
+    component: CustomerCheckout,
+    name: 'customer-checkout'
+  }, {
+    path: '/customer/menu',
+    component: CustomerMenu,
+    name: 'customer-menu'
+  }, {
+    path: '/customer/account/billing',
+    component: CustomerBilling,
+    name: 'customer-billing'
+  }, {
+    path: '/customer/account/contact',
+    component: CustomerContact,
+    name: 'customer-contact'
+  }, {
+    path: '/customer/account/settings',
+    component: CustomerSettings,
+    name: 'customer-settings'
+  }, {
+    path: '/customer/subscriptions',
+    component: CustomerSubscriptions,
+    name: 'customer-subscriptions'
+  }, {
+    path: '/customer/orders',
+    component: CustomerOrders,
+    name: 'customer-orders'
+  }, {
+    path: '/store/customers',
+    component: StoreCustomers,
+    name: 'store-customers'
+  }, {
+    path: '/store/ingredients',
+    component: StoreIngredients,
+    name: 'store-ingredients'
+  }, {
+    path: '/store/print',
+    component: StorePrint,
+    name: 'store-print'
+  }, {
+    path: '/store/meals',
+    component: StoreMeals,
+    name: 'store-meals'
+  }, {
+    path: '/store/meal-orders',
+    component: StoreMealOrders,
+    name: 'store-meal-orders'
+  }, {
+    path: '/store/orders',
+    component: StoreOrders,
+    name: 'store-orders'
+  }, {
+    path: '/store/past-orders',
+    component: StorePastOrders,
+    name: 'store-past-orders'
+  }, {
+    path: '/store/meal-plans',
+    component: StoreMealPlans,
+    name: 'store-meal-plans'
+  }, {
+    path: '/store/payments',
+    component: StorePayments,
+    name: 'store-payments'
+  }, {
+    path: '/store/account/my-account',
+    component: StoreMyAccount,
+    name: 'store-my-account'
+  }, {
+    path: '/store/account/contact',
+    component: StoreContact,
+    name: 'store-contact'
+  }, {
+    path: '/store/account/settings',
+    component: StoreSettings,
+    name: 'store-settings'
+  }, {
+    path: '/store/menu',
+    component: StoreMenu,
+    name: 'store-menu'
+  }, {
+    path: '/store/menu/preview',
+    component: StoreMenuPreview,
+    name: 'store-menu-preview'
+  }, {
+    path: '/admin/dashboard',
+    component: AdminDashboard
+  }, {
+    path: '/admin/customers',
+    component: AdminCustomers
+  }, {
+    path: '/admin/meals',
+    component: AdminMeals
+  }, {
+    path: '/admin/orders',
+    component: AdminOrders
+  }, {
+    path: '/admin/payments',
+    component: AdminPayments
+  }, {
+    path: '/admin/stores',
+    component: AdminStores
+  }, {
+    path: '/spinner',
+    component: Spinner
+  }
 ];
 
-export default new VueRouter({
-    mode: 'history',
-    routes
-});
+export default new VueRouter({mode: 'history', routes});
