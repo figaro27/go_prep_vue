@@ -4,6 +4,7 @@
       <v-select multiple v-model="selected" :options="deliveryDays"></v-select>
       <div class="card">
         <div class="card-body">
+          <Spinner v-if="isLoading"/>
           <v-client-table ref="mealsTable" :columns="columns" :data="tableData" :options="options">
             <div slot="featured_image" slot-scope="props">
               <img class="thumb" :src="props.row.featured_image" v-if="props.row.featured_image">
@@ -37,10 +38,12 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import format from "../../lib/format";
 import { Event } from "vue-tables-2";
 import vSelect from "vue-select";
+import Spinner from "../../components/Spinner";
 
 export default {
   components: {
-    vSelect
+    vSelect,
+    Spinner
   },
   data() {
     return {

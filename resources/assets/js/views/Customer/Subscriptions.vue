@@ -4,6 +4,7 @@
       <div class="card">
         <div class="card-header">Meal Plans</div>
         <div class="card-body">
+          <Spinner v-if="isLoading"/>
           <div v-for="subscription in subscriptions" :key="subscription.id">
             <div v-b-toggle="'collapse' + subscription.id">
               <b-list-group-item>
@@ -50,9 +51,12 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import format from "../../lib/format.js";
+import Spinner from "../../components/Spinner";
 
 export default {
-  components: {},
+  components: {
+    Spinner
+  },
   data() {
     return {};
   },

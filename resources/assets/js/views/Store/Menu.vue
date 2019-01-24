@@ -4,6 +4,7 @@
         <div class="col-sm-12 mt-3">
             <div class="card">
                 <div class="card-body">
+                    <Spinner v-if="isLoading"/>
                     <div class="row">
                         <div class="col-sm-10">
                             <div class="row">
@@ -45,14 +46,22 @@
 </template>
 
 <script>
+import Spinner from "../../components/Spinner";
+import { mapGetters, mapActions, mapMutations } from "vuex";
+
     export default {
         components: {
-
+            Spinner
         },
         data(){
             return {
                 meals: []
             }
+        },
+        computed: {
+        ...mapGetters({
+          isLoading: "isLoading"
+            })
         },
         mounted()
         {

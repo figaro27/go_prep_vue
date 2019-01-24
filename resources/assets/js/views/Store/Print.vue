@@ -3,6 +3,7 @@
     <div class="row">
       <div class="col-md-6">
         <div class="card">
+          <Spinner v-if="isLoading"/>
           <div class="card-body m-4">
             <v-select multiple v-model="selected" :options="deliveryDates"></v-select>
             <button @click="print('meal_quantities', 'pdf')" class="btn btn-primary btn-md form-control">Print Meals Quantity</button>

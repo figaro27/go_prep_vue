@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-md-12">
-      <Spinner v-if="loading"/>
+      <Spinner v-if="isLoading"/>
       <div class="card">
         <div class="card-body">
           <v-client-table :columns="columns" :data="tableData" :options="options">
@@ -73,7 +73,8 @@ export default {
     ...mapGetters({
       orderIngredients: "orderIngredients",
       ingredient: "ingredient",
-      defaultWeightUnit: "defaultWeightUnit"
+      defaultWeightUnit: "defaultWeightUnit",
+      isLoading: "isLoading"
     }),
     tableData() {
       return (

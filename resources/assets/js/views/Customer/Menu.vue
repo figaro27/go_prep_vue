@@ -25,6 +25,7 @@
       <div class="col-sm-12 mt-3">
         <div class="card">
           <div class="card-body">
+            <Spinner v-if="isLoading"/>
             <b-modal
               ref="mealModal"
               size="lg"
@@ -127,9 +128,12 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
+import Spinner from "../../components/Spinner";
 
 export default {
-  components: {},
+  components: {
+    Spinner
+  },
   data() {
     return {
       active: {},
@@ -167,7 +171,8 @@ export default {
       bag: "bagItems",
       hasMeal: "bagHasMeal",
       willDeliver: "viewedStoreWillDeliver",
-      _categories: "viewedStoreCategories"
+      _categories: "viewedStoreCategories",
+      isLoading: "isLoading"
     }),
     storeSettings() {
       return this.store.settings;

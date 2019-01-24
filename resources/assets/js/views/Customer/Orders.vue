@@ -4,6 +4,7 @@
       <div class="card">
         <div class="card-header">Orders</div>
         <div class="card-body">
+          <Spinner v-if="isLoading"/>
           <div v-for="order in orders" :key="order.id">
             <div v-b-toggle="'collapse' + order.id">
               <b-list-group-item>
@@ -56,9 +57,12 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import format from '../../lib/format.js';
+import Spinner from "../../components/Spinner";
 
 export default {
-  components: {},
+  components: {
+    Spinner
+  },
   data() {
     return {};
   },
