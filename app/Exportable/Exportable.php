@@ -97,6 +97,7 @@ trait Exportable
 
         $pdf = new Pdf([
             'encoding' => 'UTF-8',
+            'orientation' => 'landscape',
         ]);
         $pdf->addPage($html);
         $output = $pdf->toString();
