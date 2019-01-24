@@ -52,16 +52,16 @@ class StoreSetting extends Model
     {
         $dates = [];
 
-        $today = Carbon::today();
+        $now = Carbon::now();
 
         $cutoff = $this->cutoff_days * (60 * 60 * 24) + $this->cutoff_hours * (60 * 60);
 
         foreach ($this->delivery_days as $day) {
-            $date = Carbon::createFromFormat('D', $day);
+            $date = Carbon::createFromFormat('D', $day)->setTime(0, 0, 0);
 
-            $diff = $date->getTimestamp() - $today->getTimestamp();
+            $diff = $date->getTimestamp() - $now->getTimestamp();
 
-            if ($today->format('N') <= $date->format('N') && $diff >= $cutoff) {
+            if ($now->format('N') <= $date->format('N') && $diff >= $cutoff) {
                 $dates[] = $date;
             } else {
                 $dates[] = $date->addWeek(1);
