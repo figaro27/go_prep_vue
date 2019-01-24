@@ -37,91 +37,113 @@ import Spinner from './components/Spinner.vue';
 let routes = [
     {
         path: '/customer/home',
-        component: CustomerHome
+        component: CustomerHome,
+        name: 'customer-home'
     },
     {
         path: '/customer/bag',
-        component: CustomerBag
+        component: CustomerBag,
+        name: 'customer-bag'
     },
     {
       path: '/customer/checkout',
-      component: CustomerCheckout
+      component: CustomerCheckout,
+      name: 'customer-checkout'
     },
     {
         path: '/customer/menu',
-        component: CustomerMenu
+        component: CustomerMenu,
+        name: 'customer-menu'
     },
     {
         path: '/customer/account/billing',
-        component: CustomerBilling
+        component: CustomerBilling,
+        name: 'customer-billing'
     },
     {
         path: '/customer/account/contact',
-        component: CustomerContact
+        component: CustomerContact,
+        name: 'customer-contact'
     },
     {
         path: '/customer/account/settings',
-        component: CustomerSettings
+        component: CustomerSettings,
+        name: 'customer-settings'
     },
     {
         path: '/customer/subscriptions',
-        component: CustomerSubscriptions
+        component: CustomerSubscriptions,
+        name: 'customer-subscriptions'
     },
     {
         path: '/customer/orders',
-        component: CustomerOrders
+        component: CustomerOrders,
+        name: 'customer-orders'
     },
     {
         path: '/store/customers',
-        component: StoreCustomers
+        component: StoreCustomers,
+        name: 'store-customers'
     },
     {
         path: '/store/ingredients',
-        component: StoreIngredients
+        component: StoreIngredients,
+        name: 'store-ingredients'
     },
     {
         path: '/store/print',
-        component: StorePrint
+        component: StorePrint,
+        name: 'store-print'
     },
     {
         path: '/store/meals',
-        component: StoreMeals
+        component: StoreMeals,
+        name: 'store-meals'
     },
     {
         path: '/store/meal-orders',
-        component: StoreMealOrders
+        component: StoreMealOrders,
+        name: 'store-meal-orders'
     },
     {
         path: '/store/orders',
-        component: StoreOrders
+        component: StoreOrders,
+        name: 'store-orders'
     },
     {
         path: '/store/past-orders',
-        component: StorePastOrders
+        component: StorePastOrders,
+        name: 'store-past-orders'
     },
     {
       path: '/store/meal-plans',
-      component: StoreMealPlans
+      component: StoreMealPlans,
+      name: 'store-meal-plans'
     },
     {
         path: '/store/payments',
-        component: StorePayments
+        component: StorePayments,
+        name: 'store-payments'
     },
     {
         path: '/store/account/my-account',
-        component: StoreMyAccount
+        component: StoreMyAccount,
+        name: 'store-my-account'
     },
     {
         path: '/store/account/contact',
-        component: StoreContact
+        component: StoreContact,
+        name: 'store-contact'
     },
     {
         path: '/store/account/settings',
-        component: StoreSettings
+        component: StoreSettings,
+        name: 'store-settings'
     },
     {
         path: '/store/menu',
-        component: StoreMenu
+        component: StoreMenu,
+        name: 'store-menu'
     },
     {
         path: '/admin/dashboard',

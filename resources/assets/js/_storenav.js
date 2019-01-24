@@ -21,7 +21,6 @@ export default {
       name: 'Meals',
       url: '/store/meals',
       icon: 'fa fa-utensils'
-
     },
     {
       name: 'Meal Orders',

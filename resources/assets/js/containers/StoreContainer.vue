@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div :class="classes">
     <AppHeader fixed>
       <SidebarToggler class="d-lg-none" display="md" mobile/>
       <b-link class="navbar-brand" to="#">
@@ -116,11 +116,25 @@ export default {
     };
   },
   computed: {
+    classes() {
+      let classes = ['app'];
+      classes.push(this.$route.name);
+      return classes;
+    },
     navItems() {
       return nav.items.map(item => {
         if (item.url === "#payments") {
           item.url = this.payments_url;
         }
+
+        if(!item.class) {
+          item.class = '';
+        }
+
+        if(item.url === this.$route.path) {
+          item.class += ' active';
+        }
+        
         return item;
       });
     },
