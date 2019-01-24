@@ -203,6 +203,10 @@
           </b-list-group-item>
         </b-list-group>
 
+        <div v-if="mealSubstituteOptions(deletingMeal).length <= 0">
+          No substitutes lorem ipsum
+        </div>
+
         <!--<b-select v-model="deleteMeal.subtitute_id" :options="mealSubstituteOptions(deleteMeal)"></b-select>-->
         <button
           v-if="substitute_id"
@@ -401,10 +405,10 @@ export default {
       });
     },
     mealSubstituteOptions: vm => meal => {
-      return meal.substitute_ids.map(id => {
+      return _.filter(meal.substitute_ids.map(id => {
         const sub = vm.getMeal(id);
         return sub;
-      });
+      }));
     }
   },
   created() {
