@@ -265,3 +265,13 @@ th {
     }
   }
 }
+
+ol.plain {
+  list-style: decimal;
+  padding-inline-start: 10px;
+  
+  li {
+    list-style: decimal;
+    padding-left: 10px;
+  }
+}

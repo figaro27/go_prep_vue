@@ -155,14 +155,14 @@
           </b-form>
 
           <b-form-group label="Categories" :state="true">
-            <b-btn-group class="categories">
-              <draggable v-model="categories" @change="onChangeCategories">
-                <b-btn v-for="category in categories" :key="`category-${category.id}`">
+            <div class="categories">
+              <draggable v-model="categories" @change="onChangeCategories" element="ol" class="plain">
+                <li v-for="category in categories" :key="`category-${category.id}`" style="cursor: n-resize">
                   {{ category.category }}
                   <i v-if="category.id" @click="deleteCategory(category.id)" class="fa fa-minus-circle text-danger"></i>
-                </b-btn>
+                </li>
               </draggable>
-            </b-btn-group>
+            </div>
 
             <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
               <b-input v-model="new_category" :type="text" placeholder="New category..."></b-input>
