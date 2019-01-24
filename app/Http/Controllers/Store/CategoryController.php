@@ -46,12 +46,13 @@ class CategoryController extends StoreController
             $newCat->save();
             return $newCat;
         } else if ($request->has('categories')) {
-            $cats = $request->get('categories');
+            $cats = collect($request->get('categories'));
+            $cats = $cats->sortBy('order');
 
-            foreach($cats as $cat) {
+            foreach($cats->values() as $i => $cat) {
               $c = $this->store->categories()->find($cat['id']);
               if($c) {
-                $c->order = $cat['order'];
+                $c->order = $i;
                 $c->save();
               }
             }

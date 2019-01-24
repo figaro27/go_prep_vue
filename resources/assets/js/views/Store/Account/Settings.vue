@@ -288,7 +288,7 @@ export default {
       storeCategories: "storeCategories"
     }),
     categories() {
-      return _.chain(this.storeCategories).toArray().orderBy('order').value();
+      return _.chain(this.storeCategories).orderBy('order').toArray().value();
     },
     // storeDetail(){
     //     return this.store.store_detail;
@@ -379,8 +379,13 @@ export default {
     onChangeCategories(e) {
       if(_.isObject(e.moved)) {
         let newCats = _.toArray({...this.categories});
-        newCats[e.moved.oldIndex].order = e.moved.newIndex;
-        newCats[e.moved.newIndex].order = e.moved.oldIndex;
+        newCats[e.moved.oldIndex] = this.categories[e.moved.newIndex];
+        newCats[e.moved.newIndex] = this.categories[e.moved.oldIndex];
+
+        newCats = _.map(newCats, (cat, i) => {
+          cat.order = i;
+          return cat;
+        });
 
         axios.post("/api/me/categories", {categories: newCats}).then(response => {
           this.refreshCategories();

@@ -31,17 +31,17 @@ class StoresSeeder extends Seeder
                 [
                     'store_id' => 1,
                     'category' => 'Breakfast',
-                    'order' => 1,
+                    'order' => 0,
                 ],
                 [
                     'store_id' => 1,
                     'category' => 'Lunch',
-                    'order' => 2,
+                    'order' => 1,
                 ],
                 [
                     'store_id' => 1,
                     'category' => 'Dinner',
-                    'order' => 3,
+                    'order' => 2,
                 ],
             ]);
         });
