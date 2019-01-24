@@ -42,7 +42,7 @@ class Order extends Model
 
     public function meals()
     {
-        return $this->belongsToMany('App\Meal', 'meal_orders')->withPivot('quantity');
+        return $this->belongsToMany('App\Meal', 'meal_orders')->withPivot('quantity')->withTrashed();
     }
 
     public function subscription()
