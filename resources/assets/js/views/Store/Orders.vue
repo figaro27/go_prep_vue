@@ -293,7 +293,7 @@ export default {
     },
     async saveNotes(id) {
       let deliveryNote = deliveryNote;
-      await this.updateOrder({ id, data: { notes: this.deliveryNote } });
+      await this.updateOrder({ id, data: { notes: this.deliveryNote } })
     },
     getMealQuantities(meals) {
       let order = _.toArray(_.countBy(meals, "id"));

@@ -4,6 +4,11 @@
       <p>Orders</p>
       <div class="card">
         <div class="card-body">
+          <b-btn @click="toast('s')">Success</b-btn>
+          <b-btn @click="toast('w')">Warning</b-btn>
+          <b-btn @click="toast('e')">Error</b-btn>
+
+
           <b-form @submit.prevent="updateStoreSettings">
             <b-form-group label="Cut Off Period" label-for="cut-off-period" :state="true" inline>
               <b-select
@@ -113,7 +118,7 @@
               />
               <b-form-input
                 v-if="storeSettings.applyDeliveryFee"
-                type="text"
+                type="string"
                 v-model="storeSettings.deliveryFee"
                 placeholder="Delivery Fee"
                 required
@@ -146,7 +151,7 @@
                 v-model="storeSettings.showNutrition"
               />
             </b-form-group>
-            <!-- <p>Ingredients</p> -->
+            <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
 
           <b-form-group label="Categories" :state="true">
@@ -206,7 +211,7 @@
               />
            </b-form-group>
 
-           <b-button type="submit" variant="primary" @click="updateStoreSettings">Submit</b-button>
+           <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
         </div>
       </div>
@@ -317,50 +322,42 @@ export default {
   mounted() {},
   methods: {
     ...mapActions(['refreshCategories']),
-    updateLogin() {
-      let data = {};
 
-      if (!_.isEmpty(this.user.email)) {
-        data.email = this.user.email;
-      }
-      if (!_.isEmpty(this.user.password)) {
-        data.password = this.user.password;
-      }
-
-      axios.patch("/api/me/user", data).then(response => {
-        this.$store.commit("user", response.data);
-        if (response.data == 200)
-        this.loginAlertSuccess = true;
-        else
-        this.loginAlertFail = true;
-      });
-
-
-    },
-    updateStoreDetails() {
-      this.spliceZip();
-      axios
-        .post("/api/updateStoreDetails", this.storeDetail)
-        .then(response => {});
-    },
     updateStoreSettings() {
       let settings = { ...this.storeSettings };
       settings.delivery_distance_zipcodes = this.zipcodes;
 
-      axios.post("/api/updateStoreSettings", settings).then(response => {});
-    },
-    spliceZip() {
-      if (this.storeDetail.zip.toString().length > 5) {
-        let intToString = this.storeDetail.zip.toString();
-        let newZip = parseInt(intToString.substring(0, 5));
-        this.storeDetail.zip = newZip;
-      }
-    },
-    updateZips(zips) {
-      this.zipcodes = zips.split(",").map(zip => {
-        return zip.trim();
+      // this.spliceCharacters();
+      axios.post("/api/updateStoreSettings", settings)
+      .then(response => {
+        this.$toastr.s('Your settings have been saved.', 'Success');
+      })
+      .catch(response => {
+        let error = _.first(Object.values(response.response.data.errors))
+        error = error.join(" ");
+        this.$toastr.e(error, 'Error');
       });
     },
+    // spliceCharacters() {
+    //   if (this.storeSettings.deliveryFee != null)
+    //     {
+    //       let deliveryFee = this.storeSettings.deliveryFee;
+    //       if (deliveryFee.toString().includes('$')) {
+    //         let intToString = deliveryFee.toString();
+    //         let newFee = intToString.replace('$','');
+    //         this.storeSettings.deliveryFee = newFee;
+    //       }
+    //     }
+
+    //   if (this.storeSettings.mealPlanDiscount != null){
+    //     let mealPlanDiscount = this.storeSettings.mealPlanDiscount;
+    //     if (this.storeSettings.mealPlanDiscount.toString().includes('%')) {
+    //       let intToString = this.storeSettings.mealPlanDiscount.toString();
+    //       let newDiscount = intToString.replace('%','');
+    //       this.storeSettings.mealPlanDiscount = newDiscount;
+    //     }
+    //   }
+    // },
     createStripeAccount() {
       axios.post('/api/me/stripe').then((resp) => {
         

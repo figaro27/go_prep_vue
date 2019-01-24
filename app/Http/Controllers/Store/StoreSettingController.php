@@ -72,6 +72,14 @@ class StoreSettingController extends StoreController
      */
     public function update(Request $request, StoreSetting $storeSetting)
     {
+        $validatedData = $request->validate([
+            'mealPlanDiscount' => 'required_if:applyMealPlanDiscount,true|integer|nullable',
+            'deliveryFee' => 'required_if:applyDeliveryFee,true|integer|nullable',
+            'pickupInstructions' => 'required_if:allowpickup,true:string',
+            'minimum' => 'required|numeric',
+            'delivery_days' => 'required|min:1'
+        ]);
+
         $settings = StoreSetting::where('store_id', $this->store->id);
 
         $values = $request->except(['next_delivery_dates', 'stripe']);

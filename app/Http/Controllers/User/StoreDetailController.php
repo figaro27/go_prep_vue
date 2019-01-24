@@ -79,8 +79,8 @@ class StoreDetailController extends Controller
             'address' => 'required|string',
             'city' => 'required|string',
             'state' => 'required|string',
-            'zip' => 'required|integer',
-            'description' => 'required|string',
+            'zip' => 'required|numeric',
+            'description' => 'required|string|max:450',
         ]);
 
         $id = auth('api')->user()->id;
