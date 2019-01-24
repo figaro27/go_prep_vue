@@ -28,6 +28,7 @@ import modal from './lib/modal';
 import Axios from 'axios';
 import moment from 'moment';
 import Toastr from 'vue-toastr';
+import PictureInput from "vue-picture-input";
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -37,6 +38,7 @@ Vue.component('v-select', vSelect)
 Vue.component('timepicker', VueTimepicker)
 Vue.component('draggable', draggable)
 Vue.component('card', Card)
+Vue.component('picture-input', PictureInput)
 Vue.use(Toastr, { 
   "defaultProgressBar": false,
 

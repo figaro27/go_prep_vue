@@ -51,8 +51,21 @@
             </b-form-group>
             
             <b-form-group label="Logo" :state="true">
-              <b-form-input type="text" v-model="storeDetail.logo" placeholder="Logo" required></b-form-input>
+              <picture-input
+              :ref="`storeImageInput`"
+              :prefill="storeDetail.logo ? storeDetail.logo : ''"
+              @prefill="$refs[`storeImageInput`].onResize()"
+              :alertOnError="false"
+              :autoToggleAspectRatio="true"
+              margin="0"
+              size="10"
+              button-class="btn"
+              style="width: 180px; height: auto; margin: 0;"
+              @change="(val) => updateLogo(val)"
+            ></picture-input>
             </b-form-group>
+
+
             
             <b-form-group label="Phone number" :state="true">
               <b-form-input type="text" v-model="storeDetail.phone" placeholder="Phone" required></b-form-input>
@@ -113,6 +126,8 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
+import fs from '../../../lib/fs.js';
+
 export default {
   components: {
     cSwitch
@@ -154,7 +169,7 @@ export default {
 
     },
     updateStoreDetails() {
-      let data = this.storeDetails;
+      let data = {...this.storeDetails};
       this.spliceZip();
       axios
         .patch("/api/storeDetail", data)
@@ -199,6 +214,10 @@ export default {
           this.$toastr.e('message', 'Error');
         break;
       }
+    },
+    async updateLogo(logo) {
+      let b64 = await fs.getBase64(this.$refs.storeImageInput.file);
+      this.storeDetail.logo = b64;
     }
   }
 };

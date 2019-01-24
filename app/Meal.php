@@ -234,7 +234,7 @@ class Meal extends Model
             preg_match('/^data:image\/(.{3,9});/i', $imageRaw, $ext);
 
             if (count($ext) > 1) {
-                $imagePath = 'images/meals/' . self::generateImageFilename($image, $ext[1]);
+                $imagePath = 'public/images/meals/' . self::generateImageFilename($image, $ext[1]);
                 \Storage::put($imagePath, $image);
                 $imageUrl = \Storage::url($imagePath);
 
