@@ -5,9 +5,9 @@
       <div class="card">
         <div class="card-body">
           <!-- toastr -->
-          <b-btn @click="toast('s')">Success</b-btn>
+<!--           <b-btn @click="toast('s')">Success</b-btn>
           <b-btn @click="toast('w')">Warning</b-btn>
-          <b-btn @click="toast('e')">Error</b-btn>
+          <b-btn @click="toast('e')">Error</b-btn> -->
           <!-- /toastr -->
           <b-form @submit.prevent="updateLogin">
             <b-form-group label="Email address" label-for="email" :state="true">
@@ -131,8 +131,11 @@ export default {
     }),
     storeUser(){
         return this.user
-        }
-    },
+      },
+    storeDetails(){
+        return this.storeDetail;
+    }
+  },
   mounted() {},
   methods: {
     updateLogin() {
@@ -140,20 +143,29 @@ export default {
       let data = this.storeUser;
 
       axios.patch("/api/me/user", data).then(response => {
-        this.$toastr.s('message', 'Success!');
+        this.$toastr.s('Your login info has been updated.', 'Success');
         })
         .catch(response => {
-            this.$toastr.e('message', 'Error!');
-
+            let error = _.first(Object.values(response.response.data.errors))
+            error = error.join(" ");
+            this.$toastr.e(error, 'Error');
         });
 
 
     },
     updateStoreDetails() {
+      let data = this.storeDetails;
       this.spliceZip();
       axios
-        .post("/api/updateStoreDetails", this.storeDetail)
-        .then(response => {});
+        .patch("/api/storeDetail", data)
+        .then(response => {
+          this.$toastr.s('Your company details have been updated.', 'Success');
+        })
+        .catch(response => {
+          let error = _.first(Object.values(response.response.data.errors))
+          error = error.join(" ");
+          this.$toastr.e(error, 'Error');
+        });
     },
     updateStoreSettings() {
       let settings = { ...this.storeSettings };

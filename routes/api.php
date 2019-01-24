@@ -64,7 +64,7 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
 
         Route::get('getStore', 'StoreDetailController@show');
         Route::get('getStoreSettings', 'Store\\StoreSettingController@show');
-        Route::post('updateStoreDetails', 'StoreDetailController@update');
+        Route::patch('storeDetail', 'StoreDetailController@update');
         Route::post('updateStoreSettings', 'Store\\StoreSettingController@update');
 
     });
