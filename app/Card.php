@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Customer extends Model
+class Card extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,12 @@ class Customer extends Model
      * @var array
      */
     protected $fillable = [
-
+        'stripe_id',
+        'brand',
+        'exp_month',
+        'exp_year',
+        'last4',
+        'country',
     ];
 
     /**
@@ -21,23 +26,14 @@ class Customer extends Model
      * @var array
      */
     protected $hidden = [
+
     ];
 
     protected $casts = [
-    ];
-
-    protected $appends = [
-      'cards',
     ];
 
     public function user()
     {
         return $this->belongsTo('App\User');
     }
-
-    public function store()
-    {
-        return $this->belongsTo('App\Store');
-    }
-
 }

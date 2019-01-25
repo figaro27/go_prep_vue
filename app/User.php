@@ -37,12 +37,13 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-      'name',
+        'name',
+        'cards',
     ];
 
     public function getId()
     {
-      return $this->id;
+        return $this->id;
     }
 
     public function userRole()
@@ -75,6 +76,11 @@ class User extends Authenticatable
         return $this->hasMany('App\Subscription');
     }
 
+    public function cards()
+    {
+        return $this->hasMany('App\Card');
+    }
+
     public function store()
     {
         return $this->hasOne('App\Store');
@@ -91,8 +97,18 @@ class User extends Authenticatable
         return $this->user_role_id === $roleMap[$role];
     }
 
-    public function getNameAttribute() {
-      return $this->userDetail->full_name;
+    public function getNameAttribute()
+    {
+        return $this->userDetail->full_name;
+    }
+
+    public function getCardsAttribute()
+    {
+        try {
+            return \Stripe\Customer::retrieve($this->stripe_id)->sources->all(['object' => 'card']);
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 
 // Admin View
@@ -187,29 +203,64 @@ class User extends Authenticatable
         }
     }
 
-    public function hasCustomer($storeId)
+    public function hasStoreCustomer($storeId)
     {
         $customer = Customer::where(['user_id' => $this->id, 'store_id' => $storeId])->first();
         return !is_null($customer);
     }
 
-    public function getCustomer($storeId)
+    public function getStoreCustomer($storeId)
     {
+        $store = Store::find($storeId);
         $customer = Customer::where(['user_id' => $this->id, 'store_id' => $storeId])->first();
-        return $customer;
+
+        $acct = $store->settings->stripe_account;
+        \Stripe\Stripe::setApiKey($acct['access_token']);
+        $stripeCustomer = \Stripe\Customer::retrieve($customer->stripe_id);
+        \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+        
+        return $stripeCustomer;
     }
 
-    public function createCustomer($storeId, $token)
+    public function createStoreCustomer($storeId)
     {
-        $stripeCustomer = \Stripe\Customer::create([
-            "source" => $token,
-        ]);
+        $store = Store::find($storeId);
+
+        $acct = $store->settings->stripe_account;
+        \Stripe\Stripe::setApiKey($acct['access_token']);
+        $stripeCustomer = \Stripe\Customer::create();
+        \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
 
         $customer = new Customer;
         $customer->user_id = $this->id;
         $customer->store_id = $storeId;
         $customer->stripe_id = $stripeCustomer->id;
         $customer->save();
+
+        return $stripeCustomer;
+    }
+
+    public function createCustomer($token)
+    {
+        $stripeCustomer = \Stripe\Customer::create([
+            "source" => $token,
+        ]);
+
+        $this->stripe_id = $stripeCustomer->id;
+        $this->save();
+        
+        return $stripeCustomer;
+    }
+
+    public function hasCustomer() {
+      return !!$this->stripe_id;
+    }
+
+    public function createCard($token)
+    {
+      $customer = \Stripe\Customer::retrieve($this->stripe_id);
+
+      return $customer->sources->create(["source" => $token]);
     }
 
 }

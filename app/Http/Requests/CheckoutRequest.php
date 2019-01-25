@@ -29,8 +29,9 @@ class CheckoutRequest extends FormRequest
             'plan' => 'required|boolean',
             'pickup' => 'required|boolean',
             'delivery_day' => 'required|date',
-            'token' => 'required',
+            //'token' => 'required',
             'store_id' => 'required|numeric',
+            'card_id' => 'required|numeric',
         ];
     }
 

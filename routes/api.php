@@ -60,6 +60,8 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
                 Route::resource('me/orders', 'OrderController');
                 Route::get('store/{id}/meals', 'StoreController@meals');
                 Route::get('store/meals', 'StoreController@meals');
+
+                Route::resource('me/cards', 'Billing\CardController');
             });
         }
 
