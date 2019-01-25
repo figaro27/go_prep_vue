@@ -34,12 +34,6 @@ export default {
       class: 'nav-child'
     },
     {
-      name: 'Menu',
-      url: '/store/menu',
-      icon: 'fa fa-book',
-      class: 'nav-child'
-    },
-    {
       name: 'Preview Menu',
       url: '/store/menu/preview',
       icon: 'fa fa-book',

@@ -13,12 +13,12 @@
               :options="options"
             >
               <div slot="beforeTable" class="mb-2">
-                <button class="btn btn-success btn-sm" @click="createMeal">Add Meal</button>
+                <button class="btn btn-success btn-md" @click="createMeal">Add Meal</button>
 
                 <b-form-radio-group
                   buttons
                   button-variant="primary"
-                  size="sm"
+                  size="md"
                   v-model="filter.status"
                   @change="onChangeStatusFilter"
                   :options="statusFilterOptions"
@@ -79,7 +79,8 @@
           <b-col>
             <b-tabs>
               <b-tab title="General" active>
-                <b-form-group label="Meal title" label-for="meal-title" :state="true">
+                <h4>Meal Title</h4>
+                <b-form-group label-for="meal-title" :state="true">
                   <b-form-input
                     id="meal-title"
                     type="text"
@@ -89,8 +90,8 @@
                     @change="val => updateMeal(meal.id, {title: val})"
                   ></b-form-input>
                 </b-form-group>
-
-                <b-form-group label="Meal description" label-for="meal-description" :state="true">
+                <h4>Meal Description</h4>
+                <b-form-group label-for="meal-description" :state="true">
                   <textarea
                     v-model.lazy="meal.description"
                     id="meal-description"
@@ -99,35 +100,37 @@
                     :maxlength="100"
                     @input="e => updateMealDescription(meal.id, e.target.value)"
                   ></textarea>
-                </b-form-group>
-              </b-tab>
-              <b-tab title="Categories">
-                <h3>Categories</h3>
+                <br>
+                <h4>Categories</h4>
                 <b-form-checkbox-group
                   buttons
                   v-model="meal.category_ids"
                   :options="categoryOptions"
                   @change="val => updateMeal(meal.id, {categories: val})"
+                  class="filters"
                 ></b-form-checkbox-group>
 
-                <h3 class="mt-4">Tags</h3>
+                <h4 class="mt-4">Tags</h4>
                 <b-form-checkbox-group
                   buttons
                   v-model="meal.tag_ids"
                   :options="tagOptions"
                   @change="val => updateMeal(meal.id, {tags: val})"
+                  class="filters"
                 ></b-form-checkbox-group>
 
-                <h3 class="mt-4">This meal contains</h3>
+                <h4 class="mt-4">Allergies</h4>
                 <b-form-checkbox-group
                   buttons
                   v-model="meal.allergy_ids"
                   :options="allergyOptions"
                   @change="val => updateMeal(meal.id, {allergies: val})"
+                  class="filters"
                 ></b-form-checkbox-group>
+                </b-form-group>
               </b-tab>
+
               <b-tab title="Ingredients">
-                <h3>Ingredients</h3>
                 <ingredient-picker
                   v-model="meal.ingredients"
                   :options="{saveButton:true}"

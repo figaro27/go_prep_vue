@@ -13,10 +13,14 @@ class AllergiesSeeder extends Seeder
     public function run()
     {
       Allergy::insert([
-        ['title' => 'Nuts'],
         ['title' => 'Shellfish'],
         ['title' => 'Soy'],
-        ['title' => 'Lactose'],
+        ['title' => 'Milk'],
+        ['title' => 'Gluten'],
+        ['title' => 'Eggs'],
+        ['title' => 'Fish'],
+        ['title' => 'Nuts'],
+        ['title' => 'Wheat'],
       ]);
     }
 }

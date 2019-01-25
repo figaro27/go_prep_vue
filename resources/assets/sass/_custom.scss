@@ -145,10 +145,28 @@ li {
   }
 }
 
+.filters .btn-secondary{
+  background-color:#ffffff !important;
+  margin-right:5px !important;
+}
+
+.filters .active{
+  background-color:#F0592E !important;
+  color:#ffffff !important;
+  border-color:#dedede !important;
+}
+
+.filters .focus, .focus{
+  box-shadow: 0 0 0 0.0rem !important;
+}
+
+.nf-ingredientListDiv{
+  line-height:1em;
+}
 
 /*Menu*/
 .main-menu-area, .bag-area{
-  max-height:800px;
+  max-height:740px;
   overflow-y:auto;
 }
 
@@ -219,6 +237,25 @@ top:10px;
   width:10px;
 }
 
+.filters ul{
+  display:inline
+} 
+
+
+.menu-categories{
+  display:inline !important;
+}
+
+.menu-categories li{
+  float:left !important;
+  margin-right:18px !important;
+  font-size:16px !important;
+}
+
+.filter-area{
+  position:sticky !important;
+}
+
 
 /*Vue Tables 2*/
 
@@ -253,6 +290,11 @@ th {
 
 .center-text {
   text-align:center;
+}
+
+.center{
+  display: block; 
+  margin: 0 auto;
 }
 
 .sidebar .nav-link {

@@ -26,9 +26,8 @@
         </div>
       </main>
     </div>
-    <TheFooter>
-      <!--footer-->
-    </TheFooter>
+    <!-- <TheFooter>
+    </TheFooter> -->
   </div>
 </template>
 

@@ -215,7 +215,7 @@ class Meal extends Model
     //Considering renaming "Store" to "Company" to not cause confusion with store methods.
     public static function storeMeal($request)
     {
-        $id = Auth::user()->id;
+        $id = auth('api')->user()->id;
         $storeID = Store::where('user_id', $id)->pluck('id')->first();
         $meal = new Meal;
         $meal->active = true;

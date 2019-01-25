@@ -35,7 +35,7 @@
               >
                 <option slot="top" disabled>-- Select unit --</option>
               </b-select>
-              <span v-else>Unit</span>
+              <span v-else>Units</span>
             </div>
           </v-client-table>
         </div>

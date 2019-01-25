@@ -1,28 +1,36 @@
 <template>
   <div class="menu container-fluid">
     <div v-if="!willDeliver && !preview">
-      <b-alert variant="danger center-text" show>You are out of the delivery bounds</b-alert>
+      <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
     </div>
 
-    <div v-for="category in categories" :key="category">
-      <button @click="goToCategory(category)">{{ category }}</button>
-    </div>
 
     <div class="modal-basic">
-      <b-modal size="lg" title="Meal Filters" v-model="viewFilterModal" v-if="viewFilterModal">
-        <br>Show meals with:
-        <div v-for="tag in tags" :key="tag">
-          <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{ tag }}</b-button>
+      <b-modal size="lg" v-model="viewFilterModal" v-if="viewFilterModal" hide-header="true">
+        <div>
+        <h4 class="center-text mb-5">Hide Meals That Contain</h4>
         </div>
-        <br>Hide meals that contain:
-        <div v-for="allergy in allergies" :key="allergy">
-          <b-button :pressed="active[allergy]" @click="filterByAllergy(allergy)">{{ allergy }}</b-button>
+        <div class="row mb-4">
+              <div v-for="allergy in allergies" :key="allergy" class="filters col-md-3 mb-3">
+                <b-button :pressed="active[allergy]" @click="filterByAllergy(allergy)">{{ allergy }}</b-button>
+              </div>
         </div>
+        <hr>
+        <div>
+          <h4 class="center-text mb-5">Show Meals With</h4>
+        </div>
+        <div class="row">
+        <div v-for="tag in tags" :key="tag" class="filters col-md-3 mb-3">
+            <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{ tag }}</b-button>
+        </div>
+        </div>
+        <b-button @click="clearFilters" variant="primary" class="center mt-4">Clear All</b-button>
       </b-modal>
     </div>
 
     <div class="row">
       <div class="col-sm-12 mt-3">
+
         <div class="card">
           <div class="card-body">
             <Spinner v-if="isLoading"/>
@@ -42,7 +50,19 @@
             </b-modal>
             <div class="row">
               <div class="col-sm-9 main-menu-area">
+                <div class="filter-area">
+                <ul v-for="category in categories" :key="category" class="menu-categories">
+                  <li @click="goToCategory(category)">{{ category }}</li>
+                </ul>
                 <b-button @click="viewFilters" variant="primary" class="pull-right">Filters</b-button>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <p @click="clearAll">Clear All</p>
+            </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-9 main-menu-area">
                 <div
                   v-for="group in meals"
                   :key="group.category"
@@ -50,8 +70,8 @@
                   class="categories"
                 >
                   <h2 class="text-center mb-3">{{group.category}}</h2>
-                  <b-row>
-                    <b-col v-for="meal in group.meals" :key="meal.id" cols="3">
+                  <div class="row">
+                    <div class="col-md-3 sm-md-12" v-for="meal in group.meals" :key="meal.id">
                       <img
                         :src="meal.featured_image"
                         class="menu-item-img"
@@ -71,16 +91,12 @@
                       </div>
                       <p>{{ meal.title }}</p>
                       <p>${{ meal.price }}</p>
-                      <p v-for="tag in meal.tags" :key="tag">{{ tag.tag }}</p>
-                      <hr>
-                      <p v-for="allergy in meal.allergies" :key="allergy">{{ allergy.title }}</p>
-                    </b-col>
-                  </b-row>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="col-sm-3 bag-area" v-if="!preview">
-                <p @click="clearAll">Clear All</p>
+              <div class="col-sm-3 bag-area " v-if="!preview">
                 <ul class="list-group">
                   <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
                     <div v-if="item && item.quantity > 0" class="row">
@@ -129,6 +145,10 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
 import Spinner from "../../components/Spinner";
+
+window.addEventListener("hashchange", function () {
+    window.scrollTo(window.scrollX, window.scrollY - 500);
+});
 
 export default {
   components: {
@@ -478,6 +498,17 @@ export default {
     },
     viewFilters() {
       this.viewFilterModal = true;
+    },
+    clearFilters(){
+      let allergies = this.filters.allergies;
+        _.remove(allergies, (allergy) => _.includes(allergies, allergy));
+
+      let tags = this.filters.tags;
+      _.remove(tags, (tag) => _.includes(tags, tag));
+
+      this.active = _.mapValues(this.active, () => false);
+      this.filteredView = false;
+
     }
   }
 };

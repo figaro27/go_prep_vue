@@ -13,16 +13,16 @@ class MealsSeeder extends Seeder
     public function run()
     {
         $tags = [];
-        foreach (['Low Carb', 'Low Calorie', 'Vegan'] as $tag) {
+        foreach (['Low Carb', 'Low Calorie', 'Vegan', 'High Fiber', 'Low Fat', 'Low Sugar', 'Low Sodium', 'High Protein', 'Low Cholesterol', 'Low Saturated Fat'] as $tag) {
             $tags[] = App\MealTag::create(['tag' => $tag, 'slug' => str_slug($tag)]);
         }
 
         $ingredients = App\Ingredient::where('store_id', 1)->get();
 
         factory(App\Meal::class, 20)->create()->each(function ($u) use ($tags, $ingredients) {
-            $u->tags()->attach(rand(1, 3));
+            $u->tags()->attach(rand(1, 8));
             $u->categories()->attach(rand(1, 3));
-            $u->allergies()->attach(rand(1, 4));
+            $u->allergies()->attach(rand(1, 8));
 
             $unitTypes = [
                 'mass' => ['oz', 'g'],

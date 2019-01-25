@@ -1,12 +1,13 @@
 <template>
   <div>
     <b-form class="mb-2" @submit.prevent="searchRecipe">
+      <div class="d-flex mb-2">
+        <b-form-textarea v-model="recipe" class="flex-grow-1 mr-1" :rows="3" placeholder="Enter a query like &quot;1 cup mashed potatoes and 2 tbsp gravy&quot;. Be sure to include accurate measurement names such as tsp, tbsp, cup, gram, oz, fl oz, etc.."></b-form-textarea>
+        <b-button @click="searchRecipe" variant="primary">Add</b-button>
+      </div>
+
       <div class="mb-2">
         <ingredient-search @change="onSearchIngredient"></ingredient-search>
-      </div>
-      <div class="d-flex mb-2">
-        <b-input v-model="recipe" class="flex-grow-1 mr-1" placeholder="Type Ingredients Here"></b-input>
-        <b-button @click="searchRecipe" variant="primary">Search</b-button>
       </div>
       <div class="d-flex mb-2">
         <v-select
@@ -25,7 +26,7 @@
         <thead>
           <th>Name</th>
           <th>Weight</th>
-          <th>Unit</th>
+          <th>Units</th>
           <th style="width: 30px"></th>
         </thead>
         <tbody>
