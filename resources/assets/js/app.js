@@ -53,11 +53,15 @@ Vue.component('ingredient-search', IngredientSearch);
 // For use in templates
 Vue.prototype.format = format;
 Vue.prototype.moment = moment;
+Vue.prototype.icons = require('./lib/icons');
 
 const files = require.context('./components', true, /\.vue$/i)
 files
   .keys()
-  .map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
+  .map(key => {
+    console.log(key, key.split('/').pop())
+    Vue.component(key.split('/').pop().split('.')[0], files(key))
+  })
 
 if ($('#customerapp').length) {
   const app = new Vue({el: '#customerapp', router, store, template: '<CustomerApp/>', components: {

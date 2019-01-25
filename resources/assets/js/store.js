@@ -90,10 +90,11 @@ const state = {
     data: {},
     expires: 0
   },
+  cards: {},
   customer: {
     data: {
       subscriptions: [],
-      orders: []
+      orders: [],
     },
     expires: 0
   },
@@ -451,6 +452,7 @@ const actions = {
     dispatch('refreshOrderIngredients');
     dispatch('refreshPayments');
     dispatch('refreshStoreSubscriptions');
+    dispatch('refreshCards');
   },
 
   // Actions for logged in stores
@@ -483,6 +485,20 @@ const actions = {
       commit('storeSubscriptions', {subscriptions: data });
     } else {
       throw new Error('Failed to retrieve subscriptions');
+    }
+  },
+
+  async refreshCards({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me/cards");
+    const {data} = await res;
+
+    if (_.isArray(data)) {
+      state.cards = data;
+    } else {
+      throw new Error('Failed to retrieve cards');
     }
   },
 
@@ -851,10 +867,14 @@ const getters = {
     return state.customer.data.orders;
   },
 
+  cards: (state) => {
+    return state.cards;
+  },
+
   
 }
 
-const plugins = [createPersistedState({paths: ['bag']})];
+const plugins = [createPersistedState({paths: ['bag', 'cards']})];
 
 // A Vuex instance is created by combining the state, mutations, actions, and
 // getters.

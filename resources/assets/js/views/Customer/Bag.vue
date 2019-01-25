@@ -85,8 +85,12 @@
               </li>
               <li class="checkout-item">
                 <p>
-                  <span v-if="!applyMealPlanDiscount || !deliveryPlan"><strong>Price:</strong></span>
-                  <span v-if="applyMealPlanDiscount && deliveryPlan"><strong>Price Before Discount:</strong></span>
+                  <span v-if="!applyMealPlanDiscount || !deliveryPlan">
+                    <strong>Price:</strong>
+                  </span>
+                  <span v-if="applyMealPlanDiscount && deliveryPlan">
+                    <strong>Price Before Discount:</strong>
+                  </span>
                   ${{ totalBagPrice }}
                 </p>
               </li>
@@ -146,15 +150,9 @@
                 <div v-if="!willDeliver">
                   <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
                 </div>
-                <div v-else>Test card:
-                  <pre>4242424242424242</pre>
-                  <card
-                    class="stripe-card"
-                    :class="{ card }"
-                    :stripe="stripeKey"
-                    :options="stripeOptions"
-                    @change="card = $event.complete"
-                  />
+                <div v-else>
+                  <h4 class="mt-2 mb-3">Payment method</h4>
+                  <card-picker :selectable="true" v-model="card"></card-picker>
                   <img v-if="card" @click="checkout" src="/images/customer/checkout.jpg">
                 </div>
               </li>
@@ -172,9 +170,12 @@ import { Switch as cSwitch } from "@coreui/vue";
 import { stripeKey, stripeOptions } from "../../config/stripe.json";
 import { createToken } from "vue-stripe-elements-plus";
 
+import CardPicker from "../../components/Billing/CardPicker";
+
 export default {
   components: {
-    cSwitch
+    cSwitch,
+    CardPicker
   },
   data() {
     return {
@@ -195,7 +196,7 @@ export default {
       bag: "bagItems",
       hasMeal: "bagHasMeal",
       totalBagPrice: "totalBagPrice",
-      willDeliver: "viewedStoreWillDeliver",
+      willDeliver: "viewedStoreWillDeliver"
     }),
     storeSettings() {
       return this.store.settings;
@@ -244,7 +245,7 @@ export default {
     },
     applyMealPlanDiscount() {
       return this.storeSettings.applyMealPlanDiscount;
-            },
+    },
     mealPlanDiscount() {
       return this.storeSettings.mealPlanDiscount;
     }
@@ -277,36 +278,28 @@ export default {
       this.$store.commit("addBagItems", bag);
     },
     checkout() {
-      createToken().then(data => {
-        console.log(data);
-
-        if (!data.token) {
-          throw new Error("Failed to save card", data);
-        }
-
-        axios
-          .post("/api/bag/checkout", {
-            bag: this.bag,
-            plan: this.deliveryPlan,
-            pickup: this.pickup,
-            delivery_day: this.deliveryDay,
-            token: data.token,
-            store_id: this.store.id
-          })
-          .then(resp => {
-            if (this.deliveryPlan) {
-              this.$router.push("/customer/subscriptions");
-            } else {
-              this.$router.push("/customer/orders");
-            }
-          })
-          .catch(e => {
-            if (e.error && e.error.message) {
-              alert(e.error.message);
-            }
-          })
-          .finally(() => {});
-      });
+      axios
+        .post("/api/bag/checkout", {
+          bag: this.bag,
+          plan: this.deliveryPlan,
+          pickup: this.pickup,
+          delivery_day: this.deliveryDay,
+          card_id: this.card,
+          store_id: this.store.id
+        })
+        .then(resp => {
+          if (this.deliveryPlan) {
+            this.$router.push("/customer/subscriptions");
+          } else {
+            this.$router.push("/customer/orders");
+          }
+        })
+        .catch(e => {
+          if (e.error && e.error.message) {
+            alert(e.error.message);
+          }
+        })
+        .finally(() => {});
     }
   }
 };

@@ -1,28 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\User\Billing;
 
+use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
-use Stripe;
-use Illuminate\Support\Facades\Session;
 
-class StripeController extends UserController
+class CardController extends UserController
 {
-    public function __construct()
-    {
-        $this->middleware('store_slug');
-
-        $aaaa = Session::get('store_id');
-        $b = Session::all();
-
-        $sid = config('store_id');
-        if (defined('STORE_ID')) {
-            $this->store = Store::with(['meals', 'settings'])->find(STORE_ID);
-        }
-
-        $this->user = auth('api')->user();
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -30,7 +14,7 @@ class StripeController extends UserController
      */
     public function index()
     {
-        print_r($this->user->getCustomer($this->store->id));
+        return $this->user->cards()->get();
     }
 
     /**
@@ -51,26 +35,27 @@ class StripeController extends UserController
      */
     public function store(Request $request)
     {
-        $settings = $this->store->settings;
+        $token = $request->get('token');
+        $card = $token['card'];
 
-        if ($this->store->hasStripe()) {
-            $account = Stripe\Account::retrieve($settings->stripe_id);
+        if (!$this->user->hasCustomer()) {
+            $customer = $this->user->createCustomer($token['id']);
         } else {
-            $account = Stripe\Account::create([
-                "type" => "custom",
-                "country" => "US",
-                "email" => $this->store->user->email,
-            ]);
+            $customer = \Stripe\Customer::retrieve($this->user->stripe_id);
+            $this->user->createCard($token['id']);
         }
 
-        $links = $account->login_links->create();
+        $sources = $customer->sources->all()->getIterator();
+        $source = end($sources);
 
-        print_r($account);
-        print_r($links);
-
-        if (!isset($account->id)) {
-            return null;
-        }
+        return $this->user->cards()->create([
+            'stripe_id' => $source->id,
+            'brand' => $card['brand'],
+            'exp_month' => $card['exp_month'],
+            'exp_year' => $card['exp_year'],
+            'last4' => $card['last4'],
+            'country' => $card['country'],
+        ]);
     }
 
     /**
@@ -111,8 +96,14 @@ class StripeController extends UserController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, $id)
     {
-        //
+        $card = $this->user->cards()->find($id);
+
+        if (!$card) {
+            return response('', 404);
+        }
+
+        $card->delete();
     }
 }
