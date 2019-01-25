@@ -8,14 +8,14 @@ export default {
     {
       name: 'Past Orders',
       url: '/store/past-orders',
-      icon: 'fa fa-shopping-bag',
-      class: 'nav-child'
+      // icon: 'fa fa-shopping-bag',
+      // class: 'nav-child'
     },
     {
       name: 'Meal Plans',
       url: '/store/meal-plans',
-      icon: 'fa fa-shopping-bag',
-      class: 'nav-child'
+      // icon: 'fa fa-shopping-bag',
+      // class: 'nav-child'
     },
     {
       name: 'Meals',
@@ -25,37 +25,37 @@ export default {
     {
       name: 'Meal Orders',
       url: '/store/meal-orders',
-      icon: 'fa fa-utensils'
+      // icon: 'fa fa-utensils'
     },
     {
       name: 'Ingredients',
       url: '/store/ingredients',
-      icon: 'fa fa-lemon-o',
-      class: 'nav-child'
+      // icon: 'fa fa-lemon-o',
+      // class: 'nav-child'
     },
     {
       name: 'Preview Menu',
       url: '/store/menu/preview',
-      icon: 'fa fa-book',
-      class: 'nav-child'
-    },
-    {
-      name: 'Customers',
-      url: '/store/customers',
-      icon: 'fa fa-users',
-      class: 'nav-child'
-    },
-    {
-      name: 'Payments',
-      url: '#payments',
-      icon: 'fa fa-money',
-      class: 'nav-child',
-      target: '_blank'
+      // icon: 'fa fa-book',
+      // class: 'nav-child'
     },
     {
       name: 'Print',
       url: '/store/print',
       icon: 'fa fa-print'
+    },
+    {
+      name: 'Customers',
+      url: '/store/customers',
+      icon: 'fa fa-users',
+      // class: 'nav-child'
+    },
+    {
+      name: 'Payments',
+      url: '#payments',
+      icon: 'fa fa-money',
+      // class: 'nav-child',
+      target: '_blank'
     },
     {
       name: 'Settings',

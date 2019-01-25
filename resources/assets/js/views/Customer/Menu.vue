@@ -41,13 +41,81 @@
               v-model="mealModal"
               v-if="mealModal"
             >
-              <p>{{ format.money(meal.price) }}</p>
-              <p>{{ meal.description }}</p>
-              <img :src="meal.featured_image">
-              <img src="/images/customer/add.jpg" @click="addOne(meal)">
-              <p>{{ ingredients }}</p>
-              <div id="nutritionFacts" v-if="storeSettings.showNutrition"></div>
+            <div class="row">
+              <div class="col-md-6 modal-meal-image">
+                <img :src="meal.featured_image">
+                <p v-if="storeSettings.showNutrition">{{ meal.description }}</p>
+                <div class="row mt-3 mb-5">
+                  <div class="col-md-6">
+                    <h5>Nutrition</h5>
+                    <li v-for="tag in meal.tags">{{ tag.tag }} </li>
+                  </div>
+                  <div class="col-md-6">
+                    <h5>Contains</h5>
+                  <li v-for="allergy in meal.allergies">{{ allergy.title }} </li>
+                  </div>
+                </div>
+
+
+
+                  <div class="row mt-5" v-if="storeSettings.showNutrition">
+                    <div class="col-md-8">
+                      <h5>{{ format.money(meal.price) }}</h5>
+                    </div>
+                    <div class="col-md-4">
+                      <img src="/images/customer/add.jpg" @click="addOne(meal)">
+                    </div>
+                  </div>
+              </div>
+              <div class="col-md-6" v-if="storeSettings.showNutrition">
+                <div id="nutritionFacts"></div>
+              </div>
+              <div class="col-md-6" v-if="!storeSettings.showNutrition">
+                <p>{{ meal.description }}</p>
+                <div class="row">
+                  <div class="col-md-6">
+                    <h5>Nutrition</h5>
+                    <li v-for="tag in meal.tags">{{ tag.tag }} </li>
+                  </div>
+                  <div class="col-md-6">
+                    <h5>Contains</h5>
+                  <li v-for="allergy in meal.allergies">{{ allergy.title }} </li>
+                  </div>
+                </div>
+                <div class="row mt-3 mb-3">
+                  <div class="col-md-12">
+                    <h5>Ingredients</h5>
+                    {{ ingredients }}
+                  </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                      <h5>{{ format.money(meal.price) }}</h5>
+                    </div>
+                    <div class="col-md-4">
+                      <img src="/images/customer/add.jpg" @click="addOne(meal)">
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+            <!-- <div class="row" v-if="!showNutrition">
+              <div class="col-md-12 modal-meal-image">
+                <img :src="meal.featured_image">
+                <p>{{ meal.description }}</p>
+                  <div class="row">
+                    <div class="col-md-8">
+                      <h5>{{ format.money(meal.price) }}</h5>
+                    </div>
+                    <div class="col-md-4">
+                      <img src="/images/customer/add.jpg" @click="addOne(meal)">
+                    </div>
+                  </div>
+              </div>
+            </div> -->
+                        
             </b-modal>
+
             <div class="row">
               <div class="col-sm-9 main-menu-area">
                 <div class="filter-area">
@@ -89,8 +157,8 @@
                         ></b-form-input>
                         <img src="/images/customer/plus.jpg" @click="addOne(meal)">
                       </div>
-                      <p>{{ meal.title }}</p>
-                      <p>${{ meal.price }}</p>
+                      <p class="center-text strong">{{ meal.title }}</p>
+                      <p class="center-text">{{ format.money(meal.price) }}</p>
                     </div>
                   </div>
                 </div>
@@ -349,6 +417,7 @@ export default {
     },
     addOne(meal) {
       this.$store.commit("addToBag", { meal, quantity: 1 });
+      this.mealModal = false;
     },
     minusOne(meal) {
       this.$store.commit("removeFromBag", { meal, quantity: 1 });

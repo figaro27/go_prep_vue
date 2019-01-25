@@ -198,6 +198,14 @@ li {
 	height:100px;
 }
 
+.modal-meal-image img{
+  width:100% !important;
+}
+
+.modal-meal-image-full img{
+  width:300px !important;
+}
+
 .quantity {
   width: 115px;
   border-radius: 20px;
@@ -256,6 +264,9 @@ top:10px;
   position:sticky !important;
 }
 
+// .nf-arrows, .nf-modifier-field, .nf-unitQuantityBox{
+//   display:none !important;
+// } 
 
 /*Vue Tables 2*/
 
@@ -316,4 +327,8 @@ ol.plain {
     list-style: decimal;
     padding-left: 10px;
   }
+}
+
+.strong{
+  font-weight:bold;
 }
