@@ -264,6 +264,10 @@ top:10px;
   position:sticky !important;
 }
 
+.dropdown-item {
+  text-decoration: none !important;
+}
+
 // .nf-arrows, .nf-modifier-field, .nf-unitQuantityBox{
 //   display:none !important;
 // } 
@@ -296,7 +300,8 @@ th {
 /*Helper*/
 
 .link-remove {
-	color:#000000
+  color:#000000;
+  text-decoration: none !important;
 }
 
 .center-text {

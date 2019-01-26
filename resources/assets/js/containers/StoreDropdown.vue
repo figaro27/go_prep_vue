@@ -1,19 +1,22 @@
 <template>
   <AppHeaderDropdown right no-caret>
     <template slot="header">
-      <div class="m-3 pr-4"><h6>{{ email }}</h6></div>
+      <div class="m-3 pr-4">
+        <h6>{{ email }}</h6>
+      </div>
     </template>\
     <template slot="dropdown">
-      <b-dropdown-item>
-      <i class="fa fa-user"/>
-        <router-link to="/store/account/my-account" class="link-remove">My Account</router-link>
-      </b-dropdown-item>
+      <router-link to="/store/account/my-account" class="link-remove dropdown-item">
+        <i class="fa fa-user"/>
+        My account
+      </router-link>
 
-      <b-dropdown-item>
+      <router-link to="/store/account/contact" class="link-remove dropdown-item">
         <i class="fa fa-comment-dots"/>
-        <router-link to="/store/account/contact" class="link-remove">Contact Us</router-link>
-      </b-dropdown-item>
-      <b-dropdown-item @click="logout()">
+        Contact Us
+      </router-link>
+
+      <b-dropdown-item href="#" @click="logout()">
         <i class="fa fa-lock"/> Logout
       </b-dropdown-item>
     </template>
@@ -30,10 +33,10 @@ export default {
     AppHeaderDropdown
   },
   data() {
-    return { 
+    return {
       itemsCount: 42,
-      email: '' 
-    }
+      email: ""
+    };
   },
   // computed: {
   //   ...mapGetters({
@@ -43,7 +46,7 @@ export default {
   //     return this.user.email;
   //   }
   // },
-  created(){
+  created() {
     this.getEmail();
   },
   methods: {
