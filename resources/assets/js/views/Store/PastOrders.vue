@@ -180,11 +180,18 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       orders: "storeOrders",
-      isLoading: "isLoading"
+      isLoading: "isLoading",
+      customers: "storeCustomers",
     }),
     tableData() {
-      if (!this.filter) return _.filter(this.orders, { fulfilled: 1 });
-      else return _.filter(this.orders, { fulfilled: 1, has_notes: true });
+      let orders = [];
+      if (!this.filter) orders = _.filter(this.orders, { fulfilled: 1 });
+      else orders = _.filter(this.orders, { fulfilled: 1, has_notes: true });
+
+      return orders.map(order => {
+        order.customer = _.find(this.customers, {user_id: order.user_id});
+        return order;
+      })
     }
   },
   mounted() {},

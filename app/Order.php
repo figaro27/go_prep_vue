@@ -84,6 +84,7 @@ class Order extends Model
 
         $order->update($props->toArray());
 
+        return $order;
     }
 
 }
