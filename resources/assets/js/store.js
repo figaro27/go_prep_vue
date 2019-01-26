@@ -128,7 +128,7 @@ const mutations = {
     state.viewed_store.distance = distance;
   },
   addBagItems(state, items) {
-    state.bag.items = items;
+    state.bag.items = _.keyBy(items, 'id');
   },
   updateBagTotal(state, total) {
     state.bag.total += total;
@@ -179,7 +179,7 @@ const mutations = {
     state.bag.items[mealId].quantity -= quantity;
 
     if (state.bag.items[mealId].quantity <= 0) {
-      delete state.bag.items[mealId];
+      Vue.delete(state.bag.items, mealId);
     }
   },
   emptyBag(state) {
@@ -799,7 +799,7 @@ const getters = {
       ...state.bag
     };
     bag.items = _.filter(bag.items);
-    bag.items = _.sortBy(bag.items, 'added');
+    //bag.items = _.sortBy(bag.items, 'added');
     return bag;
   },
   bagItems(state) {

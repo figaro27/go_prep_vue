@@ -195,7 +195,6 @@
                     <img
                       v-if="total >= minimum && !preview"
                       src="/images/customer/next.jpg"
-                      @click="addBagItems(bag)"
                     >
                   </router-link>
                 </div>
@@ -389,6 +388,7 @@ export default {
       });
       return grouped;
     },
+    /*
     allergies() {
       let grouped = [];
       this.store.meals.forEach(meal => {
@@ -400,7 +400,7 @@ export default {
         });
       });
       return grouped;
-    }
+    }*/
   },
   beforeDestroy() {
     this.showActiveFilters();
@@ -414,7 +414,7 @@ export default {
       }, {});
 
       let allergies = this.allergies;
-      this.active = allergies.reduce((acc, allergy) => {
+      this.active = _.reduce(allergies, (acc, allergy) => {
         acc[allergy] = false;
         return acc;
       }, {});

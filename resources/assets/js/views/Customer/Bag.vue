@@ -16,7 +16,7 @@
         <div class="row">
           <div class="col-md-5">
             <ul class="list-group">
-              <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
+              <li v-for="item in bag" :key="`bag-${item.meal.id}`" class="bag-item">
                 <div v-if="item.quantity > 0" class="row">
                   <div class="col-sm-1">
                     <img
