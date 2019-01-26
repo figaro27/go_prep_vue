@@ -55,7 +55,7 @@
               <div
                 slot="categories"
                 slot-scope="props"
-              >{{ props.row.categories.map(category => category.category).join(', ') }}</div>
+              >{{ props.row.category_ids.map(categoryId => getCategoryTitle(categoryId)).join(', ') }}</div>
 
               <div slot="price" slot-scope="props">{{ formatMoney(props.row.price) }}</div>
 
@@ -364,6 +364,7 @@ export default {
       getMeal: "storeMeal",
       tags: "tags",
       storeCategories: "storeCategories",
+      getCategoryTitle: "storeCategoryTitle",
       allergies: "allergies",
       isLoading: "isLoading"
     }),

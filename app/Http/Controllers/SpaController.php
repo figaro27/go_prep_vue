@@ -1,11 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Store;
-use Illuminate\Support\Facades\Cache;
-use \Illuminate\Http\Request;
 use App\Allergy;
 use App\MealTag;
+use App\Store;
+use \Illuminate\Http\Request;
 
 class SpaController extends Controller
 {
@@ -32,6 +31,7 @@ class SpaController extends Controller
             //$this->middleware('view.api');
 
             $user = auth('api')->user();
+            $context = 'guest';
             $store = null;
 
             $willDeliver = false;
@@ -39,51 +39,77 @@ class SpaController extends Controller
             if ($user) {
                 // Store user
                 if ($user->hasRole('store') && $user->has('store')) {
-                    $store = $user->store()->with(['meals', 'categories', 'ingredients', 'meals.categories', 'meals.allergies', 'units', 'settings', 'storeDetail'])->first();
-                }
-                else {
-                    $store = defined('STORE_ID') ? Store::with(['meals', 'units', 'categories', 'meals.categories', 'meals.allergies', 'settings'])->find(STORE_ID) : null;
-                }
+                    $context = 'store';
 
-                // Customer user
-                if($user->hasRole('customer')) {
-                  if($store->settings->delivery_distance_type === 'radius') {
-                    $distance = $user->distanceFrom($store);
-                    $willDeliver = $distance < $store->settings->delivery_distance_radius;
-                  }
-                  else {
-                    $willDeliver = $store->deliversToZip($user->userDetail->zip);
-                  }
+                } else {
+                    $context = 'customer';
                 }
             }
             // Not logged in
             else {
-              
+                $context = 'guest';
             }
 
-            if (!$store) {
-              $store = defined('STORE_ID') ? Store::with(['meals', 'units', 'categories', 'meals.categories', 'meals.allergies', 'settings'])->find(STORE_ID) : null;
-            }
+            if ($context === 'guest') {
+                $store = defined('STORE_ID') ? Store::with([
+                    'meals',
+                    'units',
+                    'categories',
+                    'meals.categories',
+                    'meals.allergies',
+                    'settings',
+                ])->find(STORE_ID) : null;
 
-            if ($user) {
-                if ($user->hasRole('store')) {
-                    $orders = $user->store->orders()->with(['user', 'user.userDetail'])->without(['meals'])->get();
+                return [
+                    'context' => $context,
+                    'user' => null,
+                    'store' => $store,
+                    'allergies' => Allergy::all(),
+                    'tags' => MealTag::all(),
+                ];
+            } elseif ($context === 'store') {
+                $store = $user->store()->with([
+                    'categories',
+                    'ingredients',
+                    'units',
+                    'settings',
+                    'storeDetail',
+                ])->first();
+
+                return [
+                    'context' => $context,
+                    'user' => $user,
+                    'store' => $store,
+                    'allergies' => Allergy::all(),
+                    'tags' => MealTag::all(),
+                ];
+            } elseif ($context === 'customer') {
+                $store = defined('STORE_ID') ?
+                Store::with([
+                    'meals',
+                    'units',
+                    'categories',
+                    'meals.categories',
+                    'meals.allergies',
+                    'settings',
+                ])->find(STORE_ID) : null;
+
+                if ($store->settings->delivery_distance_type === 'radius') {
+                    $distance = $user->distanceFrom($store);
+                    $willDeliver = $distance < $store->settings->delivery_distance_radius;
+                } else {
+                    $willDeliver = $store->deliversToZip($user->userDetail->zip);
                 }
+
+                return [
+                    'context' => $context,
+                    'user' => $user,
+                    'store' => $store,
+                    'will_deliver' => $willDeliver,
+                    'allergies' => Allergy::all(),
+                    'tags' => MealTag::all(),
+                ];
             }
-
-            $stores = Cache::remember('stores', 10, function () {
-                return Store::all();
-            });
-
-            return [
-                'user' => $user ?? null,
-                'store' => $store,
-                'will_deliver' => $willDeliver,
-                'stores' => $stores,
-                'allergies' => Allergy::all(),
-                'tags' => MealTag::all(),
-                'orders' => $orders ?? [],
-            ];
 
         } else {
             $user = auth()->user();
@@ -93,12 +119,11 @@ class SpaController extends Controller
                     return view('store');
                 } elseif ($user->user_role_id === 3) {
                     return view('admin');
-                }
-                else {
-                  return view('customer');
+                } else {
+                    return view('customer');
                 }
             }
-            
+
             return redirect('/login');
 
         }

@@ -15,6 +15,7 @@ class CreateSubscriptionsTable extends Migration
         Schema::create('subscriptions', function ($table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
+            $table->unsignedInteger('customer_id');
             $table->unsignedInteger('store_id');
             $table->string('name');
             $table->enum('status', ['active', 'cancelled'])->default('active');

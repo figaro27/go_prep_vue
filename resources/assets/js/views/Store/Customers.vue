@@ -49,20 +49,20 @@
         <div class="row">
           <div class="col-md-4">
             <h4>Customer</h4>
-            <p>{{ customer.user_detail.firstname }} {{ customer.user_detail.lastname }}</p>
+            <p>{{ customer.name }}</p>
 
             <h4>Phone</h4>
-            <p>{{ customer.user_detail.phone }}</p>
+            <p>{{ customer.phone }}</p>
           </div>
           <div class="col-md-4">
             <h4>Address</h4>
-            <p>{{ customer.user_detail.address }}</p>
-            <p>{{ customer.user_detail.city }}, {{ customer.user_detail.state }}</p>
-            <p>{{ customer.user_detail.zip }}</p>
+            <p>{{ customer.address }}</p>
+            <p>{{ customer.city }}, {{ customer.state }}</p>
+            <p>{{ customer.zip }}</p>
           </div>
           <div class="col-md-4">
             <h4>Delivery Instructions</h4>
-            <p>{{ customer.user_detail.delivery }}</p>
+            <p>{{ customer.delivery }}</p>
           </div>
         </div>
 
@@ -123,15 +123,15 @@ export default {
       customer: [],
       orders: [],
       columns: [
-        "Name",
+        "name",
         "phone",
         "address",
         "city",
         "state",
-        "Joined",
+        "joined",
         "total_payments",
         "total_paid",
-        "LastOrder",
+        "last_order",
         "actions"
       ],
       options: {

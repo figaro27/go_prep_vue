@@ -25,7 +25,26 @@ class Meal extends Model
         'created_at' => 'date:F d, Y',
     ];
 
-    protected $appends = ['tag_titles', 'nutrition', 'active_orders', 'active_orders_price', 'lifetime_orders', 'allergy_ids', 'category_ids', 'tag_ids', 'substitute_ids'];
+    protected $appends = [
+      'tag_titles',
+      'nutrition',
+      'active_orders',
+      'active_orders_price',
+      'lifetime_orders',
+      'allergy_ids',
+      'category_ids',
+      'tag_ids',
+      'substitute_ids',
+      'ingredient_ids',
+      'order_ids',
+    ];
+
+    protected $hidden = [
+      'allergies',
+      'categories',
+      'orders',
+      //'ingredients',
+    ];
 
     /**
      * The attributes that should be mutated to dates.
@@ -70,6 +89,16 @@ class Meal extends Model
         }
 
         return $nutrition;
+    }
+
+    public function getOrderIdsAttribute()
+    {
+        return $this->orders->pluck('id');
+    }
+
+    public function getIngredientIdsAttribute()
+    {
+        return $this->tags->pluck('id');
     }
 
     public function getAllergyIdsAttribute()

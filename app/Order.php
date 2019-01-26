@@ -14,7 +14,7 @@ class Order extends Model
     ];
 
     protected $hidden = [
-        //'meals'
+
     ];
 
     protected $casts = [

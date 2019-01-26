@@ -21,13 +21,24 @@ class Customer extends Model
      * @var array
      */
     protected $hidden = [
+      'stripe_id',
+      'user',
     ];
 
     protected $casts = [
     ];
 
     protected $appends = [
-      'cards',
+        'joined',
+        'last_order',
+        'total_payments',
+        'total_paid',
+        'name',
+        'phone',
+        'address',
+        'city',
+        'state',
+        'delivery',
     ];
 
     public function user()
@@ -38,6 +49,64 @@ class Customer extends Model
     public function store()
     {
         return $this->belongsTo('App\Store');
+    }
+
+    public function cards() {
+      return $this->hasManyThrough('App\Card', 'App\User');
+    }
+
+    public function orders() {
+      return $this->user->orders();
+    }
+
+    public function getJoinedAttribute()
+    {
+        return $this->user->created_at->format('F d, Y');
+    }
+    public function getLastOrderAttribute()
+    {
+        return $this->user->order->max("created_at")->format('F d, Y');
+    }
+
+    public function getTotalPaymentsAttribute()
+    {
+        return $this->user->order->count();
+    }
+
+    public function getTotalPaidAttribute()
+    {
+        return $this->user->order->sum("amount");
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->user->name;
+    }
+
+    public function getPhoneAttribute()
+    {
+        return $this->user->userDetail->phone;
+    }
+    public function getAddressAttribute()
+    {
+        return $this->user->userDetail->address;
+    }
+    public function getCityAttribute()
+    {
+        return $this->user->userDetail->city;
+    }
+    public function getStateAttribute()
+    {
+        return $this->user->userDetail->state;
+    }
+    public function getZipAttribute()
+    {
+        return $this->user->userDetail->zip;
+    }
+
+    public function getDeliveryAttribute()
+    {
+        return $this->user->userDetail->delivery;
     }
 
 }

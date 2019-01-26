@@ -28,6 +28,7 @@ class Store extends Model
      */
     protected $hidden = [
       'orders',
+      'customers',
     ];
 
     protected $casts = [
@@ -83,32 +84,9 @@ class Store extends Model
         return $this->hasMany('App\Category')->orderBy('order');
     }
 
-    protected $appends = ['customers'];
-
-    public function getCustomersAttribute()
+    public function customers()
     {
-        $customers = $this->orders->unique('user_id')->where('store_id', $this->id)->pluck('user_id');
-        return User::with('userDetail', 'order')->whereIn('id', $customers)->get()->map(function ($user) {
-            return [
-                "id" => $user->id,
-                "name" => $user->userDetail->firstname . ' ' . $user->userDetail->lastname,
-                "Name" => $user->userDetail->firstname . ' ' . $user->userDetail->lastname,
-                "phone" => $user->userDetail->phone,
-                "address" => $user->userDetail->address,
-                "city" => $user->userDetail->city,
-                "state" => $user->userDetail->state,
-                "joined" => $user->created_at->format('F d, Y'),
-                "Joined" => $user->created_at->format('F d, Y'),
-                "last_order" => $user->order->max("created_at")->format('F d, Y'),
-                "LastOrder" => $user->order->max("created_at")->format('F d, Y'),
-                "total_payments" => $user->order->count(),
-                "TotalPayments" => $user->order->count(),
-                "total_paid" => $user->order->sum("amount"),
-                "TotalPaid" => $user->order->sum("amount"),
-            ];
-        });
-
-        return $this->store->customers;
+        return $this->hasMany('App\Customer');
     }
 
     public static function getStore($id)

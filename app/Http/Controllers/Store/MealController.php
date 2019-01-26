@@ -16,7 +16,10 @@ class MealController extends StoreController
     public function index()
     {
         return $this->store->has('meals') ?
-            $this->store->meals()->with(['orders', 'tags', 'ingredients'])->get() : [];
+            $this->store->meals()
+            ->with(['orders', 'tags', 'ingredients'])
+            ->without(['allergies', 'categories'])
+            ->get() : [];
     }
 
     public function getStoreMeals()

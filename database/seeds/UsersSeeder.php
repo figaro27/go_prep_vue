@@ -57,7 +57,19 @@ class UsersSeeder extends Seeder
         factory(App\User::class, 10)->create()->each(function ($u) {
             $u->userDetail()->save(factory(App\UserDetail::class)->make());
             for ($i = 0; $i < 7; $i++) {
-                $u->Order()->save(factory(App\Order::class)->make());
+                $customer = new App\Customer();
+                $customer->user_id = $u->id;
+                $customer->store_id = 1;
+                $customer->stripe_id = '';
+                $customer->save();
+
+                $order = $u->Order()->save(
+                  factory(App\Order::class)->make([
+                    'customer_id' => $customer->id
+                  ])
+                );
+
+                
             }
         });
 

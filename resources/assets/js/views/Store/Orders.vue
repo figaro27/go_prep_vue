@@ -212,7 +212,8 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       orders: "storeOrders",
-      isLoading: "isLoading"
+      isLoading: "isLoading",
+      customers: "storeCustomers",
     }),
     tableData() {
       let filters = { fulfilled: 0 };
@@ -226,7 +227,7 @@ export default {
       // }
       // if (!this.filter) return _.filter(this.orders, { fulfilled: 0 });
       //   else return _.filter(this.orders, { fulfilled: 0, has_notes: true });
-      return _.filter(this.orders, order => {
+      let filtered = _.filter(this.orders, order => {
         if ("delivery_dates" in filters) {
           let dateMatch = _.reduce(
             filters.delivery_dates,
@@ -253,6 +254,11 @@ export default {
 
         return true;
       });
+
+      return filtered.map(order => {
+        order.customer = _.find(this.customers, {user_id: order.user_id});
+        return order;
+      })
     },
     deliveryDates() {
       let grouped = [];

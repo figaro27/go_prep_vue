@@ -15,23 +15,7 @@ class CustomerController extends StoreController
      */
     public function index()
     {
-        $customers = $this->store->orders->unique('user_id')->where('store_id', $this->store->id)->pluck('user_id');
-        return User::with('userDetail', 'order')->whereIn('id', $customers)->get()->map(function ($user) {
-            return [
-                "id" => $user->id,
-                "Name" => $user->userDetail->firstname . ' ' . $user->userDetail->lastname,
-                "phone" => $user->userDetail->phone,
-                "address" => $user->userDetail->address,
-                "city" => $user->userDetail->city,
-                "state" => $user->userDetail->state,
-                "Joined" => $user->created_at->format('F d, Y'),
-                "LastOrder" => $user->order->max("created_at")->format('F d, Y'),
-                "TotalPayments" => $user->order->count(),
-                "TotalPaid" => '$' . number_format($user->order->sum("amount"), 2, '.', ','),
-            ];
-        });
-
-        return $this->store->customers;
+        return $this->store->customers()->without(['user'])->get();
     }
 
     /**
@@ -64,7 +48,7 @@ class CustomerController extends StoreController
     public function show(Request $request)
     {
         $id = $request->route()->parameter('customer');
-        return User::with('userDetail', 'order')->where('id', $id)->first();
+        return $this->store->customers()->with('orders')->without(['user'])->find($id);
     }
 
     /**

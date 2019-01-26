@@ -56,6 +56,7 @@ class CheckoutController extends UserController
 
             $order = new Order;
             $order->user_id = $user->id;
+            $order->customer_id = $customer->id;
             $order->store_id = $store->id;
             $order->order_number = $charge->id;
             $order->amount = $total;
@@ -104,6 +105,7 @@ class CheckoutController extends UserController
 
             $userSubscription = new Subscription();
             $userSubscription->user_id = $user->id;
+            $userSubscription->customer_id = $customer->id;
             $userSubscription->store_id = $store->id;
             $userSubscription->name = "Weekly subscription (" . $store->storeDetail->name . ")";
             $userSubscription->stripe_id = $subscription->id;
@@ -117,6 +119,7 @@ class CheckoutController extends UserController
             // Create initial order
             $order = new Order;
             $order->user_id = $user->id;
+            $order->customer_id = $customer->id;
             $order->store_id = $store->id;
             $order->subscription_id = $userSubscription->id;
             $order->order_number = $subscription->id . '_1';

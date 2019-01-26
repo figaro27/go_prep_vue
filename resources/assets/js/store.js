@@ -79,7 +79,7 @@ const state = {
     },
     payments: {
       data: {},
-      expires: 0,
+      expires: 0
     }
   },
   orders: {
@@ -94,7 +94,7 @@ const state = {
   customer: {
     data: {
       subscriptions: [],
-      orders: [],
+      orders: []
     },
     expires: 0
   },
@@ -153,9 +153,11 @@ const mutations = {
       });
     }
 
-    let item = {...state.bag.items[mealId]};
+    let item = {
+      ...state.bag.items[mealId]
+    };
     item.quantity = (item.quantity || 0) + quantity;
-    if(!item.added) {
+    if (!item.added) {
       item.added = moment().unix();
     }
 
@@ -325,10 +327,18 @@ const actions = {
   async init({
     commit,
     state,
-    dispatch,
+    dispatch
   }, args = {}) {
     const res = await axios.get('/api');
     const {data} = await res;
+
+    const context = data.context;
+
+    if (context === 'store') {
+      dispatch('initStore', data)
+    } else if (context === 'customer') {
+      dispatch('initCustomer', data)
+    }
 
     try {
       if (!_.isEmpty(data.user) && _.isObject(data.user)) {
@@ -386,6 +396,24 @@ const actions = {
       }
     } catch (e) {}
 
+    
+
+    // try {   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
+    //     let orders = data.store.orders;     commit('storeOrders', {orders});   }
+    // } catch (e) {}
+
+    /**
+     * Extra actions
+     */
+
+  },
+
+  async initStore({
+    commit,
+    state,
+    dispatch
+  }, data = {}) {
+
     try {
       if (!_.isEmpty(data.store.settings) && _.isObject(data.store.settings)) {
         let settings = data.store.settings;
@@ -407,6 +435,35 @@ const actions = {
       }
     } catch (e) {}
 
+    try {
+      if (!_.isEmpty(data.orders) && _.isObject(data.orders)) {
+        let orders = data.orders;
+        commit('storeOrders', {orders});
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.subscriptions) && _.isObject(data.subscriptions)) {
+        let subscriptions = data.subscriptions;
+        commit('storeSubscriptions', {subscriptions});
+      }
+    } catch (e) {}
+
+    dispatch('refreshMeals');
+    dispatch('refreshStoreCustomers');
+    dispatch('refreshOrders');
+    dispatch('refreshIngredients');
+    dispatch('refreshOrderIngredients');
+    dispatch('refreshPayments');
+    dispatch('refreshStoreSubscriptions');
+  },
+
+  async initCustomer({
+    commit,
+    state,
+    dispatch
+  }, data = {}) {
+
     if (_.isObject(data.store) && !_.isEmpty(data.store)) {
       commit('setViewedStore', data.store);
     }
@@ -427,32 +484,21 @@ const actions = {
       console.log(e);
     }
 
-    // try {   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
-    //     let orders = data.store.orders;     commit('storeOrders', {orders});   }
-    // } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.orders) && _.isObject(data.orders)) {
-        let orders = data.orders;
-        commit('storeOrders', {orders});
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.subscriptions) && _.isObject(data.subscriptions)) {
-        let subscriptions = data.subscriptions;
-        commit('storeSubscriptions', {subscriptions});
-      }
-    } catch (e) {}
-
-    /**
-     * Extra actions
-     */
-    dispatch('refreshIngredients');
-    dispatch('refreshOrderIngredients');
-    dispatch('refreshPayments');
-    dispatch('refreshStoreSubscriptions');
+    dispatch('refreshStores');
     dispatch('refreshCards');
+  },
+
+
+  async refreshStores({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/stores");
+    const {data} = await res;
+
+    if (_.isArray(data)) {
+      state.stores = data;
+    }
   },
 
   // Actions for logged in stores
@@ -482,7 +528,7 @@ const actions = {
     const {data} = await res;
 
     if (_.isArray(data)) {
-      commit('storeSubscriptions', {subscriptions: data });
+      commit('storeSubscriptions', {subscriptions: data});
     } else {
       throw new Error('Failed to retrieve subscriptions');
     }
@@ -499,6 +545,21 @@ const actions = {
       state.cards = data;
     } else {
       throw new Error('Failed to retrieve cards');
+    }
+  },
+
+  async refreshStoreCustomers({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me/customers");
+    const {data} = await res;
+    const customers = data;
+
+    if (_.isArray(customers)) {
+      commit('storeCustomers', {customers});
+    } else {
+      throw new Error('Failed to retrieve customers');
     }
   },
 
@@ -831,11 +892,25 @@ const getters = {
       return {};
     }
   },
+  storeCategoryTitle: (state) => id => {
+    try {
+      return state.store.categories.data[id].category || {};
+    } catch (e) {
+      return '';
+    }
+  },
   storeCustomers: (state) => {
     try {
       return state.store.customers.data || {};
     } catch (e) {
       return {};
+    }
+  },
+  storeCustomer: (state) => id => {
+    try {
+      return _.find(state.store.customers.data, {id}) || null;
+    } catch (e) {
+      return null;
     }
   },
   storeOrders: (state) => {
@@ -869,12 +944,12 @@ const getters = {
 
   cards: (state) => {
     return state.cards;
-  },
-
-  
+  }
 }
 
-const plugins = [createPersistedState({paths: ['bag', 'cards']})];
+const plugins = [createPersistedState({
+    paths: ['bag', 'cards']
+  })];
 
 // A Vuex instance is created by combining the state, mutations, actions, and
 // getters.
