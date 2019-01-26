@@ -20,6 +20,7 @@ class CreateSubscriptionsTable extends Migration
             $table->string('name');
             $table->enum('status', ['active', 'cancelled'])->default('active');
             $table->string('stripe_id')->collation('utf8mb4_bin');
+            $table->string('stripe_customer_id')->collation('utf8mb4_bin');
             $table->string('stripe_plan');
             $table->integer('quantity');
             $table->float('amount');

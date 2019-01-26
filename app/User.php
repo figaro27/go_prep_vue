@@ -209,10 +209,14 @@ class User extends Authenticatable
         return !is_null($customer);
     }
 
-    public function getStoreCustomer($storeId)
+    public function getStoreCustomer($storeId, $stripe = true)
     {
         $store = Store::find($storeId);
         $customer = Customer::where(['user_id' => $this->id, 'store_id' => $storeId])->first();
+
+        if(!$stripe) {
+          return $customer;
+        }
 
         $acct = $store->settings->stripe_account;
         \Stripe\Stripe::setApiKey($acct['access_token']);

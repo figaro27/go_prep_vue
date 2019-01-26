@@ -36,9 +36,10 @@ class CheckoutController extends UserController
         }
 
         if (!$user->hasStoreCustomer($store->id)) {
-            $customer = $user->createStoreCustomer($store->id);
+            $stripeCustomer = $user->createStoreCustomer($store->id);
         }
-        $customer = $user->getStoreCustomer($store->id);
+        $stripeCustomer = $user->getStoreCustomer($store->id);
+        $customer = $user->getStoreCustomer($store->id, false);
 
         if (!$weeklyPlan) {
             $storeSource = \Stripe\Source::create([
@@ -95,7 +96,7 @@ class CheckoutController extends UserController
             ], ['stripe_account' => $store->settings->stripe_id]);
 
             $subscription = \Stripe\Subscription::create([
-                'customer' => $customer,
+                'customer' => $stripeCustomer,
                 'items' => [
                     ['plan' => $plan],
                 ],

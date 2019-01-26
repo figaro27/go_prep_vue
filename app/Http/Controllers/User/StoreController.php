@@ -11,6 +11,10 @@ use App\Store;
 class StoreController extends UserController
 {
 
+    public function index() {
+      return Store::all();
+    }
+
     public function meals(Request $request, $storeId = null) {
       if($storeId) {
         $store = Store::with(['meals'])->find(STORE_ID);
