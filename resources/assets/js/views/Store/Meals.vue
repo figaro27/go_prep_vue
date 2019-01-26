@@ -87,7 +87,7 @@
                     v-model="meal.title"
                     placeholder="Meal Name"
                     required
-                    @change="val => updateMeal(meal.id, {title: val})"
+                    @change="val => updateMeal(meal.id, {title: val}, true)"
                   ></b-form-input>
                 </b-form-group>
                 <h4>Meal Description</h4>
@@ -98,35 +98,35 @@
                     class="form-control"
                     :rows="4"
                     :maxlength="100"
-                    @input="e => updateMealDescription(meal.id, e.target.value)"
+                    @change="e => updateMealDescription(meal.id, e.target.value)"
                   ></textarea>
-                <br>
-                <h4>Categories</h4>
-                <b-form-checkbox-group
-                  buttons
-                  v-model="meal.category_ids"
-                  :options="categoryOptions"
-                  @change="val => updateMeal(meal.id, {categories: val})"
-                  class="filters"
-                ></b-form-checkbox-group>
+                  <br>
+                  <h4>Categories</h4>
+                  <b-form-checkbox-group
+                    buttons
+                    v-model="meal.category_ids"
+                    :options="categoryOptions"
+                    @change="val => updateMeal(meal.id, {categories: val})"
+                    class="filters"
+                  ></b-form-checkbox-group>
 
-                <h4 class="mt-4">Tags</h4>
-                <b-form-checkbox-group
-                  buttons
-                  v-model="meal.tag_ids"
-                  :options="tagOptions"
-                  @change="val => updateMeal(meal.id, {tags: val})"
-                  class="filters"
-                ></b-form-checkbox-group>
+                  <h4 class="mt-4">Tags</h4>
+                  <b-form-checkbox-group
+                    buttons
+                    v-model="meal.tag_ids"
+                    :options="tagOptions"
+                    @change="val => updateMeal(meal.id, {tags: val})"
+                    class="filters"
+                  ></b-form-checkbox-group>
 
-                <h4 class="mt-4">Allergies</h4>
-                <b-form-checkbox-group
-                  buttons
-                  v-model="meal.allergy_ids"
-                  :options="allergyOptions"
-                  @change="val => updateMeal(meal.id, {allergies: val})"
-                  class="filters"
-                ></b-form-checkbox-group>
+                  <h4 class="mt-4">Allergies</h4>
+                  <b-form-checkbox-group
+                    buttons
+                    v-model="meal.allergy_ids"
+                    :options="allergyOptions"
+                    @change="val => updateMeal(meal.id, {allergies: val})"
+                    class="filters"
+                  ></b-form-checkbox-group>
                 </b-form-group>
               </b-tab>
 
@@ -199,16 +199,19 @@
             :key="meal.id"
           >
             <div class="d-flex align-items-center text-left">
-              <img class="mr-2" style="width:65px" :src="meal.featured_image" v-if="meal.featured_image">
+              <img
+                class="mr-2"
+                style="width:65px"
+                :src="meal.featured_image"
+                v-if="meal.featured_image"
+              >
               <div class="flex-grow-1 mr-2">{{meal.title}}</div>
               <b-btn>Select</b-btn>
             </div>
           </b-list-group-item>
         </b-list-group>
 
-        <div v-if="mealSubstituteOptions(deletingMeal).length <= 0">
-          No substitutes lorem ipsum
-        </div>
+        <div v-if="mealSubstituteOptions(deletingMeal).length <= 0">No substitutes lorem ipsum</div>
 
         <!--<b-select v-model="deleteMeal.subtitute_id" :options="mealSubstituteOptions(deleteMeal)"></b-select>-->
         <button
@@ -264,8 +267,7 @@ export default {
       createMealModal: false,
       viewMealModal: false,
       deleteMealModal: false,
-      deletingMeal: {
-      },
+      deletingMeal: {},
       substitute_id: null,
 
       newTags: [],
@@ -408,15 +410,17 @@ export default {
       });
     },
     mealSubstituteOptions: vm => meal => {
-      return _.filter(meal.substitute_ids.map(id => {
-        const sub = vm.getMeal(id);
-        return sub;
-      }));
+      return _.filter(
+        meal.substitute_ids.map(id => {
+          const sub = vm.getMeal(id);
+          return sub;
+        })
+      );
     }
   },
   created() {
     this.updateMealDescription = _.debounce((id, description) => {
-      this.updateMeal(id, { description });
+      this.updateMeal(id, { description }, true);
     }, 300);
   },
   mounted() {},
@@ -434,7 +438,7 @@ export default {
         return o.id === id;
       });
     },
-    updateMeal(id, changes) {
+    async updateMeal(id, changes, toast = false) {
       const i = this.getTableDataIndexById(id);
       if (i === -1) {
         return this.getTableData();
@@ -442,7 +446,11 @@ export default {
       if (_.isEmpty(changes)) {
         changes = this.editing[id];
       }
-      this._updateMeal({ id, data: changes });
+      await this._updateMeal({ id, data: changes });
+
+      if (toast) {
+        this.$toastr.s("Meal saved!");
+      }
     },
     async updateActive(id, active, props) {
       const i = _.findIndex(this.tableData, o => {
@@ -454,6 +462,12 @@ export default {
       }
 
       await this._updateMeal({ id, data: { active } });
+
+      if (active) {
+        this.$toastr.s("Meal activated!");
+      } else {
+        this.$toastr.s("Meal deactivated!");
+      }
       //this.refreshTable();
     },
 
@@ -606,7 +620,7 @@ export default {
         throw new Exception("Invalid ingredients");
       }
 
-      this.updateMeal(mealId, { ingredients });
+      this.updateMeal(mealId, { ingredients }, true);
     },
     onClickAddIngredient() {
       this.ingredients.push({});

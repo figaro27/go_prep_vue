@@ -303,6 +303,9 @@ export default {
           });
           this.ingredients = _.concat(this.ingredients, newIngredients);
           this.recipe = "";
+        })
+        .catch(e => {
+          this.$toastr.e('No ingredients found.', 'Sorry!')
         });
     },
     onSearch(search, loading) {

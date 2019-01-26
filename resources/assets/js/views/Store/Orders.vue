@@ -290,10 +290,12 @@ export default {
     async fulfill(id) {
       $(".order-" + id).fadeOut(2000);
       await this.updateOrder({ id, data: { fulfilled: 1 } });
+      this.$toastr.s('Order fulfilled!')
     },
     async saveNotes(id) {
       let deliveryNote = deliveryNote;
       await this.updateOrder({ id, data: { notes: this.deliveryNote } })
+      this.$toastr.s('Order notes saved!')
     },
     getMealQuantities(meals) {
       let order = _.toArray(_.countBy(meals, "id"));
