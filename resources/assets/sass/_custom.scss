@@ -170,6 +170,22 @@ li {
   overflow-y:auto;
 }
 
+.bag-area {
+  @include media-breakpoint-down(sm) {
+    display: none;
+
+    &.show {
+      display: block;
+    }
+  }
+  
+  @include media-breakpoint-down(md) {
+   .bag-item-image {
+     display: none;
+   } 
+  }
+}
+
 .quantity {
   border-radius: 10px;
   opacity: 0.5;
