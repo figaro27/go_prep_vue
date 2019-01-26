@@ -291,6 +291,10 @@ export default {
         return [];
       }
 
+      meals = _.filter(meals, meal => {
+        return meal.active;
+      });
+
       if (this.filteredView) {
         meals = _.filter(meals, meal => {
           let skip = false;
