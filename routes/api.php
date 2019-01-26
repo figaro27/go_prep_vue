@@ -66,6 +66,8 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
             });
         }
 
+        Route::get('store/viewed', 'SpaController@getViewedStore');
+
         Route::get('getStore', 'StoreDetailController@show');
         Route::get('getStoreSettings', 'Store\\StoreSettingController@show');
         Route::patch('storeDetail', 'StoreDetailController@update');

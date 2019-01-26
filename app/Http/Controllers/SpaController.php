@@ -129,4 +129,31 @@ class SpaController extends Controller
         }
 
     }
+
+    public function getViewedStore()
+    {
+        $user = auth('api')->user();
+        
+        $store = defined('STORE_ID') ?
+        Store::with([
+            'meals',
+            'units',
+            'categories',
+            'meals.categories',
+            'meals.allergies',
+            'settings',
+        ])->find(STORE_ID) : null;
+
+        if ($store->settings->delivery_distance_type === 'radius') {
+            $distance = $user->distanceFrom($store);
+            $willDeliver = $distance < $store->settings->delivery_distance_radius;
+        } else {
+            $willDeliver = $store->deliversToZip($user->userDetail->zip);
+        }
+
+        return [
+            'store' => $store,
+            'will_deliver' => $willDeliver,
+        ];
+    }
 }

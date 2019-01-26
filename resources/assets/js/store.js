@@ -464,6 +464,19 @@ const actions = {
     dispatch
   }, data = {}) {
 
+    dispatch('refreshViewedStore');
+    dispatch('refreshStores');
+    dispatch('refreshCards');
+  },
+
+
+  async refreshViewedStore({
+    commit,
+    state
+  }) {
+    const res = await axios.get("/api/store/viewed");
+    const {data} = await res;
+
     if (_.isObject(data.store) && !_.isEmpty(data.store)) {
       commit('setViewedStore', data.store);
     }
@@ -484,10 +497,8 @@ const actions = {
       console.log(e);
     }
 
-    dispatch('refreshStores');
-    dispatch('refreshCards');
+    
   },
-
 
   async refreshStores({
     commit,

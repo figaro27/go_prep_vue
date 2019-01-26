@@ -130,7 +130,7 @@
             </div>
             </div>
             <div class="row">
-              <div class="col-sm-9 main-menu-area">
+              <div :class="`col-sm-9 main-menu-area`">
                 <div
                   v-for="group in meals"
                   :key="group.category"
@@ -139,7 +139,7 @@
                 >
                   <h2 class="text-center mb-3">{{group.category}}</h2>
                   <div class="row">
-                    <div class="col-md-3 sm-md-12" v-for="meal in group.meals" :key="meal.id">
+                    <div class="col-md-3 col-md-3 sm-md-12" v-for="meal in group.meals" :key="meal.id">
                       <img
                         :src="meal.featured_image"
                         class="menu-item-img"
@@ -164,7 +164,7 @@
                 </div>
               </div>
 
-              <div class="col-sm-3 bag-area " v-if="!preview">
+              <div class="col-sm-3 bag-area ">
                 <ul class="list-group">
                   <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
                     <div v-if="item && item.quantity > 0" class="row">
@@ -193,7 +193,7 @@
                 <div>
                   <router-link to="/customer/bag">
                     <img
-                      v-if="total >= minimum"
+                      v-if="total >= minimum && !preview"
                       src="/images/customer/next.jpg"
                       @click="addBagItems(bag)"
                     >
@@ -261,6 +261,7 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       total: "bagQuantity",
+      allergies: "allergies",
       bag: "bagItems",
       hasMeal: "bagHasMeal",
       willDeliver: "viewedStoreWillDeliver",
@@ -286,6 +287,10 @@ export default {
       let meals = this.store.meals;
       let filters = this.filters;
       let grouped = {};
+
+      if(!_.isArray(meals)) {
+        return [];
+      }
 
       if (this.filteredView) {
         meals = _.filter(meals, meal => {
@@ -325,7 +330,8 @@ export default {
       }
 
       meals.forEach(meal => {
-        meal.categories.forEach(category => {
+        meal.category_ids.forEach(categoryId => {
+          let category = _.find(this._categories, {'id': categoryId});
           if (!_.has(grouped, category.category)) {
             grouped[category.category] = [meal];
           } else {
@@ -360,7 +366,8 @@ export default {
 
       let grouped = [];
       this.store.meals.forEach(meal => {
-        meal.categories.forEach(category => {
+        meal.category_ids.forEach(categoryId => {
+          let category = _.find(this._categories, {'id': categoryId});
           if (!_.includes(grouped, category.category)) {
             grouped.push(category.category);
           }
@@ -385,7 +392,8 @@ export default {
     allergies() {
       let grouped = [];
       this.store.meals.forEach(meal => {
-        meal.allergies.forEach(allergy => {
+        meal.allergy_ids.forEach(allergyId => {
+          let allergy = this.allergies[allergyId];
           if (!_.includes(grouped, allergy.title)) {
             grouped.push(allergy.title);
           }
