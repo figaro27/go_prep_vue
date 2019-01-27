@@ -83,7 +83,7 @@ const state = {
     }
   },
   orders: {
-    data: {},
+    data: [],
     expires: 0
   },
   subscriptions: {

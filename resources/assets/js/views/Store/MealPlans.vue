@@ -10,15 +10,16 @@
             :options="options"
             v-show="!isLoading"
           >
-            <div slot="beforeTable" class="row mb-2">
-              <div class="col-md-1">
-                <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
-              </div>
-              <div class="col-md-1 pt-2">
-                <h6>Delivery Days:</h6>
-              </div>
-              <div class="col-md-10 pb-1">
-                <v-select multiple v-model="filters.delivery_days" :options="deliveryDays"></v-select>
+            <div slot="beforeTable" class="mb-2">
+               <div class="d-flex align-items-end">
+                <div class="mr-2">
+                  <b-btn @click="filterNotes" :selected="filters.notes" variant="primary" class="filter-btn">Filter Notes</b-btn>
+                </div>
+                <div class="flex-grow-1">
+                  <b-form-group label="Delivery day" class="delivery-date-picker mb-0">
+                    <v-select multiple v-model="filters.delivery_days" :options="deliveryDays"></v-select>
+                  </b-form-group>
+                </div>
               </div>
             </div>
 
@@ -149,7 +150,8 @@ export default {
       deliveryDate: "All",
       filter: false,
       filters: {
-        delivery_days: ['All']
+        delivery_days: ['All'],
+        notes: false,
       },
       viewSubscriptionModal: false,
       subscription: {},

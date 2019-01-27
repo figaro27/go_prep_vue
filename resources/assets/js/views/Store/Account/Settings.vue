@@ -8,7 +8,6 @@
           <b-btn @click="toast('w')">Warning</b-btn>
           <b-btn @click="toast('e')">Error</b-btn>
 
-
           <b-form @submit.prevent="updateStoreSettings">
             <b-form-group label="Cut Off Period" label-for="cut-off-period" :state="true" inline>
               <b-select
@@ -21,10 +20,13 @@
                 class="d-inline w-auto mr-1"
                 :options="cutoffHoursOptions"
               ></b-select>
-              <img v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'" title="Cut Off Period" src="/images/store/popover.png">
+              <img
+                v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                title="Cut Off Period"
+                src="/images/store/popover.png"
+              >
             </b-form-group>
 
-            
             <b-form-group label="Delivery Day(s)" label-for="delivery-days" :state="true">
               <b-form-checkbox-group
                 buttons
@@ -40,9 +42,13 @@
                  { value: 'sat', text: 'Saturday' },
               ]"
               ></b-form-checkbox-group>
-              <img v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'" title="Delivery Day(s)" src="/images/store/popover.png">
+              <img
+                v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                title="Delivery Day(s)"
+                src="/images/store/popover.png"
+              >
             </b-form-group>
-            
+
             <b-form-group
               label="Delivery Distance Type"
               label-for="delivery-distance-type"
@@ -57,7 +63,11 @@
                  { value: 'zipcodes', text: 'Zipcodes' },
               ]"
               ></b-form-radio-group>
-              <img v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'" title="Delivery Distance Type" src="/images/store/popover.png">
+              <img
+                v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                title="Delivery Distance Type"
+                src="/images/store/popover.png"
+              >
             </b-form-group>
             <b-form-group
               v-if="storeSettings.delivery_distance_type === 'radius'"
@@ -125,7 +135,12 @@
               ></b-form-input>
             </b-form-group>
             <b-form-group label="Allow Pickup" :state="true">
-              <c-switch color="success" variant="pill" size="lg" v-model="storeSettings.allowPickup"/>
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.allowPickup"
+              />
               <b-form-input
                 v-if="storeSettings.allowPickup"
                 type="text"
@@ -134,7 +149,7 @@
                 required
               ></b-form-input>
             </b-form-group>
-            
+
             <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
         </div>
@@ -156,10 +171,23 @@
 
           <b-form-group label="Categories" :state="true">
             <div class="categories">
-              <draggable v-model="categories" @change="onChangeCategories" element="ol" class="plain">
-                <li v-for="category in categories" :key="`category-${category.id}`" style="cursor: n-resize">
+              <draggable
+                v-model="categories"
+                @change="onChangeCategories"
+                element="ol"
+                class="plain"
+              >
+                <li
+                  v-for="category in categories"
+                  :key="`category-${category.id}`"
+                  style="cursor: n-resize"
+                >
                   {{ category.category }}
-                  <i v-if="category.id" @click="deleteCategory(category.id)" class="fa fa-minus-circle text-danger"></i>
+                  <i
+                    v-if="category.id"
+                    @click="deleteCategory(category.id)"
+                    class="fa fa-minus-circle text-danger"
+                  ></i>
                 </li>
               </draggable>
             </div>
@@ -175,14 +203,14 @@
       <div class="card">
         <div class="card-body">
           <b-form @submit.prevent="updateStoreSettings">
-           <b-form-group label="New Orders" :state="true">
+            <b-form-group label="New Orders" :state="true">
               <c-switch
                 color="success"
                 variant="pill"
                 size="lg"
                 v-model="storeSettings.notifications.new_order"
               />
-           </b-form-group>
+            </b-form-group>
 
             <b-form-group label="New Subscriptions" :state="true">
               <c-switch
@@ -191,27 +219,27 @@
                 size="lg"
                 v-model="storeSettings.notifications.new_subscription"
               />
-           </b-form-group>
+            </b-form-group>
 
-           <b-form-group label="Cancelled Subscriptions" :state="true">
+            <b-form-group label="Cancelled Subscriptions" :state="true">
               <c-switch
                 color="success"
                 variant="pill"
                 size="lg"
                 v-model="storeSettings.notifications.cancelled_subscription"
               />
-           </b-form-group>
+            </b-form-group>
 
-           <b-form-group label="Ready to Print" :state="true">
+            <b-form-group label="Ready to Print" :state="true">
               <c-switch
                 color="success"
                 variant="pill"
                 size="lg"
                 v-model="storeSettings.notifications.ready_to_print"
               />
-           </b-form-group>
+            </b-form-group>
 
-           <b-button type="submit" variant="primary">Submit</b-button>
+            <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
         </div>
       </div>
@@ -221,20 +249,57 @@
           
           <p>Low Threshold</p>
         </div>
-      </div> -->
+      </div>-->
       <p>Payments</p>
       <div class="card">
         <div class="card-body">
           <div v-if="!storeSettings.stripe_id">
             <b-form-group label="Payment Info" :state="true">
-              <b-button href="https://connect.stripe.com/express/oauth/authorize?redirect_uri=http://goprep.localhost/store/stripe/redirect&client_id=ca_EKiyZcHDxZPyExm41NqBFJ7kMAkDItAl&state={STATE_VALUE}">Create account</b-button>
+              <b-button
+                href="https://connect.stripe.com/express/oauth/authorize?redirect_uri=http://goprep.localhost/store/stripe/redirect&client_id=ca_EKiyZcHDxZPyExm41NqBFJ7kMAkDItAl&state={STATE_VALUE}"
+              >Create account</b-button>
             </b-form-group>
           </div>
           <div v-else>
-            <b-form-group label="Stripe" :state="true">
-              ID: {{ storeSettings.stripe_id }}
-            </b-form-group>
+            <b-form-group label="Stripe" :state="true">ID: {{ storeSettings.stripe_id }}</b-form-group>
           </div>
+        </div>
+      </div>
+
+      <p>Reports</p>
+      <div class="card">
+        <div class="card-body">
+          <b-form @submit.prevent="updateStoreSettings">
+            <b-form-group label="Show # delivery days by default" :state="true">
+              <b-form-input
+                v-if="storeSettings"
+                type="number"
+                min="1"
+                :disabled="null === storeSettings.view_delivery_days"
+                v-model="storeSettings.view_delivery_days"
+                placeholder
+                required
+              ></b-form-input>
+
+              <b-form-group label="All" :state="true">
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  @change="val => {
+                    if(val) {
+                      storeSettings.view_delivery_days = null;
+                    }
+                    else {
+                      storeSettings.view_delivery_days = 1;
+                    }
+                  }"
+                />
+              </b-form-group>
+            </b-form-group>
+
+            <b-button type="submit" variant="primary">Submit</b-button>
+          </b-form>
         </div>
       </div>
     </div>
@@ -275,7 +340,7 @@ export default {
       loginAlertSuccess: false,
       loginAlertFail: false,
       zipcodes: [],
-      new_category: "",
+      new_category: ""
     };
   },
   computed: {
@@ -288,7 +353,10 @@ export default {
       storeCategories: "storeCategories"
     }),
     categories() {
-      return _.chain(this.storeCategories).orderBy('order').toArray().value();
+      return _.chain(this.storeCategories)
+        .orderBy("order")
+        .toArray()
+        .value();
     },
     // storeDetail(){
     //     return this.store.store_detail;
@@ -321,22 +389,23 @@ export default {
   },
   mounted() {},
   methods: {
-    ...mapActions(['refreshCategories']),
+    ...mapActions(["refreshCategories"]),
 
     updateStoreSettings() {
       let settings = { ...this.storeSettings };
       settings.delivery_distance_zipcodes = this.zipcodes;
 
       // this.spliceCharacters();
-      axios.post("/api/updateStoreSettings", settings)
-      .then(response => {
-        this.$toastr.s('Your settings have been saved.', 'Success');
-      })
-      .catch(response => {
-        let error = _.first(Object.values(response.response.data.errors))
-        error = error.join(" ");
-        this.$toastr.e(error, 'Error');
-      });
+      axios
+        .post("/api/updateStoreSettings", settings)
+        .then(response => {
+          this.$toastr.s("Your settings have been saved.", "Success");
+        })
+        .catch(response => {
+          let error = _.first(Object.values(response.response.data.errors));
+          error = error.join(" ");
+          this.$toastr.e(error, "Error");
+        });
     },
     // spliceCharacters() {
     //   if (this.storeSettings.deliveryFee != null)
@@ -359,26 +428,26 @@ export default {
     //   }
     // },
     createStripeAccount() {
-      axios.post('/api/me/stripe').then((resp) => {
-        
-      });
+      axios.post("/api/me/stripe").then(resp => {});
     },
     stripeLogIn() {
-      axios.get('/api/me/stripe/login').then((resp) => {
-        if(resp.data.url) {
+      axios.get("/api/me/stripe/login").then(resp => {
+        if (resp.data.url) {
           window.location = resp.data.url;
         }
       });
     },
     onAddCategory() {
-      axios.post("/api/me/categories", {category: this.new_category}).then(response => {
-        this.refreshCategories();
-        this.new_category = "";
-      });
+      axios
+        .post("/api/me/categories", { category: this.new_category })
+        .then(response => {
+          this.refreshCategories();
+          this.new_category = "";
+        });
     },
     onChangeCategories(e) {
-      if(_.isObject(e.moved)) {
-        let newCats = _.toArray({...this.categories});
+      if (_.isObject(e.moved)) {
+        let newCats = _.toArray({ ...this.categories });
         newCats[e.moved.oldIndex] = this.categories[e.moved.newIndex];
         newCats[e.moved.newIndex] = this.categories[e.moved.oldIndex];
 
@@ -387,29 +456,31 @@ export default {
           return cat;
         });
 
-        axios.post("/api/me/categories", {categories: newCats}).then(response => {
-          this.refreshCategories();
-        });
+        axios
+          .post("/api/me/categories", { categories: newCats })
+          .then(response => {
+            this.refreshCategories();
+          });
       }
     },
     deleteCategory(id) {
-        axios.delete("/api/me/categories/" + id).then(response => {
-          this.refreshCategories();
-        });
+      axios.delete("/api/me/categories/" + id).then(response => {
+        this.refreshCategories();
+      });
     },
     toast(type) {
-      switch(type) {
-        case 's':
-          this.$toastr.s('message', 'Success!');
-        break;
+      switch (type) {
+        case "s":
+          this.$toastr.s("message", "Success!");
+          break;
 
-        case 'w':
-          this.$toastr.w('message', 'Warning');
-        break;
+        case "w":
+          this.$toastr.w("message", "Warning");
+          break;
 
-        case 'e':
-          this.$toastr.e('message', 'Error');
-        break;
+        case "e":
+          this.$toastr.e("message", "Error");
+          break;
       }
     }
   }

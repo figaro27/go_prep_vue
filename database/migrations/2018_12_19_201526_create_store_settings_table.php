@@ -35,6 +35,7 @@ class CreateStoreSettingsTable extends Migration
             $table->string('stripe_id')->nullable();
             $table->longText('stripe_account')->nullable();
             $table->json('notifications');
+            $table->integer('view_delivery_days')->nullable();
             $table->timestamps();
         });
     }

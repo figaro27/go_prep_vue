@@ -11,7 +11,14 @@
             v-show="!isLoading"
           >
             <div slot="beforeTable" class="mb-2">
-              <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
+              <div class="d-flex align-items-end">
+                <div class="mr-2">
+                  <b-btn @click="filterNotes" :selected="filters.notes" variant="primary" class="filter-btn">Filter Notes</b-btn>
+                </div>
+                <div class="flex-grow-1">
+                  <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
+                </div>
+              </div>
             </div>
 
             <span slot="beforeLimit">
@@ -123,6 +130,9 @@
   </div>
 </template>
 
+<style lang="scss" scoped>
+
+</style>
 
 
 <script>
@@ -138,6 +148,10 @@ export default {
   data() {
     return {
       filter: false,
+      filters: {
+        delivery_dates: [],
+        notes: false,
+      },
       viewOrderModal: false,
       order: {},
       orderId: "",
@@ -181,17 +195,52 @@ export default {
       store: "viewedStore",
       orders: "storeOrders",
       isLoading: "isLoading",
-      customers: "storeCustomers",
+      customers: "storeCustomers"
     }),
     tableData() {
-      let orders = [];
-      if (!this.filter) orders = _.filter(this.orders, { fulfilled: 1 });
-      else orders = _.filter(this.orders, { fulfilled: 1, has_notes: true });
+      let filters = { fulfilled: 1 };
+      if (_.isArray(this.filters.delivery_dates)) {
+        filters.delivery_dates = this.filters.delivery_dates;
+      }
 
-      return orders.map(order => {
-        order.customer = _.find(this.customers, {user_id: order.user_id});
+      if (this.filter) {
+        filters.has_notes = true;
+      }
+      // }
+      // if (!this.filter) return _.filter(this.orders, { fulfilled: 0 });
+      //   else return _.filter(this.orders, { fulfilled: 0, has_notes: true });
+      let filtered = _.filter(this.orders, order => {
+        if ("delivery_dates" in filters) {
+          let dateMatch = _.reduce(
+            filters.delivery_dates,
+            (match, date) => {
+              if (date === "All") {
+                return true;
+              }
+              if (moment(date).isSame(order.delivery_date, "day")) {
+                return true;
+              }
+
+              return match;
+            },
+            false
+          );
+
+          if (!dateMatch) return false;
+        }
+
+        if ("has_notes" in filters && order.has_notes !== filters.has_notes)
+          return false;
+        if ("fulfilled" in filters && order.fulfilled !== filters.fulfilled)
+          return false;
+
+        return true;
+      });
+
+      return filtered.map(order => {
+        order.customer = _.find(this.customers, { user_id: order.user_id });
         return order;
-      })
+      });
     }
   },
   mounted() {},
@@ -249,6 +298,7 @@ export default {
     },
     filterNotes() {
       this.filter = !this.filter;
+      this.filters.notes = true;
       this.refreshTable();
     },
     exportData(report, format = "pdf", print = false) {

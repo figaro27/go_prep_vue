@@ -10,15 +10,14 @@
             :options="options"
             v-show="!isLoading"
           >
-            <div slot="beforeTable" class="row mb-2">
-              <div class="col-md-1">
-                <button @click="filterNotes" class="btn btn-primary">Filter Notes</button>
-              </div>
-              <div class="col-md-1 pt-2">
-                <h6>Delivery Days:</h6>
-              </div>
-              <div class="col-md-10 pb-1">
-                <v-select multiple v-model="filters.delivery_dates" :options="deliveryDates"></v-select>
+            <div slot="beforeTable" class="mb-2">
+              <div class="d-flex align-items-end">
+                <div class="mr-2">
+                  <b-btn @click="filterNotes" :selected="filters.notes" variant="primary" class="filter-btn">Filter Notes</b-btn>
+                </div>
+                <div class="flex-grow-1">
+                  <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
+                </div>
               </div>
             </div>
 
@@ -150,7 +149,8 @@ export default {
       deliveryDate: "All",
       filter: false,
       filters: {
-        delivery_dates: ['All']
+        delivery_dates: [],
+        notes: false,
       },
       viewOrderModal: false,
       order: {},
@@ -260,20 +260,6 @@ export default {
         return order;
       })
     },
-    deliveryDates() {
-      let grouped = [];
-      this.orders.forEach(order => {
-        if (!_.includes(grouped, order.delivery_date)) {
-          grouped.push(order.delivery_date);
-        }
-      });
-      grouped.push("All");
-      this.deliveryDate = grouped[0];
-      return grouped;
-    },
-    selected() {
-      return this.deliveryDates;
-    }
   },
   methods: {
     ...mapActions({

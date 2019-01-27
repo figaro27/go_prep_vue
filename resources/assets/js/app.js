@@ -50,6 +50,9 @@ Vue.component('thumbnail', Thumbnail)
 import IngredientSearch from './components/IngredientSearch';
 Vue.component('ingredient-search', IngredientSearch);
 
+import DeliveryDatePicker from './components/DeliveryDatePicker';
+Vue.component('delivery-date-picker', DeliveryDatePicker);
+
 // For use in templates
 Vue.prototype.format = format;
 Vue.prototype.moment = moment;
