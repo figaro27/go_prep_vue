@@ -700,7 +700,7 @@ const actions = {
       return;
     }
 
-    const index = _.findIndex(getters.storeOrders, ['id', id]);
+    const index = _.findIndex(getters.storeOrders, {'id': id});
 
     if (index === -1) {
       return;
