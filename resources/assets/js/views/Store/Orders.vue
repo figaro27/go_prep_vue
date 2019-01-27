@@ -294,7 +294,7 @@ export default {
       return _.find(this.tableData, ["id", id]);
     },
     async fulfill(id) {
-      $(".order-" + id).fadeOut(2000);
+      //$(".order-" + id).fadeOut(2000);
       await this.updateOrder({ id, data: { fulfilled: 1 } });
       this.$toastr.s('Order fulfilled!')
     },
