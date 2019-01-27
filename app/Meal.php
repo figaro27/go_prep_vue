@@ -7,6 +7,7 @@ use App\Utils\Data\Format;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Exception;
@@ -23,27 +24,29 @@ class Meal extends Model
         'price' => 'double',
         'active_orders_price' => 'decimal:2',
         'created_at' => 'date:F d, Y',
+        'substitute' => 'boolean',
     ];
 
     protected $appends = [
-      'tag_titles',
-      'nutrition',
-      'active_orders',
-      'active_orders_price',
-      'lifetime_orders',
-      'allergy_ids',
-      'category_ids',
-      'tag_ids',
-      'substitute_ids',
-      'ingredient_ids',
-      'order_ids',
+        'tag_titles',
+        'nutrition',
+        'active_orders',
+        'active_orders_price',
+        'lifetime_orders',
+        'allergy_ids',
+        'category_ids',
+        'tag_ids',
+        'substitute',
+        'substitute_ids',
+        'ingredient_ids',
+        'order_ids',
     ];
 
     protected $hidden = [
-      'allergies',
-      'categories',
-      'orders',
-      //'ingredients',
+        'allergies',
+        'categories',
+        'orders',
+        //'ingredients',
     ];
 
     /**
@@ -116,6 +119,18 @@ class Meal extends Model
         return $this->tags->pluck('id');
     }
 
+    /**
+     * Whether meal must be substituted before deleting
+     *
+     * @return bool
+     */
+    public function getSubstituteAttribute()
+    {
+        return $this->orders()->where([
+            ['delivery_date', '>', Carbon::now()],
+        ])->count() > 0;
+    }
+
     public function getSubstituteIdsAttribute()
     {
         $ids = Cache::rememberForever('meal_substitutes_' . $this->id, function () {
@@ -140,10 +155,10 @@ class Meal extends Model
                 $catIds = $this->categories->pluck('id');
                 return $query->whereIn('categories.id', $catIds);
             }, '>=', 1)
-            ->orWhereHas('tags', function ($query) {
-                $tagIds = $this->tags->pluck('id');
-                return $query->whereIn('meal_tags.id', $tagIds);
-            }, '>=', 1);
+                ->orWhereHas('tags', function ($query) {
+                    $tagIds = $this->tags->pluck('id');
+                    return $query->whereIn('meal_tags.id', $tagIds);
+                }, '>=', 1);
 
             $extraMeals = $mealsQuery->get();
 
@@ -496,23 +511,25 @@ class Meal extends Model
         ]);
     }
 
-    public static function deleteMeal($id, $subId)
+    public static function deleteMeal($id, $subId = null)
     {
         $meal = Meal::find($id);
         $sub = Meal::find($subId);
 
-        $mealOrders = MealOrder::with(['order'])
-            ->where([
-                'meal_id' => $meal->id,
-            ])
-            ->get()
-            ->filter(function ($mealOrder) {
-                return $mealOrder->order->subscription_id > 0;
-            });
+        if ($sub) {
+            $mealOrders = MealOrder::with(['order'])
+                ->where([
+                    'meal_id' => $meal->id,
+                ])
+                ->get()
+                ->filter(function ($mealOrder) {
+                    return $mealOrder->order->subscription_id > 0;
+                });
 
-        $mealOrders->each(function ($mealOrder) use ($sub) {
-            $mealOrder->update(['meal_id' => $sub->id]);
-        });
+            $mealOrders->each(function ($mealOrder) use ($sub) {
+                $mealOrder->update(['meal_id' => $sub->id]);
+            });
+        }
 
         $meal->delete();
     }

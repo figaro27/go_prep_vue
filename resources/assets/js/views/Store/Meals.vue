@@ -492,8 +492,15 @@ export default {
     deleteMeal: function(id) {
       this.deletingMeal = this.getMeal(id);
 
-      if (this.deletingMeal) {
+      if (!this.deletingMeal) {
+        return;
+      }
+
+      if(this.deletingMeal.substitute) {
         this.deleteMealModal = true;
+      }
+      else {
+        this.destroyMeal(id, null);
       }
     },
     destroyMeal: function(id, subId) {
