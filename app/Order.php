@@ -75,7 +75,7 @@ class Order extends Model
     public static function updateOrder($id, $props)
     {
 
-        $order = Order::findOrFail($id);
+        $order = Order::with(['user', 'user.userDetail'])->findOrFail($id);
 
         $props = collect($props)->only([
             'fulfilled',
