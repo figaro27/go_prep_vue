@@ -3,17 +3,24 @@
     background-color: #fff !important;
   }
 
-  .dropdown {
+  .dropdown-menu  {
+    .active > a {
+      color: #3c3c3c !important;
+    }
+
     li {
       border-bottom: 1px solid rgba(112, 128, 144, 0.1);
+      color: #3c3c3c !important;
+      
+      
       &:last-child {
         border-bottom: none;
       }
       a {
         padding: 10px 20px;
         width: 100%;
-        font-size: 1.25em;
-        color: #3c3c3c;
+        font-size: 1em;
+        color: #3c3c3c !important;
       }
     }
   }

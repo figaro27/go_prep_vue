@@ -8,7 +8,7 @@ $factory->define(App\Order::class, function (Faker $faker) {
         'store_id' => 1,
         'fulfilled' => rand(0, 1),
         'amount' => rand(100, 200),
-        'delivery_date' => $faker->dateTimeBetween($startDate = '-1 week', $endDate = '+7 days'),
-        'created_at' => $faker->dateTimeBetween($startDate = '-1 week', $endDate = 'now'),
+        'delivery_date' => $faker->dateTimeBetween($startDate = '-2 days', $endDate = '+3 days'),
+        'created_at' => $faker->dateTimeBetween($startDate = '-4 days', $endDate = 'now'),
     ];
 });
