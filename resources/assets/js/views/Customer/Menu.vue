@@ -10,8 +10,8 @@
           <h4 class="center-text mb-5">Hide Meals That Contain</h4>
         </div>
         <div class="row mb-4">
-          <div v-for="allergy in allergies" :key="allergy" class="filters col-md-3 mb-3">
-            <b-button :pressed="active[allergy]" @click="filterByAllergy(allergy)">{{ allergy }}</b-button>
+          <div v-for="allergy in allergies" :key="allergy.id" class="filters col-md-3 mb-3">
+            <b-button :pressed="active[allergy.id]" @click="filterByAllergy(allergy.id)">{{ allergy.title }}</b-button>
           </div>
         </div>
         <hr>
@@ -312,10 +312,10 @@ export default {
 
           if (!skip && filters.allergies.length > 0) {
             let hasAllergy = _.reduce(
-              meal.allergies,
-              (has, allergy) => {
+              meal.allergy_ids,
+              (has, allergyId) => {
                 if (has) return true;
-                let x = _.includes(filters.allergies, allergy.title);
+                let x = _.includes(filters.allergies, allergyId);
 
                 return x;
               },
@@ -561,17 +561,17 @@ export default {
 
       i === -1 ? this.filters.tags.push(tag) : Vue.delete(this.filters.tags, i);
     },
-    filterByAllergy(allergy) {
-      this.active[allergy] = !this.active[allergy];
+    filterByAllergy(allergyId) {
+      this.active[allergyId] = !this.active[allergyId];
       this.filteredView = true;
 
       // Check if filter already exists
-      const i = _.findIndex(this.filters.allergies, _allergy => {
-        return allergy === _allergy;
+      const i = _.findIndex(this.filters.allergies, _allergyId => {
+        return _allergyId === allergyId;
       });
 
       i === -1
-        ? this.filters.allergies.push(allergy)
+        ? this.filters.allergies.push(allergyId)
         : Vue.delete(this.filters.allergies, i);
     },
     goToCategory(category) {
