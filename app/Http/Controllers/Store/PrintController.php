@@ -19,45 +19,47 @@ use App\Exportable\Store\Subscriptions;
 class PrintController extends StoreController
 {
     public function print(Request $request, $report, $format = 'pdf') {
+      $params = collect($request->all());
+
       switch($report) {
         case 'meal_quantities':
-          $exportable = new MealQuantities($this->store);
+          $exportable = new MealQuantities($this->store, $params);
         break;
 
         case 'ingredient_quantities':
-          $exportable = new IngredientQuantities($this->store);
+          $exportable = new IngredientQuantities($this->store, $params);
         break;
 
         case 'orders':
-          $exportable = new Orders($this->store);
+          $exportable = new Orders($this->store, $params);
         break;
 
         case 'past_orders':
-          $exportable = new PastOrders($this->store);
+          $exportable = new PastOrders($this->store, $params);
         break;
 
         case 'orders_by_customer':
-          $exportable = new OrdersByCustomer($this->store);
+          $exportable = new OrdersByCustomer($this->store, $params);
         break;
 
         case 'subscriptions':
-          $exportable = new Subscriptions($this->store);
+          $exportable = new Subscriptions($this->store, $params);
         break;
 
         case 'packing_slips':
-          $exportable = new PackingSlips($this->store);
+          $exportable = new PackingSlips($this->store, $params);
         break;
 
         case 'customers':
-          $exportable = new Customers($this->store);
+          $exportable = new Customers($this->store, $params);
         break;
 
         case 'meals':
-          $exportable = new Meals($this->store);
+          $exportable = new Meals($this->store, $params);
         break;
 
         case 'meal_orders':
-          $exportable = new MealOrders($this->store);
+          $exportable = new MealOrders($this->store, $params);
         break;
       }
 

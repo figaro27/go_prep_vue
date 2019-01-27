@@ -2,10 +2,10 @@
 
 namespace App\Exportable;
 
-use App\Utils\Data\ExportsData;
 use Illuminate\Support\Facades\Storage;
-use \XLSXWriter;
+use Illuminate\Support\Carbon;
 use mikehaertl\wkhtmlto\Pdf;
+use \XLSXWriter;
 
 trait Exportable
 {
@@ -104,5 +104,21 @@ trait Exportable
 
         Storage::disk('local')->put($filename, $output);
         return Storage::url($filename);
+    }
+
+    public function getDeliveryDates()
+    {
+        $dates = null;
+        if ($this->params->has('delivery_dates')) {
+            $dates = $this->params->get('delivery_dates');
+            $dates = collect($dates)->filter(function ($date) {
+                return $date !== 'All';
+            })
+            ->map(function($date) {
+              return Carbon::parse($date);
+            });
+        }
+
+        return $dates;
     }
 }

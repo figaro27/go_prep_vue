@@ -10,16 +10,27 @@ class OrdersByCustomer
 {
     use Exportable;
 
-    protected $store;
+    protected $store, $params;
 
-    public function __construct(Store $store)
+    public function __construct(Store $store, $params)
     {
         $this->store = $store;
+        $this->params = $params;
     }
 
     public function exportData()
     {
-        $customerOrders = $this->store->getOrdersForNextDelivery('user_id')
+        $dates = $this->getDeliveryDates();
+
+        if(!count($dates)) {
+          //$orders = $this->store->getOrdersForNextDelivery('user_id');
+          $orders = $this->store->orders()->get()->groupBy('user_id');
+        }
+        else {
+          $orders = $this->store->orders()->whereIn('delivery_date', $dates)->get()->groupBy('user_id');
+        }
+
+        $customerOrders = $orders
             ->map(function ($orders, $userId) {
               return [
                 'user' => User::find($userId),

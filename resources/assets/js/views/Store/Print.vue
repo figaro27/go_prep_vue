@@ -5,7 +5,7 @@
         <div class="card">
           <Spinner v-if="isLoading"/>
           <div class="card-body m-4">
-            <v-select multiple v-model="selected" :options="deliveryDates"></v-select>
+            <delivery-date-picker v-model="delivery_dates.meal_quantities"></delivery-date-picker>
             <button @click="print('meal_quantities', 'pdf')" class="btn btn-primary btn-md form-control">Print Meals Quantity</button>
             <p class="mt-4">Shows how many of each meal is required to be made based on your orders.</p>
           </div>
@@ -14,7 +14,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-body m-4">
-            <v-select multiple v-model="selected" :options="deliveryDates"></v-select>
+            <delivery-date-picker v-model="delivery_dates.ingredient_quantities"></delivery-date-picker>
             <button @click="print('ingredient_quantities', 'pdf')" class="btn btn-primary btn-md form-control">Print Ingredients Quantity</button>
             <p class="mt-4">Shows how much of each ingredient is needed based on your orders.</p>
           </div>
@@ -25,7 +25,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-body m-4">
-            <v-select multiple v-model="selected" :options="deliveryDates"></v-select>
+            <delivery-date-picker v-model="delivery_dates.orders_by_customer"></delivery-date-picker>
             <button @click="print('orders_by_customer', 'pdf')" class="btn btn-primary btn-md form-control">Print Orders</button>
             <p class="mt-4">Shows which meals need to be packaged together for each customer.</p>
           </div>
@@ -34,7 +34,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-body m-4">
-            <v-select multiple v-model="selected" :options="deliveryDates"></v-select>
+            <delivery-date-picker v-model="delivery_dates.packing_slips"></delivery-date-picker>
             <button @click="print('packing_slips', 'pdf')" class="btn btn-primary btn-md form-control">Print Packing Slips</button>
             <p class="mt-4">Prints meal quantity summaries for each order.</p>
           </div>
@@ -55,7 +55,14 @@ export default {
     Spinner
   },
   data() {
-    return {};
+    return {
+      delivery_dates: {
+        meal_quantities: [],
+        ingredient_quantities: [],
+        orders_by_customer: [],
+        packing_slips: [],
+      },
+    };
   },
   computed: {
     ...mapGetters({
@@ -81,7 +88,11 @@ export default {
   methods: {
     print(report, format = "pdf") {
       axios
-        .get(`/api/me/print/${report}/${format}`)
+        .get(`/api/me/print/${report}/${format}`, {
+          params: {
+            delivery_dates: this.delivery_dates[report]
+          }
+        })
         .then(response => {
           if (!_.isEmpty(response.data.url)) {
             let win = window.open(response.data.url);

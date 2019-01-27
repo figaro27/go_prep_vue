@@ -11,20 +11,28 @@ class PackingSlips
 {
     use Exportable;
 
-    protected $store;
+    protected $store, $params;
     protected $orders = [];
 
-    public function __construct(Store $store)
+    public function __construct(Store $store, $params)
     {
         $this->store = $store;
-        $this->orders = $store->getOrdersForNextDelivery();
+        $this->params = $params;
+
+        $dates = $this->getDeliveryDates();
+
+        if (!count($dates)) {
+            $this->orders = $this->store->orders;
+        } else {
+            $this->orders = $this->store->orders()->whereIn('delivery_date', $dates)->get();
+        }
     }
 
     public function exportData()
     {
         return $this->orders;
-        $orders = $this->orders->map(function($order) {
-          return $order;
+        $orders = $this->orders->map(function ($order) {
+            return $order;
         });
 
         return $orders->toArray();
@@ -43,8 +51,8 @@ class PackingSlips
 
         $orders = $this->exportData();
 
-        if(!count($orders)) {
-          throw new \Exception('No orders');
+        if (!count($orders)) {
+            throw new \Exception('No orders');
         }
 
         $filename = 'public/' . md5(time()) . '.pdf';
@@ -52,10 +60,10 @@ class PackingSlips
         $pdf = new Pdf([
             'encoding' => 'UTF-8',
         ]);
-        
-        foreach($orders as $i=> $order) {
-          $html = view($this->exportPdfView(), ['order' => $order])->render();
-          $pdf->addPage($html);
+
+        foreach ($orders as $i => $order) {
+            $html = view($this->exportPdfView(), ['order' => $order])->render();
+            $pdf->addPage($html);
         }
 
         $output = $pdf->toString();

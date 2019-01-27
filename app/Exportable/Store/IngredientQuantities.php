@@ -10,16 +10,19 @@ class IngredientQuantities
 {
     use Exportable;
 
-    protected $store;
+    protected $store, $params;
 
-    public function __construct(Store $store)
+    public function __construct(Store $store, $params)
     {
         $this->store = $store;
+        $this->params = $params;
     }
 
     public function exportData()
     {
-        $ingredients = collect($this->store->getOrderIngredients());
+        $dates = $this->getDeliveryDates();
+
+        $ingredients = collect($this->store->getOrderIngredients($dates));
         $units = collect($this->store->units);
 
         $data = $ingredients->map(function ($orderIngredient) use ($units) {

@@ -9,16 +9,18 @@ class MealQuantities
 {
     use Exportable;
 
-    protected $store;
+    protected $store, $params;
 
-    public function __construct(Store $store)
+    public function __construct(Store $store, $params)
     {
         $this->store = $store;
+        $this->params = $params;
     }
 
     public function exportData()
     {
-        $meals = collect($this->store->getOrderMeals());
+        $dates = $this->getDeliveryDates();
+        $meals = collect($this->store->getOrderMeals($dates));
 
         $meals = $meals->map(function ($item, $id) {
             return [

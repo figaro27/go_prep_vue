@@ -113,11 +113,21 @@ class Store extends Model
         });
     }
 
-    public function getOrderIngredients()
+    public function getOrderIngredients($dates = null)
     {
         $ingredients = [];
 
-        $orders = $this->orders()->with(['meals', 'meals.ingredients'])->get();
+        $orders = $this->orders()->with(['meals', 'meals.ingredients']);
+
+        if($dates && count($dates) > 0) {
+          $dates = collect($dates);
+
+          $orders = $orders->whereIn('delivery_date', $dates->map(function($date) {
+            return Carbon::parse($date);
+          }));
+        }
+
+        $orders = $orders->get();
 
         foreach ($orders as $order) {
             foreach ($order->meals as $meal) {
@@ -132,7 +142,7 @@ class Store extends Model
                     if (!isset($ingredients[$key])) {
                         $ingredients[$key] = [
                             'id' => $ingredient->id,
-                            //'ingredient' => $ingredient,
+                            'ingredient' => $ingredient,
                             'quantity' => $quantity_base,
                         ];
                     } else {
@@ -145,11 +155,19 @@ class Store extends Model
         return $ingredients;
     }
 
-    public function getOrderMeals()
+    public function getOrderMeals($dates = null)
     {
         $meals = [];
 
-        $orders = $this->orders()->with(['meals'])->get();
+        $orders = $this->orders()->with(['meals']);
+        if($dates && count($dates) > 0) {
+          $dates = collect($dates);
+
+          $orders = $orders->whereIn('delivery_date', $dates->map(function($date) {
+            return Carbon::parse($date);
+          }));
+        }
+        $orders = $orders->get();
 
         foreach ($orders as $order) {
             foreach ($order->meals as $meal) {
