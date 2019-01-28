@@ -49,7 +49,10 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         if ($user->hasRole('store')) {
-          return redirect()->intended('/store/orders');
+          $protocol = $request->secure() ? 'https://' : 'http://';
+          $url = $protocol.$user->store->details->domain.'.'.config('app.domain').'/store/orders';
+
+          return redirect()->intended($url);
         } else {
             return redirect()->intended('/customer/home');
         }

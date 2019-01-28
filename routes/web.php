@@ -13,7 +13,7 @@
 
 Route::domain('{store_slug}.'.config('app.domain'))
 ->group(function ($router) {
-
+  
 });
 
 Auth::routes();
@@ -21,7 +21,7 @@ Route::fallback('SpaController@index');
 
 
 // All logged in users
-Route::group(['middleware' => ['auth', 'store_slug']], function ($router) {
+Route::group(['middleware' => ['auth:api', 'store_slug']], function ($router) {
 
   Route::get('storeMeals', 'MealController@getStoreMeals');
 
@@ -40,7 +40,7 @@ Route::group(['middleware' => ['auth', 'store_slug']], function ($router) {
 });
 
 // All logged in stores
-Route::group(['middleware' => ['auth']], function ($router) {
+Route::group(['middleware' => ['auth:api']], function ($router) {
   Route::get('/store/stripe/redirect', 'Store\\StripeController@connect');
 });
 
