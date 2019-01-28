@@ -30,28 +30,36 @@ export default {
   },
   data() {
     return {
-      delivery_dates: ["All"]
+      delivery_dates: ["All"],
+      changed: false
     };
   },
   computed: {
     ...mapGetters({
       store: "viewedStore",
       orders: "storeOrders",
-      storeSettings: "storeSettings",
+      storeSettings: "storeSettings"
     }),
     deliveryDateOptions() {
+      if(!this.orders.length) {
+        return ['All'];
+      }
+
       let grouped = [];
       this.orders.forEach(order => {
         if (!_.includes(grouped, order.delivery_date)) {
           grouped.push(order.delivery_date);
         }
       });
-      grouped.push("All");
+      //grouped.push("All");
       this.deliveryDate = grouped[0];
       return grouped;
     },
     selected() {
       return this.deliveryDates;
+    },
+    numDeliveryDates() {
+      return this.storeSettings.view_delivery_days;
     }
   },
   watch: {
@@ -59,20 +67,37 @@ export default {
       this.onChange(val);
     },
     deliveryDateOptions(val, oldVal) {
-      if (val[0] !== 'All' && this.storeSettings.view_delivery_days && oldVal[0] === 'All') {
-        let selected = val.splice(1, this.storeSettings.view_delivery_days);
-        
+      if (!this.changed && val[0] !== "All" && this.numDeliveryDates && oldVal[0] === "All") {
+        let selected = val.splice(1, this.numDeliveryDates);
+
         this.$nextTick(() => {
           this.delivery_dates = selected;
-        })
+          this.changed = true;
+          this.$forceUpdate();
+        });
       }
+    },
+  },
+  created() {
+    
+  },
+  mounted() {
+    if(this.orders.length && this.numDeliveryDates) {
+      const startIndex = this.deliveryDateOptions[0] === 'All' ? 1 : 0;
+
+      this.$nextTick(() => {
+        let selected = this.deliveryDateOptions.splice(startIndex, this.numDeliveryDates);
+        this.delivery_dates = selected;
+        this.changed = true;
+        this.$forceUpdate();
+      });
     }
   },
-  created() {},
-  mounted() {},
   methods: {
     ...mapActions([]),
     onChange(val) {
+      this.changed = true;
+
       if (!val.length) {
         val = ["All"];
         this.delivery_dates = val;
@@ -81,6 +106,10 @@ export default {
           return date !== "All";
         });
         this.delivery_dates = val;
+      }
+
+      if(!val.length) {
+        val = null;
       }
       this.$emit("input", val);
     },

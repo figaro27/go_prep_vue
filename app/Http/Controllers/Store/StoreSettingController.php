@@ -15,7 +15,7 @@ class StoreSettingController extends StoreController
      */
     public function index()
     {
-        //
+        return $this->store->settings;
     }
 
     /**

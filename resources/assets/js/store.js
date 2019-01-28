@@ -531,6 +531,20 @@ const actions = {
     }
   },
 
+  async refreshStoreSettings({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me/settings");
+    const {data} = await res;
+
+    if (_.isObject(data)) {
+      commit('storeSettings', {settings: data});
+    } else {
+      throw new Error('Failed to retrieve settings');
+    }
+  },
+
   async refreshStoreSubscriptions({
     commit,
     state

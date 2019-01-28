@@ -149,7 +149,7 @@ export default {
       deliveryDate: "All",
       filter: false,
       filters: {
-        delivery_dates: [],
+        delivery_dates: null,
         notes: false,
       },
       viewOrderModal: false,

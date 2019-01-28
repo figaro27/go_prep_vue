@@ -274,7 +274,6 @@
               <b-form-input
                 v-if="storeSettings"
                 type="number"
-                min="1"
                 :disabled="null === storeSettings.view_delivery_days"
                 v-model="storeSettings.view_delivery_days"
                 placeholder
@@ -389,16 +388,27 @@ export default {
   },
   mounted() {},
   methods: {
-    ...mapActions(["refreshCategories"]),
-
+    ...mapActions([
+      "refreshCategories",
+      "refreshStoreSettings"
+    ]),
     updateStoreSettings() {
       let settings = { ...this.storeSettings };
+
+      // Ensure numerical
+      if(!_.isNull(settings.view_delivery_days)) {
+        settings.view_delivery_days = parseInt(settings.view_delivery_days);
+      }
+
       settings.delivery_distance_zipcodes = this.zipcodes;
 
       // this.spliceCharacters();
       axios
         .post("/api/updateStoreSettings", settings)
         .then(response => {
+          // Refresh everything
+          this.refreshStoreSettings();
+
           this.$toastr.s("Your settings have been saved.", "Success");
         })
         .catch(response => {
