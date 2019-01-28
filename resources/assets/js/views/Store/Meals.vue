@@ -151,34 +151,9 @@
               margin="0"
               size="10"
               button-class="btn"
-              @change="(val) => updateImage(meal.id, val)"
             ></picture-input>
           </b-col>
         </b-row>
-
-        <!--
-
-        <hr>
-        <img :src="meal.featured_image">
-        <hr>
-        <hr>
-
-        <div v-for="tag in meal.tags" :key="tag">
-          <b-button @click="activate(tag.tag)">{{ tag.tag }}</b-button>
-          <hr>
-        </div>
-
-        
-        <hr>
-        <b-form-input type="text" v-model="meal.price" placeholder="Meal Name" required></b-form-input>
-        <hr>
-        <b-form-input type="text" v-model="meal.active_orders" placeholder="Meal Name" required></b-form-input>
-        <hr>
-        <p>{{ meal.num_orders }}</p>
-        <hr>
-        <b-form-input type="text" v-model="meal.created_at" placeholder="Meal Name" required></b-form-input>
-        <hr>
-        -->
       </b-modal>
     </div>
 
