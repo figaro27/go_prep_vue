@@ -151,34 +151,10 @@
               margin="0"
               size="10"
               button-class="btn"
-              @change="(val) => updateImage(meal.id, val)"
+              @change="val => changeImage(val, meal.id)"
             ></picture-input>
           </b-col>
         </b-row>
-
-        <!--
-
-        <hr>
-        <img :src="meal.featured_image">
-        <hr>
-        <hr>
-
-        <div v-for="tag in meal.tags" :key="tag">
-          <b-button @click="activate(tag.tag)">{{ tag.tag }}</b-button>
-          <hr>
-        </div>
-
-        
-        <hr>
-        <b-form-input type="text" v-model="meal.price" placeholder="Meal Name" required></b-form-input>
-        <hr>
-        <b-form-input type="text" v-model="meal.active_orders" placeholder="Meal Name" required></b-form-input>
-        <hr>
-        <p>{{ meal.num_orders }}</p>
-        <hr>
-        <b-form-input type="text" v-model="meal.created_at" placeholder="Meal Name" required></b-form-input>
-        <hr>
-        -->
       </b-modal>
     </div>
 
@@ -235,6 +211,7 @@ import nutritionFacts from "nutrition-label-jquery-plugin";
 import PictureInput from "vue-picture-input";
 import units from "../../data/units";
 import format from "../../lib/format";
+import fs from '../../lib/fs.js';
 import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
@@ -616,11 +593,15 @@ export default {
         showLegacyVersion: false
       });
     },
-    onChangeImage(image) {
-      if (image) {
-        this.meal.featured_image = image;
-      } else {
-        console.log("FileReader API not supported: use the <form>, Luke!");
+    async changeImage(val, mealId = null) {
+      if(!mealId) {
+        let b64 = await fs.getBase64(this.$refs.featuredImageInput.file);
+        this.meal.featured_image = b64;
+      }
+      else {
+        let b64 = await fs.getBase64(this.$refs[`featuredImageInput${mealId}`].file);
+        this.meal.featured_image = b64;
+        this.updateMeal(mealId, { featured_image: b64 });
       }
     },
     onChangeIngredients(mealId, ingredients) {
