@@ -68,8 +68,6 @@
         <b-col cols="2">
           <picture-input
             ref="featuredImageInput"
-            :prefill="meal.featured_image ? meal.featured_image : ''"
-            @prefill="$refs.featuredImageInput.onResize()"
             :alertOnError="false"
             :autoToggleAspectRatio="true"
             margin="0"
@@ -206,6 +204,9 @@ export default {
   },
   mounted() {
     this.$refs.createMealModal.show();
+    setTimeout(() => {
+      this.$refs.featuredImageInput.onResize();
+    }, 100)
   },
   methods: {
     ...mapActions({
