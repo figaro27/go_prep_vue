@@ -1,45 +1,62 @@
 <template>
   <div>
     <div class="row">
+
+
+
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body m-4">
+            <h4 class="center-text">Order Summary</h4>
+            <delivery-date-picker v-model="delivery_dates.orders_by_customer"></delivery-date-picker>
+            <p class="mt-4 center-text">Shows how to bag up your meals for each customer.</p>
+            <button @click="print('orders_by_customer', 'pdf')" class="btn btn-primary btn-lg center mt-2">Print</button>
+          </div>
+        </div>
+      </div>
+
+
       <div class="col-md-6">
         <div class="card">
           <Spinner v-if="isLoading"/>
           <div class="card-body m-4">
+            <h4 class="center-text">Meal Orders</h4>
             <delivery-date-picker v-model="delivery_dates.meal_quantities"></delivery-date-picker>
-            <button @click="print('meal_quantities', 'pdf')" class="btn btn-primary btn-md form-control">Print Meals Quantity</button>
-            <p class="mt-4">Shows how many of each meal is required to be made based on your orders.</p>
+            <p class="mt-4 center-text">Shows how many of each meal to make based on your orders.</p>
+            <button @click="print('meal_quantities', 'pdf')" class="btn btn-primary btn-lg center mt-2">Print</button>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body m-4">
-            <delivery-date-picker v-model="delivery_dates.ingredient_quantities"></delivery-date-picker>
-            <button @click="print('ingredient_quantities', 'pdf')" class="btn btn-primary btn-md form-control">Print Ingredients Quantity</button>
-            <p class="mt-4">Shows how much of each ingredient is needed based on your orders.</p>
-          </div>
-        </div>
-      </div>
+      
+
     </div>
     <div class="row">
+      
       <div class="col-md-6">
         <div class="card">
           <div class="card-body m-4">
-            <delivery-date-picker v-model="delivery_dates.orders_by_customer"></delivery-date-picker>
-            <button @click="print('orders_by_customer', 'pdf')" class="btn btn-primary btn-md form-control">Print Orders</button>
-            <p class="mt-4">Shows which meals need to be packaged together for each customer.</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body m-4">
+            <h4 class="center-text">Packing Slips</h4>
             <delivery-date-picker v-model="delivery_dates.packing_slips"></delivery-date-picker>
-            <button @click="print('packing_slips', 'pdf')" class="btn btn-primary btn-md form-control">Print Packing Slips</button>
-            <p class="mt-4">Prints meal quantity summaries for each order.</p>
+            <p class="mt-4 center-text">Show packing slips or order summaries to include in your bag to the customers.</p>
+            <button @click="print('packing_slips', 'pdf')" class="btn btn-primary btn-lg center mt-2">Print</button>
           </div>
         </div>
       </div>
+
+
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body m-4">
+            <h4 class="center-text">Ingredients</h4>
+            <delivery-date-picker v-model="delivery_dates.ingredient_quantities"></delivery-date-picker>
+            <p class="mt-4 center-text">Shows how much of each ingredient is needed based on your orders.</p>
+            <button @click="print('ingredient_quantities', 'pdf')" class="btn btn-primary btn-lg center mt-2">Print</button>
+          </div>
+        </div>
+      </div>
+
+
+
     </div>
   </div>
 </template>

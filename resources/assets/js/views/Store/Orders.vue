@@ -113,12 +113,12 @@
             <ul class="meal-quantities">
               <li v-for="(order) in getMealQuantities(meals)">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-4 pr-0">
                     <span class="order-quantity">{{order.order}}</span>
-                    <img src="/images/store/x-modal.png">
-                    <img :src="order.featured_image" class="modalMeal pl-1">
+                    <img src="/images/store/x-modal.png" class="mr-2 ml-2">
+                    <img :src="order.featured_image" class="modalMeal">
                   </div>
-                  <div class="col-md-8 pt-3">
+                  <div class="col-md-8 pt-3 nopadding">
                     <p>{{order.title}}</p>
                     <p class="strong">{{format.money(order.price * order.order)}}</p>
                   </div>
