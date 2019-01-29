@@ -6,7 +6,7 @@
         <img class="navbar-brand-full" src="http://store.goprep.localhost/images/logo.jpg" width="90" height="40" alt="GoPrep Logo">
         <img class="navbar-brand-minimized" src="/images/logo-min.png" width="33" height="40" alt="GoPrep Logo">
       </b-link>
-      <b-navbar-nav class="d-sm-up-none">
+      <b-navbar-nav class="d-none d-block d-md-none">
         <b-nav-item class="px-3" to="/customer/bag">Bag</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="d-md-down-none">

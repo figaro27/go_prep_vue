@@ -314,6 +314,18 @@ top:10px;
   padding: 30px 0px 0px 60px;
 }
 
+.switch-slider{
+  height:20px !important;
+  border:1px solid #CBD1D5 !important;
+}
+
+
+.switch-slider::before{
+  border:1px solid #CBD1D5 !important;
+  height:15px !important;
+
+}
+
 // .nf-arrows, .nf-modifier-field, .nf-unitQuantityBox{
 //   display:none !important;
 // } 

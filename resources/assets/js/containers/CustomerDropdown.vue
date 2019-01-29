@@ -4,26 +4,18 @@
       <div class="m-3">customer@goprep.com</div>
     </template>\
     <template slot="dropdown">
-      <b-dropdown-item>
-        <i class="fa fa-bell-o"/>
-        <router-link to="/customer/account/settings">Settings</router-link>
-      </b-dropdown-item>
-      <b-dropdown-item>
-        <i class="fa fa-bell-o"/>
-        <router-link to="/customer/orders">Orders</router-link>
-      </b-dropdown-item>
-      <b-dropdown-item>
-        <i class="fa fa-bell-o"/>
-        <router-link to="/customer/account/billing">Billing</router-link>
-      </b-dropdown-item>
-      <b-dropdown-item>
-        <i class="fa fa-bell-o"/>
-        <router-link to="/customer/subscriptions">Subscriptions</router-link>
-      </b-dropdown-item>
-      <b-dropdown-item>
-        <i class="fa fa-bell-o"/>
-        <router-link to="/customer/account/contact">Contact Us</router-link>
-      </b-dropdown-item>
+
+
+        <router-link to="/customer/account/my-account" class="link-remove dropdown-item">
+          <i class="fa fa-user"/>
+          My Account
+        </router-link>
+      
+        <router-link to="/customer/account/contact" class="link-remove dropdown-item">
+          <i class="fa fa-envelope"/>
+          Contact Us
+        </router-link>
+      
       <b-dropdown-item @click="logout()">
         <i class="fa fa-lock"/> Logout
       </b-dropdown-item>

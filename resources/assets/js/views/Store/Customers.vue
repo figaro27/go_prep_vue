@@ -128,7 +128,7 @@ export default {
         "address",
         "city",
         "state",
-        "joined",
+        "first_order",
         "total_payments",
         "total_paid",
         "last_order",
@@ -137,14 +137,14 @@ export default {
       options: {
         headings: {
           LastOrder: "Last Order",
-          TotalPayments: "Total Orders",
-          TotalPaid: "Total Paid",
+          total_payments: "Total Orders",
+          total_paid: "Total Paid",
           Name: "Name",
           phone: "Phone",
           address: "Address",
           city: "City",
           state: "State",
-          Joined: "Customer Since",
+          first_order: "Customer Since",
           actions: "Actions"
         },
         dateColumns: ['Joined'],

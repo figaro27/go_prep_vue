@@ -4,10 +4,6 @@
       <p>Orders</p>
       <div class="card">
         <div class="card-body">
-          <b-btn @click="toast('s')">Success</b-btn>
-          <b-btn @click="toast('w')">Warning</b-btn>
-          <b-btn @click="toast('e')">Error</b-btn>
-
           <b-form @submit.prevent="updateStoreSettings">
             <b-form-group label="Cut Off Period" label-for="cut-off-period" :state="true" inline>
               <b-select
@@ -86,7 +82,7 @@
               v-if="storeSettings.delivery_distance_type === 'zipcodes'"
               label="Delivery Zipcodes"
               label-for="delivery-distance-zipcodes"
-              description="Comma-delimited list of zipcodes"
+              description="Separate zip codes by comma"
               :state="true"
             >
               <textarea
@@ -150,7 +146,7 @@
               ></b-form-input>
             </b-form-group>
 
-            <b-button type="submit" variant="primary">Submit</b-button>
+            <b-button type="submit" variant="primary">Save</b-button>
           </b-form>
         </div>
       </div>
@@ -164,12 +160,19 @@
                 variant="pill"
                 size="lg"
                 v-model="storeSettings.showNutrition"
+                @change.native="updateStoreSettings"
               />
             </b-form-group>
-            <b-button type="submit" variant="primary">Submit</b-button>
+            <!-- <b-button type="submit" variant="primary">Save</b-button> -->
           </b-form>
 
-          <b-form-group label="Categories" :state="true">
+          <p class="mb-0 pb-0">Categories
+          <img
+            v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+            title="Categories"
+            src="/images/store/popover.png"
+          ></p>
+          <b-form-group :state="true">
             <div class="categories">
               <draggable
                 v-model="categories"
@@ -182,7 +185,7 @@
                   :key="`category-${category.id}`"
                   style="cursor: n-resize"
                 >
-                  {{ category.category }}
+                {{ category.category }}
                   <i
                     v-if="category.id"
                     @click="deleteCategory(category.id)"
@@ -209,6 +212,7 @@
                 variant="pill"
                 size="lg"
                 v-model="storeSettings.notifications.new_order"
+                @change.native="updateStoreSettings"
               />
             </b-form-group>
 
@@ -218,6 +222,7 @@
                 variant="pill"
                 size="lg"
                 v-model="storeSettings.notifications.new_subscription"
+                @change.native="updateStoreSettings"
               />
             </b-form-group>
 
@@ -227,6 +232,7 @@
                 variant="pill"
                 size="lg"
                 v-model="storeSettings.notifications.cancelled_subscription"
+                @change.native="updateStoreSettings"
               />
             </b-form-group>
 
@@ -236,10 +242,11 @@
                 variant="pill"
                 size="lg"
                 v-model="storeSettings.notifications.ready_to_print"
+                @change.native="updateStoreSettings"
               />
             </b-form-group>
 
-            <b-button type="submit" variant="primary">Submit</b-button>
+            <!-- <b-button type="submit" variant="primary">Save</b-button> -->
           </b-form>
         </div>
       </div>
@@ -250,27 +257,19 @@
           <p>Low Threshold</p>
         </div>
       </div>-->
-      <p>Payments</p>
-      <div class="card">
-        <div class="card-body">
-          <div v-if="!storeSettings.stripe_id">
-            <b-form-group label="Payment Info" :state="true">
-              <b-button
-                href="https://connect.stripe.com/express/oauth/authorize?redirect_uri=http://goprep.localhost/store/stripe/redirect&client_id=ca_EKiyZcHDxZPyExm41NqBFJ7kMAkDItAl&state={STATE_VALUE}"
-              >Create account</b-button>
-            </b-form-group>
-          </div>
-          <div v-else>
-            <b-form-group label="Stripe" :state="true">ID: {{ storeSettings.stripe_id }}</b-form-group>
-          </div>
-        </div>
-      </div>
 
-      <p>Reports</p>
+      <p>Reporting</p>
       <div class="card">
         <div class="card-body">
           <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group label="Show # delivery days by default" description="0 to display all" :state="true">
+            <p>Show # Delivery Days By Default <img
+                v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                title="Default Delivery Days"
+                src="/images/store/popover.png"
+              >
+            </p>
+            <b-form-group description="Enter 0 to Display All" :state="true">
+              
               <number-input
                 v-if="storeSettings"
                 type="number"
@@ -287,6 +286,26 @@
           </b-form>
         </div>
       </div>
+
+
+      <p>Payments</p>
+      <div class="card">
+        <div class="card-body">
+          <div v-if="!storeSettings.stripe_id">
+            <b-form-group label="Payment Info" :state="true">
+              <b-button
+                href="https://connect.stripe.com/express/oauth/authorize?redirect_uri=http://goprep.localhost/store/stripe/redirect&client_id=ca_EKiyZcHDxZPyExm41NqBFJ7kMAkDItAl&state={STATE_VALUE}"
+              >Create account</b-button>
+            </b-form-group>
+          </div>
+          <div v-else>
+            <b-form-group label="Stripe" :state="true">ID: {{ storeSettings.stripe_id }}</b-form-group>
+            <b-button type="submit" variant="primary">View Account</b-button>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </div>
 </template>

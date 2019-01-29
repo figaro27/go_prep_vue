@@ -6,7 +6,7 @@ import CustomerCheckout from './views/Customer/Checkout.vue';
 import CustomerMenu from './views/Customer/Menu.vue';
 import CustomerBilling from './views/Customer/Account/Billing.vue';
 import CustomerContact from './views/Customer/Account/Contact.vue';
-import CustomerSettings from './views/Customer/Account/Settings.vue';
+import CustomerMyAccount from './views/Customer/Account/MyAccount.vue';
 import CustomerSubscriptions from './views/Customer/Subscriptions.vue';
 import CustomerOrders from './views/Customer/Orders.vue';
 
@@ -59,9 +59,9 @@ let routes = [
     component: CustomerContact,
     name: 'customer-contact'
   }, {
-    path: '/customer/account/settings',
-    component: CustomerSettings,
-    name: 'customer-settings'
+    path: '/customer/account/my-account',
+    component: CustomerMyAccount,
+    name: 'customer-myaccount'
   }, {
     path: '/customer/subscriptions',
     component: CustomerSubscriptions,

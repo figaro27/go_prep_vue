@@ -30,6 +30,7 @@ class Customer extends Model
 
     protected $appends = [
         'joined',
+        'first_order',
         'last_order',
         'total_payments',
         'total_paid',
@@ -63,6 +64,12 @@ class Customer extends Model
     {
         return $this->user->created_at->format('F d, Y');
     }
+
+    public function getFirstOrderAttribute()
+    {
+        return $this->user->order->min("created_at")->format('F d, Y');
+    }
+
     public function getLastOrderAttribute()
     {
         return $this->user->order->max("created_at")->format('F d, Y');

@@ -125,6 +125,7 @@ class User extends Authenticatable
                 "city" => $user->userDetail->city,
                 "state" => $user->userDetail->state,
                 "Joined" => $user->created_at->format('m-d-Y'),
+                "FirstOrder" => optional($user->order->min("created_at"))->format('m-d-Y'),
                 "LastOrder" => optional($user->order->max("created_at"))->format('m-d-Y'),
                 "TotalPayments" => $user->order->count(),
                 "TotalPaid" => '$' . number_format($user->order->sum("amount"), 2, '.', ','),
