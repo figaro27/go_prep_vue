@@ -1,24 +1,34 @@
 <template>
   <div>
     <b-form class="mb-2" @submit.prevent="searchRecipe">
-      <div class="d-flex mb-2">
-        <b-form-textarea v-model="recipe" class="flex-grow-1 mr-1" :rows="3" placeholder="Enter a query like &quot;1 cup mashed potatoes and 2 tbsp gravy&quot;. Be sure to include accurate measurement names such as tsp, tbsp, cup, gram, oz, fl oz, etc.."></b-form-textarea>
-        <b-button @click="searchRecipe" variant="primary">Add</b-button>
-      </div>
+      <b-tabs class="mb-2">
+        <b-tab title="Recipe" active>
+          <b-form-textarea
+            v-model="recipe"
+            class="flex-grow-1 mr-1 mb-1"
+            :rows="3"
+            placeholder="Enter a query like &quot;1 cup mashed potatoes and 2 tbsp gravy&quot;. Be sure to include accurate measurement names such as tsp, tbsp, cup, gram, oz, fl oz, etc.."
+          ></b-form-textarea>
+          <b-button @click="searchRecipe" variant="primary">Add</b-button>
+        </b-tab>
 
-      <div class="mb-2">
-        <ingredient-search @change="onSearchIngredient"></ingredient-search>
-      </div>
-      <div class="d-flex mb-2">
-        <v-select
-          class="flex-grow-1 mr-1"
-          placeholder="Or search from your saved ingredients"
-          :options="existingIngredientOptions"
-          v-model="selectedExistingIngredients"
-          multiple
-        ></v-select>
-        <b-button @click="onClickAddExistingIngredient" variant="primary">Add</b-button>
-      </div>
+        <b-tab title="Add single ingredient">
+          <ingredient-search @change="onSearchIngredient"></ingredient-search>
+        </b-tab>
+
+        <b-tab title="Add existing ingredient">
+          <div class="d-flex">
+            <v-select
+              class="flex-grow-1 mr-1"
+              placeholder="Or search from your saved ingredients"
+              :options="existingIngredientOptions"
+              v-model="selectedExistingIngredients"
+              multiple
+            ></v-select>
+            <b-button @click="onClickAddExistingIngredient" variant="primary">Add</b-button>
+          </div>
+        </b-tab>
+      </b-tabs>
     </b-form>
 
     <div class="d-flex">
@@ -133,7 +143,6 @@
 </style>
 
 <script>
-
 import { mapGetters, mapActions } from "vuex";
 import units from "../data/units";
 import format from "../lib/format";
@@ -285,12 +294,9 @@ export default {
             ingredient.added = true;
 
             // Calculate nutrition for 1 baseunit
-            let multiplier = units.convert(
-              1,
-              units.base(ingredient.unit_type),
-              unit,
-              false
-            ) / ingredient.quantity;
+            let multiplier =
+              units.convert(1, units.base(ingredient.unit_type), unit, false) /
+              ingredient.quantity;
             let nutrition = this.getNutritionTotals([ingredient], false);
             if (nutrition) {
               nutrition = _.mapValues(nutrition, prop => {
@@ -305,7 +311,7 @@ export default {
           this.recipe = "";
         })
         .catch(e => {
-          this.$toastr.e('No ingredients found.', 'Sorry!')
+          this.$toastr.e("No ingredients found.", "Sorry!");
         });
     },
     onSearch(search, loading) {
@@ -325,7 +331,8 @@ export default {
     onSearchIngredient(val) {
       console.log(val);
       if (_.isObject(val)) {
-        this.recipe = val.serving_qty + ' ' + val.serving_unit + ' ' + val.food_name;
+        this.recipe =
+          val.serving_qty + " " + val.serving_unit + " " + val.food_name;
         this.searchRecipe();
         this.recipe = "";
         /*
@@ -370,7 +377,7 @@ export default {
       ingredients.forEach(ingredient => {
         let multiplier = 1;
 
-        if(normalize) {
+        if (normalize) {
           multiplier = ingredient.quantity || 1;
         }
 

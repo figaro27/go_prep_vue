@@ -1,5 +1,5 @@
 <template>
-  <div class="ingredient-search d-flex">
+  <div class="ingredient-search d-flex align-items-end">
     <b-form-group label="Quantity" label-for="ingredient-quantity" class="ing-quantity">
       <b-input id="ingredient-quantity" type="number" min="0" v-model="quantity"></b-input>
     </b-form-group>
@@ -29,9 +29,8 @@
         :options="options"
         @search="onSearch"
         :value="ingredient"
-        :onChange="onChange"
+        v-model="ingredient"
         placeholder="Search Food Database"
-        :disabled="!quantity || !unit"
       >
         <template slot="no-options">type to search ingredients...</template>
         <template slot="option" slot-scope="option">
@@ -50,6 +49,12 @@
         </template>
       </v-select>
     </b-form-group>
+
+    <b-button
+        :disabled="!quantity || !unit || !ingredient"
+        @click="onClickAdd"
+        variant="primary"
+      >Add</b-button>
   </div>
 </template>
 <style lang="scss">
@@ -72,7 +77,8 @@
     flex-basis: 80px;
     margin: 0 4px;
 
-    input, select {
+    input,
+    select {
       height: 45px;
     }
   }
@@ -120,7 +126,7 @@ export default {
       ingredient: null,
       options: [],
       quantity: null,
-      unit: null,
+      unit: null
     };
   },
   computed: {
@@ -149,14 +155,15 @@ export default {
           loading(false);
         });
     }, 600),
-    onChange(val) {
-      this.ingredient = null;
-      this.$refs.select.mutableValue = null;
+    onClickAdd() {
       this.$emit("change", {
         serving_qty: this.quantity,
         serving_unit: this.unit,
-        food_name: val.food_name,
+        food_name: this.ingredient.food_name
       });
+
+      this.ingredient = null;
+      this.$refs.select.mutableValue = null;
     }
   }
 };
