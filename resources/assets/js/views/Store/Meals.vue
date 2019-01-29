@@ -151,6 +151,7 @@
               margin="0"
               size="10"
               button-class="btn"
+              @change="val => changeImage(val, meal.id)"
             ></picture-input>
           </b-col>
         </b-row>
@@ -210,6 +211,7 @@ import nutritionFacts from "nutrition-label-jquery-plugin";
 import PictureInput from "vue-picture-input";
 import units from "../../data/units";
 import format from "../../lib/format";
+import fs from '../../lib/fs.js';
 import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
@@ -591,11 +593,15 @@ export default {
         showLegacyVersion: false
       });
     },
-    onChangeImage(image) {
-      if (image) {
-        this.meal.featured_image = image;
-      } else {
-        console.log("FileReader API not supported: use the <form>, Luke!");
+    async changeImage(val, mealId = null) {
+      if(!mealId) {
+        let b64 = await fs.getBase64(this.$refs.featuredImageInput.file);
+        this.meal.featured_image = b64;
+      }
+      else {
+        let b64 = await fs.getBase64(this.$refs[`featuredImageInput${mealId}`].file);
+        this.meal.featured_image = b64;
+        this.updateMeal(mealId, { featured_image: b64 });
       }
     },
     onChangeIngredients(mealId, ingredients) {

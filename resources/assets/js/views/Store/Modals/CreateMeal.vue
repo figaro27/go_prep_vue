@@ -24,6 +24,11 @@
                   :rows="4"
                   :maxlength="100"
                 ></textarea>
+              </b-form-group>
+              <b-form-group>
+                <h4>Price</h4>
+                <money required v-model="meal.price" :min="0.1" class="form-control"></money>
+              </b-form-group>
                 <br>
                 <h4>Categories</h4>
                 <b-form-checkbox-group
@@ -48,7 +53,6 @@
                   :options="allergyOptions"
                   class="filters"
                 ></b-form-checkbox-group>
-              </b-form-group>
             </b-tab>
 
             <b-tab title="Ingredients">
@@ -63,14 +67,15 @@
 
         <b-col cols="2">
           <picture-input
-            :ref="`featuredImageInput${meal.id}`"
-            :prefill="meal.featured_image ? meal.featured_image : false"
-            @prefill="$refs[`featuredImageInput${meal.id}`].onResize()"
+            ref="featuredImageInput"
+            :prefill="meal.featured_image ? meal.featured_image : ''"
+            @prefill="$refs.featuredImageInput.onResize()"
             :alertOnError="false"
             :autoToggleAspectRatio="true"
             margin="0"
             size="10"
             button-class="btn"
+            @change="val => changeImage(val)"
           ></picture-input>
         </b-col>
       </b-row>
@@ -152,6 +157,7 @@ import format from "../../../lib/format";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import Spinner from "../../../components/Spinner";
 import IngredientPicker from "../../../components/IngredientPicker";
+import fs from '../../../lib/fs.js';
 
 export default {
   components: {
@@ -211,7 +217,7 @@ export default {
         .post("/api/me/meals", this.meal)
         .then(resp => {
           this.$toastr.s('Meal created!');
-          this.$destroy();
+          this.$refs.createMealModal.hide();
         })
         .catch(e => {
           this.$toastr.e('Failed to create meal.');
@@ -220,6 +226,10 @@ export default {
           //his.getTableData();
           this.$emit("created");
         });
+    },
+    async changeImage(val) {
+      let b64 = await fs.getBase64(this.$refs.featuredImageInput.file);
+      this.meal.featured_image = b64;
     }
   }
 };

@@ -259,57 +259,134 @@ class Meal extends Model
     //Considering renaming "Store" to "Company" to not cause confusion with store methods.
     public static function storeMeal($request)
     {
-        $id = auth('api')->user()->id;
-        $storeID = Store::where('user_id', $id)->pluck('id')->first();
+        $user = auth('api')->user();
+        $store = $user->store;
+
+        $props = collect($request->all());
+        $props = $props->only([
+            'active',
+            'featured_image',
+            'photo',
+            'title',
+            'description',
+            'price',
+            'created_at',
+            'tag_ids',
+            'category_ids',
+            'allergy_ids',
+            'ingredients',
+        ]);
+
         $meal = new Meal;
+        $meal->store_id = $store->id;
         $meal->active = true;
-        $meal->store_id = $storeID;
-        $meal->featured_image = '';
-        $meal->title = $request->title;
-        $meal->description = $request->description;
-        $meal->price = $request->price;
-
-        if ($request->has('featured_image')) {
-            $imageRaw = $request->get('featured_image');
-            $imageRaw = str_replace(' ', '+', $imageRaw);
-            $image = base64_decode($imageRaw);
-
-            $ext = [];
-            preg_match('/^data:image\/(.{3,9});/i', $imageRaw, $ext);
-
-            if (count($ext) > 1) {
-                $imagePath = 'public/images/meals/' . self::generateImageFilename($image, $ext[1]);
-                \Storage::put($imagePath, $image);
-                $imageUrl = \Storage::url($imagePath);
-
-                $meal->featured_image = $imagePath;
-            }
-        }
-
+        $meal->title = $props->get('title', '');
+        $meal->description = $props->get('description', '');
+        $meal->price = $props->get('price', 0);
         $meal->save();
 
-        $tagTitles = $request->get('tag_titles');
-        if (is_array($tagTitles)) {
+        try {
 
-            $tags = collect();
-
-            foreach ($tagTitles as $tagTitle) {
-                try {
-                    $tag = MealTag::create([
-                        'tag' => $tagTitle,
-                        'slug' => str_slug($tagTitle),
-                        'store_id' => $meal->store_id,
-                    ]);
-                    $tags->push($tag->id);
-                } catch (\Exception $e) {
-                    $tags->push(MealTag::where([
-                        'tag' => $tagTitle,
-                        'store_id' => $meal->store_id,
-                    ])->first()->id);
-                }
+            if ($props->has('featured_image')) {
+                $imageUrl = Utils\Images::uploadB64($request->get('featured_image'));
+                $props->put('featured_image', $imageUrl);
             }
 
-            $meal->tags()->sync($tags);
+            $newIngredients = $props->get('ingredients');
+            if (is_array($newIngredients)) {
+
+                $ingredients = collect();
+
+                foreach ($newIngredients as $newIngredient) {
+                    try {
+
+                        // Check if ingredient with same name and unit type already exists
+                        $ingredient = Ingredient::where([
+                            'store_id' => $store->id,
+                            'food_name' => $newIngredient['food_name'],
+                            'unit_type' => Unit::getType($newIngredient['serving_unit']),
+                        ])->first();
+
+                        if ($ingredient) {
+                            $ingredients->push($ingredient);
+                        }
+                        // Nope. Create a new one
+                        else {
+                            $newIngredient = collect($newIngredient)->only([
+                                'food_name',
+                                'photo',
+                                'serving_qty',
+                                'serving_unit',
+                                'serving_weight_grams',
+                                'calories',
+                                'totalFat',
+                                'satFat',
+                                'transFat',
+                                'cholesterol',
+                                'sodium',
+                                'totalCarb',
+                                'fibers',
+                                'sugars',
+                                'proteins',
+                                'vitaminD',
+                                'potassium',
+                                'calcium',
+                                'iron',
+                                'sugars',
+                            ])->map(function ($val) {
+                                return is_null($val) ? 0 : $val;
+                            });
+
+                            $ingredientArr = Ingredient::normalize($newIngredient->toArray());
+                            $ingredient = new Ingredient($ingredientArr);
+                            $ingredient->store_id = $store->id;
+                            if ($ingredient->save()) {
+                                $ingredients->push($ingredient);
+
+                                $meal->store->units()->create([
+                                    'store_id' => $store->id,
+                                    'ingredient_id' => $ingredient->id,
+                                    'unit' => Format::baseUnit($ingredient->unit_type),
+                                ]);
+
+                            } else {
+                                throw new \Exception('Failed to create ingredient');
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        die($e);
+                    }
+                }
+
+                $syncIngredients = $ingredients->mapWithKeys(function ($val, $key) use ($newIngredients) {
+                    return [$val->id => [
+                        'quantity' => $newIngredients[$key]['quantity'] ?? 1,
+                        'quantity_unit' => $newIngredients[$key]['quantity_unit'] ?? Format::baseUnit($val->unit_type),
+                    ]];
+                });
+
+                $meal->ingredients()->sync($syncIngredients);
+            }
+
+            $allergies = $props->get('allergy_ids');
+            if (is_array($allergies)) {
+                $meal->allergies()->sync($allergies);
+            }
+
+            $categories = $props->get('category_ids');
+            if (is_array($categories)) {
+                $meal->categories()->sync($categories);
+            }
+
+            $tags = $props->get('tag_ids');
+            if (is_array($tags)) {
+                $meal->tags()->sync($tags);
+            }
+
+            $meal->update($props->toArray());
+        } catch (\Exception $e) {
+            $meal->delete();
+            throw new \Exception($e);
         }
 
     }
@@ -340,27 +417,15 @@ class Meal extends Model
             'description',
             'price',
             'created_at',
-            'tags',
-            'categories',
+            'tag_ids',
+            'category_ids',
             'ingredients',
-            'allergies',
+            'allergy_ids',
         ]);
 
         if ($props->has('featured_image')) {
-            $imageRaw = $props->get('featured_image');
-            $imageRaw = str_replace(' ', '+', $imageRaw);
-            $image = base64_decode($imageRaw);
-
-            $ext = [];
-            preg_match('/^data:image\/(.{3,9});/i', $imageRaw, $ext);
-
-            if (count($ext) > 1) {
-                $imagePath = 'images/meals/' . self::generateImageFilename($image, $ext[1]);
-                \Storage::put($imagePath, $image);
-                $imageUrl = \Storage::url($imagePath);
-
-                $props->put('featured_image', $imagePath);
-            }
+          $imageUrl = Utils\Images::uploadB64($props->get('featured_image'));
+          $props->put('featured_image', $imageUrl);
         }
 
         /*
@@ -470,31 +535,19 @@ class Meal extends Model
             $meal->ingredients()->sync($syncIngredients);
         }
 
-        $allergies = $props->get('allergies');
+        $allergies = $props->get('allergy_ids');
         if (is_array($allergies)) {
-            $allergyIds = array_map(function ($allergy) {
-                return is_numeric($allergy) ? $allergy : $allergy->id;
-            }, $allergies);
-
-            $meal->allergies()->sync($allergyIds);
+            $meal->allergies()->sync($allergy);
         }
 
-        $categories = $props->get('categories');
+        $categories = $props->get('category_ids');
         if (is_array($categories)) {
-            $categoryIds = array_map(function ($category) {
-                return is_numeric($category) ? $category : $category->id;
-            }, $categories);
-
-            $meal->categories()->sync($categoryIds);
+            $meal->categories()->sync($categories);
         }
 
-        $tags = $props->get('tags');
+        $tags = $props->get('tag_ids');
         if (is_array($tags)) {
-            $tagIds = array_map(function ($tag) {
-                return is_numeric($tag) ? $tag : $tag->id;
-            }, $tags);
-
-            $meal->tags()->sync($tagIds);
+            $meal->tags()->sync($tags);
         }
 
         $meal->update($props->toArray());
