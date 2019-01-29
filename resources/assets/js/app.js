@@ -30,11 +30,13 @@ import moment from 'moment';
 import Toastr from 'vue-toastr';
 import PictureInput from "vue-picture-input";
 import money from "v-money";
+import VueNumberInput from '@chenfengyuan/vue-number-input';
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
 Vue.use(money, {precision: 2, prefix:'$'})
+Vue.use(VueNumberInput)
 Vue.component('input-tag', InputTag)
 Vue.component('v-select', vSelect)
 Vue.component('timepicker', VueTimepicker)

@@ -270,31 +270,17 @@
       <div class="card">
         <div class="card-body">
           <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group label="Show # delivery days by default" :state="true">
-              <b-form-input
+            <b-form-group label="Show # delivery days by default" description="0 to display all" :state="true">
+              <number-input
                 v-if="storeSettings"
                 type="number"
                 :disabled="null === storeSettings.view_delivery_days"
                 v-model="storeSettings.view_delivery_days"
+                min="0"
+                max="100"
                 placeholder
                 required
-              ></b-form-input>
-
-              <b-form-group label="All" :state="true">
-                <c-switch
-                  color="success"
-                  variant="pill"
-                  size="lg"
-                  @change="val => {
-                    if(val) {
-                      storeSettings.view_delivery_days = null;
-                    }
-                    else {
-                      storeSettings.view_delivery_days = 1;
-                    }
-                  }"
-                />
-              </b-form-group>
+              ></number-input>
             </b-form-group>
 
             <b-button type="submit" variant="primary">Submit</b-button>
@@ -339,7 +325,8 @@ export default {
       loginAlertSuccess: false,
       loginAlertFail: false,
       zipcodes: [],
-      new_category: ""
+      new_category: "",
+      view_delivery_days: 1
     };
   },
   computed: {
@@ -386,7 +373,9 @@ export default {
       return this.storeSettings.delivery_distance_zipcodes.join(",");
     }
   },
-  mounted() {},
+  mounted() {
+    this.view_delivery_days = this.storeSettings.view_delivery_days;
+  },
   methods: {
     ...mapActions([
       "refreshCategories",
@@ -396,8 +385,13 @@ export default {
       let settings = { ...this.storeSettings };
 
       // Ensure numerical
-      if(!_.isNull(settings.view_delivery_days)) {
-        settings.view_delivery_days = parseInt(settings.view_delivery_days);
+      if(!_.isNull(this.storeSettings.view_delivery_days)) {
+        settings.view_delivery_days = parseInt(this.storeSettings.view_delivery_days);
+
+        // All
+        if(settings.view_delivery_days === 0) {
+          settings.view_delivery_days = null;
+        }
       }
 
       settings.delivery_distance_zipcodes = this.zipcodes;
