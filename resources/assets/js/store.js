@@ -924,6 +924,13 @@ const getters = {
       return '';
     }
   },
+  storeAllergyTitle: (state) => id => {
+    try {
+      return state.store.allergies.data[id].category || {};
+    } catch (e) {
+      return '';
+    }
+  },
   storeCustomers: (state) => {
     try {
       return state.store.customers.data || {};

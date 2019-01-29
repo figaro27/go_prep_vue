@@ -57,6 +57,11 @@
                 slot-scope="props"
               >{{ props.row.category_ids.map(categoryId => getCategoryTitle(categoryId)).join(', ') }}</div>
 
+              <div
+                slot="contains"
+                slot-scope="props"
+              >{{ props.row.allergy_ids.map(allergyId => getAllergyTitle(allergyId)).join(', ') }}</div>
+
               <div slot="price" slot-scope="props">{{ formatMoney(props.row.price) }}</div>
 
               <div slot="current_orders" slot-scope="props">{{ props.row.orders.length }}</div>
@@ -165,7 +170,13 @@
       :hide-footer="true"
     >
       <center>
-        <h5>This meal is tied to one or more subscriptions. Please select a recommended replacement meal.</h5>
+        <h5 class="mt-3">This meal is tied to one or more meal plans.
+              <img
+                v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                title="Replacement Meal"
+                src="/images/store/popover.png"
+              > </h5>
+        <h5 class="mb-3">Please select a recommended replacement meal.</h5>
 
         <b-list-group>
           <b-list-group-item
@@ -181,8 +192,11 @@
                 :src="meal.featured_image"
                 v-if="meal.featured_image"
               >
-              <div class="flex-grow-1 mr-2">{{meal.title}}</div>
-              <b-btn>Select</b-btn>
+              <div class="flex-grow-1 mr-2">
+                <p>{{meal.title}}</p> 
+                <p class="strong">{{format.money(meal.price)}}</p>
+              </div>
+              <b-btn variant="warning">Select</b-btn>
             </div>
           </b-list-group-item>
         </b-list-group>
@@ -194,7 +208,7 @@
           v-if="substitute_id"
           class="btn btn-danger btn-lg mt-3"
           @click="destroyMeal(deletingMeal.id, substitute_id)"
-        >Delete</button>
+        >Delete & Replace</button>
       </center>
     </b-modal>
   </div>
@@ -288,6 +302,7 @@ export default {
         "title",
         "categories",
         "tags",
+        "contains",
         "price",
         "lifetime_orders",
         "created_at",
@@ -300,6 +315,7 @@ export default {
           title: "Title",
           categories: "Categories",
           tags: "Tags",
+          contains: "Contains",
           price: "Price",
           lifetime_orders: "Lifetime Orders",
           created_at: "Added",
@@ -342,6 +358,7 @@ export default {
       tags: "tags",
       storeCategories: "storeCategories",
       getCategoryTitle: "storeCategoryTitle",
+      getAllergyTitle: "storeAllergyTitle",
       allergies: "allergies",
       isLoading: "isLoading"
     }),

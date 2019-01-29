@@ -13,7 +13,7 @@
             <div slot="beforeTable" class="mb-2">
               <div class="d-flex align-items-end">
                 <div class="mr-2">
-                  <b-btn @click="filterNotes" :selected="filters.notes" variant="primary" class="filter-btn">Filter Notes</b-btn>
+                  <b-btn @click="filterNotes" :selected="filters.notes" variant="primary" class="filter-btn">Filter Delivery Notes</b-btn>
                 </div>
                 <div class="flex-grow-1">
                   <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
@@ -59,24 +59,20 @@
 
     <div class="modal-basic">
       <b-modal v-model="viewOrderModal" size="lg" title="Order Information">
-        <div class="row">
-          <div class="col-md-4">
+        <div class="row light-background border-bottom mb-3">
+          <div class="col-md-4 pt-4">
             <h4>Order ID</h4>
             <p>{{ order.order_number }}</p>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 pt-4">
             <h4>Placed On</h4>
             <p>{{ order.created_at }}</p>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 pt-4">
             <h2>${{ order.amount }}</h2>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-12">
-            <hr>
-          </div>
-        </div>
+
         <div class="row">
           <div class="col-md-4">
             <h4>Customer</h4>
@@ -116,11 +112,17 @@
             <hr>
             <ul class="meal-quantities">
               <li v-for="(order) in getMealQuantities(meals)">
-                <span class="order-quantity">{{order.order}}</span>
-                <img src="/images/store/x-modal.png">
-                <img :src="order.featured_image" class="modalMeal">
-                {{order.title}}
-                ${{order.price * order.order}}
+                <div class="row">
+                  <div class="col-md-4">
+                    <span class="order-quantity">{{order.order}}</span>
+                    <img src="/images/store/x-modal.png">
+                    <img :src="order.featured_image" class="modalMeal pl-1">
+                  </div>
+                  <div class="col-md-8 pt-3">
+                    <p>{{order.title}}</p>
+                    <p class="strong">{{format.money(order.price * order.order)}}</p>
+                  </div>
+                </div>
               </li>
             </ul>
           </div>
@@ -164,9 +166,9 @@ export default {
         "user.user_detail.address",
         "user.user_detail.zip",
         "user.user_detail.phone",
-        "amount",
         "created_at",
         "delivery_date",
+        "amount",
         "actions"
       ],
       options: {
@@ -177,9 +179,9 @@ export default {
           "user.user_detail.address": "Address",
           "user.user_detail.zip": "Zip Code",
           "user.user_detail.phone": "Phone",
-          amount: "Total",
           created_at: "Order Placed",
           delivery_date: "Delivery Date",
+          amount: "Total",
           actions: "Actions"
         },
         rowClassCallback: function(row) {

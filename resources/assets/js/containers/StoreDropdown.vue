@@ -8,7 +8,7 @@
     <template slot="dropdown">
       <router-link to="/store/account/my-account" class="link-remove dropdown-item">
         <i class="fa fa-user"/>
-        My account
+        My Account
       </router-link>
 
       <router-link to="/store/account/contact" class="link-remove dropdown-item">

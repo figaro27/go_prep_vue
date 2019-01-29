@@ -1,7 +1,6 @@
 <template>
   <div class="row">
     <div class="col-md-12">
-      <v-select multiple v-model="selected" :options="deliveryDays"></v-select>
       <div class="card">
         <div class="card-body">
           <Spinner v-if="isLoading"/>
@@ -47,8 +46,6 @@ export default {
   },
   data() {
     return {
-      selected: ["foo", "bar"],
-      deliveryDays: ["foo", "bar", "baz"],
       columns: [
         "featured_image",
         "title",
@@ -61,7 +58,7 @@ export default {
           featured_image: "Image",
           title: "Title",
           price: "Price",
-          active_orders: "Orders",
+          active_orders: "Current Orders",
           active_orders_price: "Total Amount"
         },
         customSorting: {
