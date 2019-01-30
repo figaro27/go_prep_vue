@@ -57,7 +57,14 @@ class Customer extends Model
     }
 
     public function orders() {
-      return $this->user->orders();
+      return $this->hasManyThrough(
+        'App\Order',
+        'App\User',
+        'id', // Foreign key on users table...
+        'user_id', // Foreign key on orders table...
+        'user_id', // Local key on customers table...
+        'id' // Local key on users table...
+      );
     }
 
     public function getJoinedAttribute()
