@@ -294,8 +294,8 @@
           <div v-if="!storeSettings.stripe_id">
             <b-form-group label="Payment Info" :state="true">
               <b-button
-                href="https://connect.stripe.com/express/oauth/authorize?client_id=ca_ER2OUNQq30X2xHMqkWo8ilUSz7Txyn1A&state={STATE_VALUE}"
-              >Create account</b-button>
+                href="https://connect.stripe.com/express/oauth/authorize?client_id=ca_ER2OYlaTUrWz7LRQvhtKLIjZsRcM8mh9&state={STATE_VALUE}"
+              >Connect Account</b-button>
             </b-form-group>
           </div>
           <div v-else>
