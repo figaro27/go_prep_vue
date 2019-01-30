@@ -49,7 +49,7 @@ class StripeController extends StoreController
         $this->store->settings->stripe_account = $account;
         $this->store->settings->save();
 
-        return redirect('/store/account/settings');
+        return redirect('http://dev.goprep.com/store/account/settings');
 
     }
 
