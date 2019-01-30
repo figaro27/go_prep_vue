@@ -1,15 +1,21 @@
 <template>
-  <b-form-group label="Delivery dates" class="delivery-date-picker mb-0">
-    <v-select
-      multiple
-      v-model="delivery_dates"
-      @change="val => onChange(val)"
-      :options="deliveryDateOptions"
-    ></v-select>
+  <b-form-group class="delivery-date-picker mb-0">
+    <div class="d-flex align-items-center">
+      <div class="mr-2">Delivery dates:</div>
+
+      <div class="flex-grow-1">
+        <v-select
+          multiple
+          v-model="delivery_dates"
+          @change="val => onChange(val)"
+          :options="deliveryDateOptions"
+        ></v-select>
+      </div>
+    </div>
   </b-form-group>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .delivery-date-picker {
 }
 </style>
@@ -41,8 +47,8 @@ export default {
       storeSettings: "storeSettings"
     }),
     deliveryDateOptions() {
-      if(!this.orders.length) {
-        return ['All'];
+      if (!this.orders.length) {
+        return ["All"];
       }
 
       let grouped = [];
@@ -67,7 +73,12 @@ export default {
       this.onChange(val);
     },
     deliveryDateOptions(val, oldVal) {
-      if (!this.changed && val[0] !== "All" && this.numDeliveryDates && oldVal[0] === "All") {
+      if (
+        !this.changed &&
+        val[0] !== "All" &&
+        this.numDeliveryDates &&
+        oldVal[0] === "All"
+      ) {
         let selected = val.splice(1, this.numDeliveryDates);
 
         this.$nextTick(() => {
@@ -76,17 +87,18 @@ export default {
           this.$forceUpdate();
         });
       }
-    },
+    }
   },
-  created() {
-    
-  },
+  created() {},
   mounted() {
-    if(this.orders.length && this.numDeliveryDates) {
-      const startIndex = this.deliveryDateOptions[0] === 'All' ? 1 : 0;
+    if (this.orders.length && this.numDeliveryDates) {
+      const startIndex = this.deliveryDateOptions[0] === "All" ? 1 : 0;
 
       this.$nextTick(() => {
-        let selected = this.deliveryDateOptions.splice(startIndex, this.numDeliveryDates);
+        let selected = this.deliveryDateOptions.splice(
+          startIndex,
+          this.numDeliveryDates
+        );
         this.delivery_dates = selected;
         this.changed = true;
         this.$forceUpdate();
@@ -108,7 +120,7 @@ export default {
         this.delivery_dates = val;
       }
 
-      if(!val.length) {
+      if (!val.length) {
         val = null;
       }
       this.$emit("input", val);
