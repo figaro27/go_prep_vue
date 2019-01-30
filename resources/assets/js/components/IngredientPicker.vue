@@ -457,10 +457,10 @@ export default {
         valueFibers: nutrition.fibers,
         valueSugars: nutrition.sugars,
         valueProteins: nutrition.proteins,
-        valueVitaminD: nutrition.vitaminD,
-        valuePotassium_2018: nutrition.potassium,
-        valueCalcium: nutrition.calcium,
-        valueIron: nutrition.iron,
+        valueVitaminD: (nutrition.vitaminD / 20) * 100,
+        valuePotassium_2018: (nutrition.potassium / 4700) * 100,
+        valueCalcium: (nutrition.calcium / 1300) * 100,
+        valueIron: (nutrition.iron / 18) * 100,
         valueAddedSugars: nutrition.addedSugars,
         showLegacyVersion: false
       });
