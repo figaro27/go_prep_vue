@@ -3,7 +3,7 @@
     <div class="d-flex align-items-center">
       <div class="mr-2">Delivery dates:</div>
 
-      <div>
+      <div class="flex-grow-1">
         <v-select
           multiple
           v-model="delivery_dates"
