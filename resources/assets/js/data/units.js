@@ -65,6 +65,11 @@ let units = {
    * @param {String} to To unit
    */
   convert(val, from, to, round = true) {
+
+    if(from === 'unit' || to === 'unit') {
+      return val;
+    }
+
     if (from === 'grams') 
       from = 'g';
     if (to === 'grams') 

@@ -29,6 +29,7 @@ class MealsSeeder extends Seeder
                 'volume' => ['ml', 'tsp', 'fl-oz'],
                 'unit' => ['unit'],
             ];
+            $unitUnits = ['pieces', 'pinches', 'drops'];
 
             // Pick 10 ingredients at random
             $ingredientKeys = array_rand($ingredients->toArray(), min(10, count($ingredients)));
@@ -37,10 +38,12 @@ class MealsSeeder extends Seeder
                 $ingredient = $ingredients[$i];
                 $units = $unitTypes[$ingredient->unit_type];
                 $unit = $units[rand(0, count($units) - 1)];
+                $unitDisplay = ($unit !== 'unit') ? $unit : $unitUnits[rand(0, 2)];
 
                 $u->ingredients()->attach($ingredient, [
                     'quantity' => rand(1, 15),
                     'quantity_unit' => $unit,
+                    'quantity_unit_display' => $unitDisplay,
                 ]);
                 
                 try {
