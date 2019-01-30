@@ -176,7 +176,7 @@ class Meal extends Model
 
     public function ingredients()
     {
-        return $this->belongsToMany('App\Ingredient')->withPivot('quantity', 'quantity_unit')->using('App\IngredientMeal');
+        return $this->belongsToMany('App\Ingredient')->withPivot('quantity', 'quantity_unit', 'quantity_unit_display')->using('App\IngredientMeal');
     }
 
     public function categories()
@@ -362,6 +362,7 @@ class Meal extends Model
                     return [$val->id => [
                         'quantity' => $newIngredients[$key]['quantity'] ?? 1,
                         'quantity_unit' => $newIngredients[$key]['quantity_unit'] ?? Format::baseUnit($val->unit_type),
+                        'quantity_unit_display' => $newIngredients[$key]['quantity_unit_display'] ?? Format::baseUnit($val->unit_type),
                     ]];
                 });
 
@@ -529,6 +530,7 @@ class Meal extends Model
                 return [$val->id => [
                     'quantity' => $newIngredients[$key]['quantity'] ?? 1,
                     'quantity_unit' => $newIngredients[$key]['quantity_unit'] ?? Format::baseUnit($val->unit_type),
+                    'quantity_unit_display' => $newIngredients[$key]['quantity_unit_display'] ?? Format::baseUnit($val->unit_type),
                 ]];
             });
 

@@ -49,7 +49,7 @@ class Ingredient extends Model
         'sugars',
     ];
 
-    public $appends = ['quantity', 'quantity_unit'];
+    public $appends = ['quantity', 'quantity_unit', 'quantity_unit_display'];
 
     public function getQuantityAttribute() {
       if($this->pivot && $this->pivot->quantity) {
@@ -65,9 +65,16 @@ class Ingredient extends Model
       else return null;
     }
 
+    public function getQuantityUnitDisplayAttribute() {
+      if($this->pivot && $this->pivot->quantity_unit_display) {
+        return $this->pivot->quantity_unit_display;
+      }
+      else return null;
+    }
+
     public function meals()
     {
-        return $this->belongsToMany('App\Meal')->withPivot('quantity', 'quantity_unit')->using('App\IngredientMeal');
+        return $this->belongsToMany('App\Meal')->withPivot('quantity', 'quantity_unit', 'quantity_unit_display')->using('App\IngredientMeal');
     }
 
     public function store()

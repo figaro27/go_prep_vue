@@ -85,7 +85,7 @@
                 >
                   <option slot="top" disabled>-- Select unit --</option>
                 </b-select>
-                <span v-else>Unit</span>
+                <span v-else>{{ingredient.quantity_unit_display}}</span>
               </b-form-group>
             </td>
             <td>
@@ -190,7 +190,8 @@ export default {
       return units[type].selectOptions();
     },
     canSave() {
-      return this.ingredients.length > 0;
+      return true;
+      //return this.ingredients.length > 0;
     }
   },
   watch: {
@@ -287,8 +288,12 @@ export default {
           let newIngredients = _.map(response.data.foods, ingredient => {
             // Get properly named unit
             let unit = units.normalize(ingredient.serving_unit);
-            let measure = units.describe(unit);
             ingredient.unit_type = units.type(unit);
+            ingredient.quantity_unit_display = unit;
+
+            if(ingredient.unit_type === 'unit') {
+              unit = 'unit';
+            }
             ingredient.quantity = ingredient.serving_qty;
             ingredient.quantity_unit = unit;
             ingredient.added = true;
