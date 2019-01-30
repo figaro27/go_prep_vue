@@ -5,14 +5,14 @@ use Faker\Generator as Faker;
 
 $factory->define(App\Meal::class, function (Faker $faker) {
 	$image = array(
-		"http://store.goprep.localhost/images/meal-1.jpg",
-		"http://store.goprep.localhost/images/meal-2.jpg",
-		"http://store.goprep.localhost/images/meal-3.jpg",
-		"http://store.goprep.localhost/images/meal-4.jpg",
-		"http://store.goprep.localhost/images/meal-5.jpg",
-		"http://store.goprep.localhost/images/meal-6.jpg",
-		"http://store.goprep.localhost/images/meal-7.jpg",
-		"http://store.goprep.localhost/images/meal-8.jpg"
+		"http://dev.goprep.com/images/meal-1.jpg",
+		"http://dev.goprep.com/images/meal-2.jpg",
+		"http://dev.goprep.com/images/meal-3.jpg",
+		"http://dev.goprep.com/images/meal-4.jpg",
+		"http://dev.goprep.com/images/meal-5.jpg",
+		"http://dev.goprep.com/images/meal-6.jpg",
+		"http://dev.goprep.com/images/meal-7.jpg",
+		"http://dev.goprep.com/images/meal-8.jpg"
 	);
 	
     return [
