@@ -539,7 +539,7 @@ class Meal extends Model
 
         $allergies = $props->get('allergy_ids');
         if (is_array($allergies)) {
-            $meal->allergies()->sync($allergy);
+            $meal->allergies()->sync($allergies);
         }
 
         $categories = $props->get('category_ids');

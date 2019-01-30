@@ -926,7 +926,7 @@ const getters = {
   },
   storeAllergyTitle: (state) => id => {
     try {
-      return state.store.allergies.data[id].category || {};
+      return state.allergies[id].title || {};
     } catch (e) {
       return '';
     }

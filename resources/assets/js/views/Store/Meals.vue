@@ -111,7 +111,7 @@
                     buttons
                     v-model="meal.category_ids"
                     :options="categoryOptions"
-                    @change="val => updateMeal(meal.id, {categories: val})"
+                    @change="val => updateMeal(meal.id, {category_ids: val})"
                     class="filters"
                   ></b-form-checkbox-group>
 
@@ -120,7 +120,7 @@
                     buttons
                     v-model="meal.tag_ids"
                     :options="tagOptions"
-                    @change="val => updateMeal(meal.id, {tags: val})"
+                    @change="val => updateMeal(meal.id, {tag_ids: val})"
                     class="filters"
                   ></b-form-checkbox-group>
 
@@ -129,7 +129,7 @@
                     buttons
                     v-model="meal.allergy_ids"
                     :options="allergyOptions"
-                    @change="val => updateMeal(meal.id, {allergies: val})"
+                    @change="val => updateMeal(meal.id, {allergy_ids: val})"
                     class="filters"
                   ></b-form-checkbox-group>
                 </b-form-group>
