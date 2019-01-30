@@ -57,9 +57,18 @@ class PackingSlips
 
         $filename = 'public/' . md5(time()) . '.pdf';
 
-        $pdf = new Pdf([
-            'encoding' => 'UTF-8',
-        ]);
+        $pdfConfig = ['encoding' => 'utf-8'];
+
+        if(config('pdf.xserver')) {
+          $pdfConfig = array_merge($pdfConfig, [
+            'use-xserver',
+            'commandOptions' => array(
+                'procEnv' => array('DISPLAY' => ':0'),
+            ),
+          ]);
+        }
+        
+        $pdf = new Pdf($pdfConfig);
 
         foreach ($orders as $i => $order) {
             $html = view($this->exportPdfView(), ['order' => $order])->render();

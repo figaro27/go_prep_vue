@@ -104,9 +104,18 @@ trait ExportsData
 
         $html = view($this->exportPdfView(), ['data' => $data])->render();
 
-        $pdf = new Pdf([
-          'encoding' => 'UTF-8',
-        ]);
+        $pdfConfig = ['encoding' => 'utf-8'];
+
+        if(config('pdf.xserver')) {
+          $pdfConfig = array_merge($pdfConfig, [
+            'use-xserver',
+            'commandOptions' => array(
+                'procEnv' => array('DISPLAY' => ':0'),
+            ),
+          ]);
+        }
+
+        $pdf = new Pdf($pdfConfig);
         $pdf->addPage($html);
         $output = $pdf->toString();
 

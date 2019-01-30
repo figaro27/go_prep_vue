@@ -95,10 +95,18 @@ trait Exportable
 
         $html = view($this->exportPdfView(), ['data' => $data])->render();
 
-        $pdf = new Pdf([
-            'encoding' => 'UTF-8',
-            'orientation' => 'landscape',
-        ]);
+        $pdfConfig = ['encoding' => 'utf-8', 'orientation' => 'landscape'];
+
+        if(config('pdf.xserver')) {
+          $pdfConfig = array_merge($pdfConfig, [
+            'use-xserver',
+            'commandOptions' => array(
+                'procEnv' => array('DISPLAY' => ':0'),
+            ),
+          ]);
+        }
+
+        $pdf = new Pdf($pdfConfig);
         $pdf->addPage($html);
         $output = $pdf->toString();
 
