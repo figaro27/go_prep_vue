@@ -33,6 +33,7 @@ class Meal extends Model
         'active_orders',
         'active_orders_price',
         'lifetime_orders',
+        // 'subscriptions',
         'allergy_ids',
         'category_ids',
         'tag_ids',
@@ -119,6 +120,11 @@ class Meal extends Model
         return $this->tags->pluck('id');
     }
 
+    public function getSubscriptionsAttribute()
+    {
+        return $this->subscriptions->count();
+    }
+
     /**
      * Whether meal must be substituted before deleting
      *
@@ -192,6 +198,16 @@ class Meal extends Model
     public function orders()
     {
         return $this->belongsToMany('App\Order', 'meal_orders');
+    }
+
+    public function meal_subscriptions()
+    {
+        return $this->belongsTo('App\MealSubscription');
+    }
+
+    public function subscriptions()
+    {
+        return $this->belongsToMany('App\Subscription', 'meal_subscriptions');
     }
 
     public function tags()

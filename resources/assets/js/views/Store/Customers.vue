@@ -46,27 +46,25 @@
         v-model="viewCustomerModal"
         v-if="viewCustomerModal"
       >
-        <div class="row">
-          <div class="col-md-4">
+        <div class="row light-background border-bottom mb-3">
+          <div class="col-md-4 pt-4">
             <h4>Customer</h4>
             <p>{{ customer.name }}</p>
 
             <h4>Phone</h4>
             <p>{{ customer.phone }}</p>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 pt-4">
             <h4>Address</h4>
             <p>{{ customer.address }}</p>
             <p>{{ customer.city }}, {{ customer.state }}</p>
             <p>{{ customer.zip }}</p>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 pt-4">
             <h4>Delivery Instructions</h4>
             <p>{{ customer.delivery }}</p>
           </div>
         </div>
-
-        <hr>
         <div v-for="order in customer.orders" :key="order.id">
           <div v-b-toggle="'collapse' + order.id">
             <b-list-group-item>
@@ -79,22 +77,31 @@
                   <h4>Placed On</h4>
                   <p>{{ order.created_at }}</p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                   <h2>{{ format.money(order.amount) }}</h2>
+                </div>
+                <div class="col-md-1">
+                  <img class="pull-right mt-2" src="/images/collapse-arrow.png">
                 </div>
               </div>
 
-              <!-- Need to fix this bug & get meal quantities -->
               <b-collapse :id="'collapse' + order.id" class="mt-2">
-                <b-card>
-                  <p class="card-text">
-                    <div v-for="mealId in order.meal_ids" :key="mealId">
-                      <img :src="meal(mealId).featured_image" class="modalMeal" />
-                      {{ meal(mealId).title }}
-                      {{ format.money(meal(mealId).price) }}
-                    </div>
-                  </p>
-                </b-card>
+                    <ul class="meal-quantities">
+                      <li v-for="mealId in order.meal_ids" :key="mealId">
+                        <div class="row">
+                          <div class="col-md-4 pr-0">
+                            <span class="order-quantity">1</span>
+                            <img src="/images/store/x-modal.png" class="mr-2 ml-2">
+                            <img :src="meal(mealId).featured_image" class="modalMeal" />
+                          </div>
+                          <div class="col-md-8 pt-3 nopadding">
+                            <p>{{ meal(mealId).title }}</p>
+                            <p>{{ format.money(meal(mealId).price) }}</p>
+                          </div>
+                        </div>                       
+                      </li>
+                    </ul>
+
               </b-collapse>
             </b-list-group-item>
           </div>
@@ -136,7 +143,7 @@ export default {
       ],
       options: {
         headings: {
-          LastOrder: "Last Order",
+          last_order: "Last Order",
           total_payments: "Total Orders",
           total_paid: "Total Paid",
           Name: "Name",
@@ -225,7 +232,19 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    }
+    },
+    getMealQuantities(meals) {
+      let order = _.toArray(_.countBy(meals, "id"));
+
+      return order.map((order, id) => {
+        return {
+          order,
+          featured_image: meals[id].featured_image,
+          title: meals[id].title,
+          price: meals[id].price
+        };
+      });
+    },
   }
 };
 </script>

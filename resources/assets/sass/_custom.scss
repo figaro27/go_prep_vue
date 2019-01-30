@@ -50,6 +50,21 @@ li {
 	background-color:#33383b !important;
 }
 
+.dropdown-toggle::after{
+  display:none !important;
+}
+
+.custom-select{
+  width:80px !important;
+}
+
+.nav-tabs .nav-item .nav-link{
+  background-color:#f1f1f1 !important;
+}
+
+.open-indicator{
+  margin-right:8px !important;
+}
 
 /*Sidebar*/
 body:not(.sidebar-minimized) {

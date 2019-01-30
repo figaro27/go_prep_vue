@@ -23,7 +23,13 @@
                   @change="onChangeStatusFilter"
                   :options="statusFilterOptions"
                 />
+
+                <router-link to="/store/menu/preview">
+                  <button class="btn btn-warning btn-md">Preview Menu</button>
+                </router-link>
               </div>
+
+              
 
               <span slot="beforeLimit">
                 <b-btn variant="primary" @click="exportData('meals', 'pdf', true)">
@@ -106,7 +112,13 @@
                     @change="e => updateMealDescription(meal.id, e.target.value)"
                   ></textarea>
                   <br>
-                  <h4>Categories</h4>
+                  <h4>Categories
+                    <img
+                      v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                      title="Categories"
+                      src="/images/store/popover.png"
+                      >
+                  </h4>
                   <b-form-checkbox-group
                     buttons
                     v-model="meal.category_ids"
@@ -115,7 +127,13 @@
                     class="filters"
                   ></b-form-checkbox-group>
 
-                  <h4 class="mt-4">Tags</h4>
+                  <h4 class="mt-4">Tags
+                    <img
+                      v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                      title="Tags"
+                      src="/images/store/popover.png"
+                      >
+                  </h4>
                   <b-form-checkbox-group
                     buttons
                     v-model="meal.tag_ids"
@@ -124,7 +142,13 @@
                     class="filters"
                   ></b-form-checkbox-group>
 
-                  <h4 class="mt-4">Allergies</h4>
+                  <h4 class="mt-4">Contains
+                    <img
+                      v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                      title="Contains"
+                      src="/images/store/popover.png"
+                      >
+                  </h4>
                   <b-form-checkbox-group
                     buttons
                     v-model="meal.allergy_ids"
@@ -304,6 +328,7 @@ export default {
         "tags",
         "contains",
         "price",
+        "subscriptions",
         "lifetime_orders",
         "created_at",
         "actions"
@@ -317,6 +342,7 @@ export default {
           tags: "Tags",
           contains: "Contains",
           price: "Price",
+          subscriptions: "Active Meal Plans",
           lifetime_orders: "Lifetime Orders",
           created_at: "Added",
           actions: "Actions"

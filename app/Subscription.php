@@ -21,6 +21,11 @@ class Subscription extends Model
         return $this->belongsTo('App\Store');
     }
 
+    public function meals()
+    {
+        return $this->hasMany('App\Meal');
+    }
+
     public function orders()
     {
         return $this->hasMany('App\Order');

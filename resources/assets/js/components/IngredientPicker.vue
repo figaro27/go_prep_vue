@@ -2,7 +2,7 @@
   <div>
     <b-form class="mb-2" @submit.prevent="searchRecipe">
       <b-tabs class="mb-2">
-        <b-tab title="Recipe" active>
+        <b-tab title="Type in Ingredients" active>
           <b-form-textarea
             v-model="recipe"
             class="flex-grow-1 mr-1 mb-1"
@@ -12,11 +12,11 @@
           <b-button @click="searchRecipe" variant="primary">Add</b-button>
         </b-tab>
 
-        <b-tab title="Add single ingredient">
+        <b-tab title="Search Ingredients">
           <ingredient-search @change="onSearchIngredient"></ingredient-search>
         </b-tab>
 
-        <b-tab title="Add existing ingredient">
+        <b-tab title="Add Existing Ingredients">
           <div class="d-flex">
             <v-select
               class="flex-grow-1 mr-1"

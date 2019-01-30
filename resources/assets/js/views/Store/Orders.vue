@@ -46,7 +46,7 @@
               <button
                 class="btn btn-primary btn-sm"
                 @click="fulfill(props.row.id)"
-              >Mark As Fulfilled</button>
+              >Mark As Delivered</button>
             </div>
 
             <div slot="amount" slot-scope="props">
