@@ -52,9 +52,29 @@ li {
 
 
 /*Sidebar*/
+body:not(.sidebar-minimized) {
+  .sidebar {
+    width:200px !important;
+  }
+}
 
-.sidebar{
-	width:200px !important;
+body.sidebar-minimized {
+  .sidebar {
+    .nav-item {
+
+      .nav-link {
+        padding-left: 7px;
+        padding-right: 7px;
+        white-space: nowrap; 
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        .nav-icon {
+          margin-left: -7px;
+        }
+      }
+    }
+  }
 }
 
 
