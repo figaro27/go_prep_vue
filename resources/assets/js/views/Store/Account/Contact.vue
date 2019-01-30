@@ -16,7 +16,7 @@
                                 <div v-if="errors && errors.message" class="text-danger">{{ errors.message[0] }}</div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Send message</button>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
 
                             <div v-if="success" class="alert alert-success mt-3">
                                 Message sent!
