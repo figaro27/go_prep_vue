@@ -30,7 +30,7 @@ class RedirectIfAuthenticated
             }
 
             if($user->hasRole('store')) {
-              return redirect('/store/orders');
+              return redirect($user->store->getUrl('/store/orders', $request->secure));
             }
             else {
               return redirect('/customer/home');

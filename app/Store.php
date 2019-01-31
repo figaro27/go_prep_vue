@@ -89,6 +89,12 @@ class Store extends Model
         return $this->hasMany('App\Customer');
     }
 
+    public function getUrl($append = '', $secure = true) {
+      $protocol = $secure ? 'https://' : 'http://';
+      $url = $protocol.$this->details->domain.'.'.config('app.domain').$append;
+      return $url;
+    }
+
     public static function getStore($id)
     {
         return Store::with('storeDetail', 'order')->where('id', $id)->first();
