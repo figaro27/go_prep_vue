@@ -11,40 +11,49 @@
 |
 */
 
-Route::domain('{store_slug}.'.config('app.domain'))
-->group(function ($router) {
-  
-});
+foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $domain) {
 
-Auth::routes();
-Route::fallback('SpaController@index');
+  Auth::routes();
+  Route::fallback('SpaController@index');
 
 
-// All logged in users
-Route::group(['middleware' => ['auth:api', 'store_slug']], function ($router) {
+  // All logged in users
+  Route::group(['middleware' => ['auth:api', 'store_slug']], function ($router) {
 
-  Route::get('storeMeals', 'MealController@getStoreMeals');
+    Route::get('/', function(Request $request) {
+      $user = auth('api')->user();
+      if($user->hasRole('store')) {
+        return redirect('/store/orders');
+      }
+      else {
+        return redirect('/customer/orders');
+      }
+    });
 
-  Route::post('storeMealAdmin', 'MealController@storeAdmin');
-  Route::post('updateActive', 'MealController@updateActive');
+    Route::get('storeMeals', 'MealController@getStoreMeals');
 
-  Route::post('nutrients', 'NutritionController@getNutrients');
-  Route::post('searchInstant', 'NutritionController@searchInstant');
+    Route::post('storeMealAdmin', 'MealController@storeAdmin');
+    Route::post('updateActive', 'MealController@updateActive');
 
-  Route::post('/submitStore', 'ContactFormController@submitStore');
-  Route::post('/submitCustomer', 'ContactFormController@submitCustomer');
+    Route::post('nutrients', 'NutritionController@getNutrients');
+    Route::post('searchInstant', 'NutritionController@searchInstant');
 
-  Route::get('/getCustomer', 'UserDetailController@show');
-  Route::post('/updateCustomer', 'UserDetailController@update');
+    Route::post('/submitStore', 'ContactFormController@submitStore');
+    Route::post('/submitCustomer', 'ContactFormController@submitCustomer');
 
-});
+    Route::get('/getCustomer', 'UserDetailController@show');
+    Route::post('/updateCustomer', 'UserDetailController@update');
 
-// All logged in stores
-Route::group(['middleware' => ['auth:api']], function ($router) {
-  Route::get('/store/stripe/redirect', 'Store\\StripeController@connect');
-});
+  });
 
-// All logged in admin
-Route::group(['middleware' => ['auth', 'admin']], function ($router) {
+  // All logged in stores
+  Route::group(['middleware' => ['auth:api']], function ($router) {
+    Route::get('/store/stripe/redirect', 'Store\\StripeController@connect');
+  });
 
-});
+  // All logged in admin
+  Route::group(['middleware' => ['auth', 'admin']], function ($router) {
+
+  });
+
+}
