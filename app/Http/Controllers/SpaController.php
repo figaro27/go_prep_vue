@@ -94,21 +94,34 @@ class SpaController extends Controller
                     'settings',
                 ])->find(STORE_ID) : null;
 
-                if ($store->settings->delivery_distance_type === 'radius') {
-                    $distance = $user->distanceFrom($store);
-                    $willDeliver = $distance < $store->settings->delivery_distance_radius;
-                } else {
-                    $willDeliver = $store->deliversToZip($user->userDetail->zip);
-                }
+                if($store) {
+                  if ($store->settings->delivery_distance_type === 'radius') {
+                      $distance = $user->distanceFrom($store);
+                      $willDeliver = $distance < $store->settings->delivery_distance_radius;
+                  } else {
+                      $willDeliver = $store->deliversToZip($user->userDetail->zip);
+                  }
 
-                return [
+                  return [
                     'context' => $context,
                     'user' => $user,
                     'store' => $store,
+                    'store_distance' => $distance ?? null,
                     'will_deliver' => $willDeliver,
                     'allergies' => Allergy::all(),
                     'tags' => MealTag::all(),
-                ];
+                  ];
+                }
+                else {
+                  return [
+                    'context' => $context,
+                    'user' => $user,
+                    'store' => null,
+                    'allergies' => Allergy::all(),
+                    'tags' => MealTag::all(),
+                  ];
+                }
+               
             }
 
         } else {

@@ -15,5 +15,5 @@ export default {
       url: '/customer/orders',
       icon: 'fa fa-shopping-bag'
     }
-    ]
+  ]
 }

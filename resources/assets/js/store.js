@@ -464,7 +464,10 @@ const actions = {
     dispatch
   }, data = {}) {
 
-    dispatch('refreshViewedStore');
+    if(data.store) {
+      dispatch('refreshViewedStore');
+    }
+
     dispatch('refreshStores');
     dispatch('refreshCards');
   },
