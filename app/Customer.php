@@ -39,6 +39,7 @@ class Customer extends Model
         'address',
         'city',
         'state',
+        'zip',
         'delivery',
     ];
 

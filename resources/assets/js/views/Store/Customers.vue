@@ -89,12 +89,12 @@
                     <ul class="meal-quantities">
                       <li v-for="mealId in order.meal_ids" :key="mealId">
                         <div class="row">
-                          <div class="col-md-4 pr-0">
+                          <div class="col-md-5 pr-0">
                             <span class="order-quantity">1</span>
                             <img src="/images/store/x-modal.png" class="mr-2 ml-2">
                             <img :src="meal(mealId).featured_image" class="modalMeal" />
                           </div>
-                          <div class="col-md-8 pt-3 nopadding">
+                          <div class="col-md-7 pt-3 nopadding">
                             <p>{{ meal(mealId).title }}</p>
                             <p>{{ format.money(meal(mealId).price) }}</p>
                           </div>

@@ -2,6 +2,9 @@
 
 <p>From {{ $firstname }} {{ $lastname }}</p>
 
+<p>Customer ID: {{ $customerID }}</p>
+
+<p>Subject: {{ $subject }}</p>
 
 <p>Message: {{ $body }}</p>
 

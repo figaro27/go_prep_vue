@@ -14,20 +14,20 @@ class ContactFormController extends Controller
 {
     public function submitStore(Request $request) {
         $this->validate($request, [
-            'name' => 'required|string',
             'message' => 'required',
+            'subject' => 'required'
         ]);
 
-        $email = Auth::user()->email;
-        $id = Auth::user()->id;
+        $email = auth('api')->user()->email;;
+        $id = auth('api')->user()->id;;
   		$storeID = Store::where('user_id', $id)->pluck('id')->first();
   		$storeName = StoreDetail::where('store_id', $storeID)->pluck('name')->first();
 
   		$data = array(
-        	'name' => $request->name,
         	'email' => $email,
         	'storeID' => $storeID,
         	'storeName' => $storeName,
+            'subject' => $request->subject,
         	'body' => $request->message
         );
 
@@ -41,17 +41,20 @@ class ContactFormController extends Controller
     public function submitCustomer(Request $request) {
         $this->validate($request, [
             'message' => 'required',
+            'subject' => 'required'
         ]);
 
-        $email = Auth::user()->email;
-        $id = Auth::user()->id;
+        $email = auth('api')->user()->email;;
+        $id = auth('api')->user()->id;;
   		$firstname = UserDetail::where('user_id', $id)->pluck('firstname')->first();
   		$lastname = UserDetail::where('user_id', $id)->pluck('lastname')->first();
 
   		$data = array(
         	'firstname' => $firstname,
         	'lastname' => $lastname,
+            'customerID' => $id,
         	'email' => $email,
+            'subject' => $request->subject,
         	'body' => $request->message
         );
 

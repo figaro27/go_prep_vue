@@ -23,7 +23,12 @@ class Subscription extends Model
 
     public function meals()
     {
-        return $this->hasMany('App\Meal');
+        return $this->belongsToMany('App\Meal', 'meal_subscriptions')->withPivot('quantity')->withTrashed();
+    }
+
+    public function meal_subscriptions()
+    {
+        return $this->hasMany('App\MealSubscription');
     }
 
     public function orders()

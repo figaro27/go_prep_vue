@@ -33,7 +33,7 @@ class Meal extends Model
         'active_orders',
         'active_orders_price',
         'lifetime_orders',
-        // 'subscriptions',
+        'subscriptions',
         'allergy_ids',
         'category_ids',
         'tag_ids',

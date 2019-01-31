@@ -1,18 +1,28 @@
 <template>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-8 offset-2">
                 <div class="card">
                     <div class="card-body">
+                        <h3 class="center-text">Contact Us</h3>
                         <form @submit.prevent="submit">
+                            <div class="form-group">
+                                <div v-if="errors && errors.name" class="text-danger">{{ errors.name[0] }}</div>
+                            </div>
+
+                            <div>
+                                <b-form-select id="subject" v-model="fields.subject" :options="options" class="contact-subject mb-3 center" required/>
+                            </div>
+                        
                             <div class="form-group">
                                 <label for="message">Message</label>
                                 <textarea class="form-control" id="message" name="message" rows="5" v-model="fields.message"></textarea>
                                 <div v-if="errors && errors.message" class="text-danger">{{ errors.message[0] }}</div>
                             </div>
+
                             <button type="submit" class="btn btn-primary">Send Message</button>
 
                             <div v-if="success" class="alert alert-success mt-3">
-                                Message sent!
+                                Message sent! We'll get back to you shortly.
                             </div>
                         </form>
                     </div>
@@ -28,7 +38,16 @@
         },
         data(){
             return {
-            fields: {},
+                options: [
+                { value: null, text: 'Select a subject' },
+                { value: 'General Inquiry', text: 'General Inquiry' },
+                { value: 'Issue With My Order', text: 'Issue With My Order' },
+                { value: 'Suggestion', text: 'Suggestion' },
+                { value: 'Other', text: 'Other' }
+            ],
+            fields: {
+                subject: null
+            },
             errors: {},
             success: false,
             loaded: true,
