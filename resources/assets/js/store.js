@@ -791,6 +791,9 @@ const getters = {
   user(state, getters) {
     return state.user.data;
   },
+  userDetail(state, getters) {
+    return state.user.data.user_detail;
+  },
   allergies(state) {
     return state.allergies;
   },

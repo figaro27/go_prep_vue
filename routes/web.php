@@ -43,8 +43,6 @@ foreach ([config('app.domain')] as $domain) {
             Route::post('/submitCustomer', 'ContactFormController@submitCustomer');
 
             Route::get('/getCustomer', 'UserDetailController@show');
-            Route::post('/updateCustomer', 'UserDetailController@update');
-
         });
 
         // All logged in stores

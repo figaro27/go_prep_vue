@@ -51,36 +51,23 @@ export default {
   },
   data() {
     return {
-      userDetail: {
-        firstname: "",
-        lastname: "",
-        phone: "",
-        address: "",
-        city: "",
-        state: "",
-        zip: null,
-        delivery: ""
-      },
+     
     };
   },
   computed: {
     ...mapGetters({
-      cards: "cards"
+      cards: "cards",
+      user: "user",
+      userDetail: "userDetail",
     })
   },
   mounted() {
-    this.getCustomer();
   },
   methods: {
     ...mapActions(['refreshUser']),
-    getCustomer() {
-      axios.get("/getCustomer").then(response => {
-        this.userDetail = response.data;
-      });
-    },
     updateCustomer() {
       this.spliceZip();
-      axios.post("/updateCustomer", this.userDetail)
+      axios.patch("/api/me/detail", this.userDetail)
         .then(response => {
           this.$toastr.s('Profile updated.');
           this.refreshUser();

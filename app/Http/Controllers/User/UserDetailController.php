@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use App\UserDetail;
 use Illuminate\Http\Request;
 use Auth;
 
-class UserDetailController extends Controller
+class UserDetailController extends UserController
 {
     /**
      * Display a listing of the resource.
