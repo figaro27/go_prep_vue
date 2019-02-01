@@ -30,7 +30,7 @@
     import Spinner from '../../components/Spinner';
     import ViewCustomer from './Modals/ViewCustomer';
     import EditCustomer from './Modals/EditCustomer';
-    import moment from 'moment';
+    import moment from 'moment-timezone';
     
 
     export default {

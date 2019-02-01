@@ -299,13 +299,13 @@ class Store extends Model
             return false;
         }
 
-        $today = Carbon::today();
+        $now = Carbon::now($this->settings->timezone);
 
         $cutoff = $this->settings->cutoff_days * (60 * 60 * 24) + $this->settings->cutoff_hours * (60 * 60);
 
         foreach ($this->settings->delivery_days as $day) {
-            $date = Carbon::createFromFormat('D', $day);
-            $diff = $date->getTimestamp() - $today->getTimestamp();
+            $date = Carbon::createFromFormat('D', $day, $this->settings->timezone);
+            $diff = $date->getTimestamp() - $now->getTimestamp();
 
             // Cutoff passed less than an hour ago
             if ($diff <= 60 * 60) {

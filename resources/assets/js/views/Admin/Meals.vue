@@ -83,7 +83,7 @@
 
 <script>
     import Spinner from '../../components/Spinner';
-    import moment from 'moment';
+    import moment from 'moment-timezone';
     import nutritionFacts from 'nutrition-label-jquery-plugin';
 
     export default {

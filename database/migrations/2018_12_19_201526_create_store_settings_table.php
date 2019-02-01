@@ -16,6 +16,7 @@ class CreateStoreSettingsTable extends Migration
         Schema::create('store_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('store_id')->references('id')->on('stores');
+            $table->string('timezone')->default('EST');
             $table->integer('minimum')->default(5);
             $table->boolean('showNutrition')->default(true);
             $table->boolean('allowPickup')->default(false);
