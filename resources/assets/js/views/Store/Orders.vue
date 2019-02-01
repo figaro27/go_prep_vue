@@ -47,7 +47,7 @@
                 @click="viewOrder(props.row.id)"
               >View Order</button>
               <button
-                v-if="!order.fulfilled"
+                v-if="!props.row.fulfilled"
                 class="btn btn-primary btn-sm"
                 @click="fulfill(props.row.id)"
               >Mark As Delivered</button>
