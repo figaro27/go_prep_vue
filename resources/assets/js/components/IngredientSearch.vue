@@ -147,7 +147,7 @@ export default {
     },
     search: _.debounce((loading, search, vm) => {
       axios
-        .post("../searchInstant", {
+        .post("/api/searchInstant", {
           search: search
         })
         .then(response => {

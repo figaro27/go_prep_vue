@@ -31,6 +31,9 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
 
         if ($user && $user->user_role_id === 2) {
 
+            Route::post('nutrients', 'NutritionController@getNutrients');
+            Route::post('searchInstant', 'NutritionController@searchInstant');
+
             Route::group(['prefix' => 'me', 'middleware' => ['role.store'], 'namespace' => 'Store'], function ($router) {
                 Route::patch('user', 'UserController@update');
                 Route::get('user', 'UserController@show');

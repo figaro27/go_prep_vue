@@ -265,7 +265,7 @@ export default {
     searchInstant: function() {},
     searchRecipe: function() {
       axios
-        .post("/nutrients", {
+        .post("/api/nutrients", {
           query: this.recipe
         })
         .then(response => {
@@ -310,7 +310,7 @@ export default {
     },
     search: _.debounce((loading, search, vm) => {
       axios
-        .post("../searchInstant", {
+        .post("/api/searchInstant", {
           search: search
         })
         .then(response => {

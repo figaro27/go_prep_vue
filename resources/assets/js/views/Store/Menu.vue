@@ -532,7 +532,7 @@ export default {
 
     getNutrition: function() {
       axios
-        .post("../nutrients", {
+        .post("/api/nutrients", {
           query: this.ingredientQuery
         })
         .then(response => {
@@ -541,7 +541,7 @@ export default {
     },
     searchInstant: function() {
       axios
-        .post("../searchInstant", {
+        .post("/api/searchInstant", {
           search: this.ingredientSearch
         })
         .then(response => {

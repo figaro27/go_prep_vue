@@ -36,9 +36,6 @@ foreach ([config('app.domain')] as $domain) {
             Route::post('storeMealAdmin', 'MealController@storeAdmin');
             Route::post('updateActive', 'MealController@updateActive');
 
-            Route::post('nutrients', 'NutritionController@getNutrients');
-            Route::post('searchInstant', 'NutritionController@searchInstant');
-
             Route::post('/submitStore', 'ContactFormController@submitStore');
             Route::post('/submitCustomer', 'ContactFormController@submitCustomer');
 
