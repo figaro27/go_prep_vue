@@ -515,6 +515,18 @@ const actions = {
     }
   },
 
+  async refreshUser({
+    commit,
+    state
+  }, args = {}) {
+    const res = await axios.get("/api/me");
+    const {data} = await res;
+
+    if (_.isObject(data)) {
+      commit('user', data);
+    }
+  },
+
   // Actions for logged in stores
 
   async refreshPayments({

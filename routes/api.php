@@ -55,7 +55,7 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
         } else if ($user && $user->user_role_id === 1) {
             Route::group(['middleware' => ['role.customer'], 'namespace' => 'User'], function ($router) {
                 //Route::resource('stores', 'User\\StoreController');
-                Route::resource('/user', 'UserController');
+                Route::resource('/me', 'UserController');
                 Route::post('bag/checkout', 'CheckoutController@checkout');
                 Route::resource('me/subscriptions', 'SubscriptionController');
                 Route::resource('me/orders', 'OrderController');

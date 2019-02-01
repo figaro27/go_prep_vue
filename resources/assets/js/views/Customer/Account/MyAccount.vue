@@ -72,6 +72,7 @@ export default {
     this.getCustomer();
   },
   methods: {
+    ...mapActions(['refreshUser']),
     getCustomer() {
       axios.get("/getCustomer").then(response => {
         this.userDetail = response.data;
@@ -79,9 +80,14 @@ export default {
     },
     updateCustomer() {
       this.spliceZip();
-      axios.post("/updateCustomer", this.userDetail).then(response => {
-        console.log(response);
-      });
+      axios.post("/updateCustomer", this.userDetail)
+        .then(response => {
+          this.$toastr.s('Profile updated.');
+          this.refreshUser();
+        })
+        .catch(e => {
+          this.$toastr.e('Failed to update profile.')
+        });
     },
     spliceZip() {
       if (this.userDetail.zip.toString().length > 5) {

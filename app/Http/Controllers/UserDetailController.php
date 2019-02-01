@@ -47,9 +47,7 @@ class UserDetailController extends Controller
      */
     public function show(UserDetail $userDetail)
     {
-        $id = Auth::user()->id;
-        $customer = UserDetail::findOrFail($id);
-        return $customer;
+        return auth('api')->user()->details;
     }
 
     /**
@@ -79,13 +77,14 @@ class UserDetailController extends Controller
             'address' => 'required|string',
             'city' => 'required|string',
             'state' => 'required|string',
-            'zip' => 'required|integer',
+            'zip' => 'required',
             'delivery' => 'required|string',
         ]);
 
-        $id = Auth::user()->id;
-        $customer = UserDetail::findOrFail($id);
-        $customer->update($request->toArray());
+        $user = auth('api')->user();
+        $user->details->update($request->toArray());
+
+        return $user->details;
     }
 
     /**
