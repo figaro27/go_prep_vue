@@ -11,7 +11,7 @@
 |
  */
 
-foreach (['{store_slug}.' . config('app.domain'), config('app.domain')] as $domain) {
+foreach ([config('app.domain')] as $domain) {
 
     Auth::routes();
     Route::fallback('SpaController@index');
