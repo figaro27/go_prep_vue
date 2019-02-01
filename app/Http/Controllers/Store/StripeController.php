@@ -20,7 +20,7 @@ class StripeController extends StoreController
         $code = $request->get('code', null);
 
         if (!$code) {
-            //return redirect('/store');
+            return redirect('/store');
         }
 
         $user = auth()->user();
@@ -40,7 +40,7 @@ class StripeController extends StoreController
         }
 
         if ($res->getStatusCode() !== 200) {
-            //return redirect('/store');
+            return redirect('/store');
         }
 
         $account = json_decode((string) $res->getBody());
