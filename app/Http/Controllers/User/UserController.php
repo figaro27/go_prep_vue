@@ -18,4 +18,8 @@ class UserController
 
         $this->user = auth('api')->user();
     }
+
+    public function index() {
+      return $this->user;
+    }
 }
