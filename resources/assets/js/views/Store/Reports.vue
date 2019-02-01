@@ -31,7 +31,7 @@
         <div class="card">
           <Spinner v-if="isLoading"/>
           <div class="card-body m-4">
-            <h4 class="center-text mb-4">Meal Orders</h4>
+            <h4 class="center-text mb-4">Production</h4>
             <delivery-date-picker v-model="delivery_dates.meal_quantities"></delivery-date-picker>
             <p class="mt-4 center-text">Shows how many of each meal to make based on your orders.</p>
             <div class="row">

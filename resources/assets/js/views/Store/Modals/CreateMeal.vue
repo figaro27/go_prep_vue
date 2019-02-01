@@ -46,7 +46,7 @@
                   class="filters"
                 ></b-form-checkbox-group>
 
-                <h4 class="mt-4">Allergies</h4>
+                <h4 class="mt-4">Contains</h4>
                 <b-form-checkbox-group
                   buttons
                   v-model="meal.allergy_ids"

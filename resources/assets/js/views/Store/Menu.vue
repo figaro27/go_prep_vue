@@ -114,7 +114,7 @@
                   <br>
                   <h4>Categories
                     <img
-                      v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                      v-b-popover.hover="'Categories show up as different sections of your menu to your customers. You can have the same meal show up in multiple categories. Add, remove, or rearrange the order of categories in Settings.'"
                       title="Categories"
                       src="/images/store/popover.png"
                       >
@@ -129,7 +129,7 @@
 
                   <h4 class="mt-4">Tags
                     <img
-                      v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                      v-b-popover.hover="'Meal tags describe the nutritional benefits contained in your meal. These allow your meals to be filtered by your customer on your menu page for anyone with specific dietary preferences.'"
                       title="Tags"
                       src="/images/store/popover.png"
                       >
@@ -144,7 +144,7 @@
 
                   <h4 class="mt-4">Contains
                     <img
-                      v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                      v-b-popover.hover="'Indiciate if your meal contains any of the below. These allow your meals to be filtered by your customer on your menu page for anyone looking to avoid meals that contain any of these options.'"
                       title="Contains"
                       src="/images/store/popover.png"
                       >
@@ -241,7 +241,7 @@
 <script>
 import Spinner from "../../components/Spinner";
 import IngredientPicker from "../../components/IngredientPicker";
-import CreateMealModal from "./Modals/CreateMeal";
+import CreateMealModal from "./Modals/CreateMeal";  
 import moment from "moment";
 import tags from "bootstrap-tagsinput";
 import { Event } from "vue-tables-2";
@@ -328,7 +328,7 @@ export default {
         "tags",
         "contains",
         "price",
-        "subscriptions",
+        "subscription_count",
         "lifetime_orders",
         "created_at",
         "actions"
@@ -342,7 +342,7 @@ export default {
           tags: "Tags",
           contains: "Contains",
           price: "Price",
-          subscriptions: "Active Meal Plans",
+          subscription_count: "Active Meal Plans",
           lifetime_orders: "Lifetime Orders",
           created_at: "Added",
           actions: "Actions"

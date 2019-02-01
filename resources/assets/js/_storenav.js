@@ -19,12 +19,12 @@ export default {
     },
     {
       name: 'Menu',
-      url: '/store/meals',
+      url: '/store/menu',
       icon: 'fa fa-utensils'
     },
     {
       name: 'Production',
-      url: '/store/meal-orders',
+      url: '/store/production',
       icon: 'fa fa-line-chart'
     },
     {
@@ -41,7 +41,7 @@ export default {
     // },
     {
       name: 'Reports',
-      url: '/store/print',
+      url: '/store/reports',
       icon: 'fa fa-file'
     },
     {

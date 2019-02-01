@@ -13,11 +13,11 @@
               ></b-select>
               <b-select
                 v-model="storeSettings.cutoff_hours"
-                class="d-inline w-auto mr-1"
+                class="d-inline w-auto mr-1 custom-select" 
                 :options="cutoffHoursOptions"
               ></b-select>
               <img
-                v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                v-b-popover.hover="'This is the amount of time you want to lock in orders before a specific delivery day. For example - you set the cut off period to 1 day, and it is currently Tuesday. If you have a Wednesday delivery day, your customer will not see Wednesday as a delivery day option. They will see the next available delivery day. This prevents you from getting new orders right before your delivery day and possibly already after you prepped your meals for that day.'"
                 title="Cut Off Period"
                 src="/images/store/popover.png"
               >
@@ -26,8 +26,8 @@
             <b-form-group label="Delivery Day(s)" label-for="delivery-days" :state="true">
               <b-form-checkbox-group
                 buttons
-                button-variant="primary"
                 v-model="storeSettings.delivery_days"
+                class="filters"
                 :options="[
                  { value: 'sun', text: 'Sunday' },
                  { value: 'mon', text: 'Monday' },
@@ -39,7 +39,7 @@
               ]"
               ></b-form-checkbox-group>
               <img
-                v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                v-b-popover.hover="'These are the day(s) you plan on delivering your meals to your customers and will show up as options on the checkout page for the customer. You can set it to one day per week as many smaller meal prep companies do, or as many as you like.'"
                 title="Delivery Day(s)"
                 src="/images/store/popover.png"
               >
@@ -52,15 +52,15 @@
             >
               <b-form-radio-group
                 buttons
-                button-variant="primary"
                 v-model="storeSettings.delivery_distance_type"
+                class="filters"
                 :options="[
                  { value: 'radius', text: 'Radius' },
-                 { value: 'zipcodes', text: 'Zipcodes' },
+                 { value: 'zipcodes', text: 'Zip Codes' },
               ]"
               ></b-form-radio-group>
               <img
-                v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                v-b-popover.hover="'As you do local delivery, you may have a certain cutoff distance. Here you can set this distance by radius by the number of miles around you or by zip codes separated by commas.'"
                 title="Delivery Distance Type"
                 src="/images/store/popover.png"
               >
@@ -80,7 +80,7 @@
             </b-form-group>
             <b-form-group
               v-if="storeSettings.delivery_distance_type === 'zipcodes'"
-              label="Delivery Zipcodes"
+              label="Delivery Zip Codes"
               label-for="delivery-distance-zipcodes"
               description="Separate zip codes by comma"
               :state="true"
@@ -89,10 +89,18 @@
                 :value="deliveryDistanceZipcodes"
                 @input="e => { updateZips(e.target.value) }"
                 class="form-control"
-                placeholder="Zipcodes"
+                placeholder="Zip Codes"
               ></textarea>
             </b-form-group>
-            <b-form-group label="Minimum Meals Requirement" :state="true">
+            <b-form-group :state="true">
+              <p>Minimum Meals Requirement
+                <img
+                v-b-popover.hover="'Here you can set a minimum number of meals required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'"
+                title="Minimum Meals Requirement"
+                src="/images/store/popover.png"
+                class="ml-1 pb-1"
+              >
+              </p>
               <b-form-input
                 type="text"
                 v-model="storeSettings.minimum"
@@ -100,7 +108,15 @@
                 required
               ></b-form-input>
             </b-form-group>
-            <b-form-group label="Weekly Meal Plan Discount" :state="true">
+            <b-form-group :state="true">
+              <p>Weekly Meal Plan Discount
+                <img
+                v-b-popover.hover="'Give your customers an incentive to create a weekly meal plan with you by offering a discount percentage.'"
+                title="Weekly Meal Plan Discount"
+                src="/images/store/popover.png"
+                class="ml-1 pb-1"
+              >
+              </p>
               <c-switch
                 color="success"
                 variant="pill"
@@ -115,7 +131,15 @@
                 required
               ></b-form-input>
             </b-form-group>
-            <b-form-group label="Delivery Fee" :state="true">
+            <b-form-group :state="true">
+            <p>Delivery Fee
+              <img
+                v-b-popover.hover="'Here you can apply an optional delivery fee paid for by your customers.'"
+                title="Delivery Fee"
+                src="/images/store/popover.png"
+                class="ml-1 pb-1"
+              >
+            </p>
               <c-switch
                 color="success"
                 variant="pill"
@@ -130,7 +154,15 @@
                 required
               ></b-form-input>
             </b-form-group>
-            <b-form-group label="Allow Pickup" :state="true">
+            <b-form-group :state="true">
+            <p>Allow Pickup
+              <img
+                v-b-popover.hover="'Allow your customers to pick up their meals instead of having it delivered. Please provide the location, time, and any additional instructions which will be shown to the customer.'"
+                title="Allow Pickup"
+                src="/images/store/popover.png"
+                class="ml-1 pb-1"
+              >
+            </p>
               <c-switch
                 color="success"
                 variant="pill"
@@ -141,7 +173,7 @@
                 v-if="storeSettings.allowPickup"
                 type="text"
                 v-model="storeSettings.pickupInstructions"
-                placeholder="Please include pickup instructions to your customers (pickup address, phone number, and day/time)."
+                placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time)."
                 required
               ></b-form-input>
             </b-form-group>
@@ -168,7 +200,7 @@
 
           <p class="mb-0 pb-0">Categories
           <img
-            v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+            v-b-popover.hover="'Categories are ways to group your meals together into different sections that show up on your menu. Some examples include Entrees and Breakfast. You can then rearrange the order of the categories which rearranges the order they are shown on your menu to customers.'"
             title="Categories"
             src="/images/store/popover.png"
           ></p>
@@ -185,19 +217,19 @@
                   :key="`category-${category.id}`"
                   style="cursor: n-resize"
                 >
-                {{ category.category }}
+                <p>{{ category.category }}
                   <i
                     v-if="category.id"
                     @click="deleteCategory(category.id)"
                     class="fa fa-minus-circle text-danger"
-                  ></i>
+                  ></i></p>
                 </li>
               </draggable>
             </div>
 
             <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
-              <b-input v-model="new_category" :type="text" placeholder="New category..."></b-input>
-              <b-button type="submit" variant="primary">Create</b-button>
+              <b-input v-model="new_category" :type="text" placeholder="New Category..."></b-input>
+              <b-button type="submit" variant="primary ml-2">Create</b-button>
             </b-form>
           </b-form-group>
         </div>
@@ -216,7 +248,7 @@
               />
             </b-form-group>
 
-            <b-form-group label="New Subscriptions" :state="true">
+            <b-form-group label="New Meal Plans" :state="true">
               <c-switch
                 color="success"
                 variant="pill"
@@ -226,7 +258,7 @@
               />
             </b-form-group>
 
-            <b-form-group label="Cancelled Subscriptions" :state="true">
+            <b-form-group label="Cancelled Meal Plans" :state="true">
               <c-switch
                 color="success"
                 variant="pill"
@@ -263,7 +295,7 @@
         <div class="card-body">
           <b-form @submit.prevent="updateStoreSettings">
             <p>Show # Delivery Days By Default <img
-                v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                v-b-popover.hover="'This sets the default date view in the calendars on all of the tables of the application. You may only want to see information about the next single upcoming delivery day, or you may want to see the next two delivery days. Enter 0 to see all upcoming delivery days.'"
                 title="Default Delivery Days"
                 src="/images/store/popover.png"
               >
@@ -294,13 +326,14 @@
           <div v-if="!storeSettings.stripe_id">
             <b-form-group label="Payment Info" :state="true">
               <b-button
+                variant="primary"
                 href="https://connect.stripe.com/express/oauth/authorize?client_id=ca_ER2OYlaTUrWz7LRQvhtKLIjZsRcM8mh9&state={STATE_VALUE}"
               >Connect Account</b-button>
             </b-form-group>
           </div>
           <div v-else>
             <b-form-group label="Stripe" :state="true">ID: {{ storeSettings.stripe_id }}</b-form-group>
-            <b-button type="submit" variant="primary">View Account</b-button>
+            <a :href="payments_url" target="_blank"><b-button type="submit" variant="primary">View Account</b-button></a>
           </div>
         </div>
 
@@ -345,7 +378,8 @@ export default {
       loginAlertFail: false,
       zipcodes: [],
       new_category: "",
-      view_delivery_days: 1
+      view_delivery_days: 1,
+      payments_url: ""
     };
   },
   computed: {
@@ -391,6 +425,13 @@ export default {
     deliveryDistanceZipcodes() {
       return this.storeSettings.delivery_distance_zipcodes.join(",");
     }
+  },
+  created(){
+    axios.get("/api/me/stripe/login").then(resp => {
+      if (resp.data.url) {
+        this.payments_url = resp.data.url;
+      }
+    });
   },
   mounted() {
     this.view_delivery_days = this.storeSettings.view_delivery_days;

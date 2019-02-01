@@ -15,6 +15,9 @@
                 <div class="mr-2">
                   <b-btn @click="filterNotes" :selected="filters.notes" variant="primary" class="filter-btn">Filter Delivery Notes</b-btn>
                 </div>
+                <div class="mr-2">
+                  <b-btn @click="filterPastOrders" :selected="filters.pastOrders" variant="warning" class="filter-btn">View Completed Orders</b-btn>
+                </div>
                 <div class="flex-grow-1">
                   <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
                 </div>
@@ -57,7 +60,7 @@
       </div>
     </div>
 
-    <div class="modal-basic">
+    <div class="modal-basic modal-wider">
       <b-modal v-model="viewOrderModal" size="lg" title="Order Information">
         <div class="row light-background border-bottom mb-3">
           <div class="col-md-4 pt-4">
@@ -113,12 +116,12 @@
             <ul class="meal-quantities">
               <li v-for="(order) in getMealQuantities(meals)">
                 <div class="row">
-                  <div class="col-md-4 pr-0">
+                  <div class="col-md-5 pr-0">
                     <span class="order-quantity">{{order.order}}</span>
                     <img src="/images/store/x-modal.png" class="mr-2 ml-2">
-                    <img :src="order.featured_image" class="modalMeal">
+                    <img :src="order.featured_image" class="modalMeal mr-0 pr-0">
                   </div>
-                  <div class="col-md-8 pt-3 nopadding">
+                  <div class="col-md-7 pt-3 nopadding pl-0 ml-0">
                     <p>{{order.title}}</p>
                     <p class="strong">{{format.money(order.price * order.order)}}</p>
                   </div>
@@ -150,9 +153,11 @@ export default {
     return {
       deliveryDate: "All",
       filter: false,
+      pastOrder: false,
       filters: {
         delivery_dates: null,
         notes: false,
+        pastOrders: false
       },
       viewOrderModal: false,
       order: {},
@@ -218,7 +223,8 @@ export default {
       customers: "storeCustomers",
     }),
     tableData() {
-      let filters = { fulfilled: 0 };
+      let filters = { fulfilled: 0 }
+
       if (_.isArray(this.filters.delivery_dates)) {
         filters.delivery_dates = this.filters.delivery_dates;
       }
@@ -315,6 +321,10 @@ export default {
         });
       });
       this.viewOrderModal = true;
+    },
+    filterPastOrders() {
+      this.pastOrder = !this.pastOrder;
+      this.refreshTable();
     },
     filterNotes() {
       this.filter = !this.filter;

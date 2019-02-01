@@ -1,5 +1,6 @@
 <template>
   <div>
+    <img src="/images/nutritionix.png" class="mb-3">
     <b-form class="mb-2" @submit.prevent="searchRecipe">
       <b-tabs class="mb-2">
         <b-tab title="Type in Ingredients" active>

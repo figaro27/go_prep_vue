@@ -118,7 +118,7 @@
                     <li @click="goToCategory(category)">{{ category }}</li>
                   </ul>
                   <b-button @click="viewFilters" variant="primary" class="pull-right ml-3">Filters</b-button>
-                  <b-button @click="clearFilters" variant="warning" class="pull-right">Clear All</b-button>
+                  <b-button @click="clearFilters" variant="warning" class="pull-right">Clear Filters</b-button>
                 </div>
               </div>
               <div class="col-sm-3 col-md-3 order-1 order-sm-2">

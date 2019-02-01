@@ -12,9 +12,9 @@ import CustomerOrders from './views/Customer/Orders.vue';
 
 import StoreCustomers from './views/Store/Customers.vue';
 import StoreIngredients from './views/Store/Ingredients.vue';
-import StorePrint from './views/Store/Print.vue';
-import StoreMeals from './views/Store/Meals.vue';
-import StoreMealOrders from './views/Store/MealOrders.vue';
+import StoreReports from './views/Store/Reports.vue';
+import StoreMenu from './views/Store/Menu.vue';
+import StoreProduction from './views/Store/Production.vue';
 import StoreOrders from './views/Store/Orders.vue';
 import StorePastOrders from './views/Store/PastOrders.vue';
 import StoreMealPlans from './views/Store/MealPlans.vue';
@@ -79,17 +79,17 @@ let routes = [
     component: StoreIngredients,
     name: 'store-ingredients'
   }, {
-    path: '/store/print',
-    component: StorePrint,
-    name: 'store-print'
+    path: '/store/reports',
+    component: StoreReports,
+    name: 'store-reports'
   }, {
-    path: '/store/meals',
-    component: StoreMeals,
-    name: 'store-meals'
+    path: '/store/menu',
+    component: StoreMenu,
+    name: 'store-menu'
   }, {
-    path: '/store/meal-orders',
-    component: StoreMealOrders,
-    name: 'store-meal-orders'
+    path: '/store/production',
+    component: StoreProduction,
+    name: 'store-production'
   }, {
     path: '/store/orders',
     component: StoreOrders,
