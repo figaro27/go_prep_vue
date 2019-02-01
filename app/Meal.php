@@ -47,6 +47,7 @@ class Meal extends Model
         'allergies',
         'categories',
         'orders',
+        'subscriptions',
         //'ingredients',
     ];
 
