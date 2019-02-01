@@ -13,10 +13,10 @@
             <div slot="beforeTable" class="mb-2">
               <div class="d-flex align-items-end">
                 <div class="mr-2">
-                  <b-btn @click="filterNotes" :selected="filters.notes" variant="primary" class="filter-btn">Filter Delivery Notes</b-btn>
+                  <b-btn @click="$set(filters, 'has_notes', !filters.has_notes)" :selected="filters.has_notes" variant="primary" class="filter-btn">Filter Delivery Notes</b-btn>
                 </div>
                 <div class="mr-2">
-                  <b-btn @click="filterPastOrders" :selected="filters.pastOrders" variant="warning" class="filter-btn">View Completed Orders</b-btn>
+                  <b-btn @click="$set(filters, 'fulfilled', !filters.fulfilled)" :selected="filters.fulfilled" variant="warning" class="filter-btn">View Completed Orders</b-btn>
                 </div>
                 <div class="flex-grow-1">
                   <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
@@ -47,9 +47,15 @@
                 @click="viewOrder(props.row.id)"
               >View Order</button>
               <button
+                v-if="!order.fulfilled"
                 class="btn btn-primary btn-sm"
                 @click="fulfill(props.row.id)"
               >Mark As Delivered</button>
+              <button
+                v-else
+                class="btn btn-primary btn-sm"
+                @click="unfulfill(props.row.id)"
+              >Unmark As Delivered</button>
             </div>
 
             <div slot="amount" slot-scope="props">
@@ -155,9 +161,9 @@ export default {
       filter: false,
       pastOrder: false,
       filters: {
+        fulfilled: 0,
         delivery_dates: null,
-        notes: false,
-        pastOrders: false
+        has_notes: false,
       },
       viewOrderModal: false,
       order: {},
@@ -223,20 +229,10 @@ export default {
       customers: "storeCustomers",
     }),
     tableData() {
-      let filters = { fulfilled: 0 }
+      let filters = { ...this.filters }
 
-      if (_.isArray(this.filters.delivery_dates)) {
-        filters.delivery_dates = this.filters.delivery_dates;
-      }
-
-      if (this.filter) {
-        filters.has_notes = true;
-      }
-      // }
-      // if (!this.filter) return _.filter(this.orders, { fulfilled: 0 });
-      //   else return _.filter(this.orders, { fulfilled: 0, has_notes: true });
       let filtered = _.filter(this.orders, order => {
-        if ("delivery_dates" in filters) {
+        if ("delivery_dates" in filters && _.isArray(filters.delivery_dates)) {
           let dateMatch = _.reduce(
             filters.delivery_dates,
             (match, date) => {
@@ -255,9 +251,9 @@ export default {
           if (!dateMatch) return false;
         }
 
-        if ("has_notes" in filters && order.has_notes !== filters.has_notes)
+        if (filters.has_notes && !order.has_notes)
           return false;
-        if ("fulfilled" in filters && order.fulfilled !== filters.fulfilled)
+        if (order.fulfilled != filters.fulfilled)
           return false;
 
         return true;
@@ -290,11 +286,17 @@ export default {
     async fulfill(id) {
       await this.updateOrder({ id, data: { fulfilled: 1 } });
       this.$toastr.s('Order fulfilled!')
+      this.$forceUpdate();
+    },
+    async unfulfill(id) {
+      await this.updateOrder({ id, data: { fulfilled: 0 } });
+      this.$forceUpdate();
     },
     async saveNotes(id) {
       let deliveryNote = deliveryNote;
       await this.updateOrder({ id, data: { notes: this.deliveryNote } })
       this.$toastr.s('Order notes saved!')
+      this.$forceUpdate();
     },
     getMealQuantities(meals) {
       let order = _.toArray(_.countBy(meals, "id"));
