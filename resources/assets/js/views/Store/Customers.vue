@@ -90,7 +90,7 @@
                       <li v-for="mealId in order.meal_ids" :key="mealId">
                         <div class="row">
                           <div class="col-md-5 pr-0">
-                            <span class="order-quantity">1</span>
+                            <span class="order-quantity">{{ order.meal_quantities[mealId] }}</span>
                             <img src="/images/store/x-modal.png" class="mr-2 ml-2">
                             <img :src="meal(mealId).featured_image" class="modalMeal" />
                           </div>
