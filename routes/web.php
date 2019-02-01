@@ -16,6 +16,10 @@ foreach (['{store_slug}.' . config('app.domain'), config('app.domain')] as $doma
     Auth::routes();
     Route::fallback('SpaController@index');
 
+    Route::group(['middleware' => ['auth:api']], function ($router) {
+      Route::get('/store/stripe/redirect', 'Store\\StripeController@connect');
+    });
+
     Route::group(['domain' => $domain, 'middleware' => ['web', 'store_slug']], function ($router) {
 
         // All logged in users
@@ -48,7 +52,7 @@ foreach (['{store_slug}.' . config('app.domain'), config('app.domain')] as $doma
 
         // All logged in stores
         Route::group(['middleware' => ['auth:api']], function ($router) {
-            Route::get('/store/stripe/redirect', 'Store\\StripeController@connect');
+            
         });
 
         // All logged in admin
