@@ -43,33 +43,8 @@
         <tbody>
           <tr v-for="(ingredient, i) in ingredients" :key="ingredient.food_name">
             <td>
-              <b-form-group>
-                <v-select
-                  class="ingredient-dropdown"
-                  label="name"
-                  :filterable="false"
-                  :options="ingredientOptions"
-                  @search="onSearch"
-                  :value="ingredient"
-                  :onChange="(val) => onAddIngredient(val, i)"
-                >
-                  <template slot="no-options">type to search ingredients...</template>
-                  <template slot="option" slot-scope="option">
-                    <div class="d-center">
-                      <img v-if="option.photo" :src="option.photo.thumb" class="thumb">
-                      <img v-if="option.image_thumb" :src="option.image_thumb" class="thumb">
-                      {{ option.food_name }}
-                    </div>
-                  </template>
-                  <template slot="selected-option" slot-scope="option">
-                    <div class="selected">
-                      <img v-if="option.photo" :src="option.photo.thumb" class="thumb">
-                      <img v-if="option.image_thumb" :src="option.image_thumb" class="thumb">
-                      {{ option.food_name }}
-                    </div>
-                  </template>
-                </v-select>
-              </b-form-group>
+              <img :src="ingredient.image_thumb" v-if="ingredient.image_thumb" class="ingredient-thumb" />
+              {{ ingredient.food_name }}
             </td>
             <td>
               <b-form-group>
@@ -129,6 +104,14 @@
       padding-right: 0;
       width: 30px;
     }
+  }
+
+  .ingredient-thumb {
+    display: inline-block;
+    width: 38px;
+    height: auto;
+    vertical-align: middle;
+    margin-right: 5px;
   }
 }
 .ingredient-table {
@@ -298,6 +281,7 @@ export default {
             ingredient.quantity = ingredient.serving_qty;
             ingredient.quantity_unit = unit;
             ingredient.added = true;
+            ingredient.image_thumb = ingredient.photo.thumb || null;
 
             // Calculate nutrition for 1 baseunit
             let multiplier =

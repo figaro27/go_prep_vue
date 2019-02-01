@@ -464,7 +464,10 @@ const actions = {
     dispatch
   }, data = {}) {
 
-    dispatch('refreshViewedStore');
+    if(data.store) {
+      dispatch('refreshViewedStore');
+    }
+
     dispatch('refreshStores');
     dispatch('refreshCards');
   },
@@ -919,14 +922,14 @@ const getters = {
   },
   storeCategoryTitle: (state) => id => {
     try {
-      return state.store.categories.data[id].category || {};
+      return _.find(state.store.categories.data, {id}).category || {};
     } catch (e) {
       return '';
     }
   },
   storeAllergyTitle: (state) => id => {
     try {
-      return state.allergies[id].title || {};
+      return  _.find(state.allergies, {id}).title || {};
     } catch (e) {
       return '';
     }

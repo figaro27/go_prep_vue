@@ -33,7 +33,7 @@ class Meal extends Model
         'active_orders',
         'active_orders_price',
         'lifetime_orders',
-        'subscriptions',
+        'subscription_count',
         'allergy_ids',
         'category_ids',
         'tag_ids',
@@ -47,6 +47,7 @@ class Meal extends Model
         'allergies',
         'categories',
         'orders',
+        'subscriptions',
         //'ingredients',
     ];
 
@@ -120,7 +121,7 @@ class Meal extends Model
         return $this->tags->pluck('id');
     }
 
-    public function getSubscriptionsAttribute()
+    public function getSubscriptionCountAttribute()
     {
         return $this->subscriptions->count();
     }

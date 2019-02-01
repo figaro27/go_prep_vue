@@ -23,7 +23,7 @@ class Order extends Model
         'delivery_date' => 'date:l, M d'
     ];
 
-    protected $appends = ['has_notes', 'meal_ids'];
+    protected $appends = ['has_notes', 'meal_ids', 'meal_quantities'];
 
     public function user()
     {
@@ -70,6 +70,11 @@ class Order extends Model
 
     public function getMealIdsAttribute() {
       return $this->meals()->get()->pluck('id');
+    }
+    public function getMealQuantitiesAttribute() {
+      return $this->meals()->get()->keyBy('id')->map(function($meal) {
+        return $meal->pivot->quantity ?? 0;
+      });
     }
 
     public static function updateOrder($id, $props)

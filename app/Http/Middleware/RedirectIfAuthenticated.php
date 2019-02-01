@@ -18,7 +18,23 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            return redirect('/home');
+
+            $user = auth()->user();
+
+            if(!$user) {
+              $user = auth('api')->user();
+            }
+
+            if(!$user) {
+              return $next($request);
+            }
+
+            if($user->hasRole('store')) {
+              return redirect($user->store->getUrl('/store/orders', $request->secure));
+            }
+            else {
+              return redirect('/customer/home');
+            }
         }
 
         return $next($request);
