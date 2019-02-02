@@ -1,6 +1,6 @@
 <template>
   <div class="modal-full modal-tabs">
-    <b-modal title="Create Meal" ref="createMealModal" @ok.prevent="e => storeMeal()">
+    <b-modal title="Create Meal" ref="createMealModal" @ok.prevent="e => storeMeal()" @cancel.prevent="toggleModal()">
       <b-row>
         <b-col>
           <b-tabs>
@@ -22,7 +22,6 @@
                   id="meal-description"
                   class="form-control"
                   :rows="4"
-                  :maxlength="100"
                 ></textarea>
               </b-form-group>
               <b-form-group>
@@ -36,6 +35,7 @@
                   v-model="meal.category_ids"
                   :options="categoryOptions"
                   class="filters"
+                  required
                 ></b-form-checkbox-group>
 
                 <h4 class="mt-4">Tags</h4>
@@ -63,6 +63,7 @@
               ></ingredient-picker>
             </b-tab>
           </b-tabs>
+
         </b-col>
 
         <b-col cols="2">
@@ -219,19 +220,25 @@ export default {
         .then(resp => {
           this.$toastr.s('Meal created!');
           this.$refs.createMealModal.hide();
+          this.$parent.createMealModal = false;
         })
-        .catch(e => {
-          this.$toastr.e('Failed to create meal.');
+        .catch(response => {
+          let error = _.first(Object.values(response.response.data.errors));
+          error = error.join(" ");
+          this.$toastr.e(error, "Error");
         })
         .finally(() => {
           //his.getTableData();
           this.$emit("created");
         });
-        this.$parent.createMealModal = false;
+        
     },
     async changeImage(val) {
       let b64 = await fs.getBase64(this.$refs.featuredImageInput.file);
       this.meal.featured_image = b64;
+    },
+    toggleModal(){
+      this.$parent.createMealModal = false;
     }
   }
 };

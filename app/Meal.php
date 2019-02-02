@@ -273,9 +273,14 @@ class Meal extends Model
         return Meal::with('ingredients', 'tags', 'categories')->where('id', $id)->first();
     }
 
-    //Considering renaming "Store" to "Company" to not cause confusion with store methods.
     public static function storeMeal($request)
     {
+        $request->validate([
+            'title' => 'required',
+            'price' => 'required',
+            'category_ids' => 'required'
+        ]);
+
         $user = auth('api')->user();
         $store = $user->store;
 

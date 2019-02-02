@@ -1,26 +1,5 @@
 <template>
   <div class="ingredient-search d-flex align-items-end">
-    <b-form-group label="Quantity" label-for="ingredient-quantity" class="ing-quantity">
-      <b-input id="ingredient-quantity" type="number" min="0" v-model="quantity"></b-input>
-    </b-form-group>
-    <b-form-group label="Unit" class="unit">
-      <b-select v-model="unit">
-        <optgroup label="Mass">
-          <option
-            v-for="option in massOptions"
-            :key="option.value"
-            :value="option.value"
-          >{{option.text}}</option>
-        </optgroup>
-        <optgroup label="Volume">
-          <option
-            v-for="option in volumeOptions"
-            :key="option.value"
-            :value="option.value"
-          >{{option.text}}</option>
-        </optgroup>
-      </b-select>
-    </b-form-group>
     <b-form-group label="Name" class="name">
       <v-select
         ref="select"
@@ -49,11 +28,33 @@
         </template>
       </v-select>
     </b-form-group>
+    <b-form-group label="Quantity" label-for="ingredient-quantity" class="ing-quantity">
+      <b-input id="ingredient-quantity" type="number" min="0" v-model="quantity"></b-input>
+    </b-form-group>
+    <b-form-group label="Unit" class="unit">
+      <b-select v-model="unit">
+        <optgroup label="Mass">
+          <option
+            v-for="option in massOptions"
+            :key="option.value"
+            :value="option.value"
+          >{{option.text}}</option>
+        </optgroup>
+        <optgroup label="Volume">
+          <option
+            v-for="option in volumeOptions"
+            :key="option.value"
+            :value="option.value"
+          >{{option.text}}</option>
+        </optgroup>
+      </b-select>
+    </b-form-group>
 
     <b-button
         :disabled="!quantity || !unit || !ingredient"
         @click="onClickAdd"
         variant="primary"
+        class="ml-4"
       >Add</b-button>
   </div>
 </template>
@@ -83,7 +84,7 @@
     }
   }
   .name {
-    flex-grow: 1;
+    flex-grow: .65;
     margin: 0 4px;
 
     .v-select {

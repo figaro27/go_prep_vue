@@ -196,7 +196,7 @@
       <center>
         <h5 class="mt-3">This meal is tied to one or more meal plans.
               <img
-                v-b-popover.hover="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis elit eu eleifend molestie. Phasellus nec gravida ipsum. Donec ornare ullamcorper nunc et eleifend. Nam semper, nisl ut hendrerit facilisis, tellus dolor commodo.'"
+                v-b-popover.hover="'You currently have one or more meal plans with your customers that contain this meal. Please select a subtitute and your customers will be informed via email. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of foods they contain, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'"
                 title="Replacement Meal"
                 src="/images/store/popover.png"
               > </h5>
@@ -527,6 +527,7 @@ export default {
       axios.delete(`/api/me/meals/${id}?substitute_id=${subId}`).then(resp => {
         this.refreshTable();
         this.deleteMealModal = false;
+        this.$toastr.s("Meal deleted!");
       });
     },
 
