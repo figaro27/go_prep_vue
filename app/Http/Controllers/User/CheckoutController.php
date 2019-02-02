@@ -59,7 +59,7 @@ class CheckoutController extends UserController
             $order->user_id = $user->id;
             $order->customer_id = $customer->id;
             $order->store_id = $store->id;
-            $order->order_number = $charge->id;
+            $order->order_number = substr(uniqid(rand(1, 9), false), 0, 12);
             $order->amount = $total;
             $order->fulfilled = false;
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));

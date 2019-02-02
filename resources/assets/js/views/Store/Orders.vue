@@ -16,7 +16,10 @@
                   <b-btn @click="$set(filters, 'has_notes', !filters.has_notes)" :selected="filters.has_notes" variant="primary" class="filter-btn">Filter Delivery Notes</b-btn>
                 </div>
                 <div class="mr-2">
-                  <b-btn @click="$set(filters, 'fulfilled', !filters.fulfilled)" :selected="filters.fulfilled" variant="warning" class="filter-btn">View Completed Orders</b-btn>
+                  <b-btn @click="$set(filters, 'fulfilled', !filters.fulfilled)" :selected="filters.fulfilled" variant="warning" class="filter-btn">
+                    <span v-if="!filters.fulfilled">View Completed Orders</span>
+                    <span v-if="filters.fulfilled">View Incomplete Orders</span>
+                  </b-btn>
                 </div>
                 <div class="flex-grow-1">
                   <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>

@@ -5,7 +5,7 @@
     </div>
 
     <div class="modal-basic">
-      <b-modal size="lg" v-model="viewFilterModal" v-if="viewFilterModal" hide-header="true">
+      <b-modal size="lg" v-model="viewFilterModal" v-if="viewFilterModal" hide-header>
         <div>
           <h4 class="center-text mb-5">Hide Meals That Contain</h4>
         </div>

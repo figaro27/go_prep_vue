@@ -47,7 +47,7 @@
               <button
                 class="btn view btn-warning btn-sm"
                 @click="viewSubscription(props.row.id)"
-              >View Subscription</button>
+              >View Meal Plan</button>
             </div>
 
             <div slot="amount" slot-scope="props">
@@ -59,10 +59,10 @@
     </div>
 
     <div class="modal-basic">
-      <b-modal v-model="viewSubscriptionModal" size="lg" title="Subscription Information">
+      <b-modal v-model="viewSubscriptionModal" size="lg" title="Meal Plan Details">
         <div class="row">
           <div class="col-md-4">
-            <h4>Subscription ID</h4>
+            <h4>Meal Plan ID</h4>
             <p>{{ subscription.subscription_number }}</p>
           </div>
           <div class="col-md-4">

@@ -1,24 +1,36 @@
 <template>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6 offset-3">
       <div class="card">
         <div class="card-body">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce feugiat suscipit leo, nec bibendum nunc auctor pellentesque. Morbi sit amet tellus vitae ligula eleifend fringilla vitae vel sapien. Fusce dictum imperdiet sem at vestibulum. Cras lacinia augue vel arcu condimentum tempus. Morbi egestas bibendum imperdiet. Nunc hendrerit tellus ut hendrerit ultricies. Quisque sagittis a urna facilisis tempor. Nunc a erat ex. Integer volutpat ipsum placerat nisi sodales vehicula. In interdum fringilla turpis, a vulputate eros porta ut. Mauris sollicitudin fermentum magna, et finibus tortor iaculis id. Vivamus tincidunt magna quis est elementum, non sollicitudin massa suscipit.</p>
+          <h5>Welcome to GoPrep</h5>
+          <p>We envision GoPrep to be the central hub that allows customers to find local meal prep companies and allow them the convenience of ordering a number of meals taking care of their eating needs for the week. Eventually as we grow, this page will show you a list of all meal prep companies in your area. You can then view each company's menu and make your order.</p>
+          <p>Help us spread the word by getting more meal prep companies on-board.</p>
 
-          <p>Fusce at fermentum est. Aenean ut erat magna. Morbi id eros ornare diam tincidunt fermentum ut ac nibh. Vestibulum augue diam, interdum sed nisl sit amet, placerat tempus massa. Donec porttitor purus et ante condimentum, vitae ultricies justo hendrerit. Nullam auctor egestas commodo. Phasellus eleifend vulputate neque nec viverra. Sed ultricies fringilla tellus id ultricies.</p>
+            <p><a href="http://goprep.com" target="_blank">Visit Our Website</a></p>
+          
+
 
           <form @submit.prevent="submit">
             <div class="form-group">
-              <label for="message">Message</label>
-              <textarea class="form-control" id="message" name="message" rows="5" v-model="fields.message"></textarea>
-              <div v-if="errors && errors.message" class="text-danger">{{ errors.message[0] }}</div>
-          </div>
-          <button type="submit" class="btn btn-primary">Send message</button>
+              <div v-if="errors && errors.name" class="text-danger">{{ errors.name[0] }}</div>
+              <div>
+                  <b-form-select id="subject" v-model="fields.subject" :options="options" class="contact-subject mb-3" required/>
+              </div>
+              <div class="form-group">
+                <label for="message">Message</label>
+                <textarea class="form-control" id="message" name="message" rows="5" v-model="fields.message"></textarea>
+                <div v-if="errors && errors.message" class="text-danger">{{ errors.message[0] }}</div>
+              </div>
+            </div>
+          <button type="submit" class="btn btn-primary">Send Message</button>
 
           <div v-if="success" class="alert alert-success mt-3">
-                  Message sent!
+                  Message sent! We'll get back to you shortly.
           </div>
           </form>
+
+
 
         </div>
       </div>
@@ -33,10 +45,19 @@ export default {
   },
   data() {
     return {
-      fields: {},
-      errors: {},
-      success: false,
-      loaded: true,
+      options: [
+                { value: null, text: 'Select a subject' },
+                { value: 'General Inquiry', text: 'General Inquiry' },
+                { value: 'Issue With My Order', text: 'Issue With My Order' },
+                { value: 'Suggestion', text: 'Suggestion' },
+                { value: 'Other', text: 'Other' }
+            ],
+            fields: {
+                subject: null
+            },
+            errors: {},
+            success: false,
+            loaded: true,
     };
   },
   created() {},
@@ -45,8 +66,7 @@ export default {
   methods: {
     ...mapMutations(['setViewedStore']),
     submit() {
-              if (this.loaded) {
-                this.loaded = false;
+              this.loaded = false;
                 this.success = false;
                 this.errors = {};
                 axios.post('/submitCustomer', this.fields).then(response => {
@@ -59,7 +79,6 @@ export default {
                     this.errors = error.response.data.errors || {};
                   }
                 });
-                }
             }
   }
 };

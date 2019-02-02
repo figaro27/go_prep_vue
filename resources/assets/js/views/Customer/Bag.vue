@@ -78,33 +78,53 @@
                 </p>
               </li>
               <li class="checkout-item" v-if="storeSettings.applyDeliveryFee">
-                <p>
-                  <strong>Delivery Fee:</strong>
-                  ${{ storeSettings.deliveryFee }}
-                </p>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Delivery Fee:</strong>
+                  </div>
+                  <div class="col-md-8">
+                    ${{ storeSettings.deliveryFee }}
+                  </div>
+                </div>
+
               </li>
               <li class="checkout-item">
-                <p>
-                  <span v-if="!applyMealPlanDiscount || !deliveryPlan">
-                    <strong>Price:</strong>
-                  </span>
-                  <span v-if="applyMealPlanDiscount && deliveryPlan">
-                    <strong>Price Before Discount:</strong>
-                  </span>
-                  ${{ totalBagPrice }}
-                </p>
+                <div class="row">
+                  <div class="col-md-4">
+                    <span v-if="!applyMealPlanDiscount || !deliveryPlan">
+                      <strong>Price:</strong>
+                    </span>
+                    <span v-if="applyMealPlanDiscount && deliveryPlan">
+                      <strong>Price Before Discount:</strong>
+                    </span>
+                  </div>
+                  <div class="col-md-8">
+                    ${{ totalBagPrice }}
+                  </div>
+                </div>
+
               </li>
               <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
-                <p>
-                  <strong>Weekly Meal Plan Discount:</strong>
-                  ${{ mealPlanDiscountAmount }}
-                </p>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Weekly Meal Plan Discount:</strong>
+                  </div>
+                  <div class="col-md-4">
+                    ${{ mealPlanDiscountAmount }}
+                  </div>
+                </div>
+
               </li>
               <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
-                <p>
-                  <strong>Weekly Meal Plan Price:</strong>
-                  ${{ totalBagPriceAfterDiscount }}
-                </p>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Weekly Meal Plan Price:</strong>
+                  </div>
+                  <div class="col-md-8">
+                    ${{ totalBagPriceAfterDiscount }}
+                  </div>
+                </div>
+
               </li>
               <li class="checkout-item" v-if="storeSettings.allowPickup">
                 <b-form-group>
@@ -126,13 +146,14 @@
               </li>
 
               <li>
-                <div v-if="!storeSettings.allowPickup || pickup === 1">
+                <div>
+                  <p v-if="pickupOrDelivery === '0'">Delivery Day</p>
+                  <p v-if="pickupOrDelivery === '1'">Pickup Day</p>
                   <b-form-group
                     v-if="deliveryDaysOptions.length > 1"
-                    label="Delivery day"
                     description
                   >
-                    <b-select :options="deliveryDaysOptions" v-model="deliveryDay" required>
+                    <b-select :options="deliveryDaysOptions" v-model="deliveryDay" class="delivery-select" required>
                       <option slot="top" disabled>-- Select delivery day --</option>
                     </b-select>
                   </b-form-group>
@@ -182,7 +203,7 @@ export default {
       deliveryPlan: false,
       pickup: false,
       deliveryDay: undefined,
-      pickupOrDelivery: 0,
+      pickupOrDelivery: '0',
       stripeKey,
       stripeOptions,
       card: null
@@ -215,9 +236,9 @@ export default {
     },
     singOrPluralTotal() {
       if (this.total > 1) {
-        return "meals";
+        return "Meals";
       }
-      return "meal";
+      return "Meal";
     },
     deliveryPlanText() {
       if (this.deliveryPlan) return "Prepared Weekly";

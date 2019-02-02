@@ -81,7 +81,9 @@ export default {
       isLoading: "isLoading"
     }),
     tableData() {
-      return Object.values(this.meals);
+      let meals = Object.values(this.meals);
+      const production = meals.filter(meal => meal.active_orders > 0)
+      return production;
     },
     storeMeals() {
       return this.meals;

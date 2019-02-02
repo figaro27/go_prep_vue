@@ -227,6 +227,7 @@ export default {
           //his.getTableData();
           this.$emit("created");
         });
+        this.$parent.createMealModal = false;
     },
     async changeImage(val) {
       let b64 = await fs.getBase64(this.$refs.featuredImageInput.file);

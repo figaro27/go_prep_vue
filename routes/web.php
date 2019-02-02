@@ -16,6 +16,9 @@ foreach ([config('app.domain')] as $domain) {
     Route::get('/store/stripe/redirect', 'Store\\StripeController@connect');
     Auth::routes();
     Route::fallback('SpaController@index');
+
+    Route::post('/submitStore', 'ContactFormController@submitStore');
+    Route::post('/submitCustomer', 'ContactFormController@submitCustomer');
     
     Route::group(['domain' => $domain, 'middleware' => ['web', 'store_slug']], function ($router) {
 
@@ -35,9 +38,6 @@ foreach ([config('app.domain')] as $domain) {
 
             Route::post('storeMealAdmin', 'MealController@storeAdmin');
             Route::post('updateActive', 'MealController@updateActive');
-
-            Route::post('/submitStore', 'ContactFormController@submitStore');
-            Route::post('/submitCustomer', 'ContactFormController@submitCustomer');
 
             Route::get('/getCustomer', 'UserDetailController@show');
         });
