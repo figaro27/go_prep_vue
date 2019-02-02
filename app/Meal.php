@@ -308,6 +308,10 @@ class Meal extends Model
                 $imageUrl = Utils\Images::uploadB64($request->get('featured_image'));
                 $props->put('featured_image', $imageUrl);
             }
+            else {
+                $defaultImageUrl = '/images/defaultMeal.jpg';
+                $props->put('featured_image', $defaultImageUrl);
+            }
 
             $newIngredients = $props->get('ingredients');
             if (is_array($newIngredients)) {
