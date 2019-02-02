@@ -32,6 +32,7 @@ import Toastr from 'vue-toastr';
 import PictureInput from "vue-picture-input";
 import money from "v-money";
 import VueNumberInput from '@chenfengyuan/vue-number-input';
+import VueRangedatePicker from 'vue-rangedate-picker'
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -47,7 +48,11 @@ Vue.component('timepicker', VueTimepicker)
 Vue.component('draggable', draggable)
 Vue.component('card', Card)
 Vue.component('picture-input', PictureInput)
-Vue.use(Toastr, {"defaultProgressBar": false});
+Vue.use(Toastr, { 
+  "defaultProgressBar": false,
+  
+});
+Vue.component('date-range-picker', VueRangedatePicker);
 
 import Thumbnail from './components/Thumbnail';
 Vue.component('thumbnail', Thumbnail)
@@ -58,6 +63,12 @@ Vue.component('ingredient-search', IngredientSearch);
 import DeliveryDatePicker from './components/DeliveryDatePicker';
 Vue.component('delivery-date-picker', DeliveryDatePicker);
 
+/*
+moment.defaultFormat = 'ddd, MMMM Do';
+moment.defaultFormatUtc = 'ddd, MMMM Do';
+moment.fn.toString = function() { this.format(moment.defaultFormat); }
+moment.tz.setDefault(moment.tz.guess());
+*/
 // For use in templates
 Vue.prototype.format = format;
 Vue.prototype.moment = moment;

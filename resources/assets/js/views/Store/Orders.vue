@@ -11,19 +11,24 @@
             v-show="!isLoading"
           >
             <div slot="beforeTable" class="mb-2">
-              <div class="d-flex align-items-end">
+              <div class="d-flex align-items-center">
                 <div class="mr-2">
-                  <b-btn @click="$set(filters, 'has_notes', !filters.has_notes)" :selected="filters.has_notes" variant="primary" class="filter-btn">Filter Delivery Notes</b-btn>
+                  <b-btn
+                    @click="$set(filters, 'has_notes', !filters.has_notes)"
+                    :selected="filters.has_notes"
+                    variant="primary"
+                    class="filter-btn"
+                  >Filter Delivery Notes</b-btn>
                 </div>
                 <div class="mr-2">
-                  <b-btn @click="$set(filters, 'fulfilled', !filters.fulfilled)" :selected="filters.fulfilled" variant="warning" class="filter-btn">
-                    <span v-if="!filters.fulfilled">View Completed Orders</span>
-                    <span v-if="filters.fulfilled">View Incomplete Orders</span>
-                  </b-btn>
+                  <b-btn
+                    @click="$set(filters, 'fulfilled', !filters.fulfilled)"
+                    :selected="filters.fulfilled"
+                    variant="warning"
+                    class="filter-btn"
+                  >View Completed Orders</b-btn>
                 </div>
-                <div class="flex-grow-1">
-                  <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
-                </div>
+                <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
               </div>
             </div>
 
@@ -165,8 +170,11 @@ export default {
       pastOrder: false,
       filters: {
         fulfilled: 0,
-        delivery_dates: null,
-        has_notes: false,
+        delivery_dates: {
+          start: null,
+          end: null
+        },
+        has_notes: false
       },
       viewOrderModal: false,
       order: {},
@@ -205,18 +213,14 @@ export default {
         customSorting: {
           created_at: function(ascending) {
             return function(a, b) {
-              var numA = moment(a.created_at);
-              var numB = moment(b.created_at);
-              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
-              return numA.isAfter(numB, "day") ? 1 : -1;
+              if (ascending) return a.isBefore(b, "day") ? 1 : -1;
+              return numA.isAfter(b, "day") ? 1 : -1;
             };
           },
           delivery_date: function(ascending) {
             return function(a, b) {
-              var numA = moment(a.delivery_date);
-              var numB = moment(b.delivery_date);
-              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
-              return numA.isAfter(numB, "day") ? 1 : -1;
+              if (ascending) return a.isBefore(b, "day") ? 1 : -1;
+              return numA.isAfter(b, "day") ? 1 : -1;
             };
           }
         }
@@ -229,44 +233,37 @@ export default {
       store: "viewedStore",
       orders: "storeOrders",
       isLoading: "isLoading",
-      customers: "storeCustomers",
+      customers: "storeCustomers"
     }),
     tableData() {
-      let filters = { ...this.filters }
+      let filters = { ...this.filters };
 
       let filtered = _.filter(this.orders, order => {
-        if ("delivery_dates" in filters && _.isArray(filters.delivery_dates)) {
-          let dateMatch = _.reduce(
-            filters.delivery_dates,
-            (match, date) => {
-              if(date === 'All') {
-                return true;
-              }
-              if (moment(date).isSame(order.delivery_date, "day")) {
-                return true 
-              }
-
-              return match;
-            },
-            false
-          );
+        if (
+          "delivery_dates" in filters &&
+          filters.delivery_dates.start &&
+          filters.delivery_dates.end
+        ) {
+          let dateMatch = order.delivery_date.isBetween(
+                  filters.delivery_dates.start,
+                  filters.delivery_dates.end,
+                  "day"
+                );
 
           if (!dateMatch) return false;
         }
 
-        if (filters.has_notes && !order.has_notes)
-          return false;
-        if (order.fulfilled != filters.fulfilled)
-          return false;
+        if (filters.has_notes && !order.has_notes) return false;
+        if (order.fulfilled != filters.fulfilled) return false;
 
         return true;
       });
 
       return filtered.map(order => {
-        order.customer = _.find(this.customers, {user_id: order.user_id});
+        order.customer = _.find(this.customers, { user_id: order.user_id });
         return order;
-      })
-    },
+      });
+    }
   },
   methods: {
     ...mapActions({
@@ -288,7 +285,7 @@ export default {
     },
     async fulfill(id) {
       await this.updateOrder({ id, data: { fulfilled: 1 } });
-      this.$toastr.s('Order fulfilled!')
+      this.$toastr.s("Order fulfilled!");
       this.$forceUpdate();
     },
     async unfulfill(id) {
@@ -297,8 +294,8 @@ export default {
     },
     async saveNotes(id) {
       let deliveryNote = deliveryNote;
-      await this.updateOrder({ id, data: { notes: this.deliveryNote } })
-      this.$toastr.s('Order notes saved!')
+      await this.updateOrder({ id, data: { notes: this.deliveryNote } });
+      this.$toastr.s("Order notes saved!");
       this.$forceUpdate();
     },
     getMealQuantities(meals) {

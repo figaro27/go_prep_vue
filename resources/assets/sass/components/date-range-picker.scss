@@ -1,0 +1,57 @@
+.calendar-root {
+  .input-date {
+    @extend .form-control;
+  }
+}
+
+.calendar-root {
+  .input-date {
+    position: relative;
+    padding: 0.375rem 0.75rem !important;
+    //width: auto !important;
+
+    &:before {
+      border-color: rgba(60,60,60,.5);
+      border-style: solid;
+      border-width: 3px 3px 0 0;
+      content: "";
+      display: inline-block;
+      height: 10px;
+      width: 10px;
+      vertical-align: text-top;
+      transform: rotate(133deg);
+      box-sizing: inherit;
+      transition: all .15s cubic-bezier(1,-.115,.975,.855);
+      transition-timing-function: cubic-bezier(1,-.115,.975,.855);
+
+      position: absolute;
+      right: 16px;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+    }
+
+    &:after {
+      display: none !important;
+    }
+
+    &.open {
+      &:before {
+        transform: rotate(315deg);
+      }
+    }
+  }
+
+  .calendar {
+    height: 320px !important;
+
+    h2 {
+      font-size: 22px;
+    }
+
+    .calendar-btn-apply {
+      @extend .btn;
+      @extend .btn-primary;
+    }
+  }
+}

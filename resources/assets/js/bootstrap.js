@@ -1,6 +1,14 @@
 window._ = require('lodash');
 window.Popper = require('popper.js').default;
-window.moment = require('moment-timezone');
+
+const moment = require('moment-timezone');
+/*
+moment.defaultFormat = 'ddd, MMMM Do';
+moment.defaultFormatUtc = 'ddd, MMMM Do';
+moment.fn.toString = function() { this.format(moment.defaultFormat); }
+moment.tz.setDefault(moment.tz.guess());
+*/
+window.moment = moment;
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support

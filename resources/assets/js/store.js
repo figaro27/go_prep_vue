@@ -764,7 +764,13 @@ const actions = {
     const {data} = await res;
 
     if (_.isArray(data)) {
-      commit('storeOrders', {orders: data});
+      const orders = _.map(data, order => {
+        order.created_at = moment.utc(order.created_at).local();//.format('ddd, MMMM Do')
+        order.updated_at = moment.utc(order.updated_at).local();//.format('ddd, MMMM Do')
+        order.delivery_date = moment.utc(order.delivery_date).local();//.format('ddd, MMMM Do')
+        return order;
+      });
+      commit('storeOrders', {orders});
     } else {
       throw new Error('Failed to retrieve orders');
     }
