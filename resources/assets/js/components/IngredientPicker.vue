@@ -76,11 +76,11 @@
                 <b-col v-if="options.saveButton" class="text-left">
                   <b-button variant="primary" :disabled="!canSave" @click.prevent="save">Save</b-button>
                 </b-col>
-                <b-col class="text-right">
+                <!-- <b-col class="text-right">
                   <a href="#" @click.prevent="onClickAddIngredient">
                     <i class="fas fa-plus-circle"></i>
                   </a>
-                </b-col>
+                </b-col> -->
               </b-row>
             </td>
           </tr>
@@ -365,6 +365,10 @@ export default {
       };
 
       ingredients.forEach(ingredient => {
+        let calciumIndex = _.findIndex(ingredient, function(o) { return o.full_nutrients.attr_id == 301; });
+        let vitamindIndex = _.findIndex(ingredient, function(o) { return o.full_nutrients.attr_id == 324; });
+        let ironIndex = _.findIndex(ingredient, function(o) { return o.full_nutrients.attr_id == 303; });
+
         let multiplier = 1;
 
         if (normalize) {
@@ -381,6 +385,7 @@ export default {
             units.base(ingredient.unit_type)
           );
         }
+
 
         nutrition.calories +=
           (ingredient.nf_calories || ingredient.calories) * multiplier;
@@ -403,13 +408,14 @@ export default {
           (ingredient.nf_sugars || ingredient.sugars) * multiplier;
         nutrition.proteins +=
           (ingredient.nf_protein || ingredient.proteins) * multiplier;
-        nutrition.vitaminD +=
-          (ingredient.nf_vitamind || ingredient.vitaminD) * multiplier;
         nutrition.potassium +=
           (ingredient.nf_potassium || ingredient.potassium) * multiplier;
+        nutrition.vitaminD +=
+          (ingredient.full_nutrients[vitamindIndex].value || ingredient.vitaminD) * multiplier;
         nutrition.calcium +=
-          (ingredient.nf_calcium || ingredient.calcium) * multiplier;
-        nutrition.iron += (ingredient.nf_iron || ingredient.iron) * multiplier;
+          (ingredient.full_nutrients[calciumIndex].value || ingredient.calcium) * multiplier;
+        nutrition.iron += 
+        (ingredient.full_nutrients[ironIndex].value || ingredient.iron) * multiplier;
         nutrition.sugars +=
           (ingredient.nf_addedsugars || ingredient.sugars) * multiplier;
       });

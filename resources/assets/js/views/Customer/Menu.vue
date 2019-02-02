@@ -45,7 +45,7 @@
                   <p v-if="storeSettings.showNutrition">{{ meal.description }}</p>
                   <div class="row mt-3 mb-5">
                     <div class="col-md-6">
-                      <h5>Nutrition</h5>
+                      <h5>Tags</h5>
                       <li v-for="tag in meal.tags">{{ tag.tag }}</li>
                     </div>
                     <div class="col-md-6">
@@ -55,11 +55,11 @@
                   </div>
 
                   <div class="row mt-5" v-if="storeSettings.showNutrition">
-                    <div class="col-md-8">
+                    <div class="col-md-5 mt-3">
                       <h5>{{ format.money(meal.price) }}</h5>
                     </div>
-                    <div class="col-md-4">
-                      <img src="/images/customer/add.jpg" @click="addOne(meal)">
+                    <div class="col-md-7">
+                      <b-btn @click="addOne(meal)" class="menu-bag-btn">+ ADD</b-btn>
                     </div>
                   </div>
                 </div>
@@ -146,7 +146,8 @@
                         @click="showMealModal(meal)"
                       >
                       <div class="d-flex justify-content-between mb-2 mt-1">
-                        <img src="/images/customer/minus.jpg" @click="minusOne(meal)">
+                        <b-btn @click="minusOne(meal)" class="menu-bag-btn plus-minus gray"><p>-</p></b-btn>
+                        <!-- <img src="/images/customer/minus.jpg" @click="minusOne(meal)" class="plus-minus"> -->
                         <b-form-input
                           type="text"
                           name
@@ -155,7 +156,8 @@
                           :value="quantity(meal)"
                           readonly
                         ></b-form-input>
-                        <img src="/images/customer/plus.jpg" @click="addOne(meal)">
+                        <b-btn @click="addOne(meal)" class="menu-bag-btn plus-minus"><p>+</p></b-btn>
+                        <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
                       </div>
                       <p class="center-text strong">{{ meal.title }}</p>
                       <p class="center-text">{{ format.money(meal.price) }}</p>
@@ -169,9 +171,11 @@
                   <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
                     <div v-if="item && item.quantity > 0" class="d-flex align-items-center">
                       <div class="mr-2">
-                        <img src="/images/customer/bag-plus.png" @click="addOne(item.meal)">
+                        <!-- <p @click="addOne(item.meal)" class="bag-plus">+</p> -->
+                        <img src="/images/customer/bag-plus.png" @click="addOne(item.meal)" class="bag-plus-minus">
                         <p class="bag-quantity">{{ item.quantity }}</p>
-                        <img src="/images/customer/bag-minus.png" @click="minusOne(item.meal)">
+                        <!-- <p @click="minusOne(item.meal)" class="bag-minus">-</p> -->
+                        <img src="/images/customer/bag-minus.png" @click="minusOne(item.meal)" class="bag-plus-minus">
                       </div>
                       <div class="bag-item-image mr-2">
                         <img :src="item.meal.featured_image" class="cart-item-img">
@@ -191,10 +195,11 @@
                   v-if="total < minimum"
                 >Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
                 <div>
+                  
                   <router-link to="/customer/bag">
                     <b-btn v-if="total >= minimum && !preview" class="menu-bag-btn">NEXT</b-btn>
-                    <!-- <img v-if="total >= minimum && !preview" src="/images/customer/next.jpg"> -->
                   </router-link>
+                  <h6 class="center-text mt-3">Current Total - ${{ totalBagPrice }}</h6>
                 </div>
               </div>
             </div>
@@ -263,7 +268,8 @@ export default {
       hasMeal: "bagHasMeal",
       willDeliver: "viewedStoreWillDeliver",
       _categories: "viewedStoreCategories",
-      isLoading: "isLoading"
+      isLoading: "isLoading",
+      totalBagPrice: "totalBagPrice"
     }),
     storeSettings() {
       return this.store.settings;

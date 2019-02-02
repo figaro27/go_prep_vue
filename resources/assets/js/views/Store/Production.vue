@@ -15,7 +15,7 @@
             >{{ format.money(props.row.active_orders_price) }}</div>
 
             <span slot="beforeLimit">
-              <b-btn variant="primary" @click="exportData('meals', 'pdf', true)">
+              <b-btn variant="primary" @click="exportData('meal_orders', 'pdf', true)">
                 <i class="fa fa-print"></i>&nbsp;
                 Print
               </b-btn>

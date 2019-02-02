@@ -385,7 +385,29 @@ top:10px;
   height:50px !important;
   color:#ffffff !important;
   font-size:20px !important;
+  font-weight:bold !important;
 }
+
+.plus-minus{
+  width:42px !important;
+  height:42px !important;
+}
+
+.plus-minus p{
+  font-size:35px !important;
+  position:relative !important;
+  bottom:13px !important;
+}
+
+.gray{
+  background-color:#A7A7A7 !important;
+}
+
+.bag-plus-minus{
+  width:15px !important;
+  height:15px !important;
+}
+
 // .nf-arrows, .nf-modifier-field, .nf-unitQuantityBox{
 //   display:none !important;
 // } 

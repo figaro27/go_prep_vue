@@ -9,7 +9,7 @@
           <div class="col-md-12 mb-2">
             <b-button variant="primary" @click="clearAll" class>Empty Bag</b-button>
             <router-link to="/customer/menu">
-              <b-button variant="success" class="m-3">Change Meals</b-button>
+              <b-button variant="warning" class="m-3">Change Meals</b-button>
             </router-link>
           </div>
         </div>
@@ -34,7 +34,10 @@
                   <div class="col-sm-2">
                     <img :src="item.meal.featured_image" class="bag-item-img">
                   </div>
-                  <div class="col-sm-5 offset-1">{{ item.meal.title }}</div>
+                  <div class="col-sm-5 offset-1">
+                    <p>{{ item.meal.title }}</p>
+                    <p class="strong">{{ format.money(item.meal.price * item.quantity) }}</p>
+                  </div>
                   <div class="col-sm-2">
                     <img
                       src="/images/customer/x.png"
@@ -48,6 +51,9 @@
             <p
               v-if="total < minimum"
             >Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
+            <router-link to="/customer/menu">
+              <b-btn v-if="total < minimum && !preview" class="menu-bag-btn">BACK</b-btn>
+            </router-link>
             <div></div>
           </div>
           <div class="col-md-6 offset-1">
@@ -175,7 +181,6 @@
                   <h4 class="mt-2 mb-3">Payment method</h4>
                   <card-picker :selectable="true" v-model="card"></card-picker>
                   <b-btn v-if="card" @click="checkout" class="menu-bag-btn">CHECKOUT</b-btn>
-                  <!-- <img v-if="card" @click="checkout" src="/images/customer/checkout.jpg"> -->
                 </div>
               </li>
             </ul>
