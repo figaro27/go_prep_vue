@@ -1,18 +1,19 @@
 <template>
-  <b-form-group class="delivery-date-picker mb-0">
+  <div class="delivery-date-picker mb-0">
     <div class="d-flex align-items-center">
       <div class="mr-2">Delivery dates:</div>
 
       <div class="flex-grow-1">
-        <v-select
+        <date-range-picker @selected="val => onChange(val)" i18n="EN"></date-range-picker>
+        <!--<v-select
           multiple
           v-model="delivery_dates"
           @change="val => onChange(val)"
           :options="deliveryDateOptions"
-        ></v-select>
+        ></v-select>-->
       </div>
     </div>
-  </b-form-group>
+  </div>
 </template>
 
 <style lang="scss">
@@ -110,6 +111,14 @@ export default {
     onChange(val) {
       this.changed = true;
 
+      val = {...val};
+      val.start = moment(val.start);
+      val.end = moment(val.end);
+
+      //val = [val.start, val.end];
+      this.$emit("input", val);
+
+      /*
       if (!val.length) {
         val = ["All"];
         this.delivery_dates = val;
@@ -123,7 +132,10 @@ export default {
       if (!val.length) {
         val = null;
       }
-      this.$emit("input", val);
+      this.$emit("input", val);*/
+    },
+    onDateSelected(val) {
+
     },
     update(val) {}
   }
