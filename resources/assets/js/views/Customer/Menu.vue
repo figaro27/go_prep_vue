@@ -192,7 +192,8 @@
                 >Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
                 <div>
                   <router-link to="/customer/bag">
-                    <img v-if="total >= minimum && !preview" src="/images/customer/next.jpg">
+                    <b-btn v-if="total >= minimum && !preview" class="menu-bag-btn">NEXT</b-btn>
+                    <!-- <img v-if="total >= minimum && !preview" src="/images/customer/next.jpg"> -->
                   </router-link>
                 </div>
               </div>

@@ -174,7 +174,8 @@
                 <div v-else>
                   <h4 class="mt-2 mb-3">Payment method</h4>
                   <card-picker :selectable="true" v-model="card"></card-picker>
-                  <img v-if="card" @click="checkout" src="/images/customer/checkout.jpg">
+                  <b-btn v-if="card" @click="checkout" class="menu-bag-btn">CHECKOUT</b-btn>
+                  <!-- <img v-if="card" @click="checkout" src="/images/customer/checkout.jpg"> -->
                 </div>
               </li>
             </ul>

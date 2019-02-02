@@ -20,6 +20,7 @@
                 v-b-popover.hover="'This is the amount of time you want to lock in orders before a specific delivery day. For example - you set the cut off period to 1 day, and it is currently Tuesday. If you have a Wednesday delivery day, your customer will not see Wednesday as a delivery day option. They will see the next available delivery day. This prevents you from getting new orders right before your delivery day and possibly already after you prepped your meals for that day.'"
                 title="Cut Off Period"
                 src="/images/store/popover.png"
+                class="popover-size"
               >
             </b-form-group>
 
@@ -48,6 +49,7 @@
                 v-b-popover.hover="'These are the day(s) you plan on delivering your meals to your customers and will show up as options on the checkout page for the customer. You can set it to one day per week as many smaller meal prep companies do, or as many as you like.'"
                 title="Delivery Day(s)"
                 src="/images/store/popover.png"
+                class="popover-size"
               >
             </b-form-group>
 
@@ -69,6 +71,7 @@
                 v-b-popover.hover="'As you do local delivery, you may have a certain cutoff distance. Here you can set this distance by radius by the number of miles around you or by zip codes separated by commas.'"
                 title="Delivery Distance Type"
                 src="/images/store/popover.png"
+                class="popover-size"
               >
             </b-form-group>
             <b-form-group
@@ -100,12 +103,12 @@
             </b-form-group>
             <b-form-group :state="true">
               <p>
-                Minimum Meals Requirement
+                <span class="mr-1">Minimum Meals Requirement</span>
                 <img
                   v-b-popover.hover="'Here you can set a minimum number of meals required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'"
                   title="Minimum Meals Requirement"
                   src="/images/store/popover.png"
-                  class="ml-1 pb-1"
+                  class="popover-size"
                 >
               </p>
               <b-form-input
@@ -117,12 +120,12 @@
             </b-form-group>
             <b-form-group :state="true">
               <p>
-                Weekly Meal Plan Discount
+                <span class="mr-1">Weekly Meal Plan Discount</span>
                 <img
                   v-b-popover.hover="'Give your customers an incentive to create a weekly meal plan with you by offering a discount percentage.'"
                   title="Weekly Meal Plan Discount"
                   src="/images/store/popover.png"
-                  class="ml-1 pb-1"
+                  class="popover-size"
                 >
               </p>
               <c-switch
@@ -141,12 +144,12 @@
             </b-form-group>
             <b-form-group :state="true">
               <p>
-                Delivery Fee
+                <span class="mr-1">Delivery Fee</span>
                 <img
                   v-b-popover.hover="'Here you can apply an optional delivery fee paid for by your customers.'"
                   title="Delivery Fee"
                   src="/images/store/popover.png"
-                  class="ml-1 pb-1"
+                  class="popover-size"
                 >
               </p>
               <c-switch
@@ -165,12 +168,12 @@
             </b-form-group>
             <b-form-group :state="true">
               <p>
-                Allow Pickup
+                <span class="mr-1">Allow Pickup</span>
                 <img
                   v-b-popover.hover="'Allow your customers to pick up their meals instead of having it delivered. Please provide the location, time, and any additional instructions which will be shown to the customer.'"
                   title="Allow Pickup"
                   src="/images/store/popover.png"
-                  class="ml-1 pb-1"
+                  class="popover-size"
                 >
               </p>
               <c-switch
@@ -209,11 +212,12 @@
           </b-form>
 
           <p class="mb-0 pb-0">
-            Categories
+            <span class="mr-1">Categories</span>
             <img
               v-b-popover.hover="'Categories are ways to group your meals together into different sections that show up on your menu. Some examples include Entrees and Breakfast. You can then rearrange the order of the categories which rearranges the order they are shown on your menu to customers.'"
               title="Categories"
               src="/images/store/popover.png"
+              class="popover-size"
             >
           </p>
           <b-form-group :state="true">
@@ -312,6 +316,7 @@
                 v-b-popover.hover="'This sets the default date view in the calendars on all of the tables of the application. You may only want to see information about the next single upcoming delivery day, or you may want to see the next two delivery days. Enter 0 to see all upcoming delivery days.'"
                 title="Default Delivery Days"
                 src="/images/store/popover.png"
+                class="popover-size"
               >
             </p>
             <b-form-group description="Enter 0 to Display All" :state="true">

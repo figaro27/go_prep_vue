@@ -117,6 +117,7 @@
                       v-b-popover.hover="'Categories show up as different sections of your menu to your customers. You can have the same meal show up in multiple categories. Add, remove, or rearrange the order of categories in Settings.'"
                       title="Categories"
                       src="/images/store/popover.png"
+                      class="popover-size"
                       >
                   </h4>
                   <b-form-checkbox-group
@@ -132,6 +133,7 @@
                       v-b-popover.hover="'Meal tags describe the nutritional benefits contained in your meal. These allow your meals to be filtered by your customer on your menu page for anyone with specific dietary preferences.'"
                       title="Tags"
                       src="/images/store/popover.png"
+                      class="popover-size"
                       >
                   </h4>
                   <b-form-checkbox-group
@@ -147,6 +149,7 @@
                       v-b-popover.hover="'Indiciate if your meal contains any of the below. These allow your meals to be filtered by your customer on your menu page for anyone looking to avoid meals that contain any of these options.'"
                       title="Contains"
                       src="/images/store/popover.png"
+                      class="popover-size"
                       >
                   </h4>
                   <b-form-checkbox-group
@@ -199,6 +202,7 @@
                 v-b-popover.hover="'You currently have one or more meal plans with your customers that contain this meal. Please select a subtitute and your customers will be informed via email. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of foods they contain, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'"
                 title="Replacement Meal"
                 src="/images/store/popover.png"
+                class="popover-size"
               > </h5>
         <h5 class="mb-3">Please select a recommended replacement meal.</h5>
 
