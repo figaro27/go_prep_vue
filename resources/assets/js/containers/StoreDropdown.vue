@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     logout() {
-      axios.post("/logout").finally(resp => {
+      axios.post("/api/auth/logout").finally(resp => {
         window.location.href = "/login";
       });
     },

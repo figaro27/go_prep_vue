@@ -14,7 +14,7 @@
 foreach ([config('app.domain')] as $domain) {
 
     Route::get('/store/stripe/redirect', 'Store\\StripeController@connect');
-    Auth::routes();
+    //Auth::routes();
     Route::fallback('SpaController@index');
 
     Route::post('/submitStore', 'ContactFormController@submitStore');

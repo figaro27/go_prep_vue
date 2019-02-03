@@ -23,12 +23,13 @@ class HomeController extends Controller
      */
     public function index()
     {
+      return view('app');
 
         if(auth()->user()->user_role_id == 2){
-        return view('store');
+          return view('store');
         }
         elseif(auth()->user()->user_role_id == 3){
-        return view('admin');
+          return view('admin');
         }
         return view('customer');
     }

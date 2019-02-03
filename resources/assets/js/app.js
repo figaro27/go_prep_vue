@@ -9,6 +9,7 @@ import Vue from 'vue'; // Importing Vue Library
 window.Vue = Vue;
 import VueRouter from 'vue-router'; // importing Vue router library
 import router from './routes';
+import App from './containers/AppContainer';
 import CustomerApp from './containers/CustomerContainer';
 import StoreApp from './containers/StoreContainer';
 import AdminApp from './containers/AdminContainer';
@@ -35,7 +36,10 @@ import VueNumberInput from '@chenfengyuan/vue-number-input';
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
-Vue.use(money, {precision: 2, prefix:'$'})
+Vue.use(money, {
+  precision: 2,
+  prefix: '$'
+})
 Vue.use(VueNumberInput)
 Vue.component('input-tag', InputTag)
 Vue.component('v-select', vSelect)
@@ -43,10 +47,7 @@ Vue.component('timepicker', VueTimepicker)
 Vue.component('draggable', draggable)
 Vue.component('card', Card)
 Vue.component('picture-input', PictureInput)
-Vue.use(Toastr, { 
-  "defaultProgressBar": false,
-
- });
+Vue.use(Toastr, {"defaultProgressBar": false});
 
 import Thumbnail from './components/Thumbnail';
 Vue.component('thumbnail', Thumbnail)
@@ -70,19 +71,9 @@ files
     Vue.component(key.split('/').pop().split('.')[0], files(key))
   })
 
-if ($('#customerapp').length) {
-  const app = new Vue({el: '#customerapp', router, store, template: '<CustomerApp/>', components: {
-      CustomerApp
-    }});
-} else if ($('#storeapp').length) {
-  const app = new Vue({el: '#storeapp', router, store, template: '<StoreApp/>', components: {
-      StoreApp
-    }});
-} else if ($('#adminapp').length) {
-  const app = new Vue({el: '#adminapp', router, store, template: '<AdminApp/>', components: {
-      AdminApp
-    }});
-}
+const app = new Vue({el: '#app', router, store, template: '<App/>', components: {
+    App
+  }});
 
 modal.init();
 
@@ -100,7 +91,11 @@ setInterval(() => {
   }
 }, 30 * 1000);
 
-$(document).on('dblclick', '.VueTables__table tbody > tr', function() {
-  $(this).find('.btn.view').click();
-  document.getSelection().removeAllRanges();
+$(document).on('dblclick', '.VueTables__table tbody > tr', function () {
+  $(this)
+    .find('.btn.view')
+    .click();
+  document
+    .getSelection()
+    .removeAllRanges();
 });

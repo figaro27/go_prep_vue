@@ -213,8 +213,11 @@
                   v-if="total < minimum"
                 >Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
                 <div>
-                  <router-link to="/customer/bag">
+                  <router-link v-if="loggedIn" to="/customer/bag">
                     <b-btn v-if="total >= minimum && !preview" class="menu-bag-btn">NEXT</b-btn>
+                  </router-link>
+                   <router-link v-else to="/login">
+                    <b-btn v-if="total >= minimum && !preview" class="menu-bag-btn">LOG IN</b-btn>
                   </router-link>
                   <h6 class="center-text mt-3">Current Total - ${{ totalBagPrice }}</h6>
                 </div>
@@ -287,7 +290,8 @@ export default {
       _categories: "viewedStoreCategories",
       storeLogo: "viewedStoreLogo",
       isLoading: "isLoading",
-      totalBagPrice: "totalBagPrice"
+      totalBagPrice: "totalBagPrice",
+      loggedIn: "loggedIn"
     }),
     storeSettings() {
       return this.store.settings;

@@ -18,16 +18,16 @@
         >
       </b-link>
       <b-navbar-nav class="d-none d-block d-md-none">
-        <b-nav-item v-if="'id' in viewedStore" class="px-3" to="/customer/bag">Bag</b-nav-item>
+        <b-nav-item v-if="'id' in viewedStore && loggedIn" class="px-3" to="/customer/bag">Bag</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="d-md-down-none">
         <b-nav-item v-if="'id' in viewedStore" class="px-3" to="/customer/menu">Menu</b-nav-item>
-        <b-nav-item v-if="'id' in viewedStore" class="px-3" to="/customer/bag">Bag</b-nav-item>
-        <b-nav-item class="px-3" to="/customer/orders">Orders</b-nav-item>
-        <b-nav-item class="px-3" to="/customer/subscriptions">Meal Plans</b-nav-item>
+        <b-nav-item v-if="'id' in viewedStore && loggedIn" class="px-3" to="/customer/bag">Bag</b-nav-item>
+        <b-nav-item v-if="loggedIn" class="px-3" to="/customer/orders">Orders</b-nav-item>
+        <b-nav-item v-if="loggedIn" class="px-3" to="/customer/subscriptions">Meal Plans</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
-        <CustomerDropdown/>
+        <CustomerDropdown v-if="loggedIn" />
       </b-navbar-nav>
       <!--<AsideToggler class="d-lg-none" mobile />-->
     </AppHeader>
@@ -94,7 +94,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapGetters(["viewedStore"]),
+    ...mapGetters(["viewedStore", "loggedIn"]),
     name() {
       return this.$route.name;
     },

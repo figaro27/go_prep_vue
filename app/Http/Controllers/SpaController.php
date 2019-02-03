@@ -28,7 +28,7 @@ class SpaController extends Controller
     public function index(Request $request)
     {
         if ($request->wantsJson()) {
-            //$this->middleware('view.api');
+            //$this->middleware('auth:api');
 
             $user = auth('api')->user();
             $context = 'guest';
@@ -94,38 +94,38 @@ class SpaController extends Controller
                     'settings',
                 ])->find(STORE_ID) : null;
 
-                if($store) {
-                  if ($store->settings->delivery_distance_type === 'radius') {
-                      $distance = $user->distanceFrom($store);
-                      $willDeliver = $distance < $store->settings->delivery_distance_radius;
-                  } else {
-                      $willDeliver = $store->deliversToZip($user->userDetail->zip);
-                  }
+                if ($store) {
+                    if ($store->settings->delivery_distance_type === 'radius') {
+                        $distance = $user->distanceFrom($store);
+                        $willDeliver = $distance < $store->settings->delivery_distance_radius;
+                    } else {
+                        $willDeliver = $store->deliversToZip($user->userDetail->zip);
+                    }
 
-                  return [
-                    'context' => $context,
-                    'user' => $user,
-                    'store' => $store,
-                    'store_distance' => $distance ?? null,
-                    'will_deliver' => $willDeliver,
-                    'allergies' => Allergy::all(),
-                    'tags' => MealTag::all(),
-                  ];
+                    return [
+                        'context' => $context,
+                        'user' => $user,
+                        'store' => $store,
+                        'store_distance' => $distance ?? null,
+                        'will_deliver' => $willDeliver,
+                        'allergies' => Allergy::all(),
+                        'tags' => MealTag::all(),
+                    ];
+                } else {
+                    return [
+                        'context' => $context,
+                        'user' => $user,
+                        'store' => null,
+                        'allergies' => Allergy::all(),
+                        'tags' => MealTag::all(),
+                    ];
                 }
-                else {
-                  return [
-                    'context' => $context,
-                    'user' => $user,
-                    'store' => null,
-                    'allergies' => Allergy::all(),
-                    'tags' => MealTag::all(),
-                  ];
-                }
-               
+
             }
 
         } else {
             $user = auth()->user();
+            return view('app');
 
             if ($user) {
                 if ($user->user_role_id === 2) {
@@ -137,7 +137,8 @@ class SpaController extends Controller
                 }
             }
 
-            return redirect('/login');
+
+            //return redirect('/login');
 
         }
 
@@ -146,7 +147,7 @@ class SpaController extends Controller
     public function getViewedStore()
     {
         $user = auth('api')->user();
-        
+
         $store = defined('STORE_ID') ?
         Store::with([
             'meals',
@@ -158,11 +159,16 @@ class SpaController extends Controller
             'details',
         ])->find(STORE_ID) : null;
 
-        if ($store->settings->delivery_distance_type === 'radius') {
-            $distance = $user->distanceFrom($store);
-            $willDeliver = $distance < $store->settings->delivery_distance_radius;
-        } else {
-            $willDeliver = $store->deliversToZip($user->userDetail->zip);
+        if ($user) {
+            if ($store->settings->delivery_distance_type === 'radius') {
+                $distance = $user->distanceFrom($store);
+                $willDeliver = $distance < $store->settings->delivery_distance_radius;
+            } else {
+                $willDeliver = $store->deliversToZip($user->userDetail->zip);
+            }
+        }
+        else {
+            $willDeliver = false;
         }
 
         return [

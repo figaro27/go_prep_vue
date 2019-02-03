@@ -1,5 +1,9 @@
 import VueRouter from 'vue-router';
 
+import store from './store';
+
+import Login from './views/Login.vue';
+
 import CustomerHome from './views/Customer/Home.vue';
 import CustomerBag from './views/Customer/Bag.vue';
 import CustomerCheckout from './views/Customer/Checkout.vue';
@@ -33,7 +37,25 @@ import AdminStores from './views/Admin/Stores.vue';
 
 import Spinner from './components/Spinner.vue';
 
+const middleware = {
+  role: {
+    customer: (to, from, next) => {
+      if(!store.getters.loggedIn) {
+        next('/login')
+      }
+      else {
+        next();
+      }
+    }
+  }
+};
+
 let routes = [
+  {
+    path: '/login',
+    component: Login,
+    name: 'login'
+  },
   {
     path: '/customer/home',
     component: CustomerHome,
@@ -69,7 +91,8 @@ let routes = [
   }, {
     path: '/customer/orders',
     component: CustomerOrders,
-    name: 'customer-orders'
+    name: 'customer-orders',
+    beforeEnter: middleware.role.customer,
   }, {
     path: '/store/customers',
     component: StoreCustomers,

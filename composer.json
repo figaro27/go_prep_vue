@@ -19,7 +19,8 @@
         "mk-j/php_xlsxwriter": "^0.37.0",
         "php-units-of-measure/php-units-of-measure": "^2.1",
         "predis/predis": "^1.1",
-        "stripe/stripe-php": "^6.28"
+        "stripe/stripe-php": "^6.28",
+        "tymon/jwt-auth": "1.0.*"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

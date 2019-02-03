@@ -339,6 +339,9 @@ const actions = {
     } else if (context === 'customer') {
       dispatch('initCustomer', data)
     }
+    else if(context === 'guest') {
+      dispatch('initGuest', data);
+    }
 
     try {
       if (!_.isEmpty(data.user) && _.isObject(data.user)) {
@@ -468,6 +471,19 @@ const actions = {
 
     dispatch('refreshStores');
     dispatch('refreshCards');
+  },
+
+  async initGuest({
+    commit,
+    state,
+    dispatch
+  }, data = {}) {
+
+    if(data.store) {
+      dispatch('refreshViewedStore');
+    }
+
+    dispatch('refreshStores');
   },
 
 
@@ -783,6 +799,9 @@ const actions = {
 
 // getters are functions
 const getters = {
+  loggedIn(state) {
+    return !_.isEmpty(state.user.data);
+  },
   tags(state) {
     return state.tags || [];
   },
