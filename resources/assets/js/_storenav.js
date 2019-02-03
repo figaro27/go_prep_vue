@@ -55,7 +55,7 @@ export default {
       url: '#payments',
       icon: 'fa fa-money',
       // class: 'nav-child',
-      target: '_blank'
+      attributes: { target: '_blank', rel: "noopener" },
     },
     {
       name: 'Settings',
