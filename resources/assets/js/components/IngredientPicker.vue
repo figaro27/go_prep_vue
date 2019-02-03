@@ -43,7 +43,11 @@
         <tbody>
           <tr v-for="(ingredient, i) in ingredients" :key="ingredient.food_name">
             <td>
-              <img :src="ingredient.image_thumb" v-if="ingredient.image_thumb" class="ingredient-thumb" />
+              <img
+                :src="ingredient.image_thumb"
+                v-if="ingredient.image_thumb"
+                class="ingredient-thumb"
+              >
               {{ ingredient.food_name }}
             </td>
             <td>
@@ -80,7 +84,7 @@
                   <a href="#" @click.prevent="onClickAddIngredient">
                     <i class="fas fa-plus-circle"></i>
                   </a>
-                </b-col> -->
+                </b-col>-->
               </b-row>
             </td>
           </tr>
@@ -275,8 +279,8 @@ export default {
             ingredient.unit_type = units.type(unit);
             ingredient.quantity_unit_display = unit;
 
-            if(ingredient.unit_type === 'unit') {
-              unit = 'unit';
+            if (ingredient.unit_type === "unit") {
+              unit = "unit";
             }
             ingredient.quantity = ingredient.serving_qty;
             ingredient.quantity_unit = unit;
@@ -365,9 +369,15 @@ export default {
       };
 
       ingredients.forEach(ingredient => {
-        let calciumIndex = _.findIndex(ingredient, function(o) { return o.full_nutrients.attr_id == 301; });
-        let vitamindIndex = _.findIndex(ingredient, function(o) { return o.full_nutrients.attr_id == 324; });
-        let ironIndex = _.findIndex(ingredient, function(o) { return o.full_nutrients.attr_id == 303; });
+        let calciumIndex = _.findIndex(ingredient.full_nutrients, function(o) {
+          return o.attr_id == 301;
+        });
+        let vitamindIndex = _.findIndex(ingredient.full_nutrients, function(o) {
+          return o.attr_id == 324;
+        });
+        let ironIndex = _.findIndex(ingredient.full_nutrients, function(o) {
+          return o.attr_id == 303;
+        });
 
         let multiplier = 1;
 
@@ -385,7 +395,6 @@ export default {
             units.base(ingredient.unit_type)
           );
         }
-
 
         nutrition.calories +=
           (ingredient.nf_calories || ingredient.calories) * multiplier;
@@ -411,11 +420,17 @@ export default {
         nutrition.potassium +=
           (ingredient.nf_potassium || ingredient.potassium) * multiplier;
         nutrition.vitaminD +=
-          (ingredient.full_nutrients[vitamindIndex].value || ingredient.vitaminD) * multiplier;
+          (vitamindIndex > -1
+            ? ingredient.full_nutrients[vitamindIndex].value
+            : ingredient.vitaminD) * multiplier;
         nutrition.calcium +=
-          (ingredient.full_nutrients[calciumIndex].value || ingredient.calcium) * multiplier;
-        nutrition.iron += 
-        (ingredient.full_nutrients[ironIndex].value || ingredient.iron) * multiplier;
+          (calciumIndex > -1
+            ? ingredient.full_nutrients[calciumIndex].value
+            : ingredient.calcium) * multiplier;
+        nutrition.iron +=
+          (ironIndex > -1
+            ? ingredient.full_nutrients[ironIndex].value
+            : ingredient.iron) * multiplier;
         nutrition.sugars +=
           (ingredient.nf_addedsugars || ingredient.sugars) * multiplier;
       });
@@ -453,7 +468,7 @@ export default {
         valueFibers: nutrition.fibers,
         valueSugars: nutrition.sugars,
         valueProteins: nutrition.proteins,
-        valueVitaminD: (nutrition.vitaminD / 20) * 100,
+        valueVitaminD: (nutrition.vitaminD / 20000) * 100,
         valuePotassium_2018: (nutrition.potassium / 4700) * 100,
         valueCalcium: (nutrition.calcium / 1300) * 100,
         valueIron: (nutrition.iron / 18) * 100,
