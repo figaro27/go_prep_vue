@@ -10,8 +10,11 @@
           <h4 class="center-text mb-5 mt-5">Hide Meals That Contain</h4>
         </div>
         <div class="row mb-4">
-          <div v-for="allergy in allergies" :key="allergy.id" class="filters col-md-3 mb-3">
-            <b-button :pressed="active[allergy.id]" @click="filterByAllergy(allergy.id)">{{ allergy.title }}</b-button>
+          <div v-for="allergy in allergies" :key="`allergy-${allergy.id}`" class="filters col-md-3 mb-3">
+            <b-button
+              :pressed="active[allergy.id]"
+              @click="filterByAllergy(allergy.id)"
+            >{{ allergy.title }}</b-button>
           </div>
         </div>
         <hr>
@@ -19,7 +22,7 @@
           <h4 class="center-text mb-5">Show Meals With</h4>
         </div>
         <div class="row">
-          <div v-for="tag in tags" :key="tag" class="filters col-md-3 mb-3">
+          <div v-for="tag in tags" :key="`tag-${tag}`" class="filters col-md-3 mb-3">
             <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{ tag }}</b-button>
           </div>
         </div>
@@ -31,7 +34,6 @@
       <div class="col-sm-12 mt-3">
         <div class="card">
           <div class="card-body">
-            <Spinner v-if="isLoading"/>
             <b-modal
               ref="mealModal"
               size="lg"
@@ -112,7 +114,7 @@
             </b-modal>
 
             <div class="row">
-              <div class="col-sm-9 col-md-9 order-2 order-sm-1 main-menu-area">
+              <div class="col-sm-9 col-md-9 order-2 order-sm-1">
                 <div class="filter-area">
                   <ul v-for="category in categories" :key="category" class="menu-categories">
                     <li @click="goToCategory(category)">{{ category }}</li>
@@ -125,8 +127,12 @@
                 <p @click="clearAll">Clear All</p>
               </div>
             </div>
+            <div v-if="storeLogo">
+              <img :src="storeLogo" :title="store.details.name" />
+            </div>
             <div class="row">
               <div :class="`col-md-9 order-2 order-sm-1  main-menu-area`">
+                <Spinner v-if="!meals.length" position="absolute"/>
                 <div
                   v-for="group in meals"
                   :key="group.category"
@@ -146,7 +152,9 @@
                         @click="showMealModal(meal)"
                       >
                       <div class="d-flex justify-content-between mb-2 mt-1">
-                        <b-btn @click="minusOne(meal)" class="menu-bag-btn plus-minus gray"><p>-</p></b-btn>
+                        <b-btn @click="minusOne(meal)" class="menu-bag-btn plus-minus gray">
+                          <p>-</p>
+                        </b-btn>
                         <!-- <img src="/images/customer/minus.jpg" @click="minusOne(meal)" class="plus-minus"> -->
                         <b-form-input
                           type="text"
@@ -156,7 +164,9 @@
                           :value="quantity(meal)"
                           readonly
                         ></b-form-input>
-                        <b-btn @click="addOne(meal)" class="menu-bag-btn plus-minus"><p>+</p></b-btn>
+                        <b-btn @click="addOne(meal)" class="menu-bag-btn plus-minus">
+                          <p>+</p>
+                        </b-btn>
                         <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
                       </div>
                       <p class="center-text strong">{{ meal.title }}</p>
@@ -172,16 +182,24 @@
                     <div v-if="item && item.quantity > 0" class="d-flex align-items-center">
                       <div class="mr-2">
                         <!-- <p @click="addOne(item.meal)" class="bag-plus">+</p> -->
-                        <img src="/images/customer/bag-plus.png" @click="addOne(item.meal)" class="bag-plus-minus">
+                        <img
+                          src="/images/customer/bag-plus.png"
+                          @click="addOne(item.meal)"
+                          class="bag-plus-minus"
+                        >
                         <p class="bag-quantity">{{ item.quantity }}</p>
                         <!-- <p @click="minusOne(item.meal)" class="bag-minus">-</p> -->
-                        <img src="/images/customer/bag-minus.png" @click="minusOne(item.meal)" class="bag-plus-minus">
+                        <img
+                          src="/images/customer/bag-minus.png"
+                          @click="minusOne(item.meal)"
+                          class="bag-plus-minus"
+                        >
                       </div>
                       <div class="bag-item-image mr-2">
                         <img :src="item.meal.featured_image" class="cart-item-img">
                       </div>
                       <div class="flex-grow-1 mr-2">{{ item.meal.title }}</div>
-                      <div class="">
+                      <div class>
                         <img
                           src="/images/customer/x.png"
                           @click="clearMeal(item.meal)"
@@ -195,7 +213,6 @@
                   v-if="total < minimum"
                 >Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
                 <div>
-                  
                   <router-link to="/customer/bag">
                     <b-btn v-if="total >= minimum && !preview" class="menu-bag-btn">NEXT</b-btn>
                   </router-link>
@@ -268,6 +285,7 @@ export default {
       hasMeal: "bagHasMeal",
       willDeliver: "viewedStoreWillDeliver",
       _categories: "viewedStoreCategories",
+      storeLogo: "viewedStoreLogo",
       isLoading: "isLoading",
       totalBagPrice: "totalBagPrice"
     }),
@@ -570,7 +588,7 @@ export default {
       i === -1 ? this.filters.tags.push(tag) : Vue.delete(this.filters.tags, i);
     },
     filterByAllergy(allergyId) {
-      this.active[allergyId] = !this.active[allergyId];
+      Vue.set(this.active, allergyId, !this.active[allergyId]);
       this.filteredView = true;
 
       // Check if filter already exists
@@ -578,9 +596,14 @@ export default {
         return _allergyId === allergyId;
       });
 
-      i === -1
-        ? this.filters.allergies.push(allergyId)
-        : Vue.delete(this.filters.allergies, i);
+      if(i === -1) {
+        let allergies = [...this.filters.allergies];
+        allergies.push(allergyId);
+        Vue.set(this.filters, 'allergies', allergies);
+      }
+      else {
+        Vue.delete(this.filters.allergies, i);
+      }
     },
     goToCategory(category) {
       window.location.href = "#" + category;

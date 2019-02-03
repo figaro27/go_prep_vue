@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="shortcut icon" href="{{{ asset('images/favicon.png') }}}">
 </head>
-<body>
+<body class="customer">
     <div id="customerapp">
         @yield("content")
     </div>

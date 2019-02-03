@@ -155,6 +155,7 @@ class SpaController extends Controller
             'meals.categories',
             'meals.allergies',
             'settings',
+            'details',
         ])->find(STORE_ID) : null;
 
         if ($store->settings->delivery_distance_type === 'radius') {

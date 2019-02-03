@@ -89,7 +89,7 @@ class StoreDetailController extends Controller
         $store->update($request->except('logo'));
 
         if ($request->has('logo')) {
-          $imageUrl = App\Utils\Images::uploadB64($request->get('logo'));
+          $imageUrl = \App\Utils\Images::uploadB64($request->get('logo'));
           $store->logo = $imageUrl;
           $store->save();
         }

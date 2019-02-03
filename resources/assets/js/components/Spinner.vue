@@ -1,19 +1,17 @@
 <template>
-  <div>
-    <div id="cooking">
-      <div class="bubble"></div>
-      <div class="bubble"></div>
-      <div class="bubble"></div>
-      <div class="bubble"></div>
-      <div class="bubble"></div>
-      <div id="area">
-        <div id="sides">
-          <div id="pan"></div>
-          <div id="handle"></div>
-        </div>
-        <div id="pancake">
-          <div id="pastry"></div>
-        </div>
+  <div id="cooking" :style="{ position }">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div id="area">
+      <div id="sides">
+        <div id="pan"></div>
+        <div id="handle"></div>
+      </div>
+      <div id="pancake">
+        <div id="pastry"></div>
       </div>
     </div>
   </div>
@@ -36,17 +34,8 @@ body {
   // overflow: hidden;
 }
 
-h1 {
-  position: relative;
-  margin: 0 auto;
-  top: 25vh;
-  width: 100vw;
-  text-align: center;
-  font-family: "Amatic SC";
-  font-size: 6vh;
-  color: $color;
-  opacity: 0.75;
-  animation: pulse 2.5s linear infinite;
+body.customer #cooking {
+  left: 0;
 }
 
 #cooking {
@@ -281,6 +270,11 @@ h1 {
 <script>
 export default {
   components: {},
+  props: {
+    position: {
+      default: "fixed"
+    }
+  },
   data() {
     return {};
   },

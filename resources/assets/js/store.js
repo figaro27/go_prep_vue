@@ -344,7 +344,6 @@ const actions = {
       if (!_.isEmpty(data.user) && _.isObject(data.user)) {
         let user = data.user;
         commit('user', user);
-        state.isLoading = false;
       }
     } catch (e) {}
 
@@ -405,7 +404,6 @@ const actions = {
     /**
      * Extra actions
      */
-
   },
 
   async initStore({
@@ -820,6 +818,14 @@ const getters = {
   },
   viewedStoreCategories(state, getters) {
     return _.sortBy(state.viewed_store.categories, 'order');
+  },
+  viewedStoreLogo(state, getters) {
+    try {
+      return state.viewed_store.details.logo;
+    }
+    catch(e) {
+      return null;
+    }
   },
 
   //

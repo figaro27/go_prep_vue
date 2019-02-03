@@ -205,8 +205,11 @@ body.sidebar-minimized {
 
 /*Menu*/
 .main-menu-area, .bag-area{
-  max-height:740px;
-  overflow-y:auto;
+  overflow-y: auto;
+
+  @include media-breakpoint-up(md) {
+    height: calc(100vh - 210px);
+  }
 }
 
 .bag-area {
