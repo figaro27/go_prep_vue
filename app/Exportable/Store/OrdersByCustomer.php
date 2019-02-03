@@ -5,6 +5,7 @@ namespace App\Exportable\Store;
 use App\Exportable\Exportable;
 use App\Store;
 use App\User;
+use Illuminate\Support\Carbon;
 
 class OrdersByCustomer
 {
@@ -20,35 +21,40 @@ class OrdersByCustomer
 
     public function exportData()
     {
-        $dates = $this->getDeliveryDates();
+        $dateRange = $this->getDeliveryDates();
 
-        if(!count($dates)) {
-          //$orders = $this->store->getOrdersForNextDelivery('user_id');
-          $orders = $this->store->orders()->get()->groupBy('user_id');
+        $orders = $this->store->orders();
+
+        if (isset($dateRange['from'])) {
+            $from = Carbon::parse($dateRange['from']);
+            $orders = $orders->where('delivery_date', '>=', $from->format('Y-m-d'));
         }
-        else {
-          $orders = $this->store->orders()->whereIn('delivery_date', $dates)->get()->groupBy('user_id');
+        if (isset($dateRange['to'])) {
+            $to = Carbon::parse($dateRange['to']);
+            $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
         }
+
+        $orders = $orders->get()->groupBy('user_id');
 
         $customerOrders = $orders
             ->map(function ($orders, $userId) {
-              return [
-                'user' => User::find($userId),
-                'orders' => $orders->map(function($order) {
-                  return [
-                    'id' => $order->id,
-                    'meal_quantities' => array_merge(
-                      [['Meal', 'Quantity']], // Heading
-                      $order->meals->map(function($meal) {
+                return [
+                    'user' => User::find($userId),
+                    'orders' => $orders->map(function ($order) {
                         return [
-                          'title' => $meal->title,
-                          'quantity' => $meal->pivot->quantity ?? 1,
+                            'id' => $order->id,
+                            'meal_quantities' => array_merge(
+                                [['Meal', 'Quantity']], // Heading
+                                $order->meals->map(function ($meal) {
+                                    return [
+                                        'title' => $meal->title,
+                                        'quantity' => $meal->pivot->quantity ?? 1,
+                                    ];
+                                })->toArray()
+                            ),
                         ];
-                      })->toArray()
-                    ),
-                  ];
-                }),
-              ];
+                    }),
+                ];
             });
 
         return $customerOrders->values();

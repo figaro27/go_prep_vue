@@ -124,18 +124,22 @@ class Store extends Model
         });
     }
 
-    public function getOrderIngredients($dates = null)
+    public function getOrderIngredients($dateRange = [])
     {
         $ingredients = [];
 
         $orders = $this->orders()->with(['meals', 'meals.ingredients']);
 
-        if($dates && count($dates) > 0) {
-          $dates = collect($dates);
-
-          $orders = $orders->whereIn('delivery_date', $dates->map(function($date) {
-            return Carbon::parse($date);
-          }));
+        if($dateRange === []) {
+          $orders = $orders->where('delivery_date', $this->getNextDeliveryDate());
+        }
+        if(isset($dateRange['from'])) {
+          $from = Carbon::parse($dateRange['from']);
+          $orders = $orders->where('delivery_date', '>=', $from->format('Y-m-d'));
+        }
+        if(isset($dateRange['to'])) {
+          $to = Carbon::parse($dateRange['to']);
+          $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
         }
 
         $orders = $orders->get();
@@ -208,7 +212,6 @@ class Store extends Model
     public function getOrders($groupBy = null, $dateRange = []) {
       $orders = $this->orders()->with('meals');
       
-
       if(isset($dateRange['from'])) {
         $from = Carbon::parse($dateRange['from']);
         $orders = $orders->where('delivery_date', '>=', $from->format('Y-m-d'));

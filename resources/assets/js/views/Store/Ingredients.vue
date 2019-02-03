@@ -66,7 +66,7 @@ export default {
           quantity_unit: "Unit",
           actions: "Unit"
         }
-      }
+      },
     };
   },
   computed: {

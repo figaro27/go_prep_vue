@@ -148,11 +148,19 @@ export default {
   mounted() {},
   methods: {
     print(report, format = "pdf") {
+      let params = {};
+
+      let dates = this.delivery_dates[report];
+      if(dates.start && dates.end) {
+        params.delivery_dates = {
+          from: dates.start,
+          to: dates.end,
+        };
+      }
+
       axios
         .get(`/api/me/print/${report}/${format}`, {
-          params: {
-            delivery_dates: this.delivery_dates[report]
-          }
+          params
         })
         .then(response => {
           if (!_.isEmpty(response.data.url)) {
