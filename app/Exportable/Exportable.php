@@ -116,15 +116,15 @@ trait Exportable
 
     public function getDeliveryDates()
     {
-        $dates = null;
+        $dates = [];
+
         if ($this->params->has('delivery_dates')) {
-            $dates = $this->params->get('delivery_dates');
-            $dates = collect($dates)->filter(function ($date) {
-                return $date !== 'All';
-            })
-            ->map(function($date) {
-              return Carbon::parse($date);
-            });
+            $dates = json_decode($this->params->get('delivery_dates'));
+
+            $dates = [
+              'from' => Carbon::parse($dates->from),
+              'to' => Carbon::parse($dates->to),
+            ];
         }
 
         return $dates;

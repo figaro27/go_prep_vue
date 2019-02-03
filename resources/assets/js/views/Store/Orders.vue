@@ -334,8 +334,19 @@ export default {
       this.refreshTable();
     },
     exportData(report, format = "pdf", print = false) {
+      let params = {};
+
+      if(this.filters.delivery_dates.start && this.filters.delivery_dates.end) {
+        params.delivery_dates = {
+          from: this.filters.delivery_dates.start,
+          to: this.filters.delivery_dates.end,
+        };
+      }
+
       axios
-        .get(`/api/me/print/${report}/${format}`)
+        .get(`/api/me/print/${report}/${format}`, {
+          params
+        })
         .then(response => {
           if (!_.isEmpty(response.data.url)) {
             let win = window.open(response.data.url);

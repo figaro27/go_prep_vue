@@ -205,6 +205,28 @@ class Store extends Model
       return $this->settings->getNextDeliveryDates()[0] ?? null;
     }
 
+    public function getOrders($groupBy = null, $dateRange = []) {
+      $orders = $this->orders()->with('meals');
+      
+
+      if(isset($dateRange['from'])) {
+        $from = Carbon::parse($dateRange['from']);
+        $orders = $orders->where('delivery_date', '>=', $from->format('Y-m-d'));
+      }
+      if(isset($dateRange['to'])) {
+        $to = Carbon::parse($dateRange['to']);
+        $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
+      }
+
+      $orders = $orders->get();
+
+      if($groupBy) {
+        $orders = $orders->groupBy($groupBy);
+      }
+
+      return $orders;
+    }
+
     public function getOrdersForNextDelivery($groupBy = null) {
       $date = $this->getNextDeliveryDate();
       $orders = $this->orders()->with('meals')->where([

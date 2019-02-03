@@ -10,16 +10,17 @@ class Orders
 {
     use Exportable;
 
-    protected $store;
+    protected $store, $params;
 
-    public function __construct(Store $store)
+    public function __construct(Store $store, $params = [])
     {
         $this->store = $store;
+        $this->params = $params;
     }
 
     public function exportData()
     {
-        $orders = $this->store->getOrdersForNextDelivery()->map(function ($order) {
+        $orders = $this->store->getOrders(null, $this->getDeliveryDates())->map(function ($order) {
           return [
             $order->delivery,
             $order->order_number,
