@@ -9,6 +9,7 @@ use App\Mail\Store\ReadyToPrint;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 
 class Store extends Model
 {
@@ -87,6 +88,10 @@ class Store extends Model
     public function customers()
     {
         return $this->hasMany('App\Customer');
+    }
+
+    public function clearCaches() {
+      Cache::forget('store_order_ingredients'.$this->id);
     }
 
     public function getUrl($append = '', $secure = true) {

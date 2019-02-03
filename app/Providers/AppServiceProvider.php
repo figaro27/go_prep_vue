@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 use Braintree_Configuration;
 use App\MealTag;
 use App\Observers\MealTagObserver;
+use App\Meal;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
         \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
 
         MealTag::observe(MealTagObserver::class);
+
+        Meal::saved(function($meal) {
+          $meal->store->clearCaches();
+        });
     }
 
     /**
