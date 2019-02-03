@@ -76,6 +76,7 @@
         "@chenfengyuan/vue-number-input": "^1.1.0",
         "payment-icons": "^1.1.0",
         "randomatic": "^3.1.1",
-        "v-money": "^0.8.1"
+        "v-money": "^0.8.1",
+        "vue-rangedate-picker": "^1.0.0"
     }
 }
