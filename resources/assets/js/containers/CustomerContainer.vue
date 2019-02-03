@@ -105,13 +105,9 @@ export default {
     },
   },
   created() {
-    // Get initial state
-    this.initState();
+
   },
   methods: {
-    ...mapActions({
-      initState: "init"
-    })
   }
 };
 </script>

@@ -398,6 +398,8 @@ const actions = {
       }
     } catch (e) {}
 
+    state.isLoading = false;
+
     
 
     // try {   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {

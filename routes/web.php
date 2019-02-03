@@ -23,16 +23,16 @@ foreach ([config('app.domain')] as $domain) {
     Route::group(['domain' => $domain, 'middleware' => ['web', 'store_slug']], function ($router) {
 
         // All logged in users
-        Route::group(['middleware' => ['auth:api']], function ($router) {
+        Route::group(['middleware' => []], function ($router) {
 
-            Route::get('/', function (Request $request) {
+            /*Route::get('/', function (Request $request) {
                 $user = auth('api')->user();
                 if ($user->hasRole('store')) {
                     return redirect($user->store->getUrl('/store/orders', $request->secure));
                 } else {
                     return redirect('/customer/orders');
                 }
-            });
+            });*/
 
             Route::get('storeMeals', 'MealController@getStoreMeals');
 

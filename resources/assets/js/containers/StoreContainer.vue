@@ -148,8 +148,6 @@ export default {
     }
   },
   created() {
-    // Get initial state
-    this.initState();
 
     axios.get("/api/me/stripe/login").then(resp => {
       if (resp.data.url) {
@@ -159,7 +157,6 @@ export default {
   },
   methods: {
     ...mapActions({
-      initState: "init"
     })
   }
 };
