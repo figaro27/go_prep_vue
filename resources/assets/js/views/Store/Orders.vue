@@ -123,16 +123,16 @@
             <h4>Meals</h4>
             <hr>
             <ul class="meal-quantities">
-              <li v-for="(order) in getMealQuantities(meals)">
+              <li v-for="(meal) in getMealQuantities(order.meals)">
                 <div class="row">
                   <div class="col-md-5 pr-0">
-                    <span class="order-quantity">{{order.order}}</span>
+                    <span class="order-quantity">{{meal.quantity}}</span>
                     <img src="/images/store/x-modal.png" class="mr-2 ml-2">
-                    <img :src="order.featured_image" class="modalMeal mr-0 pr-0">
+                    <img :src="meal.featured_image" class="modalMeal mr-0 pr-0">
                   </div>
                   <div class="col-md-7 pt-3 nopadding pl-0 ml-0">
-                    <p>{{order.title}}</p>
-                    <p class="strong">{{format.money(order.price * order.order)}}</p>
+                    <p>{{meal.title}}</p>
+                    <p class="strong">{{format.money(meal.price * meal.quantity)}}</p>
                   </div>
                 </div>
               </li>
@@ -302,11 +302,12 @@ export default {
       this.$forceUpdate();
     },
     getMealQuantities(meals) {
-      let order = _.toArray(_.countBy(meals, "id"));
-
-      return order.map((order, id) => {
+      if(!_.isArray(meals)) {
+        return [];
+      }
+      return meals.map((meal, id) => {
         return {
-          order,
+          quantity: meal.pivot.quantity,
           featured_image: meals[id].featured_image,
           title: meals[id].title,
           price: meals[id].price
