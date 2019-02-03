@@ -6,6 +6,7 @@ use App\Exportable\Exportable;
 use App\Store;
 use Illuminate\Support\Facades\Storage;
 use mikehaertl\wkhtmlto\Pdf;
+use Illuminate\Support\Carbon;
 
 class PackingSlips
 {
@@ -18,24 +19,28 @@ class PackingSlips
     {
         $this->store = $store;
         $this->params = $params;
-
-        $dates = $this->getDeliveryDates();
-
-        if (!count($dates)) {
-            $this->orders = $this->store->orders;
-        } else {
-            $this->orders = $this->store->orders()->whereIn('delivery_date', $dates)->get();
-        }
     }
 
     public function exportData()
     {
-        return $this->orders;
-        $orders = $this->orders->map(function ($order) {
-            return $order;
-        });
+        $orders = $this->store->orders();
 
-        return $orders->toArray();
+        $dateRange = $this->getDeliveryDates();
+        if ($dateRange === []) {
+            $orders = $orders->where('delivery_date', $this->getNextDeliveryDate());
+        }
+        if (isset($dateRange['from'])) {
+            $from = Carbon::parse($dateRange['from']);
+            $orders = $orders->where('delivery_date', '>=', $from->format('Y-m-d'));
+        }
+        if (isset($dateRange['to'])) {
+            $to = Carbon::parse($dateRange['to']);
+            $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
+        }
+
+        $orders = $orders->get();
+
+        return $orders;
     }
 
     public function exportPdfView()
@@ -59,15 +64,15 @@ class PackingSlips
 
         $pdfConfig = ['encoding' => 'utf-8'];
 
-        if(config('pdf.xserver')) {
-          $pdfConfig = array_merge($pdfConfig, [
-            'use-xserver',
-            'commandOptions' => array(
-                'procEnv' => array('DISPLAY' => ':0'),
-            ),
-          ]);
+        if (config('pdf.xserver')) {
+            $pdfConfig = array_merge($pdfConfig, [
+                'use-xserver',
+                'commandOptions' => array(
+                    'procEnv' => array('DISPLAY' => ':0'),
+                ),
+            ]);
         }
-        
+
         $pdf = new Pdf($pdfConfig);
 
         foreach ($orders as $i => $order) {
