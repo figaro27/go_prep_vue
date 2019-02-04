@@ -3,6 +3,7 @@
 use Faker\Generator as Faker;
 
 
+try {
 $factory->define(App\Meal::class, function (Faker $faker) {
 	// $image = array(
 	// 	"http://dev.goprep.com/images/meal-1.jpg",
@@ -63,13 +64,18 @@ $factory->define(App\Meal::class, function (Faker $faker) {
 
 	$rand = rand(0,19);
 	
-    return [
-    	'active' => 1,
-    	'store_id' => 1,
-        'featured_image' => $mealImages[$rand],
-        'title' => $mealTitles[$rand],
-        'description' => $faker->paragraph($nbSentences = 3, $variableNbSentences = true),
-        'price' => mt_rand(80, 120) / 10,
-        'created_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now')->format('Y-m-d H:i:s')
-    ];
+	    return [
+	    	'active' => 1,
+	    	'store_id' => 1,
+	        'featured_image' => $mealImages[$rand],
+	        'title' => $mealTitles[$rand],
+	        'description' => $faker->paragraph($nbSentences = 3, $variableNbSentences = true),
+	        'price' => mt_rand(80, 120) / 10,
+	        'created_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now')->format('Y-m-d H:i:s')
+	    ];
+	
+	
 });
+
+}
+catch (\Exception $e){}
