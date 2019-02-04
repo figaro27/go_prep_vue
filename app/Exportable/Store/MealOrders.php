@@ -23,9 +23,9 @@ class MealOrders
           return [
             $meal->title,
             $meal->active_orders,
-            $meal->active_orders_price
+            '$'.$meal->active_orders_price
           ];
-        })->prepend([title, active_orders, active_orders_price])->toArray();
+        })->prepend(['Title', 'Active Orders', 'Total Meal Price'])->toArray();
     }
 
     public function exportPdfView()
