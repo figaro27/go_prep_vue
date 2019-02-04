@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import store from './store';
 
 import Login from './views/Login.vue';
+import Register from './views/Register.vue';
 
 import CustomerHome from './views/Customer/Home.vue';
 import CustomerBag from './views/Customer/Bag.vue';
@@ -55,6 +56,11 @@ let routes = [
     path: '/login',
     component: Login,
     name: 'login'
+  },
+  {
+    path: '/register',
+    component: Register,
+    name: 'register'
   },
   {
     path: '/customer/home',

@@ -33,6 +33,7 @@ import PictureInput from "vue-picture-input";
 import money from "v-money";
 import VueNumberInput from '@chenfengyuan/vue-number-input';
 import VueRangedatePicker from 'vue-rangedate-picker'
+import Vuelidate from 'vuelidate'
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -53,6 +54,7 @@ Vue.use(Toastr, {
   
 });
 Vue.component('date-range-picker', VueRangedatePicker);
+Vue.use(Vuelidate)
 
 import Thumbnail from './components/Thumbnail';
 Vue.component('thumbnail', Thumbnail)

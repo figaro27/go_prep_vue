@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
 use App\Http\Controllers\Controller;
+use App\User;
+use App\UserDetail;
+use App\Store;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -19,7 +22,7 @@ class RegisterController extends Controller
     | validation and creation. By default this controller uses a trait to
     | provide this functionality without requiring any additional code.
     |
-    */
+     */
 
     use RegistersUsers;
 
@@ -48,11 +51,33 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        $v = Validator::make($data, [
             //'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'user.role' => 'required|in:customer,store',
+            'user.email' => 'required|string|email|max:255|unique:users,email',
+            'user.password' => 'required|string|min:6|confirmed',
+
+            'user_details.first_name' => 'required',
+            'user_details.last_name' => 'required',
+            'user_details.phone' => 'required',
+            'user_details.address' => 'required',
+            'user_details.city' => 'required',
+            'user_details.state' => 'required',
+            'user_details.zip' => 'required',
         ]);
+
+        $v->sometimes('store', [
+          'store.store_name' => 'required',
+          'store.phone' => 'required',
+          'store.address' => 'required',
+          'store.city' => 'required',
+          'store.state' => 'required',
+          'store.zip' => 'required',
+        ], function ($data) {
+          return $data['user']['role'] === 'store';
+        });
+
+        return $v;
     }
 
     /**
@@ -63,11 +88,59 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             //'name' => $data['name'],
-            //'role' => 3,
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'user_role_id' => ($data['user']['role'] === 'store' ? 2 : 1),
+            'email' => $data['user']['email'],
+            'password' => Hash::make($data['user']['password']),
+            'timezone' => 'EST',
+            'remember_token' => Hash::make(str_random(10)),
         ]);
+
+        $userDetails = $user->details()->create([
+            //'user_id' => $user->id,
+            'firstname' => $data['user_details']['first_name'],
+            'lastname' => $data['user_details']['last_name'],
+            'phone' => $data['user_details']['phone'],
+            'address' => $data['user_details']['address'],
+            'city' => $data['user_details']['city'],
+            'state' => $data['user_details']['state'],
+            'zip' => $data['user_details']['zip'],
+            'country' => 'USA',
+            'delivery' => '',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        if ($data['user']['role'] === 'store') {
+            $store = $user->store()->create([]);
+
+            $storeDetail = $store->details()->create([
+                'name' => $data['store']['store_name'],
+                'phone' => $data['store']['phone'],
+                'address' => $data['store']['address'],
+                'city' => $data['store']['city'],
+                'state' => $data['store']['state'],
+                'zip' => $data['store']['zip'],
+                'logo' => '',
+                'domain' => str_slug($data['store']['store_name']),
+                'created_at' => now(),
+            ]);
+        }
+
+        return $user;
+    }
+
+    protected function registered(Request $request, $user) {
+      // Create auth token
+      $token = auth()->login($user);
+
+      return [
+        'user' => $user,
+        'access_token' => $token,
+        'token_type' => 'bearer',
+        'expires_in' => auth()->factory()->getTTL() * 60,
+        'redirect' => $user->store->getUrl('/store/account/settings')
+      ];
     }
 }

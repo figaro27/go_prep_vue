@@ -30,6 +30,11 @@
                 href="#"
               >Forgot Your Password?</a>
               -->
+
+              <router-link
+                class="btn btn-link"
+                to="/register"
+              >No Account?</router-link>
             </b-form-group>
           </b-form>
         </div>
