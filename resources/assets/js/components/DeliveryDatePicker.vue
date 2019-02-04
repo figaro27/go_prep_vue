@@ -75,28 +75,41 @@ export default {
       }
     }
   },
-  created() {},
-  mounted() {},
+  created() {
+    this.$nextTick(() => {
+      this.setInitialRange();
+    });
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.setInitialRange();
+    });
+  },
   updated() {
-    if (
-      _.isEmpty(this.$refs.picker.dateRange) &&
-      this.orders.length &&
-      this.nextDeliveryDates &&
-      this.numDeliveryDates
-    ) {
-      this.$nextTick(() => {
-        this.$refs.picker.dateRange = {
-          start: moment().startOf("date").toDate(),
-          end: moment(this.nextDeliveryDates[this.numDeliveryDates - 1].date).endOf(
-            "date"
-          ).toDate()
-        };
-        this.$forceUpdate();
-      });
-    }
+    this.setInitialRange();
   },
   methods: {
     ...mapActions([]),
+    setInitialRange() {
+      if (
+        _.isEmpty(this.$refs.picker.dateRange) &&
+        this.orders.length &&
+        this.nextDeliveryDates &&
+        this.numDeliveryDates
+      ) {
+        this.$nextTick(() => {
+          this.$refs.picker.dateRange = {
+            start: moment()
+              .startOf("date")
+              .toDate(),
+            end: moment(this.nextDeliveryDates[this.numDeliveryDates - 1].date)
+              .endOf("date")
+              .toDate()
+          };
+          this.$forceUpdate();
+        });
+      }
+    },
     onChange(val) {
       this.changed = true;
 

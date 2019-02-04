@@ -959,7 +959,7 @@ const getters = {
   },
   storeMeal: (state) => id => {
     try {
-      return _.find(state.store.meals.data, ['id', id]) || null;
+      return _.find(state.store.meals.data, ['id', parseInt(id)]) || null;
     } catch (e) {
       return {};
     }
