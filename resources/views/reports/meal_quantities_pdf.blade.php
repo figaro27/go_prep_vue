@@ -182,7 +182,7 @@
         background-color: #fff;
     }
     .oddrow td, .oddrow th {
-        background-color: #c8ced3;
+        background-color: #e8e8e8;
     }
 </style>
 

@@ -31,5 +31,6 @@ class SubscriptionsSeeder extends Seeder
     	            'updated_at' => Carbon::now()
     	        ]);
             }
+            
     }
 }
