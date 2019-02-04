@@ -29,6 +29,7 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
         Route::post('logout', 'AuthController@logout');
         Route::post('refresh', 'AuthController@refresh');
         Route::post('me', 'AuthController@me');
+        Route::post('register', 'Auth\RegisterController@register');
     
     });
     
