@@ -134,7 +134,7 @@ export default {
         "phone",
         "address",
         "city",
-        "state",
+        "zip",
         "first_order",
         "total_payments",
         "total_paid",
@@ -150,7 +150,7 @@ export default {
           phone: "Phone",
           address: "Address",
           city: "City",
-          state: "State",
+          zip: "Zip",
           first_order: "Customer Since",
           actions: "Actions"
         },

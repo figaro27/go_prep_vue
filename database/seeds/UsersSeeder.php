@@ -54,9 +54,9 @@ class UsersSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        factory(App\User::class, 10)->create()->each(function ($u) {
+        factory(App\User::class, 50)->create()->each(function ($u) {
             $u->userDetail()->save(factory(App\UserDetail::class)->make());
-            for ($i = 0; $i < 7; $i++) {
+
                 $customer = new App\Customer();
                 $customer->user_id = $u->id;
                 $customer->store_id = 1;
@@ -69,8 +69,6 @@ class UsersSeeder extends Seeder
                   ])
                 );
 
-                
-            }
         });
 
     }

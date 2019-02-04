@@ -426,11 +426,11 @@ export default {
         nutrition.calcium +=
           (calciumIndex > -1
             ? ingredient.full_nutrients[calciumIndex].value
-            : ingredient.calcium) * multiplier;
+            : ingredient.calcium);
         nutrition.iron +=
           (ironIndex > -1
             ? ingredient.full_nutrients[ironIndex].value
-            : ingredient.iron) * multiplier;
+            : ingredient.iron);
         nutrition.sugars +=
           (ingredient.nf_addedsugars || ingredient.sugars) * multiplier;
       });

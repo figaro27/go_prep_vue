@@ -18,7 +18,7 @@ class IngredientsSeeder extends Seeder
 
     for($i = 0; $i < 50; $i++) {
       factory(App\Ingredient::class)->create([
-        'food_name' => $ingredients->random()->name,
+        // 'food_name' => $ingredients->random()->name,
       ]);
     }
   }
