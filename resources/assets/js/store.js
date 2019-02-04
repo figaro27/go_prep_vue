@@ -655,7 +655,9 @@ const actions = {
     commit,
     state
   }, args = {}) {
-    const res = await axios.get("/api/me/orders/ingredients");
+    const res = await axios.get("/api/me/orders/ingredients", {
+      params: args
+    });
     let {data} = await res;
 
     if (_.isObject(data)) {

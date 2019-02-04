@@ -5,6 +5,12 @@
       <div class="card">
         <div class="card-body">
           <v-client-table :columns="columns" :data="tableData" :options="options">
+            <div slot="beforeTable" class="mb-2">
+              <div class="d-flex align-items-center">
+                <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
+              </div>
+            </div>
+
             <span slot="beforeLimit">
               <b-btn variant="primary" @click="print('pdf')">
                 <i class="fa fa-print"></i>&nbsp;
@@ -23,7 +29,11 @@
             </span>
 
             <div slot="image" slot-scope="props">
-              <thumbnail :key="props.row.image_thumb" :src="props.row.image_thumb" class="ingredient-img"></thumbnail>
+              <thumbnail
+                :key="props.row.image_thumb"
+                :src="props.row.image_thumb"
+                class="ingredient-img"
+              ></thumbnail>
             </div>
 
             <div slot="actions" slot-scope="props">
@@ -56,7 +66,12 @@ export default {
   },
   data() {
     return {
-      //loading: true,
+      filters: {
+        delivery_dates: {
+          start: null,
+          end: null
+        }
+      },
       columns: ["image", "food_name", "quantity", "actions"],
       options: {
         headings: {
@@ -66,8 +81,20 @@ export default {
           quantity_unit: "Unit",
           actions: "Unit"
         }
-      },
+      }
     };
+  },
+  watch: {
+    "filters.delivery_dates": function(dates) {
+      let params = {};
+      if (dates.start && dates.end) {
+        params.delivery_dates = {
+          from: dates.start,
+          to: dates.end
+        };
+      }
+      this.refreshOrderIngredients(params);
+    }
   },
   computed: {
     ...mapGetters({
@@ -81,7 +108,7 @@ export default {
         _.map(this.orderIngredients, (orderIngredient, id) => {
           let ingredient = this.getIngredient(id);
 
-          if(!ingredient) {
+          if (!ingredient) {
             return {};
           }
 
@@ -143,13 +170,13 @@ export default {
       return this.$store.getters.ingredientUnit(id);
     },
     unitOptions(unitType) {
-      if(!unitType) {
+      if (!unitType) {
         return [];
       }
       return units[unitType].selectOptions();
     },
     saveUnit(id, unit) {
-      this.$store.commit('ingredientUnit', {id, unit});
+      this.$store.commit("ingredientUnit", { id, unit });
       let data = {
         units: {}
       };
@@ -167,13 +194,11 @@ export default {
       axios
         .get(`/api/me/orders/ingredients/export/${type}`)
         .then(response => {
-          if(!_.isEmpty(response.data.url)) {
+          if (!_.isEmpty(response.data.url)) {
             window.open(response.data.url);
           }
         })
-        .catch(err => {
-
-        })
+        .catch(err => {})
         .finally(() => {
           this.loading = false;
         });
@@ -184,9 +209,13 @@ export default {
         .then(response => {
           if (!_.isEmpty(response.data.url)) {
             let win = window.open(response.data.url);
-            win.addEventListener('load', () => {
-              win.print();
-            }, false);
+            win.addEventListener(
+              "load",
+              () => {
+                win.print();
+              },
+              false
+            );
           }
         })
         .catch(err => {})
