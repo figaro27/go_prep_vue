@@ -58,7 +58,7 @@ export default {
     getEmail() {
       let self = this;
       axios.get("/api/me/user").then(resp => {
-        self.email = resp.data;
+        self.email = resp.data.user.email;
       });
     }
   }
