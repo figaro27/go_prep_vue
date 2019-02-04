@@ -220,7 +220,6 @@ export default {
         .then(resp => {
           this.$toastr.s('Meal created!');
           this.$refs.createMealModal.hide();
-          this.$parent.createMealModal = false;
         })
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors));
@@ -230,6 +229,7 @@ export default {
         .finally(() => {
           //his.getTableData();
           this.$emit("created");
+          this.$parent.createMealModal = false;
         });
         
     },

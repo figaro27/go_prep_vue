@@ -30,19 +30,19 @@ class StoresSeeder extends Seeder
             $u->categories()->createMany([
                 [
                     'store_id' => 1,
-                    'category' => 'Breakfast',
+                    'category' => 'Entrees',
                     'order' => 0,
                 ],
                 [
                     'store_id' => 1,
-                    'category' => 'Lunch',
+                    'category' => 'Breakfast',
                     'order' => 1,
                 ],
-                [
-                    'store_id' => 1,
-                    'category' => 'Dinner',
-                    'order' => 2,
-                ],
+                // [
+                //     'store_id' => 1,
+                //     'category' => 'Dinner',
+                //     'order' => 2,
+                // ],
             ]);
         });
 
