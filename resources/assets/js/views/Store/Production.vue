@@ -5,14 +5,19 @@
         <div class="card-body">
           <Spinner v-if="isLoading"/>
           <v-client-table ref="mealsTable" :columns="columns" :data="tableData" :options="options">
+            <div slot="beforeTable" class="mb-2">
+              <div class="d-flex align-items-center">
+                <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
+              </div>
+            </div>
             <div slot="featured_image" slot-scope="props">
               <img class="thumb" :src="props.row.featured_image" v-if="props.row.featured_image">
             </div>
             <div slot="price" slot-scope="props">{{ format.money(props.row.price) }}</div>
             <div
-              slot="active_orders_price"
+              slot="total"
               slot-scope="props"
-            >{{ format.money(props.row.active_orders_price) }}</div>
+            >{{ format.money(props.row.price * props.row.quantity) }}</div>
 
             <span slot="beforeLimit">
               <b-btn variant="primary" @click="exportData('meal_orders', 'pdf', true)">
@@ -46,20 +51,20 @@ export default {
   },
   data() {
     return {
-      columns: [
-        "featured_image",
-        "title",
-        "price",
-        "active_orders",
-        "active_orders_price"
-      ],
+      filters: {
+        delivery_dates: {
+          start: null,
+          end: null
+        }
+      },
+      columns: ["featured_image", "title", "price", "quantity", "total"],
       options: {
         headings: {
           featured_image: "Image",
           title: "Title",
           price: "Price",
-          active_orders: "Current Orders",
-          active_orders_price: "Total Amount"
+          quantity: "Current Orders",
+          total: "Total Amount"
         },
         customSorting: {
           created_at: function(ascending) {
@@ -69,7 +74,7 @@ export default {
               if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
               return numA.isAfter(numB, "day") ? 1 : -1;
             };
-          },
+          }
         }
       }
     };
@@ -77,12 +82,61 @@ export default {
   computed: {
     ...mapGetters({
       meals: "storeMeals",
+      getMeal: "storeMeal",
       orders: "storeOrders",
       isLoading: "isLoading"
     }),
     tableData() {
+      let filters = { ...this.filters };
+
+      let filtered = _.filter(this.orders, order => {
+        if (
+          "delivery_dates" in filters &&
+          filters.delivery_dates.start &&
+          filters.delivery_dates.end
+        ) {
+          let dateMatch = false;
+
+          if (filters.delivery_dates.start && filters.delivery_dates.end) {
+            dateMatch = order.delivery_date.isBetween(
+              filters.delivery_dates.start,
+              filters.delivery_dates.end
+            );
+          } else if (filters.delivery_dates.start) {
+            dateMatch = order.delivery_date.isAfter(
+              filters.delivery_dates.start
+            );
+          } else if (filters.delivery_dates.end) {
+            dateMatch = order.delivery_date.isBefore(
+              filters.delivery_dates.end
+            );
+          }
+
+          if (!dateMatch) return false;
+        }
+
+        return true;
+      });
+
+      let mealCounts = {};
+
+      filtered.forEach(order => {
+        _.forEach(order.meal_quantities, (quantity, mealId) => {
+          mealId = parseInt(mealId);
+
+          if (!mealCounts[mealId]) {
+            mealCounts[mealId] = 0;
+          }
+          mealCounts[mealId] += quantity;
+        });
+      });
+
+      return _.map(mealCounts, (quantity, mealId) => {
+        return { ...this.getMeal(mealId), quantity: quantity };
+      });
+
       let meals = Object.values(this.meals);
-      const production = meals.filter(meal => meal.active_orders > 0)
+      const production = meals.filter(meal => meal.active_orders > 0);
       return production;
     },
     storeMeals() {

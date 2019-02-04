@@ -655,7 +655,9 @@ const actions = {
     commit,
     state
   }, args = {}) {
-    const res = await axios.get("/api/me/orders/ingredients");
+    const res = await axios.get("/api/me/orders/ingredients", {
+      params: args
+    });
     let {data} = await res;
 
     if (_.isObject(data)) {
@@ -959,7 +961,7 @@ const getters = {
   },
   storeMeal: (state) => id => {
     try {
-      return _.find(state.store.meals.data, ['id', id]) || null;
+      return _.find(state.store.meals.data, ['id', parseInt(id)]) || null;
     } catch (e) {
       return {};
     }

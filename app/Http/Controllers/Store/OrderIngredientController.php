@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Store;
 
-use Illuminate\Support\Facades\Cache;
+use App\Unit;
 use App\Utils\Data\ExportsData;
 use App\Utils\Data\Format;
-use App\Unit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Carbon;
 
 class OrderIngredientController extends StoreController
 {
@@ -16,11 +18,21 @@ class OrderIngredientController extends StoreController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $ingredients = Cache::remember('store_order_ingredients'.$this->store->id, 10, function () {
-          return collect($this->store->getOrderIngredients());
-        });
+        if (!$request->has('delivery_dates')) {
+            $ingredients = Cache::remember('store_order_ingredients' . $this->store->id, 10, function () {
+                return collect($this->store->getOrderIngredients());
+            });
+        } else {
+            $dates = json_decode($request->get('delivery_dates'));
+
+            $dates = [
+                'from' => Carbon::parse($dates->from),
+                'to' => Carbon::parse($dates->to),
+            ];
+            $ingredients = collect($this->store->getOrderIngredients($dates));
+        }
 
         $ingredients = $ingredients->map(function ($item, $id) {
             return [
@@ -43,9 +55,9 @@ class OrderIngredientController extends StoreController
             if ($units->has($ingredient->id)) {
                 $unit = $units->get($ingredient->id)->unit;
                 $quantity = Unit::convert(
-                  $orderIngredient['quantity'],
-                  Format::baseUnit($ingredient->unit_type),
-                  $unit
+                    $orderIngredient['quantity'],
+                    Format::baseUnit($ingredient->unit_type),
+                    $unit
                 );
             } else {
                 $unit = Format::baseUnit($ingredient->unit_type);
