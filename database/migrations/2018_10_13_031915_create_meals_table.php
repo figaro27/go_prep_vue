@@ -18,7 +18,7 @@ class CreateMealsTable extends Migration
             $table->boolean('active');
             $table->integer('store_id')->references('id')->on('stores');
             $table->string('featured_image')->nullable();
-            $table->string('title')->unique();
+            $table->string('title');
             $table->text('description');
             $table->decimal('price', 4, 2);
             $table->timestamps();
