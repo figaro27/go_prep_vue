@@ -219,8 +219,11 @@ export default {
           },
           delivery_date: function(ascending) {
             return function(a, b) {
+              a = a.delivery_date;
+              b = b.delivery_date;
+
               if (ascending) return a.isBefore(b, "day") ? 1 : -1;
-              return numA.isAfter(b, "day") ? 1 : -1;
+              return a.isAfter(b, "day") ? 1 : -1;
             };
           }
         }
