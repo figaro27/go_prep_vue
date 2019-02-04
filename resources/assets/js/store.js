@@ -1024,6 +1024,13 @@ const getters = {
       return [];
     }
   },
+  storeNextDeliveryDates: (state) => {
+    try {
+      return state.store.settings.data.next_delivery_dates || [];
+    } catch (e) {
+      return [];
+    }
+  },
 
   subscriptions: (state) => {
     return state.customer.data.subscriptions;
