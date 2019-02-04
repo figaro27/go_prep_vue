@@ -1,7 +1,7 @@
 window._ = require('lodash');
 window.Popper = require('popper.js').default;
 
-const moment = require('moment-timezone');
+const moment = require('moment');
 /*
 moment.defaultFormat = 'ddd, MMMM Do';
 moment.defaultFormatUtc = 'ddd, MMMM Do';
