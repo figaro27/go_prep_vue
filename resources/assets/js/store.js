@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import moment from 'moment'
 import createPersistedState from 'vuex-persistedstate';
+import router from './routes';
 
 Vue.use(Vuex)
 
@@ -338,8 +339,7 @@ const actions = {
       dispatch('initStore', data)
     } else if (context === 'customer') {
       dispatch('initCustomer', data)
-    }
-    else if(context === 'guest') {
+    } else {
       dispatch('initGuest', data);
     }
 
@@ -400,8 +400,6 @@ const actions = {
 
     state.isLoading = false;
 
-    
-
     // try {   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
     //     let orders = data.store.orders;     commit('storeOrders', {orders});   }
     // } catch (e) {}
@@ -409,6 +407,7 @@ const actions = {
     /**
      * Extra actions
      */
+
   },
 
   async initStore({
@@ -467,7 +466,7 @@ const actions = {
     dispatch
   }, data = {}) {
 
-    if(data.store) {
+    if (data.store) {
       dispatch('refreshViewedStore');
     }
 
@@ -481,18 +480,18 @@ const actions = {
     dispatch
   }, data = {}) {
 
-    if(data.store) {
+    if (data.store) {
       dispatch('refreshViewedStore');
     }
 
     dispatch('refreshStores');
+
+    if(router.currentRoute.path === '/') {
+      router.replace('customer/menu');
+    }
   },
 
-
-  async refreshViewedStore({
-    commit,
-    state
-  }) {
+  async refreshViewedStore({commit, state}) {
     const res = await axios.get("/api/store/viewed");
     const {data} = await res;
 
@@ -516,7 +515,6 @@ const actions = {
       console.log(e);
     }
 
-    
   },
 
   async refreshStores({
@@ -765,9 +763,15 @@ const actions = {
 
     if (_.isArray(data)) {
       const orders = _.map(data, order => {
-        order.created_at = moment.utc(order.created_at).local();//.format('ddd, MMMM Do')
-        order.updated_at = moment.utc(order.updated_at).local();//.format('ddd, MMMM Do')
-        order.delivery_date = moment.utc(order.delivery_date).local();//.format('ddd, MMMM Do')
+        order.created_at = moment
+          .utc(order.created_at)
+          .local(); //.format('ddd, MMMM Do')
+        order.updated_at = moment
+          .utc(order.updated_at)
+          .local(); //.format('ddd, MMMM Do')
+        order.delivery_date = moment
+          .utc(order.delivery_date)
+          .local(); //.format('ddd, MMMM Do')
         return order;
       });
       commit('storeOrders', {orders});
@@ -849,8 +853,7 @@ const getters = {
   viewedStoreLogo(state, getters) {
     try {
       return state.viewed_store.details.logo;
-    }
-    catch(e) {
+    } catch (e) {
       return null;
     }
   },
@@ -970,14 +973,18 @@ const getters = {
   },
   storeCategoryTitle: (state) => id => {
     try {
-      return _.find(state.store.categories.data, {id}).category || {};
+      return _
+        .find(state.store.categories.data, {id})
+        .category || {};
     } catch (e) {
       return '';
     }
   },
   storeAllergyTitle: (state) => id => {
     try {
-      return  _.find(state.allergies, {id}).title || {};
+      return _
+        .find(state.allergies, {id})
+        .title || {};
     } catch (e) {
       return '';
     }

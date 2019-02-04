@@ -244,7 +244,7 @@ export default {
             }`;
             localStorage.setItem("jwt", JSON.stringify(jwt));
             this.init();
-            this.$router.go(jwt.redirect);
+            this.$router.replace(jwt.redirect);
           }
         })
         .catch(error => {

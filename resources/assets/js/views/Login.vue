@@ -77,11 +77,11 @@ export default {
 
             switch (jwt.user.user_role_id) {
               case 1:
-                this.$router.push("/customer/home");
+                this.$router.replace("/customer/home");
                 break;
 
               case 2:
-                this.$router.push("/store/orders");
+                this.$router.replace("/store/orders");
                 break;
             }
           }
