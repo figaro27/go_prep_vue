@@ -4,7 +4,10 @@
       <div class="mr-2">Delivery dates:</div>
 
       <div class="flex-grow-1">
-        <date-range-picker @selected="val => onChange(val)" i18n="EN"></date-range-picker>
+        <date-range-picker
+          :value="value"
+          @selected="val => onChange(val)"
+          i18n="EN"></date-range-picker>
         <!--<v-select
           multiple
           v-model="delivery_dates"
@@ -112,8 +115,10 @@ export default {
       this.changed = true;
 
       val = {...val};
-      val.start = moment(val.start);
-      val.end = moment(val.end);
+      if(val.start)
+        val.start = moment(val.start).subtract(1, 'day').startOf('date');
+      if(val.end)
+        val.end = moment(val.end).subtract(1, 'day').endOf('date');
 
       //val = [val.start, val.end];
       this.$emit("input", val);

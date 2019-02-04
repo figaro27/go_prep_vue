@@ -27,7 +27,7 @@ import lang from './lang';
 import format from './lib/format';
 import modal from './lib/modal';
 import Axios from 'axios';
-import moment from 'moment-timezone';
+import moment from 'moment';
 import Toastr from 'vue-toastr';
 import PictureInput from "vue-picture-input";
 import money from "v-money";

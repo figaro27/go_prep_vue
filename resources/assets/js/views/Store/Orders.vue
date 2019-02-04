@@ -244,11 +244,22 @@ export default {
           filters.delivery_dates.start &&
           filters.delivery_dates.end
         ) {
-          let dateMatch = order.delivery_date.isBetween(
-                  filters.delivery_dates.start,
-                  filters.delivery_dates.end,
-                  "day"
-                );
+          let dateMatch = false;
+
+          if (filters.delivery_dates.start && filters.delivery_dates.end) {
+            dateMatch = order.delivery_date.isBetween(
+              filters.delivery_dates.start,
+              filters.delivery_dates.end
+            );
+          } else if (filters.delivery_dates.start) {
+            dateMatch = order.delivery_date.isAfter(
+              filters.delivery_dates.start
+            );
+          } else if (filters.delivery_dates.end) {
+            dateMatch = order.delivery_date.isBefore(
+              filters.delivery_dates.end
+            );
+          }
 
           if (!dateMatch) return false;
         }
@@ -299,7 +310,7 @@ export default {
       this.$forceUpdate();
     },
     getMealQuantities(meals) {
-      if(!_.isArray(meals)) {
+      if (!_.isArray(meals)) {
         return [];
       }
       return meals.map((meal, id) => {
@@ -336,10 +347,13 @@ export default {
     exportData(report, format = "pdf", print = false) {
       let params = {};
 
-      if(this.filters.delivery_dates.start && this.filters.delivery_dates.end) {
+      if (
+        this.filters.delivery_dates.start &&
+        this.filters.delivery_dates.end
+      ) {
         params.delivery_dates = {
           from: this.filters.delivery_dates.start,
-          to: this.filters.delivery_dates.end,
+          to: this.filters.delivery_dates.end
         };
       }
 
