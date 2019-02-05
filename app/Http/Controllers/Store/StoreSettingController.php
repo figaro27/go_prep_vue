@@ -77,7 +77,8 @@ class StoreSettingController extends StoreController
             'deliveryFee' => 'required_if:applyDeliveryFee,true|integer|nullable',
             'pickupInstructions' => 'required_if:allowpickup,true:string',
             'minimum' => 'required|numeric',
-            'delivery_days' => 'required|min:1'
+            'delivery_days' => 'required|min:1',
+            'logo' => 'dimensions:ratio=1/1'
         ]);
 
         $settings = StoreSetting::where('store_id', $this->store->id);

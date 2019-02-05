@@ -339,10 +339,10 @@ export default {
             });
           }
         })
-        .catch(e => {
-          if (e.error && e.error.message) {
-            alert(e.error.message);
-          }
+        .catch(response => {
+          let error = _.first(Object.values(response.response.data.errors));
+          error = error.join(" ");
+          this.$toastr.e(error, "Error");
         })
         .finally(() => {
           this.loading = false;
