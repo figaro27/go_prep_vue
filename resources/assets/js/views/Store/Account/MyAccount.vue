@@ -51,6 +51,7 @@
             </b-form-group>
             
             <b-form-group label="Logo" :state="true">
+              <p class="small">Please keep height & width dimensions the exact same.</p>
               <picture-input
               :ref="`storeImageInput`"
               :prefill="storeDetail.logo ? storeDetail.logo : ''"
@@ -66,7 +67,6 @@
             </b-form-group>
 
 
-            
             <b-form-group label="Phone number" :state="true">
               <b-form-input type="text" v-model="storeDetail.phone" placeholder="Phone" required></b-form-input>
             </b-form-group>
