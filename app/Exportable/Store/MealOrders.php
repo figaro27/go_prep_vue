@@ -19,13 +19,19 @@ class MealOrders
 
     public function exportData($type = null)
     {
-        return $this->store->meals->map(function($meal) {
+        $production = $this->store->meals->map(function($meal) {
           return [
             $meal->title,
             $meal->active_orders,
             '$'.$meal->active_orders_price
           ];
-        })->prepend(['Title', 'Active Orders', 'Total Price'])->toArray();
+        });
+
+        if($type !== 'pdf'){
+            $production->prepend(['Title', 'Active Orders', 'Total Price']);
+        }
+
+        return $production->toArray();
     }
 
     public function exportPdfView()

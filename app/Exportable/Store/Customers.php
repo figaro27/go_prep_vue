@@ -19,7 +19,7 @@ class Customers
 
     public function exportData($type = null)
     {
-        return $this->store->customers->map(function($customer) {
+        $customers = $this->store->customers->map(function($customer) {
           return [
             $customer['name'],
             $customer['phone'],
@@ -31,7 +31,13 @@ class Customers
             '$'.$customer['total_paid'],
             $customer['last_order'],
           ];
-        })->prepend(['Name', 'Phone', 'Address', 'City', 'Zip', 'Customer Since', 'Total Orders', 'Total Paid', 'Last Order'])->toArray();
+        });
+
+        if($type !== 'pdf'){
+            $customers->prepend(['Name', 'Phone', 'Address', 'City', 'Zip', 'Customer Since', 'Total Orders', 'Total Paid', 'Last Order']);
+        }
+
+        return $customers->toArray();
     }
 
     public function exportPdfView()

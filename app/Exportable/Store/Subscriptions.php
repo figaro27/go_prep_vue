@@ -35,7 +35,10 @@ class Subscriptions
                 ];
             });
 
-        return $subscriptions->prepend(['Meal Plan #', 'Name', 'Address', 'Zip', 'Phone', 'Total Price', 'Meal Plan Created', 'Delivery Day' ])->toArray();
+        if($type !== 'pdf'){
+            $subscriptions->prepend(['Meal Plan #', 'Name', 'Address', 'Zip', 'Phone', 'Total Price', 'Meal Plan Created', 'Delivery Day' ]);
+        }
+        return $subscriptions->toArray();
     }
 
     public function exportPdfView()

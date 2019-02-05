@@ -33,7 +33,11 @@ class Orders
           ];
         });
 
-        return $orders->prepend(['Order #', 'Name', 'Address', 'Zip', 'Phone', 'Total', 'Order Placed', 'Delivery Day' ])->toArray();
+        if($type !== 'pdf'){
+            $orders->prepend(['Order #', 'Name', 'Address', 'Zip', 'Phone', 'Total', 'Order Placed', 'Delivery Day' ]);
+        }
+
+        return $orders->toArray();
     }
 
     public function exportPdfView()

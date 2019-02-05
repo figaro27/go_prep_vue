@@ -19,7 +19,7 @@ class Meals
 
     public function exportData($type = null)
     {
-        return $this->store->meals->map(function($meal) {
+        $menu = $this->store->meals->map(function($meal) {
           return [
             $meal->active ? 'Active' : 'Inactive',
             $meal->title,
@@ -29,7 +29,13 @@ class Meals
             $meal->subscriptions->count(),
             $meal->lifetime_orders,
           ];
-        })->prepend(['Status', 'Title', 'Categories', 'Tags', 'Contains', 'Meal Plans', 'Lifetime Orders', ])->toArray();
+        });
+
+        if($type !== 'pdf'){
+            $menu->prepend(['Status', 'Title', 'Categories', 'Tags', 'Contains', 'Meal Plans', 'Lifetime Orders', ]);
+        }
+        
+        return $menu->toArray();
     }
 
     public function exportPdfView()

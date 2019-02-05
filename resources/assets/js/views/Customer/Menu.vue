@@ -216,7 +216,7 @@
                   <router-link to="/customer/bag">
                     <b-btn v-if="total >= minimum && !preview" class="menu-bag-btn">NEXT</b-btn>
                   </router-link>
-                  <h6 class="center-text mt-3">Current Total - ${{ totalBagPrice }}</h6>
+                  <h6 class="pull-right mt-3">SubTotal - ${{ totalBagPrice }}</h6>
                 </div>
               </div>
             </div>

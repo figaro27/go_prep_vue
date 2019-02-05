@@ -10,14 +10,13 @@
   <table border="1">
     <thead>
       <tr>
-        <th>Delivery Notes</th>
-        <th>Plan ID</th>
+        <th>Meal Plan #</th>
         <th>Name</th>
         <th>Address</th>
         <th>Zip</th>
         <th>Phone</th>
         <th>Total</th>
-        <th>Order Placed</th>
+        <th>Meal Plan Created</th>
         <th>Delivery Day</th>
       </tr>
     </thead>

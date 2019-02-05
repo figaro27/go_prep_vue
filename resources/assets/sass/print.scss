@@ -1,5 +1,20 @@
+@font-face {
+  font-family: gotham;
+  src: url(fonts/gotham.otf);
+}
+
+@font-face {
+  font-family: gotham-condensed;
+  src: url(fonts/gotham-condensed.otf);
+}
+
+@font-face {
+  font-family: gotham-narrow;
+  src: url(fonts/gotham-narrow.otf);
+}
+
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'gotham-narrow';
   font-size: 11pt;
 }
 p {
@@ -7,7 +22,7 @@ p {
   margin-top: 0pt;
 }
 table {
-  font-family: Arial, sans-serif;
+  font-family: 'gotham-narrow';
   font-size: 12pt;
   line-height: 1.2;
   margin-top: 2pt;
@@ -102,21 +117,23 @@ pre {
 h1 {
   font-weight: normal;
   font-size: 26pt;
-  color: #000066;
-  font-family: sans-serif;
-  margin-top: 18pt;
+  font-family: 'gotham';
+  margin-top: 6pt;
   margin-bottom: 6pt;
+  padding-top: 4pt;
+  padding-bottom: 4pt;
   border-top: 0.075cm solid #000000;
   border-bottom: 0.075cm solid #000000;
   text-align: left; page-break-after:avoid;
 }
 h2 {
   font-weight: bold;
-  font-size: 12pt;
-  color: #000066;
-  font-family: sans-serif;
+  font-size: 16pt;
+  font-family: 'gotham';
   margin-top: 6pt;
   margin-bottom: 6pt;
+  padding-top: 4pt;
+  padding-bottom: 4pt;
   border-top: 0.07cm solid #000000;
   border-bottom: 0.07cm solid #000000;
   text-align: left;  text-transform:uppercase;
@@ -126,7 +143,7 @@ h3 {
   font-weight: normal;
   font-size: 26pt;
   color: #000000;
-  font-family: sans-serif;
+  font-family: 'gotham';
   margin-top: 0pt;
   margin-bottom: 6pt;
   border-top: 0;
@@ -137,8 +154,7 @@ h3 {
 h4 {
   font-weight: bold;
   font-size: 13pt;
-  color: #9f2b1e;
-  font-family: sans-serif;
+  font-family: 'gotham';
   margin-top: 10pt;
   margin-bottom: 7pt;
   font-variant: small-caps;
@@ -148,9 +164,8 @@ h4 {
 h5 {
   font-weight: bold;
   font-style: italic;
-  ; font-size: 11pt;
-  color: #000044;
-  font-family: sans-serif;
+  font-size: 11pt;
+  font-family: 'gotham';
   margin-top: 8pt;
   margin-bottom: 4pt;
   text-align: left;  page-break-after:avoid;
@@ -159,7 +174,7 @@ h6 {
   font-weight: bold;
   font-size: 9.5pt;
   color: #333333;
-  font-family: sans-serif;
+  font-family: 'gotham';
   margin-top: 6pt;
   margin-bottom: 0;
               text-align: left;
@@ -178,7 +193,7 @@ h6 {
   background-color: #fff;
 }
 .oddrow td, .oddrow th {
-  background-color: #c8ced3;
+  background-color: #efefef;
 }
 
 .row {
