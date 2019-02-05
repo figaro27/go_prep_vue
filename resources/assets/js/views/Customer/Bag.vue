@@ -169,7 +169,7 @@
                   <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
                 </div>
                 <div v-else>
-                  <h4 class="mt-2 mb-3">Payment method</h4>
+                  <h4 class="mt-2 mb-3">Choose Payment Method</h4>
                   <card-picker :selectable="true" v-model="card"></card-picker>
                   <b-btn v-if="card" @click="checkout" class="menu-bag-btn">CHECKOUT</b-btn>
                 </div>

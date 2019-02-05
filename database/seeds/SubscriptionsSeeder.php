@@ -12,25 +12,42 @@ class SubscriptionsSeeder extends Seeder
      */
     public function run()
     {
-        for($i=1;$i<=10;$i++)
-            {
     	        DB::table('subscriptions')->insert([
-    	        	'user_id' => rand(1,20),
-    	        	'customer_id' => rand(1,20),
+    	        	'user_id' => 11,
+    	        	'customer_id' => 11,
     	        	'store_id' => 1,
     	        	'name' => 'name',
     	        	'status' => 'active',
-    	        	'stripe_id' => rand(111,999),
+    	        	'stripe_id' => 'sub_'.substr(md5(rand()), 0, 13),
     	        	'stripe_customer_id' => 1,
     	        	'stripe_plan' => 1,
     	        	'quantity' => 1,
-    	        	'amount' => mt_rand(80, 120) / 10,
-    	        	'interval' => 1,
+    	        	'amount' => mt_rand(1200, 3000) / 10,
+    	        	'interval' => 'week',
     	        	'delivery_day' => rand(1,7),
     	        	'created_at' => Carbon::now(),
     	            'updated_at' => Carbon::now()
     	        ]);
+
+                for($i=13;$i<23;$i++){
+                    DB::table('subscriptions')->insert([
+                        'user_id' => $i,
+                        'customer_id' => $i,
+                        'store_id' => 1,
+                        'name' => 'name',
+                        'status' => 'active',
+                        'stripe_id' => 'sub_'.substr(md5(rand()), 0, 13),
+                        'stripe_customer_id' => 1,
+                        'stripe_plan' => 1,
+                        'quantity' => 1,
+                        'amount' => mt_rand(1200, 3000) / 10,
+                        'interval' => 'week',
+                        'delivery_day' => rand(4,7),
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
             }
+            
             
     }
 }

@@ -41,11 +41,11 @@
               v-model="mealModal"
               v-if="mealModal"
             >
-              <div class="row">
+              <div class="row mt-3">
                 <div class="col-md-6 modal-meal-image">
                   <img :src="meal.featured_image">
                   <p v-if="storeSettings.showNutrition">{{ meal.description }}</p>
-                  <div class="row mt-3 mb-5">
+                  <div class="row mt-3 mb-5" v-if="storeSettings.showNutrition">
                     <div class="col-md-6">
                       <h5>Tags</h5>
                       <li v-for="tag in meal.tags">{{ tag.tag }}</li>
@@ -72,12 +72,12 @@
                   <p>{{ meal.description }}</p>
                   <div class="row">
                     <div class="col-md-6">
-                      <h5>Nutrition</h5>
+                      <h5>Tags</h5>
                       <li v-for="tag in meal.tags">{{ tag.tag }}</li>
                     </div>
                     <div class="col-md-6">
                       <h5>Contains</h5>
-                      <li v-for="allergy in meal.allergies">{{ allergy.title }}</li>
+                      <li v-for="allergy in meal.allergy_titles">{{ allergy }}</li>
                     </div>
                   </div>
                   <div class="row mt-3 mb-3">
@@ -86,11 +86,19 @@
                       {{ ingredients }}
                     </div>
                   </div>
-                  <div class="row">
+                  <div class="row" v-if="storeSettings.showNutrition">
                     <div class="col-md-8">
                       <h5>{{ format.money(meal.price) }}</h5>
                     </div>
                     <div class="col-md-4">
+                      <img src="/images/customer/add.jpg" @click="addOne(meal)">
+                    </div>
+                  </div>
+                  <div class="row" v-if="!storeSettings.showNutrition">
+                    <div class="col-md-6">
+                      <h5>{{ format.money(meal.price) }}</h5>
+                    </div>
+                    <div class="col-md-6">
                       <img src="/images/customer/add.jpg" @click="addOne(meal)">
                     </div>
                   </div>

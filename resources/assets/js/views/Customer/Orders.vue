@@ -22,7 +22,7 @@
                   </div>
                   <div class="col-md-4">
                     <h4>Placed On</h4>
-                    <p>{{ order.created_at }}</p>
+                    <p>{{ moment(order.created_at).format('dddd, MMM Do') }}</p>
                   </div>
                   <div class="col-md-4">
                     <h2>{{ format.money(order.amount) }}</h2>
