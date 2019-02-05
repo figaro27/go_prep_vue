@@ -1,6 +1,6 @@
 <template>
   <div class="menu container-fluid">
-    <div v-if="!willDeliver && !preview">
+    <div v-if="!willDeliver && !preview && loggedIn">
       <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
     </div>
 
@@ -213,11 +213,8 @@
                   v-if="total < minimum"
                 >Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
                 <div>
-                  <router-link v-if="loggedIn" to="/customer/bag">
+                  <router-link to="/customer/bag">
                     <b-btn v-if="total >= minimum && !preview" class="menu-bag-btn">NEXT</b-btn>
-                  </router-link>
-                   <router-link v-else to="/login">
-                    <b-btn v-if="total >= minimum && !preview" class="menu-bag-btn">LOG IN</b-btn>
                   </router-link>
                   <h6 class="center-text mt-3">Current Total - ${{ totalBagPrice }}</h6>
                 </div>

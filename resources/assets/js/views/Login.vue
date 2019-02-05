@@ -47,6 +47,11 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 export default {
   components: {},
+  props: {
+    redirect: {
+      default: null,
+    },
+  },
   data() {
     return {
       email: "",
@@ -65,7 +70,7 @@ export default {
 
       axios
         .post("/api/auth/login", data)
-        .then(response => {
+        .then(async response => {
           let jwt = response.data;
 
           if (jwt.access_token) {
@@ -73,9 +78,13 @@ export default {
               jwt.access_token
             }`;
             localStorage.setItem("jwt", JSON.stringify(jwt));
-            this.init();
+            
+            await this.init();
 
-            switch (jwt.user.user_role_id) {
+            if(this.redirect) {
+              this.$router.replace(this.redirect);
+            }
+            else switch (jwt.user.user_role_id) {
               case 1:
                 this.$router.replace("/customer/home");
                 break;

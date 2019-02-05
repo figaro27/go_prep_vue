@@ -25,7 +25,7 @@
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from "@coreui/vue";
-// import { mapGetters, mapActions, mapMutations } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   name: "StoreDropdown",
@@ -35,30 +35,21 @@ export default {
   data() {
     return {
       itemsCount: 42,
-      email: ""
     };
   },
-  // computed: {
-  //   ...mapGetters({
-  //     user: "user",
-  //   }),
-  //   email(){
-  //     return this.user.email;
-  //   }
-  // },
-  created() {
-    this.getEmail();
+  computed: {
+    ...mapGetters({
+      user: "user"
+    }),
+    email() {
+      return this.user.email || '';
+    }
   },
+  created() {},
   methods: {
     logout() {
       axios.post("/api/auth/logout").finally(resp => {
         window.location.href = "/login";
-      });
-    },
-    getEmail() {
-      let self = this;
-      axios.get("/api/me/user").then(resp => {
-        self.email = resp.data.user.email;
       });
     }
   }

@@ -37,6 +37,11 @@ li {
   background-color:#ffffff;
   border-bottom:0px;
 }
+.navbar-nav {
+  .nav-link {
+    margin-bottom: 0;
+  }
+}
 
 .nav-link{
 	margin-bottom:10px;

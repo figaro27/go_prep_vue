@@ -55,7 +55,10 @@ let routes = [
   {
     path: '/login',
     component: Login,
-    name: 'login'
+    name: 'login',
+    props(route) {
+      return route.query;
+    },
   },
   {
     path: '/register',

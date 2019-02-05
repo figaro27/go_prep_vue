@@ -176,7 +176,7 @@
                 <p>Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.`</p>
               </li>
 
-              <li v-else>
+              <li v-else-if="loggedIn">
                 <div v-if="!willDeliver">
                   <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
                 </div>
@@ -185,6 +185,17 @@
                   <card-picker :selectable="true" v-model="card"></card-picker>
                   <b-btn v-if="card" @click="checkout" class="menu-bag-btn">CHECKOUT</b-btn>
                 </div>
+              </li>
+
+              <li v-else>
+                  <b-btn-group>
+                    <router-link :to="{ path: '/login', query: { redirect: '/customer/bag' } }" class="btn menu-bag-btn">
+                      LOG IN
+                    </router-link>
+                    <router-link :to="{ path: '/register' }" class="btn menu-bag-btn">
+                      REGISTER
+                    </router-link>
+                  </b-btn-group>
               </li>
             </ul>
           </div>
@@ -228,6 +239,7 @@ export default {
       totalBagPrice: "totalBagPrice",
       willDeliver: "viewedStoreWillDeliver",
       storeLogo: "viewedStoreLogo",
+      loggedIn: "loggedIn"
     }),
     storeSettings() {
       return this.store.settings;

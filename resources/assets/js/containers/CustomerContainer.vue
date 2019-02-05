@@ -28,7 +28,8 @@
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <CustomerDropdown v-if="loggedIn" />
-        <b-nav-item v-else class="px-3" to="/login">Log In</b-nav-item>
+        <b-nav-item v-if="!loggedIn" class="px-3" to="/login">Log In</b-nav-item>
+        <b-nav-item v-if="!loggedIn" class="px-3 mr-4" to="/register">Register</b-nav-item>
       </b-navbar-nav>
       <!--<AsideToggler class="d-lg-none" mobile />-->
     </AppHeader>
