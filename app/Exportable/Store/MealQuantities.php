@@ -17,7 +17,7 @@ class MealQuantities
         $this->params = $params;
     }
 
-    public function exportData()
+    public function exportData($type = null)
     {
         $dates = $this->getDeliveryDates();
         $meals = collect($this->store->getOrderMeals($dates));

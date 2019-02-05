@@ -19,7 +19,7 @@ class OrdersByCustomer
         $this->params = $params;
     }
 
-    public function exportData()
+    public function exportData($type = null)
     {
         $dateRange = $this->getDeliveryDates();
 

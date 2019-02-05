@@ -18,7 +18,7 @@ class Orders
         $this->params = $params;
     }
 
-    public function exportData()
+    public function exportData($type = null)
     {
         $orders = $this->store->getOrders(null, $this->getDeliveryDates())->map(function ($order) {
           return [

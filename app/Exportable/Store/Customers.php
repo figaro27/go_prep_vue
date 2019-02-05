@@ -17,7 +17,7 @@ class Customers
         $this->store = $store;
     }
 
-    public function exportData()
+    public function exportData($type = null)
     {
         return $this->store->customers->map(function($customer) {
           return [

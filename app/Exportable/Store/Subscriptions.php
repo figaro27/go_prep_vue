@@ -18,7 +18,7 @@ class Subscriptions
         $this->store = $store;
     }
 
-    public function exportData()
+    public function exportData($type = null)
     {
         $subscriptions = $this->store->subscriptions()->with(['user', 'orders', 'orders.meals'])
             ->get()

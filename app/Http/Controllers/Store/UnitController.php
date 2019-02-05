@@ -114,7 +114,7 @@ class UnitController extends StoreController
         //
     }
 
-    public function exportData()
+    public function exportData($type = null)
     {
 
     }

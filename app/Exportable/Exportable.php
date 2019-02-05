@@ -9,7 +9,7 @@ use \XLSXWriter;
 
 trait Exportable
 {
-    abstract public function exportData();
+    abstract public function exportData($type = null);
     abstract public function exportPdfView();
 
     public function export($type)

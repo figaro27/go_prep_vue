@@ -9,7 +9,7 @@ use mikehaertl\wkhtmlto\Pdf;
 
 trait ExportsData
 {
-    abstract function exportData();
+    abstract function exportData($type = null);
     abstract function exportPdfView();
 
     public function export(Request $request)

@@ -17,7 +17,7 @@ class Meals
         $this->store = $store;
     }
 
-    public function exportData()
+    public function exportData($type = null)
     {
         return $this->store->meals->map(function($meal) {
           return [

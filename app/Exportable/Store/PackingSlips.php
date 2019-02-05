@@ -21,7 +21,7 @@ class PackingSlips
         $this->params = $params;
     }
 
-    public function exportData()
+    public function exportData($type = null)
     {
         $orders = $this->store->orders();
 

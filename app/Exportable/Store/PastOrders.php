@@ -17,7 +17,7 @@ class PastOrders
         $this->store = $store;
     }
 
-    public function exportData()
+    public function exportData($type = null)
     {
         $orders = $this->store->getFulfilledOrders()->map(function ($order) {
           return [
