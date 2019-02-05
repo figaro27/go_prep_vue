@@ -40,9 +40,9 @@
               </div>
               <div class="col-md-6">
               <b-dropdown variant="warning" class="center mt-2" right text="Export as">
-                <b-dropdown-item @click="exportData('meal_quantities', 'csv')">CSV</b-dropdown-item>
-                <b-dropdown-item @click="exportData('meal_quantities', 'xls')">XLS</b-dropdown-item>
-                <b-dropdown-item @click="exportData('meal_quantities', 'pdf')">PDF</b-dropdown-item>
+                <b-dropdown-item @click="exportData('meal_orders', 'csv')">CSV</b-dropdown-item>
+                <b-dropdown-item @click="exportData('meal_orders', 'xls')">XLS</b-dropdown-item>
+                <b-dropdown-item @click="exportData('meal_orders', 'pdf')">PDF</b-dropdown-item>
               </b-dropdown>
               </div>
             </div>

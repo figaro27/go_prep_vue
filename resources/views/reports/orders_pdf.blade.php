@@ -8,9 +8,8 @@
 <body>
   <h2>Orders</h2>
   <table border="1">
-    <thead>
+    <!-- <thead>
       <tr>
-        <th>Delivery Notes</th>
         <th>Order ID</th>
         <th>Name</th>
         <th>Address</th>
@@ -20,7 +19,7 @@
         <th>Order Placed</th>
         <th>Delivery Date</th>
       </tr>
-    </thead>
+    </thead> -->
 
     <tbody>
       @foreach ($data as $i => $row)

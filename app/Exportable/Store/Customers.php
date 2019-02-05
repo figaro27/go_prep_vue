@@ -25,13 +25,13 @@ class Customers
             $customer['phone'],
             $customer['address'],
             $customer['city'],
-            $customer['state'],
+            $customer['zip'],
             $customer['joined'],
             $customer['total_payments'],
-            $customer['total_paid'],
+            '$'.$customer['total_paid'],
             $customer['last_order'],
           ];
-        })->toArray();
+        })->prepend(['Name', 'Phone', 'Address', 'City', 'Zip', 'Customer Since', 'Total Orders', 'Total Paid', 'Last Order'])->toArray();
     }
 
     public function exportPdfView()

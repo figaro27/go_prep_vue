@@ -22,19 +22,18 @@ class Orders
     {
         $orders = $this->store->getOrders(null, $this->getDeliveryDates())->map(function ($order) {
           return [
-            $order->delivery,
             $order->order_number,
             $order->user->name,
             $order->user->details->address,
             $order->user->details->zip,
             $order->user->details->phone,
-            $order->amount,
+            '$'.$order->amount,
             $order->created_at,
             $order->delivery_date,
           ];
         });
 
-        return $orders->toArray();
+        return $orders->prepend(['Order #', 'Name', 'Address', 'Zip', 'Phone', 'Total', 'Order Placed', 'Delivery Day' ])->toArray();
     }
 
     public function exportPdfView()

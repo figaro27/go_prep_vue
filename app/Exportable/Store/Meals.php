@@ -25,11 +25,11 @@ class Meals
             $meal->title,
             $meal->categories->implode('category', ', '),
             $meal->tags->implode('tag', ', '),
-            $meal->active_orders,
+            $meal->allergies->implode('title', ', '),
+            $meal->subscriptions->count(),
             $meal->lifetime_orders,
-            $meal->created_at
           ];
-        })->toArray();
+        })->prepend(['Status', 'Title', 'Categories', 'Tags', 'Contains', 'Meal Plans', 'Lifetime Orders', ])->toArray();
     }
 
     public function exportPdfView()

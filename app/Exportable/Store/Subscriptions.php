@@ -24,19 +24,18 @@ class Subscriptions
             ->get()
             ->map(function ($sub) {
                 return [
-                    $sub->notes,
                     $sub->stripe_id,
                     $sub->user->name,
                     $sub->user->details->address,
-                    $sub->user->details->zip,
+                    str_pad($sub->user->details->zip, 5, 0, STR_PAD_LEFT),
                     $sub->user->details->phone,
-                    $sub->amount,
+                    '$'.$sub->amount,
                     $sub->created_at,
                     date('l', mktime(0, 0, 0, 0, $sub->delivery_day)),
                 ];
             });
 
-        return $subscriptions->toArray();
+        return $subscriptions->prepend(['Meal Plan #', 'Name', 'Address', 'Zip', 'Phone', 'Total Price', 'Meal Plan Created', 'Delivery Day' ])->toArray();
     }
 
     public function exportPdfView()

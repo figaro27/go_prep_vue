@@ -11,6 +11,10 @@ class Subscription extends Model
 
     protected $appends = ['meals'];
 
+    protected $casts = [
+        'created_at' => 'date:F d, Y',
+    ];
+
     public function user()
     {
         return $this->belongsTo('App\User');

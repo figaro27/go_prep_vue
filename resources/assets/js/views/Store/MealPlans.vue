@@ -10,19 +10,6 @@
             :options="options"
             v-show="!isLoading"
           >
-            <div slot="beforeTable" class="mb-2">
-               <div class="d-flex align-items-end">
-                <div class="mr-2">
-                  <b-btn @click="filterNotes" :selected="filters.notes" variant="primary" class="filter-btn">Filter Notes</b-btn>
-                </div>
-                <div class="flex-grow-1">
-                  <b-form-group label="Delivery day" class="delivery-date-picker mb-0">
-                    <v-select multiple v-model="filters.delivery_days" :options="deliveryDays"></v-select>
-                  </b-form-group>
-                </div>
-              </div>
-            </div>
-
             <span slot="beforeLimit">
               <b-btn variant="primary" @click="exportData('subscriptions', 'pdf', true)">
                 <i class="fa fa-print"></i>&nbsp;
@@ -45,7 +32,7 @@
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
-                class="btn view btn-warning btn-sm"
+                class="btn view btn-primary btn-sm"
                 @click="viewSubscription(props.row.id)"
               >View Meal Plan</button>
             </div>
@@ -60,17 +47,17 @@
 
     <div class="modal-basic">
       <b-modal v-model="viewSubscriptionModal" size="lg" title="Meal Plan Details">
-        <div class="row">
+        <div class="row mt-4">
           <div class="col-md-4">
-            <h4>Meal Plan ID</h4>
-            <p>{{ subscription.subscription_number }}</p>
+            <h4>Meal Plan #</h4>
+            <p>{{ subscription.stripe_id }}</p>
           </div>
           <div class="col-md-4">
             <h4>Placed On</h4>
             <p>{{ subscription.created_at }}</p>
           </div>
           <div class="col-md-4">
-            <h2>${{ subscription.amount }}</h2>
+            <h2>{{ format.money(subscription.amount) }}</h2>
           </div>
         </div>
         <div class="row">
@@ -159,7 +146,7 @@ export default {
       user_detail: {},
       meals: {},
       columns: [
-        "notes",
+        // "notes",
         "stripe_id",
         "user.user_detail.full_name",
         "user.user_detail.address",
@@ -168,13 +155,13 @@ export default {
         "amount",
         "created_at",
         "delivery_day",
-        "interval",
+        // "interval",
         "actions"
       ],
       options: {
         headings: {
-          notes: "Notes",
-          stripe_id: "Subscription #",
+          // notes: "Notes",
+          stripe_id: "Meal Plan #",
           "user.user_detail.full_name": "Name",
           "user.user_detail.address": "Address",
           "user.user_detail.zip": "Zip Code",
@@ -182,7 +169,7 @@ export default {
           amount: "Total",
           created_at: "Subscription Placed",
           delivery_day: "Delivery Day",
-          interval: "Interval",
+          // interval: "Interval",
           actions: "Actions"
         },
         rowClassCallback: function(row) {
@@ -319,10 +306,6 @@ export default {
         });
       });
       this.viewSubscriptionModal = true;
-    },
-    filterNotes() {
-      this.filter = !this.filter;
-      this.refreshTable();
     },
     exportData(report, format = "pdf", print = false) {
       axios
