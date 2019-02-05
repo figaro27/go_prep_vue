@@ -1,7 +1,8 @@
 <template>
   <div class="delivery-date-picker mb-0">
     <div class="d-flex align-items-center">
-      <div class="mr-2">Delivery dates:</div>
+      <div class="mr-2" v-if="!storeSettings.allowPickup">Delivery Dates:</div>
+      <div class="mr-2" v-if="storeSettings.allowPickup">Delivery / Pickup Dates:</div>
 
       <div class="flex-grow-1">
         <date-range-picker ref="picker" @selected="val => onChange(val)" i18n="EN"></date-range-picker>
