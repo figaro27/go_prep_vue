@@ -21,7 +21,7 @@ class StoresSeeder extends Seeder
                 'city' => $faker->city,
                 'state' => $faker->stateAbbr,
                 'zip' => 11204,
-                'logo' => $faker->word,
+                'logo' => '/images/store/store-logo.jpg',
                 'domain' => 'store',
                 'created_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now'),
             ]);

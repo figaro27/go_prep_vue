@@ -52,7 +52,7 @@
                     </div>
                     <div class="col-md-6">
                       <h5>Contains</h5>
-                      <li v-for="allergy in meal.allergies">{{ allergy.title }}</li>
+                      <li v-for="allergy in meal.allergy_titles">{{ allergy }}</li>
                     </div>
                   </div>
 
@@ -126,9 +126,6 @@
               <div class="col-sm-3 col-md-3 order-1 order-sm-2">
                 <p @click="clearAll">Clear All</p>
               </div>
-            </div>
-            <div v-if="storeLogo">
-              <img :src="storeLogo" :title="store.details.name" />
             </div>
             <div class="row">
               <div :class="`col-md-9 order-2 order-sm-1  main-menu-area`">

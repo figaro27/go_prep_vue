@@ -2,7 +2,12 @@
   <div class="app customer">
     <AppHeader fixed>
       <b-link class="navbar-brand" to="#">
-        <img
+        <img v-if="storeLogo"
+          class="store-logo"
+          :src="storeLogo"
+          alt="Company Logo"
+        >
+        <img v-if="!storeLogo"
           class="navbar-brand-full"
           src="/images/logo.jpg"
           width="90"
@@ -97,6 +102,9 @@ export default {
   },
   computed: {
     ...mapGetters(["viewedStore", "loggedIn"]),
+    ...mapGetters({
+      storeLogo: "viewedStoreLogo",
+    }),
     name() {
       return this.$route.name;
     },

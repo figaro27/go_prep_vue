@@ -7,9 +7,6 @@
           <div class="col-md-12">
             <h2 class="center-text">Checkout</h2>
           </div>
-          <div class="col-md-12 mb-2" v-if="storeLogo">
-            <img :src="storeLogo" :title="store.details.name">
-          </div>
           <div class="col-md-12 mb-2">
             <b-button variant="primary" @click="clearAll" class>Empty Bag</b-button>
             <router-link to="/customer/menu">

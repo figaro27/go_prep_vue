@@ -28,6 +28,7 @@ class Meal extends Model
     ];
 
     protected $appends = [
+        'allergy_titles',
         'tag_titles',
         'nutrition',
         'active_orders',
@@ -220,6 +221,13 @@ class Meal extends Model
     {
         return collect($this->tags)->map(function ($meal) {
             return $meal->tag;
+        });
+    }
+
+    public function getAllergyTitlesAttribute()
+    {
+        return collect($this->allergies)->map(function ($meal){
+            return $meal->title;
         });
     }
 

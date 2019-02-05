@@ -20,7 +20,7 @@ class StoreSettingsSeeder extends Seeder
             'cutoff_hours' => 0,
             'delivery_distance_type' => 'zipcodes',
             'delivery_distance_radius' => 500,
-            'delivery_distance_zipcodes' => '[11209]',
+            'delivery_distance_zipcodes' => '[11209, 11228, 11214, 11219, 11230, 11218, 11220, 11204]',
             'stripe_id' => 'acct_1DytLMHoLjZBBJiv',
             'stripe_account' => '{"access_token":"sk_test_keZlgc38s70oGly6mjmYufLg","livemode":false,"refresh_token":"rt_ERmvvKxytr1o6Abs7dAAAgITMDlccJAX4qcOlPuadA8epbsX","token_type":"bearer","stripe_publishable_key":"pk_test_4AphKydmoFc290wUOgLPJRnY","stripe_user_id":"acct_1DytLMHoLjZBBJiv","scope":"express"}',
             'notifications' => json_encode([
@@ -29,6 +29,7 @@ class StoreSettingsSeeder extends Seeder
                 'cancelled_subscriptions' => true,
                 'ready_to_print' => true,
             ]),
+            'view_delivery_days' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
