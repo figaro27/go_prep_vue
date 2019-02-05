@@ -5,6 +5,14 @@
         <div class="card-header">Orders</div>
         <div class="card-body">
           <Spinner v-if="isLoading"/>
+          <b-alert v-if="orders[0]" :show="$route.query.created || false" variant="success">
+            Thank you for your order.
+            Your meals will be delivered on
+            {{ moment(orders[0].delivery_date).format('dddd MMM Do') || '' }}
+          </b-alert>
+          <b-alert :show="!orders.length || false" variant="warning">
+            You have no orders.
+          </b-alert>
           <div v-for="order in orders" :key="order.id">
             <div v-b-toggle="'collapse' + order.id">
               <b-list-group-item>
@@ -25,12 +33,8 @@
                 <div class="row">
                   <div class="col-md-4">
                     <h4>Delivery Status</h4>
-                    <p v-if="!order.fulfilled">
-                      Delivery day: {{ order.delivery_date }}
-                    </p>
-                    <p v-else>
-                      Delivered on: {{ order.delivery_date }}
-                    </p>
+                    <p v-if="!order.fulfilled">Delivery day: {{ moment(order.delivery_date).format('dddd MMM Do') }}</p>
+                    <p v-else>Delivered on: {{ moment(order.delivery_date).format('dddd MMM Do') }}</p>
                   </div>
                 </div>
 
@@ -40,9 +44,7 @@
                       <img :src="row.value" class="modalMeal">
                     </template>
 
-                    <template slot="FOOT_subtotal" slot-scope="row">
-                      {{ format.money(order.amount) }}
-                    </template>
+                    <template slot="FOOT_subtotal" slot-scope="row">{{ format.money(order.amount) }}</template>
                   </b-table>
                 </b-collapse>
               </b-list-group-item>
@@ -56,7 +58,7 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
-import format from '../../lib/format.js';
+import format from "../../lib/format.js";
 import Spinner from "../../components/Spinner";
 
 export default {
@@ -82,10 +84,10 @@ export default {
           image: meal.featured_image,
           meal: meal.title,
           quantity: meal.pivot.quantity,
-          subtotal: format.money(meal.price * meal.pivot.quantity),
-        }
-      })
-    },
+          subtotal: format.money(meal.price * meal.pivot.quantity)
+        };
+      });
+    }
   }
 };
 </script>

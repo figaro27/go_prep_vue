@@ -1035,10 +1035,10 @@ const getters = {
   },
 
   subscriptions: (state) => {
-    return state.customer.data.subscriptions;
+    return _.orderBy(state.customer.data.subscriptions, 'id', 'desc');
   },
   orders: (state) => {
-    return state.customer.data.orders;
+    return _.orderBy(state.customer.data.orders, 'id', 'desc');
   },
 
   cards: (state) => {

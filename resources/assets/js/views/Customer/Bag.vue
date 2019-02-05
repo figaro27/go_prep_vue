@@ -2,13 +2,13 @@
   <div class="bag container-fluid">
     <div class="card">
       <div class="card-body">
-        <Spinner v-if="loading" position="absolute"/>
+        <spinner v-if="loading" position="absolute"></spinner>
         <div class="row">
           <div class="col-md-12">
             <h2 class="center-text">Checkout</h2>
           </div>
           <div class="col-md-12 mb-2" v-if="storeLogo">
-              <img :src="storeLogo" :title="store.details.name" />
+            <img :src="storeLogo" :title="store.details.name">
           </div>
           <div class="col-md-12 mb-2">
             <b-button variant="primary" @click="clearAll" class>Empty Bag</b-button>
@@ -92,11 +92,8 @@
                   <div class="col-md-4">
                     <strong>Delivery Fee:</strong>
                   </div>
-                  <div class="col-md-8">
-                    ${{ storeSettings.deliveryFee }}
-                  </div>
+                  <div class="col-md-8">${{ storeSettings.deliveryFee }}</div>
                 </div>
-
               </li>
               <li class="checkout-item">
                 <div class="row">
@@ -108,33 +105,24 @@
                       <strong>Price Before Discount:</strong>
                     </span>
                   </div>
-                  <div class="col-md-8">
-                    ${{ totalBagPrice }}
-                  </div>
+                  <div class="col-md-8">${{ totalBagPrice }}</div>
                 </div>
-
               </li>
               <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
                 <div class="row">
                   <div class="col-md-4">
                     <strong>Weekly Meal Plan Discount:</strong>
                   </div>
-                  <div class="col-md-4">
-                    ${{ mealPlanDiscountAmount }}
-                  </div>
+                  <div class="col-md-4">${{ mealPlanDiscountAmount }}</div>
                 </div>
-
               </li>
               <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
                 <div class="row">
                   <div class="col-md-4">
                     <strong>Weekly Meal Plan Price:</strong>
                   </div>
-                  <div class="col-md-8">
-                    ${{ totalBagPriceAfterDiscount }}
-                  </div>
+                  <div class="col-md-8">${{ totalBagPriceAfterDiscount }}</div>
                 </div>
-
               </li>
               <li class="checkout-item" v-if="storeSettings.allowPickup">
                 <b-form-group>
@@ -159,11 +147,13 @@
                 <div>
                   <p v-if="pickupOrDelivery === '0'">Delivery Day</p>
                   <p v-if="pickupOrDelivery === '1'">Pickup Day</p>
-                  <b-form-group
-                    v-if="deliveryDaysOptions.length > 1"
-                    description
-                  >
-                    <b-select :options="deliveryDaysOptions" v-model="deliveryDay" class="delivery-select" required>
+                  <b-form-group v-if="deliveryDaysOptions.length > 1" description>
+                    <b-select
+                      :options="deliveryDaysOptions"
+                      v-model="deliveryDay"
+                      class="delivery-select"
+                      required
+                    >
                       <option slot="top" disabled>-- Select delivery day --</option>
                     </b-select>
                   </b-form-group>
@@ -189,14 +179,13 @@
               </li>
 
               <li v-else>
-                  <b-btn-group>
-                    <router-link :to="{ path: '/login', query: { redirect: '/customer/bag' } }" class="btn menu-bag-btn">
-                      LOG IN
-                    </router-link>
-                    <router-link :to="{ path: '/register' }" class="btn menu-bag-btn">
-                      REGISTER
-                    </router-link>
-                  </b-btn-group>
+                <b-btn-group>
+                  <router-link
+                    :to="{ path: '/login', query: { redirect: '/customer/bag' } }"
+                    class="btn menu-bag-btn"
+                  >LOG IN</router-link>
+                  <router-link :to="{ path: '/register' }" class="btn menu-bag-btn">REGISTER</router-link>
+                </b-btn-group>
               </li>
             </ul>
           </div>
@@ -224,11 +213,11 @@ export default {
       deliveryPlan: false,
       pickup: false,
       deliveryDay: undefined,
-      pickupOrDelivery: '0',
+      pickupOrDelivery: "0",
       stripeKey,
       stripeOptions,
       card: null,
-      loading: false,
+      loading: false
     };
   },
   computed: {
@@ -242,7 +231,7 @@ export default {
       willDeliver: "viewedStoreWillDeliver",
       isLoading: "isLoading",
       storeLogo: "viewedStoreLogo",
-      loggedIn: "loggedIn",
+      loggedIn: "loggedIn"
     }),
     storeSettings() {
       return this.store.settings;
@@ -298,6 +287,8 @@ export default {
   },
   mounted() {},
   methods: {
+    ...mapActions(['refreshSubscriptions', 'refreshCustomerOrders']),
+    ...mapMutations(['emptyBag']),
     quantity(meal) {
       const qty = this.$store.getters.bagItemQuantity(meal);
       return qty;
@@ -334,11 +325,21 @@ export default {
           card_id: this.card,
           store_id: this.store.id
         })
-        .then(resp => {
+        .then(async resp => {
+          this.emptyBag();
+          
           if (this.deliveryPlan) {
-            this.$router.push("/customer/subscriptions");
+            await this.refreshSubscriptions();
+            this.$router.push({
+              path: "/customer/subscriptions",
+              query: { created: true }
+            });
           } else {
-            this.$router.push("/customer/orders");
+            await this.refreshCustomerOrders();
+            this.$router.push({
+              path: "/customer/orders",
+              query: { created: true }
+            });
           }
         })
         .catch(e => {

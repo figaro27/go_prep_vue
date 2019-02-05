@@ -65,6 +65,9 @@ Vue.component('ingredient-search', IngredientSearch);
 import DeliveryDatePicker from './components/DeliveryDatePicker';
 Vue.component('delivery-date-picker', DeliveryDatePicker);
 
+import Spinner from './components/Spinner';
+Vue.component('spinner', Spinner);
+
 /*
 moment.defaultFormat = 'ddd, MMMM Do';
 moment.defaultFormatUtc = 'ddd, MMMM Do';

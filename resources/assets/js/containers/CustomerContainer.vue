@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app customer">
     <AppHeader fixed>
       <b-link class="navbar-brand" to="#">
         <img

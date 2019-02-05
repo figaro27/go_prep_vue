@@ -34,7 +34,7 @@ body {
   // overflow: hidden;
 }
 
-body.customer #cooking {
+.app.customer #cooking {
   left: 0;
 }
 
@@ -48,6 +48,7 @@ body.customer #cooking {
   width: 20vh;
   height: 20vh;
   overflow: hidden;
+  z-index: 1000;
 
   .bubble {
     position: absolute;

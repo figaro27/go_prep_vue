@@ -1,6 +1,14 @@
 <template>
   <div class="row">
     <div class="col-md-12">
+      <b-alert v-if="subscriptions[0]" :show="$route.query.created || false" variant="success">
+        Thank you for your order.
+        Your meals will be delivered on
+        {{ moment(subscriptions[0].delivery_day, 'E').format('dddd') || '' }}
+      </b-alert>
+
+      <b-alert :show="!subscriptions.length || false" variant="warning">You have no meal plans.</b-alert>
+
       <div class="card">
         <div class="card-header">Meal Plans</div>
         <div class="card-body">
@@ -58,7 +66,9 @@ export default {
     Spinner
   },
   data() {
-    return {};
+    return {
+      isLoading: false
+    };
   },
   computed: {
     ...mapGetters(["subscriptions"])
