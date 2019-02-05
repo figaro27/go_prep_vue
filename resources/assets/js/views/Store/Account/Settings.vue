@@ -474,7 +474,7 @@ export default {
         }
       }
 
-      settings.delivery_distance_zipcodes = this.zipcodes;
+      settings.delivery_distance_zipcodes = this.zipCodes;
 
       // this.spliceCharacters();
       axios
