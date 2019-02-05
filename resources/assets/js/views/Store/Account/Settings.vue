@@ -96,7 +96,7 @@
             >
               <textarea
                 :value="deliveryDistanceZipcodes"
-                @input="e => { updateZips(e.target.value) }"
+                @input="e => { updateZips(e) }"
                 class="form-control"
                 placeholder="Zip Codes"
               ></textarea>
@@ -394,10 +394,10 @@ export default {
     return {
       loginAlertSuccess: false,
       loginAlertFail: false,
-      zipcodes: [],
+      zipCodes: [],
       new_category: "",
       view_delivery_days: 1,
-      payments_url: ""
+      payments_url: "",
     };
   },
   computed: {
@@ -571,6 +571,9 @@ export default {
       if(val) {
         this.storeSettings.timezone = val.value;
       }
+    },
+    updateZips(e) {
+      this.zipCodes = e.target.value.split(',');
     }
   }
 };

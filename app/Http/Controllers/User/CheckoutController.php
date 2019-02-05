@@ -36,9 +36,9 @@ class CheckoutController extends UserController
         }
 
         if (!$user->hasStoreCustomer($store->id)) {
-            $stripeCustomer = $user->createStoreCustomer($store->id);
+            $storeCustomer = $user->createStoreCustomer($store->id);
         }
-        $stripeCustomer = $user->getStoreCustomer($store->id);
+        $storeCustomer = $user->getStoreCustomer($store->id);
         $customer = $user->getStoreCustomer($store->id, false);
 
         if (!$weeklyPlan) {
@@ -80,11 +80,6 @@ class CheckoutController extends UserController
             }
 
         } else {
-            $storeSource = \Stripe\Source::create([
-                "customer" => $this->user->stripe_id,
-                "original_source" => $card->stripe_id,
-                "usage" => "reusable",
-            ], ["stripe_account" => $store->settings->stripe_id]);
 
             $plan = \Stripe\Plan::create([
                 "amount" => $total * 100,
@@ -95,18 +90,27 @@ class CheckoutController extends UserController
                 "currency" => "usd",
             ], ['stripe_account' => $store->settings->stripe_id]);
 
-            $subscription = \Stripe\Subscription::create([
-                'customer' => $stripeCustomer,
+            $token = \Stripe\Token::create([
+                "customer" => $this->user->stripe_id,
+            ], ['stripe_account' => $store->settings->stripe_id]);
+
+            $storeSource = $storeCustomer->sources->create([
+                'source' => $token,
+            ], ['stripe_account' => $store->settings->stripe_id]);
+
+            $subscription = $storeCustomer->subscriptions->create([
+                'default_source' => $storeSource,
                 'items' => [
                     ['plan' => $plan],
                 ],
                 'application_fee_percent' => 10,
-                "source" => $storeSource,
             ], ['stripe_account' => $store->settings->stripe_id]);
+
 
             $userSubscription = new Subscription();
             $userSubscription->user_id = $user->id;
             $userSubscription->customer_id = $customer->id;
+            $userSubscription->stripe_customer_id = $storeCustomer->id;
             $userSubscription->store_id = $store->id;
             $userSubscription->name = "Weekly subscription (" . $store->storeDetail->name . ")";
             $userSubscription->stripe_id = $subscription->id;
