@@ -81,6 +81,7 @@ class StoreDetailController extends Controller
             'state' => 'required|string',
             'zip' => 'required|numeric',
             'description' => 'required|string|max:450',
+            'logo' => 'dimensions:ratio=1/1'
         ]);
 
         $id = auth('api')->user()->id;
