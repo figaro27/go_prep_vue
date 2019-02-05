@@ -29,8 +29,6 @@
                 </router-link>
               </div>
 
-              
-
               <span slot="beforeLimit">
                 <b-btn variant="primary" @click="exportData('meals', 'pdf', true)">
                   <i class="fa fa-print"></i>&nbsp;
@@ -85,7 +83,7 @@
     <create-meal-modal v-if="createMealModal" v-on:created="refreshTable()"/>
 
     <div class="modal-full modal-tabs">
-      <b-modal title="Meal" v-model="viewMealModal" v-if="viewMealModal">
+      <b-modal title="Meal" v-model="viewMealModal" v-if="viewMealModal" :key="`view-meal-modal${meal.id}`">
         <b-row>
           <b-col>
             <b-tabs>
