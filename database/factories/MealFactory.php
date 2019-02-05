@@ -3,17 +3,7 @@
 use Faker\Generator as Faker;
 
 $factory->define(App\Meal::class, function (Faker $faker) {
-	// $image = array(
-	// 	"http://dev.goprep.com/images/meal-1.jpg",
-	// 	"http://dev.goprep.com/images/meal-2.jpg",
-	// 	"http://dev.goprep.com/images/meal-3.jpg",
-	// 	"http://dev.goprep.com/images/meal-4.jpg",
-	// 	"http://dev.goprep.com/images/meal-5.jpg",
-	// 	"http://dev.goprep.com/images/meal-6.jpg",
-	// 	"http://dev.goprep.com/images/meal-7.jpg",
-	// 	"http://dev.goprep.com/images/meal-8.jpg"
-	// );
-
+	
 	$mealTitles = [
 		'Mediterranean Burger',
 		'Texas Turkey Burger',

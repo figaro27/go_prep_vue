@@ -26,6 +26,11 @@ class DatabaseSeeder extends Seeder
 
         $this->call(SubscriptionsSeeder::class);
         $this->call(MealSubscriptionsSeeder::class);
+        $this->call(MealTagsSeeder::class);
+        $this->call(MealMealTagSeeder::class);
+        $this->call(CategoryMealSeeder::class);
+        $this->call(AllergyMealSeeder::class);
+        $this->call(IngredientMealSeeder::class);
 
     }
 }

@@ -3,12 +3,13 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="{{ asset('css/print.css') }}">
+  <link rel="stylesheet" href="{{ asset('sass/_custom.scss') }}">
 </head>
 
 <body>
   <div class="row">
     <div class="col-8 address">
-      <h3>Receipient Details</h3>
+      <h3>Customer Details</h3>
       <p>
         {{$order->user->name}}
       </p>
@@ -19,8 +20,9 @@
         {{$order->user->details->zip}}<br />
         {{$order->user->details->country}}<br />
       </p>
+      <br>
       <p>
-        <strong>Delivery instructions:</strong><br />
+        <strong>Delivery Instructions:</strong><br />
         {{$order->user->details->delivery}}
       </p>
     </div>
@@ -32,13 +34,13 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row mt-5">
       <div class="col-8">
           <h3>Order Details</h3>
-          Order reference: {{$order->order_number}}<br />
-          Order placed: {{$order->created_at}}<br />
-          To be delivered: {{$order->delivery_date}}<br />
-          Total: {{number_format($order->amount, 2)}}
+          Order #: {{$order->order_number}}<br />
+          Order Placed: {{$order->created_at}}<br />
+          To Be Delivered: {{$order->delivery_date}}<br />
+          <strong>Total: {{number_format($order->amount, 2)}}</strong>
       </div>
   </div>
 
