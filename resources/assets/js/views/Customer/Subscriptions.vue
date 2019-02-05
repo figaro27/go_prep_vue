@@ -10,7 +10,6 @@
       <b-alert :show="!subscriptions.length || false" variant="warning">You have no meal plans.</b-alert>
 
       <div class="card">
-        <div class="card-header">Meal Plans</div>
         <div class="card-body">
           <Spinner v-if="isLoading"/>
           <div v-for="subscription in subscriptions" :key="subscription.id">
@@ -19,7 +18,7 @@
                 <div class="row">
                   <div class="col-md-4">
                     <h4>Meal Plan ID</h4>
-                    <p>{{ subscription.id }}</p>
+                    <p>{{ subscription.stripe_id }}</p>
                   </div>
                   <div class="col-md-4">
                     <h4>Placed On</h4>
@@ -32,6 +31,21 @@
                   <div class="col-md-4" v-else>
                     <h4>Cancelled On</h4>
                     <p>{{ subscription.cancelled_at }}</p>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <h4>Delivery Day</h4>
+                    <p v-if="!subscription.fulfilled">{{ moment(subscription.delivery_date).format('dddd, MMM Do') }}</p>
+                    <p v-else>Delivered On: {{ moment(subscription.delivery_date).format('dddd, MMM Do') }}</p>
+                  </div>
+                  <div class="col-md-4">
+                    <h4>Company</h4>
+                    <p>{{ subscription.store_name }}</p>
+                  </div>
+                  <div class="col-md-4">
+                    <img src="/images/collapse-arrow.png" class="mt-4 pt-3">
                   </div>
                 </div>
 

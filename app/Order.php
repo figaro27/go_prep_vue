@@ -19,11 +19,11 @@ class Order extends Model
 
     protected $casts = [
         'amount' => 'double',
-        //'created_at' => 'date:l, M d',
-        'delivery_date' => 'date:Y-m-d 00:00:00'
+        'delivery_date' => 'date:Y-m-d 00:00:00',
+        'created_at' => 'date:F d, Y'
     ];
 
-    protected $appends = ['has_notes', 'meal_ids', 'meal_quantities'];
+    protected $appends = ['has_notes', 'meal_ids', 'meal_quantities', 'store_name'];
 
     public function user()
     {
@@ -66,6 +66,10 @@ class Order extends Model
         //     array_push($meals, Meal::where('id', $meal)->get());
         // }
         // return $meals;
+    }
+
+    public function getStoreNameAttribute(){
+        return $this->store->storeDetail->name;
     }
 
     public function getMealIdsAttribute() {

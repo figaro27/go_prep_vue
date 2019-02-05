@@ -2,7 +2,6 @@
   <div class="row">
     <div class="col-md-12">
       <div class="card">
-        <div class="card-header">Orders</div>
         <div class="card-body">
           <Spinner v-if="isLoading"/>
           <b-alert v-if="orders[0]" :show="$route.query.created || false" variant="success">
@@ -32,9 +31,16 @@
 
                 <div class="row">
                   <div class="col-md-4">
-                    <h4>Delivery Status</h4>
-                    <p v-if="!order.fulfilled">Delivery day: {{ moment(order.delivery_date).format('dddd MMM Do') }}</p>
-                    <p v-else>Delivered on: {{ moment(order.delivery_date).format('dddd MMM Do') }}</p>
+                    <h4>Delivery Day</h4>
+                    <p v-if="!order.fulfilled">{{ moment(order.delivery_date).format('dddd, MMM Do') }}</p>
+                    <p v-else>Delivered On: {{ moment(order.delivery_date).format('dddd, MMM Do') }}</p>
+                  </div>
+                  <div class="col-md-4">
+                    <h4>Company</h4>
+                    <p>{{ order.store_name }}</p>
+                  </div>
+                  <div class="col-md-4">
+                    <img src="/images/collapse-arrow.png" class="mt-2 pt-3">
                   </div>
                 </div>
 

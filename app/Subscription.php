@@ -9,7 +9,7 @@ class Subscription extends Model
 {
     protected $fillable = ['status', 'cancelled_at'];
 
-    protected $appends = ['meals'];
+    protected $appends = ['meals', 'store_name'];
 
     protected $casts = [
         'created_at' => 'date:F d, Y',
@@ -49,6 +49,11 @@ class Subscription extends Model
         }
 
         return $latestOrder->meals;
+    }
+
+    
+    public function getStoreNameAttribute(){
+        return $this->store->storeDetail->name;
     }
 
     /**
