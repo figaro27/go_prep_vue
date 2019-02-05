@@ -2,6 +2,7 @@
   <div class="bag container-fluid">
     <div class="card">
       <div class="card-body">
+        <Spinner v-if="loading" position="absolute"/>
         <div class="row">
           <div class="col-md-12">
             <h2 class="center-text">Checkout</h2>
@@ -226,7 +227,8 @@ export default {
       pickupOrDelivery: '0',
       stripeKey,
       stripeOptions,
-      card: null
+      card: null,
+      loading: false,
     };
   },
   computed: {
@@ -238,8 +240,9 @@ export default {
       hasMeal: "bagHasMeal",
       totalBagPrice: "totalBagPrice",
       willDeliver: "viewedStoreWillDeliver",
+      isLoading: "isLoading",
       storeLogo: "viewedStoreLogo",
-      loggedIn: "loggedIn"
+      loggedIn: "loggedIn",
     }),
     storeSettings() {
       return this.store.settings;
@@ -321,6 +324,7 @@ export default {
       this.$store.commit("addBagItems", bag);
     },
     checkout() {
+      this.loading = true;
       axios
         .post("/api/bag/checkout", {
           bag: this.bag,
@@ -342,7 +346,9 @@ export default {
             alert(e.error.message);
           }
         })
-        .finally(() => {});
+        .finally(() => {
+          this.loading = false;
+        });
     }
   }
 };
