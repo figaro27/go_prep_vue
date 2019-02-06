@@ -119,6 +119,7 @@ export default {
     deleteCard(id) {
       axios.delete(`/api/me/cards/${id}`).then(async resp => {
         await this.refreshCards();
+        this.$parent.card = null;
         if(this.value === id) {
           this.selectCard(_.first(this.cards).id);
         }
