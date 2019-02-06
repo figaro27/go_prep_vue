@@ -87,6 +87,7 @@ export default {
   methods: {
     ...mapActions(["refreshCards"]),
     createCard() {
+      this.$parent.loading = true;
       createToken().then(data => {
         console.log(data);
 
@@ -110,7 +111,9 @@ export default {
               this.$toastr.e(e.error.message);
             }
           })
-          .finally(() => {});
+          .finally(() => {
+            this.$parent.loading = false;
+          });
       });
     },
     deleteCard(id) {
