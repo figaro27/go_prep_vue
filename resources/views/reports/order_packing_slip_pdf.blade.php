@@ -27,9 +27,8 @@
       </p>
     </div>
     <div class="col-4">
-      <h3>Store Details</h3>
-      <img src="https://picsum.photos/100/60" />
-      <p>{{$logo}}</p>
+      <h3>Company Details</h3>
+      <img src="http://{{$order->store->details->domain}}.dev.goprep.com/{{$order->store->details->logo}}"/>
       <h4>{{$order->store->details->name}}</h4>
       <a href="http://{{$order->store->details->domain}}.goprep.com">{{$order->store->details->domain}}.goprep.com</a>
     </div>
