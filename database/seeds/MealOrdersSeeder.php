@@ -12,7 +12,7 @@ class MealOrdersSeeder extends Seeder
      */
     public function run()
     {
-    	for ($order=1;$order<=70;$order++)
+    	for ($order=1;$order<=50;$order++)
     	{
             for($i=1;$i<=5;$i++)
             {
