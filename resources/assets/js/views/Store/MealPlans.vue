@@ -27,8 +27,11 @@
                 <img src="/images/store/note.png">
               </p>
             </div>
+            <div slot="created_at" slot-scope="props">
+              {{ moment(props.row.created_at).format('dddd, MMM Do') }}
+            </div>
             <div slot="delivery_day" class="text-nowrap" slot-scope="props">
-              {{ moment(props.row.delivery_day).format('dddd') }}
+              {{ moment(props.row.delivery_day).format('dddd, MMM Do') }}
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
@@ -54,7 +57,7 @@
           </div>
           <div class="col-md-4">
             <h4>Placed On</h4>
-            <p>{{ subscription.created_at }}</p>
+            <p>{{ moment(subscription.created_at).format('dddd, MMM Do') }}</p>
           </div>
           <div class="col-md-4">
             <h2>{{ format.money(subscription.amount) }}</h2>
@@ -82,6 +85,7 @@
           <div class="col-md-4">
             <h4>Delivery Instructions</h4>
             <p>{{ user_detail.delivery }}</p>
+            <p><strong>Delivery Day:</strong> {{ moment(subscription.delivery_date).format('dddd, MMM Do') }}</p>
           </div>
         </div>
         <div class="row">

@@ -7,7 +7,7 @@
           <b-alert v-if="orders[0]" :show="$route.query.created || false" variant="success">
             Thank you for your order.
             Your meals will be delivered on
-            {{ moment(orders[0].delivery_date).format('dddd MMM Do') || '' }}
+            {{ moment(orders[0].delivery_date).format('dddd, MMM Do') || '' }}
           </b-alert>
           <b-alert :show="!orders.length || false" variant="warning">
             You have no orders.
@@ -22,7 +22,7 @@
                   </div>
                   <div class="col-md-4">
                     <h4>Placed On</h4>
-                    <p>{{ moment(order.created_at).format('dddd, MMM Do') }}</p>
+                    <p>{{ moment(order.created_at).format('dddd, MMM Do, Y') }}</p>
                   </div>
                   <div class="col-md-4">
                     <h2>{{ format.money(order.amount) }}</h2>

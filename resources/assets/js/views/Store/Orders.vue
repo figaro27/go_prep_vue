@@ -49,6 +49,12 @@
                 <img src="/images/store/note.png">
               </p>
             </div>
+            <div slot="created_at" slot-scope="props">
+              {{ moment(props.row.created_at).format('dddd, MMM Do') }}
+            </div>
+            <div slot="delivery_date" slot-scope="props">
+              {{ moment(props.row.delivery_date).format('dddd, MMM Do') }}
+            </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-warning btn-sm"
@@ -83,7 +89,7 @@
           </div>
           <div class="col-md-4 pt-4">
             <h4>Placed On</h4>
-            <p>{{ order.created_at }}</p>
+            <p>{{ moment(order.created_at).format('dddd, MMM Do') }}</p>
           </div>
           <div class="col-md-4 pt-4">
             <h2>${{ order.amount }}</h2>
@@ -107,6 +113,7 @@
           <div class="col-md-4">
             <h4>Delivery Instructions</h4>
             <p>{{ user_detail.delivery }}</p>
+            <p><strong>Delivery Day:</strong> {{ moment(order.delivery_date).format('dddd, MMM Do') }}</p>
           </div>
         </div>
         <div class="row">

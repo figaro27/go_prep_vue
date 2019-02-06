@@ -113,7 +113,7 @@ class CheckoutController extends UserController
             $userSubscription->stripe_customer_id = $storeCustomer->id;
             $userSubscription->store_id = $store->id;
             $userSubscription->name = "Weekly subscription (" . $store->storeDetail->name . ")";
-            $userSubscription->stripe_id = $subscription->id;
+            $userSubscription->stripe_id = substr($subscription->id,4);
             $userSubscription->stripe_plan = $plan->id;
             $userSubscription->quantity = 1;
             $userSubscription->amount = $total;
@@ -127,7 +127,7 @@ class CheckoutController extends UserController
             $order->customer_id = $customer->id;
             $order->store_id = $store->id;
             $order->subscription_id = $userSubscription->id;
-            $order->order_number = $subscription->id . '_1';
+            $order->order_number = substr($subscription->id,4) . '_1';
             $order->amount = $total;
             $order->fulfilled = false;
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));

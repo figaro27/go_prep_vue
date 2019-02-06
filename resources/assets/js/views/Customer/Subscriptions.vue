@@ -22,7 +22,7 @@
                   </div>
                   <div class="col-md-4">
                     <h4>Placed On</h4>
-                    <p>{{ moment(subscription.created_at).format('dddd, MMM Do') }}</p>
+                    <p>{{ moment(subscription.created_at).format('dddd, MMM Do, Y') }}</p>
                   </div>
                   <div class="col-md-4" v-if="subscription.status === 'active'">
                     <h2>{{ format.money(subscription.amount) }} per {{subscription.interval}}</h2>
