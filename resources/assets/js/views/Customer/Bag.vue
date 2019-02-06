@@ -73,7 +73,6 @@
                         variant="pill"
                         size="lg"
                         v-model="deliveryPlan"
-                        checked
                       />
                     </div>
                   </div>
