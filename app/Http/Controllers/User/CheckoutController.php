@@ -103,7 +103,7 @@ class CheckoutController extends UserController
                 'items' => [
                     ['plan' => $plan],
                 ],
-                'application_fee_percent' => 10,
+                'application_fee_percent' => 7.9,
             ], ['stripe_account' => $store->settings->stripe_id]);
 
 
