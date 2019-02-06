@@ -220,8 +220,11 @@ export default {
         customSorting: {
           created_at: function(ascending) {
             return function(a, b) {
+              a = a.created_at;
+              b = b.created_at;
+
               if (ascending) return a.isBefore(b, "day") ? 1 : -1;
-              return numA.isAfter(b, "day") ? 1 : -1;
+              return a.isAfter(b, "day") ? 1 : -1;
             };
           },
           delivery_date: function(ascending) {
