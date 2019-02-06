@@ -285,7 +285,7 @@ class Meal extends Model
     {
         $request->validate([
             'title' => 'required',
-            'price' => 'required',
+            'price' => 'required|numeric|min:.01',
             'category_ids' => 'required'
         ]);
 

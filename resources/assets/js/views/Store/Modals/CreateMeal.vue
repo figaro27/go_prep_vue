@@ -220,18 +220,14 @@ export default {
         .then(resp => {
           this.$toastr.s('Meal created!');
           this.$refs.createMealModal.hide();
+          this.$parent.createMealModal = false;
+          this.$emit("created");
         })
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors));
           error = error.join(" ");
           this.$toastr.e(error, "Error");
         })
-        .finally(() => {
-          //his.getTableData();
-          this.$emit("created");
-          this.$parent.createMealModal = false;
-        });
-        
     },
     async changeImage(val) {
       let b64 = await fs.getBase64(this.$refs.featuredImageInput.file);
