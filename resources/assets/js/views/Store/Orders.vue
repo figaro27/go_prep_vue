@@ -33,6 +33,10 @@
             </div>
 
             <span slot="beforeLimit">
+              <b-btn variant="success" @click="exportData('orders_by_customer', 'pdf', true)">
+                <i class="fa fa-print"></i>&nbsp;
+                Print Meals By Customer
+              </b-btn>
               <b-btn variant="primary" @click="exportData('orders', 'pdf', true)">
                 <i class="fa fa-print"></i>&nbsp;
                 Print

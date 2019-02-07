@@ -8,7 +8,7 @@
         <div class="card">
           <div class="card-body m-4">
             <h4 class="center-text mb-4">Orders Summary</h4>
-            <delivery-date-picker v-model="delivery_dates.orders_by_customer"></delivery-date-picker>
+            <div class="report-date-picker"><delivery-date-picker v-model="delivery_dates.orders_by_customer"></delivery-date-picker></div>
             <p class="mt-4 center-text">Shows how to bag up your meals for each customer.</p>
             <div class="row">
               <div class="col-md-6">
@@ -32,7 +32,7 @@
           <Spinner v-if="isLoading"/>
           <div class="card-body m-4">
             <h4 class="center-text mb-4">Production</h4>
-            <delivery-date-picker v-model="delivery_dates.meal_quantities"></delivery-date-picker>
+            <div class="report-date-picker"><delivery-date-picker v-model="delivery_dates.meal_quantities"></delivery-date-picker></div>
             <p class="mt-4 center-text">Shows how many of each meal to make based on your orders.</p>
             <div class="row">
               <div class="col-md-6">
@@ -58,7 +58,7 @@
         <div class="card">
           <div class="card-body m-4">
             <h4 class="center-text mb-4">Packing Slips</h4>
-            <delivery-date-picker v-model="delivery_dates.packing_slips"></delivery-date-picker>
+            <div class="report-date-picker"><delivery-date-picker v-model="delivery_dates.packing_slips"></delivery-date-picker></div>
             <p class="mt-4 center-text">Show packing slips or order summaries to include in your bag to the customers.</p>
             <div class="row">
               <div class="col-md-6">
@@ -81,7 +81,7 @@
         <div class="card">
           <div class="card-body m-4">
             <h4 class="center-text mb-4">Ingredients</h4>
-            <delivery-date-picker v-model="delivery_dates.ingredient_quantities"></delivery-date-picker>
+            <div class="report-date-picker"><delivery-date-picker v-model="delivery_dates.ingredient_quantities"></delivery-date-picker></div>
             <p class="mt-4 center-text">Shows how much of each ingredient is needed based on your orders.</p>
             <div class="row">
               <div class="col-md-6">
