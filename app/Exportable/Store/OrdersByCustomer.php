@@ -43,6 +43,12 @@ class OrdersByCustomer
                     'orders' => $orders->map(function ($order) {
                         return [
                             'id' => $order->id,
+                            'order_number' => $order->order_number,
+                            'address' => $order->user->userDetail->address,
+                            'city' => $order->user->userDetail->city,
+                            'state' => $order->user->userDetail->state,
+                            'zip' => $order->user->userDetail->zip,
+                            'delivery' => $order->user->userDetail->delivery,
                             'meal_quantities' => array_merge(
                                 [['Meal', 'Quantity']], // Heading
                                 $order->meals->map(function ($meal) {

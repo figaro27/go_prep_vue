@@ -156,15 +156,15 @@ class UserDetailsSeeder extends Seeder
         ]);
         DB::table('user_details')->insert([
             'user_id' => 11,
-            'firstname' => 'John',
-            'lastname' => 'Buckwith',
+            'firstname' => 'Mike',
+            'lastname' => 'Soldano',
             'phone' => '(555) 123-1234',
-            'address' => '1874 95th St',
-            'city' => 'Manhattan',
+            'address' => '244 92nd St',
+            'city' => 'Brooklyn',
             'state' => 'NY',
             'zip' => '11209',
             'country' => 'USA',
-            'delivery' => 'Call Phone',
+            'delivery' => 'Call my phone when outside - (555)-526-9926',
             'created_at' => now(),
             'updated_at' => now()
         ]);
