@@ -6,7 +6,8 @@
 </head>
 
 <body>
-  <h2>Customers</h2>
+  <h1>Customers</h1>
+  <h2>{{ date("m/d/Y") }}</h2>
   <table border="1">
     <thead>
       <tr>

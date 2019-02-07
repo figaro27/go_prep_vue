@@ -35,11 +35,11 @@
             <span slot="beforeLimit">
               <b-btn variant="success" @click="exportData('orders_by_customer', 'pdf', true)">
                 <i class="fa fa-print"></i>&nbsp;
-                Print Meals By Customer
+                Print Orders Summary
               </b-btn>
               <b-btn variant="primary" @click="exportData('orders', 'pdf', true)">
                 <i class="fa fa-print"></i>&nbsp;
-                Print
+                Print Orders
               </b-btn>
               <b-dropdown class="mx-1" right text="Export as">
                 <b-dropdown-item @click="exportData('orders', 'csv')">CSV</b-dropdown-item>

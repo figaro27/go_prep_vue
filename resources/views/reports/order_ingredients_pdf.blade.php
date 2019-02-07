@@ -7,8 +7,8 @@
 </head>
 
 <body>
-  <h2>Ingredients</h2>
-  <h4>{{ date(DATE_RFC2822) }}</h4>
+  <h1>Ingredients</h1>
+  <h2>{{ date("m/d/Y") }}</h2>
 
   <table border="1">
     <tbody>

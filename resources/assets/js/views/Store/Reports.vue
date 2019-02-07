@@ -32,11 +32,11 @@
           <Spinner v-if="isLoading"/>
           <div class="card-body m-4">
             <h4 class="center-text mb-4">Production</h4>
-            <div class="report-date-picker"><delivery-date-picker v-model="delivery_dates.meal_quantities"></delivery-date-picker></div>
+            <div class="report-date-picker"><delivery-date-picker v-model="delivery_dates.meal_orders"></delivery-date-picker></div>
             <p class="mt-4 center-text">Shows how many of each meal to make based on your orders.</p>
             <div class="row">
               <div class="col-md-6">
-                <button @click="print('meal_quantities', 'pdf')" class="btn btn-primary btn-md center mt-2 pull-right">Print</button>
+                <button @click="print('meal_orders', 'pdf')" class="btn btn-primary btn-md center mt-2 pull-right">Print</button>
               </div>
               <div class="col-md-6">
               <b-dropdown variant="warning" class="center mt-2" right text="Export as">
@@ -119,6 +119,7 @@ export default {
     return {
       delivery_dates: {
         meal_quantities: [],
+        meal_orders: [],
         ingredient_quantities: [],
         orders_by_customer: [],
         packing_slips: [],

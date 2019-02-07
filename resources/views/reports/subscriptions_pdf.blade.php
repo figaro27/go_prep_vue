@@ -6,7 +6,8 @@
 </head>
 
 <body>
-  <h2>Meal Plans</h2>
+  <h1>Meal Plans</h1>
+  <h2>{{ date("m/d/Y") }}</h2>
   <table border="1">
     <thead>
       <tr>

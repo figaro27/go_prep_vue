@@ -7,7 +7,7 @@
 
 <body>
   <h1>Production</h1>
-  <h2>{{ date(DATE_RFC2822) }}</h2>
+  <h2>{{ date("m/d/Y") }}</h2>
 
   <table border="1">
     <thead>
