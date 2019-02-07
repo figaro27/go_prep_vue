@@ -1,7 +1,7 @@
 <template>
   <AppHeaderDropdown right no-caret>
     <template slot="header">
-      <div class="m-3">customer@goprep.com</div>
+      <div class="m-3">{{ email }}</div>
     </template>\
     <template slot="dropdown">
 
@@ -25,6 +25,8 @@
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from "@coreui/vue";
+import { mapGetters, mapActions, mapMutations } from "vuex";
+
 export default {
   name: "CustomerDropdown",
   components: {
@@ -32,6 +34,14 @@ export default {
   },
   data: () => {
     return { itemsCount: 42 };
+  },
+  computed: {
+    ...mapGetters({
+      user: "user"
+    }),
+    email() {
+      return this.user.email || '';
+    }
   },
   methods: {
     logout() {
