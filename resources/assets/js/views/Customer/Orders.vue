@@ -78,7 +78,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      orders: "orders"
+      orders: "orders",
+      isLoading: "isLoading",
     })
   },
   mounted() {

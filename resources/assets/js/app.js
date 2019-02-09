@@ -34,6 +34,7 @@ import money from "v-money";
 import VueNumberInput from '@chenfengyuan/vue-number-input';
 import VueRangedatePicker from 'vue-rangedate-picker'
 import Vuelidate from 'vuelidate'
+import UUID from 'vue-uuid'
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -42,6 +43,7 @@ Vue.use(money, {
   precision: 2,
   prefix: '$'
 })
+Vue.use(UUID);
 Vue.use(VueNumberInput)
 Vue.component('input-tag', InputTag)
 Vue.component('v-select', vSelect)
@@ -83,7 +85,6 @@ const files = require.context('./components', true, /\.vue$/i)
 files
   .keys()
   .map(key => {
-    console.log(key, key.split('/').pop())
     Vue.component(key.split('/').pop().split('.')[0], files(key))
   })
 

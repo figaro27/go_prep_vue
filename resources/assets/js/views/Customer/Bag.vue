@@ -346,7 +346,7 @@ export default {
           }
         })
         .catch(response => {
-          let error = _.first(Object.values(response.response.data.errors));
+          let error = _.first(Object.values(response.response.data.errors)) || ['Please try again'];
           error = error.join(" ");
           this.$toastr.e(error, "Error");
         })

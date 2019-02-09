@@ -7568,6 +7568,13 @@ vue-toastr@^2.0.16:
   resolved "https://registry.yarnpkg.com/vue-toastr/-/vue-toastr-2.0.16.tgz#82eedd94a936057697d90be5d7622f1df4a16881"
   integrity sha512-61YaHW9PftqLfZBI6YyH8ZkshpZcjGD5mcU5uCaLwnS+UbV9iqKIE4z9XHE5lGQC9tzHEFZBEnKvjbAoOsyPVw==
 
+vue-uuid@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/vue-uuid/-/vue-uuid-1.1.1.tgz#35cb6e314415d9e99c699c40c11201b7c2806048"
+  integrity sha512-iJ9zuLjWuVdaNOhoKLHl1Af1pkbk4e33upMesAulH6HqoV9rSDM+2gvP+duwQ4aQijouYHGzwRPzEZBqw7ruig==
+  dependencies:
+    uuid "^3.3.2"
+
 vue2-google-maps@0.9.8:
   version "0.9.8"
   resolved "https://registry.yarnpkg.com/vue2-google-maps/-/vue2-google-maps-0.9.8.tgz#6f3a1e12a9f585905d200e23d094c293849b8e7c"

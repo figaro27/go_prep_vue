@@ -65,7 +65,7 @@
             <p>{{ customer.delivery }}</p>
           </div>
         </div>
-        <div v-for="order in customer.orders" :key="order.id">
+        <div v-for="order in customer.orders" :key="`order-${order.id}`">
           <div v-b-toggle="'collapse' + order.id">
             <b-list-group-item>
               <div class="row">
@@ -87,7 +87,7 @@
 
               <b-collapse :id="'collapse' + order.id" class="mt-2">
                     <ul class="meal-quantities">
-                      <li v-for="mealId in order.meal_ids" :key="mealId">
+                      <li v-for="mealId in order.meal_ids" :key="$uuid.v1()">
                         <div class="row">
                           <div class="col-md-5 pr-0">
                             <span class="order-quantity">{{ order.meal_quantities[mealId] }}</span>

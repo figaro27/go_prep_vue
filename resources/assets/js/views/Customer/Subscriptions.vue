@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-md-12">
-      <b-alert v-if="subscriptions[0]" :show="$route.query.created || false" variant="success">
+      <b-alert v-if="subscriptions[0]" :show="!!!$route.query.created || false" variant="success">
         <p class="center-text mt-3">
           Thank you for your order.
           Your meals will be delivered on
@@ -9,7 +9,7 @@
         </p>
       </b-alert>
 
-      <b-alert :show="!subscriptions.length || false" variant="warning">
+      <b-alert :show="!!!subscriptions.length || false" variant="warning">
         <p class="center-text mt-3">You have no meal plans.</p>
       </b-alert>
 

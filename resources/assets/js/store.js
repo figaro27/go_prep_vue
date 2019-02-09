@@ -456,7 +456,6 @@ const actions = {
     dispatch('refreshOrders');
     dispatch('refreshIngredients');
     dispatch('refreshOrderIngredients');
-    dispatch('refreshPayments');
     dispatch('refreshStoreSubscriptions');
   },
 
@@ -542,23 +541,6 @@ const actions = {
   },
 
   // Actions for logged in stores
-
-  async refreshPayments({
-    commit,
-    state
-  }, args = {}) {
-    const res = await axios.get("/api/me/payments");
-    const {data} = await res;
-
-    if (_.isArray(data)) {
-      state.store.categories.data = _.keyBy(data, 'id');
-      state.store.categories.expires = moment()
-        .add(ttl, 'seconds')
-        .unix();
-    } else {
-      throw new Error('Failed to retrieve payments');
-    }
-  },
 
   async refreshStoreSettings({
     commit,

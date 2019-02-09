@@ -246,7 +246,7 @@
             </div>
 
             <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
-              <b-input v-model="new_category" :type="text" placeholder="New Category..."></b-input>
+              <b-input v-model="new_category" type="text" placeholder="New Category..."></b-input>
               <b-button type="submit" variant="primary ml-2">Create</b-button>
             </b-form>
           </b-form-group>
@@ -325,8 +325,8 @@
                 type="number"
                 :disabled="null === storeSettings.view_delivery_days"
                 v-model="storeSettings.view_delivery_days"
-                min="0"
-                max="100"
+                :min="0"
+                :max="100"
                 placeholder
                 required
               ></number-input>

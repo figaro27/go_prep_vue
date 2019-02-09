@@ -502,7 +502,7 @@ export default {
       axios.get(`/api/me/meals/${id}`).then(response => {
         this.meal = response.data;
         this.ingredients = response.data.ingredient;
-        this.tags = response.data.meal_tag;
+        //this.tags = response.data.meal_tag;
         this.mealID = response.data.id;
         this.viewMealModal = true;
 

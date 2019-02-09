@@ -23,7 +23,6 @@ import StoreProduction from './views/Store/Production.vue';
 import StoreOrders from './views/Store/Orders.vue';
 import StorePastOrders from './views/Store/PastOrders.vue';
 import StoreMealPlans from './views/Store/MealPlans.vue';
-import StorePayments from './views/Store/Payments.vue';
 import StoreMyAccount from './views/Store/Account/MyAccount.vue';
 import StoreContact from './views/Store/Account/Contact.vue';
 import StoreSettings from './views/Store/Account/Settings.vue';
@@ -134,10 +133,6 @@ let routes = [
     path: '/store/meal-plans',
     component: StoreMealPlans,
     name: 'store-meal-plans'
-  }, {
-    path: '/store/payments',
-    component: StorePayments,
-    name: 'store-payments'
   }, {
     path: '/store/account/my-account',
     component: StoreMyAccount,
