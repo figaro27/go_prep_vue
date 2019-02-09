@@ -42,7 +42,7 @@ class StoreSlug
 
         $user = auth()->user();
         if($user && $user->hasRole('store') && $user->has('store')) {
-          if($user->store->id !== STORE_ID) {
+          if(!$request->wantsJson() && $user->store->id !== STORE_ID) {
             return redirect()->intended($user->store->getUrl($request->path, $request->secure));
           }
         }

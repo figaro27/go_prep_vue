@@ -27,12 +27,15 @@
                 <img src="/images/store/note.png">
               </p>
             </div>
-            <div slot="created_at" slot-scope="props">
-              {{ moment(props.row.created_at).format('dddd, MMM Do') }}
-            </div>
-            <div slot="delivery_day" class="text-nowrap" slot-scope="props">
-              {{ moment(props.row.delivery_day).format('dddd, MMM Do') }}
-            </div>
+            <div
+              slot="created_at"
+              slot-scope="props"
+            >{{ moment(props.row.created_at).format('dddd, MMM Do') }}</div>
+            <div
+              slot="delivery_day"
+              class="text-nowrap"
+              slot-scope="props"
+            >{{ moment().day(props.row.delivery_day - 1).format('dddd, MMM Do') }}</div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-primary btn-sm"
@@ -99,7 +102,10 @@
               v-model="deliveryNote"
               placeholder="E.G. Customer didn't answer phone or doorbell."
             ></textarea>
-            <button class="btn btn-primary btn-md pull-right mt-2" @click="saveNotes(subscriptionId)">Save</button>
+            <button
+              class="btn btn-primary btn-md pull-right mt-2"
+              @click="saveNotes(subscriptionId)"
+            >Save</button>
           </div>
         </div>
         <div class="row">
@@ -141,8 +147,8 @@ export default {
       deliveryDate: "All",
       filter: false,
       filters: {
-        delivery_days: ['All'],
-        notes: false,
+        delivery_days: ["All"],
+        notes: false
       },
       viewSubscriptionModal: false,
       subscription: {},
@@ -209,7 +215,7 @@ export default {
       isLoading: "isLoading"
     }),
     tableData() {
-      let filters = { };
+      let filters = {};
       if (_.isArray(this.filters.delivery_days)) {
         filters.delivery_days = this.filters.delivery_days;
       }
@@ -225,11 +231,11 @@ export default {
           let dateMatch = _.reduce(
             filters.delivery_days,
             (match, date) => {
-              if(date === 'All') {
+              if (date === "All") {
                 return true;
               }
               if (moment(date).isSame(subscription.delivery_day, "day")) {
-                return true 
+                return true;
               }
 
               return match;
@@ -239,7 +245,7 @@ export default {
 
           if (!dateMatch) return false;
         }
-        
+
         if ("status" in filters && subscription.status !== filters.status)
           return false;
 
