@@ -4,9 +4,10 @@ namespace App\Http\Controllers\User;
 
 use App\Store;
 use App\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
-class UserController
+class UserController extends Controller
 {
     use ValidatesRequests;
 

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\User\Billing;
 
+use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
-use Stripe;
 use Illuminate\Support\Facades\Session;
+use App\Subscription;
 
 class StripeController extends UserController
 {
@@ -21,6 +22,32 @@ class StripeController extends UserController
         }
 
         $this->user = auth('api')->user();
+    }
+
+    public function event(Request $request)
+    {
+        $event = collect($request->json());
+        $obj = collect($event->get('data', []));
+        $type = $event->get('type', null);
+
+        //$subscriptions = Subscription::all();
+
+        if($type === 'invoice.payment_succeeded') {
+          $subId = $obj->get('subscription', null);
+          $subscription = null;
+
+          if($subId) {
+            $subId = substr($subId, 4);
+            $subscription = Subscription::where('stripe_id', $subId)->first();
+          }
+
+          if($subscription) {
+            $subscription->renew($obj);
+          }
+
+          return 'Sub renewed';
+
+        }
     }
 
     /**
@@ -51,7 +78,7 @@ class StripeController extends UserController
      */
     public function store(Request $request)
     {
-      
+
     }
 
     /**
@@ -97,7 +124,8 @@ class StripeController extends UserController
         //
     }
 
-    public function createCard(Request $request) {
-      
+    public function createCard(Request $request)
+    {
+
     }
 }

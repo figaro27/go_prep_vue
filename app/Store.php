@@ -209,6 +209,15 @@ class Store extends Model
         return $meals;
     }
 
+    public function getNextDeliveryDay($weekIndex) {
+      $week = Carbon::createFromFormat('N', $weekIndex)->format();
+      return new Carbon('next '.$week);
+
+      $this->settings->getNextDeliveryDates()->find(function($date) use ($weekIndex) {
+        Carbon::createFromFormat('N', $weekIndex)->format();
+      });
+    }
+    
     public function getNextDeliveryDate() {
       return $this->settings->getNextDeliveryDates()[0] ?? null;
     }

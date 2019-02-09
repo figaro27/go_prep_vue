@@ -49,11 +49,24 @@ class Hourly extends Command
 
         foreach ($stores as $store) {
             if ($store->cutoffPassed()) {
-
                 if ($store->notificationEnabled('ready_to_print')) {
                     $store->sendNotification('ready_to_print');
                     $count++;
                 }
+
+                $date = $this->getNextDeliveryDate();
+                $store->orders()->where([
+                  ['subscription_id', 'NOT', null],
+                  ['delivery_date', $date],
+                  ['status', 'active'],
+                ])
+                ->get()
+                ->map(function ($order) {
+                  return $order->subscription;
+                });
+
+
+
             }
 
         }
