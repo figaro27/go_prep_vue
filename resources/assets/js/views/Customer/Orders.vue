@@ -7,7 +7,8 @@
           <b-alert v-if="orders[0]" :show="$route.query.created || false" variant="success">
             <p class="center-text mt-3">
               Thank you for your order.
-              Your meals will be delivered on
+              <span v-if="!!$route.query.pickup">You should pick up your order on</span>
+              <span v-else>Your meals will be delivered on</span>
               {{ moment(orders[0].delivery_date).format('dddd, MMM Do') || '' }}
             </p>
           </b-alert>
@@ -33,7 +34,7 @@
 
                 <div class="row">
                   <div class="col-md-4">
-                    <h4>Delivery Day</h4>
+                    <h4>{{ order.pickup ? 'Pickup Day' : 'Delivery Day' }}</h4>
                     <p v-if="!order.fulfilled">{{ moment(order.delivery_date).format('dddd, MMM Do') }}</p>
                     <p v-else>Delivered On: {{ moment(order.delivery_date).format('dddd, MMM Do') }}</p>
                   </div>

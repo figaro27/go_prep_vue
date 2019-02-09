@@ -122,17 +122,17 @@
               </li>
               <li class="checkout-item" v-if="storeSettings.allowPickup">
                 <b-form-group>
-                  <b-form-radio-group v-model="pickupOrDelivery" name="pickupOrDelivery">
-                    <b-form-radio value="0">
+                  <b-form-radio-group v-model="pickup" name="pickup">
+                    <b-form-radio :value="0" @click="pickup = 0">
                       <strong>Delivery</strong>
                     </b-form-radio>
-                    <b-form-radio value="1" @click="pickupOrDelivery = 1">
+                    <b-form-radio :value="1" @click="pickup = 1">
                       <strong>Pickup</strong>
                     </b-form-radio>
                   </b-form-radio-group>
                 </b-form-group>
               </li>
-              <li class="checkout-item" v-if="storeSettings.allowPickup && pickupOrDelivery != 0">
+              <li class="checkout-item" v-if="storeSettings.allowPickup && pickup != 0">
                 <p>
                   <strong>Pickup Instructions:</strong>
                   {{ storeSettings.pickupInstructions }}
@@ -141,8 +141,8 @@
 
               <li>
                 <div>
-                  <p v-if="pickupOrDelivery === '0'">Delivery Day</p>
-                  <p v-if="pickupOrDelivery === '1'">Pickup Day</p>
+                  <p v-if="pickup === '0'">Delivery Day</p>
+                  <p v-if="pickup === '1'">Pickup Day</p>
                   <b-form-group v-if="deliveryDaysOptions.length > 1" description>
                     <b-select
                       :options="deliveryDaysOptions"
@@ -164,7 +164,7 @@
               </li>
 
               <li v-else-if="loggedIn">
-                <div v-if="!willDeliver">
+                <div v-if="!willDeliver && pickup != 1">
                   <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
                 </div>
                 <div v-else>
@@ -216,7 +216,6 @@ export default {
       deliveryPlan: false,
       pickup: false,
       deliveryDay: undefined,
-      pickupOrDelivery: "0",
       stripeKey,
       stripeOptions,
       card: null,
@@ -335,13 +334,13 @@ export default {
             await this.refreshSubscriptions();
             this.$router.push({
               path: "/customer/subscriptions",
-              query: { created: true }
+              query: { created: true, pickup: this.pickup }
             });
           } else {
             await this.refreshCustomerOrders();
             this.$router.push({
               path: "/customer/orders",
-              query: { created: true }
+              query: { created: true, pickup: this.pickup }
             });
           }
         })

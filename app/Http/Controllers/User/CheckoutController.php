@@ -62,6 +62,7 @@ class CheckoutController extends UserController
             $order->order_number = substr(uniqid(rand(1, 9), false), 0, 12);
             $order->amount = $total;
             $order->fulfilled = false;
+            $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
             $order->save();
 
@@ -106,7 +107,6 @@ class CheckoutController extends UserController
                 'application_fee_percent' => 7.9,
             ], ['stripe_account' => $store->settings->stripe_id]);
 
-
             $userSubscription = new Subscription();
             $userSubscription->user_id = $user->id;
             $userSubscription->customer_id = $customer->id;
@@ -130,6 +130,7 @@ class CheckoutController extends UserController
             $order->order_number = substr($subscription->id,4) . '_1';
             $order->amount = $total;
             $order->fulfilled = false;
+            $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
             $order->save();
 

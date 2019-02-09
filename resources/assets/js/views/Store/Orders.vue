@@ -53,12 +53,14 @@
                 <img src="/images/store/note.png">
               </p>
             </div>
-            <div slot="created_at" slot-scope="props">
-              {{ moment(props.row.created_at).format('dddd, MMM Do') }}
-            </div>
-            <div slot="delivery_date" slot-scope="props">
-              {{ moment(props.row.delivery_date).format('dddd, MMM Do') }}
-            </div>
+            <div
+              slot="created_at"
+              slot-scope="props"
+            >{{ moment(props.row.created_at).format('dddd, MMM Do') }}</div>
+            <div
+              slot="delivery_date"
+              slot-scope="props"
+            >{{ moment(props.row.delivery_date).format('dddd, MMM Do') }}</div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-warning btn-sm"
@@ -114,10 +116,20 @@
             <p>{{ user_detail.city }}, {{ user_detail.state }}</p>
             <p>{{ user_detail.zip }}</p>
           </div>
-          <div class="col-md-4">
+          <div v-if="!order.pickup" class="col-md-4">
             <h4>Delivery Instructions</h4>
             <p>{{ user_detail.delivery }}</p>
-            <p><strong>Delivery Day:</strong> {{ moment(order.delivery_date).format('dddd, MMM Do') }}</p>
+            <p>
+              <strong>Delivery Day:</strong>
+              {{ moment(order.delivery_date).format('dddd, MMM Do') }}
+            </p>
+          </div>
+          <div v-else class="col-md-4">
+            <h4>Pickup</h4>
+            <p>
+              <strong>Day:</strong>
+              {{ moment(order.delivery_date).format('dddd, MMM Do') }}
+            </p>
           </div>
         </div>
         <div class="row">

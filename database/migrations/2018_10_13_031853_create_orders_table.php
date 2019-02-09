@@ -21,7 +21,8 @@ class CreateOrdersTable extends Migration
             $table->integer('subscription_id')->references('id')->on('subscriptions')->nullable();
             $table->string('order_number')->unique();
             $table->integer('amount');
-            $table->date('delivery_date');
+            $table->boolean('pickup')->default(0);
+            $table->date('delivery_date')->nullable();
             $table->text('notes')->nullable();
             $table->boolean('fulfilled');
             $table->timestamps();
