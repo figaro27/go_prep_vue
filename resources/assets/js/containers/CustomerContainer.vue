@@ -23,17 +23,17 @@
         >
       </b-link>
       <b-navbar-nav class="d-none d-block d-md-none">
-        <b-nav-item v-if="'id' in viewedStore && loggedIn" class="px-3" to="/customer/bag">Bag</b-nav-item>
+        <b-nav-item v-if="'id' in viewedStore && loggedIn"  to="/customer/bag">Bag</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="d-md-down-none">
-        <b-nav-item v-if="'id' in viewedStore" class="px-3" to="/customer/menu">Menu</b-nav-item>
-        <b-nav-item v-if="'id' in viewedStore && loggedIn" class="px-3" to="/customer/bag">Bag</b-nav-item>
-        <b-nav-item v-if="loggedIn" class="px-3" to="/customer/orders">Orders</b-nav-item>
-        <b-nav-item v-if="loggedIn" class="px-3" to="/customer/subscriptions">Meal Plans</b-nav-item>
+        <b-nav-item v-if="'id' in viewedStore"  to="/customer/menu">Menu</b-nav-item>
+        <b-nav-item v-if="'id' in viewedStore && loggedIn"  to="/customer/bag">Bag</b-nav-item>
+        <b-nav-item v-if="loggedIn"  to="/customer/orders">Orders</b-nav-item>
+        <b-nav-item v-if="loggedIn"  to="/customer/subscriptions">Meal Plans</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <CustomerDropdown v-if="loggedIn" />
-        <b-nav-item v-if="!loggedIn" class="px-3" to="/login">Log In</b-nav-item>
+        <b-nav-item v-if="!loggedIn"  to="/login">Log In</b-nav-item>
         <b-nav-item v-if="!loggedIn" class="px-3 mr-4" to="/register">Register</b-nav-item>
       </b-navbar-nav>
       <!--<AsideToggler class="d-lg-none" mobile />-->

@@ -492,6 +492,48 @@ th {
   }
 }
 
+.navbar .nav-item:not(.dropdown) {
+  padding-left: 0;
+  padding-right: 0;
+  
+  .nav-link {
+    position: relative;
+    transition: all 0.3s ease-in-out 0s;
+    padding: 15px 1rem;
+
+    &:after {
+      content: "";
+      position: absolute;
+      height: 1px;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      //background-color: #888888;
+      -webkit-box-shadow: 0px -1px 2px 0px #20a8d8;
+      box-shadow: 0px -1px 2px 0px #20a8d8;
+      visibility: hidden;
+      -webkit-transform: scaleX(0);
+      transform: scaleX(0);
+      -webkit-transition: all 0.22s ease-in-out 0s;
+      transition: all 0.22s ease-in-out 0s;
+      //opacity: 0.4;
+    }
+
+    &:hover {
+      &:after {
+        visibility: visible;
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1);
+      }
+    }
+
+    &.active {
+      font-weight: bolder;
+      background-color: #eef3f7;
+    }
+  }
+}
+
 
 ol.plain {
   list-style: decimal;
