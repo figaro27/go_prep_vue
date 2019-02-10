@@ -52,7 +52,7 @@ class StoreSetting extends Model
     {
         $dates = [];
 
-        $now = Carbon::now($this->timezone);
+        $now = Carbon::now('utc');
 
         $cutoff = $this->cutoff_days * (60 * 60 * 24) + $this->cutoff_hours * (60 * 60);
 

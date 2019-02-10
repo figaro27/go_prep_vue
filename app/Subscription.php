@@ -99,7 +99,7 @@ class Subscription extends Model
 
         $this->update([
             'status' => 'cancelled',
-            'cancelled_at' => Carbon::now(),
+            'cancelled_at' => Carbon::now('utc'),
         ]);
 
         if ($this->store->notificationEnabled('cancelled_subscription')) {

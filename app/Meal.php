@@ -11,10 +11,12 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Exception;
+use App\Traits\LocalizesDates;
 
 class Meal extends Model
 {
     use SoftDeletes;
+    use LocalizesDates;
 
     protected $fillable = [
         'active', 'featured_image', 'title', 'description', 'price', 'created_at',
@@ -24,6 +26,7 @@ class Meal extends Model
         'price' => 'double',
         'active_orders_price' => 'decimal:2',
         'created_at' => 'date:F d, Y',
+        'created_at_local' => 'date:F d, Y',
         'substitute' => 'boolean',
     ];
 
@@ -42,6 +45,7 @@ class Meal extends Model
         'substitute_ids',
         'ingredient_ids',
         'order_ids',
+        'created_at_local'
     ];
 
     protected $hidden = [
@@ -57,11 +61,13 @@ class Meal extends Model
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'local_created_at'];
 
-    public function getQuantityAttribute()
-    {
-        return 0;
+    public function getQuantityAttribute() {
+      if($this->pivot && $this->pivot->quantity) {
+        return $this->pivot->quantity;
+      }
+      else return null;
     }
 
     public function getLifetimeOrdersAttribute()
@@ -135,7 +141,7 @@ class Meal extends Model
     public function getSubstituteAttribute()
     {
         return $this->orders()->where([
-            ['delivery_date', '>', Carbon::now()],
+            ['delivery_date', '>', Carbon::now('utc')],
         ])->count() > 0;
     }
 
@@ -615,8 +621,21 @@ class Meal extends Model
                     return $mealOrder->order->subscription_id > 0;
                 });
 
-            $mealOrders->each(function ($mealOrder) use ($sub) {
+            $mealOrders->each(function ($mealOrder) use ($meal, $sub) {
                 $mealOrder->update(['meal_id' => $sub->id]);
+
+                if($mealOrder->order->has('subscription')) {
+                  $user = $mealOrder->order->user;
+                  
+                  if($user) {
+                    $user->sendNotification('subscription_meal_substituted', [
+                      'user' => $mealOrder->order->user,
+                      'subscription' => $mealOrder->order->subscription,
+                      'old_meal' => $meal,
+                      'sub_meal' => $sub,
+                    ]);
+                  }
+                }
             });
         }
 
@@ -626,6 +645,11 @@ class Meal extends Model
     public static function generateImageFilename($image, $ext)
     {
         return sha1($image) . '.' . $ext;
+    }
+
+    public function getCreatedAtLocalAttribute()
+    {
+        return $this->localizeDate($this->created_at)->format('F d, Y');
     }
 
 }

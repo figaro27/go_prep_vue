@@ -70,6 +70,7 @@ return [
     */
 
     'timezone' => 'UTC',
+    'timezone_display' => env('TIMEZONE_DISPLAY', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------

@@ -73,8 +73,12 @@ class Hourly extends Command
         $count = 0;
 
         // Subscriptions about to renew
-        echo strtotime('+1 day -3599 seconds').'-'.strtotime('+1 day');
-        $subs = Subscription::whereBetween('next_renewal_at', [Carbon::strtotime('+1 day -3599 seconds'), strtotime('+1 day')])->get();
+        $dateRange = [
+          Carbon::now('utc')->addDays(1)->subMinutes(30)->toDateTimeString(),
+          Carbon::now('utc')->addDays(1)->addMinutes(30)->toDateTimeString()
+        ];
+        $subs = Subscription::whereBetween('next_renewal_at', $dateRange)->get();
+
         foreach ($subs as $sub) {
           $sub->user->sendNotification('subscription_renewing', $sub);
           $count++;

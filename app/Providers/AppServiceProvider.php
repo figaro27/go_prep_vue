@@ -19,9 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $timezone = date_default_timezone_get();
-        date_default_timezone_set('UTC');
-
         Schema::defaultStringLength(191);
 
         Braintree_Configuration::environment(env('BRAINTREE_ENV'));

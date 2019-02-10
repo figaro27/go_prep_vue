@@ -342,7 +342,7 @@ class Store extends Model
             return false;
         }
 
-        $now = Carbon::now($this->settings->timezone);
+        $now = Carbon::now('utc');
 
         $cutoff = $this->settings->cutoff_days * (60 * 60 * 24) + $this->settings->cutoff_hours * (60 * 60);
 

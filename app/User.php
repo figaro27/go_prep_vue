@@ -3,10 +3,13 @@
 namespace App;
 
 use App\Customer;
+use App\Mail\Customer\SubscriptionRenewing;
+use App\Mail\Customer\SubscriptionMealSubstituted;
 use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
 //use Laravel\Passport\HasApiTokens;
 use Stripe;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -301,12 +304,19 @@ class User extends Authenticatable implements JWTSubject
     {
         $email = null;
 
+        if(!isset($data['user'])) {
+          $data['user'] = $this;
+        }
+
         switch ($notif) {
             case 'subscription_renewing':
                 $email = new SubscriptionRenewing([
                     'subscription' => $data,
                 ]);
                 break;
+
+            case 'subscription_meal_substituted':
+                $email = new SubscriptionMealSubstituted($data);
         }
 
         if ($email) {
