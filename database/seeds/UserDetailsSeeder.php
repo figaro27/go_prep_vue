@@ -72,8 +72,8 @@ class UserDetailsSeeder extends Seeder
         ]);
         DB::table('user_details')->insert([
             'user_id' => 5,
-            'firstname' => 'Mike',
-            'lastname' => 'Soldano',
+            'firstname' => 'Daniel',
+            'lastname' => 'Barbosa',
             'phone' => '(347) 526-9628',
             'address' => '1622 Bay Ridge Ave',
             'city' => 'Brooklyn',

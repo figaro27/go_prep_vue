@@ -13,8 +13,8 @@ class SubscriptionsSeeder extends Seeder
     public function run()
     {
     	        DB::table('subscriptions')->insert([
-    	        	'user_id' => 11,
-    	        	'customer_id' => 11,
+    	        	'user_id' => 3,
+    	        	'customer_id' => 3,
     	        	'store_id' => 1,
     	        	'name' => 'name',
     	        	'status' => 'active',
