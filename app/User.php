@@ -289,4 +289,32 @@ class User extends Authenticatable implements JWTSubject
       return $customer->sources->create(["source" => $token]);
     }
 
+    public function notificationEnabled($notif)
+    {
+        if (!$this->settings) {
+            return false;
+        }
+        return $this->settings->notificationEnabled($notif);
+    }
+
+    public function sendNotification($notif, $data = [])
+    {
+        $email = null;
+
+        switch ($notif) {
+            case 'subscription_renewing':
+                $email = new SubscriptionRenewing([
+                    'subscription' => $data,
+                ]);
+                break;
+        }
+
+        if ($email) {
+            Mail::to($this)->send($email);
+            return true;
+        }
+
+        return false;
+    }
+
 }

@@ -26,6 +26,7 @@ class CreateSubscriptionsTable extends Migration
             $table->float('amount');
             $table->string('interval');
             $table->tinyInteger('delivery_day');
+            $table->timestamp('next_renewal_at')->nullable();
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();

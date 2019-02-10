@@ -12,6 +12,7 @@ use App\StoreDetail;
 use App\Subscription;
 use Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Carbon;
 
 class CheckoutController extends UserController
 {
@@ -119,6 +120,7 @@ class CheckoutController extends UserController
             $userSubscription->amount = $total;
             $userSubscription->interval = 'week';
             $userSubscription->delivery_day = date('N', strtotime($deliveryDay));
+            $userSubscription->next_renewal_at = (new Carbon())->addDays(7);
             $userSubscription->save();
 
             // Create initial order

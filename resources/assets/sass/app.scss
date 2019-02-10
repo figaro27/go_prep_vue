@@ -37,6 +37,10 @@ $simple-line-font-path: '~simple-line-icons/fonts/';
 @import "components/date-range-picker.scss";
 
 
+.app {
+  height: 100vh;
+}
+
 .filter-btn {
   padding-top: 11px;
   padding-bottom: 11px;

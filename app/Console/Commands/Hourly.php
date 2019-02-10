@@ -2,12 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Mail\Customer\DeliveryToday;
-use App\Order;
 use App\Store;
 use App\Subscription;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Carbon;
 
 class Hourly extends Command
 {
@@ -54,23 +52,34 @@ class Hourly extends Command
                     $count++;
                 }
 
-                $date = $this->getNextDeliveryDate();
-                $store->orders()->where([
-                  ['subscription_id', 'NOT', null],
-                  ['delivery_date', $date],
-                  ['status', 'active'],
-                ])
-                ->get()
-                ->map(function ($order) {
-                  return $order->subscription;
-                });
+                $date = $store->getNextDeliveryDate();
 
-
-
+                // Get subscription orders
+                $subOrders = $store->orders()->with('subscription')
+                  ->where([
+                      ['subscription_id', 'NOT', null],
+                      ['delivery_date', $date],
+                  ])
+                  ->whereHas('subscription', function($query) {
+                    $query->where('status', 'active');
+                  })
+                  ->get()
+                  ->map(function ($order) {
+                      return $order->subscription;
+                  });
             }
-
         }
+        $this->info($count . ' `Ready to Print` notifications sent');
+        $count = 0;
 
-        $this->info($count . ' Ready to Print notifications sent');
+        // Subscriptions about to renew
+        echo strtotime('+1 day -3599 seconds').'-'.strtotime('+1 day');
+        $subs = Subscription::whereBetween('next_renewal_at', [Carbon::strtotime('+1 day -3599 seconds'), strtotime('+1 day')])->get();
+        foreach ($subs as $sub) {
+          $sub->user->sendNotification('subscription_renewing', $sub);
+          $count++;
+        }
+        $this->info($count . ' `Meal Plan Renewing` notifications sent');
+        $count = 0;
     }
 }
