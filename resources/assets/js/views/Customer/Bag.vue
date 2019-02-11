@@ -91,6 +91,14 @@
                   <div class="col-md-8">${{ storeSettings.deliveryFee }}</div>
                 </div>
               </li>
+              <li class="checkout-item" v-if="storeSettings.applyProcessingFee">
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Processing Fee:</strong>
+                  </div>
+                  <div class="col-md-8">${{ storeSettings.processingFee }}</div>
+                </div>
+              </li>
               <li class="checkout-item">
                 <div class="row">
                   <div class="col-md-4">

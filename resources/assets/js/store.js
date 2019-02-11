@@ -16,6 +16,8 @@ const state = {
     settings: {
       applyDeliveryFee: 0,
       deliveryFee: 0,
+      applyProcessingFee: 0,
+      processingFee: 0,
       allowPickup: true,
       pickupInstructions: ''
     }
@@ -888,6 +890,9 @@ const getters = {
     })
     if (getters.viewedStoreSetting('applyDeliveryFee', false)) {
       totalBagPrice += getters.viewedStore.settings.deliveryFee;
+    }
+    if (getters.viewedStoreSetting('applyProcessingFee', false)) {
+      totalBagPrice += getters.viewedStore.settings.processingFee;
     }
 
     return totalBagPrice.toFixed(2);
