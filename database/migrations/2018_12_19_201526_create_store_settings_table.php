@@ -17,7 +17,8 @@ class CreateStoreSettingsTable extends Migration
             $table->increments('id');
             $table->integer('store_id')->references('id')->on('stores');
             $table->string('timezone')->default('EST');
-            $table->boolean('active')->default(true);
+            $table->boolean('open')->default(true);
+            $table->text('closedReason')->nullable();
             $table->string('minimumOption');
             $table->integer('minimumMeals')->default(5)->nullable();
             $table->integer('minimumPrice')->default(50)->nullable();

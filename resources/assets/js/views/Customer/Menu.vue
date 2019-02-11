@@ -1,5 +1,18 @@
 <template>
-  <div class="menu container-fluid">
+  <div>
+    <div v-if="!storeSettings.open">
+      <div class="row">
+        <div class="col-sm-12 mt-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="center-text">This company will not be taking new orders at this time.</h5>
+              <p class="center-text mt-3"><strong>Reason:</strong> {{ storeSettings.closedReason }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <div class="menu container-fluid" v-if="storeSettings.open">
     <div v-if="!willDeliver && !preview && loggedIn">
       <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
     </div>
@@ -230,6 +243,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 

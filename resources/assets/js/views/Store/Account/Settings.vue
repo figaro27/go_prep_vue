@@ -404,18 +404,35 @@
         </div>
       </div>
 
-      <p>Active</p>
+      <p>Open</p>
       <div class="card">
         <div class="card-body">
-          <b-form-group label="Active" :state="true">
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.active"
-                @change.native="updateStoreSettings"
-              />
-            </b-form-group>
+          <b-form @submit.prevent="updateStoreSettings">
+            <p>
+                <span class="mr-1">Open</span>
+                <img
+                  v-b-popover.hover="'You can toggle this off to stop showing your menu page and accepting new orders for any reason. Be sure to fill out the reason below to communicate to your customers.'"
+                  title="Open or Closed"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                >
+              </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeSettings.open"
+                />
+
+              <b-form-input
+                  v-if="!storeSettings.open"
+                  type="text"
+                  v-model="storeSettings.closedReason"
+                  placeholder="Please include the reason to give to customers as to why you are currently not accepting new orders."
+                  required
+                ></b-form-input>
+            <div class="mt-3"><b-button type="submit" variant="primary">Save</b-button></div>
+          </b-form>
         </div>
       </div>
     </div>

@@ -80,6 +80,7 @@ class StoreSettingController extends StoreController
             'minimumPrice' => 'required_if:minimumOption,price',
             'minimumMeals' => 'required_if:minimumOption,meals',
             'delivery_days' => 'required|min:1',
+            'closedReason' => 'required_if:open,false'
         ]);
 
         $settings = StoreSetting::where('store_id', $this->store->id);
