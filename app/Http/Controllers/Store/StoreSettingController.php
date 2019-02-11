@@ -76,7 +76,8 @@ class StoreSettingController extends StoreController
             'mealPlanDiscount' => 'required_if:applyMealPlanDiscount,true|integer|nullable',
             'deliveryFee' => 'required_if:applyDeliveryFee,true|integer|nullable',
             'pickupInstructions' => 'required_if:allowpickup,true:string',
-            'minimum' => 'required|numeric',
+            'minimumPrice' => 'required_if:minimumOption,price',
+            'minimumMeals' => 'required_if:minimumOption,meals',
             'delivery_days' => 'required|min:1',
         ]);
 

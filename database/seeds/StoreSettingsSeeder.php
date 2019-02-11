@@ -14,7 +14,8 @@ class StoreSettingsSeeder extends Seeder
     {
         DB::table('store_settings')->insert([
             'store_id' => 1,
-            'minimum' => 5,
+            'active' => true,
+            'minimumOption' => 'meals',
             'delivery_days' => '["sun","wed", "fri"]',
             'cutoff_days' => 1,
             'cutoff_hours' => 0,

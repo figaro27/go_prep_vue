@@ -101,7 +101,30 @@
                 placeholder="Zip Codes"
               ></textarea>
             </b-form-group>
-            <b-form-group :state="true">
+            
+            <b-form-group>
+              <b-form-radio-group v-model="minimumSelected" :options="minimumOptions">
+              </b-form-radio-group>
+            </b-form-group>
+
+            <b-form-group :state="true" v-if="minimumSelected === 'price'">
+              <p>
+                <span class="mr-1">Minimum Price Requirement</span>
+                <img
+                  v-b-popover.hover="'Here you can set a minimum bag price required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'"
+                  title="Minimum Price Requirement"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                >
+              </p>
+              <b-form-input
+                type="text"
+                v-model="storeSettings.minimumPrice"
+                placeholder="Minimum Price"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group :state="true" v-if="minimumSelected === 'meals'">
               <p>
                 <span class="mr-1">Minimum Meals Requirement</span>
                 <img
@@ -113,7 +136,7 @@
               </p>
               <b-form-input
                 type="text"
-                v-model="storeSettings.minimum"
+                v-model="storeSettings.minimumMeals"
                 placeholder="Minimum Number of Meals"
                 required
               ></b-form-input>
@@ -356,6 +379,21 @@
           </div>
         </div>
       </div>
+
+      <p>Active</p>
+      <div class="card">
+        <div class="card-body">
+          <b-form-group label="Active" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.active"
+                @change.native="updateStoreSettings"
+              />
+            </b-form-group>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -392,6 +430,8 @@ export default {
   },
   data() {
     return {
+      minimumSelected: 'price',
+      minimumOptions: [{text: 'Require Minimum Price', value: 'price'},{text: 'Require Minimum Meals', value: 'meals'}],
       loginAlertSuccess: false,
       loginAlertFail: false,
       zipCodes: [],
@@ -460,6 +500,7 @@ export default {
   methods: {
     ...mapActions(["refreshCategories", "refreshStoreSettings"]),
     updateStoreSettings() {
+      this.spliceCharacters();
       let settings = { ...this.storeSettings };
 
       // Ensure numerical
@@ -491,26 +532,35 @@ export default {
           this.$toastr.e(error, "Error");
         });
     },
-    // spliceCharacters() {
-    //   if (this.storeSettings.deliveryFee != null)
-    //     {
-    //       let deliveryFee = this.storeSettings.deliveryFee;
-    //       if (deliveryFee.toString().includes('$')) {
-    //         let intToString = deliveryFee.toString();
-    //         let newFee = intToString.replace('$','');
-    //         this.storeSettings.deliveryFee = newFee;
-    //       }
-    //     }
+    spliceCharacters() {
+      if (this.storeSettings.deliveryFee != null)
+        {
+          let deliveryFee = this.storeSettings.deliveryFee;
+          if (deliveryFee.toString().includes('$')) {
+            let intToString = deliveryFee.toString();
+            let newFee = intToString.replace('$','');
+            this.storeSettings.deliveryFee = newFee;
+          }
+        }
 
-    //   if (this.storeSettings.mealPlanDiscount != null){
-    //     let mealPlanDiscount = this.storeSettings.mealPlanDiscount;
-    //     if (this.storeSettings.mealPlanDiscount.toString().includes('%')) {
-    //       let intToString = this.storeSettings.mealPlanDiscount.toString();
-    //       let newDiscount = intToString.replace('%','');
-    //       this.storeSettings.mealPlanDiscount = newDiscount;
-    //     }
-    //   }
-    // },
+      if (this.storeSettings.mealPlanDiscount != null){
+        let mealPlanDiscount = this.storeSettings.mealPlanDiscount;
+        if (this.storeSettings.mealPlanDiscount.toString().includes('%')) {
+          let intToString = this.storeSettings.mealPlanDiscount.toString();
+          let newDiscount = intToString.replace('%','');
+          this.storeSettings.mealPlanDiscount = newDiscount;
+        }
+      }
+
+      if (this.storeSettings.minimumPrice != null){
+        let minimumPrice = this.storeSettings.minimumPrice;
+        if (this.storeSettings.minimumPrice.toString().includes('$')) {
+          let intToString = this.storeSettings.minimumPrice.toString();
+          let newPrice = intToString.replace('$','');
+          this.storeSettings.minimumPrice = newPrice;
+        }
+      }
+    },
     createStripeAccount() {
       axios.post("/api/me/stripe").then(resp => {});
     },

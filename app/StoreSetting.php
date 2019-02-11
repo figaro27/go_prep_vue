@@ -35,8 +35,10 @@ class StoreSetting extends Model
     }
 
     protected $casts = [
+        'active' => 'boolean',
         'showNutrition' => 'boolean',
         'applyDeliveryFee' => 'boolean',
+        'applyProcessingFee' => 'boolean',
         'applyMealPlanDiscount' => 'boolean',
         'allowPickup' => 'boolean',
         'delivery_days' => 'array',
