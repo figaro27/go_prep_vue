@@ -191,6 +191,30 @@
             </b-form-group>
             <b-form-group :state="true">
               <p>
+                <span class="mr-1">Processing Fee</span>
+                <img
+                  v-b-popover.hover="'Here you can apply an optional processing fee paid for by your customers.'"
+                  title="Processing Fee"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                >
+              </p>
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.applyProcessingFee"
+              />
+              <b-form-input
+                v-if="storeSettings.applyProcessingFee"
+                type="string"
+                v-model="storeSettings.processingFee"
+                placeholder="Processing Fee"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group :state="true">
+              <p>
                 <span class="mr-1">Allow Pickup</span>
                 <img
                   v-b-popover.hover="'Allow your customers to pick up their meals instead of having it delivered. Please provide the location, time, and any additional instructions which will be shown to the customer.'"
@@ -540,6 +564,16 @@ export default {
             let intToString = deliveryFee.toString();
             let newFee = intToString.replace('$','');
             this.storeSettings.deliveryFee = newFee;
+          }
+        }
+
+      if (this.storeSettings.processingFee != null)
+        {
+          let processingFee = this.storeSettings.processingFee;
+          if (processingFee.toString().includes('$')) {
+            let intToString = processingFee.toString();
+            let newFee = intToString.replace('$','');
+            this.storeSettings.processingFee = newFee;
           }
         }
 
