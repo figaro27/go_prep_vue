@@ -197,7 +197,7 @@
       <center>
         <h5 class="mt-3">This meal is tied to one or more meal plans.
               <img
-                v-b-popover.hover="'You currently have one or more meal plans with your customers that contain this meal. Please select a subtitute and your customers will be informed via email. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of foods they contain, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'"
+                v-b-popover.hover="'You currently have one or more meal plans with your customers that contain this meal. Please select a substitute and your customers will be informed via email. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of foods they contain, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'"
                 title="Replacement Meal"
                 src="/images/store/popover.png"
                 class="popover-size"

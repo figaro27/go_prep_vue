@@ -26,7 +26,15 @@
                     :selected="filters.fulfilled"
                     variant="warning"
                     class="filter-btn"
+                    v-if="!filters.fulfilled"
                   >View Completed Orders</b-btn>
+                  <b-btn
+                    @click="$set(filters, 'fulfilled', !filters.fulfilled)"
+                    :selected="filters.fulfilled"
+                    variant="danger"
+                    class="filter-btn"
+                    v-if="filters.fulfilled"
+                  >View Open Orders</b-btn>
                 </div>
                 <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
               </div>
@@ -66,16 +74,18 @@
                 class="btn view btn-warning btn-sm"
                 @click="viewOrder(props.row.id)"
               >View Order</button>
-              <button
+              <b-btn
                 v-if="!props.row.fulfilled"
                 class="btn btn-primary btn-sm"
                 @click="fulfill(props.row.id)"
-              >Mark As Delivered</button>
-              <button
+                variant="primary"
+              >Mark As Complete</b-btn>
+              <b-btn
                 v-else
                 class="btn btn-primary btn-sm"
                 @click="unfulfill(props.row.id)"
-              >Unmark As Delivered</button>
+                variant="danger"
+              >Unmark As Complete</b-btn>
             </div>
 
             <div slot="amount" slot-scope="props">
