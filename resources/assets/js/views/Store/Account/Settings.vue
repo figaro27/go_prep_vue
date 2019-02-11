@@ -95,7 +95,7 @@
               :state="true"
             >
               <textarea
-                :value="deliveryDistanceZipcodes"
+                v-model="deliveryDistanceZipcodes"
                 @input="e => { updateZips(e) }"
                 class="form-control"
                 placeholder="Zip Codes"
