@@ -19,7 +19,10 @@ const state = {
       applyProcessingFee: 0,
       processingFee: 0,
       allowPickup: true,
-      pickupInstructions: ''
+      pickupInstructions: '',
+      minimumOption: '',
+      minimumMeals: 0,
+      minimumPrice: 0
     }
   },
   stores: {},
@@ -68,7 +71,7 @@ const state = {
           new_subscription: true,
           cancelled_subscription: true,
           ready_to_print: true
-        }
+        },
       },
       expires: 0
     },
@@ -1030,6 +1033,18 @@ const getters = {
 
   cards: (state) => {
     return state.cards;
+  },
+
+  minimumOption: (state) => {
+    return state.viewed_store.settings.minimumOption;
+  },
+
+  minimumMeals: (state) => {
+    return state.viewed_store.settings.minimumMeals;
+  },
+
+  minimumPrice: (state) => {
+    return state.viewed_store.settings.minimumPrice;
   }
 }
 

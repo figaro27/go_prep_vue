@@ -227,15 +227,24 @@
                     </div>
                   </li>
                 </ul>
-                <p
-                  v-if="total < minimum"
-                >Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
+                <p class="center-text" v-if="minOption === 'meals' && total < minimumMeals">
+                  Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
+                </p>
                 <div>
                   <router-link to="/customer/bag">
-                    <b-btn v-if="total >= minimum && !preview" class="menu-bag-btn">NEXT</b-btn>
+                    <b-btn v-if="minOption === 'meals' && total >= minimumMeals && !preview" class="menu-bag-btn">NEXT</b-btn>
                   </router-link>
-                  <h6 class="pull-right mt-3">SubTotal - ${{ totalBagPrice }}</h6>
                 </div>
+
+                <p class="pull-right" v-if="minOption === 'price' && totalBagPrice < minPrice">
+                  Please add {{format.money(remainingPrice)}} more to continue.
+                </p>
+                <div>
+                  <router-link to="/customer/bag">
+                    <b-btn v-if="minOption === 'price' && totalBagPrice >= minPrice && !preview" class="menu-bag-btn">NEXT</b-btn>
+                  </router-link>
+                </div>
+                  <h6 class="mt-2 pull-right">SubTotal - ${{ totalBagPrice }}</h6>
               </div>
             </div>
           </div>
@@ -307,16 +316,28 @@ export default {
       storeLogo: "viewedStoreLogo",
       isLoading: "isLoading",
       totalBagPrice: "totalBagPrice",
-      loggedIn: "loggedIn"
+      loggedIn: "loggedIn",
+      minOption: "minimumOption",
+      minMeals: "minimumMeals",
+      minPrice: 'minimumPrice'
     }),
     storeSettings() {
       return this.store.settings;
     },
-    minimum() {
-      return this.storeSettings.minimum;
+    minimumOption() {
+      return this.minOption;
+    },
+    minimumMeals(){
+      return this.minMeals;
+    },
+    minimumPrice(){
+      return this.minPrice;
     },
     remainingMeals() {
-      return this.minimum - this.total;
+      return this.minMeals - this.total;
+    },
+    remainingPrice() {
+      return this.minPrice - this.totalBagPrice;
     },
     singOrPlural() {
       if (this.remainingMeals > 1) {

@@ -49,13 +49,22 @@
                 </div>
               </li>
             </ul>
-            <p
-              v-if="total < minimum"
-            >Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
+            <p class="mt-3" v-if="minOption === 'meals' && total < minMeals">
+              Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
+            </p>
             <router-link to="/customer/menu">
-              <b-btn v-if="total < minimum && !preview" class="menu-bag-btn">BACK</b-btn>
+              <b-btn v-if="minOption === 'meals' && total < minMeals && !preview" class="menu-bag-btn">BACK</b-btn>
             </router-link>
-            <div></div>
+            
+            <p class="mt-3" v-if="minOption === 'price' && totalBagPrice < minPrice">
+                  Please add {{format.money(remainingPrice)}} more to continue.
+            </p>
+            <div>
+              <router-link to="/customer/menu">
+                <b-btn v-if="minOption === 'price' && totalBagPrice <= minPrice && !preview" class="menu-bag-btn">BACK</b-btn>
+              </router-link>
+            </div>
+
           </div>
           <div class="col-md-6 offset-1">
             <ul class="list-group">
@@ -241,16 +250,28 @@ export default {
       willDeliver: "viewedStoreWillDeliver",
       isLoading: "isLoading",
       storeLogo: "viewedStoreLogo",
-      loggedIn: "loggedIn"
+      loggedIn: "loggedIn",
+      minOption: "minimumOption",
+      minMeals: "minimumMeals",
+      minPrice: 'minimumPrice'
     }),
     storeSettings() {
       return this.store.settings;
     },
-    minimum() {
-      return this.storeSetting("minimum", 1);
+    minimumOption() {
+      return this.minOption;
+    },
+    minimumMeals(){
+      return this.minMeals;
+    },
+    minimumPrice(){
+      return this.minPrice;
     },
     remainingMeals() {
-      return this.minimum - this.total;
+      return this.minMeals - this.total;
+    },
+    remainingPrice() {
+      return this.minPrice - this.totalBagPrice;
     },
     singOrPlural() {
       if (this.remainingMeals > 1) {
