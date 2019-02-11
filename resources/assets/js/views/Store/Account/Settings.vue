@@ -47,7 +47,7 @@
               ></b-form-checkbox-group>
               <img
                 v-b-popover.hover="'These are the day(s) you plan on delivering your meals to your customers and will show up as options on the checkout page for the customer. You can set it to one day per week as many smaller meal prep companies do, or as many as you like.'"
-                title="Delivery Day(s)"
+                title="Delivery / Pickup Day(s)"
                 src="/images/store/popover.png"
                 class="popover-size"
               >
@@ -103,11 +103,11 @@
             </b-form-group>
             
             <b-form-group>
-              <b-form-radio-group v-model="minimumSelected" :options="minimumOptions">
+              <b-form-radio-group v-model="storeSettings.minimumOption" :options="minimumOptions">
               </b-form-radio-group>
             </b-form-group>
 
-            <b-form-group :state="true" v-if="minimumSelected === 'price'">
+            <b-form-group :state="true" v-if="storeSettings.minimumOption === 'price'">
               <p>
                 <span class="mr-1">Minimum Price Requirement</span>
                 <img
@@ -124,7 +124,7 @@
                 required
               ></b-form-input>
             </b-form-group>
-            <b-form-group :state="true" v-if="minimumSelected === 'meals'">
+            <b-form-group :state="true" v-if="storeSettings.minimumOption === 'meals'">
               <p>
                 <span class="mr-1">Minimum Meals Requirement</span>
                 <img
@@ -213,7 +213,21 @@
                 required
               ></b-form-input>
             </b-form-group>
-            <b-form-group :state="true">
+            
+
+              <b-form-group label="I Will Be:">
+                <b-form-checkbox-group v-model="typeSelected" :options="typeOptions">
+                </b-form-checkbox-group>
+              </b-form-group>
+              <b-form-input
+                v-if="storeSettings.allowPickup"
+                type="text"
+                v-model="storeSettings.pickupInstructions"
+                placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time)."
+                required
+              ></b-form-input>
+
+              <!-- <b-form-group :state="true">
               <p>
                 <span class="mr-1">Allow Pickup</span>
                 <img
@@ -236,7 +250,7 @@
                 placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time)."
                 required
               ></b-form-input>
-            </b-form-group>
+            </b-form-group> -->
 
             <b-button type="submit" variant="primary">Save</b-button>
           </b-form>
@@ -471,6 +485,8 @@ export default {
   },
   data() {
     return {
+      typeSelected: 'allowDelivery',
+      typeOptions: [{text: 'Delivering to Customers', value: 'allowDelivery'},{text: 'Letting Customers Pickup', value: 'allowPickup'}],
       minimumSelected: 'price',
       minimumOptions: [{text: 'Require Minimum Price', value: 'price'},{text: 'Require Minimum Meals', value: 'meals'}],
       loginAlertSuccess: false,
@@ -537,6 +553,7 @@ export default {
   },
   mounted() {
     this.view_delivery_days = this.storeSettings.view_delivery_days;
+    this.zipCodes = this.deliveryDistanceZipcodes.split(',');
   },
   methods: {
     ...mapActions(["refreshCategories", "refreshStoreSettings"]),
@@ -675,6 +692,7 @@ export default {
     },
     updateZips(e) {
       this.zipCodes = e.target.value.split(',');
+
     }
   }
 };

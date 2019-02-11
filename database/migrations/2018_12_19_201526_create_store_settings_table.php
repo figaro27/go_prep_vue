@@ -23,6 +23,7 @@ class CreateStoreSettingsTable extends Migration
             $table->integer('minimumMeals')->default(5)->nullable();
             $table->integer('minimumPrice')->default(50)->nullable();
             $table->boolean('showNutrition')->default(true);
+            $table->boolean('allowDelivery')->default(true);
             $table->boolean('allowPickup')->default(false);
             $table->text('pickupInstructions')->nullable();
             $table->boolean('applyMealPlanDiscount')->default(false);

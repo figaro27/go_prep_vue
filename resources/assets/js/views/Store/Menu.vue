@@ -43,6 +43,7 @@
 
               <div slot="active" slot-scope="props">
                 <b-form-checkbox
+                  class="largeCheckbox"
                   type="checkbox"
                   v-model="props.row.active"
                   :value="1"
