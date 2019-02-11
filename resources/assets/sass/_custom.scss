@@ -509,8 +509,8 @@ th {
       left: 0;
       right: 0;
       //background-color: #888888;
-      -webkit-box-shadow: 0px -1px 2px 0px #20a8d8;
-      box-shadow: 0px -1px 2px 0px #20a8d8;
+      -webkit-box-shadow: 0px -1px 2px 0px #7cc039;
+      box-shadow: 0px -1px 2px 0px #7cc039;
       visibility: hidden;
       -webkit-transform: scaleX(0);
       transform: scaleX(0);
@@ -570,4 +570,8 @@ ol.plain {
 
 .StripeElement--webkit-autofill {
   background-color: #fefde5 !important;
+}
+
+.red{
+  color:#ff0000 !important;
 }

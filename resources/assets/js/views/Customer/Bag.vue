@@ -92,12 +92,20 @@
                   <strong>{{ total }} {{ singOrPluralTotal }} {{ deliveryPlanText }}</strong>
                 </p>
               </li>
+              <li class="checkout-item" v-if="storeSettings.applyDeliveryFee || storeSettings.applyProcessingFee">
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>SubTotal:</strong>
+                  </div>
+                  <div class="col-md-3 offset-5">{{ format.money(totalBagPriceBeforeFees) }}</div>
+                </div>
+              </li>
               <li class="checkout-item" v-if="storeSettings.applyDeliveryFee">
                 <div class="row">
                   <div class="col-md-4">
                     <strong>Delivery Fee:</strong>
                   </div>
-                  <div class="col-md-8">${{ storeSettings.deliveryFee }}</div>
+                  <div class="col-md-3 offset-5">{{ format.money(storeSettings.deliveryFee) }}</div>
                 </div>
               </li>
               <li class="checkout-item" v-if="storeSettings.applyProcessingFee">
@@ -105,20 +113,20 @@
                   <div class="col-md-4">
                     <strong>Processing Fee:</strong>
                   </div>
-                  <div class="col-md-8">${{ storeSettings.processingFee }}</div>
+                  <div class="col-md-3 offset-5">{{ format.money(storeSettings.processingFee) }}</div>
                 </div>
               </li>
               <li class="checkout-item">
                 <div class="row">
                   <div class="col-md-4">
                     <span v-if="!applyMealPlanDiscount || !deliveryPlan">
-                      <strong>Price:</strong>
+                      <strong>Total:</strong>
                     </span>
                     <span v-if="applyMealPlanDiscount && deliveryPlan">
-                      <strong>Price Before Discount:</strong>
+                      <strong>SubTotal:</strong>
                     </span>
                   </div>
-                  <div class="col-md-8">${{ totalBagPrice }}</div>
+                  <div class="col-md-3 offset-5">{{ format.money(totalBagPrice) }}</div>
                 </div>
               </li>
               <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
@@ -126,15 +134,15 @@
                   <div class="col-md-4">
                     <strong>Weekly Meal Plan Discount:</strong>
                   </div>
-                  <div class="col-md-4">${{ mealPlanDiscountAmount }}</div>
+                  <div class="col-md-3 offset-5 red">({{ format.money(mealPlanDiscountAmount) }})</div>
                 </div>
               </li>
               <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
                 <div class="row">
                   <div class="col-md-4">
-                    <strong>Weekly Meal Plan Price:</strong>
+                    <strong>Total:</strong>
                   </div>
-                  <div class="col-md-8">${{ totalBagPriceAfterDiscount }}</div>
+                  <div class="col-md-3 offset-5">{{ format.money(totalBagPriceAfterDiscount) }}</div>
                 </div>
               </li>
               <li class="checkout-item" v-if="storeSettings.allowPickup">
@@ -158,8 +166,8 @@
 
               <li>
                 <div>
-                  <p v-if="pickup === '0'">Delivery Day</p>
-                  <p v-if="pickup === '1'">Pickup Day</p>
+                  <p v-if="pickup === false">Delivery Day</p>
+                  <p v-if="pickup === true">Pickup Day</p>
                   <b-form-group v-if="deliveryDaysOptions.length > 1" description>
                     <b-select
                       :options="deliveryDaysOptions"
@@ -187,7 +195,8 @@
                 <div v-else>
                   <h4 class="mt-2 mb-3">Choose Payment Method</h4>
                   <card-picker :selectable="true" v-model="card"></card-picker>
-                  <b-btn v-if="card" @click="checkout" class="menu-bag-btn">CHECKOUT</b-btn>
+                  <b-btn v-if="card && minOption === 'meals' && total >= minMeals" @click="checkout" class="menu-bag-btn">CHECKOUT</b-btn>
+                  <b-btn v-if="card && minOption === 'price' && totalBagPrice >= minPrice" @click="checkout" class="menu-bag-btn">CHECKOUT</b-btn>
                 </div>
               </li>
 
@@ -273,6 +282,23 @@ export default {
     remainingPrice() {
       return this.minPrice - this.totalBagPrice;
     },
+    totalBagPriceBeforeFees(){
+      let deliveryFee = this.storeSettings.deliveryFee;
+      let processingFee = this.storeSettings.processingFee;
+      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+      let applyProcessingFee = this.storeSettings.applyProcessingFee;
+
+      if (applyDeliveryFee && applyProcessingFee){
+        return this.totalBagPrice - deliveryFee - processingFee;
+      }
+      else if (applyDeliveryFee && !applyProcessingFee){
+        return this.totalBagPrice - deliveryFee;
+      }
+      else if (applyProcessingFee && !applyDeliveryFee){
+        return this.totalBagPrice - processingFee;
+      }
+      
+    },
     singOrPlural() {
       if (this.remainingMeals > 1) {
         return "meals";
@@ -287,7 +313,7 @@ export default {
     },
     deliveryPlanText() {
       if (this.deliveryPlan) return "Prepared Weekly";
-      else return "One Time Order";
+      else return "Prepared Once";
     },
     totalBagPriceAfterDiscount() {
       return (
