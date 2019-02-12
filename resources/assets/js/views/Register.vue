@@ -242,6 +242,7 @@ export default {
             window.axios.defaults.headers.common["Authorization"] = `Bearer ${
               jwt.access_token
             }`;
+            Cookies.set('jwt', jwt);
             localStorage.setItem("jwt", JSON.stringify(jwt));
             this.init();
             this.$router.replace(jwt.redirect);

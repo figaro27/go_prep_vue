@@ -53,6 +53,7 @@
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from "@coreui/vue";
+import { mapActions } from 'vuex';
 export default {
   name: "DefaultHeaderDropdownAccnt",
   components: {
@@ -62,11 +63,7 @@ export default {
     return { itemsCount: 42 };
   },
   methods: {
-    logout() {
-      axios.post("/api/auth/logout").finally(resp => {
-        window.location.href = "/login";
-      });
-    }
+    ...mapActions(['logout'])
   }
 };
 </script>
