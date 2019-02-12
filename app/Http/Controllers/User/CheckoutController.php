@@ -31,9 +31,22 @@ class CheckoutController extends UserController
         $store = Store::with(['settings', 'storeDetail'])->findOrFail($storeId);
         $card = $this->user->cards()->findOrFail($cardId);
 
+        $application_fee = $store->settings->application_fee;
         $total = $bag->getTotal();
+        $preFeeTotal = $bag->getTotal();
+
         if ($store->settings->applyDeliveryFee) {
             $total += $store->settings->deliveryFee;
+        }
+
+        if ($store->settings->applyProcessingFee) {
+            $total += $store->settings->processingFee;
+        }
+
+        if ($store->settings->applyMealPlanDiscount) {
+            $discount = $store->settings->mealPlanDiscount / 100;
+            $total -= ($preFeeTotal * $discount);
+            $preFeeTotal -= ($preFeeTotal * $discount);
         }
 
         if (!$user->hasStoreCustomer($store->id)) {
@@ -53,7 +66,7 @@ class CheckoutController extends UserController
                 "amount" => $total * 100,
                 "currency" => "usd",
                 "source" => $storeSource,
-                "application_fee" => $total * 10, // 10%
+                "application_fee" => $preFeeTotal * $application_fee,
             ], ["stripe_account" => $store->settings->stripe_id]);
 
             $order = new Order;
@@ -105,7 +118,7 @@ class CheckoutController extends UserController
                 'items' => [
                     ['plan' => $plan],
                 ],
-                'application_fee_percent' => 7.9,
+                'application_fee_percent' => $application_fee,
             ], ['stripe_account' => $store->settings->stripe_id]);
 
             $userSubscription = new Subscription();

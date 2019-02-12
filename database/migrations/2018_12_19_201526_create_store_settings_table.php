@@ -43,6 +43,7 @@ class CreateStoreSettingsTable extends Migration
             $table->longText('stripe_account')->nullable();
             $table->json('notifications');
             $table->integer('view_delivery_days')->nullable();
+            $table->decimal('application_fee')->default(7.9);
             $table->timestamps();
         });
     }
