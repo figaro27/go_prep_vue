@@ -211,11 +211,10 @@ class Store extends Model
 
     public function getNextDeliveryDay($weekIndex) {
       $week = Carbon::createFromFormat('N', $weekIndex)->format();
-      return new Carbon('next '.$week);
-
-      $this->settings->getNextDeliveryDates()->find(function($date) use ($weekIndex) {
-        Carbon::createFromFormat('N', $weekIndex)->format();
-      });
+      $date = new Carbon('next '.$week);
+      $date->setTimezone($this->settings->timezone);
+      $date->setTime(0, 0, 0);
+      return $date;
     }
     
     public function getNextDeliveryDate() {
@@ -336,6 +335,11 @@ class Store extends Model
         return false;
     }
 
+    /**
+     * Returns whether the store's cutoff passed lesss than an hour ago
+     *
+     * @return boolean
+     */
     public function cutoffPassed()
     {
         if (!$this->settings || !is_array($this->settings->delivery_days)) {
@@ -347,11 +351,12 @@ class Store extends Model
         $cutoff = $this->settings->cutoff_days * (60 * 60 * 24) + $this->settings->cutoff_hours * (60 * 60);
 
         foreach ($this->settings->delivery_days as $day) {
-            $date = Carbon::createFromFormat('D', $day, $this->settings->timezone);
-            $diff = $date->getTimestamp() - $now->getTimestamp();
+            $date = Carbon::createFromFormat('D', $day, $this->settings->timezone)->setTime(0, 0, 0);
+            $diff = $date->getTimestamp() - $now->getTimestamp() - $cutoff;
+            //echo $diff."\r\n";
 
             // Cutoff passed less than an hour ago
-            if ($diff <= 60 * 60) {
+            if ($diff >= -60 * 60 && $diff < 0) {
                 return true;
             }
         }

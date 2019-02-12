@@ -13,7 +13,8 @@ let timezones = {
     MST: 'Mountain Standard Time',
     CST: 'Central Standard Time',
     EST: 'Eastern Standard Time',
-    AST: 'Atlantic Standard Time'
+    AST: 'Atlantic Standard Time',
+    //'America/Sao_Paulo': 'Sao Paulo',
   }
 };
 
