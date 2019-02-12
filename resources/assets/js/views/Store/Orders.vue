@@ -61,6 +61,10 @@
               slot="delivery_date"
               slot-scope="props"
             >{{ moment(props.row.delivery_date).format('dddd, MMM Do') }}</div>
+            <div
+              slot="pickup"
+              slot-scope="props"
+            >{{ props.row.pickup ? 'Pickup' : 'Delivery' }}</div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-warning btn-sm"
@@ -213,6 +217,7 @@ export default {
         // "user.user_detail.phone",
         "created_at",
         "delivery_date",
+        "pickup",
         "amount",
         "actions"
       ],
@@ -226,6 +231,7 @@ export default {
           // "user.user_detail.phone": "Phone",
           created_at: "Order Placed",
           delivery_date: "Delivery Date",
+          pickup: "Delivery Method",
           amount: "Total",
           actions: "Actions"
         },
@@ -276,17 +282,21 @@ export default {
           let dateMatch = false;
 
           if (filters.delivery_dates.start && filters.delivery_dates.end) {
-            dateMatch = order.delivery_date.isBetween(
+            dateMatch = order.delivery_date.hours(12).isBetween(
               filters.delivery_dates.start,
-              filters.delivery_dates.end
+              filters.delivery_dates.end,
+              'date',
+              '[]',
             );
           } else if (filters.delivery_dates.start) {
-            dateMatch = order.delivery_date.isAfter(
-              filters.delivery_dates.start
+            dateMatch = order.delivery_date.isSameOrAfter(
+              filters.delivery_dates.start,
+              'date',
             );
           } else if (filters.delivery_dates.end) {
-            dateMatch = order.delivery_date.isBefore(
-              filters.delivery_dates.end
+            dateMatch = order.delivery_date.isSameOrBefore(
+              filters.delivery_dates.end,
+              'date',
             );
           }
 

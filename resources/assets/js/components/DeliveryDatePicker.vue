@@ -100,10 +100,10 @@ export default {
       ) {
         this.$nextTick(() => {
           this.$refs.picker.dateRange = {
-            start: moment()
+            start: moment.utc()
               .startOf("date")
               .toDate(),
-            end: moment(this.nextDeliveryDates[this.numDeliveryDates - 1].date)
+            end: moment.utc(this.nextDeliveryDates[this.numDeliveryDates - 1].date)
               .endOf("date")
               .toDate()
           };
@@ -116,11 +116,11 @@ export default {
 
       val = { ...val };
       if (val.start)
-        val.start = moment(val.start)
+        val.start = moment.utc(val.start)
           .subtract(1, "day")
           .startOf("date");
       if (val.end)
-        val.end = moment(val.end)
+        val.end = moment.utc(val.end)
           .subtract(1, "day")
           .endOf("date");
 

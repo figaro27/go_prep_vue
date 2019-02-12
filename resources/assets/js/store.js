@@ -754,8 +754,8 @@ const actions = {
           .utc(order.updated_at)
           .local(); //.format('ddd, MMMM Do')
         order.delivery_date = moment
-          .utc(order.delivery_date)
-          .local(); //.format('ddd, MMMM Do')
+          .utc(order.delivery_date);
+          //.local(); //.format('ddd, MMMM Do')
         return order;
       });
       commit('storeOrders', {orders});

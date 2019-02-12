@@ -19,7 +19,7 @@ class Order extends Model
 
     protected $casts = [
         'amount' => 'double',
-        'delivery_date' => 'date:Y-m-d 00:00:00',
+        'delivery_date' => 'date:Y-m-d',
         'created_at' => 'date:F d, Y'
     ];
 

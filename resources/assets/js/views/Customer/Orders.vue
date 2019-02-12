@@ -4,7 +4,7 @@
       <div class="card">
         <div class="card-body">
           <Spinner v-if="isLoading"/>
-          <b-alert v-if="orders[0]" :show="$route.query.created || false" variant="success">
+          <b-alert v-if="orders[0]" :show="!!$route.query.created || false" variant="success">
             <p class="center-text mt-3">
               Thank you for your order.
               <span v-if="!!$route.query.pickup">You should pick up your order on</span>
@@ -12,7 +12,7 @@
               {{ moment(orders[0].delivery_date).format('dddd, MMM Do') || '' }}
             </p>
           </b-alert>
-          <b-alert :show="!orders.length || false" variant="warning">
+          <b-alert :show="0 === orders.length || false" variant="warning">
             <p class="center-text mt-3">You currently have no orders.</p>
           </b-alert>
           <div v-for="order in orders" :key="order.id">
