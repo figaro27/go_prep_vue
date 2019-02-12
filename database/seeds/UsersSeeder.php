@@ -42,18 +42,6 @@ class UsersSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        $customer = new App\Customer();
-        $customer->user_id = 3;
-        $customer->store_id = 1;
-        $customer->stripe_id = '';
-        $customer->save();
-
-        $order = App\User::find(3)->orders()->save(
-          factory(App\Order::class)->make([
-            'customer_id' => $customer->id
-          ])
-        );
-
         DB::table('users')->insert([
             'user_role_id' => 3,
             'email' => 'admin@goprep.com',
@@ -78,19 +66,6 @@ class UsersSeeder extends Seeder
 
         factory(App\User::class, 50)->create()->each(function ($u) {
             $u->userDetail()->save(factory(App\UserDetail::class)->make());
-
-            $customer = new App\Customer();
-            $customer->user_id = $u->id;
-            $customer->store_id = 1;
-            $customer->stripe_id = '';
-            $customer->save();
-
-            $order = $u->Order()->save(
-                factory(App\Order::class)->make([
-                    'customer_id' => $customer->id,
-                ])
-            );
-
         });
 
     }
