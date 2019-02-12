@@ -6,7 +6,6 @@ use App\Meal;
 use App\MealTag;
 use App\Observers\MealTagObserver;
 use Braintree_Configuration;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,6 +18,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if (config('app.env') === 'production' || config('app.env') === 'staging') {
+            \URL::forceScheme('https');
+        }
+
         Schema::defaultStringLength(191);
 
         Braintree_Configuration::environment(env('BRAINTREE_ENV'));
@@ -30,8 +33,8 @@ class AppServiceProvider extends ServiceProvider
 
         MealTag::observe(MealTagObserver::class);
 
-        Meal::saved(function($meal) {
-          $meal->store->clearCaches();
+        Meal::saved(function ($meal) {
+            $meal->store->clearCaches();
         });
 
     }
