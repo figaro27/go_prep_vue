@@ -19,6 +19,7 @@ class StoreSettingsSeeder extends Seeder
             'delivery_days' => '["sun","wed", "fri"]',
             'cutoff_days' => 1,
             'cutoff_hours' => 0,
+            'transferType' => 'delivery',
             'delivery_distance_type' => 'zipcodes',
             'delivery_distance_radius' => 500,
             'delivery_distance_zipcodes' => '[11209, 11228, 11214, 11219, 11230, 11218, 11220, 11204]',

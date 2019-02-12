@@ -66,6 +66,7 @@ const state = {
       data: {
         delivery_days: [],
         delivery_distance_zipcodes: [],
+        transferType: [],
         notifications: {
           new_order: true,
           new_subscription: true,

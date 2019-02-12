@@ -216,43 +216,19 @@
             
 
               <b-form-group label="I Will Be:">
-                <b-form-checkbox-group v-model="typeSelected" :options="typeOptions">
+                <b-form-checkbox-group v-model="transferSelected" :options="transferOptions">
                 </b-form-checkbox-group>
               </b-form-group>
               <b-form-input
-                v-if="storeSettings.allowPickup"
+                v-if="transferTypeCheck"
                 type="text"
                 v-model="storeSettings.pickupInstructions"
                 placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time)."
                 required
               ></b-form-input>
 
-              <!-- <b-form-group :state="true">
-              <p>
-                <span class="mr-1">Allow Pickup</span>
-                <img
-                  v-b-popover.hover="'Allow your customers to pick up their meals instead of having it delivered. Please provide the location, time, and any additional instructions which will be shown to the customer.'"
-                  title="Allow Pickup"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                >
-              </p>
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.allowPickup"
-              />
-              <b-form-input
-                v-if="storeSettings.allowPickup"
-                type="text"
-                v-model="storeSettings.pickupInstructions"
-                placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time)."
-                required
-              ></b-form-input>
-            </b-form-group> -->
 
-            <b-button type="submit" variant="primary">Save</b-button>
+            <b-button type="submit" variant="primary" class="mt-3">Save</b-button>
           </b-form>
         </div>
       </div>
@@ -485,8 +461,8 @@ export default {
   },
   data() {
     return {
-      typeSelected: 'allowDelivery',
-      typeOptions: [{text: 'Delivering to Customers', value: 'allowDelivery'},{text: 'Letting Customers Pickup', value: 'allowPickup'}],
+      transferSelected: [],
+      transferOptions: [{text: 'Delivering to Customers', value: 'delivery'},{text: 'Letting Customers Pickup', value: 'pickup'}],
       minimumSelected: 'price',
       minimumOptions: [{text: 'Require Minimum Price', value: 'price'},{text: 'Require Minimum Meals', value: 'meals'}],
       loginAlertSuccess: false,
@@ -540,6 +516,17 @@ export default {
     deliveryDistanceZipcodes() {
       return this.storeSettings.delivery_distance_zipcodes.join(",");
     },
+    transferType(){
+      return this.storeSettings.transferType;
+    },
+    transferTypes(){
+      return this.transferSelected.join(",");
+    },
+    transferTypeCheck(){
+      if (_.includes(this.transferSelected, 'pickup')){
+        return true;
+      }
+    },
     timezoneOptions() {
       return timezones.selectOptions();
     },
@@ -554,6 +541,7 @@ export default {
   mounted() {
     this.view_delivery_days = this.storeSettings.view_delivery_days;
     this.zipCodes = this.deliveryDistanceZipcodes.split(',');
+    this.transferSelected = this.transferType.split(',');
   },
   methods: {
     ...mapActions(["refreshCategories", "refreshStoreSettings"]),
@@ -572,7 +560,7 @@ export default {
           settings.view_delivery_days = null;
         }
       }
-
+      settings.transferType = this.transferTypes;
       settings.delivery_distance_zipcodes = this.zipCodes;
 
       // this.spliceCharacters();

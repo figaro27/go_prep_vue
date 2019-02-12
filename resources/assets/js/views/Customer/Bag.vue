@@ -145,7 +145,7 @@
                   <div class="col-md-3 offset-5">{{ format.money(totalBagPriceAfterDiscount) }}</div>
                 </div>
               </li>
-              <li class="checkout-item" v-if="storeSettings.allowPickup">
+              <li class="checkout-item" v-if="transferTypeCheck === 'both'">
                 <b-form-group>
                   <b-form-radio-group v-model="pickup" name="pickup">
                     <b-form-radio :value="0" @click="pickup = 0">
@@ -157,7 +157,7 @@
                   </b-form-radio-group>
                 </b-form-group>
               </li>
-              <li class="checkout-item" v-if="storeSettings.allowPickup && pickup != 0">
+              <li class="checkout-item" v-if="transferTypeCheck === 'both' && pickup === 1">
                 <p>
                   <strong>Pickup Instructions:</strong>
                   {{ storeSettings.pickupInstructions }}
@@ -166,8 +166,8 @@
 
               <li>
                 <div>
-                  <p v-if="pickup === false">Delivery Day</p>
-                  <p v-if="pickup === true">Pickup Day</p>
+                  <p v-if="pickup === 0 && transferTypeCheck !== 'pickup'">Delivery Day</p>
+                  <p v-if="pickup === 1 || transferTypeCheck === 'pickup'">Pickup Day</p>
                   <b-form-group v-if="deliveryDaysOptions.length > 1" description>
                     <b-select
                       :options="deliveryDaysOptions"
@@ -239,8 +239,8 @@ export default {
   },
   data() {
     return {
+      pickup: 0,
       deliveryPlan: false,
-      pickup: false,
       deliveryDay: undefined,
       stripeKey,
       stripeOptions,
@@ -266,6 +266,17 @@ export default {
     }),
     storeSettings() {
       return this.store.settings;
+    },
+    transferType(){
+      return this.storeSettings.transferType.split(',');
+    },
+    transferTypeCheck(){
+      if (_.includes(this.transferType, 'delivery') && _.includes(this.transferType, 'pickup')){
+        return 'both';
+      }
+      if (!_.includes(this.transferType, 'delivery') && _.includes(this.transferType, 'pickup')){
+        return 'pickup';
+      }
     },
     minimumOption() {
       return this.minOption;
