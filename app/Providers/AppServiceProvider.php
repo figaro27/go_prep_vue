@@ -19,7 +19,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         if (config('app.env') === 'production' || config('app.env') === 'staging') {
+          // Exclude store.dev.goprep.com from SSL protection
+          // until we have a dedicated CloudFlare certificate
+          if(false === strpos(app('request')->fullUrl(), 'store.dev.goprep')) {
             \URL::forceScheme('https');
+          }
         }
 
         Schema::defaultStringLength(191);
