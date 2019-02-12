@@ -133,7 +133,7 @@ class CheckoutController extends UserController
             $order->amount = $total;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
-            $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
+            $order->delivery_date = (new Carbon($deliveryDay))->toDateString();
             $order->save();
 
             foreach ($bag->getItems() as $item) {

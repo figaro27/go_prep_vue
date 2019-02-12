@@ -123,7 +123,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function getNameAttribute()
     {
-        return $this->userDetail->full_name;
+        return $this->userDetail->full_name ?? '';
     }
 
     public function getCardsAttribute()

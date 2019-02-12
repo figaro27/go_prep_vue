@@ -182,5 +182,19 @@ class UserDetailsSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+        DB::table('user_details')->insert([
+          'user_id' => 13,
+          'firstname' => 'Mike',
+          'lastname' => 'Soldano',
+          'phone' => '(347) 526-9628',
+          'address' => '1622 Bay Ridge Ave',
+          'city' => 'Brooklyn',
+          'state' => 'NY',
+          'zip' => '11209',
+          'country' => 'USA',
+          'delivery' => 'Call Phone',
+          'created_at' => now(),
+          'updated_at' => now()
+      ]);
     }
 }
