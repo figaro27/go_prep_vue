@@ -59,26 +59,30 @@ li {
   display:none !important;
 }
 
-.custom-select{
-  width:100px !important;
+.custom-select {
+  width: 100px !important;
+
+  &.w-100 {
+    width: 100% !important;
+  }
 }
 
-.delivery-select{
-  width:180px !important;
+.delivery-select {
+  width: 180px !important;
 }
 
 .nav-tabs .nav-item .nav-link{
   background-color:#f1f1f1 !important;
 }
 
-.open-indicator{
-  margin-right:8px !important;
+.open-indicator {
+  margin-right: 8px !important;
 }
 
 /*Sidebar*/
 body:not(.sidebar-minimized) {
   .sidebar {
-    width:200px !important;
+    width: 200px !important;
   }
 }
 

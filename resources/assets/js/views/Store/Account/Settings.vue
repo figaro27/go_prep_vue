@@ -27,7 +27,8 @@
             <b-form-group label="Timezone">
               <b-select
                 :options="timezoneOptions"
-                v-model="storeSettings.timezone"></b-select>
+                v-model="storeSettings.timezone"
+                class="w-100"></b-select>
             </b-form-group>
 
             <b-form-group label="Delivery Day(s)" label-for="delivery-days" :state="true">
