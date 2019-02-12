@@ -219,6 +219,7 @@
                 <b-form-checkbox-group v-model="transferSelected" :options="transferOptions">
                 </b-form-checkbox-group>
               </b-form-group>
+              <p v-if="transferTypeCheck">Pickup Instructions:</p>
               <b-form-input
                 v-if="transferTypeCheck"
                 type="text"
