@@ -26,13 +26,13 @@ class Meals
             $meal->categories->implode('category', ', '),
             $meal->tags->implode('tag', ', '),
             $meal->allergies->implode('title', ', '),
-            $meal->subscriptions->count(),
             $meal->lifetime_orders,
+            $meal->created_at->format('m-d-Y')
           ];
         });
 
         if($type !== 'pdf'){
-            $menu->prepend(['Status', 'Title', 'Categories', 'Tags', 'Contains', 'Meal Plans', 'Lifetime Orders', ]);
+            $menu->prepend(['Status', 'Title', 'Categories', 'Tags', 'Contains', 'Lifetime Orders', 'Added' ]);
         }
         
         return $menu->toArray();

@@ -6,18 +6,16 @@
 </head>
 
 <body>
-  <h1>Meals</h1>
+  <h1>Meals Ingredients</h1>
   <h2>{{ date("m/d/Y") }}</h2>
   <table border="1">
     <thead>
       <tr>
-        <th>Status</th>
-        <th>Title</th>
-        <th>Categories</th>
-        <th>Tags</th>
-        <th>Contains</th>
-        <th>Lifetime Orders</th>
-        <th>Added</th>
+        <th>Meal</th>
+        <th>Ingredient</th>
+        <th>Quantity</th>
+        <th>Unit</th>
+
       </tr>
     </thead>
 
@@ -25,7 +23,9 @@
       @foreach ($data as $i => $row)
       <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
         @foreach($row as $value)
-          <td>{{ $value }}</td>
+          <td>         
+            {{ $value }}        
+          </td>
         @endforeach
       </tr>
       @endforeach
