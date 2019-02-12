@@ -103,7 +103,7 @@ setInterval(() => {
     axios
       .get('/api/ping')
       .catch(e => {
-        window.location = '/login';
+        window.location = window.app.url + '/login';
       });
   }
 }, 30 * 1000);

@@ -30,11 +30,7 @@
                 href="#"
               >Forgot Your Password?</a>
               -->
-
-              <router-link
-                class="btn btn-link"
-                to="/register"
-              >No Account?</router-link>
+              <router-link class="btn btn-link" to="/register">No Account?</router-link>
             </b-form-group>
           </b-form>
         </div>
@@ -49,8 +45,8 @@ export default {
   components: {},
   props: {
     redirect: {
-      default: null,
-    },
+      default: null
+    }
   },
   data() {
     return {
@@ -77,21 +73,26 @@ export default {
             window.axios.defaults.headers.common["Authorization"] = `Bearer ${
               jwt.access_token
             }`;
+
+            Cookies.set("jwt", jwt, { domain: window.app.domain });
             localStorage.setItem("jwt", JSON.stringify(jwt));
-            
-            await this.init();
 
-            if(this.redirect) {
+            if (this.redirect) {
+              await this.init();
               this.$router.replace(this.redirect);
-            }
-            else switch (jwt.user.user_role_id) {
-              case 1:
-                this.$router.replace("/customer/home");
-                break;
+            } else if (jwt.redirect) {
+              window.location = jwt.redirect;
+            } else {
+              await this.init();
+              switch (jwt.user.user_role_id) {
+                case 1:
+                  this.$router.replace("/customer/home");
+                  break;
 
-              case 2:
-                this.$router.replace("/store/orders");
-                break;
+                case 2:
+                  this.$router.replace("/store/orders");
+                  break;
+              }
             }
           }
         })

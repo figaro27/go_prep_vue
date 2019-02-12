@@ -74,11 +74,15 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        $user = auth('api')->user();
+        $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/orders') : '/customer/home';
+
         return response()->json([
             'access_token' => $token,
             'user' => auth('api')->user(),
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'redirect' => $redirect,
         ]);
     }
 }

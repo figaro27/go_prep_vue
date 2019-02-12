@@ -47,11 +47,7 @@ export default {
   },
   created() {},
   methods: {
-    logout() {
-      axios.post("/api/auth/logout").finally(resp => {
-        window.location.href = "/login";
-      });
-    }
+    ...mapActions(['logout'])
   }
 };
 </script>

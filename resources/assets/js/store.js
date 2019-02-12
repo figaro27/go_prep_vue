@@ -4,6 +4,8 @@ import moment from 'moment'
 import createPersistedState from 'vuex-persistedstate';
 import router from './routes';
 
+const Cookies = require('js-cookie');
+
 Vue.use(Vuex)
 
 const ttl = 60; // 60 seconds
@@ -342,8 +344,16 @@ const actions = {
 
     if (context === 'store') {
       dispatch('initStore', data)
+      
+      if(router.currentRoute.fullPath === '/') {
+        router.replace('/store/orders');
+      }
     } else if (context === 'customer') {
       dispatch('initCustomer', data)
+
+      if(router.currentRoute.fullPath === '/') {
+        router.replace('/customer/home');
+      }
     } else {
       dispatch('initGuest', data);
     }
@@ -493,6 +503,13 @@ const actions = {
     if(router.currentRoute.path === '/') {
       router.replace('customer/menu');
     }
+  },
+
+  async logout({commit, state}) {
+    const res = await axios.post("/api/auth/logout");
+    const {data} = await res;
+    Cookies.remove('jwt', { domain: window.app.domain });
+    window.location = window.app.url + '/login';
   },
 
   async refreshViewedStore({commit, state}) {

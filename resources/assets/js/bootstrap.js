@@ -1,5 +1,6 @@
 window._ = require('lodash');
 window.Popper = require('popper.js').default;
+window.Cookies = require('js-cookie');
 
 const moment = require('moment');
 /*
@@ -47,10 +48,13 @@ if (token) {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
-let jwt = localStorage.getItem('jwt');
+//let jwt = localStorage.getItem('jwt');
+//console.log(jwt);
+
+jwt = Cookies.getJSON('jwt') || null;
 
 if(jwt) {
-  jwt = JSON.parse(jwt)
+  //jwt = JSON.parse(jwt)
   window.axios.defaults.headers.common["Authorization"] = `Bearer ${
     jwt.access_token
   }`;
