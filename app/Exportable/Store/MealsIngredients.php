@@ -12,28 +12,45 @@ class MealsIngredients
     use Exportable;
 
     protected $store;
+    protected $orientation = 'portrait';
 
-    public function __construct(Store $store)
+    public function __construct(Store $store, $orientation)
     {
         $this->store = $store;
+        $this->orientation = $orientation;
     }
 
     public function exportData($type = null)
     {
         $meals = Meal::with('ingredients')->get();
-        $menu = $meals->map(function($meal) {
-            $ingredientsName = $meal->ingredients->pluck('food_name');
-            $ingredientsQuantity = $meal->ingredients->pluck('quantity');
-            $ingredientsUnit = $meal->ingredients->pluck('quantity_unit');
-          return [
+
+        $rows = [];
+
+        foreach($meals as $meal) {
+          $i = count($rows);
+
+          $rows[$i] = [
             $meal->title,
-            $ingredientsName,
-            $ingredientsQuantity,
-            $ingredientsUnit
+            $meal->ingredients[0]->food_name,
+            $meal->ingredients[0]->quantity,
+            $meal->ingredients[0]->quantity_unit,
           ];
-        });
+
+          if(count($meal->ingredients) > 1) {
+            for($x = 1; $x < count($meal->ingredients); $x++) {
+              $ingredient = $meal->ingredients[$x];
+
+              $rows[] = [
+                '',
+                $ingredient->food_name,
+                $ingredient->quantity,
+                $ingredient->quantity_unit,
+              ];
+            }
+          }
+        }
         
-        return $menu->toArray();
+        return $rows;
     }
 
     public function exportPdfView()
