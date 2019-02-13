@@ -66,7 +66,7 @@ class CheckoutController extends UserController
                 "amount" => round($total * 100),
                 "currency" => "usd",
                 "source" => $storeSource,
-                "application_fee" => $preFeeTotal * $application_fee,
+                "application_fee" => round($preFeeTotal * $application_fee),
             ], ["stripe_account" => $store->settings->stripe_id]);
 
             $order = new Order;
