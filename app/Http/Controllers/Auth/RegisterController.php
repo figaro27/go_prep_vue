@@ -68,6 +68,8 @@ class RegisterController extends Controller
 
         $v->sometimes('store', [
           'store.store_name' => 'required',
+          'store.first_name' => 'required',
+          'store.last_name' => 'required',
           'store.phone' => 'required',
           'store.address' => 'required',
           'store.city' => 'required',
@@ -78,6 +80,32 @@ class RegisterController extends Controller
         });
 
         return $v;
+    }
+
+    public function validateStep(Request $request, $step) {
+      switch($step) {
+        case 0:
+          $v = Validator::make($request->all(), [
+            'role' => 'required|in:customer,store',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+          ]);
+        break;
+
+        case 1:
+          $v = Validator::make($request->all(), [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'phone' => 'required',
+            'address' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'zip' => 'required',
+          ]);
+        break;
+      }
+
+      return $v->validate();
     }
 
     /**

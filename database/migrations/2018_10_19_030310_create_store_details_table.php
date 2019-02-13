@@ -21,7 +21,7 @@ class CreateStoreDetailsTable extends Migration
             $table->string('address');
             $table->string('city');
             $table->string('state');
-            $table->integer('zip');
+            $table->string('zip');
             $table->string('logo');
             $table->string('domain');
             $table->text('description')->nullable();

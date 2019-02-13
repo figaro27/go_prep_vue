@@ -3,7 +3,7 @@
     <div class="col-md-6 offset-3">
       <div class="card">
         <div class="card-body p-5">
-          <b-form @submit.prevent="submit">
+          <b-form @submit.prevent="submit" autocomplete="off">
             <div v-if="step === 0">
               <b-form-group horizontal label="Account Type">
                 <b-form-radio-group
@@ -17,16 +17,43 @@
                 </b-form-radio-group>
               </b-form-group>
 
-              <b-form-group horizontal label="E-Mail Address">
-                <b-input v-model="form[0].email" type="email"></b-input>
+              <b-form-group
+                horizontal
+                label="E-Mail Address"
+                :state="state(0, 'email')"
+                :invalid-feedback="invalidFeedback(0, 'email')"
+                :valid-feedback="validFeedback(0, 'email')"
+              >
+                <b-input
+                  v-model="form[0].email"
+                  type="email"
+                  @input="$v.form[0].email.$touch(); clearFeedback(0, 'email')"
+                  :state="state(0, 'email')"
+                ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Password">
-                <b-input v-model="form[0].password" type="password"></b-input>
+              <b-form-group horizontal label="Password" :state="state(0, 'password')">
+                <b-input
+                  v-model="form[0].password"
+                  type="password"
+                  @input="$v.form[0].password.$touch(); clearFeedback(0, 'password')"
+                  :state="state(0, 'password')"
+                ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Confirm Password">
-                <b-input v-model="form[0].password_confirmation" type="password"></b-input>
+              <b-form-group
+                horizontal
+                label="Confirm Password"
+                :state="state(0, 'password') && state(0, 'password_confirmation')"
+                :invalid-feedback="invalidFeedback(0, 'password')"
+                :valid-feedback="validFeedback(0, 'password')"
+              >
+                <b-input
+                  v-model="form[0].password_confirmation"
+                  type="password"
+                  @input="$v.form[0].password_confirmation.$touch(); clearFeedback(0, 'password')"
+                  :state="state(0, 'password') && state(0, 'password_confirmation')"
+                ></b-input>
               </b-form-group>
 
               <b-form-group horizontal>
@@ -35,32 +62,67 @@
             </div>
 
             <div v-if="step === 1">
-              <b-form-group horizontal label="First Name">
-                <b-input v-model="form[1].first_name"></b-input>
+              <b-form-group horizontal label="First Name" :state="state(1, 'first_name')">
+                <b-input
+                  v-model="form[1].first_name"
+                  type="text"
+                  @input="$v.form[1].first_name.$touch(); clearFeedback(1, 'first_name')"
+                  :state="state(1, 'first_name')"
+                ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Last Name">
-                <b-input v-model="form[1].last_name"></b-input>
+              <b-form-group horizontal label="Last Name" :state="state(1, 'last_name')">
+                <b-input
+                  v-model="form[1].last_name"
+                  type="text"
+                  @input="$v.form[1].last_name.$touch(); clearFeedback(1, 'last_name')"
+                  :state="state(1, 'last_name')"
+                ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Phone Number">
-                <b-input v-model="form[1].phone"></b-input>
+              <b-form-group horizontal label="Phone Number" :state="state(1, 'phone')">
+                <b-input
+                  v-model="form[1].phone"
+                  type="tel"
+                  @input="$v.form[1].phone.$touch(); clearFeedback(1, 'phone')"
+                  :state="state(1, 'phone')"
+                ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Address">
-                <b-input v-model="form[1].address"></b-input>
+              <b-form-group horizontal label="Address" :state="state(1, 'address')">
+                <b-input
+                  v-model="form[1].address"
+                  type="text"
+                  @input="$v.form[1].address.$touch(); clearFeedback(1, 'address')"
+                  :state="state(1, 'address')"
+                ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="City">
-                <b-input v-model="form[1].city"></b-input>
+              <b-form-group horizontal label="City" :state="state(1, 'city')">
+                <b-input
+                  v-model="form[1].city"
+                  type="text"
+                  @input="$v.form[1].city.$touch(); clearFeedback(1, 'city')"
+                  :state="state(1, 'city')"
+                ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="State">
-                <b-input v-model="form[1].state"></b-input>
+              <b-form-group horizontal label="State" :state="state(1, 'state')">
+                <b-input
+                  v-model="form[1].state"
+                  type="text"
+                  @input="$v.form[1].state.$touch(); clearFeedback(1, 'state')"
+                  :state="state(1, 'state')"
+                ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Zip Code">
-                <b-input v-model="form[1].zip"></b-input>
+              <b-form-group horizontal label="Zip Code" :state="state(1, 'zip')">
+                <b-input
+                  v-model="form[1].zip"
+                  type="text"
+                  @input="$v.form[1].zip.$touch(); clearFeedback(1, 'zip')"
+                  :state="state(1, 'zip')"
+                ></b-input>
               </b-form-group>
 
               <b-form-group horizontal v-if="form[0].role === 'store'">
@@ -72,30 +134,79 @@
               </b-form-group>
             </div>
 
-             <div v-if="step === 2">
+            <div v-if="step === 2">
               <h4>Store Details</h4>
-              <b-form-group horizontal label="Store name">
-                <b-input v-model="form[2].store_name"></b-input>
+
+              <b-form-group horizontal label="Store Name" :state="state(2, 'store_name')">
+                <b-input
+                  v-model="form[2].store_name"
+                  type="text"
+                  @input="$v.form[2].store_name.$touch(); clearFeedback(2, 'store_name')"
+                  :state="state(2, 'store_name')"
+                ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Phone Number">
-                <b-input v-model="form[2].phone"></b-input>
+              <b-form-group horizontal label="First Name" :state="state(2, 'first_name')">
+                <b-input
+                  v-model="form[2].first_name"
+                  type="text"
+                  @input="$v.form[2].first_name.$touch(); clearFeedback(2, 'first_name')"
+                  :state="state(2, 'first_name')"
+                ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Address">
-                <b-input v-model="form[2].address"></b-input>
+              <b-form-group horizontal label="Last Name" :state="state(2, 'last_name')">
+                <b-input
+                  v-model="form[2].last_name"
+                  type="text"
+                  @input="$v.form[2].last_name.$touch(); clearFeedback(2, 'last_name')"
+                  :state="state(2, 'last_name')"
+                ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="City">
-                <b-input v-model="form[2].city"></b-input>
+              <b-form-group horizontal label="Phone Number" :state="state(2, 'phone')">
+                <b-input
+                  v-model="form[2].phone"
+                  type="tel"
+                  @input="$v.form[2].phone.$touch(); clearFeedback(2, 'phone')"
+                  :state="state(2, 'phone')"
+                ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="State">
-                <b-input v-model="form[2].state"></b-input>
+              <b-form-group horizontal label="Address" :state="state(2, 'address')">
+                <b-input
+                  v-model="form[2].address"
+                  type="text"
+                  @input="$v.form[2].address.$touch(); clearFeedback(2, 'address')"
+                  :state="state(2, 'address')"
+                ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Zip Code">
-                <b-input v-model="form[2].zip"></b-input>
+              <b-form-group horizontal label="City" :state="state(2, 'city')">
+                <b-input
+                  v-model="form[2].city"
+                  type="text"
+                  @input="$v.form[2].city.$touch(); clearFeedback(2, 'city')"
+                  :state="state(2, 'city')"
+                ></b-input>
+              </b-form-group>
+
+              <b-form-group horizontal label="State" :state="state(2, 'state')">
+                <b-input
+                  v-model="form[2].state"
+                  type="text"
+                  @input="$v.form[2].state.$touch(); clearFeedback(2, 'state')"
+                  :state="state(2, 'state')"
+                ></b-input>
+              </b-form-group>
+
+              <b-form-group horizontal label="Zip Code" :state="state(2, 'zip')">
+                <b-input
+                  v-model="form[2].zip"
+                  type="text"
+                  @input="$v.form[2].zip.$touch(); clearFeedback(1, 'zip')"
+                  :state="state(2, 'zip')"
+                ></b-input>
               </b-form-group>
 
               <b-form-group horizontal>
@@ -111,7 +222,8 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
-import { required, minLength, email } from "vuelidate/lib/validators";
+import { required, minLength, email, sameAs } from "vuelidate/lib/validators";
+import validators from "../validators";
 
 export default {
   components: {},
@@ -133,122 +245,157 @@ export default {
           address: null,
           city: null,
           state: null,
-          zip: null,
+          zip: null
         },
         2: {
           store_name: null,
+          first_name: null,
+          last_name: null,
           phone: null,
           address: null,
           city: null,
           state: null,
-          zip: null,
-        },
+          zip: null
+        }
+      },
+      feedback: {
+        invalid: {},
+        valid: {}
       }
     };
   },
+  computed: {},
   validations: {
     form: {
       0: {
-        role: {
-          required
-        },
-        email: {
-          required,
-          email
-        },
-        password: {
-          required
-        },
-        password_confirmation: {
-          required
-        }
+        role: validators.required,
+        email: validators.email,
+        password: validators.password,
+        password_confirmation: validators.password
       },
       1: {
-        first_name: {
-          required
-        },
-        last_name: {
-          required
-        },
-        phone: {
-          required
-        },
-        address: {
-          required
-        },
-        city: {
-          required
-        },
-        state: {
-          required
-        },
-        zip: {
-          required
-        },
+        first_name: validators.first_name,
+        last_name: validators.last_name,
+        phone: validators.phone,
+        address: validators.address,
+        city: validators.city,
+        state: validators.state,
+        zip: validators.zip
       },
       2: {
-        store_name: {
-          required
-        },
-        phone: {
-          required
-        },
-        address: {
-          required
-        },
-        city: {
-          required
-        },
-        state: {
-          required
-        },
-        zip: {
-          required
-        },
+        store_name: validators.required,
+        first_name: validators.first_name,
+        last_name: validators.last_name,
+        phone: validators.phone,
+        address: validators.address,
+        city: validators.city,
+        state: validators.state,
+        zip: validators.zip
       }
-    }
+    },
+    validationGroup: ["form[0]", "form[1]", "form[3]"]
   },
   created() {},
   mounted() {},
   methods: {
     ...mapActions(["init"]),
-    validate(step) {
-      switch (step) {
-        case 0:
-          return !_.isNull(this.user_type);
-          break;
-      }
-
-      return false;
+    state(step, key) {
+      if (!_.isEmpty(this.form[step][key]) && this.$v.form[step][key].$dirty) {
+        if (
+          this.$v.form[step][key].$error ||
+          !_.isNull(this.invalidFeedback(step, key))
+        ) {
+          return false;
+        }
+        return true;
+      } else return null;
     },
-    next() {
+    invalidFeedback(step, key) {
+      try {
+        if (_.isArray(this.feedback.invalid[step][key])) {
+          const message = this.feedback.invalid[step][key].join(" ");
+          return message;
+        }
+      } catch {}
+      return null;
+    },
+    validFeedback(step, key) {
+      try {
+        if (_.isArray(this.feedback.valid[step][key])) {
+          const message = this.feedback.valid[step][key].join(" ");
+          return message;
+        }
+      } catch {}
+      return null;
+    },
+    clearFeedback(step, key) {
+      try {
+        this.feedback.invalid[step][key] = null;
+        this.feedback.valid[step][key] = null;
+      } catch (e) {}
+    },
+    async validate(step) {
+      try {
+        await axios.post(
+          `/api/auth/register/validate/${step}`,
+          this.form[step]
+        );
+        return true;
+      } catch (e) {
+        const resp = e.response.data;
+        if (!_.isEmpty(resp.errors)) {
+          this.$set(this.feedback.invalid, step, resp.errors);
+          this.$forceUpdate();
+        }
+        return false;
+      }
+    },
+    async next() {
       if (!this.$v.form[this.step].$invalid) {
-        this.step++;
+        if (await this.validate(this.step)) {
+          this.step++;
+        }
       }
     },
     submit() {
       let data = {
         user: this.form[0],
         user_details: this.form[1],
-        store: this.form[2],
+        store: this.form[2]
       };
 
       axios
         .post("/api/auth/register", data)
-        .then(response => {
+        .then(async response => {
           let jwt = response.data;
 
           if (jwt.access_token) {
             window.axios.defaults.headers.common["Authorization"] = `Bearer ${
               jwt.access_token
             }`;
-            Cookies.set('jwt', jwt);
+            Cookies.set("jwt", jwt);
             localStorage.setItem("jwt", JSON.stringify(jwt));
-            this.init();
-            this.$router.replace(jwt.redirect);
+
+            if (this.redirect) {
+              await this.init();
+              this.$router.replace(this.redirect);
+            } else if (jwt.redirect) {
+              window.location = jwt.redirect;
+            } else {
+              await this.init();
+              switch (jwt.user.user_role_id) {
+                case 1:
+                  this.$router.replace("/customer/home");
+                  break;
+
+                case 2:
+                  this.$router.replace("/store/orders");
+                  break;
+              }
+            }
           }
         })
-        .catch(error => {
+        .catch(e => {
           this.$toastr.e("Please try again.", "Registration failed");
         });
     }
