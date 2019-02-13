@@ -63,7 +63,7 @@ class CheckoutController extends UserController
             ], ["stripe_account" => $store->settings->stripe_id]);
 
             $charge = \Stripe\Charge::create([
-                "amount" => $total * 100,
+                "amount" => round($total * 100),
                 "currency" => "usd",
                 "source" => $storeSource,
                 "application_fee" => $preFeeTotal * $application_fee,
@@ -97,7 +97,7 @@ class CheckoutController extends UserController
         } else {
 
             $plan = \Stripe\Plan::create([
-                "amount" => $total * 100,
+                "amount" => round($total * 100),
                 "interval" => "week",
                 "product" => [
                     "name" => "Weekly subscription (" . $store->storeDetail->name . ")",
