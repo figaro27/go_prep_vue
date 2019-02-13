@@ -35,6 +35,7 @@ import VueNumberInput from '@chenfengyuan/vue-number-input';
 import VueRangedatePicker from 'vue-rangedate-picker'
 import Vuelidate from 'vuelidate'
 import UUID from 'vue-uuid'
+import { VLazyImagePlugin } from "v-lazy-image";
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -57,6 +58,7 @@ Vue.use(Toastr, {
 });
 Vue.component('date-range-picker', VueRangedatePicker);
 Vue.use(Vuelidate)
+Vue.use(VLazyImagePlugin);
 
 import Thumbnail from './components/Thumbnail';
 Vue.component('thumbnail', Thumbnail)
@@ -69,6 +71,9 @@ Vue.component('delivery-date-picker', DeliveryDatePicker);
 
 import Spinner from './components/Spinner';
 Vue.component('spinner', Spinner);
+
+import PageSpinner from './components/PageSpinner';
+Vue.component('page-spinner', PageSpinner);
 
 /*
 moment.defaultFormat = 'ddd, MMMM Do';

@@ -5,7 +5,11 @@
       <div class="mr-2" v-if="storeSettings.allowPickup">Delivery / Pickup Dates:</div>
 
       <div class="flex-grow-1">
-        <date-range-picker ref="picker" @selected="val => onChange(val)" i18n="EN"></date-range-picker>
+        <date-range-picker
+            ref="picker"
+            @selected="val => onChange(val)"
+            :class="pickerClasses"
+            i18n="EN"></date-range-picker>
         <!--<v-select
           multiple
           v-model="delivery_dates"
@@ -19,6 +23,7 @@
 
 <style lang="scss">
 .delivery-date-picker {
+  
 }
 </style>
 
@@ -54,7 +59,21 @@ export default {
     },
     numDeliveryDates() {
       return this.storeSettings.view_delivery_days;
-    }
+    },
+    delivery_days() {
+      return this.storeSettings.delivery_days || [];
+    },
+    pickerClasses() {
+      return {
+        'highlight-mon': this.delivery_days.includes('mon'),
+        'highlight-tue': this.delivery_days.includes('tue'),
+        'highlight-wed': this.delivery_days.includes('wed'),
+        'highlight-thu': this.delivery_days.includes('thu'),
+        'highlight-fri': this.delivery_days.includes('fri'),
+        'highlight-sat': this.delivery_days.includes('sat'),
+        'highlight-sun': this.delivery_days.includes('sun'),
+      }
+    },
   },
   watch: {
     delivery_dates(val) {
@@ -91,6 +110,9 @@ export default {
   },
   methods: {
     ...mapActions([]),
+    ...mapGetters({
+      getStoreSetting: 'storeSetting'
+    }),
     setInitialRange() {
       if (
         _.isEmpty(this.$refs.picker.dateRange) &&

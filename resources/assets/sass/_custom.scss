@@ -329,6 +329,7 @@ top:10px;
   float:left !important;
   margin-right:18px !important;
   font-size:16px !important;
+  cursor: pointer;
 }
 
 .filter-area{
@@ -492,6 +493,16 @@ th {
 
     .nav-icon {
       color: #20a8d8;
+    }
+  }
+}
+
+.header-fixed {
+  .app-header {
+    z-index: 10010;
+
+    .navbar {
+
     }
   }
 }

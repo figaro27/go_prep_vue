@@ -5,6 +5,18 @@
 }
 
 .calendar-root {
+  // Day highlights
+  $days: 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat';
+    
+  @each $day in $days {
+    $i: index($days, $day);
+    &.highlight-#{$day} {
+      .calendar_days li:not(.calendar_days--disabled):not(.calendar_days_in-range):not(.calendar_days_selected):nth-child(#{$i}) {
+        background-color: #eee;
+      }
+    }
+  }
+
   .input-date {
     position: relative;
     padding: 0.375rem 0.75rem !important;
@@ -43,7 +55,7 @@
   }
 
   .calendar {
-    height: 320px !important;
+    height: 350px !important;
 
     h2 {
       font-size: 22px;

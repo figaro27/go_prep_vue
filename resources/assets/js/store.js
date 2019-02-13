@@ -107,7 +107,8 @@ const state = {
     },
     expires: 0
   },
-  isLoading: true
+  isLoading: true,
+  initialized: false,
 }
 
 // mutations are operations that actually mutates the state. each mutation
@@ -344,19 +345,19 @@ const actions = {
     const context = data.context;
 
     if (context === 'store') {
-      dispatch('initStore', data)
+      await dispatch('initStore', data)
       
       if(router.currentRoute.fullPath === '/') {
         router.replace('/store/orders');
       }
     } else if (context === 'customer') {
-      dispatch('initCustomer', data)
+      await dispatch('initCustomer', data)
 
       if(router.currentRoute.fullPath === '/') {
         router.replace('/customer/home');
       }
     } else {
-      dispatch('initGuest', data);
+      await dispatch('initGuest', data);
     }
 
     try {
@@ -415,6 +416,7 @@ const actions = {
     } catch (e) {}
 
     state.isLoading = false;
+    state.initialized = true;
 
     // try {   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
     //     let orders = data.store.orders;     commit('storeOrders', {orders});   }
@@ -472,7 +474,7 @@ const actions = {
     dispatch('refreshOrders');
     dispatch('refreshIngredients');
     dispatch('refreshOrderIngredients');
-    dispatch('refreshStoreSubscriptions');
+    await dispatch('refreshStoreSubscriptions');
   },
 
   async initCustomer({
@@ -482,7 +484,7 @@ const actions = {
   }, data = {}) {
 
     if (data.store) {
-      dispatch('refreshViewedStore');
+      await dispatch('refreshViewedStore');
     }
 
     dispatch('refreshStores');
@@ -865,9 +867,11 @@ const getters = {
     }
   },
 
-  //
   isLoading(state) {
     return state.isLoading;
+  },
+  initialized(state) {
+    return state.initialized;
   },
   bag(state) {
     let bag = {

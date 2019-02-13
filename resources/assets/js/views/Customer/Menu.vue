@@ -164,11 +164,11 @@
                       v-for="meal in group.meals"
                       :key="meal.id"
                     >
-                      <img
+                      <thumbnail
                         :src="meal.featured_image"
+                        
                         class="menu-item-img"
-                        @click="showMealModal(meal)"
-                      >
+                        @click="showMealModal(meal)"></thumbnail>
                       <div class="d-flex justify-content-between mb-2 mt-1">
                         <b-btn @click="minusOne(meal)" class="menu-bag-btn plus-minus gray">
                           <p>-</p>
@@ -214,7 +214,7 @@
                         >
                       </div>
                       <div class="bag-item-image mr-2">
-                        <img :src="item.meal.featured_image" class="cart-item-img">
+                        <thumbnail :src="item.meal.featured_image" :src-placeholder="item.meal.featured_image" class="cart-item-img"></thumbnail>
                       </div>
                       <div class="flex-grow-1 mr-2">{{ item.meal.title }}</div>
                       <div class>
