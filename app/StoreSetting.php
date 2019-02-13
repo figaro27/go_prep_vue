@@ -50,7 +50,7 @@ class StoreSetting extends Model
         'notifications' => 'json',
     ];
 
-    public function getNextDeliveryDates()
+    public function getNextDeliveryDates($factorCutoff = false)
     {
         $dates = [];
 
@@ -63,7 +63,11 @@ class StoreSetting extends Model
 
             $diff = $date->getTimestamp() - $now->getTimestamp();
 
-            if ($diff >= $cutoff) {
+            if($factorCutoff) {
+              $diff -= $cutoff;
+            }
+
+            if ($diff < 0) {
                 $dates[] = $date;
             } else {
                 $dates[] = $date->addWeek(1);
@@ -79,7 +83,7 @@ class StoreSetting extends Model
     }
 
     public function getNextDeliveryDatesAttribute() {
-      return $this->getNextDeliveryDates();
+      return $this->getNextDeliveryDates(true);
     }
 
     public function getStripeAttribute() {

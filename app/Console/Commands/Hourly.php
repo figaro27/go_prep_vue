@@ -46,7 +46,7 @@ class Hourly extends Command
         $count = 0;
 
         foreach ($stores as $store) {
-            if ($store->cutoffPassed()) {
+            if ($store->cutoffPassed('hour')) {
                 if ($store->notificationEnabled('ready_to_print')) {
                     $store->sendNotification('ready_to_print');
                     $count++;

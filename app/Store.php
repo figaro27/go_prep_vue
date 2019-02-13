@@ -32,7 +32,14 @@ class Store extends Model
       'customers',
     ];
 
+    protected $appends = [
+      'cutoff_passed',
+      'next_delivery_date',
+      'next_cutoff_date',
+    ];
+
     protected $casts = [
+
     ];
 
     public function user()
@@ -217,8 +224,13 @@ class Store extends Model
       return $date;
     }
     
-    public function getNextDeliveryDate() {
-      return $this->settings->getNextDeliveryDates()[0] ?? null;
+    public function getNextDeliveryDate($factorCutoff = false) {
+      return $this->settings->getNextDeliveryDates($factorCutoff)[0] ?? null;
+    }
+
+    public function getNextCutoffDate() {
+      $date = $this->getNextDeliveryDate(false);
+      return $date->subSeconds($this->getCutoffSeconds());
     }
 
     public function getOrders($groupBy = null, $dateRange = []) {
@@ -335,12 +347,17 @@ class Store extends Model
         return false;
     }
 
+    protected function getCutoffSeconds() {
+      $cutoff = $this->settings->cutoff_days * (60 * 60 * 24) + $this->settings->cutoff_hours * (60 * 60);
+      return $cutoff;
+    }
+
     /**
-     * Returns whether the store's cutoff passed lesss than an hour ago
-     *
+     * Returns whether the store's cutoff passed
+     * @param mixed $period
      * @return boolean
      */
-    public function cutoffPassed()
+    public function cutoffPassed($period = 'hour')
     {
         if (!$this->settings || !is_array($this->settings->delivery_days)) {
             return false;
@@ -356,11 +373,25 @@ class Store extends Model
             //echo $diff."\r\n";
 
             // Cutoff passed less than an hour ago
-            if ($diff >= -60 * 60 && $diff < 0) {
+            if ($period === 'hour' && $diff >= -60 * 60 && $diff < 0) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public function getCutoffPassedAttribute() {
+      $now = Carbon::now('utc');
+      $date = $this->getNextDeliveryDate();
+      return $now->getTimestamp() > ($date->getTimestamp() - $this->getCutoffSeconds());
+    }
+
+    public function getNextCutoffDateAttribute() {
+      return $this->getNextCutoffDate()->toDateTimeString();
+    }
+
+    public function getNextDeliveryDateAttribute() {
+      return $this->getNextDeliveryDate()->toDateTimeString();
     }
 }
