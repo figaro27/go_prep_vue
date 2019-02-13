@@ -18,7 +18,7 @@ class CreateSubscriptionsTable extends Migration
             $table->unsignedInteger('customer_id');
             $table->unsignedInteger('store_id');
             $table->string('name');
-            $table->enum('status', ['active', 'cancelled'])->default('active');
+            $table->enum('status', ['active', 'paused', 'cancelled'])->default('active');
             $table->string('stripe_id')->collation('utf8mb4_bin');
             $table->string('stripe_customer_id')->collation('utf8mb4_bin');
             $table->string('stripe_plan');
@@ -30,6 +30,7 @@ class CreateSubscriptionsTable extends Migration
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
+            $table->timestamp('paused_at')->nullable();
             $table->timestamps();
         });
     }

@@ -30,7 +30,11 @@
                   </div>
                   <div class="col-md-4" v-if="subscription.status === 'active'">
                     <h2>{{ format.money(subscription.amount) }} per {{subscription.interval}}</h2>
+                    <b-btn variant="warning" @click="() => pauseSubscription(subscription)">Pause</b-btn>
                     <b-btn variant="danger" @click="() => cancelSubscription(subscription)">Cancel</b-btn>
+                  </div>
+                  <div class="col-md-4" v-else-if="subscription.status === 'paused'">
+                    <b-btn variant="warning" @click="() => resumeSubscription(subscription)">Resume</b-btn>
                   </div>
                   <div class="col-md-4" v-else>
                     <h4>Cancelled On</h4>
@@ -126,6 +130,16 @@ export default {
           quantity: meal.pivot.quantity,
           subtotal: format.money(meal.price * meal.pivot.quantity)
         };
+      });
+    },
+    pauseSubscription(subscription) {
+      axios.post(`/api/me/subscriptions/${subscription.id}/pause`).then(resp => {
+        this.refreshSubscriptions();
+      });
+    },
+    resumeSubscription(subscription) {
+      axios.post(`/api/me/subscriptions/${subscription.id}/resume`).then(resp => {
+        this.refreshSubscriptions();
       });
     },
     cancelSubscription(subscription) {
