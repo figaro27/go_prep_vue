@@ -46,6 +46,7 @@
         <SidebarMinimizer/>
       </AppSidebar>
       <main class="main">
+        <page-spinner v-if="!initialized"></page-spinner>
         <!-- <Breadcrumb :list="list"/> -->
         <div class="container-fluid">
           <router-view></router-view>
@@ -62,7 +63,14 @@
   </div>
 </template>
 
+<style lang="scss" scoped>
+main.main {
+  position: relative;
+}
+</style>
+
 <script>
+import { mapGetters, mapActions } from "vuex";
 import nav from "./../_storenav";
 import {
   Header as AppHeader,
@@ -85,7 +93,6 @@ import DefaultHeaderDropdownAccnt from "./DefaultHeaderDropdownAccnt";
 import StoreDropdown from "./StoreDropdown";
 import DefaultHeaderDropdownMssgs from "./DefaultHeaderDropdownMssgs";
 import DefaultHeaderDropdownTasks from "./DefaultHeaderDropdownTasks";
-import { mapActions } from "vuex";
 
 export default {
   name: "DefaultContainer",
@@ -116,6 +123,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["initialized"]),
     classes() {
       let classes = ['app'];
       classes.push(this.$route.name);

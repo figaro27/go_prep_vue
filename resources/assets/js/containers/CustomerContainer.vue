@@ -40,6 +40,7 @@
     </AppHeader>
     <div class="app-body">
       <main class="main">
+        <page-spinner v-if="!initialized"></page-spinner>
         <div class="container-fluid">
           <router-view></router-view>
         </div>
@@ -49,6 +50,12 @@
     </TheFooter>-->
   </div>
 </template>
+
+<style lang="scss" scoped>
+main.main {
+  position: relative;
+}
+</style>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
@@ -101,7 +108,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapGetters(["viewedStore", "loggedIn"]),
+    ...mapGetters(["initialized", "viewedStore", "loggedIn"]),
     ...mapGetters({
       storeLogo: "viewedStoreLogo",
     }),
