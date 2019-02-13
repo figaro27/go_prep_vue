@@ -257,7 +257,10 @@ class User extends Authenticatable implements JWTSubject
 
         $acct = $store->settings->stripe_account;
         \Stripe\Stripe::setApiKey($acct['access_token']);
-        $stripeCustomer = \Stripe\Customer::create();
+        $stripeCustomer = \Stripe\Customer::create([
+          'email' => $this->email,
+          'description' => $this->name
+        ]);
         \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
 
         $customer = new Customer;
