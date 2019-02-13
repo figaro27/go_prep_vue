@@ -15,6 +15,9 @@ const validators = {
   first_name: {
     required,
   },
+  last_name: {
+    required,
+  },
   phone: {
     required,
   },
