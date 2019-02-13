@@ -81,7 +81,7 @@ export default {
     ...mapGetters({
       orders: "orders",
       isLoading: "isLoading",
-    })
+    }),
   },
   mounted() {
     this.refreshCustomerOrders();

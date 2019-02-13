@@ -1,12 +1,14 @@
 <template>
   <div class="app customer">
     <AppHeader fixed>
-      <b-link class="navbar-brand" to="#">
-        <img v-if="storeLogo"
+      <b-link class="navbar-brand" to="/customer/menu">
+          <img v-if="storeLogo"
           class="store-logo"
           :src="storeLogo"
           alt="Company Logo"
-        >
+          >
+      </b-link>
+      <b-link class="navbar-brand" to="#">
         <img v-if="!storeLogo"
           class="navbar-brand-full"
           src="/images/logo.jpg"

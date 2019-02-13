@@ -8,9 +8,9 @@
             <h2 class="center-text">Checkout</h2>
           </div>
           <div class="col-md-12 mb-2">
-            <b-button variant="primary" @click="clearAll" class>Empty Bag</b-button>
+            <b-button variant="primary" size="lg" @click="clearAll">Empty Bag</b-button>
             <router-link to="/customer/menu">
-              <b-button variant="warning" class="m-3">Change Meals</b-button>
+              <b-button variant="warning" size="lg" class="m-3">Change Meals</b-button>
             </router-link>
           </div>
         </div>
@@ -95,7 +95,7 @@
               <li class="checkout-item" v-if="storeSettings.applyDeliveryFee || storeSettings.applyProcessingFee">
                 <div class="row">
                   <div class="col-md-4">
-                    <strong>SubTotal:</strong>
+                    <strong>Subtotal:</strong>
                   </div>
                   <div class="col-md-3 offset-5">{{ format.money(totalBagPriceBeforeFees) }}</div>
                 </div>
@@ -123,7 +123,7 @@
                       <strong>Total:</strong>
                     </span>
                     <span v-if="applyMealPlanDiscount && deliveryPlan">
-                      <strong>SubTotal:</strong>
+                      <strong>Subtotal:</strong>
                     </span>
                   </div>
                   <div class="col-md-3 offset-5">{{ format.money(totalBagPrice) }}</div>

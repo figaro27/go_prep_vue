@@ -145,7 +145,7 @@
                 </div>
               </div>
               <div class="col-sm-3 col-md-3 order-1 order-sm-2">
-                <p @click="clearAll">Clear All</p>
+                <b-btn variant="danger" class="pull-right" @click="clearAll">Clear All</b-btn>
               </div>
             </div>
             <div class="row">
@@ -187,8 +187,8 @@
                         </b-btn>
                         <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
                       </div>
-                      <p class="center-text strong">{{ meal.title }}</p>
-                      <p class="center-text">{{ format.money(meal.price) }}</p>
+                      <p class="center-text strong featured">{{ meal.title }}</p>
+                      <p class="center-text featured">{{ format.money(meal.price) }}</p>
                     </div>
                   </div>
                 </div>

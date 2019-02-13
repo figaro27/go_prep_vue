@@ -7,7 +7,7 @@
           <p>We envision GoPrep to be the central hub that allows customers to find local meal prep companies and allow them the convenience of ordering a number of meals taking care of their eating needs for the week. Eventually as we grow, this page will show you a list of all meal prep companies in your area. You can then view each company's menu and make your order.</p>
           <p>Help us spread the word by getting more meal prep companies on-board.</p>
 
-            <p><a href="http://goprep.com" target="_blank">Visit Our Website</a></p>
+            <p>Contact us below.</p>
           
 
 
