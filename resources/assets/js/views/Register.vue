@@ -17,16 +17,32 @@
                 </b-form-radio-group>
               </b-form-group>
 
-              <b-form-group horizontal label="E-Mail Address">
-                <b-input v-model="form[0].email" type="email"></b-input>
+              
+              <b-form-group horizontal label="E-Mail Address" :state="state(0, 'email')">
+                <b-input
+                  v-model="form[0].email"
+                  type="email"
+                  @input="$v.form[0].email.$touch()"
+                  :state="state(0, 'email')">
+                </b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Password">
-                <b-input v-model="form[0].password" type="password"></b-input>
+              <b-form-group horizontal label="Password" :state="state(0, 'password')">
+                <b-input
+                  v-model="form[0].password"
+                  type="password"
+                  @input="$v.form[0].password.$touch()"
+                  :state="state(0, 'password')">
+                </b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Confirm Password">
-                <b-input v-model="form[0].password_confirmation" type="password"></b-input>
+              <b-form-group horizontal label="Confirm Password" :state="state(0, 'password_confirmation')">
+                <b-input
+                  v-model="form[0].password_confirmation"
+                  type="password"
+                  @input="$v.form[0].password_confirmation.$touch()"
+                  :state="state(0, 'password_confirmation')">
+                </b-input>
               </b-form-group>
 
               <b-form-group horizontal>
@@ -35,32 +51,67 @@
             </div>
 
             <div v-if="step === 1">
-              <b-form-group horizontal label="First Name">
-                <b-input v-model="form[1].first_name"></b-input>
+              <b-form-group horizontal label="First Name" :state="state(1, 'first_name')">
+                <b-input
+                  v-model="form[1].first_name"
+                  type="text"
+                  @input="$v.form[1].first_name.$touch()"
+                  :state="state(1, 'first_name')">
+                </b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Last Name">
-                <b-input v-model="form[1].last_name"></b-input>
+              <b-form-group horizontal label="Last Name" :state="!$v.form[1].last_name.$invalid">
+                <b-input
+                  v-model="form[1].last_name"
+                  type="text"
+                  @input="$v.form[1].last_name.$touch()"
+                  :state="$v.form[1].last_name.$dirty ? !$v.form[1].last_name.$error : null">
+                </b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Phone Number">
-                <b-input v-model="form[1].phone"></b-input>
+              <b-form-group horizontal label="Phone Number" :state="!$v.form[1].phone.$invalid">
+                <b-input
+                  v-model="form[1].phone"
+                  type="tel"
+                  @input="$v.form[1].phone.$touch()"
+                  :state="$v.form[1].phone.$dirty ? !$v.form[1].phone.$error : null">
+                </b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Address">
-                <b-input v-model="form[1].address"></b-input>
+              <b-form-group horizontal label="Address" :state="!$v.form[1].address.$invalid">
+                <b-input
+                  v-model="form[1].address"
+                  type="text"
+                  @input="$v.form[1].address.$touch()"
+                  :state="$v.form[1].address.$dirty ? !$v.form[1].address.$error : null">
+                </b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="City">
-                <b-input v-model="form[1].city"></b-input>
+              <b-form-group horizontal label="City" :state="!$v.form[1].city.$invalid">
+                <b-input
+                  v-model="form[1].city"
+                  type="text"
+                  @input="$v.form[1].city.$touch()"
+                  :state="$v.form[1].city.$dirty ? !$v.form[1].city.$error : null">
+                </b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="State">
-                <b-input v-model="form[1].state"></b-input>
+              <b-form-group horizontal label="State" :state="!$v.form[1].state.$invalid">
+                <b-input
+                  v-model="form[1].state"
+                  type="text"
+                  @input="$v.form[1].state.$touch()"
+                  :state="$v.form[1].state.$dirty ? !$v.form[1].state.$error : null">
+                </b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Zip Code">
-                <b-input v-model="form[1].zip"></b-input>
+              <b-form-group horizontal label="Zip Code" :state="!$v.form[1].state.$invalid">
+                <b-input
+                  v-model="form[1].zip"
+                  type="text"
+                  @input="$v.form[1].zip.$touch()"
+                  :state="$v.form[1].zip.$dirty ? !$v.form[1].zip.$error : null">
+                </b-input>
               </b-form-group>
 
               <b-form-group horizontal v-if="form[0].role === 'store'">
@@ -72,7 +123,7 @@
               </b-form-group>
             </div>
 
-             <div v-if="step === 2">
+            <div v-if="step === 2">
               <h4>Store Details</h4>
               <b-form-group horizontal label="Store name">
                 <b-input v-model="form[2].store_name"></b-input>
@@ -111,7 +162,8 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
-import { required, minLength, email } from "vuelidate/lib/validators";
+import { required, minLength, email, sameAs } from "vuelidate/lib/validators";
+import validators from '../validators';
 
 export default {
   components: {},
@@ -133,7 +185,7 @@ export default {
           address: null,
           city: null,
           state: null,
-          zip: null,
+          zip: null
         },
         2: {
           store_name: null,
@@ -141,77 +193,46 @@ export default {
           address: null,
           city: null,
           state: null,
-          zip: null,
-        },
+          zip: null
+        }
       }
     };
   },
   validations: {
     form: {
       0: {
-        role: {
-          required
-        },
-        email: {
-          required,
-          email
-        },
-        password: {
-          required
-        },
-        password_confirmation: {
-          required
-        }
+        role: validators.required,
+        email: validators.email,
+        password: validators.password,
+        password_confirmation: validators.password,
       },
       1: {
-        first_name: {
-          required
-        },
-        last_name: {
-          required
-        },
-        phone: {
-          required
-        },
-        address: {
-          required
-        },
-        city: {
-          required
-        },
-        state: {
-          required
-        },
-        zip: {
-          required
-        },
+        first_name: validators.first_name,
+        last_name: validators.last_name,
+        phone: validators.phone,
+        address: validators.address,
+        city: validators.city,
+        state: validators.state,
+        zip: validators.zip,
       },
       2: {
-        store_name: {
-          required
-        },
-        phone: {
-          required
-        },
-        address: {
-          required
-        },
-        city: {
-          required
-        },
-        state: {
-          required
-        },
-        zip: {
-          required
-        },
+        store_name: validators.required,
+        phone: validators.phone,
+        address: validators.address,
+        city: validators.city,
+        state: validators.state,
+        zip: validators.zip,
       }
-    }
+    },
+    validationGroup: ['form[0]', 'form[1]', 'form[3]']
   },
   created() {},
   mounted() {},
   methods: {
     ...mapActions(["init"]),
+    state(i, key) {
+      return this.$v.form[i][key].$dirty ? !this.$v.form[i][key].$error : null
+    },
     validate(step) {
       switch (step) {
         case 0:
@@ -230,22 +251,38 @@ export default {
       let data = {
         user: this.form[0],
         user_details: this.form[1],
-        store: this.form[2],
+        store: this.form[2]
       };
 
       axios
         .post("/api/auth/register", data)
-        .then(response => {
+        .then(async response => {
           let jwt = response.data;
 
           if (jwt.access_token) {
             window.axios.defaults.headers.common["Authorization"] = `Bearer ${
               jwt.access_token
             }`;
-            Cookies.set('jwt', jwt);
+            Cookies.set("jwt", jwt);
             localStorage.setItem("jwt", JSON.stringify(jwt));
-            this.init();
-            this.$router.replace(jwt.redirect);
+
+            if (this.redirect) {
+              await this.init();
+              this.$router.replace(this.redirect);
+            } else if (jwt.redirect) {
+              window.location = jwt.redirect;
+            } else {
+              await this.init();
+              switch (jwt.user.user_role_id) {
+                case 1:
+                  this.$router.replace("/customer/home");
+                  break;
+
+                case 2:
+                  this.$router.replace("/store/orders");
+                  break;
+              }
+            }
           }
         })
         .catch(error => {
