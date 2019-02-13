@@ -4,10 +4,8 @@ use Faker\Generator as Faker;
 
 $factory->define(App\Order::class, function (Faker $faker) {
 
-
-
     return [
-        'order_number' => substr(uniqid(rand(1, 9), false), 0, 12),
+        'order_number' => strtoupper(substr(sha1(uniqid()), 0, 8)),
         'store_id' => 1,
         'fulfilled' => rand(0, 1),
         'amount' => rand(100, 200),

@@ -64,7 +64,7 @@ class UsersSeeder extends Seeder
             ]);
         }
 
-        factory(App\User::class, 50)->create()->each(function ($u) {
+        factory(App\User::class, 20)->create()->each(function ($u) {
             $u->userDetail()->save(factory(App\UserDetail::class)->make());
         });
 
