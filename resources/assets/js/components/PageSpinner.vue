@@ -12,13 +12,13 @@ export default {
 
 <style lang="scss" scoped>
 .page-spinner {
-  position: absolute;
-  top: 0;
+  position: fixed;
+  top: 55px;
   left: 0;
   right: 0;
   bottom: 0;
 
-  z-index: 50;
+  z-index: 10005;
 
   display: flex;
   align-items: center;

@@ -497,6 +497,16 @@ th {
   }
 }
 
+.header-fixed {
+  .app-header {
+    z-index: 10010;
+
+    .navbar {
+
+    }
+  }
+}
+
 .navbar .nav-item:not(.dropdown) {
   padding-left: 0;
   padding-right: 0;
