@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Request;
 
 class AuthController extends Controller
 {
@@ -75,7 +76,8 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         $user = auth('api')->user();
-        $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/orders') : '/customer/home';
+        $secure = Request::secure();
+        $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/orders', $secure) : '/customer/home';
 
         return response()->json([
             'access_token' => $token,
