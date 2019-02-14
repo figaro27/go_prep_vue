@@ -17,6 +17,16 @@
   src: url(fonts/gotham-narrow.otf);
 }
 
+@font-face {
+  font-family: gotham-bold;
+  src: url(fonts/gotham-bold.ttf);
+}
+
+@font-face {
+  font-family: gotham-black;
+  src: url(fonts/gotham-black.otf);
+}
+
 p, td, li, label, input, button, b-button, textarea, legend, label, select, .alert, div {
 	font-family: 'gotham-narrow';
 	font-size:15px;
@@ -354,7 +364,7 @@ top:10px;
 .dbl-underline{
   padding-bottom: 5px !important;
   border-bottom: 3px double #F25727;
-  font-weight:900;
+  font-family:'gotham-bold' !important;
 }
 
 .filter-area{
