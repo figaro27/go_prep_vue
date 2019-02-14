@@ -167,7 +167,7 @@
                   :id="group.category"
                   class="categories"
                 >
-                  <h2 class="text-center mb-3">{{group.category}}</h2>
+                  <h2 class="text-center mb-3 dbl-underline">{{group.category}}</h2>
                   <div class="row">
                     <div
                       class="col-sm-6 col-lg-4 col-xl-3"

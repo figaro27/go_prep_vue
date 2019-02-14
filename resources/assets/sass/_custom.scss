@@ -351,6 +351,10 @@ top:10px;
   cursor:pointer !important;
 }
 
+.dbl-underline{
+  border-bottom: 3px double #D3D3D3;
+}
+
 .filter-area{
   position:sticky !important;
 }
@@ -433,7 +437,7 @@ top:10px;
 .plus-minus p{
   font-size:35px !important;
   position:relative !important;
-  bottom:13px !important;
+  bottom:3px !important;
 }
 
 .gray{

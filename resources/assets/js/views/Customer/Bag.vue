@@ -5,7 +5,7 @@
         <spinner v-if="loading" position="absolute"></spinner>
         <div class="row">
           <div class="col-md-12">
-            <h2 class="center-text">Checkout</h2>
+            <h2 class="center-text dbl-underline">Checkout</h2>
           </div>
           <div class="col-md-12 mb-2">
             <b-button variant="primary" size="lg" @click="clearAll">Empty Bag</b-button>
