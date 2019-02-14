@@ -239,6 +239,8 @@ body.sidebar-minimized {
 }
 
 .bag-area {
+  padding-top: 75px;
+  
   @include media-breakpoint-down(sm) {
     display: none;
 
