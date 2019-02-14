@@ -15,7 +15,7 @@
           <b-alert :show="0 === orders.length || false" variant="warning">
             <p class="center-text mt-3">You currently have no orders.</p>
           </b-alert>
-          <div v-for="order in orders" :key="order.id">
+          <div v-for="order in orders" :key="order.id" class="mb-4">
             <div v-b-toggle="'collapse' + order.id">
               <b-list-group-item>
                 <div class="row">
@@ -53,7 +53,17 @@
                       <img :src="row.value" class="modalMeal">
                     </template>
 
-                    <template slot="FOOT_subtotal" slot-scope="row">{{ format.money(order.amount) }}</template>
+                    <template slot="FOOT_subtotal" slot-scope="row">
+                        <p>Subtotal: {{ format.money(order.preFeePreDiscount) }}</p>
+                        <p>Meal Plan Discount: <span class="red"> ({{ format.money(order.mealPlanDiscount) }})</span></p>
+                        <p>Delivery Fee: {{ format.money(order.deliveryFee) }}</p>
+                        <p>Processing Fee: {{ format.money(order.processingFee) }}</p>
+                        <p><strong>Total: {{ format.money(order.amount) }}</strong></p>
+                    </template>
+
+                    <template slot="table-caption">
+                      
+                    </template>
                   </b-table>
                 </b-collapse>
               </b-list-group-item>
