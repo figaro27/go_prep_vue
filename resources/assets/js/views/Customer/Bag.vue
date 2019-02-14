@@ -8,9 +8,9 @@
             <h2 class="center-text dbl-underline">Checkout</h2>
           </div>
           <div class="col-md-12 mb-2">
-            <b-button variant="primary" size="lg" @click="clearAll">Empty Bag</b-button>
+            <b-button size="lg" class="green" @click="clearAll">Empty Bag</b-button>
             <router-link to="/customer/menu">
-              <b-button variant="warning" size="lg" class="m-3">Change Meals</b-button>
+              <b-button size="lg" class="orange m-3">Change Meals</b-button>
             </router-link>
           </div>
         </div>
@@ -73,6 +73,12 @@
                   <div class="col-md-3">
                     <p>
                       <strong>Weekly Meal Plan</strong>
+                      <img
+                          v-b-popover.hover="'Choose a weekly meal plan instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals as well as pause or cancel the meal plan if it is within a certain amount of time before the pickup/delivery day.'"
+                          title="Weekly Meal Plan"
+                          src="/images/store/popover.png"
+                          class="popover-size ml-1"
+                        >
                     </p>
                   </div>
                   <div class="col-md-4">
