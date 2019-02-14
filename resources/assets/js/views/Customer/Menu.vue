@@ -150,12 +150,12 @@
                 
 
                 <div class="filter-area">
-                  <b-button @click="viewFilters" variant="primary" class=""><i class="fa fa-filter"></i>&nbsp;Filters</b-button>
-                  <b-button @click="clearFilters" variant="warning" class=""><i class="fa fa-eraser"></i>&nbsp;Clear Filters</b-button>
+                  <b-button @click="viewFilters" class="green"><i class="fa fa-filter"></i>&nbsp;Filters</b-button>
+                  <b-button @click="clearFilters" class="orange"><i class="fa fa-eraser"></i>&nbsp;Clear Filters</b-button>
                 </div>
               </div>
               <div class="col-sm-3 col-md-3 order-1 order-sm-2">
-                <b-btn variant="danger" class="pull-right" @click="clearAll">Clear All</b-btn>
+                <b-btn variant="danger" class="pull-right" @click="clearAll"><i class="fa fa-eraser"></i>&nbsp;Clear All</b-btn>
               </div>
             </div>
             <div class="row">
@@ -174,11 +174,11 @@
                       v-for="meal in group.meals"
                       :key="meal.id"
                     >
-                      <thumbnail
+                      <img
                         :src="meal.featured_image"
-                        
                         class="menu-item-img"
-                        @click="showMealModal(meal)"></thumbnail>
+                        @click="showMealModal(meal)">
+                        </img>
                       <div class="d-flex justify-content-between mb-2 mt-1">
                         <b-btn @click="minusOne(meal)" class="menu-bag-btn plus-minus gray">
                           <p>-</p>

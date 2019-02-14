@@ -354,6 +354,7 @@ top:10px;
 .dbl-underline{
   padding-bottom: 5px !important;
   border-bottom: 3px double #F25727;
+  font-weight:900;
 }
 
 .filter-area{
@@ -626,4 +627,14 @@ ol.plain {
 
 .featured{
   font-size:18px !important;
+}
+
+.orange{
+  background-color:#F25727 !important;
+  color:#ffffff !important;
+}
+
+.green{
+  background-color:#79C036 !important;
+  color:#ffffff !important;
 }
