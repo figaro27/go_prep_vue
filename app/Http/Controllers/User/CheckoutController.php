@@ -35,18 +35,25 @@ class CheckoutController extends UserController
         $total = $bag->getTotal();
         $preFeeTotal = $bag->getTotal();
 
+        $deliveryFee = 0;
+        $processingFee = 0;
+        $mealPlanDiscount = 0;
+
         if ($store->settings->applyDeliveryFee) {
             $total += $store->settings->deliveryFee;
+            $deliveryFee += $store->settings->deliveryFee;
         }
 
         if ($store->settings->applyProcessingFee) {
             $total += $store->settings->processingFee;
+            $processingFee += $store->settings->processingFee;
         }
 
         if ($store->settings->applyMealPlanDiscount) {
             $discount = $store->settings->mealPlanDiscount / 100;
             $total -= ($preFeeTotal * $discount);
             $preFeeTotal -= ($preFeeTotal * $discount);
+            $mealPlanDiscount = (($store->settings->mealPlanDiscount / 100) * $preFeeTotal);
         }
 
         if (!$user->hasStoreCustomer($store->id)) {
@@ -75,6 +82,9 @@ class CheckoutController extends UserController
             $order->store_id = $store->id;
             $order->order_number = substr(uniqid(rand(1, 9), false), 0, 12);
             $order->amount = $total;
+            $order->deliveryFee = $deliveryFee;
+            $order->processingFee = $processingFee;
+            $order->mealPlanDiscount = $mealPlanDiscount;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));

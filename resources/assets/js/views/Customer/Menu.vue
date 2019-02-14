@@ -254,7 +254,7 @@
                     <b-btn v-if="minOption === 'price' && totalBagPrice >= minPrice && !preview" class="menu-bag-btn">NEXT</b-btn>
                   </router-link>
                 </div>
-                  <h6 class="mt-2 pull-right">SubTotal - ${{ totalBagPrice }}</h6>
+                  <h6 class="mt-2 pull-right">SubTotal - {{ format.money(totalBagPriceBeforeFees) }}</h6>
               </div>
             </div>
           </div>
@@ -354,6 +354,25 @@ export default {
         return "meals";
       }
       return "meal";
+    },
+    totalBagPriceBeforeFees(){
+      let deliveryFee = this.storeSettings.deliveryFee;
+      let processingFee = this.storeSettings.processingFee;
+      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+      let applyProcessingFee = this.storeSettings.applyProcessingFee;
+
+      if (applyDeliveryFee && applyProcessingFee){
+        return this.totalBagPrice - deliveryFee - processingFee;
+      }
+      else if (applyDeliveryFee && !applyProcessingFee){
+        return this.totalBagPrice - deliveryFee;
+      }
+      else if (applyProcessingFee && !applyDeliveryFee){
+        return this.totalBagPrice - processingFee;
+      }
+      else
+        return this.totalBagPrice;
+      
     },
     meals() {
       let meals = this.store.meals;

@@ -24,6 +24,9 @@ class CreateOrdersTable extends Migration
             $table->boolean('pickup')->default(0);
             $table->date('delivery_date')->nullable();
             $table->text('notes')->nullable();
+            $table->integer('processingFee')->nullable();
+            $table->integer('deliveryFee')->nullable();
+            $table->integer('mealPlanDiscount')->nullable();
             $table->boolean('fulfilled');
             $table->timestamps();
         });
