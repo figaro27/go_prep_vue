@@ -37,7 +37,7 @@ class NutritionController extends Controller
         $this->search_url = config('nutritionix.search_url');
     }
 
-    public function getNutrients(Request $query)
+    public function getNutrients(Request $request)
     {
         $client = new Client();
         $response = $client->post($this->nutrients_url, [
@@ -48,7 +48,7 @@ class NutritionController extends Controller
             ],
             'body' =>
             json_encode([
-                'query' => (string) $query,
+                'query' => $request->get('query'),
             ]),
         ]);
 
