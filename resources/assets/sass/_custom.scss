@@ -352,7 +352,8 @@ top:10px;
 }
 
 .dbl-underline{
-  border-bottom: 3px double #D3D3D3;
+  padding-bottom: 5px !important;
+  border-bottom: 3px double #F25727;
 }
 
 .filter-area{
@@ -437,7 +438,7 @@ top:10px;
 .plus-minus p{
   font-size:35px !important;
   position:relative !important;
-  bottom:3px !important;
+  bottom:10px !important;
 }
 
 .gray{
