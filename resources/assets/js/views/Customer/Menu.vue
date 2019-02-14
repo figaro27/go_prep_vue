@@ -135,27 +135,27 @@
             </b-modal>
 
             <div class="row">
-              <div class="col-sm-9 col-md-9 order-2 order-sm-1">
+              <div class="col-sm-12">
 
                 <div class="row">
                   <div class="col-sm-12 store-logo-area">
                     <img v-if="storeLogo" class="store-logo" :src="storeLogo" alt="Company Logo"/>
                   </div>
                   <div class="col-sm-12 category-area">
-                      <ul v-for="category in categories" :key="category">
-                        <li @click="goToCategory(category)">{{ category }}</li>
-                      </ul>
-                  </div>
-                  </div>
-                
+                      <div class="filter-area">
+                        <b-button @click="viewFilters" class="green"><i class="fa fa-filter"></i>&nbsp;Filters</b-button>
+                        <b-button @click="clearFilters" class="orange"><i class="fa fa-eraser"></i>&nbsp;Clear Filters</b-button>
+                      </div>
 
-                <div class="filter-area">
-                  <b-button @click="viewFilters" class="green"><i class="fa fa-filter"></i>&nbsp;Filters</b-button>
-                  <b-button @click="clearFilters" class="orange"><i class="fa fa-eraser"></i>&nbsp;Clear Filters</b-button>
-                </div>
-              </div>
-              <div class="col-sm-3 col-md-3 order-1 order-sm-2">
-                <b-btn variant="danger" class="orange pull-right" @click="clearAll"><i class="fa fa-eraser"></i>&nbsp;Clear Bag</b-btn>
+                      <ul>
+                        <li v-for="category in categories" :key="category" @click="goToCategory(category)">{{ category }}</li>
+                      </ul>
+
+                      <div>
+                        <b-btn variant="danger" class="orange pull-right" @click="clearAll"><i class="fa fa-eraser"></i>&nbsp;Clear Bag</b-btn>
+                      </div>
+                  </div>
+                  </div>
               </div>
             </div>
             <div class="row">
@@ -179,9 +179,9 @@
                         class="menu-item-img"
                         @click="showMealModal(meal)">
                         </img>
-                      <div class="d-flex justify-content-between mb-2 mt-1">
+                      <div class="d-flex justify-content-between align-items-center mb-2 mt-1">
                         <b-btn @click="minusOne(meal)" class="menu-bag-btn plus-minus gray">
-                          <p>-</p>
+                          <i>-</i>
                         </b-btn>
                         <!-- <img src="/images/customer/minus.jpg" @click="minusOne(meal)" class="plus-minus"> -->
                         <b-form-input
@@ -193,7 +193,7 @@
                           readonly
                         ></b-form-input>
                         <b-btn @click="addOne(meal)" class="menu-bag-btn plus-minus">
-                          <p>+</p>
+                          <i>+</i>
                         </b-btn>
                         <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
                       </div>

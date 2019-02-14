@@ -19,17 +19,15 @@
             <ul class="list-group">
               <li v-for="item in bag" :key="`bag-${item.meal.id}`" class="bag-item">
                 <div v-if="item.quantity > 0" class="row">
-                  <div class="col-sm-1">
+                  <div class="col-sm-1 pr-1 text-center">
                     <img
                       src="/images/customer/bag-plus.png"
                       @click="addOne(item.meal)"
-                      class="pl-1"
                     >
                     <p class="bag-quantity">{{ item.quantity }}</p>
                     <img
                       src="/images/customer/bag-minus.png"
                       @click="minusOne(item.meal)"
-                      class="pl-1"
                     >
                   </div>
                   <div class="col-sm-2">
