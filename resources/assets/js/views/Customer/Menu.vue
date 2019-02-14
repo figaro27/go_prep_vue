@@ -136,12 +136,22 @@
 
             <div class="row">
               <div class="col-sm-9 col-md-9 order-2 order-sm-1">
+
+                <div class="row">
+                  <div class="col-sm-12 store-logo-area">
+                    <img v-if="storeLogo" class="store-logo" :src="storeLogo" alt="Company Logo"/>
+                  </div>
+                  <div class="col-sm-12 category-area">
+                      <ul v-for="category in categories" :key="category">
+                        <li @click="goToCategory(category)">{{ category }}</li>
+                      </ul>
+                  </div>
+                  </div>
+                
+
                 <div class="filter-area">
-                  <ul v-for="category in categories" :key="category" class="menu-categories">
-                    <li @click="goToCategory(category)">{{ category }}</li>
-                  </ul>
-                  <b-button @click="viewFilters" variant="primary" class="pull-right ml-3">Filters</b-button>
-                  <b-button @click="clearFilters" variant="warning" class="pull-right">Clear Filters</b-button>
+                  <b-button @click="viewFilters" variant="primary" class=""><i class="fa fa-filter"></i>&nbsp;Filters</b-button>
+                  <b-button @click="clearFilters" variant="warning" class=""><i class="fa fa-eraser"></i>&nbsp;Clear Filters</b-button>
                 </div>
               </div>
               <div class="col-sm-3 col-md-3 order-1 order-sm-2">

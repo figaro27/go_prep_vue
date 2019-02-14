@@ -323,15 +323,32 @@ top:10px;
 } 
 
 
-.menu-categories{
-  display:inline !important;
+.store-logo-area{
+  height:140px !important;
+  display: flex;
+  justify-content: center;
 }
 
-.menu-categories li{
-  float:left !important;
-  margin-right:18px !important;
-  font-size:16px !important;
-  cursor: pointer;
+.category-area{
+  height:40px !important;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #D3D3D3;
+  border-bottom: 1px solid #D3D3D3;
+  margin:20px 0px!important;
+}
+
+.category-area ul li{
+  font-size:18px;
+  font-weight:bold;
+  display:flex;
+  align-items:center !important;
+  align-content:center !important;
+  padding-top:5px !important;
+}
+
+.category-area ul li:hover{
+  cursor:pointer !important;
 }
 
 .filter-area{
@@ -429,8 +446,8 @@ top:10px;
 }
 
 .store-logo{
-  width:40px !important;
-  height:40px !important;
+  width:140px !important;
+  height:140px !important;
 }
 
 .nf-vitamin-column:first-child{
