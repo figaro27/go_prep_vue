@@ -39,7 +39,7 @@
             <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{ tag }}</b-button>
           </div>
         </div>
-        <b-button @click="clearFilters" variant="primary" class="center mt-4">Clear All</b-button>
+        <b-button @click="clearFilters" class="center mt-4 orange">Clear All</b-button>
       </b-modal>
     </div>
 
@@ -155,7 +155,7 @@
                 </div>
               </div>
               <div class="col-sm-3 col-md-3 order-1 order-sm-2">
-                <b-btn variant="danger" class="pull-right" @click="clearAll"><i class="fa fa-eraser"></i>&nbsp;Clear All</b-btn>
+                <b-btn variant="danger" class="orange pull-right" @click="clearAll"><i class="fa fa-eraser"></i>&nbsp;Clear Bag</b-btn>
               </div>
             </div>
             <div class="row">
