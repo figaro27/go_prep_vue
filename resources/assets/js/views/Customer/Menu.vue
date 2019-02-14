@@ -237,24 +237,29 @@
                     </div>
                   </li>
                 </ul>
-                <p class="center-text" v-if="minOption === 'meals' && total < minimumMeals">
-                  Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
-                </p>
+
+                  <p class="align-right" v-if="minOption === 'meals' && total < minimumMeals">
+                    Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
+                  </p>
+
                 <div>
                   <router-link to="/customer/bag">
                     <b-btn v-if="minOption === 'meals' && total >= minimumMeals && !preview" class="menu-bag-btn">NEXT</b-btn>
                   </router-link>
                 </div>
-
-                <p class="pull-right" v-if="minOption === 'price' && totalBagPrice < minPrice">
-                  Please add {{format.money(remainingPrice)}} more to continue.
-                </p>
+                <div>
+                  <p class="align-right" v-if="minOption === 'price' && totalBagPrice < minPrice">
+                    Please add {{format.money(remainingPrice)}} more to continue.
+                  </p>
+                </div>
                 <div>
                   <router-link to="/customer/bag">
                     <b-btn v-if="minOption === 'price' && totalBagPrice >= minPrice && !preview" class="menu-bag-btn">NEXT</b-btn>
                   </router-link>
                 </div>
-                  <h6 class="mt-2 pull-right">SubTotal - {{ format.money(totalBagPriceBeforeFees) }}</h6>
+                  <div>
+                    <h6 class="mt-2 align-right">Subtotal - {{ format.money(totalBagPriceBeforeFees) }}</h6>
+                  </div>
               </div>
             </div>
           </div>

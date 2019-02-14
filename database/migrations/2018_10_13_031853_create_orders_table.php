@@ -20,13 +20,15 @@ class CreateOrdersTable extends Migration
             $table->integer('store_id')->references('id')->on('stores');
             $table->integer('subscription_id')->references('id')->on('subscriptions')->nullable();
             $table->string('order_number')->unique();
-            $table->integer('amount');
             $table->boolean('pickup')->default(0);
             $table->date('delivery_date')->nullable();
             $table->text('notes')->nullable();
+            $table->integer('preFeePreDiscount')->nullable();
+            $table->integer('mealPlanDiscount')->nullable();
+            $table->integer('afterDiscountBeforeFees')->nullable();
             $table->integer('processingFee')->nullable();
             $table->integer('deliveryFee')->nullable();
-            $table->integer('mealPlanDiscount')->nullable();
+            $table->integer('amount');
             $table->boolean('fulfilled');
             $table->timestamps();
         });

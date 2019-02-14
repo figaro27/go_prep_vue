@@ -33,7 +33,8 @@ class CheckoutController extends UserController
 
         $application_fee = $store->settings->application_fee;
         $total = $bag->getTotal();
-        $preFeeTotal = $bag->getTotal();
+        $afterDiscountBeforeFees = $bag->getTotal();
+        $preFeePreDiscount = $bag->getTotal();
 
         $deliveryFee = 0;
         $processingFee = 0;
@@ -49,13 +50,13 @@ class CheckoutController extends UserController
             $processingFee += $store->settings->processingFee;
         }
 
-        if ($store->settings->applyMealPlanDiscount) {
+        if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             $discount = $store->settings->mealPlanDiscount / 100;
-            $total -= ($preFeeTotal * $discount);
-            $preFeeTotal -= ($preFeeTotal * $discount);
-            $mealPlanDiscount = (($store->settings->mealPlanDiscount / 100) * $preFeeTotal);
+            $total -= ($afterDiscountBeforeFees * $discount);
+            $afterDiscountBeforeFees -= ($afterDiscountBeforeFees * $discount);
+            $mealPlanDiscount = (($store->settings->mealPlanDiscount / 100) * $afterDiscountBeforeFees);
         }
-
+        
         if (!$user->hasStoreCustomer($store->id)) {
             $storeCustomer = $user->createStoreCustomer($store->id);
         }
@@ -73,7 +74,7 @@ class CheckoutController extends UserController
                 "amount" => round($total * 100),
                 "currency" => "usd",
                 "source" => $storeSource,
-                "application_fee" => round($preFeeTotal * $application_fee),
+                "application_fee" => round($afterDiscountBeforeFees * $application_fee),
             ], ["stripe_account" => $store->settings->stripe_id]);
 
             $order = new Order;
@@ -81,10 +82,12 @@ class CheckoutController extends UserController
             $order->customer_id = $customer->id;
             $order->store_id = $store->id;
             $order->order_number = substr(uniqid(rand(1, 9), false), 0, 12);
-            $order->amount = $total;
+            $order->preFeePreDiscount = $preFeePreDiscount;
+            $order->mealPlanDiscount = $mealPlanDiscount;
+            $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
             $order->deliveryFee = $deliveryFee;
             $order->processingFee = $processingFee;
-            $order->mealPlanDiscount = $mealPlanDiscount;
+            $order->amount = $total;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
@@ -153,6 +156,11 @@ class CheckoutController extends UserController
             $order->store_id = $store->id;
             $order->subscription_id = $userSubscription->id;
             $order->order_number = substr($subscription->id,4) . '_1';
+            $order->preFeePreDiscount = $preFeePreDiscount;
+            $order->mealPlanDiscount = $mealPlanDiscount;
+            $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+            $order->deliveryFee = $deliveryFee;
+            $order->processingFee = $processingFee;
             $order->amount = $total;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);

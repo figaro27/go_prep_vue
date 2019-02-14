@@ -98,12 +98,20 @@
                   <strong>{{ total }} {{ singOrPluralTotal }} {{ deliveryPlanText }}</strong>
                 </p>
               </li>
-              <li class="checkout-item" v-if="storeSettings.applyDeliveryFee || storeSettings.applyProcessingFee">
+              <li class="checkout-item" v-if="storeSettings.applyDeliveryFee || storeSettings.applyProcessingFee || (storeSettings.applyMealPlanDiscount && deliveryPlan)">
                 <div class="row">
                   <div class="col-md-4">
                     <strong>Subtotal:</strong>
                   </div>
-                  <div class="col-md-3 offset-5">{{ format.money(totalBagPriceBeforeFees) }}</div>
+                  <div class="col-md-3 offset-5">{{ format.money(preFeePreDiscount) }}</div>
+                </div>
+              </li>
+              <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Meal Plan Discount:</strong>
+                  </div>
+                  <div class="col-md-3 offset-5 red">({{ format.money(mealPlanDiscount) }})</div>
                 </div>
               </li>
               <li class="checkout-item" v-if="storeSettings.applyDeliveryFee">
@@ -122,35 +130,20 @@
                   <div class="col-md-3 offset-5">{{ format.money(storeSettings.processingFee) }}</div>
                 </div>
               </li>
+
+
               <li class="checkout-item">
                 <div class="row">
                   <div class="col-md-4">
-                    <span v-if="!applyMealPlanDiscount || !deliveryPlan">
-                      <strong>Total:</strong>
-                    </span>
-                    <span v-if="applyMealPlanDiscount && deliveryPlan">
-                      <strong>Subtotal:</strong>
-                    </span>
+                    <strong>Total</strong>
                   </div>
-                  <div class="col-md-3 offset-5">{{ format.money(totalBagPrice) }}</div>
+                  <div class="col-md-3 offset-5">
+                    <strong>{{ format.money(afterDiscountAfterFees) }}</strong>
+                  </div>
                 </div>
               </li>
-              <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
-                <div class="row">
-                  <div class="col-md-4">
-                    <strong>Weekly Meal Plan Discount:</strong>
-                  </div>
-                  <div class="col-md-3 offset-5 red">({{ format.money(mealPlanDiscountAmount) }})</div>
-                </div>
-              </li>
-              <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
-                <div class="row">
-                  <div class="col-md-4">
-                    <strong>Total:</strong>
-                  </div>
-                  <div class="col-md-3 offset-5">{{ format.money(totalBagPriceAfterDiscount) }}</div>
-                </div>
-              </li>
+
+
               <li class="checkout-item" v-if="transferTypeCheck === 'both'">
                 <b-form-group>
                   <b-form-radio-group v-model="pickup" name="pickup">
@@ -299,11 +292,11 @@ export default {
     remainingPrice() {
       return this.minPrice - this.totalBagPrice;
     },
-    totalBagPriceBeforeFees(){
-      let deliveryFee = this.storeSettings.deliveryFee;
-      let processingFee = this.storeSettings.processingFee;
+    preFeePreDiscount(){
       let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
       let applyProcessingFee = this.storeSettings.applyProcessingFee;
+      let deliveryFee = this.storeSettings.deliveryFee;
+      let processingFee = this.storeSettings.processingFee;
 
       if (applyDeliveryFee && applyProcessingFee){
         return this.totalBagPrice - deliveryFee - processingFee;
@@ -314,7 +307,39 @@ export default {
       else if (applyProcessingFee && !applyDeliveryFee){
         return this.totalBagPrice - processingFee;
       }
-      
+      else
+        return this.totalBagPrice;
+    },
+    afterDiscountBeforeFees(){
+      if (this.applyMealPlanDiscount && this.deliveryPlan){
+        return this.preFeePreDiscount - this.mealPlanDiscount;
+      }
+      else
+        return this.preFeePreDiscount;
+    },
+    afterDiscountAfterFees(){
+      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+      let applyProcessingFee = this.storeSettings.applyProcessingFee;
+      let deliveryFee = this.storeSettings.deliveryFee;
+      let processingFee = this.storeSettings.processingFee;
+
+      if (applyDeliveryFee && applyProcessingFee){
+        return this.afterDiscountBeforeFees + deliveryFee + processingFee;
+      }
+      else if (applyDeliveryFee && !applyProcessingFee){
+        return this.afterDiscountBeforeFees + deliveryFee;
+      }
+      else if (applyProcessingFee && !applyDeliveryFee){
+        return this.afterDiscountBeforeFees + processingFee;
+      }
+      else
+        return this.afterDiscountBeforeFees;
+    },    
+    applyMealPlanDiscount() {
+      return this.storeSettings.applyMealPlanDiscount;
+    },
+    mealPlanDiscount() {
+      return this.preFeePreDiscount * (this.storeSettings.mealPlanDiscount / 100);
     },
     singOrPlural() {
       if (this.remainingMeals > 1) {
@@ -332,18 +357,7 @@ export default {
       if (this.deliveryPlan) return "Prepared Weekly";
       else return "Prepared Once";
     },
-    totalBagPriceAfterDiscount() {
-      return (
-        (this.totalBagPrice * (100 - this.mealPlanDiscount)) /
-        100
-      ).toFixed(2);
-    },
-    mealPlanDiscountAmount() {
-      return (
-        this.totalBagPrice -
-        (this.totalBagPrice * (100 - this.mealPlanDiscount)) / 100
-      ).toFixed(2);
-    },
+    
     deliveryDaysOptions() {
       return this.storeSetting("next_delivery_dates", []).map(date => {
         return {
@@ -352,12 +366,7 @@ export default {
         };
       });
     },
-    applyMealPlanDiscount() {
-      return this.storeSettings.applyMealPlanDiscount;
-    },
-    mealPlanDiscount() {
-      return this.storeSettings.mealPlanDiscount;
-    }
+
   },
   mounted() {},
   methods: {
