@@ -9,6 +9,8 @@ use \XLSXWriter;
 
 trait Exportable
 {
+    protected $orientation = 'landscape';
+
     abstract public function exportData($type = null);
     abstract public function exportPdfView();
 
@@ -95,7 +97,7 @@ trait Exportable
 
         $html = view($this->exportPdfView(), ['data' => $data])->render();
 
-        $pdfConfig = ['encoding' => 'utf-8', 'orientation' => $this->$orientation];
+        $pdfConfig = ['encoding' => 'utf-8', 'orientation' => $this->orientation];
 
         if(config('pdf.xserver')) {
           $pdfConfig = array_merge($pdfConfig, [

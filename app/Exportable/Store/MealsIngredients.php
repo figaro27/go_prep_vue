@@ -12,12 +12,11 @@ class MealsIngredients
     use Exportable;
 
     protected $store;
-    protected $orientation = 'portrait';
 
-    public function __construct(Store $store, $orientation)
+    public function __construct(Store $store, $params = [])
     {
         $this->store = $store;
-        $this->orientation = $orientation;
+        $this->orientation = 'portrait';
     }
 
     public function exportData($type = null)
