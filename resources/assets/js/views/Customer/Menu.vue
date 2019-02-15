@@ -238,28 +238,76 @@
                   </li>
                 </ul>
 
-                  <p class="align-right" v-if="minOption === 'meals' && total < minimumMeals">
+                  <p class="align-right" v-if="minOption === 'meals' && total < minimumMeals && !manualOrder">
                     Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
                   </p>
 
                 <div>
                   <router-link to="/customer/bag">
-                    <b-btn v-if="minOption === 'meals' && total >= minimumMeals && !preview" class="menu-bag-btn">NEXT</b-btn>
+                    <b-btn v-if="minOption === 'meals' && total >= minimumMeals && !preview && !manualOrder" class="menu-bag-btn">NEXT</b-btn>
                   </router-link>
                 </div>
                 <div>
-                  <p class="align-right" v-if="minOption === 'price' && totalBagPrice < minPrice">
+                  <p class="align-right" v-if="minOption === 'price' && totalBagPrice < minPrice && !manualOrder">
                     Please add {{format.money(remainingPrice)}} more to continue.
                   </p>
                 </div>
                 <div>
                   <router-link to="/customer/bag">
-                    <b-btn v-if="minOption === 'price' && totalBagPrice >= minPrice && !preview" class="menu-bag-btn">NEXT</b-btn>
+                    <b-btn v-if="minOption === 'price' && totalBagPrice >= minPrice && !preview && !manualOrder" class="menu-bag-btn">NEXT</b-btn>
                   </router-link>
                 </div>
-                  <div>
-                    <h6 class="mt-2 align-right">Subtotal - {{ format.money(totalBagPriceBeforeFees) }}</h6>
-                  </div>
+                <div v-if="manualOrder">
+                    
+                    <div v-if="transferTypeCheck === 'both'" class="center-text">
+                      <b-form-group>
+                        <b-form-radio-group v-model="pickup" name="pickup">
+                          <b-form-radio :value="0" @click="pickup = 0">
+                            <strong>Delivery</strong>
+                          </b-form-radio>
+                          <b-form-radio :value="1" @click="pickup = 1">
+                            <strong>Pickup</strong>
+                          </b-form-radio>
+                        </b-form-radio-group>
+                      </b-form-group>
+                    </div>
+                    <div>
+                      <p v-if="pickup === 0 && transferTypeCheck !== 'pickup'" class="center-text">Delivery Day</p>
+                      <p v-if="pickup === 1 || transferTypeCheck === 'pickup'" class="center-text">Pickup Day</p>
+                      <b-form-group v-if="deliveryDaysOptions.length > 1" description>
+                        <b-select
+                          :options="deliveryDaysOptions"
+                          v-model="deliveryDay"
+                          class="bag-select"
+                          required
+                        >
+                          <option slot="top" disabled>-- Select delivery day --</option>
+                        </b-select>
+                      </b-form-group>
+                      <div v-else-if="deliveryDaysOptions.length === 1">
+                        <p>Delivery day: {{ deliveryDaysOptions[0].text }}</p>
+                      </div>
+                    </div>
+
+                    <b-form-group description>
+                      <p class="center-text mt-3">Choose Customer</p> 
+                      <b-select :options="customers" v-model="customer" class="bag-select" required>
+                        <option slot="top" disabled>-- Select Customer --</option>
+                      </b-select>
+                    </b-form-group>
+
+                    <b-btn variant="success" v-if="storeSettings.applyDeliveryFee" @click="addDeliveryFee = true" class="center">Add Delivery Fee</b-btn>
+                    <b-btn variant="success" v-if="storeSettings.applyProcessingFee" @click="addProcessingFee = true" class="center mt-2">Add Processing Fee</b-btn>
+
+                    <div>
+                      <h6 class="mt-2 center-text" v-if="!addDeliveryFee && !addProcessingFee">Total: {{ format.money(totalBagPriceBeforeFees) }}</h6>
+                      <p class="mt-2 center-text" v-if="addDeliveryFee || addProcessingFee">Subtotal: {{ format.money(totalBagPriceBeforeFees) }}</p>
+                      <p class="mt-2 center-text" v-if="addDeliveryFee">Delivery Fee: {{ format.money(storeSettings.deliveryFee) }}</p>
+                      <p class="mt-2 center-text" v-if="addProcessingFee">Processing Fee: {{ format.money(storeSettings.processingFee) }}</p>
+                      <h6 class="mt-2 center-text" v-if="addDeliveryFee || addProcessingFee">Total: {{ format.money(totalBagPriceAfterFees) }}</h6>
+                    </div>
+                    <b-btn class="menu-bag-btn mt-2" @click="checkout">Create Manual Order</b-btn>
+                </div>
               </div>
             </div>
           </div>
@@ -286,12 +334,22 @@ export default {
   },
   props: {
     preview: {
-      default: false
+      default: false,
+    },
+    manualOrder: {
+      default: false,
     }
   },
   data() {
     return {
       active: {},
+      loading: false,
+      pickup: 0,
+      deliveryDay: undefined,
+      deliveryPlan: false,
+      addDeliveryFee: false,
+      addProcessingFee: false,
+      customer: undefined,
       viewFilterModal: false,
       filteredView: false,
       filters: {
@@ -322,6 +380,8 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
+      storeCustomers: "storeCustomers",
+      storeSetting: "viewedStoreSetting",
       total: "bagQuantity",
       allergies: "allergies",
       bag: "bagItems",
@@ -377,7 +437,41 @@ export default {
       }
       else
         return this.totalBagPrice;
-      
+    },
+    totalBagPriceAfterFees(){
+      let deliveryFee = this.storeSettings.deliveryFee;
+      let processingFee = this.storeSettings.processingFee;
+
+      if (this.addDeliveryFee && this.addProcessingFee){
+        return this.totalBagPriceBeforeFees + deliveryFee + processingFee;
+      }
+      else if (this.addDeliveryFee && !this.addProcessingFee){
+        return this.totalBagPriceBeforeFees + deliveryFee;
+      }
+      else if (this.addProcessingFee && !this.addDeliveryFee){
+        return this.totalBagPriceBeforeFees + processingFee;
+      }
+      else
+        return this.totalBagPriceBeforeFees;
+    },
+    transferType(){
+      return this.storeSettings.transferType.split(',');
+    },
+    transferTypeCheck(){
+      if (_.includes(this.transferType, 'delivery') && _.includes(this.transferType, 'pickup')){
+        return 'both';
+      }
+      if (!_.includes(this.transferType, 'delivery') && _.includes(this.transferType, 'pickup')){
+        return 'pickup';
+      }
+    },
+    deliveryDaysOptions() {
+      return this.storeSetting("next_delivery_dates", []).map(date => {
+        return {
+          value: date.date,
+          text: moment(date.date).format("dddd MMM Do")
+        };
+      });
     },
     meals() {
       let meals = this.store.meals;
@@ -488,20 +582,15 @@ export default {
         });
       });
       return grouped;
-    }
-    /*
-    allergies() {
-      let grouped = [];
-      this.store.meals.forEach(meal => {
-        meal.allergy_ids.forEach(allergyId => {
-          let allergy = this.allergies[allergyId];
-          if (!_.includes(grouped, allergy.title)) {
-            grouped.push(allergy.title);
-          }
-        });
+    },
+    customers() {
+      let customers = this.storeCustomers;
+      let grouped = {};
+      customers.forEach(customer =>{
+        grouped[customer.id] = customer.name;
       });
       return grouped;
-    }*/
+    },
   },
   beforeDestroy() {
     this.showActiveFilters();
@@ -695,6 +784,32 @@ export default {
 
       this.active = _.mapValues(this.active, () => false);
       this.filteredView = false;
+    },
+    addDeliveryFee(){
+      this.totalBagPriceBeforeFees += 5;
+    },
+    checkout() {
+      this.loading = true;
+      axios
+        .post("/api/bag/checkout", {
+          bag: this.bag,
+          plan: this.deliveryPlan,
+          pickup: this.pickup,
+          delivery_day: this.deliveryDay,
+          card_id: this.card,
+          store_id: this.store.id
+        })
+        .then(async resp => {
+          this.emptyBag();  
+        })
+        .catch(response => {
+          let error = _.first(Object.values(response.response.data.errors)) || ['Please try again'];
+          error = error.join(" ");
+          this.$toastr.e(error, "Error");
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     }
   }
 };

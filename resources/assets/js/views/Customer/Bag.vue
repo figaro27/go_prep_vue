@@ -364,7 +364,6 @@ export default {
         };
       });
     },
-
   },
   mounted() {},
   methods: {

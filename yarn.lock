@@ -7497,10 +7497,9 @@ vue-quill-editor@^3.0.6:
     object-assign "^4.1.1"
     quill "^1.3.4"
 
-vue-rangedate-picker@^0.3.4:
+"vue-rangedate-picker@https://github.com/msolda2/vue-rangedate-picker.git":
   version "0.3.4"
-  resolved "https://registry.yarnpkg.com/vue-rangedate-picker/-/vue-rangedate-picker-0.3.4.tgz#6ddecf4a77e0c2a009d6108996d45d642cbb9924"
-  integrity sha1-bd7PSnfgwqAJ1hCJltRdZCy7mSQ=
+  resolved "https://github.com/msolda2/vue-rangedate-picker.git#ba9a48b51666c6151ee49fb1704cc8a188ae2306"
   dependencies:
     fecha "^2.3.2"
 
@@ -7912,3 +7911,8 @@ yargs@^12.0.4, yargs@^12.0.5:
     which-module "^2.0.0"
     y18n "^3.2.1 || ^4.0.0"
     yargs-parser "^11.1.1"
+
+yarn@^1.13.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.13.0.tgz#affa9c956739548024068532a902cf18c9cb523f"
+  integrity sha512-Unfw2eefv8imt4ZMPhvFVP44WCz38huDxkHs+Yqrx4wBTK75Tr0mh3V4rh+2Nw5iQq0rcM/VafotCZo9qTb5DA==

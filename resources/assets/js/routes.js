@@ -27,6 +27,7 @@ import StoreMyAccount from './views/Store/Account/MyAccount.vue';
 import StoreContact from './views/Store/Account/Contact.vue';
 import StoreSettings from './views/Store/Account/Settings.vue';
 import StoreMenuPreview from './views/Store/MenuPreview.vue';
+import StoreManualOrder from './views/Store/ManualOrder.vue';
 
 import AdminCustomers from './views/Admin/Customers.vue';
 import AdminDashboard from './views/Admin/Dashboard.vue';
@@ -149,6 +150,10 @@ let routes = [
     path: '/store/menu/preview',
     component: StoreMenuPreview,
     name: 'store-menu-preview'
+  }, {
+    path: '/store/menu/manual-order',
+    component: StoreManualOrder,
+    name: 'store-menu-manual-order'
   }, {
     path: '/admin/dashboard',
     component: AdminDashboard

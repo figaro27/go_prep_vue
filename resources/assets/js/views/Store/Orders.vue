@@ -35,6 +35,9 @@
                     class="filter-btn"
                     v-if="filters.fulfilled"
                   >View Open Orders</b-btn>
+                  <router-link to="/store/menu/manual-order">
+                    <b-btn class="btn btn-success filter-btn">Create Manual Order</b-btn>
+                  </router-link>
                 </div>
                 <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
               </div>
@@ -112,7 +115,7 @@
             <p>{{ moment(order.created_at).format('dddd, MMM Do') }}</p>
           </div>
           <div class="col-md-4 pt-4">
-            <h2>${{ order.amount }}</h2>
+            <h2>{{ format.money(order.amount) }}</h2>
           </div>
         </div>
 
