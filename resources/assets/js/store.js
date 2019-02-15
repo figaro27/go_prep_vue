@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import moment from 'moment'
 import createPersistedState from 'vuex-persistedstate';
 import router from './routes';
+import auth from './lib/auth';
 
 const Cookies = require('js-cookie');
 
@@ -354,7 +355,12 @@ const actions = {
       await dispatch('initCustomer', data)
 
       if(router.currentRoute.fullPath === '/') {
-        router.replace('/customer/home');
+        if(_.isNull(data.store)) {
+          router.replace('/customer/home');
+        }
+        else {
+          router.replace('/customer/menu');
+        }
       }
     } else {
       await dispatch('initGuest', data);
@@ -417,6 +423,8 @@ const actions = {
 
     state.isLoading = false;
     state.initialized = true;
+
+    auth.refreshToken();
 
     // try {   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
     //     let orders = data.store.orders;     commit('storeOrders', {orders});   }
@@ -496,6 +504,8 @@ const actions = {
     state,
     dispatch
   }, data = {}) {
+
+    auth.deleteToken();
 
     if (data.store) {
       dispatch('refreshViewedStore');

@@ -45,20 +45,22 @@ let token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+    console.error('CSRF token not found');
 }
 
-//let jwt = localStorage.getItem('jwt');
-//console.log(jwt);
-
-jwt = Cookies.getJSON('jwt') || null;
+import auth from './lib/auth';
+const jwt = auth.getToken();
 
 if(jwt) {
-  //jwt = JSON.parse(jwt)
   window.axios.defaults.headers.common["Authorization"] = `Bearer ${
     jwt.access_token
   }`;
 }
+
+// Refresh token every hour
+setInterval(() => {
+  auth.refreshToken();
+}, 59 * 60 * 1000);
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

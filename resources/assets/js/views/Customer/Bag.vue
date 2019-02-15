@@ -179,7 +179,7 @@
                 </div>
               </li>
 
-              <li class="checkout-item" v-if="total < minimum">
+              <li class="checkout-item" v-if="total < minMeals">
                 <p>Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.`</p>
               </li>
 

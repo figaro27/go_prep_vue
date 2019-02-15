@@ -41,6 +41,8 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
+import auth from '../lib/auth';
+
 export default {
   components: {},
   props: {
@@ -70,12 +72,7 @@ export default {
           let jwt = response.data;
 
           if (jwt.access_token) {
-            window.axios.defaults.headers.common["Authorization"] = `Bearer ${
-              jwt.access_token
-            }`;
-
-            Cookies.set("jwt", jwt, { domain: window.app.domain });
-            localStorage.setItem("jwt", JSON.stringify(jwt));
+            auth.setToken(jwt);
 
             if (this.redirect) {
               await this.init();

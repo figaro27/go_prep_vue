@@ -101,7 +101,6 @@ let routes = [
     path: '/customer/orders',
     component: CustomerOrders,
     name: 'customer-orders',
-    beforeEnter: middleware.role.customer,
   }, {
     path: '/store/customers',
     component: StoreCustomers,

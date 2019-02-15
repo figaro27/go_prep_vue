@@ -23,12 +23,12 @@ class CreateOrdersTable extends Migration
             $table->boolean('pickup')->default(0);
             $table->date('delivery_date')->nullable();
             $table->text('notes')->nullable();
-            $table->integer('preFeePreDiscount')->nullable();
-            $table->integer('mealPlanDiscount')->nullable();
-            $table->integer('afterDiscountBeforeFees')->nullable();
-            $table->integer('processingFee')->nullable();
-            $table->integer('deliveryFee')->nullable();
-            $table->integer('amount');
+            $table->double('preFeePreDiscount')->nullable();
+            $table->double('mealPlanDiscount')->nullable();
+            $table->double('afterDiscountBeforeFees')->nullable();
+            $table->double('processingFee')->nullable();
+            $table->double('deliveryFee')->nullable();
+            $table->double('amount');
             $table->boolean('fulfilled');
             $table->timestamps();
         });

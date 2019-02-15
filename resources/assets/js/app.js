@@ -36,6 +36,7 @@ import VueRangedatePicker from 'vue-rangedate-picker'
 import Vuelidate from 'vuelidate'
 import UUID from 'vue-uuid'
 import { VLazyImagePlugin } from "v-lazy-image";
+import auth from './lib/auth';
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -111,7 +112,7 @@ setInterval(() => {
         window.location = window.app.url + '/login';
       });
   }
-}, 30 * 1000);
+}, 60 * 1000);
 
 $(document).on('dblclick', '.VueTables__table tbody > tr', function () {
   $(this)

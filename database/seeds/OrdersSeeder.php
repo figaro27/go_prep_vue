@@ -22,8 +22,8 @@ class OrdersSeeder extends Seeder
 
         for ($i = 0; $i < 10; $i++) {
             factory(App\Order::class)->create([
-              'customer_id' => $customer->id,
-              'user_id' => $user->id
+                'customer_id' => $customer->id,
+                'user_id' => $user->id,
             ]);
         }
 
@@ -34,15 +34,17 @@ class OrdersSeeder extends Seeder
         ])->get();
 
         foreach ($users as $user) {
-            $user->createStoreCustomer(1);
-            $customer = $user->getStoreCustomer(1, false);
+            try {
+                $user->createStoreCustomer(1);
+                $customer = $user->getStoreCustomer(1, false);
 
-            for ($i = 0; $i < 2; $i++) {
-              factory(App\Order::class)->create([
-                'customer_id' => $customer->id,
-                'user_id' => $user->id
-              ]);
-            }
+                for ($i = 0; $i < 2; $i++) {
+                    factory(App\Order::class)->create([
+                        'customer_id' => $customer->id,
+                        'user_id' => $user->id,
+                    ]);
+                }
+            } catch (\Exception $e) {}
         }
     }
 
