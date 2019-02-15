@@ -103,17 +103,23 @@ export default {
           let dateMatch = false;
 
           if (filters.delivery_dates.start && filters.delivery_dates.end) {
-            dateMatch = order.delivery_date.isBetween(
-              filters.delivery_dates.start,
-              filters.delivery_dates.end
-            );
+            dateMatch = order.delivery_date
+              .hours(12)
+              .isBetween(
+                filters.delivery_dates.start,
+                filters.delivery_dates.end,
+                "date",
+                "[]"
+              );
           } else if (filters.delivery_dates.start) {
-            dateMatch = order.delivery_date.isAfter(
-              filters.delivery_dates.start
+            dateMatch = order.delivery_date.isSameOrAfter(
+              filters.delivery_dates.start,
+              "date"
             );
           } else if (filters.delivery_dates.end) {
-            dateMatch = order.delivery_date.isBefore(
-              filters.delivery_dates.end
+            dateMatch = order.delivery_date.isSameOrBefore(
+              filters.delivery_dates.end,
+              "date"
             );
           }
 
