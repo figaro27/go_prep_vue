@@ -7611,6 +7611,11 @@ vuedraggable@^2.17.0:
   dependencies:
     sortablejs "^1.7.0"
 
+vuejs-dialog@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/vuejs-dialog/-/vuejs-dialog-1.3.0.tgz#35e54c4f97e6126fef14a5c63abd9a23f93edf7b"
+  integrity sha512-50r34vH3+UtkhI5qvrqqQllWd62lka1Brjyqc4pqCZ693WghB7nufDH2xYEUcPEjMtqykLh0DRSsueuPyyfRPQ==
+
 vuejs-timepicker@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/vuejs-timepicker/-/vuejs-timepicker-0.1.4.tgz#c5c79c8a2ea3051b03948cc078107d8c83eb8bba"

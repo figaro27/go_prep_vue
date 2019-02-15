@@ -82,6 +82,7 @@
         "v-lazy-image": "^1.3.2",
         "v-money": "^0.8.1",
         "vue-rangedate-picker": "https://github.com/msolda2/vue-rangedate-picker.git",
+        "vuejs-dialog": "^1.3.0",
         "vuelidate": "^0.7.4",
         "yarn": "^1.13.0"
     }

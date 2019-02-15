@@ -148,6 +148,7 @@ export default {
 
       //val = [val.start, val.end];
       this.$emit("input", val);
+      this.$emit("change", val);
 
       /*
       if (!val.length) {

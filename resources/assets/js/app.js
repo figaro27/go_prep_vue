@@ -37,6 +37,8 @@ import Vuelidate from 'vuelidate'
 import UUID from 'vue-uuid'
 import { VLazyImagePlugin } from "v-lazy-image";
 import auth from './lib/auth';
+import VuejsDialog from "vuejs-dialog";
+import 'vuejs-dialog/dist/vuejs-dialog.min.css'
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -60,6 +62,14 @@ Vue.use(Toastr, {
 Vue.component('date-range-picker', VueRangedatePicker);
 Vue.use(Vuelidate)
 Vue.use(VLazyImagePlugin);
+Vue.use(VuejsDialog, {
+  html: true,
+  loader: true,
+  okText: 'Proceed',
+  cancelText: 'Cancel',
+  animation: 'bounce',
+});
+
 
 import Thumbnail from './components/Thumbnail';
 Vue.component('thumbnail', Thumbnail)

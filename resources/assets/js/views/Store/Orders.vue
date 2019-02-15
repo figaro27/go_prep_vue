@@ -39,7 +39,7 @@
                     <b-btn class="btn btn-success filter-btn">Create Manual Order</b-btn>
                   </router-link>
                 </div>
-                <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
+                <delivery-date-picker v-model="filters.delivery_dates" @change="onChangeDateFilter"></delivery-date-picker>
               </div>
             </div>
 
@@ -72,10 +72,7 @@
               slot="delivery_date"
               slot-scope="props"
             >{{ moment(props.row.delivery_date).format('dddd, MMM Do') }}</div>
-            <div
-              slot="pickup"
-              slot-scope="props"
-            >{{ props.row.pickup ? 'Pickup' : 'Delivery' }}</div>
+            <div slot="pickup" slot-scope="props">{{ props.row.pickup ? 'Pickup' : 'Delivery' }}</div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-warning btn-sm"
@@ -196,13 +193,14 @@ import Spinner from "../../components/Spinner";
 import format from "../../lib/format";
 import vSelect from "vue-select";
 import { mapGetters, mapActions, mapMutations } from "vuex";
+import checkDateRange from "../../mixins/deliveryDates";
 
 export default {
   components: {
     Spinner,
     vSelect
   },
-
+  mixins: [checkDateRange],
   data() {
     return {
       deliveryDate: "All",
@@ -281,7 +279,8 @@ export default {
       store: "viewedStore",
       orders: "storeOrders",
       isLoading: "isLoading",
-      customers: "storeCustomers"
+      customers: "storeCustomers",
+      nextDeliveryDates: "storeNextDeliveryDates"
     }),
     tableData() {
       let filters = { ...this.filters };
@@ -295,21 +294,23 @@ export default {
           let dateMatch = false;
 
           if (filters.delivery_dates.start && filters.delivery_dates.end) {
-            dateMatch = order.delivery_date.hours(12).isBetween(
-              filters.delivery_dates.start,
-              filters.delivery_dates.end,
-              'date',
-              '[]',
-            );
+            dateMatch = order.delivery_date
+              .hours(12)
+              .isBetween(
+                filters.delivery_dates.start,
+                filters.delivery_dates.end,
+                "date",
+                "[]"
+              );
           } else if (filters.delivery_dates.start) {
             dateMatch = order.delivery_date.isSameOrAfter(
               filters.delivery_dates.start,
-              'date',
+              "date"
             );
           } else if (filters.delivery_dates.end) {
             dateMatch = order.delivery_date.isSameOrBefore(
               filters.delivery_dates.end,
-              'date',
+              "date"
             );
           }
 
@@ -396,7 +397,20 @@ export default {
       this.filter = !this.filter;
       this.refreshTable();
     },
-    exportData(report, format = "pdf", print = false) {
+    async exportData(report, format = "pdf", print = false) {
+      const warning = this.checkDateRange({ ...this.filters.delivery_dates });
+      if (warning) {
+        try {
+          let dialog = await this.$dialog.confirm(
+            "You have selected a date range which includes delivery dates which haven't passe" +
+              "d their cutoff date. Continue?"
+          );
+          dialog.close();
+        } catch (e) {
+          return;
+        }
+      }
+
       let params = {};
 
       if (
@@ -431,7 +445,8 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    }
+    },
+    onChangeDateFilter() {}
   }
 };
 </script>

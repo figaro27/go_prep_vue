@@ -59,11 +59,15 @@ import { mapGetters, mapActions } from "vuex";
 import Spinner from "../../components/Spinner";
 import format from "../../lib/format.js";
 import units from "../../data/units.js";
+import checkDateRange  from '../../mixins/deliveryDates';
 
 export default {
   components: {
     Spinner
   },
+  mixins: [
+    checkDateRange
+  ],
   data() {
     return {
       filters: {
@@ -190,7 +194,20 @@ export default {
           this.loading = false;
         });
     },
-    exportData(type = "csv") {
+    async exportData(type = "csv") {
+      const warning = this.checkDateRange({...this.filters.delivery_dates});
+      if (warning) {
+        try {
+          let dialog = await this.$dialog.confirm(
+            "You have selected a date range which includes delivery dates which haven't passe" +
+              "d their cutoff date. Continue?"
+          );
+          dialog.close();
+        } catch (e) {
+          return;
+        }
+      }
+
       axios
         .get(`/api/me/orders/ingredients/export/${type}`)
         .then(response => {

@@ -58,7 +58,9 @@ class StoreSetting extends Model
 
         $cutoff = $this->cutoff_days * (60 * 60 * 24) + $this->cutoff_hours * (60 * 60);
 
-        foreach ($this->delivery_days as $day) {
+        $ddays = $this->delivery_days;
+
+        foreach ($ddays as $day) {
             $date = Carbon::createFromFormat('D', $day, $this->timezone)->setTime(0, 0, 0);
 
             $diff = $date->getTimestamp() - $now->getTimestamp();
@@ -67,7 +69,7 @@ class StoreSetting extends Model
               $diff -= $cutoff;
             }
 
-            if ($diff < 0) {
+            if ($diff > 0) {
                 $dates[] = $date;
             } else {
                 $dates[] = $date->addWeek(1);
@@ -78,12 +80,26 @@ class StoreSetting extends Model
             return $a->getTimestamp() - $b->getTimestamp();
         });
 
-        return $dates;
+        return collect($dates);
 
     }
 
     public function getNextDeliveryDatesAttribute() {
-      return $this->getNextDeliveryDates(true);
+      return $this->getNextDeliveryDates(false)->map(function(Carbon $date) {
+        $cutoff = new Carbon($date);
+        $cutoff->subSeconds($this->getCutoffSeconds());
+        
+        return [
+          'date' => $date->toDateTimeString(),
+          'date_passed' => $date->isPast(),
+          'cutoff' => $cutoff->toDateTimeString(),
+          'cutoff_passed' => $cutoff->isPast(),
+        ];
+      });
+    }
+
+    public function getCutoffSeconds() {
+      return $this->cutoff_days * (60 * 60 * 24) + $this->cutoff_hours * (60 * 60);
     }
 
     public function getStripeAttribute() {

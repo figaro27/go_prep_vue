@@ -43,12 +43,16 @@ import format from "../../lib/format";
 import { Event } from "vue-tables-2";
 import vSelect from "vue-select";
 import Spinner from "../../components/Spinner";
+import checkDateRange  from '../../mixins/deliveryDates';
 
 export default {
   components: {
     vSelect,
     Spinner
   },
+  mixins: [
+    checkDateRange
+  ],
   data() {
     return {
       filters: {
@@ -84,7 +88,8 @@ export default {
       meals: "storeMeals",
       getMeal: "storeMeal",
       orders: "storeOrders",
-      isLoading: "isLoading"
+      isLoading: "isLoading",
+      nextDeliveryDates: "storeNextDeliveryDates"
     }),
     tableData() {
       let filters = { ...this.filters };
@@ -172,10 +177,20 @@ export default {
   },
   methods: {
     formatMoney: format.money,
-    // getTotalPrice(price, orders) {
-    //     return (price * orders).toFixed(2);
-    // },
-    exportData(report, format = "pdf", print = false) {
+    async exportData(report, format = "pdf", print = false) {
+      const warning = this.checkDateRange({...this.filters.delivery_dates});
+      if (warning) {
+        try {
+          let dialog = await this.$dialog.confirm(
+            "You have selected a date range which includes delivery dates which haven't passe" +
+              "d their cutoff date. Continue?"
+          );
+          dialog.close();
+        } catch (e) {
+          return;
+        }
+      }
+
       axios
         .get(`/api/me/print/${report}/${format}`)
         .then(response => {
