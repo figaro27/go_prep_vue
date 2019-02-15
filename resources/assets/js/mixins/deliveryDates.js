@@ -9,6 +9,12 @@ export default {
   methods : {
     checkDateRange(dateRange) {
       var warning = false;
+      if(!dateRange.start) {
+        dateRange.start = moment.utc('1000-01-01')
+      }
+      if(!dateRange.end) {
+        dateRange.end = moment.utc('3000-01-01')
+      }
       this.nextDeliveryDates.forEach(delDate => {
         const date = moment
           .utc(delDate.date)
