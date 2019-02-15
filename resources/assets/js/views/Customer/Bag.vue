@@ -129,7 +129,6 @@
                 </div>
               </li>
 
-
               <li class="checkout-item">
                 <div class="row">
                   <div class="col-md-4">
@@ -140,7 +139,6 @@
                   </div>
                 </div>
               </li>
-
 
               <li class="checkout-item" v-if="transferTypeCheck === 'both'">
                 <b-form-group>
