@@ -77,7 +77,17 @@ class AuthController extends Controller
     {
         $user = auth('api')->user();
         $secure = Request::secure();
-        $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/orders', $secure) : '/customer/home';
+
+        $preg = '/https?:\/\/(?:www\.)?'.preg_quote(config('app.domain')).'/i';
+        $url = Request::url();
+
+        // If not accessing store subdomain
+        if(preg_match($preg, $url)) {
+          $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/orders', $secure) : '/customer/home';
+        }
+        else {
+          $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/orders', $secure) : '/customer/menu';
+        }
 
         return response()->json([
             'access_token' => $token,
