@@ -81,7 +81,7 @@ class CheckoutController extends UserController
             $order->user_id = $user->id;
             $order->customer_id = $customer->id;
             $order->store_id = $store->id;
-            $order->order_number = substr(uniqid(rand(1, 9), false), 0, 12);
+            $order->order_number = strtoupper(substr(uniqid(rand(10, 99), false), 0, 10));
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
@@ -155,7 +155,7 @@ class CheckoutController extends UserController
             $order->customer_id = $customer->id;
             $order->store_id = $store->id;
             $order->subscription_id = $userSubscription->id;
-            $order->order_number = substr($subscription->id,4) . '_1';
+            $order->order_number = strtoupper(substr(uniqid(rand(10, 99), false), 0, 10));
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
