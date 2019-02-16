@@ -25,5 +25,12 @@ class CategoryMealSeeder extends Seeder
             'category_id' => 2
         ]);
     	}
+
+        for($i=19;$i<=20;$i++){
+        DB::table('category_meal')->insert([
+            'meal_id' => $i,
+            'category_id' => 3
+        ]);
+        }
     }
 }

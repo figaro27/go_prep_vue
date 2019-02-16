@@ -38,6 +38,11 @@ class StoresSeeder extends Seeder
                     'category' => 'Breakfast',
                     'order' => 1,
                 ],
+                [
+                    'store_id' => 1,
+                    'category' => 'Snacks',
+                    'order' => 2,
+                ]
                 // [
                 //     'store_id' => 1,
                 //     'category' => 'Dinner',
