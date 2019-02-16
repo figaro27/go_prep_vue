@@ -65,8 +65,8 @@
             <p>{{ customer.delivery }}</p>
           </div>
         </div>
-        <div v-for="order in customer.orders" :key="`order-${order.id}`">
-          <div v-b-toggle="'collapse' + order.id">
+        <div v-for="order in customer.orders" :key="`order-${order.order_number}`">
+          <div v-b-toggle="'collapse' + order.order_number">
             <b-list-group-item>
               <div class="row">
                 <div class="col-md-4">
@@ -85,7 +85,7 @@
                 </div>
               </div>
 
-              <b-collapse :id="'collapse' + order.id" class="mt-2">
+              <b-collapse :id="'collapse' + order.order_number" class="mt-2">
                     <ul class="meal-quantities">
                       <li v-for="mealId in order.meal_ids" :key="$uuid.v1()">
                         <div class="row">
@@ -212,7 +212,6 @@ export default {
       this.viewCustomerModal = true;
       axios.get(`/api/me/customers/${id}`).then(response => {
         this.customer = response.data;
-        this.orders = response.data.order;
       });
     },
     exportData(report, format = "pdf", print = false) {
