@@ -85,4 +85,8 @@ class OrderController extends StoreController
     {
         //
     }
+
+    public function updateViewed(){
+        Order::where('viewed', 0)->update(['viewed' => 1]);
+    }
 }

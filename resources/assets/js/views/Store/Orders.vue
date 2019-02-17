@@ -230,7 +230,7 @@ export default {
         "delivery_date",
         "pickup",
         "amount",
-        "actions"
+        "actions",
       ],
       options: {
         headings: {
@@ -244,10 +244,11 @@ export default {
           delivery_date: "Delivery Date",
           pickup: "Delivery Method",
           amount: "Total",
-          actions: "Actions"
+          actions: "Actions",
         },
         rowClassCallback: function(row) {
           let classes = `order-${row.id}`;
+          classes += row.viewed ? "" : " strong";
           return classes;
         },
         customSorting: {
@@ -328,6 +329,10 @@ export default {
         return order;
       });
     }
+  },
+  beforeDestroy() {
+    this.updateViewedOrders();
+    this.refreshOrders();
   },
   methods: {
     ...mapActions({
@@ -446,7 +451,10 @@ export default {
           this.loading = false;
         });
     },
-    onChangeDateFilter() {}
+    onChangeDateFilter() {},
+    updateViewedOrders(){
+      axios.get(`/api/me/ordersUpdateViewed`);
+    }
   }
 };
 </script>

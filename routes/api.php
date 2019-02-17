@@ -62,6 +62,7 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
                     Route::resource('meals', 'MealController');
                     Route::resource('ingredients', 'IngredientController');
                     Route::resource('orders', 'OrderController');
+                    Route::get('ordersUpdateViewed', 'OrderController@updateViewed');
                     Route::resource('subscriptions', 'SubscriptionController');
                     Route::resource('customers', 'CustomerController');
                     Route::resource('units', 'UnitController');

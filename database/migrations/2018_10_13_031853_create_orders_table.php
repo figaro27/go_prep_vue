@@ -30,6 +30,7 @@ class CreateOrdersTable extends Migration
             $table->double('deliveryFee')->nullable();
             $table->double('amount');
             $table->boolean('fulfilled');
+            $table->boolean('viewed')->default(0);
             $table->timestamps();
         });
     }
