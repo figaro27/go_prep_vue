@@ -1,6 +1,8 @@
 <template>
   <div class="row">
     <div class="col-md-8 offset-2">
+      <b-alert :show="!canOpen" variant="success">Welcome to GoPrep! Enter all settings to open your store for business.</b-alert>
+      
       <p>Orders</p>
       <div class="card">
         <div class="card-body">
@@ -25,10 +27,7 @@
             </b-form-group>
 
             <b-form-group label="Timezone">
-              <b-select
-                :options="timezoneOptions"
-                v-model="storeSettings.timezone"
-                class="w-100"></b-select>
+              <b-select :options="timezoneOptions" v-model="storeSettings.timezone" class="w-100"></b-select>
             </b-form-group>
 
             <b-form-group label="Delivery Day(s)" label-for="delivery-days" :state="true">
@@ -102,10 +101,9 @@
                 placeholder="Zip Codes"
               ></textarea>
             </b-form-group>
-            
+
             <b-form-group>
-              <b-form-radio-group v-model="storeSettings.minimumOption" :options="minimumOptions">
-              </b-form-radio-group>
+              <b-form-radio-group v-model="storeSettings.minimumOption" :options="minimumOptions"></b-form-radio-group>
             </b-form-group>
 
             <b-form-group :state="true" v-if="storeSettings.minimumOption === 'price'">
@@ -214,21 +212,18 @@
                 required
               ></b-form-input>
             </b-form-group>
-            
 
-              <b-form-group label="I Will Be:">
-                <b-form-checkbox-group v-model="transferSelected" :options="transferOptions">
-                </b-form-checkbox-group>
-              </b-form-group>
-              <p v-if="transferTypeCheck">Pickup Instructions:</p>
-              <b-form-input
-                v-if="transferTypeCheck"
-                type="text"
-                v-model="storeSettings.pickupInstructions"
-                placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time)."
-                required
-              ></b-form-input>
-
+            <b-form-group label="I Will Be:">
+              <b-form-checkbox-group v-model="transferSelected" :options="transferOptions"></b-form-checkbox-group>
+            </b-form-group>
+            <p v-if="transferTypeCheck">Pickup Instructions:</p>
+            <b-form-input
+              v-if="transferTypeCheck"
+              type="text"
+              v-model="storeSettings.pickupInstructions"
+              placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time)."
+              required
+            ></b-form-input>
 
             <b-button type="submit" variant="primary" class="mt-3">Save</b-button>
           </b-form>
@@ -350,7 +345,8 @@
       <div class="card">
         <div class="card-body">
           <b-form @submit.prevent="updateStoreSettings">
-            <p>Show # Delivery Days By Default
+            <p>
+              Show # Delivery Days By Default
               <img
                 v-b-popover.hover="'This sets the default date view in the calendars on all of the tables of the application. You may only want to see information about the next single upcoming delivery day, or you may want to see the next two delivery days. Enter 0 to see all upcoming delivery days.'"
                 title="Default Delivery Days"
@@ -399,32 +395,37 @@
       <p>Open</p>
       <div class="card">
         <div class="card-body">
-          <b-form @submit.prevent="updateStoreSettings">
+          <b-form @submit.prevent="updateStoreSettings" v-if="canOpen">
             <p>
-                <span class="mr-1">Open</span>
-                <img
-                  v-b-popover.hover="'You can toggle this off to stop showing your menu page and accepting new orders for any reason. Be sure to fill out the reason below to communicate to your customers.'"
-                  title="Open or Closed"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                >
-              </p>
-                <c-switch
-                  color="success"
-                  variant="pill"
-                  size="lg"
-                  v-model="storeSettings.open"
-                />
+              <span class="mr-1">Open</span>
+              <img
+                v-b-popover.hover="'You can toggle this off to stop showing your menu page and accepting new orders for any reason. Be sure to fill out the reason below to communicate to your customers.'"
+                title="Open or Closed"
+                src="/images/store/popover.png"
+                class="popover-size"
+              >
+            </p>
+            <c-switch
+              color="success"
+              variant="pill"
+              size="lg"
+              v-model="storeSettings.open"
+            />
 
-              <b-form-input
-                  v-if="!storeSettings.open"
-                  type="text"
-                  v-model="storeSettings.closedReason"
-                  placeholder="Please include the reason to give to customers as to why you are currently not accepting new orders."
-                  required
-                ></b-form-input>
-            <div class="mt-3"><b-button type="submit" variant="primary">Save</b-button></div>
+            <b-form-input
+              v-if="!storeSettings.open"
+              type="text"
+              v-model="storeSettings.closedReason"
+              placeholder="Please include the reason to give to customers as to why you are currently not accepting new orders."
+              required
+            ></b-form-input>
+            <div class="mt-3">
+              <b-button type="submit" variant="primary">Save</b-button>
+            </div>
           </b-form>
+          <div v-else>
+            Please enter all settings fields to open your store. 
+          </div>
         </div>
       </div>
     </div>
@@ -464,15 +465,21 @@ export default {
   data() {
     return {
       transferSelected: [],
-      transferOptions: [{text: 'Delivering to Customers', value: 'delivery'},{text: 'Letting Customers Pickup', value: 'pickup'}],
-      minimumSelected: 'price',
-      minimumOptions: [{text: 'Require Minimum Price', value: 'price'},{text: 'Require Minimum Meals', value: 'meals'}],
+      transferOptions: [
+        { text: "Delivering to Customers", value: "delivery" },
+        { text: "Letting Customers Pickup", value: "pickup" }
+      ],
+      minimumSelected: "price",
+      minimumOptions: [
+        { text: "Require Minimum Price", value: "price" },
+        { text: "Require Minimum Meals", value: "meals" }
+      ],
       loginAlertSuccess: false,
       loginAlertFail: false,
       zipCodes: [],
       new_category: "",
       view_delivery_days: 1,
-      payments_url: "",
+      payments_url: ""
     };
   },
   computed: {
@@ -516,22 +523,32 @@ export default {
       //storeSettings.cutoff_time
     },
     deliveryDistanceZipcodes() {
-      return this.storeSettings.delivery_distance_zipcodes.join(",");
+      return _.isArray(this.storeSettings.delivery_distance_zipcodes)
+        ? this.storeSettings.delivery_distance_zipcodes.join(",")
+        : [];
     },
-    transferType(){
+    transferType() {
       return this.storeSettings.transferType;
     },
-    transferTypes(){
-      return this.transferSelected.join(",");
+    transferTypes() {
+      return _.isArray(this.transferSelected)
+        ? this.transferSelected.join(",")
+        : [];
     },
-    transferTypeCheck(){
-      if (_.includes(this.transferSelected, 'pickup')){
+    transferTypeCheck() {
+      if (_.includes(this.transferSelected, "pickup")) {
         return true;
       }
     },
     timezoneOptions() {
       return timezones.selectOptions();
     },
+    canOpen() {
+      return (this.storeSettings.cutoff_days + this.storeSettings.cutoff_hours > 0 &&
+        this.storeSettings.delivery_days.length > 0 &&
+        this.storeSettings.delivery_distance_radius > 0 &&
+        !_.isEmpty(this.storeSettings.stripe_id));
+    }
   },
   created() {
     axios.get("/api/me/stripe/login").then(resp => {
@@ -542,9 +559,11 @@ export default {
   },
   mounted() {
     this.view_delivery_days = this.storeSettings.view_delivery_days;
-    this.zipCodes = this.deliveryDistanceZipcodes.split(',') || [];
-    if(_.isString(this.transferType)) {
-      this.transferSelected = this.transferType.split(',') || [];
+    if (_.isString(this.zipCodes)) {
+      this.zipCodes = this.deliveryDistanceZipcodes.split(",") || [];
+    }
+    if (_.isString(this.transferType)) {
+      this.transferSelected = this.transferType.split(",") || [];
     }
   },
   methods: {
@@ -583,40 +602,38 @@ export default {
         });
     },
     spliceCharacters() {
-      if (this.storeSettings.deliveryFee != null)
-        {
-          let deliveryFee = this.storeSettings.deliveryFee;
-          if (deliveryFee.toString().includes('$')) {
-            let intToString = deliveryFee.toString();
-            let newFee = intToString.replace('$','');
-            this.storeSettings.deliveryFee = newFee;
-          }
+      if (this.storeSettings.deliveryFee != null) {
+        let deliveryFee = this.storeSettings.deliveryFee;
+        if (deliveryFee.toString().includes("$")) {
+          let intToString = deliveryFee.toString();
+          let newFee = intToString.replace("$", "");
+          this.storeSettings.deliveryFee = newFee;
         }
+      }
 
-      if (this.storeSettings.processingFee != null)
-        {
-          let processingFee = this.storeSettings.processingFee;
-          if (processingFee.toString().includes('$')) {
-            let intToString = processingFee.toString();
-            let newFee = intToString.replace('$','');
-            this.storeSettings.processingFee = newFee;
-          }
+      if (this.storeSettings.processingFee != null) {
+        let processingFee = this.storeSettings.processingFee;
+        if (processingFee.toString().includes("$")) {
+          let intToString = processingFee.toString();
+          let newFee = intToString.replace("$", "");
+          this.storeSettings.processingFee = newFee;
         }
+      }
 
-      if (this.storeSettings.mealPlanDiscount != null){
+      if (this.storeSettings.mealPlanDiscount != null) {
         let mealPlanDiscount = this.storeSettings.mealPlanDiscount;
-        if (this.storeSettings.mealPlanDiscount.toString().includes('%')) {
+        if (this.storeSettings.mealPlanDiscount.toString().includes("%")) {
           let intToString = this.storeSettings.mealPlanDiscount.toString();
-          let newDiscount = intToString.replace('%','');
+          let newDiscount = intToString.replace("%", "");
           this.storeSettings.mealPlanDiscount = newDiscount;
         }
       }
 
-      if (this.storeSettings.minimumPrice != null){
+      if (this.storeSettings.minimumPrice != null) {
         let minimumPrice = this.storeSettings.minimumPrice;
-        if (this.storeSettings.minimumPrice.toString().includes('$')) {
+        if (this.storeSettings.minimumPrice.toString().includes("$")) {
           let intToString = this.storeSettings.minimumPrice.toString();
-          let newPrice = intToString.replace('$','');
+          let newPrice = intToString.replace("$", "");
           this.storeSettings.minimumPrice = newPrice;
         }
       }
@@ -678,13 +695,12 @@ export default {
       }
     },
     onChangeTimezone(val) {
-      if(val) {
+      if (val) {
         this.storeSettings.timezone = val.value;
       }
     },
     updateZips(e) {
-      this.zipCodes = e.target.value.split(',');
-
+      this.zipCodes = e.target.value.split(",");
     }
   }
 };

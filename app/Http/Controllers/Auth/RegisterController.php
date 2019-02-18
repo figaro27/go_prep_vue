@@ -178,6 +178,10 @@ class RegisterController extends Controller
                 'delivery_distance_zipcodes' => [],
             ]);
 
+            $storeSettings = $store->categories()->create([
+              'category' => 'Entrees'
+            ]);
+
             $key = new \Cloudflare\API\Auth\APIKey(config('services.cloudflare.user'), config('services.cloudflare.key'));
             $adapter = new \Cloudflare\API\Adapter\Guzzle($key);
             $zones = new \Cloudflare\API\Endpoints\Zones($adapter);

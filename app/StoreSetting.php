@@ -21,6 +21,7 @@ class StoreSetting extends Model
         'notifications',
         'delivery_days',
         'view_delivery_days',
+        'open',
     ];
 
     /**
