@@ -10,7 +10,7 @@ class Subscription extends Model
 {
     protected $fillable = ['status', 'cancelled_at'];
 
-    protected $appends = ['meals', 'store_name', 'latest_order', 'next_delivery_date'];
+    protected $appends = ['store_name', 'latest_order', 'next_delivery_date', 'meal_ids', 'meal_quantities'];
 
     protected $casts = [
         'created_at' => 'date:F d, Y',
@@ -51,6 +51,16 @@ class Subscription extends Model
         return $this->store->getNextDeliveryDate();
     }
 
+    public function getMealIdsAttribute() {
+      return $this->meals()->get()->pluck('id');
+    }
+    public function getMealQuantitiesAttribute() {
+      return $this->meals()->get()->keyBy('id')->map(function($meal) {
+        return $meal->pivot->quantity ?? 0;
+      });
+    }
+
+    /*
     public function getMealsAttribute()
     {
         if (!$this->latest_order) {
@@ -58,7 +68,7 @@ class Subscription extends Model
         }
 
         return $this->latest_order->meals;
-    }
+    }*/
 
     public function getStoreNameAttribute()
     {

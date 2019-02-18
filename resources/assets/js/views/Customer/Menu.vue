@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!storeSettings.open">
+    <div v-if="storeSettings.open === false">
       <div class="row">
         <div class="col-sm-12 mt-3">
           <div class="card">
@@ -246,23 +246,20 @@
                     Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
                   </p>
 
-                <div>
-                  <router-link to="/customer/bag">
-                    <b-btn v-if="minOption === 'meals' && total >= minimumMeals && !preview && !manualOrder" class="menu-bag-btn">NEXT</b-btn>
-                  </router-link>
+                <div v-if="minOption === 'meals' && total >= minimumMeals">
+                  <b-btn v-if="!preview && !manualOrder" class="menu-bag-btn" to="/customer/bag">NEXT</b-btn>
+                  <b-btn v-else-if="subscriptionId" class="menu-bag-btn" @click.prevent="updateSubscriptionMeals">Update Meals</b-btn>
                 </div>
                 <div>
                   <p class="align-right" v-if="minOption === 'price' && totalBagPrice < minPrice && !manualOrder">
                     Please add {{format.money(remainingPrice)}} more to continue.
                   </p>
                 </div>
-                <div>
-                  <router-link to="/customer/bag">
-                    <b-btn v-if="minOption === 'price' && totalBagPrice >= minPrice && !preview && !manualOrder" class="menu-bag-btn">NEXT</b-btn>
-                  </router-link>
+                <div v-if="minOption === 'price' && totalBagPrice >= minPrice">
+                  <b-btn v-if="!preview && !manualOrder" class="menu-bag-btn" to="/customer/bag">NEXT</b-btn>
+                  <b-btn v-else-if="subscriptionId" class="menu-bag-btn" @click.prevent="updateSubscriptionMeals">Update Meals</b-btn>
                 </div>
                 <div v-if="manualOrder">
-                    
                     <div v-if="transferTypeCheck === 'both'" class="center-text">
                       <b-form-group>
                         <b-form-radio-group v-model="pickup" name="pickup">
@@ -344,7 +341,10 @@ export default {
     },
     manualOrder: {
       default: false,
-    }
+    },
+    subscriptionId: {
+      default: null,
+    },
   },
   data() {
     return {
@@ -602,6 +602,7 @@ export default {
     this.showActiveFilters();
   },
   methods: {
+    ...mapActions(['refreshSubscriptions', 'emptyBag']),
     showActiveFilters() {
       let tags = this.tags;
       this.active = tags.reduce((acc, tag) => {
@@ -872,7 +873,25 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    }
+    },
+    async updateSubscriptionMeals() {
+      try {
+        const {data} = await axios.patch(`/api/me/subscriptions/${this.subscriptionId}/meals`, { bag: this.bag });
+        this.refreshSubscriptions();
+        this.emptyBag();
+        this.$router.push({
+          path: '/customer/subscriptions',
+          query: { 
+            updated: true
+          }
+        });
+      }
+      catch(e) {
+        return;
+      }
+
+
+    },
   }
 };
 </script>

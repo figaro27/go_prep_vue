@@ -13,6 +13,7 @@ import CustomerBilling from './views/Customer/Account/Billing.vue';
 import CustomerContact from './views/Customer/Account/Contact.vue';
 import CustomerMyAccount from './views/Customer/Account/MyAccount.vue';
 import CustomerSubscriptions from './views/Customer/Subscriptions.vue';
+import CustomerSubscriptionChange from './views/Customer/Subscription.vue';
 import CustomerOrders from './views/Customer/Orders.vue';
 
 import StoreCustomers from './views/Store/Customers.vue';
@@ -97,6 +98,10 @@ let routes = [
     path: '/customer/subscriptions',
     component: CustomerSubscriptions,
     name: 'customer-subscriptions'
+  }, {
+    path: '/customer/subscriptions/:id',
+    component: CustomerSubscriptionChange,
+    name: 'customer-subscription-changes'
   }, {
     path: '/customer/orders',
     component: CustomerOrders,
