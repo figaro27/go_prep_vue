@@ -25,7 +25,7 @@
       @if(!count($order['meal_quantities']))
         None
       @else
-        <table border="1">
+        <table border="1" width="100">
           <tbody>
             @foreach($order['meal_quantities'] as $i => $row)
               <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
