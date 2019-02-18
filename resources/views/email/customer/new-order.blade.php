@@ -1,7 +1,7 @@
 <!-- <div class="card">
 	<div class="card-body"> -->
 		{{ $order->store_name }}
-		{{ $order->delivery_date }}
+		<!-- {{ $order->delivery_date }} -->
 		<!-- <p>Please contact {{ $order->store_name }} for any issues at {{ $order->store->store_detail->phone }}</p> -->
 
 <!-- 		{{ $order->preFeePreDiscount }}
