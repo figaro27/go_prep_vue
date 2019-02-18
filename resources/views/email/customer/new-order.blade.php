@@ -1,14 +1,14 @@
 <!-- <div class="card">
 	<div class="card-body"> -->
-		Thank you for your order from {{ $order->store_name }}.
-		Your meals will be prepped and delivered to you on {{ $order->delivery_date }}
+		{{ $order->store_name }}.
+		{{ $order->delivery_date }}
 		<!-- <p>Please contact {{ $order->store_name }} for any issues at {{ $order->store->store_detail->phone }}</p> -->
-		Order Details
-		Subtotal: {{ $order->preFeePreDiscount }}
-		Meal Plan Discount: {{ $order->mealPlanDiscount }}
-		Delivery Fee: {{ $order->deliveryFee }}
-		Processing Fee: {{ $order->processingFee) }}
-		Total: {{ $order->amount }}
+
+		{{ $order->preFeePreDiscount }}
+		{{ $order->mealPlanDiscount }}
+		{{ $order->deliveryFee }}
+		{{ $order->processingFee) }}
+		{{ $order->amount }}
 
 
 <!-- 	</div>
