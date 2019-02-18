@@ -388,7 +388,7 @@
             <b-form-group label="Payment Info" :state="true">
               <b-button
                 variant="primary"
-                href="https://connect.stripe.com/express/oauth/authorize?client_id=ca_ER2OYlaTUrWz7LRQvhtKLIjZsRcM8mh9&state={STATE_VALUE}"
+                :href="`https://connect.stripe.com/express/oauth/authorize?client_id=ca_ER2OYlaTUrWz7LRQvhtKLIjZsRcM8mh9&state=${store.id}`"
               >Connect Account</b-button>
             </b-form-group>
           </div>

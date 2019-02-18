@@ -8,6 +8,7 @@ use \Illuminate\Http\Request;
 
 class StoreController extends Controller
 {
+    protected $user;
     protected $store;
     protected $storeName;
 
@@ -22,6 +23,7 @@ class StoreController extends Controller
             }
 
             if ($user && $user->has('store')) {
+                $this->user = $user;
                 $this->store = $user->store;
             }
 

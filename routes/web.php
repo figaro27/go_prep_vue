@@ -13,7 +13,6 @@
 
 foreach ([config('app.domain')] as $domain) {
 
-    Route::get('/store/stripe/redirect', 'Store\\StripeController@connect');
     Route::any('/stripe/event', 'User\\Billing\\StripeController@event');
     //Auth::routes();
     Route::fallback('SpaController@index');
