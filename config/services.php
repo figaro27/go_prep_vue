@@ -40,4 +40,9 @@ return [
         ],
     ],
 
+    'cloudflare' => [
+        'user' => env('CLOUDFLARE_USER'),
+        'key' => env('CLOUDFLARE_KEY'),
+    ],
+
 ];

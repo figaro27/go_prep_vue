@@ -33,7 +33,7 @@ class RegisterController extends Controller
     protected $redirectTo = '/home';
 
     protected $regex = [
-      'domain' => '/^[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/is',
+        'domain' => '/^[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/is',
     ];
 
     /**
@@ -71,7 +71,7 @@ class RegisterController extends Controller
 
         $v->sometimes('store', [
             'store.store_name' => ['required', 'unique:store_details,name'],
-            'store.domain' => ['required', 'unique:store_details,domain', 'regex:'.$this->regex['domain']],
+            'store.domain' => ['required', 'unique:store_details,domain', 'regex:' . $this->regex['domain']],
             'store.address' => 'required',
             'store.city' => 'required',
             'store.state' => 'required',
@@ -109,7 +109,7 @@ class RegisterController extends Controller
             case '2':
                 $v = Validator::make($request->all(), [
                     'store_name' => ['required', 'unique:store_details,name'],
-                    'domain' => ['required', 'unique:store_details,domain', 'regex:'.$this->regex['domain']],
+                    'domain' => ['required', 'unique:store_details,domain', 'regex:' . $this->regex['domain']],
                     'address' => 'required',
                     'city' => 'required',
                     'state' => 'required',
@@ -169,14 +169,24 @@ class RegisterController extends Controller
             ]);
 
             $storeSettings = $store->settings()->create([
-              'timezone' => 'EST',
-              'open' => 0,
-              'notifications' => [],
-              'transferType' => 'delivery',
-              'view_delivery_days' => 1,
-              'delivery_days' => [],
-              'delivery_distance_zipcodes' => [],
+                'timezone' => 'EST',
+                'open' => 0,
+                'notifications' => [],
+                'transferType' => 'delivery',
+                'view_delivery_days' => 1,
+                'delivery_days' => [],
+                'delivery_distance_zipcodes' => [],
             ]);
+
+            $key = new \Cloudflare\API\Auth\APIKey(config('services.cloudflare.user'), config('services.cloudflare.key'));
+            $adapter = new \Cloudflare\API\Adapter\Guzzle($key);
+            $zones = new \Cloudflare\API\Endpoints\Zones($adapter);
+            $dns = new \Cloudflare\API\Endpoints\DNS($adapter);
+
+            $zoneId = $zones->getZoneID('goprep.com');
+
+            $dns->addRecord($zoneId, 'CNAME', $storeDetail->domain.'.dev', 'goprep.com', 0, true);
+            $dns->addRecord($zoneId, 'CNAME', $storeDetail->domain, 'goprep.com', 0, true);
         }
 
         return $user;
