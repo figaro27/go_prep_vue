@@ -37,10 +37,10 @@
   <div class="row mt-5">
       <div class="col-8">
           <h3>Order Details</h3>
-          Order #: {{$order->order_number}}<br />
-          Order Placed: {{$order->created_at}}<br />
-          To Be Delivered: {{$order->delivery_date}}<br />
-          <strong>Total: {{number_format($order->amount, 2)}}</strong>
+          Order #{{$order->order_number}}<br />
+          Order Placed: {{$order->created_at->format('D, m/d/Y')}}<br />
+          To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}}<br />
+          <strong>Total: ${{number_format($order->amount, 2)}}</strong>
       </div>
   </div>
 
