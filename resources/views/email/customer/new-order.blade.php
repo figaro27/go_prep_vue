@@ -4,11 +4,7 @@
 		{{ $order->delivery_date }}
 		<!-- <p>Please contact {{ $order->store_name }} for any issues at {{ $order->store->store_detail->phone }}</p> -->
 
-		{{ $order->preFeePreDiscount }}
-		{{ $order->mealPlanDiscount }}
-		{{ $order->deliveryFee }}
-		{{ $order->processingFee) }}
-		{{ $order->amount }}
+
 
 
 <!-- 	</div>
