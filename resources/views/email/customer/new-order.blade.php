@@ -11,7 +11,17 @@
 		<p>Processing Fee: ${{ number_format($order->processingFee, 2) }}</p>
 		<p><strong>Total: ${{ number_format($order->amount, 2) }}</strong></p>
 
-		{{ $pickup }}
+
+		Pickup: {{ $pickup }}
+		<br><br><br>
+		Card: {{ $card }}
+		<br><br><br>
+		StoreCustomer: {{ $storeCustomer }}
+		<br><br><br>
+		Customer: {{ $customer }}
+		<br><br><br>
+		Subscription: {{ $subscription }}
+		<br><br><br>
 
 
 	</div>
