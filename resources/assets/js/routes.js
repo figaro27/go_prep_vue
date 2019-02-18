@@ -24,6 +24,7 @@ import StoreOrders from './views/Store/Orders.vue';
 import StorePastOrders from './views/Store/PastOrders.vue';
 import StoreMealPlans from './views/Store/MealPlans.vue';
 import StoreMyAccount from './views/Store/Account/MyAccount.vue';
+import StoreStripeConnect from './views/Store/Account/Stripe.vue';
 import StoreContact from './views/Store/Account/Contact.vue';
 import StoreSettings from './views/Store/Account/Settings.vue';
 import StoreMenuPreview from './views/Store/MenuPreview.vue';
@@ -137,6 +138,10 @@ let routes = [
     path: '/store/account/my-account',
     component: StoreMyAccount,
     name: 'store-my-account'
+  }, {
+    path: '/store/stripe/redirect',
+    component: StoreStripeConnect,
+    name: 'store-stripe-connect'
   }, {
     path: '/store/account/contact',
     component: StoreContact,

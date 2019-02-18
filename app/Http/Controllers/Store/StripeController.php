@@ -6,6 +6,7 @@ use GuzzleHttp;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use Stripe;
+use App\Store;
 
 class StripeController extends StoreController
 {
@@ -22,8 +23,6 @@ class StripeController extends StoreController
         if (!$code) {
             return redirect('/store');
         }
-
-        $user = auth()->user();
 
         try {
 
@@ -56,9 +55,14 @@ class StripeController extends StoreController
     public function getLoginLinks()
     {
         $settings = $this->store->settings;
-        $links = Stripe\Account::createLoginLink($settings->stripe_id);
 
-        return $links;
+        try {
+          $links = Stripe\Account::createLoginLink($settings->stripe_id);
+          return $links;
+        }
+        catch(\Exception $e) {
+          return null;
+        }
     }
 
     /**
@@ -105,9 +109,6 @@ class StripeController extends StoreController
         }
 
         $links = $account->login_links->create();
-
-        print_r($account);
-        print_r($links);
 
         if (!isset($account->id)) {
             return null;
