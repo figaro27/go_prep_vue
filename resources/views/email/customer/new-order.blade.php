@@ -3,14 +3,13 @@
 		<h4>Thank you for your order from {{ $order->store_name }}</h4>
 		<p>Your meals will be prepped and delivered to you on {{ $order->delivery_date }}</p>
 		
-		<p>Test - {{ $order->store->store_detail->id }}</p>
 
 		<h5>Order Details</h5>
-		<p>Subtotal: {{ $order->preFeePreDiscount }}</p>
-		<p>Meal Plan Discount: <span class="red"> ({{ $order->mealPlanDiscount }})</span></p>
-		<p>Delivery Fee: {{ $order->deliveryFee }}</p>
-		<p>Processing Fee: {{ $order->processingFee }}</p>
-		<p><strong>Total: {{ $order->amount }}</strong></p>
+		<p>Subtotal: {{ number_format($order->preFeePreDiscount, 2) }}</p>
+		<p>Meal Plan Discount: {{ number_format($order->mealPlanDiscount, 2) }}</p>
+		<p>Delivery Fee: {{ number_format($order->deliveryFee, 2) }}</p>
+		<p>Processing Fee: {{ number_format($order->processingFee, 2) }}</p>
+		<p><strong>Total: {{ number_format($order->amount, 2) }}</strong></p>
 
 
 	</div>
