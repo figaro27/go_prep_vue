@@ -5,7 +5,7 @@
 		<!-- <p>Please contact {{ $order->store_name }} for any issues at {{ $order->store->store_detail->phone }}</p> -->
 		Order Details
 		Subtotal: {{ $order->preFeePreDiscount }}
-		Meal Plan Discount: <span class="red"> ({{ $order->mealPlanDiscount }})
+		Meal Plan Discount: {{ $order->mealPlanDiscount }}
 		Delivery Fee: {{ $order->deliveryFee }}
 		Processing Fee: {{ $order->processingFee) }}
 		Total: {{ $order->amount }}
