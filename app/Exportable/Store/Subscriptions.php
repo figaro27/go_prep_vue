@@ -30,7 +30,7 @@ class Subscriptions
                     str_pad($sub->user->details->zip, 5, 0, STR_PAD_LEFT),
                     $sub->user->details->phone,
                     '$'.$sub->amount,
-                    $sub->created_at,
+                    $sub->created_at->format('m/d/Y'),
                     date('l', mktime(0, 0, 0, 0, $sub->delivery_day)),
                 ];
             });

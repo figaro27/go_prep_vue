@@ -10,7 +10,7 @@
   <h1>Ingredients</h1>
   <h2>{{ date("m/d/Y") }}</h2>
 
-  <table border="1">
+  <table border="1" width="100">
     <tbody>
       @foreach($data as $i => $row)
       <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">

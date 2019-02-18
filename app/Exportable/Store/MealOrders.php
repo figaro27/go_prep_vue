@@ -23,12 +23,12 @@ class MealOrders
           return [
             $meal->title,
             $meal->active_orders,
-            '$'.$meal->active_orders_price
+            // '$'.$meal->active_orders_price
           ];
         });
 
         if($type !== 'pdf'){
-            $production->prepend(['Title', 'Active Orders', 'Total Price']);
+            $production->prepend(['Title', 'Active Orders']);
         }
 
         return $production->toArray();

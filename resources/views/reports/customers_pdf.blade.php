@@ -8,7 +8,7 @@
 <body>
   <h1>Customers</h1>
   <h2>{{ date("m/d/Y") }}</h2>
-  <table border="1">
+  <table border="1" width="100">
     <thead>
       <tr>
         <th>Name</th>

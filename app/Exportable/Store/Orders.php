@@ -28,8 +28,8 @@ class Orders
             $order->user->details->zip,
             $order->user->details->phone,
             '$'.$order->amount,
-            $order->created_at,
-            $order->delivery_date,
+            $order->created_at->format('D, m/d/Y'),
+            $order->delivery_date->format('D, m/d/Y'),
           ];
         });
 

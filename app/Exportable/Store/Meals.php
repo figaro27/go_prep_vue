@@ -27,7 +27,7 @@ class Meals
             $meal->tags->implode('tag', ', '),
             $meal->allergies->implode('title', ', '),
             $meal->lifetime_orders,
-            $meal->created_at->format('m-d-Y')
+            $meal->created_at->format('m/d/Y')
           ];
         });
 
