@@ -197,7 +197,7 @@ class RegisterController extends Controller
         // Create auth token
         $token = auth()->login($user);
 
-        $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/account/settings') : '/customer/home';
+        $redirect = $user->hasRole('store') ? '/store/account/settings' : '/customer/home';
 
         return [
             'user' => $user,
