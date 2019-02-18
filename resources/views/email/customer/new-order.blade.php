@@ -11,7 +11,7 @@
 		<p>Processing Fee: ${{ number_format($order->processingFee, 2) }}</p>
 		<p><strong>Total: ${{ number_format($order->amount, 2) }}</strong></p>
 
-
+		{{ $bag }}
 
 
 	</div>
