@@ -212,16 +212,22 @@
               <li v-else>
                 <div class="row">
                   <div class="col-md-6">
-                    <b-btn class="menu-bag-btn">
-                      <router-link
+                    <router-link
                         :to="{ path: '/login', query: { redirect: '/customer/bag' } }"
-                      >LOG IN</router-link>
-                    </b-btn>
+                      >
+                      <b-btn class="menu-bag-btn">
+                        LOG IN
+                      </b-btn>
+                    </router-link>
+
+
                   </div>
                   <div class="col-md-6">
-                    <b-btn class="menu-bag-btn">
-                      <router-link :to="{ path: '/register' }">REGISTER</router-link>
-                    </b-btn>
+                    <router-link :to="{ path: '/register' }">
+                      <b-btn class="menu-bag-btn">
+                        REGISTER
+                      </b-btn>
+                    </router-link>
                   </div>
                 </div>
               </li>
