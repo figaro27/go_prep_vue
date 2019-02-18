@@ -232,8 +232,17 @@
       <p>Menu</p>
       <div class="card">
         <div class="card-body">
+          <p>
+          <span class="mr-1">Show Nutrition Facts</span>
+          <img
+            v-b-popover.hover="'Nutrition facts are generated based on the ingredients you enter in for each meal on your Menu page. The nutrition is then shown to your customers if they click on any of your meals when ordering from you.'"
+            title="Show Nutrition Facts"
+            src="/images/store/popover.png"
+            class="popover-size"
+          >
+        </p>
           <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group label="Show Nutrition Facts" :state="true">
+            <b-form-group :state="true">
               <c-switch
                 color="success"
                 variant="pill"

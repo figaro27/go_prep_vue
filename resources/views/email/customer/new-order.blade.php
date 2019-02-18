@@ -1,4 +1,7 @@
 New order!
 
-{{ $order }}
-{{ $subscription }}
+{{ $order->amount }}
+<br><br><br><br>
+{{ $order->store_name }}
+
+<!-- {{ $subscription }} -->
