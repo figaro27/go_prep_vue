@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     ...mapActions(["init"]),
-    async start() {
+    start() {
       axios
         .post(`/api/me/stripe/connect`, { code: this.$route.query.code })
         .finally(() => {

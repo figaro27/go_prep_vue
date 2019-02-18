@@ -69,7 +69,6 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
                     Route::resource('categories', 'CategoryController');
                     Route::resource('settings', 'StoreSettingController');
 
-                    Route::resource('stripe', 'StripeController');
                     Route::post('stripe/connect', 'StripeController@connect');
                     Route::get('stripe/login', 'StripeController@getLoginLinks');
 
