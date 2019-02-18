@@ -104,7 +104,13 @@ class CheckoutController extends UserController
 
             // Send notification to store
             if ($store->settings->notificationEnabled('new_order')) {
-                $store->sendNotification('new_order', $order);
+                $store->sendNotification('new_order', [
+                    'order' => $order ?? null,
+                    'pickup' => $pickup ?? null,
+                    'card' => $card ?? null,
+                    'customer' => $customer ?? null,
+                    'subscription' => $userSubscription ?? null,
+                ]);
             }
 
         } else {
@@ -167,6 +173,7 @@ class CheckoutController extends UserController
             $order->delivery_date = (new Carbon($deliveryDay))->toDateString();
             $order->save();
 
+
             foreach ($bag->getItems() as $item) {
                 $mealOrder = new MealOrder();
                 $mealOrder->order_id = $order->id;
@@ -178,17 +185,23 @@ class CheckoutController extends UserController
 
             // Send notification to store
             if ($store->settings->notificationEnabled('new_subscription')) {
-                $store->sendNotification('new_subscription', $userSubscription);
+                $store->sendNotification('new_subscription', [
+                    'order' => $order ?? null,
+                    'pickup' => $pickup ?? null,
+                    'card' => $card ?? null,
+                    'customer' => $customer ?? null,
+                    'subscription' => $userSubscription ?? null,
+                ]);
             }
         }
+
+
 
         // Send notification
         $email = new NewOrder([
             'order' => $order ?? null,
-            'bag' => $bag ?? null,
             'pickup' => $pickup ?? null,
             'card' => $card ?? null,
-            'storeCustomer' => $storeCustomer ?? null,
             'customer' => $customer ?? null,
             'subscription' => $userSubscription ?? null,
         ]);
