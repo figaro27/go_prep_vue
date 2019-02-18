@@ -1,6 +1,6 @@
 <template>
   <div class="app customer">
-    <AppHeader fixed>
+    <b-navbar toggleable="lg" class="app-header" fixed>
       <b-link class="navbar-brand" to="/customer/menu">
         <img
           class="navbar-brand-full"
@@ -17,22 +17,27 @@
           alt="GoPrep Logo"
         >
       </b-link>
-      <b-navbar-nav class="d-none d-block d-md-none">
-        <b-nav-item v-if="'id' in viewedStore && loggedIn"  to="/customer/bag">Bag</b-nav-item>
-      </b-navbar-nav>
-      <b-navbar-nav class="d-md-down-none">
-        <b-nav-item v-if="'id' in viewedStore"  to="/customer/menu">Menu</b-nav-item>
-        <b-nav-item v-if="'id' in viewedStore && loggedIn"  to="/customer/bag">Bag</b-nav-item>
-        <b-nav-item v-if="loggedIn"  to="/customer/orders">Orders</b-nav-item>
-        <b-nav-item v-if="loggedIn"  to="/customer/subscriptions">Meal Plans</b-nav-item>
-      </b-navbar-nav>
-      <b-navbar-nav class="ml-auto">
-        <CustomerDropdown v-if="loggedIn" />
-        <b-nav-item v-if="!loggedIn"  to="/login">Log In</b-nav-item>
-        <b-nav-item v-if="!loggedIn" class="px-3 mr-4" to="/register">Register</b-nav-item>
-      </b-navbar-nav>
-      <!--<AsideToggler class="d-lg-none" mobile />-->
-    </AppHeader>
+      <b-navbar-toggle target="nav_collapse" class="mr-auto ml-2" />
+      <b-btn class="mr-2 d-lg-none" variant="light" v-if="'id' in viewedStore" to="/customer/bag"><i class="fa fa-shopping-bag"></i></b-btn>
+
+      <b-collapse is-nav id="nav_collapse">
+        <b-navbar-nav class="d-none d-block d-md-none">
+          <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag">Bag</b-nav-item>
+        </b-navbar-nav>
+        <b-navbar-nav class="">
+          <b-nav-item v-if="'id' in viewedStore" to="/customer/menu">Menu</b-nav-item>
+          <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag">Bag</b-nav-item>
+          <b-nav-item v-if="loggedIn" to="/customer/orders">Orders</b-nav-item>
+          <b-nav-item v-if="loggedIn" to="/customer/subscriptions">Meal Plans</b-nav-item>
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-auto">
+          <CustomerDropdown v-if="loggedIn"/>
+          <b-nav-item v-if="!loggedIn" to="/login">Log In</b-nav-item>
+          <b-nav-item v-if="!loggedIn" class="px-3 mr-4" to="/register">Register</b-nav-item>
+        </b-navbar-nav>
+        <!--<AsideToggler class="d-lg-none" mobile />-->
+      </b-collapse>
+    </b-navbar>
     <div class="app-body">
       <main class="main">
         <page-spinner v-if="!initialized"></page-spinner>
@@ -105,7 +110,7 @@ export default {
   computed: {
     ...mapGetters(["initialized", "viewedStore", "loggedIn"]),
     ...mapGetters({
-      storeLogo: "viewedStoreLogo",
+      storeLogo: "viewedStoreLogo"
     }),
     name() {
       return this.$route.name;
@@ -114,12 +119,9 @@ export default {
       return this.$route.matched.filter(
         route => route.name || route.meta.label
       );
-    },
+    }
   },
-  created() {
-
-  },
-  methods: {
-  }
+  created() {},
+  methods: {}
 };
 </script>

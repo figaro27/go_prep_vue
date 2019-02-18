@@ -834,6 +834,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.1.tgz#5c85d662f76fa1d34575766c5dcd6615abcd30d8"
   integrity sha512-FZdkNBDqBRHKQ2MEbSC17xnPFOhZxeJ2YGSfr2BKf3sujG49Qe3bB+rGCwQfIaA7WHnGeGkSijX4FuBCdrzW/g==
 
+"PureDrawer@https://github.com/mac81/pure-drawer":
+  version "1.0.2"
+  resolved "https://github.com/mac81/pure-drawer#33ce42dc286d98dd613d3c8f0318a1f8d93d9a73"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -7409,6 +7413,11 @@ vue-codemirror@^4.0.6:
   dependencies:
     codemirror "^5.41.0"
     diff-match-patch "^1.0.0"
+
+vue-disable-autocomplete@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/vue-disable-autocomplete/-/vue-disable-autocomplete-0.0.4.tgz#6318b515ade128247038121f33a6586c1d0899e8"
+  integrity sha512-NtEMoepVfFScR6f7d37g3tQh3F5VU75ai+5+GHoQ0pt3ftrLUeOWXi0ozQDExTwPFgLK3Yk86NeyokSZMlXvFg==
 
 vue-functional-data-merge@^2.0.5:
   version "2.0.7"

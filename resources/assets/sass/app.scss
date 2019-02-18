@@ -32,6 +32,7 @@ $simple-line-font-path: '~simple-line-icons/fonts/';
 @import "ie-fix";
 
 
+@import "components/navbar.scss";
 @import "components/modal.scss";
 @import "components/select.scss";
 @import "components/date-range-picker.scss";

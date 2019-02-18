@@ -19,11 +19,11 @@ class CreateStoreSettingsTable extends Migration
             $table->string('timezone')->default('EST');
             $table->boolean('open')->default(true);
             $table->text('closedReason')->nullable();
-            $table->string('minimumOption');
+            $table->string('minimumOption')->default('price');
             $table->integer('minimumMeals')->default(5)->nullable();
             $table->integer('minimumPrice')->default(50)->nullable();
             $table->boolean('showNutrition')->default(true);
-            $table->longtext('transferType');
+            $table->longtext('transferType')->nullable();
             $table->text('pickupInstructions')->nullable();
             $table->boolean('applyMealPlanDiscount')->default(false);
             $table->integer('mealPlanDiscount')->nullable();
@@ -31,17 +31,17 @@ class CreateStoreSettingsTable extends Migration
             $table->integer('deliveryFee')->nullable();
             $table->boolean('applyProcessingFee')->default(false);
             $table->integer('processingFee')->nullable();
-            $table->longtext('delivery_days');
+            $table->longtext('delivery_days')->nullable();
             $table->tinyInteger('cutoff_days')->unsigned()->default(1);
             $table->integer('cutoff_hours')->unsigned()->default(0);
             $table->enum('delivery_distance_type', [
               'radius', 'zipcodes',
             ])->default('radius');
-            $table->double('delivery_distance_radius')->nullable();
-            $table->longtext('delivery_distance_zipcodes');
+            $table->double('delivery_distance_radius')->default(5)->nullable();
+            $table->longtext('delivery_distance_zipcodes')->nullable();
             $table->string('stripe_id')->nullable();
             $table->longText('stripe_account')->nullable();
-            $table->json('notifications');
+            $table->json('notifications')->nullable();
             $table->integer('view_delivery_days')->nullable();
             $table->decimal('application_fee')->default(7.9);
             $table->timestamps();

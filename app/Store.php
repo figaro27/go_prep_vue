@@ -230,7 +230,7 @@ class Store extends Model
 
     public function getNextCutoffDate() {
       $date = $this->getNextDeliveryDate(false);
-      return $date->subSeconds($this->getCutoffSeconds());
+      return $date ? $date->subSeconds($this->getCutoffSeconds()) : null;
     }
 
     public function getOrders($groupBy = null, $dateRange = []) {
@@ -384,14 +384,19 @@ class Store extends Model
     public function getCutoffPassedAttribute() {
       $now = Carbon::now('utc');
       $date = $this->getNextDeliveryDate();
+      if(!$date) {
+        return false;
+      }
       return $now->getTimestamp() > ($date->getTimestamp() - $this->getCutoffSeconds());
     }
 
     public function getNextCutoffDateAttribute() {
-      return $this->getNextCutoffDate()->toDateTimeString();
+      $date = $this->getNextCutoffDate();
+      return $date ? $date->toDateTimeString() : null;
     }
 
     public function getNextDeliveryDateAttribute() {
-      return $this->getNextDeliveryDate()->toDateTimeString();
+      $date = $this->getNextDeliveryDate();
+      return $date ? $date->toDateTimeString() : null;
     }
 }
