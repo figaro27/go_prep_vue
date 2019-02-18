@@ -1,2 +1,3 @@
 Delivery today!
 
+{{ $order }}

@@ -1,6 +1,7 @@
+<!--Data Finished-->
 Hello {{ $user->name }},
 
-A meal in your Meal Plan was substituted for another:
+<p>A meal in your Meal Plan was substituted for another:</p>
 
-Old: {{ $old_meal->title }}<br>
-New: {{ $sub_meal->title }}
+<p>Old: {{ $old_meal->title }}</p>
+<p>New: {{ $sub_meal->title }}</p>

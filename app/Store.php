@@ -317,15 +317,15 @@ class Store extends Model
 
         switch ($notif) {
             case 'new_order':
-                $email = new NewOrder([
-                    'order' => $data,
-                ]);
+                $email = new NewOrder(
+                    $data
+                );
                 break;
 
             case 'new_subscription':
-                $email = new NewSubscription([
-                    'subscription' => $data,
-                ]);
+                $email = new NewSubscription(
+                    $data
+                );
                 break;
 
             case 'cancelled_subscription':
