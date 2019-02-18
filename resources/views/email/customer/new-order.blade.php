@@ -5,11 +5,24 @@
 		
 
 		<h5>Order Details</h5>
-		<p>Subtotal: {{ number_format($order->preFeePreDiscount, 2) }}</p>
-		<p>Meal Plan Discount: {{ number_format($order->mealPlanDiscount, 2) }}</p>
-		<p>Delivery Fee: {{ number_format($order->deliveryFee, 2) }}</p>
-		<p>Processing Fee: {{ number_format($order->processingFee, 2) }}</p>
-		<p><strong>Total: {{ number_format($order->amount, 2) }}</strong></p>
+		<p>Subtotal: ${{ number_format($order->preFeePreDiscount, 2) }}</p>
+		<p>Meal Plan Discount: ${{ number_format($order->mealPlanDiscount, 2) }}</p>
+		<p>Delivery Fee: ${{ number_format($order->deliveryFee, 2) }}</p>
+		<p>Processing Fee: ${{ number_format($order->processingFee, 2) }}</p>
+		<p><strong>Total: ${{ number_format($order->amount, 2) }}</strong></p>
+
+		Bag: {{ $bag }}
+		<br><br><br>
+		Pickup: {{ $pickup }}
+		<br><br><br>
+		Card: {{ $card }}
+		<br><br><br>
+		StoreCustomer: {{ $storeCustomer }}
+		<br><br><br>
+		Customer: {{ $customer }}
+		<br><br><br>
+		Subscription: {{ $subscription }}
+		<br><br><br>
 
 
 	</div>

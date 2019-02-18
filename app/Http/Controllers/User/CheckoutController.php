@@ -185,6 +185,11 @@ class CheckoutController extends UserController
         // Send notification
         $email = new NewOrder([
             'order' => $order ?? null,
+            'bag' => $bag ?? null,
+            'pickup' => $pickup ?? null,
+            'card' => $card ?? null,
+            'storeCustomer' => $storeCustomer ?? null,
+            'customer' => $customer ?? null,
             'subscription' => $userSubscription ?? null,
         ]);
         Mail::to($user)->send($email);
