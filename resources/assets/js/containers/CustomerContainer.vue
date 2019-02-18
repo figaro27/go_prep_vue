@@ -1,7 +1,7 @@
 <template>
   <div class="app customer">
     <b-navbar toggleable="lg" class="app-header" fixed>
-      <b-link class="navbar-brand" to="/customer/menu">
+      <b-link class="navbar-brand" to="/customer/home">
         <img
           class="navbar-brand-full"
           src="/images/logo.jpg"
