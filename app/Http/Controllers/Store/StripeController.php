@@ -25,7 +25,6 @@ class StripeController extends StoreController
         }
 
         try {
-
             $client = new GuzzleHttp\Client();
             $res = $client->request('POST', 'https://connect.stripe.com/oauth/token', [
                 'form_params' => [

@@ -560,11 +560,7 @@ export default {
     }
   },
   created() {
-    axios.get("/api/me/stripe/login").then(resp => {
-      if (resp.data.url) {
-        this.payments_url = resp.data.url;
-      }
-    });
+
   },
   mounted() {
     this.view_delivery_days = this.storeSettings.view_delivery_days;
@@ -574,6 +570,12 @@ export default {
     if (_.isString(this.transferType)) {
       this.transferSelected = this.transferType.split(",") || [];
     }
+
+    axios.get("/api/me/stripe/login").then(resp => {
+      if (resp.data.url) {
+        this.payments_url = resp.data.url;
+      }
+    });
   },
   methods: {
     ...mapActions(["refreshCategories", "refreshStoreSettings"]),

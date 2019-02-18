@@ -156,7 +156,6 @@ export default {
     }
   },
   created() {
-
     axios.get("/api/me/stripe/login").then(resp => {
       if (resp.data.url) {
         this.payments_url = resp.data.url;
