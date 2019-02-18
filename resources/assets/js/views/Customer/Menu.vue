@@ -79,7 +79,7 @@
                   </div>
                 </div>
                 <div class="col-md-6" v-if="storeSettings.showNutrition">
-                  <div id="nutritionFacts"></div>
+                  <div id="nutritionFacts" ref="nutritionFacts"></div>
                 </div>
                 <div class="col-md-6" v-if="!storeSettings.showNutrition">
                   <p>{{ meal.description }}</p>
@@ -327,6 +327,8 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
 import Spinner from "../../components/Spinner";
+import units from "../../data/units";
+import format from "../../lib/format";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -641,81 +643,137 @@ export default {
       }
     },
     showMealModal(meal) {
-      let self = this;
-      let ingredients = meal.ingredients;
-      ingredients.forEach(function(ingredient) {
-        self.calories += ingredient.calories;
-        self.totalfat += ingredient.totalfat;
-        self.satfat += ingredient.satfat;
-        self.transfat += ingredient.transfat;
-        self.cholesterol += ingredient.cholesterol;
-        self.sodium += ingredient.sodium;
-        self.totalcarb += ingredient.totalcarb;
-        self.fibers += ingredient.fibers;
-        self.sugars += ingredient.sugars;
-        self.proteins += ingredient.proteins;
-        self.vitamind += ingredient.vitamind;
-        self.potassium += ingredient.potassium;
-        self.calcium += ingredient.calcium;
-        self.iron += ingredient.iron;
-        self.addedsugars += ingredient.addedsugars;
-      });
       this.meal = meal;
       this.mealModal = true;
 
       this.$nextTick(() => {
         this.getNutritionFacts(this.meal, this.meal.ingredients);
       });
+    },
+    getNutritionTotals: function(ingredients, normalize = true) {
+      let nutrition = {
+        calories: 0,
+        totalFat: 0,
+        satFat: 0,
+        transFat: 0,
+        cholesterol: 0,
+        sodium: 0,
+        totalCarb: 0,
+        fibers: 0,
+        sugars: 0,
+        proteins: 0,
+        vitaminD: 0,
+        potassium: 0,
+        calcium: 0,
+        iron: 0,
+        addedSugars: 0
+      };
 
-      this.$nextTick(() => {
-        ingredients.forEach(function(ingredient) {
-          self.calories = 0;
-          self.totalfat = 0;
-          self.satfat = 0;
-          self.transfat = 0;
-          self.cholesterol = 0;
-          self.sodium = 0;
-          self.totalcarb = 0;
-          self.fibers = 0;
-          self.sugars = 0;
-          self.proteins = 0;
-          self.vitamind = 0;
-          self.potassium = 0;
-          self.calcium = 0;
-          self.iron = 0;
-          self.addedsugars = 0;
+      ingredients.forEach(ingredient => {
+        let calciumIndex = _.findIndex(ingredient.full_nutrients, function(o) {
+          return o.attr_id == 301;
         });
+        let vitamindIndex = _.findIndex(ingredient.full_nutrients, function(o) {
+          return o.attr_id == 324;
+        });
+        let ironIndex = _.findIndex(ingredient.full_nutrients, function(o) {
+          return o.attr_id == 303;
+        });
+
+        let multiplier = 1;
+
+        if (normalize) {
+          multiplier = ingredient.quantity || 1;
+        }
+
+        if (
+          normalize &&
+          ingredient.quantity_unit != units.base(ingredient.unit_type)
+        ) {
+          multiplier *= units.convert(
+            1,
+            ingredient.quantity_unit,
+            units.base(ingredient.unit_type)
+          );
+        }
+
+        nutrition.calories +=
+          (ingredient.nf_calories || ingredient.calories) * multiplier;
+        nutrition.totalFat +=
+          (ingredient.nf_total_fat || ingredient.totalFat) * multiplier;
+        nutrition.satFat +=
+          (ingredient.nf_saturated_fat || ingredient.satFat) * multiplier;
+        nutrition.transFat +=
+          (ingredient.nf_trans_fat || ingredient.transFat) * multiplier;
+        nutrition.cholesterol +=
+          (ingredient.nf_cholesterol || ingredient.cholesterol) * multiplier;
+        nutrition.sodium +=
+          (ingredient.nf_sodium || ingredient.sodium) * multiplier;
+        nutrition.totalCarb +=
+          (ingredient.nf_total_carbohydrate || ingredient.totalCarb) *
+          multiplier;
+        nutrition.fibers +=
+          (ingredient.nf_dietary_fiber || ingredient.fibers) * multiplier;
+        nutrition.sugars +=
+          (ingredient.nf_sugars || ingredient.sugars) * multiplier;
+        nutrition.proteins +=
+          (ingredient.nf_protein || ingredient.proteins) * multiplier;
+        nutrition.potassium +=
+          (ingredient.nf_potassium || ingredient.potassium) * multiplier;
+        nutrition.vitaminD +=
+          (vitamindIndex > -1
+            ? ingredient.full_nutrients[vitamindIndex].value
+            : ingredient.vitaminD) * multiplier;
+        nutrition.calcium +=
+          (calciumIndex > -1
+            ? ingredient.full_nutrients[calciumIndex].value
+            : ingredient.calcium);
+        nutrition.iron +=
+          (ironIndex > -1
+            ? ingredient.full_nutrients[ironIndex].value
+            : ingredient.iron);
+        nutrition.sugars +=
+          (ingredient.nf_addedsugars || ingredient.sugars) * multiplier;
       });
+
+      return nutrition;
     },
     getNutritionFacts(meal, ingredients) {
-      this.ingredientList = this.getIngredientList(ingredients);
-      this.ingredients = this.ingredientList;
-      $("#nutritionFacts").nutritionLabel({
+      const nutrition = this.getNutritionTotals(ingredients);
+      const ingredientList = this.getIngredientList(ingredients);
+
+      $(this.$refs.nutritionFacts).html("");
+
+      $(this.$refs.nutritionFacts).nutritionLabel({
         showServingUnitQuantity: false,
         itemName: meal.title,
-        ingredientList: this.ingredientList,
+        ingredientList: ingredientList,
+
         decimalPlacesForQuantityTextbox: 2,
         valueServingUnitQuantity: 1,
+
         allowFDARounding: true,
         decimalPlacesForNutrition: 2,
+
         showPolyFat: false,
         showMonoFat: false,
-        valueCalories: this.calories,
-        valueFatCalories: this.fatcalories,
-        valueTotalFat: this.totalfat,
-        valueSatFat: this.satfat,
-        valueTransFat: this.transfat,
-        valueCholesterol: this.cholesterol,
-        valueSodium: this.sodium,
-        valueTotalCarb: this.totalcarb,
-        valueFibers: this.fibers,
-        valueSugars: this.sugars,
-        valueProteins: this.proteins,
-        valueVitaminD: this.vitamind,
-        valuePotassium_2018: this.potassium,
-        valueCalcium: this.calcium,
-        valueIron: this.iron,
-        valueAddedSugars: this.addedsugars,
+
+        valueCalories: nutrition.calories,
+        valueFatCalories: nutrition.fatCalories,
+        valueTotalFat: nutrition.totalFat,
+        valueSatFat: nutrition.satFat,
+        valueTransFat: nutrition.transFat,
+        valueCholesterol: nutrition.cholesterol,
+        valueSodium: nutrition.sodium,
+        valueTotalCarb: nutrition.totalCarb,
+        valueFibers: nutrition.fibers,
+        valueSugars: nutrition.sugars,
+        valueProteins: nutrition.proteins,
+        valueVitaminD: (nutrition.vitaminD / 20000) * 100,
+        valuePotassium_2018: (nutrition.potassium / 4700) * 100,
+        valueCalcium: (nutrition.calcium / 1300) * 100,
+        valueIron: (nutrition.iron / 18) * 100,
+        valueAddedSugars: nutrition.addedSugars,
         showLegacyVersion: false
       });
     },
