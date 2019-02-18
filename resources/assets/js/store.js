@@ -514,7 +514,12 @@ const actions = {
     dispatch('refreshStores');
 
     if(router.currentRoute.path === '/') {
-      router.replace('customer/menu');
+      if(_.isNull(data.store)) {
+        router.replace('/customer/home');
+      }
+      else {
+        router.replace('/customer/menu');
+      }
     }
   },
 
