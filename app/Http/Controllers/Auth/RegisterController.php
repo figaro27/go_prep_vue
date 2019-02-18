@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\User;
-use App\UserDetail;
 use App\Store;
+use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -32,6 +31,10 @@ class RegisterController extends Controller
      * @var string
      */
     protected $redirectTo = '/home';
+
+    protected $regex = [
+      'domain' => '/^[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/is',
+    ];
 
     /**
      * Create a new controller instance.
@@ -56,10 +59,10 @@ class RegisterController extends Controller
             'user.role' => 'required|in:customer,store',
             'user.email' => 'required|string|email|max:255|unique:users,email',
             'user.password' => 'required|string|min:6|confirmed',
+            'user.first_name' => 'required',
+            'user.last_name' => 'required',
+            'user.phone' => 'required',
 
-            'user_details.first_name' => 'required',
-            'user_details.last_name' => 'required',
-            'user_details.phone' => 'required',
             'user_details.address' => 'required',
             'user_details.city' => 'required',
             'user_details.state' => 'required',
@@ -67,45 +70,55 @@ class RegisterController extends Controller
         ]);
 
         $v->sometimes('store', [
-          'store.store_name' => 'required',
-          'store.first_name' => 'required',
-          'store.last_name' => 'required',
-          'store.phone' => 'required',
-          'store.address' => 'required',
-          'store.city' => 'required',
-          'store.state' => 'required',
-          'store.zip' => 'required',
+            'store.store_name' => ['required', 'unique:store_details,name'],
+            'store.domain' => ['required', 'unique:store_details,domain', 'regex:'.$this->regex['domain']],
+            'store.address' => 'required',
+            'store.city' => 'required',
+            'store.state' => 'required',
+            'store.zip' => 'required',
         ], function ($data) {
-          return $data['user']['role'] === 'store';
+            return $data['user']['role'] === 'store';
         });
 
         return $v;
     }
 
-    public function validateStep(Request $request, $step) {
-      switch($step) {
-        case 0:
-          $v = Validator::make($request->all(), [
-            'role' => 'required|in:customer,store',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-          ]);
-        break;
+    public function validateStep(Request $request, $step)
+    {
+        switch ($step) {
+            case '0':
+                $v = Validator::make($request->all(), [
+                    'role' => 'required|in:customer,store',
+                    'email' => 'required|string|email|max:255|unique:users,email',
+                    'password' => 'required|string|min:6|confirmed',
+                    'first_name' => 'required',
+                    'last_name' => 'required',
+                    'phone' => 'required',
+                ]);
+                break;
 
-        case 1:
-          $v = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'phone' => 'required',
-            'address' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'zip' => 'required',
-          ]);
-        break;
-      }
+            case '1':
+                $v = Validator::make($request->all(), [
+                    'address' => 'required',
+                    'city' => 'required',
+                    'state' => 'required',
+                    'zip' => 'required',
+                ]);
+                break;
 
-      return $v->validate();
+            case '2':
+                $v = Validator::make($request->all(), [
+                    'store_name' => ['required', 'unique:store_details,name'],
+                    'domain' => ['required', 'unique:store_details,domain', 'regex:'.$this->regex['domain']],
+                    'address' => 'required',
+                    'city' => 'required',
+                    'state' => 'required',
+                    'zip' => 'required',
+                ]);
+                break;
+        }
+
+        return $v->validate();
     }
 
     /**
@@ -127,9 +140,9 @@ class RegisterController extends Controller
 
         $userDetails = $user->details()->create([
             //'user_id' => $user->id,
-            'firstname' => $data['user_details']['first_name'],
-            'lastname' => $data['user_details']['last_name'],
-            'phone' => $data['user_details']['phone'],
+            'firstname' => $data['user']['first_name'],
+            'lastname' => $data['user']['last_name'],
+            'phone' => $data['user']['phone'],
             'address' => $data['user_details']['address'],
             'city' => $data['user_details']['city'],
             'state' => $data['user_details']['state'],
@@ -145,32 +158,43 @@ class RegisterController extends Controller
 
             $storeDetail = $store->details()->create([
                 'name' => $data['store']['store_name'],
-                'phone' => $data['store']['phone'],
+                'phone' => $data['user']['phone'],
                 'address' => $data['store']['address'],
                 'city' => $data['store']['city'],
                 'state' => $data['store']['state'],
                 'zip' => $data['store']['zip'],
                 'logo' => '',
-                'domain' => str_slug($data['store']['store_name']),
+                'domain' => $data['store']['domain'],
                 'created_at' => now(),
+            ]);
+
+            $storeSettings = $store->settings()->create([
+              'timezone' => 'EST',
+              'open' => 0,
+              'notifications' => [],
+              'transferType' => 'delivery',
+              'view_delivery_days' => 1,
+              'delivery_days' => [],
+              'delivery_distance_zipcodes' => [],
             ]);
         }
 
         return $user;
     }
 
-    protected function registered(Request $request, $user) {
-      // Create auth token
-      $token = auth()->login($user);
+    protected function registered(Request $request, $user)
+    {
+        // Create auth token
+        $token = auth()->login($user);
 
-      $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/account/settings') : '/customer/home';
+        $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/account/settings') : '/customer/home';
 
-      return [
-        'user' => $user,
-        'access_token' => $token,
-        'token_type' => 'bearer',
-        'expires_in' => auth()->factory()->getTTL() * 60,
-        'redirect' => $redirect
-      ];
+        return [
+            'user' => $user,
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'redirect' => $redirect,
+        ];
     }
 }

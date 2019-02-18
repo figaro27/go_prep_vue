@@ -83,7 +83,7 @@ class AuthController extends Controller
 
         // If not accessing store subdomain
         if(preg_match($preg, $url)) {
-          $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/orders', $secure) : '/customer/home';
+          $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/orders', $secure) : '/';
         }
         else {
           $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/orders', $secure) : '/customer/menu';

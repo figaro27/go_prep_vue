@@ -1,9 +1,7 @@
-import { required, minLength, email } from "vuelidate/lib/validators";
+import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 
 const validators = {
-  required: {
-    required,
-  },
+  required,
   password: {
     required,
     minLength: 7
@@ -32,6 +30,15 @@ const validators = {
   },
   zip: {
     required,
+  },
+  store_name: {
+    required,
+    minLength: 6,
+  },
+  domain: {
+    required,
+    minLength: 4,
+    regex: helpers.regex('domain', /^[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/)
   },
 }
 

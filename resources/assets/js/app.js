@@ -39,6 +39,7 @@ import { VLazyImagePlugin } from "v-lazy-image";
 import auth from './lib/auth';
 import VuejsDialog from "vuejs-dialog";
 import 'vuejs-dialog/dist/vuejs-dialog.min.css'
+import DisableAutocomplete from 'vue-disable-autocomplete';
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -69,6 +70,7 @@ Vue.use(VuejsDialog, {
   cancelText: 'Cancel',
   animation: 'bounce',
 });
+Vue.use(DisableAutocomplete);
 
 
 import Thumbnail from './components/Thumbnail';

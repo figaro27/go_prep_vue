@@ -10,12 +10,17 @@ class StoreSetting extends Model
 
     protected $fillable = [
         'minimum',
+        'minimumOption',
         'showNutrition',
         'allowPickup',
         'pickupInstructions',
         'applyDeliveryFee',
         'deliveryFee',
         'stripe_account',
+        'transferType',
+        'notifications',
+        'delivery_days',
+        'view_delivery_days',
     ];
 
     /**

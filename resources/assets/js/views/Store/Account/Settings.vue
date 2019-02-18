@@ -542,8 +542,10 @@ export default {
   },
   mounted() {
     this.view_delivery_days = this.storeSettings.view_delivery_days;
-    this.zipCodes = this.deliveryDistanceZipcodes.split(',');
-    this.transferSelected = this.transferType.split(',');
+    this.zipCodes = this.deliveryDistanceZipcodes.split(',') || [];
+    if(_.isString(this.transferType)) {
+      this.transferSelected = this.transferType.split(',') || [];
+    }
   },
   methods: {
     ...mapActions(["refreshCategories", "refreshStoreSettings"]),
