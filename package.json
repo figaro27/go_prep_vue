@@ -75,6 +75,7 @@
     },
     "dependencies": {
         "@chenfengyuan/vue-number-input": "^1.1.0",
+        "PureDrawer": "https://github.com/mac81/pure-drawer",
         "js-cookie": "^2.2.0",
         "moment-timezone": "^0.5.23",
         "payment-icons": "^1.1.0",

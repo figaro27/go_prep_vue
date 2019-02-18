@@ -1,8 +1,8 @@
 <template>
   <div class="row auth-box">
-    <div class="col-md-6 offset-3">
+    <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
       <div class="card">
-        <div class="card-body p-5">
+        <div class="card-body p-lg-5">
           <b-form @submit.prevent="submit" autocomplete="off">
             <div v-if="step === 0">
               <b-form-group horizontal label="Account Type">

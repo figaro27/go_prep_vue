@@ -1,5 +1,5 @@
 <template>
-  <div class="bag container-fluid">
+  <div class="bag">
     <div class="card">
       <div class="card-body">
         <spinner v-if="loading" position="absolute"></spinner>
@@ -7,37 +7,38 @@
           <div class="col-md-12">
             <h2 class="center-text dbl-underline">Checkout</h2>
           </div>
-          <div class="col-md-12 mb-2">
+          <div class="col-md-12 mb-2 bag-actions">
             <b-button size="lg" class="green" @click="clearAll">Empty Bag</b-button>
-            <router-link to="/customer/menu">
-              <b-button size="lg" class="orange m-3">Change Meals</b-button>
-            </router-link>
+            <b-button size="lg" class="orange" to="/customer/menu">Change Meals</b-button>
           </div>
         </div>
         <div class="row">
           <div class="col-md-5">
             <ul class="list-group">
-              <li v-for="item in bag" :key="`bag-${item.meal.id}`" class="bag-item">
-                <div v-if="item.quantity > 0" class="row">
-                  <div class="col-sm-1 pr-1 text-center">
+              <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
+                <div v-if="item && item.quantity > 0" class="d-flex align-items-center">
+                  <div class="mr-2">
                     <img
                       src="/images/customer/bag-plus.png"
                       @click="addOne(item.meal)"
+                      class="bag-plus-minus"
                     >
                     <p class="bag-quantity">{{ item.quantity }}</p>
                     <img
                       src="/images/customer/bag-minus.png"
                       @click="minusOne(item.meal)"
+                      class="bag-plus-minus"
                     >
                   </div>
-                  <div class="col-sm-2">
-                    <img :src="item.meal.featured_image" class="bag-item-img">
+                  <div class="bag-item-image mr-2">
+                    <thumbnail
+                      :src="item.meal.featured_image"
+                      :src-placeholder="item.meal.featured_image"
+                      class="cart-item-img"
+                    ></thumbnail>
                   </div>
-                  <div class="col-sm-5 offset-1">
-                    <p>{{ item.meal.title }}</p>
-                    <p class="strong">{{ format.money(item.meal.price * item.quantity) }}</p>
-                  </div>
-                  <div class="col-sm-2">
+                  <div class="flex-grow-1 mr-2">{{ item.meal.title }}</div>
+                  <div class>
                     <img
                       src="/images/customer/x.png"
                       @click="clearMeal(item.meal)"
@@ -47,24 +48,31 @@
                 </div>
               </li>
             </ul>
-            <p class="mt-3" v-if="minOption === 'meals' && total < minMeals">
-              Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
-            </p>
+            <p
+              class="mt-3"
+              v-if="minOption === 'meals' && total < minMeals"
+            >Please add {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
             <router-link to="/customer/menu">
-              <b-btn v-if="minOption === 'meals' && total < minMeals && !preview" class="menu-bag-btn">BACK</b-btn>
+              <b-btn
+                v-if="minOption === 'meals' && total < minMeals && !preview"
+                class="menu-bag-btn"
+              >BACK</b-btn>
             </router-link>
-            
-            <p class="mt-3" v-if="minOption === 'price' && totalBagPrice < minPrice">
-                  Please add {{format.money(remainingPrice)}} more to continue.
-            </p>
+
+            <p
+              class="mt-3"
+              v-if="minOption === 'price' && totalBagPrice < minPrice"
+            >Please add {{format.money(remainingPrice)}} more to continue.</p>
             <div>
               <router-link to="/customer/menu">
-                <b-btn v-if="minOption === 'price' && totalBagPrice <= minPrice && !preview" class="menu-bag-btn">BACK</b-btn>
+                <b-btn
+                  v-if="minOption === 'price' && totalBagPrice <= minPrice && !preview"
+                  class="menu-bag-btn"
+                >BACK</b-btn>
               </router-link>
             </div>
-
           </div>
-          <div class="col-md-6 offset-1">
+          <div class="col-md-6 offset-md-1">
             <ul class="list-group">
               <li class="bag-item">
                 <div class="row">
@@ -72,21 +80,16 @@
                     <p>
                       <strong>Weekly Meal Plan</strong>
                       <img
-                          v-b-popover.hover="'Choose a weekly meal plan instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals as well as pause or cancel the meal plan if it is within a certain amount of time before the pickup/delivery day.'"
-                          title="Weekly Meal Plan"
-                          src="/images/store/popover.png"
-                          class="popover-size ml-1"
-                        >
+                        v-b-popover.hover="'Choose a weekly meal plan instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals as well as pause or cancel the meal plan if it is within a certain amount of time before the pickup/delivery day.'"
+                        title="Weekly Meal Plan"
+                        src="/images/store/popover.png"
+                        class="popover-size ml-1"
+                      >
                     </p>
                   </div>
                   <div class="col-md-4">
                     <div class="aside-options">
-                      <c-switch
-                        color="success"
-                        variant="pill"
-                        size="lg"
-                        v-model="deliveryPlan"
-                      />
+                      <c-switch color="success" variant="pill" size="lg" v-model="deliveryPlan"/>
                     </div>
                   </div>
                 </div>
@@ -96,7 +99,10 @@
                   <strong>{{ total }} {{ singOrPluralTotal }} {{ deliveryPlanText }}</strong>
                 </p>
               </li>
-              <li class="checkout-item" v-if="storeSettings.applyDeliveryFee || storeSettings.applyProcessingFee || (storeSettings.applyMealPlanDiscount && deliveryPlan)">
+              <li
+                class="checkout-item"
+                v-if="storeSettings.applyDeliveryFee || storeSettings.applyProcessingFee || (storeSettings.applyMealPlanDiscount && deliveryPlan)"
+              >
                 <div class="row">
                   <div class="col-md-4">
                     <strong>Subtotal:</strong>
@@ -190,8 +196,16 @@
                 <div v-else>
                   <h4 class="mt-2 mb-3">Choose Payment Method</h4>
                   <card-picker :selectable="true" v-model="card"></card-picker>
-                  <b-btn v-if="card && minOption === 'meals' && total >= minMeals" @click="checkout" class="menu-bag-btn">CHECKOUT</b-btn>
-                  <b-btn v-if="card && minOption === 'price' && totalBagPrice >= minPrice" @click="checkout" class="menu-bag-btn">CHECKOUT</b-btn>
+                  <b-btn
+                    v-if="card && minOption === 'meals' && total >= minMeals"
+                    @click="checkout"
+                    class="menu-bag-btn"
+                  >CHECKOUT</b-btn>
+                  <b-btn
+                    v-if="card && minOption === 'price' && totalBagPrice >= minPrice"
+                    @click="checkout"
+                    class="menu-bag-btn"
+                  >CHECKOUT</b-btn>
                 </div>
               </li>
 
@@ -257,29 +271,35 @@ export default {
       loggedIn: "loggedIn",
       minOption: "minimumOption",
       minMeals: "minimumMeals",
-      minPrice: 'minimumPrice'
+      minPrice: "minimumPrice"
     }),
     storeSettings() {
       return this.store.settings;
     },
-    transferType(){
-      return this.storeSettings.transferType.split(',');
+    transferType() {
+      return this.storeSettings.transferType.split(",");
     },
-    transferTypeCheck(){
-      if (_.includes(this.transferType, 'delivery') && _.includes(this.transferType, 'pickup')){
-        return 'both';
+    transferTypeCheck() {
+      if (
+        _.includes(this.transferType, "delivery") &&
+        _.includes(this.transferType, "pickup")
+      ) {
+        return "both";
       }
-      if (!_.includes(this.transferType, 'delivery') && _.includes(this.transferType, 'pickup')){
-        return 'pickup';
+      if (
+        !_.includes(this.transferType, "delivery") &&
+        _.includes(this.transferType, "pickup")
+      ) {
+        return "pickup";
       }
     },
     minimumOption() {
       return this.minOption;
     },
-    minimumMeals(){
+    minimumMeals() {
       return this.minMeals;
     },
-    minimumPrice(){
+    minimumPrice() {
       return this.minPrice;
     },
     remainingMeals() {
@@ -288,54 +308,46 @@ export default {
     remainingPrice() {
       return this.minPrice - this.totalBagPrice;
     },
-    preFeePreDiscount(){
+    preFeePreDiscount() {
       let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
       let applyProcessingFee = this.storeSettings.applyProcessingFee;
       let deliveryFee = this.storeSettings.deliveryFee;
       let processingFee = this.storeSettings.processingFee;
 
-      if (applyDeliveryFee && applyProcessingFee){
+      if (applyDeliveryFee && applyProcessingFee) {
         return this.totalBagPrice - deliveryFee - processingFee;
-      }
-      else if (applyDeliveryFee && !applyProcessingFee){
+      } else if (applyDeliveryFee && !applyProcessingFee) {
         return this.totalBagPrice - deliveryFee;
-      }
-      else if (applyProcessingFee && !applyDeliveryFee){
+      } else if (applyProcessingFee && !applyDeliveryFee) {
         return this.totalBagPrice - processingFee;
-      }
-      else
-        return this.totalBagPrice;
+      } else return this.totalBagPrice;
     },
-    afterDiscountBeforeFees(){
-      if (this.applyMealPlanDiscount && this.deliveryPlan){
+    afterDiscountBeforeFees() {
+      if (this.applyMealPlanDiscount && this.deliveryPlan) {
         return this.preFeePreDiscount - this.mealPlanDiscount;
-      }
-      else
-        return this.preFeePreDiscount;
+      } else return this.preFeePreDiscount;
     },
-    afterDiscountAfterFees(){
+    afterDiscountAfterFees() {
       let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
       let applyProcessingFee = this.storeSettings.applyProcessingFee;
       let deliveryFee = this.storeSettings.deliveryFee;
       let processingFee = this.storeSettings.processingFee;
 
-      if (applyDeliveryFee && applyProcessingFee){
+      if (applyDeliveryFee && applyProcessingFee) {
         return this.afterDiscountBeforeFees + deliveryFee + processingFee;
-      }
-      else if (applyDeliveryFee && !applyProcessingFee){
+      } else if (applyDeliveryFee && !applyProcessingFee) {
         return this.afterDiscountBeforeFees + deliveryFee;
-      }
-      else if (applyProcessingFee && !applyDeliveryFee){
+      } else if (applyProcessingFee && !applyDeliveryFee) {
         return this.afterDiscountBeforeFees + processingFee;
-      }
-      else
-        return this.afterDiscountBeforeFees;
-    },    
+      } else return this.afterDiscountBeforeFees;
+    },
     applyMealPlanDiscount() {
       return this.storeSettings.applyMealPlanDiscount;
     },
     mealPlanDiscount() {
-      return this.preFeePreDiscount * (this.storeSettings.mealPlanDiscount / 100);
+      return (
+        this.preFeePreDiscount * (this.storeSettings.mealPlanDiscount / 100)
+      );
     },
     singOrPlural() {
       if (this.remainingMeals > 1) {
@@ -353,7 +365,7 @@ export default {
       if (this.deliveryPlan) return "Prepared Weekly";
       else return "Prepared Once";
     },
-    
+
     deliveryDaysOptions() {
       return this.storeSetting("next_delivery_dates", []).map(date => {
         return {
@@ -361,12 +373,12 @@ export default {
           text: moment(date.date).format("dddd MMM Do")
         };
       });
-    },
+    }
   },
   mounted() {},
   methods: {
-    ...mapActions(['refreshSubscriptions', 'refreshCustomerOrders']),
-    ...mapMutations(['emptyBag']),
+    ...mapActions(["refreshSubscriptions", "refreshCustomerOrders"]),
+    ...mapMutations(["emptyBag"]),
     quantity(meal) {
       const qty = this.$store.getters.bagItemQuantity(meal);
       return qty;
@@ -405,7 +417,7 @@ export default {
         })
         .then(async resp => {
           this.emptyBag();
-          
+
           if (this.deliveryPlan) {
             await this.refreshSubscriptions();
             this.$router.push({
@@ -421,7 +433,9 @@ export default {
           }
         })
         .catch(response => {
-          let error = _.first(Object.values(response.response.data.errors)) || ['Please try again'];
+          let error = _.first(Object.values(response.response.data.errors)) || [
+            "Please try again"
+          ];
           error = error.join(" ");
           this.$toastr.e(error, "Error");
         })

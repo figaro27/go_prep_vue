@@ -12,7 +12,7 @@
         </div>
       </div>
     </div>
-  <div class="menu container-fluid" v-if="storeSettings.open">
+  <div class="menu ml-auto mr-auto" v-if="storeSettings.open">
     <div v-if="!willDeliver && !preview && loggedIn">
       <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
     </div>
@@ -23,7 +23,7 @@
           <h4 class="center-text mb-5 mt-5">Hide Meals That Contain</h4>
         </div>
         <div class="row mb-4">
-          <div v-for="allergy in allergies" :key="`allergy-${allergy.id}`" class="filters col-md-3 mb-3">
+          <div v-for="allergy in allergies" :key="`allergy-${allergy.id}`" class="filters col-6 col-sm-4 col-md-3 mb-3">
             <b-button
               :pressed="active[allergy.id]"
               @click="filterByAllergy(allergy.id)"
@@ -35,7 +35,7 @@
           <h4 class="center-text mb-5">Show Meals With</h4>
         </div>
         <div class="row">
-          <div v-for="tag in tags" :key="`tag-${tag}`" class="filters col-md-3 mb-3">
+          <div v-for="tag in tags" :key="`tag-${tag}`" class="filters col-6 col-sm-4 col-md-3 mb-3">
             <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{ tag }}</b-button>
           </div>
         </div>
@@ -143,8 +143,14 @@
                   </div>
                   <div class="col-sm-12 category-area">
                       <div class="filter-area">
-                        <b-button @click="viewFilters" class="green"><i class="fa fa-filter"></i>&nbsp;Filters</b-button>
-                        <b-button @click="clearFilters" class="orange"><i class="fa fa-eraser"></i>&nbsp;Clear Filters</b-button>
+                        <b-button @click="viewFilters" class="green">
+                          <i class="fa fa-filter"></i>
+                          <span class="d-none d-md-inline">&nbsp;Filters</span>
+                        </b-button>
+                        <b-button @click="clearFilters" class="orange">
+                          <i class="fa fa-eraser"></i>
+                          <span class="d-none d-lg-inline">&nbsp;Clear Filters</span>
+                        </b-button>
                       </div>
 
                       <ul>
@@ -159,7 +165,7 @@
               </div>
             </div>
             <div class="row">
-              <div :class="`col-md-9 order-2 order-sm-1  main-menu-area`">
+              <div :class="`col-md-9 main-menu-area`">
                 <Spinner v-if="!meals.length" position="absolute"/>
                 <div
                   v-for="group in meals"
@@ -204,19 +210,17 @@
                 </div>
               </div>
 
-              <div class="col-sm-5 col-md-3 order-1 order-sm-2 bag-area">
+              <div class="col-sm-5 col-md-3 bag-area">
                 <ul class="list-group">
                   <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
                     <div v-if="item && item.quantity > 0" class="d-flex align-items-center">
                       <div class="mr-2">
-                        <!-- <p @click="addOne(item.meal)" class="bag-plus">+</p> -->
                         <img
                           src="/images/customer/bag-plus.png"
                           @click="addOne(item.meal)"
                           class="bag-plus-minus"
                         >
                         <p class="bag-quantity">{{ item.quantity }}</p>
-                        <!-- <p @click="minusOne(item.meal)" class="bag-minus">-</p> -->
                         <img
                           src="/images/customer/bag-minus.png"
                           @click="minusOne(item.meal)"

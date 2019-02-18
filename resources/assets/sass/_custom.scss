@@ -234,6 +234,7 @@ body.sidebar-minimized {
 }
 
 /*Menu*/
+
 .main-menu-area, .bag-area{
   overflow-y: auto;
 
@@ -242,15 +243,26 @@ body.sidebar-minimized {
   }
 }
 
+.main-menu-area {
+  @include media-breakpoint-down(sm) {
+    //margin-bottom: 160px;
+  }
+}
+
 .bag-area {
   padding-top: 75px;
   
   @include media-breakpoint-down(sm) {
-    display: none;
-
-    &.show {
-      display: block;
-    }
+    padding-top: 8px;
+    padding-bottom: 8px;
+    /*
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding-top: 8px;
+    padding-bottom: 8px;*/
   }
   
   @include media-breakpoint-down(md) {
@@ -315,6 +327,14 @@ body.sidebar-minimized {
   max-width: 1700px
 }
 
+.bag-actions {
+  @include media-breakpoint-down(sm) {
+    .btn {
+      font-size: 13px;
+    }
+  }
+}
+
 .checkout-item{
   border-bottom:1px solid #e1e1e1;
   margin-bottom:10px;
@@ -367,10 +387,19 @@ top:10px;
     align-content:center !important;
     padding: 0;
     margin: 0;
+
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
   }
 
   > div {
-    flex: 0 0 200px;
+    @include media-breakpoint-up(md) {
+      flex: 0 0 190px;
+    }
+    @include media-breakpoint-up(lg) {
+      flex: 0 0 210px;
+    }
   }
 }
 
