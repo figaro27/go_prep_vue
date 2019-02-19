@@ -65,6 +65,10 @@ class Subscription extends Model
         return $this->store->storeDetail->name;
     }
 
+    public function isPaused() {
+      return $this->status === 'paused';
+    }
+
     /**
      * Renew the subscription
      *
@@ -89,16 +93,14 @@ class Subscription extends Model
      *
      * @return boolean
      */
-    public function cancel()
+    public function cancel($withStripe = true)
     {
-        try {
+        if ($withStripe) {
             $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
                 'stripe_account' => $this->store->settings->stripe_id,
             ]);
             $subscription->cancel_at_period_end = true;
             $subscription->save();
-        } catch (\Exception $e) {
-            return response()->json([], 500);
         }
 
         $this->update([
@@ -116,31 +118,33 @@ class Subscription extends Model
      *
      * @return boolean
      */
-    public function pause()
+    public function pause($withStripe = true)
     {
-        try {
-            $coupon = \Stripe\Coupon::retrieve('subscription-paused', [
+        if ($withStripe) {
+            try {
+                $coupon = \Stripe\Coupon::retrieve('subscription-paused', [
+                    'stripe_account' => $this->store->settings->stripe_id,
+                ]);
+            } catch (\Exception $e) {
+                $coupon = \Stripe\Coupon::create([
+                    'duration' => 'forever',
+                    'id' => 'subscription-paused',
+                    'percent_off' => 100,
+                ], [
+                    'stripe_account' => $this->store->settings->stripe_id,
+                ]);
+            }
+
+            $storeCustomer = $this->user->getStoreCustomer($this->store->id);
+
+            //$storeCustomer->subscriptions->retrieve('', '');
+
+            $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
                 'stripe_account' => $this->store->settings->stripe_id,
             ]);
-        } catch (\Exception $e) {
-            $coupon = \Stripe\Coupon::create([
-                'duration' => 'forever',
-                'id' => 'subscription-paused',
-                'percent_off' => 100,
-            ], [
-                'stripe_account' => $this->store->settings->stripe_id,
-            ]);
+            $subscription->coupon = 'subscription-paused';
+            $subscription->save();
         }
-
-        $storeCustomer = $this->user->getStoreCustomer($this->store->id);
-
-        //$storeCustomer->subscriptions->retrieve('', '');
-
-        $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
-            'stripe_account' => $this->store->settings->stripe_id,
-        ]);
-        $subscription->coupon = 'subscription-paused';
-        $subscription->save();
 
         $this->update([
             'status' => 'paused',
@@ -157,13 +161,15 @@ class Subscription extends Model
      *
      * @return boolean
      */
-    public function resume()
+    public function resume($withStripe = true)
     {
-        $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
-            'stripe_account' => $this->store->settings->stripe_id,
-        ]);
-        $subscription->coupon = null;
-        $subscription->save();
+        if ($withStripe) {
+            $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
+                'stripe_account' => $this->store->settings->stripe_id,
+            ]);
+            $subscription->coupon = null;
+            $subscription->save();
+        }
 
         $this->update([
             'status' => 'active',
