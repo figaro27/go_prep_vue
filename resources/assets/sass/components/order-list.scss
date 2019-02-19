@@ -1,0 +1,8 @@
+.order-list {
+  .order-list-item {
+    @include media-breakpoint-down(xs) {
+      padding: 0;
+      border: none;
+    }
+  }
+}

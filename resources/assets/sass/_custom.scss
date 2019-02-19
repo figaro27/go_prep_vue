@@ -129,8 +129,13 @@ body.sidebar-minimized {
 
 /*Main*/
 
-.container-fluid {
-	margin-top:20px;
+.main .container-fluid {
+  margin-top:20px;
+
+  @include media-breakpoint-down(xs) {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
 }
 
 .card {
@@ -478,7 +483,8 @@ top:10px;
 }
 
 .contact-subject{
-  width:300px !important;
+  width: 100% !important;
+  max-width: 300px !important;
 }
 
 .nutritionix{

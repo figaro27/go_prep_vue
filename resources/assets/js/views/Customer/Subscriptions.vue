@@ -16,60 +16,74 @@
       <div class="card">
         <div class="card-body">
           <Spinner v-if="isLoading"/>
-          <div v-for="subscription in subscriptions" :key="subscription.id">
-            <div v-b-toggle="'collapse' + subscription.id">
-              <b-list-group-item>
-                <div class="row">
-                  <div class="col-md-4">
-                    <h4>Meal Plan ID</h4>
-                    <p>{{ subscription.stripe_id }}</p>
+          <div class="order-list">
+            <div v-for="subscription in subscriptions" :key="subscription.id">
+              <div v-b-toggle="'collapse' + subscription.id">
+                <b-list-group-item class="order-list-item">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <h4>Meal Plan ID</h4>
+                      <p>{{ subscription.stripe_id }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <h4>Placed On</h4>
+                      <p>{{ moment(subscription.created_at).format('dddd, MMM Do, Y') }}</p>
+                    </div>
+                    <div class="col-md-4" v-if="subscription.status === 'active'">
+                      <h2>{{ format.money(subscription.amount) }} per {{subscription.interval}}</h2>
+                      <b-btn variant="warning" @click="() => pauseSubscription(subscription)">Pause</b-btn>
+                      <b-btn variant="danger" @click="() => cancelSubscription(subscription)">Cancel</b-btn>
+                    </div>
+                    <div class="col-md-4" v-else-if="subscription.status === 'paused'">
+                      <b-btn
+                        variant="warning"
+                        @click="() => resumeSubscription(subscription)"
+                      >Resume</b-btn>
+                    </div>
+                    <div class="col-md-4" v-else>
+                      <h4>Cancelled On</h4>
+                      <p>{{ subscription.cancelled_at }}</p>
+                    </div>
                   </div>
-                  <div class="col-md-4">
-                    <h4>Placed On</h4>
-                    <p>{{ moment(subscription.created_at).format('dddd, MMM Do, Y') }}</p>
-                  </div>
-                  <div class="col-md-4" v-if="subscription.status === 'active'">
-                    <h2>{{ format.money(subscription.amount) }} per {{subscription.interval}}</h2>
-                    <b-btn variant="warning" @click="() => pauseSubscription(subscription)">Pause</b-btn>
-                    <b-btn variant="danger" @click="() => cancelSubscription(subscription)">Cancel</b-btn>
-                  </div>
-                  <div class="col-md-4" v-else-if="subscription.status === 'paused'">
-                    <b-btn variant="warning" @click="() => resumeSubscription(subscription)">Resume</b-btn>
-                  </div>
-                  <div class="col-md-4" v-else>
-                    <h4>Cancelled On</h4>
-                    <p>{{ subscription.cancelled_at }}</p>
-                  </div>
-                </div>
 
-                <div class="row">
-                  <div class="col-md-4">
-                    <h4>Delivery Day</h4>
-                    <p v-if="!subscription.latest_order.fulfilled">{{ moment(subscription.latest_order.delivery_date).format('dddd, MMM Do') }}</p>
-                    <p v-else>Delivered On: {{ moment(subscription.latest_order.delivery_date).format('dddd, MMM Do') }}</p>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <h4>Delivery Day</h4>
+                      <p
+                        v-if="!subscription.latest_order.fulfilled"
+                      >{{ moment(subscription.latest_order.delivery_date).format('dddd, MMM Do') }}</p>
+                      <p
+                        v-else
+                      >Delivered On: {{ moment(subscription.latest_order.delivery_date).format('dddd, MMM Do') }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <h4>Company</h4>
+                      <p>{{ subscription.store_name }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <img src="/images/collapse-arrow.png" class="mt-4 pt-3">
+                    </div>
                   </div>
-                  <div class="col-md-4">
-                    <h4>Company</h4>
-                    <p>{{ subscription.store_name }}</p>
-                  </div>
-                  <div class="col-md-4">
-                    <img src="/images/collapse-arrow.png" class="mt-4 pt-3">
-                  </div>
-                </div>
 
-                <b-collapse :id="'collapse' + subscription.id" class="mt-2">
-                  <b-table striped :items="getMealTableData(subscription)" foot-clone>
-                    <template slot="image" slot-scope="row">
-                      <img :src="row.value" class="modalMeal">
-                    </template>
+                  <b-collapse :id="'collapse' + subscription.id" class="mt-2">
+                    <b-table
+                      striped
+                      stacked="sm"
+                      :items="getMealTableData(subscription)"
+                      foot-clone
+                    >
+                      <template slot="image" slot-scope="row">
+                        <img :src="row.value" class="modalMeal">
+                      </template>
 
-                    <template
-                      slot="FOOT_subtotal"
-                      slot-scope="row"
-                    >{{ format.money(subscription.amount) }}</template>
-                  </b-table>
-                </b-collapse>
-              </b-list-group-item>
+                      <template
+                        slot="FOOT_subtotal"
+                        slot-scope="row"
+                      >{{ format.money(subscription.amount) }}</template>
+                    </b-table>
+                  </b-collapse>
+                </b-list-group-item>
+              </div>
             </div>
           </div>
         </div>
@@ -133,14 +147,18 @@ export default {
       });
     },
     pauseSubscription(subscription) {
-      axios.post(`/api/me/subscriptions/${subscription.id}/pause`).then(resp => {
-        this.refreshSubscriptions();
-      });
+      axios
+        .post(`/api/me/subscriptions/${subscription.id}/pause`)
+        .then(resp => {
+          this.refreshSubscriptions();
+        });
     },
     resumeSubscription(subscription) {
-      axios.post(`/api/me/subscriptions/${subscription.id}/resume`).then(resp => {
-        this.refreshSubscriptions();
-      });
+      axios
+        .post(`/api/me/subscriptions/${subscription.id}/resume`)
+        .then(resp => {
+          this.refreshSubscriptions();
+        });
     },
     cancelSubscription(subscription) {
       axios.delete(`/api/me/subscriptions/${subscription.id}`).then(resp => {
