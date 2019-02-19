@@ -17,7 +17,7 @@
             <ul class="list-group">
               <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
                 <div v-if="item && item.quantity > 0" class="d-flex align-items-center">
-                  <div class="mr-2">
+                  <div class="mr-2 text-center">
                     <img
                       src="/images/customer/bag-plus.png"
                       @click="addOne(item.meal)"

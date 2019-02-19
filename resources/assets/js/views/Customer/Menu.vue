@@ -1,124 +1,139 @@
 <template>
   <div>
+    <v-btn fixed fab bottom right color="#20a8d8" class="d-sm-none" to="/customer/bag">
+      <i class="fa fa-shopping-bag text-white"></i>
+    </v-btn>
+
     <div v-if="!storeSettings.open">
       <div class="row">
         <div class="col-sm-12 mt-3">
           <div class="card">
             <div class="card-body">
               <h5 class="center-text">This company will not be taking new orders at this time.</h5>
-              <p class="center-text mt-3"><strong>Reason:</strong> {{ storeSettings.closedReason }}</p>
+              <p class="center-text mt-3">
+                <strong>Reason:</strong>
+                {{ storeSettings.closedReason }}
+              </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  <div class="menu ml-auto mr-auto" v-if="storeSettings.open">
-    <div v-if="!willDeliver && !preview && loggedIn">
-      <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
-    </div>
+    <div class="menu ml-auto mr-auto" v-if="storeSettings.open">
+      <div v-if="!willDeliver && !preview && loggedIn">
+        <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
+      </div>
 
-    <div class="modal-basic">
-      <b-modal size="lg" v-model="viewFilterModal" v-if="viewFilterModal" hide-header>
-        <div>
-          <h4 class="center-text mb-5 mt-5">Hide Meals That Contain</h4>
-        </div>
-        <div class="row mb-4">
-          <div v-for="allergy in allergies" :key="`allergy-${allergy.id}`" class="filters col-6 col-sm-4 col-md-3 mb-3">
-            <b-button
-              :pressed="active[allergy.id]"
-              @click="filterByAllergy(allergy.id)"
-            >{{ allergy.title }}</b-button>
+      <div class="modal-basic">
+        <b-modal size="lg" v-model="viewFilterModal" v-if="viewFilterModal" hide-header>
+          <div>
+            <h4 class="center-text mb-5 mt-5">Hide Meals That Contain</h4>
           </div>
-        </div>
-        <hr>
-        <div>
-          <h4 class="center-text mb-5">Show Meals With</h4>
-        </div>
-        <div class="row">
-          <div v-for="tag in tags" :key="`tag-${tag}`" class="filters col-6 col-sm-4 col-md-3 mb-3">
-            <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{ tag }}</b-button>
-          </div>
-        </div>
-        <b-button @click="clearFilters" class="center mt-4 orange">Clear All</b-button>
-      </b-modal>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-12 mt-3">
-        <div class="card">
-          <div class="card-body">
-            <b-modal
-              ref="mealModal"
-              size="lg"
-              :title="meal.title"
-              v-model="mealModal"
-              v-if="mealModal"
+          <div class="row mb-4">
+            <div
+              v-for="allergy in allergies"
+              :key="`allergy-${allergy.id}`"
+              class="filters col-6 col-sm-4 col-md-3 mb-3"
             >
-              <div class="row mt-3">
-                <div class="col-md-6 modal-meal-image">
-                  <img :src="meal.featured_image">
-                  <p v-if="storeSettings.showNutrition">{{ meal.description }}</p>
-                  <div class="row mt-3 mb-5" v-if="storeSettings.showNutrition">
-                    <div class="col-md-6">
-                      <h5>Tags</h5>
-                      <li v-for="tag in meal.tags">{{ tag.tag }}</li>
-                    </div>
-                    <div class="col-md-6">
-                      <h5>Contains</h5>
-                      <li v-for="allergy in meal.allergy_titles">{{ allergy }}</li>
-                    </div>
-                  </div>
+              <b-button
+                :pressed="active[allergy.id]"
+                @click="filterByAllergy(allergy.id)"
+              >{{ allergy.title }}</b-button>
+            </div>
+          </div>
+          <hr>
+          <div>
+            <h4 class="center-text mb-5">Show Meals With</h4>
+          </div>
+          <div class="row">
+            <div
+              v-for="tag in tags"
+              :key="`tag-${tag}`"
+              class="filters col-6 col-sm-4 col-md-3 mb-3"
+            >
+              <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{ tag }}</b-button>
+            </div>
+          </div>
+          <b-button @click="clearFilters" class="center mt-4 orange">Clear All</b-button>
+        </b-modal>
+      </div>
 
-                  <div class="row mt-5" v-if="storeSettings.showNutrition">
-                    <div class="col-md-5 mt-3">
-                      <h5>{{ format.money(meal.price) }}</h5>
+      <div class="row">
+        <div class="col-sm-12 mt-3">
+          <div class="card">
+            <div class="card-body">
+              <b-modal
+                ref="mealModal"
+                size="lg"
+                :title="meal.title"
+                v-model="mealModal"
+                v-if="mealModal"
+              >
+                <div class="row mt-3">
+                  <div class="col-md-6 modal-meal-image">
+                    <img :src="meal.featured_image">
+                    <p v-if="storeSettings.showNutrition">{{ meal.description }}</p>
+                    <div class="row mt-3 mb-5" v-if="storeSettings.showNutrition">
+                      <div class="col-md-6">
+                        <h5>Tags</h5>
+                        <li v-for="tag in meal.tags">{{ tag.tag }}</li>
+                      </div>
+                      <div class="col-md-6">
+                        <h5>Contains</h5>
+                        <li v-for="allergy in meal.allergy_titles">{{ allergy }}</li>
+                      </div>
                     </div>
-                    <div class="col-md-7">
-                      <b-btn @click="addOne(meal)" class="menu-bag-btn">+ ADD</b-btn>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6" v-if="storeSettings.showNutrition">
-                  <div id="nutritionFacts" ref="nutritionFacts"></div>
-                </div>
-                <div class="col-md-6" v-if="!storeSettings.showNutrition">
-                  <p>{{ meal.description }}</p>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <h5>Tags</h5>
-                      <li v-for="tag in meal.tags">{{ tag.tag }}</li>
-                    </div>
-                    <div class="col-md-6">
-                      <h5>Contains</h5>
-                      <li v-for="allergy in meal.allergy_titles">{{ allergy }}</li>
-                    </div>
-                  </div>
-                  <div class="row mt-3 mb-3">
-                    <div class="col-md-12">
-                      <h5>Ingredients</h5>
-                      {{ ingredients }}
-                    </div>
-                  </div>
-                  <div class="row" v-if="storeSettings.showNutrition">
-                    <div class="col-md-8">
-                      <h5>{{ format.money(meal.price) }}</h5>
-                    </div>
-                    <div class="col-md-4">
-                      <img src="/images/customer/add.jpg" @click="addOne(meal)">
-                    </div>
-                  </div>
-                  <div class="row" v-if="!storeSettings.showNutrition">
-                    <div class="col-md-6">
-                      <h5>{{ format.money(meal.price) }}</h5>
-                    </div>
-                    <div class="col-md-6">
-                      <img src="/images/customer/add.jpg" @click="addOne(meal)">
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-              <!-- <div class="row" v-if="!showNutrition">
+                    <div class="row mt-5" v-if="storeSettings.showNutrition">
+                      <div class="col-md-5 mt-3">
+                        <h5>{{ format.money(meal.price) }}</h5>
+                      </div>
+                      <div class="col-md-7">
+                        <b-btn @click="addOne(meal)" class="menu-bag-btn">+ ADD</b-btn>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6" v-if="storeSettings.showNutrition">
+                    <div id="nutritionFacts" ref="nutritionFacts"></div>
+                  </div>
+                  <div class="col-md-6" v-if="!storeSettings.showNutrition">
+                    <p>{{ meal.description }}</p>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <h5>Tags</h5>
+                        <li v-for="tag in meal.tags">{{ tag.tag }}</li>
+                      </div>
+                      <div class="col-md-6">
+                        <h5>Contains</h5>
+                        <li v-for="allergy in meal.allergy_titles">{{ allergy }}</li>
+                      </div>
+                    </div>
+                    <div class="row mt-3 mb-3">
+                      <div class="col-md-12">
+                        <h5>Ingredients</h5>
+                        {{ ingredients }}
+                      </div>
+                    </div>
+                    <div class="row" v-if="storeSettings.showNutrition">
+                      <div class="col-md-8">
+                        <h5>{{ format.money(meal.price) }}</h5>
+                      </div>
+                      <div class="col-md-4">
+                        <img src="/images/customer/add.jpg" @click="addOne(meal)">
+                      </div>
+                    </div>
+                    <div class="row" v-if="!storeSettings.showNutrition">
+                      <div class="col-md-6">
+                        <h5>{{ format.money(meal.price) }}</h5>
+                      </div>
+                      <div class="col-md-6">
+                        <img src="/images/customer/add.jpg" @click="addOne(meal)">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- <div class="row" v-if="!showNutrition">
               <div class="col-md-12 modal-meal-image">
                 <img :src="meal.featured_image">
                 <p>{{ meal.description }}</p>
@@ -131,17 +146,16 @@
                     </div>
                   </div>
               </div>
-              </div>-->
-            </b-modal>
+                </div>-->
+              </b-modal>
 
-            <div class="row">
-              <div class="col-sm-12">
-
-                <div class="row">
-                  <div class="col-sm-12 store-logo-area">
-                    <img v-if="storeLogo" class="store-logo" :src="storeLogo" alt="Company Logo"/>
-                  </div>
-                  <div class="col-sm-12 category-area">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="row">
+                    <div class="col-sm-12 store-logo-area">
+                      <img v-if="storeLogo" class="store-logo" :src="storeLogo" alt="Company Logo">
+                    </div>
+                    <div class="col-sm-12 category-area">
                       <div class="filter-area">
                         <b-button @click="viewFilters" class="green">
                           <i class="fa fa-filter"></i>
@@ -154,115 +168,132 @@
                       </div>
 
                       <ul>
-                        <li v-for="category in categories" :key="category" @click="goToCategory(category)">{{ category }}</li>
+                        <li
+                          v-for="category in categories"
+                          :key="category"
+                          @click="goToCategory(category)"
+                        >{{ category }}</li>
                       </ul>
 
                       <div>
-                        <b-btn variant="danger" class="orange pull-right" @click="clearAll"><i class="fa fa-eraser"></i>&nbsp;Clear Bag</b-btn>
-                      </div>
-                  </div>
-                  </div>
-              </div>
-            </div>
-            <div class="row">
-              <div :class="`col-md-9 main-menu-area`">
-                <Spinner v-if="!meals.length" position="absolute"/>
-                <div
-                  v-for="group in meals"
-                  :key="group.category"
-                  :id="group.category"
-                  class="categories"
-                >
-                  <h2 class="text-center mb-3 dbl-underline">{{group.category}}</h2>
-                  <div class="row">
-                    <div
-                      class="col-sm-6 col-lg-4 col-xl-3"
-                      v-for="meal in group.meals"
-                      :key="meal.id"
-                    >
-                      <img
-                        :src="meal.featured_image"
-                        class="menu-item-img"
-                        @click="showMealModal(meal)">
-                        </img>
-                      <div class="d-flex justify-content-between align-items-center mb-2 mt-1">
-                        <b-btn @click="minusOne(meal)" class="menu-bag-btn plus-minus gray">
-                          <i>-</i>
+                        <b-btn variant="danger" class="orange pull-right" @click="clearAll">
+                          <i class="fa fa-eraser"></i>&nbsp;Clear Bag
                         </b-btn>
-                        <!-- <img src="/images/customer/minus.jpg" @click="minusOne(meal)" class="plus-minus"> -->
-                        <b-form-input
-                          type="text"
-                          name
-                          id
-                          class="quantity"
-                          :value="quantity(meal)"
-                          readonly
-                        ></b-form-input>
-                        <b-btn @click="addOne(meal)" class="menu-bag-btn plus-minus">
-                          <i>+</i>
-                        </b-btn>
-                        <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
                       </div>
-                      <p class="center-text strong featured">{{ meal.title }}</p>
-                      <p class="center-text featured">{{ format.money(meal.price) }}</p>
                     </div>
                   </div>
                 </div>
               </div>
-
-              <div class="col-sm-5 col-md-3 bag-area">
-                <ul class="list-group">
-                  <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
-                    <div v-if="item && item.quantity > 0" class="d-flex align-items-center">
-                      <div class="mr-2">
+              <div class="row">
+                <div :class="`col-md-9 main-menu-area`">
+                  <Spinner v-if="!meals.length" position="absolute"/>
+                  <div
+                    v-for="group in meals"
+                    :key="group.category"
+                    :id="group.category"
+                    class="categories"
+                  >
+                    <h2 class="text-center mb-3 dbl-underline">{{group.category}}</h2>
+                    <div class="row">
+                      <div
+                        class="col-sm-6 col-lg-4 col-xl-3"
+                        v-for="meal in group.meals"
+                        :key="meal.id"
+                      >
                         <img
-                          src="/images/customer/bag-plus.png"
-                          @click="addOne(item.meal)"
-                          class="bag-plus-minus"
+                          :src="meal.featured_image"
+                          class="menu-item-img"
+                          @click="showMealModal(meal)"
                         >
-                        <p class="bag-quantity">{{ item.quantity }}</p>
-                        <img
-                          src="/images/customer/bag-minus.png"
-                          @click="minusOne(item.meal)"
-                          class="bag-plus-minus"
-                        >
-                      </div>
-                      <div class="bag-item-image mr-2">
-                        <thumbnail :src="item.meal.featured_image" :src-placeholder="item.meal.featured_image" class="cart-item-img"></thumbnail>
-                      </div>
-                      <div class="flex-grow-1 mr-2">{{ item.meal.title }}</div>
-                      <div class>
-                        <img
-                          src="/images/customer/x.png"
-                          @click="clearMeal(item.meal)"
-                          class="clear-meal"
-                        >
+                        <div class="d-flex justify-content-between align-items-center mb-2 mt-1">
+                          <b-btn @click="minusOne(meal)" class="menu-bag-btn plus-minus gray">
+                            <i>-</i>
+                          </b-btn>
+                          <!-- <img src="/images/customer/minus.jpg" @click="minusOne(meal)" class="plus-minus"> -->
+                          <b-form-input
+                            type="text"
+                            name
+                            id
+                            class="quantity"
+                            :value="quantity(meal)"
+                            readonly
+                          ></b-form-input>
+                          <b-btn @click="addOne(meal)" class="menu-bag-btn plus-minus">
+                            <i>+</i>
+                          </b-btn>
+                          <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
+                        </div>
+                        <p class="center-text strong featured">{{ meal.title }}</p>
+                        <p class="center-text featured">{{ format.money(meal.price) }}</p>
                       </div>
                     </div>
-                  </li>
-                </ul>
+                  </div>
+                </div>
 
-                  <p class="align-right" v-if="minOption === 'meals' && total < minimumMeals && !manualOrder">
-                    Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
-                  </p>
+                <div class="col-sm-5 col-md-3 bag-area">
+                  <ul class="list-group">
+                    <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
+                      <div v-if="item && item.quantity > 0" class="d-flex align-items-center">
+                        <div class="mr-2 text-center">
+                          <img
+                            src="/images/customer/bag-plus.png"
+                            @click="addOne(item.meal)"
+                            class="bag-plus-minus"
+                          >
+                          <p class="bag-quantity">{{ item.quantity }}</p>
+                          <img
+                            src="/images/customer/bag-minus.png"
+                            @click="minusOne(item.meal)"
+                            class="bag-plus-minus"
+                          >
+                        </div>
+                        <div class="bag-item-image mr-2">
+                          <thumbnail
+                            :src="item.meal.featured_image"
+                            :src-placeholder="item.meal.featured_image"
+                            class="cart-item-img"
+                          ></thumbnail>
+                        </div>
+                        <div class="flex-grow-1 mr-2">{{ item.meal.title }}</div>
+                        <div class>
+                          <img
+                            src="/images/customer/x.png"
+                            @click="clearMeal(item.meal)"
+                            class="clear-meal"
+                          >
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
 
-                <div>
-                  <router-link to="/customer/bag">
-                    <b-btn v-if="minOption === 'meals' && total >= minimumMeals && !preview && !manualOrder" class="menu-bag-btn">NEXT</b-btn>
-                  </router-link>
-                </div>
-                <div>
-                  <p class="align-right" v-if="minOption === 'price' && totalBagPrice < minPrice && !manualOrder">
-                    Please add {{format.money(remainingPrice)}} more to continue.
-                  </p>
-                </div>
-                <div>
-                  <router-link to="/customer/bag">
-                    <b-btn v-if="minOption === 'price' && totalBagPrice >= minPrice && !preview && !manualOrder" class="menu-bag-btn">NEXT</b-btn>
-                  </router-link>
-                </div>
-                <div v-if="manualOrder">
-                    
+                  <p
+                    class="align-right"
+                    v-if="minOption === 'meals' && total < minimumMeals && !manualOrder"
+                  >Please add {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
+
+                  <div>
+                    <router-link to="/customer/bag">
+                      <b-btn
+                        v-if="minOption === 'meals' && total >= minimumMeals && !preview && !manualOrder"
+                        class="menu-bag-btn"
+                      >NEXT</b-btn>
+                    </router-link>
+                  </div>
+                  <div>
+                    <p
+                      class="align-right"
+                      v-if="minOption === 'price' && totalBagPrice < minPrice && !manualOrder"
+                    >Please add {{format.money(remainingPrice)}} more to continue.</p>
+                  </div>
+                  <div>
+                    <router-link to="/customer/bag">
+                      <b-btn
+                        v-if="minOption === 'price' && totalBagPrice >= minPrice && !preview && !manualOrder"
+                        class="menu-bag-btn"
+                      >NEXT</b-btn>
+                    </router-link>
+                  </div>
+                  <div v-if="manualOrder">
                     <div v-if="transferTypeCheck === 'both'" class="center-text">
                       <b-form-group>
                         <b-form-radio-group v-model="pickup" name="pickup">
@@ -276,8 +307,14 @@
                       </b-form-group>
                     </div>
                     <div>
-                      <p v-if="pickup === 0 && transferTypeCheck !== 'pickup'" class="center-text">Delivery Day</p>
-                      <p v-if="pickup === 1 || transferTypeCheck === 'pickup'" class="center-text">Pickup Day</p>
+                      <p
+                        v-if="pickup === 0 && transferTypeCheck !== 'pickup'"
+                        class="center-text"
+                      >Delivery Day</p>
+                      <p
+                        v-if="pickup === 1 || transferTypeCheck === 'pickup'"
+                        class="center-text"
+                      >Pickup Day</p>
                       <b-form-group v-if="deliveryDaysOptions.length > 1" description>
                         <b-select
                           :options="deliveryDaysOptions"
@@ -294,23 +331,49 @@
                     </div>
 
                     <b-form-group description>
-                      <p class="center-text mt-3">Choose Customer</p> 
+                      <p class="center-text mt-3">Choose Customer</p>
                       <b-select :options="customers" v-model="customer" class="bag-select" required>
                         <option slot="top" disabled>-- Select Customer --</option>
                       </b-select>
                     </b-form-group>
 
-                    <b-btn variant="success" v-if="storeSettings.applyDeliveryFee" @click="addDeliveryFee = true" class="center">Add Delivery Fee</b-btn>
-                    <b-btn variant="success" v-if="storeSettings.applyProcessingFee" @click="addProcessingFee = true" class="center mt-2">Add Processing Fee</b-btn>
+                    <b-btn
+                      variant="success"
+                      v-if="storeSettings.applyDeliveryFee"
+                      @click="addDeliveryFee = true"
+                      class="center"
+                    >Add Delivery Fee</b-btn>
+                    <b-btn
+                      variant="success"
+                      v-if="storeSettings.applyProcessingFee"
+                      @click="addProcessingFee = true"
+                      class="center mt-2"
+                    >Add Processing Fee</b-btn>
 
                     <div>
-                      <h6 class="mt-2 center-text" v-if="!addDeliveryFee && !addProcessingFee">Total: {{ format.money(totalBagPriceBeforeFees) }}</h6>
-                      <p class="mt-2 center-text" v-if="addDeliveryFee || addProcessingFee">Subtotal: {{ format.money(totalBagPriceBeforeFees) }}</p>
-                      <p class="mt-2 center-text" v-if="addDeliveryFee">Delivery Fee: {{ format.money(storeSettings.deliveryFee) }}</p>
-                      <p class="mt-2 center-text" v-if="addProcessingFee">Processing Fee: {{ format.money(storeSettings.processingFee) }}</p>
-                      <h6 class="mt-2 center-text" v-if="addDeliveryFee || addProcessingFee">Total: {{ format.money(totalBagPriceAfterFees) }}</h6>
+                      <h6
+                        class="mt-2 center-text"
+                        v-if="!addDeliveryFee && !addProcessingFee"
+                      >Total: {{ format.money(totalBagPriceBeforeFees) }}</h6>
+                      <p
+                        class="mt-2 center-text"
+                        v-if="addDeliveryFee || addProcessingFee"
+                      >Subtotal: {{ format.money(totalBagPriceBeforeFees) }}</p>
+                      <p
+                        class="mt-2 center-text"
+                        v-if="addDeliveryFee"
+                      >Delivery Fee: {{ format.money(storeSettings.deliveryFee) }}</p>
+                      <p
+                        class="mt-2 center-text"
+                        v-if="addProcessingFee"
+                      >Processing Fee: {{ format.money(storeSettings.processingFee) }}</p>
+                      <h6
+                        class="mt-2 center-text"
+                        v-if="addDeliveryFee || addProcessingFee"
+                      >Total: {{ format.money(totalBagPriceAfterFees) }}</h6>
                     </div>
                     <b-btn class="menu-bag-btn mt-2" @click="checkout">Create Manual Order</b-btn>
+                  </div>
                 </div>
               </div>
             </div>
@@ -319,7 +382,6 @@
       </div>
     </div>
   </div>
-</div>
 </template>
 
 
@@ -340,10 +402,10 @@ export default {
   },
   props: {
     preview: {
-      default: false,
+      default: false
     },
     manualOrder: {
-      default: false,
+      default: false
     }
   },
   data() {
@@ -400,7 +462,7 @@ export default {
       loggedIn: "loggedIn",
       minOption: "minimumOption",
       minMeals: "minimumMeals",
-      minPrice: 'minimumPrice'
+      minPrice: "minimumPrice"
     }),
     storeSettings() {
       return this.store.settings;
@@ -408,10 +470,10 @@ export default {
     minimumOption() {
       return this.minOption;
     },
-    minimumMeals(){
+    minimumMeals() {
       return this.minMeals;
     },
-    minimumPrice(){
+    minimumPrice() {
       return this.minPrice;
     },
     remainingMeals() {
@@ -426,49 +488,47 @@ export default {
       }
       return "meal";
     },
-    totalBagPriceBeforeFees(){
+    totalBagPriceBeforeFees() {
       let deliveryFee = this.storeSettings.deliveryFee;
       let processingFee = this.storeSettings.processingFee;
       let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
       let applyProcessingFee = this.storeSettings.applyProcessingFee;
 
-      if (applyDeliveryFee && applyProcessingFee){
+      if (applyDeliveryFee && applyProcessingFee) {
         return this.totalBagPrice - deliveryFee - processingFee;
-      }
-      else if (applyDeliveryFee && !applyProcessingFee){
+      } else if (applyDeliveryFee && !applyProcessingFee) {
         return this.totalBagPrice - deliveryFee;
-      }
-      else if (applyProcessingFee && !applyDeliveryFee){
+      } else if (applyProcessingFee && !applyDeliveryFee) {
         return this.totalBagPrice - processingFee;
-      }
-      else
-        return this.totalBagPrice;
+      } else return this.totalBagPrice;
     },
-    totalBagPriceAfterFees(){
+    totalBagPriceAfterFees() {
       let deliveryFee = this.storeSettings.deliveryFee;
       let processingFee = this.storeSettings.processingFee;
 
-      if (this.addDeliveryFee && this.addProcessingFee){
+      if (this.addDeliveryFee && this.addProcessingFee) {
         return this.totalBagPriceBeforeFees + deliveryFee + processingFee;
-      }
-      else if (this.addDeliveryFee && !this.addProcessingFee){
+      } else if (this.addDeliveryFee && !this.addProcessingFee) {
         return this.totalBagPriceBeforeFees + deliveryFee;
-      }
-      else if (this.addProcessingFee && !this.addDeliveryFee){
+      } else if (this.addProcessingFee && !this.addDeliveryFee) {
         return this.totalBagPriceBeforeFees + processingFee;
-      }
-      else
-        return this.totalBagPriceBeforeFees;
+      } else return this.totalBagPriceBeforeFees;
     },
-    transferType(){
-      return this.storeSettings.transferType.split(',');
+    transferType() {
+      return this.storeSettings.transferType.split(",");
     },
-    transferTypeCheck(){
-      if (_.includes(this.transferType, 'delivery') && _.includes(this.transferType, 'pickup')){
-        return 'both';
+    transferTypeCheck() {
+      if (
+        _.includes(this.transferType, "delivery") &&
+        _.includes(this.transferType, "pickup")
+      ) {
+        return "both";
       }
-      if (!_.includes(this.transferType, 'delivery') && _.includes(this.transferType, 'pickup')){
-        return 'pickup';
+      if (
+        !_.includes(this.transferType, "delivery") &&
+        _.includes(this.transferType, "pickup")
+      ) {
+        return "pickup";
       }
     },
     deliveryDaysOptions() {
@@ -592,11 +652,11 @@ export default {
     customers() {
       let customers = this.storeCustomers;
       let grouped = {};
-      customers.forEach(customer =>{
+      customers.forEach(customer => {
         grouped[customer.id] = customer.name;
       });
       return grouped;
-    },
+    }
   },
   beforeDestroy() {
     this.showActiveFilters();
@@ -725,13 +785,13 @@ export default {
             ? ingredient.full_nutrients[vitamindIndex].value
             : ingredient.vitaminD) * multiplier;
         nutrition.calcium +=
-          (calciumIndex > -1
+          calciumIndex > -1
             ? ingredient.full_nutrients[calciumIndex].value
-            : ingredient.calcium);
+            : ingredient.calcium;
         nutrition.iron +=
-          (ironIndex > -1
+          ironIndex > -1
             ? ingredient.full_nutrients[ironIndex].value
-            : ingredient.iron);
+            : ingredient.iron;
         nutrition.sugars +=
           (ingredient.nf_addedsugars || ingredient.sugars) * multiplier;
       });
@@ -822,12 +882,11 @@ export default {
         return _allergyId === allergyId;
       });
 
-      if(i === -1) {
+      if (i === -1) {
         let allergies = [...this.filters.allergies];
         allergies.push(allergyId);
-        Vue.set(this.filters, 'allergies', allergies);
-      }
-      else {
+        Vue.set(this.filters, "allergies", allergies);
+      } else {
         Vue.delete(this.filters.allergies, i);
       }
     },
@@ -847,7 +906,7 @@ export default {
       this.active = _.mapValues(this.active, () => false);
       this.filteredView = false;
     },
-    addDeliveryFee(){
+    addDeliveryFee() {
       this.totalBagPriceBeforeFees += 5;
     },
     checkout() {
@@ -862,10 +921,12 @@ export default {
           store_id: this.store.id
         })
         .then(async resp => {
-          this.emptyBag();  
+          this.emptyBag();
         })
         .catch(response => {
-          let error = _.first(Object.values(response.response.data.errors)) || ['Please try again'];
+          let error = _.first(Object.values(response.response.data.errors)) || [
+            "Please try again"
+          ];
           error = error.join(" ");
           this.$toastr.e(error, "Error");
         })
