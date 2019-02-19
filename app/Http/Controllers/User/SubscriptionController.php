@@ -31,7 +31,14 @@ class SubscriptionController extends UserController
           ], 404);
         }
 
-        $sub->cancel();
+        try {
+          $sub->cancel();
+        }
+        catch(\Exception $e) {
+          return response()->json([
+            'error' => 'Failed to cancel Meal Plan'
+          ], 500); 
+        }
     }
 
      /**
@@ -54,7 +61,7 @@ class SubscriptionController extends UserController
       catch(\Exception $e) {
         return response()->json([
           'error' => 'Failed to pause Meal Plan'
-        ], 404); 
+        ], 500); 
       }
     }
 
@@ -78,7 +85,7 @@ class SubscriptionController extends UserController
       catch(\Exception $e) {
         return response()->json([
           'error' => 'Failed to resume Meal Plan'
-        ], 404); 
+        ], 500); 
       }
     }
 }

@@ -225,6 +225,9 @@ class Store extends Model
     }
     
     public function getNextDeliveryDate($factorCutoff = false) {
+      if(!$this->settings) {
+        return null;
+      }
       return $this->settings->getNextDeliveryDates($factorCutoff)[0] ?? null;
     }
 

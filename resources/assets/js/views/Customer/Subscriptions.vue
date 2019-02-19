@@ -31,13 +31,13 @@
                     </div>
                     <div class="col-md-4" v-if="subscription.status === 'active'">
                       <h2>{{ format.money(subscription.amount) }} per {{subscription.interval}}</h2>
-                      <b-btn variant="warning" @click="() => pauseSubscription(subscription)">Pause</b-btn>
-                      <b-btn variant="danger" @click="() => cancelSubscription(subscription)">Cancel</b-btn>
+                      <b-btn variant="warning" @click.stop="() => pauseSubscription(subscription)">Pause</b-btn>
+                      <b-btn variant="danger" @click.stop="() => cancelSubscription(subscription)">Cancel</b-btn>
                     </div>
                     <div class="col-md-4" v-else-if="subscription.status === 'paused'">
                       <b-btn
                         variant="warning"
-                        @click="() => resumeSubscription(subscription)"
+                        @click.stop="() => resumeSubscription(subscription)"
                       >Resume</b-btn>
                     </div>
                     <div class="col-md-4" v-else>
@@ -146,24 +146,52 @@ export default {
         };
       });
     },
-    pauseSubscription(subscription) {
-      axios
-        .post(`/api/me/subscriptions/${subscription.id}/pause`)
-        .then(resp => {
-          this.refreshSubscriptions();
-        });
+    async pauseSubscription(subscription) {
+      try {
+        const resp = await axios.post(
+          `/api/me/subscriptions/${subscription.id}/pause`
+        );
+        this.$toastr.s(
+          "Meal Plan paused!"
+        );
+      } catch (e) {
+        this.$toastr.e(
+          "Please get in touch with our support team.",
+          "Failed to pause Meal Plan"
+        );
+      }
+
+      this.refreshSubscriptions();
     },
-    resumeSubscription(subscription) {
-      axios
-        .post(`/api/me/subscriptions/${subscription.id}/resume`)
-        .then(resp => {
-          this.refreshSubscriptions();
-        });
+    async resumeSubscription(subscription) {
+      try {
+        const resp = await axios.post(
+          `/api/me/subscriptions/${subscription.id}/resume`
+        );
+        this.$toastr.s(
+          "Meal Plan resumed!"
+        );
+      } catch (e) {
+        this.$toastr.e(
+          "Please get in touch with our support team.",
+          "Failed to resume Meal Plan"
+        );
+      }
+
+      this.refreshSubscriptions();
     },
-    cancelSubscription(subscription) {
-      axios.delete(`/api/me/subscriptions/${subscription.id}`).then(resp => {
-        this.refreshSubscriptions();
-      });
+    async cancelSubscription(subscription) {
+      try {
+        const resp = await axios.delete(`/api/me/subscriptions/${subscription.id}`);
+        this.$toastr.s(
+          "Meal Plan cancelled!"
+        );
+      } catch (e) {
+        this.$toastr.e(
+          "Please get in touch with our support team.",
+          "Failed to cancel Meal Plan"
+        );
+      }
     }
   }
 };

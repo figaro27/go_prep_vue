@@ -3,7 +3,8 @@
 namespace App;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
+use App\Model;
+use Illuminate\Support\Facades\Cache;
 
 class StoreSetting extends Model
 {
@@ -55,6 +56,21 @@ class StoreSetting extends Model
         'stripe_account' => 'json',
         'notifications' => 'json',
     ];
+
+    public function setAttributeVisibility() {
+      $user = auth('api')->user();
+
+      if(!$user || !$user->hasRole('store')) {
+        $this->setHidden([
+          'stripe',
+          'stripe_id',
+          'stripe_account',
+          'notifications',
+          'user_id',
+          'units',
+        ]);
+      }
+    }
 
     public function getNextDeliveryDates($factorCutoff = false)
     {

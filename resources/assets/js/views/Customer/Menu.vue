@@ -906,9 +906,6 @@ export default {
       this.active = _.mapValues(this.active, () => false);
       this.filteredView = false;
     },
-    addDeliveryFee() {
-      this.totalBagPriceBeforeFees += 5;
-    },
     checkout() {
       this.loading = true;
       axios
