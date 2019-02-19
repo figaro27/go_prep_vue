@@ -41,7 +41,7 @@
     <div class="app-body">
       <main class="main">
         <page-spinner v-if="!initialized"></page-spinner>
-        <div class="container-fluid">
+        <div class="container-fluid" v-if="initialized">
           <router-view></router-view>
         </div>
       </main>
