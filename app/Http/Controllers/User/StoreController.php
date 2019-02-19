@@ -12,7 +12,8 @@ class StoreController extends UserController
 {
 
     public function index() {
-      return Store::all();
+      $stores = Store::all();
+      return $stores->makeHidden(['settings.notifications']);
     }
 
     public function meals(Request $request, $storeId = null) {
