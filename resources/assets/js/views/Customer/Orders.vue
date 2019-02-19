@@ -63,7 +63,7 @@
                       <template slot="FOOT_subtotal" slot-scope="row">
                         <p>Subtotal: {{ format.money(order.preFeePreDiscount) }}</p>
                         <p>Meal Plan Discount:
-                          <span class="red">({{ format.money(order.mealPlanDiscount) }})</span>
+                          <span class="text-primary">({{ format.money(order.mealPlanDiscount) }})</span>
                         </p>
                         <p>Delivery Fee: {{ format.money(order.deliveryFee) }}</p>
                         <p>Processing Fee: {{ format.money(order.processingFee) }}</p>

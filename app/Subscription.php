@@ -91,15 +91,11 @@ class Subscription extends Model
      */
     public function cancel()
     {
-        try {
-            $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
-                'stripe_account' => $this->store->settings->stripe_id,
-            ]);
-            $subscription->cancel_at_period_end = true;
-            $subscription->save();
-        } catch (\Exception $e) {
-            return response()->json([], 500);
-        }
+        $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
+            'stripe_account' => $this->store->settings->stripe_id,
+        ]);
+        $subscription->cancel_at_period_end = true;
+        $subscription->save();
 
         $this->update([
             'status' => 'cancelled',
