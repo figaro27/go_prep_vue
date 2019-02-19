@@ -1,6 +1,17 @@
 .order-list {
   .order-list-item {
-    @include media-breakpoint-down(xs) {
+    
+  }
+
+  @include media-breakpoint-down(xs) {
+    > div {
+      + div {
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.125);
+      }
+    }
+
+    .order-list-item {
       padding: 0;
       border: none;
     }
