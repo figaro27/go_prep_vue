@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Store;
 
+use App\Store;
 use GuzzleHttp;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use Stripe;
-use App\Store;
 
 class StripeController extends StoreController
 {
@@ -55,12 +55,15 @@ class StripeController extends StoreController
     {
         $settings = $this->store->settings;
 
-        try {
-          $links = Stripe\Account::createLoginLink($settings->stripe_id);
-          return $links;
+        if (!$settings->stripe_id) {
+            return null;
         }
-        catch(\Exception $e) {
-          return null;
+
+        try {
+            $links = Stripe\Account::createLoginLink($settings->stripe_id);
+            return $links;
+        } catch (\Exception $e) {
+            return null;
         }
     }
 
@@ -106,8 +109,6 @@ class StripeController extends StoreController
                 "email" => $this->store->user->email,
             ]);
         }
-
-        $links = $account->login_links->create();
 
         if (!isset($account->id)) {
             return null;
