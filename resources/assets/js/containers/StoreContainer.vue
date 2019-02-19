@@ -48,7 +48,7 @@
       <main class="main">
         <page-spinner v-if="!initialized"></page-spinner>
         <!-- <Breadcrumb :list="list"/> -->
-        <div class="container-fluid">
+        <div class="container-fluid" v-if="initialized">
           <router-view></router-view>
         </div>
       </main>

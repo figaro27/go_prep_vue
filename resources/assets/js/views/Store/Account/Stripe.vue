@@ -17,11 +17,7 @@ export default {
   computed: {
     ...mapGetters({
       user: "user",
-      store: "store",
-      storeDetail: "storeDetail",
-      storeSetting: "storeSetting",
-      storeSettings: "storeSettings",
-      storeCategories: "storeCategories"
+      initialized: "initialized",
     })
   },
   created() {},
@@ -29,11 +25,13 @@ export default {
     this.start();
   },
   methods: {
-    ...mapActions(["init"]),
+    ...mapActions(["init", "refreshStoreSettings"]),
     start() {
+      const init = this.initialized;
       axios
         .post(`/api/me/stripe/connect`, { code: this.$route.query.code })
-        .finally(() => {
+        .finally(async () => {
+          await this.refreshStoreSettings();
           this.$router.replace("/store/account/settings");
         });
     }

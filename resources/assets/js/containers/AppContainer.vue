@@ -17,7 +17,9 @@ export default {
     StoreContainer,
   },
   data() {
-    return {};
+    return {
+      
+    };
   },
   computed: {
     ...mapGetters(["loggedIn", "user"]),

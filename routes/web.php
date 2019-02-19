@@ -39,7 +39,7 @@ foreach ([config('app.domain')] as $domain) {
             Route::post('storeMealAdmin', 'MealController@storeAdmin');
             Route::post('updateActive', 'MealController@updateActive');
 
-            Route::get('/getCustomer', 'UserDetailController@show');
+            Route::get('/getCustomer', 'User\\UserDetailController@show');
         });
 
         // All logged in stores

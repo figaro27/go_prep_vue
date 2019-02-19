@@ -340,6 +340,11 @@ const actions = {
     state,
     dispatch
   }, args = {}) {
+
+    if(auth.getToken()) {
+      await auth.refreshToken();
+    }
+    
     const res = await axios.get('/api');
     const {data} = await res;
 
@@ -423,8 +428,6 @@ const actions = {
 
     state.isLoading = false;
     state.initialized = true;
-
-    auth.refreshToken();
 
     // try {   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
     //     let orders = data.store.orders;     commit('storeOrders', {orders});   }
