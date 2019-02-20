@@ -726,6 +726,17 @@ ol.plain {
   color:#ffffff !important;
 }
 
+.d-flex > *, .d-inline-flex > * {
+  &.flex-shrink-1 {
+    flex-shrink: 1 !important;
+  }
+  &.flex-grow-1 {
+    flex-grow: 1 !important;
+  }
+  &.flex-grow-0 {
+    flex-grow: 0 !important;
+  }
+}
 .align-right{
   display:flex !important;
   justify-content: flex-end !important;

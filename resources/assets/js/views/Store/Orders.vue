@@ -12,7 +12,7 @@
           >
             <div slot="beforeTable" class="mb-2">
               <div class="d-flex align-items-center">
-                <div class="mr-2">
+                <div class="mr-2 flex-grow-0">
                   <b-btn
                     @click="$set(filters, 'has_notes', !filters.has_notes)"
                     :selected="filters.has_notes"
@@ -20,7 +20,7 @@
                     class="filter-btn"
                   >Filter Delivery Notes</b-btn>
                 </div>
-                <div class="mr-2">
+                <div class="mr-2 flex-grow-0">
                   <b-btn
                     @click="$set(filters, 'fulfilled', !filters.fulfilled)"
                     :selected="filters.fulfilled"
@@ -230,7 +230,7 @@ export default {
         "delivery_date",
         "pickup",
         "amount",
-        "actions",
+        "actions"
       ],
       options: {
         headings: {
@@ -244,7 +244,7 @@ export default {
           delivery_date: "Delivery Date",
           pickup: "Delivery Method",
           amount: "Total",
-          actions: "Actions",
+          actions: "Actions"
         },
         rowClassCallback: function(row) {
           let classes = `order-${row.id}`;
@@ -289,8 +289,8 @@ export default {
       let filtered = _.filter(this.orders, order => {
         if (
           "delivery_dates" in filters &&
-          filters.delivery_dates.start &&
-          filters.delivery_dates.end
+          (filters.delivery_dates.start ||
+          filters.delivery_dates.end)
         ) {
           let dateMatch = false;
 
@@ -304,15 +304,13 @@ export default {
                 "[]"
               );
           } else if (filters.delivery_dates.start) {
-            dateMatch = order.delivery_date.isSameOrAfter(
-              filters.delivery_dates.start,
-              "date"
-            );
+            dateMatch = order.delivery_date
+              .hours(12)
+              .isSameOrAfter(filters.delivery_dates.start, "date", "[]");
           } else if (filters.delivery_dates.end) {
-            dateMatch = order.delivery_date.isSameOrBefore(
-              filters.delivery_dates.end,
-              "date"
-            );
+            dateMatch = order.delivery_date
+              .hours(12)
+              .isSameOrBefore(filters.delivery_dates.end, "date", "[]");
           }
 
           if (!dateMatch) return false;
@@ -452,7 +450,7 @@ export default {
         });
     },
     onChangeDateFilter() {},
-    updateViewedOrders(){
+    updateViewedOrders() {
       axios.get(`/api/me/ordersUpdateViewed`);
     }
   }

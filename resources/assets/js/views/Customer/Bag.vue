@@ -373,7 +373,7 @@ export default {
       else return "Prepared Once";
     },
     deliveryDaysOptions() {
-      return this.storeSetting("next_delivery_dates", []).map(date => {
+      return this.storeSetting("next_orderable_delivery_dates", []).map(date => {
         return {
           value: date.date,
           text: moment(date.date).format("dddd MMM Do")

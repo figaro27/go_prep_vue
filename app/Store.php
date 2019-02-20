@@ -153,11 +153,12 @@ class Store extends Model
 
         foreach ($orders as $order) {
             foreach ($order->meals as $meal) {
+                $quantity = $meal->pivot->quantity;
+
                 foreach ($meal->ingredients as $ingredient) {
 
-                    $quantity = $ingredient->pivot->quantity;
                     $quantity_unit = $ingredient->pivot->quantity_unit;
-                    $quantity_base = $ingredient->pivot->quantity_base;
+                    $quantity_base = $ingredient->pivot->quantity_base * $quantity;
 
                     $key = $ingredient->id;
 
