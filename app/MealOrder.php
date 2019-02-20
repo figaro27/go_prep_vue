@@ -8,13 +8,6 @@ class MealOrder extends Pivot
 {
     protected $table = 'meal_orders';
 
-    protected $appends = ['quantity'];
-
-    public function getQuantityAttribute()
-    {
-        return $this->pivot->quantity;
-    }
-
     public function meals()
     {
         return $this->belongsTo('App\Meal');

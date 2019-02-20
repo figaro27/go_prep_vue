@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Store;
+use App\MealOrder;
 use App\Utils\Data\Format;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
@@ -72,7 +73,13 @@ class Meal extends Model
 
     public function getLifetimeOrdersAttribute()
     {
-        return $this->orders->count();
+        $id = $this->id;
+        $lifetimeOrders = 0;
+        $mealOrders = MealOrder::where('meal_id', $id)->get();
+        foreach ($mealOrders as $mealOrder){
+            $lifetimeOrders += $mealOrder->quantity;
+        }
+        return $lifetimeOrders;
     }
 
     public function getActiveOrdersAttribute()
