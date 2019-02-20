@@ -2,7 +2,6 @@
   <div class="bag">
     <div class="card">
       <div class="card-body">
-        <b-btn @click="test">Test</b-btn>
         <spinner v-if="loading" position="absolute"></spinner>
         <div class="row">
           <div class="col-md-12">
@@ -382,18 +381,13 @@ export default {
     },
   },
   mounted() {
-    // if (this.deliveryDayOptions.length === 1){
-    //   this.deliveryDay === this.deliveryDayOptions[0].value
-    // }
+    if (this.deliveryDaysOptions.length === 1){
+      this.deliveryDay = this.deliveryDaysOptions[0].value
+    }
   },
   methods: {
     ...mapActions(["refreshSubscriptions", "refreshCustomerOrders"]),
     ...mapMutations(["emptyBag"]),
-    test(){
-      this.$nextTick(function() {
-          this.deliveryDay === 'test';
-        });
-    },
     quantity(meal) {
       const qty = this.$store.getters.bagItemQuantity(meal);
       return qty;
