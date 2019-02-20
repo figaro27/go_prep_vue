@@ -97,8 +97,8 @@ export default {
       let filtered = _.filter(this.orders, order => {
         if (
           "delivery_dates" in filters &&
-          filters.delivery_dates.start &&
-          filters.delivery_dates.end
+          (filters.delivery_dates.start ||
+          filters.delivery_dates.end)
         ) {
           let dateMatch = false;
 
@@ -112,15 +112,13 @@ export default {
                 "[]"
               );
           } else if (filters.delivery_dates.start) {
-            dateMatch = order.delivery_date.isSameOrAfter(
-              filters.delivery_dates.start,
-              "date"
-            );
+            dateMatch = order.delivery_date
+              .hours(12)
+              .isSameOrAfter(filters.delivery_dates.start, "date", "[]");
           } else if (filters.delivery_dates.end) {
-            dateMatch = order.delivery_date.isSameOrBefore(
-              filters.delivery_dates.end,
-              "date"
-            );
+            dateMatch = order.delivery_date
+              .hours(12)
+              .isSameOrBefore(filters.delivery_dates.end, "date", "[]");
           }
 
           if (!dateMatch) return false;

@@ -350,11 +350,12 @@
           <p>Low Threshold</p>
         </div>
       </div>-->
+      <!--
       <p>Reporting</p>
       <div class="card">
         <div class="card-body">
           <b-form @submit.prevent="updateStoreSettings">
-            <p>
+              <p>
               Show # Delivery Days By Default
               <img
                 v-b-popover.hover="'This sets the default date view in the calendars on all of the tables of the application. You may only want to see information about the next single upcoming delivery day, or you may want to see the next two delivery days. Enter 0 to see all upcoming delivery days.'"
@@ -380,6 +381,7 @@
           </b-form>
         </div>
       </div>
+      -->
 
       <p>Payments</p>
       <div class="card">

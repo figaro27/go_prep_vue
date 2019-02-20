@@ -1,15 +1,16 @@
 <template>
-  <div class="delivery-date-picker mb-0">
+  <div class="delivery-date-picker mb-0 flex-grow-0">
     <div class="d-flex align-items-center">
-      <div class="mr-2" v-if="!storeSettings.allowPickup">Delivery Dates:</div>
-      <div class="mr-2" v-if="storeSettings.allowPickup">Delivery / Pickup Dates:</div>
+      <div class="mr-2 flex-grow-0" v-if="!storeSettings.allowPickup">Delivery Dates:</div>
+      <div class="mr-2 flex-grow-0" v-if="storeSettings.allowPickup">Delivery / Pickup Dates:</div>
 
       <div class="flex-grow-1">
         <date-range-picker
-            ref="picker"
-            @selected="val => onChange(val)"
-            :class="pickerClasses"
-            i18n="EN"></date-range-picker>
+          ref="picker"
+          @selected="val => onChange(val)"
+          :class="pickerClasses"
+          i18n="EN"
+        ></date-range-picker>
         <!--<v-select
           multiple
           v-model="delivery_dates"
@@ -23,7 +24,6 @@
 
 <style lang="scss">
 .delivery-date-picker {
-  
 }
 </style>
 
@@ -65,15 +65,15 @@ export default {
     },
     pickerClasses() {
       return {
-        'highlight-mon': this.delivery_days.includes('mon'),
-        'highlight-tue': this.delivery_days.includes('tue'),
-        'highlight-wed': this.delivery_days.includes('wed'),
-        'highlight-thu': this.delivery_days.includes('thu'),
-        'highlight-fri': this.delivery_days.includes('fri'),
-        'highlight-sat': this.delivery_days.includes('sat'),
-        'highlight-sun': this.delivery_days.includes('sun'),
-      }
-    },
+        "highlight-mon": this.delivery_days.includes("mon"),
+        "highlight-tue": this.delivery_days.includes("tue"),
+        "highlight-wed": this.delivery_days.includes("wed"),
+        "highlight-thu": this.delivery_days.includes("thu"),
+        "highlight-fri": this.delivery_days.includes("fri"),
+        "highlight-sat": this.delivery_days.includes("sat"),
+        "highlight-sun": this.delivery_days.includes("sun")
+      };
+    }
   },
   watch: {
     delivery_dates(val) {
@@ -111,9 +111,10 @@ export default {
   methods: {
     ...mapActions([]),
     ...mapGetters({
-      getStoreSetting: 'storeSetting'
+      getStoreSetting: "storeSetting"
     }),
     setInitialRange() {
+      return; // Disabled
       if (
         _.isEmpty(this.$refs.picker.dateRange) &&
         this.orders.length &&
@@ -122,12 +123,13 @@ export default {
       ) {
         this.$nextTick(() => {
           this.$refs.picker.dateRange = {
-            start: moment.utc()
+            start: moment
+              .utc()
               .startOf("date")
               .toDate(),
-            end: moment.utc(this.nextDeliveryDates[this.numDeliveryDates - 1].date)
+            end: moment
+              .utc(this.nextDeliveryDates[this.numDeliveryDates - 1].date)
               .endOf("date")
-              .toDate()
           };
           this.$forceUpdate();
         });
@@ -138,11 +140,13 @@ export default {
 
       val = { ...val };
       if (val.start)
-        val.start = moment.utc(val.start)
+        val.start = moment
+          .utc(val.start)
           .subtract(1, "day")
           .startOf("date");
       if (val.end)
-        val.end = moment.utc(val.end)
+        val.end = moment
+          .utc(val.end)
           .subtract(1, "day")
           .endOf("date");
 
