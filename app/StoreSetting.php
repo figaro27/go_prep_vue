@@ -34,7 +34,7 @@ class StoreSetting extends Model
       'stripe_account',
     ];
 
-    public $appends = ['next_delivery_dates', 'stripe'];
+    public $appends = ['next_delivery_dates', 'next_orderable_delivery_dates', 'stripe'];
 
     public function store()
     {
@@ -108,6 +108,19 @@ class StoreSetting extends Model
 
     public function getNextDeliveryDatesAttribute() {
       return $this->getNextDeliveryDates(false)->map(function(Carbon $date) {
+        $cutoff = new Carbon($date);
+        $cutoff->subSeconds($this->getCutoffSeconds());
+        
+        return [
+          'date' => $date->toDateTimeString(),
+          'date_passed' => $date->isPast(),
+          'cutoff' => $cutoff->toDateTimeString(),
+          'cutoff_passed' => $cutoff->isPast(),
+        ];
+      });
+    }
+    public function getNextOrderableDeliveryDatesAttribute() {
+      return $this->getNextDeliveryDates(true)->map(function(Carbon $date) {
         $cutoff = new Carbon($date);
         $cutoff->subSeconds($this->getCutoffSeconds());
         
