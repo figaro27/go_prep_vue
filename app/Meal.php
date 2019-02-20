@@ -74,12 +74,7 @@ class Meal extends Model
     public function getLifetimeOrdersAttribute()
     {
         $id = $this->id;
-        $lifetimeOrders = 0;
-        $mealOrders = MealOrder::where('meal_id', $id)->get();
-        foreach ($mealOrders as $mealOrder){
-            $lifetimeOrders += $mealOrder->quantity;
-        }
-        return $lifetimeOrders;
+        return MealOrder::where('meal_id', $id)->get()->sum('quantity');
     }
 
     public function getActiveOrdersAttribute()
