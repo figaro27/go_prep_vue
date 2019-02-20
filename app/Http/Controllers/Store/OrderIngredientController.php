@@ -25,12 +25,12 @@ class OrderIngredientController extends StoreController
                 return collect($this->store->getOrderIngredients());
             });
         } else {
-            $dates = json_decode($request->get('delivery_dates'));
+            $ddates = json_decode($request->get('delivery_dates'));
 
-            $dates = [
-                'from' => Carbon::parse($dates->from),
-                'to' => Carbon::parse($dates->to),
-            ];
+            $dates = [];
+            if($ddates->from) $dates['from'] = Carbon::parse($ddates->from);
+            if($ddates->to) $dates['to'] = Carbon::parse($ddates->to);
+
             $ingredients = collect($this->store->getOrderIngredients($dates));
         }
 
