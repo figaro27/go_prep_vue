@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Store;
+use Auth;
 
 class Customer extends Model
 {
@@ -68,6 +70,12 @@ class Customer extends Model
       )->orderBy('created_at', 'desc');
     }
 
+    public function getStoreID(){
+        $id = Auth::user()->id;
+        $storeID = Store::where('user_id', $id)->pluck('id')->first();
+        return $storeID;
+    }
+
     public function getJoinedAttribute()
     {
         return $this->user->created_at->format('F d, Y');
@@ -75,22 +83,23 @@ class Customer extends Model
 
     public function getFirstOrderAttribute()
     {
-        return $this->user->order->min("created_at")->format('F d, Y');
+        return $this->user->order->where('store_id', $this->getStoreID())->min("created_at")->format('F d, Y');
     }
 
     public function getLastOrderAttribute()
     {
-        return $this->user->order->max("created_at")->format('F d, Y');
+        return $this->user->order->where('store_id', $this->getStoreID())->max("created_at")->format('F d, Y');
     }
 
     public function getTotalPaymentsAttribute()
     {
-        return $this->user->order->count();
+        
+        return $this->user->order->where('store_id', $this->getStoreID())->count();
     }
 
     public function getTotalPaidAttribute()
     {
-        return $this->user->order->sum("amount");
+        return $this->user->order->where('store_id', $this->getStoreID())->sum("amount");
     }
 
     public function getNameAttribute()

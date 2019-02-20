@@ -2,6 +2,7 @@
   <div class="bag">
     <div class="card">
       <div class="card-body">
+        <b-btn @click="test">Test</b-btn>
         <spinner v-if="loading" position="absolute"></spinner>
         <div class="row">
           <div class="col-md-12">
@@ -167,8 +168,8 @@
 
               <li>
                 <div>
-                  <p v-if="pickup === 0 && transferTypeCheck !== 'pickup'">Delivery Day</p>
-                  <p v-if="pickup === 1 || transferTypeCheck === 'pickup'">Pickup Day</p>
+                  <p v-if="pickup === 0 && transferTypeCheck !== 'pickup' && deliveryDaysOptions.length > 1">Delivery Day</p>
+                  <p v-if="pickup === 1 || transferTypeCheck === 'pickup' && deliveryDaysOptions.length > 1" >Pickup Day</p>
                   <b-form-group v-if="deliveryDaysOptions.length > 1" description>
                     <b-select
                       :options="deliveryDaysOptions"
@@ -180,7 +181,7 @@
                     </b-select>
                   </b-form-group>
                   <div v-else-if="deliveryDaysOptions.length === 1">
-                    <p>Delivery day: {{ deliveryDaysOptions[0].text }}</p>
+                    <p>Delivery Day: {{ deliveryDaysOptions[0].text }}</p>
                   </div>
                 </div>
               </li>
@@ -371,7 +372,6 @@ export default {
       if (this.deliveryPlan) return "Prepared Weekly";
       else return "Prepared Once";
     },
-
     deliveryDaysOptions() {
       return this.storeSetting("next_delivery_dates", []).map(date => {
         return {
@@ -379,12 +379,21 @@ export default {
           text: moment(date.date).format("dddd MMM Do")
         };
       });
-    }
+    },
   },
-  mounted() {},
+  mounted() {
+    // if (this.deliveryDayOptions.length === 1){
+    //   this.deliveryDay === this.deliveryDayOptions[0].value
+    // }
+  },
   methods: {
     ...mapActions(["refreshSubscriptions", "refreshCustomerOrders"]),
     ...mapMutations(["emptyBag"]),
+    test(){
+      this.$nextTick(function() {
+          this.deliveryDay === 'test';
+        });
+    },
     quantity(meal) {
       const qty = this.$store.getters.bagItemQuantity(meal);
       return qty;
