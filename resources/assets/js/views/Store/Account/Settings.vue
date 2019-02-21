@@ -408,7 +408,7 @@
         <div class="card-body">
           <b-form @submit.prevent="updateStoreSettings" v-if="canOpen">
             <p>
-              <span class="mr-1">Open - Test</span>
+              <span class="mr-1">Open</span>
               <img
                 v-b-popover.hover="'You can toggle this off to stop showing your menu page and accepting new orders for any reason. Be sure to fill out the reason below to communicate to your customers.'"
                 title="Open or Closed"
