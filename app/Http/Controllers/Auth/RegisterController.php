@@ -148,7 +148,7 @@ class RegisterController extends Controller
             'state' => $data['user_details']['state'],
             'zip' => $data['user_details']['zip'],
             'country' => 'USA',
-            'delivery' => '',
+            'delivery' => $data['user_details']['delivery'],
             'created_at' => now(),
             'updated_at' => now(),
         ]);

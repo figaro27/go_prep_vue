@@ -137,6 +137,16 @@
                 ></b-input>
               </b-form-group>
 
+              <b-form-group horizontal label="Delivery Instructions" :state="state(1, 'delivery')">
+                <b-input
+                  v-model="form[1].delivery"
+                  type="text"
+                  @input="$v.form[1].delivery.$touch(); clearFeedback(1, 'delivery')"
+                  :state="state(1, 'delivery')"
+                  autocomplete="new-password"
+                ></b-input>
+              </b-form-group>
+
               <b-form-group horizontal v-if="form[0].role === 'store'">
                 <b-button @click="next()" :disabled="$v.form[1].$invalid" variant="primary">Next</b-button>
               </b-form-group>
@@ -287,7 +297,8 @@ export default {
           address: null,
           city: null,
           state: null,
-          zip: null
+          zip: null,
+          delivery: null
         },
         2: {
           store_name: null,

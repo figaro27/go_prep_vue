@@ -24,7 +24,7 @@ class CreateUserDetailsTable extends Migration
             $table->string('state');
             $table->string('zip');
             $table->string('country');
-            $table->text('delivery');
+            $table->text('delivery')->nullable();
             $table->timestamps();
         });
     }
