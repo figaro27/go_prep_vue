@@ -426,7 +426,7 @@
         </div>
       </div>
 
-      <p>Open - TEST</p>
+      <p>Open</p>
       <div class="card">
         <div class="card-body">
           <b-form @submit.prevent="updateStoreSettings" v-if="canOpen">
