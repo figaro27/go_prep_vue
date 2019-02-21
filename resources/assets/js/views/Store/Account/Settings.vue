@@ -403,6 +403,29 @@
         </div>
       </div>
 
+      <div class="card">
+        <div class="card-body">
+          <b-form @submit.prevent="updateStoreSettings">
+            <b-form-group label="Logo" :state="true">
+              <p class="small">Please keep height & width dimensions the exact same.</p>
+              <picture-input
+              :ref="`storeImageInput`"
+              :prefill="storeDetail.logo ? storeDetail.logo : ''"
+              @prefill="$refs[`storeImageInput`].onResize()"
+              :alertOnError="false"
+              :autoToggleAspectRatio="true"
+              margin="0"
+              size="10"
+              button-class="btn"
+              style="width: 180px; height: auto; margin: 0;"
+              @change="(val) => updateLogo(val)"
+            ></picture-input>
+            </b-form-group>
+            <b-button type="submit" variant="primary">Save</b-button>
+          </b-form>
+        </div>
+      </div>
+
       <p>Open</p>
       <div class="card">
         <div class="card-body">
@@ -439,6 +462,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>
@@ -713,6 +737,10 @@ export default {
     },
     updateZips(e) {
       this.zipCodes = e.target.value.split(",");
+    },
+    async updateLogo(logo) {
+      let b64 = await fs.getBase64(this.$refs.storeImageInput.file);
+      this.storeDetail.logo = b64;
     }
   }
 };

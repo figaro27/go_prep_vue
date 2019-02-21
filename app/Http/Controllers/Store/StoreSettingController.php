@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Store;
 
 use App\StoreSetting;
+use App\StoreDetail;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -84,12 +85,23 @@ class StoreSettingController extends StoreController
 
         $settings = StoreSetting::where('store_id', $this->store->id);
 
-        $values = $request->except(['next_delivery_dates', 'next_orderable_delivery_dates', 'stripe']);
+        $values = $request->except(['next_delivery_dates', 'next_orderable_delivery_dates', 'stripe', 'logo']);
         $values['delivery_days'] = json_encode($values['delivery_days']);
         $values['delivery_distance_zipcodes'] = json_encode($values['delivery_distance_zipcodes']);
         $values['notifications'] = json_encode($values['notifications']);
 
         $settings->update($values);
+
+        $newLogo = $request->has('logo') && substr($request->get('logo'), 0, 4) === 'data';
+        $storeDetail = StoreDetail::where('store_id', $this->store->id);
+        if ($newLogo) {
+          $imageUrl = Images::uploadB64($request->get('logo'));
+
+          if($imageUrl) {
+            $storeDetail->logo = $imageUrl;
+            $storeDetail->save();
+          }
+        }
     }
 
     /**
