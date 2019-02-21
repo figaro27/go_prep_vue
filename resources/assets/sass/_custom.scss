@@ -747,5 +747,8 @@ table {
 }
 
 .modal-content{
-  margin-top: 100px !important;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  margin-top:100px !important;
 }
+
