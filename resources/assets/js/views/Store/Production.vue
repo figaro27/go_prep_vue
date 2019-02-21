@@ -186,8 +186,8 @@ export default {
       if (warning) {
         try {
           let dialog = await this.$dialog.confirm(
-            "You have selected a date range which includes delivery dates which haven't passe" +
-              "d their cutoff date. Continue?"
+            "You have selected a date range which includes delivery days which haven't passe" +
+              "d their cutoff period. This means new orders can still come in for those days. Continue?"
           );
           dialog.close();
         } catch (e) {

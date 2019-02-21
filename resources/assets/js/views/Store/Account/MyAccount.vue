@@ -87,9 +87,9 @@
               <b-form-input type="text" v-model="storeDetail.zip" placeholder="Zip Code" required></b-form-input>
             </b-form-group>
             
-            <b-form-group label="About" :state="true">
+            <!-- <b-form-group label="About" :state="true">
               <b-form-textarea :rows="3" v-model="storeDetail.description" placeholder="About" required></b-form-textarea :rows="3">
-            </b-form-group>
+            </b-form-group> -->
             
             <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
