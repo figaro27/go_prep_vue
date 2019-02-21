@@ -21,7 +21,7 @@
       <hr>
     </div>
 
-    <b-form-group label="Add new card" description="Test card: 4242424242424242">
+    <b-form-group label="Add New Card" description="Test card: 4242424242424242">
       <card
         class="stripe-card"
         :class="{ newCard }"

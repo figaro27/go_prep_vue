@@ -1,6 +1,7 @@
 <template>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-8 offset-2">
+      <p>My Account</p>
       <div class="card">
         <div class="card-body">
           <b-form @submit.prevent="updateCustomer">
@@ -23,13 +24,13 @@
             <hr>
             <b-form-input type="text" v-model="userDetail.zip" placeholder="Zip Code" required></b-form-input>
             <hr>
-            <b-form-input type="text" v-model="userDetail.delivery" placeholder="Delivery" required></b-form-input>
-            <b-button type="submit" variant="primary">Submit</b-button>
+            <b-form-input type="text" v-model="userDetail.delivery" placeholder="Delivery Instructions" required></b-form-input>
+            <b-button type="submit" variant="primary" class="mt-3">Save</b-button>
           </b-form>
         </div>
       </div>
+      <p>Payment Methods</p>
       <div class="card">
-        <div class="card-header">Payment Methods</div>
         <div class="card-body">
           <card-picker :selectable="false"></card-picker>
         </div>
