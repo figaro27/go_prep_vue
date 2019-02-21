@@ -84,7 +84,7 @@ class StoreSettingController extends StoreController
 
         $settings = StoreSetting::where('store_id', $this->store->id);
 
-        $values = $request->except(['next_delivery_dates', 'stripe']);
+        $values = $request->except(['next_delivery_dates', 'next_orderable_delivery_dates', 'stripe']);
         $values['delivery_days'] = json_encode($values['delivery_days']);
         $values['delivery_distance_zipcodes'] = json_encode($values['delivery_distance_zipcodes']);
         $values['notifications'] = json_encode($values['notifications']);
