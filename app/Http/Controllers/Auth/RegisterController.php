@@ -176,6 +176,7 @@ class RegisterController extends Controller
                 'view_delivery_days' => 1,
                 'delivery_days' => [],
                 'delivery_distance_zipcodes' => [],
+                'notifications' => "{'new_order': true, 'new_orders': true, 'ready_to_print': true, 'new_subscription': true, 'new_subscriptions': true, 'cancelled_subscription': true, 'cancelled_subscriptions': true}"
             ]);
 
             $storeSettings = $store->categories()->create([
