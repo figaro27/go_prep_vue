@@ -84,7 +84,7 @@ class StoreDetailController extends Controller
           'city' => 'required|string',
           'state' => 'required|string',
           'zip' => 'required|numeric',
-          'description' => 'required|string|max:450',
+          // 'description' => 'required|string|max:450',
         ];
 
         $this->validate($request, $rules);

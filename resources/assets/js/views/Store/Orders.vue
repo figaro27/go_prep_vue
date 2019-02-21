@@ -242,7 +242,7 @@ export default {
           // "user.user_detail.phone": "Phone",
           created_at: "Order Placed",
           delivery_date: "Delivery Date",
-          pickup: "Delivery Method",
+          pickup: "Type",
           amount: "Total",
           actions: "Actions"
         },
