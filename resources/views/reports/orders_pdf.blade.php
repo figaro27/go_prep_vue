@@ -7,7 +7,14 @@
 
 <body>
   <h1>Orders</h1>
-  <h2>{{ date("m/d/Y") }}</h2>
+  @if ($delivery_dates)
+    <h2>
+      {{ $delivery_dates['from']->format('F d, Y') }} -
+      {{ $delivery_dates['to']->format('F d, Y') }}
+    </h2>
+  @else
+    <h2>All</h2>
+  @endif
   <table border="1" width="100">
     <thead>
       <tr>

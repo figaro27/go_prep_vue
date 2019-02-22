@@ -95,7 +95,13 @@ trait Exportable
     {
         $filename = 'public/' . md5(time()) . '.pdf';
 
-        $html = view($this->exportPdfView(), ['data' => $data])->render();
+        $vars = [
+          'data' => $data,
+          'params' => $this->params,
+          'delivery_dates' => $this->getDeliveryDates()
+        ];
+
+        $html = view($this->exportPdfView(), $vars)->render();
 
         $pdfConfig = ['encoding' => 'utf-8', 'orientation' => $this->orientation];
 

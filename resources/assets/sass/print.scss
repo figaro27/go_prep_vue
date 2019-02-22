@@ -28,8 +28,17 @@ table {
   margin-top: 2pt;
   margin-bottom: 5pt;
   border-collapse: collapse;
-  width: 100%;
+  width: 100% !important;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+// Fix header row overflow
+thead { display: table-header-group; }
+tfoot { display: table-row-group; }
+tr { page-break-inside: avoid; }
+// -
+
 thead {
   font-weight: bold;
   vertical-align: bottom;
