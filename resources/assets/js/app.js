@@ -43,7 +43,6 @@ import DisableAutocomplete from 'vue-disable-autocomplete';
 import Vuetify, { VBtn } from 'vuetify/lib'
 import { Ripple } from 'vuetify/lib/directives'
 import 'vuetify/src/stylus/app.styl'
-import 'intersection-observer';
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
