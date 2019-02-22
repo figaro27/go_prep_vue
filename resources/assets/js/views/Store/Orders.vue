@@ -270,7 +270,7 @@ export default {
               return a.isAfter(b, "day") ? 1 : -1;
             };
           }
-        }
+        },
       },
       deliveryNote: ""
     };

@@ -82,6 +82,10 @@ export default {
           quantity: "Quantity",
           quantity_unit: "Unit",
           actions: "Unit"
+        },
+        orderBy: {
+          column: 'food_name',
+          ascending: true
         }
       }
     };

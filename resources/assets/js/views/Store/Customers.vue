@@ -180,6 +180,10 @@ export default {
               return numA.isAfter(numB, 'day') ? 1 : -1;
             };
           },
+        },
+        orderBy: {
+          column: 'name',
+          ascending: true
         }
       }
     };

@@ -379,6 +379,10 @@ export default {
               return numA.isAfter(numB, "day") ? 1 : -1;
             };
           }
+        },
+        orderBy: {
+          column: 'title',
+          ascending: true
         }
       }
     };
