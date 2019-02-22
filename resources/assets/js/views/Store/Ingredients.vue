@@ -59,15 +59,13 @@ import { mapGetters, mapActions } from "vuex";
 import Spinner from "../../components/Spinner";
 import format from "../../lib/format.js";
 import units from "../../data/units.js";
-import checkDateRange  from '../../mixins/deliveryDates';
+import checkDateRange from "../../mixins/deliveryDates";
 
 export default {
   components: {
     Spinner
   },
-  mixins: [
-    checkDateRange
-  ],
+  mixins: [checkDateRange],
   data() {
     return {
       filters: {
@@ -194,8 +192,8 @@ export default {
           this.loading = false;
         });
     },
-    async exportData(type = "csv") {
-      const warning = this.checkDateRange({...this.filters.delivery_dates});
+    async exportData(format = "csv") {
+      const warning = this.checkDateRange({ ...this.filters.delivery_dates });
       if (warning) {
         try {
           let dialog = await this.$dialog.confirm(
@@ -208,8 +206,21 @@ export default {
         }
       }
 
+      let params = {};
+      if (
+        this.filters.delivery_dates.start &&
+        this.filters.delivery_dates.end
+      ) {
+        params.delivery_dates = {
+          from: this.filters.delivery_dates.start,
+          to: this.filters.delivery_dates.end
+        };
+      }
+
       axios
-        .get(`/api/me/orders/ingredients/export/${type}`)
+        .get(`/api/me/print/ingredient_quantities/${format}`, {
+          params
+        })
         .then(response => {
           if (!_.isEmpty(response.data.url)) {
             window.open(response.data.url);
@@ -220,9 +231,36 @@ export default {
           this.loading = false;
         });
     },
-    print(format = "pdf") {
+    async print(format = "pdf") {
+      const warning = this.checkDateRange({ ...this.filters.delivery_dates });
+      if (warning) {
+        try {
+          let dialog = await this.$dialog.confirm(
+            "You have selected a date range which includes delivery days which haven't passe" +
+              "d their cutoff period. This means new orders can still come in for those days. Continue?"
+          );
+          dialog.close();
+        } catch (e) {
+          return;
+        }
+      }
+
+      let params = {};
+
+      if (
+        this.filters.delivery_dates.start &&
+        this.filters.delivery_dates.end
+      ) {
+        params.delivery_dates = {
+          from: this.filters.delivery_dates.start,
+          to: this.filters.delivery_dates.end
+        };
+      }
+
       axios
-        .get(`/api/me/orders/ingredients/export/${format}`)
+        .get(`/api/me/print/ingredient_quantities/${format}`, {
+          params
+        })
         .then(response => {
           if (!_.isEmpty(response.data.url)) {
             let win = window.open(response.data.url);
