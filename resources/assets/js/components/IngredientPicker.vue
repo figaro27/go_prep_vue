@@ -265,6 +265,7 @@ export default {
     },
     save() {
       this.$emit("save", this.ingredients);
+      this.$toastr.s("Ingredients saved!");
     },
     searchInstant: function() {},
     searchRecipe: function() {

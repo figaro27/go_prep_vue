@@ -55,7 +55,7 @@
             <router-link to="/customer/menu">
               <b-btn
                 v-if="minOption === 'meals' && total < minMeals && !preview"
-                class="menu-bag-btn"
+                class="menu-bag-btn mb-2"
               >BACK</b-btn>
             </router-link>
 
