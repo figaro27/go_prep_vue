@@ -33,7 +33,7 @@
                   <div class="bag-item-image mr-2">
                     <thumbnail
                       :src="item.meal.featured_image"
-                      :src-placeholder="item.meal.featured_image"
+                      :spinner="false"
                       class="cart-item-img"
                     ></thumbnail>
                   </div>
