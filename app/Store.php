@@ -333,9 +333,9 @@ class Store extends Model
                 break;
 
             case 'cancelled_subscription':
-                $email = new CancelledSubscription([
-                    'subscription' => $data,
-                ]);
+                $email = new CancelledSubscription(
+                    $data
+                );
                 break;
 
             case 'ready_to_print':

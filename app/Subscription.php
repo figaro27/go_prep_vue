@@ -21,6 +21,11 @@ class Subscription extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function customer()
+    {
+        return $this->belongsTo('App\Customer');
+    }
+
     public function store()
     {
         return $this->belongsTo('App\Store');
@@ -109,7 +114,10 @@ class Subscription extends Model
         ]);
 
         if ($this->store->notificationEnabled('cancelled_subscription')) {
-            $this->store->sendNotification('cancelled_subscription', $this);
+            $this->store->sendNotification('cancelled_subscription', [
+              'subscription' => $this,
+              'customer' => $this->customer,
+            ]);
         }
     }
 

@@ -192,6 +192,8 @@ export default {
           "Failed to cancel Meal Plan"
         );
       }
+
+      this.refreshSubscriptions();
     }
   }
 };

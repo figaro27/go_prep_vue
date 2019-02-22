@@ -36,12 +36,6 @@ class SubscriptionController extends UserController
 
         try {
           $sub->cancel();
-          $customer = $this->user;
-          $storeEmail = $this->store->user->email;
-          $email = new CancelledSubscription([
-                'customer' => $customer,
-            ]);
-          Mail::to($storeEmail)->send($email);
         }
         catch(\Exception $e) {
           return response()->json([
