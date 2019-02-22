@@ -8,7 +8,15 @@
 
 <body>
   <h1>Ingredients</h1>
-  <h2>{{ date("m/d/Y") }}</h2>
+  @if ($delivery_dates)
+    <h2>
+      Delivery Days: 
+      {{ $delivery_dates['from']->format('F d, Y') }} -
+      {{ $delivery_dates['to']->format('F d, Y') }}
+    </h2>
+  @else
+    <h2>All Delivery Dates</h2>
+  @endif
 
   <table border="1" width="100">
     <tbody>
