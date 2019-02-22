@@ -86,6 +86,8 @@ trait Exportable
 
         $writer = new XLSXWriter();
 
+        $data = collect($data)->toArray();
+
         $writer->writeSheet($data);
         $output = $writer->writeToString();
 
