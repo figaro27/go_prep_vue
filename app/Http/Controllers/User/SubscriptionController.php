@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Customer;
 
 class SubscriptionController extends UserController
 {
@@ -29,10 +31,17 @@ class SubscriptionController extends UserController
           return response()->json([
             'error' => 'Meal plan not found'
           ], 404);
+
         }
 
         try {
           $sub->cancel();
+          $customer = $this->user;
+          $storeEmail = $this->store->user->email;
+          $email = new CancelledSubscription([
+                'customer' => $customer,
+            ]);
+          Mail::to($storeEmail)->send($email);
         }
         catch(\Exception $e) {
           return response()->json([

@@ -54,8 +54,9 @@ class Daily extends Command
             // Send notification
             $email = new DeliveryToday([
                 'user' => $order->user,
+                'customer' => $order->customer,
                 'order' => $order,
-                'subscription' => null,
+                'settings' => $order->store->settings,
             ]);
             Mail::to($order->user)->send($email);
         }

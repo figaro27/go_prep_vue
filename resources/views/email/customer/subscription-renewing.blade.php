@@ -1,11 +1,11 @@
-Hello {{$user->name}},
+<p>Hello {{$customer->name}},</p>
 
-In less than 24 hours, your Meal Plan will automatically renew.
+<p>In less than 24 hours, your Meal Plan will automatically renew.</p>
 
-Subscription: {{ $subscription->id }}
+<p>Subscription: {{ $subscription->stripe_id }}</p>
 
-Meals:
+<p>Meals:</p>
 
 @foreach($subscription->meals as $meal)
-  {{ $meal->title }} x {{ $meal->quantity }}
+  <p>{{ $meal->title }} x {{ $meal->quantity }}</p>
 @endforeach

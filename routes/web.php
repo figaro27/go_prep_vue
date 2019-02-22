@@ -10,6 +10,13 @@
 | contains the "web" middleware group. Now create something great!
 |
  */
+    
+    // To Be Removed
+    Route::get('/mail/cancelledSubscription', 'EmailTestController@storeCancelledSubscription');
+    Route::get('/mail/readyToPrint', 'EmailTestController@storeReadyToPrint');
+    Route::get('/mail/deliveryToday', 'EmailTestController@customerDeliveryToday');
+    Route::get('/mail/mealPlan', 'EmailTestController@customerMealPlan');
+    Route::get('/mail/subscriptionRenewing', 'EmailTestController@customerSubscriptionRenewing');
 
 foreach ([config('app.domain')] as $domain) {
 

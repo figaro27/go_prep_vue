@@ -42,13 +42,14 @@ class Hourly extends Command
     {
         // Store reports
 
-        $stores = Store::with(['settings'])->get();
+        $stores = Store::with(['settings', 'details'])->get();
         $count = 0;
 
         foreach ($stores as $store) {
+          $storeDetails = $store->details;
             if ($store->cutoffPassed('hour')) {
                 if ($store->notificationEnabled('ready_to_print')) {
-                    $store->sendNotification('ready_to_print');
+                    $store->sendNotification('ready_to_print', $storeDetails);
                     $count++;
                 }
 

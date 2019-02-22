@@ -93,8 +93,20 @@
             
             <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
+
+            <p><b-btn @click="cancelledSubscription">cancelledSubscription</b-btn></p>
+
+            <p><b-btn @click="readyToPrint">readyToPrint</b-btn></p>
+
+            <p><b-btn @click="deliveryToday">deliveryToday</b-btn></p>
+
+            <p><b-btn @click="mealPlan">mealPlan</b-btn></p>
+
+            <p><b-btn @click="subscriptionRenewing">subscriptionRenewing</b-btn></p>
         </div>
       </div>
+
+    
 
       
           </div>
@@ -218,7 +230,22 @@ export default {
     async updateLogo(logo) {
       let b64 = await fs.getBase64(this.$refs.storeImageInput.file);
       this.storeDetail.logo = b64;
-    }
+    },
+    cancelledSubscription(){
+      axios.get('/mail/cancelledSubscription');
+    },
+    readyToPrint(){
+      axios.get('/mail/readyToPrint');
+    },
+    deliveryToday(){
+      axios.get('/mail/deliveryToday');
+    },
+    mealPlan(){
+      axios.get('/mail/mealPlan');
+    },
+    subscriptionRenewing(){
+      axios.get('/mail/subscriptionRenewing');
+    },
   }
 };
 </script>

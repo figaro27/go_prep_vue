@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Store;
+use Illuminate\Support\Facades\Mail;
+use App\Customer;
 
 class SubscriptionController extends StoreController
 {
@@ -41,5 +43,12 @@ class SubscriptionController extends StoreController
         }
 
         $sub->cancel();
+
+        $customer = $this->user;
+          $storeEmail = $this->store->user->email;
+          $email = new CancelledSubscription([
+                'customer' => $customer,
+            ]);
+          Mail::to($storeEmail)->send($email);
     }
 }

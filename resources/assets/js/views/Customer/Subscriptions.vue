@@ -42,7 +42,7 @@
                     </div>
                     <div class="col-md-4" v-else>
                       <h4>Cancelled On</h4>
-                      <p>{{ subscription.cancelled_at }}</p>
+                      <p>{{ moment(subscription.cancelled_at).format('dddd, MMM Do, Y') }}</p>
                     </div>
                   </div>
 

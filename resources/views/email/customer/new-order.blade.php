@@ -1,4 +1,3 @@
-<!--Data Finished-->
 		<p>Thank you for your order from {{ $order->store_name }}</p>
 
 		@if ($pickup === 0)

@@ -315,6 +315,7 @@ class User extends Authenticatable implements JWTSubject
             case 'subscription_renewing':
                 $email = new SubscriptionRenewing([
                     'subscription' => $data,
+                    'customer' => $data->customer
                 ]);
                 break;
 

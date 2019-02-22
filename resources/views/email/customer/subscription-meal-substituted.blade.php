@@ -1,4 +1,3 @@
-<!--Data Finished-->
 Hello {{ $user->name }},
 
 <p>A meal in your Meal Plan was substituted for another:</p>
