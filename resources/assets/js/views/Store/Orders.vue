@@ -414,7 +414,10 @@ export default {
         }
       }
 
-      let params = {};
+      let params = {
+        has_notes: this.filters.has_notes ? 1 : 0,
+        fulfilled: this.filters.fulfilled ? 1 : 0,
+      };
 
       if (
         this.filters.delivery_dates.start &&

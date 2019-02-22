@@ -20,7 +20,20 @@ class Orders
 
     public function exportData($type = null)
     {
-        $orders = $this->store->getOrders(null, $this->getDeliveryDates())->map(function ($order) {
+        $params = $this->params;
+
+        $orders = $this->store->getOrders(null, $this->getDeliveryDates())
+          ->filter(function($order) use ($params) {
+            if($params->has('has_notes') && $order->has_notes != $params->get('has_notes')) {
+              return false;
+            }
+            if($params->has('fulfilled') && $order->fulfilled != $params->get('fulfilled')) {
+              return false;
+            }
+
+            return true;
+          })
+          ->map(function ($order) {
           return [
             $order->order_number,
             $order->user->name,

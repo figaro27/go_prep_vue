@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
 use mikehaertl\wkhtmlto\Pdf;
 use \XLSXWriter;
+use Illuminate\Support\Collection;
 
 trait Exportable
 {
@@ -127,7 +128,7 @@ trait Exportable
     {
         $dates = [];
 
-        if ($this->params->has('delivery_dates')) {
+        if ($this->params && $this->params->has('delivery_dates')) {
             $dates = json_decode($this->params->get('delivery_dates'));
 
             $dates = [
