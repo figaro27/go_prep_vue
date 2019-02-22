@@ -33,6 +33,8 @@ $simple-line-font-path: '~simple-line-icons/fonts/';
 @import "ie-fix";
 
 
+@import "./spinner.scss";
+
 @import "components/navbar.scss";
 @import "components/modal.scss";
 @import "components/select.scss";

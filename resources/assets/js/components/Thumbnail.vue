@@ -1,21 +1,30 @@
 <template>
-  <div class="thumbnail">
+  <div :class="'thumbnail ' + (loaded ? 'loaded' : '')">
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="filter hidden">
       <defs>
         <filter id="blur">
-          <feGaussianBlur in="SourceGraphic" :stdDeviation="deviation" />
+          <feGaussianBlur in="SourceGraphic" :stdDeviation="deviation"></feGaussianBlur>
         </filter>
       </defs>
     </svg>
-     <v-lazy-image
+    <v-lazy-image
       :style="{
-        width: '100%',
-        display: 'inline-block'
-      }"
+      width: '100%',
+      display: 'inline-block'
+    }"
       :src="src"
       :src-placeholder="srcPlaceholder"
-      @load="animate"
+      @load="onLoaded"
     ></v-lazy-image>
+
+    <div class="spinner" v-if="spinner">
+      <div class="lds-ring">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -23,9 +32,14 @@
 export default {
   props: {
     src: String,
+    spinner: {
+      type: Boolean,
+      default: true
+    },
     srcPlaceholder: {
       type: String,
-      default: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN88vTZfwAJFAOwsK0F9gAAAABJRU5ErkJggg==',
+      default:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN88vTZfwAJFAOwsK0F9gAAAABJRU5ErkJggg=="
     },
     blurLevel: {
       type: Number,
@@ -37,19 +51,22 @@ export default {
     },
     width: {
       type: Number,
-      default: 128,
+      default: 128
     },
     height: {
-      default: 'auto',
-    },
+      default: "auto"
+    }
   },
-  data: () => ({ rate: 1 }),
+  data: () => ({ rate: 1, loaded: false }),
   computed: {
     deviation() {
       return this.blurLevel * this.rate;
     }
   },
   methods: {
+    onLoaded(e) {
+      this.loaded = true;
+    },
     animate() {
       const start = Date.now() + this.duration;
 
@@ -70,9 +87,47 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .thumbnail {
   overflow: hidden;
+  position: relative;
+  background-color: #f7f2f2;
+
+  &:before {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+    width: 100%;
+  }
+  &:after {
+  }
+
+  &.loaded {
+    .spinner {
+      opacity: 0;
+    }
+  }
+
+  img {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+  }
+}
+
+.spinner {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: opacity 0.2s;
 }
 
 .filter {
