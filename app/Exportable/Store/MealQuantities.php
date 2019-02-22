@@ -9,7 +9,7 @@ class MealQuantities
 {
     use Exportable;
 
-    protected $store, $params;
+    protected $store;
 
     public function __construct(Store $store, $params)
     {

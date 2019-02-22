@@ -73,11 +73,11 @@ class Order extends Model
     }
 
     public function getMealIdsAttribute() {
-      return $this->meals()->get()->pluck('id');
+      return $this->meals()->get()->pluck('id')->unique();
     }
     public function getMealQuantitiesAttribute() {
       return $this->meals()->get()->keyBy('id')->map(function($meal) {
-        return $meal->pivot->quantity ?? 0;
+        return $meal->pivot->quantity ? $meal->pivot->quantity : 0;
       });
     }
 

@@ -12,7 +12,7 @@ class PackingSlips
 {
     use Exportable;
 
-    protected $store, $params;
+    protected $store;
     protected $orders = [];
 
     public function __construct(Store $store, $params)

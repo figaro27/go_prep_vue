@@ -10,6 +10,7 @@ use \XLSXWriter;
 trait Exportable
 {
     protected $orientation = 'landscape';
+    protected $params = [];
 
     abstract public function exportData($type = null);
     abstract public function exportPdfView();
@@ -130,8 +131,8 @@ trait Exportable
             $dates = json_decode($this->params->get('delivery_dates'));
 
             $dates = [
-              'from' => Carbon::parse($dates->from),
-              'to' => Carbon::parse($dates->to),
+              'from' => Carbon::parse($dates->from)->startOfDay(),
+              'to' => Carbon::parse($dates->to)->endOfDay(),
             ];
         }
 

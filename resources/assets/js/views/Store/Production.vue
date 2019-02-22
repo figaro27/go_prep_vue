@@ -143,10 +143,6 @@ export default {
       return _.map(mealCounts, (quantity, mealId) => {
         return { ...this.getMeal(mealId), quantity: quantity };
       });
-
-      let meals = Object.values(this.meals);
-      const production = meals.filter(meal => meal.active_orders > 0);
-      return production;
     },
     storeMeals() {
       return this.meals;
