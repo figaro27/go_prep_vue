@@ -159,11 +159,11 @@
                       <div class="filter-area">
                         <b-button @click="viewFilters" class="green">
                           <i class="fa fa-filter"></i>
-                          <span class="d-none d-md-inline">&nbsp;Filters</span>
+                          <span class="d-none d-sm-inline">&nbsp;Filters</span>
                         </b-button>
                         <b-button @click="clearFilters" class="orange">
                           <i class="fa fa-eraser"></i>
-                          <span class="d-none d-lg-inline">&nbsp;Clear Filters</span>
+                          <span class="d-none d-sm-inline">&nbsp;Clear Filters</span>
                         </b-button>
                       </div>
 
@@ -200,11 +200,11 @@
                         v-for="meal in group.meals"
                         :key="meal.id"
                       >
-                        <img
+                        <thumbnail
                           :src="meal.featured_image"
                           class="menu-item-img"
                           @click="showMealModal(meal)"
-                        >
+                        ></thumbnail>
                         <div class="d-flex justify-content-between align-items-center mb-2 mt-1">
                           <b-btn @click="minusOne(meal)" class="menu-bag-btn plus-minus gray">
                             <i>-</i>
@@ -234,7 +234,7 @@
                   <ul class="list-group">
                     <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
                       <div v-if="item && item.quantity > 0" class="d-flex align-items-center">
-                        <div class="mr-2 text-center">
+                        <div class="bag-item-quantity mr-2">
                           <img
                             src="/images/customer/bag-plus.png"
                             @click="addOne(item.meal)"
@@ -250,12 +250,12 @@
                         <div class="bag-item-image mr-2">
                           <thumbnail
                             :src="item.meal.featured_image"
-                            :src-placeholder="item.meal.featured_image"
+                            :spinner="false"
                             class="cart-item-img"
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">{{ item.meal.title }}</div>
-                        <div class>
+                        <div class="flex-grow-0">
                           <img
                             src="/images/customer/x.png"
                             @click="clearMeal(item.meal)"
