@@ -4,7 +4,7 @@
       <b-link class="navbar-brand" to="/customer/home">
         <img
           class="navbar-brand-full"
-          src="/images/logo.jpg"
+          src="/images/logo.png"
           width="90"
           height="40"
           alt="GoPrep Logo"

@@ -36,7 +36,7 @@ class EmailTestController extends Controller
 
     public function customerDeliveryToday(){
     	$customer = Customer::first();
-    	$order = Order::first();
+    	$order = Order::orderBy('created_at', 'desc')->first();
     	$card = Card::first();
     	$settings = StoreSetting::first();
     	$email = new DeliveryToday([
@@ -49,7 +49,7 @@ class EmailTestController extends Controller
 
     public function customerMealPlan(){
     	$subscription = Subscription::first();
-    	$order = Order::first();
+    	$order = Order::orderBy('created_at', 'desc')->first();
     	$email = new MealPLan([
                 'subscription' => $subscription,
                 'order' => $order

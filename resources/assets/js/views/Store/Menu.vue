@@ -115,6 +115,9 @@
                     @change="e => updateMealDescription(meal.id, e.target.value)"
                   ></textarea>
                   <br>
+                    <h4>Price</h4>
+                    <money required v-model="meal.price" :min="0.1" class="form-control" @change="e => updateMeal(meal.id, {price: val})"></money>
+                    <br>
                   <h4>Categories
                     <img
                       v-b-popover.hover="'Categories show up as different sections of your menu to your customers. You can have the same meal show up in multiple categories. Add, remove, or rearrange the order of categories in Settings.'"
