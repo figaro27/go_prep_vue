@@ -20,7 +20,7 @@ class CreateMealsTable extends Migration
             $table->string('featured_image')->nullable();
             $table->string('title');
             $table->text('description');
-            $table->decimal('price', 4, 2);
+            $table->decimal('price', 5, 2);
             $table->timestamps();
             $table->softDeletes();
         });
