@@ -74,8 +74,8 @@ class StoreSettingController extends StoreController
     {
         $validatedData = $request->validate([
             'mealPlanDiscount' => 'required_if:applyMealPlanDiscount,true|integer|nullable',
-            'deliveryFee' => 'required_if:applyDeliveryFee,true|integer|nullable',
-            'processingFee' => 'required_if:applyProcessingFee,true|integer|nullable',
+            'deliveryFee' => 'required_if:applyDeliveryFee,true|nullable',
+            'processingFee' => 'required_if:applyProcessingFee,true|nullable',
             'minimumPrice' => 'required_if:minimumOption,price',
             'minimumMeals' => 'required_if:minimumOption,meals',
             'delivery_days' => 'required|min:1',

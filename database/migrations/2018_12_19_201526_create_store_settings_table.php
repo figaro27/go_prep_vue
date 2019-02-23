@@ -28,9 +28,9 @@ class CreateStoreSettingsTable extends Migration
             $table->boolean('applyMealPlanDiscount')->default(false);
             $table->integer('mealPlanDiscount')->nullable();
             $table->boolean('applyDeliveryFee')->default(false);
-            $table->integer('deliveryFee')->nullable();
+            $table->double('deliveryFee')->nullable();
             $table->boolean('applyProcessingFee')->default(false);
-            $table->integer('processingFee')->nullable();
+            $table->double('processingFee')->nullable();
             $table->longtext('delivery_days')->nullable();
             $table->tinyInteger('cutoff_days')->unsigned()->default(1);
             $table->integer('cutoff_hours')->unsigned()->default(0);
