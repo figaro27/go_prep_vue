@@ -28,7 +28,7 @@
           <b-nav-item v-if="'id' in viewedStore" to="/customer/menu">Menu</b-nav-item>
           <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag">Bag</b-nav-item>
           <b-nav-item v-if="loggedIn" to="/customer/orders">Orders</b-nav-item>
-          <b-nav-item v-if="loggedIn" to="/customer/subscriptions">Meal Plans</b-nav-item>
+          <b-nav-item v-if="loggedIn" to="/customer/meal-plans">Meal Plans</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <CustomerDropdown v-if="loggedIn"/>
