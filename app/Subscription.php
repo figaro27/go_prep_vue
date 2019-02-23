@@ -53,7 +53,17 @@ class Subscription extends Model
 
     public function getNextDeliveryDateAttribute()
     {
-        return $this->store->getNextDeliveryDate();
+        if($this->latest_order) {
+          $date = new Carbon($this->latest_order->delivery_date);
+
+          if($date->isFuture()) {
+            return $date;
+          }
+          else return $date->add(1, 'week');
+        }
+
+        // Catch all
+        return $this->store->getNextDeliveryDay($this->delivery_day);
     }
 
     public function getMealsAttribute()
