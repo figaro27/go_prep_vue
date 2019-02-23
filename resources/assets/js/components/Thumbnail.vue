@@ -1,5 +1,5 @@
 <template>
-  <div :class="'thumbnail ' + (loaded ? 'loaded' : '')">
+  <div :class="'thumbnail ' + (loaded ? 'loaded' : '')" @click="onClick">
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="filter hidden">
       <defs>
         <filter id="blur">
@@ -55,7 +55,7 @@ export default {
     },
     height: {
       default: "auto"
-    }
+    },
   },
   data: () => ({ rate: 1, loaded: false }),
   computed: {
@@ -82,6 +82,9 @@ export default {
       };
 
       requestAnimationFrame(step);
+    },
+    onClick(e) {
+      this.$emit('click', e);
     }
   }
 };
@@ -128,6 +131,7 @@ export default {
   justify-content: center;
   z-index: 10;
   transition: opacity 0.2s;
+  pointer-events: none;
 }
 
 .filter {

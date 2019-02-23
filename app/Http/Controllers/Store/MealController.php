@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Store;
 use App\Meal;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
+use App\Http\Requests\UpdateMealRequest;
 
 class MealController extends StoreController
 {
@@ -85,7 +86,7 @@ class MealController extends StoreController
      * @param  \App\Meal  $meal
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateMealRequest $request, $id)
     {
         return Meal::updateMeal($id, $request->all());
     }
