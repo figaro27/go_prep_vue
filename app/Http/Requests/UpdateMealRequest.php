@@ -25,7 +25,7 @@ class UpdateMealRequest extends FormRequest
     public function rules()
     {
         return [
-            'price' => 'numeric|between:0.01,99.99', // todo: update price limits
+            'price' => 'numeric|between:0.01,999.99', // todo: update price limits
         ];
     }
 

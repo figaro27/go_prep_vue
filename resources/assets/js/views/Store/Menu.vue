@@ -125,7 +125,7 @@
                     required
                     v-model="meal.price"
                     :min="0.1"
-                    :max="99.99"
+                    :max="999.99"
                     class="form-control"
                     @blur.native="e => updateMeal(meal.id, {price: meal.price})"
                   ></money>
