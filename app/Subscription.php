@@ -59,7 +59,7 @@ class Subscription extends Model
           if($date->isFuture()) {
             return $date;
           }
-          else return $date->add(1, 'week');
+          else return $date->add('1 week');
         }
 
         // Catch all
