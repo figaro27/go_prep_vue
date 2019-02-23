@@ -88,7 +88,12 @@
     <create-meal-modal v-if="createMealModal" v-on:created="refreshTable()"/>
 
     <div class="modal-full modal-tabs">
-      <b-modal title="Meal" v-model="viewMealModal" v-if="viewMealModal" :key="`view-meal-modal${meal.id}`">
+      <b-modal
+        title="Meal"
+        v-model="viewMealModal"
+        v-if="viewMealModal"
+        :key="`view-meal-modal${meal.id}`"
+      >
         <b-row>
           <b-col>
             <b-tabs>
@@ -115,16 +120,24 @@
                     @change="e => updateMealDescription(meal.id, e.target.value)"
                   ></textarea>
                   <br>
-                    <h4>Price</h4>
-                    <money required v-model="meal.price" :min="0.1" class="form-control" @change="e => updateMeal(meal.id, {price: val})"></money>
-                    <br>
-                  <h4>Categories
+                  <h4>Price</h4>
+                  <money
+                    required
+                    v-model="meal.price"
+                    :min="0.1"
+                    :max="99.99"
+                    class="form-control"
+                    @blur.native="e => updateMeal(meal.id, {price: meal.price})"
+                  ></money>
+                  <br>
+                  <h4>
+                    Categories
                     <img
                       v-b-popover.hover="'Categories show up as different sections of your menu to your customers. You can have the same meal show up in multiple categories. Add, remove, or rearrange the order of categories in Settings.'"
                       title="Categories"
                       src="/images/store/popover.png"
                       class="popover-size"
-                      >
+                    >
                   </h4>
                   <b-form-checkbox-group
                     buttons
@@ -134,13 +147,14 @@
                     class="filters"
                   ></b-form-checkbox-group>
 
-                  <h4 class="mt-4">Tags
+                  <h4 class="mt-4">
+                    Tags
                     <img
                       v-b-popover.hover="'Meal tags describe the nutritional benefits contained in your meal. These allow your meals to be filtered by your customer on your menu page for anyone with specific dietary preferences.'"
                       title="Tags"
                       src="/images/store/popover.png"
                       class="popover-size"
-                      >
+                    >
                   </h4>
                   <b-form-checkbox-group
                     buttons
@@ -150,13 +164,14 @@
                     class="filters"
                   ></b-form-checkbox-group>
 
-                  <h4 class="mt-4">Contains
+                  <h4 class="mt-4">
+                    Contains
                     <img
                       v-b-popover.hover="'Indiciate if your meal contains any of the below. These allow your meals to be filtered by your customer on your menu page for anyone looking to avoid meals that contain any of these options.'"
                       title="Contains"
                       src="/images/store/popover.png"
                       class="popover-size"
-                      >
+                    >
                   </h4>
                   <b-form-checkbox-group
                     buttons
@@ -203,13 +218,15 @@
       :hide-footer="true"
     >
       <center>
-        <h5 class="mt-3">This meal is tied to one or more meal plans.
-              <img
-                v-b-popover.hover="'You currently have one or more meal plans with your customers that contain this meal. Please select a substitute and your customers will be informed via email. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of foods they contain, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'"
-                title="Replacement Meal"
-                src="/images/store/popover.png"
-                class="popover-size"
-              > </h5>
+        <h5 class="mt-3">
+          This meal is tied to one or more meal plans.
+          <img
+            v-b-popover.hover="'You currently have one or more meal plans with your customers that contain this meal. Please select a substitute and your customers will be informed via email. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of foods they contain, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'"
+            title="Replacement Meal"
+            src="/images/store/popover.png"
+            class="popover-size"
+          >
+        </h5>
         <h5 class="mb-3">Please select a recommended replacement meal.</h5>
 
         <b-list-group>
@@ -227,7 +244,7 @@
                 v-if="meal.featured_image"
               >
               <div class="flex-grow-1 mr-2">
-                <p>{{meal.title}}</p> 
+                <p>{{meal.title}}</p>
                 <p class="strong">{{format.money(meal.price)}}</p>
               </div>
               <b-btn variant="warning">Select</b-btn>
@@ -251,7 +268,7 @@
 <script>
 import Spinner from "../../components/Spinner";
 import IngredientPicker from "../../components/IngredientPicker";
-import CreateMealModal from "./Modals/CreateMeal";  
+import CreateMealModal from "./Modals/CreateMeal";
 import moment from "moment";
 import tags from "bootstrap-tagsinput";
 import { Event } from "vue-tables-2";
@@ -259,7 +276,7 @@ import nutritionFacts from "nutrition-label-jquery-plugin";
 import PictureInput from "vue-picture-input";
 import units from "../../data/units";
 import format from "../../lib/format";
-import fs from '../../lib/fs.js';
+import fs from "../../lib/fs.js";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
@@ -384,7 +401,7 @@ export default {
           }
         },
         orderBy: {
-          column: 'title',
+          column: "title",
           ascending: true
         }
       }
@@ -481,10 +498,18 @@ export default {
       if (_.isEmpty(changes)) {
         changes = this.editing[id];
       }
-      await this._updateMeal({ id, data: changes });
 
-      if (toast) {
-        this.$toastr.s("Meal saved!");
+      try {
+        await this._updateMeal({ id, data: changes });
+
+        if (toast) {
+          this.$toastr.s("Meal saved!");
+        }
+      }
+      catch(e) {
+        if (toast) {
+          this.$toastr.e("Failed to update meal");
+        }
       }
     },
     async updateActive(id, active, props) {
@@ -530,10 +555,9 @@ export default {
         return;
       }
 
-      if(this.deletingMeal.substitute) {
+      if (this.deletingMeal.substitute) {
         this.deleteMealModal = true;
-      }
-      else {
+      } else {
         this.destroyMeal(id, null);
       }
     },
@@ -652,12 +676,13 @@ export default {
       });
     },
     async changeImage(val, mealId = null) {
-      if(!mealId) {
+      if (!mealId) {
         let b64 = await fs.getBase64(this.$refs.featuredImageInput.file);
         this.meal.featured_image = b64;
-      }
-      else {
-        let b64 = await fs.getBase64(this.$refs[`featuredImageInput${mealId}`].file);
+      } else {
+        let b64 = await fs.getBase64(
+          this.$refs[`featuredImageInput${mealId}`].file
+        );
         this.meal.featured_image = b64;
         this.updateMeal(mealId, { featured_image: b64 });
       }
