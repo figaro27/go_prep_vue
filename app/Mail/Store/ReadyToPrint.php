@@ -30,6 +30,6 @@ class ReadyToPrint extends Mailable
      */
     public function build()
     {
-        return $this->view('email.store.ready-to-print')->with($this->data);
+        return $this->view('email.store.ready-to-print')->with($this->data)->subject('Your Reports Are Ready To View');
     }
 }

@@ -30,6 +30,6 @@ class SubscriptionMealSubstituted extends Mailable
      */
     public function build()
     {
-        return $this->view('email.customer.subscription-meal-substituted')->with($this->data);
+        return $this->view('email.customer.subscription-meal-substituted')->with($this->data)->subject('A Meal in Your Meal Plan Was Substituted');
     }
 }

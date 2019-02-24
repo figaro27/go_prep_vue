@@ -30,6 +30,6 @@ class NewSubscription extends Mailable
      */
     public function build()
     {
-        return $this->view('email.store.new-subscription')->with($this->data);
+        return $this->view('email.store.new-subscription')->with($this->data)->subject('New Meal Plan');
     }
 }
