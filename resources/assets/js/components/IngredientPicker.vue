@@ -26,7 +26,7 @@
               v-model="selectedExistingIngredients"
               multiple
             ></v-select>
-            <b-button @click="onClickAddExistingIngredient" variant="primary">Add</b-button>
+            <b-button @click="onClickAddExistingIngredient" variant="primary" class="flex-grow-0">Add</b-button>
           </div>
         </b-tab>
       </b-tabs>

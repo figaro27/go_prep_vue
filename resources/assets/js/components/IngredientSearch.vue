@@ -54,7 +54,7 @@
         :disabled="!quantity || !unit || !ingredient"
         @click="onClickAdd"
         variant="primary"
-        class="ml-4"
+        class="ml-4 flex-grow-0"
       >Add</b-button>
   </div>
 </template>
@@ -63,9 +63,9 @@
   margin: 0 -4px;
 
   .ing-quantity {
-    flex-grow: 0;
-    flex-shrink: 1;
-    flex-basis: 80px;
+    flex-grow: 0 !important;
+    flex-shrink: 1 !important;
+    flex-basis: 80px !important;
     margin: 0 4px;
 
     input {
@@ -73,9 +73,9 @@
     }
   }
   .unit {
-    flex-grow: 0;
-    flex-shrink: 1;
-    flex-basis: 80px;
+    flex-grow: 0 !important;
+    flex-shrink: 1 !important;
+    flex-basis: 80px !important;
     margin: 0 4px;
 
     input,
@@ -84,7 +84,7 @@
     }
   }
   .name {
-    flex-grow: .65;
+    //flex-grow: .65 !important;
     margin: 0 4px;
 
     .v-select {

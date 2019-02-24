@@ -116,7 +116,7 @@
                     id="meal-description"
                     class="form-control"
                     :rows="4"
-                    :maxlength="100"
+                    :maxlength="450"
                     @change="e => updateMealDescription(meal.id, e.target.value)"
                   ></textarea>
                   <br>
