@@ -1,0 +1,25 @@
+#xs, #sm, #md, #lg {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+@include media-breakpoint-down(xs) {
+  #xs {display: block;}
+}
+
+@include media-breakpoint-down(sm) {
+  @include media-breakpoint-up(sm) {
+    #sm {display: block;}
+  }
+}
+
+@include media-breakpoint-down(md) {
+  @include media-breakpoint-up(md) {
+    #md {display: block;}
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  #lg {display: block;}
+}

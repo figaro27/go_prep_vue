@@ -16,6 +16,11 @@
     </script>
 </head>
 <body>
+    <div id="xs"></div>
+    <div id="sm"></div>
+    <div id="md"></div>
+    <div id="lg"></div>
+
     <div id="app">
         @yield("content")
     </div>
