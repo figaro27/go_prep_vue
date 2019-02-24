@@ -10,6 +10,7 @@
           @selected="val => onChange(val)"
           :class="pickerClasses"
           i18n="EN"
+          :righttoleft="rtl ? 'true' : 'false'"
         ></date-range-picker>
         <!--<v-select
           multiple
@@ -34,12 +35,16 @@ import format from "../lib/format";
 
 export default {
   props: {
-    value: {}
+    value: {},
     /*options: {
       default: {
         //saveButton: false
       }
     },*/
+    rtl: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
