@@ -76,12 +76,14 @@ class Customer extends Model
 
     public function getFirstOrderAttribute()
     {
-        return $this->user->order->where('store_id', $this->getStoreID())->min("created_at")->format('F d, Y');
+        $date = $this->user->order->where('store_id', $this->getStoreID())->min("created_at");
+        return $date ? $date->format('F d, Y') : null;
     }
 
     public function getLastOrderAttribute()
     {
-        return $this->user->order->where('store_id', $this->getStoreID())->max("created_at")->format('F d, Y');
+        $date = $this->user->order->where('store_id', $this->getStoreID())->max("created_at");
+        return $date ? $date->format('F d, Y') : null;
     }
 
     public function getTotalPaymentsAttribute()

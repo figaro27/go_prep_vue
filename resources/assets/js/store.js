@@ -348,6 +348,13 @@ const actions = {
     const res = await axios.get('/api');
     const {data} = await res;
 
+    try {
+      if (!_.isEmpty(data.user) && _.isObject(data.user)) {
+        let user = data.user;
+        commit('user', user);
+      }
+    } catch (e) {}
+
     const context = data.context;
 
     if (context === 'store') {
@@ -370,13 +377,6 @@ const actions = {
     } else {
       await dispatch('initGuest', data);
     }
-
-    try {
-      if (!_.isEmpty(data.user) && _.isObject(data.user)) {
-        let user = data.user;
-        commit('user', user);
-      }
-    } catch (e) {}
 
     try {
       if (!_.isEmpty(data.allergies) && _.isObject(data.allergies)) {
@@ -480,12 +480,16 @@ const actions = {
       }
     } catch (e) {}
 
-    dispatch('refreshMeals');
-    dispatch('refreshStoreCustomers');
-    dispatch('refreshOrders');
-    dispatch('refreshIngredients');
-    dispatch('refreshOrderIngredients');
-    await dispatch('refreshStoreSubscriptions');
+    // Required actions
+    await Promise.all([
+      dispatch('refreshMeals'),
+      dispatch('refreshOrders'),
+    ]);
+
+    dispatch('refreshStoreCustomers')
+    dispatch('refreshOrderIngredients')
+    dispatch('refreshIngredients')
+    dispatch('refreshStoreSubscriptions')
   },
 
   async initCustomer({
