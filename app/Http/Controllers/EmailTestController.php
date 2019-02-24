@@ -9,6 +9,8 @@ use App\Mail\Store\ReadyToPrint;
 use App\Mail\Customer\DeliveryToday;
 use App\Mail\Customer\MealPLan;
 use App\Mail\Customer\SubscriptionRenewing;
+use App\Mail\Store\NewSubscription;
+use App\Store;
 use App\Customer;
 use App\Card;
 use App\StoreDetail;
@@ -19,17 +21,21 @@ use App\StoreSetting;
 class EmailTestController extends Controller
 {
     public function storeCancelledSubscription(){
+        $subscription = Subscription::first();
     	$customer = Customer::first();
     	$email = new CancelledSubscription([
+                'subscription' => $subscription,
                 'customer' => $customer,
             ]);
     	Mail::to('store@goprep.com')->send($email);
     }
 
     public function storeReadyToPrint(){
+        $store = Store::first();
     	$storeDetails = StoreDetail::first();
     	$email = new ReadyToPrint([
-                'storeDetail' => $storeDetails
+                'store' => $store,
+                'storeDetails' => $storeDetails
             ]);
     	Mail::to('store@goprep.com')->send($email);
     }
@@ -66,6 +72,17 @@ class EmailTestController extends Controller
             ]);
     	Mail::to('customer@goprep.com')->send($email);
     }
+
+    public function storeNewSubscription(){
+        $customer = Customer::first();
+        $subscription = Subscription::first();
+        $email = new NewSubscription([
+                'customer' => $customer,
+                'subscription' => $subscription,
+            ]);
+        Mail::to('store@goprep.com')->send($email);
+    }
+
 
     
 }

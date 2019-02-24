@@ -103,6 +103,9 @@
             <p><b-btn @click="mealPlan">mealPlan</b-btn></p>
 
             <p><b-btn @click="subscriptionRenewing">subscriptionRenewing</b-btn></p>
+
+            <p><b-btn @click="newSubscription">newSubscription</b-btn></p>
+
         </div>
       </div>
 
@@ -245,6 +248,9 @@ export default {
     },
     subscriptionRenewing(){
       axios.get('/mail/subscriptionRenewing');
+    },
+    newSubscription(){
+      axios.get('/mail/newSubscription');
     },
   }
 };

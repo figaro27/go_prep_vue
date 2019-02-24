@@ -48,6 +48,7 @@ class SubscriptionController extends StoreController
           $storeEmail = $this->store->user->email;
           $email = new CancelledSubscription([
                 'customer' => $customer,
+                'subscription' => $sub
             ]);
           Mail::to($storeEmail)->send($email);
     }

@@ -317,6 +317,9 @@ class Store extends Model
 
     public function sendNotification($notif, $data = [])
     {
+        $store = $this;
+        $storeDetails = $this->details;
+
         $email = null;
 
         switch ($notif) {
@@ -339,7 +342,10 @@ class Store extends Model
                 break;
 
             case 'ready_to_print':
-                $email = new ReadyToPrint($data);
+                $email = new ReadyToPrint([
+                  'store' => $store,
+                  'storeDetails' => $storeDetails
+                ]);
                 break;
         }
 
