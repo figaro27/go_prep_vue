@@ -14,11 +14,6 @@
               <img class="thumb" :src="props.row.featured_image" v-if="props.row.featured_image">
             </div>
             <div slot="price" slot-scope="props">{{ format.money(props.row.price) }}</div>
-            <!-- <div
-              slot="total"
-              slot-scope="props"
-            >{{ format.money(props.row.price * props.row.quantity) }}</div> -->
-
             <span slot="beforeLimit">
               <b-btn variant="primary" @click="exportData('meal_orders', 'pdf', true)">
                 <i class="fa fa-print"></i>&nbsp;
