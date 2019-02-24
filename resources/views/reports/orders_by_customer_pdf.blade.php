@@ -25,7 +25,7 @@
     
     @foreach($orderGroup['orders'] as $order)
      
-    <h4>Order # {{$order['order_number']}}</h4>
+    <h4>Order #{{$order['order_number']}}</h4>
     <h4>Customer: {{$orderGroup['user']->name }}</h4>
     <h4>Address: {{$order['address']}}, {{$order['city']}}, {{$order['state']}}, {{$order['zip']}}</h4>
     <h5>Delivery Instructions: {{$order['delivery']}}</h5>
