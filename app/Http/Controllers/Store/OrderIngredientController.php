@@ -21,9 +21,9 @@ class OrderIngredientController extends StoreController
     public function index(Request $request)
     {
         if (!$request->has('delivery_dates')) {
-            $ingredients = Cache::remember('store_order_ingredients' . $this->store->id, 10, function () {
-                return collect($this->store->getOrderIngredients());
-            });
+            //$ingredients = Cache::remember('store_order_ingredients' . $this->store->id, 10, function () {
+            return collect($this->store->getOrderIngredients());
+            //});
         } else {
             $ddates = json_decode($request->get('delivery_dates'));
 

@@ -8,6 +8,7 @@ use App\Observers\MealTagObserver;
 use Braintree_Configuration;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,6 +40,11 @@ class AppServiceProvider extends ServiceProvider
         Meal::saved(function ($meal) {
             $meal->store->clearCaches();
         });
+
+        // UnitsOfMeasure aliases
+        $unit = Volume::getUnit('tbsp');
+        $unit->addAlias('Tbs');
+
 
     }
 
