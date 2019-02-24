@@ -178,7 +178,7 @@ export default {
           try {
             let dialog = await this.$dialog.confirm(
               "You have selected a date range which includes delivery days which haven't passe" +
-              "d their cutoff period. This means new orders can still come in for those days. Continue?"
+                "d their cutoff period. This means new orders can still come in for those days. Continue?"
             );
             dialog.close();
           } catch (e) {
@@ -203,7 +203,12 @@ export default {
             );
           }
         })
-        .catch(err => {})
+        .catch(err => {
+          this.$toastr.e(
+            "Please confirm that data exists for the selected date range.",
+            "Failed to print report."
+          );
+        })
         .finally(() => {
           this.loading = false;
         });
@@ -216,7 +221,7 @@ export default {
           try {
             let dialog = await this.$dialog.confirm(
               "You have selected a date range which includes delivery days which haven't passe" +
-              "d their cutoff period. This means new orders can still come in for those days. Continue?"
+                "d their cutoff period. This means new orders can still come in for those days. Continue?"
             );
             dialog.close();
           } catch (e) {

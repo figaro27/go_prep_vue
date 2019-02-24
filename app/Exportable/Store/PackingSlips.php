@@ -27,7 +27,7 @@ class PackingSlips
 
         $dateRange = $this->getDeliveryDates();
         if ($dateRange === []) {
-            $orders = $orders->where('delivery_date', $this->getNextDeliveryDate());
+            $orders = $orders->where('delivery_date', $this->store->getNextDeliveryDate());
         }
         if (isset($dateRange['from'])) {
             $from = Carbon::parse($dateRange['from']);
