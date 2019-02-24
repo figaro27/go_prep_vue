@@ -500,6 +500,8 @@ const actions = {
 
     dispatch('refreshStores');
     dispatch('refreshCards');
+    dispatch('refreshCustomerOrders');
+    dispatch('refreshSubscriptions');
   },
 
   async initGuest({

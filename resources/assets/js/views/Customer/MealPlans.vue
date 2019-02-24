@@ -109,9 +109,7 @@ export default {
   computed: {
     ...mapGetters(["subscriptions"])
   },
-  mounted() {
-    this.refreshSubscriptions();
-  },
+  mounted() {},
   methods: {
     ...mapActions(["refreshSubscriptions"]),
     getOrderTableData(subscription) {

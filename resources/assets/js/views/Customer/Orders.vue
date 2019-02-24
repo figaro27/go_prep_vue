@@ -103,9 +103,7 @@ export default {
       isLoading: "isLoading"
     })
   },
-  mounted() {
-    this.refreshCustomerOrders();
-  },
+  mounted() {},
   methods: {
     ...mapActions(["refreshCustomerOrders"]),
     getMealTableData(order) {
