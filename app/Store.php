@@ -218,7 +218,7 @@ class Store extends Model
     }
 
     public function getNextDeliveryDay($weekIndex) {
-      $week = Carbon::createFromFormat('N', $weekIndex)->format();
+      $week = date('D', strtotime("Sunday +{$weekIndex} days"));
       $date = new Carbon('next '.$week);
       $date->setTimezone($this->settings->timezone);
       $date->setTime(0, 0, 0);

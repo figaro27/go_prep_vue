@@ -63,8 +63,7 @@ class Subscription extends Model
       }
       
       // Catch all
-      //return $this->store->getNextDeliveryDay($this->delivery_day); // todo fix
-      return null;
+      return $this->store->getNextDeliveryDay($this->delivery_day);
     }
 
     public function getMealsAttribute()
