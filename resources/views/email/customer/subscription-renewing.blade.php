@@ -110,7 +110,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- company name -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $order->store_name }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $subscription->store_name }}</td>
                       </tr>
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $customer->name }}</td>
@@ -122,13 +122,13 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           <br /> {{ $customer->city }}, {{ $customer->state }} {{ $customer->zip }}
                           </td>
                       </tr>
-                      @if ($pickup === 0)
+                      @if ($subscription->latest_order->pickup === 0)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format('D, m/d/Y') }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $subscription->next_delivery_date->format('D, m/d/Y') }}</td>
                       </tr>
-                      @else ($pickup === 1)
+                      @else ($subscription->latest_order->pickup === 1)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $order->delivery_date->format('D, m/d/Y') }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $subscription->next_delivery_date->format('D, m/d/Y') }}</td>
                       </tr>
                       @endif
                       <!-- end address -->
@@ -169,14 +169,20 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- content -->
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> You have a meal plan renewing from {{ $store->details->name }}. You have 24 hours left to update, pause, or cancel your meal plan before orders are locked in and your card is charged.
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> You have a meal plan renewing from {{ $subscription->store->details->name }}. You have 24 hours left to update, pause, or cancel your meal plan before orders are locked in and your card is charged.
                   </td>
+                </tr>
+                <tr>
+                  <td height="15"></td>
                 </tr>
                 <tr>
                 	<td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">Click the button below if you would like to update your meal plan.</td>
                 </tr>
                 <tr>
-                	<td bgcolor="#E04F00" class="btn-link" height="45" align="center" style="font-family:Century Gothic, Arial, Sans-serif; font-size:16px; color:#ffffff;padding-left:25px;padding-right:25px;border-radius:5px;border-bottom:2px solid #1A77B0;"><a href="http://goprep.com/customer/meal-plans">Go</a></td>
+                  <td height="15"></td>
+                </tr>
+                <tr>
+                	<td bgcolor="#E04F00" class="btn-link" height="45" align="center" style="font-family:Century Gothic, Arial, Sans-serif; font-size:16px; color:#ffffff;padding-left:25px;padding-right:25px;border-radius:5px;border-bottom:2px solid #F8F8F8;"><a href="http://goprep.com/customer/meal-plans">Go</a></td>
                 </tr>
 
 
@@ -255,7 +261,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
               		@php
 		            	$lineItemTotal = 0;
 		            @endphp
-				@endforeach
+				        @endforeach
               </table>
             </td>
           </tr>
@@ -301,7 +307,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       @php
               			$feesTotal = 0;
-              			$feesTotal += ($order->deliveryFee + $order->processingFee)
+              			$feesTotal += ($subscription->latest_order->deliveryFee + $subscription->latest_order->processingFee)
               		  @endphp
                       <tr>
                         <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($feesTotal, 2) }}</td>
@@ -364,7 +370,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td height="5"></td>
                 </tr>
                 <!-- content -->
-                @if ($pickup === 0)
+                @if ($subscription->latest_order->pickup === 0)
 				<tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->delivery }} </td>
                 </tr>
