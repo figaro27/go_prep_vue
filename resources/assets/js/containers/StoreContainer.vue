@@ -46,7 +46,7 @@
         <SidebarMinimizer/>
       </AppSidebar>
       <main class="main">
-        <page-spinner v-if="!initialized"></page-spinner>
+        <page-spinner v-if="!initialized" style="left: 200px"></page-spinner>
         <!-- <Breadcrumb :list="list"/> -->
         <div class="container-fluid" v-if="initialized">
           <router-view></router-view>
