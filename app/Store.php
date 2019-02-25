@@ -139,7 +139,7 @@ class Store extends Model
         $orders = $this->orders()->with(['meals', 'meals.ingredients']);
 
         if($dateRange === []) {
-          $orders = $orders->where('delivery_date', $this->getNextDeliveryDate());
+          //$orders = $orders->where('delivery_date', $this->getNextDeliveryDate());
         }
         if(isset($dateRange['from'])) {
           $from = Carbon::parse($dateRange['from']);
