@@ -430,7 +430,7 @@ export default {
           if (this.deliveryPlan) {
             await this.refreshSubscriptions();
             this.$router.push({
-              path: "/customer/subscriptions",
+              path: "/customer/meal-plans",
               query: { created: true, pickup: this.pickup }
             });
           } else {

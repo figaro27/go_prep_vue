@@ -13,6 +13,7 @@ import CustomerBilling from './views/Customer/Account/Billing.vue';
 import CustomerContact from './views/Customer/Account/Contact.vue';
 import CustomerMyAccount from './views/Customer/Account/MyAccount.vue';
 import CustomerMealPlans from './views/Customer/MealPlans.vue';
+import CustomerMealPlanChange from './views/Customer/MealPlan.vue';
 import CustomerOrders from './views/Customer/Orders.vue';
 
 import StoreCustomers from './views/Store/Customers.vue';
@@ -98,6 +99,10 @@ let routes = [
     path: '/customer/meal-plans',
     component: CustomerMealPlans,
     name: 'customer-meal-plans'
+  }, {
+    path: '/customer/meal-plans/:id',
+    component: CustomerMealPlanChange,
+    name: 'customer-meal-plan-changes'
   }, {
     path: '/customer/orders',
     component: CustomerOrders,

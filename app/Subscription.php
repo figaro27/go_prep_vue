@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
+use App\MealOrder;
+use App\MealSubscription;
+
 class Subscription extends Model
 {
     protected $fillable = ['status', 'cancelled_at'];
 
-    protected $appends = ['meals', 'store_name', 'latest_order', 'next_delivery_date'];
+    protected $appends = ['store_name', 'latest_order', 'next_delivery_date', 'meal_ids', 'meal_quantities'];
 
     protected $casts = [
         'created_at' => 'date:F d, Y',
@@ -66,6 +69,16 @@ class Subscription extends Model
       return $this->store->getNextDeliveryDay($this->delivery_day);
     }
 
+    public function getMealIdsAttribute() {
+      return $this->meals()->get()->pluck('id');
+    }
+    public function getMealQuantitiesAttribute() {
+      return $this->meals()->get()->keyBy('id')->map(function($meal) {
+        return $meal->pivot->quantity ?? 0;
+      });
+    }
+
+    /*
     public function getMealsAttribute()
     {
         if (!$this->latest_order) {
@@ -73,7 +86,7 @@ class Subscription extends Model
         }
 
         return $this->latest_order->meals;
-    }
+    }*/
 
     public function getStoreNameAttribute()
     {
@@ -98,6 +111,17 @@ class Subscription extends Model
         $newOrder->delivery_date = $this->next_delivery_date;
         $newOrder->order_number = substr(uniqid(rand(1, 9), false), 0, 12);
         $newOrder->push();
+
+        $newOrder->meals()->delete();
+        foreach($this->meals as $meal) {
+          $mealSub = new MealOrder();
+          $mealSub->order_id = $newOrder->id;
+          $mealSub->store_id = $this->store->id;
+          $mealSub->meal_id = $meal->id;
+          $mealSub->quantity = $meal->pivot->quantity;
+          $mealSub->save();
+        }
+
         //} catch (\Exception $e) {
 
         //}
