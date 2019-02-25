@@ -324,7 +324,6 @@ export default {
         });
     }, 350),
     onSearchIngredient(val) {
-      console.log(val);
       if (_.isObject(val)) {
         this.recipe =
           val.serving_qty + " " + val.serving_unit + " " + val.food_name;

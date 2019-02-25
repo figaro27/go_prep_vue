@@ -388,7 +388,7 @@ class Meal extends Model
                                 $meal->store->units()->create([
                                     'store_id' => $store->id,
                                     'ingredient_id' => $ingredient->id,
-                                    'unit' => Format::baseUnit($ingredient->unit_type),
+                                    'unit' => $newIngredient->get('serving_unit', Format::baseUnit($ingredient->unit_type))
                                 ]);
 
                             } else {
@@ -555,7 +555,7 @@ class Meal extends Model
                                 $meal->store->units()->create([
                                     'store_id' => $meal->store_id,
                                     'ingredient_id' => $ingredient->id,
-                                    'unit' => Format::baseUnit($ingredient->unit_type),
+                                    'unit' => $newIngredient->get('serving_unit', Format::baseUnit($ingredient->unit_type))
                                 ]);
 
                             } else {
