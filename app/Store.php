@@ -131,7 +131,7 @@ class Store extends Model
         });
     }
 
-    public function getOrderIngredients($dateRange = [])
+    public function getOrderIngredients($dateRange = [], $excludeFulfilled = true)
     {
         $ingredients = [];
 
@@ -147,6 +147,10 @@ class Store extends Model
         if(isset($dateRange['to'])) {
           $to = Carbon::parse($dateRange['to']);
           $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
+        }
+
+        if($excludeFulfilled) {
+          $orders = $orders->where('fulfilled', false);
         }
 
         $orders = $orders->get();

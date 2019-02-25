@@ -153,15 +153,12 @@ export default {
       });
     }
   },
-  mounted() {
+  async mounted() {
     // Set initial weight unit to user default
     this.weightUnit = this.defaultWeightUnit || "oz";
 
-    /*this.refreshIngredients().then(() => {
-      this.refreshOrderIngredients().finally(() => {
-        //this.loading = false;
-      });
-    });*/
+    await this.refreshIngredients();
+    this.refreshOrderIngredients();
   },
   methods: {
     ...mapActions([
