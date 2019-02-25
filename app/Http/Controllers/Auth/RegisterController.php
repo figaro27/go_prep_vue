@@ -183,15 +183,20 @@ class RegisterController extends Controller
                 'category' => 'Entrees',
             ]);
 
-            $key = new \Cloudflare\API\Auth\APIKey(config('services.cloudflare.user'), config('services.cloudflare.key'));
-            $adapter = new \Cloudflare\API\Adapter\Guzzle($key);
-            $zones = new \Cloudflare\API\Endpoints\Zones($adapter);
-            $dns = new \Cloudflare\API\Endpoints\DNS($adapter);
+            try {
+              $key = new \Cloudflare\API\Auth\APIKey(config('services.cloudflare.user'), config('services.cloudflare.key'));
+              $adapter = new \Cloudflare\API\Adapter\Guzzle($key);
+              $zones = new \Cloudflare\API\Endpoints\Zones($adapter);
+              $dns = new \Cloudflare\API\Endpoints\DNS($adapter);
 
-            $zoneId = $zones->getZoneID('goprep.com');
+              $zoneId = $zones->getZoneID('goprep.com');
 
-            $dns->addRecord($zoneId, 'CNAME', $storeDetail->domain . '.dev', 'goprep.com', 0, true);
-            $dns->addRecord($zoneId, 'CNAME', $storeDetail->domain, 'goprep.com', 0, true);
+              $dns->addRecord($zoneId, 'CNAME', $storeDetail->domain . '.dev', 'goprep.com', 0, true);
+              $dns->addRecord($zoneId, 'CNAME', $storeDetail->domain, 'goprep.com', 0, true);
+            }
+            catch(\Exception $e) {
+              // todo: send notification to admin
+            }
         }
 
         return $user;
