@@ -9,28 +9,28 @@
 <body>
   <div class="row">
     <div class="col-8 address">
-      <h3>Customer Details</h3>
+      <h4>Customer</h4>
       <p>
         {{$order->user->name}}
       </p>
       <p>
         {{$order->user->details->address}}<br />
-        {{$order->user->details->city}}<br />
-        {{$order->user->details->state}}<br />
-        {{$order->user->details->zip}}<br />
-        {{$order->user->details->country}}<br />
+        {{$order->user->details->city}},
+        {{$order->user->details->state}}
+        {{$order->user->details->zip}}
       </p>
-      <br>
+      @if ($order->pickup === 0)
       <p>
         <strong>Delivery Instructions:</strong><br />
         {{$order->user->details->delivery}}
       </p>
+      @endif
     </div>
     <div class="col-4">
-      <h3>Company Details</h3>
-      <img src="http://{{$order->store->details->domain}}.dev.goprep.com/{{$order->store->details->logo}}"/>
       <h4>{{$order->store->details->name}}</h4>
-      <a href="http://{{$order->store->details->domain}}.goprep.com">{{$order->store->details->domain}}.goprep.com</a>
+      <img src="http://{{$order->store->details->domain}}.dev.goprep.com/{{$order->store->details->logo}}"/ style="zoom: 0.5">
+      <br><br>
+      <p><a href="http://{{$order->store->details->domain}}.goprep.com">www.{{$order->store->details->domain}}.goprep.com</a></p>
     </div>
   </div>
 
