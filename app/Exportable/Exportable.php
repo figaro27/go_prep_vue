@@ -113,10 +113,10 @@ trait Exportable
           'orientation' => $this->orientation,
           'page-size' => 'Letter',
           'no-outline',
-          'margin-top' => 0,
-          'margin-bottom' => 0,
-          'margin-left' => 0,
-          'margin-right' => 0,
+          //'margin-top' => 0,
+          //'margin-bottom' => 0,
+          //'margin-left' => 0,
+          //'margin-right' => 0,
           'disable-smart-shrinking'
         ];
 

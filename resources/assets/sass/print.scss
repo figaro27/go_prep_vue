@@ -25,21 +25,21 @@ body {
   font-size: 11pt;
 
   &.portrait {
-    width:      8.5in;
-    height:     11in;
+    //width:      8.5in;
+    //height:     11in;
 
     #print-area {
-      width:      7.9in;
-      height:     10.4in;
+      //width:      7.9in;
+      //height:     10.4in;
     }
   }
   &.landscape {
-    width:      11in;
-    height:     8.5in;
+    //width:      11in;
+    //height:     8.5in;
 
     #print-area {
-      width:      10.4in;
-      height:     7.9in;
+      //width:      10.4in;
+      //height:     7.9in;
     }
   }
 }
@@ -47,8 +47,8 @@ body {
 /* Printable area */
 #print-area {
   position:   relative;
-  top:        0.3in;
-  left:       0.3in;
+  //top:        0.3in;
+  //left:       0.3in;
 }
 
 p {
