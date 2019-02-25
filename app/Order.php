@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\MealOrder;
 use App\Meal;
 
+use Illuminate\Support\Carbon;
+
 class Order extends Model
 {
 
@@ -23,7 +25,7 @@ class Order extends Model
         //'created_at' => 'date:F d, Y'
     ];
 
-    protected $appends = ['has_notes', 'meal_ids', 'meal_quantities', 'store_name'];
+    protected $appends = ['has_notes', 'meal_ids', 'meal_quantities', 'store_name', 'cutoff_passed'];
 
     public function user()
     {
@@ -79,6 +81,14 @@ class Order extends Model
       return $this->meals()->get()->keyBy('id')->map(function($meal) {
         return $meal->pivot->quantity ? $meal->pivot->quantity : 0;
       });
+    }
+    public function getCutoffPassedAttribute() {
+      $ddates = $this->store->settings->getNextDeliveryDates(true);
+
+      $oddate = new Carbon($this->delivery_date);
+      $diff = $oddate->diffInSeconds(Carbon::now());
+      
+      return $oddate->isPast() || $diff <= $this->store->getCutoffSeconds();
     }
 
     public static function updateOrder($id, $props)

@@ -9,6 +9,12 @@
         </p>
       </b-alert>
 
+      <b-alert v-if="subscriptions[0]" :show="!!$route.query.updated || false" variant="success">
+        <p class="center-text mt-3">
+          You have successfully updated your meal plan.
+        </p>
+      </b-alert>
+
       <b-alert :show="0 === subscriptions.length || false" variant="warning">
         <p class="center-text mt-3">You have no meal plans.</p>
       </b-alert>
@@ -33,6 +39,7 @@
                       <h2>{{ format.money(subscription.amount) }} per {{subscription.interval}}</h2>
                       <b-btn variant="warning" @click.stop="() => pauseSubscription(subscription)">Pause</b-btn>
                       <b-btn variant="danger" @click.stop="() => cancelSubscription(subscription)">Cancel</b-btn>
+                      <b-btn variant="success" @click.stop="() => editSubscription(subscription)">Change Meals</b-btn>
                     </div>
                     <div class="col-md-4" v-else-if="subscription.status === 'paused'">
                       <b-btn
@@ -93,7 +100,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import format from "../../lib/format.js";
 import Spinner from "../../components/Spinner";
 
@@ -112,6 +119,7 @@ export default {
   mounted() {},
   methods: {
     ...mapActions(["refreshSubscriptions"]),
+    ...mapMutations(["emptyBag", "addBagItems"]),
     getOrderTableData(subscription) {
       if (!subscription || !_.isArray(subscription.orders)) {
         return [];
@@ -192,6 +200,20 @@ export default {
       }
 
       this.refreshSubscriptions();
+    },
+    editSubscription(subscription) {
+      this.emptyBag();
+
+      const items = _.map(subscription.meals, meal => {
+        return {
+          id: meal.id,
+          meal: meal,
+          quantity: meal.pivot.quantity,
+          added: moment().unix()
+        }
+      });
+      this.addBagItems(items);
+      window.location = `${subscription.store.url}/customer/meal-plans/${subscription.id}`;
     }
   }
 };

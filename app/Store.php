@@ -36,6 +36,7 @@ class Store extends Model
       'cutoff_passed',
       'next_delivery_date',
       'next_cutoff_date',
+      'url'
     ];
 
     protected $casts = [
@@ -361,7 +362,7 @@ class Store extends Model
         return false;
     }
 
-    protected function getCutoffSeconds() {
+    public function getCutoffSeconds() {
       $cutoff = $this->settings->cutoff_days * (60 * 60 * 24) + $this->settings->cutoff_hours * (60 * 60);
       return $cutoff;
     }
@@ -412,5 +413,9 @@ class Store extends Model
     public function getNextDeliveryDateAttribute() {
       $date = $this->getNextDeliveryDate();
       return $date ? $date->toDateTimeString() : null;
+    }
+
+    public function getUrlAttribute() {
+      return $this->getUrl();
     }
 }

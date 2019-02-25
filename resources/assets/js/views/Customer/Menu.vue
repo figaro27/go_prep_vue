@@ -271,27 +271,26 @@
                     v-if="minOption === 'meals' && total < minimumMeals && !manualOrder"
                   >Please add {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
 
-                  <div>
-                    <router-link to="/customer/bag">
-                      <b-btn
-                        v-if="minOption === 'meals' && total >= minimumMeals && !preview && !manualOrder"
-                        class="menu-bag-btn"
-                      >NEXT</b-btn>
+                  <div
+                    v-if="minOption === 'meals' && total >= minimumMeals && !preview && !manualOrder"
+                  >
+                    <router-link to="/customer/bag" v-if="!subscriptionId">
+                      <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
+                    <b-btn v-else class="menu-bag-btn" @click="updateSubscriptionMeals">UPDATE MEALS</b-btn>
                   </div>
-                  <div>
+                  <div v-if="minOption === 'price' && totalBagPrice < minPrice && !manualOrder">
                     <p
                       class="align-right"
-                      v-if="minOption === 'price' && totalBagPrice < minPrice && !manualOrder"
                     >Please add {{format.money(remainingPrice)}} more to continue.</p>
                   </div>
-                  <div>
-                    <router-link to="/customer/bag">
+                  <div v-if="minOption === 'price' && totalBagPrice >= minPrice && !preview && !manualOrder">
+                    <router-link to="/customer/bag" v-if="!subscriptionId">
                       <b-btn
-                        v-if="minOption === 'price' && totalBagPrice >= minPrice && !preview && !manualOrder"
                         class="menu-bag-btn"
                       >NEXT</b-btn>
                     </router-link>
+                    <b-btn v-else class="menu-bag-btn" @click="updateSubscriptionMeals">UPDATE MEALS</b-btn>
                   </div>
                   <div v-if="manualOrder">
                     <div v-if="transferTypeCheck === 'both'" class="center-text">
@@ -406,6 +405,9 @@ export default {
     },
     manualOrder: {
       default: false
+    },
+    subscriptionId: {
+      default: null
     }
   },
   data() {
@@ -662,6 +664,7 @@ export default {
     this.showActiveFilters();
   },
   methods: {
+    ...mapActions(["refreshSubscriptions", "emptyBag"]),
     showActiveFilters() {
       let tags = this.tags;
       this.active = tags.reduce((acc, tag) => {
@@ -930,6 +933,30 @@ export default {
         .finally(() => {
           this.loading = false;
         });
+    },
+    async updateSubscriptionMeals() {
+      try {
+        const { data } = await axios.post(
+          `/api/me/subscriptions/${this.subscriptionId}/meals`,
+          { bag: this.bag }
+        );
+        await this.refreshSubscriptions();
+        this.emptyBag();
+        this.$router.push({
+          path: "/customer/meal-plans",
+          query: {
+            updated: true
+          }
+        });
+      } catch (e) {
+        if(!_.isEmpty(e.response.data.error)) {
+          this.$toastr.e(e.response.data.error);
+        }
+        else {
+          this.$toastr.e('Please try again or contact our support team', 'Failed to update meals!');
+        }
+        return;
+      }
     }
   }
 };

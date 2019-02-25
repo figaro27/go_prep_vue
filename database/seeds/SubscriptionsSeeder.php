@@ -30,6 +30,12 @@ class SubscriptionsSeeder extends Seeder
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
+        $mealSub = new App\MealSubscription();
+        $mealSub->subscription_id = $subId;
+        $mealSub->store_id = 1;
+        $mealSub->meal_id = 1;
+        $mealSub->quantity = 3;
+        $mealSub->save();
         $user = User::find(3);
         $user->orders()->first()->update(['subscription_id' => $subId]);
 

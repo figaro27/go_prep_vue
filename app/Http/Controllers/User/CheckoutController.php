@@ -6,6 +6,7 @@ use App\Bag;
 use App\Http\Controllers\User\UserController;
 use App\Mail\Customer\NewOrder;
 use App\MealOrder;
+use App\MealSubscription;
 use App\Order;
 use App\Store;
 use App\StoreDetail;
@@ -181,6 +182,15 @@ class CheckoutController extends UserController
                 $mealOrder->meal_id = $item['meal']['id'];
                 $mealOrder->quantity = $item['quantity'];
                 $mealOrder->save();
+            }
+
+            foreach ($bag->getItems() as $item) {
+              $mealSub = new MealSubscription();
+              $mealSub->subscription_id = $userSubscription->id;
+              $mealSub->store_id = $store->id;
+              $mealSub->meal_id = $item['meal']['id'];
+              $mealSub->quantity = $item['quantity'];
+              $mealSub->save();
             }
 
             // Send notification to store
