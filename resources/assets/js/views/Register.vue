@@ -281,6 +281,7 @@ export default {
   components: {},
   data() {
     return {
+      redirect: null,
       step: 0,
 
       form: {
@@ -344,7 +345,11 @@ export default {
     },
     validationGroup: ["form[0]", "form[1]", "form[3]"]
   },
-  created() {},
+  created() {
+    if(!_.isEmpty(this.$route.query.redirect)) {
+      this.redirect = this.$route.query.redirect;
+    }
+  },
   mounted() {},
   methods: {
     ...mapActions(["init", "setToken"]),

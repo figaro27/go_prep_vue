@@ -223,7 +223,7 @@
 
                   </div>
                   <div class="col-md-6">
-                    <router-link :to="{ path: '/register' }">
+                    <router-link :to="{ path: '/register', query: { redirect: '/customer/bag' } }">
                       <b-btn class="menu-bag-btn">
                         REGISTER
                       </b-btn>

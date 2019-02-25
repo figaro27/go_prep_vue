@@ -21,7 +21,7 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
   
     //Auth::routes();
     Route::group([
-      'middleware' => 'api',
+      'middleware' => ['api', 'store_slug'],
       'prefix' => 'auth'
     ], function ($router) {
     

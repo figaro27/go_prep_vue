@@ -176,11 +176,11 @@ class RegisterController extends Controller
                 'view_delivery_days' => 1,
                 'delivery_days' => [],
                 'delivery_distance_zipcodes' => [],
-                'notifications' => array('new_order' => true, 'new_orders' => true, 'ready_to_print' => true, 'new_subscription' => true, 'new_subscriptions' => true, 'cancelled_subscription' => true, 'cancelled_subscriptions' => true)
+                'notifications' => array('new_order' => true, 'new_orders' => true, 'ready_to_print' => true, 'new_subscription' => true, 'new_subscriptions' => true, 'cancelled_subscription' => true, 'cancelled_subscriptions' => true),
             ]);
 
             $storeSettings = $store->categories()->create([
-              'category' => 'Entrees'
+                'category' => 'Entrees',
             ]);
 
             $key = new \Cloudflare\API\Auth\APIKey(config('services.cloudflare.user'), config('services.cloudflare.key'));
@@ -190,7 +190,7 @@ class RegisterController extends Controller
 
             $zoneId = $zones->getZoneID('goprep.com');
 
-            $dns->addRecord($zoneId, 'CNAME', $storeDetail->domain.'.dev', 'goprep.com', 0, true);
+            $dns->addRecord($zoneId, 'CNAME', $storeDetail->domain . '.dev', 'goprep.com', 0, true);
             $dns->addRecord($zoneId, 'CNAME', $storeDetail->domain, 'goprep.com', 0, true);
         }
 
@@ -202,7 +202,13 @@ class RegisterController extends Controller
         // Create auth token
         $token = auth()->login($user);
 
-        $redirect = $user->hasRole('store') ? '/store/account/settings' : '/customer/home';
+        // Determine redirect URL
+        if ($user->hasRole('store')) {
+            $redirect = '/store/account/settings';
+        } else {
+            $store = defined('STORE_ID') ? Store::find(STORE_ID) : null;
+            $redirect = $store ? '/customer/menu' : '/customer/home';
+        }
 
         return [
             'user' => $user,
