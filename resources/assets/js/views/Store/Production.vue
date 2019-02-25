@@ -98,7 +98,7 @@ export default {
     tableData() {
       let filters = { ...this.filters };
 
-      let filtered = _.filter(this.orders, order => {
+      let filteredByDate = _.filter(this.orders, order => {
         if (
           "delivery_dates" in filters &&
           (filters.delivery_dates.start ||
@@ -131,9 +131,14 @@ export default {
         return true;
       });
 
+      let filteredOrders = _.filter(filteredByDate, order => {
+        if (order.fulfilled === 0)
+          return true;
+      })
+
       let mealCounts = {};
 
-      filtered.forEach(order => {
+      filteredOrders.forEach(order => {
         _.forEach(order.meal_quantities, (quantity, mealId) => {
           mealId = parseInt(mealId);
 
