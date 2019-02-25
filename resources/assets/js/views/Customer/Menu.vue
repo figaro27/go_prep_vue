@@ -70,63 +70,63 @@
                 v-if="mealModal"
               >
                 <div class="row mt-3">
-                  <div class="col-md-6 modal-meal-image">
+                  <div class="col-lg-6 modal-meal-image">
                     <img :src="meal.featured_image">
                     <p v-if="storeSettings.showNutrition">{{ meal.description }}</p>
                     <div class="row mt-3 mb-5" v-if="storeSettings.showNutrition">
-                      <div class="col-md-6">
+                      <div class="col-lg-6">
                         <h5>Tags</h5>
                         <li v-for="tag in meal.tags">{{ tag.tag }}</li>
                       </div>
-                      <div class="col-md-6">
+                      <div class="col-lg-6">
                         <h5>Contains</h5>
                         <li v-for="allergy in meal.allergy_titles">{{ allergy }}</li>
                       </div>
                     </div>
 
                     <div class="row mt-5" v-if="storeSettings.showNutrition">
-                      <div class="col-md-5 mt-3">
+                      <div class="col-lg-5 mt-3">
                         <h5>{{ format.money(meal.price) }}</h5>
                       </div>
-                      <div class="col-md-7">
+                      <div class="col-lg-7">
                         <b-btn @click="addOne(meal)" class="menu-bag-btn">+ ADD</b-btn>
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-6" v-if="storeSettings.showNutrition">
-                    <div id="nutritionFacts" ref="nutritionFacts"></div>
+                  <div class="col-lg-6" v-if="storeSettings.showNutrition">
+                    <div id="nutritionFacts" ref="nutritionFacts" class="mt-2 mt-lg-0"></div>
                   </div>
-                  <div class="col-md-6" v-if="!storeSettings.showNutrition">
+                  <div class="col-lg-6" v-if="!storeSettings.showNutrition">
                     <p>{{ meal.description }}</p>
                     <div class="row">
-                      <div class="col-md-6">
+                      <div class="col-lg-6">
                         <h5>Tags</h5>
                         <li v-for="tag in meal.tags">{{ tag.tag }}</li>
                       </div>
-                      <div class="col-md-6">
+                      <div class="col-lg-6">
                         <h5>Contains</h5>
                         <li v-for="allergy in meal.allergy_titles">{{ allergy }}</li>
                       </div>
                     </div>
                     <div class="row mt-3 mb-3">
-                      <div class="col-md-12">
+                      <div class="col-lg-12">
                         <h5>Ingredients</h5>
                         {{ ingredients }}
                       </div>
                     </div>
                     <div class="row" v-if="storeSettings.showNutrition">
-                      <div class="col-md-8">
+                      <div class="col-lg-8">
                         <h5>{{ format.money(meal.price) }}</h5>
                       </div>
-                      <div class="col-md-4">
+                      <div class="col-lg-4">
                         <img src="/images/customer/add.jpg" @click="addOne(meal)">
                       </div>
                     </div>
                     <div class="row" v-if="!storeSettings.showNutrition">
-                      <div class="col-md-6">
+                      <div class="col-lg-6">
                         <h5>{{ format.money(meal.price) }}</h5>
                       </div>
-                      <div class="col-md-6">
+                      <div class="col-lg-6">
                         <img src="/images/customer/add.jpg" @click="addOne(meal)">
                       </div>
                     </div>

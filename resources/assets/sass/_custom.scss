@@ -148,6 +148,14 @@ body.sidebar-minimized {
 
 /*Main*/
 
+.app-body {
+  -webkit-overflow-scrolling: touch;
+}
+
+.main {
+  -webkit-overflow-scrolling: touch;
+}
+
 .main .container-fluid {
   margin-top:20px;
 
@@ -261,6 +269,7 @@ body.sidebar-minimized {
 
 .main-menu-area, .bag-area{
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 
   @include media-breakpoint-up(md) {
     height: calc(100vh - 210px);
@@ -326,9 +335,13 @@ body.sidebar-minimized {
 
 .modal-meal-image img{
   width:100% !important;
+
+  @include media-breakpoint-down(md) {
+    margin-bottom: 30px;
+  }
 }
 
-.modal-meal-image-full img{
+.modal-meal-image-full img {
   width:300px !important;
 }
 
@@ -827,6 +840,7 @@ table {
 .modal-content{
   max-height: 80vh !important;
   overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
   margin-top:100px !important;
 }
 
