@@ -12,8 +12,8 @@
         >
         <img
           class="navbar-brand-minimized"
-          src="/images/logo-min.png"
-          width="33"
+          src="/images/logo.png"
+          width="90"
           height="40"
           alt="GoPrep Logo"
         >
