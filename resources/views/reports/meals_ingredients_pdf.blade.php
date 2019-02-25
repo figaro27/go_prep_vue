@@ -5,33 +5,35 @@
   <link rel="stylesheet" href="{{ asset('css/print.css') }}">
 </head>
 
-<body>
-  <h1>Meals Ingredients</h1>
-  <h2>{{ date("m/d/Y") }}</h2>
-  <table border="1" width="100">
-    <thead>
-      <tr>
-        <th>Meal</th>
-        <th>Ingredient</th>
-        <th>Quantity</th>
-        <th>Unit</th>
+<body class="{{ $body_classes }}">
+  <div id="print-area">
+    <h1>Meals Ingredients</h1>
+    <h2>{{ date("m/d/Y") }}</h2>
+    <table border="1" width="100">
+      <thead>
+        <tr>
+          <th>Meal</th>
+          <th>Ingredient</th>
+          <th>Quantity</th>
+          <th>Unit</th>
 
-      </tr>
-    </thead>
+        </tr>
+      </thead>
 
-    <tbody>
-      @foreach ($data as $i => $row)
-      <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-        @foreach($row as $value)
-          <td>         
-            {{ $value }}        
-          </td>
+      <tbody>
+        @foreach ($data as $i => $row)
+        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+          @foreach($row as $value)
+            <td>         
+              {{ $value }}        
+            </td>
+          @endforeach
+        </tr>
         @endforeach
-      </tr>
-      @endforeach
-    </tbody>
-  
-  </table>
+      </tbody>
+    
+    </table>
+  </div>
 </body>
 
 </html>

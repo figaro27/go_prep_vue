@@ -13,10 +13,44 @@
   src: url(fonts/gotham-narrow.otf);
 }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+  text-rendering: optimizeLegibility;
+}
+
 body {
   font-family: 'gotham-narrow';
   font-size: 11pt;
+
+  &.portrait {
+    width:      8.5in;
+    height:     11in;
+
+    #print-area {
+      width:      7.9in;
+      height:     10.4in;
+    }
+  }
+  &.landscape {
+    width:      11in;
+    height:     8.5in;
+
+    #print-area {
+      width:      10.4in;
+      height:     7.9in;
+    }
+  }
 }
+
+/* Printable area */
+#print-area {
+  position:   relative;
+  top:        0.3in;
+  left:       0.3in;
+}
+
 p {
   margin-bottom: 4pt;
   margin-top: 0pt;

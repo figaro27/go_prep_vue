@@ -102,12 +102,23 @@ trait Exportable
         $vars = [
           'data' => $data,
           'params' => $this->params,
-          'delivery_dates' => $this->getDeliveryDates()
+          'delivery_dates' => $this->getDeliveryDates(),
+          'body_classes' => implode(' ', [$this->orientation])
         ];
 
         $html = view($this->exportPdfView(), $vars)->render();
 
-        $pdfConfig = ['encoding' => 'utf-8', 'orientation' => $this->orientation];
+        $pdfConfig = [
+          'encoding' => 'utf-8',
+          'orientation' => $this->orientation,
+          'page-size' => 'Letter',
+          'no-outline',
+          'margin-top' => 0,
+          'margin-bottom' => 0,
+          'margin-left' => 0,
+          'margin-right' => 0,
+          'disable-smart-shrinking'
+        ];
 
         if(config('pdf.xserver')) {
           $pdfConfig = array_merge($pdfConfig, [
