@@ -115,7 +115,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $storeDetails->name }}</td>
                       </tr>
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $store->next_delivery_date }}
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ date('D, m/d/Y', strtotime($store->next_delivery_date)) }}
                           </td>
                       </tr>
 
@@ -155,7 +155,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- content -->
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Orders are locked in and your reports are ready to be viewed for the next delivery date: {{ $store->next_delivery_date }}
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Orders are locked in and your reports are ready to be viewed for the next delivery date: {{ date('D, m/d/Y', strtotime($store->next_delivery_date)) }}
                   </td>
                 </tr>
                 <tr>
