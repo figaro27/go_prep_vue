@@ -205,7 +205,7 @@ export default {
         })
         .catch(err => {
           this.$toastr.e(
-            "Please confirm that data exists for the selected date range.",
+            "Please confirm that orders exist for the selected date range.",
             "Failed to print report."
           );
         })

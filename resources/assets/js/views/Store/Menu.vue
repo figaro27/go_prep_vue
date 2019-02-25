@@ -369,7 +369,7 @@ export default {
           tags: "Tags",
           contains: "Contains",
           price: "Price",
-          subscription_count: "Active Meal Plans",
+          subscription_count: "Meal Plans",
           lifetime_orders: "Lifetime Orders",
           created_at: "Added",
           actions: "Actions"

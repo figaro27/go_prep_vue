@@ -20,7 +20,7 @@
       <b-navbar-toggle target="nav_collapse" class="mr-auto ml-2" />
       <b-btn class="mr-2 d-lg-none" variant="light" v-if="'id' in viewedStore" to="/customer/bag"><i class="fa fa-shopping-bag"></i></b-btn>
 
-      <b-collapse is-nav id="nav_collapse">
+      <b-collapse is-nav id="nav_collapse" class="customer-nav">
         <b-navbar-nav class="d-none d-block d-md-none">
           <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag">Bag</b-nav-item>
         </b-navbar-nav>

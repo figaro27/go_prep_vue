@@ -82,6 +82,12 @@ li {
 	line-height: 25px;
 }
 
+.customer-nav .nav-item .nav-link, .customer-nav .nav-item .nav-link div{
+  @include media-breakpoint-down(md){
+  color:#73818f !important;
+}
+}
+
 .nav .nav-child{
 	background-color:#33383b !important;
 }
