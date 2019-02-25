@@ -242,7 +242,7 @@ class Store extends Model
       return $date ? $date->subSeconds($this->getCutoffSeconds()) : null;
     }
 
-    public function getOrders($groupBy = null, $dateRange = []) {
+    public function getOrders($groupBy = null, $dateRange = [], $onlyUnfulfilled = false) {
       $orders = $this->orders()->with('meals');
       
       if(isset($dateRange['from'])) {
@@ -252,6 +252,10 @@ class Store extends Model
       if(isset($dateRange['to'])) {
         $to = Carbon::parse($dateRange['to']);
         $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
+      }
+
+      if($onlyUnfulfilled) {
+        $orders = $orders->where('fulfilled', 0);
       }
 
       $orders = $orders->get();

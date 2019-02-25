@@ -24,7 +24,7 @@ class MealOrders
         $mealQuantities = [];
         $dates = $this->getDeliveryDates();
 
-        $orders = $this->store->getOrders(null, $this->getDeliveryDates());
+        $orders = $this->store->getOrders(null, $dates, true);
             $orders->map(function ($order) use (&$mealQuantities) {
                 foreach ($order->meal_quantities as $id => $qty) {
                     $meal = Meal::find($id);
