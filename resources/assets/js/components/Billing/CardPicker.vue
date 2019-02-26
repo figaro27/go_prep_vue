@@ -107,9 +107,10 @@ export default {
             this.$toastr.s("Payment method saved.");
           })
           .catch(resp => {
-            let error = _.first(Object.values(resp.resp.data.errors));
-            error = error.join(" ");
-            this.$toastr.e(error, "Error");
+            // let error = _.first(Object.values(resp.resp.data.errors));
+            // error = error.join(" ");
+            // this.$toastr.e(error, "Error");
+            this.$toastr.e("Failed to add card.", "Error");
           })
           .finally(() => {
             this.$parent.loading = false;

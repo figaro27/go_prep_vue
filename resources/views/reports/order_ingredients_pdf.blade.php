@@ -8,7 +8,7 @@
 
 <body class="{{ $body_classes }}">
   <div id="print-area">
-    <h1>Ingredients</h1>
+    <h1>Ingredients Production</h1>
     @if ($delivery_dates)
       <h2>
         Delivery Days: 

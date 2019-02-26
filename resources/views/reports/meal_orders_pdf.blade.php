@@ -7,7 +7,7 @@
 
 <body class="{{ $body_classes }}">
   <div id="print-area">
-    <h1>Production</h1>
+    <h1>Meal Production</h1>
     @if ($delivery_dates)
       <h2>
         Delivery Days: 
@@ -21,8 +21,8 @@
     <table border="1" width="100">
       <thead>
         <tr>
-          <th>Title</th>
-          <th>Active Orders</th>
+          <th>Meal</th>
+          <th>Orders</th>
           <!-- <th>Total Price</th> -->
         </tr>
       </thead>

@@ -4,7 +4,7 @@
       <i class="fa fa-shopping-bag text-white"></i>
     </v-btn>
 
-    <div v-if="!storeSettings.open">
+    <div v-if="storeSettings.open === 0">
       <div class="row">
         <div class="col-sm-12 mt-3">
           <div class="card">
