@@ -48,7 +48,7 @@ $simple-line-font-path: '~simple-line-icons/fonts/';
 .app {
   height: 100vh;
   -webkit-overflow-scrolling: touch;
-  overflow-y: scroll;
+  // overflow-y: scroll;
 }
 
 .filter-btn {
