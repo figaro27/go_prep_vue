@@ -7,7 +7,7 @@
 
 <body class="{{ $body_classes }}">
   <div id="print-area">
-    <h1>Meals Ingredients</h1>
+    <h1>Ingredients</h1>
     <h2>{{ date("m/d/Y") }}</h2>
     <table border="1" width="100">
       <thead>
