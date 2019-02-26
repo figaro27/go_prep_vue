@@ -19,7 +19,7 @@ class OrdersByCustomer
         $this->params = $params;
     }
 
-    public function exportData($type = null)
+    public function exportData($type = null, $excludeFulfilled = true)
     {
         $dateRange = $this->getDeliveryDates();
 
@@ -34,7 +34,11 @@ class OrdersByCustomer
             $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
         }
 
-        $orders = $orders->get()->groupBy('user_id');
+        if ($excludeFulfilled){
+            $orders = $orders->where('fulfilled', 0)->get()->groupBy('user_id');
+        }
+        else
+            $orders = $orders->get()->groupBy('user_id');
 
         $customerOrders = $orders
             ->map(function ($orders, $userId) {
