@@ -6,6 +6,7 @@ let map = {
   'teaspoons': 'tsp',
   'teaspoon': 'tsp',
   'tbsp': 'Tbs',
+  'tbs': 'Tbs',
   'milligramme': 'mg',
   'milligrammes': 'mg',
   'liter': 'l',
@@ -66,6 +67,9 @@ let units = {
    */
   convert(val, from, to, round = true) {
 
+    from = units.normalize(from);
+    to = units.normalize(to);
+
     if(from === 'unit' || to === 'unit') {
       return val;
     }
@@ -97,7 +101,8 @@ let units = {
     }
 
     if(unitName in map) {
-      return map[unitName];
+      let unit = map[unitName];
+      return unit;
     }
     return unitName;
   },
