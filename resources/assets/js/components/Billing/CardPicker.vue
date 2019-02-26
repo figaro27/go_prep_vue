@@ -21,7 +21,7 @@
       <hr>
     </div>
 
-    <b-form-group label="Add New Card" description="Test card: 4242424242424242">
+    <b-form-group label="Add New Card">
       <card
         class="stripe-card"
         :class="{ newCard }"
@@ -106,10 +106,10 @@ export default {
             this.newCard = null;
             this.$toastr.s("Payment method saved.");
           })
-          .catch(e => {
-            if (e.error && e.error.message) {
-              this.$toastr.e(e.error.message);
-            }
+          .catch(resp => {
+            let error = _.first(Object.values(resp.resp.data.errors));
+            error = error.join(" ");
+            this.$toastr.e(error, "Error");
           })
           .finally(() => {
             this.$parent.loading = false;
