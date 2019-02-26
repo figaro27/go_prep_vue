@@ -150,12 +150,12 @@ body.sidebar-minimized {
 
 .app-body {
   -webkit-overflow-scrolling: touch;
-  overflow-y: scroll;
+ 
 }
 
 .main {
   -webkit-overflow-scrolling: touch;
-  overflow-y: scroll;
+  
 }
 
 .main .container-fluid {
@@ -844,7 +844,7 @@ table {
   max-height: 80vh !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch;
-  overflow-y: scroll;
+  
   margin-top:100px !important;
 }
 
