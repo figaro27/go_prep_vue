@@ -56,7 +56,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- logo -->
                       <tr>
-                        <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px;" src="http://www.myquickstartup.net/goprep-logo.png" alt="logo" /></td>
+                        <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px;" src="http://www.myquickstartup.net/goprep-logo.png" alt="GoPrep" title="GoPrep"/></td>
                       </tr>
                       <!-- end logo -->
                       <tr>
