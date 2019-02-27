@@ -603,7 +603,7 @@ export default {
 
       // this.spliceCharacters();
       axios
-        .post("/api/updateStoreSettings", settings)
+        .patch("/api/me/settings", settings)
         .then(response => {
           // Refresh everything
           this.refreshStoreSettings();

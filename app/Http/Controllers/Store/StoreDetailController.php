@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Store;
 
 use App\StoreDetail;
-use Auth;
+use App\Http\Controllers\Store\StoreController;
 use Illuminate\Http\Request;
 use \App\Utils\Images;
 
-class StoreDetailController extends Controller
+class StoreDetailController extends StoreController
 {
     /**
      * Display a listing of the resource.
@@ -48,9 +48,7 @@ class StoreDetailController extends Controller
      */
     public function show(StoreDetail $storeDetail)
     {
-        $id = Auth::user()->id;
-        $store = StoreDetail::findOrFail($id);
-        return $store;
+        return $this->store->details;
     }
 
     /**
@@ -73,48 +71,46 @@ class StoreDetailController extends Controller
      */
     public function update(Request $request)
     {
-      $id = auth('api')->user()->id;
-      $store = StoreDetail::findOrFail($id);
+        $store = $this->store->details;
 
         $rules = [
-          'name' => 'required|string',
-          'logo' => 'required|string',
-          'phone' => 'required|string',
-          'address' => 'required|string',
-          'city' => 'required|string',
-          'state' => 'required|string',
-          'zip' => 'required|numeric',
-          // 'description' => 'required|string|max:450',
+            'name' => 'required|string',
+            'logo' => 'required|string',
+            'phone' => 'required|string',
+            'address' => 'required|string',
+            'city' => 'required|string',
+            'state' => 'required|string',
+            'zip' => 'required|numeric',
+            // 'description' => 'required|string|max:450',
         ];
 
         $this->validate($request, $rules);
 
         $newLogo = $request->has('logo') && substr($request->get('logo'), 0, 4) === 'data';
 
-        if($newLogo) {
-          $image = Images::decodeB64($request->get('logo'));
-          $size = getimagesizefromstring($image);
+        if ($newLogo) {
+            $image = Images::decodeB64($request->get('logo'));
+            $size = getimagesizefromstring($image);
 
-          if($size && $size[0] !== $size[1]) {
-            return response()->json([
-              'message' => 'The given data was invalid.',
-              'errors' => [
-                'logo' => ['The logo must have an equal width and height.']
-              ]
-            ], 422);
-          }
+            if ($size && $size[0] !== $size[1]) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => [
+                        'logo' => ['The logo must have an equal width and height.'],
+                    ],
+                ], 422);
+            }
         }
-
 
         $store->update($request->except('logo'));
 
         if ($newLogo) {
-          $imageUrl = Images::uploadB64($request->get('logo'));
+            $imageUrl = Images::uploadB64($request->get('logo'));
 
-          if($imageUrl) {
-            $store->logo = $imageUrl;
-            $store->save();
-          }
+            if ($imageUrl) {
+                $store->logo = $imageUrl;
+                $store->save();
+            }
         }
 
         return $store;

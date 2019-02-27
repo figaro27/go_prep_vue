@@ -68,6 +68,10 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
                     Route::resource('units', 'UnitController');
                     Route::resource('categories', 'CategoryController');
                     Route::resource('settings', 'StoreSettingController');
+                    
+                    Route::get('getStore', 'StoreDetailController@show');
+                    Route::patch('details', 'StoreDetailController@update');
+                    Route::patch('settings', 'StoreSettingController@update');
 
                     Route::post('stripe/connect', 'StripeController@connect');
                     Route::get('stripe/login', 'StripeController@getLoginLinks');
@@ -97,10 +101,6 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
         });
 
         Route::get('store/viewed', 'SpaController@getViewedStore');
-
-        Route::get('getStore', 'StoreDetailController@show');
-        Route::patch('storeDetail', 'StoreDetailController@update');
-        Route::post('updateStoreSettings', 'Store\\StoreSettingController@update');
 
     });
 
