@@ -171,7 +171,7 @@ export default {
       return this.$store.getters.ingredient(id);
     },
     getIngredientUnit(id) {
-      return this.$store.getters.ingredientUnit(id);
+      return units.normalize(this.$store.getters.ingredientUnit(id));
     },
     unitOptions(unitType) {
       if (!unitType) {
