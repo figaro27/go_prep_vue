@@ -187,7 +187,7 @@ export default {
       let data = {...this.storeDetails};
       this.spliceZip();
       axios
-        .patch("/api/storeDetail", data)
+        .patch("/api/me/details", data)
         .then(response => {
           this.$toastr.s('Your company details have been updated.', 'Success');
         })
@@ -201,7 +201,7 @@ export default {
       let settings = { ...this.storeSettings };
       settings.delivery_distance_zipcodes = this.zipcodes;
 
-      axios.post("/api/updateStoreSettings", settings).then(response => {});
+      axios.patch("/api/me/settings", settings).then(response => {});
     },
     spliceZip() {
       if (this.storeDetail.zip.toString().length > 5) {
