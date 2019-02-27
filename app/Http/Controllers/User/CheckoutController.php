@@ -115,6 +115,8 @@ class CheckoutController extends UserController
             }
 
         } else {
+            $weekIndex = date('N', strtotime($deliveryDay));
+            $cutoff = $store->getNextCutoffDate($weekIndex);
 
             $plan = \Stripe\Plan::create([
                 "amount" => round($total * 100),
@@ -139,6 +141,8 @@ class CheckoutController extends UserController
                     ['plan' => $plan],
                 ],
                 'application_fee_percent' => $application_fee,
+                'billing_cycle_anchor' => $cutoff->getTimestamp(),
+                'prorate' => false,
             ], ['stripe_account' => $store->settings->stripe_id]);
 
             $userSubscription = new Subscription();
@@ -153,7 +157,7 @@ class CheckoutController extends UserController
             $userSubscription->amount = $total;
             $userSubscription->interval = 'week';
             $userSubscription->delivery_day = date('N', strtotime($deliveryDay));
-            $userSubscription->next_renewal_at = Carbon::now('utc')->addDays(7);
+            $userSubscription->next_renewal_at = $cutoff->addDays(7);
             $userSubscription->save();
 
             // Create initial order
