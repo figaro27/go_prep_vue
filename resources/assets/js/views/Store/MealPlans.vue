@@ -35,7 +35,7 @@
               slot="delivery_day"
               class="text-nowrap"
               slot-scope="props"
-            >{{ moment().day(props.row.delivery_day - 1).format('dddd, MMM Do') }}</div>
+            >{{ moment(props.row.next_delivery_date).format('dddd, MMM Do') }}</div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-primary btn-sm"
