@@ -13,7 +13,7 @@
                   name="user-type"
                 >
                   <b-form-radio value="customer">Customer</b-form-radio>
-                  <b-form-radio value="store">Store</b-form-radio>
+                  <b-form-radio value="store">Company</b-form-radio>
                 </b-form-radio-group>
               </b-form-group>
 

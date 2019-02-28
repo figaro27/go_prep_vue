@@ -19,11 +19,14 @@ class OrdersByCustomer
         $this->params = $params;
     }
 
-    public function exportData($type = null, $excludeFulfilled = true)
+    public function exportData($type = null)
     {
         $dateRange = $this->getDeliveryDates();
+        $params = $this->params;
 
-        $orders = $this->store->orders();
+        $fulfilled = $params->get('fulfilled');
+
+        $orders = $this->store->orders()->where('fulfilled', $fulfilled)->get()->groupBy('user_id');
 
         if (isset($dateRange['from'])) {
             $from = Carbon::parse($dateRange['from']);
@@ -34,11 +37,7 @@ class OrdersByCustomer
             $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
         }
 
-        if ($excludeFulfilled){
-            $orders = $orders->where('fulfilled', 0)->get()->groupBy('user_id');
-        }
-        else
-            $orders = $orders->get()->groupBy('user_id');
+
 
         $customerOrders = $orders
             ->map(function ($orders, $userId) {
