@@ -41,7 +41,7 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
-import auth from '../lib/auth';
+import auth from "../lib/auth";
 
 export default {
   components: {},
@@ -74,23 +74,25 @@ export default {
           if (jwt.access_token) {
             auth.setToken(jwt);
 
-            if (this.redirect) {
-              await this.init();
-              this.$router.replace(this.redirect);
-            } else if (jwt.redirect) {
-              window.location = jwt.redirect;
-            } else {
-              await this.init();
-              switch (jwt.user.user_role_id) {
-                case 1:
-                  this.$router.replace("/customer/home");
-                  break;
+            this.$nextTick(async () => {
+              if (!_.isEmpty(this.redirect)) {
+                this.init();
+                this.$router.replace(this.redirect);
+              } else if (jwt.redirect) {
+                window.location = jwt.redirect;
+              } else {
+                await this.init();
+                switch (jwt.user.user_role_id) {
+                  case 1:
+                    this.$router.replace("/customer/home");
+                    break;
 
-                case 2:
-                  this.$router.replace("/store/orders");
-                  break;
+                  case 2:
+                    this.$router.replace("/store/orders");
+                    break;
+                }
               }
-            }
+            });
           }
         })
         .catch(error => {
