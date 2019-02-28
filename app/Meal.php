@@ -612,7 +612,7 @@ class Meal extends Model
     {
         $meal = Meal::find($id);
         $sub = Meal::find($subId);
-        $store = $this->store;
+        $store = $meal->store;
 
         if ($sub) {
             $mealOrders = MealOrder::with(['order'])
