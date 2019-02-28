@@ -224,10 +224,9 @@ class Store extends Model
 
     public function getNextDeliveryDay($weekIndex) {
       $week = date('D', strtotime("Sunday +{$weekIndex} days"));
-      $date = new Carbon('next '.$week);
-      $date->setTimezone($this->settings->timezone);
+      $date = new Carbon('next '.$week, $this->settings->timezone);
       $date->setTime(0, 0, 0);
-      return $date;
+      return $date->setTimezone('utc');
     }
     
     public function getNextDeliveryDate($factorCutoff = false) {
@@ -237,8 +236,14 @@ class Store extends Model
       return $this->settings->getNextDeliveryDates($factorCutoff)[0] ?? null;
     }
 
-    public function getNextCutoffDate() {
-      $date = $this->getNextDeliveryDate(false);
+    public function getNextCutoffDate($weekIndex = null) {
+      if(is_null($weekIndex)) {
+        $date = $this->getNextDeliveryDate(false);
+      }
+      else {
+        $date = $this->getNextDeliveryDay($weekIndex);  
+      }
+
       return $date ? $date->subSeconds($this->getCutoffSeconds()) : null;
     }
 

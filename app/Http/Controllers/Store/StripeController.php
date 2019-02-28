@@ -6,6 +6,7 @@ use App\Store;
 use GuzzleHttp;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Stripe;
 
 class StripeController extends StoreController
@@ -59,8 +60,16 @@ class StripeController extends StoreController
             return null;
         }
 
+        $cacheId = 'stripe_login_url_'.$this->store->id;
+        
+        if(Cache::has($cacheId)) {
+          $link = Cache::get($cacheId, null);
+          if($link) return $link;
+        }
+
         try {
             $links = Stripe\Account::createLoginLink($settings->stripe_id);
+            Cache::put($cacheId, $links, 60 * 24);
             return $links;
         } catch (\Exception $e) {
             return null;

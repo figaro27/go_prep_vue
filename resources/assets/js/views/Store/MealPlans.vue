@@ -35,7 +35,7 @@
               slot="delivery_day"
               class="text-nowrap"
               slot-scope="props"
-            >{{ moment().day(props.row.delivery_day - 1).format('dddd, MMM Do') }}</div>
+            >{{ moment(props.row.next_delivery_date).format('dddd, MMM Do') }}</div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-primary btn-sm"
@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <div class="modal-basic">
+    <div v-if="subscription" class="modal-basic">
       <b-modal v-model="viewSubscriptionModal" size="lg" title="Meal Plan Details">
         <div class="row mt-4">
           <div class="col-md-4">
@@ -113,12 +113,18 @@
             <h4>Meals</h4>
             <hr>
             <ul class="meal-quantities">
-              <li v-for="meal in subscription.meals" :key="meal.id">
-                <span class="subscription-quantity">{{meal.pivot.quantity}}</span>
-                <img src="/images/store/x-modal.png">
-                <img :src="meal.featured_image" class="modalMeal">
-                {{meal.title}}
-                {{ format.money(meal.price * meal.pivot.quantity) }}
+              <li v-for="(meal) in getMealData(subscription)" :key="meal.id">
+                <div class="row">
+                  <div class="col-md-5 pr-0">
+                    <span class="order-quantity">{{meal.quantity}}</span>
+                    <img src="/images/store/x-modal.png" class="mr-2 ml-2">
+                    <img :src="meal.featured_image" class="modalMeal mr-0 pr-0">
+                  </div>
+                  <div class="col-md-7 pt-3 nopadding pl-0 ml-0">
+                    <p>{{meal.title}}</p>
+                    <p class="strong">{{format.money(meal.price * meal.quantity)}}</p>
+                  </div>
+                </div>
               </li>
             </ul>
           </div>
@@ -212,7 +218,8 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       subscriptions: "storeSubscriptions",
-      isLoading: "isLoading"
+      isLoading: "isLoading",
+      getMeal: "storeMeal",
     }),
     tableData() {
       let filters = {};
@@ -338,7 +345,16 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    }
+    },
+    getMealData(subscription) {
+      if(!subscription || !subscription.meal_ids) return [];
+      return subscription.meal_ids.map(id => {
+        return {
+          ...this.getMeal(id),
+          quantity: subscription.meal_quantities[id]
+        }
+      })
+    },
   }
 };
 </script>

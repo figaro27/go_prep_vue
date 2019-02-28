@@ -16,7 +16,7 @@ class Subscription extends Model
     protected $appends = ['store_name', 'latest_order', 'next_delivery_date', 'meal_ids', 'meal_quantities'];
 
     protected $casts = [
-        'created_at' => 'date:F d, Y',
+
     ];
 
     public function user()
