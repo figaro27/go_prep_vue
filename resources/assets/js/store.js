@@ -613,7 +613,23 @@ const actions = {
     const {data} = await res;
 
     if (_.isArray(data)) {
-      commit('storeSubscriptions', {subscriptions: data});
+      const subscriptions = _.map(data, subscription => {
+        subscription.created_at = moment
+          .utc(subscription.created_at)
+          .local(); //.format('ddd, MMMM Do')
+        subscription.updated_at = moment
+          .utc(subscription.updated_at)
+          .local(); //.format('ddd, MMMM Do')
+        subscription.next_delivery_date = moment
+          .utc(subscription.next_delivery_date.date);
+        subscription.next_renewal_at = moment
+          .utc(subscription.next_renewal_at)
+          .local();
+          //.local(); //.format('ddd, MMMM Do')
+        return subscription;
+      });
+
+      commit('storeSubscriptions', {subscriptions});
     } else {
       throw new Error('Failed to retrieve subscriptions');
     }
@@ -821,7 +837,20 @@ const actions = {
     const {data} = await res;
 
     if (_.isArray(data)) {
-      commit('customerSubscriptions', {subscriptions: data});
+      const subscriptions = _.map(data, subscription => {
+        subscription.created_at = moment
+          .utc(subscription.created_at)
+          .local(); //.format('ddd, MMMM Do')
+        subscription.updated_at = moment
+          .utc(subscription.updated_at)
+          .local(); //.format('ddd, MMMM Do')
+        subscription.next_delivery_date = moment
+          .utc(subscription.next_delivery_date.date);
+          //.local(); //.format('ddd, MMMM Do')
+        return subscription;
+      });
+
+      commit('customerSubscriptions', {subscriptions});
     } else {
       throw new Error('Failed to retrieve orders');
     }
