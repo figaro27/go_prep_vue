@@ -62,6 +62,8 @@ class RegisterController extends Controller
             'user.first_name' => 'required',
             'user.last_name' => 'required',
             'user.phone' => 'required',
+            'user.accepted_tos' => 'in:1',
+
 
             'user_details.address' => 'required',
             'user_details.city' => 'required',
@@ -94,6 +96,7 @@ class RegisterController extends Controller
                     'first_name' => 'required',
                     'last_name' => 'required',
                     'phone' => 'required',
+                    'accepted_tos' => 'in:1'
                 ]);
                 break;
 
@@ -136,6 +139,7 @@ class RegisterController extends Controller
             'password' => Hash::make($data['user']['password']),
             'timezone' => 'EST',
             'remember_token' => Hash::make(str_random(10)),
+            'accepted_tos' => $data['user']['accepted_tos'],
         ]);
 
         $userDetails = $user->details()->create([

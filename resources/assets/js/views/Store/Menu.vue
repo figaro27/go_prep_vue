@@ -89,7 +89,7 @@
 
     <div class="modal-full modal-tabs">
       <b-modal
-        title="Meal"
+        title="View Meal"
         v-model="viewMealModal"
         v-if="viewMealModal"
         :key="`view-meal-modal${meal.id}`"

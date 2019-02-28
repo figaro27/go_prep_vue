@@ -1,6 +1,6 @@
 <template>
   <div class="modal-full modal-tabs">
-    <b-modal title="Create Meal" ref="createMealModal" @ok.prevent="e => storeMeal()" @cancel.prevent="toggleModal()" @hidden="toggleModal">
+    <b-modal title="Add Meal" ref="createMealModal" @ok.prevent="e => storeMeal()" @cancel.prevent="toggleModal()" @hidden="toggleModal">
       <b-row>
         <b-col>
           <b-tabs>

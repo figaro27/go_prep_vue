@@ -90,6 +90,21 @@
               </b-form-group>
 
               <b-form-group horizontal>
+                <b-form-checkbox
+                  id="checkbox1"
+                  v-model="form[0].accepted_tos"
+                  value="1"
+                  unchecked-value="0"
+                >
+                  I accept the <span v-b-modal.terms class="strong">terms of service</span>
+                </b-form-checkbox>
+              </b-form-group>
+
+              <b-modal id="terms" size="xl">
+                <termsOfService></termsOfService>
+              </b-modal>
+
+              <b-form-group horizontal>
                 <b-button @click="next()" :disabled="$v.form[0].$invalid" variant="primary">Next</b-button>
               </b-form-group>
             </div>
@@ -276,9 +291,12 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import { required, minLength, email, sameAs } from "vuelidate/lib/validators";
 import validators from "../validators";
 import auth from "../lib/auth";
+import TermsOfService from "./TermsOfService";
 
 export default {
-  components: {},
+  components: {
+    TermsOfService
+  },
   data() {
     return {
       redirect: null,
@@ -292,7 +310,8 @@ export default {
           password_confirmation: null,
           first_name: null,
           last_name: null,
-          phone: null
+          phone: null,
+          accepted_tos: 0
         },
         1: {
           address: null,
@@ -413,6 +432,12 @@ export default {
             this.step += 2;
           }
         }
+        else
+          if (this.form[0].accepted_tos === 0){
+            this.$toastr.e("Please accept the terms of service.", "Registration failed");
+          }
+          else
+            this.$toastr.e("Please try again.", "Registration failed");
       }
     },
     async submit() {
