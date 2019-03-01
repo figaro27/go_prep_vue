@@ -24,7 +24,11 @@ class OrdersByCustomer
         $dateRange = $this->getDeliveryDates();
         $params = $this->params;
 
-        $fulfilled = $params->get('fulfilled');
+        if ($params->has('fulfilled')){
+            $fulfilled = $params->get('fulfilled');
+        }
+        else
+            $fulfilled = 0;
 
         $orders = $this->store->orders()->where('fulfilled', $fulfilled)->get()->groupBy('user_id');
 
