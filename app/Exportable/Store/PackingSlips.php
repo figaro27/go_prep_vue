@@ -19,6 +19,7 @@ class PackingSlips
     {
         $this->store = $store;
         $this->params = $params;
+        $this->orientation = 'portrait';
     }
 
     public function exportData($type = null)
@@ -75,8 +76,26 @@ class PackingSlips
 
         $pdf = new Pdf($pdfConfig);
 
+        try {
+          $logo = \App\Utils\Images::encodeB64(
+            url($this->store->details->logo)
+          );
+        }
+        catch(\Exception $e) {
+          $logo = $this->store->getUrl($this->store->details->logo);
+        }
+
+        $vars = [
+          'order' => null,
+          'params' => $this->params,
+          'delivery_dates' => $this->getDeliveryDates(),
+          'body_classes' => implode(' ', [$this->orientation]),
+          'logo' => $logo,
+        ];
+
         foreach ($orders as $i => $order) {
-            $html = view($this->exportPdfView(), ['order' => $order])->render();
+            $vars['order'] = $order;
+            $html = view($this->exportPdfView(), $vars)->render();
             $pdf->addPage($html);
         }
 

@@ -29,7 +29,7 @@
       </div>
       <div class="col-4">
         <h4>{{$order->store->details->name}}</h4>
-        <img src="http://{{$order->store->details->domain}}.dev.goprep.com/{{$order->store->details->logo}}"/ style="zoom: 0.5">
+        <img src="{{$logo}}" style="zoom: 0.5" />
         <br><br>
         <p><a href="http://{{$order->store->details->domain}}.goprep.com">www.{{$order->store->details->domain}}.goprep.com</a></p>
       </div>
