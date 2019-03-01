@@ -534,8 +534,8 @@ const actions = {
 
   async logout({commit, state}) {
     const res = await axios.post("/api/auth/logout");
+    auth.deleteToken();
     const {data} = await res;
-    Cookies.remove('jwt', { domain: window.app.domain });
     window.location = window.app.url + '/login';
   },
 
@@ -874,7 +874,7 @@ const actions = {
 // getters are functions
 const getters = {
   loggedIn(state) {
-    return !_.isEmpty(state.user.data);
+    return !_.isEmpty(state.user.data) || auth.hasToken();
   },
   tags(state) {
     return state.tags || [];

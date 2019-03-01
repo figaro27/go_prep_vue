@@ -6,6 +6,10 @@ const auth = {
     return Cookies.getJSON("jwt") || null;
   },
 
+  hasToken() {
+    return !_.isNull(auth.getToken());
+  },
+
   setToken(jwt) {
     window.axios.defaults.headers.common["Authorization"] = `Bearer ${
     jwt.access_token}`;

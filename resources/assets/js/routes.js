@@ -1,6 +1,7 @@
 import VueRouter from 'vue-router';
 
 import store from './store';
+import auth from './lib/auth';
 
 import Login from './views/Login.vue';
 import Register from './views/Register.vue';
@@ -43,10 +44,9 @@ import Spinner from './components/Spinner.vue';
 const middleware = {
   role: {
     customer: (to, from, next) => {
-      if(!store.getters.loggedIn) {
+      if (!store.getters.loggedIn) {
         next('/login')
-      }
-      else {
+      } else {
         next();
       }
     }
@@ -60,14 +60,12 @@ let routes = [
     name: 'login',
     props(route) {
       return route.query;
-    },
-  },
-  {
+    }
+  }, {
     path: '/register',
     component: Register,
     name: 'register'
-  },
-  {
+  }, {
     path: '/customer/home',
     component: CustomerHome,
     name: 'customer-home'
@@ -106,7 +104,7 @@ let routes = [
   }, {
     path: '/customer/orders',
     component: CustomerOrders,
-    name: 'customer-orders',
+    name: 'customer-orders'
   }, {
     path: '/store/customers',
     component: StoreCustomers,
@@ -187,4 +185,36 @@ let routes = [
   }
 ];
 
-export default new VueRouter({mode: 'history', routes});
+const router = new VueRouter({mode: 'history', routes});
+
+router.beforeEach((to, from, next) => {
+  const redirectRoutes = [
+    /^\/store.*/,
+    /^\/customer\/meal-plans\/?$/,
+  ]
+
+  let matched = false;
+
+  redirectRoutes.forEach(route => {
+    if(matched || route.test(to.fullPath)) {
+      matched = true;
+    }
+  })
+
+  if (matched) {
+    if (!auth.hasToken()) {
+      next({
+        path: "/login",
+        query: {
+          redirect: to.path
+        }
+      });
+    } else {
+      next();
+    }
+  }
+
+  next();
+})
+
+export default router;
