@@ -96,11 +96,11 @@
                   value="1"
                   unchecked-value="0"
                 >
-                  I accept the <span v-b-modal.terms class="strong">terms of service</span>
+                  I accept the <span v-b-modal.tos class="strong">terms of service</span>
                 </b-form-checkbox>
               </b-form-group>
 
-              <b-modal id="terms" size="xl">
+              <b-modal id="tos" size="xl">
                 <termsOfService></termsOfService>
               </b-modal>
 
@@ -276,6 +276,21 @@
               </b-form-group>
 
               <b-form-group horizontal>
+                <b-form-checkbox
+                  id="checkbox1"
+                  v-model="form[2].accepted_toa"
+                  value="1"
+                  unchecked-value="0"
+                >
+                  I accept the <span v-b-modal.toa class="strong">terms of agreement</span>
+                </b-form-checkbox>
+              </b-form-group>
+
+              <b-modal id="toa" size="xl">
+                <termsOfAgreement></termsOfAgreement>
+              </b-modal>
+
+              <b-form-group horizontal>
                 <b-button type="submit" :disabled="$v.form[2].$invalid" variant="primary">Submit</b-button>
               </b-form-group>
             </div>
@@ -292,10 +307,12 @@ import { required, minLength, email, sameAs } from "vuelidate/lib/validators";
 import validators from "../validators";
 import auth from "../lib/auth";
 import TermsOfService from "./TermsOfService";
+import TermsOfAgreement from "./TermsOfAgreement";
 
 export default {
   components: {
-    TermsOfService
+    TermsOfService,
+    TermsOfAgreement
   },
   data() {
     return {
@@ -326,7 +343,8 @@ export default {
           address: null,
           city: null,
           state: null,
-          zip: null
+          zip: null,
+          accepted_toa: 0
         }
       },
       feedback: {

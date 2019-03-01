@@ -19,7 +19,7 @@ class Store extends Model
      * @var array
      */
     protected $fillable = [
-
+        'accepted_toa'
     ];
 
     /**
