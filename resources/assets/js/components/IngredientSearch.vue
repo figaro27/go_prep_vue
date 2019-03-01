@@ -90,6 +90,9 @@
     .v-select {
       display: block;
 
+      .dropdown-toggle {
+        height: 45px;
+      }
       .option {
         font-size: 18px;
         height: 45px;
@@ -110,6 +113,10 @@
         height: 35px;
       }
     }
+  }
+
+  .button {
+    height: 45px;
   }
 }
 </style>

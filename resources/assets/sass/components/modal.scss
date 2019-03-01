@@ -27,7 +27,7 @@
     transition: all 0.25s;
     margin: 30px 100px;
     max-width: calc(100% - 200px);
-    max-height: calc(100% - 150px);
+    max-height: calc(100% - 130px);
   }
 
   .modal-backdrop {
@@ -63,6 +63,8 @@
     left: 0;
     border-radius: 0;
     box-shadow: none;
+    margin-top: 0 !important;
+    max-height: 85vh !important;
   }
 
   .modal-header {

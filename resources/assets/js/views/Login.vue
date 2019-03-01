@@ -17,7 +17,7 @@
               <div class="col-md-6 offset-md-3">
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                  <label class="form-check-label pull-left" for="remember">Remember Me</label>
+                  <label class="form-check-label" for="remember">Remember Me</label>
                 </div>
               </div>
             </div>
