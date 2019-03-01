@@ -188,8 +188,20 @@ let routes = [
 const router = new VueRouter({mode: 'history', routes});
 
 router.beforeEach((to, from, next) => {
-  let authRoute = /^\/store.*/.test(to.fullPath);
-  if (authRoute) {
+  const redirectRoutes = [
+    /^\/store.*/,
+    /^\/customer\/meal-plans\/?$/,
+  ]
+
+  let matched = false;
+
+  redirectRoutes.forEach(route => {
+    if(matched || route.test(to.fullPath)) {
+      matched = true;
+    }
+  })
+
+  if (matched) {
     if (!auth.hasToken()) {
       next({
         path: "/login",
