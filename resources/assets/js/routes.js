@@ -58,13 +58,15 @@ let routes = [
     path: '/login',
     component: Login,
     name: 'login',
+    meta: { bodyClass: 'login' },
     props(route) {
       return route.query;
     }
   }, {
     path: '/register',
     component: Register,
-    name: 'register'
+    name: 'register',
+    meta: { bodyClass: 'register' },
   }, {
     path: '/customer/home',
     component: CustomerHome,

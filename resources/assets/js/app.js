@@ -43,8 +43,10 @@ import DisableAutocomplete from 'vue-disable-autocomplete';
 import Vuetify, { VBtn } from 'vuetify/lib'
 import { Ripple } from 'vuetify/lib/directives'
 import 'vuetify/src/stylus/app.styl'
+import vbclass from 'vue-body-class'
 
 Vue.use(VueRouter);
+Vue.use(vbclass, router);
 Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'default')
 Vue.use(money, {

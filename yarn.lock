@@ -7543,6 +7543,11 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
+vue-body-class@^2.0.0-beta.2:
+  version "2.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/vue-body-class/-/vue-body-class-2.0.0-beta.2.tgz#d11bda0ef9ed2fc9dceec0325ca87c0099f17eea"
+  integrity sha1-0RvaDvntL8nc7sAyXKh8AJnxfuo=
+
 vue-chartjs@^3.3.2:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/vue-chartjs/-/vue-chartjs-3.4.0.tgz#669e4453be0676605fc9290b3b581867ccd15c88"
