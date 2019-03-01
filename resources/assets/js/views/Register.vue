@@ -96,11 +96,11 @@
                   value="1"
                   unchecked-value="0"
                 >
-                  I accept the <span v-b-modal.tos class="strong">terms of service</span>
+                  I accept the <span class="strong" @click.stop.prevent="$refs.tos.show()">terms of service</span>
                 </b-form-checkbox>
               </b-form-group>
 
-              <b-modal id="tos" size="xl">
+              <b-modal id="tos" size="xl" ref="tos">
                 <termsOfService></termsOfService>
               </b-modal>
 
@@ -282,11 +282,11 @@
                   value="1"
                   unchecked-value="0"
                 >
-                  I accept the <span v-b-modal.toa class="strong">terms of agreement</span>
+                  I accept the <span class="strong" @click.stop.prevent="$refs.toa.show()">terms of agreement</span>
                 </b-form-checkbox>
               </b-form-group>
 
-              <b-modal id="toa" size="xl">
+              <b-modal id="toa" size="xl" ref="toa">
                 <termsOfAgreement></termsOfAgreement>
               </b-modal>
 
