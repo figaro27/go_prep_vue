@@ -283,13 +283,6 @@ body.sidebar-minimized {
   @include media-breakpoint-down(sm) {
     //margin-bottom: 160px;
   }
-
-  h2 {
-    display: block !important;
-    visibility: visible !important;
-    color: #23282c;
-    font-size: 1.75rem !important;
-  }
 }
 
 .bag-area {
