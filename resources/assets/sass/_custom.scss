@@ -2,43 +2,13 @@
 @import "~nutrition-label-jquery-plugin/dist/css/nutritionLabel-min.css";
 @import "~vue-toastr/src/vue-toastr.scss";
 
-@font-face {
-  font-family: gotham;
-  src: url(fonts/gotham.otf);
-}
-
-@font-face {
-  font-family: gotham-condensed;
-  src: url(fonts/gotham-condensed.otf);
-}
-
-@font-face {
-  font-family: gotham-narrow;
-  src: url(fonts/gotham-narrow.otf);
-}
-
-@font-face {
-  font-family: gotham-bold;
-  src: url(fonts/gotham-bold.ttf);
-}
-
-@font-face {
-  font-family: gotham-black;
-  src: url(fonts/gotham-black.otf);
-}
-
-@font-face {
-  font-family: gotham-medium;
-  src: url(fonts/gotham-medium.ttf);
-}
-
 p, td, li, label, input, button, b-button, textarea, legend, label, select, .alert, div {
-	font-family: 'gotham-narrow';
+	font-family: 'gotham-narrow', sans-serif;
 	font-size:15px;
 }
 
 h1, h2, h3, h4, h5, h6 {
-	font-family: 'gotham' !important;
+	font-family: 'gotham', sans-serif !important;
 	font-weight: bold;
 }
 
@@ -76,7 +46,7 @@ li {
 
 .nav-link{
 	margin-bottom:10px;
-	font-family: 'gotham';
+	font-family: 'gotham', sans-serif;
 	font-size: 14px;
 	font-weight: 300;
 	line-height: 25px;
@@ -507,7 +477,7 @@ top:10px;
 
 .dbl-underline {
   padding-bottom: 8px !important;
-  font-family:'gotham-medium' !important;
+  font-family:'gotham-medium', sans-serif !important;
   position: relative;
 
   &:after {
@@ -666,7 +636,7 @@ th:last-child{
 }
 
 th {
-	font-family: 'gotham';
+	font-family: 'gotham', sans-serif;
 	font-size: 14px;
 	font-weight: 600;
 }
