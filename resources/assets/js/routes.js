@@ -190,6 +190,22 @@ let routes = [
 const router = new VueRouter({mode: 'history', routes});
 
 router.beforeEach((to, from, next) => {
+  
+  // Routes to add class to body.
+  // Exclude leading /
+  const classRoutes = [
+    'login',
+    'register',
+  ];
+  
+  // Handle body classes
+  classRoutes.forEach(route => {
+    if(to.path === '/' + route) {
+      $('body').addClass(route);
+    }
+    else $('body').removeClass(route);
+  })
+
   const redirectRoutes = [
     /^\/store.*/,
     /^\/customer\/meal-plans\/?$/,
