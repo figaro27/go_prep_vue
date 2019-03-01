@@ -93,6 +93,7 @@
         v-model="viewMealModal"
         v-if="viewMealModal"
         :key="`view-meal-modal${meal.id}`"
+        @ok="onChangeIngredients(meal.id, $refs.ingredientPicker.ingredients)"
       >
         <b-row>
           <b-col>
@@ -185,6 +186,7 @@
 
               <b-tab title="Ingredients">
                 <ingredient-picker
+                  ref="ingredientPicker"
                   v-model="meal.ingredients"
                   :options="{saveButton:true}"
                   :meal="meal"
