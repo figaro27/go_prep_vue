@@ -872,6 +872,19 @@ background-color: #3082CF !important;
   background-color:#f3f3f3 !important;
 }
 
+.auth-background{
+  position:fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-image: url("meal-prep-kitchen.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: 0;
+}
+
+
 .navbar-brand-minimized{
   position:relative !important;
   left:130px !important;
