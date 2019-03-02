@@ -185,8 +185,12 @@
                 </div>
               </li>
 
-              <li class="checkout-item" v-if="total < minMeals">
+              <li class="checkout-item" v-if="minOption === 'meals' && total < minimumMeals && !manualOrder">
                 <p>Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.`</p>
+              </li>
+
+              <li class="checkout-item" v-if="minOption === 'price' && totalBagPrice < minPrice && !manualOrder">
+                <p>Please add {{format.money(remainingPrice)}} more to continue.</p>
               </li>
 
               <li v-else-if="loggedIn">
