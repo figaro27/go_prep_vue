@@ -186,7 +186,7 @@
               </li>
 
               <li class="checkout-item" v-if="minOption === 'meals' && total < minimumMeals && !manualOrder">
-                <p>Please choose {{ remainingMeals }} {{ singOrPlural }} to continue.`</p>
+                <p>Please add {{ remainingMeals }} {{ singOrPlural }} to continue.`</p>
               </li>
 
               <li class="checkout-item" v-if="minOption === 'price' && totalBagPrice < minPrice && !manualOrder">
