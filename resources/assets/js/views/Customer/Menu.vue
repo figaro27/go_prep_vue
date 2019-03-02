@@ -204,6 +204,7 @@
                           :src="meal.featured_image"
                           class="menu-item-img"
                           @click="showMealModal(meal)"
+                          style="background-color:#ffffff"
                         ></thumbnail>
                         <div class="d-flex justify-content-between align-items-center mb-2 mt-1">
                           <b-btn @click="minusOne(meal)" class="menu-bag-btn plus-minus gray">
