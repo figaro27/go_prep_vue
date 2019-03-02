@@ -293,7 +293,11 @@ body.sidebar-minimized {
   width: 100%;
 }
 
-.menu-item-img .thumbnail{
+.menu-item-img .thumbnail .loaded{
+  background-color:#ffffff !important;
+}
+
+.loaded{
   background-color:#ffffff !important;
 }
 
