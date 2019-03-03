@@ -1,6 +1,6 @@
 <template>
   <div class="ingredient-search d-flex align-items-end">
-    <b-form-group label="Name" class="name">
+    <b-form-group label="Name" class="name flex-grow-1">
       <v-select
         ref="select"
         label="name"
