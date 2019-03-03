@@ -24,9 +24,6 @@ foreach ([config('app.domain')] as $domain) {
     Route::any('/stripe/event', 'Billing\\StripeController@event');
     //Auth::routes();
     Route::fallback('SpaController@index');
-
-    Route::post('/submitStore', 'ContactFormController@submitStore');
-    Route::post('/submitCustomer', 'ContactFormController@submitCustomer');
     
     Route::group(['domain' => $domain, 'middleware' => ['web', 'store_slug']], function ($router) {
 

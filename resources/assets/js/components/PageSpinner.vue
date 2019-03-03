@@ -1,12 +1,26 @@
 <template>
-  <div class="page-spinner">
+  <div :class="classes">
     <spinner></spinner>
   </div>
 </template>
 
 <script>
 export default {
-
+  props: {
+    faded: {
+      type: Boolean,
+      default: false,
+    }
+  },
+  computed: {
+    classes() {
+      let classes = ['page-spinner'];
+      if(this.faded) {
+        classes.push('faded');
+      }
+      return classes;
+    }
+  }
 }
 </script>
 
@@ -25,5 +39,10 @@ export default {
   justify-content: center;
 
   background-color: #e4e5e6;
+
+  &.faded {
+    background-color: transparent;
+    pointer-events: none;
+  }
 }
 </style>

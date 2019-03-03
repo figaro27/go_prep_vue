@@ -40,7 +40,7 @@
     </b-navbar>
     <div class="app-body">
       <main class="main">
-        <page-spinner v-if="!initialized"></page-spinner>
+        <page-spinner v-if="!initialized || isLoading" :faded="initialized"></page-spinner>
         <div class="container-fluid" v-if="initialized">
           <router-view></router-view>
         </div>
@@ -108,7 +108,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapGetters(["initialized", "viewedStore", "loggedIn"]),
+    ...mapGetters(["initialized", "viewedStore", "loggedIn", "isLoading"]),
     ...mapGetters({
       storeLogo: "viewedStoreLogo"
     }),

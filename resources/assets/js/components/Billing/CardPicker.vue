@@ -87,7 +87,7 @@ export default {
   methods: {
     ...mapActions(["refreshCards"]),
     createCard() {
-      this.$parent.loading = true;
+      // this.$parent.loading = true;
       createToken().then(data => {
         console.log(data);
 
@@ -107,10 +107,16 @@ export default {
             this.$toastr.s("Payment method saved.");
           })
           .catch(resp => {
+            let error = "Failed to add card.";
+            
+            if(!_.isEmpty(resp.response.data.error)) {
+              error = resp.response.data.error;
+            }
+
             // let error = _.first(Object.values(resp.resp.data.errors));
             // error = error.join(" ");
             // this.$toastr.e(error, "Error");
-            this.$toastr.e("Failed to add card.", "Error");
+            this.$toastr.e(error, "Error");
           })
           .finally(() => {
             this.$parent.loading = false;

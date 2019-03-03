@@ -46,7 +46,7 @@
         <SidebarMinimizer/>
       </AppSidebar>
       <main class="main">
-        <page-spinner v-if="!initialized" style="left: 200px"></page-spinner>
+        <page-spinner v-if="!initialized || isLoading" :faded="initialized" style="left: 200px"></page-spinner>
         <!-- <Breadcrumb :list="list"/> -->
         <div class="container-fluid" v-if="initialized">
           <router-view></router-view>
@@ -123,7 +123,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["initialized"]),
+    ...mapGetters(["initialized", "isLoading"]),
     classes() {
       let classes = ['app'];
       classes.push(this.$route.name);

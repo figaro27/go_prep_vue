@@ -58,7 +58,9 @@ let routes = [
     path: '/login',
     component: Login,
     name: 'login',
-    meta: { bodyClass: 'login' },
+    meta: {
+      bodyClass: 'login'
+    },
     props(route) {
       return route.query;
     }
@@ -66,7 +68,9 @@ let routes = [
     path: '/register',
     component: Register,
     name: 'register',
-    meta: { bodyClass: 'register' },
+    meta: {
+      bodyClass: 'register'
+    }
   }, {
     path: '/customer/home',
     component: CustomerHome,
@@ -190,45 +194,37 @@ let routes = [
 const router = new VueRouter({mode: 'history', routes});
 
 router.beforeEach((to, from, next) => {
-  
-  // Routes to add class to body.
-  // Exclude leading /
-  const classRoutes = [
-    'login',
-    'register',
-  ];
-  
+
+  // Routes to add class to body. Exclude leading /
+  const classRoutes = ['login', 'register'];
+
   // Handle body classes
   classRoutes.forEach(route => {
-    if(to.path === '/' + route) {
+    if (to.path === '/' + route) {
       $('body').addClass(route);
+    } else 
+      $('body').removeClass(route);
     }
-    else $('body').removeClass(route);
-  })
+  )
 
-  const redirectRoutes = [
-    /^\/store.*/,
-    /^\/customer\/meal-plans\/?$/,
-  ]
+  if (!auth.hasToken()) {
+    const redirectRoutes = [/^\/store.*/, /^\/customer\/((?!home|menu|bag).*)\/?$/]
 
-  let matched = false;
+    let matched = false;
 
-  redirectRoutes.forEach(route => {
-    if(matched || route.test(to.fullPath)) {
-      matched = true;
-    }
-  })
+    redirectRoutes.forEach(route => {
+      if (matched || route.test(to.fullPath)) {
+        matched = true;
+      }
+    })
 
-  if (matched) {
-    if (!auth.hasToken()) {
+    if (matched) {
       next({
         path: "/login",
         query: {
           redirect: to.path
         }
       });
-    } else {
-      next();
     }
   }
 

@@ -481,7 +481,9 @@ export default {
   methods: {
     ...mapActions({
       refreshMeals: "refreshMeals",
-      _updateMeal: "updateMeal"
+      _updateMeal: "updateMeal",
+      addJob: "addJob",
+      removeJob: "removeJob",
     }),
     formatMoney: format.money,
     refreshTable() {
@@ -537,7 +539,8 @@ export default {
       this.createMealModal = true;
     },
 
-    viewMeal(id) {
+    async viewMeal(id) {
+      const jobId = await this.addJob();
       axios.get(`/api/me/meals/${id}`).then(response => {
         this.meal = response.data;
         this.ingredients = response.data.ingredient;
@@ -548,6 +551,9 @@ export default {
         this.$nextTick(function() {
           window.dispatchEvent(new window.Event("resize"));
         });
+      })
+      .finally(() => {
+        this.removeJob(jobId);
       });
     },
     deleteMeal: function(id) {

@@ -34,15 +34,13 @@ import money from "v-money";
 import VueNumberInput from '@chenfengyuan/vue-number-input';
 import VueRangedatePicker from 'vue-rangedate-picker'
 import Vuelidate from 'vuelidate'
-import UUID from 'vue-uuid'
-import { VLazyImagePlugin } from "v-lazy-image";
+import vUUID from 'vue-uuid'
+import uuid from 'uuid'
+import {VLazyImagePlugin} from "v-lazy-image";
 import auth from './lib/auth';
 import VuejsDialog from "vuejs-dialog";
 import 'vuejs-dialog/dist/vuejs-dialog.min.css'
 import DisableAutocomplete from 'vue-disable-autocomplete';
-import Vuetify, { VBtn } from 'vuetify/lib'
-import { Ripple } from 'vuetify/lib/directives'
-import 'vuetify/src/stylus/app.styl'
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -51,7 +49,7 @@ Vue.use(money, {
   precision: 2,
   prefix: '$'
 })
-Vue.use(UUID);
+Vue.use(vUUID);
 Vue.use(VueNumberInput)
 Vue.component('input-tag', InputTag)
 Vue.component('v-select', vSelect)
@@ -59,9 +57,7 @@ Vue.component('timepicker', VueTimepicker)
 Vue.component('draggable', draggable)
 Vue.component('card', Card)
 Vue.component('picture-input', PictureInput)
-Vue.use(Toastr, { 
-  "defaultProgressBar": false,
-});
+Vue.use(Toastr, {"defaultProgressBar": false});
 Vue.component('date-range-picker', VueRangedatePicker);
 Vue.use(Vuelidate)
 Vue.use(VLazyImagePlugin);
@@ -70,21 +66,9 @@ Vue.use(VuejsDialog, {
   loader: true,
   okText: 'Proceed',
   cancelText: 'Cancel',
-  animation: 'bounce',
+  animation: 'bounce'
 });
 Vue.use(DisableAutocomplete);
-
-Vue.use(Vuetify, {
-  components: {
-    VBtn,
-  },
-  directives: {
-    Ripple
-  },
-  theme: {
-    primary: '#20a8d8',
-  },
-})
 
 import Thumbnail from './components/Thumbnail';
 Vue.component('thumbnail', Thumbnail)
@@ -100,6 +84,9 @@ Vue.component('spinner', Spinner);
 
 import PageSpinner from './components/PageSpinner';
 Vue.component('page-spinner', PageSpinner);
+
+import FloatingActionButton from './components/FloatingActionButton';
+Vue.component('floating-action-button', FloatingActionButton);
 
 /*
 moment.defaultFormat = 'ddd, MMMM Do';
@@ -147,3 +134,47 @@ $(document).on('dblclick', '.VueTables__table tbody > tr', function () {
     .getSelection()
     .removeAllRanges();
 });
+
+// Request interceptors for spinner
+
+// Always create jobs for these routes
+// regardless of http method
+const jobRoutes = [
+  /^\/api\/me\/print/, // all print routes
+];
+
+window
+  .axios
+  .interceptors
+  .request
+  .use(config => {
+    let job = _.includes([
+      'post', 'patch', 'delete', 'put'
+    ], config.method);
+
+    jobRoutes.forEach(route => {
+      if (job || route.test(config.url)) {
+        job = true;
+      }
+    })
+
+    if (job) {
+      const id = uuid.v1();
+      store.dispatch('addJob', {id});
+      config.transactionId = id;
+    }
+    return config;
+  });
+
+window
+  .axios
+  .interceptors
+  .response
+  .use((response) => {
+    if (!_.isEmpty(response.config.transactionId)) {
+      const id = response.config.transactionId;
+      store.dispatch('removeJob', id);
+    }
+    return response;
+  });
+// -

@@ -4,6 +4,7 @@ import moment from 'moment'
 import createPersistedState from 'vuex-persistedstate';
 import router from './routes';
 import auth from './lib/auth';
+import uuid from 'uuid'
 
 const Cookies = require('js-cookie');
 
@@ -13,6 +14,7 @@ const ttl = 60; // 60 seconds
 
 // root state object. each Vuex instance is just a single state tree.
 const state = {
+  jobs: {},
   viewed_store: {
     meals: [],
     will_deliver: true,
@@ -539,6 +541,27 @@ const actions = {
     window.location = window.app.url + '/login';
   },
 
+  addJob({state, dispatch}, args = {}) {
+    if(!('id' in args)) {
+      args.id = uuid.v1();
+    }
+    if(!('expires' in args)) {
+      args.expires = 10000;
+    }
+    Vue.set(state.jobs, args.id, moment().add(args.expires, 'seconds').unix());
+
+    // Automatically remove after 10s
+    setTimeout(() => {
+      dispatch('removeJob', args.id)
+    }, args.expires)
+
+    return args.id;
+  },
+
+  removeJob({state}, id) {
+    Vue.delete(state.jobs, id);
+  },
+
   async refreshViewedStore({commit, state}) {
     const res = await axios.get("/api/store/viewed");
     const {data} = await res;
@@ -921,7 +944,7 @@ const getters = {
   },
 
   isLoading(state) {
-    return state.isLoading;
+    return state.isLoading || !_.isEmpty(state.jobs);
   },
   initialized(state) {
     return state.initialized;
