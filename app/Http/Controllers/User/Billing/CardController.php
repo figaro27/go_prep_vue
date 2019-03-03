@@ -42,7 +42,14 @@ class CardController extends UserController
             $customer = $this->user->createCustomer($token['id']);
         } else {
             $customer = \Stripe\Customer::retrieve($this->user->stripe_id);
-            $this->user->createCard($token['id']);
+
+            try {
+                $this->user->createCard($token['id']);
+            } catch (\Stripe\Error\Card $e) {
+                return response()->json([
+                    'error' => 'Your card was declined. Please verify the entered information and try again.',
+                ], 400);
+            }
         }
 
         $sources = $customer->sources->all()->getIterator();
