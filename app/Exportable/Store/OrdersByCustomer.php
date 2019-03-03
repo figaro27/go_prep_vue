@@ -30,7 +30,7 @@ class OrdersByCustomer
         else
             $fulfilled = 0;
 
-        $orders = $this->store->orders()->where('fulfilled', $fulfilled)->get()->groupBy('user_id');
+        $orders = $this->store->orders()->where('fulfilled', $fulfilled);
 
         if (isset($dateRange['from'])) {
             $from = Carbon::parse($dateRange['from']);
@@ -41,9 +41,9 @@ class OrdersByCustomer
             $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
         }
 
-
-
         $customerOrders = $orders
+            ->get()
+            ->groupBy('user_id')
             ->map(function ($orders, $userId) {
                 return [
                     'user' => User::find($userId),
