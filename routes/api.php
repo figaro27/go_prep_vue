@@ -36,7 +36,6 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
     
     Route::group(['domain' => $domain, 'middleware' => ['api', 'view.api', 'store_slug']], function ($router) {
       
-      
       Route::get('ping', function () {
         if (!auth('api')->check()) {
           return response('', 401);
@@ -44,6 +43,7 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
       });
       
       Route::get('/', ['middleware' => ['view.api'], 'uses' => 'SpaController@index']);
+
       Route::group(['middleware' => ['auth:api']], function ($router) {
         $user = auth('api')->user();
 
@@ -51,6 +51,7 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
 
                 Route::post('nutrients', 'NutritionController@getNutrients');
                 Route::post('searchInstant', 'NutritionController@searchInstant');
+                Route::post('contact', 'ContactFormController@submitStore');
 
                 Route::group(['prefix' => 'me', 'middleware' => ['role.store'], 'namespace' => 'Store'], function ($router) {
                     Route::patch('user', 'UserController@update');
@@ -79,6 +80,8 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
                     Route::get('print/{report}/{type}', 'PrintController@print');
                 });
             } else if ($user && $user->user_role_id === 1) {
+                Route::post('contact', 'ContactFormController@submitCustomer');
+
                 Route::group(['middleware' => ['role.customer'], 'namespace' => 'User'], function ($router) {
                     //Route::resource('stores', 'User\\StoreController');
                     Route::patch('/me/detail', 'UserDetailController@update');

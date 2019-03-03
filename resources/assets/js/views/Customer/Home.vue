@@ -69,7 +69,7 @@ export default {
               this.loaded = false;
                 this.success = false;
                 this.errors = {};
-                axios.post('/submitCustomer', this.fields).then(response => {
+                axios.post('/api/contact', this.fields).then(response => {
                   this.fields = {};
                   this.loaded = true;
                   this.success = true;

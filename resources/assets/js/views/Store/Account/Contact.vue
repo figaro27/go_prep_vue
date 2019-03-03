@@ -61,7 +61,7 @@
                 this.loaded = false;
                 this.success = false;
                 this.errors = {};
-                axios.post('/submitStore', this.fields).then(response => {
+                axios.post('/api/contact', this.fields).then(response => {
                   this.fields = {};
                   this.loaded = true;
                   this.success = true;

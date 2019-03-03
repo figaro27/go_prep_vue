@@ -8,7 +8,7 @@
             :columns="columns"
             :data="tableData"
             :options="options"
-            v-show="!isLoading"
+            v-show="initialized"
           >
             <div slot="beforeTable" class="mb-2">
               <div class="d-flex align-items-center">
@@ -280,6 +280,7 @@ export default {
       store: "viewedStore",
       orders: "storeOrders",
       isLoading: "isLoading",
+      initialized: "initialized",
       customers: "storeCustomers",
       nextDeliveryDates: "storeNextDeliveryDates"
     }),
@@ -335,7 +336,9 @@ export default {
   methods: {
     ...mapActions({
       refreshOrders: "refreshOrders",
-      updateOrder: "updateOrder"
+      updateOrder: "updateOrder",
+      addJob: "addJob",
+      removeJob: "removeJob",
     }),
     refreshTable() {
       this.refreshOrders();
@@ -378,19 +381,23 @@ export default {
         };
       });
     },
-    viewOrder(id) {
+    async viewOrder(id) {
+      const jobId = await this.addJob();
       axios.get(`/api/me/orders/${id}`).then(response => {
         this.orderId = response.data.id;
         this.deliveryNote = response.data.notes;
         this.order = response.data;
         this.user_detail = response.data.user.user_detail;
         this.meals = response.data.meals;
+        this.viewOrderModal = true;
 
         this.$nextTick(function() {
           window.dispatchEvent(new window.Event("resize"));
         });
+      })
+      .finally(() => {
+        this.removeJob(jobId);
       });
-      this.viewOrderModal = true;
     },
     filterPastOrders() {
       this.pastOrder = !this.pastOrder;
