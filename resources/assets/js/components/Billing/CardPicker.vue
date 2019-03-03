@@ -87,7 +87,7 @@ export default {
   methods: {
     ...mapActions(["refreshCards"]),
     createCard() {
-      this.$parent.loading = true;
+      // this.$parent.loading = true;
       createToken().then(data => {
         console.log(data);
 
