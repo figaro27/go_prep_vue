@@ -41,9 +41,6 @@ import auth from './lib/auth';
 import VuejsDialog from "vuejs-dialog";
 import 'vuejs-dialog/dist/vuejs-dialog.min.css'
 import DisableAutocomplete from 'vue-disable-autocomplete';
-import Vuetify, {VBtn} from 'vuetify/lib'
-import {Ripple} from 'vuetify/lib/directives'
-import 'vuetify/src/stylus/app.styl'
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -73,18 +70,6 @@ Vue.use(VuejsDialog, {
 });
 Vue.use(DisableAutocomplete);
 
-Vue.use(Vuetify, {
-  components: {
-    VBtn
-  },
-  directives: {
-    Ripple
-  },
-  theme: {
-    primary: '#20a8d8'
-  }
-})
-
 import Thumbnail from './components/Thumbnail';
 Vue.component('thumbnail', Thumbnail)
 
@@ -99,6 +84,9 @@ Vue.component('spinner', Spinner);
 
 import PageSpinner from './components/PageSpinner';
 Vue.component('page-spinner', PageSpinner);
+
+import FloatingActionButton from './components/FloatingActionButton';
+Vue.component('floating-action-button', FloatingActionButton);
 
 /*
 moment.defaultFormat = 'ddd, MMMM Do';
