@@ -161,7 +161,7 @@ window
   .request
   .use(config => {
     let job = _.includes([
-      'post', 'patch', 'delete'
+      'post', 'patch', 'delete', 'put'
     ], config.method);
 
     jobRoutes.forEach(route => {
