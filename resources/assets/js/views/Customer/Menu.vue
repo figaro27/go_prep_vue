@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-btn fixed fab bottom right color="#20a8d8" class="d-sm-none" to="/customer/bag">
+    <floating-action-button class="d-sm-none" to="/customer/bag">
       <i class="fa fa-shopping-bag text-white"></i>
-    </v-btn>
+    </floating-action-button>
 
     <div v-if="storeSettings.open === 0">
       <div class="row">
