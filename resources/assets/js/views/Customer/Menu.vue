@@ -54,7 +54,7 @@
               <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{ tag }}</b-button>
             </div>
           </div>
-          <b-button @click="clearFilters" class="center mt-4 orange">Clear All</b-button>
+          <b-button @click="clearFilters" class="center mt-4 brand-color white-text">Clear All</b-button>
         </b-modal>
       </div>
 
