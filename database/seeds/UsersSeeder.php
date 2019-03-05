@@ -20,6 +20,7 @@ class UsersSeeder extends Seeder
             'remember_token' => str_random(10),
             'created_at' => now(),
             'updated_at' => now(),
+            'accepted_tos' => 1,
         ]);
 
         DB::table('users')->insert([
@@ -30,6 +31,7 @@ class UsersSeeder extends Seeder
             'remember_token' => str_random(10),
             'created_at' => now(),
             'updated_at' => now(),
+            'accepted_tos' => 1,
         ]);
 
         DB::table('users')->insert([
@@ -40,6 +42,7 @@ class UsersSeeder extends Seeder
             'remember_token' => str_random(10),
             'created_at' => now(),
             'updated_at' => now(),
+            'accepted_tos' => 1,
         ]);
 
         DB::table('users')->insert([
@@ -50,6 +53,7 @@ class UsersSeeder extends Seeder
             'remember_token' => str_random(10),
             'created_at' => now(),
             'updated_at' => now(),
+            'accepted_tos' => 1,
         ]);
 
         for ($i = 2; $i < 11; $i++) {
@@ -61,6 +65,7 @@ class UsersSeeder extends Seeder
                 'remember_token' => str_random(10),
                 'created_at' => now(),
                 'updated_at' => now(),
+                'accepted_tos' => 1,
             ]);
         }
 
