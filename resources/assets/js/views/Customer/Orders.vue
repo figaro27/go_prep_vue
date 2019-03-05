@@ -28,7 +28,7 @@
                     </div>
                     <div class="col-md-4">
                       <h4>Placed On</h4>
-                      <p>{{ moment(order.created_at).format('dddd, MMM Do, Y') }}</p>
+                      <p>{{ moment.utc(order.created_at).local().format('dddd, MMM Do, Y') }}</p>
                     </div>
                     <div class="col-md-4">
                       <h2>{{ format.money(order.amount) }}</h2>

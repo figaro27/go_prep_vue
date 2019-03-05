@@ -33,7 +33,7 @@
                     </div>
                     <div class="col-md-4">
                       <h4>Placed On</h4>
-                      <p>{{ moment(subscription.created_at).format('dddd, MMM Do, Y') }}</p>
+                      <p>{{ moment.utc(subscription.created_at).local().format('dddd, MMM Do, Y') }}</p>
                     </div>
                     <div class="col-md-4" v-if="subscription.status === 'active'">
                       <h2>{{ format.money(subscription.amount) }} per {{subscription.interval}}</h2>
@@ -49,7 +49,7 @@
                     </div>
                     <div class="col-md-4" v-else>
                       <h4>Cancelled On</h4>
-                      <p>{{ moment(subscription.cancelled_at).format('dddd, MMM Do, Y') }}</p>
+                      <p>{{ moment.utc(subscription.cancelled_at).local().format('dddd, MMM Do, Y') }}</p>
                     </div>
                   </div>
 
