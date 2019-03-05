@@ -57,6 +57,13 @@ Vue.component('timepicker', VueTimepicker)
 Vue.component('draggable', draggable)
 Vue.component('card', Card)
 Vue.component('picture-input', PictureInput)
+
+Vue.component('v-style', {
+  render: function (createElement) {
+    return createElement('style', this.$slots.default)
+  }
+});
+
 Vue.use(Toastr, {"defaultProgressBar": false});
 Vue.component('date-range-picker', VueRangedatePicker);
 Vue.use(Vuelidate)

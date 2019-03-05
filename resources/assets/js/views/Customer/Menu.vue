@@ -157,11 +157,11 @@
                     </div>
                     <div class="col-sm-12 category-area">
                       <div class="filter-area">
-                        <b-button @click="viewFilters" class="green">
+                        <b-button @click="viewFilters" class="brand-color white-text">
                           <i class="fa fa-filter"></i>
                           <span class="d-none d-sm-inline">&nbsp;Filters</span>
                         </b-button>
-                        <b-button @click="clearFilters" class="orange">
+                        <b-button @click="clearFilters" class="gray white-text">
                           <i class="fa fa-eraser"></i>
                           <span class="d-none d-sm-inline">&nbsp;Clear Filters</span>
                         </b-button>
@@ -176,7 +176,7 @@
                       </ul>
 
                       <div>
-                        <b-btn variant="danger" class="orange pull-right" @click="clearAll">
+                        <b-btn class="gray white-text pull-right" @click="clearAll">
                           <i class="fa fa-eraser"></i>&nbsp;Clear Bag
                         </b-btn>
                       </div>
@@ -207,7 +207,7 @@
                           style="background-color:#ffffff"
                         ></thumbnail>
                         <div class="d-flex justify-content-between align-items-center mb-2 mt-1">
-                          <b-btn @click="minusOne(meal)" class="menu-bag-btn plus-minus gray">
+                          <b-btn @click="minusOne(meal)" class="plus-minus gray">
                             <i>-</i>
                           </b-btn>
                           <!-- <img src="/images/customer/minus.jpg" @click="minusOne(meal)" class="plus-minus"> -->
@@ -236,17 +236,9 @@
                     <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
                       <div v-if="item && item.quantity > 0" class="d-flex align-items-center">
                         <div class="bag-item-quantity mr-2">
-                          <img
-                            src="/images/customer/bag-plus.png"
-                            @click="addOne(item.meal)"
-                            class="bag-plus-minus"
-                          >
+                          <div @click="addOne(item.meal)" class="bag-plus-minus brand-color white-text"><i>+</i></div>
                           <p class="bag-quantity">{{ item.quantity }}</p>
-                          <img
-                            src="/images/customer/bag-minus.png"
-                            @click="minusOne(item.meal)"
-                            class="bag-plus-minus"
-                          >
+                          <div @click="minusOne(item.meal)" class="bag-plus-minus gray white-text"><i>-</i></div>
                         </div>
                         <div class="bag-item-image mr-2">
                           <thumbnail
@@ -255,7 +247,7 @@
                             class="cart-item-img"
                           ></thumbnail>
                         </div>
-                        <div class="flex-grow-1 mr-2">{{ item.meal.title }}</div>
+                        <div class="flex-grow-1 mr-2" >{{ item.meal.title }}</div>
                         <div class="flex-grow-0">
                           <img
                             src="/images/customer/x.png"
@@ -452,7 +444,7 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       storeCustomers: "storeCustomers",
-      storeSetting: "viewedStoreSetting",
+    storeSetting: "viewedStoreSetting",
       total: "bagQuantity",
       allergies: "allergies",
       bag: "bagItems",
@@ -467,7 +459,7 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice"
     }),
-    storeSettings() {
+  storeSettings() {
       return this.store.settings;
     },
     minimumOption() {
@@ -492,10 +484,10 @@ export default {
       return "meal";
     },
     totalBagPriceBeforeFees() {
-      let deliveryFee = this.storeSettings.deliveryFee;
-      let processingFee = this.storeSettings.processingFee;
-      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
-      let applyProcessingFee = this.storeSettings.applyProcessingFee;
+    let deliveryFee = this.storeSettings.deliveryFee;
+    let processingFee = this.storeSettings.processingFee;
+    let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+    let applyProcessingFee = this.storeSettings.applyProcessingFee;
 
       if (applyDeliveryFee && applyProcessingFee) {
         return this.totalBagPrice - deliveryFee - processingFee;
@@ -506,8 +498,8 @@ export default {
       } else return this.totalBagPrice;
     },
     totalBagPriceAfterFees() {
-      let deliveryFee = this.storeSettings.deliveryFee;
-      let processingFee = this.storeSettings.processingFee;
+    let deliveryFee = this.storeSettings.deliveryFee;
+    let processingFee = this.storeSettings.processingFee;
 
       if (this.addDeliveryFee && this.addProcessingFee) {
         return this.totalBagPriceBeforeFees + deliveryFee + processingFee;
@@ -518,7 +510,7 @@ export default {
       } else return this.totalBagPriceBeforeFees;
     },
     transferType() {
-      return this.storeSettings.transferType.split(",");
+    return this.storeSettings.transferType.split(",");
     },
     transferTypeCheck() {
       if (

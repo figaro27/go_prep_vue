@@ -48,6 +48,19 @@
     </div>
     <!-- <TheFooter>
     </TheFooter>-->
+    <v-style>
+      .navbar {
+        background: {{ navBgColor }};
+      }
+
+      .menu-bag-btn, .brand-color {
+        background: {{ bgColor }};
+      }
+
+    .dbl-underline:after {
+      border-bottom: 3px double {{ bgColor }};
+    }
+    </v-style>
   </div>
 </template>
 
@@ -105,7 +118,10 @@ export default {
     SidebarMinimizer
   },
   data() {
-    return {};
+    return {
+      navBgColor: '',
+      bgColor: ''
+    };
   },
   computed: {
     ...mapGetters(["initialized", "viewedStore", "loggedIn", "isLoading"]),
@@ -120,6 +136,15 @@ export default {
         route => route.name || route.meta.label
       );
     }
+  },
+  updated() {
+      this.navBgColor = this.viewedStore.settings.color + ' !important';
+
+      if (this.navBgColor === '#3082CF !important'){
+        this.bgColor = '#F25727 !important';
+      }
+      else
+        this.bgColor = this.viewedStore.settings.color + ' !important';
   },
   created() {},
   methods: {}

@@ -67,6 +67,10 @@
 main.main {
   position: relative;
 }
+
+.navbar {
+  background-color:#3082CF;
+}
 </style>
 
 <script>

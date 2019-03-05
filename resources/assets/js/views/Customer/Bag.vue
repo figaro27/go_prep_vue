@@ -8,8 +8,8 @@
             <h2 class="center-text dbl-underline">Checkout</h2>
           </div>
           <div class="col-md-12 mb-2 bag-actions">
-            <b-button size="lg" class="green" @click="clearAll">Empty Bag</b-button>
-            <b-button size="lg" class="orange" to="/customer/menu">Change Meals</b-button>
+            <b-button size="lg" class="brand-color white-text" to="/customer/menu">Change Meals</b-button>
+            <b-button size="lg" class="gray white-text" @click="clearAll">Empty Bag</b-button>
           </div>
         </div>
         <div class="row">
@@ -18,17 +18,9 @@
               <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
                 <div v-if="item && item.quantity > 0" class="d-flex align-items-center">
                   <div class="bag-item-quantity mr-2">
-                    <img
-                      src="/images/customer/bag-plus.png"
-                      @click="addOne(item.meal)"
-                      class="bag-plus-minus"
-                    >
+                    <div @click="addOne(item.meal)" class="bag-plus-minus brand-color white-text"><i>+</i></div>
                     <p class="bag-quantity">{{ item.quantity }}</p>
-                    <img
-                      src="/images/customer/bag-minus.png"
-                      @click="minusOne(item.meal)"
-                      class="bag-plus-minus"
-                    >
+                    <div @click="minusOne(item.meal)" class="bag-plus-minus gray white-text"><i>-</i></div>
                   </div>
                   <div class="bag-item-image mr-2">
                     <thumbnail

@@ -31,7 +31,7 @@ class StoreSetting extends Model
      * @var array
      */
     protected $hidden = [
-      'stripe_account',
+      'stripe_account', 'application_fee',
     ];
 
     public $appends = ['next_delivery_dates', 'next_orderable_delivery_dates', 'stripe'];
