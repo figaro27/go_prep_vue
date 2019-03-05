@@ -166,15 +166,17 @@ window
     return config;
   });
 
+const responseInterceptor = (response) => {
+  if (!_.isEmpty(response.config.transactionId)) {
+    const id = response.config.transactionId;
+    store.dispatch('removeJob', id);
+  }
+  return response;
+};
+
 window
   .axios
   .interceptors
   .response
-  .use((response) => {
-    if (!_.isEmpty(response.config.transactionId)) {
-      const id = response.config.transactionId;
-      store.dispatch('removeJob', id);
-    }
-    return response;
-  });
+  .use(responseInterceptor, responseInterceptor);
 // -
