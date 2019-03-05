@@ -8,8 +8,8 @@
             <h2 class="center-text dbl-underline">Checkout</h2>
           </div>
           <div class="col-md-12 mb-2 bag-actions">
-            <b-button size="lg" class="brand-color white-text" to="/customer/menu">Change Meals</b-button>
-            <b-button size="lg" class="gray white-text" @click="clearAll">Empty Bag</b-button>
+            <b-button size="lg" class="brand-color white-text" to="/customer/menu"><span class="d-none d-sm-inline">Change Meals</span></b-button>
+            <b-button size="lg" class="gray white-text" @click="clearAll"><span class="d-none d-sm-inline">Empty Bag</span></b-button>
           </div>
         </div>
         <div class="row">
