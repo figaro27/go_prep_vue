@@ -7710,6 +7710,11 @@ vue-style-loader@^4.1.0:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
 
+vue-swatches@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/vue-swatches/-/vue-swatches-1.0.3.tgz#84eb23ba99bbbb0d56698f3a8bdb1b340203d33b"
+  integrity sha512-3J+Nc3bisvhhp0BW0pfTbQvdl3i+dhwoPjoM+2D6R6hW65KNpXOA+sJwcSg2j1Xd6fLcOV7LMb2sz6s4vKSWRg==
+
 "vue-tables-2@https://github.com/msolda2/vue-tables-2.git":
   version "1.4.70"
   resolved "https://github.com/msolda2/vue-tables-2.git#75b6f875abc4b899d7f2c50c8c7bc2fed7b4e411"

@@ -293,6 +293,23 @@
               <b-button type="submit" variant="primary ml-2">Create</b-button>
             </b-form>
           </b-form-group>
+
+          <b-form @submit.prevent="updateStoreSettings">
+            <b-form-group :state="true">
+              <p>
+              <span class="mr-1">Menu Brand Color</span>
+              <img
+                v-b-popover.hover="'Set the main color to show on your menu for buttons & the top navigation area. Try to match this to the main color of your logo.'"
+                title="Menu Brand Color"
+                src="/images/store/popover.png"
+                class="popover-size"
+              >
+              </p>
+              <swatches v-model="color"></swatches>
+              <b-button type="submit" variant="primary mt-2">Save</b-button>
+            </b-form-group>
+          </b-form>
+
         </div>
       </div>
       <p>Notifications</p>
@@ -439,6 +456,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>
@@ -469,12 +487,18 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
 import timezones from "../../../data/timezones.js";
+import Swatches from 'vue-swatches';
+import "vue-swatches/dist/vue-swatches.min.css";
+
+
 export default {
   components: {
-    cSwitch
+    cSwitch,
+    Swatches
   },
   data() {
     return {
+      color: '',
       transferSelected: [],
       transferOptions: [
         { text: "Delivering to Customers", value: "delivery" },
@@ -559,13 +583,14 @@ export default {
         this.storeSettings.delivery_days.length > 0 &&
         this.storeSettings.delivery_distance_radius > 0 &&
         !_.isEmpty(this.storeSettings.stripe_id));
-    }
+    },
   },
   created() {
 
   },
   mounted() {
     this.view_delivery_days = this.storeSettings.view_delivery_days;
+    this.color = this.storeSettings.color;
 
     if (_.isString(this.deliveryDistanceZipcodes)) {
       this.zipCodes = this.deliveryDistanceZipcodes.split(",") || [];
@@ -600,6 +625,7 @@ export default {
       }
       settings.transferType = this.transferTypes;
       settings.delivery_distance_zipcodes = this.zipCodes;
+      settings.color = this.color;
 
       // this.spliceCharacters();
       axios

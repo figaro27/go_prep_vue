@@ -495,6 +495,7 @@ export default {
       });
     },
     async updateMeal(id, changes, toast = false) {
+
       const i = this.getTableDataIndexById(id);
       if (i === -1) {
         return this.getTableData();
@@ -506,9 +507,6 @@ export default {
       try {
         await this._updateMeal({ id, data: changes });
 
-        if (toast) {
-          this.$toastr.s("Meal saved!");
-        }
       }
       catch(e) {
         if (toast) {

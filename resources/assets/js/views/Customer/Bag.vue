@@ -418,7 +418,7 @@ export default {
       this.$store.commit("addBagItems", bag);
     },
     checkout() {
-      this.loading = true;
+      // this.loading = true;
       axios
         .post("/api/bag/checkout", {
           bag: this.bag,
