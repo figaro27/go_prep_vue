@@ -60,6 +60,10 @@
     .dbl-underline:after {
       border-bottom: 3px double {{ bgColor }};
     }
+
+    .nav-item a:hover{
+      background-color: #afafaf !important;
+      }
     </v-style>
   </div>
 </template>
