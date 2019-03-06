@@ -34,7 +34,7 @@
               <b-form-checkbox-group
                 buttons
                 v-model="storeSettings.delivery_days"
-                class="filters"
+                class="storeFilters"
                 :options="[
                  { value: 'sun', text: 'Sunday' },
                  { value: 'mon', text: 'Monday' },
@@ -61,7 +61,7 @@
               <b-form-radio-group
                 buttons
                 v-model="storeSettings.delivery_distance_type"
-                class="filters"
+                class="storeFilters"
                 :options="[
                  { value: 'radius', text: 'Radius' },
                  { value: 'zipcodes', text: 'Zip Codes' },
