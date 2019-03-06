@@ -60,6 +60,16 @@
     <!-- <TheFooter>
       footer
     </TheFooter>-->
+    <v-style>
+          .menu-bag-btn, .brand-color, .filters .active {
+            background: {{ bgColor }};
+          }
+
+        .dbl-underline:after {
+          border-bottom: 3px double {{ bgColor }};
+        }
+      
+    </v-style>
   </div>
 </template>
 
@@ -123,11 +133,12 @@ export default {
   },
   data() {
     return {
-      payments_url: "#payments"
+      payments_url: "#payments",
+      bgColor: ''
     };
   },
   computed: {
-    ...mapGetters(["initialized", "isLoading"]),
+    ...mapGetters(["initialized", "isLoading", "storeSettings"]),
     classes() {
       let classes = ['app'];
       classes.push(this.$route.name);
@@ -165,6 +176,13 @@ export default {
         this.payments_url = resp.data.url;
       }
     });
+  },
+  updated() {
+      if (this.storeSettings.color === '#3082CF' || this.storeSettings.color === '#3082cf'){
+        this.bgColor = '#F25727 !important';
+      }
+      else
+        this.bgColor = this.storeSettings.color + ' !important';
   },
   methods: {
     ...mapActions({

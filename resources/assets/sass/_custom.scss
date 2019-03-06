@@ -233,6 +233,21 @@ body.sidebar-minimized {
   box-shadow: 0 0 0 0.0rem !important;
 }
 
+.storeFilters .btn-secondary{
+  background-color:#ffffff !important;
+  margin-right:5px !important;
+}
+
+.storeFilters .active{
+  color:#ffffff !important;
+  border-color:#dedede !important;
+  background-color:#F25727 !important;
+}
+
+.storeFilters .focus, .focus{
+  box-shadow: 0 0 0 0.0rem !important;
+}
+
 .nf-ingredientListDiv{
   line-height:1em;
 }

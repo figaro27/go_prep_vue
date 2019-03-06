@@ -144,7 +144,7 @@ export default {
   updated() {
       this.navBgColor = this.viewedStore.settings.color + ' !important';
 
-      if (this.navBgColor === '#3082cf !important'){
+      if (this.navBgColor === '#3082cf !important' || this.navBgColor === '#3082CF !important'){
         this.bgColor = '#F25727 !important';
       }
       else

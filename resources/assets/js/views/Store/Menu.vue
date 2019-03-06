@@ -145,7 +145,7 @@
                     v-model="meal.category_ids"
                     :options="categoryOptions"
                     @change="val => updateMeal(meal.id, {category_ids: val})"
-                    class="filters"
+                    class="storeFilters"
                   ></b-form-checkbox-group>
 
                   <h4 class="mt-4">
@@ -162,7 +162,7 @@
                     v-model="meal.tag_ids"
                     :options="tagOptions"
                     @change="val => updateMeal(meal.id, {tag_ids: val})"
-                    class="filters"
+                    class="storeFilters"
                   ></b-form-checkbox-group>
 
                   <h4 class="mt-4">
@@ -179,7 +179,7 @@
                     v-model="meal.allergy_ids"
                     :options="allergyOptions"
                     @change="val => updateMeal(meal.id, {allergy_ids: val})"
-                    class="filters"
+                    class="storeFilters"
                   ></b-form-checkbox-group>
                 </b-form-group>
               </b-tab>

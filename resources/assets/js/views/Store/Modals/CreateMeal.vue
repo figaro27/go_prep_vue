@@ -34,7 +34,7 @@
                   buttons
                   v-model="meal.category_ids"
                   :options="categoryOptions"
-                  class="filters"
+                  class="storeFilters"
                   required
                 ></b-form-checkbox-group>
 
@@ -43,7 +43,7 @@
                   buttons
                   v-model="meal.tag_ids"
                   :options="tagOptions"
-                  class="filters"
+                  class="storeFilters"
                 ></b-form-checkbox-group>
 
                 <h4 class="mt-4">Contains</h4>
@@ -51,7 +51,7 @@
                   buttons
                   v-model="meal.allergy_ids"
                   :options="allergyOptions"
-                  class="filters"
+                  class="storeFilters"
                 ></b-form-checkbox-group>
             </b-tab>
 
