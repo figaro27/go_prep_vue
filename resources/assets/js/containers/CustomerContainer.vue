@@ -57,12 +57,12 @@
         background: {{ bgColor }};
       }
 
-    .dbl-underline:after {
-      border-bottom: 3px double {{ bgColor }};
-    }
+      .dbl-underline:after {
+        border-bottom: 3px double {{ bgColor }};
+      }
 
-    .nav-item a:hover{
-      background-color: #afafaf !important;
+      .nav-item a:hover {
+        background-color: #afafaf !important;
       }
     </v-style>
   </div>
@@ -142,8 +142,14 @@ export default {
     }
   },
   updated() {
+    let page = this.name
+    if (page != 'customer-home' && page != 'login' && page != 'register')
       this.navBgColor = this.viewedStore.settings.color + ' !important';
+    else
+      this.navBgColor = '#3082cf !important';
 
+
+      
       if (this.navBgColor === '#3082cf !important' || this.navBgColor === '#3082CF !important'){
         this.bgColor = '#F25727 !important';
       }
