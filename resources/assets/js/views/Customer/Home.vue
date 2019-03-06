@@ -37,6 +37,10 @@
     </div>
   </div>
 </template>
+<style>
+.navbar {
+background: #3082cf;
+}
 </style>
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";

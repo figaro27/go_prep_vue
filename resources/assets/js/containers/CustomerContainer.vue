@@ -142,13 +142,7 @@ export default {
     }
   },
   updated() {
-    if (_.isSet(this.viewedStore)){
       this.navBgColor = this.viewedStore.settings.color + ' !important';
-    }
-    else{
-      this.navBgColor = '#3082cf !important';
-    }
-
 
       if (this.navBgColor === '#3082cf !important'){
         this.bgColor = '#F25727 !important';
