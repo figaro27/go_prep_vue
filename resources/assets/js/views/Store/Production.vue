@@ -16,7 +16,7 @@
             <div slot="price" slot-scope="props">{{ format.money(props.row.price) }}</div>
 
             <div slot="total" slot-scope="props">
-              ${{ props.row.total }}
+              {{ format.money(props.row.total) }}
             </div>
 
             <span slot="beforeLimit">
