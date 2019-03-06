@@ -168,7 +168,7 @@
                   <h4 class="mt-4">
                     Contains
                     <img
-                      v-b-popover.hover="'Indiciate if your meal contains any of the below. These allow your meals to be filtered by your customer on your menu page for anyone looking to avoid meals that contain any of these options.'"
+                      v-b-popover.hover="'Indicate if your meal contains any of the below. These allow your meals to be filtered by your customer on your menu page for anyone looking to avoid meals that contain any of these options.'"
                       title="Contains"
                       src="/images/store/popover.png"
                       class="popover-size"
