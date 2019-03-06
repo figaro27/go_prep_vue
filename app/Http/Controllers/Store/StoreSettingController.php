@@ -73,7 +73,7 @@ class StoreSettingController extends StoreController
     public function update(Request $request, StoreSetting $storeSetting)
     {
         $validatedData = $request->validate([
-            'mealPlanDiscount' => 'required_if:applyMealPlanDiscount,true|integer|nullable',
+            'mealPlanDiscount' => 'required_if:applyMealPlanDiscount,true|integer|nullable|max:99',
             'deliveryFee' => 'required_if:applyDeliveryFee,true|nullable',
             'processingFee' => 'required_if:applyProcessingFee,true|nullable',
             'minimumPrice' => 'required_if:minimumOption,price',

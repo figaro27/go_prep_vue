@@ -130,6 +130,18 @@ return [
         ],
     ],
 
+    'price.min' => [
+        'price' => [
+            'min' => 'Please set a price for the meal',
+        ],
+    ],
+
+    'category_ids.required' => [
+        'category_ids' => [
+            'required' => 'Please select at least one category. You can add new categories in Settings',
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes
