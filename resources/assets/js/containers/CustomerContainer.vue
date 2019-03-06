@@ -53,7 +53,7 @@
         background: {{ navBgColor }};
       }
 
-      .menu-bag-btn, .brand-color {
+      .menu-bag-btn, .brand-color, .filters .active {
         background: {{ bgColor }};
       }
 
