@@ -93,7 +93,7 @@
         v-model="viewMealModal"
         v-if="viewMealModal"
         :key="`view-meal-modal${meal.id}`"
-        @ok="onChangeIngredients(meal.id, $refs.ingredientPicker.ingredients)"
+        @ok.prevent="onViewMealModalOk"
       >
         <b-row>
           <b-col>
@@ -494,6 +494,24 @@ export default {
         return o.id === id;
       });
     },
+    async onViewMealModalOk(e) {
+      const data = {
+        validate_all: true,
+        title: this.meal.title,
+        description: this.meal.description,
+        price: this.meal.price,
+        category_ids: this.meal.category_ids,
+      };
+
+      const updated = await this.updateMeal(this.meal.id, data, true);
+
+      if(updated) {
+        this.viewMealModal = false;
+      }
+      else {
+        e.preventDefault();
+      }
+    },
     async updateMeal(id, changes, toast = false) {
 
       const i = this.getTableDataIndexById(id);
@@ -507,11 +525,26 @@ export default {
       try {
         await this._updateMeal({ id, data: changes });
 
+        if(toast) {
+          this.$toastr.s("Meal updated!");
+        }
+
+        return true;
       }
       catch(e) {
         if (toast) {
-          this.$toastr.e("Failed to update meal");
+          let error = _.first(Object.values(e.response.data.errors));
+
+          if(error) {
+            error = error.join(" ");
+            this.$toastr.e(error, "Error");
+          }
+          else {
+            this.$toastr.e("Failed to update meal!", "Error");
+          }
         }
+
+        return false;
       }
     },
     async updateActive(id, active, props) {

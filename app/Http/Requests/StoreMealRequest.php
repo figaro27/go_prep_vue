@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
-class UpdateMealRequest extends FormRequest
+class StoreMealRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,22 +24,12 @@ class UpdateMealRequest extends FormRequest
      */
     public function rules()
     {
-        if($this->request->get('validate_all', false)) {
-          return [
-              'title' => 'required',
-              'description' => 'required',
-              'price' => 'required|numeric|between:0.01,999.99', // todo: update price limits
-              'category_ids' => 'required',
-          ];
-        }
-        else {
-          return [
-              'title' => 'filled',
-              'description' => 'filled',
-              'price' => 'filled',
-              'category_ids' => 'filled',
-          ];
-        }
+        return [
+            'title' => 'required',
+            'description' => 'required',
+            'price' => 'required|numeric|between:0.01,999.99', // todo: update price limits
+            'category_ids' => 'required',
+        ];
     }
 
     /**

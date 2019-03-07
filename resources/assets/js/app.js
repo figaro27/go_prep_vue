@@ -173,10 +173,13 @@ window
     return config;
   });
 
-const responseInterceptor = (response) => {
+const responseInterceptor = (response, error = false) => {
   if (!_.isEmpty(response.config.transactionId)) {
     const id = response.config.transactionId;
     store.dispatch('removeJob', id);
+  }
+  if(error) {
+    return Promise.reject(response);
   }
   return response;
 };
@@ -185,5 +188,5 @@ window
   .axios
   .interceptors
   .response
-  .use(responseInterceptor, responseInterceptor);
+  .use(responseInterceptor, resp => responseInterceptor(resp, true));
 // -
