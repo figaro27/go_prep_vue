@@ -1,6 +1,12 @@
 <template>
   <div class="modal-full modal-tabs">
-    <b-modal title="Add Meal" ref="createMealModal" @ok.prevent="e => storeMeal()" @cancel.prevent="toggleModal()" @hidden="toggleModal">
+    <b-modal
+      title="Add Meal"
+      ref="createMealModal"
+      @ok.prevent="e => storeMeal(e)"
+      @cancel.prevent="toggleModal()"
+      @hidden="toggleModal"
+    >
       <b-row>
         <b-col>
           <b-tabs>
@@ -28,31 +34,31 @@
                 <h4>Price</h4>
                 <money required v-model="meal.price" :min="0.1" class="form-control"></money>
               </b-form-group>
-                <br>
-                <h4>Categories</h4>
-                <b-form-checkbox-group
-                  buttons
-                  v-model="meal.category_ids"
-                  :options="categoryOptions"
-                  class="storeFilters"
-                  required
-                ></b-form-checkbox-group>
+              <br>
+              <h4>Categories</h4>
+              <b-form-checkbox-group
+                buttons
+                v-model="meal.category_ids"
+                :options="categoryOptions"
+                class="storeFilters"
+                required
+              ></b-form-checkbox-group>
 
-                <h4 class="mt-4">Tags</h4>
-                <b-form-checkbox-group
-                  buttons
-                  v-model="meal.tag_ids"
-                  :options="tagOptions"
-                  class="storeFilters"
-                ></b-form-checkbox-group>
+              <h4 class="mt-4">Tags</h4>
+              <b-form-checkbox-group
+                buttons
+                v-model="meal.tag_ids"
+                :options="tagOptions"
+                class="storeFilters"
+              ></b-form-checkbox-group>
 
-                <h4 class="mt-4">Contains</h4>
-                <b-form-checkbox-group
-                  buttons
-                  v-model="meal.allergy_ids"
-                  :options="allergyOptions"
-                  class="storeFilters"
-                ></b-form-checkbox-group>
+              <h4 class="mt-4">Contains</h4>
+              <b-form-checkbox-group
+                buttons
+                v-model="meal.allergy_ids"
+                :options="allergyOptions"
+                class="storeFilters"
+              ></b-form-checkbox-group>
             </b-tab>
 
             <b-tab title="Ingredients">
@@ -63,7 +69,6 @@
               ></ingredient-picker>
             </b-tab>
           </b-tabs>
-
         </b-col>
 
         <b-col cols="2">
@@ -156,7 +161,7 @@ import format from "../../../lib/format";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import Spinner from "../../../components/Spinner";
 import IngredientPicker from "../../../components/IngredientPicker";
-import fs from '../../../lib/fs.js';
+import fs from "../../../lib/fs.js";
 
 export default {
   components: {
@@ -201,39 +206,40 @@ export default {
           value: allergy.id
         };
       });
-    },
+    }
   },
   mounted() {
     this.$refs.createMealModal.show();
     setTimeout(() => {
       this.$refs.featuredImageInput.onResize();
-    }, 100)
+    }, 100);
   },
   methods: {
     ...mapActions({
       refreshMeals: "refreshMeals",
       _updateMeal: "updateMeal"
     }),
-    storeMeal() {
-      axios
-        .post("/api/me/meals", this.meal)
-        .then(resp => {
-          this.$toastr.s('Meal created!');
-          this.$emit("created");
-          this.$refs.createMealModal.hide();
-          this.$parent.createMealModal = false;
-        })
-        .catch(response => {
-          let error = _.first(Object.values(response.response.data.errors));
-          error = error.join(" ");
-          this.$toastr.e(error, "Error");
-        })
+    async storeMeal(e) {
+      try {
+        const { data } = await axios.post("/api/me/meals", this.meal);
+      } catch (response) {
+        e.preventDefault();
+        let error = _.first(Object.values(response.response.data.errors));
+        error = error.join(" ");
+        this.$toastr.e(error, "Error");
+        return;
+      }
+
+      this.$toastr.s("Meal created!");
+      this.$emit("created");
+      this.$refs.createMealModal.hide();
+      this.$parent.createMealModal = false;
     },
     async changeImage(val) {
       let b64 = await fs.getBase64(this.$refs.featuredImageInput.file);
       this.meal.featured_image = b64;
     },
-    toggleModal(){
+    toggleModal() {
       this.$parent.createMealModal = false;
     }
   }
