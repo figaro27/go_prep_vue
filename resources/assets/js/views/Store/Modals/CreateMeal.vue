@@ -219,9 +219,9 @@ export default {
         .post("/api/me/meals", this.meal)
         .then(resp => {
           this.$toastr.s('Meal created!');
+          this.$emit("created");
           this.$refs.createMealModal.hide();
           this.$parent.createMealModal = false;
-          this.$emit("created");
         })
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors));

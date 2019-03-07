@@ -85,7 +85,7 @@
       </div>
     </div>
 
-    <create-meal-modal v-if="createMealModal" v-on:created="refreshTable()"/>
+    <create-meal-modal v-if="createMealModal" @created="refreshTable()"/>
 
     <div class="modal-full modal-tabs">
       <b-modal
@@ -624,18 +624,18 @@ export default {
 
       ingredients.forEach(ingredient => {
         nutrition.calories += ingredient.nf_calories || ingredient.calories;
-        nutrition.totalFat += ingredient.nf_total_fat || ingredient.totalFat;
-        nutrition.satFat += ingredient.nf_saturated_fat || ingredient.satFat;
-        nutrition.transFat += ingredient.nf_trans_fat || ingredient.transFat;
+        nutrition.totalFat += ingredient.nf_total_fat || ingredient.totalfat;
+        nutrition.satFat += ingredient.nf_saturated_fat || ingredient.satfat;
+        nutrition.transFat += ingredient.nf_trans_fat || ingredient.transfat;
         nutrition.cholesterol +=
           ingredient.nf_cholesterol || ingredient.cholesterol;
         nutrition.sodium += ingredient.nf_sodium || ingredient.sodium;
         nutrition.totalCarb +=
-          ingredient.nf_total_carbohydrate || ingredient.totalCarb;
+          ingredient.nf_total_carbohydrate || ingredient.totalcarb;
         nutrition.fibers += ingredient.nf_dietary_fiber || ingredient.fibers;
         nutrition.sugars += ingredient.nf_sugars || ingredient.sugars;
         nutrition.proteins += ingredient.nf_protein || ingredient.proteins;
-        nutrition.vitaminD += ingredient.nf_vitamind || ingredient.vitaminD;
+        nutrition.vitaminD += ingredient.nf_vitamind || ingredient.vitamind;
         nutrition.potassium += ingredient.nf_potassium || ingredient.potassium;
         nutrition.calcium += ingredient.nf_calcium || ingredient.calcium;
         nutrition.iron += ingredient.nf_iron || ingredient.iron;
