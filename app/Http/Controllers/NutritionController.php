@@ -12,16 +12,16 @@ class NutritionController extends Controller
 
     public static $keyMap = [
         'nf_calories' => 'calories',
-        'nf_total_fat' => 'totalFat',
-        'nf_saturated_fat' => 'satFat',
-        'nf_trans_fat' => 'transFat',
+        'nf_total_fat' => 'totalfat',
+        'nf_saturated_fat' => 'satfat',
+        'nf_trans_fat' => 'transfat',
         'nf_cholesterol' => 'cholesterol',
         'nf_sodium' => 'sodium',
-        'nf_total_carbohydrate' => 'totalCarb',
+        'nf_total_carbohydrate' => 'totalcarb',
         'nf_dietary_fiber' => 'fibers',
         'nf_sugars' => 'sugars',
         'nf_protein' => 'proteins',
-        'nf_vitamind' => 'vitaminD',
+        'nf_vitamind' => 'vitamind',
         'nf_potassium' => 'potassium',
         'nf_calcium' => 'calcium',
         'nf_iron' => 'iron',
@@ -56,11 +56,15 @@ class NutritionController extends Controller
 
         $rawFoods = $res->foods;
         $foods = [];
+        $normalizeKeys = ['totalfat', 'satfat', 'totalcarb'];
 
         foreach ($rawFoods as $rawFood) {
-            $foods[] = collect($rawFood)->mapWithKeys(function ($item, $key) {
+            $foods[] = collect($rawFood)->mapWithKeys(function ($item, $key) use ($rawFood, $normalizeKeys) {
                 if(isset(self::$keyMap[$key])) {
                   $key = self::$keyMap[$key];
+                }
+                if(in_array($key, $normalizeKeys)) {
+                  $item = $item / $rawFood->serving_weight_grams;
                 }
                 return [$key => $item];
             });

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Store;
 
+use App\Http\Controllers\Store\StoreController;
+use App\Http\Requests\StoreMealRequest;
+use App\Http\Requests\UpdateMealRequest;
 use App\Meal;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Store\StoreController;
-use App\Http\Requests\UpdateMealRequest;
 
 class MealController extends StoreController
 {
@@ -17,7 +18,7 @@ class MealController extends StoreController
     public function index()
     {
         return $this->store->has('meals') ?
-            $this->store->meals()
+        $this->store->meals()
             ->with(['orders', 'tags', 'ingredients'])
             ->without(['allergies', 'categories'])
             ->get() : [];
@@ -25,7 +26,7 @@ class MealController extends StoreController
 
     public function getStoreMeals()
     {
-        $id = auth()->id; 
+        $id = auth()->id;
         $storeID = Store::where('user_id', $id)->pluck('id')->first();
 
         return Meal::getStoreMeals($storeId);
@@ -47,7 +48,7 @@ class MealController extends StoreController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreMealRequest $request)
     {
         return Meal::storeMeal($request);
     }
@@ -88,13 +89,15 @@ class MealController extends StoreController
      */
     public function update(UpdateMealRequest $request, $id)
     {
-        return Meal::updateMeal($id, $request->all());
+        return Meal::updateMeal($id, $request->only([
+          'title', 'description', 'price', 'category_ids', 'tag_ids', 'allergy_ids', 'featured_image', 'ingredients'
+        ]));
     }
 
     public function updateActive(Request $request, $id)
     {
-        if($request->has('active')) {
-          return Meal::updateActive($id, $request->get('active'));
+        if ($request->has('active')) {
+            return Meal::updateActive($id, $request->get('active'));
         }
     }
 
@@ -109,20 +112,20 @@ class MealController extends StoreController
         $meal = $this->store->meals()->find($id);
 
         $subId = $request->get('substitute_id', null);
-        if($subId) {
-          $sub = $this->store->meals()->find($subId);
+        if ($subId) {
+            $sub = $this->store->meals()->find($subId);
         }
 
-        if(!$meal) {
-          return response()->json([
-            'error' => 'Invalid meal ID'
-          ], 400);
+        if (!$meal) {
+            return response()->json([
+                'error' => 'Invalid meal ID',
+            ], 400);
         }
 
-        if($meal->substitute && !$sub) {
-          return response()->json([
-            'error' => 'Invalid substitute meal ID'
-          ], 400);
+        if ($meal->substitute && !$sub) {
+            return response()->json([
+                'error' => 'Invalid substitute meal ID',
+            ], 400);
         }
 
         return Meal::deleteMeal($id, $subId);

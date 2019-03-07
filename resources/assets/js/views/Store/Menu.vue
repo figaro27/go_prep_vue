@@ -85,7 +85,7 @@
       </div>
     </div>
 
-    <create-meal-modal v-if="createMealModal" v-on:created="refreshTable()"/>
+    <create-meal-modal v-if="createMealModal" @created="refreshTable()"/>
 
     <div class="modal-full modal-tabs">
       <b-modal
@@ -93,7 +93,7 @@
         v-model="viewMealModal"
         v-if="viewMealModal"
         :key="`view-meal-modal${meal.id}`"
-        @ok="onChangeIngredients(meal.id, $refs.ingredientPicker.ingredients)"
+        @ok.prevent="onViewMealModalOk"
       >
         <b-row>
           <b-col>
@@ -494,6 +494,24 @@ export default {
         return o.id === id;
       });
     },
+    async onViewMealModalOk(e) {
+      const data = {
+        validate_all: true,
+        title: this.meal.title,
+        description: this.meal.description,
+        price: this.meal.price,
+        category_ids: this.meal.category_ids,
+      };
+
+      const updated = await this.updateMeal(this.meal.id, data, true);
+
+      if(updated) {
+        this.viewMealModal = false;
+      }
+      else {
+        e.preventDefault();
+      }
+    },
     async updateMeal(id, changes, toast = false) {
 
       const i = this.getTableDataIndexById(id);
@@ -507,11 +525,26 @@ export default {
       try {
         await this._updateMeal({ id, data: changes });
 
+        if(toast) {
+          this.$toastr.s("Meal updated!");
+        }
+
+        return true;
       }
       catch(e) {
         if (toast) {
-          this.$toastr.e("Failed to update meal");
+          let error = _.first(Object.values(e.response.data.errors));
+
+          if(error) {
+            error = error.join(" ");
+            this.$toastr.e(error, "Error");
+          }
+          else {
+            this.$toastr.e("Failed to update meal!", "Error");
+          }
         }
+
+        return false;
       }
     },
     async updateActive(id, active, props) {
@@ -624,18 +657,18 @@ export default {
 
       ingredients.forEach(ingredient => {
         nutrition.calories += ingredient.nf_calories || ingredient.calories;
-        nutrition.totalFat += ingredient.nf_total_fat || ingredient.totalFat;
-        nutrition.satFat += ingredient.nf_saturated_fat || ingredient.satFat;
-        nutrition.transFat += ingredient.nf_trans_fat || ingredient.transFat;
+        nutrition.totalFat += ingredient.nf_total_fat || ingredient.totalfat;
+        nutrition.satFat += ingredient.nf_saturated_fat || ingredient.satfat;
+        nutrition.transFat += ingredient.nf_trans_fat || ingredient.transfat;
         nutrition.cholesterol +=
           ingredient.nf_cholesterol || ingredient.cholesterol;
         nutrition.sodium += ingredient.nf_sodium || ingredient.sodium;
         nutrition.totalCarb +=
-          ingredient.nf_total_carbohydrate || ingredient.totalCarb;
+          ingredient.nf_total_carbohydrate || ingredient.totalcarb;
         nutrition.fibers += ingredient.nf_dietary_fiber || ingredient.fibers;
         nutrition.sugars += ingredient.nf_sugars || ingredient.sugars;
         nutrition.proteins += ingredient.nf_protein || ingredient.proteins;
-        nutrition.vitaminD += ingredient.nf_vitamind || ingredient.vitaminD;
+        nutrition.vitaminD += ingredient.nf_vitamind || ingredient.vitamind;
         nutrition.potassium += ingredient.nf_potassium || ingredient.potassium;
         nutrition.calcium += ingredient.nf_calcium || ingredient.calcium;
         nutrition.iron += ingredient.nf_iron || ingredient.iron;

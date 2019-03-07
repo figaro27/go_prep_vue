@@ -736,6 +736,9 @@ export default {
         let ironIndex = _.findIndex(ingredient.full_nutrients, function(o) {
           return o.attr_id == 303;
         });
+        let transfatIndex = _.findIndex(ingredient.full_nutrients, function(o) {
+          return o.attr_id == 605;
+        });
 
         let multiplier = 1;
 
@@ -750,24 +753,27 @@ export default {
           multiplier *= units.convert(
             1,
             ingredient.quantity_unit,
-            units.base(ingredient.unit_type)
+            units.base(ingredient.unit_type),
+            false
           );
         }
 
         nutrition.calories +=
           (ingredient.nf_calories || ingredient.calories) * multiplier;
         nutrition.totalFat +=
-          (ingredient.nf_total_fat || ingredient.totalFat) * multiplier;
+          (ingredient.nf_total_fat || ingredient.totalfat) * multiplier;
         nutrition.satFat +=
-          (ingredient.nf_saturated_fat || ingredient.satFat) * multiplier;
+          (ingredient.nf_saturated_fat || ingredient.satfat) * multiplier;
         nutrition.transFat +=
-          (ingredient.nf_trans_fat || ingredient.transFat) * multiplier;
+          transfatIndex > -1
+            ? ingredient.full_nutrients[transfatIndex].value
+            : ingredient.transfat;
         nutrition.cholesterol +=
           (ingredient.nf_cholesterol || ingredient.cholesterol) * multiplier;
         nutrition.sodium +=
           (ingredient.nf_sodium || ingredient.sodium) * multiplier;
         nutrition.totalCarb +=
-          (ingredient.nf_total_carbohydrate || ingredient.totalCarb) *
+          (ingredient.nf_total_carbohydrate || ingredient.totalcarb) *
           multiplier;
         nutrition.fibers +=
           (ingredient.nf_dietary_fiber || ingredient.fibers) * multiplier;
@@ -780,7 +786,7 @@ export default {
         nutrition.vitaminD +=
           (vitamindIndex > -1
             ? ingredient.full_nutrients[vitamindIndex].value
-            : ingredient.vitaminD) * multiplier;
+            : ingredient.vitamind) * multiplier;
         nutrition.calcium +=
           calciumIndex > -1
             ? ingredient.full_nutrients[calciumIndex].value
