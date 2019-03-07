@@ -19,7 +19,8 @@
         </div>
       </div>
     </div>
-    <div class="menu ml-auto mr-auto" v-if="storeSettings.open">
+    <div class="menu ml-auto mr-auto">
+    <!-- <div class="menu ml-auto mr-auto" v-if="storeSettings.open"> -->
       <div v-if="!willDeliver && !preview && loggedIn">
         <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
       </div>
