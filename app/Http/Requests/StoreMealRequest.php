@@ -26,7 +26,6 @@ class StoreMealRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'description' => 'required',
             'price' => 'required|numeric|between:0.01,999.99', // todo: update price limits
             'category_ids' => 'required',
         ];
