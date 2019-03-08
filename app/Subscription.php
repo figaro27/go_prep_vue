@@ -109,10 +109,17 @@ class Subscription extends Model
         $newOrder->created_at = now();
         $newOrder->updated_at = now();
         $newOrder->delivery_date = $this->next_delivery_date;
+        $newOrder->fulfilled = 0;
         $newOrder->order_number = substr(uniqid(rand(1, 9), false), 0, 12);
         $newOrder->push();
 
-        $newOrder->meals()->delete();
+        try {
+          $newOrder->meal_orders()->forceDelete();
+        }
+        catch(\Exception $e) {
+          
+        }
+
         foreach($this->meals as $meal) {
           $mealSub = new MealOrder();
           $mealSub->order_id = $newOrder->id;
@@ -135,11 +142,16 @@ class Subscription extends Model
     public function cancel($withStripe = true)
     {
         if ($withStripe) {
-            $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
-                'stripe_account' => $this->store->settings->stripe_id,
-            ]);
-            $subscription->cancel_at_period_end = true;
-            $subscription->save();
+            try {
+              $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
+                  'stripe_account' => $this->store->settings->stripe_id,
+              ]);
+              $subscription->cancel_at_period_end = true;
+              $subscription->save();
+            }
+            catch(\Exception $e) {
+
+            }
         }
 
         $this->update([
