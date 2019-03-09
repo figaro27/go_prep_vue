@@ -27,7 +27,6 @@ class UpdateMealRequest extends FormRequest
         if($this->request->get('validate_all', false)) {
           return [
               'title' => 'required',
-              'description' => 'required',
               'price' => 'required|numeric|between:0.01,999.99', // todo: update price limits
               'category_ids' => 'required',
           ];
@@ -35,7 +34,6 @@ class UpdateMealRequest extends FormRequest
         else {
           return [
               'title' => 'filled',
-              'description' => 'filled',
               'price' => 'filled',
               'category_ids' => 'filled',
           ];
