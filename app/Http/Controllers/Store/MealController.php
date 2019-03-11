@@ -90,7 +90,7 @@ class MealController extends StoreController
     public function update(UpdateMealRequest $request, $id)
     {
         return Meal::updateMeal($id, $request->only([
-          'title', 'description', 'price', 'category_ids', 'tag_ids', 'allergy_ids', 'featured_image', 'ingredients'
+          'active', 'title', 'description', 'price', 'category_ids', 'tag_ids', 'allergy_ids', 'featured_image', 'ingredients'
         ]));
     }
 
