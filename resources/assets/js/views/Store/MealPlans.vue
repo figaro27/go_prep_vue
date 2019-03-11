@@ -22,7 +22,6 @@
               </b-dropdown>
             </span>
 
-
             <div
               slot="delivery_day"
               class="text-nowrap"
@@ -185,14 +184,7 @@ export default {
           return classes;
         },
         customSorting: {
-          created_at: function(ascending) {
-            return function(a, b) {
-              var numA = moment(a.created_at);
-              var numB = moment(b.created_at);
-              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
-              return numA.isAfter(numB, "day") ? 1 : -1;
-            };
-          },
+
           delivery_day: function(ascending) {
             return function(a, b) {
               var numA = moment(a.delivery_day);
