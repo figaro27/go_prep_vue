@@ -168,7 +168,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td height="15"></td>
                 </tr>
                 <tr>
-                	<td bgcolor="#E04F00" class="btn-link" height="45" align="center" style="font-family:Century Gothic, Arial, Sans-serif; font-size:16px; color:#ffffff;padding-left:25px;padding-right:25px;border-radius:5px;border-bottom:2px solid #F8F8F8;"><a href="http://{{ $storeDetails->domain }}.goprep.com/store/reports">Go</a></td>
+                <td><a href="http://{{ $storeDetails->domain }}.goprep.com/store/reports"><button bgcolor="#E04F00" align="center" style="font-family:'Open Sans'; font-size:16px; color:#ffffff;padding-left:25px;padding-right:25px;border-radius:5px;background-color:#F25727;width:100%;height:55px;border:none">Go</button></a></td>
                 </tr>
 
 
