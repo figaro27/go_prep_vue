@@ -57,7 +57,7 @@ export default {
     return {
       filters: {
         delivery_dates: {
-          start: null,
+          start: moment(),
           end: null
         }
       },

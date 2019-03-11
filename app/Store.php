@@ -145,6 +145,9 @@ class Store extends Model
           $from = Carbon::parse($dateRange['from']);
           $orders = $orders->where('delivery_date', '>=', $from->format('Y-m-d'));
         }
+        else {
+          $orders = $orders->where('delivery_date', '>=', Carbon::now()->format('Y-m-d'));
+        }
         if(isset($dateRange['to'])) {
           $to = Carbon::parse($dateRange['to']);
           $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
