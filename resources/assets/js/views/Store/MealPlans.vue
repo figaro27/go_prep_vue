@@ -22,15 +22,7 @@
               </b-dropdown>
             </span>
 
-            <div slot="notes" class="text-nowrap" slot-scope="props">
-              <p v-if="props.row.has_notes">
-                <img src="/images/store/note.png">
-              </p>
-            </div>
-            <div
-              slot="created_at"
-              slot-scope="props"
-            >{{ moment(props.row.created_at).format('dddd, MMM Do') }}</div>
+
             <div
               slot="delivery_day"
               class="text-nowrap"
