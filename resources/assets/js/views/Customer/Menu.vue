@@ -652,6 +652,9 @@ export default {
         grouped[customer.id] = customer.name;
       });
       return grouped;
+    },
+    showIngredients(){
+      return this.storeSettings.showIngredients;
     }
   },
   beforeDestroy() {
@@ -805,6 +808,7 @@ export default {
         showServingUnitQuantity: false,
         itemName: meal.title,
         ingredientList: ingredientList,
+        showIngredients : this.showIngredients,
 
         decimalPlacesForQuantityTextbox: 2,
         valueServingUnitQuantity: 1,

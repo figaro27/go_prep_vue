@@ -269,7 +269,27 @@
                 @change.native="updateStoreSettings"
               />
             </b-form-group>
-            <!-- <b-button type="submit" variant="primary">Save</b-button> -->
+          </b-form>
+
+          <p v-if="storeSettings.showNutrition">
+          <span class="mr-1">Show Ingredients</span>
+          <img
+            v-b-popover.hover="'Ingredients of your meals are listed at the bottom of the nutrition facts that show on your menu. You can choose to show or hide them with this option.'"
+            title="Show Ingredients"
+            src="/images/store/popover.png"
+            class="popover-size"
+          >
+        </p>
+          <b-form @submit.prevent="updateStoreSettings" v-if="storeSettings.showNutrition">
+            <b-form-group :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.showIngredients"
+                @change.native="updateStoreSettings"
+              />
+            </b-form-group>
           </b-form>
 
           <p class="mb-0 pb-0">

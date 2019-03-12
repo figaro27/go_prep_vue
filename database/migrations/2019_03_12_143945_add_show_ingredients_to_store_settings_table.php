@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class MakeMealDescriptionNullable extends Migration
+class AddShowIngredientsToStoreSettingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class MakeMealDescriptionNullable extends Migration
      */
     public function up()
     {
-        Schema::table('meals', function (Blueprint $table) {
-            $table->text('description')->nullable()->change();
+        Schema::table('store_settings', function (Blueprint $table) {
+            $table->boolean('showIngredients')->default(false);
         });
     }
 
@@ -25,8 +25,8 @@ class MakeMealDescriptionNullable extends Migration
      */
     public function down()
     {
-        Schema::table('meals', function (Blueprint $table) {
-            $table->text('description')->change();
+        Schema::table('store_settings', function (Blueprint $table) {
+            $table->dropColumn('showIngredients');
         });
     }
 }
