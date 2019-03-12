@@ -40,7 +40,7 @@ class CheckoutController extends UserController
         $deliveryFee = 0;
         $processingFee = 0;
         $mealPlanDiscount = 0;
-        $salesTax = $request->get('tax');
+        $salesTax = $request->get('salesTax');
 
         if ($store->settings->applyDeliveryFee) {
             $total += $store->settings->deliveryFee;
@@ -62,6 +62,8 @@ class CheckoutController extends UserController
         if (!$user->hasStoreCustomer($store->id)) {
             $storeCustomer = $user->createStoreCustomer($store->id);
         }
+
+        $total = $total + $salesTax;
         $storeCustomer = $user->getStoreCustomer($store->id);
         $customer = $user->getStoreCustomer($store->id, false);
 
