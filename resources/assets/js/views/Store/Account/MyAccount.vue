@@ -94,7 +94,7 @@
             <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
 
-<!--             <p><b-btn @click="cancelledSubscription">cancelledSubscription</b-btn></p>
+<!--        <p><b-btn @click="cancelledSubscription">cancelledSubscription</b-btn></p>
 
             <p><b-btn @click="readyToPrint">readyToPrint</b-btn></p>
 
@@ -104,7 +104,11 @@
 
             <p><b-btn @click="subscriptionRenewing">subscriptionRenewing</b-btn></p>
 
-            <p><b-btn @click="newSubscription">newSubscription</b-btn></p> -->
+            <p><b-btn @click="newSubscription">newSubscription</b-btn></p> 
+
+            <p><b-btn @click="customerNewOrder">customerNewOrder</b-btn></p>
+            
+            -->
 
         </div>
       </div>
@@ -252,6 +256,9 @@ export default {
     newSubscription(){
       axios.get('/mail/newSubscription');
     },
+    customerNewOrder(){
+      axios.get('/mail/newOrder');
+    }
   }
 };
 </script>

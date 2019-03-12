@@ -122,11 +122,11 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           <br /> {{ $customer->city }}, {{ $customer->state }} {{ $customer->zip }}
                           </td>
                       </tr>
-                      @if ($pickup === 0)
+                      @if ($order->store->settings->pickup === 0)
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format('D, m/d/Y') }}</td>
                       </tr>
-                      @else ($pickup === 1)
+                      @else ($order->store->settings->pickup === 1)
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $order->delivery_date->format('D, m/d/Y') }}</td>
                       </tr>
@@ -311,7 +311,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td height="5"></td>
                 </tr>
                 <!-- content -->
-                @if ($pickup === 0)
+                @if ($order->store->settings->pickup === 0)
 				<tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->delivery }} </td>
                 </tr>
@@ -332,6 +332,46 @@ u + .body .full { width:100% !important; width:100vw !important;}
       </td>
     </tr>
   </table>
+
+  <table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td align="center">
+        <table align="center" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td width="600" align="center">
+              <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td height="40"></td>
+                </tr>
+                <!-- title -->
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Notes from {{ $order->store->details->name }}</td>
+                </tr>
+                <!-- end title -->
+                <tr>
+                  <td height="5"></td>
+                </tr>
+                <!-- content -->
+                @if ($order->store->settings->notesForCustomer != null)
+				        <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $order->store->settings->notesForCustomer }} </td>
+                </tr>
+				        @endif
+                
+                <!-- end content -->
+                <tr>
+                  <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+
+
   <!-- end note -->
   <!-- footer -->
   <!-- end footer -->

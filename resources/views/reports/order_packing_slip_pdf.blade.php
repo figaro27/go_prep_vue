@@ -66,6 +66,11 @@
       </tbody>
     
     </table>
+    <br>
+    @if ($order->store->settings->notesForCustomer != null)
+    <h2>Notes</h2>
+    <p>{{$order->store->settings->notesForCustomer}}</p>
+    @endif
   </div>
 </body>
 

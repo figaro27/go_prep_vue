@@ -217,13 +217,32 @@
               <b-form-checkbox-group v-model="transferSelected" :options="transferOptions"></b-form-checkbox-group>
             </b-form-group>
             <p v-if="transferTypeCheck">Pickup Instructions:</p>
-            <b-form-input
+            <b-form-textarea
               v-if="transferTypeCheck"
               type="text"
+              rows="3"
               v-model="storeSettings.pickupInstructions"
               placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time)."
               required
-            ></b-form-input>
+            ></b-form-textarea>
+
+            <p class="mt-2">
+                <span class="mr-1">Notes For Customer</span>
+                <img
+                  v-b-popover.hover="'Here you can optionally add any notes that you want to communicate to your customer on your packing slips and new order email notifications. Some examples include heating instructions, expiration periods of your meals, or any personalized message.'"
+                  title="Notes For Customer"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                >
+            </p>
+            <b-form-textarea
+              type="text"
+              rows="3"
+              v-model="storeSettings.notesForCustomer"
+              placeholder="E.G. Heating instructions, meal expiration dates, or any personalized message. This goes on your packing slips & email notifications to your customers."
+              required
+            ></b-form-textarea>
+
 
             <b-button type="submit" variant="primary" class="mt-3">Save</b-button>
           </b-form>
