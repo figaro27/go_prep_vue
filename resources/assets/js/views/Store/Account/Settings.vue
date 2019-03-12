@@ -240,7 +240,6 @@
               rows="3"
               v-model="storeSettings.notesForCustomer"
               placeholder="E.G. Heating instructions, meal expiration periods, or any personalized message. This goes on your packing slips & email notifications to your customers."
-              required
             ></b-form-textarea>
 
 
