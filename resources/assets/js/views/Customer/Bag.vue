@@ -207,7 +207,7 @@
                     class="menu-bag-btn"
                   >CHECKOUT</b-btn>
                   <b-btn
-                    v-if="card && minOption === 'price' && totalBagPrice >= minPrice"
+                    v-if="card && minOption === 'price' && totalBagPrice >= minPrice && storeSettings.open"
                     @click="checkout"
                     class="menu-bag-btn"
                   >CHECKOUT</b-btn>
@@ -237,6 +237,21 @@
                 </div>
               </li>
             </ul>
+            <div v-if="storeSettings.open === false">
+              <div class="row">
+                <div class="col-sm-12 mt-3">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="center-text">This company will not be taking new orders at this time.</h5>
+                      <p class="center-text mt-3">
+                        <strong>Reason:</strong>
+                        {{ storeSettings.closedReason }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

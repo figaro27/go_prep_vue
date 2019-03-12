@@ -4,26 +4,27 @@
       <i class="fa fa-shopping-bag text-white"></i>
     </floating-action-button>
 
-    <div v-if="storeSettings.open === 0">
-      <div class="row">
-        <div class="col-sm-12 mt-3">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="center-text">This company will not be taking new orders at this time.</h5>
-              <p class="center-text mt-3">
-                <strong>Reason:</strong>
-                {{ storeSettings.closedReason }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- <div class="menu ml-auto mr-auto"> -->
     <div class="menu ml-auto mr-auto">
-    <!-- <div class="menu ml-auto mr-auto" v-if="storeSettings.open"> -->
       <div v-if="!willDeliver && !preview && loggedIn">
         <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
       </div>
+
+      <div v-if="storeSettings.open === false">
+      <div class="row">
+        <div class="col-sm-12 mt-3">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="center-text">This company will not be taking new orders at this time.</h5>
+                  <p class="center-text mt-3">
+                    <strong>Reason:</strong>
+                    {{ storeSettings.closedReason }}
+                  </p>
+                </div>
+              </div>
+        </div>
+      </div>
+    </div>
 
       <div class="modal-basic">
         <b-modal size="lg" v-model="viewFilterModal" v-if="viewFilterModal" hide-header>
