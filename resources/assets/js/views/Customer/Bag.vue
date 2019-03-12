@@ -93,7 +93,7 @@
               </li>
               <li
                 class="checkout-item"
-                v-if="storeSettings.applyDeliveryFee || storeSettings.applyProcessingFee || (storeSettings.applyMealPlanDiscount && deliveryPlan)"
+                
               >
                 <div class="row">
                   <div class="col-md-4">
@@ -124,6 +124,15 @@
                     <strong>Processing Fee:</strong>
                   </div>
                   <div class="col-md-3 offset-5">{{ format.money(storeSettings.processingFee) }}</div>
+                </div>
+              </li>
+
+              <li class="checkout-item">
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Sales Tax:</strong>
+                  </div>
+                  <div class="col-md-3 offset-5">{{ format.money(tax) }}</div>
                 </div>
               </li>
 
@@ -240,13 +249,15 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
 import { stripeKey, stripeOptions } from "../../config/stripe.json";
 import { createToken } from "vue-stripe-elements-plus";
+import SalesTax from "sales-tax";
 
 import CardPicker from "../../components/Billing/CardPicker";
 
 export default {
   components: {
     cSwitch,
-    CardPicker
+    CardPicker,
+    SalesTax
   },
   data() {
     return {
@@ -256,7 +267,8 @@ export default {
       stripeKey,
       stripeOptions,
       card: null,
-      loading: false
+      loading: false,
+      salesTax: 0
     };
   },
   computed: {
@@ -334,14 +346,15 @@ export default {
       let applyProcessingFee = this.storeSettings.applyProcessingFee;
       let deliveryFee = this.storeSettings.deliveryFee;
       let processingFee = this.storeSettings.processingFee;
+      let salesTax = 1 + (this.salesTax);
 
       if (applyDeliveryFee && applyProcessingFee) {
-        return this.afterDiscountBeforeFees + deliveryFee + processingFee;
+        return (this.afterDiscountBeforeFees + deliveryFee + processingFee) * salesTax;
       } else if (applyDeliveryFee && !applyProcessingFee) {
-        return this.afterDiscountBeforeFees + deliveryFee;
+        return (this.afterDiscountBeforeFees + deliveryFee) * salesTax;
       } else if (applyProcessingFee && !applyDeliveryFee) {
-        return this.afterDiscountBeforeFees + processingFee;
-      } else return this.afterDiscountBeforeFees;
+        return (this.afterDiscountBeforeFees + processingFee) * salesTax;
+      } else return this.afterDiscountBeforeFees * salesTax;
     },
     applyMealPlanDiscount() {
       return this.storeSettings.applyMealPlanDiscount;
@@ -375,11 +388,15 @@ export default {
         };
       });
     },
+    tax() {
+      return this.salesTax * this.afterDiscountBeforeFees;
+    }
   },
   mounted() {
     if (this.deliveryDaysOptions.length === 1){
       this.deliveryDay = this.deliveryDaysOptions[0].value
     }
+    this.getSalesTax(this.store.details.state);
   },
   methods: {
     ...mapActions(["refreshSubscriptions", "refreshCustomerOrders"]),
@@ -418,7 +435,8 @@ export default {
           pickup: this.pickup,
           delivery_day: this.deliveryDay,
           card_id: this.card,
-          store_id: this.store.id
+          store_id: this.store.id,
+          salesTax: this.tax
         })
         .then(async resp => {
           this.emptyBag();
@@ -447,7 +465,16 @@ export default {
         .finally(() => {
           this.loading = false;
         });
+    },
+    getSalesTax(state){
+      SalesTax.getSalesTax("US", state)
+      .then((tax) => {
+        this.setSalesTax(tax.rate);
+      });
+    },
+    setSalesTax(rate){
+      this.salesTax = rate;
     }
   }
-};
+}
 </script>

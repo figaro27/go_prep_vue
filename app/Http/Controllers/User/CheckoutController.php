@@ -40,6 +40,7 @@ class CheckoutController extends UserController
         $deliveryFee = 0;
         $processingFee = 0;
         $mealPlanDiscount = 0;
+        $salesTax = $request->get('tax');
 
         if ($store->settings->applyDeliveryFee) {
             $total += $store->settings->deliveryFee;
@@ -88,6 +89,7 @@ class CheckoutController extends UserController
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
             $order->deliveryFee = $deliveryFee;
             $order->processingFee = $processingFee;
+            $order->salesTax = $salesTax;
             $order->amount = $total;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
@@ -172,6 +174,7 @@ class CheckoutController extends UserController
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
             $order->deliveryFee = $deliveryFee;
             $order->processingFee = $processingFee;
+            $order->salesTax = $salesTax;
             $order->amount = $total;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
