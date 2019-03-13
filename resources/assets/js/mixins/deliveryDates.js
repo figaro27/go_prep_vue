@@ -18,6 +18,7 @@ export default {
       this.nextDeliveryDates.forEach(delDate => {
         const date = moment
           .utc(delDate.date)
+          .hours(12)
           .unix();
         const cutoff = moment
           .utc(delDate.cutoff)
