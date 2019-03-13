@@ -124,7 +124,7 @@ class CheckoutController extends UserController
 
             $plan = \Stripe\Plan::create([
                 "amount" => round($total * 100),
-                "interval" => "day",
+                "interval" => "week",
                 "product" => [
                     "name" => "Weekly subscription (" . $store->storeDetail->name . ")",
                 ],
@@ -159,7 +159,7 @@ class CheckoutController extends UserController
             $userSubscription->stripe_plan = $plan->id;
             $userSubscription->quantity = 1;
             $userSubscription->amount = $total;
-            $userSubscription->interval = 'day';
+            $userSubscription->interval = 'week';
             $userSubscription->delivery_day = date('N', strtotime($deliveryDay));
             $userSubscription->next_renewal_at = $cutoff->addDays(7);
             $userSubscription->save();
