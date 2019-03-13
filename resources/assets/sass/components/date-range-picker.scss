@@ -67,3 +67,42 @@
     }
   }
 }
+
+@include media-breakpoint-down(sm) {
+  .calendar-root {
+    .calendar {
+      width: auto !important;
+      height: auto !important;
+    }
+    .calendar-head {
+      display: none;
+    }
+    .calendar-wrap {
+      width: 100% !important;
+    }
+    .calendar_month_left {
+      width: calc(100%) !important;
+      //float: none !important;
+    }
+    .calendar-range {
+      display: none;
+    }
+    .calendar_month_right {
+      width: 20px !important;
+      position: absolute;
+      right: 0;
+
+      *:not(.months-text) {
+        display: none;
+      }
+
+      .months-text {
+        font-size: 0;
+
+        .right {
+          display: inline-block !important;
+        }
+      }
+    }
+  }
+}

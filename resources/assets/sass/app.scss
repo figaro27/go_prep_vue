@@ -44,6 +44,11 @@ $simple-line-font-path: '~simple-line-icons/fonts/';
 @import "components/select.scss";
 @import "components/date-range-picker.scss";
 @import "components/order-list.scss";
+@import "components/v-table.scss";
+@import "components/sidebar.scss";
+
+
+@import "pages/reports.scss";
 
 
 .app {

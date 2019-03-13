@@ -884,3 +884,27 @@ body.login, body.register {
 .white-text{
   color:#ffffff !important;
 }
+
+
+.storeFilters {
+  @include media-breakpoint-down(sm) {
+    display: flex;
+    flex-wrap: wrap;
+
+    .btn {
+      flex-basis: 33%;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  @include media-breakpoint-down(lg) {
+    display: flex;
+    flex-wrap: wrap;
+
+    .btn {
+      flex-basis: 25%;
+      flex-grow: 0;
+      margin-bottom: 0.5rem;
+    }
+  }
+}

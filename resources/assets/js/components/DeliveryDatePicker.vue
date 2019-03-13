@@ -1,8 +1,8 @@
 <template>
   <div class="delivery-date-picker mb-0 flex-grow-0">
-    <div class="d-flex align-items-center">
-      <div class="mr-2 flex-grow-0" v-if="!storeSettings.allowPickup">Delivery Dates:</div>
-      <div class="mr-2 flex-grow-0" v-if="storeSettings.allowPickup">Delivery / Pickup Dates:</div>
+    <div class="d-sm-flex align-items-center">
+      <div class="mr-sm-2 flex-grow-0" v-if="!storeSettings.allowPickup">Delivery Dates:</div>
+      <div class="mr-sm-2 flex-grow-0" v-if="storeSettings.allowPickup">Delivery / Pickup Dates:</div>
 
       <div class="flex-grow-1">
         <date-range-picker
@@ -11,6 +11,7 @@
           :class="pickerClasses"
           i18n="EN"
           :righttoleft="rtl ? 'true' : 'false'"
+          :compact="true"
         ></date-range-picker>
         <!--<v-select
           multiple

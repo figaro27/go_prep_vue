@@ -142,13 +142,38 @@ $(document).on('dblclick', '.VueTables__table tbody > tr', function () {
     .removeAllRanges();
 });
 
-setInterval(function() {
+setInterval(function () {
   $('.vs__selected-options > input').prop('readonly', false);
 }, 500)
 
-// Request interceptors for spinner
+setInterval(function () {
+  $('.VueTables__table:not(.responsive)')
+    .each(function () {
+      $(this).addClass('responsive');
+      var table = $(this);
+      var tableRow = table.find('tr');
+      table
+        .find('td')
+        .each(function () {
+          var tdIndex = $(this).index();
+          if ($(tableRow).find('th').eq(tdIndex).attr('data-label')) {
+            var thText = $(tableRow)
+              .find('th')
+              .eq(tdIndex)
+              .data('label');
+          } else {
+            var thText = $(tableRow)
+              .find('th')
+              .eq(tdIndex)
+              .find('.VueTables__heading')
+              .text();
+          }
+          $(this).attr('data-label', thText + ':');
+        });
+    });
+}, 2000)
 
-// Always create jobs for these routes
+// Request interceptors for spinner Always create jobs for these routes
 // regardless of http method
 const jobRoutes = [
   /^\/api\/me\/print/, // all print routes
@@ -182,7 +207,7 @@ const responseInterceptor = (response, error = false) => {
     const id = response.config.transactionId;
     store.dispatch('removeJob', id);
   }
-  if(error) {
+  if (error) {
     return Promise.reject(response);
   }
   return response;

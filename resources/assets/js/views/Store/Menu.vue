@@ -13,7 +13,7 @@
               :options="options"
             >
               <div slot="beforeTable" class="mb-2">
-                <button class="btn btn-success btn-md" @click="createMeal">Add Meal</button>
+                <button class="btn btn-success btn-md mb-2 mb-sm-0" @click="createMeal">Add Meal</button>
 
                 <b-form-radio-group
                   buttons
@@ -22,15 +22,13 @@
                   v-model="filter.status"
                   @change="onChangeStatusFilter"
                   :options="statusFilterOptions"
+                  class="mb-2 mb-sm-0"
                 />
-
-                <router-link to="/store/menu/preview">
-                  <button class="btn btn-warning btn-md">Preview Menu</button>
-                </router-link>
+                <button class="btn btn-warning btn-md" to="/store/menu/preview">Preview Menu</button>
               </div>
 
               <span slot="beforeLimit">
-                <b-btn variant="success" @click="exportData('meals_ingredients', 'pdf', true)">
+                <b-btn variant="success" @click="exportData('meals_ingredients', 'pdf', true)" class="mb-2 mb-sm-0">
                   <i class="fa fa-print"></i>&nbsp;
                   Print Meals Ingredients
                 </b-btn>

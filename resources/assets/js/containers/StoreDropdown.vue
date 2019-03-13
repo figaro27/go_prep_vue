@@ -1,8 +1,11 @@
 <template>
   <AppHeaderDropdown right no-caret>
-    <template slot="header">
-      <div class="m-3 pr-4">
+    <template slot="header" class="app-header-dropdown">
+      <div class="d-none d-sm-block m-3 pr-4">
         <h6>{{ email }}</h6>
+      </div>
+      <div class="d-block d-sm-none mt-3 mb-3">
+        <i class="fa fa-ellipsis-h"></i>
       </div>
     </template>\
     <template slot="dropdown">

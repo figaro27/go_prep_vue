@@ -1,0 +1,8 @@
+.app.store-reports {
+  .delivery-date-picker {
+    @include media-breakpoint-down(sm) {
+      display: block;
+      text-align: center;
+    }
+  }
+}

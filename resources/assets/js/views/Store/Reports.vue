@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-6">
         <div class="card">
-          <div class="card-body m-4">
+          <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Orders Summary</h4>
             <div class="report-date-picker">
               <delivery-date-picker v-model="delivery_dates.orders_by_customer"></delivery-date-picker>
@@ -31,7 +31,7 @@
       <div class="col-md-6">
         <div class="card">
           <Spinner v-if="isLoading"/>
-          <div class="card-body m-4">
+          <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Production</h4>
             <div class="report-date-picker">
               <delivery-date-picker v-model="delivery_dates.meal_orders" :rtl="true"></delivery-date-picker>
@@ -59,7 +59,7 @@
     <div class="row">
       <div class="col-md-6">
         <div class="card">
-          <div class="card-body m-4">
+          <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Packing Slips</h4>
             <div class="report-date-picker">
               <delivery-date-picker v-model="delivery_dates.packing_slips"></delivery-date-picker>
@@ -88,7 +88,7 @@
 
       <div class="col-md-6">
         <div class="card">
-          <div class="card-body m-4">
+          <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Ingredients</h4>
             <div class="report-date-picker">
               <delivery-date-picker v-model="delivery_dates.ingredient_quantities" :rtl="true"></delivery-date-picker>
@@ -117,6 +117,10 @@
     </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+
+</style>
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
