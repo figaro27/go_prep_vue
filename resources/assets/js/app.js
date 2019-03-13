@@ -142,6 +142,10 @@ $(document).on('dblclick', '.VueTables__table tbody > tr', function () {
     .removeAllRanges();
 });
 
+setInterval(function() {
+  $('.vs__selected-options > input').prop('readonly', false);
+}, 500)
+
 // Request interceptors for spinner
 
 // Always create jobs for these routes
