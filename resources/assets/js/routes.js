@@ -74,7 +74,10 @@ let routes = [
   }, {
     path: '/customer/home',
     component: CustomerHome,
-    name: 'customer-home'
+    name: 'customer-home',
+    beforeEnter: (to, from, next) => {
+      window.location = window.app.front_url;
+    }
   }, {
     path: '/customer/bag',
     component: CustomerBag,

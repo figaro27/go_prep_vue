@@ -53,6 +53,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://goprep.localhost'),
+    'front_url' => env('FRONT_URL', 'http://www.goprep.localhost'),
 
 
     // Domain
