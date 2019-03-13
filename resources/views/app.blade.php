@@ -13,6 +13,7 @@
     window.app = {
       domain: "{{ config('app.domain') }}",
       url: "{{ config('app.url') }}",
+      front_url: "{{ config('app.front_url') }}",
     }
     </script>
 </head>
