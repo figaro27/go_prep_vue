@@ -1,0 +1,7 @@
+.sidebar {
+  .nav-link {
+    @include media-breakpoint-down(sm) {
+      margin-bottom: 0;
+    }
+  }
+}

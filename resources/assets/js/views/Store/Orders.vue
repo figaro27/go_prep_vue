@@ -11,8 +11,8 @@
             v-show="initialized"
           >
             <div slot="beforeTable" class="mb-2">
-              <div class="d-flex align-items-center">
-                <div class="mr-2 flex-grow-0">
+              <div class="table-before d-flex align-items-center">
+                <div class="d-inline mr-2 flex-grow-0">
                   <b-btn
                     @click="$set(filters, 'has_notes', !filters.has_notes)"
                     :selected="filters.has_notes"
@@ -20,7 +20,7 @@
                     class="filter-btn"
                   >Filter Delivery Notes</b-btn>
                 </div>
-                <div class="mr-2 flex-grow-0">
+                <div class="d-inline mr-2 flex-grow-0">
                   <b-btn
                     @click="$set(filters, 'fulfilled', !filters.fulfilled)"
                     :selected="filters.fulfilled"
@@ -39,7 +39,7 @@
                     <b-btn class="btn btn-success filter-btn">Create Manual Order</b-btn>
                   </router-link> -->
                 </div>
-                <delivery-date-picker v-model="filters.delivery_dates" @change="onChangeDateFilter"></delivery-date-picker>
+                <delivery-date-picker v-model="filters.delivery_dates" @change="onChangeDateFilter" class="mt-3 mt-sm-0"></delivery-date-picker>
               </div>
             </div>
 
@@ -52,7 +52,7 @@
                 <i class="fa fa-print"></i>&nbsp;
                 Print Orders
               </b-btn>
-              <b-dropdown class="mx-1" right text="Export as">
+              <b-dropdown class="mx-1 mt-2 mt-sm-0" right text="Export as">
                 <b-dropdown-item @click="exportData('orders', 'csv')">CSV</b-dropdown-item>
                 <b-dropdown-item @click="exportData('orders', 'xls')">XLS</b-dropdown-item>
                 <b-dropdown-item @click="exportData('orders', 'pdf')">PDF</b-dropdown-item>
