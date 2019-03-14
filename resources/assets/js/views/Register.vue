@@ -132,16 +132,17 @@
                 ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="State" :state="state(1, 'state')">
-                <b-input
+              <!-- <b-input
                   v-model="form[1].state"
                   type="text"
                   @input="$v.form[1].state.$touch(); clearFeedback(1, 'state')"
                   :state="state(1, 'state')"
                   autocomplete="new-password"
-                ></b-input>
+                ></b-input> -->
+              <b-form-group horizontal label="State" :state="state(1, 'state')">
+                <v-select label="name" :options="stateNames" :on-change="val => changeState(val, 1)"></v-select>
               </b-form-group>
-
+              
               <b-form-group horizontal label="Zip Code" :state="state(1, 'zip')">
                 <b-input
                   v-model="form[1].zip"
@@ -243,7 +244,7 @@
                 ></b-input>
               </b-form-group>
 
-              <b-form-group
+              <!-- <b-form-group
                 horizontal
                 label="State"
                 :state="state(2, 'state')"
@@ -257,7 +258,11 @@
                   :state="state(2, 'state')"
                   autocomplete="new-password"
                 ></b-input>
+              </b-form-group> -->
+              <b-form-group horizontal label="State" :state="state(2, 'state')">
+                <v-select label="name" :options="stateNames" :on-change="val => changeState(val, 2)"></v-select>
               </b-form-group>
+              
 
               <b-form-group
                 horizontal
@@ -308,6 +313,7 @@ import validators from "../validators";
 import auth from "../lib/auth";
 import TermsOfService from "./TermsOfService";
 import TermsOfAgreement from "./TermsOfAgreement";
+import states from "../data/states.js";
 
 export default {
   components: {
@@ -353,7 +359,11 @@ export default {
       }
     };
   },
-  computed: {},
+  computed: {
+    stateNames() {
+      return states.stateNames()
+    },
+  },
   validations: {
     form: {
       0: {
@@ -503,6 +513,9 @@ export default {
         .catch(e => {
           this.$toastr.e("Please try again.", "Registration failed");
         });
+    },
+    changeState(state, formNumber){
+      this.form[formNumber].state = state.abbreviation;
     }
   }
 };
