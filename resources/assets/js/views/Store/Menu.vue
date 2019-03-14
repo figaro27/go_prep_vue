@@ -206,6 +206,8 @@
               button-class="btn"
               @change="val => changeImage(val, meal.id)"
             ></picture-input>
+            <p class="center-text small">Image size too big?<br>
+            You can compress images <a href="https://imagecompressor.com/" target="_blank">here.</a></p>
           </b-col>
         </b-row>
       </b-modal>
