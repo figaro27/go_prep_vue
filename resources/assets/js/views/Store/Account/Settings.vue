@@ -280,7 +280,7 @@
             class="popover-size"
           >
         </p>
-          <b-form @submit.prevent="updateStoreSettings" v-if="storeSettings.showNutrition">
+          <b-form @submit.prevent="updateStoreSettings">
             <b-form-group :state="true">
               <c-switch
                 color="success"

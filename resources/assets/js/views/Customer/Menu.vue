@@ -110,7 +110,7 @@
                         <li v-for="allergy in meal.allergy_titles">{{ allergy }}</li>
                       </div>
                     </div>
-                    <div class="row mt-3 mb-3">
+                    <div class="row mt-3 mb-3" v-if="storeSettings.showIngredients">
                       <div class="col-lg-12">
                         <h5>Ingredients</h5>
                         {{ ingredients }}
