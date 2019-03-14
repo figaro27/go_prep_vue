@@ -271,7 +271,7 @@
             </b-form-group>
           </b-form>
 
-          <p v-if="storeSettings.showNutrition">
+          <p>
           <span class="mr-1">Show Ingredients</span>
           <img
             v-b-popover.hover="'Ingredients of your meals are listed at the bottom of the nutrition facts that show on your menu. You can choose to show or hide them with this option.'"
