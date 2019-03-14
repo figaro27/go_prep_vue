@@ -11,7 +11,7 @@
             v-show="initialized"
           >
             <div slot="beforeTable" class="mb-2">
-              <div class="table-before d-flex align-items-center">
+              <div class="table-before d-flex flex-wrap align-items-center">
                 <div class="d-inline mr-2 flex-grow-0">
                   <b-btn
                     @click="$set(filters, 'has_notes', !filters.has_notes)"
