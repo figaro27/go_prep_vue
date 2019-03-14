@@ -40,6 +40,7 @@
                   </router-link> -->
                 </div>
                 <delivery-date-picker v-model="filters.delivery_dates" @change="onChangeDateFilter" class="mt-3 mt-sm-0"></delivery-date-picker>
+                <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
               </div>
             </div>
 
@@ -183,9 +184,13 @@
         </div>
       </b-modal>
     </div>
+      <v-style>
+        .input-date{
+          color: {{ dateColor }}
+        }
+      </v-style>
   </div>
 </template>
-
 
 
 <script>
@@ -203,6 +208,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      dateColor: "",
       deliveryDate: "All",
       filter: false,
       pastOrder: false,
@@ -459,9 +465,16 @@ export default {
           this.loading = false;
         });
     },
-    onChangeDateFilter() {},
+    onChangeDateFilter() {
+      this.dateColor = "#5c6873 !important";
+    },
     updateViewedOrders() {
       axios.get(`/api/me/ordersUpdateViewed`);
+    },
+    clearDeliveryDates(){
+      this.filters.delivery_dates.start = null;
+      this.filters.delivery_dates.end = null;
+      this.dateColor = "#ffffff !important";
     }
   }
 };

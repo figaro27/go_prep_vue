@@ -7,7 +7,8 @@
           <v-client-table ref="mealsTable" :columns="columns" :data="tableData" :options="options">
             <div slot="beforeTable" class="mb-2">
               <div class="d-flex align-items-center">
-                <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
+                <delivery-date-picker v-model="filters.delivery_dates" @change="onChangeDateFilter"></delivery-date-picker>
+                <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
               </div>
             </div>
             <div slot="featured_image" slot-scope="props">
@@ -34,6 +35,11 @@
         </div>
       </div>
     </div>
+    <v-style>
+        .input-date{
+          color: {{ dateColor }}
+        }
+      </v-style>
   </div>
 </template>
 
@@ -55,6 +61,7 @@ export default {
   ],
   data() {
     return {
+      dateColor: "",
       filters: {
         delivery_dates: {
           start: moment(),
@@ -235,6 +242,14 @@ export default {
         .finally(() => {
           this.loading = false;
         });
+    },
+    onChangeDateFilter() {
+      this.dateColor = "#5c6873 !important";
+    },
+    clearDeliveryDates(){
+      this.filters.delivery_dates.start = null;
+      this.filters.delivery_dates.end = null;
+      this.dateColor = "#ffffff !important";
     }
   }
 };
