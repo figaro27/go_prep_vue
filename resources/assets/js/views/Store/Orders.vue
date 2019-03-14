@@ -12,7 +12,7 @@
           >
             <div slot="beforeTable" class="mb-2">
               <div class="table-before d-flex flex-wrap align-items-center">
-                <div class="d-inline mr-2 flex-grow-0">
+                <div class="d-inline-block mb-2 mb-md-0 mr-2 flex-grow-0">
                   <b-btn
                     @click="$set(filters, 'has_notes', !filters.has_notes)"
                     :selected="filters.has_notes"
@@ -20,7 +20,7 @@
                     class="filter-btn"
                   >Filter Delivery Notes</b-btn>
                 </div>
-                <div class="d-inline mr-2 flex-grow-0">
+                <div class="d-inline-block mr-2 flex-grow-0">
                   <b-btn
                     @click="$set(filters, 'fulfilled', !filters.fulfilled)"
                     :selected="filters.fulfilled"
