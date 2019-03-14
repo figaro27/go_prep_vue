@@ -174,6 +174,7 @@
                           v-for="category in categories"
                           :key="category"
                           @click="goToCategory(category)"
+                          class="ml-4"
                         >{{ category }}</li>
                       </ul>
 
