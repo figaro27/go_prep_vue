@@ -68,7 +68,7 @@ class RegisterController extends Controller
             'user_details.address' => 'required',
             'user_details.city' => 'required',
             'user_details.state' => 'required',
-            'user_details.zip' => 'required',
+            'user_details.zip' => 'required|min:5',
         ]);
 
         $v->sometimes('store', [

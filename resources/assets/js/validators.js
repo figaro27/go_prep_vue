@@ -30,6 +30,7 @@ const validators = {
   },
   zip: {
     required,
+    minLength: 5
   },
   store_name: {
     required,
