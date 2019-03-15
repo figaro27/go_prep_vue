@@ -458,6 +458,32 @@
         </div>
       </div>
 
+      <p>Logo</p>
+      <div class="card">
+        <div class="card-body">
+          <b-form @submit.prevent="updateStoreLogo">
+              <b-form-group label="Logo" :state="true">
+                  <p class="small">Please keep height & width dimensions the exact same.</p>
+                  <picture-input
+                  :ref="`storeImageInput`"
+                  :prefill="storeDetail.logo ? storeDetail.logo : ''"
+                  @prefill="$refs[`storeImageInput`].onResize()"
+                  :alertOnError="false"
+                  :autoToggleAspectRatio="true"
+                  margin="0"
+                  size="10"
+                  button-class="btn"
+                  style="width: 180px; height: auto; margin: 0;"
+                  @change="(val) => updateLogo(val)"
+                ></picture-input>
+              </b-form-group>
+                <div class="mt-3">
+                  <b-button type="submit" variant="primary">Save</b-button>
+                </div>
+            </b-form>
+          </div>
+        </div>
+
       <p>Open</p>
       <div class="card">
         <div class="card-body">
@@ -495,32 +521,7 @@
           <div v-else>
             Please enter all settings fields to open your store. 
           </div>
-
-          <b-form @submit.prevent="updateStoreLogo">
-            <b-form-group label="Logo" :state="true">
-                <p class="small">Please keep height & width dimensions the exact same.</p>
-                <picture-input
-                :ref="`storeImageInput`"
-                :prefill="storeDetail.logo ? storeDetail.logo : ''"
-                @prefill="$refs[`storeImageInput`].onResize()"
-                :alertOnError="false"
-                :autoToggleAspectRatio="true"
-                margin="0"
-                size="10"
-                button-class="btn"
-                style="width: 180px; height: auto; margin: 0;"
-                @change="(val) => updateLogo(val)"
-              ></picture-input>
-              </b-form-group>
-            <div class="mt-3">
-            <b-button type="submit" variant="primary">Save</b-button>
-          </div>
-          </b-form>
-
-
-
-
-          
+       
         </div>
       </div>
 
