@@ -485,13 +485,42 @@
               placeholder="Please include the reason to give to customers as to why you are currently not accepting new orders."
               required
             ></b-form-input>
+
+
             <div class="mt-3">
               <b-button type="submit" variant="primary">Save</b-button>
             </div>
           </b-form>
+
           <div v-else>
             Please enter all settings fields to open your store. 
           </div>
+
+          <b-form @submit.prevent="updateStoreLogo">
+            <b-form-group label="Logo" :state="true">
+                <p class="small">Please keep height & width dimensions the exact same.</p>
+                <picture-input
+                :ref="`storeImageInput`"
+                :prefill="storeDetail.logo ? storeDetail.logo : ''"
+                @prefill="$refs[`storeImageInput`].onResize()"
+                :alertOnError="false"
+                :autoToggleAspectRatio="true"
+                margin="0"
+                size="10"
+                button-class="btn"
+                style="width: 180px; height: auto; margin: 0;"
+                @change="(val) => updateLogo(val)"
+              ></picture-input>
+              </b-form-group>
+            <div class="mt-3">
+            <b-button type="submit" variant="primary">Save</b-button>
+          </div>
+          </b-form>
+
+
+
+
+          
         </div>
       </div>
 
@@ -527,7 +556,7 @@ import { Switch as cSwitch } from "@coreui/vue";
 import timezones from "../../../data/timezones.js";
 import Swatches from 'vue-swatches';
 import "vue-swatches/dist/vue-swatches.min.css";
-
+import fs from '../../../lib/fs.js';
 
 export default {
   components: {
@@ -564,6 +593,9 @@ export default {
       storeSettings: "storeSettings",
       storeCategories: "storeCategories"
     }),
+    storeDetails(){
+        return this.storeDetail;
+    },
     categories() {
       return _.chain(this.storeCategories)
         .orderBy("order")
@@ -680,6 +712,12 @@ export default {
           this.$toastr.e(error, "Error");
         });
     },
+    updateStoreLogo() {
+      let data = {...this.storeDetails};
+      axios
+        .patch("/api/me/updateLogo", data)
+        
+    },
     spliceCharacters() {
       if (this.storeSettings.deliveryFee != null) {
         let deliveryFee = this.storeSettings.deliveryFee;
@@ -780,7 +818,11 @@ export default {
     },
     updateZips(e) {
       this.zipCodes = e.target.value.split(",");
-    }
+    },
+    async updateLogo(logo) {
+      let b64 = await fs.getBase64(this.$refs.storeImageInput.file);
+      this.storeDetail.logo = b64;
+    },
   }
 };
 </script>

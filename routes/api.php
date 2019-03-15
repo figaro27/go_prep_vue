@@ -72,6 +72,7 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
                     
                     Route::get('getStore', 'StoreDetailController@show');
                     Route::patch('details', 'StoreDetailController@update');
+                    Route::patch('updateLogo', 'StoreDetailController@updateLogo');
                     Route::patch('settings', 'StoreSettingController@update');
 
                     Route::post('stripe/connect', 'StripeController@connect');

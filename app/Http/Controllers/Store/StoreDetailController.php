@@ -117,6 +117,39 @@ class StoreDetailController extends StoreController
 
     }
 
+    public function updateLogo(Request $request)
+    {
+        $store = $this->store->details;
+
+        $newLogo = $request->has('logo') && substr($request->get('logo'), 0, 4) === 'data';
+
+        if ($newLogo) {
+            $image = Images::decodeB64($request->get('logo'));
+            $size = getimagesizefromstring($image);
+
+            if ($size && $size[0] !== $size[1]) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => [
+                        'logo' => ['The logo must have an equal width and height.'],
+                    ],
+                ], 422);
+            }
+        }
+
+        if ($newLogo) {
+            $imageUrl = Images::uploadB64($request->get('logo'));
+
+
+                $store->logo = $imageUrl;
+                $store->save();
+            
+        }
+
+        return $store;
+
+    }
+
     /**
      * Remove the specified resource from storage.
      *
