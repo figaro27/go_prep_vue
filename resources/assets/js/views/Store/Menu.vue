@@ -24,7 +24,7 @@
                   :options="statusFilterOptions"
                   class="mb-2 mb-sm-0"
                 />
-                <button class="btn btn-warning btn-md" to="/store/menu/preview">Preview Menu</button>
+                <router-link :to="'/store/menu/preview'" class="btn btn-warning btn-md" tag="button">Preview Menu</router-link>
               </div>
 
               <span slot="beforeLimit">
