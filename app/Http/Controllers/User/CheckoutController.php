@@ -96,6 +96,9 @@ class CheckoutController extends UserController
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
+            $order->paid = true;
+            $order->stripe_id = $charge->id;
+            $order->paid_at = new Carbon();
             $order->save();
 
             foreach ($bag->getItems() as $item) {

@@ -104,8 +104,14 @@ class Subscription extends Model
      */
     public function renew(Collection $stripeInvoice)
     {
+        $latestOrder = $this->orders()->orderBy('delivery_date', 'desc')->first();
+        $latestOrder->paid = true;
+        $latestOrder->paid_at = new Carbon();
+        $latestOrder->stripe_id = $stripeInvoice->get('id', null);
+        $latestOrder->save();
+
         //try {
-        $newOrder = $this->latest_order->replicate(['created_at', 'updated_at', 'delivery_date']);
+        $newOrder = $this->latest_order->replicate(['created_at', 'updated_at', 'delivery_date', 'paid', 'paid_at', 'stripe_id']);
         $newOrder->created_at = now();
         $newOrder->updated_at = now();
         $newOrder->delivery_date = $this->next_delivery_date;
