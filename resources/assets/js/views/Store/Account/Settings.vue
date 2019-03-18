@@ -216,9 +216,18 @@
             <b-form-group label="I Will Be:">
               <b-form-checkbox-group v-model="transferSelected" :options="transferOptions"></b-form-checkbox-group>
             </b-form-group>
-            <p v-if="transferTypeCheck">Pickup Instructions:</p>
+            <p v-if="transferTypeCheckDelivery">Delivery Instructions:</p>
             <b-form-textarea
-              v-if="transferTypeCheck"
+              v-if="transferTypeCheckDelivery"
+              type="text"
+              rows="3"
+              v-model="storeSettings.deliveryInstructions"
+              placeholder="Please include delivery instructions to your customers (time window, how long your driver will wait, etc.)."
+              required
+            ></b-form-textarea>
+            <p v-if="transferTypeCheckPickup">Pickup Instructions:</p>
+            <b-form-textarea
+              v-if="transferTypeCheckPickup"
               type="text"
               rows="3"
               v-model="storeSettings.pickupInstructions"
@@ -641,7 +650,12 @@ export default {
         ? this.transferSelected.join(",")
         : [];
     },
-    transferTypeCheck() {
+    transferTypeCheckDelivery() {
+      if (_.includes(this.transferSelected, "delivery")) {
+        return true;
+      }
+    },
+    transferTypeCheckPickup() {
       if (_.includes(this.transferSelected, "pickup")) {
         return true;
       }

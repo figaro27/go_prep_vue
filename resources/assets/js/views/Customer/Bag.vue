@@ -147,7 +147,7 @@
                 </div>
               </li>
 
-              <li class="checkout-item" v-if="transferTypeCheck === 'both'">
+              <li class="checkout-item" v-if="transferTypeCheckDelivery && transferTypeCheckPickup">
                 <b-form-group>
                   <b-form-radio-group v-model="pickup" name="pickup">
                     <b-form-radio :value="0" @click="pickup = 0">
@@ -159,7 +159,13 @@
                   </b-form-radio-group>
                 </b-form-group>
               </li>
-              <li class="checkout-item" v-if="transferTypeCheck === 'both' && pickup === 1">
+              <li class="checkout-item" v-if="transferTypeCheckDelivery && pickup === 0">
+                <p>
+                  <strong>Delivery Instructions:</strong>
+                  {{ storeSettings.deliveryInstructions }}
+                </p>
+              </li>
+              <li class="checkout-item" v-if="transferTypeCheckPickup && pickup === 1">
                 <p>
                   <strong>Pickup Instructions:</strong>
                   {{ storeSettings.pickupInstructions }}
@@ -308,19 +314,13 @@ export default {
     transferType() {
       return this.storeSettings.transferType.split(",");
     },
-    transferTypeCheck() {
-      if (
-        _.includes(this.transferType, "delivery") &&
-        _.includes(this.transferType, "pickup")
-      ) {
-        return "both";
-      }
-      if (
-        !_.includes(this.transferType, "delivery") &&
-        _.includes(this.transferType, "pickup")
-      ) {
-        return "pickup";
-      }
+    transferTypeCheckDelivery() {
+      if (_.includes(this.transferType, "delivery")) 
+        return true;
+    },
+    transferTypeCheckPickup() {
+      if (_.includes(this.transferType, "pickup")) 
+        return true;
     },
     minimumOption() {
       return this.minOption;
@@ -412,6 +412,10 @@ export default {
       this.deliveryDay = this.deliveryDaysOptions[0].value
     }
     this.getSalesTax(this.store.details.state);
+
+    if (!_.includes(this.transferType, "delivery")) 
+        this.pickup = 1;
+
   },
   methods: {
     ...mapActions(["refreshSubscriptions", "refreshCustomerOrders"]),
