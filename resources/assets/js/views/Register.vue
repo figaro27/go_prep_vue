@@ -3,7 +3,7 @@
     <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
       <div class="card">
         <div class="card-body p-lg-5">
-          <b-form @submit.prevent="submit" autocomplete="off">
+          <b-form @submit.prevent="submit" autocomplete="off" ref="form">
             <div v-if="step === 0">
               <b-form-group horizontal label="Account Type">
                 <b-form-radio-group
@@ -466,6 +466,8 @@ export default {
           }
           else
             this.$toastr.e("Please try again.", "Registration failed");
+        
+        this.$v.form.$touch()
       }
     },
     async submit() {
