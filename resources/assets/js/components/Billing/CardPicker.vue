@@ -75,7 +75,7 @@ export default {
   data() {
     return {
       stripeKey: window.app.stripe_key,
-      stripeOptions,
+      // stripeOptions,
       newCard: null,
     };
   },

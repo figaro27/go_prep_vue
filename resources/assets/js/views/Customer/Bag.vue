@@ -280,7 +280,7 @@ export default {
       deliveryPlan: false,
       deliveryDay: undefined,
       stripeKey: window.app.stripe_key,
-      stripeOptions,
+      // stripeOptions,
       card: null,
       loading: false,
       salesTax: 0
