@@ -262,7 +262,7 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
-import { stripeKey, stripeOptions } from "../../config/stripe.json";
+// import { stripeKey, stripeOptions } from "../../config/stripe.json";
 import { createToken } from "vue-stripe-elements-plus";
 import SalesTax from "sales-tax";
 
@@ -279,7 +279,7 @@ export default {
       pickup: 0,
       deliveryPlan: false,
       deliveryDay: undefined,
-      stripeKey,
+      stripeKey: window.app.stripe_key,
       stripeOptions,
       card: null,
       loading: false,

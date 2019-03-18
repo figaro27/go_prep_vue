@@ -14,6 +14,7 @@
       domain: "{{ config('app.domain') }}",
       url: "{{ config('app.url') }}",
       front_url: "{{ config('app.front_url') }}",
+      stripe_key: "{{ config('app.stripe_key') }}"
     }
     </script>
 </head>

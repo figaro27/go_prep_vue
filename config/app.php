@@ -55,6 +55,7 @@ return [
     'url' => env('APP_URL', 'http://goprep.localhost'),
     'front_url' => env('FRONT_URL', 'http://www.goprep.localhost'),
 
+    'stripe_key' => env('STRIPE_KEY'),
 
     // Domain
     'domain' => env('APP_DOMAIN', 'goprep.localhost'),
