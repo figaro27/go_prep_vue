@@ -163,6 +163,7 @@ export default {
         "created_at",
         "delivery_day",
         // "interval",
+        "status",
         "actions"
       ],
       options: {
@@ -177,6 +178,7 @@ export default {
           created_at: "Subscription Placed",
           delivery_day: "Delivery Day",
           // interval: "Interval",
+          status: "Status",
           actions: "Actions"
         },
         rowClassCallback: function(row) {
@@ -253,7 +255,13 @@ export default {
         return true;
       });
 
-      return subs;
+      const activeSubs = _.filter(subs, sub => {
+        if (sub.status != 'cancelled'){
+          return true;
+        }
+      })
+
+      return activeSubs;
     },
     deliveryDays() {
       let grouped = [];
