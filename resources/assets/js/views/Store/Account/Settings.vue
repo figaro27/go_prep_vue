@@ -223,7 +223,7 @@
               rows="3"
               v-model="storeSettings.deliveryInstructions"
               placeholder="Please include delivery instructions to your customers (time window, how long your driver will wait, etc.)."
-              required
+              class="mb-2"
             ></b-form-textarea>
             <p v-if="transferTypeCheckPickup">Pickup Instructions:</p>
             <b-form-textarea
@@ -232,7 +232,6 @@
               rows="3"
               v-model="storeSettings.pickupInstructions"
               placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time)."
-              required
             ></b-form-textarea>
 
             <p class="mt-2">
@@ -359,6 +358,34 @@
 
         </div>
       </div>
+
+      <p>Logo</p>
+      <div class="card">
+        <div class="card-body">
+          <b-form @submit.prevent="updateStoreLogo">
+              <b-form-group label="Logo" :state="true">
+                  <p class="small">Please keep height & width dimensions the exact same.</p>
+                  <picture-input
+                  :ref="`storeImageInput`"
+                  :prefill="storeDetail.logo ? storeDetail.logo : ''"
+                  @prefill="$refs[`storeImageInput`].onResize()"
+                  :alertOnError="false"
+                  :autoToggleAspectRatio="true"
+                  margin="0"
+                  size="10"
+                  button-class="btn"
+                  style="width: 180px; height: auto; margin: 0;"
+                  @change="(val) => updateLogo(val)"
+                ></picture-input>
+              </b-form-group>
+                <div class="mt-3">
+                  <b-button type="submit" variant="primary">Save</b-button>
+                </div>
+            </b-form>
+          </div>
+        </div>
+
+
       <p>Notifications</p>
       <div class="card">
         <div class="card-body">
@@ -467,31 +494,23 @@
         </div>
       </div>
 
-      <p>Logo</p>
-      <div class="card">
-        <div class="card-body">
-          <b-form @submit.prevent="updateStoreLogo">
-              <b-form-group label="Logo" :state="true">
-                  <p class="small">Please keep height & width dimensions the exact same.</p>
-                  <picture-input
-                  :ref="`storeImageInput`"
-                  :prefill="storeDetail.logo ? storeDetail.logo : ''"
-                  @prefill="$refs[`storeImageInput`].onResize()"
-                  :alertOnError="false"
-                  :autoToggleAspectRatio="true"
-                  margin="0"
-                  size="10"
-                  button-class="btn"
-                  style="width: 180px; height: auto; margin: 0;"
-                  @change="(val) => updateLogo(val)"
-                ></picture-input>
-              </b-form-group>
-                <div class="mt-3">
-                  <b-button type="submit" variant="primary">Save</b-button>
-                </div>
-            </b-form>
-          </div>
-        </div>
+          <b-modal v-model="showTOAModal" title="Terms of Agreement" size="xl"
+          @ok="allowOpen"
+          @cancel="allowOpen"
+          @hidden="allowOpen"
+          >
+            <termsOfAgreement></termsOfAgreement>
+            <center>
+            <b-form-checkbox
+              v-model="acceptedTOAcheck"
+              value="1"
+              unchecked-value="0"
+            >
+              I accept these terms.
+            </b-form-checkbox>
+          </center>
+          </b-modal>
+
 
       <p>Open</p>
       <div class="card">
@@ -511,6 +530,7 @@
               variant="pill"
               size="lg"
               v-model="storeSettings.open"
+              @change.native="checkTOAforModal"
             />
 
             <b-form-input
@@ -567,14 +587,19 @@ import timezones from "../../../data/timezones.js";
 import Swatches from 'vue-swatches';
 import "vue-swatches/dist/vue-swatches.min.css";
 import fs from '../../../lib/fs.js';
+import TermsOfAgreement from "../../TermsOfAgreement";
 
 export default {
   components: {
     cSwitch,
-    Swatches
+    Swatches,
+    TermsOfAgreement
   },
   data() {
     return {
+      acceptedTOA: 0,
+      acceptedTOAcheck: 0,
+      showTOAModal: 0,
       color: '',
       transferSelected: [],
       transferOptions: [
@@ -690,6 +715,8 @@ export default {
         this.payments_url = resp.data.url;
       }
     });
+
+    this.checkAcceptedTOA();
   },
   methods: {
     ...mapActions(["refreshCategories", "refreshStoreSettings"]),
@@ -838,6 +865,25 @@ export default {
       let b64 = await fs.getBase64(this.$refs.storeImageInput.file);
       this.storeDetail.logo = b64;
     },
+    checkAcceptedTOA(){
+      axios.get('/api/me/getAcceptedTOA')
+        .then(resp => {
+          this.acceptedTOA = resp.data
+        })
+    },
+    checkTOAforModal(){
+      if (this.acceptedTOA === 0){
+        this.showTOAModal = 1;
+      }
+    },
+    allowOpen(){
+      if (this.acceptedTOAcheck === "1"){
+        axios.get('/api/me/acceptedTOA')
+        this.storeSettings.open = true
+      }
+      else
+        this.storeSettings.open = false
+    }
   }
 };
 </script>

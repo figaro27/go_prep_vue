@@ -117,7 +117,7 @@ class RegisterController extends Controller
                     'city' => 'required',
                     'state' => 'required',
                     'zip' => 'required',
-                    'accepted_toa' => 'in:1'
+                    // 'accepted_toa' => 'in:1'
                 ]);
                 break;
         }
@@ -160,7 +160,7 @@ class RegisterController extends Controller
 
         if ($data['user']['role'] === 'store') {
             $store = $user->store()->create([
-                'accepted_toa' => $data['store']['accepted_toa'],
+                // 'accepted_toa' => $data['store']['accepted_toa'],
             ]);
 
             $storeDetail = $store->details()->create([

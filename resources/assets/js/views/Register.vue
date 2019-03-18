@@ -280,7 +280,7 @@
                 ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal>
+              <!-- <b-form-group horizontal>
                 <b-form-checkbox
                   id="checkbox1"
                   v-model="form[2].accepted_toa"
@@ -289,11 +289,11 @@
                 >
                   I accept the <span class="strong" @click.stop.prevent="$refs.toa.show()">terms of agreement</span>
                 </b-form-checkbox>
-              </b-form-group>
+              </b-form-group> -->
 
-              <b-modal id="toa" size="xl" ref="toa">
+              <!-- <b-modal id="toa" size="xl" ref="toa">
                 <termsOfAgreement></termsOfAgreement>
-              </b-modal>
+              </b-modal> -->
 
               <b-form-group horizontal>
                 <b-button type="submit" :disabled="$v.form[2].$invalid" variant="primary">Submit</b-button>
@@ -350,7 +350,7 @@ export default {
           city: null,
           state: null,
           zip: null,
-          accepted_toa: 0
+          // accepted_toa: 0
         }
       },
       feedback: {
