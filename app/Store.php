@@ -136,7 +136,7 @@ class Store extends Model
     {
         $ingredients = [];
 
-        $orders = $this->orders()->with(['meals', 'meals.ingredients']);
+        $orders = $this->orders()->with(['meals', 'meals.ingredients'])->where('paid', 1);
 
         if($dateRange === []) {
           //$orders = $orders->where('delivery_date', $this->getNextDeliveryDate());
@@ -190,7 +190,7 @@ class Store extends Model
     {
         $meals = [];
 
-        $orders = $this->orders()->with(['meals']);
+        $orders = $this->orders()->with(['meals'])->where('paid', 1);
         if($dateRange === []) {
           $orders = $orders->where('delivery_date', $this->getNextDeliveryDate());
         }
@@ -250,7 +250,7 @@ class Store extends Model
       return $date ? $date->subSeconds($this->getCutoffSeconds()) : null;
     }
 
-    public function getOrders($groupBy = null, $dateRange = [], $onlyUnfulfilled = false) {
+    public function getOrders($groupBy = null, $dateRange = [], $onlyUnfulfilled = false, $onlyPaid = true) {
       $orders = $this->orders()->with('meals');
       
       if(isset($dateRange['from'])) {
@@ -265,6 +265,9 @@ class Store extends Model
       if($onlyUnfulfilled) {
         $orders = $orders->where('fulfilled', 0);
       }
+      if($onlyPaid) {
+        $orders = $orders->where('paid', 1);
+      }
 
       $orders = $orders->get();
 
@@ -278,7 +281,8 @@ class Store extends Model
     public function getOrdersForNextDelivery($groupBy = null) {
       $date = $this->getNextDeliveryDate();
       $orders = $this->orders()->with('meals')->where([
-        'delivery_date' => $date->format('Y-m-d'),
+        ['paid', 1],
+        ['delivery_date', $date->format('Y-m-d')],
       ])->get();
 
       if($groupBy) {
@@ -290,9 +294,10 @@ class Store extends Model
 
     public function getPastOrders($groupBy = null) {
       $date = $this->getNextDeliveryDate();
-      $orders = $this->orders()->with('meals')->where(
-        'delivery_date', '<', $date->format('Y-m-d')
-      )->get();
+      $orders = $this->orders()->with('meals')->where([
+        ['paid', 1],
+        ['delivery_date', '<', $date->format('Y-m-d')]
+      ])->get();
 
       if($groupBy) {
         $orders = $orders->groupBy($groupBy);
@@ -303,9 +308,10 @@ class Store extends Model
 
     public function getFulfilledOrders($groupBy = null) {
       $date = $this->getNextDeliveryDate();
-      $orders = $this->orders()->with('meals')->where(
-        'fulfilled', '1'
-      )->get();
+      $orders = $this->orders()->with('meals')->where([
+        ['paid', 1],
+        ['fulfilled', '1']
+      ])->get();
 
       if($groupBy) {
         $orders = $orders->groupBy($groupBy);
