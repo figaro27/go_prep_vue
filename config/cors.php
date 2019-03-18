@@ -13,11 +13,10 @@ return [
     */
    
     'supportsCredentials' => true,
-    'allowedOrigins' => ['*'],
-    'allowedOriginsPatterns' => [],
+    'allowedOrigins' => [],
+    'allowedOriginsPatterns' => [env('CORS_PATTERN', '/(.+\.)?goprep\.com/i')],
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],
     'exposedHeaders' => [],
     'maxAge' => 0,
-
 ];
