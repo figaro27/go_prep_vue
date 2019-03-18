@@ -214,6 +214,7 @@ export default {
       pastOrder: false,
       filters: {
         fulfilled: 0,
+        paid: 1,
         delivery_dates: {
           start: null,
           end: null
@@ -294,6 +295,9 @@ export default {
       let filters = { ...this.filters };
 
       let filtered = _.filter(this.orders, order => {
+        if("paid" in filters && (filters.paid !== order.paid)) {
+          return false;
+        }
         if (
           "delivery_dates" in filters &&
           (filters.delivery_dates.start ||
