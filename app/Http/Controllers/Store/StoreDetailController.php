@@ -164,6 +164,8 @@ class StoreDetailController extends StoreController
     public function acceptedTOA(){
         $this->store->accepted_toa = 1;
         $this->store->save();
+        $this->store->user->accepted_tos = 1;
+        $this->store->user->save();
     }
 
     public function getAcceptedTOA(){

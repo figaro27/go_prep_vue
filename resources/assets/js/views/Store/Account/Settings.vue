@@ -499,6 +499,7 @@
           @cancel="allowOpen"
           @hidden="allowOpen"
           >
+            <termsOfService></termsOfService>
             <termsOfAgreement></termsOfAgreement>
             <center>
             <b-form-checkbox
@@ -587,12 +588,14 @@ import timezones from "../../../data/timezones.js";
 import Swatches from 'vue-swatches';
 import "vue-swatches/dist/vue-swatches.min.css";
 import fs from '../../../lib/fs.js';
+import TermsOfService from "../../TermsOfService";
 import TermsOfAgreement from "../../TermsOfAgreement";
 
 export default {
   components: {
     cSwitch,
     Swatches,
+    TermsOfService,
     TermsOfAgreement
   },
   data() {

@@ -89,17 +89,6 @@
                 ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal>
-                <b-form-checkbox
-                  id="checkbox1"
-                  v-model="form[0].accepted_tos"
-                  value="1"
-                  unchecked-value="0"
-                >
-                  I accept the <span class="strong" @click.stop.prevent="$refs.tos.show()">terms of service</span>
-                </b-form-checkbox>
-              </b-form-group>
-
               <b-modal id="tos" size="xl" ref="tos">
                 <termsOfService></termsOfService>
               </b-modal>
@@ -161,6 +150,17 @@
                   :state="state(1, 'delivery')"
                   autocomplete="new-password"
                 ></b-input>
+              </b-form-group>
+
+              <b-form-group horizontal>
+                <b-form-checkbox
+                  id="checkbox1"
+                  v-model="form[1].accepted_tos"
+                  value="1"
+                  unchecked-value="0"
+                >
+                  I accept the <span class="strong" @click.stop.prevent="$refs.tos.show()">terms of service</span>
+                </b-form-checkbox>
               </b-form-group>
 
               <b-form-group horizontal v-if="form[0].role === 'store'">
@@ -334,14 +334,14 @@ export default {
           first_name: null,
           last_name: null,
           phone: null,
-          accepted_tos: 0
         },
         1: {
           address: null,
           city: null,
           state: null,
           zip: null,
-          delivery: null
+          delivery: null,
+          accepted_tos: 0
         },
         2: {
           store_name: null,
@@ -461,7 +461,7 @@ export default {
           }
         }
         else
-          if (this.form[0].accepted_tos === 0){
+          if (this.form[1].accepted_tos === 0){
             this.$toastr.e("Please accept the terms of service.", "Registration failed");
           }
           else
