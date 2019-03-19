@@ -3,7 +3,6 @@
     <floating-action-button class="d-sm-none" to="/customer/bag">
       <i class="fa fa-shopping-bag text-white"></i>
     </floating-action-button>
-
     <!-- <div class="menu ml-auto mr-auto"> -->
     <div class="menu ml-auto mr-auto">
       <div v-if="!willDeliver && !preview && loggedIn">
@@ -386,6 +385,7 @@ import nutritionFacts from "nutrition-label-jquery-plugin";
 import Spinner from "../../components/Spinner";
 import units from "../../data/units";
 import format from "../../lib/format";
+import SalesTax from "sales-tax";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -404,10 +404,12 @@ export default {
     },
     subscriptionId: {
       default: null
-    }
+    },
+    SalesTax
   },
   data() {
     return {
+      salesTaxRate: 0,
       active: {},
       loading: false,
       pickup: 0,
@@ -658,6 +660,9 @@ export default {
     showIngredients(){
       return this.storeSettings.showIngredients;
     }
+  },
+  mounted() {
+    this.getSalesTax(this.store.details.state);
   },
   beforeDestroy() {
     this.showActiveFilters();
@@ -938,7 +943,9 @@ export default {
       try {
         const { data } = await axios.post(
           `/api/me/subscriptions/${this.subscriptionId}/meals`,
-          { bag: this.bag }
+          { bag: this.bag,
+            salesTaxRate: this.salesTaxRate
+          }
         );
         await this.refreshSubscriptions();
         this.emptyBag();
@@ -957,6 +964,15 @@ export default {
         }
         return;
       }
+    },
+    getSalesTax(state){
+      SalesTax.getSalesTax("US", state)
+      .then((tax) => {
+        this.setSalesTax(tax.rate);
+      });
+    },
+    setSalesTax(rate){
+      this.salesTaxRate = rate;
     }
   }
 };
