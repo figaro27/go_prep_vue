@@ -42,28 +42,30 @@ class CheckoutController extends UserController
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
 
-        if ($store->settings->applyDeliveryFee) {
-            $total += $store->settings->deliveryFee;
-            $deliveryFee += $store->settings->deliveryFee;
-        }
-
-        if ($store->settings->applyProcessingFee) {
-            $total += $store->settings->processingFee;
-            $processingFee += $store->settings->processingFee;
-        }
 
         if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             $discount = $store->settings->mealPlanDiscount / 100;
-            $total -= ($afterDiscountBeforeFees * $discount);
-            $afterDiscountBeforeFees -= ($afterDiscountBeforeFees * $discount);
-            $mealPlanDiscount = (($store->settings->mealPlanDiscount / 100) * $afterDiscountBeforeFees);
+            $mealPlanDiscount = ($total * $discount);
+            $total -= $mealPlanDiscount;
+            $afterDiscountBeforeFees = $total;
+        }
+
+        if ($store->settings->applyDeliveryFee) {
+            $deliveryFee += $store->settings->deliveryFee;
+            $total += $deliveryFee;
+        }
+
+        if ($store->settings->applyProcessingFee) {
+            $processingFee += $store->settings->processingFee;
+            $total += $processingFee;
         }
         
         if (!$user->hasStoreCustomer($store->id)) {
             $storeCustomer = $user->createStoreCustomer($store->id);
         }
 
-        $total = $total + $salesTax;
+        $total += $salesTax;
+        
         $storeCustomer = $user->getStoreCustomer($store->id);
         $customer = $user->getStoreCustomer($store->id, false);
 
