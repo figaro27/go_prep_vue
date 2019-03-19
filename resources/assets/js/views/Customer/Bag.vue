@@ -404,7 +404,7 @@ export default {
       });
     },
     tax() {
-      return this.salesTax * this.afterDiscountBeforeFees;
+      return this.salesTax * this.afterDiscountAfterFees;
     }
   },
   mounted() {
