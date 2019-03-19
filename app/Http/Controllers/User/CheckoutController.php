@@ -152,6 +152,8 @@ class CheckoutController extends UserController
                 'prorate' => false,
             ], ['stripe_account' => $store->settings->stripe_id]);
 
+
+
             $userSubscription = new Subscription();
             $userSubscription->user_id = $user->id;
             $userSubscription->customer_id = $customer->id;
@@ -161,6 +163,12 @@ class CheckoutController extends UserController
             $userSubscription->stripe_id = substr($subscription->id,4);
             $userSubscription->stripe_plan = $plan->id;
             $userSubscription->quantity = 1;
+            $userSubscription->preFeePreDiscount = $preFeePreDiscount;
+            $userSubscription->mealPlanDiscount = $mealPlanDiscount;
+            $userSubscription->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+            $userSubscription->processingFee = $processingFee;
+            $userSubscription->deliveryFee = $deliveryFee;
+            $userSubscription->salesTax = $salesTax;
             $userSubscription->amount = $total;
             $userSubscription->interval = 'week';
             $userSubscription->delivery_day = date('N', strtotime($deliveryDay));
