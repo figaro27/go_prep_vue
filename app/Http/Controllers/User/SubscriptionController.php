@@ -145,7 +145,6 @@ class SubscriptionController extends UserController
           }
         }
 
-        $weeklyPlan = $request->get('plan');
         $application_fee = $store->settings->application_fee;
         $total = $bag->getTotal();
         $afterDiscountBeforeFees = $bag->getTotal();
@@ -155,9 +154,17 @@ class SubscriptionController extends UserController
         $processingFee = 0;
         $mealPlanDiscount = 0;
 
-        
+        if ($store->settings->applyDeliveryFee) {
+            $total += $store->settings->deliveryFee;
+            $deliveryFee += $store->settings->deliveryFee;
+        }
 
-        if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
+        if ($store->settings->applyProcessingFee) {
+            $total += $store->settings->processingFee;
+            $processingFee += $store->settings->processingFee;
+        }
+
+        if ($store->settings->applyMealPlanDiscount) {
             $discount = $store->settings->mealPlanDiscount / 100;
             $total -= ($afterDiscountBeforeFees * $discount);
             $afterDiscountBeforeFees -= ($afterDiscountBeforeFees * $discount);
