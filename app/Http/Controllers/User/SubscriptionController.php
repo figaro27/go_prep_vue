@@ -167,7 +167,7 @@ class SubscriptionController extends UserController
 
         if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             $discount = $store->settings->mealPlanDiscount / 100;
-            $total -= ($afterDiscountBeforeFees * $discount);
+            $total -= 5;
             $afterDiscountBeforeFees -= ($afterDiscountBeforeFees * $discount);
             $mealPlanDiscount = (($store->settings->mealPlanDiscount / 100) * $afterDiscountBeforeFees);
         }
