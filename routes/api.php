@@ -79,6 +79,9 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
                     Route::get('stripe/login', 'StripeController@getLoginLinks');
 
                     Route::get('print/{report}/{type}', 'PrintController@print');
+
+                    Route::get('acceptedTOA', 'StoreDetailController@acceptedTOA');
+                    Route::get('getAcceptedTOA', 'StoreDetailController@getAcceptedTOA');
                 });
             } else if ($user && $user->user_role_id === 1) {
                 Route::post('contact', 'ContactFormController@submitCustomer');

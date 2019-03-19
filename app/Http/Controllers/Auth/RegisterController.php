@@ -62,7 +62,7 @@ class RegisterController extends Controller
             'user.first_name' => 'required',
             'user.last_name' => 'required',
             'user.phone' => 'required',
-            'user.accepted_tos' => 'in:1',
+            // 'user.accepted_tos' => 'in:1',
 
 
             'user_details.address' => 'required',
@@ -96,7 +96,6 @@ class RegisterController extends Controller
                     'first_name' => 'required',
                     'last_name' => 'required',
                     'phone' => 'required',
-                    'accepted_tos' => 'in:1'
                 ]);
                 break;
 
@@ -106,6 +105,7 @@ class RegisterController extends Controller
                     'city' => 'required',
                     'state' => 'required',
                     'zip' => 'required',
+                    'accepted_tos' => 'in:1'
                 ]);
                 break;
 
@@ -117,7 +117,7 @@ class RegisterController extends Controller
                     'city' => 'required',
                     'state' => 'required',
                     'zip' => 'required',
-                    'accepted_toa' => 'in:1'
+                    // 'accepted_toa' => 'in:1'
                 ]);
                 break;
         }
@@ -140,7 +140,7 @@ class RegisterController extends Controller
             'password' => Hash::make($data['user']['password']),
             'timezone' => 'EST',
             'remember_token' => Hash::make(str_random(10)),
-            'accepted_tos' => $data['user']['accepted_tos'],
+            // 'accepted_tos' => $data['user']['accepted_tos'],
         ]);
 
         $userDetails = $user->details()->create([
@@ -160,7 +160,7 @@ class RegisterController extends Controller
 
         if ($data['user']['role'] === 'store') {
             $store = $user->store()->create([
-                'accepted_toa' => $data['store']['accepted_toa'],
+                // 'accepted_toa' => $data['store']['accepted_toa'],
             ]);
 
             $storeDetail = $store->details()->create([

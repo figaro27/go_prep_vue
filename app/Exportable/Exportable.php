@@ -2,11 +2,10 @@
 
 namespace App\Exportable;
 
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use mikehaertl\wkhtmlto\Pdf;
 use \XLSXWriter;
-use Illuminate\Support\Collection;
 
 trait Exportable
 {
@@ -100,33 +99,33 @@ trait Exportable
         $filename = 'public/' . md5(time()) . '.pdf';
 
         $vars = [
-          'data' => $data,
-          'params' => $this->params,
-          'delivery_dates' => $this->getDeliveryDates(),
-          'body_classes' => implode(' ', [$this->orientation])
+            'data' => $data,
+            'params' => $this->params,
+            'delivery_dates' => $this->getDeliveryDates(),
+            'body_classes' => implode(' ', [$this->orientation]),
         ];
 
         $html = view($this->exportPdfView(), $vars)->render();
 
         $pdfConfig = [
-          'encoding' => 'utf-8',
-          'orientation' => $this->orientation,
-          'page-size' => 'Letter',
-          'no-outline',
-          //'margin-top' => 0,
-          //'margin-bottom' => 0,
-          //'margin-left' => 0,
-          //'margin-right' => 0,
-          'disable-smart-shrinking'
+            'encoding' => 'utf-8',
+            'orientation' => $this->orientation,
+            'page-size' => 'Letter',
+            'no-outline',
+            //'margin-top' => 0,
+            //'margin-bottom' => 0,
+            //'margin-left' => 0,
+            //'margin-right' => 0,
+            'disable-smart-shrinking',
         ];
 
-        if(config('pdf.xserver')) {
-          $pdfConfig = array_merge($pdfConfig, [
-            'use-xserver',
-            'commandOptions' => array(
-                'procEnv' => array('DISPLAY' => ':0'),
-            ),
-          ]);
+        if (config('pdf.xserver')) {
+            $pdfConfig = array_merge($pdfConfig, [
+                'use-xserver',
+                'commandOptions' => array(
+                    'enableXvfb' => true,
+                ),
+            ]);
         }
 
         $pdf = new Pdf($pdfConfig);
@@ -145,8 +144,8 @@ trait Exportable
             $dates = json_decode($this->params->get('delivery_dates'));
 
             $dates = [
-              'from' => Carbon::parse($dates->from)->startOfDay(),
-              'to' => Carbon::parse($dates->to)->endOfDay(),
+                'from' => Carbon::parse($dates->from)->startOfDay(),
+                'to' => Carbon::parse($dates->to)->endOfDay(),
             ];
         }
 

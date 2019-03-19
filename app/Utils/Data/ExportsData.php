@@ -104,15 +104,25 @@ trait ExportsData
 
         $html = view($this->exportPdfView(), ['data' => $data])->render();
 
-        $pdfConfig = ['encoding' => 'utf-8'];
+        $pdfConfig = [
+            'encoding' => 'utf-8',
+            'orientation' => $this->orientation,
+            'page-size' => 'Letter',
+            'no-outline',
+            //'margin-top' => 0,
+            //'margin-bottom' => 0,
+            //'margin-left' => 0,
+            //'margin-right' => 0,
+            'disable-smart-shrinking',
+        ];
 
-        if(config('pdf.xserver')) {
-          $pdfConfig = array_merge($pdfConfig, [
-            'use-xserver',
-            'commandOptions' => array(
-                'procEnv' => array('DISPLAY' => ':0'),
-            ),
-          ]);
+        if (config('pdf.xserver')) {
+            $pdfConfig = array_merge($pdfConfig, [
+                'use-xserver',
+                'commandOptions' => array(
+                    'enableXvfb' => true,
+                ),
+            ]);
         }
 
         $pdf = new Pdf($pdfConfig);

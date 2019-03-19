@@ -4,7 +4,7 @@ const validators = {
   required,
   password: {
     required,
-    minLength: 7
+    minLength: minLength(7)
   },
   email: {
     required,
@@ -30,15 +30,15 @@ const validators = {
   },
   zip: {
     required,
-    minLength: 5
+    minLength: minLength(5)
   },
   store_name: {
     required,
-    minLength: 6,
+    minLength: minLength(6),
   },
   domain: {
     required,
-    minLength: 4,
+    minLength: minLength(4),
     regex: helpers.regex('domain', /^[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/)
   },
 }

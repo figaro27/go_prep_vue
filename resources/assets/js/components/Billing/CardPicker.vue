@@ -59,7 +59,7 @@
 </style>
 
 <script>
-import { stripeKey, stripeOptions } from "../../config/stripe.json";
+// import { stripeKey, stripeOptions } from "../../config/stripe.json";
 import { createToken } from "vue-stripe-elements-plus";
 import { mapGetters, mapActions } from "vuex";
 
@@ -74,8 +74,8 @@ export default {
   },
   data() {
     return {
-      stripeKey,
-      stripeOptions,
+      stripeKey: window.app.stripe_key,
+      // stripeOptions,
       newCard: null,
     };
   },

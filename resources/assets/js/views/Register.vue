@@ -3,7 +3,7 @@
     <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
       <div class="card">
         <div class="card-body p-lg-5">
-          <b-form @submit.prevent="submit" autocomplete="off">
+          <b-form @submit.prevent="submit" autocomplete="off" ref="form">
             <div v-if="step === 0">
               <b-form-group horizontal label="Account Type">
                 <b-form-radio-group
@@ -89,17 +89,6 @@
                 ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal>
-                <b-form-checkbox
-                  id="checkbox1"
-                  v-model="form[0].accepted_tos"
-                  value="1"
-                  unchecked-value="0"
-                >
-                  I accept the <span class="strong" @click.stop.prevent="$refs.tos.show()">terms of service</span>
-                </b-form-checkbox>
-              </b-form-group>
-
               <b-modal id="tos" size="xl" ref="tos">
                 <termsOfService></termsOfService>
               </b-modal>
@@ -161,6 +150,17 @@
                   :state="state(1, 'delivery')"
                   autocomplete="new-password"
                 ></b-input>
+              </b-form-group>
+
+              <b-form-group horizontal>
+                <b-form-checkbox
+                  id="checkbox1"
+                  v-model="form[1].accepted_tos"
+                  value="1"
+                  unchecked-value="0"
+                >
+                  I accept the <span class="strong" @click.stop.prevent="$refs.tos.show()">terms of service</span>
+                </b-form-checkbox>
               </b-form-group>
 
               <b-form-group horizontal v-if="form[0].role === 'store'">
@@ -280,7 +280,7 @@
                 ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal>
+              <!-- <b-form-group horizontal>
                 <b-form-checkbox
                   id="checkbox1"
                   v-model="form[2].accepted_toa"
@@ -289,11 +289,11 @@
                 >
                   I accept the <span class="strong" @click.stop.prevent="$refs.toa.show()">terms of agreement</span>
                 </b-form-checkbox>
-              </b-form-group>
+              </b-form-group> -->
 
-              <b-modal id="toa" size="xl" ref="toa">
+              <!-- <b-modal id="toa" size="xl" ref="toa">
                 <termsOfAgreement></termsOfAgreement>
-              </b-modal>
+              </b-modal> -->
 
               <b-form-group horizontal>
                 <b-button type="submit" :disabled="$v.form[2].$invalid" variant="primary">Submit</b-button>
@@ -334,14 +334,14 @@ export default {
           first_name: null,
           last_name: null,
           phone: null,
-          accepted_tos: 0
         },
         1: {
           address: null,
           city: null,
           state: null,
           zip: null,
-          delivery: null
+          delivery: null,
+          accepted_tos: 0
         },
         2: {
           store_name: null,
@@ -350,7 +350,7 @@ export default {
           city: null,
           state: null,
           zip: null,
-          accepted_toa: 0
+          // accepted_toa: 0
         }
       },
       feedback: {
@@ -461,11 +461,13 @@ export default {
           }
         }
         else
-          if (this.form[0].accepted_tos === 0){
+          if (this.form[1].accepted_tos === 0){
             this.$toastr.e("Please accept the terms of service.", "Registration failed");
           }
           else
             this.$toastr.e("Please try again.", "Registration failed");
+        
+        this.$v.form.$touch()
       }
     },
     async submit() {
