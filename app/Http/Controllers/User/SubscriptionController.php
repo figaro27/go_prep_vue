@@ -121,8 +121,6 @@ class SubscriptionController extends UserController
         }
 
         $bag = new Bag($request->get('bag'));
-        $application_fee = $store->settings->application_fee;
-        $total = $bag->getTotal();
 
         MealSubscription::where('subscription_id', $sub->id)->delete();
         foreach ($bag->getItems() as $item) {
@@ -147,6 +145,12 @@ class SubscriptionController extends UserController
           }
         }
 
+        $weeklyPlan = $request->get('plan');
+        $application_fee = $store->settings->application_fee;
+        $total = $bag->getTotal();
+        $afterDiscountBeforeFees = $bag->getTotal();
+        $preFeePreDiscount = $bag->getTotal();
+
         $deliveryFee = 0;
         $processingFee = 0;
         $mealPlanDiscount = 0;
@@ -161,8 +165,7 @@ class SubscriptionController extends UserController
             $processingFee += $store->settings->processingFee;
         }
 
-        // if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
-        if ($store->settings->applyMealPlanDiscount) {
+        if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             $discount = $store->settings->mealPlanDiscount / 100;
             $total -= ($afterDiscountBeforeFees * $discount);
             $afterDiscountBeforeFees -= ($afterDiscountBeforeFees * $discount);
