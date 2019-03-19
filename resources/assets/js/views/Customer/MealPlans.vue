@@ -86,7 +86,18 @@
                       <template
                         slot="FOOT_subtotal"
                         slot-scope="row"
-                      >{{ format.money(subscription.amount) }}</template>
+                      >
+                      <p>Subtotal: {{ format.money(subscription.preFeePreDiscount) }}</p>
+                        <p>Meal Plan Discount:
+                          <span class="text-success">({{ format.money(subscription.mealPlanDiscount) }})</span>
+                        </p>
+                        <p>Delivery Fee: {{ format.money(subscription.deliveryFee) }}</p>
+                        <p>Processing Fee: {{ format.money(subscription.processingFee) }}</p>
+                        <p>Sales Tax: {{ format.money(subscription.salesTax) }}</p>
+                        <p>
+                          <strong>Total: {{ format.money(subscription.amount) }}</strong>
+                        </p>
+                      </template>
                     </b-table>
                   </b-collapse>
                 </b-list-group-item>
