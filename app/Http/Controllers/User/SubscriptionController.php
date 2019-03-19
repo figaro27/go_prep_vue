@@ -153,6 +153,7 @@ class SubscriptionController extends UserController
         $deliveryFee = 0;
         $processingFee = 0;
         $mealPlanDiscount = 0;
+        $salesTax = $request->get('salesTax');
 
         if ($store->settings->applyDeliveryFee) {
             $total += $store->settings->deliveryFee;
@@ -170,6 +171,8 @@ class SubscriptionController extends UserController
             $afterDiscountBeforeFees -= ($afterDiscountBeforeFees * $discount);
             $mealPlanDiscount = (($store->settings->mealPlanDiscount / 100) * $afterDiscountBeforeFees);
         }
+
+        $total = $total + $salesTax;
 
         try {
             $plan = \Stripe\Plan::retrieve($sub->stripe_plan, ['stripe_account' => $sub->store->settings->stripe_id]);
