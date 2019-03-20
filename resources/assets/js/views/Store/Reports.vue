@@ -12,7 +12,7 @@
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Meals</h4>
             <div class="report-date-picker">
-              <delivery-date-picker v-model="delivery_dates.meal_orders" :rtl="true"></delivery-date-picker>
+              <delivery-date-picker v-model="delivery_dates.meal_orders"></delivery-date-picker>
             </div>
             <p class="mt-4 center-text">Shows how many of each meal to make based on your orders.</p>
             <div class="row">
@@ -100,7 +100,7 @@
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Packing Slips</h4>
             <div class="report-date-picker">
-              <delivery-date-picker v-model="delivery_dates.packing_slips"></delivery-date-picker>
+              <delivery-date-picker v-model="delivery_dates.packing_slips" :rtl="true"></delivery-date-picker>
             </div>
             <p
               class="mt-4 center-text"
