@@ -119,6 +119,7 @@ class PackingSlips
         foreach ($orders as $i => $order) {
             $vars['order'] = $order;
             $html = view($this->exportPdfView(), $vars)->render();
+            Log::info('Page HTML: '.$html);
             $pdf->addPage($html);
         }
 
