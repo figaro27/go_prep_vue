@@ -88,11 +88,11 @@
                         slot-scope="row"
                       >
                       <p>Subtotal: {{ format.money(subscription.preFeePreDiscount) }}</p>
-                        <p>Meal Plan Discount:
+                        <p v-if="subscription.mealPlanDiscount > 0">Meal Plan Discount:
                           <span class="text-success">({{ format.money(subscription.mealPlanDiscount) }})</span>
                         </p>
-                        <p>Delivery Fee: {{ format.money(subscription.deliveryFee) }}</p>
-                        <p>Processing Fee: {{ format.money(subscription.processingFee) }}</p>
+                        <p v-if="subscription.deliveryFee > 0">Delivery Fee: {{ format.money(subscription.deliveryFee) }}</p>
+                        <p v-if="subscription.processingFee > 0">Processing Fee: {{ format.money(subscription.processingFee) }}</p>
                         <p>Sales Tax: {{ format.money(subscription.salesTax) }}</p>
                         <p>
                           <strong>Total: {{ format.money(subscription.amount) }}</strong>

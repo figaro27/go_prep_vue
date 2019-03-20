@@ -62,11 +62,11 @@
 
                       <template slot="FOOT_subtotal" slot-scope="row">
                         <p>Subtotal: {{ format.money(order.preFeePreDiscount) }}</p>
-                        <p>Meal Plan Discount:
+                        <p v-if="order.mealPlanDiscount > 0">Meal Plan Discount:
                           <span class="text-success">({{ format.money(order.mealPlanDiscount) }})</span>
                         </p>
-                        <p>Delivery Fee: {{ format.money(order.deliveryFee) }}</p>
-                        <p>Processing Fee: {{ format.money(order.processingFee) }}</p>
+                        <p v-if="order.deliveryFee > 0">Delivery Fee: {{ format.money(order.deliveryFee) }}</p>
+                        <p v-if="order.processingFee > 0">Processing Fee: {{ format.money(order.processingFee) }}</p>
                         <p>Sales Tax: {{ format.money(order.salesTax) }}</p>
                         <p>
                           <strong>Total: {{ format.money(order.amount) }}</strong>
