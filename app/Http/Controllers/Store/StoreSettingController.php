@@ -143,3 +143,4 @@ class StoreSettingController extends StoreController
             $subscription->user->sendNotification('meal_plan_paused', compact([$subscription, $customer]));
     }
 }
+}
