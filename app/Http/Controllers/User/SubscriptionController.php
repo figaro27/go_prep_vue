@@ -155,6 +155,13 @@ class SubscriptionController extends UserController
         $mealPlanDiscount = 0;
         $salesTaxRate = $request->get('salesTaxRate');
 
+        if ($store->settings->applyMealPlanDiscount) {
+            $discount = $store->settings->mealPlanDiscount / 100;
+            $mealPlanDiscount = ($total * $discount);
+            $total -= $mealPlanDiscount;
+            $afterDiscountBeforeFees = $total;
+        }
+
         if ($store->settings->applyDeliveryFee) {
             $total += $store->settings->deliveryFee;
             $deliveryFee += $store->settings->deliveryFee;
@@ -163,13 +170,6 @@ class SubscriptionController extends UserController
         if ($store->settings->applyProcessingFee) {
             $total += $store->settings->processingFee;
             $processingFee += $store->settings->processingFee;
-        }
-
-        if ($store->settings->applyMealPlanDiscount) {
-            $discount = $store->settings->mealPlanDiscount / 100;
-            $mealPlanDiscount = ($total * $discount);
-            $total -= $mealPlanDiscount;
-            $afterDiscountBeforeFees = $total;
         }
 
         $salesTax = $total * $salesTaxRate;
