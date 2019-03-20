@@ -128,7 +128,10 @@
 </template>
 
 <style lang="scss" scoped>
-
+.report-date-picker {
+  display: flex;
+  justify-content: center;
+}
 </style>
 
 <script>
