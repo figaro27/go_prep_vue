@@ -26,7 +26,8 @@ class PackingSlips
     public function exportData($type = null)
     {
         $orders = $this->store->orders()->where([
-          ['paid', 1],
+          'paid' => 1,
+          'fulfilled' => 0
         ]);
 
         $dateRange = $this->getDeliveryDates();

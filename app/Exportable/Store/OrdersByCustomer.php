@@ -30,7 +30,7 @@ class OrdersByCustomer
         else
             $fulfilled = 0;
 
-        $orders = $this->store->orders()->where('fulfilled', $fulfilled);
+        $orders = $this->store->orders()->where(['fulfilled' => $fulfilled, 'paid' => 1]);
 
         if (isset($dateRange['from'])) {
             $from = Carbon::parse($dateRange['from']);

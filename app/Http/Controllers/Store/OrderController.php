@@ -16,7 +16,7 @@ class OrderController extends StoreController
     public function index()
     {
         return $this->store->has('orders') ?
-            $this->store->orders()->with(['user', 'user.userDetail'])->get() : [];
+            $this->store->orders()->with(['user', 'user.userDetail'])->where('paid', 1)->get() : [];
     }
 
 
