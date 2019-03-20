@@ -3,7 +3,6 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="{{ asset('css/print.css') }}">
-  <link rel="stylesheet" href="{{ asset('sass/_custom.scss') }}">
 </head>
 
 <body class="{{ $body_classes }}">
