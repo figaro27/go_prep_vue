@@ -14,7 +14,7 @@ return [
    
     'supportsCredentials' => false,
     'allowedOrigins' => [],
-    'allowedOriginsPatterns' => [env('CORS_PATTERN', '/(.+\.)?goprep\.com/i')],
+    'allowedOriginsPatterns' => [env('CORS_PATTERN', '/^(.+\.)?goprep\.com$/i')],
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],
     'exposedHeaders' => [],
