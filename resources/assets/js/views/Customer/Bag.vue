@@ -356,6 +356,20 @@ export default {
         return this.preFeePreDiscount - this.mealPlanDiscount;
       } else return this.preFeePreDiscount;
     },
+    afterDiscountAfterFeesBeforeTax() {
+      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+      let applyProcessingFee = this.storeSettings.applyProcessingFee;
+      let deliveryFee = this.storeSettings.deliveryFee;
+      let processingFee = this.storeSettings.processingFee;
+
+      if (applyDeliveryFee && applyProcessingFee) {
+        return this.afterDiscountBeforeFees + deliveryFee + processingFee;
+      } else if (applyDeliveryFee && !applyProcessingFee) {
+        return this.afterDiscountBeforeFees + deliveryFee;
+      } else if (applyProcessingFee && !applyDeliveryFee) {
+        return this.afterDiscountBeforeFees + processingFee;
+      } else return this.afterDiscountBeforeFees;
+    },
     afterDiscountAfterFees() {
       let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
       let applyProcessingFee = this.storeSettings.applyProcessingFee;
@@ -404,7 +418,8 @@ export default {
       });
     },
     tax() {
-      return this.salesTax * this.afterDiscountAfterFees;
+      return this.salesTax * this.afterDiscountAfterFeesBeforeTax;
+
     }
   },
   mounted() {
