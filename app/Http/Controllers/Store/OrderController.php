@@ -19,6 +19,11 @@ class OrderController extends StoreController
             $this->store->orders()->with(['user:id'])->where(['paid' => 1, 'fulfilled' => 0])->get() : [];
     }
 
+    public function getFulfilledOrders()
+    {
+        return $this->store->has('orders') ?
+            $this->store->orders()->with(['user:id'])->where(['paid' => 1, 'fulfilled' => 1])->get() : [];
+    }
 
     /**
      * Show the form for creating a new resource.
