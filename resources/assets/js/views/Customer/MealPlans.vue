@@ -190,8 +190,7 @@ export default {
         );
       } catch (e) {
         this.$toastr.e(
-          "Please get in touch with our support team.",
-          "Failed to resume Meal Plan"
+          e.response.data.error
         );
       }
 
