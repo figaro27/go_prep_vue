@@ -642,9 +642,6 @@ export default {
     storeDetails(){
         return this.storeDetail;
     },
-    mealPlans(){
-      return this.storeSubscriptions;
-    },
     categories() {
       return _.chain(this.storeCategories)
         .orderBy("order")
@@ -754,7 +751,7 @@ export default {
       settings.color = this.color;
 
       // this.spliceCharacters();
-      if (this.storeSettings.open === false && this.mealPlans.length > 0){
+      if (this.storeSettings.open === false && this.storeSubscriptions.length > 0){
         this.showMealPlansModal = true;
         return;
       }
