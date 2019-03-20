@@ -12,7 +12,7 @@ return [
     |
     */
    
-    'supportsCredentials' => true,
+    'supportsCredentials' => false,
     'allowedOrigins' => [],
     'allowedOriginsPatterns' => [env('CORS_PATTERN', '/(.+\.)?goprep\.com/i')],
     'allowedHeaders' => ['*'],
