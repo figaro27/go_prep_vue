@@ -126,4 +126,20 @@ class StoreSettingController extends StoreController
       }
       
     }
+
+    public function pauseMealPlans()
+    {
+
+        $settings = $this->store->settings;
+        $settings->open = 0;
+        $settings->save();
+
+        $subscriptions = $this->store->subscriptions;
+
+        foreach ($subscriptions as $subscription){
+            $subscription->status = 'paused';
+            $subscription->save();
+            $customer = $subscription->user;
+            $subscription->user->sendNotification('meal_plan_paused', compact([$subscription, $customer]));
+    }
 }
