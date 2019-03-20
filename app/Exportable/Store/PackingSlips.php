@@ -7,6 +7,7 @@ use App\Store;
 use Illuminate\Support\Facades\Storage;
 use mikehaertl\wkhtmlto\Pdf;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class PackingSlips
 {
@@ -57,7 +58,11 @@ class PackingSlips
             return null;
         }
 
+        Log::info('Starting packing slip print');
+
         $orders = $this->exportData();
+
+        Log::info('Found '.count($orders).' orders');
 
         if (!count($orders)) {
             throw new \Exception('No orders');
@@ -86,6 +91,8 @@ class PackingSlips
             ]);
         }
 
+        Log::info($pdfConfig);
+
         $pdf = new Pdf($pdfConfig);
 
         try {
@@ -97,6 +104,8 @@ class PackingSlips
           $logo = $this->store->getUrl($this->store->details->logo);
         }
 
+        Log::info('Logo URL: '.$logo);
+
         $vars = [
           'order' => null,
           'params' => $this->params,
@@ -104,6 +113,8 @@ class PackingSlips
           'body_classes' => implode(' ', [$this->orientation]),
           'logo' => $logo,
         ];
+
+        Log::info($vars);
 
         foreach ($orders as $i => $order) {
             $vars['order'] = $order;
@@ -113,7 +124,12 @@ class PackingSlips
 
         $output = $pdf->toString();
 
+        Log::info('Output: '.$output);
+
         Storage::disk('local')->put($filename, $output);
+
+        Log::info('Saved to '.$filename);
+
         return Storage::url($filename);
 
     }
