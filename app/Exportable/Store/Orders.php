@@ -40,7 +40,7 @@ class Orders
             $order->user->details->address,
             $order->user->details->zip,
             $order->user->details->phone,
-            '$'.$order->amount,
+            '$'.number_format($order->amount, 2),
             $order->created_at->format('D, m/d/Y'),
             $order->delivery_date->format('D, m/d/Y'),
           ];
