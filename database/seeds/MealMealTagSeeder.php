@@ -17,5 +17,10 @@ class MealMealTagSeeder extends Seeder
             'meal_tag_id' => rand(1,8)
         ]);
     	}
+
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 1,
+            'meal_tag_id' => 8
+        ]);
     }
 }
