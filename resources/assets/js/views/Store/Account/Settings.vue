@@ -750,8 +750,14 @@ export default {
       settings.delivery_distance_zipcodes = this.zipCodes;
       settings.color = this.color;
 
-      // this.spliceCharacters();
-      if (this.storeSettings.open === false && this.storeSubscriptions.length > 0){
+      let activeSubscriptions = false;
+
+      this.storeSubscriptions.forEach(subscription => {
+        if (subscription.status === 'active')
+          activeSubscriptions = true;
+      })
+
+      if (this.storeSettings.open === false && activeSubscriptions){
         this.showMealPlansModal = true;
         return;
       }
