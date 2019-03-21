@@ -27,6 +27,11 @@
               class="text-nowrap"
               slot-scope="props"
             >{{ moment(props.row.next_delivery_date).format('dddd, MMM Do') }}</div>
+            <div
+              slot="charge_time"
+              class="text-nowrap"
+              slot-scope="props"
+            >{{ moment(props.row.charge_time).format('dddd, MMM Do') }}</div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-primary btn-sm"
@@ -162,6 +167,7 @@ export default {
         "amount",
         "created_at",
         "delivery_day",
+        "charge_time",
         // "interval",
         "status",
         "actions"
@@ -175,8 +181,9 @@ export default {
           "user.user_detail.zip": "Zip Code",
           "user.user_detail.phone": "Phone",
           amount: "Total",
-          created_at: "Subscription Placed",
+          created_at: "Meal Plan Placed",
           delivery_day: "Delivery Day",
+          charge_time: "Charge Day",
           // interval: "Interval",
           status: "Status",
           actions: "Actions"
