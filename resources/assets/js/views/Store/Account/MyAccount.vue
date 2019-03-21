@@ -94,6 +94,7 @@
             <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
 
+
 <!--        <p><b-btn @click="cancelledSubscription">cancelledSubscription</b-btn></p>
 
             <p><b-btn @click="readyToPrint">readyToPrint</b-btn></p>
@@ -106,7 +107,13 @@
 
             <p><b-btn @click="newSubscription">newSubscription</b-btn></p> 
 
+            <p><b-btn @click="customerMealPlanPaused">mealPlanPaused</b-btn></p>
+
             <p><b-btn @click="customerNewOrder">customerNewOrder</b-btn></p>
+
+            
+
+
             
             -->
 
@@ -258,7 +265,11 @@ export default {
     },
     customerNewOrder(){
       axios.get('/mail/newOrder');
+    },
+    customerMealPlanPaused(){
+      axios.get('/mail/mealPlanPaused');
     }
+
   }
 };
 </script>

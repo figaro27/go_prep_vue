@@ -522,7 +522,7 @@
       <p>Open</p>
       <div class="card">
         <div class="card-body">
-          <b-form @submit.prevent="updateStoreSettings" v-if="canOpen">
+          <b-form @submit.prevent="closeStore" v-if="canOpen">
             <p>
               <span class="mr-1">Open</span>
               <img
@@ -750,19 +750,37 @@ export default {
       settings.delivery_distance_zipcodes = this.zipCodes;
       settings.color = this.color;
 
-      // this.spliceCharacters();
-      if (this.storeSettings.open === false && this.storeSubscriptions.length > 0){
+      axios
+        .patch("/api/me/settings", settings)
+        .then(response => {
+          this.refreshStoreSettings();
+          this.$toastr.s("Your settings have been saved.", "Success");
+        })
+        .catch(response => {
+          let error = _.first(Object.values(response.response.data.errors));
+          error = error.join(" ");
+          this.$toastr.e(error, "Error");
+        });
+    },
+    closeStore(){
+      let activeSubscriptions = false;
+
+      this.storeSubscriptions.forEach(subscription => {
+        if (subscription.status === 'active')
+          activeSubscriptions = true;
+      })
+
+      if (this.storeSettings.open === false && activeSubscriptions){
         this.showMealPlansModal = true;
         return;
       }
-        
+      
+      let settings = { ...this.storeSettings };
 
       axios
         .patch("/api/me/settings", settings)
         .then(response => {
-          // Refresh everything
           this.refreshStoreSettings();
-
           this.$toastr.s("Your settings have been saved.", "Success");
         })
         .catch(response => {
@@ -902,7 +920,7 @@ export default {
         this.storeSettings.open = false
     },
     pauseMealPlans(){
-      axios.get('/api/me/pauseMealPlans')
+      axios.post('/api/me/pauseMealPlans', {closedReason: this.storeSettings.closedReason})
       this.showMealPlansModal = false;
       this.$toastr.s("Your settings have been saved.", "Success");
     }

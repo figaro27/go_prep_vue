@@ -172,6 +172,7 @@ class CheckoutController extends UserController
             $userSubscription->deliveryFee = $deliveryFee;
             $userSubscription->salesTax = $salesTax;
             $userSubscription->amount = $total;
+            $userSubscription->pickup = $request->get('pickup', 0);
             $userSubscription->interval = 'week';
             $userSubscription->delivery_day = date('N', strtotime($deliveryDay));
             $userSubscription->next_renewal_at = $cutoff->addDays(7);

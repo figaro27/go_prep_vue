@@ -71,7 +71,7 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
                     Route::resource('units', 'UnitController');
                     Route::resource('categories', 'CategoryController');
                     Route::resource('settings', 'StoreSettingController');
-                    Route::get('pauseMealPlans', 'StoreSettingController@pauseMealPlans');
+                    Route::post('pauseMealPlans', 'StoreSettingController@pauseMealPlans');
                     
                     Route::get('getStore', 'StoreDetailController@show');
                     Route::patch('details', 'StoreDetailController@update');
