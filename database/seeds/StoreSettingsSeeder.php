@@ -32,7 +32,7 @@ class StoreSettingsSeeder extends Seeder
             'mealPlanDiscount' => 10,
             'deliveryInstructions' => 'Our driver will drops off the food between 4 PM and 6 PM. He will wait 10 minutes after ringing your bell and calling your phone. If you missed your delivery please call us at (555) 123-4567.',
             'pickupInstructions' => 'Please pick up your food at 555 Bay Ridge Ave between 4 PM and 6 PM.',
-            'notesForCustomer' => 'Please heat up each hot mail in the microwave for 2 minutes. Do not eat any salads or meals containing dairy after 4 days. Thank you for your order!',
+            'notesForCustomer' => 'Please heat up each hot meal in the microwave for 2 minutes. Do not eat any salads or meals containing dairy after 4 days. Thank you for your order!',
             'stripe_id' => 'acct_1DytLMHoLjZBBJiv',
             'stripe_account' => '{"access_token":"sk_test_keZlgc38s70oGly6mjmYufLg","livemode":false,"refresh_token":"rt_ERmvvKxytr1o6Abs7dAAAgITMDlccJAX4qcOlPuadA8epbsX","token_type":"bearer","stripe_publishable_key":"pk_test_4AphKydmoFc290wUOgLPJRnY","stripe_user_id":"acct_1DytLMHoLjZBBJiv","scope":"express"}',
             'notifications' => json_encode([
