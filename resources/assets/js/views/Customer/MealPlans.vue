@@ -23,7 +23,7 @@
         <div class="card-body">
           <Spinner v-if="isLoading"/>
           <div class="order-list">
-            <div v-for="subscription in subscriptions" :key="subscription.id">
+            <div v-for="subscription in subscriptions" :key="subscription.id" class="mb-4">
               <div v-b-toggle="'collapse' + subscription.id">
                 <b-list-group-item class="order-list-item">
                   <div class="row">
@@ -190,8 +190,7 @@ export default {
         );
       } catch (e) {
         this.$toastr.e(
-          "Please get in touch with our support team.",
-          "Failed to resume Meal Plan"
+          e.response.data.error
         );
       }
 
