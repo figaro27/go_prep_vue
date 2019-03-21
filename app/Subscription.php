@@ -13,7 +13,7 @@ class Subscription extends Model
 {
     protected $fillable = ['status', 'cancelled_at'];
 
-    protected $appends = ['store_name', 'latest_order', 'next_delivery_date', 'meal_ids', 'meal_quantities'];
+    protected $appends = ['store_name', 'latest_order', 'next_delivery_date', 'meal_ids', 'meal_quantities', 'charge_time'];
 
     protected $casts = [
 
@@ -76,6 +76,14 @@ class Subscription extends Model
       return $this->meals()->get()->keyBy('id')->map(function($meal) {
         return $meal->pivot->quantity ?? 0;
       });
+    }
+
+    public function getChargeTimeAttribute() {
+      $cutoffDays = $this->store->settings->cutoff_days;
+      $cutoffHours = $this->store->settings->cutoff_hours;
+      $date = new Carbon($this->next_delivery_date);
+      $chargeTime = $date->subDays($cutoffDays)->subHours($cutoffHours);;
+      return $chargeTime->format('D, m/d/Y');
     }
 
     /*

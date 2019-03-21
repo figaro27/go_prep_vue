@@ -73,6 +73,11 @@
                   </div>
 
                   <b-collapse :id="'collapse' + subscription.id" class="mt-2">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <p>Your card will be charged on {{ subscription.charge_time }}. You can Cancel, Pause, or Change Meals up until that time.</p>
+                      </div>
+                    </div>
                     <b-table
                       striped
                       stacked="sm"
