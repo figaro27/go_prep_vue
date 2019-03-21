@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Store;
 
 use App\StoreSetting;
+use App\Subscription;
+use App\Customer;
+use App\Mail\Customer\MealPLanPaused;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -137,15 +141,22 @@ class StoreSettingController extends StoreController
         $subscriptions = $this->store->subscriptions;
 
         foreach ($subscriptions as $subscription){
+            if ($subscription->status === 'active'){
+                $customer = $subscription->customer;
+                $emailAddress = $customer->user->email;
+                $email = new MealPLanPaused([
+                    'customer' => $customer,
+                    'subscription' => $subscription,
+                ]);
+                Mail::to($emailAddress)->send($email);
+                sleep(1);
+            }
+        }
+
+        foreach ($subscriptions as $subscription){
             $subscription->status = 'paused';
             $subscription->save();
         }
 
-        foreach ($subscriptions as $subscription){
-        $customer = $subscription->user;
-        $subscription->user->sendNotification('meal_plan_paused', compact([$subscription, $customer]));
-        sleep(1);
-        }
-
-}
+    }
 }

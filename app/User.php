@@ -5,7 +5,6 @@ namespace App;
 use App\Customer;
 use App\Mail\Customer\SubscriptionRenewing;
 use App\Mail\Customer\SubscriptionMealSubstituted;
-use App\Mail\Customer\MealPLanPaused;
 use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -323,9 +322,6 @@ class User extends Authenticatable implements JWTSubject
 
             case 'subscription_meal_substituted':
                 $email = new SubscriptionMealSubstituted($data);
-            break;
-            case 'meal_plan_paused':
-                $email = new MealPlanPaused($data);
         }
 
         if ($email) {
