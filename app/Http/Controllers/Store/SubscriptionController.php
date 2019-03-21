@@ -13,7 +13,7 @@ class SubscriptionController extends StoreController
      */
     public function index()
     {
-        return $this->store->subscriptions()->with(['user'])->orderBy('created_at')->get();
+        return $this->store->subscriptions()->with(['user:id'])->orderBy('created_at')->get();
     }
 
     /**

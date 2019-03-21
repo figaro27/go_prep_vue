@@ -13,7 +13,7 @@ class Subscription extends Model
 {
     protected $fillable = ['status', 'cancelled_at'];
 
-    protected $appends = [];
+    protected $appends = ['store_name', 'latest_order', 'next_delivery_date', 'meal_ids', 'meal_quantities'];
 
     protected $casts = [
 
