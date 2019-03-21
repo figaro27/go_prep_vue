@@ -123,6 +123,7 @@ class Subscription extends Model
         $newOrder->created_at = now();
         $newOrder->updated_at = now();
         $newOrder->delivery_date = $this->next_delivery_date;
+        $newOrder->paid = 0;
         $newOrder->fulfilled = 0;
         $newOrder->order_number = substr(uniqid(rand(1, 9), false), 0, 12);
         $newOrder->push();

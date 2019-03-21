@@ -10,6 +10,7 @@ use App\Mail\Customer\DeliveryToday;
 use App\Mail\Customer\MealPLan;
 use App\Mail\Customer\SubscriptionRenewing;
 use App\Mail\Customer\NewOrder;
+use App\Mail\Customer\MealPlanPaused;
 use App\Mail\Store\NewSubscription;
 use App\Store;
 use App\Customer;
@@ -90,6 +91,16 @@ class EmailTestController extends Controller
         $email = new NewOrder([
                 'customer' => $customer,
                 'order' => $order,
+            ]);
+        Mail::to('customer@goprep.com')->send($email);
+    }
+
+    public function customerMealPlanPaused(){
+        $customer = Customer::first();
+        $subscription = Subscription::first();
+        $email = new MealPlanPaused([
+                'customer' => $customer,
+                'subscription' => $subscription,
             ]);
         Mail::to('customer@goprep.com')->send($email);
     }
