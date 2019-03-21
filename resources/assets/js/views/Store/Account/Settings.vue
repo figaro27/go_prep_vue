@@ -902,7 +902,7 @@ export default {
         this.storeSettings.open = false
     },
     pauseMealPlans(){
-      axios.get('/api/me/pauseMealPlans')
+      axios.post('/api/me/pauseMealPlans', {closedReason: this.storeSettings.closedReason})
       this.showMealPlansModal = false;
       this.$toastr.s("Your settings have been saved.", "Success");
     }

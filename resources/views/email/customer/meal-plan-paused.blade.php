@@ -122,11 +122,11 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           <br /> {{ $customer->city }}, {{ $customer->state }} {{ $customer->zip }}
                           </td>
                       </tr>
-                      @if ($subscription->latest_order->pickup === 0)
+                      @if ($subscription->pickup === 0)
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $subscription->next_delivery_date->format('D, m/d/Y') }}</td>
                       </tr>
-                      @else ($subscription->latest_order->pickup === 1)
+                      @else ($subscription->pickup === 1)
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $subscription->next_delivery_date->format('D, m/d/Y') }}</td>
                       </tr>
@@ -169,7 +169,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- content -->
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your meal plan with {{ $subscription->store->details->name }} was automatically paused as {{ $subscription->store->details->name }} marked their store as closed with reason: {{ $subscription->store->settings->closedReason }}.
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your meal plan with {{ $subscription->store->details->name }} was automatically paused as {{ $subscription->store->details->name }} marked their store as closed with reason: {{ $subscription->store->settings->closedReason }}
                   </td>
                 </tr>
                 <tr>
@@ -296,7 +296,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       @php
               			$feesTotal = 0;
-              			$feesTotal += ($subscription->latest_order->deliveryFee + $subscription->latest_order->processingFee)
+              			$feesTotal += ($subscription->deliveryFee + $subscription->processingFee)
               		  @endphp
                       <tr>
                         <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($feesTotal, 2) }}</td>
@@ -359,7 +359,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td height="5"></td>
                 </tr>
                 <!-- content -->
-                @if ($subscription->latest_order->pickup === 0)
+                @if ($subscription->pickup === 0)
 				<tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->delivery }} </td>
                 </tr>

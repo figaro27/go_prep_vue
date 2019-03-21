@@ -159,18 +159,7 @@
                   </b-form-radio-group>
                 </b-form-group>
               </li>
-              <li class="checkout-item" v-if="transferTypeCheckDelivery && pickup === 0">
-                <p>
-                  <strong>Delivery Instructions:</strong>
-                  {{ storeSettings.deliveryInstructions }}
-                </p>
-              </li>
-              <li class="checkout-item" v-if="transferTypeCheckPickup && pickup === 1">
-                <p>
-                  <strong>Pickup Instructions:</strong>
-                  {{ storeSettings.pickupInstructions }}
-                </p>
-              </li>
+              
 
               <li>
                 <div>
@@ -243,6 +232,20 @@
                 </div>
               </li>
             </ul>
+
+            <li class="transfer-instruction mt-2" v-if="transferTypeCheckDelivery && pickup === 0">
+                <p>
+                  <strong>Delivery Instructions:</strong>
+                  {{ storeSettings.deliveryInstructions }}
+                </p>
+              </li>
+              <li class="transfer-instruction mt-2" v-if="transferTypeCheckPickup && pickup === 1">
+                <p>
+                  <strong>Pickup Instructions:</strong>
+                  {{ storeSettings.pickupInstructions }}
+                </p>
+              </li>
+
             <div v-if="storeSettings.open === false">
               <div class="row">
                 <div class="col-sm-12 mt-3">

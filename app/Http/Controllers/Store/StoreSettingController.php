@@ -131,11 +131,12 @@ class StoreSettingController extends StoreController
       
     }
 
-    public function pauseMealPlans()
+    public function pauseMealPlans(Request $request)
     {
 
         $settings = $this->store->settings;
         $settings->open = 0;
+        $settings->closedReason = $request->closedReason;
         $settings->save();
 
         $subscriptions = $this->store->subscriptions;
