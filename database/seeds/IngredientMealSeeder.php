@@ -143,47 +143,5 @@ class IngredientMealSeeder extends Seeder
                 'quantity_unit_display' => 'oz',
             ]);
         }
-
-        for ($i = 16; $i <= 20; $i++) {
-            DB::table('ingredient_meal')->insert([
-                'ingredient_id' => 16,
-                'meal_id' => $i,
-                'quantity' => 1,
-                'quantity_unit' => 'unit',
-                'quantity_unit_display' => 'unit',
-            ]);
-
-            DB::table('ingredient_meal')->insert([
-                'ingredient_id' => 17,
-                'meal_id' => $i,
-                'quantity' => 3,
-                'quantity_unit' => 'oz',
-                'quantity_unit_display' => 'oz',
-            ]);
-
-            DB::table('ingredient_meal')->insert([
-                'ingredient_id' => 18,
-                'meal_id' => $i,
-                'quantity' => 1,
-                'quantity_unit' => 'cup',
-                'quantity_unit_display' => 'cup',
-            ]);
-
-            DB::table('ingredient_meal')->insert([
-                'ingredient_id' => 19,
-                'meal_id' => $i,
-                'quantity' => 3,
-                'quantity_unit' => 'tsp',
-                'quantity_unit_display' => 'tsp',
-            ]);
-
-             DB::table('ingredient_meal')->insert([
-                'ingredient_id' => 20,
-                'meal_id' => $i,
-                'quantity' => 1,
-                'quantity_unit' => 'lb',
-                'quantity_unit_display' => 'lb',
-            ]);
-        }
     }
 }
