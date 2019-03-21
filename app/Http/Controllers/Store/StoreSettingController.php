@@ -139,8 +139,13 @@ class StoreSettingController extends StoreController
         foreach ($subscriptions as $subscription){
             $subscription->status = 'paused';
             $subscription->save();
-            $customer = $subscription->user;
-            $subscription->user->sendNotification('meal_plan_paused', compact([$subscription, $customer]));
-    }
+        }
+
+        foreach ($subscriptions as $subscription){
+        $customer = $subscription->user;
+        $subscription->user->sendNotification('meal_plan_paused', compact([$subscription, $customer]));
+        sleep(1);
+        }
+
 }
 }
