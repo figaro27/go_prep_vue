@@ -66,7 +66,7 @@ class EmailTestController extends Controller
 
     public function customerSubscriptionRenewing(){
     	$customer = Customer::first();
-    	$subscription = Subscription::first();
+    	$subscription = Subscription::orderBy('created_at', 'desc')->first();
     	$email = new SubscriptionRenewing([
     			'customer' => $customer,
                 'subscription' => $subscription,

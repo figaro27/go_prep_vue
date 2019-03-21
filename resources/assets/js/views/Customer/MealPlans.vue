@@ -75,7 +75,7 @@
                   <b-collapse :id="'collapse' + subscription.id" class="mt-2">
                     <div class="row">
                       <div class="col-md-12">
-                        <p>Your card will be charged on {{ subscription.charge_time }}. You can Cancel, Pause, or Change Meals up until that time.</p>
+                        <p>Your card will be charged on {{ subscription.charge_time }}. You can Pause, Cancel, or Change Meals up until that time to affect this weeks order. If you Pause, Cancel, or Change Meals after this day, it will be applied to <strong>next week's</strong> order.</p>
                       </div>
                     </div>
                     <b-table
