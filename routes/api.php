@@ -63,12 +63,15 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
                     Route::resource('meals', 'MealController');
                     Route::resource('ingredients', 'IngredientController');
                     Route::resource('orders', 'OrderController');
+                    Route::post('getOrders', 'OrderController@index');
+                    Route::post('getFulfilledOrders', 'OrderController@getFulfilledOrders');
                     Route::get('ordersUpdateViewed', 'OrderController@updateViewed');
                     Route::resource('subscriptions', 'SubscriptionController');
                     Route::resource('customers', 'CustomerController');
                     Route::resource('units', 'UnitController');
                     Route::resource('categories', 'CategoryController');
                     Route::resource('settings', 'StoreSettingController');
+                    Route::get('pauseMealPlans', 'StoreSettingController@pauseMealPlans');
                     
                     Route::get('getStore', 'StoreDetailController@show');
                     Route::patch('details', 'StoreDetailController@update');

@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Store;
 
 use App\StoreSetting;
+use App\Subscription;
+use App\Customer;
+use App\Mail\Customer\MealPLanPaused;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -125,5 +129,34 @@ class StoreSettingController extends StoreController
         return null;
       }
       
+    }
+
+    public function pauseMealPlans()
+    {
+
+        $settings = $this->store->settings;
+        $settings->open = 0;
+        $settings->save();
+
+        $subscriptions = $this->store->subscriptions;
+
+        foreach ($subscriptions as $subscription){
+            if ($subscription->status === 'active'){
+                $customer = $subscription->customer;
+                $emailAddress = $customer->user->email;
+                $email = new MealPLanPaused([
+                    'customer' => $customer,
+                    'subscription' => $subscription,
+                ]);
+                Mail::to($emailAddress)->send($email);
+                sleep(1);
+            }
+        }
+
+        foreach ($subscriptions as $subscription){
+            $subscription->status = 'paused';
+            $subscription->save();
+        }
+
     }
 }

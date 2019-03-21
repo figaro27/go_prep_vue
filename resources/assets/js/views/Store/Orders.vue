@@ -22,14 +22,14 @@
                 </div>
                 <div class="d-inline-block mr-2 flex-grow-0">
                   <b-btn
-                    @click="$set(filters, 'fulfilled', !filters.fulfilled)"
+                    @click="showFulfilledOrders()"
                     :selected="filters.fulfilled"
                     variant="warning"
                     class="filter-btn"
                     v-if="!filters.fulfilled"
                   >View Completed Orders</b-btn>
                   <b-btn
-                    @click="$set(filters, 'fulfilled', !filters.fulfilled)"
+                    @click="showUnfulfilledOrders()"
                     :selected="filters.fulfilled"
                     variant="danger"
                     class="filter-btn"
@@ -346,12 +346,16 @@ export default {
   methods: {
     ...mapActions({
       refreshOrders: "refreshOrders",
+      refreshOrdersWithFulfilled: "refreshOrdersWithFulfilled",
       updateOrder: "updateOrder",
       addJob: "addJob",
       removeJob: "removeJob",
     }),
     refreshTable() {
       this.refreshOrders();
+    },
+    refreshTableWithFulfilled() {
+      this.refreshOrdersWithFulfilled();
     },
     formatMoney: format.money,
     syncEditables() {
@@ -479,6 +483,14 @@ export default {
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
       this.dateColor = "#ffffff !important";
+    },
+    showFulfilledOrders(){
+      this.filters.fulfilled = 1;
+      this.refreshTableWithFulfilled();
+    },
+    showUnfulfilledOrders(){
+      this.filters.fulfilled = 0;
+      this.refreshTable();
     }
   }
 };

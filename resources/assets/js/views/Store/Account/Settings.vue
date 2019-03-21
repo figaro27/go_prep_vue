@@ -513,6 +513,12 @@
           </b-modal>
 
 
+      <b-modal v-model="showMealPlansModal" title="Warning">
+        <p>You currently have at least one active meal plan with your customers. If you temporarily close your store, all of your customer's meal plans will be automatically paused and will not resume when you re-open. These customers will be notified via email.</p>
+        <p class="center-text">Continue anyway?</p>
+        <b-btn variant="danger" class="center" @click="pauseMealPlans">Continue</b-btn>
+      </b-modal>
+
       <p>Open</p>
       <div class="card">
         <div class="card-body">
@@ -603,6 +609,7 @@ export default {
       acceptedTOA: 0,
       acceptedTOAcheck: 0,
       showTOAModal: 0,
+      showMealPlansModal: false,
       color: '',
       transferSelected: [],
       transferOptions: [
@@ -629,7 +636,8 @@ export default {
       storeDetail: "storeDetail",
       storeSetting: "storeSetting",
       storeSettings: "storeSettings",
-      storeCategories: "storeCategories"
+      storeCategories: "storeCategories",
+      storeSubscriptions: "storeSubscriptions"
     }),
     storeDetails(){
         return this.storeDetail;
@@ -743,6 +751,12 @@ export default {
       settings.color = this.color;
 
       // this.spliceCharacters();
+      if (this.storeSettings.open === false && this.storeSubscriptions.length > 0){
+        this.showMealPlansModal = true;
+        return;
+      }
+        
+
       axios
         .patch("/api/me/settings", settings)
         .then(response => {
@@ -886,6 +900,11 @@ export default {
       }
       else
         this.storeSettings.open = false
+    },
+    pauseMealPlans(){
+      axios.get('/api/me/pauseMealPlans')
+      this.showMealPlansModal = false;
+      this.$toastr.s("Your settings have been saved.", "Success");
     }
   }
 };

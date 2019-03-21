@@ -79,6 +79,12 @@ class SubscriptionController extends UserController
     public function resume($id) {
       $sub = $this->user->subscriptions()->find($id);
 
+      if ($sub->store->settings->open === false){
+        return response()->json([
+          'error' => 'This store is currently closed. Please try again when they re-open.'
+        ], 404);
+      }
+
       if(!$sub) {
         return response()->json([
           'error' => 'Meal plan not found'
