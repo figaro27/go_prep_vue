@@ -21,24 +21,25 @@ class StoreSlug
         preg_match('/(.+)\.'.config('app.domain').'/i', $host, $hostParts);
 
         $slug = count($hostParts) > 1 ? $hostParts[1] : null;
+        $storeId = $request->headers->get('x-viewed-store-id', null);
+        $store = null;
 
-        if ($slug) {
-            define('STORE_SLUG', $slug);
-
-            $store = Store::with('storeDetail')->whereHas('storeDetail', function ($query) {
-                return $query->where('domain', STORE_SLUG);
-            })->first();
-
-            if ($store) {
-                define('STORE_ID', $store->id);
-            } else {
-                define('STORE_ID', null);
-            }
-        } else {
-            define('STORE_SLUG', null);
-            define('STORE_ID', null);
+        if($slug) {
+          $store = Store::with('storeDetail')->whereHas('storeDetail', function ($query) use ($slug) {
+            return $query->where('domain', $slug);
+          })->first();
         }
-
+        elseif($storeId) {
+          $store = Store::with('storeDetail')->find($storeId);
+        }
+        
+        if ($store) {
+          define('STORE_ID', $store->id);
+          define('STORE_SLUG', $store->details->domain);
+        } else {
+          define('STORE_ID', null);
+          define('STORE_SLUG', null);
+        }
 
         $user = auth()->user();
         if($user && $user->hasRole('store') && $user->has('store')) {

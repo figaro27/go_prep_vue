@@ -43,6 +43,7 @@ class User extends Authenticatable implements JWTSubject
     protected $appends = [
         'name',
         'cards',
+        'last_viewed_store'
     ];
 
     /**
@@ -133,6 +134,11 @@ class User extends Authenticatable implements JWTSubject
         } catch (\Exception $e) {
             return [];
         }
+    }
+
+    public function getLastViewedStoreAttribute()
+    {
+        return Store::find($this->last_viewed_store_id);
     }
 
 // Admin View

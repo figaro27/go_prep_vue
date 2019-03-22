@@ -130,6 +130,9 @@ const mutations = {
       ...state.viewed_store,
       ...store
     };
+
+    // Store in cookie for front-end site
+    Cookies.set("last_viewed_store", state.viewed_store.id, {domain: window.app.domain});
   },
   tags(state, {tags}) {
     state.tags = tags;

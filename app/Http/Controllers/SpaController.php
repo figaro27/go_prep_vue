@@ -92,7 +92,7 @@ class SpaController extends Controller
                     'meals.categories',
                     'meals.allergies',
                     'settings',
-                ])->find(STORE_ID) : null;
+                ])->find(STORE_ID) : $user->last_viewed_store;
 
                 if ($store) {
                     if ($store->settings->delivery_distance_type === 'radius') {
@@ -101,6 +101,9 @@ class SpaController extends Controller
                     } else {
                         $willDeliver = $store->deliversToZip($user->userDetail->zip);
                     }
+
+                    $user->last_viewed_store_id = $store->id;
+                    $user->save();
 
                     return [
                         'context' => $context,
