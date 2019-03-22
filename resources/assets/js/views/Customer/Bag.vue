@@ -233,13 +233,13 @@
               </li>
             </ul>
 
-            <li class="transfer-instruction mt-2" v-if="transferTypeCheckDelivery && pickup === 0">
+            <li class="transfer-instruction mt-2" v-if="transferTypeCheckDelivery && pickup === 0 && storeSettings.deliveryInstructions">
                 <p>
                   <strong>Delivery Instructions:</strong>
                   {{ storeSettings.deliveryInstructions }}
                 </p>
               </li>
-              <li class="transfer-instruction mt-2" v-if="transferTypeCheckPickup && pickup === 1">
+              <li class="transfer-instruction mt-2" v-if="transferTypeCheckPickup && pickup === 1 && storeSettings.pickupInstructions">
                 <p>
                   <strong>Pickup Instructions:</strong>
                   {{ storeSettings.pickupInstructions }}
