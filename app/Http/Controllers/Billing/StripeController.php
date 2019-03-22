@@ -41,7 +41,7 @@ class StripeController extends Controller
             //}
 
             // Create new Order for subscription
-            $subscription->renew($obj);
+            $subscription->renew($obj, $event);
             return 'Meal plan renewed';
           }
           else {
@@ -57,18 +57,18 @@ class StripeController extends Controller
             $subscription = Subscription::where('stripe_id', $subId)->first();
           }
 
-          if($subscription) {
-            // Set status to 'paused'
-            $subscription->pause(false);
-            return 'Meal plan paused';
-          }
-          else {
+          if(!$subscription) {
             return 'Meal plan not found';
           }
+
+          $subscription->paymentFailed($obj, $event);
+
+          // Set status to 'paused'
+          //$subscription->pause(false);
+          //return 'Meal plan paused';
         }
         elseif($type === 'customer.subscription.deleted') {
           
         }
-        
     }
 }

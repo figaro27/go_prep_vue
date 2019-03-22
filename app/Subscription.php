@@ -2,18 +2,16 @@
 
 namespace App;
 
+use App\MealOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-
-use App\MealOrder;
-use App\MealSubscription;
 
 class Subscription extends Model
 {
     protected $fillable = ['status', 'cancelled_at'];
 
-    protected $appends = ['store_name', 'latest_order', 'next_delivery_date', 'meal_ids', 'meal_quantities', 'charge_time'];
+    protected $appends = ['store_name', 'latest_order', 'latest_unpaid_order', 'next_delivery_date', 'meal_ids', 'meal_quantities', 'charge_time'];
 
     protected $casts = [
 
@@ -54,46 +52,60 @@ class Subscription extends Model
         return $this->orders()->orderBy('delivery_date', 'desc')->first();
     }
 
+    public function getLatestUnpaidOrderAttribute()
+    {
+        $latestOrder = $this->orders()->where([
+            ['paid', 0],
+        ])
+            ->whereDate('delivery_date', '>=', Carbon::now())
+            ->orderBy('delivery_date', 'desc')->first();
+
+        return $latestOrder;
+    }
+
     public function getNextDeliveryDateAttribute()
     {
-      if($this->latest_order) {
-        $date = new Carbon($this->latest_order->delivery_date->toDateTimeString());
-        
-        if($date->isFuture()) {
-          return $date;
+        if ($this->latest_order) {
+            $date = new Carbon($this->latest_order->delivery_date->toDateTimeString());
+
+            if ($date->isFuture()) {
+                return $date;
+            }
+            return $date->addWeek();
         }
-        return $date->addWeek();
-      }
-      
-      // Catch all
-      return $this->store->getNextDeliveryDay($this->delivery_day);
+
+        // Catch all
+        return $this->store->getNextDeliveryDay($this->delivery_day);
     }
 
-    public function getMealIdsAttribute() {
-      return $this->meals()->get()->pluck('id');
+    public function getMealIdsAttribute()
+    {
+        return $this->meals()->get()->pluck('id');
     }
-    public function getMealQuantitiesAttribute() {
-      return $this->meals()->get()->keyBy('id')->map(function($meal) {
-        return $meal->pivot->quantity ?? 0;
-      });
+    public function getMealQuantitiesAttribute()
+    {
+        return $this->meals()->get()->keyBy('id')->map(function ($meal) {
+            return $meal->pivot->quantity ?? 0;
+        });
     }
 
-    public function getChargeTimeAttribute() {
-      $cutoffDays = $this->store->settings->cutoff_days;
-      $cutoffHours = $this->store->settings->cutoff_hours;
-      $date = new Carbon($this->next_delivery_date);
-      $chargeTime = $date->subDays($cutoffDays)->subHours($cutoffHours);;
-      return $chargeTime->format('D, m/d/Y');
+    public function getChargeTimeAttribute()
+    {
+        $cutoffDays = $this->store->settings->cutoff_days;
+        $cutoffHours = $this->store->settings->cutoff_hours;
+        $date = new Carbon($this->next_delivery_date);
+        $chargeTime = $date->subDays($cutoffDays)->subHours($cutoffHours);
+        return $chargeTime->format('D, m/d/Y');
     }
 
     /*
     public function getMealsAttribute()
     {
-        if (!$this->latest_order) {
-            return [];
-        }
+    if (!$this->latest_order) {
+    return [];
+    }
 
-        return $this->latest_order->meals;
+    return $this->latest_order->meals;
     }*/
 
     public function getStoreNameAttribute()
@@ -101,8 +113,9 @@ class Subscription extends Model
         return $this->store->storeDetail->name;
     }
 
-    public function isPaused() {
-      return $this->status === 'paused';
+    public function isPaused()
+    {
+        return $this->status === 'paused';
     }
 
     /**
@@ -110,18 +123,23 @@ class Subscription extends Model
      *
      * @return boolean
      */
-    public function renew(Collection $stripeInvoice)
+    public function renew(Collection $stripeInvoice, Collection $stripeEvent)
     {
-        $latestOrder = $this->orders()->where([
-          ['paid', 0],
-        ])
-        ->whereDate('delivery_date', '>=', Carbon::now())
-        ->orderBy('delivery_date', 'desc')->first();
+        $latestOrder = $this->latest_unpaid_order;
+
+        if (!$latestOrder) {
+            throw new \Exception('No unpaid order for subscription #' . $this->id);
+        }
 
         $latestOrder->paid = 1;
         $latestOrder->paid_at = new Carbon();
         $latestOrder->stripe_id = $stripeInvoice->get('id', null);
         $latestOrder->save();
+
+        $latestOrder->events()->create([
+            'type' => 'payment_succeeded',
+            'stripe_event' => $stripeEvent,
+        ]);
 
         //try {
         $newOrder = $this->latest_order->replicate(['created_at', 'updated_at', 'delivery_date', 'paid', 'paid_at', 'stripe_id']);
@@ -135,24 +153,42 @@ class Subscription extends Model
         $newOrder->push();
 
         try {
-          $newOrder->meal_orders()->forceDelete();
-        }
-        catch(\Exception $e) {
-          
+            $newOrder->meal_orders()->forceDelete();
+        } catch (\Exception $e) {
+
         }
 
-        foreach($this->meals as $meal) {
-          $mealSub = new MealOrder();
-          $mealSub->order_id = $newOrder->id;
-          $mealSub->store_id = $this->store->id;
-          $mealSub->meal_id = $meal->id;
-          $mealSub->quantity = $meal->pivot->quantity;
-          $mealSub->save();
+        foreach ($this->meals as $meal) {
+            $mealSub = new MealOrder();
+            $mealSub->order_id = $newOrder->id;
+            $mealSub->store_id = $this->store->id;
+            $mealSub->meal_id = $meal->id;
+            $mealSub->quantity = $meal->pivot->quantity;
+            $mealSub->save();
         }
 
         //} catch (\Exception $e) {
 
         //}
+    }
+
+    /**
+     *  Handle payment failure
+     *
+     * @return boolean
+     */
+    public function paymentFailed(Collection $stripeInvoice, Collection $stripeEvent)
+    {
+        $latestOrder = $this->latest_unpaid_order;
+
+        if (!$latestOrder) {
+            throw new \Exception('No unpaid order for subscription #' . $this->id);
+        }
+
+        $latestOrder->events()->create([
+            'type' => 'payment_failed',
+            'stripe_event' => $stripeEvent,
+        ]);
     }
 
     /**
@@ -164,13 +200,12 @@ class Subscription extends Model
     {
         if ($withStripe) {
             try {
-              $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
-                  'stripe_account' => $this->store->settings->stripe_id,
-              ]);
-              $subscription->cancel_at_period_end = true;
-              $subscription->save();
-            }
-            catch(\Exception $e) {
+                $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
+                    'stripe_account' => $this->store->settings->stripe_id,
+                ]);
+                $subscription->cancel_at_period_end = true;
+                $subscription->save();
+            } catch (\Exception $e) {
 
             }
         }
@@ -182,8 +217,8 @@ class Subscription extends Model
 
         if ($this->store->notificationEnabled('cancelled_subscription')) {
             $this->store->sendNotification('cancelled_subscription', [
-              'subscription' => $this,
-              'customer' => $this->customer,
+                'subscription' => $this,
+                'customer' => $this->customer,
             ]);
         }
     }
