@@ -91,7 +91,7 @@ class MealsSeeder extends Seeder
         'A family classic. Non-fat greek yogurt, layered with organic granola and stawberries.',
         'Organic oatmeal with fresh plump blueberries. Serve warm and enjoy!',
         'Homemade brownies made for the Keto friendly diet. Packed with healthy fats and no carbs, this is the perfect treat for pre or post workout',
-        'Our homemade granola snacks are the perfect low calroie alternative for a life on the go. Baked fresh on premise with all organic ingredients.'
+        'Our homemade granola snacks are the perfect low calorie alternative for a life on the go. Baked fresh on premise with all organic ingredients.'
     ];
 
         $daysAgo = [
