@@ -31,6 +31,14 @@ class MealsSeeder extends Seeder
         'Sweet Potato Ground Turkey Bake',
         'Tex Mex Stuffed Peppers',
         'Turkey Chili Bowl',
+        'Protein Pancakes',
+        'Protein Waffles',
+        'Avocado Toast with Egg',
+        'Yogurt Parfait',
+        'Blueberry Oatmeal',
+        'Keto Bomb Brownies',
+        'Low Calorie Granola Bites'
+
     ];
 
     $mealImages = [
@@ -50,6 +58,14 @@ class MealsSeeder extends Seeder
         '/images/store/meals/sweet-potato-ground-turkey-bake.jpeg',
         '/images/store/meals/tex-mex-stuffed-peppers.jpeg',
         '/images/store/meals/turkey-chili-bowl.jpeg',
+        '/images/store/meals/protein-pancakes.jpg',
+        '/images/store/meals/protein-waffles.jpg',
+        '/images/store/meals/avocado-toast.jpg',
+        '/images/store/meals/parfait.jpg',
+        '/images/store/meals/oatmeal.jpg',
+        '/images/store/meals/brownies.jpg',
+        '/images/store/meals/granola-bites.jpg',
+
     ];
 
     $mealDescriptions = [
@@ -69,6 +85,13 @@ class MealsSeeder extends Seeder
         'Delicious Ground Turkey Bake Mixed With Sweet Potatoes.',
         'Red Bell Peppers Stuffed with Ground Turkey seasoned with Taco and Tex mex styled spices and Garlic Brown Rice served with Mixed Veggies.',
         'Flavorful Ground Turkey Chili over Quinoa.',
+        'Delicious protein pancakes, topped with non-sugar raw blue agave sweetener, strawberries, blueberries, and a taste of low fat butter.',
+        'Golden and crispy protein waffles, topped with stawberries and blueberries, non-sugar blue agave sweetener, and a pinch of low fat butter.',
+        'Lightly toasted whole wheat bread, topped with our signature avocado spread and an over easy egg. Sprinkled with cilantro and lime.',
+        'A family classic. Non-fat greek yogurt, layered with organic granola and stawberries.',
+        'Organic oatmeal with fresh plump blueberries. Serve warm and enjoy!',
+        'Homemade brownies made for the Keto friendly diet. Packed with healthy fats and no carbs, this is the perfect treat for pre or post workout',
+        'Our homemade granola snacks are the perfect low calroie alternative for a life on the go. Baked fresh on premise with all organic ingredients.'
     ];
 
         $daysAgo = [
@@ -76,7 +99,7 @@ class MealsSeeder extends Seeder
             Carbon::now()->subDays(25)
         ];
 
-        for($i=0;$i<16;$i++){
+        for($i=0;$i<23;$i++){
         DB::table('meals')->insert([
             'active' => 1,
             'store_id' => 1,

@@ -65,6 +65,61 @@ class AllergyMealSeeder extends Seeder
             'allergy_id' => 4
         ]);
 
+        DB::table('allergy_meal')->insert([
+            'meal_id' => 17,
+            'allergy_id' => 4
+        ]);
+        DB::table('allergy_meal')->insert([
+            'meal_id' => 17,
+            'allergy_id' => 5
+        ]);
+
+        DB::table('allergy_meal')->insert([
+            'meal_id' => 18,
+            'allergy_id' => 4
+        ]);
+        DB::table('allergy_meal')->insert([
+            'meal_id' => 18,
+            'allergy_id' => 5
+        ]);
+
+        DB::table('allergy_meal')->insert([
+            'meal_id' => 19,
+            'allergy_id' => 6
+        ]);
+
+        DB::table('allergy_meal')->insert([
+            'meal_id' => 20,
+            'allergy_id' => 3
+        ]);
+
+        DB::table('allergy_meal')->insert([
+            'meal_id' => 21,
+            'allergy_id' => 4
+        ]);
+        DB::table('allergy_meal')->insert([
+            'meal_id' => 21,
+            'allergy_id' => 8
+        ]);
+        DB::table('allergy_meal')->insert([
+            'meal_id' => 21,
+            'allergy_id' => 7
+        ]);
+
+        DB::table('allergy_meal')->insert([
+            'meal_id' => 22,
+            'allergy_id' => 3
+        ]);
+        DB::table('allergy_meal')->insert([
+            'meal_id' => 22,
+            'allergy_id' => 5
+        ]);
+
+        DB::table('allergy_meal')->insert([
+            'meal_id' => 23,
+            'allergy_id' => 7
+        ]);
+
     	
     }
 }
