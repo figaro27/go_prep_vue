@@ -13,7 +13,7 @@ class Subscription extends Model
 {
     protected $fillable = ['status', 'cancelled_at'];
 
-    protected $appends = ['store_name', 'latest_order', 'next_delivery_date', 'meal_ids', 'meal_quantities'];
+    protected $appends = ['store_name', 'latest_order', 'next_delivery_date', 'meal_ids', 'meal_quantities', 'charge_time'];
 
     protected $casts = [
 
@@ -78,6 +78,14 @@ class Subscription extends Model
       });
     }
 
+    public function getChargeTimeAttribute() {
+      $cutoffDays = $this->store->settings->cutoff_days;
+      $cutoffHours = $this->store->settings->cutoff_hours;
+      $date = new Carbon($this->next_delivery_date);
+      $chargeTime = $date->subDays($cutoffDays)->subHours($cutoffHours);;
+      return $chargeTime->format('D, m/d/Y');
+    }
+
     /*
     public function getMealsAttribute()
     {
@@ -104,8 +112,13 @@ class Subscription extends Model
      */
     public function renew(Collection $stripeInvoice)
     {
-        $latestOrder = $this->orders()->orderBy('delivery_date', 'desc')->first();
-        $latestOrder->paid = true;
+        $latestOrder = $this->orders()->where([
+          ['paid', 0],
+        ])
+        ->whereDate('delivery_date', '>=', Carbon::now())
+        ->orderBy('delivery_date', 'desc')->first();
+
+        $latestOrder->paid = 1;
         $latestOrder->paid_at = new Carbon();
         $latestOrder->stripe_id = $stripeInvoice->get('id', null);
         $latestOrder->save();
@@ -114,8 +127,9 @@ class Subscription extends Model
         $newOrder = $this->latest_order->replicate(['created_at', 'updated_at', 'delivery_date', 'paid', 'paid_at', 'stripe_id']);
         $newOrder->created_at = now();
         $newOrder->updated_at = now();
-        $newOrder->delivery_date = $this->next_delivery_date;
+        $newOrder->delivery_date = $latestOrder->delivery_date->addWeeks(1);
         $newOrder->paid = 0;
+        $newOrder->viewed = 0;
         $newOrder->fulfilled = 0;
         $newOrder->order_number = substr(uniqid(rand(1, 9), false), 0, 12);
         $newOrder->push();

@@ -21,8 +21,14 @@ class StripeController extends Controller
 
         if($type === 'invoice.payment_succeeded') {
           $subId = $obj->get('subscription', null);
-          $subscription = null;
+          $amountPaid = $obj->get('amount_paid', null);
 
+          // Meal plan paused
+          if(!$amountPaid) {
+            return 'Amount paid = 0. Meal plan paused. Skipping renewal';
+          }
+
+          $subscription = null;
           if($subId) {
             $subId = substr($subId, 4);
             $subscription = Subscription::where('stripe_id', $subId)->first();
@@ -30,9 +36,9 @@ class StripeController extends Controller
 
           if($subscription) {
             // Make sure status is set to 'active'
-            if($subscription->isPaused()) {
-              $subscription->resume(false);
-            }
+            //if($subscription->isPaused()) {
+            //  $subscription->resume(false);
+            //}
 
             // Create new Order for subscription
             $subscription->renew($obj);
