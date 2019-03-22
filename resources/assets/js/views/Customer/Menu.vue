@@ -120,7 +120,7 @@
                         <h5>{{ format.money(meal.price) }}</h5>
                       </div>
                       <div class="col-lg-4">
-                        <img src="/images/customer/add.jpg" @click="addOne(meal)">
+                        <b-btn @click="addOne(meal)" class="menu-bag-btn">+ ADD</b-btn>
                       </div>
                     </div>
                     <div class="row" v-if="!storeSettings.showNutrition">
@@ -128,7 +128,7 @@
                         <h5>{{ format.money(meal.price) }}</h5>
                       </div>
                       <div class="col-lg-6">
-                        <img src="/images/customer/add.jpg" @click="addOne(meal)">
+                        <b-btn @click="addOne(meal)" class="menu-bag-btn">+ ADD</b-btn>
                       </div>
                     </div>
                   </div>
