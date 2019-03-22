@@ -123,7 +123,7 @@
                         <b-btn @click="addOne(meal)" class="menu-bag-btn">+ ADD</b-btn>
                       </div>
                     </div>
-                    <div class="row" v-if="!storeSettings.showNutrition">
+                    <div class="row mt-5" v-if="!storeSettings.showNutrition">
                       <div class="col-lg-6">
                         <h5>{{ format.money(meal.price) }}</h5>
                       </div>
