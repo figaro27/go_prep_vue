@@ -12,39 +12,26 @@ class CategoryMealSeeder extends Seeder
     public function run()
     {
 
-        for($i=1;$i<=9;$i++){
+        for($i=0;$i<=15;$i++){
         DB::table('category_meal')->insert([
             'meal_id' => $i,
             'category_id' => 1
         ]);
     	}
 
-        for($i=11;$i<=16;$i++){
-        DB::table('category_meal')->insert([
-            'meal_id' => $i,
-            'category_id' => 1
-        ]);
-        }
-
-
-
-    	for($i=17;$i<=21;$i++){
+    	for($i=16;$i<=20;$i++){
         DB::table('category_meal')->insert([
             'meal_id' => $i,
             'category_id' => 2
         ]);
     	}
 
-        for($i=22;$i<=23;$i++){
+        for($i=21;$i<=23;$i++){
         DB::table('category_meal')->insert([
             'meal_id' => $i,
             'category_id' => 3
         ]);
         }
 
-        DB::table('category_meal')->insert([
-            'meal_id' => 10,
-            'category_id' => 3
-        ]);
     }
 }

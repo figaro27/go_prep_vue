@@ -24,7 +24,6 @@ class MealsSeeder extends Seeder
         'Garlic Shrimp Bowl',
         'Hot and Spicy Chicken',
         'Lemon Cod',
-        'Level 1 Bar - Peanut Butter',
         'Peanut Crusted Chicken',
         'Steak Tips',
         'Sweet Chili Turkey Meatballs',
@@ -37,7 +36,8 @@ class MealsSeeder extends Seeder
         'Yogurt Parfait',
         'Blueberry Oatmeal',
         'Keto Bomb Brownies',
-        'Low Calorie Granola Bites'
+        'Low Calorie Granola Bites',
+        'Level 1 Bar - Peanut Butter',
 
     ];
 
@@ -51,7 +51,6 @@ class MealsSeeder extends Seeder
         '/images/store/meals/garlic-shrimp-bowl.jpeg',
         '/images/store/meals/hot-and-spicy-chicken.jpeg',
         '/images/store/meals/lemon-cod.jpeg',
-        '/images/store/meals/level-1-bar-peanut-butter.jpeg',
         '/images/store/meals/peanut-crusted-chicken.jpeg',
         '/images/store/meals/steak-tips.jpeg',
         '/images/store/meals/sweet-chili-turkey-meatballs.jpeg',
@@ -65,6 +64,7 @@ class MealsSeeder extends Seeder
         '/images/store/meals/oatmeal.jpg',
         '/images/store/meals/brownies.jpg',
         '/images/store/meals/granola-bites.jpg',
+        '/images/store/meals/level-1-bar-peanut-butter.jpeg',
 
     ];
 
@@ -78,7 +78,6 @@ class MealsSeeder extends Seeder
         'Shrimp Tossed in Lemon and Garlic Sauce over Quinoa.',
         '5 Spice Seasoned Chicken with Cauliflower and Brown Rice.',
         'Lemon and Garlic Cod served over Seasoned Quinoa and Green Beans.',
-        'Healthy snack for on the go.',
         'Peanut Crusted Chicken  With Pineapple salsa and Garlic Flavored Brown Rice.',
         'Seasoned Steak Tip with Sweet Potatoes and Mixed Veggies.',
         'Tasty and Delicious Turkey Meatballs, drizzled in a Sweet and Sour Sauce, with Asian Style Green Beans and Brown Rice.',
@@ -91,7 +90,8 @@ class MealsSeeder extends Seeder
         'A family classic. Non-fat greek yogurt, layered with organic granola and stawberries.',
         'Organic oatmeal with fresh plump blueberries. Serve warm and enjoy!',
         'Homemade brownies made for the Keto friendly diet. Packed with healthy fats and no carbs, this is the perfect treat for pre or post workout',
-        'Our homemade granola snacks are the perfect low calorie alternative for a life on the go. Baked fresh on premise with all organic ingredients.'
+        'Our homemade granola snacks are the perfect low calorie alternative for a life on the go. Baked fresh on premise with all organic ingredients.',
+        'Healthy snack for on the go.',
     ];
 
         $daysAgo = [
@@ -99,7 +99,7 @@ class MealsSeeder extends Seeder
             Carbon::now()->subDays(25)
         ];
 
-        for($i=0;$i<23;$i++){
+        for($i=0;$i<=14;$i++){
         DB::table('meals')->insert([
             'active' => 1,
             'store_id' => 1,
@@ -110,6 +110,32 @@ class MealsSeeder extends Seeder
             'created_at' => $daysAgo[rand(0,1)],
         ]);
     }
+
+
+    for($i=15;$i<=19;$i++){
+        DB::table('meals')->insert([
+            'active' => 1,
+            'store_id' => 1,
+            'featured_image' => $mealImages[$i],
+            'title' => $mealTitles[$i],
+            'description' => $mealDescriptions[$i],
+            'price' => mt_rand(60, 80) / 10,
+            'created_at' => $daysAgo[rand(0,1)],
+        ]);
+    }
+
+    for($i=20;$i<=22;$i++){
+        DB::table('meals')->insert([
+            'active' => 1,
+            'store_id' => 1,
+            'featured_image' => $mealImages[$i],
+            'title' => $mealTitles[$i],
+            'description' => $mealDescriptions[$i],
+            'price' => mt_rand(40, 60) / 10,
+            'created_at' => $daysAgo[rand(0,1)],
+        ]);
+    }
+
 
         // $tags = [];
         // foreach (['Low Carb', 'Low Calorie', 'Vegan', 'High Fiber', 'Low Fat', 'Low Sugar', 'Low Sodium', 'High Protein', 'Low Cholesterol', 'Low Saturated Fat'] as $tag) {
