@@ -28,12 +28,15 @@ class MealsIngredients
         foreach($meals as $meal) {
           $i = count($rows);
 
-          $rows[$i] = [
-            $meal->title,
-            $meal->ingredients[0]->food_name,
-            $meal->ingredients[0]->quantity,
-            $meal->ingredients[0]->quantity_unit,
-          ];
+          if (count($meal->ingredients) > 0)
+          {
+            $rows[$i] = [
+              $meal->title,
+              $meal->ingredients[0]->food_name,
+              $meal->ingredients[0]->quantity,
+              $meal->ingredients[0]->quantity_unit,
+            ];
+          }
 
           if(count($meal->ingredients) > 1) {
             for($x = 1; $x < count($meal->ingredients); $x++) {
@@ -49,7 +52,7 @@ class MealsIngredients
           }
         }
         
-        return $rows;
+        return $meals;
     }
 
     public function exportPdfView()
