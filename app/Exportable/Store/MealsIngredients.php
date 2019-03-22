@@ -52,7 +52,7 @@ class MealsIngredients
           }
         }
         
-        return $meals;
+        return $rows;
     }
 
     public function exportPdfView()
