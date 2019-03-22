@@ -244,14 +244,31 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <td height="10"></td>
                       </tr>
                       <tr>
-                        <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:12px; color:#3b3b3b; line-height:26px; text-transform:uppercase;line-height:24px;">Fees</td>
+                        <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:12px; color:#3b3b3b; line-height:26px; text-transform:uppercase;line-height:24px;">@php
+                        $subtotal = $order->preFeePreDiscount;
+                        $mealPlanDiscount = $order->mealPlanDiscount;
+                        $deliveryFee = $order->deliveryFee;
+                        $processingFee = $order->processingFee;
+                        $salesTax = $order->salesTax;
+                        @endphp
+
+                        @if ($mealPlanDiscount > 0 || $deliveryFee > 0 || $processingFee > 0)
+                        Subtotal<br>
+                        @endif
+                        @if ($mealPlanDiscount > 0)
+                        Meal Plan Discount<br>
+                        @endif
+                        @if ($deliveryFee > 0)
+                        Delivery Fee<br>
+                        @endif
+                        @if ($processingFee > 0)
+                        Processing Fee<br>
+                        @endif
+                        Sales Tax
+                      </td>
                       </tr>
-                      @php
-              			$feesTotal = 0;
-              			$feesTotal += ($order->deliveryFee + $order->processingFee)
-              		  @endphp
                       <tr>
-                        <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($feesTotal, 2) }}</td>
+                        <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</td>
                       </tr>
                       <tr>
                         <td height="15"></td>
@@ -269,7 +286,20 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <td height="10"></td>
                       </tr>
                       <tr>
-                        <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:12px; color:#3b3b3b; line-height:26px; text-transform:uppercase;line-height:24px;">Total</td>
+                        <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:12px; color:#3b3b3b; line-height:26px; text-transform:uppercase;line-height:24px;">@if ($mealPlanDiscount > 0 || $deliveryFee > 0 || $processingFee > 0)
+                          ${{ number_format($subtotal, 2) }}<br>
+                          @endif
+                          @if ($mealPlanDiscount > 0)
+                          ${{ number_format($mealPlanDiscount, 2) }}<br>
+                          @endif
+                          @if ($deliveryFee > 0)
+                          ${{ number_format($deliveryFee, 2) }}<br>
+                          @endif
+                          @if ($processingFee > 0)
+                          ${{ number_format($processingFee, 2) }}<br>
+                          @endif
+                          ${{ number_format($salesTax, 2) }}
+                        </td>
                       </tr>
                       <tr>
                         <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($order->amount, 2) }}</td>

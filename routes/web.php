@@ -20,6 +20,7 @@
     Route::get('/mail/newSubscription', 'EmailTestController@storeNewSubscription');
     Route::get('/mail/newOrder', 'EmailTestController@customerNewOrder');
     Route::get('/mail/mealPlanPaused', 'EmailTestController@customerMealPlanPaused');
+    Route::get('/mail/storeNewOrder', 'EmailTestController@storeNewOrder');
 
 
 foreach ([config('app.domain')] as $domain) {

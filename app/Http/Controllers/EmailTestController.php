@@ -105,6 +105,14 @@ class EmailTestController extends Controller
         Mail::to('customer@goprep.com')->send($email);
     }
 
-
+    public function storeNewOrder(){
+        $customer = Customer::first();
+        $order = Order::first();
+        $email = new NewOrder([
+                'customer' => $customer,
+                'order' => $order,
+            ]);
+        Mail::to('store@goprep.com')->send($email);
+    }
     
 }
