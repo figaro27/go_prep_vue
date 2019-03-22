@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\MealOrder;
 use App\Meal;
+use App\OrderEvent;
 
 use Illuminate\Support\Carbon;
 
@@ -50,6 +51,11 @@ class Order extends Model
     public function subscription()
     {
         return $this->belongsTo('App\Subscription');
+    }
+
+    public function events()
+    {
+        return $this->hasMany('App\OrderEvent');
     }
 
     public function getHasNotesAttribute()
