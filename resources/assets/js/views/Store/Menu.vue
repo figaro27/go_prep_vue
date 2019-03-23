@@ -605,6 +605,7 @@ export default {
         this.refreshTable();
         this.deleteMealModal = false;
         this.$toastr.s("Meal deleted!");
+        this.substitute_id = null;
       });
     },
 
