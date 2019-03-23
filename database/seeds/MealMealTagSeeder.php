@@ -231,5 +231,94 @@ class MealMealTagSeeder extends Seeder
             'meal_tag_id' => 9
         ]);
 
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 17,
+            'meal_tag_id' => 8
+        ]);
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 17,
+            'meal_tag_id' => 6
+        ]);
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 17,
+            'meal_tag_id' => 10
+        ]);
+
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 18,
+            'meal_tag_id' => 8
+        ]);
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 18,
+            'meal_tag_id' => 6
+        ]);
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 18,
+            'meal_tag_id' => 10
+        ]);
+
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 19,
+            'meal_tag_id' => 2
+        ]);
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 19,
+            'meal_tag_id' => 9
+        ]);
+
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 20,
+            'meal_tag_id' => 1
+        ]);
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 20,
+            'meal_tag_id' => 6
+        ]);
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 20,
+            'meal_tag_id' => 10
+        ]);
+
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 21,
+            'meal_tag_id' => 4
+        ]);
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 21,
+            'meal_tag_id' => 9
+        ]);
+
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 22,
+            'meal_tag_id' => 1
+        ]);
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 22,
+            'meal_tag_id' => 4
+        ]);
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 22,
+            'meal_tag_id' => 8
+        ]);
+
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 23,
+            'meal_tag_id' => 2
+        ]);
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 23,
+            'meal_tag_id' => 9
+        ]);
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 23,
+            'meal_tag_id' => 7
+        ]);
+        DB::table('meal_meal_tag')->insert([
+            'meal_id' => 23,
+            'meal_tag_id' => 4
+        ]);
+
+
+
     }
 }

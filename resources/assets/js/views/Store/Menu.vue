@@ -501,8 +501,8 @@ export default {
         description: this.meal.description,
         price: this.meal.price,
         category_ids: this.meal.category_ids,
+        ingredients: this.meal.ingredients
       };
-
       const updated = await this.updateMeal(this.meal.id, data, true);
 
       if(updated) {
