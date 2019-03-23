@@ -142,9 +142,10 @@ class Meal extends Model
      */
     public function getSubstituteAttribute()
     {
-        return $this->orders()->where([
-            ['delivery_date', '>', Carbon::now('utc')],
-        ])->count() > 0;
+        // return $this->orders()->where([
+        //     ['delivery_date', '>', Carbon::now('utc')],
+        // ])->count() > 0;
+        return $this->subscription_count > 0;
     }
 
     public function getSubstituteIdsAttribute()
