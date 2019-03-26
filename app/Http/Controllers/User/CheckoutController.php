@@ -154,8 +154,6 @@ class CheckoutController extends UserController
                 'prorate' => false,
             ], ['stripe_account' => $store->settings->stripe_id]);
 
-
-
             $userSubscription = new Subscription();
             $userSubscription->user_id = $user->id;
             $userSubscription->customer_id = $customer->id;

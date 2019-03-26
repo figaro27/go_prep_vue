@@ -244,7 +244,7 @@ class Store extends Model
         $date = $this->getNextDeliveryDate(false);
       }
       else {
-        $date = $this->getNextDeliveryDay($weekIndex);  
+        $date = $this->getNextDeliveryDay($weekIndex);
       }
 
       return $date ? $date->subSeconds($this->getCutoffSeconds()) : null;
