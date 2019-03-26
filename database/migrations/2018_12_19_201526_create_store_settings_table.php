@@ -16,7 +16,7 @@ class CreateStoreSettingsTable extends Migration
         Schema::create('store_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('store_id')->references('id')->on('stores');
-            $table->string('timezone')->default('EST');
+            $table->string('timezone')->default('America/New_York');
             $table->boolean('open')->default(true);
             $table->text('closedReason')->nullable();
             $table->string('minimumOption')->default('price');

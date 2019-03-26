@@ -138,7 +138,7 @@ class RegisterController extends Controller
             'user_role_id' => ($data['user']['role'] === 'store' ? 2 : 1),
             'email' => $data['user']['email'],
             'password' => Hash::make($data['user']['password']),
-            'timezone' => 'EST',
+            'timezone' => 'America/New_York',
             'remember_token' => Hash::make(str_random(10)),
             // 'accepted_tos' => $data['user']['accepted_tos'],
         ]);
@@ -176,7 +176,7 @@ class RegisterController extends Controller
             ]);
 
             $storeSettings = $store->settings()->create([
-                'timezone' => 'EST',
+                'timezone' => 'America/New_York',
                 'open' => 0,
                 'notifications' => [],
                 'transferType' => 'delivery',
