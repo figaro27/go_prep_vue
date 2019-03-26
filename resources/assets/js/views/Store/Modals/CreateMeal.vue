@@ -71,7 +71,7 @@
           </b-tabs>
         </b-col>
 
-        <b-col cols="2">
+        <b-col md="3" lg="2">
           <picture-input
             ref="featuredImageInput"
             :alertOnError="false"

@@ -194,7 +194,7 @@
             </b-tabs>
           </b-col>
 
-          <b-col cols="2">
+          <b-col md="3" lg="2">
             <picture-input
               :ref="`featuredImageInput${meal.id}`"
               :prefill="meal.featured_image ? meal.featured_image : false"
