@@ -10,20 +10,20 @@
       </div>
 
       <div v-if="storeSettings.open === false">
-      <div class="row">
-        <div class="col-sm-12 mt-3">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="center-text">This company will not be taking new orders at this time.</h5>
-                  <p class="center-text mt-3">
-                    <strong>Reason:</strong>
-                    {{ storeSettings.closedReason }}
-                  </p>
-                </div>
+        <div class="row">
+          <div class="col-sm-12 mt-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="center-text">This company will not be taking new orders at this time.</h5>
+                <p class="center-text mt-3">
+                  <strong>Reason:</strong>
+                  {{ storeSettings.closedReason }}
+                </p>
               </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
       <div class="modal-basic">
         <b-modal size="lg" v-model="viewFilterModal" v-if="viewFilterModal" hide-header>
@@ -238,9 +238,16 @@
                     <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
                       <div v-if="item && item.quantity > 0" class="d-flex align-items-center">
                         <div class="bag-item-quantity mr-2">
-                          <div @click="addOne(item.meal)" class="bag-plus-minus brand-color white-text"><i>+</i></div>
+                          <div
+                            @click="addOne(item.meal)"
+                            class="bag-plus-minus brand-color white-text"
+                          >
+                            <i>+</i>
+                          </div>
                           <p class="bag-quantity">{{ item.quantity }}</p>
-                          <div @click="minusOne(item.meal)" class="bag-plus-minus gray white-text"><i>-</i></div>
+                          <div @click="minusOne(item.meal)" class="bag-plus-minus gray white-text">
+                            <i>-</i>
+                          </div>
                         </div>
                         <div class="bag-item-image mr-2">
                           <thumbnail
@@ -249,7 +256,7 @@
                             class="cart-item-img"
                           ></thumbnail>
                         </div>
-                        <div class="flex-grow-1 mr-2" >{{ item.meal.title }}</div>
+                        <div class="flex-grow-1 mr-2">{{ item.meal.title }}</div>
                         <div class="flex-grow-0">
                           <img
                             src="/images/customer/x.png"
@@ -279,11 +286,11 @@
                       class="align-right"
                     >Please add {{format.money(remainingPrice)}} more to continue.</p>
                   </div>
-                  <div v-if="minOption === 'price' && totalBagPrice >= minPrice && !preview && !manualOrder">
+                  <div
+                    v-if="minOption === 'price' && totalBagPrice >= minPrice && !preview && !manualOrder"
+                  >
                     <router-link to="/customer/bag" v-if="!subscriptionId">
-                      <b-btn
-                        class="menu-bag-btn"
-                      >NEXT</b-btn>
+                      <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
                     <b-btn v-else class="menu-bag-btn" @click="updateSubscriptionMeals">UPDATE MEALS</b-btn>
                   </div>
@@ -384,6 +391,7 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
 import Spinner from "../../components/Spinner";
 import units from "../../data/units";
+import nutrition from "../../data/nutrition";
 import format from "../../lib/format";
 import SalesTax from "sales-tax";
 
@@ -449,7 +457,7 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       storeCustomers: "storeCustomers",
-    storeSetting: "viewedStoreSetting",
+      storeSetting: "viewedStoreSetting",
       total: "bagQuantity",
       allergies: "allergies",
       bag: "bagItems",
@@ -464,7 +472,10 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice"
     }),
-  storeSettings() {
+    nutrition() {
+      return nutrition;
+    },
+    storeSettings() {
       return this.store.settings;
     },
     minimumOption() {
@@ -489,10 +500,10 @@ export default {
       return "meal";
     },
     totalBagPriceBeforeFees() {
-    let deliveryFee = this.storeSettings.deliveryFee;
-    let processingFee = this.storeSettings.processingFee;
-    let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
-    let applyProcessingFee = this.storeSettings.applyProcessingFee;
+      let deliveryFee = this.storeSettings.deliveryFee;
+      let processingFee = this.storeSettings.processingFee;
+      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+      let applyProcessingFee = this.storeSettings.applyProcessingFee;
 
       if (applyDeliveryFee && applyProcessingFee) {
         return this.totalBagPrice - deliveryFee - processingFee;
@@ -503,8 +514,8 @@ export default {
       } else return this.totalBagPrice;
     },
     totalBagPriceAfterFees() {
-    let deliveryFee = this.storeSettings.deliveryFee;
-    let processingFee = this.storeSettings.processingFee;
+      let deliveryFee = this.storeSettings.deliveryFee;
+      let processingFee = this.storeSettings.processingFee;
 
       if (this.addDeliveryFee && this.addProcessingFee) {
         return this.totalBagPriceBeforeFees + deliveryFee + processingFee;
@@ -515,7 +526,7 @@ export default {
       } else return this.totalBagPriceBeforeFees;
     },
     transferType() {
-    return this.storeSettings.transferType.split(",");
+      return this.storeSettings.transferType.split(",");
     },
     transferTypeCheck() {
       if (
@@ -657,7 +668,7 @@ export default {
       });
       return grouped;
     },
-    showIngredients(){
+    showIngredients() {
       return this.storeSettings.showIngredients;
     }
   },
@@ -714,100 +725,12 @@ export default {
       this.mealModal = true;
 
       this.$nextTick(() => {
-        this.getNutritionFacts(this.meal, this.meal.ingredients);
+        this.getNutritionFacts(this.meal.ingredients, this.meal);
       });
     },
-    getNutritionTotals: function(ingredients, normalize = true) {
-      let nutrition = {
-        calories: 0,
-        totalFat: 0,
-        satFat: 0,
-        transFat: 0,
-        cholesterol: 0,
-        sodium: 0,
-        totalCarb: 0,
-        fibers: 0,
-        sugars: 0,
-        proteins: 0,
-        vitaminD: 0,
-        potassium: 0,
-        calcium: 0,
-        iron: 0,
-        addedSugars: 0
-      };
-
-      ingredients.forEach(ingredient => {
-        let calciumIndex = _.findIndex(ingredient.full_nutrients, function(o) {
-          return o.attr_id == 301;
-        });
-        let vitamindIndex = _.findIndex(ingredient.full_nutrients, function(o) {
-          return o.attr_id == 324;
-        });
-        let ironIndex = _.findIndex(ingredient.full_nutrients, function(o) {
-          return o.attr_id == 303;
-        });
-
-        let multiplier = 1;
-
-        if (normalize) {
-          multiplier = ingredient.quantity || 1;
-        }
-
-        if (
-          normalize &&
-          ingredient.quantity_unit != units.base(ingredient.unit_type)
-        ) {
-          multiplier *= units.convert(
-            1,
-            ingredient.quantity_unit,
-            units.base(ingredient.unit_type)
-          );
-        }
-
-        nutrition.calories +=
-          (ingredient.nf_calories || ingredient.calories) * multiplier;
-        nutrition.totalFat +=
-          (ingredient.nf_total_fat || ingredient.totalFat) * multiplier;
-        nutrition.satFat +=
-          (ingredient.nf_saturated_fat || ingredient.satFat) * multiplier;
-        nutrition.transFat +=
-          (ingredient.nf_trans_fat || ingredient.transFat) * multiplier;
-        nutrition.cholesterol +=
-          (ingredient.nf_cholesterol || ingredient.cholesterol) * multiplier;
-        nutrition.sodium +=
-          (ingredient.nf_sodium || ingredient.sodium) * multiplier;
-        nutrition.totalCarb +=
-          (ingredient.nf_total_carbohydrate || ingredient.totalCarb) *
-          multiplier;
-        nutrition.fibers +=
-          (ingredient.nf_dietary_fiber || ingredient.fibers) * multiplier;
-        nutrition.sugars +=
-          (ingredient.nf_sugars || ingredient.sugars) * multiplier;
-        nutrition.proteins +=
-          (ingredient.nf_protein || ingredient.proteins) * multiplier;
-        nutrition.potassium +=
-          (ingredient.nf_potassium || ingredient.potassium) * multiplier;
-        nutrition.vitaminD +=
-          (vitamindIndex > -1
-            ? ingredient.full_nutrients[vitamindIndex].value
-            : ingredient.vitaminD) * multiplier;
-        nutrition.calcium +=
-          calciumIndex > -1
-            ? ingredient.full_nutrients[calciumIndex].value
-            : ingredient.calcium;
-        nutrition.iron +=
-          ironIndex > -1
-            ? ingredient.full_nutrients[ironIndex].value
-            : ingredient.iron;
-        nutrition.sugars +=
-          (ingredient.nf_addedsugars || ingredient.sugars) * multiplier;
-      });
-
-      return nutrition;
-    },
-    getNutritionFacts(meal, ingredients) {
-      const nutrition = this.getNutritionTotals(ingredients);
-      const ingredientList = this.getIngredientList(ingredients);
+    getNutritionFacts(ingredients, meal) {
+      const nutrition = this.nutrition.getTotals(ingredients);
+      const ingredientList = this.nutrition.getIngredientList(ingredients);
 
       $(this.$refs.nutritionFacts).html("");
 
@@ -815,7 +738,7 @@ export default {
         showServingUnitQuantity: false,
         itemName: meal.title,
         ingredientList: ingredientList,
-        showIngredients : this.showIngredients,
+        showIngredients: this.showIngredients,
 
         decimalPlacesForQuantityTextbox: 2,
         valueServingUnitQuantity: 1,
@@ -844,16 +767,6 @@ export default {
         valueAddedSugars: nutrition.addedSugars,
         showLegacyVersion: false
       });
-    },
-    getIngredientList: function(ingredients) {
-      let ingredientList = "";
-      ingredients.forEach(function(ingredient) {
-        ingredientList +=
-          ingredient.food_name.charAt(0).toUpperCase() +
-          ingredient.food_name.slice(1) +
-          ", ";
-      });
-      return ingredientList;
     },
     addBagItems(bag) {
       this.$store.commit("addBagItems", bag);
@@ -943,9 +856,7 @@ export default {
       try {
         const { data } = await axios.post(
           `/api/me/subscriptions/${this.subscriptionId}/meals`,
-          { bag: this.bag,
-            salesTaxRate: this.salesTaxRate
-          }
+          { bag: this.bag, salesTaxRate: this.salesTaxRate }
         );
         await this.refreshSubscriptions();
         this.emptyBag();
@@ -956,22 +867,23 @@ export default {
           }
         });
       } catch (e) {
-        if(!_.isEmpty(e.response.data.error)) {
+        if (!_.isEmpty(e.response.data.error)) {
           this.$toastr.e(e.response.data.error);
-        }
-        else {
-          this.$toastr.e('Please try again or contact our support team', 'Failed to update meals!');
+        } else {
+          this.$toastr.e(
+            "Please try again or contact our support team",
+            "Failed to update meals!"
+          );
         }
         return;
       }
     },
-    getSalesTax(state){
-      SalesTax.getSalesTax("US", state)
-      .then((tax) => {
+    getSalesTax(state) {
+      SalesTax.getSalesTax("US", state).then(tax => {
         this.setSalesTax(tax.rate);
       });
     },
-    setSalesTax(rate){
+    setSalesTax(rate) {
       this.salesTaxRate = rate;
     }
   }
