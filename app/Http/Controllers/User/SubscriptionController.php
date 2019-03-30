@@ -6,8 +6,7 @@ use App\Bag;
 use App\MealOrder;
 use App\MealSubscription;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use App\Customer;
+use Illuminate\Support\Carbon;
 
 class SubscriptionController extends UserController
 {
@@ -30,20 +29,19 @@ class SubscriptionController extends UserController
     {
         $sub = $this->user->subscriptions()->find($id);
 
-        if(!$sub) {
-          return response()->json([
-            'error' => 'Meal plan not found'
-          ], 404);
+        if (!$sub) {
+            return response()->json([
+                'error' => 'Meal plan not found',
+            ], 404);
 
         }
 
         try {
-          $sub->cancel();
-        }
-        catch(\Exception $e) {
-          return response()->json([
-            'error' => 'Failed to cancel Meal Plan'
-          ], 500); 
+            $sub->cancel();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to cancel Meal Plan',
+            ], 500);
         }
     }
 
@@ -52,23 +50,23 @@ class SubscriptionController extends UserController
      *
      * @return \Illuminate\Http\Response
      */
-    public function pause($id) {
-      $sub = $this->user->subscriptions()->find($id);
+    public function pause($id)
+    {
+        $sub = $this->user->subscriptions()->find($id);
 
-      if(!$sub) {
-        return response()->json([
-          'error' => 'Meal plan not found'
-        ], 404);
-      }
+        if (!$sub) {
+            return response()->json([
+                'error' => 'Meal plan not found',
+            ], 404);
+        }
 
-      try {
-        $sub->pause();
-      }
-      catch(\Exception $e) {
-        return response()->json([
-          'error' => 'Failed to pause Meal Plan'
-        ], 500); 
-      }
+        try {
+            $sub->pause();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to pause Meal Plan',
+            ], 500);
+        }
     }
 
     /**
@@ -76,29 +74,29 @@ class SubscriptionController extends UserController
      *
      * @return \Illuminate\Http\Response
      */
-    public function resume($id) {
-      $sub = $this->user->subscriptions()->find($id);
+    public function resume($id)
+    {
+        $sub = $this->user->subscriptions()->find($id);
 
-      if ($sub->store->settings->open === false){
-        return response()->json([
-          'error' => 'This store is currently closed. Please try again when they re-open.'
-        ], 404);
-      }
+        if ($sub->store->settings->open === false) {
+            return response()->json([
+                'error' => 'This store is currently closed. Please try again when they re-open.',
+            ], 404);
+        }
 
-      if(!$sub) {
-        return response()->json([
-          'error' => 'Meal plan not found'
-        ], 404);
-      }
+        if (!$sub) {
+            return response()->json([
+                'error' => 'Meal plan not found',
+            ], 404);
+        }
 
-      try {
-        $sub->resume();
-      }
-      catch(\Exception $e) {
-        return response()->json([
-          'error' => 'Failed to resume Meal Plan'
-        ], 500); 
-      }
+        try {
+            $sub->resume();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to resume Meal Plan',
+            ], 500);
+        }
     }
 
     /**
@@ -127,29 +125,6 @@ class SubscriptionController extends UserController
         }
 
         $bag = new Bag($request->get('bag'));
-
-        MealSubscription::where('subscription_id', $sub->id)->delete();
-        foreach ($bag->getItems() as $item) {
-            $mealSub = new MealSubscription();
-            $mealSub->subscription_id = $sub->id;
-            $mealSub->store_id = $store->id;
-            $mealSub->meal_id = $item['meal']['id'];
-            $mealSub->quantity = $item['quantity'];
-            $mealSub->save();
-        }
-
-        // Update latest order IF cutoff hasn't passed yet
-        if(!$sub->latest_order->cutoff_passed) {
-          MealOrder::where('order_id', $sub->latest_order->id)->delete();
-          foreach ($bag->getItems() as $item) {
-            $mealOrder = new MealOrder();
-            $mealOrder->order_id = $sub->latest_order->id;
-            $mealOrder->store_id = $store->id;
-            $mealOrder->meal_id = $item['meal']['id'];
-            $mealOrder->quantity = $item['quantity'];
-            $mealOrder->save();
-          }
-        }
 
         $application_fee = $store->settings->application_fee;
         $total = $bag->getTotal();
@@ -181,6 +156,7 @@ class SubscriptionController extends UserController
         $salesTax = $total * $salesTaxRate;
         $total += $salesTax;
 
+        // Delete existing stripe plan
         try {
             $plan = \Stripe\Plan::retrieve($sub->stripe_plan, ['stripe_account' => $sub->store->settings->stripe_id]);
             $plan->delete();
@@ -188,16 +164,7 @@ class SubscriptionController extends UserController
 
         }
 
-        $sub->preFeePreDiscount = $preFeePreDiscount;
-        $sub->mealPlanDiscount = $mealPlanDiscount;
-        $sub->afterDiscountBeforeFees = $afterDiscountBeforeFees;
-        $sub->processingFee = $processingFee;
-        $sub->deliveryFee = $deliveryFee;
-        $sub->salesTax = $salesTax;
-
-        $sub->amount = $total;
-        $sub->save();
-
+        // Create stripe plan with new pricing
         $plan = \Stripe\Plan::create([
             "amount" => round($total * 100),
             "interval" => "week",
@@ -207,6 +174,7 @@ class SubscriptionController extends UserController
             "currency" => "usd",
         ], ['stripe_account' => $store->settings->stripe_id]);
 
+        // Assign plan to stripe subscription
         \Stripe\Subscription::update($subscription->id, [
             'cancel_at_period_end' => false,
             'items' => [
@@ -218,5 +186,65 @@ class SubscriptionController extends UserController
             'prorate' => false,
         ], ['stripe_account' => $store->settings->stripe_id]);
 
+        // Assign new plan ID to subscription
+        $sub->stripe_plan = $plan->id;
+
+        // Update meals in subscription
+        MealSubscription::where('subscription_id', $sub->id)->delete();
+        foreach ($bag->getItems() as $item) {
+            $mealSub = new MealSubscription();
+            $mealSub->subscription_id = $sub->id;
+            $mealSub->store_id = $store->id;
+            $mealSub->meal_id = $item['meal']['id'];
+            $mealSub->quantity = $item['quantity'];
+            $mealSub->save();
+        }
+
+        // Update subscription pricing
+        $sub->preFeePreDiscount = $preFeePreDiscount;
+        $sub->mealPlanDiscount = $mealPlanDiscount;
+        $sub->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+        $sub->processingFee = $processingFee;
+        $sub->deliveryFee = $deliveryFee;
+        $sub->salesTax = $salesTax;
+        $sub->amount = $total;
+        $sub->save();
+
+        // Update future orders IF cutoff hasn't passed yet
+        $futureOrders = $sub->orders()
+            ->where([
+                ['fulfilled', 0],
+                ['paid', 0],
+            ])
+            ->whereDate('delivery_date', '>=', Carbon::now())
+            ->get();
+
+        foreach ($futureOrders as $order) {
+            // Cutoff already passed. Missed your chance bud!
+            if ($order->cutoff_passed) {
+                continue;
+            }
+
+            // Update order pricing
+            $order->preFeePreDiscount = $preFeePreDiscount;
+            $order->mealPlanDiscount = $mealPlanDiscount;
+            $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+            $order->processingFee = $processingFee;
+            $order->deliveryFee = $deliveryFee;
+            $order->salesTax = $salesTax;
+            $order->amount = $total;
+            $order->save();
+
+            // Replace order meals
+            $order->meal_orders()->delete();
+            foreach ($bag->getItems() as $item) {
+                $mealOrder = new MealOrder();
+                $mealOrder->order_id = $order->id;
+                $mealOrder->store_id = $store->id;
+                $mealOrder->meal_id = $item['meal']['id'];
+                $mealOrder->quantity = $item['quantity'];
+                $mealOrder->save();
+            }
+        }
     }
 }

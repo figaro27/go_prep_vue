@@ -141,23 +141,26 @@ class Subscription extends Model
             'stripe_event' => $stripeEvent,
         ]);
 
-        //try {
-        $newOrder = $this->latest_order->replicate(['created_at', 'updated_at', 'delivery_date', 'paid', 'paid_at', 'stripe_id']);
-        $newOrder->created_at = now();
-        $newOrder->updated_at = now();
+        // Create new order for next delivery
+        $newOrder = new Order;
+        $newOrder->user_id = $this->user_id;
+        $newOrder->customer_id = $this->customer_id;
+        $newOrder->store_id = $this->store->id;
+        $newOrder->subscription_id = $this->id;
+        $newOrder->order_number = strtoupper(substr(uniqid(rand(10, 99), false), 0, 10));
+        $newOrder->preFeePreDiscount = $this->preFeePreDiscount;
+        $newOrder->mealPlanDiscount = $this->mealPlanDiscount;
+        $newOrder->afterDiscountBeforeFees = $this->afterDiscountBeforeFees;
+        $newOrder->deliveryFee = $this->deliveryFee;
+        $newOrder->processingFee = $this->processingFee;
+        $newOrder->salesTax = $this->salesTax;
+        $newOrder->amount = $this->amount;
+        $newOrder->fulfilled = false;
+        $newOrder->pickup = $this->pickup;
         $newOrder->delivery_date = $latestOrder->delivery_date->addWeeks(1);
-        $newOrder->paid = 0;
-        $newOrder->viewed = 0;
-        $newOrder->fulfilled = 0;
-        $newOrder->order_number = substr(uniqid(rand(1, 9), false), 0, 12);
-        $newOrder->push();
+        $newOrder->save();
 
-        try {
-            $newOrder->meal_orders()->forceDelete();
-        } catch (\Exception $e) {
-
-        }
-
+        // Assign subscription meals to new order
         foreach ($this->meals as $meal) {
             $mealSub = new MealOrder();
             $mealSub->order_id = $newOrder->id;
@@ -166,10 +169,6 @@ class Subscription extends Model
             $mealSub->quantity = $meal->pivot->quantity;
             $mealSub->save();
         }
-
-        //} catch (\Exception $e) {
-
-        //}
     }
 
     /**

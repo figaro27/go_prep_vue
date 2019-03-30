@@ -40,7 +40,7 @@ class StripeController extends Controller
             //  $subscription->resume(false);
             //}
 
-            // Create new Order for subscription
+            // Process renewal
             $subscription->renew($obj, $event);
             return 'Meal plan renewed';
           }
