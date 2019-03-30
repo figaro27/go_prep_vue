@@ -2,17 +2,16 @@
 
 namespace App;
 
-use App\Store;
 use App\MealOrder;
+use App\Store;
+use App\Subscription;
+use App\Traits\LocalizesDates;
 use App\Utils\Data\Format;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Exception;
-use App\Traits\LocalizesDates;
 
 class Meal extends Model
 {
@@ -46,7 +45,7 @@ class Meal extends Model
         'substitute_ids',
         'ingredient_ids',
         'order_ids',
-        'created_at_local'
+        'created_at_local',
     ];
 
     protected $hidden = [
@@ -64,11 +63,14 @@ class Meal extends Model
      */
     protected $dates = ['deleted_at', 'local_created_at'];
 
-    public function getQuantityAttribute() {
-      if($this->pivot && $this->pivot->quantity) {
-        return $this->pivot->quantity;
-      }
-      else return null;
+    public function getQuantityAttribute()
+    {
+        if ($this->pivot && $this->pivot->quantity) {
+            return $this->pivot->quantity;
+        } else {
+            return null;
+        }
+
     }
 
     public function getLifetimeOrdersAttribute()
@@ -235,7 +237,7 @@ class Meal extends Model
 
     public function getAllergyTitlesAttribute()
     {
-        return collect($this->allergies)->map(function ($meal){
+        return collect($this->allergies)->map(function ($meal) {
             return $meal->title;
         });
     }
@@ -295,7 +297,7 @@ class Meal extends Model
         $request->validate([
             'title' => 'required',
             'price' => 'required|numeric|min:.01',
-            'category_ids' => 'required'
+            'category_ids' => 'required',
         ]);
 
         $user = auth('api')->user();
@@ -329,8 +331,7 @@ class Meal extends Model
             if ($props->has('featured_image')) {
                 $imageUrl = Utils\Images::uploadB64($request->get('featured_image'));
                 $props->put('featured_image', $imageUrl);
-            }
-            else {
+            } else {
                 $defaultImageUrl = '/images/defaultMeal.jpg';
                 $props->put('featured_image', $defaultImageUrl);
             }
@@ -389,7 +390,7 @@ class Meal extends Model
                                 $meal->store->units()->create([
                                     'store_id' => $store->id,
                                     'ingredient_id' => $ingredient->id,
-                                    'unit' => $newIngredient->get('serving_unit', Format::baseUnit($ingredient->unit_type))
+                                    'unit' => $newIngredient->get('serving_unit', Format::baseUnit($ingredient->unit_type)),
                                 ]);
 
                             } else {
@@ -468,8 +469,8 @@ class Meal extends Model
         ]);
 
         if ($props->has('featured_image')) {
-          $imageUrl = Utils\Images::uploadB64($props->get('featured_image'));
-          $props->put('featured_image', $imageUrl);
+            $imageUrl = Utils\Images::uploadB64($props->get('featured_image'));
+            $props->put('featured_image', $imageUrl);
         }
 
         /*
@@ -556,7 +557,7 @@ class Meal extends Model
                                 $meal->store->units()->create([
                                     'store_id' => $meal->store_id,
                                     'ingredient_id' => $ingredient->id,
-                                    'unit' => $newIngredient->get('serving_unit', Format::baseUnit($ingredient->unit_type))
+                                    'unit' => $newIngredient->get('serving_unit', Format::baseUnit($ingredient->unit_type)),
                                 ]);
 
                             } else {
@@ -616,6 +617,17 @@ class Meal extends Model
         $store = $meal->store;
 
         if ($sub) {
+            $subscriptionMeals = MealSubscription::where([
+                ['meal_id', $meal->id],
+            ])
+                ->get();
+
+            $subscriptionMeals->each(function ($subscriptionMeal) use ($subId) {
+                $subscriptionMeal->meal_id = $subId;
+                $subscriptionMeal->save();
+                $subscriptionMeal->subscription->syncPrices();
+            });
+
             $mealOrders = MealOrder::with(['order'])
                 ->where([
                     'meal_id' => $meal->id,
@@ -625,21 +637,21 @@ class Meal extends Model
                     return $mealOrder->order->subscription_id > 0;
                 });
 
-            $mealOrders->each(function ($mealOrder) use ($meal, $sub) {
+            $mealOrders->each(function ($mealOrder) use ($meal, $sub, $store) {
                 $mealOrder->update(['meal_id' => $sub->id]);
 
-                if($mealOrder->order->has('subscription')) {
-                  $user = $mealOrder->order->user;
-                  
-                  if($user) {
-                    $user->sendNotification('subscription_meal_substituted', [
-                      'user' => $mealOrder->order->user,
-                      'subscription' => $mealOrder->order->subscription,
-                      'old_meal' => $meal,
-                      'sub_meal' => $sub,
-                      'store' => $store
-                    ]);
-                  }
+                if ($mealOrder->order->has('subscription')) {
+                    $user = $mealOrder->order->user;
+
+                    if ($user) {
+                        $user->sendNotification('subscription_meal_substituted', [
+                            'user' => $mealOrder->order->user,
+                            'subscription' => $mealOrder->order->subscription,
+                            'old_meal' => $meal,
+                            'sub_meal' => $sub,
+                            'store' => $store,
+                        ]);
+                    }
                 }
             });
         }

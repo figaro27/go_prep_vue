@@ -289,4 +289,13 @@ class Subscription extends Model
             $this->store->sendNotification('resumed_subscription', $this);
         }
     }
+
+    /**
+     * Ensures subscription pricing is in line with the attached meals
+     *
+     * @return void
+     */
+    public function syncPrices() {
+      // todo: implement
+    }
 }
