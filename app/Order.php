@@ -89,12 +89,10 @@ class Order extends Model
       });
     }
     public function getCutoffPassedAttribute() {
-      $ddates = $this->store->settings->getNextDeliveryDates(true);
-
-      $oddate = new Carbon($this->delivery_date);
-      $diff = $oddate->diffInSeconds(Carbon::now());
-      
-      return $oddate->isPast() || $diff <= $this->store->getCutoffSeconds();
+      $ddate = new Carbon($this->delivery_date, $this->store->settings->timezone);
+      $ddate->setTime(0, 0);
+      $cutoff = $ddate->subSeconds($this->store->getCutoffSeconds());
+      return $cutoff->isPast();
     }
 
     public static function updateOrder($id, $props)
