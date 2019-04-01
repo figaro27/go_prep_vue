@@ -346,10 +346,6 @@ const actions = {
     dispatch
   }, args = {}) {
 
-    if(auth.getToken()) {
-      await auth.refreshToken();
-    }
-    
     const res = await axios.get('/api');
     const {data} = await res;
 

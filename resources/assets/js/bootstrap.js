@@ -49,19 +49,9 @@ if (token) {
 }
 
 import auth from './lib/auth';
-const jwt = auth.getToken();
+auth.init();
 
-if(jwt) {
-  window.axios.defaults.headers.common["Authorization"] = `Bearer ${
-    jwt.access_token
-  }`;
-}
-
-// Refresh token every hour
-setInterval(() => {
-  auth.refreshToken();
-}, 59 * 60 * 1000);
-
+//const jwt = auth.getToken();
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

@@ -1,6 +1,15 @@
 import Cookies from 'js-cookie';
 
+let refreshTimeout = null;
+let interceptor = null;
+
 const auth = {
+
+  init() {
+    if(auth.hasToken()) {
+      auth.setToken(auth.getToken())
+    }
+  },
 
   getToken() {
     return Cookies.getJSON("jwt") || null;
@@ -11,16 +20,27 @@ const auth = {
   },
 
   setToken(jwt) {
-    window.axios.defaults.headers.common["Authorization"] = `Bearer ${
-    jwt.access_token}`;
-
     Cookies.set("jwt", jwt, {domain: window.app.domain});
-    //localStorage.setItem("jwt", JSON.stringify(jwt));
+
+    interceptor = window.axios.interceptors.request.use(config => {
+      const jwt = auth.getToken()
+      if (jwt) {
+        config.headers.common['Authorization'] = `Bearer ${jwt.access_token}`;
+      }
+      return config
+    });
+
+    // Schedule a token refresh
+    clearTimeout(refreshTimeout)
+    refreshTimeout = setTimeout(() => {
+      auth.refreshToken();
+    }, jwt.expires_in - 30);
   },
 
   deleteToken() {
-    window.axios.defaults.headers.common["Authorization"] = null;
+    //window.axios.defaults.headers.common["Authorization"] = null;
     Cookies.remove("jwt", {domain: window.app.domain});
+    window.axios.interceptors.request.eject(interceptor);
   },
 
   async refreshToken() {
@@ -37,7 +57,7 @@ const auth = {
     if(resp.data.access_token) {
       auth.setToken(resp.data);
     }
-  }
+  },
 }
 
 export default auth;
