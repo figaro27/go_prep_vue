@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Meal;
 use App\MealTag;
+use App\Observers\MealObserver;
 use App\Observers\MealTagObserver;
 use Braintree_Configuration;
 use Illuminate\Support\Facades\Schema;
@@ -19,11 +20,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (config('app.env') === 'production' || config('app.env') === 'staging') {
-          // Exclude goprep.localhost from SSL protection
-          if(false === strpos(app('request')->fullUrl(), 'goprep.localhost')) {
-            \URL::forceScheme('https');
-          }
+        if (
+            config('app.env') === 'production' ||
+            config('app.env') === 'staging'
+        ) {
+            // Exclude goprep.localhost from SSL protection
+            if (
+                false === strpos(app('request')->fullUrl(), 'goprep.localhost')
+            ) {
+                \URL::forceScheme('https');
+            }
         }
 
         Schema::defaultStringLength(191);
@@ -35,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
 
         \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
 
+        Meal::observe(MealObserver::class);
         MealTag::observe(MealTagObserver::class);
 
         Meal::saved(function ($meal) {
@@ -44,8 +51,6 @@ class AppServiceProvider extends ServiceProvider
         // UnitsOfMeasure aliases
         $unit = Volume::getUnit('tbsp');
         $unit->addAlias('Tbs');
-
-
     }
 
     /**
