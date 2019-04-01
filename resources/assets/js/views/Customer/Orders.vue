@@ -3,15 +3,19 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <Spinner v-if="isLoading"/>
-          <b-alert v-if="orders[0]" :show="!!$route.query.created || false" variant="success">
+          <Spinner v-if="isLoading" />
+          <b-alert
+            v-if="orders[0]"
+            :show="!!$route.query.created || false"
+            variant="success"
+          >
             <p class="center-text mt-3">
               Thank you for your order.
-              <span
-                v-if="!!$route.query.pickup"
-              >You should pick up your order on</span>
+              <span v-if="!!$route.query.pickup"
+                >You should pick up your order on</span
+              >
               <span v-else>Your meals will be delivered on</span>
-              {{ moment(orders[0].delivery_date).format('dddd, MMM Do') || '' }}
+              {{ moment(orders[0].delivery_date).format("dddd, MMM Do") || "" }}
             </p>
           </b-alert>
           <b-alert :show="0 === orders.length || false" variant="warning">
@@ -28,7 +32,14 @@
                     </div>
                     <div class="col-md-4">
                       <h4>Placed On</h4>
-                      <p>{{ moment.utc(order.created_at).local().format('dddd, MMM Do, Y') }}</p>
+                      <p>
+                        {{
+                          moment
+                            .utc(order.created_at)
+                            .local()
+                            .format("dddd, MMM Do, Y")
+                        }}
+                      </p>
                     </div>
                     <div class="col-md-4">
                       <h2>{{ format.money(order.amount) }}</h2>
@@ -37,46 +48,59 @@
 
                   <div class="row">
                     <div class="col-md-4">
-                      <h4>{{ order.pickup ? 'Pickup Day' : 'Delivery Day' }}</h4>
-                      <p
-                        v-if="!order.fulfilled"
-                      >{{ moment(order.delivery_date).format('dddd, MMM Do') }}</p>
-                      <p
-                        v-else
-                      >Delivered On: {{ moment(order.delivery_date).format('dddd, MMM Do') }}</p>
+                      <h4>
+                        {{ order.pickup ? "Pickup Day" : "Delivery Day" }}
+                      </h4>
+                      <p v-if="!order.fulfilled">
+                        {{ moment(order.delivery_date).format("dddd, MMM Do") }}
+                      </p>
+                      <p v-else>
+                        Delivered On:
+                        {{ moment(order.delivery_date).format("dddd, MMM Do") }}
+                      </p>
                     </div>
                     <div class="col-md-4">
                       <h4>Company</h4>
                       <p>{{ order.store_name }}</p>
                     </div>
                     <div class="col-md-4">
-                      <img src="/images/collapse-arrow.png" class="mt-2 pt-3">
+                      <img src="/images/collapse-arrow.png" class="mt-2 pt-3" />
                     </div>
                   </div>
 
                   <b-collapse :id="'collapse' + order.id" class="mt-2">
-                    <b-table striped stacked="sm" :items="getMealTableData(order)" foot-clone>
+                    <b-table
+                      striped
+                      stacked="sm"
+                      :items="getMealTableData(order)"
+                      foot-clone
+                    >
                       <template slot="image" slot-scope="row">
-                        <img :src="row.value" class="modalMeal">
+                        <img :src="row.value" class="modalMeal" />
                       </template>
 
                       <template slot="FOOT_subtotal" slot-scope="row">
-                        <p>Subtotal: {{ format.money(order.preFeePreDiscount) }}</p>
+                        <p>
+                          Subtotal: {{ format.money(order.preFeePreDiscount) }}
+                        </p>
                         <p v-if="order.mealPlanDiscount > 0">
                           Meal Plan Discount:
-                          <span
-                            class="text-success"
-                          >({{ format.money(order.mealPlanDiscount) }})</span>
+                          <span class="text-success"
+                            >({{ format.money(order.mealPlanDiscount) }})</span
+                          >
                         </p>
-                        <p
-                          v-if="order.deliveryFee > 0"
-                        >Delivery Fee: {{ format.money(order.deliveryFee) }}</p>
-                        <p
-                          v-if="order.processingFee > 0"
-                        >Processing Fee: {{ format.money(order.processingFee) }}</p>
+                        <p v-if="order.deliveryFee > 0">
+                          Delivery Fee: {{ format.money(order.deliveryFee) }}
+                        </p>
+                        <p v-if="order.processingFee > 0">
+                          Processing Fee:
+                          {{ format.money(order.processingFee) }}
+                        </p>
                         <p>Sales Tax: {{ format.money(order.salesTax) }}</p>
                         <p>
-                          <strong>Total: {{ format.money(order.amount) }}</strong>
+                          <strong
+                            >Total: {{ format.money(order.amount) }}</strong
+                          >
                         </p>
                       </template>
 
@@ -107,26 +131,27 @@ export default {
   },
   computed: {
     ...mapGetters({
-      orders: "orders",
+      _orders: "orders",
       isLoading: "isLoading"
-    })
+    }),
+    orders() {
+      return this._orders.filter(meal => {
+        return meal.paid === 1;
+      });
+    }
   },
   mounted() {},
   methods: {
     ...mapActions(["refreshCustomerOrders"]),
     getMealTableData(order) {
-      return order.meals
-        .filter(meal => {
-          return meal.paid;
-        })
-        .map(meal => {
-          return {
-            image: meal.featured_image,
-            meal: meal.title,
-            quantity: meal.pivot.quantity,
-            subtotal: format.money(meal.price * meal.pivot.quantity)
-          };
-        });
+      return order.meals.map(meal => {
+        return {
+          image: meal.featured_image,
+          meal: meal.title,
+          quantity: meal.pivot.quantity,
+          subtotal: format.money(meal.price * meal.pivot.quantity)
+        };
+      });
     }
   }
 };
