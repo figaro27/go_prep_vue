@@ -347,6 +347,11 @@ class Subscription extends Model
             );
         }
 
+        // Cancelled subscription. Halt here
+        if ($subscription->status === \Stripe\Subscription::STATUS_CANCELED) {
+            return;
+        }
+
         $items = $this->meal_subscriptions->map(function ($meal) {
             return [
                 'quantity' => $meal->quantity,
