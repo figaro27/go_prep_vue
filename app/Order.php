@@ -36,6 +36,11 @@ class Order extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function customer()
+    {
+        return $this->belongsTo('App\Customer');
+    }
+
     public function store()
     {
         return $this->belongsTo('App\Store');

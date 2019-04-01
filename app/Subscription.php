@@ -11,11 +11,17 @@ class Subscription extends Model
 {
     protected $fillable = ['status', 'cancelled_at'];
 
-    protected $appends = ['store_name', 'latest_order', 'latest_unpaid_order', 'next_delivery_date', 'meal_ids', 'meal_quantities', 'charge_time'];
-
-    protected $casts = [
-
+    protected $appends = [
+        'store_name',
+        'latest_order',
+        'latest_unpaid_order',
+        'next_delivery_date',
+        'meal_ids',
+        'meal_quantities',
+        'charge_time'
     ];
+
+    protected $casts = [];
 
     public function user()
     {
@@ -34,7 +40,9 @@ class Subscription extends Model
 
     public function meals()
     {
-        return $this->belongsToMany('App\Meal', 'meal_subscriptions')->withPivot('quantity')->withTrashed();
+        return $this->belongsToMany('App\Meal', 'meal_subscriptions')
+            ->withPivot('quantity')
+            ->withTrashed();
     }
 
     public function meal_subscriptions()
@@ -49,16 +57,18 @@ class Subscription extends Model
 
     public function getLatestOrderAttribute()
     {
-        return $this->orders()->orderBy('delivery_date', 'desc')->first();
+        return $this->orders()
+            ->orderBy('delivery_date', 'desc')
+            ->first();
     }
 
     public function getLatestUnpaidOrderAttribute()
     {
-        $latestOrder = $this->orders()->where([
-            ['paid', 0],
-        ])
+        $latestOrder = $this->orders()
+            ->where([['paid', 0]])
             ->whereDate('delivery_date', '>=', Carbon::now())
-            ->orderBy('delivery_date', 'desc')->first();
+            ->orderBy('delivery_date', 'desc')
+            ->first();
 
         return $latestOrder;
     }
@@ -66,7 +76,9 @@ class Subscription extends Model
     public function getNextDeliveryDateAttribute()
     {
         if ($this->latest_order) {
-            $date = new Carbon($this->latest_order->delivery_date->toDateTimeString());
+            $date = new Carbon(
+                $this->latest_order->delivery_date->toDateTimeString()
+            );
 
             if ($date->isFuture()) {
                 return $date;
@@ -80,13 +92,18 @@ class Subscription extends Model
 
     public function getMealIdsAttribute()
     {
-        return $this->meals()->get()->pluck('id');
+        return $this->meals()
+            ->get()
+            ->pluck('id');
     }
     public function getMealQuantitiesAttribute()
     {
-        return $this->meals()->get()->keyBy('id')->map(function ($meal) {
-            return $meal->pivot->quantity ?? 0;
-        });
+        return $this->meals()
+            ->get()
+            ->keyBy('id')
+            ->map(function ($meal) {
+                return $meal->pivot->quantity ?? 0;
+            });
     }
 
     public function getChargeTimeAttribute()
@@ -128,7 +145,9 @@ class Subscription extends Model
         $latestOrder = $this->latest_unpaid_order;
 
         if (!$latestOrder) {
-            throw new \Exception('No unpaid order for subscription #' . $this->id);
+            throw new \Exception(
+                'No unpaid order for subscription #' . $this->id
+            );
         }
 
         $latestOrder->paid = 1;
@@ -138,16 +157,18 @@ class Subscription extends Model
 
         $latestOrder->events()->create([
             'type' => 'payment_succeeded',
-            'stripe_event' => $stripeEvent,
+            'stripe_event' => $stripeEvent
         ]);
 
         // Create new order for next delivery
-        $newOrder = new Order;
+        $newOrder = new Order();
         $newOrder->user_id = $this->user_id;
         $newOrder->customer_id = $this->customer_id;
         $newOrder->store_id = $this->store->id;
         $newOrder->subscription_id = $this->id;
-        $newOrder->order_number = strtoupper(substr(uniqid(rand(10, 99), false), 0, 10));
+        $newOrder->order_number = strtoupper(
+            substr(uniqid(rand(10, 99), false), 0, 10)
+        );
         $newOrder->preFeePreDiscount = $this->preFeePreDiscount;
         $newOrder->mealPlanDiscount = $this->mealPlanDiscount;
         $newOrder->afterDiscountBeforeFees = $this->afterDiscountBeforeFees;
@@ -176,17 +197,21 @@ class Subscription extends Model
      *
      * @return boolean
      */
-    public function paymentFailed(Collection $stripeInvoice, Collection $stripeEvent)
-    {
+    public function paymentFailed(
+        Collection $stripeInvoice,
+        Collection $stripeEvent
+    ) {
         $latestOrder = $this->latest_unpaid_order;
 
         if (!$latestOrder) {
-            throw new \Exception('No unpaid order for subscription #' . $this->id);
+            throw new \Exception(
+                'No unpaid order for subscription #' . $this->id
+            );
         }
 
         $latestOrder->events()->create([
             'type' => 'payment_failed',
-            'stripe_event' => $stripeEvent,
+            'stripe_event' => $stripeEvent
         ]);
     }
 
@@ -199,25 +224,27 @@ class Subscription extends Model
     {
         if ($withStripe) {
             try {
-                $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
-                    'stripe_account' => $this->store->settings->stripe_id,
-                ]);
+                $subscription = \Stripe\Subscription::retrieve(
+                    'sub_' . $this->stripe_id,
+                    [
+                        'stripe_account' => $this->store->settings->stripe_id
+                    ]
+                );
                 $subscription->cancel_at_period_end = true;
                 $subscription->save();
             } catch (\Exception $e) {
-
             }
         }
 
         $this->update([
             'status' => 'cancelled',
-            'cancelled_at' => Carbon::now('utc'),
+            'cancelled_at' => Carbon::now('utc')
         ]);
 
         if ($this->store->notificationEnabled('cancelled_subscription')) {
             $this->store->sendNotification('cancelled_subscription', [
                 'subscription' => $this,
-                'customer' => $this->customer,
+                'customer' => $this->customer
             ]);
         }
     }
@@ -232,32 +259,38 @@ class Subscription extends Model
         if ($withStripe) {
             try {
                 $coupon = \Stripe\Coupon::retrieve('subscription-paused', [
-                    'stripe_account' => $this->store->settings->stripe_id,
+                    'stripe_account' => $this->store->settings->stripe_id
                 ]);
             } catch (\Exception $e) {
-                $coupon = \Stripe\Coupon::create([
-                    'duration' => 'forever',
-                    'id' => 'subscription-paused',
-                    'percent_off' => 100,
-                ], [
-                    'stripe_account' => $this->store->settings->stripe_id,
-                ]);
+                $coupon = \Stripe\Coupon::create(
+                    [
+                        'duration' => 'forever',
+                        'id' => 'subscription-paused',
+                        'percent_off' => 100
+                    ],
+                    [
+                        'stripe_account' => $this->store->settings->stripe_id
+                    ]
+                );
             }
 
             $storeCustomer = $this->user->getStoreCustomer($this->store->id);
 
             //$storeCustomer->subscriptions->retrieve('', '');
 
-            $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
-                'stripe_account' => $this->store->settings->stripe_id,
-            ]);
+            $subscription = \Stripe\Subscription::retrieve(
+                'sub_' . $this->stripe_id,
+                [
+                    'stripe_account' => $this->store->settings->stripe_id
+                ]
+            );
             $subscription->coupon = 'subscription-paused';
             $subscription->save();
         }
 
         $this->update([
             'status' => 'paused',
-            'paused_at' => Carbon::now('utc'),
+            'paused_at' => Carbon::now('utc')
         ]);
 
         if ($this->store->notificationEnabled('paused_subscription')) {
@@ -273,16 +306,19 @@ class Subscription extends Model
     public function resume($withStripe = true)
     {
         if ($withStripe) {
-            $subscription = \Stripe\Subscription::retrieve('sub_' . $this->stripe_id, [
-                'stripe_account' => $this->store->settings->stripe_id,
-            ]);
+            $subscription = \Stripe\Subscription::retrieve(
+                'sub_' . $this->stripe_id,
+                [
+                    'stripe_account' => $this->store->settings->stripe_id
+                ]
+            );
             $subscription->coupon = null;
             $subscription->save();
         }
 
         $this->update([
             'status' => 'active',
-            'paused_at' => null,
+            'paused_at' => null
         ]);
 
         if ($this->store->notificationEnabled('resumed_subscription')) {
@@ -295,7 +331,151 @@ class Subscription extends Model
      *
      * @return void
      */
-    public function syncPrices() {
-      // todo: implement
+    public function syncPrices()
+    {
+        try {
+            $subscription = \Stripe\Subscription::retrieve(
+                'sub_' . $this->stripe_id,
+                ['stripe_account' => $this->store->settings->stripe_id]
+            );
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'error' => 'Meal plan not found at payment gateway'
+                ],
+                404
+            );
+        }
+
+        $items = $this->meal_subscriptions->map(function ($meal) {
+            return [
+                'quantity' => $meal->quantity,
+                'meal' => [
+                    'id' => $meal->meal->id,
+                    'price' => $meal->meal->price
+                ]
+            ];
+        });
+
+        $bag = new Bag($items);
+
+        $total = $bag->getTotal();
+        $afterDiscountBeforeFees = $bag->getTotal();
+        $preFeePreDiscount = $bag->getTotal();
+
+        $deliveryFee = 0;
+        $processingFee = 0;
+        $mealPlanDiscount = 0;
+        $salesTaxRate =
+            round(100 * ($this->salesTax / $this->amount)) / 100 ?? 0;
+
+        if ($this->store->settings->applyMealPlanDiscount) {
+            $discount = $this->store->settings->mealPlanDiscount / 100;
+            $mealPlanDiscount = $total * $discount;
+            $total -= $mealPlanDiscount;
+            $afterDiscountBeforeFees = $total;
+        }
+
+        if ($this->store->settings->applyDeliveryFee) {
+            $total += $this->store->settings->deliveryFee;
+            $deliveryFee += $this->store->settings->deliveryFee;
+        }
+
+        if ($this->store->settings->applyProcessingFee) {
+            $total += $this->store->settings->processingFee;
+            $processingFee += $this->store->settings->processingFee;
+        }
+
+        $salesTax = $total * $salesTaxRate;
+        $total += $salesTax;
+
+        // Update subscription pricing
+        $this->preFeePreDiscount = $preFeePreDiscount;
+        $this->mealPlanDiscount = $mealPlanDiscount;
+        $this->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+        $this->processingFee = $processingFee;
+        $this->deliveryFee = $deliveryFee;
+        $this->salesTax = $salesTax;
+        $this->amount = $total;
+        $this->save();
+
+        // Delete existing stripe plan
+        try {
+            $plan = \Stripe\Plan::retrieve($this->stripe_plan, [
+                'stripe_account' => $this->store->settings->stripe_id
+            ]);
+            $plan->delete();
+        } catch (\Exception $e) {
+        }
+
+        // Create stripe plan with new pricing
+        $plan = \Stripe\Plan::create(
+            [
+                "amount" => round($total * 100),
+                "interval" => "week",
+                "product" => [
+                    "name" =>
+                        "Weekly subscription (" .
+                        $this->store->storeDetail->name .
+                        ")"
+                ],
+                "currency" => "usd"
+            ],
+            ['stripe_account' => $this->store->settings->stripe_id]
+        );
+
+        // Assign plan to stripe subscription
+        \Stripe\Subscription::update(
+            $subscription->id,
+            [
+                'cancel_at_period_end' => false,
+                'items' => [
+                    [
+                        'id' => $subscription->items->data[0]->id,
+                        'plan' => $plan->id
+                    ]
+                ],
+                'prorate' => false
+            ],
+            ['stripe_account' => $this->store->settings->stripe_id]
+        );
+
+        // Assign new plan ID to subscription
+        $this->stripe_plan = $plan->id;
+        $this->save();
+
+        // Update future orders IF cutoff hasn't passed yet
+        $futureOrders = $this->orders()
+            ->where([['fulfilled', 0], ['paid', 0]])
+            ->whereDate('delivery_date', '>=', Carbon::now())
+            ->get();
+
+        foreach ($futureOrders as $order) {
+            // Cutoff already passed. Missed your chance bud!
+            if ($order->cutoff_passed) {
+                continue;
+            }
+
+            // Update order pricing
+            $order->preFeePreDiscount = $preFeePreDiscount;
+            $order->mealPlanDiscount = $mealPlanDiscount;
+            $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+            $order->processingFee = $processingFee;
+            $order->deliveryFee = $deliveryFee;
+            $order->salesTax = $salesTax;
+            $order->amount = $total;
+            $order->save();
+
+            // Replace order meals
+            $order->meal_orders()->delete();
+            foreach ($bag->getItems() as $item) {
+                $mealOrder = new MealOrder();
+                $mealOrder->order_id = $order->id;
+                $mealOrder->store_id = $this->store->id;
+                $mealOrder->meal_id = $item['meal']['id'];
+                $mealOrder->quantity = $item['quantity'];
+                $mealOrder->save();
+            }
+        }
     }
 }

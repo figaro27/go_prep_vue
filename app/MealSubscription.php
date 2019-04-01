@@ -2,18 +2,13 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class MealSubscription extends Model
+class MealSubscription extends Pivot
 {
     protected $table = 'meal_subscriptions';
 
-    protected $appends = ['quantity'];
-
-    public function getQuantityAttribute()
-    {
-        return $this->pivot->quantity;
-    }
+    protected $appends = [];
 
     public function meals()
     {
@@ -30,9 +25,8 @@ class MealSubscription extends Model
         return $this->hasMany('App\Subscription');
     }
 
-    public function subscription(){
-    	return $this->belongsTo('App\Subscription');
+    public function subscription()
+    {
+        return $this->belongsTo('App\Subscription');
     }
-
-    
 }

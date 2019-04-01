@@ -19,7 +19,12 @@ class Meal extends Model
     use LocalizesDates;
 
     protected $fillable = [
-        'active', 'featured_image', 'title', 'description', 'price', 'created_at',
+        'active',
+        'featured_image',
+        'title',
+        'description',
+        'price',
+        'created_at'
     ];
 
     protected $casts = [
@@ -27,7 +32,7 @@ class Meal extends Model
         'active_orders_price' => 'decimal:2',
         'created_at' => 'date:F d, Y',
         'created_at_local' => 'date:F d, Y',
-        'substitute' => 'boolean',
+        'substitute' => 'boolean'
     ];
 
     protected $appends = [
@@ -45,14 +50,14 @@ class Meal extends Model
         'substitute_ids',
         'ingredient_ids',
         'order_ids',
-        'created_at_local',
+        'created_at_local'
     ];
 
     protected $hidden = [
         'allergies',
         'categories',
         'orders',
-        'subscriptions',
+        'subscriptions'
         //'ingredients',
     ];
 
@@ -70,13 +75,14 @@ class Meal extends Model
         } else {
             return null;
         }
-
     }
 
     public function getLifetimeOrdersAttribute()
     {
         $id = $this->id;
-        return MealOrder::where('meal_id', $id)->get()->sum('quantity');
+        return MealOrder::where('meal_id', $id)
+            ->get()
+            ->sum('quantity');
     }
 
     public function getActiveOrdersAttribute()
@@ -91,7 +97,6 @@ class Meal extends Model
 
     public function getNutritionAttribute()
     {
-
         $nutrition = [];
 
         foreach ($this->ingredients as $ingredient) {
@@ -100,7 +105,8 @@ class Meal extends Model
                     $nutrition[$field] = 0;
                 }
 
-                $nutrition[$field] += $ingredient[$field] * $ingredient->pivot->quantity_grams;
+                $nutrition[$field] +=
+                    $ingredient[$field] * $ingredient->pivot->quantity_grams;
             }
         }
 
@@ -152,40 +158,61 @@ class Meal extends Model
 
     public function getSubstituteIdsAttribute()
     {
-        $ids = Cache::rememberForever('meal_substitutes_' . $this->id, function () {
-            $mealsQuery = $this->store->meals()->where([
-                ['id', '<>', $this->id],
-                ['price', '<=', $this->price * 1.2],
-                ['price', '>=', $this->price * 0.8],
-            ])
-                ->whereDoesntHave('allergies', function ($query) {
-                    $allergyIds = $this->allergies->pluck('id');
-                    $query->whereIn('allergies.id', $allergyIds);
-                });
+        $ids = Cache::rememberForever(
+            'meal_substitutes_' . $this->id,
+            function () {
+                $mealsQuery = $this->store
+                    ->meals()
+                    ->where([
+                        ['id', '<>', $this->id],
+                        ['price', '<=', $this->price * 1.2],
+                        ['price', '>=', $this->price * 0.8]
+                    ])
+                    ->whereDoesntHave('allergies', function ($query) {
+                        $allergyIds = $this->allergies->pluck('id');
+                        $query->whereIn('allergies.id', $allergyIds);
+                    });
 
-            $meals = $mealsQuery->get();
-            if ($meals->count() <= 5) {
-                return $meals->pluck('id');
+                $meals = $mealsQuery->get();
+                if ($meals->count() <= 5) {
+                    return $meals->pluck('id');
+                }
+
+                $mealsQuery = $mealsQuery->whereNotIn(
+                    'id',
+                    $meals->pluck('id')
+                );
+
+                $mealsQuery = $mealsQuery
+                    ->whereHas(
+                        'categories',
+                        function ($query) {
+                            $catIds = $this->categories->pluck('id');
+                            return $query->whereIn('categories.id', $catIds);
+                        },
+                        '>=',
+                        1
+                    )
+                    ->orWhereHas(
+                        'tags',
+                        function ($query) {
+                            $tagIds = $this->tags->pluck('id');
+                            return $query->whereIn('meal_tags.id', $tagIds);
+                        },
+                        '>=',
+                        1
+                    );
+
+                $extraMeals = $mealsQuery->get();
+
+                return $meals
+                    ->concat($extraMeals)
+                    ->slice(0, 5)
+                    ->pluck('id');
             }
-
-            $mealsQuery = $mealsQuery->whereNotIn('id', $meals->pluck('id'));
-
-            $mealsQuery = $mealsQuery->whereHas('categories', function ($query) {
-                $catIds = $this->categories->pluck('id');
-                return $query->whereIn('categories.id', $catIds);
-            }, '>=', 1)
-                ->orWhereHas('tags', function ($query) {
-                    $tagIds = $this->tags->pluck('id');
-                    return $query->whereIn('meal_tags.id', $tagIds);
-                }, '>=', 1);
-
-            $extraMeals = $mealsQuery->get();
-
-            return $meals->concat($extraMeals)->slice(0, 5)->pluck('id');
-        });
+        );
 
         return $ids;
-
     }
 
     public function store()
@@ -195,7 +222,9 @@ class Meal extends Model
 
     public function ingredients()
     {
-        return $this->belongsToMany('App\Ingredient')->withPivot('quantity', 'quantity_unit', 'quantity_unit_display')->using('App\IngredientMeal');
+        return $this->belongsToMany('App\Ingredient')
+            ->withPivot('quantity', 'quantity_unit', 'quantity_unit_display')
+            ->using('App\IngredientMeal');
     }
 
     public function categories()
@@ -244,52 +273,68 @@ class Meal extends Model
 
     public function allergies()
     {
-        return $this->belongsToMany('App\Allergy', 'allergy_meal', 'meal_id', 'allergy_id')->using('App\MealAllergy');
+        return $this->belongsToMany(
+            'App\Allergy',
+            'allergy_meal',
+            'meal_id',
+            'allergy_id'
+        )->using('App\MealAllergy');
     }
 
     //Admin View
     public static function getMeals()
     {
-
-        return Meal::orderBy('created_at', 'desc')->get()->map(function ($meal) {
-            return [
-                "id" => $meal->id,
-                "active" => $meal->active,
-                "featured_image" => $meal->featured_image,
-                "title" => $meal->title,
-                "description" => $meal->description,
-                "price" => $meal->price,
-                "created_at" => $meal->created_at,
-            ];
-        });
+        return Meal::orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($meal) {
+                return [
+                    "id" => $meal->id,
+                    "active" => $meal->active,
+                    "featured_image" => $meal->featured_image,
+                    "title" => $meal->title,
+                    "description" => $meal->description,
+                    "price" => $meal->price,
+                    "created_at" => $meal->created_at
+                ];
+            });
     }
 
     //Store View
     public static function getStoreMeals($storeID = null)
     {
-
-        return Meal::with('meal_order', 'ingredients', 'meal_tags')->where('store_id', $storeID)->orderBy('active', 'desc')->orderBy('created_at', 'desc')->get()->map(function ($meal) {
-            // Fix redundancy of getting the authenticated Store ID twice
-            $id = Auth::user()->id;
-            $storeID = Store::where('user_id', $id)->pluck('id')->first();
-            return [
-                "id" => $meal->id,
-                "active" => $meal->active,
-                "featured_image" => $meal->featured_image,
-                "title" => $meal->title,
-                "description" => $meal->description,
-                "price" => '$' . $meal->price,
-                "current_orders" => $meal->meal_order->where('store_id', $storeID)->count(),
-                "created_at" => $meal->created_at,
-                'ingredients' => $meal->ingredients,
-                'meal_tags' => $meal->meal_tags,
-            ];
-        });
+        return Meal::with('meal_order', 'ingredients', 'meal_tags')
+            ->where('store_id', $storeID)
+            ->orderBy('active', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($meal) {
+                // Fix redundancy of getting the authenticated Store ID twice
+                $id = Auth::user()->id;
+                $storeID = Store::where('user_id', $id)
+                    ->pluck('id')
+                    ->first();
+                return [
+                    "id" => $meal->id,
+                    "active" => $meal->active,
+                    "featured_image" => $meal->featured_image,
+                    "title" => $meal->title,
+                    "description" => $meal->description,
+                    "price" => '$' . $meal->price,
+                    "current_orders" => $meal->meal_order
+                        ->where('store_id', $storeID)
+                        ->count(),
+                    "created_at" => $meal->created_at,
+                    'ingredients' => $meal->ingredients,
+                    'meal_tags' => $meal->meal_tags
+                ];
+            });
     }
 
     public static function getMeal($id)
     {
-        return Meal::with('ingredients', 'tags', 'categories')->where('id', $id)->first();
+        return Meal::with('ingredients', 'tags', 'categories')
+            ->where('id', $id)
+            ->first();
     }
 
     public static function storeMeal($request)
@@ -297,7 +342,7 @@ class Meal extends Model
         $request->validate([
             'title' => 'required',
             'price' => 'required|numeric|min:.01',
-            'category_ids' => 'required',
+            'category_ids' => 'required'
         ]);
 
         $user = auth('api')->user();
@@ -315,10 +360,10 @@ class Meal extends Model
             'tag_ids',
             'category_ids',
             'allergy_ids',
-            'ingredients',
+            'ingredients'
         ]);
 
-        $meal = new Meal;
+        $meal = new Meal();
         $meal->store_id = $store->id;
         $meal->active = true;
         $meal->title = $props->get('title', '');
@@ -327,9 +372,10 @@ class Meal extends Model
         $meal->save();
 
         try {
-
             if ($props->has('featured_image')) {
-                $imageUrl = Utils\Images::uploadB64($request->get('featured_image'));
+                $imageUrl = Utils\Images::uploadB64(
+                    $request->get('featured_image')
+                );
                 $props->put('featured_image', $imageUrl);
             } else {
                 $defaultImageUrl = '/images/defaultMeal.jpg';
@@ -338,17 +384,17 @@ class Meal extends Model
 
             $newIngredients = $props->get('ingredients');
             if (is_array($newIngredients)) {
-
                 $ingredients = collect();
 
                 foreach ($newIngredients as $newIngredient) {
                     try {
-
                         // Check if ingredient with same name and unit type already exists
                         $ingredient = Ingredient::where([
                             'store_id' => $store->id,
                             'food_name' => $newIngredient['food_name'],
-                            'unit_type' => Unit::getType($newIngredient['serving_unit']),
+                            'unit_type' => Unit::getType(
+                                $newIngredient['serving_unit']
+                            )
                         ])->first();
 
                         if ($ingredient) {
@@ -356,32 +402,36 @@ class Meal extends Model
                         }
                         // Nope. Create a new one
                         else {
-                            $newIngredient = collect($newIngredient)->only([
-                                'food_name',
-                                'photo',
-                                'serving_qty',
-                                'serving_unit',
-                                'serving_weight_grams',
-                                'calories',
-                                'totalFat',
-                                'satFat',
-                                'transFat',
-                                'cholesterol',
-                                'sodium',
-                                'totalCarb',
-                                'fibers',
-                                'sugars',
-                                'proteins',
-                                'vitaminD',
-                                'potassium',
-                                'calcium',
-                                'iron',
-                                'sugars',
-                            ])->map(function ($val) {
-                                return is_null($val) ? 0 : $val;
-                            });
+                            $newIngredient = collect($newIngredient)
+                                ->only([
+                                    'food_name',
+                                    'photo',
+                                    'serving_qty',
+                                    'serving_unit',
+                                    'serving_weight_grams',
+                                    'calories',
+                                    'totalFat',
+                                    'satFat',
+                                    'transFat',
+                                    'cholesterol',
+                                    'sodium',
+                                    'totalCarb',
+                                    'fibers',
+                                    'sugars',
+                                    'proteins',
+                                    'vitaminD',
+                                    'potassium',
+                                    'calcium',
+                                    'iron',
+                                    'sugars'
+                                ])
+                                ->map(function ($val) {
+                                    return is_null($val) ? 0 : $val;
+                                });
 
-                            $ingredientArr = Ingredient::normalize($newIngredient->toArray());
+                            $ingredientArr = Ingredient::normalize(
+                                $newIngredient->toArray()
+                            );
                             $ingredient = new Ingredient($ingredientArr);
                             $ingredient->store_id = $store->id;
                             if ($ingredient->save()) {
@@ -390,11 +440,15 @@ class Meal extends Model
                                 $meal->store->units()->create([
                                     'store_id' => $store->id,
                                     'ingredient_id' => $ingredient->id,
-                                    'unit' => $newIngredient->get('serving_unit', Format::baseUnit($ingredient->unit_type)),
+                                    'unit' => $newIngredient->get(
+                                        'serving_unit',
+                                        Format::baseUnit($ingredient->unit_type)
+                                    )
                                 ]);
-
                             } else {
-                                throw new \Exception('Failed to create ingredient');
+                                throw new \Exception(
+                                    'Failed to create ingredient'
+                                );
                             }
                         }
                     } catch (\Exception $e) {
@@ -402,12 +456,23 @@ class Meal extends Model
                     }
                 }
 
-                $syncIngredients = $ingredients->mapWithKeys(function ($val, $key) use ($newIngredients) {
-                    return [$val->id => [
-                        'quantity' => $newIngredients[$key]['quantity'] ?? 1,
-                        'quantity_unit' => $newIngredients[$key]['quantity_unit'] ?? Format::baseUnit($val->unit_type),
-                        'quantity_unit_display' => $newIngredients[$key]['quantity_unit_display'] ?? Format::baseUnit($val->unit_type),
-                    ]];
+                $syncIngredients = $ingredients->mapWithKeys(function (
+                    $val,
+                    $key
+                ) use ($newIngredients) {
+                    return [
+                        $val->id => [
+                            'quantity' =>
+                                $newIngredients[$key]['quantity'] ?? 1,
+                            'quantity_unit' =>
+                                $newIngredients[$key]['quantity_unit'] ??
+                                Format::baseUnit($val->unit_type),
+                            'quantity_unit_display' =>
+                                $newIngredients[$key][
+                                    'quantity_unit_display'
+                                ] ?? Format::baseUnit($val->unit_type)
+                        ]
+                    ];
                 });
 
                 $meal->ingredients()->sync($syncIngredients);
@@ -433,12 +498,11 @@ class Meal extends Model
             $meal->delete();
             throw new \Exception($e);
         }
-
     }
 
     public static function storeMealAdmin($request)
     {
-        $meal = new Meal;
+        $meal = new Meal();
         $meal->active = true;
         $meal->store_id = $request->store_id;
         $meal->featured_image = $request->featured_image;
@@ -451,7 +515,6 @@ class Meal extends Model
 
     public static function updateMeal($id, $props)
     {
-
         $meal = Meal::findOrFail($id);
 
         $props = collect($props)->only([
@@ -465,7 +528,7 @@ class Meal extends Model
             'tag_ids',
             'category_ids',
             'ingredients',
-            'allergy_ids',
+            'allergy_ids'
         ]);
 
         if ($props->has('featured_image')) {
@@ -500,22 +563,31 @@ class Meal extends Model
 
         $newIngredients = $props->get('ingredients');
         if (is_array($newIngredients)) {
-
             $ingredients = collect();
 
             foreach ($newIngredients as $newIngredient) {
                 try {
                     // Existing ingredient
-                    if (is_numeric($newIngredient) || isset($newIngredient['id'])) {
-                        $ingredientId = is_numeric($newIngredient) ? $newIngredient : $newIngredient['id'];
-                        $ingredient = Ingredient::where('store_id', $meal->store_id)->findOrFail($ingredientId);
+                    if (
+                        is_numeric($newIngredient) ||
+                        isset($newIngredient['id'])
+                    ) {
+                        $ingredientId = is_numeric($newIngredient)
+                            ? $newIngredient
+                            : $newIngredient['id'];
+                        $ingredient = Ingredient::where(
+                            'store_id',
+                            $meal->store_id
+                        )->findOrFail($ingredientId);
                         $ingredients->push($ingredient);
                     } else {
                         // Check if ingredient with same name and unit type already exists
                         $ingredient = Ingredient::where([
                             'store_id' => $meal->store_id,
                             'food_name' => $newIngredient['food_name'],
-                            'unit_type' => Unit::getType($newIngredient['serving_unit']),
+                            'unit_type' => Unit::getType(
+                                $newIngredient['serving_unit']
+                            )
                         ])->first();
 
                         if ($ingredient) {
@@ -523,32 +595,36 @@ class Meal extends Model
                         }
                         // Nope. Create a new one
                         else {
-                            $newIngredient = collect($newIngredient)->only([
-                                'food_name',
-                                'photo',
-                                'serving_qty',
-                                'serving_unit',
-                                'serving_weight_grams',
-                                'calories',
-                                'totalFat',
-                                'satFat',
-                                'transFat',
-                                'cholesterol',
-                                'sodium',
-                                'totalCarb',
-                                'fibers',
-                                'sugars',
-                                'proteins',
-                                'vitaminD',
-                                'potassium',
-                                'calcium',
-                                'iron',
-                                'sugars',
-                            ])->map(function ($val) {
-                                return is_null($val) ? 0 : $val;
-                            });
+                            $newIngredient = collect($newIngredient)
+                                ->only([
+                                    'food_name',
+                                    'photo',
+                                    'serving_qty',
+                                    'serving_unit',
+                                    'serving_weight_grams',
+                                    'calories',
+                                    'totalFat',
+                                    'satFat',
+                                    'transFat',
+                                    'cholesterol',
+                                    'sodium',
+                                    'totalCarb',
+                                    'fibers',
+                                    'sugars',
+                                    'proteins',
+                                    'vitaminD',
+                                    'potassium',
+                                    'calcium',
+                                    'iron',
+                                    'sugars'
+                                ])
+                                ->map(function ($val) {
+                                    return is_null($val) ? 0 : $val;
+                                });
 
-                            $ingredientArr = Ingredient::normalize($newIngredient->toArray());
+                            $ingredientArr = Ingredient::normalize(
+                                $newIngredient->toArray()
+                            );
                             $ingredient = new Ingredient($ingredientArr);
                             $ingredient->store_id = $meal->store_id;
                             if ($ingredient->save()) {
@@ -557,11 +633,15 @@ class Meal extends Model
                                 $meal->store->units()->create([
                                     'store_id' => $meal->store_id,
                                     'ingredient_id' => $ingredient->id,
-                                    'unit' => $newIngredient->get('serving_unit', Format::baseUnit($ingredient->unit_type)),
+                                    'unit' => $newIngredient->get(
+                                        'serving_unit',
+                                        Format::baseUnit($ingredient->unit_type)
+                                    )
                                 ]);
-
                             } else {
-                                throw new \Exception('Failed to create ingredient');
+                                throw new \Exception(
+                                    'Failed to create ingredient'
+                                );
                             }
                         }
                     }
@@ -570,12 +650,21 @@ class Meal extends Model
                 }
             }
 
-            $syncIngredients = $ingredients->mapWithKeys(function ($val, $key) use ($newIngredients) {
-                return [$val->id => [
-                    'quantity' => $newIngredients[$key]['quantity'] ?? 1,
-                    'quantity_unit' => $newIngredients[$key]['quantity_unit'] ?? Format::baseUnit($val->unit_type),
-                    'quantity_unit_display' => $newIngredients[$key]['quantity_unit_display'] ?? Format::baseUnit($val->unit_type),
-                ]];
+            $syncIngredients = $ingredients->mapWithKeys(function (
+                $val,
+                $key
+            ) use ($newIngredients) {
+                return [
+                    $val->id => [
+                        'quantity' => $newIngredients[$key]['quantity'] ?? 1,
+                        'quantity_unit' =>
+                            $newIngredients[$key]['quantity_unit'] ??
+                            Format::baseUnit($val->unit_type),
+                        'quantity_unit_display' =>
+                            $newIngredients[$key]['quantity_unit_display'] ??
+                            Format::baseUnit($val->unit_type)
+                    ]
+                ];
             });
 
             $meal->ingredients()->sync($syncIngredients);
@@ -606,7 +695,7 @@ class Meal extends Model
         $meal = Meal::where('id', $id)->first();
 
         $meal->update([
-            'active' => $active,
+            'active' => $active
         ]);
     }
 
@@ -618,40 +707,54 @@ class Meal extends Model
 
         if ($sub) {
             $subscriptionMeals = MealSubscription::where([
-                ['meal_id', $meal->id],
-            ])
-                ->get();
+                ['meal_id', $meal->id]
+            ])->get();
 
-            $subscriptionMeals->each(function ($subscriptionMeal) use ($subId) {
+            $subscriptionMeals->each(function ($subscriptionMeal) use (
+                $meal,
+                $sub,
+                $subId
+            ) {
+                if (!$subscriptionMeal->subscription) {
+                    return;
+                }
                 $subscriptionMeal->meal_id = $subId;
-                $subscriptionMeal->save();
-                $subscriptionMeal->subscription->syncPrices();
-            });
+                try {
+                    $subscriptionMeal->save();
+                } catch (\Illuminate\Database\QueryException $e) {
+                    $errorCode = $e->errorInfo[1];
 
-            $mealOrders = MealOrder::with(['order'])
-                ->where([
-                    'meal_id' => $meal->id,
-                ])
-                ->get()
-                ->filter(function ($mealOrder) {
-                    return $mealOrder->order->subscription_id > 0;
-                });
+                    // If this subscription already has the same meal
+                    // add to the quantity
+                    if ($errorCode == 1062) {
+                        $qty = $subscriptionMeal->quantity;
+                        $subscriptionMeal->delete();
 
-            $mealOrders->each(function ($mealOrder) use ($meal, $sub, $store) {
-                $mealOrder->update(['meal_id' => $sub->id]);
+                        $subscriptionMeal = MealSubscription::where([
+                            ['meal_id', $subId],
+                            [
+                                'subscription_id',
+                                $subscriptionMeal->subscription_id
+                            ]
+                        ])->first();
 
-                if ($mealOrder->order->has('subscription')) {
-                    $user = $mealOrder->order->user;
-
-                    if ($user) {
-                        $user->sendNotification('subscription_meal_substituted', [
-                            'user' => $mealOrder->order->user,
-                            'subscription' => $mealOrder->order->subscription,
-                            'old_meal' => $meal,
-                            'sub_meal' => $sub,
-                            'store' => $store,
-                        ]);
+                        $subscriptionMeal->quantity += $qty;
+                        $subscriptionMeal->save();
                     }
+                }
+                $subscriptionMeal->subscription->syncPrices();
+
+                $user = $subscriptionMeal->subscription->user;
+
+                if ($user) {
+                    $user->sendNotification('subscription_meal_substituted', [
+                        'user' => $user,
+                        'customer' => $subscriptionMeal->subscription->customer,
+                        'subscription' => $subscriptionMeal->subscription,
+                        'old_meal' => $meal,
+                        'sub_meal' => $sub,
+                        'store' => $subscriptionMeal->subscription->store
+                    ]);
                 }
             });
         }
@@ -668,5 +771,4 @@ class Meal extends Model
     {
         return $this->localizeDate($this->created_at)->format('F d, Y');
     }
-
 }

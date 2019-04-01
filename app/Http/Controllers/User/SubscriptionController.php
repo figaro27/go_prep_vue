@@ -17,7 +17,10 @@ class SubscriptionController extends UserController
      */
     public function index()
     {
-        return $this->user->subscriptions()->with(['orders', 'meals'])->get();
+        return $this->user
+            ->subscriptions()
+            ->with(['orders', 'meals'])
+            ->get();
     }
 
     /**
@@ -30,18 +33,23 @@ class SubscriptionController extends UserController
         $sub = $this->user->subscriptions()->find($id);
 
         if (!$sub) {
-            return response()->json([
-                'error' => 'Meal plan not found',
-            ], 404);
-
+            return response()->json(
+                [
+                    'error' => 'Meal plan not found'
+                ],
+                404
+            );
         }
 
         try {
             $sub->cancel();
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to cancel Meal Plan',
-            ], 500);
+            return response()->json(
+                [
+                    'error' => 'Failed to cancel Meal Plan'
+                ],
+                500
+            );
         }
     }
 
@@ -55,17 +63,23 @@ class SubscriptionController extends UserController
         $sub = $this->user->subscriptions()->find($id);
 
         if (!$sub) {
-            return response()->json([
-                'error' => 'Meal plan not found',
-            ], 404);
+            return response()->json(
+                [
+                    'error' => 'Meal plan not found'
+                ],
+                404
+            );
         }
 
         try {
             $sub->pause();
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to pause Meal Plan',
-            ], 500);
+            return response()->json(
+                [
+                    'error' => 'Failed to pause Meal Plan'
+                ],
+                500
+            );
         }
     }
 
@@ -79,23 +93,33 @@ class SubscriptionController extends UserController
         $sub = $this->user->subscriptions()->find($id);
 
         if ($sub->store->settings->open === false) {
-            return response()->json([
-                'error' => 'This store is currently closed. Please try again when they re-open.',
-            ], 404);
+            return response()->json(
+                [
+                    'error' =>
+                        'This store is currently closed. Please try again when they re-open.'
+                ],
+                404
+            );
         }
 
         if (!$sub) {
-            return response()->json([
-                'error' => 'Meal plan not found',
-            ], 404);
+            return response()->json(
+                [
+                    'error' => 'Meal plan not found'
+                ],
+                404
+            );
         }
 
         try {
             $sub->resume();
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to resume Meal Plan',
-            ], 500);
+            return response()->json(
+                [
+                    'error' => 'Failed to resume Meal Plan'
+                ],
+                500
+            );
         }
     }
 
@@ -110,18 +134,27 @@ class SubscriptionController extends UserController
         $sub = $this->user->subscriptions()->find($id);
 
         if (!$sub) {
-            return response()->json([
-                'error' => 'Meal plan not found',
-            ], 404);
+            return response()->json(
+                [
+                    'error' => 'Meal plan not found'
+                ],
+                404
+            );
         }
         $store = $sub->store;
 
         try {
-            $subscription = \Stripe\Subscription::retrieve('sub_' . $sub->stripe_id, ['stripe_account' => $store->settings->stripe_id]);
+            $subscription = \Stripe\Subscription::retrieve(
+                'sub_' . $sub->stripe_id,
+                ['stripe_account' => $store->settings->stripe_id]
+            );
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Meal plan not found at payment gateway',
-            ], 404);
+            return response()->json(
+                [
+                    'error' => 'Meal plan not found at payment gateway'
+                ],
+                404
+            );
         }
 
         $bag = new Bag($request->get('bag'));
@@ -138,7 +171,7 @@ class SubscriptionController extends UserController
 
         if ($store->settings->applyMealPlanDiscount) {
             $discount = $store->settings->mealPlanDiscount / 100;
-            $mealPlanDiscount = ($total * $discount);
+            $mealPlanDiscount = $total * $discount;
             $total -= $mealPlanDiscount;
             $afterDiscountBeforeFees = $total;
         }
@@ -158,33 +191,44 @@ class SubscriptionController extends UserController
 
         // Delete existing stripe plan
         try {
-            $plan = \Stripe\Plan::retrieve($sub->stripe_plan, ['stripe_account' => $sub->store->settings->stripe_id]);
+            $plan = \Stripe\Plan::retrieve($sub->stripe_plan, [
+                'stripe_account' => $sub->store->settings->stripe_id
+            ]);
             $plan->delete();
         } catch (\Exception $e) {
-
         }
 
         // Create stripe plan with new pricing
-        $plan = \Stripe\Plan::create([
-            "amount" => round($total * 100),
-            "interval" => "week",
-            "product" => [
-                "name" => "Weekly subscription (" . $store->storeDetail->name . ")",
+        $plan = \Stripe\Plan::create(
+            [
+                "amount" => round($total * 100),
+                "interval" => "week",
+                "product" => [
+                    "name" =>
+                        "Weekly subscription (" .
+                        $store->storeDetail->name .
+                        ")"
+                ],
+                "currency" => "usd"
             ],
-            "currency" => "usd",
-        ], ['stripe_account' => $store->settings->stripe_id]);
+            ['stripe_account' => $store->settings->stripe_id]
+        );
 
         // Assign plan to stripe subscription
-        \Stripe\Subscription::update($subscription->id, [
-            'cancel_at_period_end' => false,
-            'items' => [
-                [
-                    'id' => $subscription->items->data[0]->id,
-                    'plan' => $plan->id,
+        \Stripe\Subscription::update(
+            $subscription->id,
+            [
+                'cancel_at_period_end' => false,
+                'items' => [
+                    [
+                        'id' => $subscription->items->data[0]->id,
+                        'plan' => $plan->id
+                    ]
                 ],
+                'prorate' => false
             ],
-            'prorate' => false,
-        ], ['stripe_account' => $store->settings->stripe_id]);
+            ['stripe_account' => $store->settings->stripe_id]
+        );
 
         // Assign new plan ID to subscription
         $sub->stripe_plan = $plan->id;
@@ -211,11 +255,9 @@ class SubscriptionController extends UserController
         $sub->save();
 
         // Update future orders IF cutoff hasn't passed yet
-        $futureOrders = $sub->orders()
-            ->where([
-                ['fulfilled', 0],
-                ['paid', 0],
-            ])
+        $futureOrders = $sub
+            ->orders()
+            ->where([['fulfilled', 0], ['paid', 0]])
             ->whereDate('delivery_date', '>=', Carbon::now())
             ->get();
 
