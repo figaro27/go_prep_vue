@@ -62,11 +62,18 @@
 
                       <template slot="FOOT_subtotal" slot-scope="row">
                         <p>Subtotal: {{ format.money(order.preFeePreDiscount) }}</p>
-                        <p v-if="order.mealPlanDiscount > 0">Meal Plan Discount:
-                          <span class="text-success">({{ format.money(order.mealPlanDiscount) }})</span>
+                        <p v-if="order.mealPlanDiscount > 0">
+                          Meal Plan Discount:
+                          <span
+                            class="text-success"
+                          >({{ format.money(order.mealPlanDiscount) }})</span>
                         </p>
-                        <p v-if="order.deliveryFee > 0">Delivery Fee: {{ format.money(order.deliveryFee) }}</p>
-                        <p v-if="order.processingFee > 0">Processing Fee: {{ format.money(order.processingFee) }}</p>
+                        <p
+                          v-if="order.deliveryFee > 0"
+                        >Delivery Fee: {{ format.money(order.deliveryFee) }}</p>
+                        <p
+                          v-if="order.processingFee > 0"
+                        >Processing Fee: {{ format.money(order.processingFee) }}</p>
                         <p>Sales Tax: {{ format.money(order.salesTax) }}</p>
                         <p>
                           <strong>Total: {{ format.money(order.amount) }}</strong>
@@ -108,14 +115,18 @@ export default {
   methods: {
     ...mapActions(["refreshCustomerOrders"]),
     getMealTableData(order) {
-      return order.meals.map(meal => {
-        return {
-          image: meal.featured_image,
-          meal: meal.title,
-          quantity: meal.pivot.quantity,
-          subtotal: format.money(meal.price * meal.pivot.quantity)
-        };
-      });
+      return order.meals
+        .filter(meal => {
+          return meal.paid;
+        })
+        .map(meal => {
+          return {
+            image: meal.featured_image,
+            meal: meal.title,
+            quantity: meal.pivot.quantity,
+            subtotal: format.money(meal.price * meal.pivot.quantity)
+          };
+        });
     }
   }
 };
