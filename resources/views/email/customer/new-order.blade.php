@@ -122,11 +122,11 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           <br /> {{ $customer->city }}, {{ $customer->state }} {{ $customer->zip }}
                           </td>
                       </tr>
-                      @if ($order->store->settings->pickup === 0)
+                      @if ($order->pickup === 0)
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format('D, m/d/Y') }}</td>
                       </tr>
-                      @else ($order->store->settings->pickup === 1)
+                      @else ($order->pickup === 1)
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $order->delivery_date->format('D, m/d/Y') }}</td>
                       </tr>
@@ -334,22 +334,26 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- title -->
                 <tr>
+                  @if ($order->pickup === 0)
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Delivery Instructions</td>
+                  @else
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Pickup Instructions</td>
+                  @endif
                 </tr>
                 <!-- end title -->
                 <tr>
                   <td height="5"></td>
                 </tr>
                 <!-- content -->
-                @if ($order->store->settings->pickup === 0)
+                @if ($order->pickup === 0)
 				<tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->delivery }} </td>
                 </tr>
                 @else
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup </td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $order->store->settings->pickupInstructions }} </td>
                 </tr>
-				@endif
+				        @endif
                 
                 <!-- end content -->
                 <tr>
