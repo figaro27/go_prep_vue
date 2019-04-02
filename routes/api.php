@@ -61,6 +61,7 @@ foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $doma
                     Route::get('orders/ingredients', 'OrderIngredientController@index');
 
                     Route::resource('meals', 'MealController');
+                    Route::post('destroyMealNonSubstitute', 'MealController@destroyMealNonSubtitute');
                     Route::resource('ingredients', 'IngredientController');
                     Route::resource('orders', 'OrderController');
                     Route::post('getOrders', 'OrderController@index');

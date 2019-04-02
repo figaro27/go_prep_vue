@@ -212,6 +212,15 @@
         </b-row>
       </b-modal>
     </div>
+    <b-modal
+      title="Delete Meal"
+      v-model="deleteMealModalNonSubstitute"
+      v-if="deleteMealModalNonSubstitute"
+      :hide-footer="true"
+    >
+    <p class="center-text mb-3 mt-3">Are you sure you want to delete this meal?</p>
+    <b-btn variant="danger" class="center" @click="destroyMealNonSubstitute(deletingMeal.id)">Delete</b-btn>
+    </b-modal>
 
     <b-modal
       title="Delete Meal"
@@ -311,6 +320,7 @@ export default {
       createMealModal: false,
       viewMealModal: false,
       deleteMealModal: false,
+      deleteMealModalNonSubstitute: false,
       deletingMeal: {},
       substitute_id: null,
 
@@ -597,7 +607,7 @@ export default {
       if (this.deletingMeal.substitute) {
         this.deleteMealModal = true;
       } else {
-        this.destroyMeal(id, null);
+        this.deleteMealModalNonSubstitute = true;
       }
     },
     destroyMeal: function(id, subId) {
@@ -608,7 +618,13 @@ export default {
         this.substitute_id = null;
       });
     },
-
+    destroyMealNonSubstitute(mealId) {
+      axios.post(`/api/me/destroyMealNonSubstitute`, {id: mealId}).then(resp => {
+        this.refreshTable();
+        this.deleteMealModalNonSubstitute = false;
+        this.$toastr.s("Meal deleted!");
+      });
+    },
     getNutrition: function() {
       axios
         .post("/api/nutrients", {
