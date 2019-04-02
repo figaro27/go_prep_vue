@@ -1008,6 +1008,15 @@ const getters = {
 
     return state.bag.items[meal].quantity || 0;
   },
+  totalBagPricePreFees(state, getters) {
+    let items = _.compact(_.toArray(state.bag.items));
+    let totalBagPricePreFees = 0;
+    items.forEach(item => {
+      totalBagPricePreFees += (item.quantity * item.meal.price);
+    })
+
+    return totalBagPricePreFees;
+  },
   totalBagPrice(state, getters) {
     let items = _.compact(_.toArray(state.bag.items));
     let totalBagPrice = 0;
