@@ -164,7 +164,7 @@
               <li>
                 <div>
                   <p v-if="pickup === 0 && transferTypeCheck !== 'pickup' && deliveryDaysOptions.length > 1">Delivery Day</p>
-                  <p v-if="pickup === 1 || transferTypeCheck === 'pickup' && deliveryDaysOptions.length > 1" >Pickup Day</p>
+                  <p v-if="pickup === 1 && deliveryDaysOptions.length > 1" >Pickup Day</p>
                   <b-form-group v-if="deliveryDaysOptions.length > 1" description>
                     <b-select
                       :options="deliveryDaysOptions"
@@ -176,7 +176,8 @@
                     </b-select>
                   </b-form-group>
                   <div v-else-if="deliveryDaysOptions.length === 1">
-                    <p>Delivery Day: {{ deliveryDaysOptions[0].text }}</p>
+                    <p v-if="pickup === 0">Delivery Day: {{ deliveryDaysOptions[0].text }}</p>
+                    <p v-if="pickup === 1">Pickup Day: {{ deliveryDaysOptions[0].text }}</p>
                   </div>
                 </div>
               </li>
