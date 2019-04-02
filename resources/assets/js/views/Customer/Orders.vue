@@ -12,7 +12,7 @@
             <p class="center-text mt-3">
               Thank you for your order.
               <span v-if="!!$route.query.pickup"
-                >You should pick up your order on</span
+                >You can pick up your order on</span
               >
               <span v-else>Your meals will be delivered on</span>
               {{ moment(orders[0].delivery_date).format("dddd, MMM Do") || "" }}
