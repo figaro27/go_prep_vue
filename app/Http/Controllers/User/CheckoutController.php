@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Bag;
 use App\Http\Controllers\User\UserController;
 use App\Mail\Customer\NewOrder;
+use App\Mail\Customer\MealPlan;
 use App\MealOrder;
 use App\MealSubscription;
 use App\Order;
@@ -123,6 +124,16 @@ class CheckoutController extends UserController
                 ]);
             }
 
+            // Send notification
+            $email = new NewOrder([
+                'order' => $order ?? null,
+                'pickup' => $pickup ?? null,
+                'card' => $card ?? null,
+                'customer' => $customer ?? null,
+                'subscription' => $userSubscription ?? null,
+            ]);
+            Mail::to($user)->send($email);
+
         } else {
             $weekIndex = date('N', strtotime($deliveryDay));
             $cutoff = $store->getNextCutoffDate($weekIndex);
@@ -224,19 +235,19 @@ class CheckoutController extends UserController
                     'subscription' => $userSubscription ?? null,
                 ]);
             }
+
+
+            // Send notification
+            $email = new MealPlan([
+                'order' => $order ?? null,
+                'pickup' => $pickup ?? null,
+                'card' => $card ?? null,
+                'customer' => $customer ?? null,
+                'subscription' => $userSubscription ?? null,
+            ]);
+            Mail::to($user)->send($email);
         }
 
-
-
-        // Send notification
-        $email = new NewOrder([
-            'order' => $order ?? null,
-            'pickup' => $pickup ?? null,
-            'card' => $card ?? null,
-            'customer' => $customer ?? null,
-            'subscription' => $userSubscription ?? null,
-        ]);
-        Mail::to($user)->send($email);
 
         /*
     $subscription = $user->newSubscription('main', $plan->id)->create($stripeToken['id']);
