@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img src="/images/nutritionix.png" class="nutritionix mb-3">
+    <img src="/images/nutritionix.png" class="nutritionix mb-3" />
     <b-form class="mb-2" @submit.prevent="searchRecipe">
       <b-tabs class="mb-2">
         <b-tab title="Type in Ingredients" active>
@@ -8,7 +8,7 @@
             v-model="recipe"
             class="flex-grow-1 mr-1 mb-1"
             :rows="3"
-            placeholder="Enter a query like &quot;1 cup mashed potatoes and 2 tbsp gravy&quot;. Be sure to include accurate measurement names such as tsp, tbsp, cup, gram, oz, fl oz, etc.."
+            placeholder='Enter a query like "1 cup mashed potatoes and 2 tbsp gravy". Be sure to include accurate measurement names such as tsp, tbsp, cup, gram, oz, fl oz, etc..'
           ></b-form-textarea>
           <b-button @click="searchRecipe" variant="primary">Add</b-button>
         </b-tab>
@@ -31,7 +31,8 @@
               @click="onClickAddExistingIngredient"
               variant="primary"
               class="flex-grow-0"
-            >Add</b-button>
+              >Add</b-button
+            >
           </div>
         </b-tab>
       </b-tabs>
@@ -46,18 +47,24 @@
           <th style="width: 30px"></th>
         </thead>
         <tbody>
-          <tr v-for="(ingredient, i) in ingredients" :key="ingredient.food_name">
+          <tr
+            v-for="(ingredient, i) in ingredients"
+            :key="ingredient.food_name"
+          >
             <td>
               <img
                 :src="ingredient.image_thumb"
                 v-if="ingredient.image_thumb"
                 class="ingredient-thumb"
-              >
+              />
               {{ ingredient.food_name }}
             </td>
             <td>
               <b-form-group>
-                <b-form-input placeholder="Weight" v-model="ingredient.quantity"></b-form-input>
+                <b-form-input
+                  placeholder="Weight"
+                  v-model="ingredient.quantity"
+                ></b-form-input>
               </b-form-group>
             </td>
             <td class="text-center">
@@ -70,7 +77,7 @@
                 >
                   <option slot="top" disabled>-- Select unit --</option>
                 </b-select>
-                <span v-else>{{ingredient.quantity_unit_display}}</span>
+                <span v-else>{{ ingredient.quantity_unit_display }}</span>
               </b-form-group>
             </td>
             <td>
@@ -83,7 +90,12 @@
             <td colspan="10" class="text-right">
               <b-row>
                 <b-col v-if="options.saveButton" class="text-left">
-                  <b-button variant="primary" :disabled="!canSave" @click.prevent="save">Save</b-button>
+                  <b-button
+                    variant="primary"
+                    :disabled="!canSave"
+                    @click.prevent="save"
+                    >Save</b-button
+                  >
                 </b-col>
                 <!-- <b-col class="text-right">
                   <a href="#" @click.prevent="onClickAddIngredient">
@@ -253,12 +265,12 @@ export default {
           val.quantity_unit,
           false
         );
-        let nutrition = this.getNutritionTotals([val], false);
-        if (nutrition) {
-          nutrition = _.mapValues(nutrition, prop => {
+        let totals = nutrition.getTotals([val], false);
+        if (totals) {
+          totals = _.mapValues(totals, prop => {
             return prop * multiplier;
           });
-          val = _.merge(val, nutrition);
+          val = _.merge(val, totals);
         }
 
         this.ingredients[i] = val;
@@ -277,7 +289,7 @@ export default {
       this.$toastr.s("Ingredients saved!");
     },
     searchInstant: function() {},
-    searchRecipe: function() {
+    searchRecipe() {
       axios
         .post("/api/nutrients", {
           query: this.recipe
@@ -301,12 +313,12 @@ export default {
             let multiplier =
               units.convert(1, units.base(ingredient.unit_type), unit, false) /
               ingredient.quantity;
-            let nutrition = this.getNutritionTotals([ingredient], false);
-            if (nutrition) {
-              nutrition = _.mapValues(nutrition, prop => {
+            let totals = nutrition.getTotals([ingredient], false);
+            if (totals) {
+              totals = _.mapValues(totals, prop => {
                 return prop * multiplier;
               });
-              ingredient = _.merge(ingredient, nutrition);
+              ingredient = _.merge(ingredient, totals);
             }
 
             return ingredient;
