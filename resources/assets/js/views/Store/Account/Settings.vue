@@ -494,7 +494,7 @@
         </div>
       </div>
 
-          <b-modal v-model="showTOAModal" title="Terms of Agreement" size="xl"
+          <b-modal v-model="showTOAModal" title="Terms of Service / Service Agreement" size="xl"
           @ok="allowOpen"
           @cancel="allowOpen"
           @hidden="allowOpen"
