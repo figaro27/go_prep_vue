@@ -577,7 +577,7 @@ class Meal extends Model implements HasMedia
                 'meals/'
             );
             $fullImagePath = \Storage::disk('public')->path($imagePath);
-            $meal->clearMediaCollection();
+            $meal->clearMediaCollection('featured_image');
             $meal
                 ->addMedia($fullImagePath)
                 ->toMediaCollection('featured_image');
