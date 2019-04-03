@@ -110,7 +110,7 @@
                   <div class="col-md-3 offset-5 red">({{ format.money(mealPlanDiscount) }})</div>
                 </div>
               </li>
-              <li class="checkout-item" v-if="storeSettings.applyDeliveryFee">
+              <li class="checkout-item" v-if="storeSettings.applyDeliveryFee && pickup === 0">
                 <div class="row">
                   <div class="col-md-4">
                     <strong>Delivery Fee:</strong>
@@ -164,7 +164,7 @@
               <li>
                 <div>
                   <p v-if="pickup === 0 && transferTypeCheck !== 'pickup' && deliveryDaysOptions.length > 1">Delivery Day</p>
-                  <p v-if="pickup === 1 || transferTypeCheck === 'pickup' && deliveryDaysOptions.length > 1" >Pickup Day</p>
+                  <p v-if="pickup === 1 && deliveryDaysOptions.length > 1" >Pickup Day</p>
                   <b-form-group v-if="deliveryDaysOptions.length > 1" description>
                     <b-select
                       :options="deliveryDaysOptions"
@@ -176,7 +176,8 @@
                     </b-select>
                   </b-form-group>
                   <div v-else-if="deliveryDaysOptions.length === 1">
-                    <p>Delivery Day: {{ deliveryDaysOptions[0].text }}</p>
+                    <p v-if="pickup === 0">Delivery Day: {{ deliveryDaysOptions[0].text }}</p>
+                    <p v-if="pickup === 1">Pickup Day: {{ deliveryDaysOptions[0].text }}</p>
                   </div>
                 </div>
               </li>
@@ -302,6 +303,7 @@ export default {
       total: "bagQuantity",
       bag: "bagItems",
       hasMeal: "bagHasMeal",
+      totalBagPricePreFees: "totalBagPricePreFees",
       totalBagPrice: "totalBagPrice",
       willDeliver: "viewedStoreWillDeliver",
       isLoading: "isLoading",
@@ -341,18 +343,8 @@ export default {
       return this.minPrice - this.totalBagPrice;
     },
     preFeePreDiscount() {
-      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
-      let applyProcessingFee = this.storeSettings.applyProcessingFee;
-      let deliveryFee = this.storeSettings.deliveryFee;
-      let processingFee = this.storeSettings.processingFee;
-
-      if (applyDeliveryFee && applyProcessingFee) {
-        return this.totalBagPrice - deliveryFee - processingFee;
-      } else if (applyDeliveryFee && !applyProcessingFee) {
-        return this.totalBagPrice - deliveryFee;
-      } else if (applyProcessingFee && !applyDeliveryFee) {
-        return this.totalBagPrice - processingFee;
-      } else return this.totalBagPrice;
+      let subtotal = this.totalBagPricePreFees
+      return subtotal;
     },
     afterDiscountBeforeFees() {
       if (this.applyMealPlanDiscount && this.deliveryPlan) {
@@ -364,29 +356,23 @@ export default {
       let applyProcessingFee = this.storeSettings.applyProcessingFee;
       let deliveryFee = this.storeSettings.deliveryFee;
       let processingFee = this.storeSettings.processingFee;
+      let subtotal = this.afterDiscountBeforeFees;
 
-      if (applyDeliveryFee && applyProcessingFee) {
-        return this.afterDiscountBeforeFees + deliveryFee + processingFee;
-      } else if (applyDeliveryFee && !applyProcessingFee) {
-        return this.afterDiscountBeforeFees + deliveryFee;
-      } else if (applyProcessingFee && !applyDeliveryFee) {
-        return this.afterDiscountBeforeFees + processingFee;
-      } else return this.afterDiscountBeforeFees;
+      if (applyDeliveryFee & this.pickup === 0)
+      subtotal += deliveryFee;
+      if (applyProcessingFee)
+      subtotal += processingFee;
+
+
+      return subtotal;
+
     },
     afterDiscountAfterFees() {
-      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
-      let applyProcessingFee = this.storeSettings.applyProcessingFee;
-      let deliveryFee = this.storeSettings.deliveryFee;
-      let processingFee = this.storeSettings.processingFee;
       let salesTax = 1 + (this.salesTax);
+      let subtotal = this.afterDiscountAfterFeesBeforeTax;
 
-      if (applyDeliveryFee && applyProcessingFee) {
-        return (this.afterDiscountBeforeFees + deliveryFee + processingFee) * salesTax;
-      } else if (applyDeliveryFee && !applyProcessingFee) {
-        return (this.afterDiscountBeforeFees + deliveryFee) * salesTax;
-      } else if (applyProcessingFee && !applyDeliveryFee) {
-        return (this.afterDiscountBeforeFees + processingFee) * salesTax;
-      } else return this.afterDiscountBeforeFees * salesTax;
+      return subtotal * salesTax;
+
     },
     applyMealPlanDiscount() {
       return this.storeSettings.applyMealPlanDiscount;

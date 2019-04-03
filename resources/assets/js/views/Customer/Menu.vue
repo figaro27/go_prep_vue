@@ -273,6 +273,10 @@
                     v-if="minOption === 'meals' && total < minimumMeals && !manualOrder"
                   >Please add {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
 
+                  <p class="align-right">
+                    <strong>Subtotal:</strong> {{ format.money(preFeePreDiscount) }}
+                  </p>
+
                   <div
                     v-if="minOption === 'meals' && total >= minimumMeals && !preview && !manualOrder"
                   >
@@ -670,7 +674,21 @@ export default {
     },
     showIngredients() {
       return this.storeSettings.showIngredients;
-    }
+    },
+    preFeePreDiscount() {
+      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+      let applyProcessingFee = this.storeSettings.applyProcessingFee;
+      let deliveryFee = this.storeSettings.deliveryFee;
+      let processingFee = this.storeSettings.processingFee;
+
+      if (applyDeliveryFee && applyProcessingFee) {
+        return this.totalBagPrice - deliveryFee - processingFee;
+      } else if (applyDeliveryFee && !applyProcessingFee) {
+        return this.totalBagPrice - deliveryFee;
+      } else if (applyProcessingFee && !applyDeliveryFee) {
+        return this.totalBagPrice - processingFee;
+      } else return this.totalBagPrice;
+    },
   },
   mounted() {
     this.getSalesTax(this.store.details.state);

@@ -1,10 +1,17 @@
 <template>
   <div class="row">
     <div class="col-md-12">
-      <b-alert v-if="subscriptions[0]" :show="!!$route.query.created || false" variant="success">
+      <b-alert 
+          v-if="subscriptions[0]" 
+          :show="!!$route.query.created || false" 
+          variant="success"
+        >
         <p class="center-text mt-3">
           Thank you for your order.
-          Your meals will be delivered on
+          <span v-if="!!$route.query.pickup"
+                >You can pick up your order on</span
+              >
+              <span v-else>Your meals will be delivered on</span>
           {{ moment(subscriptions[0].delivery_day, 'E').format('dddd') || '' }}
         </p>
       </b-alert>

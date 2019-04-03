@@ -56,7 +56,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- logo -->
                       <tr>
-                        <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px;" src="http://www.myquickstartup.net/goprep-logo.png" alt="GoPrep" title="GoPrep" /></td>
+                        <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px;" src="https://goprep.com/logo.png" alt="GoPrep" title="GoPrep" /></td>
                       </tr>
                       <!-- end logo -->
                       <tr>
@@ -335,6 +335,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- title -->
                 <tr>
+                  @if ($pickup === 0)
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Delivery Instructions</td>
                 </tr>
                 <!-- end title -->
@@ -342,15 +343,11 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td height="5"></td>
                 </tr>
                 <!-- content -->
-                @if ($pickup === 0)
-				<tr>
+                
+				        <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->delivery }} </td>
                 </tr>
-                @else
-                <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup </td>
-                </tr>
-				@endif
+				        @endif
                 
                 <!-- end content -->
                 <tr>

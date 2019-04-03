@@ -130,4 +130,10 @@ class MealController extends StoreController
 
         return Meal::deleteMeal($id, $subId);
     }
+
+    public function destroyMealNonSubtitute(Request $request)
+    {
+        $meal = $this->store->meals()->find($request->id);
+        $meal->delete();
+    }
 }
