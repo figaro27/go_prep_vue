@@ -91,6 +91,10 @@ foreach (
                             );
 
                             Route::resource('meals', 'MealController');
+                            Route::resource(
+                                'packages',
+                                'MealPackageController'
+                            );
                             Route::post(
                                 'destroyMealNonSubstitute',
                                 'MealController@destroyMealNonSubtitute'

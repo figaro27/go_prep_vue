@@ -1,8 +1,11 @@
-import numeral from 'numeral';
+import numeral from "numeral";
 
 export default {
   money(val) {
-    return numeral(val).format('$0,0.00');
+    return numeral(val).format("$0,0.00");
+  },
+  price(val) {
+    return numeral(val).format("$0,0.00");
   },
   date(val) {
     // todo: implement
@@ -10,8 +13,8 @@ export default {
   },
 
   nextDay(day) {
-    if(!_.isNumber(day)) {
-      day = moment(day, 'ddd').isoWeekday();
+    if (!_.isNumber(day)) {
+      day = moment(day, "ddd").isoWeekday();
     }
     const today = moment().isoWeekday();
 
@@ -22,8 +25,8 @@ export default {
     } else {
       // otherwise, give me *next week's* instance of that same day
       return moment()
-        .add(1, 'weeks')
+        .add(1, "weeks")
         .isoWeekday(day);
     }
   }
-}
+};
