@@ -91,6 +91,7 @@
                     <thumbnail
                       v-if="meal.image.url"
                       :src="meal.image.url"
+                      :aspect="false"
                     ></thumbnail>
                     <p v-if="storeSettings.showNutrition">
                       {{ meal.description }}

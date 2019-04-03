@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="'thumbnail ' + (loaded ? 'loaded' : '')"
+    :class="'thumbnail' + (loaded ? ' loaded' : '') + (aspect ? ' aspect' : '')"
     @click="onClick"
     :style="`width: ${width}`"
   >
@@ -40,6 +40,10 @@ export default {
   props: {
     src: String,
     spinner: {
+      type: Boolean,
+      default: true
+    },
+    aspect: {
       type: Boolean,
       default: true
     },
@@ -103,12 +107,23 @@ export default {
   position: relative;
   background-color: #f7f2f2;
 
-  &:before {
-    content: "";
-    display: block;
-    padding-bottom: 100%;
-    width: 100%;
+  &.aspect {
+    &:before {
+      content: "";
+      display: block;
+      padding-bottom: 100%;
+      width: 100%;
+    }
+
+    img {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      top: 0;
+    }
   }
+
   &:after {
   }
 
@@ -116,14 +131,6 @@ export default {
     .spinner {
       opacity: 0;
     }
-  }
-
-  img {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    top: 0;
   }
 }
 
