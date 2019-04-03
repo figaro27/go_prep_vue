@@ -52,6 +52,7 @@
                       :src="item.meal.image.url_thumb"
                       :spinner="false"
                       class="cart-item-img"
+                      width="80px"
                     ></thumbnail>
                   </div>
                   <div class="flex-grow-1 mr-2">{{ item.meal.title }}</div>
