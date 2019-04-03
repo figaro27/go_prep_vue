@@ -33,7 +33,7 @@ class RegisterController extends Controller
     protected $redirectTo = '/home';
 
     protected $regex = [
-        'domain' => '/^[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/is',
+        'domain' => '/^[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/is'
     ];
 
     /**
@@ -64,23 +64,30 @@ class RegisterController extends Controller
             'user.phone' => 'required',
             // 'user.accepted_tos' => 'in:1',
 
-
             'user_details.address' => 'required',
             'user_details.city' => 'required',
             'user_details.state' => 'required',
-            'user_details.zip' => 'required|min:5',
+            'user_details.zip' => 'required|min:5'
         ]);
 
-        $v->sometimes('store', [
-            'store.store_name' => ['required', 'unique:store_details,name'],
-            'store.domain' => ['required', 'unique:store_details,domain', 'regex:' . $this->regex['domain']],
-            'store.address' => 'required',
-            'store.city' => 'required',
-            'store.state' => 'required',
-            'store.zip' => 'required',
-        ], function ($data) {
-            return $data['user']['role'] === 'store';
-        });
+        $v->sometimes(
+            'store',
+            [
+                'store.store_name' => ['required', 'unique:store_details,name'],
+                'store.domain' => [
+                    'required',
+                    'unique:store_details,domain',
+                    'regex:' . $this->regex['domain']
+                ],
+                'store.address' => 'required',
+                'store.city' => 'required',
+                'store.state' => 'required',
+                'store.zip' => 'required'
+            ],
+            function ($data) {
+                return $data['user']['role'] === 'store';
+            }
+        );
 
         return $v;
     }
@@ -91,11 +98,12 @@ class RegisterController extends Controller
             case '0':
                 $v = Validator::make($request->all(), [
                     'role' => 'required|in:customer,store',
-                    'email' => 'required|string|email|max:255|unique:users,email',
+                    'email' =>
+                        'required|string|email|max:255|unique:users,email',
                     'password' => 'required|string|min:6|confirmed',
                     'first_name' => 'required',
                     'last_name' => 'required',
-                    'phone' => 'required',
+                    'phone' => 'required'
                 ]);
                 break;
 
@@ -112,11 +120,15 @@ class RegisterController extends Controller
             case '2':
                 $v = Validator::make($request->all(), [
                     'store_name' => ['required', 'unique:store_details,name'],
-                    'domain' => ['required', 'unique:store_details,domain', 'regex:' . $this->regex['domain']],
+                    'domain' => [
+                        'required',
+                        'unique:store_details,domain',
+                        'regex:' . $this->regex['domain']
+                    ],
                     'address' => 'required',
                     'city' => 'required',
                     'state' => 'required',
-                    'zip' => 'required',
+                    'zip' => 'required'
                     // 'accepted_toa' => 'in:1'
                 ]);
                 break;
@@ -135,11 +147,11 @@ class RegisterController extends Controller
     {
         $user = User::create([
             //'name' => $data['name'],
-            'user_role_id' => ($data['user']['role'] === 'store' ? 2 : 1),
+            'user_role_id' => $data['user']['role'] === 'store' ? 2 : 1,
             'email' => $data['user']['email'],
             'password' => Hash::make($data['user']['password']),
             'timezone' => 'America/New_York',
-            'remember_token' => Hash::make(str_random(10)),
+            'remember_token' => Hash::make(str_random(10))
             // 'accepted_tos' => $data['user']['accepted_tos'],
         ]);
 
@@ -153,9 +165,19 @@ class RegisterController extends Controller
             'state' => $data['user_details']['state'],
             'zip' => $data['user_details']['zip'],
             'country' => 'USA',
-            'delivery' => isset($data['user_details']['delivery']) ? $data['user_details']['delivery'] : '',
+            'delivery' => isset($data['user_details']['delivery'])
+                ? $data['user_details']['delivery']
+                : '',
             'created_at' => now(),
             'updated_at' => now(),
+            'notifications' => json_encode([
+                'delivery_today' => true,
+                'meal_plan' => true,
+                'meal_plan_paused' => true,
+                'new_order' => true,
+                'subscription_meal_substituted' => true,
+                'subscription_renewing' => true
+            ])
         ]);
 
         if ($data['user']['role'] === 'store') {
@@ -172,7 +194,7 @@ class RegisterController extends Controller
                 'zip' => $data['store']['zip'],
                 'logo' => '',
                 'domain' => $data['store']['domain'],
-                'created_at' => now(),
+                'created_at' => now()
             ]);
 
             $storeSettings = $store->settings()->create([
@@ -183,26 +205,50 @@ class RegisterController extends Controller
                 'view_delivery_days' => 1,
                 'delivery_days' => [],
                 'delivery_distance_zipcodes' => [],
-                'notifications' => array('new_order' => true, 'new_orders' => true, 'ready_to_print' => true, 'new_subscription' => true, 'new_subscriptions' => true, 'cancelled_subscription' => true, 'cancelled_subscriptions' => true),
+                'notifications' => array(
+                    'new_order' => true,
+                    'new_orders' => true,
+                    'ready_to_print' => true,
+                    'new_subscription' => true,
+                    'new_subscriptions' => true,
+                    'cancelled_subscription' => true,
+                    'cancelled_subscriptions' => true
+                )
             ]);
 
             $storeSettings = $store->categories()->create([
-                'category' => 'Entrees',
+                'category' => 'Entrees'
             ]);
 
             try {
-              $key = new \Cloudflare\API\Auth\APIKey(config('services.cloudflare.user'), config('services.cloudflare.key'));
-              $adapter = new \Cloudflare\API\Adapter\Guzzle($key);
-              $zones = new \Cloudflare\API\Endpoints\Zones($adapter);
-              $dns = new \Cloudflare\API\Endpoints\DNS($adapter);
+                $key = new \Cloudflare\API\Auth\APIKey(
+                    config('services.cloudflare.user'),
+                    config('services.cloudflare.key')
+                );
+                $adapter = new \Cloudflare\API\Adapter\Guzzle($key);
+                $zones = new \Cloudflare\API\Endpoints\Zones($adapter);
+                $dns = new \Cloudflare\API\Endpoints\DNS($adapter);
 
-              $zoneId = $zones->getZoneID('goprep.com');
+                $zoneId = $zones->getZoneID('goprep.com');
 
-              $dns->addRecord($zoneId, 'CNAME', $storeDetail->domain . '.dev', 'goprep.com', 0, true);
-              $dns->addRecord($zoneId, 'CNAME', $storeDetail->domain, 'goprep.com', 0, true);
-            }
-            catch(\Exception $e) {
-              // todo: send notification to admin
+                $dns->addRecord(
+                    $zoneId,
+                    'CNAME',
+                    $storeDetail->domain . '.dev',
+                    'goprep.com',
+                    0,
+                    true
+                );
+                $dns->addRecord(
+                    $zoneId,
+                    'CNAME',
+                    $storeDetail->domain,
+                    'goprep.com',
+                    0,
+                    true
+                );
+            } catch (\Exception $e) {
+                // todo: send notification to admin
             }
         }
 
@@ -226,8 +272,11 @@ class RegisterController extends Controller
             'user' => $user,
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'redirect' => $redirect,
+            'expires_in' =>
+                auth()
+                    ->factory()
+                    ->getTTL() * 60,
+            'redirect' => $redirect
         ];
     }
 }
