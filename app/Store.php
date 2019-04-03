@@ -18,30 +18,23 @@ class Store extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'accepted_toa'
-    ];
+    protected $fillable = ['accepted_toa'];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = [
-      'orders',
-      'customers',
-    ];
+    protected $hidden = ['orders', 'customers'];
 
     protected $appends = [
-      'cutoff_passed',
-      'next_delivery_date',
-      'next_cutoff_date',
-      'url'
+        'cutoff_passed',
+        'next_delivery_date',
+        'next_cutoff_date',
+        'url'
     ];
 
-    protected $casts = [
-
-    ];
+    protected $casts = [];
 
     public function user()
     {
@@ -55,7 +48,10 @@ class Store extends Model
 
     public function subscriptions()
     {
-        return $this->hasMany('App\Subscription')->orderBy('created_at', 'desc');
+        return $this->hasMany('App\Subscription')->orderBy(
+            'created_at',
+            'desc'
+        );
     }
 
     public function meals()
@@ -98,63 +94,105 @@ class Store extends Model
         return $this->hasMany('App\Customer');
     }
 
-    public function clearCaches() {
-      Cache::forget('store_order_ingredients'.$this->id);
+    public function clearCaches()
+    {
+        Cache::forget('store_order_ingredients' . $this->id);
     }
 
-    public function getUrl($append = '', $secure = true) {
-      $protocol = $secure ? 'https://' : 'http://';
-      $url = $protocol.$this->details->domain.'.'.config('app.domain').$append;
-      return $url;
+    public function getUrl($append = '', $secure = true)
+    {
+        $protocol = $secure ? 'https://' : 'http://';
+        if (starts_with($append, config('app.url'))) {
+            $append = str_replace(config('app.url'), '', $append);
+        }
+        $url =
+            $protocol .
+            $this->details->domain .
+            '.' .
+            config('app.domain') .
+            $append;
+        return $url;
     }
 
     public static function getStore($id)
     {
-        return Store::with('storeDetail', 'order')->where('id', $id)->first();
+        return Store::with('storeDetail', 'order')
+            ->where('id', $id)
+            ->first();
     }
 
     public static function getStores()
     {
-        return Store::with('storeDetail', 'order')->get()->map(function ($store) {
-            return [
-                "id" => $store->id,
-                "logo" => $store->storeDetail->logo,
-                "name" => $store->storeDetail->name,
-                "phone" => $store->storeDetail->phone,
-                "address" => $store->storeDetail->address,
-                "city" => $store->storeDetail->city,
-                "state" => $store->storeDetail->state,
-                "Joined" => $store->created_at->format('m-d-Y'),
-                "TotalOrders" => $store->order->count(),
-                "TotalCustomers" => Order::all()->unique('user_id')->where('store_id', '=', $store->id)->count(),
-                "TotalPaid" => '$' . number_format(Order::all()->where('store_id', '=', $store->id)->pluck('amount')->sum(), 2, '.', ','),
-            ];
-        });
+        return Store::with('storeDetail', 'order')
+            ->get()
+            ->map(function ($store) {
+                return [
+                    "id" => $store->id,
+                    "logo" => $store->storeDetail->logo,
+                    "name" => $store->storeDetail->name,
+                    "phone" => $store->storeDetail->phone,
+                    "address" => $store->storeDetail->address,
+                    "city" => $store->storeDetail->city,
+                    "state" => $store->storeDetail->state,
+                    "Joined" => $store->created_at->format('m-d-Y'),
+                    "TotalOrders" => $store->order->count(),
+                    "TotalCustomers" => Order::all()
+                        ->unique('user_id')
+                        ->where('store_id', '=', $store->id)
+                        ->count(),
+                    "TotalPaid" =>
+                        '$' .
+                        number_format(
+                            Order::all()
+                                ->where('store_id', '=', $store->id)
+                                ->pluck('amount')
+                                ->sum(),
+                            2,
+                            '.',
+                            ','
+                        )
+                ];
+            });
     }
 
-    public function getOrderIngredients($dateRange = [], $excludeFulfilled = true)
-    {
+    public function getOrderIngredients(
+        $dateRange = [],
+        $excludeFulfilled = true
+    ) {
         $ingredients = [];
 
-        $orders = $this->orders()->with(['meals', 'meals.ingredients'])->where('paid', 1);
+        $orders = $this->orders()
+            ->with(['meals', 'meals.ingredients'])
+            ->where('paid', 1);
 
-        if($dateRange === []) {
-          //$orders = $orders->where('delivery_date', $this->getNextDeliveryDate());
+        if ($dateRange === []) {
+            //$orders = $orders->where('delivery_date', $this->getNextDeliveryDate());
         }
-        if(isset($dateRange['from'])) {
-          $from = Carbon::parse($dateRange['from']);
-          $orders = $orders->where('delivery_date', '>=', $from->format('Y-m-d'));
+        if (isset($dateRange['from'])) {
+            $from = Carbon::parse($dateRange['from']);
+            $orders = $orders->where(
+                'delivery_date',
+                '>=',
+                $from->format('Y-m-d')
+            );
+        } else {
+            $orders = $orders->where(
+                'delivery_date',
+                '>=',
+                Carbon::now()->format('Y-m-d')
+            );
         }
-        else {
-          $orders = $orders->where('delivery_date', '>=', Carbon::now()->format('Y-m-d'));
-        }
-        if(isset($dateRange['to'])) {
-          $to = Carbon::parse($dateRange['to']);
-          $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
+        if (isset($dateRange['to'])) {
+            $to = Carbon::parse($dateRange['to']);
+            $orders = $orders->where(
+                'delivery_date',
+                '<=',
+                $to->format('Y-m-d')
+            );
         }
 
-        if($excludeFulfilled) {
-          $orders = $orders->where('fulfilled', false);
+        if ($excludeFulfilled) {
+            $orders = $orders->where('fulfilled', false);
         }
 
         $orders = $orders->get();
@@ -164,9 +202,9 @@ class Store extends Model
                 $quantity = $meal->pivot->quantity;
 
                 foreach ($meal->ingredients as $ingredient) {
-
                     $quantity_unit = $ingredient->pivot->quantity_unit;
-                    $quantity_base = $ingredient->pivot->quantity_base * $quantity;
+                    $quantity_base =
+                        $ingredient->pivot->quantity_base * $quantity;
 
                     $key = $ingredient->id;
 
@@ -174,7 +212,7 @@ class Store extends Model
                         $ingredients[$key] = [
                             'id' => $ingredient->id,
                             'ingredient' => $ingredient,
-                            'quantity' => $quantity_base,
+                            'quantity' => $quantity_base
                         ];
                     } else {
                         $ingredients[$key]['quantity'] += $quantity_base;
@@ -190,134 +228,166 @@ class Store extends Model
     {
         $meals = [];
 
-        $orders = $this->orders()->with(['meals'])->where('paid', 1);
-        if($dateRange === []) {
-          $orders = $orders->where('delivery_date', $this->getNextDeliveryDate());
+        $orders = $this->orders()
+            ->with(['meals'])
+            ->where('paid', 1);
+        if ($dateRange === []) {
+            $orders = $orders->where(
+                'delivery_date',
+                $this->getNextDeliveryDate()
+            );
         }
-        if(isset($dateRange['from'])) {
-          $from = Carbon::parse($dateRange['from']);
-          $orders = $orders->where('delivery_date', '>=', $from->format('Y-m-d'));
+        if (isset($dateRange['from'])) {
+            $from = Carbon::parse($dateRange['from']);
+            $orders = $orders->where(
+                'delivery_date',
+                '>=',
+                $from->format('Y-m-d')
+            );
         }
-        if(isset($dateRange['to'])) {
-          $to = Carbon::parse($dateRange['to']);
-          $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
+        if (isset($dateRange['to'])) {
+            $to = Carbon::parse($dateRange['to']);
+            $orders = $orders->where(
+                'delivery_date',
+                '<=',
+                $to->format('Y-m-d')
+            );
         }
         $orders = $orders->get();
 
         foreach ($orders as $order) {
             foreach ($order->meals as $meal) {
+                $key = $meal->id;
 
-              $key = $meal->id;
-
-              if (!isset($meals[$key])) {
-                $meals[$key] = [
-                  'id' => $key,
-                  'meal' => $meal,
-                  'quantity' => 1,
-                ];
-              }
-              else {
-                $meals[$key]['quantity']++;
-              }
+                if (!isset($meals[$key])) {
+                    $meals[$key] = [
+                        'id' => $key,
+                        'meal' => $meal,
+                        'quantity' => 1
+                    ];
+                } else {
+                    $meals[$key]['quantity']++;
+                }
             }
         }
 
         return $meals;
     }
 
-    public function getNextDeliveryDay($weekIndex) {
-      $week = date('D', strtotime("Sunday +{$weekIndex} days"));
-      $date = new Carbon('next '.$week, $this->settings->timezone);
-      $date->setTime(0, 0, 0);
-      return $date->setTimezone('utc');
-    }
-    
-    public function getNextDeliveryDate($factorCutoff = false) {
-      if(!$this->settings) {
-        return null;
-      }
-      return $this->settings->getNextDeliveryDates($factorCutoff)[0] ?? null;
+    public function getNextDeliveryDay($weekIndex)
+    {
+        $week = date('D', strtotime("Sunday +{$weekIndex} days"));
+        $date = new Carbon('next ' . $week, $this->settings->timezone);
+        $date->setTime(0, 0, 0);
+        return $date->setTimezone('utc');
     }
 
-    public function getNextCutoffDate($weekIndex = null) {
-      if(is_null($weekIndex)) {
-        $date = $this->getNextDeliveryDate(false);
-      }
-      else {
-        $date = $this->getNextDeliveryDay($weekIndex);
-      }
-
-      return $date ? $date->subSeconds($this->getCutoffSeconds()) : null;
+    public function getNextDeliveryDate($factorCutoff = false)
+    {
+        if (!$this->settings) {
+            return null;
+        }
+        return $this->settings->getNextDeliveryDates($factorCutoff)[0] ?? null;
     }
 
-    public function getOrders($groupBy = null, $dateRange = [], $onlyUnfulfilled = false, $onlyPaid = true) {
-      $orders = $this->orders()->with('meals');
-      
-      if(isset($dateRange['from'])) {
-        $from = Carbon::parse($dateRange['from']);
-        $orders = $orders->where('delivery_date', '>=', $from->format('Y-m-d'));
-      }
-      if(isset($dateRange['to'])) {
-        $to = Carbon::parse($dateRange['to']);
-        $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
-      }
+    public function getNextCutoffDate($weekIndex = null)
+    {
+        if (is_null($weekIndex)) {
+            $date = $this->getNextDeliveryDate(false);
+        } else {
+            $date = $this->getNextDeliveryDay($weekIndex);
+        }
 
-      if($onlyUnfulfilled) {
-        $orders = $orders->where('fulfilled', 0);
-      }
-      if($onlyPaid) {
-        $orders = $orders->where('paid', 1);
-      }
-
-      $orders = $orders->get();
-
-      if($groupBy) {
-        $orders = $orders->groupBy($groupBy);
-      }
-
-      return $orders;
+        return $date ? $date->subSeconds($this->getCutoffSeconds()) : null;
     }
 
-    public function getOrdersForNextDelivery($groupBy = null) {
-      $date = $this->getNextDeliveryDate();
-      $orders = $this->orders()->with('meals')->where([
-        ['paid', 1],
-        ['delivery_date', $date->format('Y-m-d')],
-      ])->get();
+    public function getOrders(
+        $groupBy = null,
+        $dateRange = [],
+        $onlyUnfulfilled = false,
+        $onlyPaid = true
+    ) {
+        $orders = $this->orders()->with('meals');
 
-      if($groupBy) {
-        $orders = $orders->groupBy($groupBy);
-      }
+        if (isset($dateRange['from'])) {
+            $from = Carbon::parse($dateRange['from']);
+            $orders = $orders->where(
+                'delivery_date',
+                '>=',
+                $from->format('Y-m-d')
+            );
+        }
+        if (isset($dateRange['to'])) {
+            $to = Carbon::parse($dateRange['to']);
+            $orders = $orders->where(
+                'delivery_date',
+                '<=',
+                $to->format('Y-m-d')
+            );
+        }
 
-      return $orders;
+        if ($onlyUnfulfilled) {
+            $orders = $orders->where('fulfilled', 0);
+        }
+        if ($onlyPaid) {
+            $orders = $orders->where('paid', 1);
+        }
+
+        $orders = $orders->get();
+
+        if ($groupBy) {
+            $orders = $orders->groupBy($groupBy);
+        }
+
+        return $orders;
     }
 
-    public function getPastOrders($groupBy = null) {
-      $date = $this->getNextDeliveryDate();
-      $orders = $this->orders()->with('meals')->where([
-        ['paid', 1],
-        ['delivery_date', '<', $date->format('Y-m-d')]
-      ])->get();
+    public function getOrdersForNextDelivery($groupBy = null)
+    {
+        $date = $this->getNextDeliveryDate();
+        $orders = $this->orders()
+            ->with('meals')
+            ->where([['paid', 1], ['delivery_date', $date->format('Y-m-d')]])
+            ->get();
 
-      if($groupBy) {
-        $orders = $orders->groupBy($groupBy);
-      }
+        if ($groupBy) {
+            $orders = $orders->groupBy($groupBy);
+        }
 
-      return $orders;
+        return $orders;
     }
 
-    public function getFulfilledOrders($groupBy = null) {
-      $date = $this->getNextDeliveryDate();
-      $orders = $this->orders()->with('meals')->where([
-        ['paid', 1],
-        ['fulfilled', '1']
-      ])->get();
+    public function getPastOrders($groupBy = null)
+    {
+        $date = $this->getNextDeliveryDate();
+        $orders = $this->orders()
+            ->with('meals')
+            ->where([
+                ['paid', 1],
+                ['delivery_date', '<', $date->format('Y-m-d')]
+            ])
+            ->get();
 
-      if($groupBy) {
-        $orders = $orders->groupBy($groupBy);
-      }
+        if ($groupBy) {
+            $orders = $orders->groupBy($groupBy);
+        }
 
-      return $orders;
+        return $orders;
+    }
+
+    public function getFulfilledOrders($groupBy = null)
+    {
+        $date = $this->getNextDeliveryDate();
+        $orders = $this->orders()
+            ->with('meals')
+            ->where([['paid', 1], ['fulfilled', '1']])
+            ->get();
+
+        if ($groupBy) {
+            $orders = $orders->groupBy($groupBy);
+        }
+
+        return $orders;
     }
 
     public function deliversToZip($zip)
@@ -347,27 +417,21 @@ class Store extends Model
 
         switch ($notif) {
             case 'new_order':
-                $email = new NewOrder(
-                    $data
-                );
+                $email = new NewOrder($data);
                 break;
 
             case 'new_subscription':
-                $email = new NewSubscription(
-                    $data
-                );
+                $email = new NewSubscription($data);
                 break;
 
             case 'cancelled_subscription':
-                $email = new CancelledSubscription(
-                    $data
-                );
+                $email = new CancelledSubscription($data);
                 break;
 
             case 'ready_to_print':
                 $email = new ReadyToPrint([
-                  'store' => $store,
-                  'storeDetails' => $storeDetails
+                    'store' => $store,
+                    'storeDetails' => $storeDetails
                 ]);
                 break;
         }
@@ -380,9 +444,12 @@ class Store extends Model
         return false;
     }
 
-    public function getCutoffSeconds() {
-      $cutoff = $this->settings->cutoff_days * (60 * 60 * 24) + $this->settings->cutoff_hours * (60 * 60);
-      return $cutoff;
+    public function getCutoffSeconds()
+    {
+        $cutoff =
+            $this->settings->cutoff_days * (60 * 60 * 24) +
+            $this->settings->cutoff_hours * (60 * 60);
+        return $cutoff;
     }
 
     /**
@@ -398,10 +465,16 @@ class Store extends Model
 
         $now = Carbon::now('utc');
 
-        $cutoff = $this->settings->cutoff_days * (60 * 60 * 24) + $this->settings->cutoff_hours * (60 * 60);
+        $cutoff =
+            $this->settings->cutoff_days * (60 * 60 * 24) +
+            $this->settings->cutoff_hours * (60 * 60);
 
         foreach ($this->settings->delivery_days as $day) {
-            $date = Carbon::createFromFormat('D', $day, $this->settings->timezone)->setTime(0, 0, 0);
+            $date = Carbon::createFromFormat(
+                'D',
+                $day,
+                $this->settings->timezone
+            )->setTime(0, 0, 0);
             $diff = $date->getTimestamp() - $now->getTimestamp() - $cutoff;
             //echo $diff."\r\n";
 
@@ -414,26 +487,31 @@ class Store extends Model
         return false;
     }
 
-    public function getCutoffPassedAttribute() {
-      $now = Carbon::now('utc');
-      $date = $this->getNextDeliveryDate();
-      if(!$date) {
-        return false;
-      }
-      return $now->getTimestamp() > ($date->getTimestamp() - $this->getCutoffSeconds());
+    public function getCutoffPassedAttribute()
+    {
+        $now = Carbon::now('utc');
+        $date = $this->getNextDeliveryDate();
+        if (!$date) {
+            return false;
+        }
+        return $now->getTimestamp() >
+            $date->getTimestamp() - $this->getCutoffSeconds();
     }
 
-    public function getNextCutoffDateAttribute() {
-      $date = $this->getNextCutoffDate();
-      return $date ? $date->toDateTimeString() : null;
+    public function getNextCutoffDateAttribute()
+    {
+        $date = $this->getNextCutoffDate();
+        return $date ? $date->toDateTimeString() : null;
     }
 
-    public function getNextDeliveryDateAttribute() {
-      $date = $this->getNextDeliveryDate();
-      return $date ? $date->toDateTimeString() : null;
+    public function getNextDeliveryDateAttribute()
+    {
+        $date = $this->getNextDeliveryDate();
+        return $date ? $date->toDateTimeString() : null;
     }
 
-    public function getUrlAttribute() {
-      return $this->getUrl();
+    public function getUrlAttribute()
+    {
+        return $this->getUrl();
     }
 }

@@ -102,9 +102,13 @@ class Meal extends Model implements HasMedia
         }
 
         return [
-            'url' => $mediaItems[0]->getUrl('full'),
-            'url_thumb' => $mediaItems[0]->getUrl('thumb'),
-            'url_medium' => $mediaItems[0]->getUrl('medium')
+            'url' => $this->store->getUrl($mediaItems[0]->getUrl('full')),
+            'url_thumb' => $this->store->getUrl(
+                $mediaItems[0]->getUrl('thumb')
+            ),
+            'url_medium' => $this->store->getUrl(
+                $mediaItems[0]->getUrl('medium')
+            )
         ];
     }
 
