@@ -15,6 +15,7 @@ use PHPUnit\Framework\Constraint\Exception;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
+use Spatie\Image\Manipulations;
 
 class Meal extends Model implements HasMedia
 {
@@ -95,12 +96,13 @@ class Meal extends Model implements HasMedia
         if (!count($mediaItems)) {
             return [
                 'url' => null,
-                'url_thumb' => null
+                'url_thumb' => null,
+                'url_medium' => null
             ];
         }
 
         return [
-            'url' => $mediaItems[0]->getUrl(),
+            'url' => $mediaItems[0]->getUrl('full'),
             'url_thumb' => $mediaItems[0]->getUrl('thumb'),
             'url_medium' => $mediaItems[0]->getUrl('medium')
         ];
@@ -108,14 +110,17 @@ class Meal extends Model implements HasMedia
 
     public function registerMediaConversions(Media $media = null)
     {
+        $this->addMediaConversion('full')
+            ->width(1024)
+            ->height(1024)
+            ->performOnCollections('featured_image');
+
         $this->addMediaConversion('thumb')
-            ->width(180)
-            ->height(180)
+            ->fit(Manipulations::FIT_CROP, 180, 180)
             ->performOnCollections('featured_image');
 
         $this->addMediaConversion('medium')
-            ->width(360)
-            ->height(360)
+            ->fit(Manipulations::FIT_CROP, 360, 360)
             ->performOnCollections('featured_image');
     }
 
@@ -416,9 +421,15 @@ class Meal extends Model implements HasMedia
         try {
             if ($props->has('featured_image')) {
                 $imagePath = Utils\Images::uploadB64(
-                    $request->get('featured_image')
+                    $request->get('featured_image'),
+                    'path',
+                    'meals/'
                 );
-                $meal->addMedia($imagePath)->toMediaCollection();
+                $fullImagePath = \Storage::disk('public')->path($imagePath);
+                $meal->clearMediaCollection('featured_image');
+                $meal
+                    ->addMedia($fullImagePath)
+                    ->toMediaCollection('featured_image');
 
                 //$props->put('featured_image', $imageUrl);
             } else {
@@ -537,7 +548,7 @@ class Meal extends Model implements HasMedia
                 $meal->tags()->sync($tags);
             }
 
-            $meal->update($props->toArray());
+            $meal->update($props->except(['featured_image'])->toArray());
         } catch (\Exception $e) {
             $meal->delete();
             throw new \Exception($e);
