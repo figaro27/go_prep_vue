@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <Spinner v-if="isLoading"/>
+          <Spinner v-if="isLoading" />
           <v-client-table
             :columns="columns"
             :data="tableData"
@@ -11,32 +11,38 @@
             v-show="!isLoading"
           >
             <span slot="beforeLimit">
-              <b-btn variant="primary" @click="exportData('subscriptions', 'pdf', true)">
-                <i class="fa fa-print"></i>&nbsp;
-                Print
+              <b-btn
+                variant="primary"
+                @click="exportData('subscriptions', 'pdf', true)"
+              >
+                <i class="fa fa-print"></i>&nbsp; Print
               </b-btn>
               <b-dropdown class="mx-1" right text="Export as">
-                <b-dropdown-item @click="exportData('subscriptions', 'csv')">CSV</b-dropdown-item>
-                <b-dropdown-item @click="exportData('subscriptions', 'xls')">XLS</b-dropdown-item>
-                <b-dropdown-item @click="exportData('subscriptions', 'pdf')">PDF</b-dropdown-item>
+                <b-dropdown-item @click="exportData('subscriptions', 'csv')"
+                  >CSV</b-dropdown-item
+                >
+                <b-dropdown-item @click="exportData('subscriptions', 'xls')"
+                  >XLS</b-dropdown-item
+                >
+                <b-dropdown-item @click="exportData('subscriptions', 'pdf')"
+                  >PDF</b-dropdown-item
+                >
               </b-dropdown>
             </span>
 
-            <div
-              slot="delivery_day"
-              class="text-nowrap"
-              slot-scope="props"
-            >{{ moment(props.row.next_delivery_date).format('dddd, MMM Do') }}</div>
-            <div
-              slot="charge_time"
-              class="text-nowrap"
-              slot-scope="props"
-            >{{ moment(props.row.charge_time).format('dddd, MMM Do') }}</div>
+            <div slot="delivery_day" class="text-nowrap" slot-scope="props">
+              {{ moment(props.row.next_delivery_date).format("dddd, MMM Do") }}
+            </div>
+            <div slot="charge_time" class="text-nowrap" slot-scope="props">
+              {{ moment(props.row.charge_time).format("dddd, MMM Do") }}
+            </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-primary btn-sm"
                 @click="viewSubscription(props.row.id)"
-              >View Meal Plan</button>
+              >
+                View Meal Plan
+              </button>
             </div>
 
             <div slot="amount" slot-scope="props">
@@ -48,7 +54,11 @@
     </div>
 
     <div v-if="subscription" class="modal-basic">
-      <b-modal v-model="viewSubscriptionModal" size="lg" title="Meal Plan Details">
+      <b-modal
+        v-model="viewSubscriptionModal"
+        size="lg"
+        title="Meal Plan Details"
+      >
         <div class="row mt-4">
           <div class="col-md-4">
             <h4>Meal Plan #</h4>
@@ -56,7 +66,7 @@
           </div>
           <div class="col-md-4">
             <h4>Placed On</h4>
-            <p>{{ moment(subscription.created_at).format('dddd, MMM Do') }}</p>
+            <p>{{ moment(subscription.created_at).format("dddd, MMM Do") }}</p>
           </div>
           <div class="col-md-4">
             <h2>{{ format.money(subscription.amount) }}</h2>
@@ -64,7 +74,7 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <hr>
+            <hr />
           </div>
         </div>
         <div class="row">
@@ -84,7 +94,10 @@
           <div class="col-md-4">
             <h4>Delivery Instructions</h4>
             <p>{{ user_detail.delivery }}</p>
-            <p><strong>Delivery Day:</strong> {{ moment(subscription.delivery_date).format('dddd, MMM Do') }}</p>
+            <p>
+              <strong>Delivery Day:</strong>
+              {{ moment(subscription.delivery_date).format("dddd, MMM Do") }}
+            </p>
           </div>
         </div>
         <div class="row">
@@ -101,24 +114,33 @@
             <button
               class="btn btn-primary btn-md pull-right mt-2"
               @click="saveNotes(subscriptionId)"
-            >Save</button>
+            >
+              Save
+            </button>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
             <h4>Meals</h4>
-            <hr>
+            <hr />
             <ul class="meal-quantities">
-              <li v-for="(meal) in getMealData(subscription)" :key="meal.id">
+              <li v-for="meal in getMealData(subscription)" :key="meal.id">
                 <div class="row">
                   <div class="col-md-5 pr-0">
-                    <span class="order-quantity">{{meal.quantity}}</span>
-                    <img src="/images/store/x-modal.png" class="mr-2 ml-2">
-                    <img :src="meal.featured_image" class="modalMeal mr-0 pr-0">
+                    <span class="order-quantity">{{ meal.quantity }}</span>
+                    <img src="/images/store/x-modal.png" class="mr-2 ml-2" />
+                    <thumbnail
+                      v-if="meal.image.url_thumb"
+                      :src="meal.image.url_thumb"
+                      :spinner="false"
+                      class="mr-0 pr-0"
+                    ></thumbnail>
                   </div>
                   <div class="col-md-7 pt-3 nopadding pl-0 ml-0">
-                    <p>{{meal.title}}</p>
-                    <p class="strong">{{format.money(meal.price * meal.quantity)}}</p>
+                    <p>{{ meal.title }}</p>
+                    <p class="strong">
+                      {{ format.money(meal.price * meal.quantity) }}
+                    </p>
                   </div>
                 </div>
               </li>
@@ -129,8 +151,6 @@
     </div>
   </div>
 </template>
-
-
 
 <script>
 import Spinner from "../../components/Spinner";
@@ -210,8 +230,8 @@ export default {
             };
           }
         },
-        orderBy: { 
-          column:'created_at' 
+        orderBy: {
+          column: "created_at"
         }
       },
       deliveryNote: ""
@@ -222,7 +242,7 @@ export default {
       store: "viewedStore",
       subscriptions: "storeSubscriptions",
       isLoading: "isLoading",
-      getMeal: "storeMeal",
+      getMeal: "storeMeal"
     }),
     tableData() {
       let filters = {};
@@ -263,10 +283,10 @@ export default {
       });
 
       const activeSubs = _.filter(subs, sub => {
-        if (sub.status != 'cancelled'){
+        if (sub.status != "cancelled") {
           return true;
         }
-      })
+      });
 
       return activeSubs;
     },
@@ -313,7 +333,7 @@ export default {
       return subscription.map((subscription, id) => {
         return {
           subscription,
-          featured_image: meals[id].featured_image,
+          featured_image: meals[id].image.url_thumb,
           title: meals[id].title,
           price: meals[id].price
         };
@@ -356,14 +376,14 @@ export default {
         });
     },
     getMealData(subscription) {
-      if(!subscription || !subscription.meal_ids) return [];
+      if (!subscription || !subscription.meal_ids) return [];
       return subscription.meal_ids.map(id => {
         return {
           ...this.getMeal(id),
           quantity: subscription.meal_quantities[id]
-        }
-      })
-    },
+        };
+      });
+    }
   }
 };
 </script>

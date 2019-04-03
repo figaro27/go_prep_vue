@@ -2,7 +2,7 @@
   <div
     :class="'thumbnail ' + (loaded ? 'loaded' : '')"
     @click="onClick"
-    :style="`width: ${width}px`"
+    :style="`width: ${width}`"
   >
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="filter hidden">
       <defs>
@@ -57,8 +57,8 @@ export default {
       default: 300
     },
     width: {
-      type: Number,
-      default: 128
+      type: String,
+      default: "128px"
     },
     height: {
       default: "auto"

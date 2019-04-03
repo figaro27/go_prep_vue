@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <Spinner v-if="isLoading"/>
+          <Spinner v-if="isLoading" />
           <v-client-table
             :columns="columns"
             :data="tableData"
@@ -13,40 +13,60 @@
             <div slot="beforeTable" class="mb-2">
               <div class="d-flex align-items-end">
                 <div class="mr-2">
-                  <b-btn @click="filterNotes" :selected="filters.notes" variant="primary" class="filter-btn">Filter Delivery Notes</b-btn>
+                  <b-btn
+                    @click="filterNotes"
+                    :selected="filters.notes"
+                    variant="primary"
+                    class="filter-btn"
+                    >Filter Delivery Notes</b-btn
+                  >
                 </div>
                 <div class="flex-grow-1">
-                  <delivery-date-picker v-model="filters.delivery_dates"></delivery-date-picker>
+                  <delivery-date-picker
+                    v-model="filters.delivery_dates"
+                  ></delivery-date-picker>
                 </div>
               </div>
             </div>
 
             <span slot="beforeLimit">
-              <b-btn variant="primary" @click="exportData('past_orders', 'pdf', true)">
-                <i class="fa fa-print"></i>&nbsp;
-                Print
+              <b-btn
+                variant="primary"
+                @click="exportData('past_orders', 'pdf', true)"
+              >
+                <i class="fa fa-print"></i>&nbsp; Print
               </b-btn>
               <b-dropdown class="mx-1" right text="Export as">
-                <b-dropdown-item @click="exportData('past_orders', 'csv')">CSV</b-dropdown-item>
-                <b-dropdown-item @click="exportData('past_orders', 'xls')">XLS</b-dropdown-item>
-                <b-dropdown-item @click="exportData('past_orders', 'pdf')">PDF</b-dropdown-item>
+                <b-dropdown-item @click="exportData('past_orders', 'csv')"
+                  >CSV</b-dropdown-item
+                >
+                <b-dropdown-item @click="exportData('past_orders', 'xls')"
+                  >XLS</b-dropdown-item
+                >
+                <b-dropdown-item @click="exportData('past_orders', 'pdf')"
+                  >PDF</b-dropdown-item
+                >
               </b-dropdown>
             </span>
 
             <div slot="notes" class="text-nowrap" slot-scope="props">
               <p v-if="props.row.has_notes">
-                <img src="/images/store/note.png">
+                <img src="/images/store/note.png" />
               </p>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-warning btn-sm"
                 @click="viewOrder(props.row.id)"
-              >View Order</button>
+              >
+                View Order
+              </button>
               <button
                 class="btn btn-primary btn-sm"
                 @click="unfulfill(props.row.id)"
-              >Mark As Unfulfilled</button>
+              >
+                Mark As Unfulfilled
+              </button>
             </div>
 
             <div slot="amount" slot-scope="props">
@@ -102,24 +122,36 @@
               v-model="deliveryNote"
               placeholder="E.G. Customer didn't answer phone or doorbell."
             ></textarea>
-            <button class="btn btn-primary btn-md pull-right mt-2" @click="saveNotes(orderId)">Save</button>
+            <button
+              class="btn btn-primary btn-md pull-right mt-2"
+              @click="saveNotes(orderId)"
+            >
+              Save
+            </button>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
             <h4>Meals</h4>
-            <hr>
+            <hr />
             <ul class="meal-quantities">
-              <li v-for="(order) in getMealQuantities(meals)">
+              <li v-for="order in getMealQuantities(meals)">
                 <div class="row">
                   <div class="col-md-4 pr-0">
-                    <span class="order-quantity">{{order.order}}</span>
-                    <img src="/images/store/x-modal.png" class="mr-2 ml-2">
-                    <img :src="order.featured_image" class="modalMeal">
+                    <span class="order-quantity">{{ order.order }}</span>
+                    <img src="/images/store/x-modal.png" class="mr-2 ml-2" />
+                    <thumbnail
+                      v-if="meal.image.url_thumb"
+                      :src="meal.image.url_thumb"
+                      :spinner="false"
+                      class
+                    ></thumbnail>
                   </div>
                   <div class="col-md-8 pt-3 nopadding">
-                    <p>{{order.title}}</p>
-                    <p class="strong">{{format.money(order.price * order.order)}}</p>
+                    <p>{{ order.title }}</p>
+                    <p class="strong">
+                      {{ format.money(order.price * order.order) }}
+                    </p>
                   </div>
                 </div>
               </li>
@@ -131,10 +163,7 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-
-</style>
-
+<style lang="scss" scoped></style>
 
 <script>
 import Spinner from "../../components/Spinner";
@@ -151,7 +180,7 @@ export default {
       filter: false,
       filters: {
         delivery_dates: [],
-        notes: false,
+        notes: false
       },
       viewOrderModal: false,
       order: {},
@@ -276,7 +305,7 @@ export default {
       return order.map((order, id) => {
         return {
           order,
-          featured_image: meals[id].featured_image,
+          featured_image: meals[id].image.url_thumb,
           title: meals[id].title,
           price: meals[id].price
         };

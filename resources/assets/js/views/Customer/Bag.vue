@@ -8,23 +8,48 @@
             <h2 class="center-text dbl-underline">Checkout</h2>
           </div>
           <div class="col-md-12 mb-2 bag-actions">
-            <b-button size="lg" class="brand-color white-text" to="/customer/menu"><span class="d-none d-sm-inline">Change Meals</span></b-button>
-            <b-button size="lg" class="gray white-text" @click="clearAll"><span class="d-none d-sm-inline">Empty Bag</span></b-button>
+            <b-button
+              size="lg"
+              class="brand-color white-text"
+              to="/customer/menu"
+              ><span class="d-none d-sm-inline">Change Meals</span></b-button
+            >
+            <b-button size="lg" class="gray white-text" @click="clearAll"
+              ><span class="d-none d-sm-inline">Empty Bag</span></b-button
+            >
           </div>
         </div>
         <div class="row">
           <div class="col-md-5">
             <ul class="list-group">
-              <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
-                <div v-if="item && item.quantity > 0" class="d-flex align-items-center">
+              <li
+                v-for="(item, mealId) in bag"
+                :key="`bag-${mealId}`"
+                class="bag-item"
+              >
+                <div
+                  v-if="item && item.quantity > 0"
+                  class="d-flex align-items-center"
+                >
                   <div class="bag-item-quantity mr-2">
-                    <div @click="addOne(item.meal)" class="bag-plus-minus brand-color white-text"><i>+</i></div>
+                    <div
+                      @click="addOne(item.meal)"
+                      class="bag-plus-minus brand-color white-text"
+                    >
+                      <i>+</i>
+                    </div>
                     <p class="bag-quantity">{{ item.quantity }}</p>
-                    <div @click="minusOne(item.meal)" class="bag-plus-minus gray white-text"><i>-</i></div>
+                    <div
+                      @click="minusOne(item.meal)"
+                      class="bag-plus-minus gray white-text"
+                    >
+                      <i>-</i>
+                    </div>
                   </div>
                   <div class="bag-item-image mr-2">
                     <thumbnail
-                      :src="item.meal.featured_image"
+                      v-if="item.meal.image.url_thumb"
+                      :src="item.meal.image.url_thumb"
                       :spinner="false"
                       class="cart-item-img"
                     ></thumbnail>
@@ -35,32 +60,39 @@
                       src="/images/customer/x.png"
                       @click="clearMeal(item.meal)"
                       class="clear-meal"
-                    >
+                    />
                   </div>
                 </div>
               </li>
             </ul>
-            <p
-              class="mt-3"
-              v-if="minOption === 'meals' && total < minMeals"
-            >Please add {{ remainingMeals }} {{ singOrPlural }} to continue.</p>
+            <p class="mt-3" v-if="minOption === 'meals' && total < minMeals">
+              Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
+            </p>
             <router-link to="/customer/menu">
               <b-btn
                 v-if="minOption === 'meals' && total < minMeals && !preview"
                 class="menu-bag-btn mb-2"
-              >BACK</b-btn>
+                >BACK</b-btn
+              >
             </router-link>
 
             <p
               class="mt-3"
               v-if="minOption === 'price' && totalBagPrice < minPrice"
-            >Please add {{format.money(remainingPrice)}} more to continue.</p>
+            >
+              Please add {{ format.money(remainingPrice) }} more to continue.
+            </p>
             <div>
               <router-link to="/customer/menu">
                 <b-btn
-                  v-if="minOption === 'price' && totalBagPrice <= minPrice && !preview"
+                  v-if="
+                    minOption === 'price' &&
+                      totalBagPrice <= minPrice &&
+                      !preview
+                  "
                   class="menu-bag-btn"
-                >BACK</b-btn>
+                  >BACK</b-btn
+                >
               </router-link>
             </div>
           </div>
@@ -72,50 +104,69 @@
                     <p>
                       <strong>Weekly Meal Plan</strong>
                       <img
-                        v-b-popover.hover="'Choose a weekly meal plan instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals as well as pause or cancel the meal plan if it is within a certain amount of time before the pickup/delivery day.'"
+                        v-b-popover.hover="
+                          'Choose a weekly meal plan instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals as well as pause or cancel the meal plan if it is within a certain amount of time before the pickup/delivery day.'
+                        "
                         title="Weekly Meal Plan"
                         src="/images/store/popover.png"
                         class="popover-size ml-1"
-                      >
+                      />
                     </p>
                   </div>
                   <div class="col-md-4">
                     <div class="aside-options">
-                      <c-switch color="success" variant="pill" size="lg" v-model="deliveryPlan"/>
+                      <c-switch
+                        color="success"
+                        variant="pill"
+                        size="lg"
+                        v-model="deliveryPlan"
+                      />
                     </div>
                   </div>
                 </div>
               </li>
               <li class="checkout-item">
                 <p>
-                  <strong>{{ total }} {{ singOrPluralTotal }} {{ deliveryPlanText }}</strong>
+                  <strong
+                    >{{ total }} {{ singOrPluralTotal }}
+                    {{ deliveryPlanText }}</strong
+                  >
                 </p>
               </li>
-              <li
-                class="checkout-item"
-                
-              >
+              <li class="checkout-item">
                 <div class="row">
                   <div class="col-md-4">
                     <strong>Subtotal:</strong>
                   </div>
-                  <div class="col-md-3 offset-5">{{ format.money(preFeePreDiscount) }}</div>
+                  <div class="col-md-3 offset-5">
+                    {{ format.money(preFeePreDiscount) }}
+                  </div>
                 </div>
               </li>
-              <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
+              <li
+                class="checkout-item"
+                v-if="deliveryPlan && applyMealPlanDiscount"
+              >
                 <div class="row">
                   <div class="col-md-4">
                     <strong>Meal Plan Discount:</strong>
                   </div>
-                  <div class="col-md-3 offset-5 red">({{ format.money(mealPlanDiscount) }})</div>
+                  <div class="col-md-3 offset-5 red">
+                    ({{ format.money(mealPlanDiscount) }})
+                  </div>
                 </div>
               </li>
-              <li class="checkout-item" v-if="storeSettings.applyDeliveryFee && pickup === 0">
+              <li
+                class="checkout-item"
+                v-if="storeSettings.applyDeliveryFee && pickup === 0"
+              >
                 <div class="row">
                   <div class="col-md-4">
                     <strong>Delivery Fee:</strong>
                   </div>
-                  <div class="col-md-3 offset-5">{{ format.money(storeSettings.deliveryFee) }}</div>
+                  <div class="col-md-3 offset-5">
+                    {{ format.money(storeSettings.deliveryFee) }}
+                  </div>
                 </div>
               </li>
               <li class="checkout-item" v-if="storeSettings.applyProcessingFee">
@@ -123,7 +174,9 @@
                   <div class="col-md-4">
                     <strong>Processing Fee:</strong>
                   </div>
-                  <div class="col-md-3 offset-5">{{ format.money(storeSettings.processingFee) }}</div>
+                  <div class="col-md-3 offset-5">
+                    {{ format.money(storeSettings.processingFee) }}
+                  </div>
                 </div>
               </li>
 
@@ -147,7 +200,10 @@
                 </div>
               </li>
 
-              <li class="checkout-item" v-if="transferTypeCheckDelivery && transferTypeCheckPickup">
+              <li
+                class="checkout-item"
+                v-if="transferTypeCheckDelivery && transferTypeCheckPickup"
+              >
                 <b-form-group>
                   <b-form-radio-group v-model="pickup" name="pickup">
                     <b-form-radio :value="0" @click="pickup = 0">
@@ -159,40 +215,78 @@
                   </b-form-radio-group>
                 </b-form-group>
               </li>
-              
 
               <li>
                 <div>
-                  <p v-if="pickup === 0 && transferTypeCheck !== 'pickup' && deliveryDaysOptions.length > 1">Delivery Day</p>
-                  <p v-if="pickup === 1 && deliveryDaysOptions.length > 1" >Pickup Day</p>
-                  <b-form-group v-if="deliveryDaysOptions.length > 1" description>
+                  <p
+                    v-if="
+                      pickup === 0 &&
+                        transferTypeCheck !== 'pickup' &&
+                        deliveryDaysOptions.length > 1
+                    "
+                  >
+                    Delivery Day
+                  </p>
+                  <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
+                    Pickup Day
+                  </p>
+                  <b-form-group
+                    v-if="deliveryDaysOptions.length > 1"
+                    description
+                  >
                     <b-select
                       :options="deliveryDaysOptions"
                       v-model="deliveryDay"
                       class="delivery-select"
                       required
                     >
-                      <option slot="top" disabled>-- Select delivery day --</option>
+                      <option slot="top" disabled
+                        >-- Select delivery day --</option
+                      >
                     </b-select>
                   </b-form-group>
                   <div v-else-if="deliveryDaysOptions.length === 1">
-                    <p v-if="pickup === 0">Delivery Day: {{ deliveryDaysOptions[0].text }}</p>
-                    <p v-if="pickup === 1">Pickup Day: {{ deliveryDaysOptions[0].text }}</p>
+                    <p v-if="pickup === 0">
+                      Delivery Day: {{ deliveryDaysOptions[0].text }}
+                    </p>
+                    <p v-if="pickup === 1">
+                      Pickup Day: {{ deliveryDaysOptions[0].text }}
+                    </p>
                   </div>
                 </div>
               </li>
 
-              <li class="checkout-item" v-if="minOption === 'meals' && total < minimumMeals && !manualOrder">
-                <p>Please add {{ remainingMeals }} {{ singOrPlural }} to continue.`</p>
+              <li
+                class="checkout-item"
+                v-if="
+                  minOption === 'meals' && total < minimumMeals && !manualOrder
+                "
+              >
+                <p>
+                  Please add {{ remainingMeals }} {{ singOrPlural }} to
+                  continue.`
+                </p>
               </li>
 
-              <li class="checkout-item" v-if="minOption === 'price' && totalBagPrice < minPrice && !manualOrder">
-                <p>Please add {{format.money(remainingPrice)}} more to continue.</p>
+              <li
+                class="checkout-item"
+                v-if="
+                  minOption === 'price' &&
+                    totalBagPrice < minPrice &&
+                    !manualOrder
+                "
+              >
+                <p>
+                  Please add {{ format.money(remainingPrice) }} more to
+                  continue.
+                </p>
               </li>
 
               <li v-else-if="loggedIn">
                 <div v-if="!willDeliver && pickup != 1">
-                  <b-alert variant="danger center-text" show>You are outside of the delivery area.</b-alert>
+                  <b-alert variant="danger center-text" show
+                    >You are outside of the delivery area.</b-alert
+                  >
                 </div>
                 <div v-else>
                   <h4 class="mt-2 mb-3">Choose Payment Method</h4>
@@ -201,12 +295,19 @@
                     v-if="card && minOption === 'meals' && total >= minMeals"
                     @click="checkout"
                     class="menu-bag-btn"
-                  >CHECKOUT</b-btn>
+                    >CHECKOUT</b-btn
+                  >
                   <b-btn
-                    v-if="card && minOption === 'price' && totalBagPrice >= minPrice && storeSettings.open"
+                    v-if="
+                      card &&
+                        minOption === 'price' &&
+                        totalBagPrice >= minPrice &&
+                        storeSettings.open
+                    "
                     @click="checkout"
                     class="menu-bag-btn"
-                  >CHECKOUT</b-btn>
+                    >CHECKOUT</b-btn
+                  >
                 </div>
               </li>
 
@@ -214,17 +315,23 @@
                 <div class="row">
                   <div class="col-md-6">
                     <router-link
-                        :to="{ path: '/login', query: { redirect: '/customer/bag' } }"
-                      >
+                      :to="{
+                        path: '/login',
+                        query: { redirect: '/customer/bag' }
+                      }"
+                    >
                       <b-btn class="menu-bag-btn">
                         LOG IN
                       </b-btn>
                     </router-link>
-
-
                   </div>
                   <div class="col-md-6">
-                    <router-link :to="{ path: '/register', query: { redirect: '/customer/bag' } }">
+                    <router-link
+                      :to="{
+                        path: '/register',
+                        query: { redirect: '/customer/bag' }
+                      }"
+                    >
                       <b-btn class="menu-bag-btn">
                         REGISTER
                       </b-btn>
@@ -234,25 +341,41 @@
               </li>
             </ul>
 
-            <li class="transfer-instruction mt-2" v-if="transferTypeCheckDelivery && pickup === 0 && storeSettings.deliveryInstructions">
-                <p>
-                  <strong>Delivery Instructions:</strong>
-                  {{ storeSettings.deliveryInstructions }}
-                </p>
-              </li>
-              <li class="transfer-instruction mt-2" v-if="transferTypeCheckPickup && pickup === 1 && storeSettings.pickupInstructions">
-                <p>
-                  <strong>Pickup Instructions:</strong>
-                  {{ storeSettings.pickupInstructions }}
-                </p>
-              </li>
+            <li
+              class="transfer-instruction mt-2"
+              v-if="
+                transferTypeCheckDelivery &&
+                  pickup === 0 &&
+                  storeSettings.deliveryInstructions
+              "
+            >
+              <p>
+                <strong>Delivery Instructions:</strong>
+                {{ storeSettings.deliveryInstructions }}
+              </p>
+            </li>
+            <li
+              class="transfer-instruction mt-2"
+              v-if="
+                transferTypeCheckPickup &&
+                  pickup === 1 &&
+                  storeSettings.pickupInstructions
+              "
+            >
+              <p>
+                <strong>Pickup Instructions:</strong>
+                {{ storeSettings.pickupInstructions }}
+              </p>
+            </li>
 
             <div v-if="storeSettings.open === false">
               <div class="row">
                 <div class="col-sm-12 mt-3">
                   <div class="card">
                     <div class="card-body">
-                      <h5 class="center-text">This company will not be taking new orders at this time.</h5>
+                      <h5 class="center-text">
+                        This company will not be taking new orders at this time.
+                      </h5>
                       <p class="center-text mt-3">
                         <strong>Reason:</strong>
                         {{ storeSettings.closedReason }}
@@ -320,12 +443,10 @@ export default {
       return this.storeSettings.transferType.split(",");
     },
     transferTypeCheckDelivery() {
-      if (_.includes(this.transferType, "delivery")) 
-        return true;
+      if (_.includes(this.transferType, "delivery")) return true;
     },
     transferTypeCheckPickup() {
-      if (_.includes(this.transferType, "pickup")) 
-        return true;
+      if (_.includes(this.transferType, "pickup")) return true;
     },
     minimumOption() {
       return this.minOption;
@@ -343,7 +464,7 @@ export default {
       return this.minPrice - this.totalBagPrice;
     },
     preFeePreDiscount() {
-      let subtotal = this.totalBagPricePreFees
+      let subtotal = this.totalBagPricePreFees;
       return subtotal;
     },
     afterDiscountBeforeFees() {
@@ -358,21 +479,16 @@ export default {
       let processingFee = this.storeSettings.processingFee;
       let subtotal = this.afterDiscountBeforeFees;
 
-      if (applyDeliveryFee & this.pickup === 0)
-      subtotal += deliveryFee;
-      if (applyProcessingFee)
-      subtotal += processingFee;
-
+      if (applyDeliveryFee & (this.pickup === 0)) subtotal += deliveryFee;
+      if (applyProcessingFee) subtotal += processingFee;
 
       return subtotal;
-
     },
     afterDiscountAfterFees() {
-      let salesTax = 1 + (this.salesTax);
+      let salesTax = 1 + this.salesTax;
       let subtotal = this.afterDiscountAfterFeesBeforeTax;
 
       return subtotal * salesTax;
-
     },
     applyMealPlanDiscount() {
       return this.storeSettings.applyMealPlanDiscount;
@@ -399,27 +515,26 @@ export default {
       else return "Prepared Once";
     },
     deliveryDaysOptions() {
-      return this.storeSetting("next_orderable_delivery_dates", []).map(date => {
-        return {
-          value: date.date,
-          text: moment(date.date).format("dddd MMM Do")
-        };
-      });
+      return this.storeSetting("next_orderable_delivery_dates", []).map(
+        date => {
+          return {
+            value: date.date,
+            text: moment(date.date).format("dddd MMM Do")
+          };
+        }
+      );
     },
     tax() {
       return this.salesTax * this.afterDiscountAfterFeesBeforeTax;
-
     }
   },
   mounted() {
-    if (this.deliveryDaysOptions.length === 1){
-      this.deliveryDay = this.deliveryDaysOptions[0].value
+    if (this.deliveryDaysOptions.length === 1) {
+      this.deliveryDay = this.deliveryDaysOptions[0].value;
     }
     this.getSalesTax(this.store.details.state);
 
-    if (!_.includes(this.transferType, "delivery")) 
-        this.pickup = 1;
-
+    if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
   },
   methods: {
     ...mapActions(["refreshSubscriptions", "refreshCustomerOrders"]),
@@ -489,15 +604,14 @@ export default {
           this.loading = false;
         });
     },
-    getSalesTax(state){
-      SalesTax.getSalesTax("US", state)
-      .then((tax) => {
+    getSalesTax(state) {
+      SalesTax.getSalesTax("US", state).then(tax => {
         this.setSalesTax(tax.rate);
       });
     },
-    setSalesTax(rate){
+    setSalesTax(rate) {
       this.salesTax = rate;
     }
   }
-}
+};
 </script>

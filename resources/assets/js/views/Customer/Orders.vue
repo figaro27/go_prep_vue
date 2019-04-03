@@ -146,7 +146,7 @@ export default {
     getMealTableData(order) {
       return order.meals.map(meal => {
         return {
-          image: meal.featured_image,
+          image: meal.image.url_thumb,
           meal: meal.title,
           quantity: meal.pivot.quantity,
           subtotal: format.money(meal.price * meal.pivot.quantity)

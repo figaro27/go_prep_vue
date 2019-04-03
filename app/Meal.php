@@ -84,8 +84,8 @@ class Meal extends Model implements HasMedia
     }
 
     /*public function getFeaturedImageAttribute() {
-      $mediaItems = $this->getMedia('featured_image');
-      return count($mediaItems) ? $mediaItems[0]->getUrl('thumb') : null;
+    $mediaItems = $this->getMedia('featured_image');
+    return count($mediaItems) ? $mediaItems[0]->getUrl('thumb') : null;
     }*/
 
     public function getImageAttribute()
@@ -101,7 +101,8 @@ class Meal extends Model implements HasMedia
 
         return [
             'url' => $mediaItems[0]->getUrl(),
-            'url_thumb' => $mediaItems[0]->getUrl('thumb')
+            'url_thumb' => $mediaItems[0]->getUrl('thumb'),
+            'url_medium' => $mediaItems[0]->getUrl('medium')
         ];
     }
 
@@ -110,7 +111,11 @@ class Meal extends Model implements HasMedia
         $this->addMediaConversion('thumb')
             ->width(180)
             ->height(180)
-            ->sharpen(10)
+            ->performOnCollections('featured_image');
+
+        $this->addMediaConversion('medium')
+            ->width(360)
+            ->height(360)
             ->performOnCollections('featured_image');
     }
 

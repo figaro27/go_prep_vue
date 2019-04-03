@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <Spinner v-if="isLoading"/>
+          <Spinner v-if="isLoading" />
           <v-client-table
             :columns="columns"
             :data="tableData"
@@ -18,7 +18,8 @@
                     :selected="filters.has_notes"
                     variant="primary"
                     class="filter-btn"
-                  >Filter Delivery Notes</b-btn>
+                    >Filter Delivery Notes</b-btn
+                  >
                 </div>
                 <div class="d-inline-block mr-2 flex-grow-0">
                   <b-btn
@@ -27,70 +28,90 @@
                     variant="warning"
                     class="filter-btn"
                     v-if="!filters.fulfilled"
-                  >View Completed Orders</b-btn>
+                    >View Completed Orders</b-btn
+                  >
                   <b-btn
                     @click="showUnfulfilledOrders()"
                     :selected="filters.fulfilled"
                     variant="danger"
                     class="filter-btn"
                     v-if="filters.fulfilled"
-                  >View Open Orders</b-btn>
+                    >View Open Orders</b-btn
+                  >
                   <!-- <router-link to="/store/menu/manual-order">
                     <b-btn class="btn btn-success filter-btn">Create Manual Order</b-btn>
                   </router-link> -->
                 </div>
-                <delivery-date-picker v-model="filters.delivery_dates" @change="onChangeDateFilter" class="mt-3 mt-sm-0"></delivery-date-picker>
+                <delivery-date-picker
+                  v-model="filters.delivery_dates"
+                  @change="onChangeDateFilter"
+                  class="mt-3 mt-sm-0"
+                ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
               </div>
             </div>
 
             <span slot="beforeLimit">
-              <b-btn variant="success" @click="exportData('orders_by_customer', 'pdf', true)">
-                <i class="fa fa-print"></i>&nbsp;
-                Print Orders Summary
+              <b-btn
+                variant="success"
+                @click="exportData('orders_by_customer', 'pdf', true)"
+              >
+                <i class="fa fa-print"></i>&nbsp; Print Orders Summary
               </b-btn>
-              <b-btn variant="primary" @click="exportData('orders', 'pdf', true)">
-                <i class="fa fa-print"></i>&nbsp;
-                Print Orders
+              <b-btn
+                variant="primary"
+                @click="exportData('orders', 'pdf', true)"
+              >
+                <i class="fa fa-print"></i>&nbsp; Print Orders
               </b-btn>
               <b-dropdown class="mx-1 mt-2 mt-sm-0" right text="Export as">
-                <b-dropdown-item @click="exportData('orders', 'csv')">CSV</b-dropdown-item>
-                <b-dropdown-item @click="exportData('orders', 'xls')">XLS</b-dropdown-item>
-                <b-dropdown-item @click="exportData('orders', 'pdf')">PDF</b-dropdown-item>
+                <b-dropdown-item @click="exportData('orders', 'csv')"
+                  >CSV</b-dropdown-item
+                >
+                <b-dropdown-item @click="exportData('orders', 'xls')"
+                  >XLS</b-dropdown-item
+                >
+                <b-dropdown-item @click="exportData('orders', 'pdf')"
+                  >PDF</b-dropdown-item
+                >
               </b-dropdown>
             </span>
 
             <div slot="notes" class="text-nowrap" slot-scope="props">
               <p v-if="props.row.has_notes">
-                <img src="/images/store/note.png">
+                <img src="/images/store/note.png" />
               </p>
             </div>
-            <div
-              slot="created_at"
-              slot-scope="props"
-            >{{ moment(props.row.created_at).format('dddd, MMM Do') }}</div>
-            <div
-              slot="delivery_date"
-              slot-scope="props"
-            >{{ moment(props.row.delivery_date).format('dddd, MMM Do') }}</div>
-            <div slot="pickup" slot-scope="props">{{ props.row.pickup ? 'Pickup' : 'Delivery' }}</div>
+            <div slot="created_at" slot-scope="props">
+              {{ moment(props.row.created_at).format("dddd, MMM Do") }}
+            </div>
+            <div slot="delivery_date" slot-scope="props">
+              {{ moment(props.row.delivery_date).format("dddd, MMM Do") }}
+            </div>
+            <div slot="pickup" slot-scope="props">
+              {{ props.row.pickup ? "Pickup" : "Delivery" }}
+            </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-warning btn-sm"
                 @click="viewOrder(props.row.id)"
-              >View Order</button>
+              >
+                View Order
+              </button>
               <b-btn
                 v-if="!props.row.fulfilled"
                 class="btn btn-primary btn-sm"
                 @click="fulfill(props.row.id)"
                 variant="primary"
-              >Mark As Complete</b-btn>
+                >Mark As Complete</b-btn
+              >
               <b-btn
                 v-else
                 class="btn btn-primary btn-sm"
                 @click="unfulfill(props.row.id)"
                 variant="danger"
-              >Unmark As Complete</b-btn>
+                >Unmark As Complete</b-btn
+              >
             </div>
 
             <div slot="amount" slot-scope="props">
@@ -110,7 +131,7 @@
           </div>
           <div class="col-md-4 pt-4">
             <h4>Placed On</h4>
-            <p>{{ moment(order.created_at).format('dddd, MMM Do') }}</p>
+            <p>{{ moment(order.created_at).format("dddd, MMM Do") }}</p>
           </div>
           <div class="col-md-4 pt-4">
             <h2>{{ format.money(order.amount) }}</h2>
@@ -136,14 +157,14 @@
             <p>{{ user_detail.delivery }}</p>
             <p>
               <strong>Delivery Day:</strong>
-              {{ moment(order.delivery_date).format('dddd, MMM Do') }}
+              {{ moment(order.delivery_date).format("dddd, MMM Do") }}
             </p>
           </div>
           <div v-else class="col-md-4">
             <h4>Pickup</h4>
             <p>
               <strong>Day:</strong>
-              {{ moment(order.delivery_date).format('dddd, MMM Do') }}
+              {{ moment(order.delivery_date).format("dddd, MMM Do") }}
             </p>
           </div>
         </div>
@@ -158,24 +179,36 @@
               v-model="deliveryNote"
               placeholder="E.G. Customer didn't answer phone or doorbell."
             ></textarea>
-            <button class="btn btn-primary btn-md pull-right mt-2" @click="saveNotes(orderId)">Save</button>
+            <button
+              class="btn btn-primary btn-md pull-right mt-2"
+              @click="saveNotes(orderId)"
+            >
+              Save
+            </button>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
             <h4>Meals</h4>
-            <hr>
+            <hr />
             <ul class="meal-quantities">
-              <li v-for="(meal) in getMealQuantities(order.meals)">
+              <li v-for="meal in getMealQuantities(order.meals)">
                 <div class="row">
                   <div class="col-md-5 pr-0">
-                    <span class="order-quantity">{{meal.quantity}}</span>
-                    <img src="/images/store/x-modal.png" class="mr-2 ml-2">
-                    <img :src="meal.featured_image" class="modalMeal mr-0 pr-0">
+                    <span class="order-quantity">{{ meal.quantity }}</span>
+                    <img src="/images/store/x-modal.png" class="mr-2 ml-2" />
+                    <thumbnail
+                      v-if="meal.image.url_thumb"
+                      :src="meal.image.url_thumb"
+                      :spinner="false"
+                      class="mr-0 pr-0"
+                    ></thumbnail>
                   </div>
                   <div class="col-md-7 pt-3 nopadding pl-0 ml-0">
-                    <p>{{meal.title}}</p>
-                    <p class="strong">{{format.money(meal.price * meal.quantity)}}</p>
+                    <p>{{ meal.title }}</p>
+                    <p class="strong">
+                      {{ format.money(meal.price * meal.quantity) }}
+                    </p>
                   </div>
                 </div>
               </li>
@@ -184,14 +217,12 @@
         </div>
       </b-modal>
     </div>
-      <v-style>
-        .input-date{
-          color: {{ dateColor }}
-        }
-      </v-style>
+    <v-style>
+      .input-date{ color: {{ dateColor }}
+      }
+    </v-style>
   </div>
 </template>
-
 
 <script>
 import Spinner from "../../components/Spinner";
@@ -277,7 +308,7 @@ export default {
               return a.isAfter(b, "day") ? 1 : -1;
             };
           }
-        },
+        }
       },
       deliveryNote: ""
     };
@@ -295,13 +326,12 @@ export default {
       let filters = { ...this.filters };
 
       let filtered = _.filter(this.orders, order => {
-        if("paid" in filters && (filters.paid !== order.paid)) {
+        if ("paid" in filters && filters.paid !== order.paid) {
           return false;
         }
         if (
           "delivery_dates" in filters &&
-          (filters.delivery_dates.start ||
-          filters.delivery_dates.end)
+          (filters.delivery_dates.start || filters.delivery_dates.end)
         ) {
           let dateMatch = false;
 
@@ -349,7 +379,7 @@ export default {
       refreshOrdersWithFulfilled: "refreshOrdersWithFulfilled",
       updateOrder: "updateOrder",
       addJob: "addJob",
-      removeJob: "removeJob",
+      removeJob: "removeJob"
     }),
     refreshTable() {
       this.refreshOrders();
@@ -389,7 +419,7 @@ export default {
       return meals.map((meal, id) => {
         return {
           quantity: meal.pivot.quantity,
-          featured_image: meals[id].featured_image,
+          image: meals[id].image,
           title: meals[id].title,
           price: meals[id].price
         };
@@ -397,21 +427,23 @@ export default {
     },
     async viewOrder(id) {
       const jobId = await this.addJob();
-      axios.get(`/api/me/orders/${id}`).then(response => {
-        this.orderId = response.data.id;
-        this.deliveryNote = response.data.notes;
-        this.order = response.data;
-        this.user_detail = response.data.user.user_detail;
-        this.meals = response.data.meals;
-        this.viewOrderModal = true;
+      axios
+        .get(`/api/me/orders/${id}`)
+        .then(response => {
+          this.orderId = response.data.id;
+          this.deliveryNote = response.data.notes;
+          this.order = response.data;
+          this.user_detail = response.data.user.user_detail;
+          this.meals = response.data.meals;
+          this.viewOrderModal = true;
 
-        this.$nextTick(function() {
-          window.dispatchEvent(new window.Event("resize"));
+          this.$nextTick(function() {
+            window.dispatchEvent(new window.Event("resize"));
+          });
+        })
+        .finally(() => {
+          this.removeJob(jobId);
         });
-      })
-      .finally(() => {
-        this.removeJob(jobId);
-      });
     },
     filterPastOrders() {
       this.pastOrder = !this.pastOrder;
@@ -437,7 +469,7 @@ export default {
 
       let params = {
         has_notes: this.filters.has_notes ? 1 : 0,
-        fulfilled: this.filters.fulfilled ? 1 : 0,
+        fulfilled: this.filters.fulfilled ? 1 : 0
       };
 
       if (
@@ -479,16 +511,16 @@ export default {
     updateViewedOrders() {
       axios.get(`/api/me/ordersUpdateViewed`);
     },
-    clearDeliveryDates(){
+    clearDeliveryDates() {
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
       this.dateColor = "#ffffff !important";
     },
-    showFulfilledOrders(){
+    showFulfilledOrders() {
       this.filters.fulfilled = 1;
       this.refreshTableWithFulfilled();
     },
-    showUnfulfilledOrders(){
+    showUnfulfilledOrders() {
       this.filters.fulfilled = 0;
       this.refreshTable();
     }
