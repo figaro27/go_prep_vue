@@ -1,5 +1,8 @@
 <template>
   <div class="row auth-box">
+    <b-modal id="tos" size="xl" ref="tos">
+      <termsOfService></termsOfService>
+    </b-modal>
     <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
       <div class="card">
         <div class="card-body p-lg-5">
@@ -17,21 +20,35 @@
                 </b-form-radio-group>
               </b-form-group>
 
-              <b-form-group horizontal label="First Name" :state="state(0, 'first_name')">
+              <b-form-group
+                horizontal
+                label="First Name"
+                :state="state(0, 'first_name')"
+              >
                 <b-input
                   v-model="form[0].first_name"
                   type="text"
-                  @input="$v.form[0].first_name.$touch(); clearFeedback(0, 'first_name')"
+                  @input="
+                    $v.form[0].first_name.$touch();
+                    clearFeedback(0, 'first_name');
+                  "
                   :state="state(0, 'first_name')"
                   autocomplete="new-password"
                 ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Last Name" :state="state(0, 'last_name')">
+              <b-form-group
+                horizontal
+                label="Last Name"
+                :state="state(0, 'last_name')"
+              >
                 <b-input
                   v-model="form[0].last_name"
                   type="text"
-                  @input="$v.form[0].last_name.$touch(); clearFeedback(0, 'last_name')"
+                  @input="
+                    $v.form[0].last_name.$touch();
+                    clearFeedback(0, 'last_name');
+                  "
                   :state="state(0, 'last_name')"
                   autocomplete="new-password"
                 ></b-input>
@@ -47,17 +64,27 @@
                 <b-input
                   v-model="form[0].email"
                   type="email"
-                  @input="$v.form[0].email.$touch(); clearFeedback(0, 'email')"
+                  @input="
+                    $v.form[0].email.$touch();
+                    clearFeedback(0, 'email');
+                  "
                   :state="state(0, 'email')"
                   autocomplete="new-password"
                 ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Password" :state="state(0, 'password')">
+              <b-form-group
+                horizontal
+                label="Password"
+                :state="state(0, 'password')"
+              >
                 <b-input
                   v-model="form[0].password"
                   type="password"
-                  @input="$v.form[0].password.$touch(); clearFeedback(0, 'password')"
+                  @input="
+                    $v.form[0].password.$touch();
+                    clearFeedback(0, 'password');
+                  "
                   :state="state(0, 'password')"
                   autocomplete="new-password"
                 ></b-input>
@@ -66,46 +93,68 @@
               <b-form-group
                 horizontal
                 label="Confirm Password"
-                :state="state(0, 'password') && state(0, 'password_confirmation')"
+                :state="
+                  state(0, 'password') && state(0, 'password_confirmation')
+                "
                 :invalid-feedback="invalidFeedback(0, 'password')"
                 :valid-feedback="validFeedback(0, 'password')"
               >
                 <b-input
                   v-model="form[0].password_confirmation"
                   type="password"
-                  @input="$v.form[0].password_confirmation.$touch(); clearFeedback(0, 'password')"
-                  :state="state(0, 'password') && state(0, 'password_confirmation')"
+                  @input="
+                    $v.form[0].password_confirmation.$touch();
+                    clearFeedback(0, 'password');
+                  "
+                  :state="
+                    state(0, 'password') && state(0, 'password_confirmation')
+                  "
                   autocomplete="new-password"
                 ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Phone Number" :state="state(0, 'phone')">
+              <b-form-group
+                horizontal
+                label="Phone Number"
+                :state="state(0, 'phone')"
+              >
                 <b-input
                   v-model="form[0].phone"
                   type="tel"
-                  @input="$v.form[0].phone.$touch(); clearFeedback(0, 'phone')"
+                  @input="
+                    $v.form[0].phone.$touch();
+                    clearFeedback(0, 'phone');
+                  "
                   :state="state(0, 'phone')"
                   autocomplete="new-password"
                 ></b-input>
               </b-form-group>
 
-              <b-modal id="tos" size="xl" ref="tos">
-                <termsOfService></termsOfService>
-              </b-modal>
-
               <b-form-group horizontal>
-                <b-button @click="next()" :disabled="$v.form[0].$invalid" variant="primary">Next</b-button>
+                <b-button
+                  @click="next()"
+                  :disabled="$v.form[0].$invalid"
+                  variant="primary"
+                  >Next</b-button
+                >
               </b-form-group>
             </div>
 
             <div v-if="step === 1">
               <h4>Account Details</h4>
 
-              <b-form-group horizontal label="Address" :state="state(1, 'address')">
+              <b-form-group
+                horizontal
+                label="Address"
+                :state="state(1, 'address')"
+              >
                 <b-input
                   v-model="form[1].address"
                   type="text"
-                  @input="$v.form[1].address.$touch(); clearFeedback(1, 'address')"
+                  @input="
+                    $v.form[1].address.$touch();
+                    clearFeedback(1, 'address');
+                  "
                   :state="state(1, 'address')"
                   autocomplete="new-password"
                 ></b-input>
@@ -115,7 +164,10 @@
                 <b-input
                   v-model="form[1].city"
                   type="text"
-                  @input="$v.form[1].city.$touch(); clearFeedback(1, 'city')"
+                  @input="
+                    $v.form[1].city.$touch();
+                    clearFeedback(1, 'city');
+                  "
                   :state="state(1, 'city')"
                   autocomplete="new-password"
                 ></b-input>
@@ -127,26 +179,44 @@
                   @input="$v.form[1].state.$touch(); clearFeedback(1, 'state')"
                   :state="state(1, 'state')"
                   autocomplete="new-password"
-                ></b-input> -->
+              ></b-input>-->
               <b-form-group horizontal label="State" :state="state(1, 'state')">
-                <v-select label="name" :options="stateNames" :on-change="val => changeState(val, 1)"></v-select>
+                <v-select
+                  label="name"
+                  :options="stateNames"
+                  :on-change="val => changeState(val, 1)"
+                ></v-select>
               </b-form-group>
-              
-              <b-form-group horizontal label="Zip Code" :state="state(1, 'zip')">
+
+              <b-form-group
+                horizontal
+                label="Zip Code"
+                :state="state(1, 'zip')"
+              >
                 <b-input
                   v-model="form[1].zip"
                   type="text"
-                  @input="$v.form[1].zip.$touch(); clearFeedback(1, 'zip')"
+                  @input="
+                    $v.form[1].zip.$touch();
+                    clearFeedback(1, 'zip');
+                  "
                   :state="state(1, 'zip')"
                   autocomplete="new-password"
                 ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="Delivery Instructions" :state="state(1, 'delivery')">
+              <b-form-group
+                horizontal
+                label="Delivery Instructions"
+                :state="state(1, 'delivery')"
+              >
                 <b-input
                   v-model="form[1].delivery"
                   type="text"
-                  @input="$v.form[1].delivery.$touch(); clearFeedback(1, 'delivery')"
+                  @input="
+                    $v.form[1].delivery.$touch();
+                    clearFeedback(1, 'delivery');
+                  "
                   :state="state(1, 'delivery')"
                   autocomplete="new-password"
                 ></b-input>
@@ -159,16 +229,29 @@
                   value="1"
                   unchecked-value="0"
                 >
-                  I accept the <span class="strong" @click.stop.prevent="$refs.tos.show()">terms of service</span>
+                  I accept the
+                  <span class="strong" @click.stop.prevent="$refs.tos.show()"
+                    >terms of service</span
+                  >
                 </b-form-checkbox>
               </b-form-group>
 
               <b-form-group horizontal v-if="form[0].role === 'store'">
-                <b-button @click="next()" :disabled="$v.form[1].$invalid" variant="primary">Next</b-button>
+                <b-button
+                  @click="next()"
+                  :disabled="$v.form[1].$invalid"
+                  variant="primary"
+                  >Next</b-button
+                >
               </b-form-group>
 
               <b-form-group horizontal v-else>
-                <b-button type="submit" :disabled="$v.form[1].$invalid" variant="primary">Submit</b-button>
+                <b-button
+                  type="submit"
+                  :disabled="$v.form[1].$invalid"
+                  variant="primary"
+                  >Submit</b-button
+                >
               </b-form-group>
             </div>
 
@@ -185,7 +268,10 @@
                 <b-input
                   v-model="form[2].store_name"
                   type="text"
-                  @input="$v.form[2].store_name.$touch(); clearFeedback(2, 'store_name')"
+                  @input="
+                    $v.form[2].store_name.$touch();
+                    clearFeedback(2, 'store_name');
+                  "
                   :state="state(2, 'store_name')"
                   autocomplete="new-password"
                 ></b-input>
@@ -202,7 +288,10 @@
                   <b-input
                     v-model="form[2].domain"
                     type="text"
-                    @input="$v.form[2].domain.$touch(); clearFeedback(2, 'domain')"
+                    @input="
+                      $v.form[2].domain.$touch();
+                      clearFeedback(2, 'domain');
+                    "
                     :state="state(2, 'domain')"
                     autocomplete="new-password"
                   ></b-input>
@@ -222,7 +311,10 @@
                 <b-input
                   v-model="form[2].address"
                   type="text"
-                  @input="$v.form[2].address.$touch(); clearFeedback(2, 'address')"
+                  @input="
+                    $v.form[2].address.$touch();
+                    clearFeedback(2, 'address');
+                  "
                   :state="state(2, 'address')"
                   autocomplete="new-password"
                 ></b-input>
@@ -238,7 +330,10 @@
                 <b-input
                   v-model="form[2].city"
                   type="text"
-                  @input="$v.form[2].city.$touch(); clearFeedback(2, 'city')"
+                  @input="
+                    $v.form[2].city.$touch();
+                    clearFeedback(2, 'city');
+                  "
                   :state="state(2, 'city')"
                   autocomplete="new-password"
                 ></b-input>
@@ -258,11 +353,14 @@
                   :state="state(2, 'state')"
                   autocomplete="new-password"
                 ></b-input>
-              </b-form-group> -->
+              </b-form-group>-->
               <b-form-group horizontal label="State" :state="state(2, 'state')">
-                <v-select label="name" :options="stateNames" :on-change="val => changeState(val, 2)"></v-select>
+                <v-select
+                  label="name"
+                  :options="stateNames"
+                  :on-change="val => changeState(val, 2)"
+                ></v-select>
               </b-form-group>
-              
 
               <b-form-group
                 horizontal
@@ -274,7 +372,10 @@
                 <b-input
                   v-model="form[2].zip"
                   type="text"
-                  @input="$v.form[2].zip.$touch(); clearFeedback(1, 'zip')"
+                  @input="
+                    $v.form[2].zip.$touch();
+                    clearFeedback(1, 'zip');
+                  "
                   :state="state(2, 'zip')"
                   autocomplete="new-password"
                 ></b-input>
@@ -289,14 +390,19 @@
                 >
                   I accept the <span class="strong" @click.stop.prevent="$refs.toa.show()">terms of agreement</span>
                 </b-form-checkbox>
-              </b-form-group> -->
+              </b-form-group>-->
 
               <!-- <b-modal id="toa" size="xl" ref="toa">
                 <termsOfAgreement></termsOfAgreement>
-              </b-modal> -->
+              </b-modal>-->
 
               <b-form-group horizontal>
-                <b-button type="submit" :disabled="$v.form[2].$invalid" variant="primary">Submit</b-button>
+                <b-button
+                  type="submit"
+                  :disabled="$v.form[2].$invalid"
+                  variant="primary"
+                  >Submit</b-button
+                >
               </b-form-group>
             </div>
           </b-form>
@@ -333,7 +439,7 @@ export default {
           password_confirmation: null,
           first_name: null,
           last_name: null,
-          phone: null,
+          phone: null
         },
         1: {
           address: null,
@@ -349,7 +455,7 @@ export default {
           address: null,
           city: null,
           state: null,
-          zip: null,
+          zip: null
           // accepted_toa: 0
         }
       },
@@ -361,8 +467,8 @@ export default {
   },
   computed: {
     stateNames() {
-      return states.stateNames()
-    },
+      return states.stateNames();
+    }
   },
   validations: {
     form: {
@@ -393,7 +499,7 @@ export default {
     validationGroup: ["form[0]", "form[1]", "form[3]"]
   },
   created() {
-    if(!_.isEmpty(this.$route.query.redirect)) {
+    if (!_.isEmpty(this.$route.query.redirect)) {
       this.redirect = this.$route.query.redirect;
     }
   },
@@ -459,15 +565,14 @@ export default {
           } else {
             this.step += 2;
           }
-        }
-        else
-          if (this.form[1].accepted_tos === 0){
-            this.$toastr.e("Please accept the terms of service.", "Registration failed");
-          }
-          else
-            this.$toastr.e("Please try again.", "Registration failed");
-        
-        this.$v.form.$touch()
+        } else if (this.form[1].accepted_tos === 0) {
+          this.$toastr.e(
+            "Please accept the terms of service.",
+            "Registration failed"
+          );
+        } else this.$toastr.e("Please try again.", "Registration failed");
+
+        this.$v.form.$touch();
       }
     },
     async submit() {
@@ -516,7 +621,7 @@ export default {
           this.$toastr.e("Please try again.", "Registration failed");
         });
     },
-    changeState(state, formNumber){
+    changeState(state, formNumber) {
       this.form[formNumber].state = state.abbreviation;
     }
   }
