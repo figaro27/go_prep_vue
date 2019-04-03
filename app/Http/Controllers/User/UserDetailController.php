@@ -78,13 +78,19 @@ class UserDetailController extends UserController
             'city' => 'required|string',
             'state' => 'required|string',
             'zip' => 'required',
-            'delivery' => 'required|string',
+            'delivery' => 'required|string'
         ]);
 
-        $user = auth('api')->user();
-        $user->details->update($request->toArray());
+        $values = $request->only(['notifications']);
+        $values['notifications'] = json_encode($values['notifications']);
 
-        return $user->details;
+        $details = auth('api')->user()->details;
+        $details->update($values);
+        $details->update($request->toArray());
+
+        // return $user->details;
+
+        // return $values;
     }
 
     /**

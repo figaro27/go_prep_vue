@@ -357,6 +357,9 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 <tr>
                   <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
                 </tr>
+                <tr>
+                  <td height="45" style="text-align: center;"><a href="https://goprep.com/store/account/settings">Unsubscribe</a></td>
+                </tr>
               </table>
             </td>
           </tr>

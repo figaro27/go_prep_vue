@@ -5,30 +5,129 @@
       <div class="card">
         <div class="card-body">
           <b-form @submit.prevent="updateCustomer">
-            <b-form-input type="text" v-model="userDetail.firstname" placeholder="First Name"></b-form-input>
-            <hr>
+            <b-form-input
+              type="text"
+              v-model="userDetail.firstname"
+              placeholder="First Name"
+            ></b-form-input>
+            <hr />
             <b-form-input
               type="text"
               v-model="userDetail.lastname"
               placeholder="Last Name"
               required
             ></b-form-input>
-            <hr>
-            <b-form-input type="text" v-model="userDetail.phone" placeholder="Phone" required></b-form-input>
-            <hr>
-            <b-form-input type="text" v-model="userDetail.address" placeholder="Address" required></b-form-input>
-            <hr>
-            <b-form-input type="text" v-model="userDetail.city" placeholder="City" required></b-form-input>
-            <hr>
-            <b-form-input type="text" v-model="userDetail.state" placeholder="State" required></b-form-input>
-            <hr>
-            <b-form-input type="text" v-model="userDetail.zip" placeholder="Zip Code" required></b-form-input>
-            <hr>
-            <b-form-input type="text" v-model="userDetail.delivery" placeholder="Delivery Instructions" required></b-form-input>
-            <b-button type="submit" variant="primary" class="mt-3">Save</b-button>
+            <hr />
+            <b-form-input
+              type="text"
+              v-model="userDetail.phone"
+              placeholder="Phone"
+              required
+            ></b-form-input>
+            <hr />
+            <b-form-input
+              type="text"
+              v-model="userDetail.address"
+              placeholder="Address"
+              required
+            ></b-form-input>
+            <hr />
+            <b-form-input
+              type="text"
+              v-model="userDetail.city"
+              placeholder="City"
+              required
+            ></b-form-input>
+            <hr />
+            <b-form-input
+              type="text"
+              v-model="userDetail.state"
+              placeholder="State"
+              required
+            ></b-form-input>
+            <hr />
+            <b-form-input
+              type="text"
+              v-model="userDetail.zip"
+              placeholder="Zip Code"
+              required
+            ></b-form-input>
+            <hr />
+            <b-form-input
+              type="text"
+              v-model="userDetail.delivery"
+              placeholder="Delivery Instructions"
+              required
+            ></b-form-input>
+            <b-button type="submit" variant="primary" class="mt-3"
+              >Save</b-button
+            >
           </b-form>
         </div>
       </div>
+
+      <p>Notifications</p>
+      <div class="card">
+        <div class="card-body">
+          <b-form @submit.prevent="updateCustomer">
+            <b-form-group label="New Orders" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="userDetail.notifications.new_order"
+                @change.native="updateCustomer"
+              />
+            </b-form-group>
+            <b-form-group label="Delivery Today" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="userDetail.notifications.delivery_today"
+                @change.native="updateCustomer"
+              />
+            </b-form-group>
+            <b-form-group label="New Meal Plans" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="userDetail.notifications.meal_plan"
+                @change.native="updateCustomer"
+              />
+            </b-form-group>
+            <b-form-group label="Renewing Meal Plans" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="userDetail.notifications.subscription_renewing"
+                @change.native="updateCustomer"
+              />
+            </b-form-group>
+            <b-form-group label="Meal Plan Paused" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="userDetail.notifications.meal_plan_paused"
+                @change.native="updateCustomer"
+              />
+            </b-form-group>
+            <b-form-group label="Meal Plan Meal Substitution" :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="userDetail.notifications.subscription_meal_substituted"
+                @change.native="updateCustomer"
+              />
+            </b-form-group>
+          </b-form>
+        </div>
+      </div>
+
       <p>Payment Methods</p>
       <div class="card">
         <div class="card-body">
@@ -38,43 +137,41 @@
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
 
 <script>
-import CardPicker from '../../../components/Billing/CardPicker';
+import CardPicker from "../../../components/Billing/CardPicker";
 import { mapGetters, mapActions } from "vuex";
+import { Switch as cSwitch } from "@coreui/vue";
 
 export default {
   components: {
-    CardPicker
+    CardPicker,
+    cSwitch
   },
   data() {
-    return {
-     
-    };
+    return {};
   },
   computed: {
     ...mapGetters({
       cards: "cards",
       user: "user",
-      userDetail: "userDetail",
+      userDetail: "userDetail"
     })
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
-    ...mapActions(['refreshUser']),
+    ...mapActions(["refreshUser"]),
     updateCustomer() {
       this.spliceZip();
-      axios.patch("/api/me/detail", this.userDetail)
+      axios
+        .patch("/api/me/detail", this.userDetail)
         .then(response => {
-          this.$toastr.s('Profile updated.');
+          this.$toastr.s("Profile updated.");
           this.refreshUser();
         })
         .catch(e => {
-          this.$toastr.e('Failed to update profile.')
+          this.$toastr.e("Failed to update profile.");
         });
     },
     spliceZip() {
@@ -82,7 +179,7 @@ export default {
         let reducedZip = this.userDetail.zip.toString();
         this.userDetail.zip = parseInt(reducedZip.substring(0, 5));
       }
-    },
+    }
   }
 };
 </script>
