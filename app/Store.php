@@ -101,7 +101,7 @@ class Store extends Model
 
     public function getUrl($append = '', $secure = true)
     {
-        $protocol = $secure ? 'https://' : 'http://';
+        $protocol = config('app.secure') && $secure ? 'https://' : 'http://';
         if (starts_with($append, config('app.url'))) {
             $append = str_replace(config('app.url'), '', $append);
         }
