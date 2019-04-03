@@ -89,8 +89,8 @@
                 <div class="row mt-3">
                   <div class="col-lg-6 modal-meal-image">
                     <thumbnail
-                      v-if="meal.image.url_medium"
-                      :src="meal.image.url_medium"
+                      v-if="meal.image.url"
+                      :src="meal.image.url"
                     ></thumbnail>
                     <p v-if="storeSettings.showNutrition">
                       {{ meal.description }}
@@ -246,8 +246,8 @@
                         :key="meal.id"
                       >
                         <thumbnail
-                          v-if="meal.image.url_thumb"
-                          :src="meal.image.url_thumb"
+                          v-if="meal.image.url_medium"
+                          :src="meal.image.url_medium"
                           class="menu-item-img"
                           width="100%"
                           @click="showMealModal(meal)"
