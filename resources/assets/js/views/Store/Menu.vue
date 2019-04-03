@@ -4,7 +4,7 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-body">
-            <Spinner v-if="isLoading"/>
+            <Spinner v-if="isLoading" />
 
             <v-client-table
               ref="mealsTable"
@@ -13,7 +13,12 @@
               :options="options"
             >
               <div slot="beforeTable" class="mb-2">
-                <button class="btn btn-success btn-md mb-2 mb-sm-0" @click="createMeal">Add Meal</button>
+                <button
+                  class="btn btn-success btn-md mb-2 mb-sm-0"
+                  @click="createMeal"
+                >
+                  Add Meal
+                </button>
 
                 <b-form-radio-group
                   buttons
@@ -24,22 +29,38 @@
                   :options="statusFilterOptions"
                   class="mb-2 mb-sm-0"
                 />
-                <router-link :to="'/store/menu/preview'" class="btn btn-warning btn-md" tag="button">Preview Menu</router-link>
+                <router-link
+                  :to="'/store/menu/preview'"
+                  class="btn btn-warning btn-md"
+                  tag="button"
+                  >Preview Menu</router-link
+                >
               </div>
 
               <span slot="beforeLimit">
-                <b-btn variant="success" @click="exportData('meals_ingredients', 'pdf', true)" class="mb-2 mb-sm-0">
-                  <i class="fa fa-print"></i>&nbsp;
-                  Print Meals Ingredients
+                <b-btn
+                  variant="success"
+                  @click="exportData('meals_ingredients', 'pdf', true)"
+                  class="mb-2 mb-sm-0"
+                >
+                  <i class="fa fa-print"></i>&nbsp; Print Meals Ingredients
                 </b-btn>
-                <b-btn variant="primary" @click="exportData('meals', 'pdf', true)">
-                  <i class="fa fa-print"></i>&nbsp;
-                  Print
+                <b-btn
+                  variant="primary"
+                  @click="exportData('meals', 'pdf', true)"
+                >
+                  <i class="fa fa-print"></i>&nbsp; Print
                 </b-btn>
                 <b-dropdown class="mx-1" right text="Export as">
-                  <b-dropdown-item @click="exportData('meals', 'csv')">CSV</b-dropdown-item>
-                  <b-dropdown-item @click="exportData('meals', 'xls')">XLS</b-dropdown-item>
-                  <b-dropdown-item @click="exportData('meals', 'pdf')">PDF</b-dropdown-item>
+                  <b-dropdown-item @click="exportData('meals', 'csv')"
+                    >CSV</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('meals', 'xls')"
+                    >XLS</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('meals', 'pdf')"
+                    >PDF</b-dropdown-item
+                  >
                 </b-dropdown>
               </span>
 
@@ -50,32 +71,57 @@
                   v-model="props.row.active"
                   :value="1"
                   :unchecked-value="0"
-                  @change="(val) => updateActive(props.row.id, val)"
+                  @change="val => updateActive(props.row.id, val)"
                 ></b-form-checkbox>
               </div>
 
               <div slot="featured_image" slot-scope="props">
-                <img class="thumb" :src="props.row.featured_image" v-if="props.row.featured_image">
+                <thumbnail
+                  v-if="props.row.image.url_thumb"
+                  :src="props.row.image.url_thumb"
+                ></thumbnail>
               </div>
 
-              <div slot="tags" slot-scope="props">{{ props.row.tag_titles.join(', ') }}</div>
-              <div
-                slot="categories"
-                slot-scope="props"
-              >{{ props.row.category_ids.map(categoryId => getCategoryTitle(categoryId)).join(', ') }}</div>
+              <div slot="tags" slot-scope="props">
+                {{ props.row.tag_titles.join(", ") }}
+              </div>
+              <div slot="categories" slot-scope="props">
+                {{
+                  props.row.category_ids
+                    .map(categoryId => getCategoryTitle(categoryId))
+                    .join(", ")
+                }}
+              </div>
 
-              <div
-                slot="contains"
-                slot-scope="props"
-              >{{ props.row.allergy_ids.map(allergyId => getAllergyTitle(allergyId)).join(', ') }}</div>
+              <div slot="contains" slot-scope="props">
+                {{
+                  props.row.allergy_ids
+                    .map(allergyId => getAllergyTitle(allergyId))
+                    .join(", ")
+                }}
+              </div>
 
-              <div slot="price" slot-scope="props">{{ formatMoney(props.row.price) }}</div>
+              <div slot="price" slot-scope="props">
+                {{ formatMoney(props.row.price) }}
+              </div>
 
-              <div slot="current_orders" slot-scope="props">{{ props.row.orders.length }}</div>
+              <div slot="current_orders" slot-scope="props">
+                {{ props.row.orders.length }}
+              </div>
 
               <div slot="actions" class="text-nowrap" slot-scope="props">
-                <button class="btn view btn-warning btn-sm" @click="viewMeal(props.row.id)">View</button>
-                <button class="btn btn-danger btn-sm" @click="() => deleteMeal(props.row.id)">Delete</button>
+                <button
+                  class="btn view btn-warning btn-sm"
+                  @click="viewMeal(props.row.id)"
+                >
+                  View
+                </button>
+                <button
+                  class="btn btn-danger btn-sm"
+                  @click="() => deleteMeal(props.row.id)"
+                >
+                  Delete
+                </button>
               </div>
             </v-client-table>
           </div>
@@ -83,7 +129,7 @@
       </div>
     </div>
 
-    <create-meal-modal v-if="createMealModal" @created="refreshTable()"/>
+    <create-meal-modal v-if="createMealModal" @created="refreshTable()" />
 
     <div class="modal-full modal-tabs">
       <b-modal
@@ -105,7 +151,7 @@
                     v-model="meal.title"
                     placeholder="Meal Name"
                     required
-                    @change="val => updateMeal(meal.id, {title: val}, true)"
+                    @change="val => updateMeal(meal.id, { title: val }, true)"
                   ></b-form-input>
                 </b-form-group>
                 <h4>Meal Description</h4>
@@ -116,9 +162,11 @@
                     class="form-control"
                     :rows="4"
                     :maxlength="450"
-                    @change="e => updateMealDescription(meal.id, e.target.value)"
+                    @change="
+                      e => updateMealDescription(meal.id, e.target.value)
+                    "
                   ></textarea>
-                  <br>
+                  <br />
                   <h4>Price</h4>
                   <money
                     required
@@ -126,57 +174,65 @@
                     :min="0.1"
                     :max="999.99"
                     class="form-control"
-                    @blur.native="e => updateMeal(meal.id, {price: meal.price})"
+                    @blur.native="
+                      e => updateMeal(meal.id, { price: meal.price })
+                    "
                   ></money>
-                  <br>
+                  <br />
                   <h4>
                     Categories
                     <img
-                      v-b-popover.hover="'Categories show up as different sections of your menu to your customers. You can have the same meal show up in multiple categories. Add, remove, or rearrange the order of categories in Settings.'"
+                      v-b-popover.hover="
+                        'Categories show up as different sections of your menu to your customers. You can have the same meal show up in multiple categories. Add, remove, or rearrange the order of categories in Settings.'
+                      "
                       title="Categories"
                       src="/images/store/popover.png"
                       class="popover-size"
-                    >
+                    />
                   </h4>
                   <b-form-checkbox-group
                     buttons
                     v-model="meal.category_ids"
                     :options="categoryOptions"
-                    @change="val => updateMeal(meal.id, {category_ids: val})"
+                    @change="val => updateMeal(meal.id, { category_ids: val })"
                     class="storeFilters"
                   ></b-form-checkbox-group>
 
                   <h4 class="mt-4">
                     Tags
                     <img
-                      v-b-popover.hover="'Meal tags describe the nutritional benefits contained in your meal. These allow your meals to be filtered by your customer on your menu page for anyone with specific dietary preferences.'"
+                      v-b-popover.hover="
+                        'Meal tags describe the nutritional benefits contained in your meal. These allow your meals to be filtered by your customer on your menu page for anyone with specific dietary preferences.'
+                      "
                       title="Tags"
                       src="/images/store/popover.png"
                       class="popover-size"
-                    >
+                    />
                   </h4>
                   <b-form-checkbox-group
                     buttons
                     v-model="meal.tag_ids"
                     :options="tagOptions"
-                    @change="val => updateMeal(meal.id, {tag_ids: val})"
+                    @change="val => updateMeal(meal.id, { tag_ids: val })"
                     class="storeFilters"
                   ></b-form-checkbox-group>
 
                   <h4 class="mt-4">
                     Contains
                     <img
-                      v-b-popover.hover="'Indicate if your meal contains any of the below. These allow your meals to be filtered by your customer on your menu page for anyone looking to avoid meals that contain any of these options.'"
+                      v-b-popover.hover="
+                        'Indicate if your meal contains any of the below. These allow your meals to be filtered by your customer on your menu page for anyone looking to avoid meals that contain any of these options.'
+                      "
                       title="Contains"
                       src="/images/store/popover.png"
                       class="popover-size"
-                    >
+                    />
                   </h4>
                   <b-form-checkbox-group
                     buttons
                     v-model="meal.allergy_ids"
                     :options="allergyOptions"
-                    @change="val => updateMeal(meal.id, {allergy_ids: val})"
+                    @change="val => updateMeal(meal.id, { allergy_ids: val })"
                     class="storeFilters"
                   ></b-form-checkbox-group>
                 </b-form-group>
@@ -186,7 +242,7 @@
                 <ingredient-picker
                   ref="ingredientPicker"
                   v-model="meal.ingredients"
-                  :options="{saveButton:true}"
+                  :options="{ saveButton: true }"
                   :meal="meal"
                   @save="val => onChangeIngredients(meal.id, val)"
                 ></ingredient-picker>
@@ -197,7 +253,7 @@
           <b-col md="3" lg="2">
             <picture-input
               :ref="`featuredImageInput${meal.id}`"
-              :prefill="meal.featured_image ? meal.featured_image : false"
+              :prefill="meal.image.url_thumb ? meal.image.url_thumb : false"
               @prefill="$refs[`featuredImageInput${meal.id}`].onResize()"
               :alertOnError="false"
               :autoToggleAspectRatio="true"
@@ -206,8 +262,11 @@
               button-class="btn"
               @change="val => changeImage(val, meal.id)"
             ></picture-input>
-            <p class="center-text">Image size too big?<br>
-            You can compress images <a href="https://imagecompressor.com/" target="_blank">here.</a></p>
+            <p class="center-text">
+              Image size too big?<br />
+              You can compress images
+              <a href="https://imagecompressor.com/" target="_blank">here.</a>
+            </p>
           </b-col>
         </b-row>
       </b-modal>
@@ -218,8 +277,15 @@
       v-if="deleteMealModalNonSubstitute"
       :hide-footer="true"
     >
-    <p class="center-text mb-3 mt-3">Are you sure you want to delete this meal?</p>
-    <b-btn variant="danger" class="center" @click="destroyMealNonSubstitute(deletingMeal.id)">Delete</b-btn>
+      <p class="center-text mb-3 mt-3">
+        Are you sure you want to delete this meal?
+      </p>
+      <b-btn
+        variant="danger"
+        class="center"
+        @click="destroyMealNonSubstitute(deletingMeal.id)"
+        >Delete</b-btn
+      >
     </b-modal>
 
     <b-modal
@@ -232,11 +298,13 @@
         <h5 class="mt-3">
           This meal is tied to one or more meal plans.
           <img
-            v-b-popover.hover="'You currently have one or more meal plans with your customers that contain this meal. Please select a substitute and your customers will be informed via email. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of foods they contain, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'"
+            v-b-popover.hover="
+              'You currently have one or more meal plans with your customers that contain this meal. Please select a substitute and your customers will be informed via email. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of foods they contain, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'
+            "
             title="Replacement Meal"
             src="/images/store/popover.png"
             class="popover-size"
-          >
+          />
         </h5>
         <h5 class="mb-3">Please select a recommended replacement meal.</h5>
 
@@ -244,33 +312,41 @@
           <b-list-group-item
             v-for="meal in mealSubstituteOptions(deletingMeal)"
             :active="substitute_id === meal.id"
-            @click="() => { substitute_id = meal.id }"
+            @click="
+              () => {
+                substitute_id = meal.id;
+              }
+            "
             :key="meal.id"
           >
             <div class="d-flex align-items-center text-left">
               <img
                 class="mr-2"
                 style="width:65px"
-                :src="meal.featured_image"
-                v-if="meal.featured_image"
-              >
+                :src="meal.image.thumb_url"
+                v-if="meal.image.thumb_url"
+              />
               <div class="flex-grow-1 mr-2">
-                <p>{{meal.title}}</p>
-                <p class="strong">{{format.money(meal.price)}}</p>
+                <p>{{ meal.title }}</p>
+                <p class="strong">{{ format.money(meal.price) }}</p>
               </div>
               <b-btn variant="warning">Select</b-btn>
             </div>
           </b-list-group-item>
         </b-list-group>
 
-        <div v-if="mealSubstituteOptions(deletingMeal).length <= 0">No substitutes lorem ipsum</div>
+        <div v-if="mealSubstituteOptions(deletingMeal).length <= 0">
+          No substitutes lorem ipsum
+        </div>
 
         <!--<b-select v-model="deleteMeal.subtitute_id" :options="mealSubstituteOptions(deleteMeal)"></b-select>-->
         <button
           v-if="substitute_id"
           class="btn btn-danger btn-lg mt-3"
           @click="destroyMeal(deletingMeal.id, substitute_id)"
-        >Delete & Replace</button>
+        >
+          Delete & Replace
+        </button>
       </center>
     </b-modal>
   </div>
@@ -315,7 +391,8 @@ export default {
         price: "",
         num_orders: "",
         created_at: "",
-        categories: []
+        categories: [],
+        image: {}
       },
       createMealModal: false,
       viewMealModal: false,
@@ -337,7 +414,8 @@ export default {
         title: "",
         description: "",
         price: "",
-        ingredients: []
+        ingredients: [],
+        image: {}
       },
       nutrition: {
         calories: null,
@@ -493,7 +571,7 @@ export default {
       refreshMeals: "refreshMeals",
       _updateMeal: "updateMeal",
       addJob: "addJob",
-      removeJob: "removeJob",
+      removeJob: "removeJob"
     }),
     formatMoney: format.money,
     refreshTable() {
@@ -515,15 +593,13 @@ export default {
       };
       const updated = await this.updateMeal(this.meal.id, data, true);
 
-      if(updated) {
+      if (updated) {
         this.viewMealModal = false;
-      }
-      else {
+      } else {
         e.preventDefault();
       }
     },
     async updateMeal(id, changes, toast = false) {
-
       const i = this.getTableDataIndexById(id);
       if (i === -1) {
         return this.getTableData();
@@ -535,21 +611,19 @@ export default {
       try {
         await this._updateMeal({ id, data: changes });
 
-        if(toast) {
+        if (toast) {
           this.$toastr.s("Meal updated!");
         }
 
         return true;
-      }
-      catch(e) {
+      } catch (e) {
         if (toast) {
           let error = _.first(Object.values(e.response.data.errors));
 
-          if(error) {
+          if (error) {
             error = error.join(" ");
             this.$toastr.e(error, "Error");
-          }
-          else {
+          } else {
             this.$toastr.e("Failed to update meal!", "Error");
           }
         }
@@ -582,20 +656,23 @@ export default {
 
     async viewMeal(id) {
       const jobId = await this.addJob();
-      axios.get(`/api/me/meals/${id}`).then(response => {
-        this.meal = response.data;
-        this.ingredients = response.data.ingredient;
-        //this.tags = response.data.meal_tag;
-        this.mealID = response.data.id;
-        this.viewMealModal = true;
+      axios
+        .get(`/api/me/meals/${id}`)
+        .then(response => {
+          this.meal = response.data;
+          this.ingredients = response.data.ingredient;
+          //this.tags = response.data.meal_tag;
+          this.mealID = response.data.id;
+          this.viewMealModal = true;
 
-        this.$nextTick(function() {
-          window.dispatchEvent(new window.Event("resize"));
+          this.$nextTick(function() {
+            window.dispatchEvent(new window.Event("resize"));
+            this.$refs[`featuredImageInput${this.meal.id}`].onResize();
+          });
+        })
+        .finally(() => {
+          this.removeJob(jobId);
         });
-      })
-      .finally(() => {
-        this.removeJob(jobId);
-      });
     },
     deleteMeal: function(id) {
       this.deletingMeal = this.getMeal(id);
@@ -619,11 +696,13 @@ export default {
       });
     },
     destroyMealNonSubstitute(mealId) {
-      axios.post(`/api/me/destroyMealNonSubstitute`, {id: mealId}).then(resp => {
-        this.refreshTable();
-        this.deleteMealModalNonSubstitute = false;
-        this.$toastr.s("Meal deleted!");
-      });
+      axios
+        .post(`/api/me/destroyMealNonSubstitute`, { id: mealId })
+        .then(resp => {
+          this.refreshTable();
+          this.deleteMealModalNonSubstitute = false;
+          this.$toastr.s("Meal deleted!");
+        });
     },
     getNutrition: function() {
       axios

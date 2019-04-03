@@ -1,17 +1,24 @@
 <template>
-  <div :class="'thumbnail ' + (loaded ? 'loaded' : '')" @click="onClick">
+  <div
+    :class="'thumbnail ' + (loaded ? 'loaded' : '')"
+    @click="onClick"
+    :style="`width: ${width}px`"
+  >
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="filter hidden">
       <defs>
         <filter id="blur">
-          <feGaussianBlur in="SourceGraphic" :stdDeviation="deviation"></feGaussianBlur>
+          <feGaussianBlur
+            in="SourceGraphic"
+            :stdDeviation="deviation"
+          ></feGaussianBlur>
         </filter>
       </defs>
     </svg>
     <v-lazy-image
       :style="{
-      width: '100%',
-      display: 'inline-block'
-    }"
+        width: '100%',
+        display: 'inline-block'
+      }"
       :src="src"
       :src-placeholder="srcPlaceholder"
       @load="onLoaded"
@@ -55,7 +62,7 @@ export default {
     },
     height: {
       default: "auto"
-    },
+    }
   },
   data: () => ({ rate: 1, loaded: false }),
   computed: {
@@ -84,7 +91,7 @@ export default {
       requestAnimationFrame(step);
     },
     onClick(e) {
-      this.$emit('click', e);
+      this.$emit("click", e);
     }
   }
 };
