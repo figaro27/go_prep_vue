@@ -294,6 +294,11 @@ class Meal extends Model implements HasMedia
         return $this->belongsToMany('App\Subscription', 'meal_subscriptions');
     }
 
+    public function packages()
+    {
+        return $this->belongsToMany('App\MealPackage', 'meal_meal_package');
+    }
+
     public function tags()
     {
         return $this->belongsToMany('App\MealTag', 'meal_meal_tag');

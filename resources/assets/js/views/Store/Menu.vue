@@ -20,6 +20,13 @@
                   Add Meal
                 </button>
 
+                <button
+                  class="btn btn-success btn-md mb-2 mb-sm-0"
+                  @click="createMealPackage"
+                >
+                  Add Package
+                </button>
+
                 <b-form-radio-group
                   buttons
                   button-variant="primary"
@@ -130,6 +137,7 @@
     </div>
 
     <create-meal-modal v-if="createMealModal" @created="refreshTable()" />
+    <create-package-modal v-if="createPackageModal" @created="refreshTable()" />
 
     <div class="modal-full modal-tabs">
       <b-modal
@@ -356,6 +364,7 @@
 import Spinner from "../../components/Spinner";
 import IngredientPicker from "../../components/IngredientPicker";
 import CreateMealModal from "./Modals/CreateMeal";
+import CreatePackageModal from "./Modals/CreateMealPackage";
 import moment from "moment";
 import tags from "bootstrap-tagsinput";
 import { Event } from "vue-tables-2";
@@ -371,7 +380,8 @@ export default {
     Spinner,
     PictureInput,
     IngredientPicker,
-    CreateMealModal
+    CreateMealModal,
+    CreatePackageModal
   },
   updated() {
     //$(window).trigger("resize");
@@ -395,6 +405,7 @@ export default {
         image: {}
       },
       createMealModal: false,
+      createPackageModal: false,
       viewMealModal: false,
       deleteMealModal: false,
       deleteMealModalNonSubstitute: false,
@@ -652,6 +663,9 @@ export default {
 
     createMeal() {
       this.createMealModal = true;
+    },
+    createMealPackage() {
+      this.createPackageModal = true;
     },
 
     async viewMeal(id) {
