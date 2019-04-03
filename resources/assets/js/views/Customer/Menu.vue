@@ -385,7 +385,7 @@
                   <div
                     v-if="
                       minOption === 'price' &&
-                        totalBagPrice < minPrice &&
+                        totalBagPricePreFees < minPrice &&
                         !manualOrder
                     "
                   >
@@ -638,7 +638,7 @@ export default {
       return this.minMeals - this.total;
     },
     remainingPrice() {
-      return this.minPrice - this.totalBagPrice;
+      return this.minPrice - this.totalBagPricePreFees;
     },
     singOrPlural() {
       if (this.remainingMeals > 1) {
