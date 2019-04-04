@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Cache;
 
 class StoreSetting extends Model
 {
-
     protected $fillable = [
         'minimum',
         'minimumOption',
@@ -22,7 +21,7 @@ class StoreSetting extends Model
         'notifications',
         'delivery_days',
         'view_delivery_days',
-        'open',
+        'open'
     ];
 
     /**
@@ -30,11 +29,13 @@ class StoreSetting extends Model
      *
      * @var array
      */
-    protected $hidden = [
-      'stripe_account', 'application_fee',
-    ];
+    protected $hidden = ['stripe_account', 'application_fee'];
 
-    public $appends = ['next_delivery_dates', 'next_orderable_delivery_dates', 'stripe'];
+    public $appends = [
+        'next_delivery_dates',
+        'next_orderable_delivery_dates',
+        'stripe'
+    ];
 
     public function store()
     {
@@ -55,22 +56,23 @@ class StoreSetting extends Model
         //'cutoff_time' => 'datetime:H:i',
         'delivery_distance_zipcodes' => 'json',
         'stripe_account' => 'json',
-        'notifications' => 'json',
+        'notifications' => 'json'
     ];
 
-    public function setAttributeVisibility() {
-      $user = auth('api')->user();
+    public function setAttributeVisibility()
+    {
+        $user = auth('api')->user();
 
-      if(!$user || !$user->hasRole('store')) {
-        $this->setHidden([
-          'stripe',
-          'stripe_id',
-          'stripe_account',
-          'notifications',
-          'user_id',
-          'units',
-        ]);
-      }
+        if (!$user || !$user->hasRole('store')) {
+            $this->setHidden([
+                'stripe',
+                'stripe_id',
+                'stripe_account',
+                'notifications',
+                'user_id',
+                'units'
+            ]);
+        }
     }
 
     public function getNextDeliveryDates($factorCutoff = false)
@@ -79,17 +81,23 @@ class StoreSetting extends Model
 
         $now = Carbon::now('utc');
 
-        $cutoff = $this->cutoff_days * (60 * 60 * 24) + $this->cutoff_hours * (60 * 60);
+        $cutoff =
+            $this->cutoff_days * (60 * 60 * 24) +
+            $this->cutoff_hours * (60 * 60);
 
         $ddays = $this->delivery_days;
 
         foreach ($ddays as $day) {
-            $date = Carbon::createFromFormat('D', $day, $this->timezone)->setTime(0, 0, 0);
+            $date = Carbon::createFromFormat(
+                'D',
+                $day,
+                $this->timezone
+            )->setTime(0, 0, 0);
 
             $diff = $date->getTimestamp() - $now->getTimestamp();
 
-            if($factorCutoff) {
-              $diff -= $cutoff;
+            if ($factorCutoff) {
+                $diff -= $cutoff;
             }
 
             if ($diff > 0) {
@@ -103,49 +111,64 @@ class StoreSetting extends Model
             return $a->getTimestamp() - $b->getTimestamp();
         });
 
+        foreach ($dates as $date) {
+            $nextWeeksDate = Carbon::createFromFormat(
+                'D',
+                $day,
+                $this->timezone
+            )->setTime(0, 0, 0);
+            $dates[] = $nextWeeksDate->addWeek(1);
+        }
+
         return collect($dates);
-
     }
 
-    public function getNextDeliveryDatesAttribute() {
-      return $this->getNextDeliveryDates(false)->map(function(Carbon $date) {
-        $cutoff = new Carbon($date);
-        $cutoff->subSeconds($this->getCutoffSeconds());
-        
-        return [
-          'date' => $date->toDateTimeString(),
-          'date_passed' => $date->isPast(),
-          'cutoff' => $cutoff->toDateTimeString(),
-          'cutoff_passed' => $cutoff->isPast(),
-        ];
-      });
+    public function getNextDeliveryDatesAttribute()
+    {
+        return $this->getNextDeliveryDates(false)->map(function (Carbon $date) {
+            $cutoff = new Carbon($date);
+            $cutoff->subSeconds($this->getCutoffSeconds());
+
+            return [
+                'date' => $date->toDateTimeString(),
+                'date_passed' => $date->isPast(),
+                'cutoff' => $cutoff->toDateTimeString(),
+                'cutoff_passed' => $cutoff->isPast()
+            ];
+        });
     }
-    public function getNextOrderableDeliveryDatesAttribute() {
-      return $this->getNextDeliveryDates(true)->map(function(Carbon $date) {
-        $cutoff = new Carbon($date);
-        $cutoff->subSeconds($this->getCutoffSeconds());
-        
-        return [
-          'date' => $date->toDateTimeString(),
-          'date_passed' => $date->isPast(),
-          'cutoff' => $cutoff->toDateTimeString(),
-          'cutoff_passed' => $cutoff->isPast(),
-        ];
-      });
+    public function getNextOrderableDeliveryDatesAttribute()
+    {
+        return $this->getNextDeliveryDates(true)->map(function (Carbon $date) {
+            $cutoff = new Carbon($date);
+            $cutoff->subSeconds($this->getCutoffSeconds());
+
+            return [
+                'date' => $date->toDateTimeString(),
+                'date_passed' => $date->isPast(),
+                'cutoff' => $cutoff->toDateTimeString(),
+                'cutoff_passed' => $cutoff->isPast()
+            ];
+        });
     }
 
-    public function getCutoffSeconds() {
-      return $this->cutoff_days * (60 * 60 * 24) + $this->cutoff_hours * (60 * 60);
+    public function getCutoffSeconds()
+    {
+        return $this->cutoff_days * (60 * 60 * 24) +
+            $this->cutoff_hours * (60 * 60);
     }
 
-    public function getStripeAttribute() {
-      if($this->stripe_account && isset($this->stripe_account->id)) {
-        return $this->stripe_account;
-      }
-      return null;
+    public function getStripeAttribute()
+    {
+        if ($this->stripe_account && isset($this->stripe_account->id)) {
+            return $this->stripe_account;
+        }
+        return null;
     }
 
-    public function notificationEnabled($notif) {
-      return isset($this->notifications[$notif]) && $this->notifications[$notif];
+    public function notificationEnabled($notif)
+    {
+        return isset($this->notifications[$notif]) &&
+            $this->notifications[$notif];
     }
 }
