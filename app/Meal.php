@@ -12,11 +12,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use PHPUnit\Framework\Constraint\Exception;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\Models\Media;
+use Spatie\Image\Manipulations;
 
-class Meal extends Model
+class Meal extends Model implements HasMedia
 {
     use SoftDeletes;
     use LocalizesDates;
+    use HasMediaTrait;
 
     protected $fillable = [
         'active',
@@ -50,7 +55,9 @@ class Meal extends Model
         'substitute_ids',
         'ingredient_ids',
         'order_ids',
-        'created_at_local'
+        'created_at_local',
+        'image'
+        //'featured_image',
     ];
 
     protected $hidden = [
@@ -75,6 +82,50 @@ class Meal extends Model
         } else {
             return null;
         }
+    }
+
+    /*public function getFeaturedImageAttribute() {
+    $mediaItems = $this->getMedia('featured_image');
+    return count($mediaItems) ? $mediaItems[0]->getUrl('thumb') : null;
+    }*/
+
+    public function getImageAttribute()
+    {
+        $mediaItems = $this->getMedia('featured_image');
+
+        if (!count($mediaItems)) {
+            return [
+                'url' => null,
+                'url_thumb' => null,
+                'url_medium' => null
+            ];
+        }
+
+        return [
+            'url' => $this->store->getUrl($mediaItems[0]->getUrl('full')),
+            'url_thumb' => $this->store->getUrl(
+                $mediaItems[0]->getUrl('thumb')
+            ),
+            'url_medium' => $this->store->getUrl(
+                $mediaItems[0]->getUrl('medium')
+            )
+        ];
+    }
+
+    public function registerMediaConversions(Media $media = null)
+    {
+        $this->addMediaConversion('full')
+            ->width(1024)
+            ->height(1024)
+            ->performOnCollections('featured_image');
+
+        $this->addMediaConversion('thumb')
+            ->fit(Manipulations::FIT_CROP, 180, 180)
+            ->performOnCollections('featured_image');
+
+        $this->addMediaConversion('medium')
+            ->fit(Manipulations::FIT_CROP, 360, 360)
+            ->performOnCollections('featured_image');
     }
 
     public function getLifetimeOrdersAttribute()
@@ -373,10 +424,18 @@ class Meal extends Model
 
         try {
             if ($props->has('featured_image')) {
-                $imageUrl = Utils\Images::uploadB64(
-                    $request->get('featured_image')
+                $imagePath = Utils\Images::uploadB64(
+                    $request->get('featured_image'),
+                    'path',
+                    'meals/'
                 );
-                $props->put('featured_image', $imageUrl);
+                $fullImagePath = \Storage::disk('public')->path($imagePath);
+                $meal->clearMediaCollection('featured_image');
+                $meal
+                    ->addMedia($fullImagePath)
+                    ->toMediaCollection('featured_image');
+
+                //$props->put('featured_image', $imageUrl);
             } else {
                 $defaultImageUrl = '/images/defaultMeal.jpg';
                 $props->put('featured_image', $defaultImageUrl);
@@ -493,7 +552,7 @@ class Meal extends Model
                 $meal->tags()->sync($tags);
             }
 
-            $meal->update($props->toArray());
+            $meal->update($props->except(['featured_image'])->toArray());
         } catch (\Exception $e) {
             $meal->delete();
             throw new \Exception($e);
@@ -532,8 +591,17 @@ class Meal extends Model
         ]);
 
         if ($props->has('featured_image')) {
-            $imageUrl = Utils\Images::uploadB64($props->get('featured_image'));
-            $props->put('featured_image', $imageUrl);
+            $imagePath = Utils\Images::uploadB64(
+                $props->get('featured_image'),
+                'path',
+                'meals/'
+            );
+            $fullImagePath = \Storage::disk('public')->path($imagePath);
+            $meal->clearMediaCollection('featured_image');
+            $meal
+                ->addMedia($fullImagePath)
+                ->toMediaCollection('featured_image');
+            //$props->put('featured_image', $imageUrl);
         }
 
         /*
@@ -685,7 +753,7 @@ class Meal extends Model
             $meal->tags()->sync($tags);
         }
 
-        $meal->update($props->toArray());
+        $meal->update($props->except('featured_image')->toArray());
 
         return $meal;
     }

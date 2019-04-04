@@ -88,7 +88,15 @@
               >
                 <div class="row mt-3">
                   <div class="col-lg-6 modal-meal-image">
+                    <<<<<<< HEAD
                     <img :src="meal.featured_image" />
+                    =======
+                    <thumbnail
+                      v-if="meal.image.url"
+                      :src="meal.image.url"
+                      :aspect="false"
+                    ></thumbnail>
+                    >>>>>>> develop
                     <p v-if="storeSettings.showNutrition">
                       {{ meal.description }}
                     </p>
@@ -171,21 +179,6 @@
                     </div>
                   </div>
                 </div>
-
-                <!-- <div class="row" v-if="!showNutrition">
-              <div class="col-md-12 modal-meal-image">
-                <img :src="meal.featured_image">
-                <p>{{ meal.description }}</p>
-                  <div class="row">
-                    <div class="col-md-8">
-                      <h5>{{ format.money(meal.price) }}</h5>
-                    </div>
-                    <div class="col-md-4">
-                      <img src="/images/customer/add.jpg" @click="addOne(meal)">
-                    </div>
-                  </div>
-              </div>
-                </div>-->
               </b-modal>
 
               <div class="row">
@@ -258,8 +251,10 @@
                         :key="meal.id"
                       >
                         <thumbnail
-                          :src="meal.featured_image"
+                          v-if="meal.image.url_medium"
+                          :src="meal.image.url_medium"
                           class="menu-item-img"
+                          width="100%"
                           @click="showMealModal(meal)"
                           style="background-color:#ffffff"
                         ></thumbnail>
@@ -328,9 +323,9 @@
                         </div>
                         <div class="bag-item-image mr-2">
                           <thumbnail
-                            :src="item.meal.featured_image"
+                            :src="item.meal.image.url_thumb"
                             :spinner="false"
-                            class="cart-item-img"
+                            width="80px"
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
@@ -360,7 +355,11 @@
                   </p>
 
                   <p class="align-right">
+                    <<<<<<< HEAD
                     <strong>Subtotal:&nbsp;</strong>
+                    =======
+                    <strong>Subtotal:</strong>
+                    >>>>>>> develop
                     {{ format.money(preFeePreDiscount) }}
                   </p>
 
@@ -385,7 +384,11 @@
                   <div
                     v-if="
                       minOption === 'price' &&
+<<<<<<< HEAD
                         totalBagPricePreFees < minPrice &&
+=======
+                        totalBagPrice < minPrice &&
+>>>>>>> develop
                         !manualOrder
                     "
                   >
@@ -819,8 +822,23 @@ export default {
       return this.storeSettings.showIngredients;
     },
     preFeePreDiscount() {
+<<<<<<< HEAD
       let subtotal = this.totalBagPricePreFees;
       return subtotal;
+=======
+      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+      let applyProcessingFee = this.storeSettings.applyProcessingFee;
+      let deliveryFee = this.storeSettings.deliveryFee;
+      let processingFee = this.storeSettings.processingFee;
+
+      if (applyDeliveryFee && applyProcessingFee) {
+        return this.totalBagPrice - deliveryFee - processingFee;
+      } else if (applyDeliveryFee && !applyProcessingFee) {
+        return this.totalBagPrice - deliveryFee;
+      } else if (applyProcessingFee && !applyDeliveryFee) {
+        return this.totalBagPrice - processingFee;
+      } else return this.totalBagPrice;
+>>>>>>> develop
     }
   },
   mounted() {

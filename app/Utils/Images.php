@@ -1,11 +1,15 @@
 <?php
 
 namespace App\Utils;
+use Illuminate\Support\Facades\Storage;
 
 class Images
 {
-    public static function uploadB64($imageRaw, $return = 'url', $filenamePrefix = '_')
-    {
+    public static function uploadB64(
+        $imageRaw,
+        $return = 'url',
+        $filenamePrefix = '_'
+    ) {
         if (!\Storage::exists($imageRaw) && $imageRaw[0] !== '/') {
             $image = self::decodeB64($imageRaw);
 
@@ -13,11 +17,16 @@ class Images
                 $ext = [];
                 preg_match('/^data:image\/(.{3,9});base64,/i', $imageRaw, $ext);
 
-                $imagePath = 'public/images/stores/' . $filenamePrefix . sha1($image) . '.' . $ext[1];
-                \Storage::disk('local')->put($imagePath, $image);
-                $imageUrl = \Storage::url($imagePath);
+                $imagePath =
+                    'images/' . $filenamePrefix . sha1($image) . '.' . $ext[1];
+                \Storage::disk('public')->put($imagePath, $image);
 
-                return $imageUrl;
+                if ($return === 'url') {
+                    $imageUrl = \Storage::url($imagePath);
+                    return $imageUrl;
+                } elseif ($return === 'path') {
+                    return $imagePath;
+                }
             }
         }
     }

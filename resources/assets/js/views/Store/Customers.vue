@@ -2,7 +2,7 @@
   <div class="store-customer-container">
     <div class="row">
       <div class="col-md-12">
-        <Spinner v-if="isLoading"/>
+        <Spinner v-if="isLoading" />
         <div class="card">
           <div class="card-body">
             <v-client-table
@@ -12,14 +12,22 @@
               v-show="!isLoading"
             >
               <span slot="beforeLimit">
-                <b-btn variant="primary" @click="exportData('customers', 'pdf', true)">
-                  <i class="fa fa-print"></i>&nbsp;
-                  Print
+                <b-btn
+                  variant="primary"
+                  @click="exportData('customers', 'pdf', true)"
+                >
+                  <i class="fa fa-print"></i>&nbsp; Print
                 </b-btn>
                 <b-dropdown class="mx-1" right text="Export as">
-                  <b-dropdown-item @click="exportData('customers', 'csv')">CSV</b-dropdown-item>
-                  <b-dropdown-item @click="exportData('customers', 'xls')">XLS</b-dropdown-item>
-                  <b-dropdown-item @click="exportData('customers', 'pdf')">PDF</b-dropdown-item>
+                  <b-dropdown-item @click="exportData('customers', 'csv')"
+                    >CSV</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('customers', 'xls')"
+                    >XLS</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('customers', 'pdf')"
+                    >PDF</b-dropdown-item
+                  >
                 </b-dropdown>
               </span>
 
@@ -31,7 +39,9 @@
                 <button
                   class="btn view btn-primary btn-sm"
                   @click="viewCustomer(props.row.id)"
-                >View Customer</button>
+                >
+                  View Customer
+                </button>
               </div>
             </v-client-table>
           </div>
@@ -65,7 +75,10 @@
             <p>{{ customer.delivery }}</p>
           </div>
         </div>
-        <div v-for="order in customer.orders" :key="`order-${order.order_number}`">
+        <div
+          v-for="order in customer.orders"
+          :key="`order-${order.order_number}`"
+        >
           <div v-b-toggle="'collapse' + order.order_number">
             <b-list-group-item>
               <div class="row">
@@ -75,33 +88,51 @@
                 </div>
                 <div class="col-md-4">
                   <h4>Placed On</h4>
-                  <p>{{ moment.utc(order.created_at).local().format('dddd, MMM Do, Y') }}</p>
+                  <p>
+                    {{
+                      moment
+                        .utc(order.created_at)
+                        .local()
+                        .format("dddd, MMM Do, Y")
+                    }}
+                  </p>
                 </div>
                 <div class="col-md-3">
                   <h2>{{ format.money(order.amount) }}</h2>
                 </div>
                 <div class="col-md-1">
-                  <img class="pull-right mt-2" src="/images/collapse-arrow.png">
+                  <img
+                    class="pull-right mt-2"
+                    src="/images/collapse-arrow.png"
+                  />
                 </div>
               </div>
 
               <b-collapse :id="'collapse' + order.order_number" class="mt-2">
-                    <ul class="meal-quantities">
-                      <li v-for="mealId in order.meal_ids" :key="$uuid.v1()">
-                        <div class="row">
-                          <div class="col-md-5 pr-0">
-                            <span class="order-quantity">{{ order.meal_quantities[mealId] }}</span>
-                            <img src="/images/store/x-modal.png" class="mr-2 ml-2">
-                            <img :src="meal(mealId).featured_image" class="modalMeal" />
-                          </div>
-                          <div class="col-md-7 pt-3 nopadding">
-                            <p>{{ meal(mealId).title }}</p>
-                            <p>{{ format.money(meal(mealId).price) }}</p>
-                          </div>
-                        </div>                       
-                      </li>
-                    </ul>
-
+                <ul class="meal-quantities">
+                  <li v-for="mealId in order.meal_ids" :key="$uuid.v1()">
+                    <div class="row">
+                      <div class="col-md-5 pr-0">
+                        <span class="order-quantity">{{
+                          order.meal_quantities[mealId]
+                        }}</span>
+                        <img
+                          src="/images/store/x-modal.png"
+                          class="mr-2 ml-2"
+                        />
+                        <thumbnail
+                          v-if="meal(mealId).image.url_thumb"
+                          :src="meal(mealId).image.url_thumb"
+                          :spinner="false"
+                        ></thumbnail>
+                      </div>
+                      <div class="col-md-7 pt-3 nopadding">
+                        <p>{{ meal(mealId).title }}</p>
+                        <p>{{ format.money(meal(mealId).price) }}</p>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
               </b-collapse>
             </b-list-group-item>
           </div>
@@ -154,7 +185,7 @@ export default {
           first_order: "Customer Since",
           actions: "Actions"
         },
-        dateColumns: ['Joined'],
+        dateColumns: ["Joined"],
         customSorting: {
           TotalPaid: function(ascending) {
             return function(a, b) {
@@ -168,21 +199,21 @@ export default {
             return function(a, b) {
               var numA = moment(a.Joined);
               var numB = moment(b.Joined);
-              if (ascending) return numA.isBefore(numB, 'day') ? 1 : -1;
-              return numA.isAfter(numB, 'day') ? 1 : -1;
+              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
+              return numA.isAfter(numB, "day") ? 1 : -1;
             };
           },
           LastOrder: function(ascending) {
             return function(a, b) {
               var numA = moment(a.LastOrder);
               var numB = moment(b.LastOrder);
-              if (ascending) return numA.isBefore(numB, 'day') ? 1 : -1;
-              return numA.isAfter(numB, 'day') ? 1 : -1;
+              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
+              return numA.isAfter(numB, "day") ? 1 : -1;
             };
-          },
+          }
         },
         orderBy: {
-          column: 'name',
+          column: "name",
           ascending: true
         }
       }
@@ -224,10 +255,14 @@ export default {
         .then(response => {
           if (!_.isEmpty(response.data.url)) {
             let win = window.open(response.data.url);
-            if(print) {
-              win.addEventListener('load', () => {
-                win.print();
-              }, false);
+            if (print) {
+              win.addEventListener(
+                "load",
+                () => {
+                  win.print();
+                },
+                false
+              );
             }
           }
         })
@@ -242,12 +277,12 @@ export default {
       return order.map((order, id) => {
         return {
           order,
-          featured_image: meals[id].featured_image,
+          featured_image: meals[id].image.url_thumb,
           title: meals[id].title,
           price: meals[id].price
         };
       });
-    },
+    }
   }
 };
 </script>

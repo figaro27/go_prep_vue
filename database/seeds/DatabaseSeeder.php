@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
-
+use App\Console\Commands\MigrateImages;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -33,5 +34,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AllergyMealSeeder::class);
         $this->call(IngredientMealSeeder::class);
 
+        Artisan::call('migrate:images');
     }
 }

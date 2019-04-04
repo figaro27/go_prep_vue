@@ -3,32 +3,55 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <Spinner v-if="isLoading"/>
-          <v-client-table ref="mealsTable" :columns="columns" :data="tableData" :options="options">
+          <Spinner v-if="isLoading" />
+          <v-client-table
+            ref="mealsTable"
+            :columns="columns"
+            :data="tableData"
+            :options="options"
+          >
             <div slot="beforeTable" class="mb-2">
               <div class="d-flex align-items-center">
-                <delivery-date-picker v-model="filters.delivery_dates" @change="onChangeDateFilter"></delivery-date-picker>
+                <delivery-date-picker
+                  v-model="filters.delivery_dates"
+                  @change="onChangeDateFilter"
+                ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
               </div>
             </div>
             <div slot="featured_image" slot-scope="props">
-              <img class="thumb" :src="props.row.featured_image" v-if="props.row.featured_image">
+              <thumbnail
+                v-if="props.row.image.url_thumb"
+                :src="props.row.image.url_thumb"
+                :spinner="false"
+                class="thumb"
+              ></thumbnail>
             </div>
-            <div slot="price" slot-scope="props">{{ format.money(props.row.price) }}</div>
+            <div slot="price" slot-scope="props">
+              {{ format.money(props.row.price) }}
+            </div>
 
             <div slot="total" slot-scope="props">
               {{ format.money(props.row.total) }}
             </div>
 
             <span slot="beforeLimit">
-              <b-btn variant="primary" @click="exportData('meal_orders', 'pdf', true)">
-                <i class="fa fa-print"></i>&nbsp;
-                Print
+              <b-btn
+                variant="primary"
+                @click="exportData('meal_orders', 'pdf', true)"
+              >
+                <i class="fa fa-print"></i>&nbsp; Print
               </b-btn>
               <b-dropdown class="mx-1" right text="Export as">
-                <b-dropdown-item @click="exportData('meal_orders', 'csv')">CSV</b-dropdown-item>
-                <b-dropdown-item @click="exportData('meal_orders', 'xls')">XLS</b-dropdown-item>
-                <b-dropdown-item @click="exportData('meal_orders', 'pdf')">PDF</b-dropdown-item>
+                <b-dropdown-item @click="exportData('meal_orders', 'csv')"
+                  >CSV</b-dropdown-item
+                >
+                <b-dropdown-item @click="exportData('meal_orders', 'xls')"
+                  >XLS</b-dropdown-item
+                >
+                <b-dropdown-item @click="exportData('meal_orders', 'pdf')"
+                  >PDF</b-dropdown-item
+                >
               </b-dropdown>
             </span>
           </v-client-table>
@@ -36,10 +59,9 @@
       </div>
     </div>
     <v-style>
-        .input-date{
-          color: {{ dateColor }}
-        }
-      </v-style>
+      .input-date{ color: {{ dateColor }}
+      }
+    </v-style>
   </div>
 </template>
 
@@ -49,16 +71,14 @@ import format from "../../lib/format";
 import { Event } from "vue-tables-2";
 import vSelect from "vue-select";
 import Spinner from "../../components/Spinner";
-import checkDateRange  from '../../mixins/deliveryDates';
+import checkDateRange from "../../mixins/deliveryDates";
 
 export default {
   components: {
     vSelect,
     Spinner
   },
-  mixins: [
-    checkDateRange
-  ],
+  mixins: [checkDateRange],
   data() {
     return {
       dateColor: "",
@@ -88,7 +108,7 @@ export default {
           }
         },
         orderBy: {
-          column: 'title',
+          column: "title",
           ascending: true
         }
       }
@@ -108,8 +128,7 @@ export default {
       let filteredByDate = _.filter(this.orders, order => {
         if (
           "delivery_dates" in filters &&
-          (filters.delivery_dates.start ||
-          filters.delivery_dates.end)
+          (filters.delivery_dates.start || filters.delivery_dates.end)
         ) {
           let dateMatch = false;
 
@@ -139,9 +158,8 @@ export default {
       });
 
       let filteredOrders = _.filter(filteredByDate, order => {
-        if (order.fulfilled === 0)
-          return true;
-      })
+        if (order.fulfilled === 0) return true;
+      });
 
       let mealCounts = {};
 
@@ -158,7 +176,11 @@ export default {
 
       let meal = this.getMeal;
       return _.map(mealCounts, (quantity, mealId) => {
-        return { ...this.getMeal(mealId), quantity: quantity, total: parseInt(quantity * meal(mealId).price) };
+        return {
+          ...this.getMeal(mealId),
+          quantity: quantity,
+          total: parseInt(quantity * meal(mealId).price)
+        };
       });
     },
     storeMeals() {
@@ -195,7 +217,7 @@ export default {
   methods: {
     formatMoney: format.money,
     async exportData(report, format = "pdf", print = false) {
-      const warning = this.checkDateRange({...this.filters.delivery_dates});
+      const warning = this.checkDateRange({ ...this.filters.delivery_dates });
       if (warning) {
         try {
           let dialog = await this.$dialog.confirm(
@@ -246,7 +268,7 @@ export default {
     onChangeDateFilter() {
       this.dateColor = "#5c6873 !important";
     },
-    clearDeliveryDates(){
+    clearDeliveryDates() {
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
       this.dateColor = "#ffffff !important";
