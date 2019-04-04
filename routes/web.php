@@ -10,31 +10,40 @@
 | contains the "web" middleware group. Now create something great!
 |
  */
-    
-    // To Be Removed
-    Route::get('/mail/cancelledSubscription', 'EmailTestController@storeCancelledSubscription');
-    Route::get('/mail/readyToPrint', 'EmailTestController@storeReadyToPrint');
-    Route::get('/mail/deliveryToday', 'EmailTestController@customerDeliveryToday');
-    Route::get('/mail/mealPlan', 'EmailTestController@customerMealPlan');
-    Route::get('/mail/subscriptionRenewing', 'EmailTestController@customerSubscriptionRenewing');
-    Route::get('/mail/newSubscription', 'EmailTestController@storeNewSubscription');
-    Route::get('/mail/newOrder', 'EmailTestController@customerNewOrder');
-    Route::get('/mail/mealPlanPaused', 'EmailTestController@customerMealPlanPaused');
-    Route::get('/mail/storeNewOrder', 'EmailTestController@storeNewOrder');
 
+// To Be Removed
+Route::get('/getDeliveryRoutes', 'DeliveryRouteController@getRoutes');
+
+Route::get(
+    '/mail/cancelledSubscription',
+    'EmailTestController@storeCancelledSubscription'
+);
+Route::get('/mail/readyToPrint', 'EmailTestController@storeReadyToPrint');
+Route::get('/mail/deliveryToday', 'EmailTestController@customerDeliveryToday');
+Route::get('/mail/mealPlan', 'EmailTestController@customerMealPlan');
+Route::get(
+    '/mail/subscriptionRenewing',
+    'EmailTestController@customerSubscriptionRenewing'
+);
+Route::get('/mail/newSubscription', 'EmailTestController@storeNewSubscription');
+Route::get('/mail/newOrder', 'EmailTestController@customerNewOrder');
+Route::get(
+    '/mail/mealPlanPaused',
+    'EmailTestController@customerMealPlanPaused'
+);
+Route::get('/mail/storeNewOrder', 'EmailTestController@storeNewOrder');
 
 foreach ([config('app.domain')] as $domain) {
-
     Route::any('/stripe/event', 'Billing\\StripeController@event');
     //Auth::routes();
     Route::fallback('SpaController@index');
-    
-    Route::group(['domain' => $domain, 'middleware' => ['web', 'store_slug']], function ($router) {
 
-        // All logged in users
-        Route::group(['middleware' => []], function ($router) {
-
-            /*Route::get('/', function (Request $request) {
+    Route::group(
+        ['domain' => $domain, 'middleware' => ['web', 'store_slug']],
+        function ($router) {
+            // All logged in users
+            Route::group(['middleware' => []], function ($router) {
+                /*Route::get('/', function (Request $request) {
                 $user = auth('api')->user();
                 if ($user->hasRole('store')) {
                     return redirect($user->store->getUrl('/store/orders', $request->secure));
@@ -43,24 +52,21 @@ foreach ([config('app.domain')] as $domain) {
                 }
             });*/
 
-            Route::get('storeMeals', 'MealController@getStoreMeals');
+                Route::get('storeMeals', 'MealController@getStoreMeals');
 
-            Route::post('storeMealAdmin', 'MealController@storeAdmin');
-            Route::post('updateActive', 'MealController@updateActive');
+                Route::post('storeMealAdmin', 'MealController@storeAdmin');
+                Route::post('updateActive', 'MealController@updateActive');
 
-            Route::get('/getCustomer', 'User\\UserDetailController@show');
-        });
+                Route::get('/getCustomer', 'User\\UserDetailController@show');
+            });
 
-        // All logged in stores
-        Route::group(['middleware' => ['auth:api']], function ($router) {
-            
-        });
+            // All logged in stores
+            Route::group(['middleware' => ['auth:api']], function ($router) {});
 
-        // All logged in admin
-        Route::group(['middleware' => ['auth', 'admin']], function ($router) {
-
-        });
-
-    });
-
+            // All logged in admin
+            Route::group(['middleware' => ['auth', 'admin']], function (
+                $router
+            ) {});
+        }
+    );
 }
