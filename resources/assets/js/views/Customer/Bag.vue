@@ -462,7 +462,7 @@ export default {
       return this.minMeals - this.total;
     },
     remainingPrice() {
-      return this.minPrice - this.totalBagPrice;
+      return this.minPrice - this.totalBagPricePreFees;
     },
     preFeePreDiscount() {
       let subtotal = this.totalBagPricePreFees;
