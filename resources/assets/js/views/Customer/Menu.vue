@@ -355,11 +355,7 @@
                   </p>
 
                   <p class="align-right">
-                    <<<<<<< HEAD
                     <strong>Subtotal:&nbsp;</strong>
-                    =======
-                    <strong>Subtotal:</strong>
-                    >>>>>>> develop
                     {{ format.money(preFeePreDiscount) }}
                   </p>
 
@@ -384,11 +380,7 @@
                   <div
                     v-if="
                       minOption === 'price' &&
-<<<<<<< HEAD
                         totalBagPricePreFees < minPrice &&
-=======
-                        totalBagPrice < minPrice &&
->>>>>>> develop
                         !manualOrder
                     "
                   >
@@ -822,23 +814,8 @@ export default {
       return this.storeSettings.showIngredients;
     },
     preFeePreDiscount() {
-<<<<<<< HEAD
       let subtotal = this.totalBagPricePreFees;
       return subtotal;
-=======
-      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
-      let applyProcessingFee = this.storeSettings.applyProcessingFee;
-      let deliveryFee = this.storeSettings.deliveryFee;
-      let processingFee = this.storeSettings.processingFee;
-
-      if (applyDeliveryFee && applyProcessingFee) {
-        return this.totalBagPrice - deliveryFee - processingFee;
-      } else if (applyDeliveryFee && !applyProcessingFee) {
-        return this.totalBagPrice - deliveryFee;
-      } else if (applyProcessingFee && !applyDeliveryFee) {
-        return this.totalBagPrice - processingFee;
-      } else return this.totalBagPrice;
->>>>>>> develop
     }
   },
   mounted() {
