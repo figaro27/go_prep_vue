@@ -192,8 +192,8 @@ class Subscription extends Model
         }
 
         // Send new order notification to store at the cutoff once the order is paid
-        if ($this->$store->settings->notificationEnabled('new_order')) {
-            $this->$store->sendNotification('new_order', [
+        if ($this->store->settings->notificationEnabled('new_order')) {
+            $this->store->sendNotification('new_order', [
                 'order' => $order ?? null,
                 'pickup' => $pickup ?? null,
                 'card' => $card ?? null,
@@ -203,8 +203,8 @@ class Subscription extends Model
         }
 
         // Send new order notification to customer at the cutoff once the order is paid
-        if ($this->$user->details->notificationEnabled('new_order')) {
-            $this->$user->sendNotification('new_order', [
+        if ($this->user->details->notificationEnabled('new_order')) {
+            $this->user->sendNotification('new_order', [
                 'order' => $order ?? null,
                 'pickup' => $pickup ?? null,
                 'card' => $card ?? null,
