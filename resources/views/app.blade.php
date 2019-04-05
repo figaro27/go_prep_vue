@@ -19,6 +19,15 @@
     </script>
 </head>
 <body>
+        <script type="text/javascript">
+            window._mfq = window._mfq || [];
+            (function() {
+                var mf = document.createElement("script");
+                mf.type = "text/javascript"; mf.async = true;
+                mf.src = "//cdn.mouseflow.com/projects/81fa0da9-fff3-40d9-82cb-0b8171acfafa.js";
+                document.getElementsByTagName("head")[0].appendChild(mf);
+            })();
+        </script>
     <div id="xs"></div>
     <div id="sm"></div>
     <div id="md"></div>
