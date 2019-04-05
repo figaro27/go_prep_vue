@@ -88,15 +88,12 @@
               >
                 <div class="row mt-3">
                   <div class="col-lg-6 modal-meal-image">
-                    <<<<<<< HEAD
                     <img :src="meal.featured_image" />
-                    =======
                     <thumbnail
                       v-if="meal.image.url"
                       :src="meal.image.url"
                       :aspect="false"
                     ></thumbnail>
-                    >>>>>>> develop
                     <p v-if="storeSettings.showNutrition">
                       {{ meal.description }}
                     </p>
