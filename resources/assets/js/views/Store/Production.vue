@@ -179,7 +179,7 @@ export default {
         return {
           ...this.getMeal(mealId),
           quantity: quantity,
-          total: parseInt(quantity * meal(mealId).price)
+          total: quantity * meal(mealId).price
         };
       });
     },
