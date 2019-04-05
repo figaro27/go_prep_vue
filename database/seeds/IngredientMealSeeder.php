@@ -11,9 +11,7 @@ class IngredientMealSeeder extends Seeder
      */
     public function run()
     {
-
-        
-    	$createIngredientsMealsTable = "
+        $createIngredientsMealsTable = "
     		CREATE TABLE IF NOT EXISTS `ingredient_meal` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ingredient_id` int(10) unsigned NOT NULL,
@@ -30,14 +28,118 @@ class IngredientMealSeeder extends Seeder
   CONSTRAINT `ingredient_meal_meal_id_foreign` FOREIGN KEY (`meal_id`) REFERENCES `meals` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     	";
+        DB::statement($createIngredientsMealsTable);
 
-    	$insertIngredientsMeals = "
-    		INSERT INTO `ingredient_meal` VALUES (1,1,1,5.00,'oz','oz',NULL,NULL),(2,2,1,3.00,'oz','oz',NULL,NULL),(3,3,1,1.00,'tsp','tsp',NULL,NULL),(4,4,1,5.00,'oz','oz',NULL,NULL),(5,5,2,4.00,'oz','oz',NULL,NULL),(6,6,2,2.00,'oz','oz',NULL,NULL),(7,7,2,2.00,'oz','oz',NULL,NULL),(8,8,2,2.00,'Tbs','Tbs',NULL,NULL),(9,4,2,4.00,'oz','oz',NULL,NULL),(10,9,18,2.00,'unit','slices',NULL,NULL),(11,10,18,6.00,'fl-oz','Tbs',NULL,NULL),(12,11,18,1.00,'Tbs','Tbs',NULL,NULL),(13,12,18,0.50,'oz','oz',NULL,NULL),(14,13,18,2.00,'unit','large',NULL,NULL),(15,14,3,1.00,'oz','oz',NULL,NULL),(16,15,3,1.00,'oz','oz',NULL,NULL),(17,7,3,1.00,'oz','oz',NULL,NULL),(18,8,3,1.00,'Tbs','Tbs',NULL,NULL),(19,5,3,5.00,'oz','oz',NULL,NULL),(20,4,3,5.00,'oz','oz',NULL,NULL),(21,16,4,8.00,'oz','oz',NULL,NULL),(22,17,4,5.00,'oz','oz',NULL,NULL),(23,18,4,5.00,'oz','oz',NULL,NULL),(24,3,4,1.00,'tsp','tsp',NULL,NULL),(25,19,20,10.00,'oz','oz',NULL,NULL),(26,20,20,0.67,'cup','cup',NULL,NULL),(27,21,5,6.00,'oz','oz',NULL,NULL),(28,6,5,2.00,'oz','oz',NULL,NULL),(29,7,5,2.00,'oz','oz',NULL,NULL),(30,4,5,5.00,'oz','oz',NULL,NULL),(31,22,5,2.00,'Tbs','Tbs',NULL,NULL),(32,23,6,5.00,'oz','oz',NULL,NULL),(33,24,6,3.00,'Tbs','cup',NULL,NULL),(34,4,6,5.00,'oz','oz',NULL,NULL),(35,25,7,7.00,'oz','oz',NULL,NULL),(36,4,7,5.00,'oz','oz',NULL,NULL),(37,26,7,1.00,'Tbs','Tbs',NULL,NULL),(38,27,7,2.00,'Tbs','Tbs',NULL,NULL),(39,28,8,4.00,'oz','oz',NULL,NULL),(40,23,8,7.00,'oz','oz',NULL,NULL),(41,4,8,5.00,'oz','oz',NULL,NULL),(42,22,8,2.00,'Tbs','Tbs',NULL,NULL),(43,29,21,0.10,'cup','cup',NULL,NULL),(44,30,21,0.10,'cup','cup',NULL,NULL),(45,31,21,0.10,'tsp','tsp',NULL,NULL),(46,32,21,0.20,'Tbs','Tbs',NULL,NULL),(47,33,21,0.10,'cup','cup',NULL,NULL),(48,34,21,0.25,'oz','oz',NULL,NULL),(49,13,21,0.25,'unit','large',NULL,NULL),(50,35,21,0.10,'tsp','tsp',NULL,NULL),(51,36,9,4.00,'oz','oz',NULL,NULL),(52,16,9,7.00,'oz','oz',NULL,NULL),(53,37,9,5.00,'Tbs','Tbs',NULL,NULL),(54,38,9,2.00,'oz','oz',NULL,NULL),(55,39,23,1.00,'oz','oz',NULL,NULL),(56,40,22,0.50,'Tbs','cup',NULL,NULL),(57,41,22,1.00,'tsp','Tbs',NULL,NULL),(58,42,22,1.00,'Tbs','Tbs',NULL,NULL),(59,43,22,1.00,'oz','oz',NULL,NULL),(60,44,22,1.00,'oz','oz',NULL,NULL),(61,45,22,1.00,'Tbs','Tbs',NULL,NULL),(62,46,10,0.50,'cup','cup',NULL,NULL),(63,47,10,8.00,'oz','oz',NULL,NULL),(64,48,10,1.00,'oz','oz',NULL,NULL),(65,4,10,4.00,'oz','oz',NULL,NULL),(66,49,16,0.75,'cup','cup',NULL,NULL),(67,50,16,1.00,'unit','medium (7\" to 7-7/8\" long)',NULL,NULL),(68,13,16,1.00,'unit','large',NULL,NULL),(69,51,16,0.50,'cup','cup',NULL,NULL),(70,31,16,4.00,'tsp','tsp',NULL,NULL),(71,52,16,0.12,'tsp','tsp',NULL,NULL),(72,53,16,0.12,'tsp','tsp',NULL,NULL),(73,54,16,0.25,'cup','cup',NULL,NULL),(74,55,16,1.00,'tsp','tsp',NULL,NULL),(75,56,17,1.00,'cup','cup',NULL,NULL),(76,57,17,1.00,'unit','large',NULL,NULL),(77,58,17,3.00,'Tbs','Tbs',NULL,NULL),(78,31,17,1.00,'tsp','tsp',NULL,NULL),(79,59,17,0.25,'tsp','tsp',NULL,NULL),(80,55,17,4.00,'tsp','tsp',NULL,NULL),(81,60,11,8.00,'oz','oz',NULL,NULL),(82,18,11,4.00,'oz','oz',NULL,NULL),(83,61,11,4.00,'oz','oz',NULL,NULL),(84,62,12,8.00,'oz','oz',NULL,NULL),(85,63,12,2.00,'Tbs','Tbs',NULL,NULL),(86,64,12,2.00,'oz','oz',NULL,NULL),(87,38,12,2.00,'oz','oz',NULL,NULL),(88,4,12,5.00,'oz','oz',NULL,NULL),(89,65,13,2.00,'cup','cup',NULL,NULL),(90,17,13,3.00,'oz','oz',NULL,NULL),(91,66,14,2.00,'unit','pepper',NULL,NULL),(92,67,14,5.00,'oz','oz',NULL,NULL),(93,68,14,2.00,'tsp','tsp',NULL,NULL),(94,4,14,2.00,'oz','oz',NULL,NULL),(95,15,14,3.00,'oz','oz',NULL,NULL),(96,65,15,1.50,'cup','cup',NULL,NULL),(97,36,15,5.00,'oz','oz',NULL,NULL),(98,69,19,1.00,'cup','cup',NULL,NULL),(99,70,19,0.50,'cup','cup',NULL,NULL),(100,71,19,3.00,'oz','oz',NULL,NULL);
+        $m = 0;
+        for ($i = 0; $i <= 639; $i += 71) {
+            $insertIngredientsMeals = "
+    		INSERT INTO `ingredient_meal` 
+        (ingredient_id,meal_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        (1+$i,1+$m,5.00,'oz','oz',NULL,NULL),
+        (2+$i,1+$m,3.00,'oz','oz',NULL,NULL),
+        (3+$i,1+$m,1.00,'tsp','tsp',NULL,NULL),
+        (4+$i,1+$m,5.00,'oz','oz',NULL,NULL),
+        (5+$i,2+$m,4.00,'oz','oz',NULL,NULL),
+        (6+$i,2+$m,2.00,'oz','oz',NULL,NULL),
+        (7+$i,2+$m,2.00,'oz','oz',NULL,NULL),
+        (8+$i,2+$m,2.00,'Tbs','Tbs',NULL,NULL),
+        (4+$i,2+$m,4.00,'oz','oz',NULL,NULL),
+        (9+$i,18+$m,2.00,'unit','slices',NULL,NULL),
+        (10+$i,18+$m,6.00,'fl-oz','Tbs',NULL,NULL),
+        (11+$i,18+$m,1.00,'Tbs','Tbs',NULL,NULL),
+        (12+$i,18+$m,0.50,'oz','oz',NULL,NULL),
+        (13+$i,18+$m,2.00,'unit','large',NULL,NULL),
+        (14+$i,3+$m,1.00,'oz','oz',NULL,NULL),
+        (15+$i,3+$m,1.00,'oz','oz',NULL,NULL),
+        (7+$i,3+$m,1.00,'oz','oz',NULL,NULL),
+        (8+$i,3+$m,1.00,'Tbs','Tbs',NULL,NULL),
+        (5+$i,3+$m,5.00,'oz','oz',NULL,NULL),
+        (4+$i,3+$m,5.00,'oz','oz',NULL,NULL),
+        (16+$i,4+$m,8.00,'oz','oz',NULL,NULL),
+        (17+$i,4+$m,5.00,'oz','oz',NULL,NULL),
+        (18+$i,4+$m,5.00,'oz','oz',NULL,NULL),
+        (3+$i,4+$m,1.00,'tsp','tsp',NULL,NULL),
+        (19+$i,20+$m,10.00,'oz','oz',NULL,NULL),
+        (20+$i,20+$m,0.67,'cup','cup',NULL,NULL),
+        (21+$i,5+$m,6.00,'oz','oz',NULL,NULL),
+        (6+$i,5+$m,2.00,'oz','oz',NULL,NULL),
+        (7+$i,5+$m,2.00,'oz','oz',NULL,NULL),
+        (4+$i,5+$m,5.00,'oz','oz',NULL,NULL),
+        (22+$i,5+$m,2.00,'Tbs','Tbs',NULL,NULL),
+        (23+$i,6+$m,5.00,'oz','oz',NULL,NULL),
+        (24+$i,6+$m,3.00,'Tbs','cup',NULL,NULL),
+        (4+$i,6+$m,5.00,'oz','oz',NULL,NULL),
+        (25+$i,7+$m,7.00,'oz','oz',NULL,NULL),
+        (4+$i,7+$m,5.00,'oz','oz',NULL,NULL),
+        (26+$i,7+$m,1.00,'Tbs','Tbs',NULL,NULL),
+        (27+$i,7+$m,2.00,'Tbs','Tbs',NULL,NULL),
+        (28+$i,8+$m,4.00,'oz','oz',NULL,NULL),
+        (23+$i,8+$m,7.00,'oz','oz',NULL,NULL),
+        (4+$i,8+$m,5.00,'oz','oz',NULL,NULL),
+        (22+$i,8+$m,2.00,'Tbs','Tbs',NULL,NULL),
+        (29+$i,21+$m,0.10,'cup','cup',NULL,NULL),
+        (30+$i,21+$m,0.10,'cup','cup',NULL,NULL),
+        (31+$i,21+$m,0.10,'tsp','tsp',NULL,NULL),
+        (32+$i,21+$m,0.20,'Tbs','Tbs',NULL,NULL),
+        (33+$i,21+$m,0.10,'cup','cup',NULL,NULL),
+        (34+$i,21+$m,0.25,'oz','oz',NULL,NULL),
+        (13+$i,21+$m,0.25,'unit','large',NULL,NULL),
+        (35+$i,21+$m,0.10,'tsp','tsp',NULL,NULL),
+        (36+$i,9+$m,4.00,'oz','oz',NULL,NULL),
+        (16+$i,9+$m,7.00,'oz','oz',NULL,NULL),
+        (37+$i,9+$m,5.00,'Tbs','Tbs',NULL,NULL),
+        (38+$i,9+$m,2.00,'oz','oz',NULL,NULL),
+        (39+$i,23+$m,1.00,'oz','oz',NULL,NULL),
+        (40+$i,22+$m,0.50,'Tbs','cup',NULL,NULL),
+        (41+$i,22+$m,1.00,'tsp','Tbs',NULL,NULL),
+        (42+$i,22+$m,1.00,'Tbs','Tbs',NULL,NULL),
+        (43+$i,22+$m,1.00,'oz','oz',NULL,NULL),
+        (44+$i,22+$m,1.00,'oz','oz',NULL,NULL),
+        (45+$i,22+$m,1.00,'Tbs','Tbs',NULL,NULL),
+        (46+$i,10+$m,0.50,'cup','cup',NULL,NULL),
+        (47+$i,10+$m,8.00,'oz','oz',NULL,NULL),
+        (48+$i,10+$m,1.00,'oz','oz',NULL,NULL),
+        (4+$i,10+$m,4.00,'oz','oz',NULL,NULL),
+        (49+$i,16+$m,0.75,'cup','cup',NULL,NULL),
+        (50+$i,16+$m,1.00,'unit','medium (7\" to 7-7/8\" long)',NULL,NULL),
+        (13+$i,16+$m,1.00,'unit','large',NULL,NULL),
+        (51+$i,16+$m,0.50,'cup','cup',NULL,NULL),
+        (31+$i,16+$m,4.00,'tsp','tsp',NULL,NULL),
+        (52+$i,16+$m,0.12,'tsp','tsp',NULL,NULL),
+        (53+$i,16+$m,0.12,'tsp','tsp',NULL,NULL),
+        (54+$i,16+$m,0.25,'cup','cup',NULL,NULL),
+        (55+$i,16+$m,1.00,'tsp','tsp',NULL,NULL),
+        (56+$i,17+$m,1.00,'cup','cup',NULL,NULL),
+        (57+$i,17+$m,1.00,'unit','large',NULL,NULL),
+        (58+$i,17+$m,3.00,'Tbs','Tbs',NULL,NULL),
+        (31+$i,17+$m,1.00,'tsp','tsp',NULL,NULL),
+        (59+$i,17+$m,0.25,'tsp','tsp',NULL,NULL),
+        (55+$i,17+$m,4.00,'tsp','tsp',NULL,NULL),
+        (60+$i,11+$m,8.00,'oz','oz',NULL,NULL),
+        (18+$i,11+$m,4.00,'oz','oz',NULL,NULL),
+        (61+$i,11+$m,4.00,'oz','oz',NULL,NULL),
+        (62+$i,12+$m,8.00,'oz','oz',NULL,NULL),
+        (63+$i,12+$m,2.00,'Tbs','Tbs',NULL,NULL),
+        (64+$i,12+$m,2.00,'oz','oz',NULL,NULL),
+        (38+$i,12+$m,2.00,'oz','oz',NULL,NULL),
+        (4+$i,12+$m,5.00,'oz','oz',NULL,NULL),
+        (65+$i,13+$m,2.00,'cup','cup',NULL,NULL),
+        (17+$i,13+$m,3.00,'oz','oz',NULL,NULL),
+        (66+$i,14+$m,2.00,'unit','pepper',NULL,NULL),
+        (67+$i,14+$m,5.00,'oz','oz',NULL,NULL),
+        (68+$i,14+$m,2.00,'tsp','tsp',NULL,NULL),
+        (4+$i,14+$m,2.00,'oz','oz',NULL,NULL),
+        (15+$i,14+$m,3.00,'oz','oz',NULL,NULL),
+        (65+$i,15+$m,1.50,'cup','cup',NULL,NULL),
+        (36+$i,15+$m,5.00,'oz','oz',NULL,NULL),
+        (69+$i,19+$m,1.00,'cup','cup',NULL,NULL),
+        (70+$i,19+$m,0.50,'cup','cup',NULL,NULL),
+        (71+$i,19+$m,3.00,'oz','oz',NULL,NULL);
 
     	";
-
-    DB::statement($createIngredientsMealsTable);
-    DB::statement($insertIngredientsMeals);
-
+            DB::statement($insertIngredientsMeals);
+            $m += 23;
+        }
     }
 }

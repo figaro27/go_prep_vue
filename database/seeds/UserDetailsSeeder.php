@@ -11,197 +11,46 @@ class UserDetailsSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('user_details')->insert([
-            'user_id' => 1,
-            'firstname' => 'Herb',
-            'lastname' => 'Williams',
-            'phone' => '(917) 334-4487',
-            'address' => '128 8th Ave',
-            'city' => 'Brooklyn',
-            'state' => 'NY',
-            'zip' => '11209',
-            'country' => 'USA',
-            'delivery' => 'Ring my doorbell',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        $faker = Faker\Factory::create();
 
-        DB::table('user_details')->insert([
-            'user_id' => 2,
-            'firstname' => 'Jerry',
-            'lastname' => 'McNerry',
-            'phone' => '(718) 259-3314',
-            'address' => '742 3rd Ave',
-            'city' => 'Brooklyn',
-            'state' => 'NY',
-            'zip' => '11209',
-            'country' => 'USA',
-            'delivery' => 'Leave on the sidewalk IDC',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        for ($i = 1; $i <= 10; $i++) {
+            DB::table('user_details')->insert([
+                'user_id' => $i,
+                'firstname' => 'Mike',
+                'lastname' => 'Soldano',
+                'phone' => '(917) 334-4487',
+                'address' => '244 92nd St',
+                'city' => 'Brooklyn',
+                'state' => 'NY',
+                'zip' => '11209',
+                'country' => 'USA',
+                'delivery' => 'Ring my doorbell',
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
 
-        DB::table('user_details')->insert([
-            'user_id' => 3,
-            'firstname' => 'Mike',
-            'lastname' => 'Soldano',
-            'phone' => '(347) 526-9628',
-            'address' => '1622 Bay Ridge Ave',
-            'city' => 'Brooklyn',
-            'state' => 'NY',
-            'zip' => '11209',
-            'country' => 'USA',
-            'delivery' => 'Call Phone',
-            'notifications' => json_encode([
-                'delivery_today' => true,
-                'meal_plan' => true,
-                'meal_plan_paused' => true,
-                'new_order' => true,
-                'subscription_meal_substituted' => true,
-                'subscription_renewing' => true
-            ]),
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        DB::table('user_details')->insert([
-            'user_id' => 4,
-            'firstname' => 'Mike',
-            'lastname' => 'Soldano',
-            'phone' => '(347) 526-9628',
-            'address' => '1622 Bay Ridge Ave',
-            'city' => 'Brooklyn',
-            'state' => 'NY',
-            'zip' => '11209',
-            'country' => 'USA',
-            'delivery' => 'Call Phone',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        DB::table('user_details')->insert([
-            'user_id' => 5,
-            'firstname' => 'Daniel',
-            'lastname' => 'Barbosa',
-            'phone' => '(347) 526-9628',
-            'address' => '1622 Bay Ridge Ave',
-            'city' => 'Brooklyn',
-            'state' => 'NY',
-            'zip' => '11209',
-            'country' => 'USA',
-            'delivery' => 'Call Phone',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        DB::table('user_details')->insert([
-            'user_id' => 6,
-            'firstname' => 'Mike',
-            'lastname' => 'Soldano',
-            'phone' => '(347) 526-9628',
-            'address' => '1622 Bay Ridge Ave',
-            'city' => 'Brooklyn',
-            'state' => 'NY',
-            'zip' => '11209',
-            'country' => 'USA',
-            'delivery' => 'Call Phone',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        DB::table('user_details')->insert([
-            'user_id' => 7,
-            'firstname' => 'Mike',
-            'lastname' => 'Soldano',
-            'phone' => '(347) 526-9628',
-            'address' => '1622 Bay Ridge Ave',
-            'city' => 'Brooklyn',
-            'state' => 'NY',
-            'zip' => '11209',
-            'country' => 'USA',
-            'delivery' => 'Call Phone',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        DB::table('user_details')->insert([
-            'user_id' => 8,
-            'firstname' => 'Mike',
-            'lastname' => 'Soldano',
-            'phone' => '(347) 526-9628',
-            'address' => '1622 Bay Ridge Ave',
-            'city' => 'Brooklyn',
-            'state' => 'NY',
-            'zip' => '11209',
-            'country' => 'USA',
-            'delivery' => 'Call Phone',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        DB::table('user_details')->insert([
-            'user_id' => 9,
-            'firstname' => 'Mike',
-            'lastname' => 'Soldano',
-            'phone' => '(347) 526-9628',
-            'address' => '1622 Bay Ridge Ave',
-            'city' => 'Brooklyn',
-            'state' => 'NY',
-            'zip' => '11209',
-            'country' => 'USA',
-            'delivery' => 'Call Phone',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        DB::table('user_details')->insert([
-            'user_id' => 10,
-            'firstname' => 'Mike',
-            'lastname' => 'Soldano',
-            'phone' => '(347) 526-9628',
-            'address' => '1622 Bay Ridge Ave',
-            'city' => 'Brooklyn',
-            'state' => 'NY',
-            'zip' => '11209',
-            'country' => 'USA',
-            'delivery' => 'Call Phone',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        DB::table('user_details')->insert([
-            'user_id' => 11,
-            'firstname' => 'Mike',
-            'lastname' => 'Soldano',
-            'phone' => '(555) 123-1234',
-            'address' => '244 92nd St',
-            'city' => 'Brooklyn',
-            'state' => 'NY',
-            'zip' => '11209',
-            'country' => 'USA',
-            'delivery' => 'Call my phone when outside - (555)-526-9926',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        DB::table('user_details')->insert([
-            'user_id' => 12,
-            'firstname' => 'Mike',
-            'lastname' => 'Soldano',
-            'phone' => '(347) 526-9628',
-            'address' => '1622 Bay Ridge Ave',
-            'city' => 'Brooklyn',
-            'state' => 'NY',
-            'zip' => '11209',
-            'country' => 'USA',
-            'delivery' => 'Call Phone',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        DB::table('user_details')->insert([
-            'user_id' => 13,
-            'firstname' => 'Mike',
-            'lastname' => 'Soldano',
-            'phone' => '(347) 526-9628',
-            'address' => '1622 Bay Ridge Ave',
-            'city' => 'Brooklyn',
-            'state' => 'NY',
-            'zip' => '11209',
-            'country' => 'USA',
-            'delivery' => 'Call Phone',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        for ($i = 11; $i <= 30; $i++) {
+            DB::table('user_details')->insert([
+                'user_id' => $i,
+                'firstname' => $faker->firstname,
+                'lastname' => $faker->lastname,
+                'phone' =>
+                    '(' .
+                    rand(333, 444) .
+                    ') ' .
+                    rand(123, 999) .
+                    '-' .
+                    rand(1234, 9999),
+                'address' => rand(123, 999) . ' ' . $faker->streetName,
+                'city' => $faker->city,
+                'state' => 'NY',
+                'zip' => '11209',
+                'country' => 'USA',
+                'delivery' => 'Please ring my doorbell.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
     }
 }

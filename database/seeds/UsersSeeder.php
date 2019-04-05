@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Faker\Factory;
 
 class UsersSeeder extends Seeder
 {
@@ -11,67 +12,51 @@ class UsersSeeder extends Seeder
      */
     public function run()
     {
+        $faker = Faker\Factory::create();
 
-        DB::table('users')->insert([
-            'user_role_id' => 2,
-            'email' => 'store@goprep.com',
-            'email_verified_at' => now(),
-            'password' => bcrypt('secret'),
-            'remember_token' => str_random(10),
-            'created_at' => now(),
-            'updated_at' => now(),
-            'accepted_tos' => 1,
-        ]);
-
-        DB::table('users')->insert([
-            'user_role_id' => 1,
-            'email' => 'dan.j.barbosa@gmail.com',
-            'email_verified_at' => now(),
-            'password' => bcrypt('secret'),
-            'remember_token' => str_random(10),
-            'created_at' => now(),
-            'updated_at' => now(),
-            'accepted_tos' => 1,
-        ]);
-
-        DB::table('users')->insert([
-            'user_role_id' => 1,
-            'email' => 'customer@goprep.com',
-            'email_verified_at' => now(),
-            'password' => bcrypt('secret'),
-            'remember_token' => str_random(10),
-            'created_at' => now(),
-            'updated_at' => now(),
-            'accepted_tos' => 1,
-        ]);
-
-        DB::table('users')->insert([
-            'user_role_id' => 3,
-            'email' => 'admin@goprep.com',
-            'email_verified_at' => now(),
-            'password' => bcrypt('secret'),
-            'remember_token' => str_random(10),
-            'created_at' => now(),
-            'updated_at' => now(),
-            'accepted_tos' => 1,
-        ]);
-
-        for ($i = 2; $i < 11; $i++) {
+        // Creating Store Users
+        for ($i = 1; $i <= 10; $i++) {
             DB::table('users')->insert([
                 'user_role_id' => 2,
-                'email' => 'store' . $i . '@goprep.com',
+                'email' => 'store' . $i . '@goprepdev.com',
                 'email_verified_at' => now(),
                 'password' => bcrypt('secret'),
                 'remember_token' => str_random(10),
                 'created_at' => now(),
                 'updated_at' => now(),
-                'accepted_tos' => 1,
+                'accepted_tos' => 1
             ]);
         }
 
-        factory(App\User::class, 20)->create()->each(function ($u) {
-            $u->userDetail()->save(factory(App\UserDetail::class)->make());
-        });
+        // Creating Customer Users
+        for ($i = 1; $i <= 20; $i++) {
+            DB::table('users')->insert([
+                'user_role_id' => 1,
+                'email' => 'customer' . $i . '@goprepdev.com',
+                'email_verified_at' => now(),
+                'password' => bcrypt('secret'),
+                'remember_token' => str_random(10),
+                'created_at' => now(),
+                'updated_at' => now(),
+                'accepted_tos' => 1
+            ]);
+        }
 
+        // Creating Customers
+        for ($u = 1; $u <= 10; $u++) {
+            for ($i = 1; $i <= 20; $i++) {
+                DB::table('customers')->insert([
+                    'store_id' => $u,
+                    'user_id' => $i,
+                    'stripe_id' => 'cus_EpKhIQbBcstUvl',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+        }
+
+        // factory(App\User::class, 20)->create()->each(function ($u) {
+        //     $u->userDetail()->save(factory(App\UserDetail::class)->make());
+        // });
     }
 }
