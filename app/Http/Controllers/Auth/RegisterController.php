@@ -170,14 +170,14 @@ class RegisterController extends Controller
                 : '',
             'created_at' => now(),
             'updated_at' => now(),
-            'notifications' => json_encode([
+            'notifications' => array(
                 'delivery_today' => true,
                 'meal_plan' => true,
                 'meal_plan_paused' => true,
                 'new_order' => true,
                 'subscription_meal_substituted' => true,
                 'subscription_renewing' => true
-            ])
+            )
         ]);
 
         if ($data['user']['role'] === 'store') {
