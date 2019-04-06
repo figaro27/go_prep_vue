@@ -44,7 +44,7 @@ class UsersSeeder extends Seeder
 
         // Creating Customers
         for ($u = 1; $u <= 10; $u++) {
-            for ($i = 1; $i <= 20; $i++) {
+            for ($i = 11; $i <= 30; $i++) {
                 DB::table('customers')->insert([
                     'store_id' => $u,
                     'user_id' => $i,
@@ -54,9 +54,5 @@ class UsersSeeder extends Seeder
                 ]);
             }
         }
-
-        // factory(App\User::class, 20)->create()->each(function ($u) {
-        //     $u->userDetail()->save(factory(App\UserDetail::class)->make());
-        // });
     }
 }
