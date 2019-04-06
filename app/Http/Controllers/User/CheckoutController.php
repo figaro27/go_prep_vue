@@ -4,8 +4,8 @@ namespace App\Http\Controllers\User;
 
 use App\Bag;
 use App\Http\Controllers\User\UserController;
-use App\Mail\Customer\NewOrder;
 use App\Mail\Customer\MealPlan;
+use App\Mail\Customer\NewOrder;
 use App\MealOrder;
 use App\MealSubscription;
 use App\Order;
@@ -13,8 +13,8 @@ use App\Store;
 use App\StoreDetail;
 use App\Subscription;
 use Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends UserController
 {
@@ -43,10 +43,9 @@ class CheckoutController extends UserController
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
 
-
         if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             $discount = $store->settings->mealPlanDiscount / 100;
-            $mealPlanDiscount = ($total * $discount);
+            $mealPlanDiscount = $total * $discount;
             $total -= $mealPlanDiscount;
             $afterDiscountBeforeFees = $total;
         }
@@ -60,35 +59,45 @@ class CheckoutController extends UserController
             $processingFee += $store->settings->processingFee;
             $total += $processingFee;
         }
-        
+
         if (!$user->hasStoreCustomer($store->id)) {
             $storeCustomer = $user->createStoreCustomer($store->id);
         }
 
         $total += $salesTax;
-        
+
         $storeCustomer = $user->getStoreCustomer($store->id);
         $customer = $user->getStoreCustomer($store->id, false);
 
         if (!$weeklyPlan) {
-            $storeSource = \Stripe\Source::create([
-                "customer" => $this->user->stripe_id,
-                "original_source" => $card->stripe_id,
-                "usage" => "single_use",
-            ], ["stripe_account" => $store->settings->stripe_id]);
+            $storeSource = \Stripe\Source::create(
+                [
+                    "customer" => $this->user->stripe_id,
+                    "original_source" => $card->stripe_id,
+                    "usage" => "single_use"
+                ],
+                ["stripe_account" => $store->settings->stripe_id]
+            );
 
-            $charge = \Stripe\Charge::create([
-                "amount" => round($total * 100),
-                "currency" => "usd",
-                "source" => $storeSource,
-                "application_fee" => round($afterDiscountBeforeFees * $application_fee),
-            ], ["stripe_account" => $store->settings->stripe_id]);
+            $charge = \Stripe\Charge::create(
+                [
+                    "amount" => round($total * 100),
+                    "currency" => "usd",
+                    "source" => $storeSource,
+                    "application_fee" => round(
+                        $afterDiscountBeforeFees * $application_fee
+                    )
+                ],
+                ["stripe_account" => $store->settings->stripe_id]
+            );
 
-            $order = new Order;
+            $order = new Order();
             $order->user_id = $user->id;
             $order->customer_id = $customer->id;
             $order->store_id = $store->id;
-            $order->order_number = strtoupper(substr(uniqid(rand(10, 99), false), 0, 10));
+            $order->order_number = strtoupper(
+                substr(uniqid(rand(10, 99), false), 0, 10)
+            );
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
@@ -120,7 +129,7 @@ class CheckoutController extends UserController
                     'pickup' => $pickup ?? null,
                     'card' => $card ?? null,
                     'customer' => $customer ?? null,
-                    'subscription' => $userSubscription ?? null,
+                    'subscription' => null
                 ]);
             }
 
@@ -130,48 +139,61 @@ class CheckoutController extends UserController
                 'pickup' => $pickup ?? null,
                 'card' => $card ?? null,
                 'customer' => $customer ?? null,
-                'subscription' => $userSubscription ?? null,
+                'subscription' => null
             ]);
             Mail::to($user)->send($email);
-
         } else {
             $weekIndex = date('N', strtotime($deliveryDay));
             $cutoff = $store->getNextCutoffDate($weekIndex);
 
-            $plan = \Stripe\Plan::create([
-                "amount" => round($total * 100),
-                "interval" => "week",
-                "product" => [
-                    "name" => "Weekly subscription (" . $store->storeDetail->name . ")",
+            $plan = \Stripe\Plan::create(
+                [
+                    "amount" => round($total * 100),
+                    "interval" => "week",
+                    "product" => [
+                        "name" =>
+                            "Weekly subscription (" .
+                            $store->storeDetail->name .
+                            ")"
+                    ],
+                    "currency" => "usd"
                 ],
-                "currency" => "usd",
-            ], ['stripe_account' => $store->settings->stripe_id]);
+                ['stripe_account' => $store->settings->stripe_id]
+            );
 
-            $token = \Stripe\Token::create([
-                "customer" => $this->user->stripe_id,
-            ], ['stripe_account' => $store->settings->stripe_id]);
-
-            $storeSource = $storeCustomer->sources->create([
-                'source' => $token,
-            ], ['stripe_account' => $store->settings->stripe_id]);
-
-            $subscription = $storeCustomer->subscriptions->create([
-                'default_source' => $storeSource,
-                'items' => [
-                    ['plan' => $plan],
+            $token = \Stripe\Token::create(
+                [
+                    "customer" => $this->user->stripe_id
                 ],
-                'application_fee_percent' => $application_fee,
-                'billing_cycle_anchor' => $cutoff->getTimestamp(),
-                'prorate' => false,
-            ], ['stripe_account' => $store->settings->stripe_id]);
+                ['stripe_account' => $store->settings->stripe_id]
+            );
+
+            $storeSource = $storeCustomer->sources->create(
+                [
+                    'source' => $token
+                ],
+                ['stripe_account' => $store->settings->stripe_id]
+            );
+
+            $subscription = $storeCustomer->subscriptions->create(
+                [
+                    'default_source' => $storeSource,
+                    'items' => [['plan' => $plan]],
+                    'application_fee_percent' => $application_fee,
+                    'billing_cycle_anchor' => $cutoff->getTimestamp(),
+                    'prorate' => false
+                ],
+                ['stripe_account' => $store->settings->stripe_id]
+            );
 
             $userSubscription = new Subscription();
             $userSubscription->user_id = $user->id;
             $userSubscription->customer_id = $customer->id;
             $userSubscription->stripe_customer_id = $storeCustomer->id;
             $userSubscription->store_id = $store->id;
-            $userSubscription->name = "Weekly subscription (" . $store->storeDetail->name . ")";
-            $userSubscription->stripe_id = substr($subscription->id,4);
+            $userSubscription->name =
+                "Weekly subscription (" . $store->storeDetail->name . ")";
+            $userSubscription->stripe_id = substr($subscription->id, 4);
             $userSubscription->stripe_plan = $plan->id;
             $userSubscription->quantity = 1;
             $userSubscription->preFeePreDiscount = $preFeePreDiscount;
@@ -183,17 +205,22 @@ class CheckoutController extends UserController
             $userSubscription->amount = $total;
             $userSubscription->pickup = $request->get('pickup', 0);
             $userSubscription->interval = 'week';
-            $userSubscription->delivery_day = date('N', strtotime($deliveryDay));
+            $userSubscription->delivery_day = date(
+                'N',
+                strtotime($deliveryDay)
+            );
             $userSubscription->next_renewal_at = $cutoff->addDays(7);
             $userSubscription->save();
 
             // Create initial order
-            $order = new Order;
+            $order = new Order();
             $order->user_id = $user->id;
             $order->customer_id = $customer->id;
             $order->store_id = $store->id;
             $order->subscription_id = $userSubscription->id;
-            $order->order_number = strtoupper(substr(uniqid(rand(10, 99), false), 0, 10));
+            $order->order_number = strtoupper(
+                substr(uniqid(rand(10, 99), false), 0, 10)
+            );
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
@@ -206,7 +233,6 @@ class CheckoutController extends UserController
             $order->delivery_date = (new Carbon($deliveryDay))->toDateString();
             $order->save();
 
-
             foreach ($bag->getItems() as $item) {
                 $mealOrder = new MealOrder();
                 $mealOrder->order_id = $order->id;
@@ -217,12 +243,12 @@ class CheckoutController extends UserController
             }
 
             foreach ($bag->getItems() as $item) {
-              $mealSub = new MealSubscription();
-              $mealSub->subscription_id = $userSubscription->id;
-              $mealSub->store_id = $store->id;
-              $mealSub->meal_id = $item['meal']['id'];
-              $mealSub->quantity = $item['quantity'];
-              $mealSub->save();
+                $mealSub = new MealSubscription();
+                $mealSub->subscription_id = $userSubscription->id;
+                $mealSub->store_id = $store->id;
+                $mealSub->meal_id = $item['meal']['id'];
+                $mealSub->quantity = $item['quantity'];
+                $mealSub->save();
             }
 
             // Send notification to store
@@ -232,10 +258,9 @@ class CheckoutController extends UserController
                     'pickup' => $pickup ?? null,
                     'card' => $card ?? null,
                     'customer' => $customer ?? null,
-                    'subscription' => $userSubscription ?? null,
+                    'subscription' => $userSubscription ?? null
                 ]);
             }
-
 
             // Send notification
             $email = new MealPlan([
@@ -243,11 +268,10 @@ class CheckoutController extends UserController
                 'pickup' => $pickup ?? null,
                 'card' => $card ?? null,
                 'customer' => $customer ?? null,
-                'subscription' => $userSubscription ?? null,
+                'subscription' => $userSubscription ?? null
             ]);
             Mail::to($user)->send($email);
         }
-
 
         /*
     $subscription = $user->newSubscription('main', $plan->id)->create($stripeToken['id']);

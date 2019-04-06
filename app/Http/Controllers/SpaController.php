@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 use App\Allergy;
 use App\MealTag;
 use App\Store;
-use \Illuminate\Http\Request;
+use Illuminate\Http\Request;
 
 class SpaController extends Controller
 {
-
     /**
      * Create a new controller instance.
      *
@@ -40,7 +39,6 @@ class SpaController extends Controller
                 // Store user
                 if ($user->hasRole('store') && $user->has('store')) {
                     $context = 'store';
-
                 } else {
                     $context = 'customer';
                 }
@@ -51,55 +49,66 @@ class SpaController extends Controller
             }
 
             if ($context === 'guest') {
-                $store = defined('STORE_ID') ? Store::with([
-                    'meals',
-                    'units',
-                    'categories',
-                    'meals.categories',
-                    'meals.allergies',
-                    'settings',
-                ])->find(STORE_ID) : null;
+                $store = defined('STORE_ID')
+                    ? Store::with([
+                        'meals',
+                        'units',
+                        'categories',
+                        'meals.categories',
+                        'meals.allergies',
+                        'settings'
+                    ])->find(STORE_ID)
+                    : null;
 
                 return [
                     'context' => $context,
                     'user' => null,
                     'store' => $store,
                     'allergies' => Allergy::all(),
-                    'tags' => MealTag::all(),
+                    'tags' => MealTag::all()
                 ];
             } elseif ($context === 'store') {
-                $store = $user->store()->with([
-                    'categories',
-                    'ingredients',
-                    'units',
-                    'settings',
-                    'storeDetail',
-                ])->first();
+                $store = $user
+                    ->store()
+                    ->with([
+                        'categories',
+                        'ingredients',
+                        'units',
+                        'settings',
+                        'storeDetail'
+                    ])
+                    ->first();
 
                 return [
                     'context' => $context,
                     'user' => $user,
                     'store' => $store,
                     'allergies' => Allergy::all(),
-                    'tags' => MealTag::all(),
+                    'tags' => MealTag::all()
                 ];
             } elseif ($context === 'customer') {
-                $store = defined('STORE_ID') ?
-                Store::with([
-                    'meals',
-                    'units',
-                    'categories',
-                    'meals.categories',
-                    'meals.allergies',
-                    'settings',
-                ])->find(STORE_ID) : $user->last_viewed_store;
+                $store = defined('STORE_ID')
+                    ? Store::with([
+                        'meals',
+                        'packages',
+                        'units',
+                        'categories',
+                        'meals.categories',
+                        'meals.allergies',
+                        'settings'
+                    ])->find(STORE_ID)
+                    : $user->last_viewed_store;
 
                 if ($store) {
                     if ($store->settings->delivery_distance_type === 'radius') {
                         $distance = $user->distanceFrom($store);
-                        $willDeliver = $distance < $store->settings->delivery_distance_radius;
+                        $willDeliver =
+                            $distance <
+                            $store->settings->delivery_distance_radius;
                     } else {
-                        $willDeliver = $store->deliversToZip($user->userDetail->zip);
+                        $willDeliver = $store->deliversToZip(
+                            $user->userDetail->zip
+                        );
                     }
 
                     $user->last_viewed_store_id = $store->id;
@@ -112,7 +121,7 @@ class SpaController extends Controller
                         'store_distance' => $distance ?? null,
                         'will_deliver' => $willDeliver,
                         'allergies' => Allergy::all(),
-                        'tags' => MealTag::all(),
+                        'tags' => MealTag::all()
                     ];
                 } else {
                     return [
@@ -120,12 +129,10 @@ class SpaController extends Controller
                         'user' => $user,
                         'store' => null,
                         'allergies' => Allergy::all(),
-                        'tags' => MealTag::all(),
+                        'tags' => MealTag::all()
                     ];
                 }
-
             }
-
         } else {
             $user = auth()->user();
             return view('app');
@@ -140,43 +147,43 @@ class SpaController extends Controller
                 }
             }
 
-
             //return redirect('/login');
-
         }
-
     }
 
     public function getViewedStore()
     {
         $user = auth('api')->user();
 
-        $store = defined('STORE_ID') ?
-        Store::with([
-            'meals',
-            'units',
-            'categories',
-            'meals.categories',
-            'meals.allergies',
-            'settings',
-            'details',
-        ])->find(STORE_ID) : null;
+        $store = defined('STORE_ID')
+            ? Store::with([
+                'meals',
+                'packages',
+                'packages.meals',
+                'units',
+                'categories',
+                'meals.categories',
+                'meals.allergies',
+                'settings',
+                'details'
+            ])->find(STORE_ID)
+            : null;
 
         if ($user) {
             if ($store->settings->delivery_distance_type === 'radius') {
                 $distance = $user->distanceFrom($store);
-                $willDeliver = $distance < $store->settings->delivery_distance_radius;
+                $willDeliver =
+                    $distance < $store->settings->delivery_distance_radius;
             } else {
                 $willDeliver = $store->deliversToZip($user->userDetail->zip);
             }
-        }
-        else {
+        } else {
             $willDeliver = false;
         }
 
         return [
             'store' => $store,
-            'will_deliver' => $willDeliver,
+            'will_deliver' => $willDeliver
         ];
     }
 }

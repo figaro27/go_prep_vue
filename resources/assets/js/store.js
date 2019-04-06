@@ -1,14 +1,14 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import moment from 'moment'
-import createPersistedState from 'vuex-persistedstate';
-import router from './routes';
-import auth from './lib/auth';
-import uuid from 'uuid'
+import Vue from "vue";
+import Vuex from "vuex";
+import moment from "moment";
+import createPersistedState from "vuex-persistedstate";
+import router from "./routes";
+import auth from "./lib/auth";
+import uuid from "uuid";
 
-const Cookies = require('js-cookie');
+const Cookies = require("js-cookie");
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 const ttl = 60; // 60 seconds
 
@@ -24,8 +24,8 @@ const state = {
       applyProcessingFee: 0,
       processingFee: 0,
       allowPickup: true,
-      pickupInstructions: '',
-      minimumOption: '',
+      pickupInstructions: "",
+      minimumOption: "",
       minimumMeals: 0,
       minimumPrice: 0
     }
@@ -40,7 +40,7 @@ const state = {
 
   // State for logged in users (of any role)
   user: {
-    weightUnit: 'oz',
+    weightUnit: "oz",
 
     data: {}
   },
@@ -77,7 +77,7 @@ const state = {
           new_subscription: true,
           cancelled_subscription: true,
           ready_to_print: true
-        },
+        }
       },
       expires: 0
     },
@@ -111,8 +111,8 @@ const state = {
     expires: 0
   },
   isLoading: true,
-  initialized: false,
-}
+  initialized: false
+};
 
 // mutations are operations that actually mutates the state. each mutation
 // handler gets the entire state tree as the first argument, followed by
@@ -123,7 +123,7 @@ const mutations = {
     state.user.data = user;
   },
   allergies(state, allergies) {
-    state.allergies = _.keyBy(allergies, 'id');
+    state.allergies = _.keyBy(allergies, "id");
   },
   setViewedStore(state, store) {
     state.viewed_store = {
@@ -132,9 +132,11 @@ const mutations = {
     };
 
     // Store in cookie for front-end site
-    Cookies.set("last_viewed_store", state.viewed_store.id, {domain: window.app.domain});
+    Cookies.set("last_viewed_store", state.viewed_store.id, {
+      domain: window.app.domain
+    });
   },
-  tags(state, {tags}) {
+  tags(state, { tags }) {
     state.tags = tags;
   },
   setViewedStoreWillDeliver(state, willDeliver) {
@@ -144,7 +146,7 @@ const mutations = {
     state.viewed_store.distance = distance;
   },
   addBagItems(state, items) {
-    state.bag.items = _.keyBy(items, 'id');
+    state.bag.items = _.keyBy(items, "id");
   },
   updateBagTotal(state, total) {
     state.bag.total += total;
@@ -152,19 +154,21 @@ const mutations = {
       state.bag.total = 0;
     }
   },
-  addToBag(state, {
-    meal,
-    quantity = 1
-  }) {
+  addToBag(state, { meal, quantity = 1, mealPackage = false }) {
     let mealId = meal;
     if (!_.isNumber(mealId)) {
       mealId = meal.id;
+    }
+
+    if (mealPackage || meal.meal_package) {
+      mealId = "package-" + mealId;
     }
 
     if (!_.has(state.bag.items, mealId)) {
       Vue.set(state.bag.items, mealId, {
         quantity: 0,
         meal,
+        meal_package: mealPackage,
         added: moment().unix()
       });
     }
@@ -179,13 +183,14 @@ const mutations = {
 
     Vue.set(state.bag.items, mealId, item);
   },
-  removeFromBag(state, {
-    meal,
-    quantity = 1
-  }) {
+  removeFromBag(state, { meal, quantity = 1, mealPackage = false }) {
     let mealId = meal;
     if (!_.isNumber(mealId)) {
       mealId = meal.id;
+    }
+
+    if (mealPackage || meal.meal_package) {
+      mealId = "package-" + mealId;
     }
 
     if (!_.has(state.bag.items, mealId)) {
@@ -202,10 +207,10 @@ const mutations = {
     state.bag.items = {};
   },
 
-  ingredients(state, {ingredients, expires}) {
+  ingredients(state, { ingredients, expires }) {
     if (!expires) {
       expires = moment()
-        .add(ttl, 'seconds')
+        .add(ttl, "seconds")
         .unix();
     }
 
@@ -213,10 +218,10 @@ const mutations = {
     state.store.ingredients.expires = expires;
   },
 
-  ingredientUnits(state, {units, expires}) {
+  ingredientUnits(state, { units, expires }) {
     if (!expires) {
       expires = moment()
-        .add(ttl, 'seconds')
+        .add(ttl, "seconds")
         .unix();
     }
 
@@ -224,14 +229,14 @@ const mutations = {
     state.store.ingredient_units.expires = expires;
   },
 
-  ingredientUnit(state, {id, unit}) {
+  ingredientUnit(state, { id, unit }) {
     Vue.set(state.store.ingredient_units.data, id, unit);
   },
 
-  orderIngredients(state, {ingredients, expires}) {
+  orderIngredients(state, { ingredients, expires }) {
     if (!expires) {
       expires = moment()
-        .add(ttl, 'seconds')
+        .add(ttl, "seconds")
         .unix();
     }
 
@@ -239,10 +244,10 @@ const mutations = {
     state.store.order_ingredients.expires = expires;
   },
 
-  storeDetail(state, {detail, expires}) {
+  storeDetail(state, { detail, expires }) {
     if (!expires) {
       expires = moment()
-        .add(ttl, 'seconds')
+        .add(ttl, "seconds")
         .unix();
     }
 
@@ -250,10 +255,10 @@ const mutations = {
     state.store.detail.expires = expires;
   },
 
-  storeSettings(state, {settings, expires}) {
+  storeSettings(state, { settings, expires }) {
     if (!expires) {
       expires = moment()
-        .add(ttl, 'seconds')
+        .add(ttl, "seconds")
         .unix();
     }
 
@@ -261,10 +266,10 @@ const mutations = {
     state.store.settings.expires = expires;
   },
 
-  storeMeals(state, {meals, expires}) {
+  storeMeals(state, { meals, expires }) {
     if (!expires) {
       expires = moment()
-        .add(ttl, 'seconds')
+        .add(ttl, "seconds")
         .unix();
     }
 
@@ -272,10 +277,10 @@ const mutations = {
     state.store.meals.expires = expires;
   },
 
-  storeCategories(state, {categories, expires}) {
+  storeCategories(state, { categories, expires }) {
     if (!expires) {
       expires = moment()
-        .add(ttl, 'seconds')
+        .add(ttl, "seconds")
         .unix();
     }
 
@@ -283,10 +288,10 @@ const mutations = {
     state.store.categories.expires = expires;
   },
 
-  storeCustomers(state, {customers, expires}) {
+  storeCustomers(state, { customers, expires }) {
     if (!expires) {
       expires = moment()
-        .add(ttl, 'seconds')
+        .add(ttl, "seconds")
         .unix();
     }
 
@@ -294,10 +299,10 @@ const mutations = {
     state.store.customers.expires = expires;
   },
 
-  storeOrders(state, {orders, expires}) {
+  storeOrders(state, { orders, expires }) {
     if (!expires) {
       expires = moment()
-        .add(ttl, 'seconds')
+        .add(ttl, "seconds")
         .unix();
     }
 
@@ -305,91 +310,87 @@ const mutations = {
     state.orders.expires = expires;
   },
 
-  storeSubscriptions(state, {subscriptions, expires}) {
+  storeSubscriptions(state, { subscriptions, expires }) {
     if (!expires) {
       expires = moment()
-        .add(ttl, 'seconds')
+        .add(ttl, "seconds")
         .unix();
     }
 
-    state.subscriptions.data = _.keyBy(subscriptions, 'id');
+    state.subscriptions.data = _.keyBy(subscriptions, "id");
     state.subscriptions.expires = expires;
   },
 
-  customerSubscriptions(state, {subscriptions, expires}) {
+  customerSubscriptions(state, { subscriptions, expires }) {
     state.customer.data.subscriptions = subscriptions;
   },
 
-  customerOrders(state, {orders, expires}) {
+  customerOrders(state, { orders, expires }) {
     state.customer.data.orders = orders;
   },
 
-  categories(state, {categories, expires}) {
+  categories(state, { categories, expires }) {
     if (!expires) {
       expires = moment()
-        .add(ttl, 'seconds')
+        .add(ttl, "seconds")
         .unix();
     }
 
     state.store.categories.data = units;
     state.store.categories.expires = expires;
   }
-}
+};
 
 // actions are functions that cause side effects and can involve asynchronous
 // operations.
 const actions = {
-
-  async init({
-    commit,
-    state,
-    dispatch
-  }, args = {}) {
-
-    const res = await axios.get('/api');
-    const {data} = await res;
+  async init({ commit, state, dispatch }, args = {}) {
+    const res = await axios.get("/api");
+    const { data } = await res;
 
     try {
       if (!_.isEmpty(data.user) && _.isObject(data.user)) {
         let user = data.user;
-        commit('user', user);
+        commit("user", user);
       }
     } catch (e) {}
 
     const context = data.context;
 
-    if (context === 'store') {
-      await dispatch('initStore', data)
-      
-      if(router.currentRoute.fullPath === '/') {
-        router.replace('/store/orders');
-      }
-    } else if (context === 'customer') {
-      await dispatch('initCustomer', data)
+    if (context === "store") {
+      await dispatch("initStore", data);
 
-      if(router.currentRoute.fullPath === '/') {
-        if(_.isNull(data.store)) {
-          router.replace('/customer/home');
-        }
-        else {
-          router.replace('/customer/menu');
+      if (router.currentRoute.fullPath === "/") {
+        router.replace("/store/orders");
+      }
+    } else if (context === "customer") {
+      await dispatch("initCustomer", data);
+
+      if (router.currentRoute.fullPath === "/") {
+        if (_.isNull(data.store)) {
+          router.replace("/customer/home");
+        } else {
+          router.replace("/customer/menu");
         }
       }
     } else {
-      await dispatch('initGuest', data);
+      await dispatch("initGuest", data);
     }
 
     try {
       if (!_.isEmpty(data.allergies) && _.isObject(data.allergies)) {
         let allergies = data.allergies;
-        commit('allergies', allergies);
+        commit("allergies", allergies);
       }
     } catch (e) {}
 
     try {
-      if (!_.isEmpty(data.store.store_detail) && _.isObject(data.store.store_detail)) {
+      if (
+        !_.isEmpty(data.store.store_detail) &&
+        _.isObject(data.store.store_detail)
+      ) {
         let detail = data.store.store_detail;
-        commit('storeDetail', {detail});
+        commit("storeDetail", { detail });
       }
     } catch (e) {}
 
@@ -402,7 +403,7 @@ const actions = {
         });
 
         if (!_.isEmpty(units)) {
-          commit('ingredientUnits', {units});
+          commit("ingredientUnits", { units });
         }
       }
     } catch (e) {}
@@ -412,7 +413,7 @@ const actions = {
         let categories = data.store.categories;
 
         if (!_.isEmpty(categories)) {
-          commit('storeCategories', {categories});
+          commit("storeCategories", { categories });
         }
       }
     } catch (e) {}
@@ -422,7 +423,7 @@ const actions = {
         let tags = data.tags;
 
         if (_.isArray(tags)) {
-          commit('tags', {tags});
+          commit("tags", { tags });
         }
       }
     } catch (e) {}
@@ -437,141 +438,130 @@ const actions = {
     /**
      * Extra actions
      */
-
   },
 
-  async initStore({
-    commit,
-    state,
-    dispatch
-  }, data = {}) {
-
+  async initStore({ commit, state, dispatch }, data = {}) {
     try {
       if (!_.isEmpty(data.store.settings) && _.isObject(data.store.settings)) {
         let settings = data.store.settings;
-        commit('storeSettings', {settings});
+        commit("storeSettings", { settings });
       }
     } catch (e) {}
 
     try {
       if (!_.isEmpty(data.store.meals) && _.isObject(data.store.meals)) {
         let meals = data.store.meals;
-        commit('storeMeals', {meals});
+        commit("storeMeals", { meals });
       }
     } catch (e) {}
 
     try {
-      if (!_.isEmpty(data.store.customers) && _.isObject(data.store.customers)) {
+      if (
+        !_.isEmpty(data.store.customers) &&
+        _.isObject(data.store.customers)
+      ) {
         let customers = data.store.customers;
-        commit('storeCustomers', {customers});
+        commit("storeCustomers", { customers });
       }
     } catch (e) {}
 
     try {
       if (!_.isEmpty(data.orders) && _.isObject(data.orders)) {
         let orders = data.orders;
-        commit('storeOrders', {orders});
+        commit("storeOrders", { orders });
       }
     } catch (e) {}
 
     try {
       if (!_.isEmpty(data.subscriptions) && _.isObject(data.subscriptions)) {
         let subscriptions = data.subscriptions;
-        commit('storeSubscriptions', {subscriptions});
+        commit("storeSubscriptions", { subscriptions });
       }
     } catch (e) {}
 
     // Required actions
-    await Promise.all([
-      dispatch('refreshMeals'),
-      dispatch('refreshOrders'),
-    ]);
+    await Promise.all([dispatch("refreshMeals"), dispatch("refreshOrders")]);
 
-    dispatch('refreshStoreCustomers')
-    dispatch('refreshOrderIngredients')
-    dispatch('refreshIngredients')
-    dispatch('refreshStoreSubscriptions')
+    dispatch("refreshStoreCustomers");
+    dispatch("refreshOrderIngredients");
+    dispatch("refreshIngredients");
+    dispatch("refreshStoreSubscriptions");
   },
 
-  async initCustomer({
-    commit,
-    state,
-    dispatch
-  }, data = {}) {
-
+  async initCustomer({ commit, state, dispatch }, data = {}) {
     if (data.store) {
-      await dispatch('refreshViewedStore');
+      await dispatch("refreshViewedStore");
     }
 
-    dispatch('refreshStores');
-    dispatch('refreshCards');
-    dispatch('refreshCustomerOrders');
-    dispatch('refreshSubscriptions');
+    dispatch("refreshStores");
+    dispatch("refreshCards");
+    dispatch("refreshCustomerOrders");
+    dispatch("refreshSubscriptions");
   },
 
-  async initGuest({
-    commit,
-    state,
-    dispatch
-  }, data = {}) {
-
+  async initGuest({ commit, state, dispatch }, data = {}) {
     auth.deleteToken();
 
     if (data.store) {
-      dispatch('refreshViewedStore');
+      dispatch("refreshViewedStore");
     }
 
-    dispatch('refreshStores');
+    dispatch("refreshStores");
 
-    if(router.currentRoute.path === '/') {
-      if(_.isNull(data.store)) {
-        router.replace('/customer/home');
-      }
-      else {
-        router.replace('/customer/menu');
+    if (router.currentRoute.path === "/") {
+      if (_.isNull(data.store)) {
+        router.replace("/customer/home");
+      } else {
+        router.replace("/customer/menu");
       }
     }
   },
 
-  async logout({commit, state}) {
+  async logout({ commit, state }) {
     const res = await axios.post("/api/auth/logout");
     auth.deleteToken();
-    const {data} = await res;
-    window.location = window.app.url + '/login';
+    const { data } = await res;
+    window.location = window.app.url + "/login";
   },
 
-  addJob({state, dispatch}, args = {}) {
-    if(!('id' in args)) {
+  addJob({ state, dispatch }, args = {}) {
+    if (!("id" in args)) {
       args.id = uuid.v1();
     }
-    if(!('expires' in args)) {
+    if (!("expires" in args)) {
       args.expires = 10000;
     }
-    Vue.set(state.jobs, args.id, moment().add(args.expires, 'seconds').unix());
+    Vue.set(
+      state.jobs,
+      args.id,
+      moment()
+        .add(args.expires, "seconds")
+        .unix()
+    );
 
     // Automatically remove after 10s
     setTimeout(() => {
-      dispatch('removeJob', args.id)
-    }, args.expires)
+      dispatch("removeJob", args.id);
+    }, args.expires);
 
     return args.id;
   },
 
-  removeJob({state}, id) {
+  removeJob({ state }, id) {
     Vue.delete(state.jobs, id);
   },
 
-  async refreshViewedStore({commit, state}) {
+  async refreshViewedStore({ commit, state }) {
     const res = await axios.get("/api/store/viewed");
-    const {data} = await res;
+    const { data } = await res;
 
     if (_.isObject(data.store) && !_.isEmpty(data.store)) {
-      commit('setViewedStore', data.store);
+      commit("setViewedStore", data.store);
     }
 
     try {
       if (data.store_distance) {
-        commit('setViewedStoreDistance', data.store_distance);
+        commit("setViewedStoreDistance", data.store_distance);
       }
     } catch (e) {
       console.log(e);
@@ -579,175 +569,141 @@ const actions = {
 
     try {
       if (_.isBoolean(data.will_deliver)) {
-        commit('setViewedStoreWillDeliver', data.will_deliver);
+        commit("setViewedStoreWillDeliver", data.will_deliver);
       }
     } catch (e) {
       console.log(e);
     }
-
   },
 
-  async refreshStores({
-    commit,
-    state
-  }, args = {}) {
+  async refreshStores({ commit, state }, args = {}) {
     const res = await axios.get("/api/stores");
-    const {data} = await res;
+    const { data } = await res;
 
     if (_.isArray(data)) {
       state.stores = data;
     }
   },
 
-  async refreshUser({
-    commit,
-    state
-  }, args = {}) {
+  async refreshUser({ commit, state }, args = {}) {
     const res = await axios.get("/api/me");
-    const {data} = await res;
+    const { data } = await res;
 
     if (_.isObject(data)) {
-      commit('user', data);
+      commit("user", data);
     }
   },
 
   // Actions for logged in stores
 
-  async refreshStoreSettings({
-    commit,
-    state
-  }, args = {}) {
+  async refreshStoreSettings({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/settings");
-    const {data} = await res;
+    const { data } = await res;
 
     if (_.isObject(data)) {
-      commit('storeSettings', {settings: data});
+      commit("storeSettings", { settings: data });
     } else {
-      throw new Error('Failed to retrieve settings');
+      throw new Error("Failed to retrieve settings");
     }
   },
 
-  async refreshStoreSubscriptions({
-    commit,
-    state
-  }, args = {}) {
+  async refreshStoreSubscriptions({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/subscriptions");
-    const {data} = await res;
+    const { data } = await res;
 
     if (_.isArray(data)) {
       const subscriptions = _.map(data, subscription => {
-        subscription.created_at = moment
-          .utc(subscription.created_at)
-          .local(); //.format('ddd, MMMM Do')
-        subscription.updated_at = moment
-          .utc(subscription.updated_at)
-          .local(); //.format('ddd, MMMM Do')
-        subscription.next_delivery_date = moment
-          .utc(subscription.next_delivery_date.date);
+        subscription.created_at = moment.utc(subscription.created_at).local(); //.format('ddd, MMMM Do')
+        subscription.updated_at = moment.utc(subscription.updated_at).local(); //.format('ddd, MMMM Do')
+        subscription.next_delivery_date = moment.utc(
+          subscription.next_delivery_date.date
+        );
         subscription.next_renewal_at = moment
           .utc(subscription.next_renewal_at)
           .local();
-          //.local(); //.format('ddd, MMMM Do')
+        //.local(); //.format('ddd, MMMM Do')
         return subscription;
       });
 
-      commit('storeSubscriptions', {subscriptions});
+      commit("storeSubscriptions", { subscriptions });
     } else {
-      throw new Error('Failed to retrieve subscriptions');
+      throw new Error("Failed to retrieve subscriptions");
     }
   },
 
-  async refreshCards({
-    commit,
-    state
-  }, args = {}) {
+  async refreshCards({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/cards");
-    const {data} = await res;
+    const { data } = await res;
 
     if (_.isArray(data)) {
       state.cards = data;
     } else {
-      throw new Error('Failed to retrieve cards');
+      throw new Error("Failed to retrieve cards");
     }
   },
 
-  async refreshStoreCustomers({
-    commit,
-    state
-  }, args = {}) {
+  async refreshStoreCustomers({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/customers");
-    const {data} = await res;
+    const { data } = await res;
     const customers = data;
 
     if (_.isArray(customers)) {
-      commit('storeCustomers', {customers});
+      commit("storeCustomers", { customers });
     } else {
-      throw new Error('Failed to retrieve customers');
+      throw new Error("Failed to retrieve customers");
     }
   },
 
-  async refreshCategories({
-    commit,
-    state
-  }, args = {}) {
+  async refreshCategories({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/categories");
-    const {data} = await res;
+    const { data } = await res;
 
     if (_.isArray(data)) {
-      state.store.categories.data = _.keyBy(data, 'id');
+      state.store.categories.data = _.keyBy(data, "id");
       state.store.categories.expires = moment()
-        .add(ttl, 'seconds')
+        .add(ttl, "seconds")
         .unix();
     } else {
-      throw new Error('Failed to retrieve ingredients');
+      throw new Error("Failed to retrieve ingredients");
     }
   },
 
-  async refreshIngredients({
-    commit,
-    state
-  }, args = {}) {
+  async refreshIngredients({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/ingredients");
-    const {data} = await res;
+    const { data } = await res;
 
     if (_.isArray(data)) {
-      state.store.ingredients.data = _.keyBy(data, 'id');
+      state.store.ingredients.data = _.keyBy(data, "id");
       state.store.ingredients.expires = moment()
-        .add(ttl, 'seconds')
+        .add(ttl, "seconds")
         .unix();
     } else {
-      throw new Error('Failed to retrieve ingredients');
+      throw new Error("Failed to retrieve ingredients");
     }
   },
 
-  async refreshOrderIngredients({
-    commit,
-    state
-  }, args = {}) {
+  async refreshOrderIngredients({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/orders/ingredients", {
       params: args
     });
-    let {data} = await res;
+    let { data } = await res;
 
     if (_.isObject(data)) {
       data = Object.values(data);
     }
 
     if (_.isArray(data)) {
-      commit('orderIngredients', {
-        ingredients: _.keyBy(data, 'id')
-      })
+      commit("orderIngredients", {
+        ingredients: _.keyBy(data, "id")
+      });
     } else {
-      throw new Error('Failed to retrieve order ingredients');
+      throw new Error("Failed to retrieve order ingredients");
     }
   },
 
-  async refreshIngredientUnits({
-    commit,
-    state
-  }, args = {}) {
+  async refreshIngredientUnits({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/units");
-    let {data} = await res;
+    let { data } = await res;
 
     if (_.isObject(data)) {
       data = Object.values(data);
@@ -756,65 +712,54 @@ const actions = {
     if (_.isArray(data)) {
       let units = {};
 
-      data = _.keyBy(data, 'ingredient_id');
+      data = _.keyBy(data, "ingredient_id");
       _.forEach(data, (unit, id) => {
         units[id] = unit.unit;
       });
 
-      commit('ingredientUnits', {units})
+      commit("ingredientUnits", { units });
     } else {
-      throw new Error('Failed to retrieve ingredient units');
+      throw new Error("Failed to retrieve ingredient units");
     }
   },
 
-  async updateMeal({
-    commit,
-    state,
-    getters,
-    dispatch
-  }, {id, data}) {
-
+  async updateMeal({ commit, state, getters, dispatch }, { id, data }) {
     if (!id || !data) {
       return;
     }
 
-    const index = _.findIndex(getters.storeMeals, ['id', id]);
+    const index = _.findIndex(getters.storeMeals, ["id", id]);
 
     if (index === -1) {
       return;
     }
 
-    Vue.set(state.store.meals.data, index, _.merge(state.store.meals.data[index], data));
+    Vue.set(
+      state.store.meals.data,
+      index,
+      _.merge(state.store.meals.data[index], data)
+    );
     const resp = await axios.patch(`/api/me/meals/${id}`, data);
     Vue.set(state.store.meals.data, index, resp.data);
   },
 
-  async refreshMeals({
-    commit,
-    state
-  }, args = {}) {
+  async refreshMeals({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/meals");
-    const {data} = await res;
+    const { data } = await res;
 
     if (_.isArray(data)) {
-      commit('storeMeals', {meals: data});
+      commit("storeMeals", { meals: data });
     } else {
-      throw new Error('Failed to retrieve meals');
+      throw new Error("Failed to retrieve meals");
     }
   },
 
-  async updateOrder({
-    commit,
-    state,
-    getters,
-    dispatch
-  }, {id, data}) {
-
+  async updateOrder({ commit, state, getters, dispatch }, { id, data }) {
     if (!id || !data) {
       return;
     }
 
-    const index = _.findIndex(getters.storeOrders, {'id': id});
+    const index = _.findIndex(getters.storeOrders, { id: id });
 
     if (index === -1) {
       return;
@@ -825,99 +770,74 @@ const actions = {
     Vue.set(state.orders.data, index, resp.data);
   },
 
-  async refreshOrders({
-    commit,
-    state
-  }, args = {}) {
+  async refreshOrders({ commit, state }, args = {}) {
     const res = await axios.post("/api/me/getOrders");
-    const {data} = await res;
+    const { data } = await res;
 
     if (_.isArray(data)) {
       const orders = _.map(data, order => {
-        order.created_at = moment
-          .utc(order.created_at)
-          .local(); //.format('ddd, MMMM Do')
-        order.updated_at = moment
-          .utc(order.updated_at)
-          .local(); //.format('ddd, MMMM Do')
-        order.delivery_date = moment
-          .utc(order.delivery_date);
-          //.local(); //.format('ddd, MMMM Do')
+        order.created_at = moment.utc(order.created_at).local(); //.format('ddd, MMMM Do')
+        order.updated_at = moment.utc(order.updated_at).local(); //.format('ddd, MMMM Do')
+        order.delivery_date = moment.utc(order.delivery_date);
+        //.local(); //.format('ddd, MMMM Do')
         return order;
       });
-      commit('storeOrders', {orders});
+      commit("storeOrders", { orders });
     } else {
-      throw new Error('Failed to retrieve orders');
+      throw new Error("Failed to retrieve orders");
     }
   },
 
-  async refreshOrdersWithFulfilled({
-    commit,
-    state
-  }, args = {}) {
+  async refreshOrdersWithFulfilled({ commit, state }, args = {}) {
     const res = await axios.post("/api/me/getFulfilledOrders");
-    const {data} = await res;
+    const { data } = await res;
 
     if (_.isArray(data)) {
       const orders = _.map(data, order => {
-        order.created_at = moment
-          .utc(order.created_at)
-          .local(); //.format('ddd, MMMM Do')
-        order.updated_at = moment
-          .utc(order.updated_at)
-          .local(); //.format('ddd, MMMM Do')
-        order.delivery_date = moment
-          .utc(order.delivery_date);
-          //.local(); //.format('ddd, MMMM Do')
+        order.created_at = moment.utc(order.created_at).local(); //.format('ddd, MMMM Do')
+        order.updated_at = moment.utc(order.updated_at).local(); //.format('ddd, MMMM Do')
+        order.delivery_date = moment.utc(order.delivery_date);
+        //.local(); //.format('ddd, MMMM Do')
         return order;
       });
-      commit('storeOrders', {orders});
+      commit("storeOrders", { orders });
     } else {
-      throw new Error('Failed to retrieve orders');
+      throw new Error("Failed to retrieve orders");
     }
   },
 
-  async refreshSubscriptions({
-    commit,
-    state
-  }, args = {}) {
+  async refreshSubscriptions({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/subscriptions");
-    const {data} = await res;
+    const { data } = await res;
 
     if (_.isArray(data)) {
       const subscriptions = _.map(data, subscription => {
-        subscription.created_at = moment
-          .utc(subscription.created_at)
-          .local(); //.format('ddd, MMMM Do')
-        subscription.updated_at = moment
-          .utc(subscription.updated_at)
-          .local(); //.format('ddd, MMMM Do')
-        subscription.next_delivery_date = moment
-          .utc(subscription.next_delivery_date.date);
-          //.local(); //.format('ddd, MMMM Do')
+        subscription.created_at = moment.utc(subscription.created_at).local(); //.format('ddd, MMMM Do')
+        subscription.updated_at = moment.utc(subscription.updated_at).local(); //.format('ddd, MMMM Do')
+        subscription.next_delivery_date = moment.utc(
+          subscription.next_delivery_date.date
+        );
+        //.local(); //.format('ddd, MMMM Do')
         return subscription;
       });
 
-      commit('customerSubscriptions', {subscriptions});
+      commit("customerSubscriptions", { subscriptions });
     } else {
-      throw new Error('Failed to retrieve orders');
+      throw new Error("Failed to retrieve orders");
     }
   },
 
-  async refreshCustomerOrders({
-    commit,
-    state
-  }, args = {}) {
+  async refreshCustomerOrders({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/orders");
-    const {data} = await res;
+    const { data } = await res;
 
     if (_.isArray(data)) {
-      commit('customerOrders', {orders: data});
+      commit("customerOrders", { orders: data });
     } else {
-      throw new Error('Failed to retrieve orders');
+      throw new Error("Failed to retrieve orders");
     }
   }
-}
+};
 
 // getters are functions
 const getters = {
@@ -939,13 +859,13 @@ const getters = {
   stores(state) {
     return state.stores;
   },
-  store: (state, getters) => (id) => {
-    return _.find(state.stores, ['id', id]);
+  store: (state, getters) => id => {
+    return _.find(state.stores, ["id", id]);
   },
   viewedStore(state, getters) {
     return state.viewed_store;
   },
-  viewedStoreSetting: (state, getters) => (key, defaultValue = '') => {
+  viewedStoreSetting: (state, getters) => (key, defaultValue = "") => {
     try {
       return state.viewed_store.settings[key] || defaultValue;
     } catch (e) {
@@ -958,7 +878,7 @@ const getters = {
     // getters.viewedStoreSetting('delivery_distance_radius' - 1)
   },
   viewedStoreCategories(state, getters) {
-    return _.sortBy(state.viewed_store.categories, 'order');
+    return _.sortBy(state.viewed_store.categories, "order");
   },
   viewedStoreLogo(state, getters) {
     try {
@@ -984,20 +904,36 @@ const getters = {
   },
   bagItems(state) {
     let items = _.filter(state.bag.items);
-    items = _.sortBy(items, 'added');
+    items = _.sortBy(items, "added");
     return items;
   },
   bagQuantity(state) {
-    return _.sumBy(_.compact(_.toArray(state.bag.items)), item => item.quantity);
+    return _.sumBy(_.compact(_.toArray(state.bag.items)), item => {
+      if (!item.meal_package) {
+        return item.quantity;
+      } else {
+        return (
+          item.quantity *
+          _.sumBy(
+            _.compact(_.toArray(item.meal.meals)),
+            item => item.pivot.quantity
+          )
+        );
+      }
+    });
   },
-  bagHasMeal: (state) => (meal) => {
+  bagHasMeal: state => meal => {
     if (!_.isNumber(meal)) {
       meal = meal.id;
     }
 
     return _.has(state.bag.items, meal);
   },
-  bagItemQuantity: (state) => (meal) => {
+  bagItemQuantity: state => meal => {
+    if (!meal) {
+      return 0;
+    }
+
     if (!_.isNumber(meal)) {
       meal = meal.id;
     }
@@ -1012,8 +948,8 @@ const getters = {
     let items = _.compact(_.toArray(state.bag.items));
     let totalBagPricePreFees = 0;
     items.forEach(item => {
-      totalBagPricePreFees += (item.quantity * item.meal.price);
-    })
+      totalBagPricePreFees += item.quantity * item.meal.price;
+    });
 
     return totalBagPricePreFees;
   },
@@ -1021,12 +957,12 @@ const getters = {
     let items = _.compact(_.toArray(state.bag.items));
     let totalBagPrice = 0;
     items.forEach(item => {
-      totalBagPrice += (item.quantity * item.meal.price);
-    })
-    if (getters.viewedStoreSetting('applyDeliveryFee', false)) {
+      totalBagPrice += item.quantity * item.meal.price;
+    });
+    if (getters.viewedStoreSetting("applyDeliveryFee", false)) {
       totalBagPrice += getters.viewedStore.settings.deliveryFee;
     }
-    if (getters.viewedStoreSetting('applyProcessingFee', false)) {
+    if (getters.viewedStoreSetting("applyProcessingFee", false)) {
       totalBagPrice += getters.viewedStore.settings.processingFee;
     }
 
@@ -1042,13 +978,13 @@ const getters = {
   ingredients(state) {
     return state.store.ingredients.data || {};
   },
-  ingredient: (state) => id => {
-    return _.find(state.store.ingredients.data, {'id': parseInt(id)});
+  ingredient: state => id => {
+    return _.find(state.store.ingredients.data, { id: parseInt(id) });
   },
-  ingredientUnit: (state) => id => {
+  ingredientUnit: state => id => {
     return _.has(state.store.ingredient_units.data, parseInt(id))
       ? state.store.ingredient_units.data[parseInt(id)]
-      : '';
+      : "";
   },
   orderIngredients(state) {
     return state.store.order_ingredients.data || {};
@@ -1060,95 +996,91 @@ const getters = {
       return {};
     }
   },
-  storeSetting: (state, getters) => (key, defaultValue = '') => {
+  storeSetting: (state, getters) => (key, defaultValue = "") => {
     try {
       return state.store.settings.data[key] || defaultValue;
     } catch (e) {
       return defaultValue;
     }
   },
-  storeSettings: (state) => {
+  storeSettings: state => {
     try {
       return state.store.settings.data || {};
     } catch (e) {
       return {};
     }
   },
-  storeMeals: (state) => {
+  storeMeals: state => {
     try {
       return state.store.meals.data || {};
     } catch (e) {
       return {};
     }
   },
-  storeMeal: (state) => id => {
+  storeMeal: state => id => {
     try {
-      return _.find(state.store.meals.data, ['id', parseInt(id)]) || null;
+      return _.find(state.store.meals.data, ["id", parseInt(id)]) || null;
     } catch (e) {
       return {};
     }
   },
-  storeCategories: (state) => {
+  storeCategories: state => {
     try {
-      return _.orderBy(state.store.categories.data, 'order') || {};
+      return _.orderBy(state.store.categories.data, "order") || {};
     } catch (e) {
       return {};
     }
   },
-  storeCategoryTitle: (state) => id => {
+  storeCategoryTitle: state => id => {
     try {
-      return _
-        .find(state.store.categories.data, {id})
-        .category || {};
+      return _.find(state.store.categories.data, { id }).category || {};
     } catch (e) {
-      return '';
+      return "";
     }
   },
-  storeAllergyTitle: (state) => id => {
+  storeAllergyTitle: state => id => {
     try {
-      return _
-        .find(state.allergies, {id})
-        .title || {};
+      return _.find(state.allergies, { id }).title || {};
     } catch (e) {
-      return '';
+      return "";
     }
   },
-  storeCustomers: (state) => {
+  storeCustomers: state => {
     try {
       return state.store.customers.data || {};
     } catch (e) {
       return {};
     }
   },
-  storeCustomer: (state) => id => {
+  storeCustomer: state => id => {
     try {
-      return _.find(state.store.customers.data, {id}) || null;
+      return _.find(state.store.customers.data, { id }) || null;
     } catch (e) {
       return null;
     }
   },
-  storeOrders: (state) => {
+  storeOrders: state => {
     try {
       return state.orders.data || [];
     } catch (e) {
       return {};
     }
   },
-  storeOrdersByCustomer: (state) => (userId) => {
+  storeOrdersByCustomer: state => userId => {
     try {
-      return _.filter(state.orders.data, {'user_id': userId}) || [];
+      return _.filter(state.orders.data, { user_id: userId }) || [];
     } catch (e) {
       return {};
     }
   },
-  storeSubscriptions: (state) => {
+  storeSubscriptions: state => {
     try {
       return Object.values(state.subscriptions.data) || [];
     } catch (e) {
       return [];
     }
   },
-  storeNextDeliveryDates: (state) => {
+  storeNextDeliveryDates: state => {
     try {
       return state.store.settings.data.next_delivery_dates || [];
     } catch (e) {
@@ -1156,34 +1088,36 @@ const getters = {
     }
   },
 
-  subscriptions: (state) => {
-    return _.orderBy(state.customer.data.subscriptions, 'id', 'desc');
+  subscriptions: state => {
+    return _.orderBy(state.customer.data.subscriptions, "id", "desc");
   },
-  orders: (state) => {
-    return _.orderBy(state.customer.data.orders, 'id', 'desc');
+  orders: state => {
+    return _.orderBy(state.customer.data.orders, "id", "desc");
   },
 
-  cards: (state) => {
+  cards: state => {
     return state.cards;
   },
 
-  minimumOption: (state) => {
+  minimumOption: state => {
     return state.viewed_store.settings.minimumOption;
   },
 
-  minimumMeals: (state) => {
+  minimumMeals: state => {
     return state.viewed_store.settings.minimumMeals;
   },
 
-  minimumPrice: (state) => {
+  minimumPrice: state => {
     return state.viewed_store.settings.minimumPrice;
   }
-}
+};
 
-const plugins = [createPersistedState({
-    paths: ['bag', 'cards']
-  })];
+const plugins = [
+  createPersistedState({
+    paths: ["bag", "cards"]
+  })
+];
 
 // A Vuex instance is created by combining the state, mutations, actions, and
 // getters.
-export default new Vuex.Store({state, getters, actions, mutations, plugins})
+export default new Vuex.Store({ state, getters, actions, mutations, plugins });

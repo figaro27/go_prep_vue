@@ -30,7 +30,34 @@ class Bag
 
     public function getItems()
     {
-        return $this->items;
+        $items = [];
+
+        return collect($this->items)->map(function ($item) use (&$items) {
+            if ($item['meal_package']) {
+                for ($i = 0; $i < $item['quantity']; $i++) {
+                    foreach ($item['meal']['meals'] as $meal) {
+                        if (!isset($items[$meal['id']])) {
+                            $items[$meal['id']] = [
+                                'meal' => $meal,
+                                'quantity' => $meal['quantity']
+                            ];
+                        } else {
+                            $items[$meal['id']]['quantity'] +=
+                                $meal['quantity'];
+                        }
+                    }
+                }
+            } else {
+                if (!isset($items[$item['meal']['id']])) {
+                    $items[$item['meal']['id']] = $item;
+                } else {
+                    $items[$item['meal']['id']]['quantity'] +=
+                        $item['quantity'];
+                }
+            }
+        });
+
+        return array_values($items);
     }
 
     /**
