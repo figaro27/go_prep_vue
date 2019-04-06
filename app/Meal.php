@@ -56,7 +56,8 @@ class Meal extends Model implements HasMedia
         'ingredient_ids',
         'order_ids',
         'created_at_local',
-        'image'
+        'image',
+        'quantity'
         //'featured_image',
     ];
 

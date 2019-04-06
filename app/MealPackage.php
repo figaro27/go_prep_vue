@@ -3,17 +3,68 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\Models\Media;
 
-class MealPackage extends Model
+class MealPackage extends Model implements HasMedia
 {
+    use HasMediaTrait;
+
     public $fillable = ['title', 'description', 'store_id', 'price'];
+    public $appends = ['image'];
 
     public function meals()
     {
         return $this->belongsToMany('App\\Meal')->withPivot('quantity');
     }
 
-    public static function store($props)
+    public function store()
+    {
+        return $this->belongsTo('App\\Store');
+    }
+
+    public function getImageAttribute()
+    {
+        $mediaItems = $this->getMedia('featured_image');
+
+        if (!count($mediaItems)) {
+            return [
+                'url' => null,
+                'url_thumb' => null,
+                'url_medium' => null
+            ];
+        }
+
+        return [
+            'url' => $this->store->getUrl($mediaItems[0]->getUrl('full')),
+            'url_thumb' => $this->store->getUrl(
+                $mediaItems[0]->getUrl('thumb')
+            ),
+            'url_medium' => $this->store->getUrl(
+                $mediaItems[0]->getUrl('medium')
+            )
+        ];
+    }
+
+    public function registerMediaConversions(Media $media = null)
+    {
+        $this->addMediaConversion('full')
+            ->width(1024)
+            ->height(1024)
+            ->performOnCollections('featured_image');
+
+        $this->addMediaConversion('thumb')
+            ->fit(Manipulations::FIT_CROP, 180, 180)
+            ->performOnCollections('featured_image');
+
+        $this->addMediaConversion('medium')
+            ->fit(Manipulations::FIT_CROP, 360, 360)
+            ->performOnCollections('featured_image');
+    }
+
+    public static function _store($props)
     {
         $props = collect($props)->only([
             'active',

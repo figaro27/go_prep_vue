@@ -99,12 +99,13 @@
               >
                 <div class="row mt-3">
                   <div class="col-lg-6 modal-meal-image">
-                    <img :src="meal.featured_image" />
                     <thumbnail
                       v-if="meal.image.url"
                       :src="meal.image.url"
                       :aspect="false"
+                      width="100%"
                     ></thumbnail>
+                    <img v-else :src="meal.featured_image" />
                     <p v-if="storeSettings.showNutrition">
                       {{ meal.description }}
                     </p>
@@ -184,6 +185,42 @@
                           >+ ADD</b-btn
                         >
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </b-modal>
+
+              <b-modal
+                ref="mealPackageModal"
+                size="lg"
+                :title="mealPackage.title"
+                v-model="mealPackageModal"
+                v-if="mealPackageModal"
+              >
+                <div class="row mt-3">
+                  <div class="col-lg-6 modal-meal-image">
+                    <thumbnail
+                      v-if="mealPackage.image.url"
+                      :src="mealPackage.image.url"
+                      :aspect="false"
+                      width="100%"
+                    ></thumbnail>
+                    <img v-else :src="mealPackage.featured_image" />
+                  </div>
+                  <div class="col-lg-6">
+                    <div clas="modal-meal-package-price">
+                      {{ format.money(mealPackage.price) }}
+                    </div>
+                    <div clas="modal-meal-package-description">
+                      {{ mealPackage.description }}
+                    </div>
+                    <div clas="modal-meal-package-meals">
+                      <h6>Meals</h6>
+                      <ul>
+                        <li v-for="meal in mealPackage.meals" :key="meal.id">
+                          {{ meal.title }} x {{ meal.quantity }}
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -304,6 +341,63 @@
                         </p>
                         <p class="center-text featured">
                           {{ format.money(meal.price) }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    v-if="storeSettings.meal_packages && mealPackages.length"
+                  >
+                    <h2 class="text-center mb-3 dbl-underline">
+                      Packages
+                    </h2>
+
+                    <div class="row">
+                      <div
+                        class="col-sm-6 col-lg-4 col-xl-3"
+                        v-for="mealPackage in mealPackages"
+                        :key="mealPackage.id"
+                      >
+                        <thumbnail
+                          v-if="mealPackage.image.url_medium"
+                          :src="mealPackage.image.url_medium"
+                          class="menu-item-img"
+                          width="100%"
+                          @click="showMealPackageModal(mealPackage)"
+                          style="background-color:#ffffff"
+                        ></thumbnail>
+                        <div
+                          class="d-flex justify-content-between align-items-center mb-2 mt-1"
+                        >
+                          <b-btn
+                            @click="minusOne(mealPackage, true)"
+                            class="plus-minus gray"
+                          >
+                            <i>-</i>
+                          </b-btn>
+                          <!-- <img src="/images/customer/minus.jpg" @click="minusOne(meal)" class="plus-minus"> -->
+                          <b-form-input
+                            type="text"
+                            name
+                            id
+                            class="quantity"
+                            :value="quantity(mealPackage, true)"
+                            readonly
+                          ></b-form-input>
+                          <b-btn
+                            @click="addOne(mealPackage, true)"
+                            class="menu-bag-btn plus-minus"
+                          >
+                            <i>+</i>
+                          </b-btn>
+                          <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
+                        </div>
+                        <p class="center-text strong featured">
+                          {{ mealPackage.title }}
+                        </p>
+                        <p class="center-text featured">
+                          {{ format.money(mealPackage.price) }}
                         </p>
                       </div>
                     </div>
@@ -591,8 +685,10 @@ export default {
       },
       //bag: {},
       meal: null,
+      mealPackage: null,
       ingredients: "",
       mealModal: false,
+      mealPackageModal: false,
       calories: null,
       totalfat: null,
       satfat: null,
@@ -790,6 +886,14 @@ export default {
       // Sort
       return _.orderBy(grouped, "order");
     },
+    mealPackages() {
+      return (
+        _.map(this.store.packages, mealPackage => {
+          mealPackage.meal_package = true;
+          return mealPackage;
+        }) || []
+      );
+    },
     categories() {
       let sorting = {};
       this._categories.forEach(cat => {
@@ -862,20 +966,20 @@ export default {
         {}
       );
     },
-    quantity(meal) {
+    quantity(meal, mealPackage = false) {
       const qty = this.$store.getters.bagItemQuantity(meal);
       return qty;
     },
-    addOne(meal) {
-      this.$store.commit("addToBag", { meal, quantity: 1 });
+    addOne(meal, mealPackage = false) {
+      this.$store.commit("addToBag", { meal, quantity: 1, mealPackage });
       this.mealModal = false;
     },
-    minusOne(meal) {
-      this.$store.commit("removeFromBag", { meal, quantity: 1 });
+    minusOne(meal, mealPackage = false) {
+      this.$store.commit("removeFromBag", { meal, quantity: 1, mealPackage });
     },
-    clearMeal(meal) {
+    clearMeal(meal, mealPackage = false) {
       let quantity = this.quantity(meal);
-      this.$store.commit("removeFromBag", { meal, quantity });
+      this.$store.commit("removeFromBag", { meal, quantity, mealPackage });
     },
     clearAll() {
       this.$store.commit("emptyBag");
@@ -892,6 +996,14 @@ export default {
       this.$nextTick(() => {
         this.getNutritionFacts(this.meal.ingredients, this.meal);
       });
+    },
+    showMealPackageModal(mealPackage) {
+      this.mealPackage = mealPackage;
+      this.mealPackageModal = true;
+
+      //this.$nextTick(() => {
+      //  this.getNutritionFacts(this.meal.ingredients, this.meal);
+      //});
     },
     getNutritionFacts(ingredients, meal) {
       const nutrition = this.nutrition.getTotals(ingredients);

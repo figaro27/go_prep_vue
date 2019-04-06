@@ -154,16 +154,21 @@ const mutations = {
       state.bag.total = 0;
     }
   },
-  addToBag(state, { meal, quantity = 1 }) {
+  addToBag(state, { meal, quantity = 1, mealPackage = false }) {
     let mealId = meal;
     if (!_.isNumber(mealId)) {
       mealId = meal.id;
+    }
+
+    if (mealPackage || meal.meal_package) {
+      mealId = "package-" + mealId;
     }
 
     if (!_.has(state.bag.items, mealId)) {
       Vue.set(state.bag.items, mealId, {
         quantity: 0,
         meal,
+        meal_package: mealPackage,
         added: moment().unix()
       });
     }
@@ -178,10 +183,14 @@ const mutations = {
 
     Vue.set(state.bag.items, mealId, item);
   },
-  removeFromBag(state, { meal, quantity = 1 }) {
+  removeFromBag(state, { meal, quantity = 1, mealPackage = false }) {
     let mealId = meal;
     if (!_.isNumber(mealId)) {
       mealId = meal.id;
+    }
+
+    if (mealPackage || meal.meal_package) {
+      mealId = "package-" + mealId;
     }
 
     if (!_.has(state.bag.items, mealId)) {
@@ -903,10 +912,19 @@ const getters = {
     return items;
   },
   bagQuantity(state) {
-    return _.sumBy(
-      _.compact(_.toArray(state.bag.items)),
-      item => item.quantity
-    );
+    return _.sumBy(_.compact(_.toArray(state.bag.items)), item => {
+      if (!item.meal_package) {
+        return item.quantity;
+      } else {
+        return (
+          item.quantity *
+          _.sumBy(
+            _.compact(_.toArray(item.meal.meals)),
+            item => item.pivot.quantity
+          )
+        );
+      }
+    });
   },
   bagHasMeal: state => meal => {
     if (!_.isNumber(meal)) {
@@ -916,6 +934,10 @@ const getters = {
     return _.has(state.bag.items, meal);
   },
   bagItemQuantity: state => meal => {
+    if (!meal) {
+      return 0;
+    }
+
     if (!_.isNumber(meal)) {
       meal = meal.id;
     }

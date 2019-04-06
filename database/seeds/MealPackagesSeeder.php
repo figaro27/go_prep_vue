@@ -24,6 +24,15 @@ class MealPackagesSeeder extends Seeder
                 'store_id' => 1
             ]);
 
+            try {
+                $package->clearMediaCollection('featured_image');
+                $package
+                    ->addMediaFromUrl('http://lorempixel.com/1024/1024/food/')
+                    ->preservingOriginal()
+                    ->toMediaCollection('featured_image');
+            } catch (\Exception $e) {
+            }
+
             for ($m = 0; $m < rand(4, 10); $m++) {
                 try {
                     MealPackageMeal::create([

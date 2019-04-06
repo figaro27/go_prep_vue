@@ -540,19 +540,19 @@ export default {
   methods: {
     ...mapActions(["refreshSubscriptions", "refreshCustomerOrders"]),
     ...mapMutations(["emptyBag"]),
-    quantity(meal) {
+    quantity(meal, mealPackage = false) {
       const qty = this.$store.getters.bagItemQuantity(meal);
       return qty;
     },
-    addOne(meal) {
-      this.$store.commit("addToBag", { meal, quantity: 1 });
+    addOne(meal, mealPackage = false) {
+      this.$store.commit("addToBag", { meal, quantity: 1, mealPackage });
     },
-    minusOne(meal) {
-      this.$store.commit("removeFromBag", { meal, quantity: 1 });
+    minusOne(meal, mealPackage = false) {
+      this.$store.commit("removeFromBag", { meal, quantity: 1, mealPackage });
     },
-    clearMeal(meal) {
+    clearMeal(meal, mealPackage = false) {
       let quantity = this.quantity(meal);
-      this.$store.commit("removeFromBag", { meal, quantity });
+      this.$store.commit("removeFromBag", { meal, quantity, mealPackage });
     },
     clearAll() {
       this.$store.commit("emptyBag");

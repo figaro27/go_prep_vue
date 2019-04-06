@@ -56,7 +56,7 @@ class MealPackageController extends StoreController
         );
         $props->put('store_id', $this->store->id);
 
-        return MealPackage::store($props);
+        return MealPackage::_store($props);
     }
 
     public function storeAdmin(Request $request)
