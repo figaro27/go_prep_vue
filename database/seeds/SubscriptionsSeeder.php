@@ -27,7 +27,7 @@ class SubscriptionsSeeder extends Seeder
                     'stripe_customer_id' => 1,
                     'stripe_plan' => 1,
                     'quantity' => 1,
-                    'amount' => mt_rand(1200, 3000) / 10,
+                    'amount' => mt_rand(1100, 2000) / 10,
                     'interval' => 'week',
                     'delivery_day' => rand(4, 7),
                     'created_at' => Carbon::now()->subDays($i),

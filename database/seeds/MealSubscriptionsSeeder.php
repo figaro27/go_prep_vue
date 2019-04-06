@@ -18,7 +18,7 @@ class MealSubscriptionsSeeder extends Seeder
                     DB::table('meal_subscriptions')->insert([
                         'store_id' => 1,
                         'subscription_id' => $subscription,
-                        'meal_id' => rand(1, 20),
+                        'meal_id' => rand(1, 23),
                         'quantity' => rand(1, 4),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
@@ -34,7 +34,7 @@ class MealSubscriptionsSeeder extends Seeder
                     DB::table('meal_subscriptions')->insert([
                         'store_id' => 2,
                         'subscription_id' => $subscription,
-                        'meal_id' => rand(1, 20),
+                        'meal_id' => rand(24, 46),
                         'quantity' => rand(1, 4),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
@@ -50,7 +50,7 @@ class MealSubscriptionsSeeder extends Seeder
                     DB::table('meal_subscriptions')->insert([
                         'store_id' => 3,
                         'subscription_id' => $subscription,
-                        'meal_id' => rand(1, 20),
+                        'meal_id' => rand(47, 69),
                         'quantity' => rand(1, 4),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
@@ -66,7 +66,7 @@ class MealSubscriptionsSeeder extends Seeder
                     DB::table('meal_subscriptions')->insert([
                         'store_id' => 4,
                         'subscription_id' => $subscription,
-                        'meal_id' => rand(1, 20),
+                        'meal_id' => rand(70, 92),
                         'quantity' => rand(1, 4),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
@@ -82,7 +82,7 @@ class MealSubscriptionsSeeder extends Seeder
                     DB::table('meal_subscriptions')->insert([
                         'store_id' => 5,
                         'subscription_id' => $subscription,
-                        'meal_id' => rand(1, 20),
+                        'meal_id' => rand(93, 115),
                         'quantity' => rand(1, 4),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
@@ -98,7 +98,7 @@ class MealSubscriptionsSeeder extends Seeder
                     DB::table('meal_subscriptions')->insert([
                         'store_id' => 6,
                         'subscription_id' => $subscription,
-                        'meal_id' => rand(1, 20),
+                        'meal_id' => rand(116, 138),
                         'quantity' => rand(1, 4),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
@@ -114,7 +114,7 @@ class MealSubscriptionsSeeder extends Seeder
                     DB::table('meal_subscriptions')->insert([
                         'store_id' => 7,
                         'subscription_id' => $subscription,
-                        'meal_id' => rand(1, 20),
+                        'meal_id' => rand(139, 161),
                         'quantity' => rand(1, 4),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
@@ -130,7 +130,7 @@ class MealSubscriptionsSeeder extends Seeder
                     DB::table('meal_subscriptions')->insert([
                         'store_id' => 8,
                         'subscription_id' => $subscription,
-                        'meal_id' => rand(1, 20),
+                        'meal_id' => rand(162, 184),
                         'quantity' => rand(1, 4),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
@@ -146,7 +146,7 @@ class MealSubscriptionsSeeder extends Seeder
                     DB::table('meal_subscriptions')->insert([
                         'store_id' => 9,
                         'subscription_id' => $subscription,
-                        'meal_id' => rand(1, 20),
+                        'meal_id' => rand(185, 207),
                         'quantity' => rand(1, 4),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
@@ -162,7 +162,7 @@ class MealSubscriptionsSeeder extends Seeder
                     DB::table('meal_subscriptions')->insert([
                         'store_id' => 10,
                         'subscription_id' => $subscription,
-                        'meal_id' => rand(1, 20),
+                        'meal_id' => rand(208, 230),
                         'quantity' => rand(1, 4),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
