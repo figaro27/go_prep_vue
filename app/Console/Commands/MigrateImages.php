@@ -41,21 +41,22 @@ class MigrateImages extends Command
         $meals = Meal::all();
 
         foreach ($meals as $meal) {
-            if ($meal->featured_image) {
+            $mediaItems = $meal->getMedia('featured_image');
+
+            if ($meal->featured_image && !count($mediaItems)) {
                 try {
                     $fullImagePath = resource_path(
                         'assets/' . $meal->featured_image
                     );
                     $meal->clearMediaCollection('featured_image');
-                    $this->comment($fullImagePath);
+                    $this->comment('Migrating ' . $fullImagePath);
                     $meal
                         ->addMedia($fullImagePath)
                         ->preservingOriginal()
                         ->toMediaCollection('featured_image');
                     $meal->save();
                 } catch (\Exception $e) {
-                    print_r($e->getMessage());
-                    exit();
+                    $this->error($e->getMessage());
                 }
             }
         }

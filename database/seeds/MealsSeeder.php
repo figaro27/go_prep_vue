@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Seeder;
-use App\Utils\Data\Format;
+use App\Meal;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class MealsSeeder extends Seeder
 {
@@ -95,7 +95,7 @@ class MealsSeeder extends Seeder
 
         for ($store = 1; $store <= 10; $store++) {
             for ($i = 0; $i <= 22; $i++) {
-                DB::table('meals')->insert([
+                $id = DB::table('meals')->insert([
                     'active' => 1,
                     'store_id' => $store,
                     'featured_image' => $mealImages[$i],
@@ -104,6 +104,18 @@ class MealsSeeder extends Seeder
                     'price' => mt_rand(80, 120) / 10,
                     'created_at' => $daysAgo[rand(0, 1)]
                 ]);
+
+                $meal = Meal::find($id);
+                $fullImagePath = resource_path('assets' . $mealImages[$i]);
+                try {
+                    $meal->clearMediaCollection('featured_image');
+                    $meal
+                        ->addMedia($fullImagePath)
+                        ->preservingOriginal()
+                        ->toMediaCollection('featured_image');
+                } catch (\Exception $e) {
+                    echo "Failed to migrate image $fullImagePath - file not found\r\n";
+                }
             }
 
             // for($i=15;$i<=19;$i++){

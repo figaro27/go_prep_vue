@@ -15,7 +15,8 @@ class UserDetail extends Model
         'state',
         'zip',
         'country',
-        'delivery'
+        'delivery',
+        'notifications'
     ];
 
     public function user()
