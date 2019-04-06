@@ -1,13 +1,21 @@
 <template>
   <div class="row">
     <div class="col-md-8 offset-md-2">
-      <b-alert :show="!canOpen" variant="success">Welcome to GoPrep! Enter all settings to open your store for business.</b-alert>
-      
+      <b-alert :show="!canOpen" variant="success"
+        >Welcome to GoPrep! Enter all settings to open your store for
+        business.</b-alert
+      >
+
       <p>Orders</p>
       <div class="card">
         <div class="card-body">
           <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group label="Cut Off Period" label-for="cut-off-period" :state="true" inline>
+            <b-form-group
+              label="Cut Off Period"
+              label-for="cut-off-period"
+              :state="true"
+              inline
+            >
               <b-select
                 v-model="storeSettings.cutoff_days"
                 class="d-inline w-auto mr-1"
@@ -19,38 +27,50 @@
                 :options="cutoffHoursOptions"
               ></b-select>
               <img
-                v-b-popover.hover="'This is the amount of time you want to lock in orders before a specific delivery day. For example - you set the cut off period to 1 day, and it is currently Tuesday. If you have a Wednesday delivery day, your customer will not see Wednesday as a delivery day option. They will see the next available delivery day. This prevents you from getting new orders right before your delivery day and possibly already after you prepped your meals for that day.'"
+                v-b-popover.hover="
+                  'This is the amount of time you want to lock in orders before a specific delivery day. For example - you set the cut off period to 1 day, and it is currently Tuesday. If you have a Wednesday delivery day, your customer will not see Wednesday as a delivery day option. They will see the next available delivery day. This prevents you from getting new orders right before your delivery day and possibly already after you prepped your meals for that day.'
+                "
                 title="Cut Off Period"
                 src="/images/store/popover.png"
                 class="popover-size"
-              >
+              />
             </b-form-group>
 
             <b-form-group label="Timezone">
-              <b-select :options="timezoneOptions" v-model="storeSettings.timezone" class="w-100"></b-select>
+              <b-select
+                :options="timezoneOptions"
+                v-model="storeSettings.timezone"
+                class="w-100"
+              ></b-select>
             </b-form-group>
 
-            <b-form-group label="Delivery Day(s)" label-for="delivery-days" :state="true">
+            <b-form-group
+              label="Delivery Day(s)"
+              label-for="delivery-days"
+              :state="true"
+            >
               <b-form-checkbox-group
                 buttons
                 v-model="storeSettings.delivery_days"
                 class="storeFilters"
                 :options="[
-                 { value: 'sun', text: 'Sunday' },
-                 { value: 'mon', text: 'Monday' },
-                 { value: 'tue', text: 'Tuesday' },
-                 { value: 'wed', text: 'Wednesday' },
-                 { value: 'thu', text: 'Thursday' },
-                 { value: 'fri', text: 'Friday' },
-                 { value: 'sat', text: 'Saturday' },
-              ]"
+                  { value: 'sun', text: 'Sunday' },
+                  { value: 'mon', text: 'Monday' },
+                  { value: 'tue', text: 'Tuesday' },
+                  { value: 'wed', text: 'Wednesday' },
+                  { value: 'thu', text: 'Thursday' },
+                  { value: 'fri', text: 'Friday' },
+                  { value: 'sat', text: 'Saturday' }
+                ]"
               ></b-form-checkbox-group>
               <img
-                v-b-popover.hover="'These are the day(s) you plan on delivering your meals to your customers and will show up as options on the checkout page for the customer. You can set it to one day per week as many smaller meal prep companies do, or as many as you like.'"
+                v-b-popover.hover="
+                  'These are the day(s) you plan on delivering your meals to your customers and will show up as options on the checkout page for the customer. You can set it to one day per week as many smaller meal prep companies do, or as many as you like.'
+                "
                 title="Delivery / Pickup Day(s)"
                 src="/images/store/popover.png"
                 class="popover-size"
-              >
+              />
             </b-form-group>
 
             <b-form-group
@@ -63,16 +83,18 @@
                 v-model="storeSettings.delivery_distance_type"
                 class="storeFilters"
                 :options="[
-                 { value: 'radius', text: 'Radius' },
-                 { value: 'zipcodes', text: 'Zip Codes' },
-              ]"
+                  { value: 'radius', text: 'Radius' },
+                  { value: 'zipcodes', text: 'Zip Codes' }
+                ]"
               ></b-form-radio-group>
               <img
-                v-b-popover.hover="'As you do local delivery, you may have a certain cutoff distance. Here you can set this distance by radius by the number of miles around you or by zip codes separated by commas.'"
+                v-b-popover.hover="
+                  'As you do local delivery, you may have a certain cutoff distance. Here you can set this distance by radius by the number of miles around you or by zip codes separated by commas.'
+                "
                 title="Delivery Distance Type"
                 src="/images/store/popover.png"
                 class="popover-size"
-              >
+              />
             </b-form-group>
             <b-form-group
               v-if="storeSettings.delivery_distance_type === 'radius'"
@@ -96,25 +118,37 @@
             >
               <textarea
                 v-model="deliveryDistanceZipcodes"
-                @input="e => { updateZips(e) }"
+                @input="
+                  e => {
+                    updateZips(e);
+                  }
+                "
                 class="form-control"
                 placeholder="Zip Codes"
               ></textarea>
             </b-form-group>
 
             <b-form-group>
-              <b-form-radio-group v-model="storeSettings.minimumOption" :options="minimumOptions"></b-form-radio-group>
+              <b-form-radio-group
+                v-model="storeSettings.minimumOption"
+                :options="minimumOptions"
+              ></b-form-radio-group>
             </b-form-group>
 
-            <b-form-group :state="true" v-if="storeSettings.minimumOption === 'price'">
+            <b-form-group
+              :state="true"
+              v-if="storeSettings.minimumOption === 'price'"
+            >
               <p>
                 <span class="mr-1">Minimum Price Requirement</span>
                 <img
-                  v-b-popover.hover="'Here you can set a minimum bag price required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'"
+                  v-b-popover.hover="
+                    'Here you can set a minimum bag price required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'
+                  "
                   title="Minimum Price Requirement"
                   src="/images/store/popover.png"
                   class="popover-size"
-                >
+                />
               </p>
               <b-form-input
                 type="text"
@@ -123,15 +157,20 @@
                 required
               ></b-form-input>
             </b-form-group>
-            <b-form-group :state="true" v-if="storeSettings.minimumOption === 'meals'">
+            <b-form-group
+              :state="true"
+              v-if="storeSettings.minimumOption === 'meals'"
+            >
               <p>
                 <span class="mr-1">Minimum Meals Requirement</span>
                 <img
-                  v-b-popover.hover="'Here you can set a minimum number of meals required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'"
+                  v-b-popover.hover="
+                    'Here you can set a minimum number of meals required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'
+                  "
                   title="Minimum Meals Requirement"
                   src="/images/store/popover.png"
                   class="popover-size"
-                >
+                />
               </p>
               <b-form-input
                 type="text"
@@ -144,11 +183,13 @@
               <p>
                 <span class="mr-1">Weekly Meal Plan Discount</span>
                 <img
-                  v-b-popover.hover="'Give your customers an incentive to create a weekly meal plan with you by offering a discount percentage.'"
+                  v-b-popover.hover="
+                    'Give your customers an incentive to create a weekly meal plan with you by offering a discount percentage.'
+                  "
                   title="Weekly Meal Plan Discount"
                   src="/images/store/popover.png"
                   class="popover-size"
-                >
+                />
               </p>
               <c-switch
                 color="success"
@@ -168,11 +209,13 @@
               <p>
                 <span class="mr-1">Delivery Fee</span>
                 <img
-                  v-b-popover.hover="'Here you can apply an optional delivery fee paid for by your customers.'"
+                  v-b-popover.hover="
+                    'Here you can apply an optional delivery fee paid for by your customers.'
+                  "
                   title="Delivery Fee"
                   src="/images/store/popover.png"
                   class="popover-size"
-                >
+                />
               </p>
               <c-switch
                 color="success"
@@ -192,11 +235,13 @@
               <p>
                 <span class="mr-1">Processing Fee</span>
                 <img
-                  v-b-popover.hover="'Here you can apply an optional processing fee paid for by your customers.'"
+                  v-b-popover.hover="
+                    'Here you can apply an optional processing fee paid for by your customers.'
+                  "
                   title="Processing Fee"
                   src="/images/store/popover.png"
                   class="popover-size"
-                >
+                />
               </p>
               <c-switch
                 color="success"
@@ -214,7 +259,10 @@
             </b-form-group>
 
             <b-form-group label="I Will Be:">
-              <b-form-checkbox-group v-model="transferSelected" :options="transferOptions"></b-form-checkbox-group>
+              <b-form-checkbox-group
+                v-model="transferSelected"
+                :options="transferOptions"
+              ></b-form-checkbox-group>
             </b-form-group>
             <p v-if="transferTypeCheckDelivery">Delivery Instructions:</p>
             <b-form-textarea
@@ -235,13 +283,15 @@
             ></b-form-textarea>
 
             <p class="mt-2">
-                <span class="mr-1">Notes For Customer</span>
-                <img
-                  v-b-popover.hover="'Here you can optionally add any notes that you want to communicate to your customer on your packing slips and new order email notifications. Some examples include heating instructions, expiration periods of your meals, or any personalized message.'"
-                  title="Notes For Customer"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                >
+              <span class="mr-1">Notes For Customer</span>
+              <img
+                v-b-popover.hover="
+                  'Here you can optionally add any notes that you want to communicate to your customer on your packing slips and new order email notifications. Some examples include heating instructions, expiration periods of your meals, or any personalized message.'
+                "
+                title="Notes For Customer"
+                src="/images/store/popover.png"
+                class="popover-size"
+              />
             </p>
             <b-form-textarea
               type="text"
@@ -250,8 +300,9 @@
               placeholder="E.G. Heating instructions, meal expiration periods, or any personalized message. This goes on your packing slips & email notifications to your customers."
             ></b-form-textarea>
 
-
-            <b-button type="submit" variant="primary" class="mt-3">Save</b-button>
+            <b-button type="submit" variant="primary" class="mt-3"
+              >Save</b-button
+            >
           </b-form>
         </div>
       </div>
@@ -259,14 +310,16 @@
       <div class="card">
         <div class="card-body">
           <p>
-          <span class="mr-1">Show Nutrition Facts</span>
-          <img
-            v-b-popover.hover="'Nutrition facts are generated based on the ingredients you enter in for each meal on your Menu page. The nutrition is then shown to your customers if they click on any of your meals when ordering from you.'"
-            title="Show Nutrition Facts"
-            src="/images/store/popover.png"
-            class="popover-size"
-          >
-        </p>
+            <span class="mr-1">Show Nutrition Facts</span>
+            <img
+              v-b-popover.hover="
+                'Nutrition facts are generated based on the ingredients you enter in for each meal on your Menu page. The nutrition is then shown to your customers if they click on any of your meals when ordering from you.'
+              "
+              title="Show Nutrition Facts"
+              src="/images/store/popover.png"
+              class="popover-size"
+            />
+          </p>
           <b-form @submit.prevent="updateStoreSettings">
             <b-form-group :state="true">
               <c-switch
@@ -280,14 +333,16 @@
           </b-form>
 
           <p>
-          <span class="mr-1">Show Ingredients</span>
-          <img
-            v-b-popover.hover="'Ingredients of your meals are listed at the bottom of the nutrition facts that show on your menu. You can choose to show or hide them with this option.'"
-            title="Show Ingredients"
-            src="/images/store/popover.png"
-            class="popover-size"
-          >
-        </p>
+            <span class="mr-1">Show Ingredients</span>
+            <img
+              v-b-popover.hover="
+                'Ingredients of your meals are listed at the bottom of the nutrition facts that show on your menu. You can choose to show or hide them with this option.'
+              "
+              title="Show Ingredients"
+              src="/images/store/popover.png"
+              class="popover-size"
+            />
+          </p>
           <b-form @submit.prevent="updateStoreSettings">
             <b-form-group :state="true">
               <c-switch
@@ -300,14 +355,39 @@
             </b-form-group>
           </b-form>
 
+          <p>
+            <span class="mr-1">Allow Meal Packages</span>
+            <img
+              v-b-popover.hover="
+                'Whether to allow the grouping of meals into meal packages.'
+              "
+              title="Allow Meal Packages"
+              src="/images/store/popover.png"
+              class="popover-size"
+            />
+          </p>
+          <b-form @submit.prevent="updateStoreSettings">
+            <b-form-group :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.meal_packages"
+                @change.native="updateStoreSettings"
+              />
+            </b-form-group>
+          </b-form>
+
           <p class="mb-0 pb-0">
             <span class="mr-1">Categories</span>
             <img
-              v-b-popover.hover="'Categories are ways to group your meals together into different sections that show up on your menu. Some examples include Entrees and Breakfast. You can then rearrange the order of the categories which rearranges the order they are shown on your menu to customers.'"
+              v-b-popover.hover="
+                'Categories are ways to group your meals together into different sections that show up on your menu. Some examples include Entrees and Breakfast. You can then rearrange the order of the categories which rearranges the order they are shown on your menu to customers.'
+              "
               title="Categories"
               src="/images/store/popover.png"
               class="popover-size"
-            >
+            />
           </p>
           <b-form-group :state="true">
             <div class="categories">
@@ -335,7 +415,11 @@
             </div>
 
             <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
-              <b-input v-model="new_category" type="text" placeholder="New Category..."></b-input>
+              <b-input
+                v-model="new_category"
+                type="text"
+                placeholder="New Category..."
+              ></b-input>
               <b-button type="submit" variant="primary ml-2">Create</b-button>
             </b-form>
           </b-form-group>
@@ -343,19 +427,20 @@
           <b-form @submit.prevent="updateStoreSettings">
             <b-form-group :state="true">
               <p>
-              <span class="mr-1">Menu Brand Color</span>
-              <img
-                v-b-popover.hover="'Set the main color to show on your menu for buttons & the top navigation area. Try to match this to the main color of your logo.'"
-                title="Menu Brand Color"
-                src="/images/store/popover.png"
-                class="popover-size"
-              >
+                <span class="mr-1">Menu Brand Color</span>
+                <img
+                  v-b-popover.hover="
+                    'Set the main color to show on your menu for buttons & the top navigation area. Try to match this to the main color of your logo.'
+                  "
+                  title="Menu Brand Color"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
               </p>
               <swatches v-model="color"></swatches>
               <b-button type="submit" variant="primary mt-2">Save</b-button>
             </b-form-group>
           </b-form>
-
         </div>
       </div>
 
@@ -363,28 +448,29 @@
       <div class="card">
         <div class="card-body">
           <b-form @submit.prevent="updateStoreLogo">
-              <b-form-group label="Logo" :state="true">
-                  <p class="small">Please keep height & width dimensions the exact same.</p>
-                  <picture-input
-                  :ref="`storeImageInput`"
-                  :prefill="storeDetail.logo ? storeDetail.logo : ''"
-                  @prefill="$refs[`storeImageInput`].onResize()"
-                  :alertOnError="false"
-                  :autoToggleAspectRatio="true"
-                  margin="0"
-                  size="10"
-                  button-class="btn"
-                  style="width: 180px; height: auto; margin: 0;"
-                  @change="(val) => updateLogo(val)"
-                ></picture-input>
-              </b-form-group>
-                <div class="mt-3">
-                  <b-button type="submit" variant="primary">Save</b-button>
-                </div>
-            </b-form>
-          </div>
+            <b-form-group label="Logo" :state="true">
+              <p class="small">
+                Please keep height & width dimensions the exact same.
+              </p>
+              <picture-input
+                :ref="`storeImageInput`"
+                :prefill="storeDetail.logo ? storeDetail.logo : ''"
+                @prefill="$refs[`storeImageInput`].onResize()"
+                :alertOnError="false"
+                :autoToggleAspectRatio="true"
+                margin="0"
+                size="10"
+                button-class="btn"
+                style="width: 180px; height: auto; margin: 0;"
+                @change="val => updateLogo(val)"
+              ></picture-input>
+            </b-form-group>
+            <div class="mt-3">
+              <b-button type="submit" variant="primary">Save</b-button>
+            </div>
+          </b-form>
         </div>
-
+      </div>
 
       <p>Notifications</p>
       <div class="card">
@@ -481,12 +567,19 @@
             <b-form-group label="Payment Info" :state="true">
               <b-button
                 variant="primary"
-                :href="`https://connect.stripe.com/express/oauth/authorize?client_id=ca_ER2OUNQq30X2xHMqkWo8ilUSz7Txyn1A&state=${store.id}`"
-              >Connect Account</b-button>
+                :href="
+                  `https://connect.stripe.com/express/oauth/authorize?client_id=ca_ER2OUNQq30X2xHMqkWo8ilUSz7Txyn1A&state=${
+                    store.id
+                  }`
+                "
+                >Connect Account</b-button
+              >
             </b-form-group>
           </div>
           <div v-else>
-            <b-form-group label="Stripe" :state="true">ID: {{ storeSettings.stripe_id }}</b-form-group>
+            <b-form-group label="Stripe" :state="true"
+              >ID: {{ storeSettings.stripe_id }}</b-form-group
+            >
             <a :href="payments_url" target="_blank">
               <b-button type="submit" variant="primary">View Account</b-button>
             </a>
@@ -494,29 +587,38 @@
         </div>
       </div>
 
-          <b-modal v-model="showTOAModal" title="Terms of Service / Service Agreement" size="xl"
-          @ok="allowOpen"
-          @cancel="allowOpen"
-          @hidden="allowOpen"
+      <b-modal
+        v-model="showTOAModal"
+        title="Terms of Service / Service Agreement"
+        size="xl"
+        @ok="allowOpen"
+        @cancel="allowOpen"
+        @hidden="allowOpen"
+      >
+        <termsOfService></termsOfService>
+        <termsOfAgreement></termsOfAgreement>
+        <center>
+          <b-form-checkbox
+            v-model="acceptedTOAcheck"
+            value="1"
+            unchecked-value="0"
           >
-            <termsOfService></termsOfService>
-            <termsOfAgreement></termsOfAgreement>
-            <center>
-            <b-form-checkbox
-              v-model="acceptedTOAcheck"
-              value="1"
-              unchecked-value="0"
-            >
-              I accept these terms.
-            </b-form-checkbox>
-          </center>
-          </b-modal>
-
+            I accept these terms.
+          </b-form-checkbox>
+        </center>
+      </b-modal>
 
       <b-modal v-model="showMealPlansModal" title="Warning">
-        <p>You currently have at least one active meal plan with your customers. If you temporarily close your store, all of your customer's meal plans will be automatically paused and will not resume when you re-open. These customers will be notified via email.</p>
+        <p>
+          You currently have at least one active meal plan with your customers.
+          If you temporarily close your store, all of your customer's meal plans
+          will be automatically paused and will not resume when you re-open.
+          These customers will be notified via email.
+        </p>
         <p class="center-text">Continue anyway?</p>
-        <b-btn variant="danger" class="center" @click="pauseMealPlans">Continue</b-btn>
+        <b-btn variant="danger" class="center" @click="pauseMealPlans"
+          >Continue</b-btn
+        >
       </b-modal>
 
       <p>Open</p>
@@ -526,11 +628,13 @@
             <p>
               <span class="mr-1">Open</span>
               <img
-                v-b-popover.hover="'You can toggle this off to stop showing your menu page and accepting new orders for any reason. Be sure to fill out the reason below to communicate to your customers.'"
+                v-b-popover.hover="
+                  'You can toggle this off to stop showing your menu page and accepting new orders for any reason. Be sure to fill out the reason below to communicate to your customers.'
+                "
                 title="Open or Closed"
                 src="/images/store/popover.png"
                 class="popover-size"
-              >
+              />
             </p>
             <c-switch
               color="success"
@@ -548,19 +652,16 @@
               required
             ></b-form-input>
 
-
             <div class="mt-3">
               <b-button type="submit" variant="primary">Save</b-button>
             </div>
           </b-form>
 
           <div v-else>
-            Please enter all settings fields to open your store. 
+            Please enter all settings fields to open your store.
           </div>
-       
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -586,14 +687,13 @@
 }
 </style>
 
-
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
 import timezones from "../../../data/timezones.js";
-import Swatches from 'vue-swatches';
+import Swatches from "vue-swatches";
 import "vue-swatches/dist/vue-swatches.min.css";
-import fs from '../../../lib/fs.js';
+import fs from "../../../lib/fs.js";
 import TermsOfService from "../../TermsOfService";
 import TermsOfAgreement from "../../TermsOfAgreement";
 
@@ -610,7 +710,7 @@ export default {
       acceptedTOAcheck: 0,
       showTOAModal: 0,
       showMealPlansModal: false,
-      color: '',
+      color: "",
       transferSelected: [],
       transferOptions: [
         { text: "Delivering to Customers", value: "delivery" },
@@ -639,8 +739,8 @@ export default {
       storeCategories: "storeCategories",
       storeSubscriptions: "storeSubscriptions"
     }),
-    storeDetails(){
-        return this.storeDetail;
+    storeDetails() {
+      return this.storeDetail;
     },
     categories() {
       return _.chain(this.storeCategories)
@@ -700,15 +800,15 @@ export default {
       return timezones.selectOptions();
     },
     canOpen() {
-      return (this.storeSettings.cutoff_days + this.storeSettings.cutoff_hours > 0 &&
+      return (
+        this.storeSettings.cutoff_days + this.storeSettings.cutoff_hours > 0 &&
         this.storeSettings.delivery_days.length > 0 &&
         this.storeSettings.delivery_distance_radius > 0 &&
-        !_.isEmpty(this.storeSettings.stripe_id));
-    },
+        !_.isEmpty(this.storeSettings.stripe_id)
+      );
+    }
   },
-  created() {
-
-  },
+  created() {},
   mounted() {
     this.view_delivery_days = this.storeSettings.view_delivery_days;
     this.color = this.storeSettings.color;
@@ -716,7 +816,7 @@ export default {
     if (_.isString(this.deliveryDistanceZipcodes)) {
       this.zipCodes = this.deliveryDistanceZipcodes.split(",") || [];
     }
-    
+
     if (_.isString(this.transferType)) {
       this.transferSelected = this.transferType.split(",") || [];
     }
@@ -762,19 +862,18 @@ export default {
           this.$toastr.e(error, "Error");
         });
     },
-    closeStore(){
+    closeStore() {
       let activeSubscriptions = false;
 
       this.storeSubscriptions.forEach(subscription => {
-        if (subscription.status === 'active')
-          activeSubscriptions = true;
-      })
+        if (subscription.status === "active") activeSubscriptions = true;
+      });
 
-      if (this.storeSettings.open === false && activeSubscriptions){
+      if (this.storeSettings.open === false && activeSubscriptions) {
         this.showMealPlansModal = true;
         return;
       }
-      
+
       let settings = { ...this.storeSettings };
 
       axios
@@ -790,10 +889,8 @@ export default {
         });
     },
     updateStoreLogo() {
-      let data = {...this.storeDetails};
-      axios
-        .patch("/api/me/updateLogo", data)
-        
+      let data = { ...this.storeDetails };
+      axios.patch("/api/me/updateLogo", data);
     },
     spliceCharacters() {
       if (this.storeSettings.deliveryFee != null) {
@@ -900,27 +997,26 @@ export default {
       let b64 = await fs.getBase64(this.$refs.storeImageInput.file);
       this.storeDetail.logo = b64;
     },
-    checkAcceptedTOA(){
-      axios.get('/api/me/getAcceptedTOA')
-        .then(resp => {
-          this.acceptedTOA = resp.data
-        })
+    checkAcceptedTOA() {
+      axios.get("/api/me/getAcceptedTOA").then(resp => {
+        this.acceptedTOA = resp.data;
+      });
     },
-    checkTOAforModal(){
-      if (this.acceptedTOA === 0){
+    checkTOAforModal() {
+      if (this.acceptedTOA === 0) {
         this.showTOAModal = 1;
       }
     },
-    allowOpen(){
-      if (this.acceptedTOAcheck === "1"){
-        axios.get('/api/me/acceptedTOA')
-        this.storeSettings.open = true
-      }
-      else
-        this.storeSettings.open = false
+    allowOpen() {
+      if (this.acceptedTOAcheck === "1") {
+        axios.get("/api/me/acceptedTOA");
+        this.storeSettings.open = true;
+      } else this.storeSettings.open = false;
     },
-    pauseMealPlans(){
-      axios.post('/api/me/pauseMealPlans', {closedReason: this.storeSettings.closedReason})
+    pauseMealPlans() {
+      axios.post("/api/me/pauseMealPlans", {
+        closedReason: this.storeSettings.closedReason
+      });
       this.showMealPlansModal = false;
       this.$toastr.s("Your settings have been saved.", "Success");
     }

@@ -77,20 +77,28 @@ class StoreSettingController extends StoreController
     public function update(Request $request, StoreSetting $storeSetting)
     {
         $validatedData = $request->validate([
-            'mealPlanDiscount' => 'required_if:applyMealPlanDiscount,true|integer|nullable|max:99',
+            'mealPlanDiscount' =>
+                'required_if:applyMealPlanDiscount,true|integer|nullable|max:99',
             'deliveryFee' => 'required_if:applyDeliveryFee,true|nullable',
             'processingFee' => 'required_if:applyProcessingFee,true|nullable',
             'minimumPrice' => 'required_if:minimumOption,price',
             'minimumMeals' => 'required_if:minimumOption,meals',
             'delivery_days' => 'required|min:1',
+            'meal_packages' => 'boolean'
             //'closedReason' => 'required_if:open,false'
         ]);
 
         $settings = StoreSetting::where('store_id', $this->store->id);
 
-        $values = $request->except(['next_delivery_dates', 'next_orderable_delivery_dates', 'stripe']);
+        $values = $request->except([
+            'next_delivery_dates',
+            'next_orderable_delivery_dates',
+            'stripe'
+        ]);
         $values['delivery_days'] = json_encode($values['delivery_days']);
-        $values['delivery_distance_zipcodes'] = json_encode($values['delivery_distance_zipcodes']);
+        $values['delivery_distance_zipcodes'] = json_encode(
+            $values['delivery_distance_zipcodes']
+        );
         $values['notifications'] = json_encode($values['notifications']);
 
         $settings->update($values);
@@ -111,29 +119,27 @@ class StoreSettingController extends StoreController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function createStripeAccount(Request $request) {
-      
-      if($this->store->hasStripe()) {
-        return;
-      }
-      
-      $settings = $this->store->settings;
+    public function createStripeAccount(Request $request)
+    {
+        if ($this->store->hasStripe()) {
+            return;
+        }
 
-      $account = Stripe\Account::create([
-        "type" => "standard",
-        "country" => "US",
-        "email" => $this->store->user->userDetail->email,
-      ]);
+        $settings = $this->store->settings;
 
-      if(!isset($account->id)) {
-        return null;
-      }
-      
+        $account = Stripe\Account::create([
+            "type" => "standard",
+            "country" => "US",
+            "email" => $this->store->user->userDetail->email
+        ]);
+
+        if (!isset($account->id)) {
+            return null;
+        }
     }
 
     public function pauseMealPlans(Request $request)
     {
-
         $settings = $this->store->settings;
         $settings->open = 0;
         $settings->closedReason = $request->closedReason;
@@ -141,23 +147,22 @@ class StoreSettingController extends StoreController
 
         $subscriptions = $this->store->subscriptions;
 
-        foreach ($subscriptions as $subscription){
-            if ($subscription->status === 'active'){
+        foreach ($subscriptions as $subscription) {
+            if ($subscription->status === 'active') {
                 $customer = $subscription->customer;
                 $emailAddress = $customer->user->email;
                 $email = new MealPLanPaused([
                     'customer' => $customer,
-                    'subscription' => $subscription,
+                    'subscription' => $subscription
                 ]);
                 Mail::to($emailAddress)->send($email);
                 sleep(1);
             }
         }
 
-        foreach ($subscriptions as $subscription){
+        foreach ($subscriptions as $subscription) {
             $subscription->status = 'paused';
             $subscription->save();
         }
-
     }
 }
