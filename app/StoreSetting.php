@@ -107,18 +107,13 @@ class StoreSetting extends Model
             }
         }
 
+        foreach ($dates as $date) {
+            $dates[] = $date->copy()->addWeek(1);
+        }
+
         usort($dates, function ($a, $b) {
             return $a->getTimestamp() - $b->getTimestamp();
         });
-
-        foreach ($dates as $date) {
-            $nextWeeksDate = Carbon::createFromFormat(
-                'D',
-                $day,
-                $this->timezone
-            )->setTime(0, 0, 0);
-            $dates[] = $nextWeeksDate->addWeek(1);
-        }
 
         return collect($dates);
     }
