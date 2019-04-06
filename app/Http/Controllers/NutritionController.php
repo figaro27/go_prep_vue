@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 
 class NutritionController extends Controller
 {
-
-    protected $app_id, $app_key, $track_url, $nutrients_url;
+    protected $app_id;
+    protected $app_key;
+    protected $track_url;
+    protected $nutrients_url;
+    protected $item_search_url;
 
     public static $keyMap = [
         'nf_calories' => 'calories',
@@ -25,32 +28,51 @@ class NutritionController extends Controller
         'nf_potassium' => 'potassium',
         'nf_calcium' => 'calcium',
         'nf_iron' => 'iron',
-        'nf_addedsugars' => 'sugars',
+        'nf_addedsugars' => 'sugars'
     ];
 
-    public function __construct($app_id = null, $app_key = null, $track_url = null, $nutrients_url = null, $search_url = null)
-    {
+    public function __construct(
+        $app_id = null,
+        $app_key = null,
+        $track_url = null,
+        $nutrients_url = null,
+        $search_url = null
+    ) {
         $this->app_id = config('nutritionix.app_id');
         $this->app_key = config('nutritionix.app_key');
         $this->track_url = config('nutritionix.track_url');
         $this->nutrients_url = config('nutritionix.nutrients_url');
         $this->search_url = config('nutritionix.search_url');
+        $this->item_search_url = config('nutritionix.item_search_url');
     }
 
-    public function getNutrients(Request $request)
+    public function getNutrients(Request $request, $nixId = null)
     {
         $client = new Client();
-        $response = $client->post($this->nutrients_url, [
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'x-app-id' => $this->app_id,
-                'x-app-key' => $this->app_key,
-            ],
-            'body' =>
-            json_encode([
-                'query' => $request->get('query'),
-            ]),
-        ]);
+
+        if ($nixId) {
+            $response = $client->get($this->item_search_url, [
+                'headers' => [
+                    'x-app-id' => $this->app_id,
+                    'x-app-key' => $this->app_key
+                ],
+                'query' => [
+                    'nix_item_id' => $nixId
+                ]
+            ]);
+        } else {
+            $body = json_encode([
+                'query' => $request->get('query')
+            ]);
+            $response = $client->post($this->nutrients_url, [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'x-app-id' => $this->app_id,
+                    'x-app-key' => $this->app_key
+                ],
+                'body' => $body
+            ]);
+        }
 
         $res = json_decode($response->getBody());
 
@@ -59,18 +81,27 @@ class NutritionController extends Controller
         $normalizeKeys = ['totalfat', 'satfat', 'totalcarb'];
 
         foreach ($rawFoods as $rawFood) {
-            $foods[] = collect($rawFood)->mapWithKeys(function ($item, $key) use ($rawFood, $normalizeKeys) {
-                if(isset(self::$keyMap[$key])) {
-                  $key = self::$keyMap[$key];
+            if ($nixId) {
+                $rawFoodserving_weight_grams = 1;
+            }
+            $foods[] = collect($rawFood)->mapWithKeys(function (
+                $item,
+                $key
+            ) use ($rawFood, $normalizeKeys) {
+                if (isset(self::$keyMap[$key])) {
+                    $key = self::$keyMap[$key];
                 }
-                if(in_array($key, $normalizeKeys)) {
-                  $item = $item / $rawFood->serving_weight_grams;
+                if (
+                    in_array($key, $normalizeKeys) &&
+                    $rawFood->serving_weight_grams
+                ) {
+                    $item = $item / $rawFood->serving_weight_grams;
                 }
                 return [$key => $item];
             });
         }
         return [
-            'foods' => $foods,
+            'foods' => $foods
         ];
     }
 
@@ -81,16 +112,18 @@ class NutritionController extends Controller
         $response = $client->post($this->search_url, [
             'headers' => [
                 'x-app-id' => $this->app_id,
-                'x-app-key' => $this->app_key,
+                'x-app-key' => $this->app_key
             ],
             'form_params' => [
-              'query' => $food,
-              'detailed' => true,
+                'query' => $food,
+                'detailed' => true,
+                'branded' => true,
+                'branded_type' => null,
+                'branded_region' => 1 // USA
             ]
         ]);
 
         $res = (string) $response->getBody();
         return $res;
-
     }
 }

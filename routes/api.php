@@ -17,102 +17,213 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
-foreach ([config('app.domain'), '{store_slug}.' . config('app.domain')] as $domain) {
-  
+foreach (
+    [config('app.domain'), '{store_slug}.' . config('app.domain')]
+    as $domain
+) {
     //Auth::routes();
-    Route::group([
-      'middleware' => ['api', 'store_slug'],
-      'prefix' => 'auth'
-    ], function ($router) {
-    
-        Route::post('login', 'AuthController@login');
-        Route::post('logout', 'AuthController@logout');
-        Route::post('refresh', 'AuthController@refresh');
-        Route::post('me', 'AuthController@me');
-        Route::post('register', 'Auth\RegisterController@register');
-        Route::post('register/validate/{step}', 'Auth\RegisterController@validateStep');
-    
-    });
-    
-    Route::group(['domain' => $domain, 'middleware' => ['api', 'view.api', 'store_slug']], function ($router) {
-      
-      Route::get('ping', function () {
-        if (!auth('api')->check()) {
-          return response('', 401);
+    Route::group(
+        [
+            'middleware' => ['api', 'store_slug'],
+            'prefix' => 'auth'
+        ],
+        function ($router) {
+            Route::post('login', 'AuthController@login');
+            Route::post('logout', 'AuthController@logout');
+            Route::post('refresh', 'AuthController@refresh');
+            Route::post('me', 'AuthController@me');
+            Route::post('register', 'Auth\RegisterController@register');
+            Route::post(
+                'register/validate/{step}',
+                'Auth\RegisterController@validateStep'
+            );
         }
-      });
-      
-      Route::get('/', ['middleware' => ['view.api'], 'uses' => 'SpaController@index']);
+    );
 
-      Route::group(['middleware' => ['auth:api']], function ($router) {
-        $user = auth('api')->user();
+    Route::group(
+        [
+            'domain' => $domain,
+            'middleware' => ['api', 'view.api', 'store_slug']
+        ],
+        function ($router) {
+            Route::get('ping', function () {
+                if (!auth('api')->check()) {
+                    return response('', 401);
+                }
+            });
 
-            if ($user && $user->user_role_id === 2) {
+            Route::get('/', [
+                'middleware' => ['view.api'],
+                'uses' => 'SpaController@index'
+            ]);
 
-                Route::post('nutrients', 'NutritionController@getNutrients');
-                Route::post('searchInstant', 'NutritionController@searchInstant');
-                Route::post('contact', 'ContactFormController@submitStore');
+            Route::group(['middleware' => ['auth:api']], function ($router) {
+                $user = auth('api')->user();
 
-                Route::group(['prefix' => 'me', 'middleware' => ['role.store'], 'namespace' => 'Store'], function ($router) {
-                    Route::patch('user', 'UserController@update');
-                    Route::get('user', 'UserController@show');
+                if ($user && $user->user_role_id === 2) {
+                    Route::post(
+                        'nutrients/{nixId?}',
+                        'NutritionController@getNutrients'
+                    );
+                    Route::post(
+                        'searchInstant',
+                        'NutritionController@searchInstant'
+                    );
+                    Route::post('contact', 'ContactFormController@submitStore');
 
-                    Route::get('orders/ingredients/export/{type}', 'OrderIngredientController@export');
-                    Route::get('orders/ingredients', 'OrderIngredientController@index');
+                    Route::group(
+                        [
+                            'prefix' => 'me',
+                            'middleware' => ['role.store'],
+                            'namespace' => 'Store'
+                        ],
+                        function ($router) {
+                            Route::patch('user', 'UserController@update');
+                            Route::get('user', 'UserController@show');
 
-                    Route::resource('meals', 'MealController');
-                    Route::post('destroyMealNonSubstitute', 'MealController@destroyMealNonSubtitute');
-                    Route::resource('ingredients', 'IngredientController');
-                    Route::resource('orders', 'OrderController');
-                    Route::post('getOrders', 'OrderController@index');
-                    Route::post('getFulfilledOrders', 'OrderController@getFulfilledOrders');
-                    Route::get('ordersUpdateViewed', 'OrderController@updateViewed');
-                    Route::resource('subscriptions', 'SubscriptionController');
-                    Route::resource('customers', 'CustomerController');
-                    Route::resource('units', 'UnitController');
-                    Route::resource('categories', 'CategoryController');
-                    Route::resource('settings', 'StoreSettingController');
-                    Route::post('pauseMealPlans', 'StoreSettingController@pauseMealPlans');
-                    
-                    Route::get('getStore', 'StoreDetailController@show');
-                    Route::patch('details', 'StoreDetailController@update');
-                    Route::patch('updateLogo', 'StoreDetailController@updateLogo');
-                    Route::patch('settings', 'StoreSettingController@update');
+                            Route::get(
+                                'orders/ingredients/export/{type}',
+                                'OrderIngredientController@export'
+                            );
+                            Route::get(
+                                'orders/ingredients',
+                                'OrderIngredientController@index'
+                            );
 
-                    Route::post('stripe/connect', 'StripeController@connect');
-                    Route::get('stripe/login', 'StripeController@getLoginLinks');
+                            Route::resource('meals', 'MealController');
+                            Route::post(
+                                'destroyMealNonSubstitute',
+                                'MealController@destroyMealNonSubtitute'
+                            );
+                            Route::resource(
+                                'ingredients',
+                                'IngredientController'
+                            );
+                            Route::resource('orders', 'OrderController');
+                            Route::post('getOrders', 'OrderController@index');
+                            Route::post(
+                                'getFulfilledOrders',
+                                'OrderController@getFulfilledOrders'
+                            );
+                            Route::get(
+                                'ordersUpdateViewed',
+                                'OrderController@updateViewed'
+                            );
+                            Route::resource(
+                                'subscriptions',
+                                'SubscriptionController'
+                            );
+                            Route::resource('customers', 'CustomerController');
+                            Route::resource('units', 'UnitController');
+                            Route::resource('categories', 'CategoryController');
+                            Route::resource(
+                                'settings',
+                                'StoreSettingController'
+                            );
+                            Route::post(
+                                'pauseMealPlans',
+                                'StoreSettingController@pauseMealPlans'
+                            );
 
-                    Route::get('print/{report}/{type}', 'PrintController@print');
+                            Route::get(
+                                'getStore',
+                                'StoreDetailController@show'
+                            );
+                            Route::patch(
+                                'details',
+                                'StoreDetailController@update'
+                            );
+                            Route::patch(
+                                'updateLogo',
+                                'StoreDetailController@updateLogo'
+                            );
+                            Route::patch(
+                                'settings',
+                                'StoreSettingController@update'
+                            );
 
-                    Route::get('acceptedTOA', 'StoreDetailController@acceptedTOA');
-                    Route::get('getAcceptedTOA', 'StoreDetailController@getAcceptedTOA');
-                });
-            } else if ($user && $user->user_role_id === 1) {
-                Route::post('contact', 'ContactFormController@submitCustomer');
+                            Route::post(
+                                'stripe/connect',
+                                'StripeController@connect'
+                            );
+                            Route::get(
+                                'stripe/login',
+                                'StripeController@getLoginLinks'
+                            );
 
-                Route::group(['middleware' => ['role.customer'], 'namespace' => 'User'], function ($router) {
-                    //Route::resource('stores', 'User\\StoreController');
-                    Route::patch('/me/detail', 'UserDetailController@update');
+                            Route::get(
+                                'print/{report}/{type}',
+                                'PrintController@print'
+                            );
 
-                    Route::post('bag/checkout', 'CheckoutController@checkout');
-                    Route::resource('me/subscriptions', 'SubscriptionController');
-                    Route::post('me/subscriptions/{id}/pause', 'SubscriptionController@pause');
-                    Route::post('me/subscriptions/{id}/resume', 'SubscriptionController@resume');
-                    Route::post('me/subscriptions/{id}/meals', 'SubscriptionController@updateMeals');
-                    Route::resource('me/orders', 'OrderController');
-                    Route::get('stores', 'StoreController@index');
-                    Route::get('store/{id}/meals', 'StoreController@meals');
-                    Route::get('store/meals', 'StoreController@meals');
+                            Route::get(
+                                'acceptedTOA',
+                                'StoreDetailController@acceptedTOA'
+                            );
+                            Route::get(
+                                'getAcceptedTOA',
+                                'StoreDetailController@getAcceptedTOA'
+                            );
+                        }
+                    );
+                } elseif ($user && $user->user_role_id === 1) {
+                    Route::post(
+                        'contact',
+                        'ContactFormController@submitCustomer'
+                    );
 
-                    Route::resource('me/cards', 'Billing\CardController');
+                    Route::group(
+                        [
+                            'middleware' => ['role.customer'],
+                            'namespace' => 'User'
+                        ],
+                        function ($router) {
+                            //Route::resource('stores', 'User\\StoreController');
+                            Route::patch(
+                                '/me/detail',
+                                'UserDetailController@update'
+                            );
 
-                    Route::resource('/me', 'UserController');
-                });
-            }
-        });
+                            Route::post(
+                                'bag/checkout',
+                                'CheckoutController@checkout'
+                            );
+                            Route::resource(
+                                'me/subscriptions',
+                                'SubscriptionController'
+                            );
+                            Route::post(
+                                'me/subscriptions/{id}/pause',
+                                'SubscriptionController@pause'
+                            );
+                            Route::post(
+                                'me/subscriptions/{id}/resume',
+                                'SubscriptionController@resume'
+                            );
+                            Route::post(
+                                'me/subscriptions/{id}/meals',
+                                'SubscriptionController@updateMeals'
+                            );
+                            Route::resource('me/orders', 'OrderController');
+                            Route::get('stores', 'StoreController@index');
+                            Route::get(
+                                'store/{id}/meals',
+                                'StoreController@meals'
+                            );
+                            Route::get('store/meals', 'StoreController@meals');
 
-        Route::get('store/viewed', 'SpaController@getViewedStore');
+                            Route::resource(
+                                'me/cards',
+                                'Billing\CardController'
+                            );
 
-    });
+                            Route::resource('/me', 'UserController');
+                        }
+                    );
+                }
+            });
 
+            Route::get('store/viewed', 'SpaController@getViewedStore');
+        }
+    );
 }

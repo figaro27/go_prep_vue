@@ -8,7 +8,7 @@
             v-model="recipe"
             class="flex-grow-1 mr-1 mb-1"
             :rows="3"
-            placeholder='Enter a query like "1 cup mashed potatoes and 2 tbsp gravy". Be sure to include accurate measurement names such as tsp, tbsp, cup, gram, oz, fl oz, etc..'
+            placeholder="Enter a query like '1 cup mashed potatoes and 2 tbsp gravy'. Be sure to include accurate measurement names such as tsp, tbsp, cup, gram, oz, fl oz, etc.."
           ></b-form-textarea>
           <b-button @click="searchRecipe" variant="primary">Add</b-button>
         </b-tab>
@@ -289,40 +289,43 @@ export default {
       this.$toastr.s("Ingredients saved!");
     },
     searchInstant: function() {},
+    processFoods(foods) {
+      return _.map(foods, ingredient => {
+        // Get properly named unit
+        let unit = units.normalize(ingredient.serving_unit);
+        ingredient.unit_type = units.type(unit);
+        ingredient.quantity_unit_display = unit;
+
+        if (ingredient.unit_type === "unit") {
+          unit = "unit";
+        }
+        ingredient.quantity = ingredient.serving_qty;
+        ingredient.quantity_unit = unit;
+        ingredient.added = true;
+        ingredient.image_thumb = ingredient.photo.thumb || null;
+
+        // Calculate nutrition for 1 baseunit
+        let multiplier =
+          units.convert(1, units.base(ingredient.unit_type), unit, false) /
+          ingredient.quantity;
+        let totals = nutrition.getTotals([ingredient], false);
+        if (totals) {
+          totals = _.mapValues(totals, prop => {
+            return prop * multiplier;
+          });
+          ingredient = _.merge(ingredient, totals);
+        }
+
+        return ingredient;
+      });
+    },
     searchRecipe() {
       axios
         .post("/api/nutrients", {
           query: this.recipe
         })
         .then(response => {
-          let newIngredients = _.map(response.data.foods, ingredient => {
-            // Get properly named unit
-            let unit = units.normalize(ingredient.serving_unit);
-            ingredient.unit_type = units.type(unit);
-            ingredient.quantity_unit_display = unit;
-
-            if (ingredient.unit_type === "unit") {
-              unit = "unit";
-            }
-            ingredient.quantity = ingredient.serving_qty;
-            ingredient.quantity_unit = unit;
-            ingredient.added = true;
-            ingredient.image_thumb = ingredient.photo.thumb || null;
-
-            // Calculate nutrition for 1 baseunit
-            let multiplier =
-              units.convert(1, units.base(ingredient.unit_type), unit, false) /
-              ingredient.quantity;
-            let totals = nutrition.getTotals([ingredient], false);
-            if (totals) {
-              totals = _.mapValues(totals, prop => {
-                return prop * multiplier;
-              });
-              ingredient = _.merge(ingredient, totals);
-            }
-
-            return ingredient;
-          });
+          let newIngredients = this.processFoods(response.data.foods);
           this.ingredients = _.concat(this.ingredients, newIngredients);
           this.recipe = "";
         })
@@ -346,18 +349,23 @@ export default {
     }, 350),
     onSearchIngredient(val) {
       if (_.isObject(val)) {
-        this.recipe =
-          val.serving_qty + " " + val.serving_unit + " " + val.food_name;
-        this.searchRecipe();
-        this.recipe = "";
-        /*
-        this.ingredients.push({
+        if (val.nix_item_id) {
+          axios
+            .post("/api/nutrients/" + val.nix_item_id, {
+              query: this.recipe
+            })
+            .then(response => {
+              let newIngredients = this.processFoods(response.data.foods);
+              this.ingredients = _.concat(this.ingredients, newIngredients);
+            });
+        } else {
+          let ingredientName = val.food_name;
 
-          food_name: val.food_name,
-          quantity: val.serving_qty,
-          quantity_unit: units.base(units.type(val.serving_unit)),
-          unit_type: units.type(val.serving_unit)
-        });*/
+          this.recipe =
+            val.serving_qty + " " + val.serving_unit + " " + ingredientName;
+          this.searchRecipe();
+          this.recipe = "";
+        }
       }
     },
     getNutritionFacts(ingredients) {
