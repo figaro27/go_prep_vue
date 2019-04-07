@@ -601,6 +601,12 @@ body.sidebar-minimized {
   font-weight: bold !important;
 }
 
+.width-80 {
+  width: 80% !important;
+  padding-left: 10% !important;
+  padding-right: 10% !important;
+}
+
 .menu-bag-btn i {
   color: #ffffff !important;
   text-decoration: none !important;
@@ -938,4 +944,13 @@ body.register {
 
 .modal-meal-image .v-lazy-image {
   display: none !important;
+}
+
+.VueCarousel-pagination {
+  position: relative !important;
+  bottom: 80px !important;
+}
+
+.modal-meal-package-meals li {
+  list-style-type: circle !important;
 }

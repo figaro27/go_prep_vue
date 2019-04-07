@@ -222,22 +222,26 @@
                         <img v-else :src="mealPackage.featured_image" />
                       </div>
                       <div class="col-lg-6">
-                        <div clas="modal-meal-package-price">
-                          {{ format.money(mealPackage.price) }}
+                        <div class="modal-meal-package-description mt-2">
+                          <p>{{ mealPackage.description }}</p>
                         </div>
-                        <div clas="modal-meal-package-description">
-                          {{ mealPackage.description }}
-                        </div>
-                        <div clas="modal-meal-package-meals">
-                          <h6>Meals</h6>
-                          <ul>
-                            <li
-                              v-for="meal in mealPackage.meals"
-                              :key="meal.id"
-                            >
-                              {{ meal.title }} x {{ meal.quantity }}
-                            </li>
-                          </ul>
+                        <div class="modal-meal-package-meals">
+                          <h5 class="mt-2">Meals</h5>
+
+                          <li v-for="meal in mealPackage.meals" :key="meal.id">
+                            {{ meal.title }} x {{ meal.quantity }}
+                          </li>
+
+                          <div class="modal-meal-package-price">
+                            <h5 class="mt-3 mb-3">
+                              {{ format.money(mealPackage.price) }}
+                            </h5>
+                          </div>
+                          <b-btn
+                            @click="addOne(mealPackage)"
+                            class="menu-bag-btn width-80"
+                            >+ ADD</b-btn
+                          >
                         </div>
                       </div>
                     </div>
@@ -251,6 +255,7 @@
                   >
                     <div class="row">
                       <div class="col-lg-6 modal-meal-image">
+                        <h4 class="center-text">{{ meal.title }}</h4>
                         <thumbnail
                           v-if="meal.image.url"
                           :src="meal.image.url"
@@ -285,6 +290,11 @@
                           :ref="`nutritionFacts${meal.id}`"
                           class="mt-2 mt-lg-0"
                         ></div>
+                        <b-btn
+                          @click="addOne(mealPackage)"
+                          class="menu-bag-btn width-80 mt-3"
+                          >+ ADD PACKAGE</b-btn
+                        >
                       </div>
                       <div class="col-lg-6" v-if="!storeSettings.showNutrition">
                         <p>{{ meal.description }}</p>
@@ -309,6 +319,11 @@
                             {{ ingredients }}
                           </div>
                         </div>
+                        <b-btn
+                          @click="addOne(mealPackage)"
+                          class="menu-bag-btn width-80 mt-3"
+                          >+ ADD PACKAGE</b-btn
+                        >
                       </div>
                     </div>
                   </slide>
@@ -1082,6 +1097,7 @@ export default {
     addOne(meal, mealPackage = false) {
       this.$store.commit("addToBag", { meal, quantity: 1, mealPackage });
       this.mealModal = false;
+      this.mealPackageModal = false;
     },
     minusOne(meal, mealPackage = false) {
       this.$store.commit("removeFromBag", { meal, quantity: 1, mealPackage });
