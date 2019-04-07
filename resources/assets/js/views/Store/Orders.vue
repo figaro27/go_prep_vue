@@ -18,7 +18,7 @@
                     :selected="filters.has_notes"
                     variant="primary"
                     class="filter-btn"
-                    >Filter Delivery Notes</b-btn
+                    >Filter Notes</b-btn
                   >
                 </div>
                 <div class="d-inline-block mr-2 flex-grow-0">
@@ -170,7 +170,7 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <h4>Delivery Notes</h4>
+            <h4>Notes</h4>
             <textarea
               type="text"
               id="form7"
