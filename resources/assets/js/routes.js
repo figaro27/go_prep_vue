@@ -88,11 +88,6 @@ let routes = [
     name: "customer-menu"
   },
   {
-    path: "/customer/account/billing",
-    component: CustomerBilling,
-    name: "customer-billing"
-  },
-  {
     path: "/customer/account/contact",
     component: CustomerContact,
     name: "customer-contact"
@@ -148,11 +143,6 @@ let routes = [
     name: "store-orders"
   },
   {
-    path: "/store/past-orders",
-    component: StorePastOrders,
-    name: "store-past-orders"
-  },
-  {
     path: "/store/meal-plans",
     component: StoreMealPlans,
     name: "store-meal-plans"
@@ -186,30 +176,6 @@ let routes = [
     path: "/store/menu/manual-order",
     component: StoreManualOrder,
     name: "store-menu-manual-order"
-  },
-  {
-    path: "/admin/dashboard",
-    component: AdminDashboard
-  },
-  {
-    path: "/admin/customers",
-    component: AdminCustomers
-  },
-  {
-    path: "/admin/meals",
-    component: AdminMeals
-  },
-  {
-    path: "/admin/orders",
-    component: AdminOrders
-  },
-  {
-    path: "/admin/payments",
-    component: AdminPayments
-  },
-  {
-    path: "/admin/stores",
-    component: AdminStores
   },
   {
     path: "/spinner",
