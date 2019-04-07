@@ -72,7 +72,10 @@ class MealPackageController extends StoreController
      */
     public function show(Request $request, $id)
     {
-        //return Meal::getMeal($id);
+        return $this->store
+            ->packages()
+            ->with(['meals'])
+            ->find($id);
     }
 
     /**

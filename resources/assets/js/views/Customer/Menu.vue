@@ -73,9 +73,9 @@
               :key="`tag-${tag}`"
               class="filters col-6 col-sm-4 col-md-3 mb-3"
             >
-              <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{
-                tag
-              }}</b-button>
+              <b-button :pressed="active[tag]" @click="filterByTag(tag)">
+                {{ tag }}
+              </b-button>
             </div>
           </div>
           <b-button
@@ -196,34 +196,123 @@
                 :title="mealPackage.title"
                 v-model="mealPackageModal"
                 v-if="mealPackageModal"
+                @shown="$forceUpdate()"
+                :hide-footer="true"
               >
-                <div class="row mt-3">
-                  <div class="col-lg-6 modal-meal-image">
-                    <thumbnail
-                      v-if="mealPackage.image.url"
-                      :src="mealPackage.image.url"
-                      :aspect="false"
-                      width="100%"
-                    ></thumbnail>
-                    <img v-else :src="mealPackage.featured_image" />
-                  </div>
-                  <div class="col-lg-6">
-                    <div clas="modal-meal-package-price">
-                      {{ format.money(mealPackage.price) }}
+                <carousel
+                  ref="carousel"
+                  :perPage="1"
+                  @mounted="
+                    () => {
+                      loaded = true;
+                    }
+                  "
+                >
+                  <slide>
+                    <div v-if="loaded" class="row">
+                      <div class="col-lg-6 modal-meal-image">
+                        <thumbnail
+                          v-if="mealPackage.image.url"
+                          :src="mealPackage.image.url"
+                          :aspect="false"
+                          width="100%"
+                          :spinner="false"
+                          :lazy="false"
+                        ></thumbnail>
+                        <img v-else :src="mealPackage.featured_image" />
+                      </div>
+                      <div class="col-lg-6">
+                        <div clas="modal-meal-package-price">
+                          {{ format.money(mealPackage.price) }}
+                        </div>
+                        <div clas="modal-meal-package-description">
+                          {{ mealPackage.description }}
+                        </div>
+                        <div clas="modal-meal-package-meals">
+                          <h6>Meals</h6>
+                          <ul>
+                            <li
+                              v-for="meal in mealPackage.meals"
+                              :key="meal.id"
+                            >
+                              {{ meal.title }} x {{ meal.quantity }}
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
                     </div>
-                    <div clas="modal-meal-package-description">
-                      {{ mealPackage.description }}
+                  </slide>
+
+                  <!-- Text slides with image -->
+                  <slide
+                    v-for="meal in mealPackage.meals"
+                    :key="meal.id"
+                    :caption="meal.title"
+                  >
+                    <div class="row">
+                      <div class="col-lg-6 modal-meal-image">
+                        <thumbnail
+                          v-if="meal.image.url"
+                          :src="meal.image.url"
+                          :aspect="false"
+                          width="100%"
+                          :lazy="false"
+                          :spinner="false"
+                        ></thumbnail>
+                        <img v-else :src="meal.featured_image" />
+                        <p v-if="storeSettings.showNutrition">
+                          {{ meal.description }}
+                        </p>
+                        <div
+                          class="row mt-3 mb-5"
+                          v-if="storeSettings.showNutrition"
+                        >
+                          <div class="col-lg-6">
+                            <h5>Tags</h5>
+                            <li v-for="tag in meal.tags">{{ tag.tag }}</li>
+                          </div>
+                          <div class="col-lg-6">
+                            <h5>Contains</h5>
+                            <li v-for="allergy in meal.allergy_titles">
+                              {{ allergy }}
+                            </li>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-6" v-if="storeSettings.showNutrition">
+                        <div
+                          :id="`nutritionFacts${meal.id}`"
+                          :ref="`nutritionFacts${meal.id}`"
+                          class="mt-2 mt-lg-0"
+                        ></div>
+                      </div>
+                      <div class="col-lg-6" v-if="!storeSettings.showNutrition">
+                        <p>{{ meal.description }}</p>
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <h5>Tags</h5>
+                            <li v-for="tag in meal.tags">{{ tag.tag }}</li>
+                          </div>
+                          <div class="col-lg-6">
+                            <h5>Contains</h5>
+                            <li v-for="allergy in meal.allergy_titles">
+                              {{ allergy }}
+                            </li>
+                          </div>
+                        </div>
+                        <div
+                          class="row mt-3 mb-3"
+                          v-if="storeSettings.showIngredients"
+                        >
+                          <div class="col-lg-12">
+                            <h5>Ingredients</h5>
+                            {{ ingredients }}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div clas="modal-meal-package-meals">
-                      <h6>Meals</h6>
-                      <ul>
-                        <li v-for="meal in mealPackage.meals" :key="meal.id">
-                          {{ meal.title }} x {{ meal.quantity }}
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
+                  </slide>
+                </carousel>
               </b-modal>
 
               <div class="row">
@@ -241,8 +330,8 @@
                       <b-btn
                         @click="showDescription"
                         class="brand-color white-text center mt-3"
-                        >About
-                      </b-btn>
+                        >About</b-btn
+                      >
                     </div>
                     <div class="col-sm-12 category-area">
                       <div class="filter-area">
@@ -350,29 +439,27 @@
                     v-if="storeSettings.meal_packages && mealPackages.length"
                     id="Packages"
                   >
-                    <h2 class="text-center mb-3 dbl-underline">
-                      Packages
-                    </h2>
+                    <h2 class="text-center mb-3 dbl-underline">Packages</h2>
 
                     <div class="row">
                       <div
                         class="col-sm-6 col-lg-4 col-xl-3"
-                        v-for="mealPackage in mealPackages"
-                        :key="mealPackage.id"
+                        v-for="mealPkg in mealPackages"
+                        :key="mealPkg.id"
                       >
                         <thumbnail
-                          v-if="mealPackage.image.url_medium"
-                          :src="mealPackage.image.url_medium"
+                          v-if="mealPkg.image.url_medium"
+                          :src="mealPkg.image.url_medium"
                           class="menu-item-img"
                           width="100%"
-                          @click="showMealPackageModal(mealPackage)"
+                          @click="showMealPackageModal(mealPkg)"
                           style="background-color:#ffffff"
                         ></thumbnail>
                         <div
                           class="d-flex justify-content-between align-items-center mb-2 mt-1"
                         >
                           <b-btn
-                            @click="minusOne(mealPackage, true)"
+                            @click="minusOne(mealPkg, true)"
                             class="plus-minus gray"
                           >
                             <i>-</i>
@@ -383,11 +470,11 @@
                             name
                             id
                             class="quantity"
-                            :value="quantity(mealPackage, true)"
+                            :value="quantity(mealPkg, true)"
                             readonly
                           ></b-form-input>
                           <b-btn
-                            @click="addOne(mealPackage, true)"
+                            @click="addOne(mealPkg, true)"
                             class="menu-bag-btn plus-minus"
                           >
                             <i>+</i>
@@ -395,10 +482,10 @@
                           <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
                         </div>
                         <p class="center-text strong featured">
-                          {{ mealPackage.title }}
+                          {{ mealPkg.title }}
                         </p>
                         <p class="center-text featured">
-                          {{ format.money(mealPackage.price) }}
+                          {{ format.money(mealPkg.price) }}
                         </p>
                       </div>
                     </div>
@@ -645,6 +732,7 @@ import units from "../../data/units";
 import nutrition from "../../data/nutrition";
 import format from "../../lib/format";
 import SalesTax from "sales-tax";
+import keyboardJS from "keyboardjs";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -668,6 +756,7 @@ export default {
   },
   data() {
     return {
+      loaded: false,
       salesTaxRate: 0,
       active: {},
       loading: false,
@@ -949,7 +1038,20 @@ export default {
     }
   },
   mounted() {
-    this.getSalesTax(this.store.details.state);
+    try {
+      this.getSalesTax(this.store.details.state);
+    } catch (e) {}
+    keyboardJS.bind("left", () => {
+      if (this.$refs.carousel) {
+        console.log(this.$refs.carousel);
+        this.$refs.carousel.handleNavigation("backward");
+      }
+    });
+    keyboardJS.bind("right", () => {
+      if (this.$refs.carousel) {
+        this.$refs.carousel.handleNavigation("forward");
+      }
+    });
   },
   beforeDestroy() {
     this.showActiveFilters();
@@ -1005,20 +1107,34 @@ export default {
       });
     },
     showMealPackageModal(mealPackage) {
-      this.mealPackage = mealPackage;
+      this.mealPackage = { ...mealPackage };
       this.mealPackageModal = true;
+
+      this.$nextTick(() => {
+        this.mealPackage.meals.forEach(meal => {
+          this.getNutritionFacts(
+            meal.ingredients,
+            meal,
+            this.$refs[`nutritionFacts${meal.id}`]
+          );
+        });
+      });
 
       //this.$nextTick(() => {
       //  this.getNutritionFacts(this.meal.ingredients, this.meal);
       //});
     },
-    getNutritionFacts(ingredients, meal) {
+    getNutritionFacts(ingredients, meal, ref = null) {
       const nutrition = this.nutrition.getTotals(ingredients);
       const ingredientList = this.nutrition.getIngredientList(ingredients);
 
-      $(this.$refs.nutritionFacts).html("");
+      if (!ref) {
+        ref = this.$refs.nutritionFacts;
+      }
 
-      $(this.$refs.nutritionFacts).nutritionLabel({
+      $(ref).html("");
+
+      $(ref).nutritionLabel({
         showServingUnitQuantity: false,
         itemName: meal.title,
         ingredientList: ingredientList,

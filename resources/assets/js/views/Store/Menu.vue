@@ -133,7 +133,11 @@
               <div slot="actions" class="text-nowrap" slot-scope="props">
                 <button
                   class="btn view btn-warning btn-sm"
-                  @click="viewMeal(props.row.id)"
+                  @click="
+                    props.row.meal_package
+                      ? viewMealPackage(props.row.id)
+                      : viewMeal(props.row.id)
+                  "
                 >
                   View
                 </button>
@@ -152,6 +156,12 @@
 
     <create-meal-modal v-if="createMealModal" @created="refreshTable()" />
     <create-package-modal v-if="createPackageModal" @created="refreshTable()" />
+    <view-package-modal
+      v-if="viewPackageModal"
+      :meal_package="mealPackage"
+      @hide="viewPackageModal = false"
+      @updated="refreshTable()"
+    />
 
     <div class="modal-full modal-tabs">
       <b-modal
@@ -379,6 +389,7 @@ import Spinner from "../../components/Spinner";
 import IngredientPicker from "../../components/IngredientPicker";
 import CreateMealModal from "./Modals/CreateMeal";
 import CreatePackageModal from "./Modals/CreateMealPackage";
+import ViewPackageModal from "./Modals/ViewMealPackage";
 import moment from "moment";
 import tags from "bootstrap-tagsinput";
 import { Event } from "vue-tables-2";
@@ -395,7 +406,8 @@ export default {
     PictureInput,
     IngredientPicker,
     CreateMealModal,
-    CreatePackageModal
+    CreatePackageModal,
+    ViewPackageModal
   },
   updated() {
     //$(window).trigger("resize");
@@ -423,6 +435,7 @@ export default {
       viewMealModal: false,
       deleteMealModal: false,
       deleteMealModalNonSubstitute: false,
+      viewPackageModal: false,
       deletingMeal: {},
       substitute_id: null,
 
@@ -433,6 +446,7 @@ export default {
       ingredientList: "",
       ingredients: [],
       meal: [],
+      mealPackage: {},
       mealID: null,
       newMeal: {
         featured_image: "",
@@ -743,6 +757,23 @@ export default {
           this.removeJob(jobId);
         });
     },
+    async viewMealPackage(id) {
+      const jobId = await this.addJob();
+      axios
+        .get(`/api/me/packages/${id}`)
+        .then(response => {
+          this.mealPackage = response.data;
+          this.viewPackageModal = true;
+
+          this.$nextTick(function() {
+            window.dispatchEvent(new window.Event("resize"));
+          });
+        })
+        .finally(() => {
+          this.removeJob(jobId);
+        });
+    },
+
     deleteMeal: function(id) {
       this.deletingMeal = this.getMeal(id);
 

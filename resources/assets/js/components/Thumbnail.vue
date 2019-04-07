@@ -15,14 +15,26 @@
       </defs>
     </svg>
     <v-lazy-image
+      v-if="lazy"
+      ref="lazy"
       :style="{
         width: '100%',
+        height: 'auto',
         display: 'inline-block'
       }"
       :src="src"
       :src-placeholder="srcPlaceholder"
       @load="onLoaded"
     ></v-lazy-image>
+    <img
+      v-else
+      :src="src"
+      :style="{
+        width: '100%',
+        height: 'auto',
+        display: 'inline-block'
+      }"
+    />
 
     <div class="spinner" v-if="spinner">
       <div class="lds-ring">
@@ -44,6 +56,10 @@ export default {
       default: true
     },
     aspect: {
+      type: Boolean,
+      default: true
+    },
+    lazy: {
       type: Boolean,
       default: true
     },
@@ -74,6 +90,7 @@ export default {
       return this.blurLevel * this.rate;
     }
   },
+  mounted() {},
   methods: {
     onLoaded(e) {
       this.loaded = true;

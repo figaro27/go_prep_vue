@@ -41,7 +41,9 @@ import auth from "./lib/auth";
 import VuejsDialog from "vuejs-dialog";
 import "vuejs-dialog/dist/vuejs-dialog.min.css";
 import DisableAutocomplete from "vue-disable-autocomplete";
+import VueCarousel from "vue-carousel";
 
+Vue.use(VueCarousel);
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, "bootstrap4", "default");
