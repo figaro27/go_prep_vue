@@ -21,7 +21,8 @@ class MealPackagesSeeder extends Seeder
                 'title' => 'Package ' . $i,
                 'description' => 'This is the description for package ' . $i,
                 'price' => rand(500, 20000) / 100,
-                'store_id' => 1
+                'store_id' => 1,
+                'active' => 1
             ]);
 
             try {
