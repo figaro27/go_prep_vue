@@ -359,7 +359,7 @@
             <span class="mr-1">Allow Meal Packages</span>
             <img
               v-b-popover.hover="
-                'Whether to allow the grouping of meals into meal packages.'
+                'Enables a button on your menu page which lets you create meal packages. These are groupings of individual meals on your menu and are displayed to your customer on your menu through a scrolling carousel. Enabling this also adds a Packages category to your menu.'
               "
               title="Allow Meal Packages"
               src="/images/store/popover.png"
