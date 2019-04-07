@@ -348,6 +348,7 @@
 
                   <div
                     v-if="storeSettings.meal_packages && mealPackages.length"
+                    id="Packages"
                   >
                     <h2 class="text-center mb-3 dbl-underline">
                       Packages
@@ -910,9 +911,15 @@ export default {
         });
       });
 
-      return _.orderBy(grouped, cat => {
+      let categories = _.orderBy(grouped, cat => {
         return cat in sorting ? sorting[cat] : 9999;
       });
+
+      if (this.storeSettings.meal_packages && this.mealPackages.length) {
+        categories.push("Packages");
+      }
+
+      return categories;
     },
     tags() {
       let grouped = [];

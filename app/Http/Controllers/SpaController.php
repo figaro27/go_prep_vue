@@ -52,6 +52,7 @@ class SpaController extends Controller
                 $store = defined('STORE_ID')
                     ? Store::with([
                         'meals',
+                        'packages',
                         'units',
                         'categories',
                         'meals.categories',
@@ -73,6 +74,7 @@ class SpaController extends Controller
                     ->with([
                         'categories',
                         'ingredients',
+                        'packages',
                         'units',
                         'settings',
                         'storeDetail'

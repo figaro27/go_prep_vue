@@ -20,7 +20,7 @@ class MealPackageController extends StoreController
         return $this->store->has('packages')
             ? $this->store
                 ->packages()
-                ->with(['orders'])
+                ->with(['meals'])
                 ->without([])
                 ->get()
             : [];
@@ -96,8 +96,7 @@ class MealPackageController extends StoreController
     {
         $package = $this->store->packages()->find($id);
 
-        return $package->_update(
-            $id,
+        $props = collect(
             $request->only([
                 'active',
                 'title',
@@ -107,6 +106,8 @@ class MealPackageController extends StoreController
                 'meals'
             ])
         );
+
+        return $package->_update($props);
     }
 
     public function updateActive(Request $request, $id)

@@ -78,7 +78,10 @@
                   v-model="props.row.active"
                   :value="1"
                   :unchecked-value="0"
-                  @change="val => updateActive(props.row.id, val)"
+                  @change="
+                    val =>
+                      updateActive(props.row.id, val, props.row.meal_package)
+                  "
                 ></b-form-checkbox>
               </div>
 
@@ -89,18 +92,29 @@
                 ></thumbnail>
               </div>
 
-              <div slot="tags" slot-scope="props">
+              <div
+                slot="tags"
+                slot-scope="props"
+                v-if="!props.row.meal_package"
+              >
                 {{ props.row.tag_titles.join(", ") }}
               </div>
               <div slot="categories" slot-scope="props">
-                {{
-                  props.row.category_ids
-                    .map(categoryId => getCategoryTitle(categoryId))
-                    .join(", ")
-                }}
+                <div v-if="!props.row.meal_package">
+                  {{
+                    props.row.category_ids
+                      .map(categoryId => getCategoryTitle(categoryId))
+                      .join(", ")
+                  }}
+                </div>
+                <div v-else>Packages</div>
               </div>
 
-              <div slot="contains" slot-scope="props">
+              <div
+                slot="contains"
+                slot-scope="props"
+                v-if="!props.row.meal_package"
+              >
                 {{
                   props.row.allergy_ids
                     .map(allergyId => getAllergyTitle(allergyId))
@@ -271,8 +285,8 @@
               @change="val => changeImage(val, meal.id)"
             ></picture-input>
             <p class="center-text">
-              Image size too big?<br />
-              You can compress images
+              Image size too big?
+              <br />You can compress images
               <a href="https://imagecompressor.com/" target="_blank">here.</a>
             </p>
           </b-col>
@@ -512,6 +526,7 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       meals: "storeMeals",
+      mealPackages: "mealPackages",
       getMeal: "storeMeal",
       tags: "tags",
       storeCategories: "storeCategories",
@@ -521,7 +536,10 @@ export default {
       isLoading: "isLoading"
     }),
     tableData() {
-      return Object.values(this.meals);
+      return Object.values(this.mealPackages).map(mealPackage => {
+        return mealPackage;
+      });
+      //return Object.values(this.meals);
     },
     tagOptions() {
       return Object.values(this.tags).map(tag => {
@@ -581,6 +599,7 @@ export default {
     ...mapActions({
       refreshMeals: "refreshMeals",
       _updateMeal: "updateMeal",
+      _updateMealPackage: "updateMealPackage",
       addJob: "addJob",
       removeJob: "removeJob"
     }),
@@ -642,16 +661,52 @@ export default {
         return false;
       }
     },
-    async updateActive(id, active, props) {
+    async updateMealPackage(id, changes, toast = false) {
+      const i = this.getTableDataIndexById(id);
+      if (i === -1) {
+        return this.getTableData();
+      }
+      if (_.isEmpty(changes)) {
+        changes = this.editing[id];
+      }
+
+      try {
+        await this._updateMeal({ id, data: changes });
+
+        if (toast) {
+          this.$toastr.s("Meal updated!");
+        }
+
+        return true;
+      } catch (e) {
+        if (toast) {
+          let error = _.first(Object.values(e.response.data.errors));
+
+          if (error) {
+            error = error.join(" ");
+            this.$toastr.e(error, "Error");
+          } else {
+            this.$toastr.e("Failed to update meal!", "Error");
+          }
+        }
+
+        return false;
+      }
+    },
+    async updateActive(id, active, isMealPackage = false) {
       const i = _.findIndex(this.tableData, o => {
-        return o.id === id;
+        return o.id === id && !!o.meal_package === isMealPackage;
       });
 
       if (i === -1) {
         return this.getTableData();
       }
 
-      await this._updateMeal({ id, data: { active } });
+      if (!isMealPackage) {
+        await this._updateMeal({ id, data: { active } });
+      } else {
+        await this._updateMealPackage({ id, data: { active } });
+      }
 
       if (active) {
         this.$toastr.s("Meal activated!");

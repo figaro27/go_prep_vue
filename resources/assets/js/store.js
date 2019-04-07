@@ -85,6 +85,10 @@ const state = {
       data: {},
       expires: 0
     },
+    meal_packages: {
+      data: {},
+      expires: 0
+    },
     customers: {
       data: {},
       expires: 0
@@ -480,7 +484,11 @@ const actions = {
     } catch (e) {}
 
     // Required actions
-    await Promise.all([dispatch("refreshMeals"), dispatch("refreshOrders")]);
+    await Promise.all([
+      dispatch("refreshMeals"),
+      dispatch("refreshMealPackages"),
+      dispatch("refreshOrders")
+    ]);
 
     dispatch("refreshStoreCustomers");
     dispatch("refreshOrderIngredients");
@@ -743,6 +751,26 @@ const actions = {
     Vue.set(state.store.meals.data, index, resp.data);
   },
 
+  async updateMealPackage({ commit, state, getters, dispatch }, { id, data }) {
+    if (!id || !data) {
+      return;
+    }
+
+    const index = _.findIndex(getters.mealPackages, ["id", id]);
+
+    if (index === -1) {
+      return;
+    }
+
+    Vue.set(
+      state.store.meal_packages.data,
+      index,
+      _.merge(state.store.meal_packages.data[index], data)
+    );
+    const resp = await axios.patch(`/api/me/packages/${id}`, data);
+    Vue.set(state.store.meal_packages.data, index, resp.data);
+  },
+
   async refreshMeals({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/meals");
     const { data } = await res;
@@ -751,6 +779,16 @@ const actions = {
       commit("storeMeals", { meals: data });
     } else {
       throw new Error("Failed to retrieve meals");
+    }
+  },
+  async refreshMealPackages({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/packages");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      state.store.meal_packages.data = data;
+    } else {
+      throw new Error("Failed to retrieve meal packages");
     }
   },
 
@@ -897,6 +935,14 @@ const getters = {
   },
   initialized(state) {
     return state.initialized;
+  },
+  mealPackages(state) {
+    return (
+      _.map(state.store.meal_packages.data, mealPackage => {
+        mealPackage.meal_package = true;
+        return mealPackage;
+      }) || []
+    );
   },
   bag(state) {
     let bag = {
