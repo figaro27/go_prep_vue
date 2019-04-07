@@ -11,25 +11,40 @@
         v-model="ingredient"
         placeholder="Search Food Database"
       >
-        <template slot="no-options">type to search ingredients...</template>
+        <template slot="no-options"
+          >type to search ingredients...</template
+        >
         <template slot="option" slot-scope="option">
           <div class="d-flex option">
             <div class="thumb-wrap">
-              <img v-if="option.photo" :src="option.photo.thumb" class="thumb">
+              <img
+                v-if="option.photo"
+                :src="option.photo.thumb"
+                class="thumb"
+              />
             </div>
             {{ option.food_name }}
           </div>
         </template>
         <template slot="selected-option" slot-scope="option">
           <div class="selected">
-            <img v-if="option.photo" :src="option.photo.thumb" class="thumb">
+            <img v-if="option.photo" :src="option.photo.thumb" class="thumb" />
             {{ option.food_name }}
           </div>
         </template>
       </v-select>
     </b-form-group>
-    <b-form-group label="Quantity" label-for="ingredient-quantity" class="ing-quantity">
-      <b-input id="ingredient-quantity" type="number" min="0" v-model="quantity"></b-input>
+    <b-form-group
+      label="Quantity"
+      label-for="ingredient-quantity"
+      class="ing-quantity"
+    >
+      <b-input
+        id="ingredient-quantity"
+        type="number"
+        min="0"
+        v-model="quantity"
+      ></b-input>
     </b-form-group>
     <b-form-group label="Unit" class="unit">
       <b-select v-model="unit">
@@ -38,24 +53,27 @@
             v-for="option in massOptions"
             :key="option.value"
             :value="option.value"
-          >{{option.text}}</option>
+            >{{ option.text }}</option
+          >
         </optgroup>
         <optgroup label="Volume">
           <option
             v-for="option in volumeOptions"
             :key="option.value"
             :value="option.value"
-          >{{option.text}}</option>
+            >{{ option.text }}</option
+          >
         </optgroup>
       </b-select>
     </b-form-group>
 
     <b-button
-        :disabled="!quantity || !unit || !ingredient"
-        @click="onClickAdd"
-        variant="primary"
-        class="ml-4 flex-grow-0"
-      >Add</b-button>
+      :disabled="!quantity || !unit || !ingredient"
+      @click="onClickAdd"
+      variant="primary"
+      class="ml-4 flex-grow-0"
+      >Add</b-button
+    >
   </div>
 </template>
 <style lang="scss">
@@ -159,7 +177,11 @@ export default {
           search: search
         })
         .then(response => {
-          vm.options = response.data.common;
+          vm.options = _.concat(
+            [],
+            response.data.common,
+            response.data.branded
+          );
           loading(false);
         });
     }, 600),
@@ -167,7 +189,8 @@ export default {
       this.$emit("change", {
         serving_qty: this.quantity,
         serving_unit: this.unit,
-        food_name: this.ingredient.food_name
+        food_name: this.ingredient.food_name,
+        nix_item_id: this.ingredient.nix_item_id
       });
 
       this.ingredient = null;
