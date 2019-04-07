@@ -42,7 +42,10 @@ import VuejsDialog from "vuejs-dialog";
 import "vuejs-dialog/dist/vuejs-dialog.min.css";
 import DisableAutocomplete from "vue-disable-autocomplete";
 import VueCarousel from "vue-carousel";
+import wysiwyg from "vue-wysiwyg";
+import "vue-wysiwyg/dist/vueWysiwyg.css";
 
+Vue.use(wysiwyg, {});
 Vue.use(VueCarousel);
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);

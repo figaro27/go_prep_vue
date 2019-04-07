@@ -122,7 +122,9 @@
               ></b-form-input>
             </b-form-group>
 
-            <b-form-group label="About" :state="true"> </b-form-group>
+            <b-form-group label="About" :state="true">
+              <wysiwyg v-model="storeDetail.description" />
+            </b-form-group>
 
             <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
