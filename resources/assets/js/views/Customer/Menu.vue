@@ -200,7 +200,7 @@
                         alt="Company Logo"
                       />
                     </div>
-                    <div class="col-sm-12">
+                    <div class="col-sm-12" v-if="store.details.description">
                       <b-btn
                         @click="showDescription"
                         class="brand-color white-text center mt-3"

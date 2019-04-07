@@ -42,13 +42,6 @@ import VuejsDialog from "vuejs-dialog";
 import "vuejs-dialog/dist/vuejs-dialog.min.css";
 import DisableAutocomplete from "vue-disable-autocomplete";
 
-require("froala-editor/js/froala_editor.pkgd.min.js");
-require("froala-editor/css/froala_editor.pkgd.min.css");
-require("font-awesome/css/font-awesome.css");
-require("froala-editor/css/froala_style.min.css");
-import VueFroala from "vue-froala-wysiwyg";
-Vue.use(VueFroala);
-
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(ClientTable, {}, false, "bootstrap4", "default");
