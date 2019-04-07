@@ -31,6 +31,17 @@
 
       <div class="modal-basic">
         <b-modal
+          :title="store.details.name"
+          size="lg"
+          v-model="showDescriptionModal"
+          v-if="showDescriptionModal"
+        >
+          <p v-html="description"></p>
+        </b-modal>
+      </div>
+
+      <div class="modal-basic">
+        <b-modal
           size="lg"
           v-model="viewFilterModal"
           v-if="viewFilterModal"
@@ -188,6 +199,13 @@
                         :src="storeLogo"
                         alt="Company Logo"
                       />
+                    </div>
+                    <div class="col-sm-12">
+                      <b-btn
+                        @click="showDescription"
+                        class="brand-color white-text center mt-3"
+                        >About
+                      </b-btn>
                     </div>
                     <div class="col-sm-12 category-area">
                       <div class="filter-area">
@@ -565,6 +583,7 @@ export default {
       addProcessingFee: false,
       customer: undefined,
       viewFilterModal: false,
+      showDescriptionModal: false,
       filteredView: false,
       filters: {
         tags: [],
@@ -611,6 +630,9 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice"
     }),
+    description() {
+      return this.store.details.description;
+    },
     nutrition() {
       return nutrition;
     },
@@ -1028,6 +1050,9 @@ export default {
     },
     setSalesTax(rate) {
       this.salesTaxRate = rate;
+    },
+    showDescription() {
+      this.showDescriptionModal = true;
     }
   }
 };

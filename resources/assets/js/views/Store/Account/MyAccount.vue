@@ -122,9 +122,13 @@
               ></b-form-input>
             </b-form-group>
 
-            <!-- <b-form-group label="About" :state="true">
-              <b-form-textarea :rows="3" v-model="storeDetail.description" placeholder="About" required></b-form-textarea :rows="3">
-            </b-form-group> -->
+            <b-form-group label="About" :state="true">
+              <froala
+                :tag="'textarea'"
+                :config="config"
+                v-model="storeDetail.description"
+              ></froala>
+            </b-form-group>
 
             <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
@@ -185,13 +189,43 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
 import fs from "../../../lib/fs.js";
+import VueFroala from "vue-froala-wysiwyg";
 
 export default {
   components: {
-    cSwitch
+    cSwitch,
+    VueFroala
   },
   data() {
-    return {};
+    return {
+      config: {
+        placeholder:
+          "About your company. Here you can talk about the kind of foods you prepare, your terms, etc.",
+        toolbarButtons: [
+          "undo",
+          "redo",
+          "|",
+          "bold",
+          "italic",
+          "underline",
+          "strikeThrough",
+          "fontFamily",
+          "fontSize",
+          "color",
+          "outdent",
+          "indent",
+          "clearFormatting",
+          "insertTable",
+          "formatOL",
+          "formatUL"
+        ],
+        events: {
+          "froalaEditor.initialized": function() {
+            console.log("initialized");
+          }
+        }
+      }
+    };
   },
   computed: {
     ...mapGetters({
