@@ -32,7 +32,7 @@ class Bag
     {
         $items = [];
 
-        return collect($this->items)->map(function ($item) use (&$items) {
+        collect($this->items)->map(function ($item) use (&$items) {
             if ($item['meal_package']) {
                 for ($i = 0; $i < $item['quantity']; $i++) {
                     foreach ($item['meal']['meals'] as $meal) {
