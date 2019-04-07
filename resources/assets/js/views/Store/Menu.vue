@@ -21,6 +21,7 @@
                 </button>
 
                 <button
+                  v-if="storeSettings.meal_packages"
                   class="btn btn-success btn-md mb-2 mb-sm-0"
                   @click="createMealPackage"
                 >
@@ -539,6 +540,7 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
+      storeSettings: "storeSettings",
       meals: "storeMeals",
       mealPackages: "mealPackages",
       getMeal: "storeMeal",

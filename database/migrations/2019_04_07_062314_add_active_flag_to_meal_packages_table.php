@@ -14,7 +14,7 @@ class AddActiveFlagToMealPackagesTable extends Migration
     public function up()
     {
         Schema::table('meal_packages', function (Blueprint $table) {
-            $table->boolean('active');
+            $table->boolean('active')->default(true);
         });
     }
 
