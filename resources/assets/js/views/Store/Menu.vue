@@ -282,31 +282,13 @@
               </b-tab>
 
               <b-tab title="Size Variations">
-                <b-button
-                  @click="
-                    meal.sizes.push({
-                      title: '',
-                      price: meal.price,
-                      mutliplier: 1
-                    })
+                <meal-sizes
+                  :meal="meal"
+                  @change="val => onChangeSizes(meal.id, val)"
+                  @changeDefault="
+                    val => updateMeal(meal.id, { default_size_title: val })
                   "
-                  >Add Meal Size Variation</b-button
-                >
-
-                <v-client-table
-                  :columns="['title', 'price', 'multiplier']"
-                  :data="meal.sizes"
-                >
-                  <div slot="title" slot-scope="props">
-                    <b-input :value="props.row.title"></b-input>
-                  </div>
-                  <div slot="price" slot-scope="props">
-                    <b-input :value="props.row.price"></b-input>
-                  </div>
-                  <div slot="multiplier" slot-scope="props">
-                    <b-input :value="props.row.multipler"></b-input>
-                  </div>
-                </v-client-table>
+                ></meal-sizes>
               </b-tab>
             </b-tabs>
           </b-col>
@@ -416,6 +398,7 @@
 <script>
 import Spinner from "../../components/Spinner";
 import IngredientPicker from "../../components/IngredientPicker";
+import MealSizes from "../../components/Menu/MealSizes";
 import CreateMealModal from "./Modals/CreateMeal";
 import CreatePackageModal from "./Modals/CreateMealPackage";
 import ViewPackageModal from "./Modals/ViewMealPackage";
@@ -436,7 +419,8 @@ export default {
     IngredientPicker,
     CreateMealModal,
     CreatePackageModal,
-    ViewPackageModal
+    ViewPackageModal,
+    MealSizes
   },
   updated() {
     //$(window).trigger("resize");
@@ -686,10 +670,14 @@ export default {
       }
 
       try {
-        await this._updateMeal({ id, data: changes });
+        const meal = await this._updateMeal({ id, data: changes });
 
         if (toast) {
           this.$toastr.s("Meal updated!");
+        }
+
+        if (id === this.meal.id) {
+          this.meal = meal;
         }
 
         return true;
@@ -869,10 +857,24 @@ export default {
     },
     onChangeIngredients(mealId, ingredients) {
       if (!_.isNumber(mealId) || !_.isArray(ingredients)) {
-        throw new Exception("Invalid ingredients");
+        throw new Error("Invalid ingredients");
       }
 
       this.updateMeal(mealId, { ingredients }, true);
+    },
+    onChangeSizes(mealId, sizes) {
+      if (!_.isNumber(mealId) || !_.isArray(sizes)) {
+        throw new Error("Invalid sizes");
+      }
+
+      // Validate all rows
+      for (let size of sizes) {
+        if (!size.title || !size.price || !size.multiplier) {
+          return;
+        }
+      }
+
+      this.updateMeal(mealId, { sizes }, true);
     },
     onClickAddIngredient() {
       this.ingredients.push({});
