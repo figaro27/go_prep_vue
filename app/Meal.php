@@ -314,6 +314,11 @@ class Meal extends Model implements HasMedia
         return $this->belongsToMany('App\MealPackage', 'meal_meal_package');
     }
 
+    public function sizes()
+    {
+        return $this->hasMany('App\MealSize');
+    }
+
     public function tags()
     {
         return $this->belongsToMany('App\MealTag', 'meal_meal_tag');
@@ -394,7 +399,7 @@ class Meal extends Model implements HasMedia
 
     public static function getMeal($id)
     {
-        return Meal::with('ingredients', 'tags', 'categories')
+        return Meal::with('ingredients', 'tags', 'categories', 'sizes')
             ->where('id', $id)
             ->first();
     }

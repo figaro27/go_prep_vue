@@ -280,6 +280,34 @@
                   @save="val => onChangeIngredients(meal.id, val)"
                 ></ingredient-picker>
               </b-tab>
+
+              <b-tab title="Size Variations">
+                <b-button
+                  @click="
+                    meal.sizes.push({
+                      title: '',
+                      price: meal.price,
+                      mutliplier: 1
+                    })
+                  "
+                  >Add Meal Size Variation</b-button
+                >
+
+                <v-client-table
+                  :columns="['title', 'price', 'multiplier']"
+                  :data="meal.sizes"
+                >
+                  <div slot="title" slot-scope="props">
+                    <b-input :value="props.row.title"></b-input>
+                  </div>
+                  <div slot="price" slot-scope="props">
+                    <b-input :value="props.row.price"></b-input>
+                  </div>
+                  <div slot="multiplier" slot-scope="props">
+                    <b-input :value="props.row.multipler"></b-input>
+                  </div>
+                </v-client-table>
+              </b-tab>
             </b-tabs>
           </b-col>
 
