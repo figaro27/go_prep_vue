@@ -15,6 +15,13 @@ class MealPackage extends Model implements HasMedia
     public $fillable = ['title', 'description', 'store_id', 'price', 'active'];
     public $appends = ['image'];
 
+    protected $casts = [
+        'price' => 'double',
+        'active_orders_price' => 'decimal:2',
+        'created_at' => 'date:F d, Y',
+        'created_at_local' => 'date:F d, Y'
+    ];
+
     public function meals()
     {
         return $this->belongsToMany('App\\Meal')->withPivot('quantity');
