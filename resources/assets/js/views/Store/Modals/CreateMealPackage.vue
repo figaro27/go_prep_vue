@@ -133,6 +133,7 @@ export default {
   data() {
     return {
       package: {
+        active: true,
         meals: []
       },
       columns: ["included", "featured_image", "title", "quantity"],

@@ -197,7 +197,7 @@ class Subscription extends Model
                 'order' => $newOrder ?? null,
                 'pickup' => $newOrder->pickup ?? null,
                 'card' => null,
-                'customer' => $this->customer ?? null,
+                'customer' => $newOrder->customer ?? null,
                 'subscription' => $this ?? null
             ]);
         }
@@ -208,7 +208,7 @@ class Subscription extends Model
                 'order' => $newOrder ?? null,
                 'pickup' => $newOrder->pickup ?? null,
                 'card' => null,
-                'customer' => $this->customer ?? null,
+                'customer' => $newOrder->customer ?? null,
                 'subscription' => $this ?? null
             ]);
         }
