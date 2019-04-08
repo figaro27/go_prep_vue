@@ -3,6 +3,7 @@
 namespace App;
 
 use App\MealOrder;
+use App\MealSize;
 use App\Store;
 use App\Subscription;
 use App\Traits\LocalizesDates;
@@ -29,6 +30,7 @@ class Meal extends Model implements HasMedia
         'title',
         'description',
         'price',
+        'default_size_title',
         'created_at'
     ];
 
@@ -313,7 +315,7 @@ class Meal extends Model implements HasMedia
 
     public function sizes()
     {
-        return $this->hasMany('App\MealSize');
+        return $this->hasMany('App\MealSize', 'meal_id', 'id');
     }
 
     public function tags()
@@ -433,6 +435,7 @@ class Meal extends Model implements HasMedia
         $meal->title = $props->get('title', '');
         $meal->description = $props->get('description', '');
         $meal->price = $props->get('price', 0);
+        $meal->default_size_title = $props->get('title', '');
         $meal->save();
 
         try {
@@ -600,7 +603,9 @@ class Meal extends Model implements HasMedia
             'tag_ids',
             'category_ids',
             'ingredients',
-            'allergy_ids'
+            'allergy_ids',
+            'sizes',
+            'default_size_title'
         ]);
 
         if ($props->has('featured_image')) {
@@ -766,9 +771,27 @@ class Meal extends Model implements HasMedia
             $meal->tags()->sync($tags);
         }
 
+        // Meal sizes
+        $sizes = $props->get('sizes');
+        if (is_array($sizes)) {
+            foreach ($sizes as $size) {
+                if (isset($size['id'])) {
+                    $mealSize = $meal->sizes()->find($size['id']);
+                } else {
+                    $mealSize = new MealSize();
+                    $mealSize->meal_id = $meal->id;
+                }
+
+                $mealSize->title = $size['title'];
+                $mealSize->price = $size['price'];
+                $mealSize->multiplier = $size['multiplier'];
+                $mealSize->save();
+            }
+        }
+
         $meal->update($props->except('featured_image')->toArray());
 
-        return $meal;
+        return Meal::getMeal($id);
     }
 
     public static function updateActive($id, $active)

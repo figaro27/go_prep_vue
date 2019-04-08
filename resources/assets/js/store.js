@@ -749,6 +749,7 @@ const actions = {
     );
     const resp = await axios.patch(`/api/me/meals/${id}`, data);
     Vue.set(state.store.meals.data, index, resp.data);
+    return resp.data;
   },
 
   async updateMealPackage({ commit, state, getters, dispatch }, { id, data }) {
