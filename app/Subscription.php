@@ -150,6 +150,15 @@ class Subscription extends Model
             );
         }
 
+        // Ensure we haven't already processed this payment
+        if (
+            $this->orders()
+                ->where('stripe_id', $stripeInvoice->get('id'))
+                ->count()
+        ) {
+            return;
+        }
+
         $latestOrder->paid = 1;
         $latestOrder->paid_at = new Carbon();
         $latestOrder->stripe_id = $stripeInvoice->get('id', null);
