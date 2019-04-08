@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\StoreDetail;
@@ -18,7 +19,10 @@ class DeliveryRouteController extends Controller
         ]);
 
         // Get the correct store - move controller to Store folder? And to routes/api.
-        $store = StoreDetail::first();
+        $id = Auth::user()->id;
+        $store = Store::where('user_id', $id)
+            ->pluck('id')
+            ->first();
         $address =
             $store->address .
             ' ' .
