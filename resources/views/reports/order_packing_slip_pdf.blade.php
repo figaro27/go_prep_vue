@@ -57,7 +57,7 @@
       <tbody>
         @foreach ($order->meals as $i => $meal)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-            <td>{{$meal->quantity || 1}}</td>
+            <td>{{$meal->quantity}}</td>
             <td>{{$meal->title}}</td>
             <td>${{number_format($meal->price * max($meal->quantity, 1), 2)}}</td>
         </tr>
