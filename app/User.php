@@ -14,7 +14,6 @@ use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
-//use Laravel\Passport\HasApiTokens;
 use Stripe;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
