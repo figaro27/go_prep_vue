@@ -95,10 +95,12 @@ class Meal extends Model implements HasMedia
         $mediaItems = $this->getMedia('featured_image');
 
         if (!count($mediaItems)) {
+            $url = asset('images/defaultMeal.jpg');
+
             return [
-                'url' => null,
-                'url_thumb' => null,
-                'url_medium' => null
+                'url' => $url,
+                'url_thumb' => $url,
+                'url_medium' => $url
             ];
         }
 
