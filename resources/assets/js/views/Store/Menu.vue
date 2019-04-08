@@ -615,6 +615,7 @@ export default {
   methods: {
     ...mapActions({
       refreshMeals: "refreshMeals",
+      refreshMealPackages: "refreshMealPackages",
       _updateMeal: "updateMeal",
       _updateMealPackage: "updateMealPackage",
       addJob: "addJob",
@@ -623,6 +624,7 @@ export default {
     formatMoney: format.money,
     refreshTable() {
       this.refreshMeals();
+      this.refreshMealPackages();
     },
     getTableDataIndexById(id) {
       return _.findIndex(this.tableData, o => {
