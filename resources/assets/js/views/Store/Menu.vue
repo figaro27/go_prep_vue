@@ -552,10 +552,11 @@ export default {
       isLoading: "isLoading"
     }),
     tableData() {
-      return Object.values(this.mealPackages).map(mealPackage => {
+      const packages = Object.values(this.mealPackages).map(mealPackage => {
         return mealPackage;
       });
-      //return Object.values(this.meals);
+      const meals = Object.values(this.meals);
+      return _.concat(packages, meals);
     },
     tagOptions() {
       return Object.values(this.tags).map(tag => {
