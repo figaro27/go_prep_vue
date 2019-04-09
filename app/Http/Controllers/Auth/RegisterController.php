@@ -151,8 +151,8 @@ class RegisterController extends Controller
             'email' => $data['user']['email'],
             'password' => Hash::make($data['user']['password']),
             'timezone' => 'America/New_York',
-            'remember_token' => Hash::make(str_random(10))
-            // 'accepted_tos' => $data['user']['accepted_tos'],
+            'remember_token' => Hash::make(str_random(10)),
+            'accepted_tos' => 1
         ]);
 
         $userDetails = $user->details()->create([
