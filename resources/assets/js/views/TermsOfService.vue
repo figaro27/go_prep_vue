@@ -1,4 +1,4 @@
-<template>
+f<template>
   <div>
     <p style="text-align: center;"><strong>GOPREP</strong></p>
     <p style="text-align: center;"><strong>TERMS OF SERVICE</strong></p>
@@ -390,20 +390,20 @@
     </ol>
     13.1     Allergy, dietary and other product information. Third-Party
     Providers are responsible for providing Information about their Products and
-    ensuring that it is factually accurate and up-to-date, and we do not
-    undertake any such responsibility. If you are in doubt about allergy
-    warnings, contents of a dish or any other Product Information, you should
-    confirm with the Third-Party Provider directly before ordering. 13.2    
-    Third-Party Providers actions and omissions: The legal contract for the
-    supply and purchase of Products is between you and the Third-Party Providers
-    that you place your Order with. We have no control over the actions or
-    omissions of any Third-Party Providers. 13.3 Information provided by
-    Third-Party Providers (meal prep companies) including nutritional values
-    presented in nutrition facts, meal ingredients, meal titles, meal
-    descriptions, nutritional tags, and allergy tags, may not be accurate. You
-    agree to take no action against the Third-Party Provider or to the Company
-    Service upon any discoveries of inaccuracies with any of the aforementioned
-    data.
+    ensuring to the best of their ability and knowledge that it is factually
+    accurate and up-to-date, and we do not undertake any such responsibility. If
+    you are in doubt about allergy warnings, contents of a dish or any other
+    Product Information, you should confirm with the Third-Party Provider
+    directly before ordering. 13.2     Third-Party Providers actions and
+    omissions: The legal contract for the supply and purchase of Products is
+    between you and the Third-Party Providers that you place your Order with. We
+    have no control over the actions or omissions of any Third-Party Providers.
+    13.3 Information provided by Third-Party Providers (meal prep companies)
+    including nutritional values presented in nutrition facts, meal ingredients,
+    meal titles, meal descriptions, nutritional tags, and allergy tags, may not
+    be accurate. You agree to take no action against the Third-Party Provider or
+    to the Company Service upon any discoveries of inaccuracies with any of the
+    aforementioned data.
     <ol start="14">
       <br />
       <li>

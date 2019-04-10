@@ -96,7 +96,11 @@
             <p>{{ user_detail.delivery }}</p>
             <p>
               <strong>Delivery Day:</strong>
-              {{ moment(subscription.delivery_date).format("dddd, MMM Do") }}
+              {{
+                moment()
+                  .isoWeekday(this.delivery_day)
+                  .format("dddd")
+              }}
             </p>
           </div>
         </div>
@@ -166,6 +170,7 @@ export default {
 
   data() {
     return {
+      delivery_day: 7,
       deliveryDate: "All",
       filter: false,
       filters: {
@@ -346,6 +351,7 @@ export default {
         this.subscription = response.data;
         this.user_detail = response.data.user.user_detail;
         this.meals = response.data.meals;
+        this.delivery_day = response.data.delivery_day;
 
         this.$nextTick(function() {
           window.dispatchEvent(new window.Event("resize"));
