@@ -94,11 +94,11 @@
           <div class="col-md-4">
             <h4>Delivery Instructions</h4>
             <p>{{ user_detail.delivery }}</p>
-            <p>
+            <p v-if="subscription.delivery_day">
               <strong>Delivery Day:</strong>
               {{
                 moment()
-                  .isoWeekday(this.delivery_day)
+                  .isoWeekday(subscription.delivery_day)
                   .format("dddd")
               }}
             </p>
@@ -170,7 +170,6 @@ export default {
 
   data() {
     return {
-      delivery_day: 7,
       deliveryDate: "All",
       filter: false,
       filters: {
