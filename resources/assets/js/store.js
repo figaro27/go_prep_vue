@@ -979,20 +979,28 @@ const getters = {
 
     return _.has(state.bag.items, meal);
   },
-  bagItemQuantity: state => meal => {
+  bagItemQuantity: state => (meal, mealPackage = false) => {
     if (!meal) {
       return 0;
     }
 
-    if (!_.isNumber(meal)) {
-      meal = meal.id;
+    let mealId = meal;
+    if (!_.isNumber(mealId)) {
+      mealId = meal.id;
     }
 
-    if (!_.has(state.bag.items, meal) || !_.isObject(state.bag.items[meal])) {
+    if (mealPackage || meal.meal_package) {
+      mealId = "package-" + mealId;
+    }
+
+    if (
+      !_.has(state.bag.items, mealId) ||
+      !_.isObject(state.bag.items[mealId])
+    ) {
       return 0;
     }
 
-    return state.bag.items[meal].quantity || 0;
+    return state.bag.items[mealId].quantity || 0;
   },
   totalBagPricePreFees(state, getters) {
     let items = _.compact(_.toArray(state.bag.items));
