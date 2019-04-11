@@ -13,13 +13,17 @@ textarea,
 legend,
 label,
 select,
-p > span > .s1,
 .alert,
 div {
   font-family: "gotham-narrow", sans-serif;
   font-size: 15px;
 }
 
+.s1 {
+  font-family: "gotham-narrow", sans-serif !important;
+}
+
+h1 .s1,
 h1,
 h2,
 h3,
