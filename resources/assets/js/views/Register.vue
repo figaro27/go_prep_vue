@@ -257,7 +257,10 @@
 
             <div v-if="step === 2">
               <h4>Store Details</h4>
-
+              <p class="mb-3">
+                You can change these details later in My Account before you go
+                live.
+              </p>
               <b-form-group
                 horizontal
                 label="Store Name"
