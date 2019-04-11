@@ -191,7 +191,7 @@ export default {
         "amount",
         "created_at",
         "delivery_day",
-        "charge_time",
+        // "charge_time",
         // "interval",
         "status",
         "actions"
@@ -207,7 +207,7 @@ export default {
           amount: "Total",
           created_at: "Meal Plan Placed",
           delivery_day: "Delivery Day",
-          charge_time: "Charge Day",
+          // charge_time: "Charge Day",
           // interval: "Interval",
           status: "Status",
           actions: "Actions"
