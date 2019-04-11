@@ -210,7 +210,7 @@ class CheckoutController extends UserController
                 strtotime($deliveryDay)
             );
             $userSubscription->next_renewal_at = $cutoff->addDays(7);
-            $userSubscription->charge_time = $cutoff->getTimestamp();
+            // $userSubscription->charge_time = $cutoff->getTimestamp();
             $userSubscription->save();
 
             // Create initial order

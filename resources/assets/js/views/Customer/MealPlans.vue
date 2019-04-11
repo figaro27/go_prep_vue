@@ -149,6 +149,15 @@
                           Cancel, or Change Meals after this day, it will be
                           applied to <strong>next week's</strong> order.
                         </p> -->
+                        <p>
+                          Your card will be charged on
+                          {{
+                            moment(subscription.next_renewal_at).format("dddd")
+                          }}. You can Pause, Cancel, or Change Meals up until
+                          that time to affect this weeks order. If you Pause,
+                          Cancel, or Change Meals after this day, it will be
+                          applied to <strong>next week's</strong> order.
+                        </p>
                       </div>
                     </div>
                     <b-table
