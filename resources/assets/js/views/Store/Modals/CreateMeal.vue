@@ -32,9 +32,14 @@
               </b-form-group>
               <b-form-group>
                 <h4>Price</h4>
-                <money required v-model="meal.price" :min="0.1" class="form-control"></money>
+                <money
+                  required
+                  v-model="meal.price"
+                  :min="0.1"
+                  class="form-control"
+                ></money>
               </b-form-group>
-              <br>
+              <br />
               <h4>Categories</h4>
               <b-form-checkbox-group
                 buttons
@@ -64,7 +69,7 @@
             <b-tab title="Ingredients">
               <ingredient-picker
                 v-model="meal.ingredients"
-                :options="{saveButton:true}"
+                :options="{ saveButton: true }"
                 :meal="meal"
               ></ingredient-picker>
             </b-tab>
@@ -81,8 +86,8 @@
             button-class="btn"
             @change="val => changeImage(val)"
           ></picture-input>
-          <p class="center-text mt-2">Image size too big?<br>
-            You can compress images <a href="https://imagecompressor.com/" target="_blank">here.</a></p>
+          <!-- <p class="center-text mt-2">Image size too big?<br>
+            You can compress images <a href="https://imagecompressor.com/" target="_blank">here.</a></p> -->
         </b-col>
       </b-row>
     </b-modal>
