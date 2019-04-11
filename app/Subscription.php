@@ -17,11 +17,13 @@ class Subscription extends Model
         'latest_unpaid_order',
         'next_delivery_date',
         'meal_ids',
-        'meal_quantities',
-        'charge_time'
+        'meal_quantities'
+        // 'charge_time'
     ];
 
-    protected $casts = [];
+    protected $casts = [
+        'charge_time' => 'date'
+    ];
 
     public function user()
     {
@@ -106,14 +108,14 @@ class Subscription extends Model
             });
     }
 
-    public function getChargeTimeAttribute()
-    {
-        $cutoffDays = $this->store->settings->cutoff_days;
-        $cutoffHours = $this->store->settings->cutoff_hours;
-        $date = new Carbon($this->next_delivery_date);
-        $chargeTime = $date->subDays($cutoffDays)->subHours($cutoffHours);
-        return $chargeTime->format('D, m/d/Y');
-    }
+    // public function getChargeTimeAttribute()
+    // {
+    //     $cutoffDays = $this->store->settings->cutoff_days;
+    //     $cutoffHours = $this->store->settings->cutoff_hours;
+    //     $date = new Carbon($this->next_delivery_date);
+    //     $chargeTime = $date->subDays($cutoffDays)->subHours($cutoffHours);
+    //     return $chargeTime->format('D, m/d/Y');
+    // }
 
     /*
     public function getMealsAttribute()

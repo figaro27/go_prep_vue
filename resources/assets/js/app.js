@@ -28,6 +28,7 @@ import format from "./lib/format";
 import modal from "./lib/modal";
 import Axios from "axios";
 import moment from "moment";
+import momentTimezone from "moment-timezone";
 import Toastr from "vue-toastr";
 import PictureInput from "vue-picture-input";
 import money from "v-money";
@@ -109,6 +110,7 @@ moment.tz.setDefault(moment.tz.guess());
 // For use in templates
 Vue.prototype.format = format;
 Vue.prototype.moment = moment;
+Vue.prototype.momentTimezone = momentTimezone;
 Vue.prototype.icons = require("./lib/icons");
 
 const files = require.context("./components", true, /\.vue$/i);
