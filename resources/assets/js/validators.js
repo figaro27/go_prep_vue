@@ -11,36 +11,43 @@ const validators = {
     email
   },
   first_name: {
-    required,
+    required
   },
   last_name: {
-    required,
+    required
   },
   phone: {
-    required,
+    required
   },
   address: {
-    required,
+    required
   },
   city: {
-    required,
+    required
   },
   state: {
-    required,
+    required
   },
   zip: {
     required,
     minLength: minLength(5)
   },
+  delivery: {
+    required,
+    minLength: minLength(5)
+  },
   store_name: {
     required,
-    minLength: minLength(6),
+    minLength: minLength(6)
   },
   domain: {
     required,
     minLength: minLength(4),
-    regex: helpers.regex('domain', /^[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/)
-  },
-}
+    regex: helpers.regex(
+      "domain",
+      /^[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/
+    )
+  }
+};
 
 export default validators;

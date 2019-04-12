@@ -449,7 +449,7 @@ export default {
           city: null,
           state: null,
           zip: null,
-          delivery: null,
+          delivery: "Please call my phone when outside.",
           accepted_tos: 0
         },
         2: {
@@ -488,7 +488,8 @@ export default {
         address: validators.address,
         city: validators.city,
         state: validators.state,
-        zip: validators.zip
+        zip: validators.zip,
+        delivery: validators.delivery
       },
       2: {
         store_name: validators.store_name,
