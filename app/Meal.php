@@ -135,6 +135,9 @@ class Meal extends Model implements HasMedia
     {
         $id = $this->id;
         return MealOrder::where('meal_id', $id)
+            ->whereHas('order', function ($order) {
+                $order->where('paid', 1);
+            })
             ->get()
             ->sum('quantity');
     }
