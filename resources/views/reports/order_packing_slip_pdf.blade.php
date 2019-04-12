@@ -11,18 +11,16 @@
       <div class="col-8 address">
         <h4>Customer</h4>
         <p>
-          {{$order->user->name}}
-        </p>
-        <p>
-          {{$order->user->details->address}}<br />
+          {{$order->user->name}}<br>
+          {{$order->user->details->address}}<br>
           {{$order->user->details->city}},
           {{$order->user->details->state}}
           {{$order->user->details->zip}}
         </p>
         <h4 class="mt-3">Order Details</h4>
-            Order #{{$order->order_number}}<br />
-            Order Placed: {{$order->created_at->format('D, m/d/Y')}}<br />
-            To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}}<br />
+            Order #{{$order->order_number}}<br>
+            Order Placed: {{$order->created_at->format('D, m/d/Y')}}<br>
+            To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}}<br>
             <strong>Total: ${{number_format($order->amount, 2)}}</strong>
       </div>
       <div class="col-4">
