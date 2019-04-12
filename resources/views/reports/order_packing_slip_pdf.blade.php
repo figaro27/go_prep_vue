@@ -25,24 +25,19 @@
           {{$order->user->details->delivery}}
         </p>
         @endif
+        <h3 class="mt-3">Order Details</h3>
+            Order #{{$order->order_number}}<br />
+            Order Placed: {{$order->created_at->format('D, m/d/Y')}}<br />
+            To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}}<br />
+            <strong>Total: ${{number_format($order->amount, 2)}}</strong>
       </div>
       <div class="col-4">
-        <h4>{{$order->store->details->name}}</h4>
         <img src="{{$logo}}" style="zoom: 0.5" />
         <br><br>
         <p><a href="http://{{$order->store->details->domain}}.goprep.com">www.{{$order->store->details->domain}}.goprep.com</a></p>
       </div>
     </div>
 
-    <div class="row mt-5">
-        <div class="col-8">
-            <h3>Order Details</h3>
-            Order #{{$order->order_number}}<br />
-            Order Placed: {{$order->created_at->format('D, m/d/Y')}}<br />
-            To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}}<br />
-            <strong>Total: ${{number_format($order->amount, 2)}}</strong>
-        </div>
-    </div>
 
     <h2>Meals</h2>
     <table border="1">
