@@ -30,6 +30,7 @@ class Customer extends Model
         'last_order',
         'total_payments',
         'total_paid',
+        'paid_orders',
         'name',
         'phone',
         'address',
@@ -56,9 +57,7 @@ class Customer extends Model
 
     public function orders()
     {
-        return $this->hasMany('App\Order')
-            ->where('paid', 1)
-            ->orderBy('created_at', 'desc');
+        return $this->hasMany('App\Order')->orderBy('created_at', 'desc');
     }
 
     public function getStoreID()
@@ -68,6 +67,11 @@ class Customer extends Model
             ->pluck('id')
             ->first();
         return $storeID;
+    }
+
+    public function getPaidOrdersAttribute()
+    {
+        return $this->orders->where('paid', 1);
     }
 
     public function getJoinedAttribute()

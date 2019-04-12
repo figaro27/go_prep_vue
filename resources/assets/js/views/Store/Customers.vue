@@ -76,7 +76,7 @@
           </div>
         </div>
         <div
-          v-for="order in customer.orders"
+          v-for="order in customer.paid_orders"
           :key="`order-${order.order_number}`"
         >
           <div v-b-toggle="'collapse' + order.order_number">
