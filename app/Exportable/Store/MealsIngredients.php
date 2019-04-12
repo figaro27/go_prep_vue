@@ -22,7 +22,7 @@ class MealsIngredients
     public function exportData($type = null)
     {
         $meals = Meal::with('ingredients')
-            ->where('store_id', $store->id)
+            ->where('store_id', $this->store->id)
             ->get();
 
         $rows = [];
