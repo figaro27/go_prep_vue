@@ -55,7 +55,10 @@
                       width="80px"
                     ></thumbnail>
                   </div>
-                  <div class="flex-grow-1 mr-2">{{ item.meal.title }}</div>
+                  <div class="flex-grow-1 mr-2">
+                    {{ item.meal.title }}
+                    <em v-if="item.size"> - {{ item.size.title }}</em>
+                  </div>
                   <div class="flex-grow-0">
                     <img
                       src="/images/customer/x.png"
