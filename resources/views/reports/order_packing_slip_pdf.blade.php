@@ -19,12 +19,6 @@
           {{$order->user->details->state}}
           {{$order->user->details->zip}}
         </p>
-        @if ($order->pickup === 0)
-        <p>
-          <strong>Delivery Instructions:</strong><br />
-          {{$order->user->details->delivery}}
-        </p>
-        @endif
         <h4 class="mt-3">Order Details</h4>
             Order #{{$order->order_number}}<br />
             Order Placed: {{$order->created_at->format('D, m/d/Y')}}<br />
