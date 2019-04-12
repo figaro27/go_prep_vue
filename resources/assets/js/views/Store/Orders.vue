@@ -134,7 +134,29 @@
             <p>{{ moment(order.created_at).format("dddd, MMM Do") }}</p>
           </div>
           <div class="col-md-4 pt-4">
-            <h2>{{ format.money(order.amount) }}</h2>
+            <span> Subtotal: {{ format.money(order.preFeePreDiscount) }} </span
+            ><br />
+            <span v-if="order.mealPlanDiscount > 0">
+              Meal Plan Discount:
+              <span class="text-success"
+                >({{ format.money(order.mealPlanDiscount) }})
+              </span>
+              <br />
+            </span>
+            <span v-if="order.deliveryFee > 0">
+              Delivery Fee: {{ format.money(order.deliveryFee) }}
+              <br />
+            </span>
+            <span v-if="order.processingFee > 0">
+              Processing Fee:
+              {{ format.money(order.processingFee) }}
+              <br />
+            </span>
+            <span>Sales Tax: {{ format.money(order.salesTax) }}</span
+            ><br />
+            <span>
+              <strong>Total: {{ format.money(order.amount) }}</strong>
+            </span>
           </div>
         </div>
 

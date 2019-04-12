@@ -79,7 +79,31 @@
             <p>{{ moment(subscription.created_at).format("dddd, MMM Do") }}</p>
           </div>
           <div class="col-md-4">
-            <h2>{{ format.money(subscription.amount) }}</h2>
+            <span>
+              Subtotal:
+              {{ format.money(subscription.preFeePreDiscount) }} </span
+            ><br />
+            <span v-if="subscription.mealPlanDiscount > 0">
+              Meal Plan Discount:
+              <span class="text-success"
+                >({{ format.money(subscription.mealPlanDiscount) }})
+              </span>
+              <br />
+            </span>
+            <span v-if="subscription.deliveryFee > 0">
+              Delivery Fee: {{ format.money(subscription.deliveryFee) }}
+              <br />
+            </span>
+            <span v-if="subscription.processingFee > 0">
+              Processing Fee:
+              {{ format.money(subscription.processingFee) }}
+              <br />
+            </span>
+            <span>Sales Tax: {{ format.money(subscription.salesTax) }}</span
+            ><br />
+            <span>
+              <strong>Total: {{ format.money(subscription.amount) }}</strong>
+            </span>
           </div>
         </div>
         <div class="row">
