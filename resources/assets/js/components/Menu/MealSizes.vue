@@ -3,11 +3,18 @@
     <v-client-table
       :columns="['title', 'price', 'multiplier']"
       :data="tableData"
+      :options="{
+        orderBy: {
+          column: 'id',
+          ascending: true
+        }
+      }"
     >
       <div slot="beforeTable" class="mb-2">
         <b-button
           @click="
             meal.sizes.push({
+              id: 100 + meal.sizes.length, // push to the end of table
               title: '',
               price: meal.price,
               multiplier: 1
@@ -19,6 +26,9 @@
       <div slot="title" slot-scope="props">
         <b-input
           v-model="props.row.title"
+          :placeholder="
+            props.row.id === -1 ? 'Default meal size title' : 'Meal size title'
+          "
           @change="
             val => {
               if (props.row.id !== -1) {
@@ -90,6 +100,7 @@ export default {
   watch: {},
   created() {
     this.sizes = _.isArray(this.meal.sizes) ? this.meal.sizes : [];
+    this.onChangeSizes = _.debounce(this.onChangeSizes, 2000);
   },
   mounted() {},
   methods: {

@@ -309,7 +309,7 @@
               Image size too big?
               <br />You can compress images
               <a href="https://imagecompressor.com/" target="_blank">here.</a>
-            </p> -->
+            </p>-->
           </b-col>
         </b-row>
       </b-modal>
@@ -650,7 +650,8 @@ export default {
         description: this.meal.description,
         price: this.meal.price,
         category_ids: this.meal.category_ids,
-        ingredients: this.meal.ingredients
+        ingredients: this.meal.ingredients,
+        sizes: this.meal.sizes
       };
       const updated = await this.updateMeal(this.meal.id, data, true);
 
@@ -874,7 +875,7 @@ export default {
         }
       }
 
-      this.updateMeal(mealId, { sizes }, true);
+      this.updateMeal(mealId, { sizes }, false);
     },
     onClickAddIngredient() {
       this.ingredients.push({});

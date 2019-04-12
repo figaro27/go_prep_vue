@@ -21,16 +21,17 @@ class CheckoutController extends UserController
     public function checkout(\App\Http\Requests\CheckoutRequest $request)
     {
         $user = auth('api')->user();
+        $storeId = $request->get('store_id');
+        $store = Store::with(['settings', 'storeDetail'])->findOrFail($storeId);
 
-        $bag = new Bag($request->get('bag'));
+        $bag = new Bag($request->get('bag'), $store);
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
         $deliveryDay = $request->get('delivery_day');
         //$stripeToken = $request->get('token');
-        $storeId = $request->get('store_id');
+
         $cardId = $request->get('card_id');
 
-        $store = Store::with(['settings', 'storeDetail'])->findOrFail($storeId);
         $card = $this->user->cards()->findOrFail($cardId);
 
         $application_fee = $store->settings->application_fee;
@@ -119,6 +120,9 @@ class CheckoutController extends UserController
                 $mealOrder->store_id = $store->id;
                 $mealOrder->meal_id = $item['meal']['id'];
                 $mealOrder->quantity = $item['quantity'];
+                if ($item['size']) {
+                    $mealOrder->meal_size_id = $item['size']['id'];
+                }
                 $mealOrder->save();
             }
 
@@ -239,6 +243,9 @@ class CheckoutController extends UserController
                 $mealOrder->store_id = $store->id;
                 $mealOrder->meal_id = $item['meal']['id'];
                 $mealOrder->quantity = $item['quantity'];
+                if ($item['size']) {
+                    $mealOrder->meal_size_id = $item['size']['id'];
+                }
                 $mealOrder->save();
             }
 
@@ -248,6 +255,9 @@ class CheckoutController extends UserController
                 $mealSub->store_id = $store->id;
                 $mealSub->meal_id = $item['meal']['id'];
                 $mealSub->quantity = $item['quantity'];
+                if ($item['size']) {
+                    $mealSub->meal_size_id = $item['size']['id'];
+                }
                 $mealSub->save();
             }
 

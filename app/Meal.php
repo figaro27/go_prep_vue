@@ -59,7 +59,8 @@ class Meal extends Model implements HasMedia
         'order_ids',
         'created_at_local',
         'image',
-        'quantity'
+        'quantity',
+        'meal_size'
         //'featured_image',
     ];
 
@@ -82,6 +83,15 @@ class Meal extends Model implements HasMedia
     {
         if ($this->pivot && $this->pivot->quantity) {
             return $this->pivot->quantity;
+        } else {
+            return null;
+        }
+    }
+
+    public function getMealSizeAttribute()
+    {
+        if ($this->pivot && $this->pivot->meal_size_id) {
+            return MealSize::find($this->pivot->meal_size_id);
         } else {
             return null;
         }
@@ -777,7 +787,9 @@ class Meal extends Model implements HasMedia
             foreach ($sizes as $size) {
                 if (isset($size['id'])) {
                     $mealSize = $meal->sizes()->find($size['id']);
-                } else {
+                }
+
+                if (!$mealSize) {
                     $mealSize = new MealSize();
                     $mealSize->meal_id = $meal->id;
                 }

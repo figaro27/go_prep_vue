@@ -18,6 +18,11 @@ class MealOrder extends Pivot
         return $this->belongsTo('App\Meal');
     }
 
+    public function mealSize()
+    {
+        return $this->belongsTo('App\MealSize');
+    }
+
     public function orders()
     {
         return $this->hasMany('App\Order');
