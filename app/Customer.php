@@ -56,7 +56,9 @@ class Customer extends Model
 
     public function orders()
     {
-        return $this->hasMany('App\Order')->orderBy('created_at', 'desc');
+        return $this->hasMany('App\Order')
+            ->where('paid', 1)
+            ->orderBy('created_at', 'desc');
     }
 
     public function getStoreID()
