@@ -13,22 +13,16 @@ class Customer extends Model
      *
      * @var array
      */
-    protected $fillable = [
-
-    ];
+    protected $fillable = [];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = [
-      'stripe_id',
-      'user',
-    ];
+    protected $hidden = ['stripe_id', 'user'];
 
-    protected $casts = [
-    ];
+    protected $casts = [];
 
     protected $appends = [
         'joined',
@@ -42,7 +36,7 @@ class Customer extends Model
         'city',
         'state',
         'zip',
-        'delivery',
+        'delivery'
     ];
 
     public function user()
@@ -55,17 +49,22 @@ class Customer extends Model
         return $this->belongsTo('App\Store');
     }
 
-    public function cards() {
-      return $this->hasManyThrough('App\Card', 'App\User');
+    public function cards()
+    {
+        return $this->hasManyThrough('App\Card', 'App\User');
     }
 
-    public function orders() {
-      return $this->hasMany('App\Order')->orderBy('created_at', 'desc');
+    public function orders()
+    {
+        return $this->hasMany('App\Order')->orderBy('created_at', 'desc');
     }
 
-    public function getStoreID(){
+    public function getStoreID()
+    {
         $id = Auth::user()->id;
-        $storeID = Store::where('user_id', $id)->pluck('id')->first();
+        $storeID = Store::where('user_id', $id)
+            ->pluck('id')
+            ->first();
         return $storeID;
     }
 
@@ -76,25 +75,34 @@ class Customer extends Model
 
     public function getFirstOrderAttribute()
     {
-        $date = $this->user->order->where('store_id', $this->getStoreID())->min("created_at");
+        $date = $this->user->order
+            ->where('store_id', $this->getStoreID())
+            ->min("created_at");
         return $date ? $date->format('F d, Y') : null;
     }
 
     public function getLastOrderAttribute()
     {
-        $date = $this->user->order->where('store_id', $this->getStoreID())->max("created_at");
+        $date = $this->user->order
+            ->where('store_id', $this->getStoreID())
+            ->max("created_at");
         return $date ? $date->format('F d, Y') : null;
     }
 
     public function getTotalPaymentsAttribute()
     {
-        
-        return $this->user->order->where('store_id', $this->getStoreID())->count();
+        return $this->user->order
+            ->where('store_id', $this->getStoreID())
+            ->where('paid', 1)
+            ->count();
     }
 
     public function getTotalPaidAttribute()
     {
-        return $this->user->order->where('store_id', $this->getStoreID())->sum("amount");
+        return $this->user->order
+            ->where('store_id', $this->getStoreID())
+            ->where('paid', 1)
+            ->sum("amount");
     }
 
     public function getNameAttribute()
@@ -127,5 +135,4 @@ class Customer extends Model
     {
         return $this->user->userDetail->delivery;
     }
-
 }
