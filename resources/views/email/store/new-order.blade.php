@@ -132,9 +132,12 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       @endif
                       <!-- end address -->
+                      <tr>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Order #{{ $order->order_number }}</td>
+                      </tr>
                       @if ($order->subscription)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; "><strong>Meal Plan: {{ $order->subscription->stripe_id }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Meal Plan #{{ $order->subscription->stripe_id }}</td>
                       </tr>
                       @endif
                       <tr>
