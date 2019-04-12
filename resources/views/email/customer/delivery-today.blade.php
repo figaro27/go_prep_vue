@@ -301,15 +301,15 @@ u + .body .full { width:100% !important; width:100vw !important;}
           </tr>
           <tr>
             <td align="center">
-              <table width="400" class="table-full" align="left" border="0" cellpadding="0" cellspacing="0">
+              <table width="100%" class="table-full" align="left" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td bgcolor="#f8f8f8" align="center">
-                    <table class="table-inner" align="center" width="90%" border="0" cellpadding="0" cellspacing="0">
+                    <table class="table-inner" align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td height="10"></td>
+                        <td height="10"></td><td bgcolor="#e1e6e7"></td>
                       </tr>
                       <tr>
-                        <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:12px; color:#3b3b3b; line-height:26px; text-transform:uppercase;line-height:24px;">@php
+                        <td style="padding-left:15px;font-family: 'Open Sans', Arial, sans-serif; font-size:12px; color:#3b3b3b; line-height:26px; text-transform:uppercase;line-height:24px;">@php
                         $subtotal = $order->preFeePreDiscount;
                         $mealPlanDiscount = $order->mealPlanDiscount;
                         $deliveryFee = $order->deliveryFee;
@@ -318,7 +318,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         @endphp
 
                         @if ($mealPlanDiscount > 0 || $deliveryFee > 0 || $processingFee > 0)
-                        Subtotal<br>
+                        Subtotal: <br>
                         @endif
                         @if ($mealPlanDiscount > 0)
                         Meal Plan Discount<br>
@@ -329,29 +329,13 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         @if ($processingFee > 0)
                         Processing Fee<br>
                         @endif
-                        Sales Tax
+                        Sales Tax<br><br>
+                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span>
                       </td>
-                      </tr>
-                      <tr>
-                        <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</td>
-                      </tr>
-                      <tr>
-                        <td height="15"></td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-              <!--[if (gte mso 9)|(IE)]></td><td><![endif]-->
-              <table width="200" class="table-full" border="0" align="right" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td align="center" bgcolor="#e1e6e7">
-                    <table class="table-inner" width="80%" border="0" align="center" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td height="10"></td>
-                      </tr>
-                      <tr>
-                        <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:12px; color:#3b3b3b; line-height:26px; text-transform:uppercase;line-height:24px;">@if ($mealPlanDiscount > 0 || $deliveryFee > 0 || $processingFee > 0)
+
+                    
+                      
+                        <td bgcolor="#e1e6e7" style="padding-left:15px;font-family: 'Open Sans', Arial, sans-serif; font-size:12px; color:#3b3b3b; line-height:26px; text-transform:uppercase;line-height:24px;">@if ($mealPlanDiscount > 0 || $deliveryFee > 0 || $processingFee > 0)
                           ${{ number_format($subtotal, 2) }}<br>
                           @endif
                           @if ($mealPlanDiscount > 0)
@@ -363,19 +347,21 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           @if ($processingFee > 0)
                           ${{ number_format($processingFee, 2) }}<br>
                           @endif
-                          ${{ number_format($salesTax, 2) }}
+                          ${{ number_format($salesTax, 2) }}<br><br>
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($order->amount, 2) }}</span>
                         </td>
                       </tr>
-                      <tr>
-                        <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($order->amount, 2) }}</td>
+                  </td>
                       </tr>
+                      
                       <tr>
-                        <td height="15"></td>
+                        <td height="15"></td><td bgcolor="#e1e6e7"></td>
                       </tr>
                     </table>
                   </td>
                 </tr>
               </table>
+
             </td>
           </tr>
           <tr>
