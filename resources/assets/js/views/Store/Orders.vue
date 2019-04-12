@@ -170,23 +170,19 @@
           </div>
           <div class="col-md-4">
             <h4>Address</h4>
-            <p>{{ user_detail.address }}</p>
-            <p>{{ user_detail.city }}, {{ user_detail.state }}</p>
-            <p>{{ user_detail.zip }}</p>
-          </div>
-          <div v-if="!order.pickup" class="col-md-4">
-            <h4>Delivery Instructions</h4>
-            <p>{{ user_detail.delivery }}</p>
             <p>
-              <strong>Delivery Day:</strong>
-              {{ moment(order.delivery_date).format("dddd, MMM Do") }}
+              {{ user_detail.address }}<br />
+              {{ user_detail.city }}, {{ user_detail.state }}<br />
+              {{ user_detail.zip }}
             </p>
           </div>
-          <div v-else class="col-md-4">
-            <h4>Pickup</h4>
-            <p>
-              <strong>Day:</strong>
-              {{ moment(order.delivery_date).format("dddd, MMM Do") }}
+          <div class="col-md-4">
+            <h4 v-if="!order.pickup">Delivery Day</h4>
+            <h4 v-if="order.pickup">Pickup Day</h4>
+            {{ moment(order.delivery_date).format("dddd, MMM Do") }}
+            <p v-if="!order.pickup" class="mt-3">
+              <strong>Delivery Instructions</strong>
+              {{ user_detail.delivery }}
             </p>
           </div>
         </div>

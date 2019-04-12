@@ -121,20 +121,19 @@
           </div>
           <div class="col-md-4">
             <h4>Address</h4>
-            <p>{{ user_detail.address }}</p>
-            <p>{{ user_detail.city }}, {{ user_detail.state }}</p>
-            <p>{{ user_detail.zip }}</p>
+            <p>
+              {{ user_detail.address }}<br />
+              {{ user_detail.city }}, {{ user_detail.state }}<br />
+              {{ user_detail.zip }}
+            </p>
           </div>
           <div class="col-md-4">
-            <h4>Delivery Instructions</h4>
-            <p>{{ user_detail.delivery }}</p>
-            <p v-if="subscription.delivery_day">
-              <strong>Delivery Day:</strong>
-              {{
-                moment()
-                  .isoWeekday(subscription.delivery_day)
-                  .format("dddd")
-              }}
+            <h4 v-if="!subscription.pickup">Delivery Day</h4>
+            <h4 v-if="subscription.pickup">Pickup Day</h4>
+            {{ moment(subscription.delivery_date).format("dddd, MMM Do") }}
+            <p v-if="!subscription.pickup" class="mt-3">
+              <strong>Delivery Instructions</strong>
+              {{ user_detail.delivery }}
             </p>
           </div>
         </div>
