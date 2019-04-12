@@ -15,6 +15,7 @@ class Subscription extends Model
         'store_name',
         'latest_order',
         'latest_unpaid_order',
+        'latest_paid_order',
         'next_delivery_date',
         'meal_ids',
         'meal_quantities'
@@ -69,6 +70,16 @@ class Subscription extends Model
         $latestOrder = $this->orders()
             ->where([['paid', 0]])
             ->whereDate('delivery_date', '>=', Carbon::now())
+            ->orderBy('delivery_date', 'desc')
+            ->first();
+
+        return $latestOrder;
+    }
+
+    public function getLatestPaidOrderAttribute()
+    {
+        $latestOrder = $this->orders()
+            ->where([['paid', 1]])
             ->orderBy('delivery_date', 'desc')
             ->first();
 

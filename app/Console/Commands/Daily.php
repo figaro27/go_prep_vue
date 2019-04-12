@@ -46,6 +46,7 @@ class Daily extends Command
 
         $orders = Order::where([
             'delivery_date' => date('Y-m-d'),
+            'paid' => 1
         ])->get();
 
         $this->info(count($orders) . ' orders for delivery today');
@@ -56,27 +57,9 @@ class Daily extends Command
                 'user' => $order->user,
                 'customer' => $order->customer,
                 'order' => $order,
-                'settings' => $order->store->settings,
+                'settings' => $order->store->settings
             ]);
             Mail::to($order->user)->send($email);
-        }
-
-        // Subscriptions
-
-        $subscriptions = Subscription::where([
-            'delivery_day' => date('N'),
-        ])->get();
-
-        $this->info(count($subscriptions) . ' subscriptions for delivery today');
-
-        foreach ($subscriptions as $subscription) {
-            // Send notification
-            $email = new DeliveryToday([
-                'user' => $subscription->user,
-                'order' => null,
-                'subscription' => $subscription,
-            ]);
-            Mail::to($subscription->user)->send($email);
         }
     }
 }
