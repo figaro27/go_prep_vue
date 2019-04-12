@@ -38,7 +38,7 @@ class Order extends Model
 
     public function customer()
     {
-        return $this->belongsTo('App\Customer');
+        return $this->belongsTo('App\Customer')->where('paid', 1);
     }
 
     public function store()
