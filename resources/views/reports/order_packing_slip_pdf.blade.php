@@ -19,6 +19,9 @@
         </p>
         <h4 class="mt-3">Order Details</h4>
             Order #{{$order->order_number}}<br>
+            @if ($order->subscription)
+            Meal Plan #{{ $order->subscription->stripe_id }}
+            @endif
             Order Placed: {{$order->created_at->format('D, m/d/Y')}}<br>
             To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}}<br>
             <strong>Total: ${{number_format($order->amount, 2)}}</strong>
