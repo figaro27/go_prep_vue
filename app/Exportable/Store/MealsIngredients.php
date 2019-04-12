@@ -21,37 +21,38 @@ class MealsIngredients
 
     public function exportData($type = null)
     {
-        $meals = Meal::with('ingredients')->get();
+        $meals = Meal::with('ingredients')
+            ->where('store_id', $store->id)
+            ->get();
 
         $rows = [];
 
-        foreach($meals as $meal) {
-          $i = count($rows);
+        foreach ($meals as $meal) {
+            $i = count($rows);
 
-          if (count($meal->ingredients) > 0)
-          {
-            $rows[$i] = [
-              $meal->title,
-              $meal->ingredients[0]->food_name,
-              $meal->ingredients[0]->quantity,
-              $meal->ingredients[0]->quantity_unit,
-            ];
-          }
-
-          if(count($meal->ingredients) > 1) {
-            for($x = 1; $x < count($meal->ingredients); $x++) {
-              $ingredient = $meal->ingredients[$x];
-
-              $rows[] = [
-                '',
-                $ingredient->food_name,
-                $ingredient->quantity,
-                $ingredient->quantity_unit,
-              ];
+            if (count($meal->ingredients) > 0) {
+                $rows[$i] = [
+                    $meal->title,
+                    $meal->ingredients[0]->food_name,
+                    $meal->ingredients[0]->quantity,
+                    $meal->ingredients[0]->quantity_unit
+                ];
             }
-          }
+
+            if (count($meal->ingredients) > 1) {
+                for ($x = 1; $x < count($meal->ingredients); $x++) {
+                    $ingredient = $meal->ingredients[$x];
+
+                    $rows[] = [
+                        '',
+                        $ingredient->food_name,
+                        $ingredient->quantity,
+                        $ingredient->quantity_unit
+                    ];
+                }
+            }
         }
-        
+
         return $rows;
     }
 
