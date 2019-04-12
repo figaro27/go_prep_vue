@@ -55,7 +55,8 @@ class Order extends Model
     {
         return $this->belongsToMany('App\Meal', 'meal_orders')
             ->withPivot('quantity', 'meal_size_id')
-            ->withTrashed();
+            ->withTrashed()
+            ->using('App\MealOrder');
     }
 
     public function subscription()

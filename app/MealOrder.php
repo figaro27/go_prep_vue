@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class MealOrder extends Pivot
 {
     protected $table = 'meal_orders';
+    protected $appends = ['price'];
 
     public function meals()
     {
@@ -31,5 +32,12 @@ class MealOrder extends Pivot
     public function order()
     {
         return $this->belongsTo('App\Order');
+    }
+
+    public function getPriceAttribute()
+    {
+        return $this->meal_size_id
+            ? $this->mealSize->price
+            : $this->meal->price;
     }
 }
