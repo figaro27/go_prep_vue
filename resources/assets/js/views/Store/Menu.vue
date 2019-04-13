@@ -38,11 +38,19 @@
                   class="mb-2 mb-sm-0"
                 />
                 <router-link
+                  v-if="!storeURLcheck"
                   :to="'/store/menu/preview'"
                   class="btn btn-warning btn-md"
                   tag="button"
                   >Preview Menu</router-link
                 >
+                <a
+                  :href="storeURL"
+                  v-if="storeURLcheck"
+                  class="btn btn-warning btn-md"
+                  tag="button"
+                  >Preview Menu
+                </a>
               </div>
 
               <span slot="beforeLimit">
@@ -541,6 +549,7 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       storeSettings: "storeSettings",
+      storeDetail: "storeDetail",
       meals: "storeMeals",
       mealPackages: "mealPackages",
       getMeal: "storeMeal",
@@ -551,6 +560,15 @@ export default {
       allergies: "allergies",
       isLoading: "isLoading"
     }),
+    storeURLcheck() {
+      let URL = window.location.href;
+      let subdomainCheck = URL.substr(0, URL.indexOf("."));
+      if (subdomainCheck.includes("goprep")) return true;
+      else return false;
+    },
+    storeURL() {
+      return "http://" + this.storeDetail.domain + ".goprep.com";
+    },
     tableData() {
       const packages = Object.values(this.mealPackages).map(mealPackage => {
         return mealPackage;
