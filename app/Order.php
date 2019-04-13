@@ -104,7 +104,15 @@ class Order extends Model
     {
         return $this->meals()
             ->get()
-            ->keyBy('id')
+            ->keyBy(function ($meal) {
+                $id = $meal->id;
+
+                if ($meal->meal_size) {
+                    $id .= '-' . $meal->meal_size->id;
+                }
+
+                return $id;
+            })
             ->map(function ($meal) {
                 return $meal->pivot->quantity ? $meal->pivot->quantity : 0;
             });

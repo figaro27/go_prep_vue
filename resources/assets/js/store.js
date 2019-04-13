@@ -1095,7 +1095,11 @@ const getters = {
   },
   storeMeal: state => id => {
     try {
-      return _.find(state.store.meals.data, ["id", parseInt(id)]) || null;
+      let meal = _.find(state.store.meals.data, ["id", parseInt(id)]) || null;
+      meal.getSize = sizeId => {
+        return _.find(meal.sizes, ["id", parseInt(sizeId)]);
+      };
+      return meal;
     } catch (e) {
       return {};
     }
