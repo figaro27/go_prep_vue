@@ -178,13 +178,15 @@ export default {
         let mealIdParts = mealId.split("-"); // mealId-sizeId
         let meal = this.getMeal(mealIdParts[0]);
         let size = null;
-        let title = meal.title;
+        let title = null;
         let price = meal.price;
 
         if (mealIdParts[1]) {
           size = meal.getSize(mealIdParts[1]);
-          title += " - " + size.title;
+          title = meal.title + " - " + size.title;
           price = size.price;
+        } else {
+          title = meal.full_title;
         }
 
         return {

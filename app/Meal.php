@@ -60,7 +60,8 @@ class Meal extends Model implements HasMedia
         'created_at_local',
         'image',
         'quantity',
-        'meal_size'
+        'meal_size',
+        'full_title'
         //'featured_image',
     ];
 
@@ -95,6 +96,21 @@ class Meal extends Model implements HasMedia
         } else {
             return null;
         }
+    }
+
+    public function getFullTitleAttribute()
+    {
+        $title = $this->title;
+
+        if ($this->has('sizes')) {
+            if ($this->pivot && $this->pivot->meal_size_id) {
+                return $this->meal_size->full_title;
+            } elseif ($this->default_size_title) {
+                return $title . ' - ' . $this->default_size_title;
+            }
+        }
+
+        return $title;
     }
 
     /*public function getFeaturedImageAttribute() {

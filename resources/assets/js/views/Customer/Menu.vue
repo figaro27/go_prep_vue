@@ -73,9 +73,9 @@
               :key="`tag-${tag}`"
               class="filters col-6 col-sm-4 col-md-3 mb-3"
             >
-              <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{
-                tag
-              }}</b-button>
+              <b-button :pressed="active[tag]" @click="filterByTag(tag)">
+                {{ tag }}
+              </b-button>
             </div>
           </div>
           <b-button
@@ -444,9 +444,9 @@
                             toggle-class="menu-bag-btn plus-minus"
                           >
                             <i slot="button-content">+</i>
-                            <b-dropdown-item @click="addOne(meal)">{{
-                              meal.default_size_title
-                            }}</b-dropdown-item>
+                            <b-dropdown-item @click="addOne(meal)">
+                              {{ meal.default_size_title }}
+                            </b-dropdown-item>
                             <b-dropdown-item
                               v-for="size in meal.sizes"
                               :key="size.id"
@@ -558,8 +558,10 @@
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
-                          {{ item.meal.title }}
-                          <em v-if="item.size"> - {{ item.size.title }}</em>
+                          <div v-if="item.size">
+                            {{ item.size.full_title }}
+                          </div>
+                          <div v-else>{{ item.meal.full_title }}</div>
                         </div>
                         <div class="flex-grow-0">
                           <img
