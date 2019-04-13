@@ -567,7 +567,9 @@ export default {
       else return false;
     },
     storeURL() {
-      return "http://" + this.storeDetail.domain + ".goprep.com";
+      return (
+        "http://" + this.storeDetail.domain + ".goprep.com/store/menu/preview"
+      );
     },
     tableData() {
       const packages = Object.values(this.mealPackages).map(mealPackage => {
