@@ -13,10 +13,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use PHPUnit\Framework\Constraint\Exception;
+use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
-use Spatie\Image\Manipulations;
 
 class Meal extends Model implements HasMedia
 {
@@ -455,7 +455,9 @@ class Meal extends Model implements HasMedia
             'tag_ids',
             'category_ids',
             'allergy_ids',
-            'ingredients'
+            'ingredients',
+            'sizes',
+            'default_size_title'
         ]);
 
         $meal = new Meal();
@@ -464,7 +466,7 @@ class Meal extends Model implements HasMedia
         $meal->title = $props->get('title', '');
         $meal->description = $props->get('description', '');
         $meal->price = $props->get('price', 0);
-        $meal->default_size_title = $props->get('title', '');
+        $meal->default_size_title = $props->get('default_size_title', '');
         $meal->save();
 
         try {
@@ -595,6 +597,19 @@ class Meal extends Model implements HasMedia
             $tags = $props->get('tag_ids');
             if (is_array($tags)) {
                 $meal->tags()->sync($tags);
+            }
+
+            // Meal sizes
+            $sizes = $props->get('sizes');
+            if (is_array($sizes)) {
+                foreach ($sizes as $size) {
+                    $mealSize = new MealSize();
+                    $mealSize->meal_id = $meal->id;
+                    $mealSize->title = $size['title'];
+                    $mealSize->price = $size['price'];
+                    $mealSize->multiplier = $size['multiplier'];
+                    $mealSize->save();
+                }
             }
 
             $meal->update($props->except(['featured_image'])->toArray());

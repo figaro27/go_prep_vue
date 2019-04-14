@@ -73,6 +73,14 @@
                 :meal="meal"
               ></ingredient-picker>
             </b-tab>
+
+            <b-tab title="Size Variations">
+              <meal-sizes
+                :meal="meal"
+                @change="val => onChangeSizes(val)"
+                @changeDefault="val => (meal.default_size_title = val)"
+              ></meal-sizes>
+            </b-tab>
           </b-tabs>
         </b-col>
 
@@ -87,7 +95,7 @@
             @change="val => changeImage(val)"
           ></picture-input>
           <!-- <p class="center-text mt-2">Image size too big?<br>
-            You can compress images <a href="https://imagecompressor.com/" target="_blank">here.</a></p> -->
+          You can compress images <a href="https://imagecompressor.com/" target="_blank">here.</a></p>-->
         </b-col>
       </b-row>
     </b-modal>
@@ -168,17 +176,21 @@ import format from "../../../lib/format";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import Spinner from "../../../components/Spinner";
 import IngredientPicker from "../../../components/IngredientPicker";
+import MealSizes from "../../../components/Menu/MealSizes";
 import fs from "../../../lib/fs.js";
 
 export default {
   components: {
     Spinner,
     PictureInput,
-    IngredientPicker
+    IngredientPicker,
+    MealSizes
   },
   data() {
     return {
-      meal: {}
+      meal: {
+        sizes: []
+      }
     };
   },
   computed: {
@@ -248,6 +260,20 @@ export default {
     },
     toggleModal() {
       this.$parent.createMealModal = false;
+    },
+    onChangeSizes(sizes) {
+      if (!_.isArray(sizes)) {
+        throw new Error("Invalid sizes");
+      }
+
+      // Validate all rows
+      for (let size of sizes) {
+        if (!size.title || !size.price || !size.multiplier) {
+          return;
+        }
+      }
+
+      this.meal.sizes = sizes;
     }
   }
 };
