@@ -255,13 +255,13 @@ u + .body .full { width:100% !important; width:100vw !important;}
               	@endphp
               	@foreach($order->meals as $meal)
               		@php
-		            	$lineItemTotal += $meal->price * $meal->quantity;
+		            	$lineItemTotal += $meal->item_price * $meal->item_quantity;
 		            @endphp
               	<tr>
-	              	<td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $meal->title }}</td>
+	              	<td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $meal->item_title }}</td>
 	              	<td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
-	              		${{ number_format($meal->price, 2) }}</td>
-	              	<td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $meal->quantity }}</td>
+	              		${{ number_format($meal->item_price, 2) }}</td>
+	              	<td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $meal->item_quantity }}</td>
 	              	<td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;  font-weight: bold;">${{ number_format($lineItemTotal, 2) }}</td>
               	</tr>
               		@php

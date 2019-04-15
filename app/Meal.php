@@ -3,6 +3,7 @@
 namespace App;
 
 use App\MealOrder;
+use App\MealSize;
 use App\Store;
 use App\Subscription;
 use App\Traits\LocalizesDates;
@@ -12,10 +13,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use PHPUnit\Framework\Constraint\Exception;
+use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
-use Spatie\Image\Manipulations;
 
 class Meal extends Model implements HasMedia
 {
@@ -29,6 +30,7 @@ class Meal extends Model implements HasMedia
         'title',
         'description',
         'price',
+        'default_size_title',
         'created_at'
     ];
 
@@ -57,8 +59,13 @@ class Meal extends Model implements HasMedia
         'order_ids',
         'created_at_local',
         'image',
-        'quantity'
-        //'featured_image',
+        'quantity',
+        'meal_size',
+
+        // Relevant only when meal is connected to an order
+        'item_title',
+        'item_price',
+        'item_quantity'
     ];
 
     protected $hidden = [
@@ -83,6 +90,52 @@ class Meal extends Model implements HasMedia
         } else {
             return null;
         }
+    }
+
+    public function getMealSizeAttribute()
+    {
+        if ($this->pivot && $this->pivot->meal_size_id) {
+            return MealSize::find($this->pivot->meal_size_id);
+        } else {
+            return null;
+        }
+    }
+
+    public function getItemTitleAttribute()
+    {
+        $title = $this->title;
+
+        if ($this->has('sizes')) {
+            if ($this->pivot && $this->pivot->meal_size_id) {
+                return $title . ' - ' . $this->meal_size->title;
+            } elseif ($this->default_size_title) {
+                return $title . ' - ' . $this->default_size_title;
+            }
+        }
+
+        return $title;
+    }
+
+    public function getItemPriceAttribute()
+    {
+        $price = $this->price;
+
+        if ($this->has('sizes')) {
+            if ($this->pivot && $this->pivot->meal_size_id) {
+                return $this->meal_size->price;
+            }
+        }
+
+        return $price;
+    }
+
+    public function getItemQuantityAttribute()
+    {
+        if ($this->pivot && $this->pivot->quantity) {
+            return $this->pivot->quantity;
+        }
+
+        return null;
     }
 
     /*public function getFeaturedImageAttribute() {
@@ -314,6 +367,11 @@ class Meal extends Model implements HasMedia
         return $this->belongsToMany('App\MealPackage', 'meal_meal_package');
     }
 
+    public function sizes()
+    {
+        return $this->hasMany('App\MealSize', 'meal_id', 'id');
+    }
+
     public function tags()
     {
         return $this->belongsToMany('App\MealTag', 'meal_meal_tag');
@@ -394,7 +452,7 @@ class Meal extends Model implements HasMedia
 
     public static function getMeal($id)
     {
-        return Meal::with('ingredients', 'tags', 'categories')
+        return Meal::with('ingredients', 'tags', 'categories', 'sizes')
             ->where('id', $id)
             ->first();
     }
@@ -422,7 +480,9 @@ class Meal extends Model implements HasMedia
             'tag_ids',
             'category_ids',
             'allergy_ids',
-            'ingredients'
+            'ingredients',
+            'sizes',
+            'default_size_title'
         ]);
 
         $meal = new Meal();
@@ -431,6 +491,7 @@ class Meal extends Model implements HasMedia
         $meal->title = $props->get('title', '');
         $meal->description = $props->get('description', '');
         $meal->price = $props->get('price', 0);
+        $meal->default_size_title = $props->get('default_size_title', '');
         $meal->save();
 
         try {
@@ -563,6 +624,19 @@ class Meal extends Model implements HasMedia
                 $meal->tags()->sync($tags);
             }
 
+            // Meal sizes
+            $sizes = $props->get('sizes');
+            if (is_array($sizes)) {
+                foreach ($sizes as $size) {
+                    $mealSize = new MealSize();
+                    $mealSize->meal_id = $meal->id;
+                    $mealSize->title = $size['title'];
+                    $mealSize->price = $size['price'];
+                    $mealSize->multiplier = $size['multiplier'];
+                    $mealSize->save();
+                }
+            }
+
             $meal->update($props->except(['featured_image'])->toArray());
         } catch (\Exception $e) {
             $meal->delete();
@@ -598,7 +672,9 @@ class Meal extends Model implements HasMedia
             'tag_ids',
             'category_ids',
             'ingredients',
-            'allergy_ids'
+            'allergy_ids',
+            'sizes',
+            'default_size_title'
         ]);
 
         if ($props->has('featured_image')) {
@@ -764,9 +840,29 @@ class Meal extends Model implements HasMedia
             $meal->tags()->sync($tags);
         }
 
+        // Meal sizes
+        $sizes = $props->get('sizes');
+        if (is_array($sizes)) {
+            foreach ($sizes as $size) {
+                if (isset($size['id'])) {
+                    $mealSize = $meal->sizes()->find($size['id']);
+                }
+
+                if (!$mealSize) {
+                    $mealSize = new MealSize();
+                    $mealSize->meal_id = $meal->id;
+                }
+
+                $mealSize->title = $size['title'];
+                $mealSize->price = $size['price'];
+                $mealSize->multiplier = $size['multiplier'];
+                $mealSize->save();
+            }
+        }
+
         $meal->update($props->except('featured_image')->toArray());
 
-        return $meal;
+        return Meal::getMeal($id);
     }
 
     public static function updateActive($id, $active)

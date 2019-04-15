@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use App\Store;
 
 class Bag
 {
@@ -10,18 +11,30 @@ class Bag
     protected $items;
 
     /**
+     * @var App\Store
+     */
+    protected $store;
+
+    /**
      *
      * @param array $items
      */
-    public function __construct($_items)
+    public function __construct($_items, Store $store)
     {
+        $this->store = $store;
+
         $items = [];
 
+        // Deduplicate items
         collect($_items)->map(function ($item) use (&$items) {
-            if (!isset($items[$item['meal']['id']])) {
-                $items[$item['meal']['id']] = $item;
+            $itemId = $item['size']
+                ? $item['meal']['id'] . '-' . $item['size']['id']
+                : $item['meal']['id'];
+
+            if (!isset($items[$itemId])) {
+                $items[$itemId] = $item;
             } else {
-                $items[$item['meal']['id']]['quantity'] += $item['quantity'];
+                $items[$itemId]['quantity'] += $item['quantity'];
             }
         });
 
@@ -31,28 +44,43 @@ class Bag
     public function getItems()
     {
         $items = [];
+        $meals = $this->store
+            ->meals()
+            ->get()
+            ->keyBy('id');
 
-        collect($this->items)->map(function ($item) use (&$items) {
+        collect($this->items)->map(function ($item) use (&$items, $meals) {
             if ($item['meal_package']) {
                 for ($i = 0; $i < $item['quantity']; $i++) {
                     foreach ($item['meal']['meals'] as $meal) {
-                        if (!isset($items[$meal['id']])) {
-                            $items[$meal['id']] = [
+                        $itemId = $meal['id'];
+                        if (!isset($items[$itemId])) {
+                            $items[$itemId] = [
                                 'meal' => $meal,
-                                'quantity' => $meal['quantity']
+                                'quantity' => $meal['quantity'],
+                                'price' => $meals[$itemId]->price
                             ];
                         } else {
-                            $items[$meal['id']]['quantity'] +=
-                                $meal['quantity'];
+                            $items[$itemId]['quantity'] += $meal['quantity'];
                         }
                     }
                 }
             } else {
-                if (!isset($items[$item['meal']['id']])) {
-                    $items[$item['meal']['id']] = $item;
+                $itemId = $item['meal']['id'];
+                $price = $meals[$itemId]->price;
+
+                // Ensure size variations are counted separately
+                if ($item['size']) {
+                    $itemId .= '-' . $item['size']['id'];
+                    $price = $item['size']['price'];
+                }
+
+                $item['price'] = $price;
+
+                if (!isset($items[$itemId])) {
+                    $items[$itemId] = $item;
                 } else {
-                    $items[$item['meal']['id']]['quantity'] +=
-                        $item['quantity'];
+                    $items[$itemId]['quantity'] += $item['quantity'];
                 }
             }
         });
@@ -69,8 +97,8 @@ class Bag
     {
         $total = 0.0;
 
-        foreach ($this->items as $item) {
-            $total += $item['quantity'] * $item['meal']['price'];
+        foreach ($this->getItems() as $item) {
+            $total += $item['quantity'] * $item['price'];
         }
 
         return $total;

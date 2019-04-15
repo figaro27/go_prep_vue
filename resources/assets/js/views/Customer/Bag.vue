@@ -12,11 +12,12 @@
               size="lg"
               class="brand-color white-text"
               to="/customer/menu"
-              ><span class="d-none d-sm-inline">Change Meals</span></b-button
             >
-            <b-button size="lg" class="gray white-text" @click="clearAll"
-              ><span class="d-none d-sm-inline">Empty Bag</span></b-button
-            >
+              <span class="d-none d-sm-inline">Change Meals</span>
+            </b-button>
+            <b-button size="lg" class="gray white-text" @click="clearAll">
+              <span class="d-none d-sm-inline">Empty Bag</span>
+            </b-button>
           </div>
         </div>
         <div class="row">
@@ -55,7 +56,9 @@
                       width="80px"
                     ></thumbnail>
                   </div>
-                  <div class="flex-grow-1 mr-2">{{ item.meal.title }}</div>
+                  <div class="flex-grow-1 mr-2">
+                    { item.item_title }}
+                  </div>
                   <div class="flex-grow-0">
                     <img
                       src="/images/customer/x.png"
@@ -128,10 +131,10 @@
               </li>
               <li class="checkout-item">
                 <p>
-                  <strong
-                    >{{ total }} {{ singOrPluralTotal }}
-                    {{ deliveryPlanText }}</strong
-                  >
+                  <strong>
+                    {{ total }} {{ singOrPluralTotal }}
+                    {{ deliveryPlanText }}
+                  </strong>
                 </p>
               </li>
               <li class="checkout-item">
@@ -321,9 +324,7 @@
                         query: { redirect: '/customer/bag' }
                       }"
                     >
-                      <b-btn class="menu-bag-btn">
-                        LOG IN
-                      </b-btn>
+                      <b-btn class="menu-bag-btn">LOG IN</b-btn>
                     </router-link>
                   </div>
                   <div class="col-md-6">
@@ -333,9 +334,7 @@
                         query: { redirect: '/customer/bag' }
                       }"
                     >
-                      <b-btn class="menu-bag-btn">
-                        REGISTER
-                      </b-btn>
+                      <b-btn class="menu-bag-btn">REGISTER</b-btn>
                     </router-link>
                   </div>
                 </div>

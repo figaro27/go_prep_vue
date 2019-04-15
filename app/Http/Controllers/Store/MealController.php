@@ -17,17 +17,21 @@ class MealController extends StoreController
      */
     public function index()
     {
-        return $this->store->has('meals') ?
-        $this->store->meals()
-            ->with(['orders', 'tags', 'ingredients'])
-            ->without(['allergies', 'categories'])
-            ->get() : [];
+        return $this->store->has('meals')
+            ? $this->store
+                ->meals()
+                ->with(['orders', 'tags', 'ingredients', 'sizes'])
+                ->without(['allergies', 'categories'])
+                ->get()
+            : [];
     }
 
     public function getStoreMeals()
     {
         $id = auth()->id;
-        $storeID = Store::where('user_id', $id)->pluck('id')->first();
+        $storeID = Store::where('user_id', $id)
+            ->pluck('id')
+            ->first();
 
         return Meal::getStoreMeals($storeId);
     }
@@ -89,9 +93,22 @@ class MealController extends StoreController
      */
     public function update(UpdateMealRequest $request, $id)
     {
-        return Meal::updateMeal($id, $request->only([
-          'active', 'title', 'description', 'price', 'category_ids', 'tag_ids', 'allergy_ids', 'featured_image', 'ingredients'
-        ]));
+        return Meal::updateMeal(
+            $id,
+            $request->only([
+                'active',
+                'title',
+                'description',
+                'price',
+                'category_ids',
+                'tag_ids',
+                'allergy_ids',
+                'featured_image',
+                'ingredients',
+                'sizes',
+                'default_size_title'
+            ])
+        );
     }
 
     public function updateActive(Request $request, $id)
@@ -117,15 +134,21 @@ class MealController extends StoreController
         }
 
         if (!$meal) {
-            return response()->json([
-                'error' => 'Invalid meal ID',
-            ], 400);
+            return response()->json(
+                [
+                    'error' => 'Invalid meal ID'
+                ],
+                400
+            );
         }
 
         if ($meal->substitute && !$sub) {
-            return response()->json([
-                'error' => 'Invalid substitute meal ID',
-            ], 400);
+            return response()->json(
+                [
+                    'error' => 'Invalid substitute meal ID'
+                ],
+                400
+            );
         }
 
         return Meal::deleteMeal($id, $subId);

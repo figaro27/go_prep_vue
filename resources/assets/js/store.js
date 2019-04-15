@@ -158,7 +158,7 @@ const mutations = {
       state.bag.total = 0;
     }
   },
-  addToBag(state, { meal, quantity = 1, mealPackage = false }) {
+  addToBag(state, { meal, quantity = 1, mealPackage = false, size = null }) {
     let mealId = meal;
     if (!_.isNumber(mealId)) {
       mealId = meal.id;
@@ -168,12 +168,17 @@ const mutations = {
       mealId = "package-" + mealId;
     }
 
+    if (size) {
+      mealId = "size-" + mealId + "-" + size.id;
+    }
+
     if (!_.has(state.bag.items, mealId)) {
       Vue.set(state.bag.items, mealId, {
         quantity: 0,
         meal,
         meal_package: mealPackage,
-        added: moment().unix()
+        added: moment().unix(),
+        size
       });
     }
 
@@ -187,7 +192,10 @@ const mutations = {
 
     Vue.set(state.bag.items, mealId, item);
   },
-  removeFromBag(state, { meal, quantity = 1, mealPackage = false }) {
+  removeFromBag(
+    state,
+    { meal, quantity = 1, mealPackage = false, size = null }
+  ) {
     let mealId = meal;
     if (!_.isNumber(mealId)) {
       mealId = meal.id;
@@ -195,6 +203,10 @@ const mutations = {
 
     if (mealPackage || meal.meal_package) {
       mealId = "package-" + mealId;
+    }
+
+    if (size) {
+      mealId = "size-" + mealId + "-" + size.id;
     }
 
     if (!_.has(state.bag.items, mealId)) {
@@ -749,6 +761,7 @@ const actions = {
     );
     const resp = await axios.patch(`/api/me/meals/${id}`, data);
     Vue.set(state.store.meals.data, index, resp.data);
+    return resp.data;
   },
 
   async updateMealPackage({ commit, state, getters, dispatch }, { id, data }) {
@@ -979,7 +992,7 @@ const getters = {
 
     return _.has(state.bag.items, meal);
   },
-  bagItemQuantity: state => (meal, mealPackage = false) => {
+  bagItemQuantity: state => (meal, mealPackage = false, size = null) => {
     if (!meal) {
       return 0;
     }
@@ -991,6 +1004,10 @@ const getters = {
 
     if (mealPackage || meal.meal_package) {
       mealId = "package-" + mealId;
+    }
+
+    if (size) {
+      mealId = "size-" + mealId + "-" + size.id;
     }
 
     if (
@@ -1006,7 +1023,8 @@ const getters = {
     let items = _.compact(_.toArray(state.bag.items));
     let totalBagPricePreFees = 0;
     items.forEach(item => {
-      totalBagPricePreFees += item.quantity * item.meal.price;
+      const price = item.size ? item.size.price : item.meal.price;
+      totalBagPricePreFees += item.quantity * price;
     });
 
     return totalBagPricePreFees;
@@ -1077,7 +1095,11 @@ const getters = {
   },
   storeMeal: state => id => {
     try {
-      return _.find(state.store.meals.data, ["id", parseInt(id)]) || null;
+      let meal = _.find(state.store.meals.data, ["id", parseInt(id)]) || null;
+      meal.getSize = sizeId => {
+        return _.find(meal.sizes, ["id", parseInt(sizeId)]);
+      };
+      return meal;
     } catch (e) {
       return {};
     }

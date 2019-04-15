@@ -24,21 +24,31 @@ class OrdersByCustomer
         $dateRange = $this->getDeliveryDates();
         $params = $this->params;
 
-        if ($params->has('fulfilled')){
+        if ($params->has('fulfilled')) {
             $fulfilled = $params->get('fulfilled');
-        }
-        else
+        } else {
             $fulfilled = 0;
+        }
 
-        $orders = $this->store->orders()->where(['fulfilled' => $fulfilled, 'paid' => 1]);
+        $orders = $this->store
+            ->orders()
+            ->where(['fulfilled' => $fulfilled, 'paid' => 1]);
 
         if (isset($dateRange['from'])) {
             $from = Carbon::parse($dateRange['from']);
-            $orders = $orders->where('delivery_date', '>=', $from->format('Y-m-d'));
+            $orders = $orders->where(
+                'delivery_date',
+                '>=',
+                $from->format('Y-m-d')
+            );
         }
         if (isset($dateRange['to'])) {
             $to = Carbon::parse($dateRange['to']);
-            $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
+            $orders = $orders->where(
+                'delivery_date',
+                '<=',
+                $to->format('Y-m-d')
+            );
         }
 
         $customerOrders = $orders
@@ -58,15 +68,18 @@ class OrdersByCustomer
                             'delivery' => $order->user->userDetail->delivery,
                             'meal_quantities' => array_merge(
                                 [['Meal', 'Quantity']], // Heading
-                                $order->meals->map(function ($meal) {
-                                    return [
-                                        'title' => $meal->title,
-                                        'quantity' => $meal->pivot->quantity ?? 1,
-                                    ];
-                                })->toArray()
-                            ),
+                                $order->meals
+                                    ->map(function ($meal) {
+                                        return [
+                                            'title' => $meal->item_title,
+                                            'quantity' =>
+                                                $meal->item_quantity ?? 1
+                                        ];
+                                    })
+                                    ->toArray()
+                            )
                         ];
-                    }),
+                    })
                 ];
             });
 

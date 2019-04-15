@@ -145,11 +145,14 @@ export default {
     ...mapActions(["refreshCustomerOrders"]),
     getMealTableData(order) {
       return order.meals.map(meal => {
+        const price = meal.item_price;
+        const quantity = meal.item_quantity;
+
         return {
           image: meal.image.url_thumb,
-          meal: meal.title,
-          quantity: meal.pivot.quantity,
-          subtotal: format.money(meal.price * meal.pivot.quantity)
+          meal: meal.item_title,
+          quantity: quantity,
+          subtotal: format.money(price * quantity)
         };
       });
     }

@@ -205,11 +205,19 @@ class Store extends Model
         foreach ($orders as $order) {
             foreach ($order->meals as $meal) {
                 $quantity = $meal->pivot->quantity;
+                $multiplier = 1;
+
+                // A size was chosen. Use the multiplier
+                if ($meal->meal_size) {
+                    $multiplier = $meal->meal_size->multiplier;
+                }
 
                 foreach ($meal->ingredients as $ingredient) {
                     $quantity_unit = $ingredient->pivot->quantity_unit;
                     $quantity_base =
-                        $ingredient->pivot->quantity_base * $quantity;
+                        $ingredient->pivot->quantity_base *
+                        $quantity *
+                        $multiplier;
 
                     $key = $ingredient->id;
 

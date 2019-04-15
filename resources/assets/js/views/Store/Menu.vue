@@ -288,6 +288,16 @@
                   @save="val => onChangeIngredients(meal.id, val)"
                 ></ingredient-picker>
               </b-tab>
+
+              <b-tab title="Size Variations">
+                <meal-sizes
+                  :meal="meal"
+                  @change="val => onChangeSizes(meal.id, val)"
+                  @changeDefault="
+                    val => updateMeal(meal.id, { default_size_title: val })
+                  "
+                ></meal-sizes>
+              </b-tab>
             </b-tabs>
           </b-col>
 
@@ -307,7 +317,7 @@
               Image size too big?
               <br />You can compress images
               <a href="https://imagecompressor.com/" target="_blank">here.</a>
-            </p> -->
+            </p>-->
           </b-col>
         </b-row>
       </b-modal>
@@ -396,6 +406,7 @@
 <script>
 import Spinner from "../../components/Spinner";
 import IngredientPicker from "../../components/IngredientPicker";
+import MealSizes from "../../components/Menu/MealSizes";
 import CreateMealModal from "./Modals/CreateMeal";
 import CreatePackageModal from "./Modals/CreateMealPackage";
 import ViewPackageModal from "./Modals/ViewMealPackage";
@@ -416,7 +427,8 @@ export default {
     IngredientPicker,
     CreateMealModal,
     CreatePackageModal,
-    ViewPackageModal
+    ViewPackageModal,
+    MealSizes
   },
   updated() {
     //$(window).trigger("resize");
@@ -658,7 +670,8 @@ export default {
         description: this.meal.description,
         price: this.meal.price,
         category_ids: this.meal.category_ids,
-        ingredients: this.meal.ingredients
+        ingredients: this.meal.ingredients,
+        sizes: this.meal.sizes
       };
       const updated = await this.updateMeal(this.meal.id, data, true);
 
@@ -678,10 +691,14 @@ export default {
       }
 
       try {
-        await this._updateMeal({ id, data: changes });
+        const meal = await this._updateMeal({ id, data: changes });
 
         if (toast) {
           this.$toastr.s("Meal updated!");
+        }
+
+        if (id === this.meal.id) {
+          this.meal = meal;
         }
 
         return true;
@@ -861,10 +878,24 @@ export default {
     },
     onChangeIngredients(mealId, ingredients) {
       if (!_.isNumber(mealId) || !_.isArray(ingredients)) {
-        throw new Exception("Invalid ingredients");
+        throw new Error("Invalid ingredients");
       }
 
       this.updateMeal(mealId, { ingredients }, true);
+    },
+    onChangeSizes(mealId, sizes) {
+      if (!_.isNumber(mealId) || !_.isArray(sizes)) {
+        throw new Error("Invalid sizes");
+      }
+
+      // Validate all rows
+      for (let size of sizes) {
+        if (!size.title || !size.price || !size.multiplier) {
+          return;
+        }
+      }
+
+      this.updateMeal(mealId, { sizes }, false);
     },
     onClickAddIngredient() {
       this.ingredients.push({});

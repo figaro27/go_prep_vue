@@ -165,7 +165,7 @@ export default {
 
       filteredOrders.forEach(order => {
         _.forEach(order.meal_quantities, (quantity, mealId) => {
-          mealId = parseInt(mealId);
+          //mealId = parseInt(mealIdParts[0]);
 
           if (!mealCounts[mealId]) {
             mealCounts[mealId] = 0;
@@ -174,12 +174,28 @@ export default {
         });
       });
 
-      let meal = this.getMeal;
       return _.map(mealCounts, (quantity, mealId) => {
+        let mealIdParts = mealId.split("-"); // mealId-sizeId
+        let meal = this.getMeal(mealIdParts[0]);
+        let size = null;
+        let title = null;
+        let price = meal.price;
+
+        if (mealIdParts[1]) {
+          size = meal.getSize(mealIdParts[1]);
+          title = meal.title + " - " + size.title;
+          price = size.price;
+        } else {
+          title = meal.item_title;
+        }
+
         return {
-          ...this.getMeal(mealId),
+          ...meal,
+          title,
+          price,
+          size,
           quantity: quantity,
-          total: quantity * meal(mealId).price
+          total: quantity * price
         };
       });
     },

@@ -191,9 +191,9 @@ export default {
       return subscription.meals.map(meal => {
         return {
           image: meal.image.url_thumb,
-          meal: meal.title,
-          quantity: meal.pivot.quantity,
-          subtotal: format.money(meal.price * meal.pivot.quantity)
+          meal: meal.item_title,
+          quantity: meal.item_quantity,
+          subtotal: format.money(meal.item_price * meal.item_quantity)
         };
       });
     },

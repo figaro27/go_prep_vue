@@ -5,6 +5,7 @@ namespace App\Exportable\Store;
 use App\Exportable\Exportable;
 use App\Store;
 use App\Meal;
+use App\MealSize;
 
 class MealOrders
 {
@@ -25,16 +26,24 @@ class MealOrders
         $dates = $this->getDeliveryDates();
 
         $orders = $this->store->getOrders(null, $dates, true);
-            $orders->map(function ($order) use (&$mealQuantities) {
-                foreach ($order->meal_quantities as $id => $qty) {
-                    $meal = Meal::find($id);
-                    if (!isset($mealQuantities[$meal->title])) {
-                        $mealQuantities[$meal->title] = 0;
+        $orders->map(function ($order) use (&$mealQuantities) {
+            foreach ($order->meal_quantities as $id => $qty) {
+                $idParts = explode('-', $id);
+                $meal = Meal::find($idParts[0]);
+                $title = $meal->item_title;
+                if (isset($idParts[1])) {
+                    $size = MealSize::find($idParts[1]);
+                    if ($size) {
+                        $title = $size->full_title;
                     }
-
-                    $mealQuantities[$meal->title] += $qty;
                 }
-            });
+                if (!isset($mealQuantities[$title])) {
+                    $mealQuantities[$title] = 0;
+                }
+
+                $mealQuantities[$title] += $qty;
+            }
+        });
 
         ksort($mealQuantities);
 

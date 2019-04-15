@@ -433,11 +433,28 @@
                             readonly
                           ></b-form-input>
                           <b-btn
+                            v-if="meal.sizes.length === 0"
                             @click="addOne(meal)"
                             class="menu-bag-btn plus-minus"
                           >
                             <i>+</i>
                           </b-btn>
+                          <b-dropdown
+                            v-else
+                            toggle-class="menu-bag-btn plus-minus"
+                          >
+                            <i slot="button-content">+</i>
+                            <b-dropdown-item @click="addOne(meal)">
+                              {{ meal.default_size_title }}
+                            </b-dropdown-item>
+                            <b-dropdown-item
+                              v-for="size in meal.sizes"
+                              :key="size.id"
+                              @click="addOne(meal, false, size)"
+                              >{{ size.title }}</b-dropdown-item
+                            >
+                          </b-dropdown>
+
                           <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
                         </div>
                         <p class="center-text strong featured">
@@ -520,14 +537,14 @@
                       >
                         <div class="bag-item-quantity mr-2">
                           <div
-                            @click="addOne(item.meal)"
+                            @click="addOne(item.meal, false, item.size)"
                             class="bag-plus-minus brand-color white-text"
                           >
                             <i>+</i>
                           </div>
                           <p class="bag-quantity">{{ item.quantity }}</p>
                           <div
-                            @click="minusOne(item.meal)"
+                            @click="minusOne(item.meal, false, item.size)"
                             class="bag-plus-minus gray white-text"
                           >
                             <i>-</i>
@@ -541,12 +558,15 @@
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
-                          {{ item.meal.title }}
+                          <div v-if="item.size">
+                            {{ item.size.full_title }}
+                          </div>
+                          <div v-else>{{ item.meal.item_title }}</div>
                         </div>
                         <div class="flex-grow-0">
                           <img
                             src="/images/customer/x.png"
-                            @click="clearMeal(item.meal)"
+                            @click="clearMeal(item.meal, false, item.size)"
                             class="clear-meal"
                           />
                         </div>
@@ -1090,21 +1110,31 @@ export default {
         {}
       );
     },
-    quantity(meal, mealPackage = false) {
-      const qty = this.$store.getters.bagItemQuantity(meal);
+    quantity(meal, mealPackage = false, size = null) {
+      const qty = this.$store.getters.bagItemQuantity(meal, mealPackage, size);
       return qty;
     },
-    addOne(meal, mealPackage = false) {
-      this.$store.commit("addToBag", { meal, quantity: 1, mealPackage });
+    addOne(meal, mealPackage = false, size = null) {
+      this.$store.commit("addToBag", { meal, quantity: 1, mealPackage, size });
       this.mealModal = false;
       this.mealPackageModal = false;
     },
-    minusOne(meal, mealPackage = false) {
-      this.$store.commit("removeFromBag", { meal, quantity: 1, mealPackage });
+    minusOne(meal, mealPackage = false, size = null) {
+      this.$store.commit("removeFromBag", {
+        meal,
+        quantity: 1,
+        mealPackage,
+        size
+      });
     },
-    clearMeal(meal, mealPackage = false) {
-      let quantity = this.quantity(meal);
-      this.$store.commit("removeFromBag", { meal, quantity, mealPackage });
+    clearMeal(meal, mealPackage = false, size = null) {
+      let quantity = this.quantity(meal, mealPackage, size);
+      this.$store.commit("removeFromBag", {
+        meal,
+        quantity,
+        mealPackage,
+        size
+      });
     },
     clearAll() {
       this.$store.commit("emptyBag");
