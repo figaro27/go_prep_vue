@@ -106,8 +106,11 @@
                       width="100%"
                     ></thumbnail>
                     <img v-else :src="meal.featured_image" />
-                    <p v-if="storeSettings.showNutrition">
-                      {{ meal.description }}
+                    <p
+                      v-if="storeSettings.showNutrition"
+                      v-html="mealDescription"
+                    >
+                      <!-- {{ meal.description }} -->
                     </p>
                     <div
                       class="row mt-3 mb-5"
@@ -828,6 +831,7 @@ export default {
   },
   data() {
     return {
+      mealDescription: "",
       loaded: false,
       salesTaxRate: 0,
       active: {},
@@ -1184,6 +1188,7 @@ export default {
     showMealModal(meal) {
       this.meal = meal;
       this.mealModal = true;
+      this.mealDescription = meal.description;
 
       this.$nextTick(() => {
         this.getNutritionFacts(this.meal.ingredients, this.meal);
