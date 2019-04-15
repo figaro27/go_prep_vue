@@ -438,9 +438,7 @@ export default {
         return {
           quantity: meal.pivot.quantity,
           image: meals[id].image,
-          title:
-            meal.title +
-            (meal.pivot.meal_size_id ? " - " + meal.meal_size.title : ""),
+          title: meal.item_title,
           price: meal.pivot.price
         };
       });
