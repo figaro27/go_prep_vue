@@ -58,7 +58,10 @@ class StoreSetting extends Model
         //'cutoff_time' => 'datetime:H:i',
         'delivery_distance_zipcodes' => 'json',
         'stripe_account' => 'json',
-        'notifications' => 'json'
+        'notifications' => 'json',
+        'deliveryFee' => 'float',
+        'processingFee' => 'float',
+        'application_fee' => 'float'
     ];
 
     public function setAttributeVisibility()

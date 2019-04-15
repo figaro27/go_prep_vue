@@ -16,9 +16,14 @@ class Order extends Model
     protected $hidden = [];
 
     protected $casts = [
-        'amount' => 'double',
         'delivery_date' => 'date:Y-m-d',
-        'cutoff_date' => 'date:Y-m-d H:i:s'
+        'cutoff_date' => 'date:Y-m-d H:i:s',
+        'preFeePreDiscount' => 'float',
+        'afterDiscountBeforeFees' => 'float',
+        'processingFee' => 'float',
+        'deliveryFee' => 'float',
+        'amount' => 'float',
+        'salesTax' => 'float'
         //'created_at' => 'date:F d, Y'
     ];
 

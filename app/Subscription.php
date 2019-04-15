@@ -23,7 +23,13 @@ class Subscription extends Model
     ];
 
     protected $casts = [
-        'charge_time' => 'date'
+        'charge_time' => 'date',
+        'preFeePreDiscount' => 'float',
+        'afterDiscountBeforeFees' => 'float',
+        'processingFee' => 'float',
+        'deliveryFee' => 'float',
+        'amount' => 'float',
+        'salesTax' => 'float'
     ];
 
     public function user()
