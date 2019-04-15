@@ -4,6 +4,9 @@
       :columns="['title', 'price', 'multiplier']"
       :data="tableData"
       :options="{
+        headings: {
+          multiplier: 'Ingredient Multiplier'
+        },
         orderBy: {
           column: 'id',
           ascending: true
@@ -12,6 +15,7 @@
     >
       <div slot="beforeTable" class="mb-2">
         <b-button
+          variant="primary"
           @click="
             meal.sizes.push({
               id: 100 + meal.sizes.length, // push to the end of table
@@ -20,7 +24,7 @@
               multiplier: 1
             })
           "
-          >Add Meal Size Variation</b-button
+          >Add Meal Size</b-button
         >
       </div>
       <div slot="title" slot-scope="props">
