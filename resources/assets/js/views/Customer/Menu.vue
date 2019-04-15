@@ -130,9 +130,24 @@
                         <h5>{{ format.money(meal.price) }}</h5>
                       </div>
                       <div class="col-lg-7">
-                        <b-btn @click="addOne(meal)" class="menu-bag-btn"
+                        <b-btn
+                          v-if="meal.sizes.length === 0"
+                          @click="addOne(meal)"
+                          class="menu-bag-btn"
                           >+ ADD</b-btn
                         >
+                        <b-dropdown v-else toggle-class="menu-bag-btn">
+                          <span slot="button-content">+ ADD</span>
+                          <b-dropdown-item @click="addOne(meal)">
+                            {{ meal.default_size_title }}
+                          </b-dropdown-item>
+                          <b-dropdown-item
+                            v-for="size in meal.sizes"
+                            :key="size.id"
+                            @click="addOne(meal, false, size)"
+                            >{{ size.title }}</b-dropdown-item
+                          >
+                        </b-dropdown>
                       </div>
                     </div>
                   </div>
@@ -181,9 +196,24 @@
                         <h5>{{ format.money(meal.price) }}</h5>
                       </div>
                       <div class="col-lg-6">
-                        <b-btn @click="addOne(meal)" class="menu-bag-btn"
+                        <b-btn
+                          v-if="meal.sizes.length === 0"
+                          @click="addOne(meal)"
+                          class="menu-bag-btn"
                           >+ ADD</b-btn
                         >
+                        <b-dropdown v-else toggle-class="menu-bag-btn">
+                          <span slot="button-content">+ ADD</span>
+                          <b-dropdown-item @click="addOne(meal)">
+                            {{ meal.default_size_title }}
+                          </b-dropdown-item>
+                          <b-dropdown-item
+                            v-for="size in meal.sizes"
+                            :key="size.id"
+                            @click="addOne(meal, false, size)"
+                            >{{ size.title }}</b-dropdown-item
+                          >
+                        </b-dropdown>
                       </div>
                     </div>
                   </div>
@@ -1029,7 +1059,7 @@ export default {
       this.store.meals.forEach(meal => {
         meal.category_ids.forEach(categoryId => {
           let category = _.find(this._categories, { id: categoryId });
-          if (category && !_.includes(grouped, category.category)) {
+          if (!_.includes(grouped, category.category)) {
             grouped.push(category.category);
           }
         });
