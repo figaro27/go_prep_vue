@@ -437,7 +437,7 @@
                     <div class="row">
                       <div
                         class="col-sm-6 col-lg-4 col-xl-3"
-                        v-for="meal in group.meals"
+                        v-for="(meal, i) in group.meals"
                         :key="meal.id"
                       >
                         <thumbnail
@@ -476,6 +476,7 @@
                           <b-dropdown
                             v-else
                             toggle-class="menu-bag-btn plus-minus"
+                            :right="i > 0 && (i + 1) % 4 === 0"
                           >
                             <i slot="button-content">+</i>
                             <b-dropdown-item @click="addOne(meal)">
