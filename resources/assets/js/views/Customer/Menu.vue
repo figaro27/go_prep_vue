@@ -1029,7 +1029,7 @@ export default {
       this.store.meals.forEach(meal => {
         meal.category_ids.forEach(categoryId => {
           let category = _.find(this._categories, { id: categoryId });
-          if (!_.includes(grouped, category.category)) {
+          if (category && !_.includes(grouped, category.category)) {
             grouped.push(category.category);
           }
         });
