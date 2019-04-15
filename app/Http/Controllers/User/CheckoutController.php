@@ -146,6 +146,8 @@ class CheckoutController extends UserController
                 'subscription' => null
             ]);
             Mail::to($user)->send($email);
+            sleep(2);
+            Mail::to('mike@goprep.com')->send($email);
         } else {
             $weekIndex = date('N', strtotime($deliveryDay));
             $cutoff = $store->getNextCutoffDate($weekIndex);
@@ -282,6 +284,8 @@ class CheckoutController extends UserController
                 'subscription' => $userSubscription ?? null
             ]);
             Mail::to($user)->send($email);
+            sleep(2);
+            Mail::to('mike@goprep.com')->send($email);
         }
 
         /*
