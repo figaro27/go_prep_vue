@@ -126,25 +126,6 @@ class Subscription extends Model
             });
     }
 
-    // public function getChargeTimeAttribute()
-    // {
-    //     $cutoffDays = $this->store->settings->cutoff_days;
-    //     $cutoffHours = $this->store->settings->cutoff_hours;
-    //     $date = new Carbon($this->next_delivery_date);
-    //     $chargeTime = $date->subDays($cutoffDays)->subHours($cutoffHours);
-    //     return $chargeTime->format('D, m/d/Y');
-    // }
-
-    /*
-    public function getMealsAttribute()
-    {
-    if (!$this->latest_order) {
-    return [];
-    }
-
-    return $this->latest_order->meals;
-    }*/
-
     public function getStoreNameAttribute()
     {
         return $this->store->storeDetail->name;
@@ -178,6 +159,12 @@ class Subscription extends Model
         ) {
             return;
         }
+
+        // Retrieve the subscription from Stripe
+        $subscription = \Stripe\Subscription::retrieve(
+            'sub_' . $this->stripe_id,
+            ['stripe_account' => $this->store->settings->stripe_id]
+        );
 
         $latestOrder->paid = 1;
         $latestOrder->paid_at = new Carbon();
@@ -219,6 +206,10 @@ class Subscription extends Model
             $mealSub->quantity = $meal->pivot->quantity;
             $mealSub->save();
         }
+
+        // Store next charge time as reported by Stripe
+        $this->charge_time = $subscription->current_period_end;
+        $this->save();
 
         // Send new order notification to store at the cutoff once the order is paid
         if ($this->store->settings->notificationEnabled('new_order')) {
