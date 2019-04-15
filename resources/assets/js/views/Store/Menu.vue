@@ -49,8 +49,8 @@
                   v-if="storeURLcheck"
                   class="btn btn-warning btn-md"
                   tag="button"
-                  >Preview Menu
-                </a>
+                  >Preview Menu</a
+                >
               </div>
 
               <span slot="beforeLimit">
@@ -292,10 +292,8 @@
               <b-tab title="Size Variations">
                 <meal-sizes
                   :meal="meal"
-                  @change="val => onChangeSizes(meal.id, val)"
-                  @changeDefault="
-                    val => updateMeal(meal.id, { default_size_title: val })
-                  "
+                  @change="val => (meal.sizes = val)"
+                  @changeDefault="val => (meal.default_size_title = val)"
                 ></meal-sizes>
               </b-tab>
             </b-tabs>
@@ -671,7 +669,8 @@ export default {
         price: this.meal.price,
         category_ids: this.meal.category_ids,
         ingredients: this.meal.ingredients,
-        sizes: this.meal.sizes
+        sizes: this.meal.sizes,
+        default_size_title: this.meal.default_size_title
       };
       const updated = await this.updateMeal(this.meal.id, data, true);
 
