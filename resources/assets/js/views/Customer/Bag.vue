@@ -57,8 +57,7 @@
                     ></thumbnail>
                   </div>
                   <div class="flex-grow-1 mr-2">
-                    <div v-if="item.size">{{ item.size.full_title }}</div>
-                    <div v-else>{{ item.meal.full_title }}</div>
+                    { item.item_title }}
                   </div>
                   <div class="flex-grow-0">
                     <img

@@ -7,15 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class MealSize extends Model
 {
-    public $appends = ['full_title'];
+    public $fillable = [];
+    public $appends = [];
 
     public function meal()
     {
         return $this->belongsTo('App\Meal');
-    }
-
-    public function getFullTitleAttribute()
-    {
-        return $this->meal->title . ' - ' . $this->title;
     }
 }

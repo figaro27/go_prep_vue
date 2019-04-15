@@ -44,8 +44,9 @@ class Subscription extends Model
     public function meals()
     {
         return $this->belongsToMany('App\Meal', 'meal_subscriptions')
-            ->withPivot('quantity')
-            ->withTrashed();
+            ->withPivot('quantity', 'meal_size_id')
+            ->withTrashed()
+            ->using('App\MealSubscription');
     }
 
     public function meal_subscriptions()

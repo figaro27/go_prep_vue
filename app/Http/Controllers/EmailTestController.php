@@ -22,97 +22,107 @@ use App\StoreSetting;
 
 class EmailTestController extends Controller
 {
-    public function storeCancelledSubscription(){
+    public function storeCancelledSubscription()
+    {
         $subscription = Subscription::first();
-    	$customer = Customer::first();
-    	$email = new CancelledSubscription([
-                'subscription' => $subscription,
-                'customer' => $customer,
-            ]);
-    	Mail::to('store@goprep.com')->send($email);
+        $customer = Customer::first();
+        $email = new CancelledSubscription([
+            'subscription' => $subscription,
+            'customer' => $customer
+        ]);
+        Mail::to('store@goprep.com')->send($email);
     }
 
-    public function storeReadyToPrint(){
+    public function storeReadyToPrint()
+    {
         $store = Store::first();
-    	$storeDetails = StoreDetail::first();
-    	$email = new ReadyToPrint([
-                'store' => $store,
-                'storeDetails' => $storeDetails
-            ]);
-    	Mail::to('store@goprep.com')->send($email);
+        $storeDetails = StoreDetail::first();
+        $email = new ReadyToPrint([
+            'store' => $store,
+            'storeDetails' => $storeDetails
+        ]);
+        Mail::to('store@goprep.com')->send($email);
     }
 
-    public function customerDeliveryToday(){
-    	$customer = Customer::first();
-    	$order = Order::orderBy('created_at', 'desc')->first();
-    	$card = Card::first();
-    	$settings = StoreSetting::first();
-    	$email = new DeliveryToday([
-                'customer' => $customer,
-                'order' => $order,
-                'settings' => $order->store->settings
-            ]);
-    	Mail::to('customer@goprep.com')->send($email);
+    public function customerDeliveryToday()
+    {
+        $customer = Customer::first();
+        $order = Order::orderBy('created_at', 'desc')->first();
+        $card = Card::first();
+        $settings = StoreSetting::first();
+        $email = new DeliveryToday([
+            'customer' => $customer,
+            'order' => $order,
+            'settings' => $order->store->settings
+        ]);
+        Mail::to('customer@goprep.com')->send($email);
     }
 
-    public function customerMealPlan(){
-    	$subscription = Subscription::first();
-    	$order = Order::orderBy('created_at', 'desc')->first();
-    	$email = new MealPLan([
-                'subscription' => $subscription,
-                'order' => $order
-            ]);
-    	Mail::to('customer@goprep.com')->send($email);
+    public function customerMealPlan()
+    {
+        $customer = Customer::first();
+        $subscription = Subscription::first();
+        $order = Order::orderBy('created_at', 'desc')->first();
+        $email = new MealPlan([
+            'subscription' => $subscription,
+            'customer' => $subscription,
+            'order' => $order
+        ]);
+        Mail::to('customer@goprep.com')->send($email);
     }
 
-    public function customerSubscriptionRenewing(){
-    	$customer = Customer::first();
-    	$subscription = Subscription::orderBy('created_at', 'desc')->first();
-    	$email = new SubscriptionRenewing([
-    			'customer' => $customer,
-                'subscription' => $subscription,
-            ]);
-    	Mail::to('customer@goprep.com')->send($email);
+    public function customerSubscriptionRenewing()
+    {
+        $customer = Customer::first();
+        $subscription = Subscription::orderBy('created_at', 'desc')->first();
+        $email = new SubscriptionRenewing([
+            'customer' => $customer,
+            'subscription' => $subscription
+        ]);
+        Mail::to('customer@goprep.com')->send($email);
     }
 
-    public function storeNewSubscription(){
+    public function storeNewSubscription()
+    {
         $customer = Customer::first();
         $subscription = Subscription::first();
         $email = new NewSubscription([
-                'customer' => $customer,
-                'subscription' => $subscription,
-            ]);
+            'customer' => $customer,
+            'subscription' => $subscription
+        ]);
         Mail::to('store@goprep.com')->send($email);
     }
 
-    public function customerNewOrder(){
+    public function customerNewOrder()
+    {
         $customer = Customer::first();
         $order = Order::first();
         $email = new NewOrder([
-                'customer' => $customer,
-                'order' => $order,
-            ]);
+            'customer' => $customer,
+            'order' => $order
+        ]);
         Mail::to('customer@goprep.com')->send($email);
     }
 
-    public function customerMealPlanPaused(){
+    public function customerMealPlanPaused()
+    {
         $customer = Customer::first();
         $subscription = Subscription::first();
         $email = new MealPlanPaused([
-                'customer' => $customer,
-                'subscription' => $subscription,
-            ]);
+            'customer' => $customer,
+            'subscription' => $subscription
+        ]);
         Mail::to('customer@goprep.com')->send($email);
     }
 
-    public function storeNewOrder(){
+    public function storeNewOrder()
+    {
         $customer = Customer::first();
         $order = Order::first();
         $email = new NewOrder([
-                'customer' => $customer,
-                'order' => $order,
-            ]);
+            'customer' => $customer,
+            'order' => $order
+        ]);
         Mail::to('store@goprep.com')->send($email);
     }
-    
 }

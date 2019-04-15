@@ -107,14 +107,19 @@
                   <div class="row">
                     <div class="col-md-4">
                       <h4>Delivery Day</h4>
-                      <p v-if="!subscription.latest_order.fulfilled">
+                      <p
+                        v-if="
+                          subscription.latest_order &&
+                            !subscription.latest_order.fulfilled
+                        "
+                      >
                         {{
                           moment(
                             subscription.latest_order.delivery_date
                           ).format("dddd, MMM Do")
                         }}
                       </p>
-                      <p v-else>
+                      <p v-else-if="subscription.latest_order">
                         Delivered On:
                         {{
                           moment(
@@ -261,11 +266,14 @@ export default {
       }
 
       return subscription.meals.map(meal => {
+        const price = meal.item_price;
+        const quantity = meal.item_quantity;
+
         return {
           image: meal.image.url,
           meal: meal.title,
           quantity: meal.pivot.quantity,
-          subtotal: format.money(meal.price * meal.pivot.quantity)
+          subtotal: format.money(price * quantity)
         };
       });
     },

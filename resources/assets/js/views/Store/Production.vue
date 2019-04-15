@@ -186,7 +186,7 @@ export default {
           title = meal.title + " - " + size.title;
           price = size.price;
         } else {
-          title = meal.full_title;
+          title = meal.item_title;
         }
 
         return {

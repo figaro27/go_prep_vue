@@ -95,15 +95,32 @@ class MealsSeeder extends Seeder
 
         for ($store = 1; $store <= 10; $store++) {
             for ($i = 0; $i <= 22; $i++) {
-                $id = DB::table('meals')->insert([
+                $id = DB::table('meals')->insertGetId([
                     'active' => 1,
                     'store_id' => $store,
                     'featured_image' => $mealImages[$i],
                     'title' => $mealTitles[$i],
                     'description' => $mealDescriptions[$i],
                     'price' => mt_rand(80, 120) / 10,
+                    'default_size_title' => 'Medium',
                     'created_at' => $daysAgo[rand(0, 1)]
                 ]);
+
+                if ($i === 0) {
+                    DB::table('meal_sizes')->insert([
+                        'meal_id' => $id,
+                        'title' => 'Large',
+                        'price' => mt_rand(80, 120) / 10,
+                        'multiplier' => mt_rand(10, 20) / 10
+                    ]);
+
+                    DB::table('meal_sizes')->insert([
+                        'meal_id' => $id,
+                        'title' => 'Extra Large',
+                        'price' => mt_rand(80, 120) / 10,
+                        'multiplier' => mt_rand(10, 20) / 10
+                    ]);
+                }
 
                 $meal = Meal::find($id);
                 $fullImagePath = resource_path('assets' . $mealImages[$i]);
