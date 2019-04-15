@@ -271,8 +271,8 @@ export default {
 
         return {
           image: meal.image.url,
-          meal: meal.title,
-          quantity: meal.pivot.quantity,
+          meal: meal.item_title,
+          quantity: quantity,
           subtotal: format.money(price * quantity)
         };
       });
