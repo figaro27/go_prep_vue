@@ -164,7 +164,9 @@
                     ></div>
                   </div>
                   <div class="col-lg-6" v-if="!storeSettings.showNutrition">
-                    <p>{{ meal.description }}</p>
+                    <p v-html="mealDescription">
+                      <!-- {{ meal.description }} -->
+                    </p>
                     <div class="row">
                       <div class="col-lg-6">
                         <h5>Tags</h5>
@@ -302,8 +304,11 @@
                           :spinner="false"
                         ></thumbnail>
                         <img v-else :src="meal.featured_image" />
-                        <p v-if="storeSettings.showNutrition">
-                          {{ meal.description }}
+                        <p
+                          v-if="storeSettings.showNutrition"
+                          v-html="mealDescription"
+                        >
+                          <!-- {{ meal.description }} -->
                         </p>
                         <div
                           class="row mt-3 mb-5"
@@ -334,7 +339,9 @@
                         >
                       </div>
                       <div class="col-lg-6" v-if="!storeSettings.showNutrition">
-                        <p>{{ meal.description }}</p>
+                        <p v-html="mealDescription">
+                          <!-- {{ meal.description }} -->
+                        </p>
                         <div class="row">
                           <div class="col-lg-6">
                             <h5>Tags</h5>
