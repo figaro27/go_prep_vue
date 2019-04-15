@@ -139,13 +139,15 @@
                         <b-dropdown v-else toggle-class="menu-bag-btn">
                           <span slot="button-content">+ ADD</span>
                           <b-dropdown-item @click="addOne(meal)">
-                            {{ meal.default_size_title }}
+                            {{ meal.default_size_title }} -
+                            {{ format.money(meal.item_price) }}
                           </b-dropdown-item>
                           <b-dropdown-item
                             v-for="size in meal.sizes"
                             :key="size.id"
                             @click="addOne(meal, false, size)"
-                            >{{ size.title }}</b-dropdown-item
+                            >{{ size.title }} -
+                            {{ format.money(size.price) }}</b-dropdown-item
                           >
                         </b-dropdown>
                       </div>
@@ -205,13 +207,15 @@
                         <b-dropdown v-else toggle-class="menu-bag-btn">
                           <span slot="button-content">+ ADD</span>
                           <b-dropdown-item @click="addOne(meal)">
-                            {{ meal.default_size_title }}
+                            {{ meal.default_size_title }} -
+                            {{ format.money(meal.item_price) }}
                           </b-dropdown-item>
                           <b-dropdown-item
                             v-for="size in meal.sizes"
                             :key="size.id"
                             @click="addOne(meal, false, size)"
-                            >{{ size.title }}</b-dropdown-item
+                            >{{ size.title }} -
+                            {{ format.money(size.price) }}</b-dropdown-item
                           >
                         </b-dropdown>
                       </div>
@@ -475,13 +479,15 @@
                           >
                             <i slot="button-content">+</i>
                             <b-dropdown-item @click="addOne(meal)">
-                              {{ meal.default_size_title }}
+                              {{ meal.default_size_title }} -
+                              {{ format.money(meal.item_price) }}
                             </b-dropdown-item>
                             <b-dropdown-item
                               v-for="size in meal.sizes"
                               :key="size.id"
                               @click="addOne(meal, false, size)"
-                              >{{ size.title }}</b-dropdown-item
+                              >{{ size.title }} -
+                              {{ format.money(size.price) }}</b-dropdown-item
                             >
                           </b-dropdown>
 
