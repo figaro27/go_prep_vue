@@ -57,7 +57,7 @@
                     ></thumbnail>
                   </div>
                   <div class="flex-grow-1 mr-2">
-                    { item.item_title }}
+                    {{ item.meal.item_title }}
                   </div>
                   <div class="flex-grow-0">
                     <img
