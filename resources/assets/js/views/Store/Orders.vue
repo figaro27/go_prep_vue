@@ -439,7 +439,7 @@ export default {
           quantity: meal.pivot.quantity,
           image: meals[id].image,
           title: meal.item_title,
-          price: meal.pivot.price
+          price: meal.item_price
         };
       });
     },

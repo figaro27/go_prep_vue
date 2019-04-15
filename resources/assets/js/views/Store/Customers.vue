@@ -110,25 +110,28 @@
 
               <b-collapse :id="'collapse' + order.order_number" class="mt-2">
                 <ul class="meal-quantities">
-                  <li v-for="mealId in order.meal_ids" :key="$uuid.v1()">
+                  <li
+                    v-for="meal in getMealQuantities(order)"
+                    :key="$uuid.v1()"
+                  >
                     <div class="row">
                       <div class="col-md-5 pr-0">
-                        <span class="order-quantity">{{
-                          order.meal_quantities[mealId]
-                        }}</span>
+                        <span class="order-quantity">
+                          {{ meal.quantity }}
+                        </span>
                         <img
                           src="/images/store/x-modal.png"
                           class="mr-2 ml-2"
                         />
                         <thumbnail
-                          v-if="meal(mealId).image.url_thumb"
-                          :src="meal(mealId).image.url_thumb"
+                          v-if="meal.image.url_thumb"
+                          :src="meal.image.url_thumb"
                           :spinner="false"
                         ></thumbnail>
                       </div>
                       <div class="col-md-7 pt-3 nopadding">
-                        <p>{{ meal(mealId).title }}</p>
-                        <p>{{ format.money(meal(mealId).price) }}</p>
+                        <p>{{ meal.title }}</p>
+                        <p>{{ format.money(meal.item_price) }}</p>
                       </div>
                     </div>
                   </li>
@@ -223,6 +226,7 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       meal: "storeMeal",
+      getMeal: "storeMeal",
       customers: "storeCustomers",
       //orders: "storeOrders",
       isLoading: "isLoading",
@@ -271,15 +275,50 @@ export default {
           this.loading = false;
         });
     },
-    getMealQuantities(meals) {
-      let order = _.toArray(_.countBy(meals, "id"));
+    getMealQuantities(order) {
+      let mealCounts = {};
 
-      return order.map((order, id) => {
+      _.forEach(order.meal_quantities, (quantity, mealId) => {
+        if (!mealCounts[mealId]) {
+          mealCounts[mealId] = 0;
+        }
+        mealCounts[mealId] += quantity;
+      });
+
+      return _.map(mealCounts, (quantity, mealId) => {
+        let mealIdParts = mealId.split("-"); // mealId-sizeId
+        let meal = this.getMeal(mealIdParts[0]);
+        let size = null;
+        let title = null;
+        let price = meal.price;
+
+        if (mealIdParts[1]) {
+          size = meal.getSize(mealIdParts[1]);
+          title = size.full_title;
+          price = size.price;
+        } else {
+          title = meal.item_title;
+        }
+
         return {
-          order,
-          featured_image: meals[id].image.url_thumb,
-          title: meals[id].title,
-          price: meals[id].price
+          ...meal,
+          title,
+          price,
+          size,
+          quantity: quantity,
+          total: quantity * price
+        };
+      });
+
+      if (!_.isArray(meals)) {
+        return [];
+      }
+      return meals.map((meal, id) => {
+        return {
+          quantity: meal.item_quantity,
+          image: meal.image,
+          title: meal.item_title,
+          price: meal.item_price
         };
       });
     }
