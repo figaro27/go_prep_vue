@@ -61,7 +61,8 @@ class StoreSetting extends Model
         'notifications' => 'json',
         'deliveryFee' => 'float',
         'processingFee' => 'float',
-        'application_fee' => 'float'
+        'application_fee' => 'float',
+        'mealPlanDiscount' => 'float'
     ];
 
     public function setAttributeVisibility()

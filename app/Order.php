@@ -23,7 +23,8 @@ class Order extends Model
         'processingFee' => 'float',
         'deliveryFee' => 'float',
         'amount' => 'float',
-        'salesTax' => 'float'
+        'salesTax' => 'float',
+        'mealPlanDiscount' => 'float'
         //'created_at' => 'date:F d, Y'
     ];
 
