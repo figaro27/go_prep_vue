@@ -14,10 +14,6 @@ class AddChangeChargeTimeFieldToTimestampInSubscriptionsTable extends Migration
     public function up()
     {
         Schema::table('subscriptions', function (Blueprint $table) {
-            $table->dropColumn('charge_time');
-        });
-
-        Schema::table('subscriptions', function (Blueprint $table) {
             $table->timestamp('charge_time')->nullable();
         });
     }
