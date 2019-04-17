@@ -606,10 +606,12 @@
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
-                          <div v-if="item.size">
-                            {{ item.size.full_title }}
-                          </div>
-                          <div v-else>{{ item.meal.item_title }}</div>
+                          <span v-if="item.meal_package">{{
+                            item.meal.title
+                          }}</span>
+                          <span v-if="!item.meal.meal_package">{{
+                            item.meal.item_title
+                          }}</span>
                         </div>
                         <div class="flex-grow-0">
                           <img
