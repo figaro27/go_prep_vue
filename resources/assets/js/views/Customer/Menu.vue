@@ -432,6 +432,7 @@
                   </div>
                 </div>
               </div>
+              <!-- Meals Area -->
               <div class="row">
                 <div :class="`col-md-9 main-menu-area`">
                   <Spinner v-if="!meals.length" position="absolute" />
@@ -1061,9 +1062,8 @@ export default {
     },
     mealPackages() {
       return (
-        _.map(this.store.packages, mealPackage => {
-          mealPackage.meal_package = true;
-          return mealPackage;
+        _.filter(this.store.packages, mealPackage => {
+          return mealPackage.active;
         }) || []
       );
     },
