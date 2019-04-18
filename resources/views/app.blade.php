@@ -24,7 +24,7 @@
             (function() {
                 var mf = document.createElement("script");
                 mf.type = "text/javascript"; mf.async = true;
-                mf.src = "//cdn.mouseflow.com/projects/81fa0da9-fff3-40d9-82cb-0b8171acfafa.js";
+                mf.src = "//cdn.mouseflow.com/projects/@php echo env('MOUSEFLOW') @endphp";
                 document.getElementsByTagName("head")[0].appendChild(mf);
             })();
         </script>
