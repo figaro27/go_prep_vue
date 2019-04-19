@@ -58,9 +58,10 @@
                   </div>
                   <div class="flex-grow-1 mr-2">
                     <span v-if="item.meal_package">{{ item.meal.title }}</span>
-                    <span v-if="!item.meal.meal_package">{{
-                      item.meal.item_title
-                    }}</span>
+                    <span v-else-if="item.size">
+                      {{ item.size.full_title }}
+                    </span>
+                    <span v-else>{{ item.meal.item_title }}</span>
                   </div>
                   <div class="flex-grow-0">
                     <img

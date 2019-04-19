@@ -166,6 +166,7 @@ const mutations = {
 
     if (mealPackage || meal.meal_package) {
       mealId = "package-" + mealId;
+      mealPackage = true;
     }
 
     if (size) {
@@ -203,6 +204,7 @@ const mutations = {
 
     if (mealPackage || meal.meal_package) {
       mealId = "package-" + mealId;
+      mealPackage = true;
     }
 
     if (size) {
@@ -1005,6 +1007,7 @@ const getters = {
 
     if (mealPackage || meal.meal_package) {
       mealId = "package-" + mealId;
+      mealPackage = true;
     }
 
     if (size) {

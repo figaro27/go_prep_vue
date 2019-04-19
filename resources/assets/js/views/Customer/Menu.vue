@@ -609,9 +609,10 @@
                           <span v-if="item.meal_package">{{
                             item.meal.title
                           }}</span>
-                          <span v-if="!item.meal.meal_package">{{
-                            item.meal.item_title
-                          }}</span>
+                          <span v-else-if="item.size">
+                            {{ item.size.full_title }}
+                          </span>
+                          <span v-else>{{ item.meal.item_title }}</span>
                         </div>
                         <div class="flex-grow-0">
                           <img
@@ -1063,10 +1064,14 @@ export default {
       return _.orderBy(grouped, "order");
     },
     mealPackages() {
-      return (
+      return _.map(
         _.filter(this.store.packages, mealPackage => {
           return mealPackage.active;
-        }) || []
+        }) || [],
+        mealPackage => {
+          mealPackage.meal_package = true;
+          return mealPackage;
+        }
       );
     },
     categories() {
@@ -1122,6 +1127,7 @@ export default {
       return subtotal;
     }
   },
+  created() {},
   mounted() {
     try {
       this.getSalesTax(this.store.details.state);
