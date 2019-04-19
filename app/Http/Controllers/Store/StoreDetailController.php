@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Store;
 use App\StoreDetail;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Http\Request;
-use \App\Utils\Images;
+use App\Utils\Images;
 
 class StoreDetailController extends StoreController
 {
@@ -80,15 +80,18 @@ class StoreDetailController extends StoreController
             'address' => 'required|string',
             'city' => 'required|string',
             'state' => 'required|string',
-            'zip' => 'required|numeric',
+            'zip' => 'required|numeric'
             // 'description' => 'required|string|max:450',
         ];
 
         $this->validate($request, $rules);
 
-        $newLogo = $request->has('logo') && substr($request->get('logo'), 0, 4) === 'data';
+        $newLogo =
+            $request->has('logo') &&
+            substr($request->get('logo'), 0, 4) === 'data';
 
-        if ($newLogo) {
+        // Disabling 1:1 aspect ratio check
+        /*if ($newLogo) {
             $image = Images::decodeB64($request->get('logo'));
             $size = getimagesizefromstring($image);
 
@@ -100,7 +103,7 @@ class StoreDetailController extends StoreController
                     ],
                 ], 422);
             }
-        }
+        }*/
 
         $store->update($request->except('logo'));
 
@@ -114,16 +117,18 @@ class StoreDetailController extends StoreController
         }
 
         return $store;
-
     }
 
     public function updateLogo(Request $request)
     {
         $store = $this->store->details;
 
-        $newLogo = $request->has('logo') && substr($request->get('logo'), 0, 4) === 'data';
+        $newLogo =
+            $request->has('logo') &&
+            substr($request->get('logo'), 0, 4) === 'data';
 
-        if ($newLogo) {
+        // Disabling 1:1 aspect ratio check
+        /*if ($newLogo) {
             $image = Images::decodeB64($request->get('logo'));
             $size = getimagesizefromstring($image);
 
@@ -135,19 +140,16 @@ class StoreDetailController extends StoreController
                     ],
                 ], 422);
             }
-        }
+        }*/
 
         if ($newLogo) {
             $imageUrl = Images::uploadB64($request->get('logo'));
 
-
-                $store->logo = $imageUrl;
-                $store->save();
-            
+            $store->logo = $imageUrl;
+            $store->save();
         }
 
         return $store;
-
     }
 
     /**
@@ -161,14 +163,16 @@ class StoreDetailController extends StoreController
         //
     }
 
-    public function acceptedTOA(){
+    public function acceptedTOA()
+    {
         $this->store->accepted_toa = 1;
         $this->store->save();
         $this->store->user->accepted_tos = 1;
         $this->store->user->save();
     }
 
-    public function getAcceptedTOA(){
+    public function getAcceptedTOA()
+    {
         return $this->store->accepted_toa;
     }
 }
