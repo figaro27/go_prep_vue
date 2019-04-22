@@ -230,7 +230,10 @@
                   unchecked-value="0"
                 >
                   I accept the
-                  <span class="strong" @click.stop.prevent="$refs.tos.show()"
+                  <span
+                    class="strong"
+                    @click.stop.prevent="$refs.tos.show()"
+                    @touch.stop.prevent="$refs.tos.show()"
                     >terms of service</span
                   >
                 </b-form-checkbox>
