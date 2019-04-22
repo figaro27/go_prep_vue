@@ -1,6 +1,6 @@
 <template>
   <div>
-    <floating-action-button class="d-sm-none" to="/customer/bag">
+    <floating-action-button class="d-sm-none brand-color" to="/customer/bag">
       <i class="fa fa-shopping-bag text-white"></i>
     </floating-action-button>
     <!-- <div class="menu ml-auto mr-auto"> -->
