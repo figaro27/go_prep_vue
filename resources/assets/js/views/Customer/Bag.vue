@@ -245,6 +245,7 @@
                     <b-select
                       :options="deliveryDaysOptions"
                       v-model="deliveryDay"
+                      @input="val => (deliveryDay = val)"
                       class="delivery-select"
                       required
                     >
