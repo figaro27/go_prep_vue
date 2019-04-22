@@ -13,10 +13,10 @@
               class="brand-color white-text"
               to="/customer/menu"
             >
-              <span class="d-none d-sm-inline">Change Meals</span>
+              <span class="d-sm-inline">Change Meals</span>
             </b-button>
             <b-button size="lg" class="gray white-text" @click="clearAll">
-              <span class="d-none d-sm-inline">Empty Bag</span>
+              <span class="d-sm-inline">Empty Bag</span>
             </b-button>
           </div>
         </div>
