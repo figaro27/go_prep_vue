@@ -127,12 +127,19 @@
                         </li>
                       </div>
                     </div>
+                  </div>
+                  <div class="col-lg-6" v-if="storeSettings.showNutrition">
+                    <div
+                      id="nutritionFacts"
+                      ref="nutritionFacts"
+                      class="mt-2 mt-lg-0"
+                    ></div>
 
-                    <div class="row mt-5" v-if="storeSettings.showNutrition">
-                      <div class="col-lg-5 mt-3">
+                    <div class="row mt-1" v-if="storeSettings.showNutrition">
+                      <div class="col-lg-6 mt-3">
                         <h5>{{ format.money(meal.price) }}</h5>
                       </div>
-                      <div class="col-lg-7">
+                      <div class="col-lg-6">
                         <b-btn
                           v-if="meal.sizes.length === 0"
                           @click="addOne(meal)"
@@ -155,13 +162,6 @@
                         </b-dropdown>
                       </div>
                     </div>
-                  </div>
-                  <div class="col-lg-6" v-if="storeSettings.showNutrition">
-                    <div
-                      id="nutritionFacts"
-                      ref="nutritionFacts"
-                      class="mt-2 mt-lg-0"
-                    ></div>
                   </div>
                   <div class="col-lg-6" v-if="!storeSettings.showNutrition">
                     <p v-html="mealDescription">
