@@ -419,13 +419,13 @@ export default {
       deliveryDay: undefined,
       stripeKey: window.app.stripe_key,
       // stripeOptions,
-      card: null,
       loading: false,
       salesTax: 0
     };
   },
   computed: {
     ...mapGetters({
+      cards: "cards",
       store: "viewedStore",
       storeSetting: "viewedStoreSetting",
       total: "bagQuantity",
@@ -441,6 +441,10 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice"
     }),
+    card() {
+      if (this.cards.length > 1) return null;
+      else return 1;
+    },
     storeSettings() {
       return this.store.settings;
     },
