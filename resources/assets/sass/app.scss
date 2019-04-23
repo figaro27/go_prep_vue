@@ -47,10 +47,14 @@ $simple-line-font-path: "~simple-line-icons/fonts/";
 @import "pages/reports.scss";
 
 .app {
-  display: block;
-  height: 100vh;
+  display: flex;
   -webkit-overflow-scrolling: touch;
-  // overflow-y: scroll;
+  //overflow-y: scroll;
+}
+
+.app-body {
+  flex-grow: 1;
+  flex-shrink: 0;
 }
 
 .filter-btn {
