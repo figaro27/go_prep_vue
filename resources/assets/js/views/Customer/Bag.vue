@@ -534,9 +534,7 @@ export default {
     }
   },
   mounted() {
-    if (this.deliveryDaysOptions.length === 1) {
-      this.deliveryDay = this.deliveryDaysOptions[0].value;
-    }
+    this.deliveryDay = this.deliveryDaysOptions[0].value;
     this.getSalesTax(this.store.details.state);
 
     if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
