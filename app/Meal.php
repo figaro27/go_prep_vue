@@ -250,7 +250,7 @@ class Meal extends Model implements HasMedia
 
     public function getSubscriptionCountAttribute()
     {
-        return $this->subscriptions->count();
+        return $this->subscriptions->where('status', 'active')->count();
     }
 
     /**
