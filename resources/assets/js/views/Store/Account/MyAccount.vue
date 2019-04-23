@@ -49,6 +49,7 @@
       <p>Company</p>
       <div class="card">
         <div class="card-body">
+          <p>https://{{ storeDetails.domain }}.goprep.com</p>
           <b-form @submit.prevent="updateStoreDetails">
             <b-form-group label="Company Name" :state="true">
               <b-form-input

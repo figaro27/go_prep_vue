@@ -9,6 +9,7 @@
       <p>Orders</p>
       <div class="card">
         <div class="card-body">
+          <p>https://{{ storeDetails.domain }}.goprep.com</p>
           <b-form @submit.prevent="updateStoreSettings">
             <b-form-group
               label="Cut Off Period"
