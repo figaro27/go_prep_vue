@@ -5,22 +5,20 @@
 // If you are going to use dark layout please comment next line
 @import "~@coreui/coreui-pro/scss/coreui";
 
-
 // Taken from original App.vue
-@import '~@coreui/icons/css/coreui-icons.min.css';
+@import "~@coreui/icons/css/coreui-icons.min.css";
 /* Import Font Awesome Icons Set */
-$fa-font-path: '~font-awesome/fonts/';
-@import '~font-awesome/scss/font-awesome.scss';
+$fa-font-path: "~font-awesome/fonts/";
+@import "~font-awesome/scss/font-awesome.scss";
 /* Import Simple Line Icons Set */
-$simple-line-font-path: '~simple-line-icons/fonts/';
-@import '~simple-line-icons/scss/simple-line-icons.scss';
+$simple-line-font-path: "~simple-line-icons/fonts/";
+@import "~simple-line-icons/scss/simple-line-icons.scss";
 /* Import Flag Icons Set */
-@import '~flag-icon-css/css/flag-icon.min.css';
+@import "~flag-icon-css/css/flag-icon.min.css";
 /* Import Bootstrap Vue Styles */
-@import '~bootstrap-vue/dist/bootstrap-vue.css';
+@import "~bootstrap-vue/dist/bootstrap-vue.css";
 
-@import '~perfect-scrollbar/css/perfect-scrollbar.css';
-
+@import "~perfect-scrollbar/css/perfect-scrollbar.css";
 
 // Import styles with dark layout
 // If you want to use dark layout uncomment next line
@@ -36,7 +34,6 @@ $simple-line-font-path: '~simple-line-icons/fonts/';
 // Responsive
 @import "responsive";
 
-
 @import "./spinner.scss";
 
 @import "components/navbar.scss";
@@ -47,11 +44,10 @@ $simple-line-font-path: '~simple-line-icons/fonts/';
 @import "components/v-table.scss";
 @import "components/sidebar.scss";
 
-
 @import "pages/reports.scss";
 
-
 .app {
+  display: block;
   height: 100vh;
   -webkit-overflow-scrolling: touch;
   // overflow-y: scroll;
