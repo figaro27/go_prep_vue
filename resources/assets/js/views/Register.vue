@@ -223,20 +223,24 @@
               </b-form-group>
 
               <b-form-group horizontal>
-                <b-form-checkbox
-                  id="accepted-tos"
-                  name="accepted-tos"
-                  v-model="form[1].accepted_tos"
-                  value="1"
-                >
-                  I accept the
-                  <span
-                    class="strong"
-                    @click.stop.prevent="$refs.tos.show()"
-                    @touch.stop.prevent="$refs.tos.show()"
-                    >terms of service</span
-                  >
-                </b-form-checkbox>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="accepted"
+                    id="accepted"
+                    value="1"
+                  />
+                  <label class="form-check-label" for="accepted">
+                    I accept the
+                    <span
+                      class="strong"
+                      @click.stop.prevent="$refs.tos.show()"
+                      @touch.stop.prevent="$refs.tos.show()"
+                      >terms of service</span
+                    >
+                  </label>
+                </div>
               </b-form-group>
 
               <b-form-group horizontal v-if="form[0].role === 'store'">
