@@ -224,10 +224,10 @@
 
               <b-form-group horizontal>
                 <b-form-checkbox
-                  id="checkbox1"
+                  id="accepted-tos"
+                  name="accepted-tos"
                   v-model="form[1].accepted_tos"
                   value="1"
-                  unchecked-value="0"
                 >
                   I accept the
                   <span
