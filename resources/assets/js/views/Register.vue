@@ -584,6 +584,10 @@ export default {
         } else this.$toastr.e("Please try again.", "Registration failed");
 
         this.$v.form.$touch();
+
+        this.$nextTick(() => {
+          this.$forceUpdate();
+        });
       }
     },
     async submit() {
