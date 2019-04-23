@@ -46,9 +46,16 @@ $simple-line-font-path: "~simple-line-icons/fonts/";
 
 @import "pages/reports.scss";
 
+body {
+  width: 100vw;
+  height: auto;
+  min-height: 100vh;
+}
+
 .app {
   display: flex;
   -webkit-overflow-scrolling: touch;
+  min-height: 100vh;
   //overflow-y: scroll;
 }
 

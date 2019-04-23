@@ -27,13 +27,6 @@ $peak: 40%; // pancake's highest level, obviously ;)
 //$color_back: #E4E5E6; // background
 $color: #333; // the rest
 
-body {
-  //background-color: $color_back;
-  height: 100vh;
-  width: 100vw;
-  // overflow: hidden;
-}
-
 .app.customer #cooking {
   left: 0;
 }
