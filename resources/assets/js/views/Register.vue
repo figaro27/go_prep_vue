@@ -411,7 +411,7 @@
                 </b-form-checkbox>
               </b-form-group>
 
-              <b-form-group horizontal :state="state(2, 'accepted_toa')">
+              <!--<b-form-group horizontal :state="state(2, 'accepted_toa')">
                 <b-form-checkbox
                   id="accepted-toa2"
                   name="accepted-toa2"
@@ -428,7 +428,7 @@
                     >terms of agreement</span
                   >
                 </b-form-checkbox>
-              </b-form-group>
+              </b-form-group>-->
 
               <b-form-group horizontal>
                 <b-button
@@ -490,8 +490,8 @@ export default {
           city: null,
           state: null,
           zip: null,
-          accepted_tos: 0,
-          accepted_toa: 0
+          accepted_tos: 0
+          //accepted_toa: 0
         }
       },
       feedback: {
@@ -531,8 +531,8 @@ export default {
         city: validators.city,
         state: validators.state,
         zip: validators.zip,
-        accepted_tos: validators.required,
-        accepted_toa: validators.required
+        accepted_tos: validators.required
+        //accepted_toa: validators.required
       }
     },
     validationGroup: ["form[0]", "form[1]", "form[3]"]
