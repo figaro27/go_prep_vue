@@ -226,25 +226,22 @@
               </b-form-group>
 
               <b-form-group horizontal>
-                <div class="form-check">
-                  <input
-                    v-model="form[1].accepted_tos"
-                    class="form-check-input"
-                    type="checkbox"
-                    name="accepted"
-                    id="accepted"
-                    value="1"
-                  />
-                  <label class="form-check-label" for="accepted">
-                    I accept the
-                    <span
-                      class="strong"
-                      @click.stop.prevent="$refs.tos.show()"
-                      @touch.stop.prevent="$refs.tos.show()"
-                      >terms of service</span
-                    >
-                  </label>
-                </div>
+                <b-form-checkbox
+                  id="accepted-tos"
+                  name="accepted-tos"
+                  v-model="form[1].accepted_tos"
+                  :value="1"
+                  :unchecked-value="0"
+                  :state="state(1, 'accepted_tos')"
+                >
+                  I accept the
+                  <span
+                    class="strong"
+                    @click.stop.prevent="$refs.tos.show()"
+                    @touch.stop.prevent="$refs.tos.show()"
+                    >terms of service</span
+                  >
+                </b-form-checkbox>
               </b-form-group>
 
               <b-form-group horizontal v-if="form[0].role === 'store'">
@@ -400,8 +397,8 @@
                   id="accepted-tos2"
                   name="accepted-tos2"
                   v-model="form[2].accepted_tos"
-                  value="1"
-                  unchecked-value="0"
+                  :value="1"
+                  :unchecked-value="0"
                   :state="state(2, 'accepted_tos')"
                 >
                   I accept the
@@ -419,8 +416,8 @@
                   id="accepted-toa2"
                   name="accepted-toa2"
                   v-model="form[2].accepted_toa"
-                  value="1"
-                  unchecked-value="0"
+                  :value="1"
+                  :unchecked-value="0"
                   :state="state(2, 'accepted_toa')"
                 >
                   I accept the
@@ -524,7 +521,8 @@ export default {
         city: validators.city,
         state: validators.state,
         zip: validators.zip,
-        delivery: validators.delivery
+        delivery: validators.delivery,
+        accepted_tos: validators.required
       },
       2: {
         store_name: validators.store_name,
@@ -532,7 +530,9 @@ export default {
         address: validators.address,
         city: validators.city,
         state: validators.state,
-        zip: validators.zip
+        zip: validators.zip,
+        accepted_tos: validators.required,
+        accepted_toa: validators.required
       }
     },
     validationGroup: ["form[0]", "form[1]", "form[3]"]

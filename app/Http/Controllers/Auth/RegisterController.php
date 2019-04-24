@@ -183,7 +183,7 @@ class RegisterController extends Controller
 
         if ($data['user']['role'] === 'store') {
             $store = $user->store()->create([
-                // 'accepted_toa' => $data['store']['accepted_toa'],
+                'accepted_toa' => 1
             ]);
 
             $storeDetail = $store->details()->create([
