@@ -3,6 +3,9 @@
     <b-modal id="tos" size="xl" ref="tos">
       <termsOfService></termsOfService>
     </b-modal>
+    <b-modal id="toa" size="xl" ref="toa">
+      <termsOfAgreement></termsOfAgreement>
+    </b-modal>
     <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
       <div class="card">
         <div class="card-body p-lg-5">
@@ -225,6 +228,7 @@
               <b-form-group horizontal>
                 <div class="form-check">
                   <input
+                    v-model="form[1].accepted_tos"
                     class="form-check-input"
                     type="checkbox"
                     name="accepted"
@@ -391,20 +395,43 @@
                 ></b-input>
               </b-form-group>
 
-              <!-- <b-form-group horizontal>
+              <b-form-group horizontal :state="state(2, 'accepted_tos')">
                 <b-form-checkbox
-                  id="checkbox1"
+                  id="accepted-tos2"
+                  name="accepted-tos2"
+                  v-model="form[2].accepted_tos"
+                  value="1"
+                  unchecked-value="0"
+                  :state="state(2, 'accepted_tos')"
+                >
+                  I accept the
+                  <span
+                    class="strong"
+                    @click.stop.prevent="$refs.tos.show()"
+                    @touch.stop.prevent="$refs.tos.show()"
+                    >terms of service</span
+                  >
+                </b-form-checkbox>
+              </b-form-group>
+
+              <b-form-group horizontal :state="state(2, 'accepted_toa')">
+                <b-form-checkbox
+                  id="accepted-toa2"
+                  name="accepted-toa2"
                   v-model="form[2].accepted_toa"
                   value="1"
                   unchecked-value="0"
+                  :state="state(2, 'accepted_toa')"
                 >
-                  I accept the <span class="strong" @click.stop.prevent="$refs.toa.show()">terms of agreement</span>
+                  I accept the
+                  <span
+                    class="strong"
+                    @click.stop.prevent="$refs.toa.show()"
+                    @touch.stop.prevent="$refs.toa.show()"
+                    >terms of agreement</span
+                  >
                 </b-form-checkbox>
-              </b-form-group>-->
-
-              <!-- <b-modal id="toa" size="xl" ref="toa">
-                <termsOfAgreement></termsOfAgreement>
-              </b-modal>-->
+              </b-form-group>
 
               <b-form-group horizontal>
                 <b-button
@@ -465,8 +492,9 @@ export default {
           address: null,
           city: null,
           state: null,
-          zip: null
-          // accepted_toa: 0
+          zip: null,
+          accepted_tos: 0,
+          accepted_toa: 0
         }
       },
       feedback: {

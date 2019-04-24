@@ -128,8 +128,9 @@ class RegisterController extends Controller
                     'address' => 'required',
                     'city' => 'required',
                     'state' => 'required',
-                    'zip' => 'required'
-                    // 'accepted_toa' => 'in:1'
+                    'zip' => 'required',
+                    'accepted_tos' => 'in:1',
+                    'accepted_toa' => 'in:1'
                 ]);
                 break;
         }
