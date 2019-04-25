@@ -1,4 +1,4 @@
-import units from './units';
+import units from "./units";
 
 const nutrition = {
   getIngredientList(ingredients) {
@@ -43,6 +43,9 @@ const nutrition = {
       let transfatIndex = _.findIndex(ingredient.full_nutrients, function(o) {
         return o.attr_id == 605;
       });
+      let addedSugarIndex = _.findIndex(ingredient.full_nutrients, function(o) {
+        return o.attr_id == 539;
+      });
 
       let multiplier = 1;
 
@@ -77,12 +80,15 @@ const nutrition = {
       nutrition.sodium +=
         (ingredient.nf_sodium || ingredient.sodium) * multiplier;
       nutrition.totalCarb +=
-        (ingredient.nf_total_carbohydrate || ingredient.totalcarb) *
-        multiplier;
+        (ingredient.nf_total_carbohydrate || ingredient.totalcarb) * multiplier;
       nutrition.fibers +=
         (ingredient.nf_dietary_fiber || ingredient.fibers) * multiplier;
       nutrition.sugars +=
         (ingredient.nf_sugars || ingredient.sugars) * multiplier;
+      nutrition.addedSugars +=
+        addedSugarIndex > -1
+          ? ingredient.full_nutrients[addedSugarIndex].value
+          : ingredient.addedSugars;
       nutrition.proteins +=
         (ingredient.nf_protein || ingredient.proteins) * multiplier;
       nutrition.potassium +=
@@ -99,12 +105,10 @@ const nutrition = {
         ironIndex > -1
           ? ingredient.full_nutrients[ironIndex].value
           : ingredient.iron;
-      nutrition.sugars +=
-        (ingredient.nf_addedsugars || ingredient.sugars) * multiplier;
     });
 
     return nutrition;
-  },
-}
+  }
+};
 
 export default nutrition;
