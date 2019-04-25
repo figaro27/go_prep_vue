@@ -41,6 +41,11 @@ foreach ([config('app.domain')] as $domain) {
     Route::group(
         ['domain' => $domain, 'middleware' => ['web', 'store_slug']],
         function ($router) {
+            // Override reset password route
+            Route::get('forgot/reset/{token}', 'SpaController@index')->name(
+                'password.reset'
+            );
+
             // All logged in users
             Route::group(['middleware' => []], function ($router) {
                 /*Route::get('/', function (Request $request) {

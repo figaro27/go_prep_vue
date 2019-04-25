@@ -898,7 +898,10 @@ table {
 }
 
 body.login,
-body.register {
+body.register,
+body.forgot,
+body.reset,
+body.forgotresettoken {
   background-image: url("meal-prep-kitchen.jpg");
   background-repeat: no-repeat;
   background-size: cover;
