@@ -565,7 +565,7 @@
       <div class="card">
         <div class="card-body">
           <div v-if="!storeSettings.stripe_id">
-            <b-form-group label="Payment Info" :state="true">
+            <b-form-group :state="true">
               <b-button
                 variant="primary"
                 :href="
