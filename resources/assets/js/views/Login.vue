@@ -43,9 +43,7 @@
             </b-form-group>
 
             <b-form-group horizontal>
-              <router-link class="btn btn-link" to="/forgot"
-                >Forgot password?</router-link
-              >
+              <router-link to="/forgot">Forgot password?</router-link>
             </b-form-group>
           </b-form>
         </div>
