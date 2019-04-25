@@ -308,7 +308,7 @@
                   >
                   <b-btn
                     v-if="
-                      card &&
+                      card != null &&
                         minOption === 'price' &&
                         totalBagPrice >= minPrice &&
                         storeSettings.open
@@ -442,7 +442,7 @@ export default {
       minPrice: "minimumPrice"
     }),
     card() {
-      if (this.cards.length > 1) return null;
+      if (this.cards.length != 1) return null;
       else return 1;
     },
     storeSettings() {
