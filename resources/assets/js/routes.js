@@ -214,7 +214,10 @@ router.beforeEach((to, from, next) => {
       remove: /[*+~.()'"!:@\/]/
     });
 
-    if (to.path === "/" + route || to.matched[0].path === "/" + route) {
+    if (
+      to.path === "/" + route ||
+      (to.matched[0] && to.matched[0].path === "/" + route)
+    ) {
       $("body").addClass(className);
     } else $("body").removeClass(className);
   });
