@@ -54,13 +54,12 @@ class SyncNutrition extends Command
         foreach ($grouped as $unitType => $ingredients) {
             $unit = $typeMap[$unitType];
 
+            $ingredients = $ingredients->pluck('food_name')->unique();
+
             foreach ($ingredients->chunk(100) as $chunk) {
                 $query = $chunk
                     ->map(function ($ingredient) use ($unit, $precision) {
-                        return $precision .
-                            $unit .
-                            ' ' .
-                            $ingredient->food_name;
+                        return $precision . $unit . ' ' . $ingredient;
                     })
                     ->implode(', ');
 
@@ -85,9 +84,9 @@ class SyncNutrition extends Command
                         $food->get('food_name')
                     )->update($newVals);
                 }
+
+                sleep(3);
             }
         }
-
-        return;
     }
 }
