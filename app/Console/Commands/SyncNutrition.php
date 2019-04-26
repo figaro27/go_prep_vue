@@ -76,13 +76,17 @@ class SyncNutrition extends Command
                     $newVals = [];
 
                     foreach (['sugars', 'addedSugars', 'totalcarb'] as $field) {
-                        $newVals[$field] = $food->get($field, 0) / $precision;
+                        $newVals[$field] = $food->get($field, 0);
+
+                        if ($field !== 'totalcarb') {
+                            $newVals[$field] /= $precision;
+                        }
                     }
 
-                    Ingredient::where(
-                        'food_name',
-                        $food->get('food_name')
-                    )->update($newVals);
+                    Ingredient::where([
+                        'food_name' => $food->get('food_name'),
+                        'unit_type' => $unitType
+                    ])->update($newVals);
                 }
 
                 sleep(3);
