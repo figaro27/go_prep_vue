@@ -8,39 +8,61 @@
           width="90"
           height="40"
           alt="GoPrep Logo"
-        >
+        />
         <img
           class="navbar-brand-minimized"
           src="/images/logo.png"
           width="33"
           height="40"
           alt="GoPrep Logo"
-        >
+        />
       </b-link>
       <b-navbar-toggle target="nav_collapse" class="mr-auto ml-2" />
-      <b-btn class="mr-2 d-lg-none" variant="light" v-if="'id' in viewedStore" to="/customer/bag"><i class="fa fa-shopping-bag"></i></b-btn>
+      <b-btn
+        class="mr-2 d-lg-none"
+        variant="light"
+        v-if="'id' in viewedStore"
+        to="/customer/bag"
+        ><i class="fa fa-shopping-bag"></i
+      ></b-btn>
 
       <b-collapse is-nav id="nav_collapse" class="customer-nav">
         <b-navbar-nav class="d-none d-block d-md-none">
-          <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag">Bag</b-nav-item>
+          <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag"
+            >Bag</b-nav-item
+          >
         </b-navbar-nav>
         <b-navbar-nav class="">
-          <b-nav-item v-if="'id' in viewedStore" to="/customer/menu">Menu</b-nav-item>
-          <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag">Bag</b-nav-item>
+          <b-nav-item v-if="'id' in viewedStore" to="/customer/menu"
+            >Menu</b-nav-item
+          >
+          <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag"
+            >Bag</b-nav-item
+          >
           <b-nav-item v-if="loggedIn" to="/customer/orders">Orders</b-nav-item>
-          <b-nav-item v-if="loggedIn" to="/customer/meal-plans">Meal Plans</b-nav-item>
+          <b-nav-item v-if="loggedIn" to="/customer/meal-plans"
+            >Meal Plans</b-nav-item
+          >
+          <b-nav-item v-if="loggedIn" to="/customer/account/my-account"
+            >My Account</b-nav-item
+          >
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
-          <CustomerDropdown v-if="loggedIn"/>
+          <CustomerDropdown v-if="loggedIn" />
           <b-nav-item v-if="!loggedIn" to="/login">Log In</b-nav-item>
-          <b-nav-item v-if="!loggedIn" class="px-3 mr-4" to="/register">Register</b-nav-item>
+          <b-nav-item v-if="!loggedIn" class="px-3 mr-4" to="/register"
+            >Register</b-nav-item
+          >
         </b-navbar-nav>
         <!--<AsideToggler class="d-lg-none" mobile />-->
       </b-collapse>
     </b-navbar>
     <div class="app-body">
       <main class="main">
-        <page-spinner v-if="!initialized || isLoading" :faded="initialized"></page-spinner>
+        <page-spinner
+          v-if="!initialized || isLoading"
+          :faded="initialized"
+        ></page-spinner>
         <div class="container-fluid" v-if="initialized">
           <router-view></router-view>
         </div>
@@ -49,21 +71,10 @@
     <!-- <TheFooter>
     </TheFooter>-->
     <v-style>
-      .navbar {
-        background: {{ navBgColor }};
-      }
-
-      .menu-bag-btn, .brand-color, .filters .active {
-        background: {{ bgColor }};
-      }
-
-      .dbl-underline:after {
-        border-bottom: 3px double {{ bgColor }};
-      }
-
-      .nav-item a:hover {
-        background-color: #afafaf !important;
-      }
+      .navbar { background: {{ navBgColor }}; } .menu-bag-btn, .brand-color,
+      .filters .active { background: {{ bgColor }}; } .dbl-underline:after {
+      border-bottom: 3px double {{ bgColor }}; } .nav-item a:hover {
+      background-color: #afafaf !important; }
     </v-style>
   </div>
 </template>
@@ -123,8 +134,8 @@ export default {
   },
   data() {
     return {
-      navBgColor: '',
-      bgColor: ''
+      navBgColor: "",
+      bgColor: ""
     };
   },
   computed: {
@@ -142,21 +153,19 @@ export default {
     }
   },
   updated() {
-    let page = this.name
+    let page = this.name;
     // if (page != 'customer-home' && page != 'login' && page != 'register' && page != 'customer-orders' && page != 'customer-meal-plans')
     //   this.navBgColor = this.viewedStore.settings.color + ' !important';
-    if (page === 'customer-menu' || page === 'customer-bag')
-      this.navBgColor = this.viewedStore.settings.color + ' !important';
-    else
-      this.navBgColor = '#3082cf !important';
+    if (page === "customer-menu" || page === "customer-bag")
+      this.navBgColor = this.viewedStore.settings.color + " !important";
+    else this.navBgColor = "#3082cf !important";
 
-
-      
-      if (this.navBgColor === '#3082cf !important' || this.navBgColor === '#3082CF !important'){
-        this.bgColor = '#F25727 !important';
-      }
-      else
-        this.bgColor = this.viewedStore.settings.color + ' !important';
+    if (
+      this.navBgColor === "#3082cf !important" ||
+      this.navBgColor === "#3082CF !important"
+    ) {
+      this.bgColor = "#F25727 !important";
+    } else this.bgColor = this.viewedStore.settings.color + " !important";
   },
   created() {},
   methods: {}

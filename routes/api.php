@@ -195,6 +195,11 @@ foreach (
                                 'UserDetailController@update'
                             );
 
+                            Route::patch(
+                                '/me/password',
+                                'PasswordController@update'
+                            );
+
                             Route::post(
                                 'bag/checkout',
                                 'CheckoutController@checkout'

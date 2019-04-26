@@ -66,6 +66,48 @@
         </div>
       </div>
 
+      <p>Change Password</p>
+      <div class="card">
+        <div class="card-body">
+          <b-form @submit.prevent="updatePassword">
+            <b-form-group :state="true">
+              <b-form-input
+                type="password"
+                v-model="password.current"
+                placeholder="Current Password"
+                required
+              ></b-form-input>
+            </b-form-group>
+
+            <hr />
+
+            <b-form-group :state="true">
+              <b-form-input
+                type="password"
+                v-model="password.new"
+                placeholder="New Password"
+                required
+              ></b-form-input>
+            </b-form-group>
+
+            <hr />
+
+            <b-form-group :state="true" class="mb-0">
+              <b-form-input
+                type="password"
+                v-model="password.new_confirmation"
+                placeholder="Confirm New Password"
+                required
+              ></b-form-input>
+            </b-form-group>
+
+            <b-button type="submit" variant="primary" class="mt-3"
+              >Save</b-button
+            >
+          </b-form>
+        </div>
+      </div>
+
       <p>Notifications</p>
       <div class="card">
         <div class="card-body">
@@ -144,13 +186,22 @@ import CardPicker from "../../../components/Billing/CardPicker";
 import { mapGetters, mapActions } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
 
+import toasts from "../../../mixins/toasts";
+
 export default {
+  mixins: [toasts],
   components: {
     CardPicker,
     cSwitch
   },
   data() {
-    return {};
+    return {
+      password: {
+        current: null,
+        new: null,
+        new_confirmation: null
+      }
+    };
   },
   computed: {
     ...mapGetters({
@@ -172,6 +223,20 @@ export default {
         })
         .catch(e => {
           this.$toastr.e("Failed to update profile.");
+        });
+    },
+    updatePassword() {
+      axios
+        .patch("/api/me/password", this.password)
+        .then(response => {
+          this.$toastr.s("Password updated.");
+          this.refreshUser();
+        })
+        .catch(e => {
+          this.toastErrorResponse(
+            e.response.data,
+            "Failed to update password."
+          );
         });
     },
     spliceZip() {
