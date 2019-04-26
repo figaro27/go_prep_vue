@@ -1,10 +1,13 @@
 import VueRouter from "vue-router";
+import slugify from "slugify";
 
 import store from "./store";
 import auth from "./lib/auth";
 
 import Login from "./views/Login.vue";
 import Register from "./views/Register.vue";
+import Forgot from "./views/ForgotPassword.vue";
+import Reset from "./views/ResetPassword.vue";
 
 import CustomerHome from "./views/Customer/Home.vue";
 import CustomerBag from "./views/Customer/Bag.vue";
@@ -62,6 +65,22 @@ let routes = [
     name: "register",
     meta: {
       bodyClass: "register"
+    }
+  },
+  {
+    path: "/forgot",
+    component: Forgot,
+    name: "forgot",
+    meta: {
+      bodyClass: "forgot"
+    }
+  },
+  {
+    path: "/forgot/reset/:token",
+    component: Reset,
+    name: "reset",
+    meta: {
+      bodyClass: "reset"
     }
   },
   {
@@ -187,13 +206,17 @@ const router = new VueRouter({ mode: "history", routes });
 
 router.beforeEach((to, from, next) => {
   // Routes to add class to body. Exclude leading /
-  const classRoutes = ["login", "register"];
+  const classRoutes = ["login", "register", "forgot", "forgot/reset/:token"];
 
   // Handle body classes
   classRoutes.forEach(route => {
-    if (to.path === "/" + route) {
-      $("body").addClass(route);
-    } else $("body").removeClass(route);
+    let className = slugify(route, {
+      remove: /[*+~.()'"!:@\/]/
+    });
+
+    if (to.path === "/" + route || to.matched[0].path === "/" + route) {
+      $("body").addClass(className);
+    } else $("body").removeClass(className);
   });
 
   if (!auth.hasToken()) {

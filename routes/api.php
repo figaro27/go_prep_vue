@@ -37,6 +37,13 @@ foreach (
                 'register/validate/{step}',
                 'Auth\RegisterController@validateStep'
             );
+
+            // Password resetting
+            Route::post(
+                'forgot',
+                'Auth\ForgotPasswordController@sendResetLinkEmail'
+            );
+            Route::post('reset', 'Auth\ResetPasswordController@reset');
         }
     );
 

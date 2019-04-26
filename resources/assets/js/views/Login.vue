@@ -15,8 +15,15 @@
             <div class="form-group row">
               <div class="col-md-6 offset-md-3">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                  <label class="form-check-label" for="remember">Remember Me</label>
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="remember"
+                    id="remember"
+                  />
+                  <label class="form-check-label" for="remember"
+                    >Remember Me</label
+                  >
                 </div>
               </div>
             </div>
@@ -30,7 +37,13 @@
                 href="#"
               >Forgot Your Password?</a>
               -->
-              <router-link class="btn btn-link" to="/register">No Account?</router-link>
+              <router-link class="btn btn-link" to="/register"
+                >No Account?</router-link
+              >
+            </b-form-group>
+
+            <b-form-group horizontal>
+              <router-link to="/forgot">Forgot password?</router-link>
             </b-form-group>
           </b-form>
         </div>
