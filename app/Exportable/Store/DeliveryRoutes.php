@@ -1,23 +1,34 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Exportable\Store;
 
-use Auth;
+use App\Exportable\Exportable;
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
-use App\StoreDetail;
-use App\Order;
 use App\Store;
+use App\Order;
 
-class DeliveryRouteController extends Controller
+class DeliveryRoutes
 {
-    public function getRoutes()
+    use Exportable;
+
+    protected $store;
+
+    public function __construct(Store $store, $params = [])
     {
+        $this->store = $store;
+        $this->params = $params;
+    }
+
+    public function exportData($type = null)
+    {
+        $dates = $this->getDeliveryDates();
+        $orders = $this->store->getOrders(null, $dates, true);
+
         $googleApiKey = 'AIzaSyArp-lohyOEQXF6a69wyFXruthJd9jNY4U';
-        $hereApp_id = "V2tJJFOIa2LjoSw4xNuX";
-        $hereApp_code = "JRGmnV2itkv7cCLRWc55CA";
-        // $hereApp_id="D2vwjQLe6hZEsNkdzPf0";
-        // $hereApp_code="_0IsSILsI4W-7piSDVl81A";
+        // $hereApp_id = "V2tJJFOIa2LjoSw4xNuX";
+        // $hereApp_code = "JRGmnV2itkv7cCLRWc55CA";
+        $hereApp_id = "D2vwjQLe6hZEsNkdzPf0";
+        $hereApp_code = "_0IsSILsI4W-7piSDVl81A";
 
         // Get all customer addresses from orders
 
@@ -35,34 +46,40 @@ class DeliveryRouteController extends Controller
         $storeAddress = str_replace(' ', '+', $address);
 
         $customerAddresses = [];
-        $customerAddressesNatural = [];
+        $customers = [];
 
         // Transfer to Exportable and get delivery dates for accurate orders
 
         $orders = Order::where('store_id', $store->id)->get();
 
         foreach ($orders as $order) {
-            $customerAddress = $order->user->details;
+            $customerDetails = $order->user->details;
             array_push(
                 $customerAddresses,
-                str_replace(' ', '+', $customerAddress->address) .
+                str_replace(' ', '+', $customerDetails->address) .
                     '+' .
-                    $customerAddress->city .
+                    $customerDetails->city .
                     '+' .
-                    $customerAddress->state .
+                    $customerDetails->state .
                     '+' .
-                    $customerAddress->zip
+                    $customerDetails->zip
             );
 
             array_push(
-                $customerAddressesNatural,
-                $customerAddress->address .
+                $customers,
+                $customerDetails->firstname .
                     ' ' .
-                    $customerAddress->city .
+                    $customerDetails->lastname .
+                    '|' .
+                    $customerDetails->address .
+                    ', ' .
+                    $customerDetails->city .
+                    ', ' .
+                    $customerDetails->state .
                     ' ' .
-                    $customerAddress->state .
-                    ' ' .
-                    $customerAddress->zip
+                    $customerDetails->zip .
+                    '|' .
+                    $customerDetails->delivery
             );
         }
 
@@ -73,7 +90,7 @@ class DeliveryRouteController extends Controller
         $storeCoordinates = '';
         $res = $googleClient->get(
             'https://maps.googleapis.com/maps/api/geocode/json?address=' .
-                $customerAddress .
+                $storeAddress .
                 '&key=' .
                 $googleApiKey
         );
@@ -139,11 +156,20 @@ class DeliveryRouteController extends Controller
         $order = [];
 
         foreach ($waypoints as $waypoint) {
-            array_push($order, $waypoint->id);
+            if ($waypoint->id != "Start") {
+                array_push($order, (int) substr($waypoint->id, -1));
+            }
         }
 
-        // Fix this below, maybe get delivery instructions, get accurate delivery date for orders, and should be done
-        $output = array_merge($customerAddressesNatural, $order);
-        return $output;
+        $deliveryAddresses = array_map(function ($item) use ($customers) {
+            return $customers[$item - 1];
+        }, $order);
+
+        return $deliveryAddresses;
+    }
+
+    public function exportPdfView()
+    {
+        return 'reports.delivery_routes_pdf';
     }
 }

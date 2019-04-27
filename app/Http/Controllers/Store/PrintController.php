@@ -16,6 +16,7 @@ use App\Exportable\Store\OrdersByCustomer;
 use App\Exportable\Store\PastOrders;
 use App\Exportable\Store\Subscriptions;
 use App\Exportable\Store\MealsIngredients;
+use App\Exportable\Store\DeliveryRoutes;
 
 class PrintController extends StoreController
 {
@@ -58,6 +59,10 @@ class PrintController extends StoreController
 
             case 'meals_ingredients':
                 $exportable = new MealsIngredients($this->store, $params);
+                break;
+
+            case 'delivery_routes':
+                $exportable = new DeliveryRoutes($this->store, $params);
                 break;
         }
 
