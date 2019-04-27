@@ -48,9 +48,9 @@ class DeliveryRoutes
         $customerAddresses = [];
         $customers = [];
 
-        // Transfer to Exportable and get delivery dates for accurate orders
-
-        $orders = Order::where('store_id', $store->id)->get();
+        $orders = Order::where('store_id', $store->id)
+            ->where('pickup', 0)
+            ->get();
 
         foreach ($orders as $order) {
             $customerDetails = $order->user->details;
