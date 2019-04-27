@@ -162,7 +162,7 @@ class DeliveryRoutes
         }
 
         $deliveryAddresses = array_map(function ($item) use ($customers) {
-            return $customers[$item];
+            return $customers[$item - 1];
         }, $order);
 
         return $deliveryAddresses;
