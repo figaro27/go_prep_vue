@@ -18,10 +18,11 @@
       <h2>All Delivery Dates</h2>
     @endif
 
-
+    <ol>
     @foreach($data as $i)
-      <p>{{ $i }}</p>
+      <li>{{ $i }}</li>
     @endforeach
+    </ol>
   </div>
 </body>
 
