@@ -88,23 +88,23 @@ const nutrition = {
       nutrition.addedSugars +=
         addedSugarIndex > -1
           ? ingredient.full_nutrients[addedSugarIndex].value
-          : ingredient.addedSugars;
+          : ingredient.addedSugars || 0;
       nutrition.proteins +=
         (ingredient.nf_protein || ingredient.proteins) * multiplier;
       nutrition.potassium +=
         (ingredient.nf_potassium || ingredient.potassium) * multiplier;
       nutrition.vitaminD +=
-        (vitamindIndex > -1
+        vitamindIndex > -1
           ? ingredient.full_nutrients[vitamindIndex].value
-          : ingredient.vitamind) * multiplier;
+          : ingredient.vitamind || 0;
       nutrition.calcium +=
         calciumIndex > -1
           ? ingredient.full_nutrients[calciumIndex].value
-          : ingredient.calcium;
+          : ingredient.calcium || 0;
       nutrition.iron +=
         ironIndex > -1
           ? ingredient.full_nutrients[ironIndex].value
-          : ingredient.iron;
+          : ingredient.iron || 0;
     });
 
     return nutrition;

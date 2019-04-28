@@ -18,7 +18,7 @@ class Unit
                 $v->toNativeUnit();
                 $type = 'volume';
             } catch (\Exception $e) {
-                $type= 'unit';
+                $type = 'unit';
             }
         }
 
@@ -27,26 +27,40 @@ class Unit
 
     public static function isSameType($unitA, $unitB)
     {
-      return self::getType($unitA) === self::getType($unitB);
+        return self::getType($unitA) === self::getType($unitB);
     }
 
     public static function convert($value, $unitA, $unitB)
     {
-      if(!self::isSameType($unitA, $unitB)) {
-        return $value;
-      }
+        if (!self::isSameType($unitA, $unitB)) {
+            return $value;
+        }
 
-      switch(self::getType($unitA)) {
-        case 'mass':
-          $value = new Mass($value, $unitA);
-          break;
-        case 'volume':
-          $value = new Volume($value, $unitA);
-          break;
-        default:
-          return $value;
-      }
+        switch (self::getType($unitA)) {
+            case 'mass':
+                $value = new Mass($value, $unitA);
+                break;
+            case 'volume':
+                $value = new Volume($value, $unitA);
+                break;
+            default:
+                return $value;
+        }
 
-      return $value->toUnit($unitB);
+        return $value->toUnit($unitB);
+    }
+
+    public static function base($unitType)
+    {
+        switch ($unitType) {
+            case "mass":
+                return "g";
+            case "volume":
+                return "ml";
+            case "unit":
+                return "unit";
+            default:
+                throw new \Exception("Unrecognized unit type");
+        }
     }
 }
