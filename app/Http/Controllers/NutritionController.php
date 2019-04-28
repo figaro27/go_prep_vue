@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use App\Unit;
 
 class NutritionController extends Controller
 {
@@ -91,11 +92,22 @@ class NutritionController extends Controller
                 if (isset(self::$keyMap[$key])) {
                     $key = self::$keyMap[$key];
                 }
-                if (
-                    in_array($key, $normalizeKeys) &&
-                    $rawFood->serving_weight_grams
-                ) {
-                    $item = $item / $rawFood->serving_weight_grams;
+
+                $type = Unit::getType($rawFood->serving_unit);
+                $base = Unit::base($type);
+
+                if ($type !== 'unit') {
+                    $multiplier = Unit::convert(
+                        $rawFood->serving_qty,
+                        $rawFood->serving_unit,
+                        $base
+                    );
+                } else {
+                    $multiplier = $rawFood->serving_qty;
+                }
+
+                if (in_array($key, $normalizeKeys) && $rawFood->serving_qty) {
+                    $item = $item / $multiplier;
                 }
                 return [$key => $item];
             });

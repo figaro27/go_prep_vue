@@ -75,10 +75,25 @@ class SyncNutrition extends Command
                 foreach ($nutrition['foods'] as $food) {
                     $newVals = [];
 
-                    foreach (['sugars', 'addedSugars', 'totalcarb'] as $field) {
+                    foreach (
+                        [
+                            'sugars',
+                            'addedSugars',
+                            'totalcarb',
+                            'totalfat',
+                            'satfat'
+                        ]
+                        as $field
+                    ) {
                         $newVals[$field] = $food->get($field, 0);
 
-                        if ($field !== 'totalcarb') {
+                        if (
+                            !in_array($field, [
+                                'totalfat',
+                                'satfat',
+                                'totalcarb'
+                            ])
+                        ) {
                             $newVals[$field] /= $precision;
                         }
                     }
