@@ -25,10 +25,10 @@ class DeliveryRoutes
         $orders = $this->store->getOrders(null, $dates, true);
 
         $googleApiKey = 'AIzaSyArp-lohyOEQXF6a69wyFXruthJd9jNY4U';
-        $hereApp_id = "V2tJJFOIa2LjoSw4xNuX";
-        $hereApp_code = "JRGmnV2itkv7cCLRWc55CA";
-        // $hereApp_id = "D2vwjQLe6hZEsNkdzPf0";
-        // $hereApp_code = "_0IsSILsI4W-7piSDVl81A";
+        // $hereApp_id = "V2tJJFOIa2LjoSw4xNuX";
+        // $hereApp_code = "JRGmnV2itkv7cCLRWc55CA";
+        $hereApp_id = "D2vwjQLe6hZEsNkdzPf0";
+        $hereApp_code = "_0IsSILsI4W-7piSDVl81A";
 
         // Get all customer addresses from orders
 
@@ -162,7 +162,9 @@ class DeliveryRoutes
         }
 
         $deliveryAddresses = array_map(function ($item) use ($customers) {
-            return $customers[$item];
+            if ($item != 0) {
+                return $customers[$item - 1];
+            }
         }, $order);
 
         return $deliveryAddresses;
