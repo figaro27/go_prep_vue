@@ -149,7 +149,10 @@ trait Exportable
             ];
         } elseif ($defaultFuture) {
             $dates = [
-                'from' => Carbon::today()->startOfDay()
+                'from' => Carbon::today()->startOfDay(),
+                'to' => Carbon::today()
+                    ->addDays(14)
+                    ->startOfDay()
             ];
         }
 
