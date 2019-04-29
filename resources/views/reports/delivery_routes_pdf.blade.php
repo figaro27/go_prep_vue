@@ -26,7 +26,7 @@
       {{$row['address']}}<br>
       {{$row['phone']}}<br>
       Instructions: {{$row['instructions']}}<br>
-      <hr>
+      <hr style="text-align: left">
     @endforeach
     </div>
   </div>
