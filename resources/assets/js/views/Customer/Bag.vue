@@ -415,7 +415,6 @@ export default {
   data() {
     return {
       pickup: 0,
-      card: null,
       deliveryPlan: false,
       deliveryDay: undefined,
       stripeKey: window.app.stripe_key,
@@ -442,10 +441,10 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice"
     }),
-    // card() {
-    //   if (this.cards.length != 1) return null;
-    //   else return 1;
-    // },
+    card() {
+      if (this.cards.length != 1) return null;
+      else return this.cards[0].id;
+    },
     storeSettings() {
       return this.store.settings;
     },
