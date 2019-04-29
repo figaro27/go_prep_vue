@@ -46,28 +46,30 @@ class Hourly extends Command
         $count = 0;
 
         foreach ($stores as $store) {
-          $storeDetails = $store->details;
-            if ($store->cutoffPassed('hour')) {
+            $date = $store->getNextDeliveryDate();
+            $orders = $store->orders()->where('delivery_date', $date);
+            $storeDetails = $store->details;
+            if (count($orders) > 0 && $store->cutoffPassed('hour')) {
                 if ($store->notificationEnabled('ready_to_print')) {
                     $store->sendNotification('ready_to_print', $storeDetails);
                     $count++;
                 }
 
-                $date = $store->getNextDeliveryDate();
-
                 // Get subscription orders
-                $subOrders = $store->orders()->with('subscription')
-                  ->where([
-                      ['subscription_id', 'NOT', null],
-                      ['delivery_date', $date],
-                  ])
-                  ->whereHas('subscription', function($query) {
-                    $query->where('status', 'active');
-                  })
-                  ->get()
-                  ->map(function ($order) {
-                      return $order->subscription;
-                  });
+                $subOrders = $store
+                    ->orders()
+                    ->with('subscription')
+                    ->where([
+                        ['subscription_id', 'NOT', null],
+                        ['delivery_date', $date]
+                    ])
+                    ->whereHas('subscription', function ($query) {
+                        $query->where('status', 'active');
+                    })
+                    ->get()
+                    ->map(function ($order) {
+                        return $order->subscription;
+                    });
             }
         }
         $this->info($count . ' `Ready to Print` notifications sent');
@@ -75,14 +77,23 @@ class Hourly extends Command
 
         // Subscriptions about to renew
         $dateRange = [
-          Carbon::now('utc')->addDays(1)->subMinutes(30)->toDateTimeString(),
-          Carbon::now('utc')->addDays(1)->addMinutes(30)->toDateTimeString()
+            Carbon::now('utc')
+                ->addDays(1)
+                ->subMinutes(30)
+                ->toDateTimeString(),
+            Carbon::now('utc')
+                ->addDays(1)
+                ->addMinutes(30)
+                ->toDateTimeString()
         ];
-        $subs = Subscription::whereBetween('next_renewal_at', $dateRange)->get();
+        $subs = Subscription::whereBetween(
+            'next_renewal_at',
+            $dateRange
+        )->get();
 
         foreach ($subs as $sub) {
-          $sub->user->sendNotification('subscription_renewing', $sub);
-          $count++;
+            $sub->user->sendNotification('subscription_renewing', $sub);
+            $count++;
         }
         $this->info($count . ' `Meal Plan Renewing` notifications sent');
         $count = 0;
