@@ -18,11 +18,17 @@
       <h2>All Delivery Dates</h2>
     @endif
 
-    <ol>
-    @foreach($data as $i)
-      <li>{{ $i }}</li>
+    <div>
+    @foreach($data as $i => $row)
+      {{$i + 1}}.<br>
+      Order #{{$row['order']->order_number}}<br>
+      {{$row['name']}}<br>
+      {{$row['address']}}<br>
+      {{$row['phone']}}<br>
+      Instructions: {{$row['instructions']}}<br>
+      <hr>
     @endforeach
-    </ol>
+    </div>
   </div>
 </body>
 

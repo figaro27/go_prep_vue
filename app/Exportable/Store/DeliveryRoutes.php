@@ -44,7 +44,7 @@ class DeliveryRoutes
             $storeDetails->state .
             ' ' .
             $storeDetails->zip;
-        $storeAddress = str_replace(' ', '+', $address);
+        $storeAddress = urlencode($address);
 
         $customerAddresses = [];
         $customers = [];
@@ -55,33 +55,27 @@ class DeliveryRoutes
 
         foreach ($orders as $order) {
             $customerDetails = $order->user->details;
-            array_push(
-                $customerAddresses,
-                str_replace(' ', '+', $customerDetails->address) .
-                    '+' .
-                    $customerDetails->city .
-                    '+' .
-                    $customerDetails->state .
-                    '+' .
+            $customerAddresses[] = urlencode(
+                implode(', ', [
+                    $customerDetails->address,
+                    $customerDetails->city,
+                    $customerDetails->state,
                     $customerDetails->zip
+                ])
             );
 
-            array_push(
-                $customers,
-                $customerDetails->firstname .
-                    ' ' .
-                    $customerDetails->lastname .
-                    '|' .
-                    $customerDetails->address .
-                    ', ' .
-                    $customerDetails->city .
-                    ', ' .
-                    $customerDetails->state .
-                    ' ' .
-                    $customerDetails->zip .
-                    '|' .
-                    $customerDetails->delivery
-            );
+            $customers[] = [
+                'order' => $order,
+                'name' => $customerDetails->full_name,
+                'address' => implode(', ', [
+                    $customerDetails->address,
+                    $customerDetails->city,
+                    $customerDetails->state,
+                    $customerDetails->zip
+                ]),
+                'phone' => $customerDetails->phone,
+                'instructions' => $customerDetails->delivery
+            ];
         }
 
         // Convert store address to geocode
@@ -162,11 +156,13 @@ class DeliveryRoutes
             }
         }
 
-        $deliveryAddresses = array_map(function ($item) use ($customers) {
-            if ($item != 0) {
-                return $customers[$item - 1];
-            }
-        }, $order);
+        $deliveryAddresses = collect($order)
+            ->filter()
+            ->map(function ($item) use ($customers) {
+                if ($item != 0) {
+                    return $customers[$item - 1];
+                }
+            });
 
         return $deliveryAddresses;
     }
