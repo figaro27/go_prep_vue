@@ -318,7 +318,8 @@ class Store extends Model
         $groupBy = null,
         $dateRange = [],
         $onlyUnfulfilled = false,
-        $onlyPaid = true
+        $onlyPaid = true,
+        $onlyDelivery = false
     ) {
         $orders = $this->orders()->with('meals');
 
@@ -344,6 +345,9 @@ class Store extends Model
         }
         if ($onlyPaid) {
             $orders = $orders->where('paid', 1);
+        }
+        if ($onlyDelivery) {
+            $orders = $orders->where('pickup', 0);
         }
 
         $orders = $orders->get();
