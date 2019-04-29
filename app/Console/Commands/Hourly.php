@@ -47,7 +47,10 @@ class Hourly extends Command
 
         foreach ($stores as $store) {
             $date = $store->getNextDeliveryDate();
-            $orders = $store->orders()->where('delivery_date', $date);
+            $orders = $store
+                ->orders()
+                ->where('delivery_date', $date)
+                ->get();
             $storeDetails = $store->details;
             if (count($orders) > 0 && $store->cutoffPassed('hour')) {
                 if ($store->notificationEnabled('ready_to_print')) {
