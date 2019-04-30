@@ -24,20 +24,43 @@ class UpdateMealRequest extends FormRequest
      */
     public function rules()
     {
-        if($this->request->get('validate_all', false)) {
-          return [
-              'title' => 'required',
-              'price' => 'required|numeric|between:0.01,999.99', // todo: update price limits
-              'category_ids' => 'required',
-          ];
+        if ($this->request->get('validate_all', false)) {
+            return [
+                'title' => 'required',
+                'price' => 'required|numeric|between:0.01,999.99', // todo: update price limits
+                'category_ids' => 'required',
+                'default_size_title' => 'required_with:sizes',
+                'sizes.*.title' => 'required|distinct',
+                'sizes.*.price' => 'required',
+                'sizes.*.multiplier' => 'required|distinct|not_in:1'
+            ];
+        } else {
+            return [
+                'title' => 'filled',
+                'price' => 'filled',
+                'category_ids' => 'filled'
+            ];
         }
-        else {
-          return [
-              'title' => 'filled',
-              'price' => 'filled',
-              'category_ids' => 'filled',
-          ];
-        }
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'sizes.*.title' => [
+                'required' => 'The meal size title is required'
+            ],
+            'sizes.*.price' => [
+                'required' => 'The meal size price is required'
+            ],
+            'sizes.*.multiplier' => [
+                'required' => 'The meal size price is required'
+            ]
+        ];
     }
 
     /**
@@ -48,8 +71,6 @@ class UpdateMealRequest extends FormRequest
      */
     public function withValidator($validator)
     {
-        $validator->after(function (Validator $validator) {
-
-        });
+        $validator->after(function (Validator $validator) {});
     }
 }
