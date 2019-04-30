@@ -102,7 +102,7 @@ trait Exportable
             'data' => $data,
             'params' => $this->params,
             'delivery_dates' => $this->getDeliveryDates(),
-            'body_classes' => implode(' ', [$this->orientation]),
+            'body_classes' => implode(' ', [$this->orientation])
         ];
 
         $html = view($this->exportPdfView(), $vars)->render();
@@ -116,15 +116,15 @@ trait Exportable
             //'margin-bottom' => 0,
             //'margin-left' => 0,
             //'margin-right' => 0,
-            'disable-smart-shrinking',
+            'disable-smart-shrinking'
         ];
 
         if (config('pdf.xserver')) {
             $pdfConfig = array_merge($pdfConfig, [
                 'use-xserver',
                 'commandOptions' => array(
-                    'enableXvfb' => true,
-                ),
+                    'enableXvfb' => true
+                )
             ]);
         }
 
@@ -136,7 +136,7 @@ trait Exportable
         return Storage::url($filename);
     }
 
-    public function getDeliveryDates()
+    public function getDeliveryDates($defaultFuture = true)
     {
         $dates = [];
 
@@ -145,7 +145,14 @@ trait Exportable
 
             $dates = [
                 'from' => Carbon::parse($dates->from)->startOfDay(),
-                'to' => Carbon::parse($dates->to)->endOfDay(),
+                'to' => Carbon::parse($dates->to)->endOfDay()
+            ];
+        } elseif ($defaultFuture) {
+            $dates = [
+                'from' => Carbon::today()->startOfDay(),
+                'to' => Carbon::today()
+                    ->addDays(14)
+                    ->startOfDay()
             ];
         }
 

@@ -23,7 +23,7 @@ class DeliveryRoutes
     public function exportData($type = null)
     {
         $dates = $this->getDeliveryDates();
-        $orders = $this->store->getOrders(null, $dates, true);
+        $orders = $this->store->getOrders(null, $dates, true, true, true);
 
         $googleApiKey = 'AIzaSyArp-lohyOEQXF6a69wyFXruthJd9jNY4U';
         // $hereApp_id = "V2tJJFOIa2LjoSw4xNuX";
@@ -48,10 +48,6 @@ class DeliveryRoutes
 
         $customerAddresses = [];
         $customers = [];
-
-        $orders = Order::where('store_id', $store->id)
-            ->where('pickup', 0)
-            ->get();
 
         foreach ($orders as $order) {
             $customerDetails = $order->user->details;
