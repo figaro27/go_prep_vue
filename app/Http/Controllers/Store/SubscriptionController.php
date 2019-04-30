@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Store;
 use Illuminate\Support\Facades\Mail;
 use App\Customer;
+use App\Mail\Store\CancelledSubscription;
 
 class SubscriptionController extends StoreController
 {
@@ -13,7 +14,11 @@ class SubscriptionController extends StoreController
      */
     public function index()
     {
-        return $this->store->subscriptions()->with(['user:id'])->orderBy('created_at')->get();
+        return $this->store
+            ->subscriptions()
+            ->with(['user:id'])
+            ->orderBy('created_at')
+            ->get();
     }
 
     /**
@@ -24,7 +29,11 @@ class SubscriptionController extends StoreController
      */
     public function show($id)
     {
-        return $this->store->subscriptions()->with(['user', 'user.userDetail', 'orders', 'orders.meals'])->where('id', $id)->first();
+        return $this->store
+            ->subscriptions()
+            ->with(['user', 'user.userDetail', 'orders', 'orders.meals'])
+            ->where('id', $id)
+            ->first();
     }
 
     /**
@@ -37,19 +46,14 @@ class SubscriptionController extends StoreController
         $sub = $this->store->subscriptions()->find($id);
 
         if (!$sub) {
-            return response()->json([
-                'error' => 'Meal plan not found',
-            ], 404);
+            return response()->json(
+                [
+                    'error' => 'Meal plan not found'
+                ],
+                404
+            );
         }
 
         $sub->cancel();
-
-        $customer = $this->user;
-          $storeEmail = $this->store->user->email;
-          $email = new CancelledSubscription([
-                'customer' => $customer,
-                'subscription' => $sub
-            ]);
-          Mail::to($storeEmail)->send($email);
     }
 }

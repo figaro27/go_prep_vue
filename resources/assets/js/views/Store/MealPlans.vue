@@ -3,6 +3,20 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
+          <b-modal
+            v-model="showCancelModal"
+            title="Cancel Meal Plan"
+            size="md"
+            :hide-footer="true"
+          >
+            <p class="center-text mb-3 mt-3">
+              Are you sure you want to cancel this meal plan?
+            </p>
+            <b-btn variant="danger" class="center" @click="destroyMealPlan"
+              >Cancel</b-btn
+            >
+          </b-modal>
+
           <Spinner v-if="isLoading" />
           <v-client-table
             :columns="columns"
@@ -51,7 +65,13 @@
                 class="btn view btn-primary btn-sm"
                 @click="viewSubscription(props.row.id)"
               >
-                View Meal Plan
+                View
+              </button>
+              <button
+                class="btn view btn-danger btn-sm"
+                @click="deleteMealPlan(props.row.id)"
+              >
+                Cancel Meal Plan
               </button>
             </div>
 
@@ -203,6 +223,7 @@ export default {
 
   data() {
     return {
+      showCancelModal: false,
       deliveryDate: "All",
       filter: false,
       filters: {
@@ -421,6 +442,18 @@ export default {
           ...this.getMeal(id),
           quantity: subscription.meal_quantities[id]
         };
+      });
+    },
+    deleteMealPlan(id) {
+      this.subscriptionId = id;
+      this.showCancelModal = true;
+    },
+    destroyMealPlan() {
+      let id = this.subscriptionId;
+      axios.delete(`/api/me/subscriptions/${id}`).then(resp => {
+        this.refreshTable();
+        this.showCancelModal = false;
+        this.$toastr.s("Meal Plan Cancelled");
       });
     }
   }

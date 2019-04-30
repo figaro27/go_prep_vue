@@ -142,12 +142,17 @@ u + .body .full { width:100% !important; width:100vw !important;}
     <tr>
       <td align="center">
         <table align="center" width="600" style="max-width:600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
+          <br>
           <tr>
-            <td height="50"></td>
+            <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">
+              Unfortunately, this company had to cancel your meal plan. This is usually a result in a change of menu or a change of business operations such as a change in the delivery day.
+            </td>
           </tr>
+
           <!-- header -->
           <tr>
             <td>
+              <br>
               <table class="table-inner" width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px; text-transform:uppercase;">Meal Name</td>

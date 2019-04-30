@@ -290,6 +290,12 @@ class Subscription extends Model
                 'customer' => $this->customer
             ]);
         }
+
+        $this->user->sendNotification('subscription_cancelled', [
+            'subscription' => $this,
+            'store' => $this->store,
+            'customer' => $this->customer
+        ]);
     }
 
     /**
