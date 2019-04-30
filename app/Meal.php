@@ -843,6 +843,8 @@ class Meal extends Model implements HasMedia
         // Meal sizes
         $sizes = $props->get('sizes');
         if (is_array($sizes)) {
+            $sizeIds = [];
+
             foreach ($sizes as $size) {
                 if (isset($size['id'])) {
                     $mealSize = $meal->sizes()->find($size['id']);
@@ -857,7 +859,15 @@ class Meal extends Model implements HasMedia
                 $mealSize->price = $size['price'];
                 $mealSize->multiplier = $size['multiplier'];
                 $mealSize->save();
+
+                $sizeIds[] = $mealSize->id;
             }
+
+            // Deleted sizes
+            $meal
+                ->sizes()
+                ->whereNotIn('id', $sizeIds)
+                ->delete();
         }
 
         $meal->update($props->except('featured_image')->toArray());

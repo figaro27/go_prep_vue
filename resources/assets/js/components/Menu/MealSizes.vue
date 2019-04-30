@@ -1,10 +1,11 @@
 <template>
   <div>
     <v-client-table
-      :columns="['title', 'price', 'multiplier']"
+      :columns="columns"
       :data="tableData"
       :options="{
         headings: {
+          actions: '',
           multiplier: 'Ingredient Multiplier'
         },
         orderBy: {
@@ -25,6 +26,11 @@
             })
           "
           >Add Meal Size</b-button
+        >
+      </div>
+      <div slot="actions" slot-scope="props" v-if="props.row.id !== -1">
+        <b-btn variant="danger" size="sm" @click="deleteSize(props.row.id)"
+          >Delete</b-btn
         >
       </div>
       <div slot="title" slot-scope="props">
@@ -89,6 +95,15 @@ export default {
     };
   },
   computed: {
+    columns() {
+      let cols = ["title", "price", "multiplier"];
+
+      if (this.tableData.length) {
+        cols = ["actions", ...cols];
+      }
+
+      return cols;
+    },
     tableData() {
       return _.concat(
         {
@@ -108,6 +123,12 @@ export default {
   },
   mounted() {},
   methods: {
+    deleteSize(id) {
+      this.meal.sizes = _.filter(this.meal.sizes, size => {
+        return size.id !== id;
+      });
+      this.onChangeSizes();
+    },
     onChangeSizes() {
       if (!_.isArray(this.meal.sizes)) {
         throw new Error("Invalid sizes");
