@@ -31,8 +31,9 @@ class UpdateMealRequest extends FormRequest
                 'category_ids' => 'required',
                 'default_size_title' => 'required_with:sizes',
                 'sizes.*.title' => 'required|distinct',
-                'sizes.*.price' => 'required',
-                'sizes.*.multiplier' => 'required|distinct|not_in:1'
+                'sizes.*.price' => 'required|gte:0.1|lte:1000',
+                'sizes.*.multiplier' =>
+                    'required|distinct|not_in:1|gte:0.1|lte:20'
             ];
         } else {
             return [
