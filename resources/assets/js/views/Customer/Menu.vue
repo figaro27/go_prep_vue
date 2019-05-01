@@ -5,7 +5,7 @@
     </floating-action-button>
     <!-- <div class="menu ml-auto mr-auto"> -->
     <div class="menu ml-auto mr-auto">
-      <div v-if="!allowPickup && !willDeliver && !preview && loggedIn">
+      <div v-if="!willDeliver && !preview && loggedIn">
         <b-alert variant="danger center-text" show
           >You are outside of the delivery area.</b-alert
         >
@@ -903,10 +903,6 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice"
     }),
-    allowPickup() {
-      if (this.storeSettings.transferType.includes("pickup")) return true;
-      else return false;
-    },
     description() {
       return this.store.details.description;
     },
