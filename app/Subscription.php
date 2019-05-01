@@ -411,7 +411,9 @@ class Subscription extends Model
             ];
         });
 
-        $bag = new Bag($items);
+        $store = $this->store;
+
+        $bag = new Bag($items, $store);
 
         $total = $bag->getTotal();
         $afterDiscountBeforeFees = $bag->getTotal();
