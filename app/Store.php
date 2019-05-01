@@ -99,6 +99,11 @@ class Store extends Model
         return $this->hasMany('App\Customer');
     }
 
+    public function coupons()
+    {
+        return $this->hasMany('App\Coupon');
+    }
+
     public function clearCaches()
     {
         Cache::forget('store_order_ingredients' . $this->id);

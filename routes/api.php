@@ -127,6 +127,7 @@ foreach (
                             Route::resource('customers', 'CustomerController');
                             Route::resource('units', 'UnitController');
                             Route::resource('categories', 'CategoryController');
+                            Route::resource('coupons', 'CouponController');
                             Route::resource(
                                 'settings',
                                 'StoreSettingController'

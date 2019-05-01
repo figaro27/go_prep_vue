@@ -284,6 +284,17 @@ const mutations = {
     state.store.settings.expires = expires;
   },
 
+  storeCoupons(state, { coupons, expires }) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, "seconds")
+        .unix();
+    }
+
+    state.store.settings.data = settings;
+    state.store.settings.expires = expires;
+  },
+
   storeMeals(state, { meals, expires }) {
     if (!expires) {
       expires = moment()
@@ -467,6 +478,13 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.store.coupons) && _.isObject(data.store.coupons)) {
+        let coupons = data.store.coupons;
+        commit("storeCoupons", { coupons });
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.meals) && _.isObject(data.store.meals)) {
         let meals = data.store.meals;
         commit("storeMeals", { meals });
@@ -626,6 +644,17 @@ const actions = {
       commit("storeSettings", { settings: data });
     } else {
       throw new Error("Failed to retrieve settings");
+    }
+  },
+
+  async refreshStoreCoupons({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/coupons");
+    const { data } = await res;
+
+    if (_.isObject(data)) {
+      commit("storeCoupons", { settings: data });
+    } else {
+      throw new Error("Failed to retrieve coupons");
     }
   },
 
@@ -1086,6 +1115,13 @@ const getters = {
   storeSettings: state => {
     try {
       return state.store.settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeCoupons: state => {
+    try {
+      return state.store.coupons.data || {};
     } catch (e) {
       return {};
     }

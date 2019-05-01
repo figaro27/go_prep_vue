@@ -450,6 +450,104 @@
         </div>
       </div>
 
+      <p>Coupons</p>
+      <div class="card">
+        <div class="card-body">
+          <b-form @submit.prevent="updateStoreSettings">
+            <b-form-group :state="true">
+              <p>
+                <span class="mr-1">Coupons</span>
+                <img
+                  v-b-popover.hover="
+                    'Add a coupon that your customers can use on your checkout page. Choose the type - either an overall percentage of the bag or a flat amount.'
+                  "
+                  title="Coupons"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+
+              <v-client-table
+                :columns="columns"
+                :data="tableData"
+                :options="{
+                  orderBy: {
+                    column: 'id',
+                    ascending: true
+                  },
+                  headings: {
+                    amount: 'Percentage / Amount'
+                  }
+                }"
+              >
+                <div slot="beforeTable" class="mb-2">
+                  <b-btn
+                    variant="success"
+                    @click="
+                      coupons.push({
+                        id: 100 + coupons.length,
+                        code: '',
+                        type: '',
+                        amount: null
+                      })
+                    "
+                  >
+                    Add Coupon
+                  </b-btn>
+                </div>
+
+                <div slot="code" slot-scope="props">
+                  <b-input
+                    v-model="props.row.code"
+                    placeholder="Enter Coupon Code"
+                  ></b-input>
+                </div>
+                <div slot="type" slot-scope="props">
+                  <b-form-group>
+                    <b-form-radio-group
+                      id="selected-coupon-type"
+                      v-model="coupon.type"
+                      name="selected-coupon-type"
+                    >
+                      <b-form-radio name="percent" value="percent"
+                        >Percentage</b-form-radio
+                      >
+                      <b-form-radio name="flat" value="flat"
+                        >Flat Amount</b-form-radio
+                      >
+                    </b-form-radio-group>
+                  </b-form-group>
+                </div>
+                <div slot="amount" slot-scope="props">
+                  <b-input
+                    :disabled="props.row.id === -1"
+                    v-model="props.row.amount"
+                  ></b-input>
+                </div>
+                <div
+                  slot="actions"
+                  slot-scope="props"
+                  v-if="props.row.id !== -1"
+                >
+                  <b-button
+                    @click="saveCoupon(props.row.id)"
+                    variant="primary"
+                    class="mt-3"
+                    >Save</b-button
+                  >
+                  <b-btn
+                    variant="danger"
+                    size="sm"
+                    @click="deleteCoupon(props.row.id)"
+                    >Delete</b-btn
+                  >
+                </div>
+              </v-client-table>
+            </b-form-group>
+          </b-form>
+        </div>
+      </div>
+
       <p>Logo</p>
       <div class="card">
         <div class="card-body">
@@ -690,6 +788,10 @@
     }
   }
 }
+
+.VueTables__search {
+  display: none;
+}
 </style>
 
 <script>
@@ -731,7 +833,14 @@ export default {
       zipCodes: [],
       new_category: "",
       view_delivery_days: 1,
-      payments_url: ""
+      payments_url: "",
+      coupon: {
+        code: "",
+        type: "",
+        amount: null
+      },
+      coupons: [],
+      columns: ["code", "type", "amount", "actions"]
     };
   },
   computed: {
@@ -742,8 +851,12 @@ export default {
       storeSetting: "storeSetting",
       storeSettings: "storeSettings",
       storeCategories: "storeCategories",
-      storeSubscriptions: "storeSubscriptions"
+      storeSubscriptions: "storeSubscriptions",
+      storeCoupons: "storeCoupons"
     }),
+    tableData() {
+      return this.coupons;
+    },
     storeDetails() {
       return this.storeDetail;
     },
@@ -866,6 +979,12 @@ export default {
           error = error.join(" ");
           this.$toastr.e(error, "Error");
         });
+    },
+    saveCoupon() {
+      let coupons = { ...this.storeCoupons };
+      // coupons.code = this.
+      // coupons.type = this.
+      // coupons.amount = this.
     },
     closeStore() {
       let activeSubscriptions = false;
