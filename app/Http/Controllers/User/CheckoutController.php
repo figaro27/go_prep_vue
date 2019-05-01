@@ -215,8 +215,8 @@ class CheckoutController extends UserController
                 'N',
                 strtotime($deliveryDay)
             );
-            $userSubscription->next_renewal_at = $cutoff->copy()->addDays(7);
-            $userSubscription->charge_time = $cutoff->getTimestamp();
+            // In this case the 'next renewal time' is actually the first charge time
+            $userSubscription->next_renewal_at = $cutoff->getTimestamp();
             $userSubscription->save();
 
             // Create initial order
@@ -283,9 +283,13 @@ class CheckoutController extends UserController
                 'customer' => $customer ?? null,
                 'subscription' => $userSubscription ?? null
             ]);
-            Mail::to($user)
-                ->bcc('mike@goprep.com')
-                ->send($email);
+
+            try {
+                Mail::to($user)
+                    ->bcc('mike@goprep.com')
+                    ->send($email);
+            } catch (\Exception $e) {
+            }
         }
 
         /*

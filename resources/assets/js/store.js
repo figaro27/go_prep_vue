@@ -637,7 +637,6 @@ const actions = {
       const subscriptions = _.map(data, subscription => {
         subscription.created_at = moment.utc(subscription.created_at).local(); //.format('ddd, MMMM Do')
         subscription.updated_at = moment.utc(subscription.updated_at).local();
-        subscription.charge_time = moment.utc(subscription.charge_time).local();
         subscription.next_delivery_date = moment.utc(
           subscription.next_delivery_date.date
         );

@@ -48,16 +48,11 @@
               {{ moment(props.row.next_delivery_date).format("dddd, MMM Do") }}
             </div>
             <div
-              slot="charge_time"
+              slot="charge_day"
               class="text-nowrap"
               slot-scope="props"
               v-if="storeSettings.timezone"
             >
-              <!-- {{
-                momentTimezone
-                  .tz(props.row.charge_time, storeSettings.timezone)
-                  .format("dddd")
-              }} -->
               {{ moment(props.row.next_renewal_at).format("dddd") }}
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
@@ -245,7 +240,7 @@ export default {
         "amount",
         "created_at",
         "delivery_day",
-        "charge_time",
+        "charge_day",
         // "interval",
         "status",
         "actions"
@@ -261,7 +256,7 @@ export default {
           amount: "Total",
           created_at: "Meal Plan Placed",
           delivery_day: "Delivery Day",
-          charge_time: "Charge Day",
+          charge_day: "Charge Day",
           // interval: "Interval",
           status: "Status",
           actions: "Actions"

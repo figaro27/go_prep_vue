@@ -19,11 +19,10 @@ class Subscription extends Model
         'next_delivery_date',
         'meal_ids',
         'meal_quantities'
-        // 'charge_time'
     ];
 
     protected $casts = [
-        'charge_time' => 'date',
+        'next_renewal_at' => 'date',
         'preFeePreDiscount' => 'float',
         'afterDiscountBeforeFees' => 'float',
         'processingFee' => 'float',
@@ -209,7 +208,7 @@ class Subscription extends Model
         }
 
         // Store next charge time as reported by Stripe
-        $this->charge_time = $subscription->current_period_end;
+        $this->next_renewal_at = $subscription->current_period_end;
         $this->save();
 
         // Send new order notification to store at the cutoff once the order is paid
