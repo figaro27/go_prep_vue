@@ -230,13 +230,13 @@ class RegisterController extends Controller
                 $zones = new \Cloudflare\API\Endpoints\Zones($adapter);
                 $dns = new \Cloudflare\API\Endpoints\DNS($adapter);
 
-                $zoneId = $zones->getZoneID('goprep.com');
+                $zoneId = $zones->getZoneID(config('services.cloudflare.zone'));
 
                 $dns->addRecord(
                     $zoneId,
                     'CNAME',
                     $storeDetail->domain . '.dev',
-                    'goprep.com',
+                    config('services.cloudflare.zone'),
                     0,
                     true
                 );
@@ -244,7 +244,7 @@ class RegisterController extends Controller
                     $zoneId,
                     'CNAME',
                     $storeDetail->domain,
-                    'goprep.com',
+                    config('services.cloudflare.zone'),
                     0,
                     true
                 );
