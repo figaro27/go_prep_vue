@@ -54,6 +54,7 @@
                 buttons
                 v-model="storeSettings.delivery_days"
                 class="storeFilters"
+                @change="val => onChangeDeliveryDays(val)"
                 :options="[
                   { value: 'sun', text: 'Sunday' },
                   { value: 'mon', text: 'Monday' },
@@ -73,6 +74,10 @@
                 class="popover-size"
               />
             </b-form-group>
+            <b-modal ref="deliveryDaysModal">
+              There are meal plans associated with one or more deselected
+              delivery days.
+            </b-modal>
 
             <b-form-group
               label="Delivery Distance Type"
@@ -989,6 +994,19 @@ export default {
     onChangeTimezone(val) {
       if (val) {
         this.storeSettings.timezone = val.value;
+      }
+    },
+    onChangeDeliveryDays(days) {
+      let hasAll = true;
+
+      this.storeSettings.subscribed_delivery_days.forEach(day => {
+        if (!_.includes(days, day)) {
+          hasAll = false;
+        }
+      });
+
+      if (!hasAll) {
+        this.$refs.deliveryDaysModal.show();
       }
     },
     updateZips(e) {
