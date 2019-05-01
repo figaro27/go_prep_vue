@@ -595,13 +595,12 @@
 
       <b-modal
         v-model="showTOAModal"
-        title="Terms of Service / Service Agreement"
+        title="Service Agreement"
         size="xl"
         @ok="allowOpen"
         @cancel="allowOpen"
         @hidden="allowOpen"
       >
-        <termsOfService></termsOfService>
         <termsOfAgreement></termsOfAgreement>
         <center>
           <b-form-checkbox
