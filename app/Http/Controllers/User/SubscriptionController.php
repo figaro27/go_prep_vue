@@ -157,7 +157,7 @@ class SubscriptionController extends UserController
             );
         }
 
-        $bag = new Bag($request->get('bag'));
+        $bag = new Bag($request->get('bag'), $store);
 
         $application_fee = $store->settings->application_fee;
         $total = $bag->getTotal();
