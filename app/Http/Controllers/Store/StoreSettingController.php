@@ -93,6 +93,7 @@ class StoreSettingController extends StoreController
         $values = $request->except([
             'next_delivery_dates',
             'next_orderable_delivery_dates',
+            'subscribed_delivery_days',
             'stripe'
         ]);
         $values['delivery_days'] = json_encode($values['delivery_days']);
