@@ -2,9 +2,10 @@
 
 namespace App;
 
-use Carbon\Carbon;
 use App\Model;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class StoreSetting extends Model
 {
@@ -35,8 +36,20 @@ class StoreSetting extends Model
     public $appends = [
         'next_delivery_dates',
         'next_orderable_delivery_dates',
+        'subscribed_delivery_days', // Delivery days with active meal plans
         'stripe'
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::saved(function ($model) {
+            Cache::forget(
+                'store_' . $model->store_id . '_subscribed_delivery_days'
+            );
+        });
+    }
 
     public function store()
     {
@@ -151,6 +164,38 @@ class StoreSetting extends Model
                 'cutoff_passed' => $cutoff->isPast()
             ];
         });
+    }
+
+    public function getSubscribedDeliveryDaysAttribute()
+    {
+        return Cache::remember(
+            'store_' . $this->store_id . '_subscribed_delivery_days',
+            60,
+            function () {
+                $days = DB::table('subscriptions')
+                    ->select(DB::raw('delivery_day, count(*) as `count`'))
+                    ->where([
+                        'status' => 'active',
+                        'store_id' => $this->store->id
+                    ])
+                    ->groupBy('delivery_day')
+                    ->get();
+
+                $ddays = [];
+                foreach ($days as $day) {
+                    if ($day->count > 0) {
+                        $ddays[] = strtolower(
+                            date(
+                                'D',
+                                strtotime("Sunday +{$day->delivery_day} days")
+                            )
+                        );
+                    }
+                }
+
+                return $ddays;
+            }
+        );
     }
 
     public function getCutoffSeconds()
