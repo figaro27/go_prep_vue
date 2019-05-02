@@ -145,9 +145,12 @@ class CheckoutController extends UserController
                 'customer' => $customer ?? null,
                 'subscription' => null
             ]);
-            Mail::to($user)
-                ->bcc('mike@goprep.com')
-                ->send($email);
+            try {
+                Mail::to($user)
+                    ->bcc('mike@goprep.com')
+                    ->send($email);
+            } catch (\Exception $e) {
+            }
         } else {
             $weekIndex = date('N', strtotime($deliveryDay));
             $cutoff = $store->getNextCutoffDate($weekIndex);
