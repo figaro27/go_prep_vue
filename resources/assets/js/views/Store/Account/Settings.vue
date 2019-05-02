@@ -1,10 +1,9 @@
 <template>
   <div class="row">
     <div class="col-md-8 offset-md-2">
-      <b-alert :show="!canOpen" variant="success"
-        >Welcome to GoPrep! Enter all settings to open your store for
-        business.</b-alert
-      >
+      <b-alert :show="!canOpen" variant="success">
+        Welcome to GoPrep! Enter all settings to open your store for business.
+      </b-alert>
 
       <p>Orders</p>
       <div class="card">
@@ -74,10 +73,10 @@
                 class="popover-size"
               />
             </b-form-group>
-            <b-modal ref="deliveryDaysModal">
-              There are meal plans associated with one or more deselected
-              delivery days.
-            </b-modal>
+            <b-modal ref="deliveryDaysModal"
+              >There are meal plans associated with
+              {{ deselectedDeliveryDay }}</b-modal
+            >
 
             <b-form-group
               label="Delivery Distance Type"
@@ -607,9 +606,8 @@
             v-model="acceptedTOAcheck"
             value="1"
             unchecked-value="0"
+            >I accept these terms.</b-form-checkbox
           >
-            I accept these terms.
-          </b-form-checkbox>
         </center>
       </b-modal>
 
@@ -662,9 +660,7 @@
             </div>
           </b-form>
 
-          <div v-else>
-            Please enter all settings fields to open your store.
-          </div>
+          <div v-else>Please enter all settings fields to open your store.</div>
         </div>
       </div>
     </div>
@@ -731,7 +727,8 @@ export default {
       zipCodes: [],
       new_category: "",
       view_delivery_days: 1,
-      payments_url: ""
+      payments_url: "",
+      deselectedDeliveryDay: null
     };
   },
   computed: {
@@ -996,15 +993,29 @@ export default {
       }
     },
     onChangeDeliveryDays(days) {
-      let hasAll = true;
+      // Get unselected day
+      let diff = _.difference(this.storeSettings.delivery_days, days);
 
-      this.storeSettings.subscribed_delivery_days.forEach(day => {
-        if (!_.includes(days, day)) {
-          hasAll = false;
-        }
-      });
+      if (_.isEmpty(diff)) {
+        return;
+      }
 
-      if (!hasAll) {
+      const deselected = diff[0];
+
+      // Deselected day has active meal plans
+      if (_.includes(this.storeSettings.subscribed_delivery_days, deselected)) {
+        // Add deselected day back for now
+        this.$nextTick(() => {
+          this.storeSettings.delivery_days = [
+            ...this.storeSettings.delivery_days,
+            deselected
+          ];
+        });
+
+        // Store deselected day for later
+        this.deselectedDeliveryDay = deselected;
+
+        // Show modal
         this.$refs.deliveryDaysModal.show();
       }
     },
