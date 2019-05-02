@@ -20,11 +20,13 @@
                 v-model="storeSettings.cutoff_days"
                 class="d-inline w-auto mr-1"
                 :options="cutoffDaysOptions"
+                @change.native="checkCutoffMealPlans"
               ></b-select>
               <b-select
                 v-model="storeSettings.cutoff_hours"
                 class="d-inline w-auto mr-1 custom-select"
                 :options="cutoffHoursOptions"
+                @change.native="checkCutoffMealPlans"
               ></b-select>
               <img
                 v-b-popover.hover="
@@ -73,6 +75,32 @@
                 class="popover-size"
               />
             </b-form-group>
+            <b-modal
+              size="md"
+              v-model="showCutoffModal"
+              title="Warning"
+              hide-footer
+            >
+              <h6 class="center-text mt-3">
+                You potentially have active meal plans that are charged and
+                turned into orders at this cutoff period.
+              </h6>
+              <p class="center-text mt-3">
+                If you change your cutoff time, those active meal plans won't be
+                adjusted. They will still turn into orders at the time of your
+                old cutoff.
+              </p>
+              <p class="center-text mt-3">
+                If this is an issue, please either keep this cutoff period, or
+                you can individually cancel meal plans on the Meal Plans page.
+              </p>
+              <b-btn
+                class="center"
+                variant="primary"
+                @click="showCutoffModal = false"
+                >Confirm</b-btn
+              >
+            </b-modal>
             <b-modal
               size="xl"
               ref="deliveryDaysModal"
@@ -781,7 +809,8 @@ export default {
       new_category: "",
       view_delivery_days: 1,
       payments_url: "",
-      deselectedDeliveryDay: null
+      deselectedDeliveryDay: null,
+      showCutoffModal: false
     };
   },
   computed: {
@@ -1118,6 +1147,11 @@ export default {
     },
     hideDeliveryDaysModal() {
       this.$refs.deliveryDaysModal.hide();
+    },
+    checkCutoffMealPlans() {
+      if (this.storeSubscriptions.length > 0) {
+        this.showCutoffModal = true;
+      }
     }
   }
 };
