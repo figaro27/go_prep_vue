@@ -73,10 +73,63 @@
                 class="popover-size"
               />
             </b-form-group>
-            <b-modal ref="deliveryDaysModal"
-              >There are meal plans associated with
-              {{ deselectedDeliveryDay }}</b-modal
+            <b-modal
+              size="xl"
+              ref="deliveryDaysModal"
+              title="Warning"
+              hide-footer
             >
+              <h6 class="center-text mt-3">
+                There are active meal plans associated with this delivery day.
+                Please choose one of the three options below to continue.
+              </h6>
+              <div class="row mt-5">
+                <div class="col-sm-4">
+                  <p class="center-text">
+                    Cancel my action and keep this delivery day active for
+                    future meal plans & orders.
+                  </p>
+                </div>
+                <div class="col-sm-4">
+                  <p class="center-text">
+                    Remove this delivery day, but I will still fulfill meal plan
+                    orders attached to this day.
+                  </p>
+                </div>
+                <div class="col-sm-4">
+                  <p class="center-text">
+                    Remove this delivery day for future orders, and cancel all
+                    my meal plans attached to this day.
+                  </p>
+                </div>
+              </div>
+              <div class="row mb-5">
+                <div class="col-sm-4">
+                  <b-btn
+                    variant="success"
+                    class="center"
+                    @click="hideDeliveryDaysModal"
+                    >Keep Day</b-btn
+                  >
+                </div>
+                <div class="col-sm-4">
+                  <b-btn
+                    variant="warning"
+                    class="center"
+                    @click="removeDeliveryDay"
+                    >Remove Day & Honor</b-btn
+                  >
+                </div>
+                <div class="col-sm-4">
+                  <b-btn
+                    variant="danger"
+                    class="center"
+                    @click="cancelMealPlans"
+                    >Remove Day & Cancel</b-btn
+                  >
+                </div>
+              </div>
+            </b-modal>
 
             <b-form-group
               label="Delivery Distance Type"
@@ -1019,6 +1072,12 @@ export default {
         this.$refs.deliveryDaysModal.show();
       }
     },
+    removeDeliveryDay() {
+      let day = this.deselectedDeliveryDay;
+      let index = this.storeSettings.delivery_days.indexOf(day);
+      this.storeSettings.delivery_days.splice(index, 1);
+      this.$refs.deliveryDaysModal.hide();
+    },
     updateZips(e) {
       this.zipCodes = e.target.value.split(",");
     },
@@ -1048,6 +1107,17 @@ export default {
       });
       this.showMealPlansModal = false;
       this.$toastr.s("Your settings have been saved.", "Success");
+    },
+    cancelMealPlans() {
+      this.removeDeliveryDay();
+      axios.post("/api/me/cancelMealPlans", {
+        deliveryDay: this.deselectedDeliveryDay
+      });
+      this.$refs.deliveryDaysModal.hide();
+      this.$toastr.s("Your settings have been saved.", "Success");
+    },
+    hideDeliveryDaysModal() {
+      this.$refs.deliveryDaysModal.hide();
     }
   }
 };

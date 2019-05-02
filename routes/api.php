@@ -135,6 +135,10 @@ foreach (
                                 'pauseMealPlans',
                                 'StoreSettingController@pauseMealPlans'
                             );
+                            Route::post(
+                                'cancelMealPlans',
+                                'StoreSettingController@cancelMealPlans'
+                            );
 
                             Route::get(
                                 'getStore',
