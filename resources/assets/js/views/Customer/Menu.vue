@@ -641,6 +641,41 @@
                     <strong>Subtotal:&nbsp;</strong>
                     {{ format.money(preFeePreDiscount) }}
                   </p>
+                  <div v-if="subscriptionId">
+                    <p
+                      class="align-right red"
+                      v-if="storeSettings.applyMealPlanDiscount"
+                    >
+                      <strong>Meal Plan Discount:&nbsp;</strong>
+                      ({{ format.money(mealPlanDiscount) }})
+                    </p>
+
+                    <p
+                      class="align-right"
+                      v-if="storeSettings.applyDeliveryFee"
+                    >
+                      <strong>Delivery Fee:&nbsp;</strong>
+                      {{ format.money(storeSettings.deliveryFee) }}
+                    </p>
+
+                    <p
+                      class="align-right"
+                      v-if="storeSettings.applyProcessingFee"
+                    >
+                      <strong>Processing Fee:&nbsp;</strong>
+                      {{ format.money(storeSettings.processingFee) }}
+                    </p>
+
+                    <p class="align-right">
+                      <strong>Sales Tax:&nbsp;</strong>
+                      {{ format.money(tax) }}
+                    </p>
+
+                    <p class="align-right">
+                      <strong>Total&nbsp;</strong>
+                      {{ format.money(afterDiscountAfterFees) }}
+                    </p>
+                  </div>
 
                   <div
                     v-if="
@@ -826,7 +861,8 @@ window.addEventListener("hashchange", function() {
 
 export default {
   components: {
-    Spinner
+    Spinner,
+    SalesTax
   },
   props: {
     preview: {
@@ -837,11 +873,11 @@ export default {
     },
     subscriptionId: {
       default: null
-    },
-    SalesTax
+    }
   },
   data() {
     return {
+      salesTax: 0,
       mealDescription: "",
       loaded: false,
       salesTaxRate: 0,
@@ -903,6 +939,44 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice"
     }),
+    tax() {
+      return this.salesTax * this.afterDiscountAfterFeesBeforeTax;
+    },
+    preFeePreDiscount() {
+      let subtotal = this.totalBagPricePreFees;
+      return subtotal;
+    },
+    afterDiscountBeforeFees() {
+      if (this.applyMealPlanDiscount && this.deliveryPlan) {
+        return this.preFeePreDiscount - this.mealPlanDiscount;
+      } else return this.preFeePreDiscount;
+    },
+    afterDiscountAfterFeesBeforeTax() {
+      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+      let applyProcessingFee = this.storeSettings.applyProcessingFee;
+      let deliveryFee = this.storeSettings.deliveryFee;
+      let processingFee = this.storeSettings.processingFee;
+      let subtotal = this.afterDiscountBeforeFees;
+
+      if (applyDeliveryFee & (this.pickup === 0)) subtotal += deliveryFee;
+      if (applyProcessingFee) subtotal += processingFee;
+
+      return subtotal;
+    },
+    afterDiscountAfterFees() {
+      let salesTax = 1 + this.salesTax;
+      let subtotal = this.afterDiscountAfterFeesBeforeTax;
+
+      return subtotal * salesTax;
+    },
+    applyMealPlanDiscount() {
+      return this.storeSettings.applyMealPlanDiscount;
+    },
+    mealPlanDiscount() {
+      return (
+        this.preFeePreDiscount * (this.storeSettings.mealPlanDiscount / 100)
+      );
+    },
     description() {
       return this.store.details.description;
     },
