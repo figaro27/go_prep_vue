@@ -710,7 +710,7 @@
                   <div
                     v-if="
                       minOption === 'price' &&
-                        totalBagPrice >= minPrice &&
+                        totalBagPricePreFees >= minPrice &&
                         !preview &&
                         !manualOrder
                     "
