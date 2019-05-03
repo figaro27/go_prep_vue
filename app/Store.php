@@ -324,6 +324,26 @@ class Store extends Model
         return $date ? $date->subSeconds($this->getCutoffSeconds()) : null;
     }
 
+    /**
+     * Get the cutoff date for a particular delivery date
+     *
+     * @param Carbon $deliveryDate
+     * @return Carbon $cutoffDate
+     */
+    public function getCutoffDate(Carbon $deliveryDate)
+    {
+        $cutoffDate = Carbon::createFromDate(
+            $deliveryDate->year,
+            $deliveryDate->month,
+            $deliveryDate->day,
+            $this->settings->timezone
+        );
+        return $cutoffDate
+            ->setTime(0, 0, 0)
+            ->subSeconds($this->getCutoffSeconds())
+            ->setTimezone('utc');
+    }
+
     public function getOrders(
         $groupBy = null,
         $dateRange = [],

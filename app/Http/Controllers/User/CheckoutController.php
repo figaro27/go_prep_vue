@@ -153,7 +153,21 @@ class CheckoutController extends UserController
             }
         } else {
             $weekIndex = date('N', strtotime($deliveryDay));
-            $cutoff = $store->getNextCutoffDate($weekIndex);
+
+            // Get cutoff date for selected delivery day
+            $cutoff = $store->getCutoffDate(new Carbon($deliveryDay));
+
+            // How long into the future is the delivery day? In days
+            $diff = (strtotime($deliveryDay) - time()) / 86400;
+
+            // Set billing anchor to now +2 mins
+            $billingAnchor = Carbon::now()->addMinutes(2);
+
+            // Selected start date is more than 1 week into the future.
+            // Wait until next week to start billing cycle
+            if ($diff >= 7) {
+                $billingAnchor->addWeeks(1);
+            }
 
             $plan = \Stripe\Plan::create(
                 [
@@ -189,7 +203,7 @@ class CheckoutController extends UserController
                     'default_source' => $storeSource,
                     'items' => [['plan' => $plan]],
                     'application_fee_percent' => $application_fee,
-                    'billing_cycle_anchor' => $cutoff->getTimestamp(),
+                    'billing_cycle_anchor' => $billingAnchor->getTimestamp(),
                     'prorate' => false
                 ],
                 ['stripe_account' => $store->settings->stripe_id]
@@ -219,7 +233,7 @@ class CheckoutController extends UserController
                 strtotime($deliveryDay)
             );
             // In this case the 'next renewal time' is actually the first charge time
-            $userSubscription->next_renewal_at = $cutoff->getTimestamp();
+            $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
             $userSubscription->save();
 
             // Create initial order
