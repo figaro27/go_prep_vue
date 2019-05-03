@@ -341,6 +341,8 @@ class Subscription extends Model
             'paused_at' => Carbon::now('utc')
         ]);
 
+        $this->store->clearCaches();
+
         if ($this->store->notificationEnabled('paused_subscription')) {
             $this->store->sendNotification('paused_subscription', $this);
         }
@@ -368,6 +370,8 @@ class Subscription extends Model
             'status' => 'active',
             'paused_at' => null
         ]);
+
+        $this->store->clearCaches();
 
         if ($this->store->notificationEnabled('resumed_subscription')) {
             $this->store->sendNotification('resumed_subscription', $this);

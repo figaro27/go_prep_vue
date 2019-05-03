@@ -36,6 +36,15 @@ class Store extends Model
 
     protected $casts = [];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        self::saved(function ($model) {
+            $model->clearCaches();
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo('App\User');
@@ -102,6 +111,7 @@ class Store extends Model
     public function clearCaches()
     {
         Cache::forget('store_order_ingredients' . $this->id);
+        Cache::forget('store_' . $this->id . '_subscribed_delivery_days');
     }
 
     public function getUrl($append = '', $secure = true)
