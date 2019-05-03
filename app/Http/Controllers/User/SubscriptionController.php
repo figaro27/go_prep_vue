@@ -241,6 +241,9 @@ class SubscriptionController extends UserController
             $mealSub->store_id = $store->id;
             $mealSub->meal_id = $item['meal']['id'];
             $mealSub->quantity = $item['quantity'];
+            if (isset($item['size']) && $item['size']) {
+                $mealSub->meal_size_id = $item['size']['id'];
+            }
             $mealSub->save();
         }
 
@@ -285,6 +288,9 @@ class SubscriptionController extends UserController
                 $mealOrder->store_id = $store->id;
                 $mealOrder->meal_id = $item['meal']['id'];
                 $mealOrder->quantity = $item['quantity'];
+                if (isset($item['size']) && $item['size']) {
+                    $mealOrder->meal_size_id = $item['size']['id'];
+                }
                 $mealOrder->save();
             }
         }

@@ -491,7 +491,7 @@
                           >
                             <i slot="button-content">+</i>
                             <b-dropdown-item @click="addOne(meal)">
-                              {{ meal.default_size_title }} -
+                              {{ meal.default_size_title || "Regular" }} -
                               {{ format.money(meal.item_price) }}
                             </b-dropdown-item>
                             <b-dropdown-item
@@ -940,7 +940,7 @@ export default {
       minPrice: "minimumPrice"
     }),
     tax() {
-      return this.salesTax * this.afterDiscountAfterFeesBeforeTax;
+      return this.salesTaxRate * this.afterDiscountAfterFeesBeforeTax;
     },
     preFeePreDiscount() {
       let subtotal = this.totalBagPricePreFees;
