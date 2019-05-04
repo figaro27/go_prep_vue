@@ -203,7 +203,7 @@ class CheckoutController extends UserController
                     'default_source' => $storeSource,
                     'items' => [['plan' => $plan]],
                     'application_fee_percent' => $application_fee,
-                    'billing_cycle_anchor' => $billingAnchor->getTimestamp(),
+                    'trial_end' => $billingAnchor->getTimestamp(),
                     'prorate' => false
                 ],
                 ['stripe_account' => $store->settings->stripe_id]
