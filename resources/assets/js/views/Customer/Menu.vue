@@ -1437,7 +1437,7 @@ export default {
       try {
         const { data } = await axios.post(
           `/api/me/subscriptions/${this.subscriptionId}/meals`,
-          { bag: this.bag, salesTaxRate: this.salesTaxRate }
+          { bag: this.bag, salesTaxRate: this.salesTax }
         );
         await this.refreshSubscriptions();
         this.emptyBag();
