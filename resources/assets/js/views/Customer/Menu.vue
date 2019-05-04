@@ -940,14 +940,17 @@ export default {
       minPrice: "minimumPrice"
     }),
     tax() {
-      return this.salesTaxRate * this.afterDiscountAfterFeesBeforeTax;
+      return this.salesTax * this.afterDiscountAfterFeesBeforeTax;
     },
     preFeePreDiscount() {
       let subtotal = this.totalBagPricePreFees;
       return subtotal;
     },
+    applyMealPlanDiscount() {
+      return this.storeSettings.applyMealPlanDiscount;
+    },
     afterDiscountBeforeFees() {
-      if (this.applyMealPlanDiscount && this.deliveryPlan) {
+      if (this.applyMealPlanDiscount) {
         return this.preFeePreDiscount - this.mealPlanDiscount;
       } else return this.preFeePreDiscount;
     },
@@ -958,7 +961,7 @@ export default {
       let processingFee = this.storeSettings.processingFee;
       let subtotal = this.afterDiscountBeforeFees;
 
-      if (applyDeliveryFee & (this.pickup === 0)) subtotal += deliveryFee;
+      if (applyDeliveryFee && this.pickup === 0) subtotal += deliveryFee;
       if (applyProcessingFee) subtotal += processingFee;
 
       return subtotal;
@@ -1217,6 +1220,7 @@ export default {
         this.$refs.carousel.handleNavigation("forward");
       }
     });
+    this.setPickupIfMealPlan();
   },
   beforeDestroy() {
     this.showActiveFilters();
@@ -1461,10 +1465,17 @@ export default {
       });
     },
     setSalesTax(rate) {
-      this.salesTaxRate = rate;
+      this.salesTax = rate;
     },
     showDescription() {
       this.showDescriptionModal = true;
+    },
+    setPickupIfMealPlan() {
+      axios
+        .get("/api/me/getSubscriptionPickup/${this.subscriptionId}")
+        .then(async resp => {
+          this.pickup = resp;
+        });
     }
   }
 };

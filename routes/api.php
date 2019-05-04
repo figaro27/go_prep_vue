@@ -224,6 +224,10 @@ foreach (
                                 'me/subscriptions/{id}/meals',
                                 'SubscriptionController@updateMeals'
                             );
+                            Route::get(
+                                'me/getSubscriptionPickup/{id}',
+                                'SubscriptionController@getSubscriptionPickup'
+                            );
                             Route::resource('me/orders', 'OrderController');
                             Route::get('stores', 'StoreController@index');
                             Route::get(

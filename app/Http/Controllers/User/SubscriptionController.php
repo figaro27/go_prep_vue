@@ -123,6 +123,13 @@ class SubscriptionController extends UserController
         }
     }
 
+    public function getSubscriptionPickup($id)
+    {
+        $sub = Subscription::where('id', $id)->get();
+        $pickup = $sub->pickup;
+        return $pickup;
+    }
+
     /**
      * Update meals
      *
