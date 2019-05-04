@@ -835,9 +835,9 @@ export default {
       view_delivery_days: 1,
       payments_url: "",
       coupon: {
-        code: "",
-        type: "",
-        amount: null
+        code: "GOPREP",
+        type: "percent",
+        amount: 10
       },
       coupons: [],
       columns: ["code", "type", "amount", "actions"]
@@ -981,10 +981,14 @@ export default {
         });
     },
     saveCoupon() {
-      let coupons = { ...this.storeCoupons };
-      // coupons.code = this.
-      // coupons.type = this.
-      // coupons.amount = this.
+      axios
+        .post("/api/me/coupons", this.coupon)
+        .then(response => {
+          console.log("success");
+        })
+        .catch(response => {
+          console.log("error");
+        });
     },
     closeStore() {
       let activeSubscriptions = false;

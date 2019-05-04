@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Store;
 
 use App\Store;
 use App\Coupon;
 use Illuminate\Http\Request;
 
-class CouponController extends Controller
+class CouponController extends StoreController
 {
     /**
      * Display a listing of the resource.
