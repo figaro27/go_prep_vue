@@ -126,7 +126,7 @@ class SubscriptionController extends UserController
     public function getSubscriptionPickup($id)
     {
         $sub = Subscription::where('id', $id)->get();
-        $pickup = $sub->pickup;
+        $pickup = $sub->pluck('pickup');
         return $pickup;
     }
 

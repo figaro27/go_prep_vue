@@ -652,7 +652,7 @@
 
                     <p
                       class="align-right"
-                      v-if="storeSettings.applyDeliveryFee"
+                      v-if="storeSettings.applyDeliveryFee && pickup === 0"
                     >
                       <strong>Delivery Fee:&nbsp;</strong>
                       {{ format.money(storeSettings.deliveryFee) }}
@@ -1472,9 +1472,9 @@ export default {
     },
     setPickupIfMealPlan() {
       axios
-        .get("/api/me/getSubscriptionPickup/${this.subscriptionId}")
-        .then(async resp => {
-          this.pickup = resp;
+        .get(`/api/me/getSubscriptionPickup/${this.subscriptionId}`)
+        .then(response => {
+          this.pickup = response.data;
         });
     }
   }
