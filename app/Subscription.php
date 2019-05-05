@@ -19,11 +19,10 @@ class Subscription extends Model
         'next_delivery_date',
         'meal_ids',
         'meal_quantities'
-        // 'charge_time'
     ];
 
     protected $casts = [
-        'charge_time' => 'date',
+        'next_renewal_at' => 'date',
         'preFeePreDiscount' => 'float',
         'afterDiscountBeforeFees' => 'float',
         'processingFee' => 'float',
@@ -214,7 +213,7 @@ class Subscription extends Model
         }
 
         // Store next charge time as reported by Stripe
-        $this->charge_time = $subscription->current_period_end;
+        $this->next_renewal_at = $subscription->current_period_end;
         $this->save();
 
         // Send new order notification to store at the cutoff once the order is paid
@@ -347,6 +346,8 @@ class Subscription extends Model
             'paused_at' => Carbon::now('utc')
         ]);
 
+        $this->store->clearCaches();
+
         if ($this->store->notificationEnabled('paused_subscription')) {
             $this->store->sendNotification('paused_subscription', $this);
         }
@@ -374,6 +375,8 @@ class Subscription extends Model
             'status' => 'active',
             'paused_at' => null
         ]);
+
+        $this->store->clearCaches();
 
         if ($this->store->notificationEnabled('resumed_subscription')) {
             $this->store->sendNotification('resumed_subscription', $this);

@@ -6,6 +6,7 @@ use App\StoreSetting;
 use App\Subscription;
 use App\Customer;
 use App\Mail\Customer\MealPLanPaused;
+use App\Mail\Customer\SubscriptionCancelled;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Auth;
@@ -164,6 +165,59 @@ class StoreSettingController extends StoreController
         foreach ($subscriptions as $subscription) {
             $subscription->status = 'paused';
             $subscription->save();
+        }
+    }
+
+    public function cancelMealPlans(Request $request)
+    {
+        $deliveryDay = $request->deliveryDay;
+        $day = null;
+        switch ($deliveryDay) {
+            case "mon":
+                $day = 1;
+                break;
+
+            case "tue":
+                $day = 2;
+                break;
+
+            case "wed":
+                $day = 3;
+                break;
+
+            case "thu":
+                $day = 4;
+                break;
+
+            case "fri":
+                $day = 5;
+                break;
+
+            case "sat":
+                $day = 6;
+                break;
+
+            case "sun":
+                $day = 7;
+                break;
+        }
+
+        $subscriptions = $this->store->subscriptions;
+        $deliveryDaySubscriptions = $subscriptions->where('delivery_day', $day);
+
+        foreach ($deliveryDaySubscriptions as $subscription) {
+            if ($subscription->status === 'active') {
+                $customer = $subscription->customer;
+                $emailAddress = $customer->user->email;
+                $email = new SubscriptionCancelled([
+                    'customer' => $customer,
+                    'subscription' => $subscription
+                ]);
+                Mail::to($emailAddress)->send($email);
+                $subscription->status = 'cancelled';
+                $subscription->save();
+                sleep(1);
+            }
         }
     }
 }

@@ -143,7 +143,9 @@ u + .body .full { width:100% !important; width:100vw !important;}
       <td align="center">
         <table align="center" width="600" style="max-width:600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
           <tr>
-            <td height="50"></td>
+            <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">
+              Your customer cancelled their meal plan. This applies to the next order renewal. If this meal plan was cancelled before their order fulfillment, then the customer is still expecting their order for the week as they have already paid for it. Please check the Orders page which only shows orders that have been paid.
+            </td>
           </tr>
           <!-- header -->
           <tr>

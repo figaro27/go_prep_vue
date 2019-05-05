@@ -159,12 +159,29 @@ class CheckoutController extends UserController
                 'customer' => $customer ?? null,
                 'subscription' => null
             ]);
-            Mail::to($user)
-                ->bcc('mike@goprep.com')
-                ->send($email);
+            try {
+                Mail::to($user)
+                    ->bcc('mike@goprep.com')
+                    ->send($email);
+            } catch (\Exception $e) {
+            }
         } else {
             $weekIndex = date('N', strtotime($deliveryDay));
-            $cutoff = $store->getNextCutoffDate($weekIndex);
+
+            // Get cutoff date for selected delivery day
+            $cutoff = $store->getCutoffDate(new Carbon($deliveryDay));
+
+            // How long into the future is the delivery day? In days
+            $diff = (strtotime($deliveryDay) - time()) / 86400;
+
+            // Set billing anchor to now +2 mins
+            $billingAnchor = Carbon::now()->addMinutes(2);
+
+            // Selected start date is more than 1 week into the future.
+            // Wait until next week to start billing cycle
+            if ($diff >= 7) {
+                $billingAnchor->addWeeks(1);
+            }
 
             $plan = \Stripe\Plan::create(
                 [
@@ -200,8 +217,8 @@ class CheckoutController extends UserController
                     'default_source' => $storeSource,
                     'items' => [['plan' => $plan]],
                     'application_fee_percent' => $application_fee,
-                    'billing_cycle_anchor' => $cutoff->getTimestamp(),
-                    'prorate' => false
+                    'trial_end' => $billingAnchor->getTimestamp()
+                    //'prorate' => false
                 ],
                 ['stripe_account' => $store->settings->stripe_id]
             );
@@ -232,6 +249,8 @@ class CheckoutController extends UserController
             $userSubscription->next_renewal_at = $cutoff->copy()->addDays(7);
             $userSubscription->charge_time = $cutoff->getTimestamp();
             $userSubscription->coupon_id = $couponId;
+            // In this case the 'next renewal time' is actually the first charge time
+            $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
             $userSubscription->save();
 
             // Create initial order
@@ -299,9 +318,13 @@ class CheckoutController extends UserController
                 'customer' => $customer ?? null,
                 'subscription' => $userSubscription ?? null
             ]);
-            Mail::to($user)
-                ->bcc('mike@goprep.com')
-                ->send($email);
+
+            try {
+                Mail::to($user)
+                    ->bcc('mike@goprep.com')
+                    ->send($email);
+            } catch (\Exception $e) {
+            }
         }
 
         /*

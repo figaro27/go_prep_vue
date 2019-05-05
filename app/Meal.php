@@ -108,9 +108,9 @@ class Meal extends Model implements HasMedia
         if ($this->has('sizes')) {
             if ($this->pivot && $this->pivot->meal_size_id) {
                 return $title . ' - ' . $this->meal_size->title;
-            } elseif ($this->default_size_title) {
+            } /*elseif ($this->default_size_title) {
                 return $title . ' - ' . $this->default_size_title;
-            }
+            }*/
         }
 
         return $title;

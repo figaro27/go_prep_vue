@@ -28,6 +28,10 @@ class StoreMealRequest extends FormRequest
             'title' => 'required',
             'price' => 'required|numeric|between:0.01,999.99', // todo: update price limits
             'category_ids' => 'required',
+            'default_size_title' => '',
+            'sizes.*.title' => 'required|distinct',
+            'sizes.*.price' => 'required|gte:0.1|lte:1000',
+            'sizes.*.multiplier' => 'required|distinct|gte:0.1|lte:20'
         ];
     }
 
@@ -39,8 +43,6 @@ class StoreMealRequest extends FormRequest
      */
     public function withValidator($validator)
     {
-        $validator->after(function (Validator $validator) {
-
-        });
+        $validator->after(function (Validator $validator) {});
     }
 }

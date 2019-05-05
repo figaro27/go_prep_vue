@@ -27,9 +27,10 @@ class Bag
 
         // Deduplicate items
         collect($_items)->map(function ($item) use (&$items) {
-            $itemId = $item['size']
-                ? $item['meal']['id'] . '-' . $item['size']['id']
-                : $item['meal']['id'];
+            $itemId =
+                isset($item['size']) && $item['size']
+                    ? $item['meal']['id'] . '-' . $item['size']['id']
+                    : $item['meal']['id'];
 
             if (!isset($items[$itemId])) {
                 $items[$itemId] = $item;
@@ -50,7 +51,7 @@ class Bag
             ->keyBy('id');
 
         collect($this->items)->map(function ($item) use (&$items, $meals) {
-            if ($item['meal_package']) {
+            if (isset($item['meal_package']) && $item['meal_package']) {
                 for ($i = 0; $i < $item['quantity']; $i++) {
                     foreach ($item['meal']['meals'] as $meal) {
                         $itemId = $meal['id'];
@@ -70,7 +71,7 @@ class Bag
                 $price = $meals[$itemId]->price;
 
                 // Ensure size variations are counted separately
-                if ($item['size']) {
+                if (isset($item['size']) && $item['size']) {
                     $itemId .= '-' . $item['size']['id'];
                     $price = $item['size']['price'];
                 }

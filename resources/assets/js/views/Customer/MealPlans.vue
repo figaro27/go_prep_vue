@@ -140,20 +140,6 @@
                   <b-collapse :id="'collapse' + subscription.id" class="mt-2">
                     <div class="row">
                       <div class="col-md-12">
-                        <!-- <p>
-                          Your card will be charged on
-                          {{
-                            momentTimezone
-                              .tz(
-                                subscription.charge_time,
-                                storeSettings.timezone
-                              )
-                              .format("dddd")
-                          }}. You can Pause, Cancel, or Change Meals up until
-                          that time to affect this weeks order. If you Pause,
-                          Cancel, or Change Meals after this day, it will be
-                          applied to <strong>next week's</strong> order.
-                        </p> -->
                         <p>
                           Your card will be charged on
                           {{

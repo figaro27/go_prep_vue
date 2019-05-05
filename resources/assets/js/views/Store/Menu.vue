@@ -385,7 +385,9 @@
         </b-list-group>
 
         <div v-if="mealSubstituteOptions(deletingMeal).length <= 0">
-          No substitutes lorem ipsum
+          There are currently no substitute options for this meal. Please add a
+          similar meal that 1) doesn't contain the same allergies, and 2) is
+          within the same meal category.
         </div>
 
         <!--<b-select v-model="deleteMeal.subtitute_id" :options="mealSubstituteOptions(deleteMeal)"></b-select>-->

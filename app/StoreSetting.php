@@ -45,9 +45,7 @@ class StoreSetting extends Model
         parent::boot();
 
         self::saved(function ($model) {
-            Cache::forget(
-                'store_' . $model->store_id . '_subscribed_delivery_days'
-            );
+            $model->store->clearCaches();
         });
     }
 
@@ -170,7 +168,7 @@ class StoreSetting extends Model
     {
         return Cache::remember(
             'store_' . $this->store_id . '_subscribed_delivery_days',
-            60,
+            10,
             function () {
                 $days = DB::table('subscriptions')
                     ->select(DB::raw('delivery_day, count(*) as `count`'))

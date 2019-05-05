@@ -108,8 +108,8 @@
             <ul class="list-group">
               <li class="bag-item">
                 <div class="row">
-                  <div class="col-md-3">
-                    <p>
+                  <div class="col-md-4 pb-1">
+                    <h3>
                       <strong>Weekly Meal Plan</strong>
                       <img
                         v-b-popover.hover="
@@ -119,9 +119,9 @@
                         src="/images/store/popover.png"
                         class="popover-size ml-1"
                       />
-                    </p>
+                    </h3>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-4 pt-2">
                     <div class="aside-options">
                       <c-switch
                         color="success"

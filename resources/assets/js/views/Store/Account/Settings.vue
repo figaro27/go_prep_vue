@@ -1,10 +1,9 @@
 <template>
   <div class="row">
     <div class="col-md-8 offset-md-2">
-      <b-alert :show="!canOpen" variant="success"
-        >Welcome to GoPrep! Enter all settings to open your store for
-        business.</b-alert
-      >
+      <b-alert :show="!canOpen" variant="success">
+        Welcome to GoPrep! Enter all settings to open your store for business.
+      </b-alert>
       <p>Orders</p>
       <div class="card">
         <div class="card-body">
@@ -20,11 +19,13 @@
                 v-model="storeSettings.cutoff_days"
                 class="d-inline w-auto mr-1"
                 :options="cutoffDaysOptions"
+                @change.native="checkCutoffMealPlans"
               ></b-select>
               <b-select
                 v-model="storeSettings.cutoff_hours"
                 class="d-inline w-auto mr-1 custom-select"
                 :options="cutoffHoursOptions"
+                @change.native="checkCutoffMealPlans"
               ></b-select>
               <img
                 v-b-popover.hover="
@@ -73,9 +74,88 @@
                 class="popover-size"
               />
             </b-form-group>
-            <b-modal ref="deliveryDaysModal">
-              There are meal plans associated with one or more deselected
-              delivery days.
+            <b-modal
+              size="md"
+              v-model="showCutoffModal"
+              title="Warning"
+              hide-footer
+            >
+              <h6 class="center-text mt-3">
+                You potentially have active meal plans that are charged and
+                turned into orders at this cutoff period.
+              </h6>
+              <p class="center-text mt-3">
+                If you change your cutoff time, those active meal plans won't be
+                adjusted. They will still turn into orders at the time of your
+                old cutoff.
+              </p>
+              <p class="center-text mt-3">
+                If this is an issue, please either keep this cutoff period, or
+                you can individually cancel meal plans on the Meal Plans page.
+              </p>
+              <b-btn
+                class="center"
+                variant="primary"
+                @click="showCutoffModal = false"
+                >Confirm</b-btn
+              >
+            </b-modal>
+            <b-modal
+              size="xl"
+              ref="deliveryDaysModal"
+              title="Warning"
+              hide-footer
+            >
+              <h6 class="center-text mt-3">
+                There are active meal plans associated with this delivery day.
+                Please choose one of the three options below to continue.
+              </h6>
+              <div class="row mt-5">
+                <div class="col-sm-4">
+                  <p class="center-text">
+                    Cancel my action and keep this delivery day active for
+                    future meal plans & orders.
+                  </p>
+                </div>
+                <div class="col-sm-4">
+                  <p class="center-text">
+                    Remove this delivery day, but I will still fulfill meal plan
+                    orders attached to this day.
+                  </p>
+                </div>
+                <div class="col-sm-4">
+                  <p class="center-text">
+                    Remove this delivery day for future orders, and cancel all
+                    my meal plans attached to this day.
+                  </p>
+                </div>
+              </div>
+              <div class="row mb-5">
+                <div class="col-sm-4">
+                  <b-btn
+                    variant="success"
+                    class="center"
+                    @click="hideDeliveryDaysModal"
+                    >Keep Day</b-btn
+                  >
+                </div>
+                <div class="col-sm-4">
+                  <b-btn
+                    variant="warning"
+                    class="center"
+                    @click="removeDeliveryDay"
+                    >Remove Day & Honor</b-btn
+                  >
+                </div>
+                <div class="col-sm-4">
+                  <b-btn
+                    variant="danger"
+                    class="center"
+                    @click="cancelMealPlans"
+                    >Remove Day & Cancel</b-btn
+                  >
+                </div>
+              </div>
             </b-modal>
 
             <b-form-group
@@ -670,9 +750,8 @@
             v-model="acceptedTOAcheck"
             value="1"
             unchecked-value="0"
+            >I accept these terms.</b-form-checkbox
           >
-            I accept these terms.
-          </b-form-checkbox>
         </center>
       </b-modal>
 
@@ -725,9 +804,7 @@
             </div>
           </b-form>
 
-          <div v-else>
-            Please enter all settings fields to open your store.
-          </div>
+          <div v-else>Please enter all settings fields to open your store.</div>
         </div>
       </div>
     </div>
@@ -802,6 +879,8 @@ export default {
       payments_url: "",
       coupon: {},
       columns: ["code", "type", "amount", "actions"]
+      deselectedDeliveryDay: null,
+      showCutoffModal: false
     };
   },
   computed: {
@@ -1092,17 +1171,37 @@ export default {
       }
     },
     onChangeDeliveryDays(days) {
-      let hasAll = true;
+      // Get unselected day
+      let diff = _.difference(this.storeSettings.delivery_days, days);
 
-      this.storeSettings.subscribed_delivery_days.forEach(day => {
-        if (!_.includes(days, day)) {
-          hasAll = false;
-        }
-      });
+      if (_.isEmpty(diff)) {
+        return;
+      }
 
-      if (!hasAll) {
+      const deselected = diff[0];
+
+      // Deselected day has active meal plans
+      if (_.includes(this.storeSettings.subscribed_delivery_days, deselected)) {
+        // Add deselected day back for now
+        this.$nextTick(() => {
+          this.storeSettings.delivery_days = [
+            ...this.storeSettings.delivery_days,
+            deselected
+          ];
+        });
+
+        // Store deselected day for later
+        this.deselectedDeliveryDay = deselected;
+
+        // Show modal
         this.$refs.deliveryDaysModal.show();
       }
+    },
+    removeDeliveryDay() {
+      let day = this.deselectedDeliveryDay;
+      let index = this.storeSettings.delivery_days.indexOf(day);
+      this.storeSettings.delivery_days.splice(index, 1);
+      this.$refs.deliveryDaysModal.hide();
     },
     updateZips(e) {
       this.zipCodes = e.target.value.split(",");
@@ -1133,6 +1232,22 @@ export default {
       });
       this.showMealPlansModal = false;
       this.$toastr.s("Your settings have been saved.", "Success");
+    },
+    cancelMealPlans() {
+      this.removeDeliveryDay();
+      axios.post("/api/me/cancelMealPlans", {
+        deliveryDay: this.deselectedDeliveryDay
+      });
+      this.$refs.deliveryDaysModal.hide();
+      this.$toastr.s("Your settings have been saved.", "Success");
+    },
+    hideDeliveryDaysModal() {
+      this.$refs.deliveryDaysModal.hide();
+    },
+    checkCutoffMealPlans() {
+      if (this.storeSubscriptions.length > 0) {
+        this.showCutoffModal = true;
+      }
     }
   }
 };

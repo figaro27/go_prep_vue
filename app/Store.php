@@ -36,6 +36,15 @@ class Store extends Model
 
     protected $casts = [];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        self::saved(function ($model) {
+            $model->clearCaches();
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo('App\User');
@@ -107,6 +116,7 @@ class Store extends Model
     public function clearCaches()
     {
         Cache::forget('store_order_ingredients' . $this->id);
+        Cache::forget('store_' . $this->id . '_subscribed_delivery_days');
     }
 
     public function getUrl($append = '', $secure = true)
@@ -317,6 +327,26 @@ class Store extends Model
         }
 
         return $date ? $date->subSeconds($this->getCutoffSeconds()) : null;
+    }
+
+    /**
+     * Get the cutoff date for a particular delivery date
+     *
+     * @param Carbon $deliveryDate
+     * @return Carbon $cutoffDate
+     */
+    public function getCutoffDate(Carbon $deliveryDate)
+    {
+        $cutoffDate = Carbon::createFromDate(
+            $deliveryDate->year,
+            $deliveryDate->month,
+            $deliveryDate->day,
+            $this->settings->timezone
+        );
+        return $cutoffDate
+            ->setTime(0, 0, 0)
+            ->subSeconds($this->getCutoffSeconds())
+            ->setTimezone('utc');
     }
 
     public function getOrders(

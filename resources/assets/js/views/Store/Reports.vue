@@ -1,5 +1,15 @@
 <template>
   <div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <div class="alert alert-success center" role="alert">
+          <p class="center-text">
+            Please select a date range for each report. If you only want reports
+            for a single day please select the same day twice.
+          </p>
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="col-md-12">
         <h2 class="center-text mb-4">Production</h2>
