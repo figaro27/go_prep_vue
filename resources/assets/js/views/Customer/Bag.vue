@@ -557,10 +557,11 @@ export default {
     },
     couponReduction() {
       let coupon = this.coupon;
+      let afterDiscountAfterFees = this.afterDiscountAfterFees;
       if (coupon.type === "flat") {
         return coupon.amount;
       } else if (coupon.type === "percent") {
-        return (coupon.amount / 100) * this.afterDiscountAfterFees;
+        return (coupon.amount / 100) * afterDiscountAfterFees;
       }
     },
     afterDiscountAfterFeesAfterCoupon() {
@@ -661,7 +662,8 @@ export default {
           card_id: this.card,
           store_id: this.store.id,
           salesTax: this.tax,
-          coupon_id: this.coupon.id
+          coupon_id: this.coupon.id,
+          couponReduction: this.couponReduction
         })
         .then(async resp => {
           this.emptyBag();
@@ -701,7 +703,7 @@ export default {
     },
     applyCoupon() {
       this.storeCoupons.forEach(coupon => {
-        if (this.couponCode.toUpperCase === coupon.code.toUpperCase) {
+        if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
           this.coupon = coupon;
           this.couponApplied = true;
           this.couponCode = "";

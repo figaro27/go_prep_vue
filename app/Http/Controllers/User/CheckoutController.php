@@ -30,6 +30,7 @@ class CheckoutController extends UserController
         $pickup = $request->get('pickup');
         $deliveryDay = $request->get('delivery_day');
         $couponId = $request->get('coupon_id');
+        $couponReduction = $request->get('couponReduction');
         //$stripeToken = $request->get('token');
 
         $cardId = $request->get('card_id');
@@ -64,13 +65,13 @@ class CheckoutController extends UserController
         }
 
         if ($couponId != null) {
-            $coupon = Coupon::where('id', $couponId);
-            $couponReduction = 0;
-            if ($coupon->type === 'flat') {
-                $couponReduction = $coupon->amount;
-            } elseif ($coupon->type === 'percent') {
-                $couponReduction = ($coupon->amount / 100) * $total;
-            }
+            // $coupon = Coupon::where('id', $couponId)->first();
+            // $couponReduction = 0;
+            // if ($coupon->type === 'flat') {
+            //     $couponReduction = $coupon->amount;
+            // } elseif ($coupon->type === 'percent') {
+            //     $couponReduction = ($coupon->amount / 100) * $total;
+            // }
             $total -= $couponReduction;
         }
 
@@ -126,6 +127,7 @@ class CheckoutController extends UserController
             $order->stripe_id = $charge->id;
             $order->paid_at = new Carbon();
             $order->coupon_id = $couponId;
+            $order->couponReduction = $couponReduction;
             $order->save();
 
             foreach ($bag->getItems() as $item) {
@@ -249,6 +251,7 @@ class CheckoutController extends UserController
             $userSubscription->next_renewal_at = $cutoff->copy()->addDays(7);
             $userSubscription->charge_time = $cutoff->getTimestamp();
             $userSubscription->coupon_id = $couponId;
+            $userSubscription->couponReduction = $couponReduction;
             // In this case the 'next renewal time' is actually the first charge time
             $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
             $userSubscription->save();
@@ -273,6 +276,7 @@ class CheckoutController extends UserController
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = (new Carbon($deliveryDay))->toDateString();
             $order->coupon_id = $couponId;
+            $order->couponReduction = $couponReduction;
             $order->save();
 
             foreach ($bag->getItems() as $item) {

@@ -878,7 +878,7 @@ export default {
       view_delivery_days: 1,
       payments_url: "",
       coupon: {},
-      columns: ["code", "type", "amount", "actions"]
+      columns: ["code", "type", "amount", "actions"],
       deselectedDeliveryDay: null,
       showCutoffModal: false
     };
