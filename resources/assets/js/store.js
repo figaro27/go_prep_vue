@@ -96,6 +96,10 @@ const state = {
     payments: {
       data: {},
       expires: 0
+    },
+    coupons: {
+      data: {},
+      expires: 0
     }
   },
   orders: {
@@ -291,8 +295,8 @@ const mutations = {
         .unix();
     }
 
-    state.store.settings.data = settings;
-    state.store.settings.expires = expires;
+    state.store.coupons.data = coupons;
+    state.store.coupons.expires = expires;
   },
 
   storeMeals(state, { meals, expires }) {
@@ -443,6 +447,16 @@ const actions = {
 
         if (!_.isEmpty(categories)) {
           commit("storeCategories", { categories });
+        }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.coupons)) {
+        let coupons = data.store.coupons;
+
+        if (!_.isEmpty(coupons)) {
+          commit("storeCoupons", { coupons });
         }
       }
     } catch (e) {}
@@ -652,7 +666,7 @@ const actions = {
     const { data } = await res;
 
     if (_.isObject(data)) {
-      commit("storeCoupons", { settings: data });
+      commit("storeCoupons", { coupons: data });
     } else {
       throw new Error("Failed to retrieve coupons");
     }

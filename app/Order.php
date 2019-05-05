@@ -75,6 +75,11 @@ class Order extends Model
         return $this->hasMany('App\OrderEvent');
     }
 
+    public function coupon()
+    {
+        return $this->hasOne('App\Coupon');
+    }
+
     public function getHasNotesAttribute()
     {
         if ($this->notes) {

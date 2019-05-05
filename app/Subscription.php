@@ -66,6 +66,11 @@ class Subscription extends Model
         return $this->hasMany('App\Order');
     }
 
+    public function coupon()
+    {
+        return $this->hasOne('App\Coupon');
+    }
+
     public function getLatestOrderAttribute()
     {
         return $this->orders()

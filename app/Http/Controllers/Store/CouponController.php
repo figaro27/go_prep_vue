@@ -16,7 +16,7 @@ class CouponController extends StoreController
     public function index()
     {
         $storeId = $this->store->id;
-        return Coupon::where('store_id', $storeId)->get();
+        return Coupon::where('store_id', 3)->get();
     }
 
     /**

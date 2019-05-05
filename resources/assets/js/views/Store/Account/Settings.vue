@@ -5,7 +5,6 @@
         >Welcome to GoPrep! Enter all settings to open your store for
         business.</b-alert
       >
-
       <p>Orders</p>
       <div class="card">
         <div class="card-body">
@@ -453,98 +452,64 @@
       <p>Coupons</p>
       <div class="card">
         <div class="card-body">
-          <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group :state="true">
-              <p>
-                <span class="mr-1">Coupons</span>
-                <img
-                  v-b-popover.hover="
-                    'Add a coupon that your customers can use on your checkout page. Choose the type - either an overall percentage of the bag or a flat amount.'
-                  "
-                  title="Coupons"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </p>
+          <p>
+            <span class="mr-1">Coupons</span>
+            <img
+              v-b-popover.hover="
+                'Add a coupon that your customers can use on your checkout page. Choose the type - either an overall percentage of the bag or a flat amount.'
+              "
+              title="Coupons"
+              src="/images/store/popover.png"
+              class="popover-size"
+            />
+          </p>
 
-              <v-client-table
-                :columns="columns"
-                :data="tableData"
-                :options="{
-                  orderBy: {
-                    column: 'id',
-                    ascending: true
-                  },
-                  headings: {
-                    amount: 'Percentage / Amount'
-                  }
-                }"
+          <v-client-table
+            :columns="columns"
+            :data="tableData"
+            :options="{
+              orderBy: {
+                column: 'id',
+                ascending: true
+              }
+            }"
+          >
+            <div slot="beforeTable" class="mb-2">
+              <b-form-group id="coupon">
+                <b-form-input
+                  id="coupon-code"
+                  v-model="coupon.code"
+                  required
+                  placeholder="Enter Coupon Code"
+                ></b-form-input>
+                <b-form-radio-group v-model="coupon.type">
+                  <b-form-radio name="coupon-type" value="flat"
+                    >Flat Dollar Amount</b-form-radio
+                  >
+                  <b-form-radio name="coupon-type" value="percent"
+                    >Percentage Amount</b-form-radio
+                  >
+                </b-form-radio-group>
+
+                <b-form-input
+                  id="coupon-code"
+                  v-model="coupon.amount"
+                  required
+                  placeholder="Enter Amount ($ or %)"
+                ></b-form-input>
+              </b-form-group>
+              <b-btn variant="success" @click="saveCoupon">Save</b-btn>
+            </div>
+
+            <div slot="actions" slot-scope="props" v-if="props.row.id !== -1">
+              <b-btn
+                variant="danger"
+                size="sm"
+                @click="deleteCoupon(props.row.id)"
+                >Delete</b-btn
               >
-                <div slot="beforeTable" class="mb-2">
-                  <b-btn
-                    variant="success"
-                    @click="
-                      coupons.push({
-                        id: 100 + coupons.length,
-                        code: '',
-                        type: '',
-                        amount: null
-                      })
-                    "
-                  >
-                    Add Coupon
-                  </b-btn>
-                </div>
-
-                <div slot="code" slot-scope="props">
-                  <b-input
-                    v-model="props.row.code"
-                    placeholder="Enter Coupon Code"
-                  ></b-input>
-                </div>
-                <div slot="type" slot-scope="props">
-                  <b-form-group>
-                    <b-form-radio-group
-                      id="selected-coupon-type"
-                      v-model="coupon.type"
-                      name="selected-coupon-type"
-                    >
-                      <b-form-radio name="percent" value="percent"
-                        >Percentage</b-form-radio
-                      >
-                      <b-form-radio name="flat" value="flat"
-                        >Flat Amount</b-form-radio
-                      >
-                    </b-form-radio-group>
-                  </b-form-group>
-                </div>
-                <div slot="amount" slot-scope="props">
-                  <b-input
-                    :disabled="props.row.id === -1"
-                    v-model="props.row.amount"
-                  ></b-input>
-                </div>
-                <div
-                  slot="actions"
-                  slot-scope="props"
-                  v-if="props.row.id !== -1"
-                >
-                  <b-button
-                    @click="saveCoupon(props.row.id)"
-                    variant="primary"
-                    class="mt-3"
-                    >Save</b-button
-                  >
-                  <b-btn
-                    variant="danger"
-                    size="sm"
-                    @click="deleteCoupon(props.row.id)"
-                    >Delete</b-btn
-                  >
-                </div>
-              </v-client-table>
-            </b-form-group>
-          </b-form>
+            </div>
+          </v-client-table>
         </div>
       </div>
 
@@ -813,6 +778,7 @@ export default {
   },
   data() {
     return {
+      storeCoupons: {},
       acceptedTOA: 0,
       acceptedTOAcheck: 0,
       showTOAModal: 0,
@@ -834,12 +800,7 @@ export default {
       new_category: "",
       view_delivery_days: 1,
       payments_url: "",
-      coupon: {
-        code: "GOPREP",
-        type: "percent",
-        amount: 10
-      },
-      coupons: [],
+      coupon: {},
       columns: ["code", "type", "amount", "actions"]
     };
   },
@@ -851,11 +812,11 @@ export default {
       storeSetting: "storeSetting",
       storeSettings: "storeSettings",
       storeCategories: "storeCategories",
-      storeSubscriptions: "storeSubscriptions",
-      storeCoupons: "storeCoupons"
+      storeSubscriptions: "storeSubscriptions"
+      // storeCoupons: "storeCoupons"
     }),
     tableData() {
-      return this.coupons;
+      return this.storeCoupons;
     },
     storeDetails() {
       return this.storeDetail;
@@ -945,6 +906,10 @@ export default {
       }
     });
 
+    axios.get("/api/me/coupons").then(resp => {
+      this.storeCoupons = resp.data;
+    });
+
     this.checkAcceptedTOA();
   },
   methods: {
@@ -981,14 +946,22 @@ export default {
         });
     },
     saveCoupon() {
-      axios
-        .post("/api/me/coupons", this.coupon)
-        .then(response => {
-          console.log("success");
-        })
-        .catch(response => {
-          console.log("error");
-        });
+      axios.post("/api/me/coupons", this.coupon).then(response => {
+        this.coupon = {};
+        this.refreshCoupons();
+        this.$toastr.s("Coupon Added", "Success");
+      });
+    },
+    refreshCoupons() {
+      axios.get("/api/me/coupons").then(resp => {
+        this.storeCoupons = resp.data;
+      });
+    },
+    deleteCoupon(id) {
+      axios.delete("/api/me/coupons/" + id).then(response => {
+        this.refreshCoupons();
+        this.$toastr.s("Coupon Deleted", "Success");
+      });
     },
     closeStore() {
       let activeSubscriptions = false;

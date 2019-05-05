@@ -197,13 +197,43 @@
                 </div>
               </li>
 
-              <li class="checkout-item">
+              <li :class="checkoutClass">
                 <div class="row">
                   <div class="col-md-4">
                     <strong>Total</strong>
                   </div>
                   <div class="col-md-3 offset-5">
                     <strong>{{ format.money(afterDiscountAfterFees) }}</strong>
+                    <br />
+                    <strong
+                      ><span class="text-success" v-if="couponApplied"
+                        >({{ format.money(couponReduction) }})</span
+                      ></strong
+                    >
+                    <br />
+                    <strong
+                      ><span v-if="couponApplied">{{
+                        format.money(afterDiscountAfterFeesAfterCoupon)
+                      }}</span></strong
+                    >
+                  </div>
+                </div>
+              </li>
+
+              <li :class="couponClass" v-if="hasCoupons">
+                <div class="row">
+                  <div class="col-md-4">
+                    <b-form-group id="coupon">
+                      <b-form-input
+                        id="coupon-code"
+                        v-model="couponCode"
+                        required
+                        placeholder="Enter Coupon Code"
+                      ></b-form-input>
+                    </b-form-group>
+                  </div>
+                  <div class="col-md-4">
+                    <b-btn variant="primary" @click="applyCoupon">Apply</b-btn>
                   </div>
                 </div>
               </li>
@@ -420,7 +450,32 @@ export default {
       stripeKey: window.app.stripe_key,
       // stripeOptions,
       loading: false,
-      salesTax: 0
+      salesTax: 0,
+      coupon: {},
+      couponCode: "",
+      storeCoupons: [
+        {
+          amount: 10,
+          code: "GOPREP",
+          created_at: "2019-05-04 05:12:48",
+          id: 1,
+          store_id: 3,
+          type: "percent",
+          updated_at: "2019-05-04 05:12:48"
+        },
+        {
+          amount: 11,
+          code: "BACKTO3",
+          created_at: "2019-05-05 18:13:23",
+          id: 8,
+          store_id: 3,
+          type: "flat",
+          updated_at: "2019-05-05 18:13:23"
+        }
+      ],
+      couponApplied: false,
+      checkoutClass: "checkout-item",
+      couponClass: "checkout-item"
     };
   },
   computed: {
@@ -440,6 +495,7 @@ export default {
       minOption: "minimumOption",
       minMeals: "minimumMeals",
       minPrice: "minimumPrice"
+      // storeCoupons: "storeCoupons"
     }),
     card() {
       if (this.cards.length != 1) return null;
@@ -498,6 +554,29 @@ export default {
       let subtotal = this.afterDiscountAfterFeesBeforeTax;
 
       return subtotal * salesTax;
+    },
+    couponReduction() {
+      let coupon = this.coupon;
+      if (coupon.type === "flat") {
+        return coupon.amount;
+      } else if (coupon.type === "percent") {
+        return (coupon.amount / 100) * this.afterDiscountAfterFees;
+      }
+    },
+    afterDiscountAfterFeesAfterCoupon() {
+      let coupon = this.coupon;
+      if (coupon.type === "flat") {
+        return this.afterDiscountAfterFees - this.couponReduction;
+      } else if (coupon.type === "percent") {
+        return this.afterDiscountAfterFees - this.couponReduction;
+      }
+    },
+    hasCoupons() {
+      if (this.storeCoupons.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
     },
     applyMealPlanDiscount() {
       return this.storeSettings.applyMealPlanDiscount;
@@ -618,6 +697,19 @@ export default {
     },
     setSalesTax(rate) {
       this.salesTax = rate;
+    },
+    applyCoupon() {
+      this.storeCoupons.forEach(coupon => {
+        if (this.couponCode.toUpperCase === coupon.code.toUpperCase) {
+          this.coupon = coupon;
+          this.couponApplied = true;
+          this.couponCode = "";
+          this.checkoutClass = "checkout-item-total";
+          this.couponClass = "checkout-item-hide";
+          this.$toastr.s("Coupon Applied.", "Success");
+          return;
+        }
+      });
     }
   }
 };
