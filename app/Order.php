@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\MealOrder;
 use App\Meal;
 use App\OrderEvent;
+use App\Coupon;
 
 use Illuminate\Support\Carbon;
 
@@ -34,7 +35,9 @@ class Order extends Model
         'meal_quantities',
         'store_name',
         'cutoff_date',
-        'cutoff_passed'
+        'cutoff_passed',
+        'pre_coupon',
+        'coupon_code'
     ];
 
     public function user()
@@ -78,6 +81,18 @@ class Order extends Model
     public function coupon()
     {
         return $this->hasOne('App\Coupon');
+    }
+
+    public function getPreCouponAttribute()
+    {
+        return $this->amount + $this->couponReduction;
+    }
+
+    public function getCouponCodeAttribute()
+    {
+        return Coupon::where('id', $this->coupon_id)
+            ->pluck('code')
+            ->first();
     }
 
     public function getHasNotesAttribute()

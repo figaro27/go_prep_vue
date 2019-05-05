@@ -97,11 +97,24 @@
                           {{ format.money(order.processingFee) }}
                         </p>
                         <p>Sales Tax: {{ format.money(order.salesTax) }}</p>
-                        <p>
+
+                        <strong
+                          ><span v-if="order.couponReduction === null"
+                            >Total: {{ format.money(order.amount) }}</span
+                          ></strong
+                        >
+                        <div v-if="order.couponReduction > 0">
+                          Pre-Coupon Total: {{ format.money(order.pre_coupon) }}
+                          <br />
+                          <span class="text-success"
+                            >(Coupon {{ order.coupon_code }}:
+                            {{ format.money(order.couponReduction) }})</span
+                          >
+                          <br />
                           <strong
                             >Total: {{ format.money(order.amount) }}</strong
                           >
-                        </p>
+                        </div>
                       </template>
 
                       <template slot="table-caption"></template>

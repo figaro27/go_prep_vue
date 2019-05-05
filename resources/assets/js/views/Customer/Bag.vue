@@ -159,7 +159,7 @@
                   <div class="col-md-4">
                     <strong>Meal Plan Discount:</strong>
                   </div>
-                  <div class="col-md-3 offset-5 red">
+                  <div class="col-md-3 offset-5 text-success">
                     ({{ format.money(mealPlanDiscount) }})
                   </div>
                 </div>

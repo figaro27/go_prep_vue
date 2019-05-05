@@ -6,6 +6,7 @@ use App\MealOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use App\Coupon;
 
 class Subscription extends Model
 {
@@ -18,7 +19,9 @@ class Subscription extends Model
         'latest_paid_order',
         'next_delivery_date',
         'meal_ids',
-        'meal_quantities'
+        'meal_quantities',
+        'pre_coupon',
+        'coupon_code'
     ];
 
     protected $casts = [
@@ -68,6 +71,18 @@ class Subscription extends Model
     public function coupon()
     {
         return $this->hasOne('App\Coupon');
+    }
+
+    public function getPreCouponAttribute()
+    {
+        return $this->amount + $this->couponReduction;
+    }
+
+    public function getCouponCodeAttribute()
+    {
+        return Coupon::where('id', $this->coupon_id)
+            ->pluck('code')
+            ->first();
     }
 
     public function getLatestOrderAttribute()

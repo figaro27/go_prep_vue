@@ -166,13 +166,12 @@
                           Subtotal:
                           {{ format.money(subscription.preFeePreDiscount) }}
                         </p>
-                        <p v-if="subscription.mealPlanDiscount > 0">
-                          Meal Plan Discount:
-                          <span class="text-success"
-                            >({{
-                              format.money(subscription.mealPlanDiscount)
-                            }})</span
-                          >
+                        <p
+                          class="text-success"
+                          v-if="subscription.mealPlanDiscount > 0"
+                        >
+                          (Meal Plan Discount:
+                          {{ format.money(subscription.mealPlanDiscount) }})
                         </p>
                         <p v-if="subscription.deliveryFee > 0">
                           Delivery Fee:
@@ -185,12 +184,29 @@
                         <p>
                           Sales Tax: {{ format.money(subscription.salesTax) }}
                         </p>
-                        <p>
+
+                        <strong
+                          ><span v-if="subscription.couponReduction === null"
+                            >Total:
+                            {{ format.money(subscription.amount) }}</span
+                          ></strong
+                        >
+                        <div v-if="subscription.couponReduction > 0">
+                          Pre-Coupon Total:
+                          {{ format.money(subscription.pre_coupon) }}
+                          <br />
+                          <span class="text-success"
+                            >(Coupon {{ order.coupon_code }}:
+                            {{
+                              format.money(subscription.couponReduction)
+                            }})</span
+                          >
+                          <br />
                           <strong
                             >Total:
                             {{ format.money(subscription.amount) }}</strong
                           >
-                        </p>
+                        </div>
                       </template>
                     </b-table>
                   </b-collapse>

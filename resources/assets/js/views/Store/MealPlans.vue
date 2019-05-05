@@ -117,7 +117,21 @@
             <span>Sales Tax: {{ format.money(subscription.salesTax) }}</span
             ><br />
             <span>
-              <strong>Total: {{ format.money(subscription.amount) }}</strong>
+              <strong
+                ><span v-if="subscription.couponReduction === null"
+                  >Total: {{ format.money(subscription.amount) }}</span
+                ></strong
+              >
+              <div v-if="subscription.couponReduction > 0">
+                Pre-Coupon Total: {{ format.money(subscription.pre_coupon) }}
+                <br />
+                <span class="text-success"
+                  >(Coupon {{ subscription.coupon_code }}:
+                  {{ format.money(subscription.couponReduction) }})</span
+                >
+                <br />
+                <strong>Total: {{ format.money(subscription.amount) }}</strong>
+              </div>
             </span>
           </div>
         </div>
