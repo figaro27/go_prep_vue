@@ -12,6 +12,7 @@ use App\Order;
 use App\Store;
 use App\StoreDetail;
 use App\Subscription;
+use App\Coupon;
 use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -28,6 +29,7 @@ class CheckoutController extends UserController
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
         $deliveryDay = $request->get('delivery_day');
+        $couponId = $request->get('coupon_id');
         //$stripeToken = $request->get('token');
 
         $cardId = $request->get('card_id');
@@ -59,6 +61,17 @@ class CheckoutController extends UserController
         if ($store->settings->applyProcessingFee) {
             $processingFee += $store->settings->processingFee;
             $total += $processingFee;
+        }
+
+        if ($couponId != null) {
+            $coupon = Coupon::where('id', $couponId);
+            $couponReduction = 0;
+            if ($coupon->type === 'flat') {
+                $couponReduction = $coupon->amount;
+            } elseif ($coupon->type === 'percent') {
+                $couponReduction = ($coupon->amount / 100) * $total;
+            }
+            $total -= $couponReduction;
         }
 
         if (!$user->hasStoreCustomer($store->id)) {
@@ -112,6 +125,7 @@ class CheckoutController extends UserController
             $order->paid = true;
             $order->stripe_id = $charge->id;
             $order->paid_at = new Carbon();
+            $order->coupon_id = $couponId;
             $order->save();
 
             foreach ($bag->getItems() as $item) {
@@ -217,6 +231,7 @@ class CheckoutController extends UserController
             );
             $userSubscription->next_renewal_at = $cutoff->copy()->addDays(7);
             $userSubscription->charge_time = $cutoff->getTimestamp();
+            $userSubscription->coupon_id = $couponId;
             $userSubscription->save();
 
             // Create initial order
@@ -238,6 +253,7 @@ class CheckoutController extends UserController
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = (new Carbon($deliveryDay))->toDateString();
+            $order->coupon_id = $couponId;
             $order->save();
 
             foreach ($bag->getItems() as $item) {

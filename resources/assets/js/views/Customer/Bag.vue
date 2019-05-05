@@ -660,7 +660,8 @@ export default {
           delivery_day: this.deliveryDay,
           card_id: this.card,
           store_id: this.store.id,
-          salesTax: this.tax
+          salesTax: this.tax,
+          coupon_id: this.coupon.id
         })
         .then(async resp => {
           this.emptyBag();
