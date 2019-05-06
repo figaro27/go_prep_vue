@@ -92,7 +92,38 @@ class StoreSetting extends Model
         }
     }
 
-    public function getNextDeliveryDates($factorCutoff = false)
+    /**
+     * Get the cutoff date for a particular delivery date
+     *
+     * @param Carbon $deliveryDate
+     * @return Carbon $cutoffDate
+     */
+    public function getCutoffDate(Carbon $deliveryDate)
+    {
+        $cutoffDate = Carbon::createFromDate(
+            $deliveryDate->year,
+            $deliveryDate->month,
+            $deliveryDate->day,
+            $this->timezone
+        );
+        if ($this->cutoff_type === 'timed') {
+            return $cutoffDate
+                ->setTime(0, 0, 0)
+                ->subSeconds($this->getCutoffSeconds())
+                ->setTimezone('utc');
+        } elseif ($this->cutoff_type === 'single_day') {
+            $dayName = date(
+                'l',
+                strtotime("Sunday +{$this->cutoff_days} days")
+            );
+            return $cutoffDate
+                ->modify('last ' . $dayName)
+                ->setTime($this->cutoff_hours, 0, 0)
+                ->setTimezone('utc');
+        }
+    }
+
+    public function getNextDeliveryDates($factorCutoff = false, $quantity = -1)
     {
         $dates = [];
 
@@ -104,12 +135,22 @@ class StoreSetting extends Model
 
         $ddays = $this->delivery_days;
 
-        foreach ($ddays as $day) {
+        foreach ($ddays as $i => $day) {
             $date = Carbon::createFromFormat(
                 'D',
                 $day,
                 $this->timezone
             )->setTime(0, 0, 0);
+
+            $cutoff = $this->getCutoffDate($date);
+
+            if (!$factorCutoff || !$cutoff->isPast()) {
+                $dates[] = $date;
+            } else {
+                $dates[] = $date->addWeek(1);
+            }
+
+            continue;
 
             $diff = $date->getTimestamp() - $now->getTimestamp();
 
@@ -138,8 +179,7 @@ class StoreSetting extends Model
     public function getNextDeliveryDatesAttribute()
     {
         return $this->getNextDeliveryDates(false)->map(function (Carbon $date) {
-            $cutoff = new Carbon($date);
-            $cutoff->subSeconds($this->getCutoffSeconds());
+            $cutoff = $this->getCutoffDate($date);
 
             return [
                 'date' => $date->toDateTimeString(),
@@ -152,8 +192,7 @@ class StoreSetting extends Model
     public function getNextOrderableDeliveryDatesAttribute()
     {
         return $this->getNextDeliveryDates(true)->map(function (Carbon $date) {
-            $cutoff = new Carbon($date);
-            $cutoff->subSeconds($this->getCutoffSeconds());
+            $cutoff = $this->getCutoffDate($date);
 
             return [
                 'date' => $date->toDateTimeString(),
