@@ -637,13 +637,13 @@
                     continue.
                   </p>
 
-                  <p class="align-right">
+                  <!--  <p class="align-right">
                     <strong>Subtotal:&nbsp;</strong>
                     {{ format.money(preFeePreDiscount) }}
                   </p>
                   <div v-if="subscriptionId">
                     <p
-                      class="align-right red"
+                      class="align-right text-success"
                       v-if="storeSettings.applyMealPlanDiscount"
                     >
                       <strong>Meal Plan Discount:&nbsp;</strong>
@@ -675,7 +675,7 @@
                       <strong>Total&nbsp;</strong>
                       {{ format.money(afterDiscountAfterFees) }}
                     </p>
-                  </div>
+                  </div> -->
 
                   <div
                     v-if="
