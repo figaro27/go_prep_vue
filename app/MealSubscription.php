@@ -8,7 +8,7 @@ class MealSubscription extends Pivot
 {
     protected $table = 'meal_subscriptions';
 
-    protected $appends = ['price'];
+    protected $appends = [];
 
     public function meals()
     {
@@ -33,12 +33,5 @@ class MealSubscription extends Pivot
     public function subscription()
     {
         return $this->belongsTo('App\Subscription');
-    }
-
-    public function getPriceAttribute()
-    {
-        return $this->meal_size_id
-            ? $this->meal_size->price
-            : $this->meal->price;
     }
 }
