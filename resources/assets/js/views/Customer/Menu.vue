@@ -413,7 +413,7 @@
                         <li
                           v-for="category in categories"
                           :key="category"
-                          @click="goToCategory(category)"
+                          @click.prevent="goToCategory(category)"
                           class="ml-4"
                         >
                           {{ category }}
@@ -1393,7 +1393,9 @@ export default {
       }
     },
     goToCategory(category) {
-      window.location.href = "#" + category;
+      $(".main-menu-area").scrollTop(0);
+      const top = $(`#${category}`).position().top;
+      $(".main-menu-area").scrollTop(top);
     },
     viewFilters() {
       this.viewFilterModal = true;

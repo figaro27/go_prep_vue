@@ -277,6 +277,7 @@ body.sidebar-minimized {
 
 .main-menu-area,
 .bag-area {
+  position: relative;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overflow-y: scroll;
