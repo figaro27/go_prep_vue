@@ -628,7 +628,7 @@
               <b-btn
                 variant="danger"
                 size="sm"
-                @click="deleteCoupon(props.row.id)"
+                @click="e => deleteCoupon(props.row.id)"
                 >Delete</b-btn
               >
             </div>
@@ -1075,18 +1075,25 @@ export default {
         });
     },
     saveCoupon() {
-      axios.post("/api/me/coupons", this.coupon).then(response => {
-        this.coupon = {};
-        this.refreshCoupons();
-        this.$toastr.s("Coupon Added", "Success");
-      });
-      this.refreshStoreCoupons();
+      axios
+        .post("/api/me/coupons", this.coupon)
+        .then(response => {
+          this.coupon = {};
+          this.$toastr.s("Coupon Added", "Success");
+        })
+        .finally(() => {
+          this.refreshStoreCoupons();
+        });
     },
     deleteCoupon(id) {
-      axios.delete("/api/me/coupons/" + id).then(response => {
-        this.refreshStoreCoupons();
-        this.$toastr.s("Coupon Deleted", "Success");
-      });
+      axios
+        .delete("/api/me/coupons/" + id)
+        .then(response => {
+          this.$toastr.s("Coupon Deleted", "Success");
+        })
+        .finally(() => {
+          this.refreshStoreCoupons();
+        });
     },
     closeStore() {
       let activeSubscriptions = false;
