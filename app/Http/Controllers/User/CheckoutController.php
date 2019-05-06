@@ -249,7 +249,6 @@ class CheckoutController extends UserController
                 strtotime($deliveryDay)
             );
             $userSubscription->next_renewal_at = $cutoff->copy()->addDays(7);
-            $userSubscription->charge_time = $cutoff->getTimestamp();
             $userSubscription->coupon_id = $couponId;
             $userSubscription->couponReduction = $couponReduction;
             // In this case the 'next renewal time' is actually the first charge time
