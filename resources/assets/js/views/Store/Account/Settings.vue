@@ -551,34 +551,50 @@
               orderBy: {
                 column: 'id',
                 ascending: true
-              }
+              },
+              filterable: false
             }"
           >
             <div slot="beforeTable" class="mb-2">
               <b-form-group id="coupon">
-                <b-form-input
-                  id="coupon-code"
-                  v-model="coupon.code"
-                  required
-                  placeholder="Enter Coupon Code"
-                ></b-form-input>
-                <b-form-radio-group v-model="coupon.type">
-                  <b-form-radio name="coupon-type" value="flat"
-                    >Flat Dollar Amount</b-form-radio
-                  >
-                  <b-form-radio name="coupon-type" value="percent"
-                    >Percentage Amount</b-form-radio
-                  >
-                </b-form-radio-group>
-
-                <b-form-input
-                  id="coupon-code"
-                  v-model="coupon.amount"
-                  required
-                  placeholder="Enter Amount ($ or %)"
-                ></b-form-input>
+                <div class="row">
+                  <div class="col-md-3">
+                    <b-form-input
+                      id="coupon-code"
+                      v-model="coupon.code"
+                      required
+                      placeholder="Enter Coupon Code"
+                    ></b-form-input>
+                  </div>
+                  <div class="col-md-4">
+                    <b-form-radio-group v-model="coupon.type">
+                      <div class="row">
+                        <div class="col-md-6 pt-2">
+                          <b-form-radio name="coupon-type" value="flat"
+                            >Flat Amount</b-form-radio
+                          >
+                        </div>
+                        <div class="col-md-6 pt-2">
+                          <b-form-radio name="coupon-type" value="percent"
+                            >Percentage</b-form-radio
+                          >
+                        </div>
+                      </div>
+                    </b-form-radio-group>
+                  </div>
+                  <div class="col-md-2">
+                    <b-form-input
+                      id="coupon-code"
+                      v-model="coupon.amount"
+                      required
+                      placeholder="Enter Amount"
+                    ></b-form-input>
+                  </div>
+                  <div class="col-md-2">
+                    <b-btn variant="success" @click="saveCoupon">Add</b-btn>
+                  </div>
+                </div>
               </b-form-group>
-              <b-btn variant="success" @click="saveCoupon">Save</b-btn>
             </div>
 
             <div slot="actions" slot-scope="props" v-if="props.row.id !== -1">
