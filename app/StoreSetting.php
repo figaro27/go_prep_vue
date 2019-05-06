@@ -149,20 +149,6 @@ class StoreSetting extends Model
             } else {
                 $dates[] = $date->addWeek(1);
             }
-
-            continue;
-
-            $diff = $date->getTimestamp() - $now->getTimestamp();
-
-            if ($factorCutoff) {
-                $diff -= $cutoff;
-            }
-
-            if ($diff > 0) {
-                $dates[] = $date;
-            } else {
-                $dates[] = $date->addWeek(1);
-            }
         }
 
         foreach ($dates as $date) {
