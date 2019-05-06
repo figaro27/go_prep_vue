@@ -558,7 +558,12 @@ class Store extends Model
             return false;
         }
         $cutoff = $this->getCutoffDate($date);
-        return $cutoff->isPast();
+
+        if ($cutoff != false) {
+            return $cutoff->isPast();
+        } else {
+            return false;
+        }
     }
 
     public function getNextCutoffDateAttribute()
