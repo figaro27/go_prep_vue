@@ -19,7 +19,7 @@ class MealOrder extends Pivot
         return $this->belongsTo('App\Meal');
     }
 
-    public function mealSize()
+    public function meal_size()
     {
         return $this->belongsTo('App\MealSize');
     }
@@ -36,8 +36,8 @@ class MealOrder extends Pivot
 
     public function getPriceAttribute()
     {
-        return $this->meal_size_id
-            ? $this->mealSize->price
+        return $this->meal_size_id && $this->meal_size
+            ? $this->meal_size->price
             : $this->meal->price;
     }
 }

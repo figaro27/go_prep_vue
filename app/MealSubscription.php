@@ -20,7 +20,7 @@ class MealSubscription extends Pivot
         return $this->belongsTo('App\Meal');
     }
 
-    public function mealSize()
+    public function meal_size()
     {
         return $this->belongsTo('App\MealSize');
     }
@@ -38,7 +38,7 @@ class MealSubscription extends Pivot
     public function getPriceAttribute()
     {
         return $this->meal_size_id
-            ? $this->mealSize->price
+            ? $this->meal_size->price
             : $this->meal->price;
     }
 }
