@@ -679,7 +679,7 @@ const actions = {
     const res = await axios.get("/api/me/coupons");
     const { data } = await res;
 
-    if (_.isObject(data)) {
+    if (_.isArray(data)) {
       commit("storeCoupons", { coupons: data });
     } else {
       throw new Error("Failed to retrieve coupons");

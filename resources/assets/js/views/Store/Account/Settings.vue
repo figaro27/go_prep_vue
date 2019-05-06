@@ -556,45 +556,47 @@
             }"
           >
             <div slot="beforeTable" class="mb-2">
-              <b-form-group id="coupon">
-                <div class="row">
-                  <div class="col-md-3">
-                    <b-form-input
-                      id="coupon-code"
-                      v-model="coupon.code"
-                      required
-                      placeholder="Enter Coupon Code"
-                    ></b-form-input>
-                  </div>
-                  <div class="col-md-4">
-                    <b-form-radio-group v-model="coupon.type">
-                      <div class="row">
-                        <div class="col-md-6 pt-2">
-                          <b-form-radio name="coupon-type" value="flat"
-                            >Flat Amount</b-form-radio
-                          >
+              <b-form @submit.prevent="saveCoupon">
+                <b-form-group id="coupon">
+                  <div class="row">
+                    <div class="col-md-3">
+                      <b-form-input
+                        id="coupon-code"
+                        v-model="coupon.code"
+                        required
+                        placeholder="Enter Coupon Code"
+                      ></b-form-input>
+                    </div>
+                    <div class="col-md-4">
+                      <b-form-radio-group v-model="coupon.type">
+                        <div class="row">
+                          <div class="col-md-6 pt-2">
+                            <b-form-radio name="coupon-type" value="flat"
+                              >Flat Amount</b-form-radio
+                            >
+                          </div>
+                          <div class="col-md-6 pt-2">
+                            <b-form-radio name="coupon-type" value="percent"
+                              >Percent</b-form-radio
+                            >
+                          </div>
                         </div>
-                        <div class="col-md-6 pt-2">
-                          <b-form-radio name="coupon-type" value="percent"
-                            >Percentage</b-form-radio
-                          >
-                        </div>
-                      </div>
-                    </b-form-radio-group>
+                      </b-form-radio-group>
+                    </div>
+                    <div class="col-md-2">
+                      <b-form-input
+                        id="coupon-code"
+                        v-model="coupon.amount"
+                        required
+                        placeholder="Enter Amount"
+                      ></b-form-input>
+                    </div>
+                    <div class="col-md-2">
+                      <b-button type="submit" variant="success">Add</b-button>
+                    </div>
                   </div>
-                  <div class="col-md-2">
-                    <b-form-input
-                      id="coupon-code"
-                      v-model="coupon.amount"
-                      required
-                      placeholder="Enter Amount"
-                    ></b-form-input>
-                  </div>
-                  <div class="col-md-2">
-                    <b-btn variant="success" @click="saveCoupon">Add</b-btn>
-                  </div>
-                </div>
-              </b-form-group>
+                </b-form-group>
+              </b-form>
             </div>
 
             <div slot="actions" slot-scope="props" v-if="props.row.id !== -1">
@@ -892,7 +894,7 @@ export default {
       new_category: "",
       view_delivery_days: 1,
       payments_url: "",
-      coupon: {},
+      coupon: { type: "flat" },
       columns: ["code", "type", "amount", "actions"],
       deselectedDeliveryDay: null,
       showCutoffModal: false
@@ -908,9 +910,6 @@ export default {
       storeCategories: "storeCategories",
       storeSubscriptions: "storeSubscriptions",
       storeCoupons: "storeCoupons"
-    }),
-    ...mapActions({
-      refreshStoreCoupons: "refreshStoreCoupons"
     }),
     tableData() {
       if (this.storeCoupons.length > 0) return this.storeCoupons;
@@ -1007,7 +1006,11 @@ export default {
     this.checkAcceptedTOA();
   },
   methods: {
-    ...mapActions(["refreshCategories", "refreshStoreSettings"]),
+    ...mapActions([
+      "refreshCategories",
+      "refreshStoreSettings",
+      "refreshStoreCoupons"
+    ]),
     updateStoreSettings() {
       this.spliceCharacters();
       let settings = { ...this.storeSettings };
@@ -1040,18 +1043,22 @@ export default {
         });
     },
     saveCoupon() {
-      axios.post("/api/me/coupons", this.coupon).then(response => {
-        this.coupon = {};
-        this.refreshCoupons();
-        this.$toastr.s("Coupon Added", "Success");
-      });
+      axios
+        .post("/api/me/coupons", this.coupon)
+        .then(response => {
+          this.coupon = {};
+          this.$toastr.s("Coupon Added", "Success");
+        })
+        .catch(response => {
+          this.$toastr.e("Failed to add coupon.", "Error");
+        });
       this.refreshStoreCoupons();
     },
     deleteCoupon(id) {
       axios.delete("/api/me/coupons/" + id).then(response => {
-        this.refreshStoreCoupons();
         this.$toastr.s("Coupon Deleted", "Success");
       });
+      this.refreshStoreCoupons();
     },
     closeStore() {
       let activeSubscriptions = false;
