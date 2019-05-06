@@ -126,8 +126,17 @@ class SubscriptionController extends UserController
     public function getSubscriptionPickup($id)
     {
         $sub = $this->user->subscriptions()->find($id);
-        $pickup = $sub->pluck('pickup');
-        return $pickup;
+
+        if (!$sub) {
+            return response()->json(
+                [
+                    'error' => 'Meal plan not found'
+                ],
+                404
+            );
+        }
+
+        return $sub->pickup;
     }
 
     /**
