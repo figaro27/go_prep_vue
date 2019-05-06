@@ -164,7 +164,7 @@
                 Pre-Coupon Total: {{ format.money(order.pre_coupon) }}
                 <br />
                 <span class="text-success"
-                  >(Coupon {{ order.coupon_code }}:
+                  >(Coupon {{ order.couponCode }}:
                   {{ format.money(order.couponReduction) }})</span
                 >
                 <br />

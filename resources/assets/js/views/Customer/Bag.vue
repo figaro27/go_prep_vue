@@ -642,7 +642,8 @@ export default {
           store_id: this.store.id,
           salesTax: this.tax,
           coupon_id: this.coupon.id,
-          couponReduction: this.couponReduction
+          couponReduction: this.couponReduction,
+          couponCode: this.coupon.code
         })
         .then(async resp => {
           this.emptyBag();

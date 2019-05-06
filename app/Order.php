@@ -36,8 +36,7 @@ class Order extends Model
         'store_name',
         'cutoff_date',
         'cutoff_passed',
-        'pre_coupon',
-        'coupon_code'
+        'pre_coupon'
     ];
 
     public function user()
@@ -86,13 +85,6 @@ class Order extends Model
     public function getPreCouponAttribute()
     {
         return $this->amount + $this->couponReduction;
-    }
-
-    public function getCouponCodeAttribute()
-    {
-        return Coupon::where('id', $this->coupon_id)
-            ->pluck('code')
-            ->first();
     }
 
     public function getHasNotesAttribute()

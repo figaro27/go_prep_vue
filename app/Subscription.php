@@ -20,8 +20,7 @@ class Subscription extends Model
         'next_delivery_date',
         'meal_ids',
         'meal_quantities',
-        'pre_coupon',
-        'coupon_code'
+        'pre_coupon'
     ];
 
     protected $casts = [
@@ -76,13 +75,6 @@ class Subscription extends Model
     public function getPreCouponAttribute()
     {
         return $this->amount + $this->couponReduction;
-    }
-
-    public function getCouponCodeAttribute()
-    {
-        return Coupon::where('id', $this->coupon_id)
-            ->pluck('code')
-            ->first();
     }
 
     public function getLatestOrderAttribute()

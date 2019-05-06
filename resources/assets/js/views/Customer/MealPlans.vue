@@ -204,7 +204,7 @@
                           {{ format.money(subscription.pre_coupon) }}
                           <br />
                           <span class="text-success"
-                            >(Coupon {{ subscription.coupon_code }}:
+                            >(Coupon {{ subscription.couponCode }}:
                             {{
                               format.money(subscription.couponReduction)
                             }})</span

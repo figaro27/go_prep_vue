@@ -31,6 +31,7 @@ class CheckoutController extends UserController
         $deliveryDay = $request->get('delivery_day');
         $couponId = $request->get('coupon_id');
         $couponReduction = $request->get('couponReduction');
+        $couponCode = $request->get('couponCode');
         //$stripeToken = $request->get('token');
 
         $cardId = $request->get('card_id');
@@ -128,6 +129,7 @@ class CheckoutController extends UserController
             $order->paid_at = new Carbon();
             $order->coupon_id = $couponId;
             $order->couponReduction = $couponReduction;
+            $order->couponCode = $couponCode;
             $order->save();
 
             $items = $bag->getItems();
@@ -252,6 +254,7 @@ class CheckoutController extends UserController
             $userSubscription->next_renewal_at = $cutoff->copy()->addDays(7);
             $userSubscription->coupon_id = $couponId;
             $userSubscription->couponReduction = $couponReduction;
+            $userSubscription->couponCode = $couponCode;
             // In this case the 'next renewal time' is actually the first charge time
             $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
             $userSubscription->save();
@@ -277,6 +280,7 @@ class CheckoutController extends UserController
             $order->delivery_date = (new Carbon($deliveryDay))->toDateString();
             $order->coupon_id = $couponId;
             $order->couponReduction = $couponReduction;
+            $order->couponCode = $couponCode;
             $order->save();
 
             foreach ($bag->getItems() as $item) {
