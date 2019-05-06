@@ -343,7 +343,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           ${{ number_format($subtotal, 2) }}<br>
                           @endif
                           @if ($mealPlanDiscount > 0)
-                          ${{ number_format($mealPlanDiscount, 2) }}<br>
+                          (${{ number_format($mealPlanDiscount, 2) }})<br>
                           @endif
                           @if ($deliveryFee > 0)
                           ${{ number_format($deliveryFee, 2) }}<br>
