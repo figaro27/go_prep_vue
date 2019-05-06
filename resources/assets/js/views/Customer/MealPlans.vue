@@ -106,8 +106,11 @@
 
                   <div class="row">
                     <div class="col-md-4">
-                      <h4 v-if="subscription.pickup === 0">Delivery Day</h4>
-                      <h4 v-if="subscription.pickup === 1">Pickup Day</h4>
+                      <h4>
+                        {{
+                          subscription.pickup ? "Pickup Day" : "Delivery Day"
+                        }}
+                      </h4>
                       <p
                         v-if="
                           subscription.latest_order &&
