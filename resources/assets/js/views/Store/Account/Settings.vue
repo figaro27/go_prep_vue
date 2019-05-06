@@ -871,7 +871,6 @@ export default {
   },
   data() {
     return {
-      storeCoupons: {},
       acceptedTOA: 0,
       acceptedTOAcheck: 0,
       showTOAModal: 0,
@@ -907,8 +906,8 @@ export default {
       storeSetting: "storeSetting",
       storeSettings: "storeSettings",
       storeCategories: "storeCategories",
-      storeSubscriptions: "storeSubscriptions"
-      // storeCoupons: "storeCoupons"
+      storeSubscriptions: "storeSubscriptions",
+      storeCoupons: "storeCoupons"
     }),
     tableData() {
       return this.storeCoupons;
@@ -999,10 +998,6 @@ export default {
       if (resp.data.url) {
         this.payments_url = resp.data.url;
       }
-    });
-
-    axios.get("/api/me/coupons").then(resp => {
-      this.storeCoupons = resp.data;
     });
 
     this.checkAcceptedTOA();
