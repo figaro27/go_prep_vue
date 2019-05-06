@@ -197,25 +197,40 @@
                 </div>
               </li>
 
-              <li :class="checkoutClass">
+              <li class="checkout-item">
+                <div class="row">
+                  <div class="col-md-4">
+                    <span v-if="!couponApplied"><strong>Total</strong></span>
+                    <span v-if="couponApplied">Pre-Coupon Total</span>
+                  </div>
+                  <div class="col-md-3 offset-5">
+                    <strong>{{ format.money(afterDiscountAfterFees) }}</strong>
+                  </div>
+                </div>
+              </li>
+
+              <li class="checkout-item" v-if="couponApplied">
+                <div class="row">
+                  <div class="col-md-4">
+                    <span class="text-success">({{ coupon.code }})</span>
+                  </div>
+                  <div class="col-md-3 offset-5">
+                    <span class="text-success"
+                      >({{ format.money(couponReduction) }})</span
+                    >
+                  </div>
+                </div>
+              </li>
+
+              <li class="checkout-item" v-if="couponApplied">
                 <div class="row">
                   <div class="col-md-4">
                     <strong>Total</strong>
                   </div>
                   <div class="col-md-3 offset-5">
-                    <strong>{{ format.money(afterDiscountAfterFees) }}</strong>
-                    <br />
-                    <strong
-                      ><span class="text-success" v-if="couponApplied"
-                        >({{ format.money(couponReduction) }})</span
-                      ></strong
-                    >
-                    <br />
-                    <strong
-                      ><span v-if="couponApplied">{{
-                        format.money(afterDiscountAfterFeesAfterCoupon)
-                      }}</span></strong
-                    >
+                    <strong>{{
+                      format.money(afterDiscountAfterFeesAfterCoupon)
+                    }}</strong>
                   </div>
                 </div>
               </li>
@@ -453,7 +468,6 @@ export default {
       coupon: {},
       couponCode: "",
       couponApplied: false,
-      checkoutClass: "checkout-item",
       couponClass: "checkout-item"
     };
   },
@@ -687,7 +701,6 @@ export default {
           this.coupon = coupon;
           this.couponApplied = true;
           this.couponCode = "";
-          this.checkoutClass = "checkout-item-total";
           this.couponClass = "checkout-item-hide";
           this.$toastr.s("Coupon Applied.", "Success");
           return;
