@@ -12,7 +12,11 @@
             >You can pick up your order on</span
           >
           <span v-else>Your meals will be delivered on</span>
-          {{ moment(subscriptions[0].delivery_day, "E").format("dddd") || "" }}
+          {{
+            moment(subscriptions[0].next_delivery_date).format(
+              "dddd, MMM Do, Y"
+            ) || ""
+          }}
         </p>
       </b-alert>
 
