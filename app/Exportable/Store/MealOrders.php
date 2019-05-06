@@ -17,6 +17,7 @@ class MealOrders
     {
         $this->store = $store;
         $this->params = $params;
+        $this->orientation = 'portrait';
     }
 
     public function exportData($type = null)
