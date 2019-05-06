@@ -315,8 +315,7 @@ class Store extends Model
         if (!$this->settings) {
             return null;
         }
-        return $this->settings->getNextDeliveryDates($factorCutoff, 1)[0] ??
-            null;
+        return $this->settings->getNextDeliveryDates($factorCutoff)[0] ?? null;
     }
 
     public function getNextCutoffDate($weekIndex = null)
@@ -327,7 +326,7 @@ class Store extends Model
             $date = $this->getNextDeliveryDay($weekIndex);
         }
 
-        return $date ? $date->subSeconds($this->getCutoffSeconds()) : null;
+        return $date ? $this->getCutoffDate($date) : null;
     }
 
     /**

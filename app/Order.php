@@ -156,6 +156,8 @@ class Order extends Model
 
     public function getCutoffDate()
     {
+        return $this->store->getCutoffDate($this->delivery_date);
+
         $ddate = new Carbon(
             $this->delivery_date,
             $this->store->settings->timezone

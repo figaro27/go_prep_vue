@@ -123,43 +123,52 @@ class StoreSetting extends Model
         }
     }
 
-    public function getNextDeliveryDates($factorCutoff = false, $quantity = -1)
+    public function getNextDeliveryDates($factorCutoff = false)
     {
-        $dates = [];
+        return Cache::remember(
+            'store_' .
+                $this->store_id .
+                'delivery_dates' .
+                ($factorCutoff ? 1 : 0),
+            1,
+            function () use ($factorCutoff) {
+                $dates = [];
 
-        $now = Carbon::now('utc');
+                $now = Carbon::now('utc');
 
-        $cutoff =
-            $this->cutoff_days * (60 * 60 * 24) +
-            $this->cutoff_hours * (60 * 60);
+                $cutoff =
+                    $this->cutoff_days * (60 * 60 * 24) +
+                    $this->cutoff_hours * (60 * 60);
 
-        $ddays = $this->delivery_days;
+                $ddays = $this->delivery_days;
 
-        foreach ($ddays as $i => $day) {
-            $date = Carbon::createFromFormat(
-                'D',
-                $day,
-                $this->timezone
-            )->setTime(0, 0, 0);
+                foreach ($ddays as $i => $day) {
+                    $date = Carbon::createFromFormat(
+                        'D',
+                        $day,
+                        $this->timezone
+                    )->setTime(0, 0, 0);
 
-            $cutoff = $this->getCutoffDate($date);
+                    $cutoff = $this->getCutoffDate($date);
 
-            if (!$factorCutoff || !$cutoff->isPast()) {
-                $dates[] = $date;
-            } else {
-                $dates[] = $date->addWeek(1);
+                    if (!$factorCutoff || !$cutoff->isPast()) {
+                        $dates[] = $date;
+                    } else {
+                        $dates[] = $date->addWeek(1);
+                    }
+                }
+
+                foreach ($dates as $date) {
+                    $dates[] = $date->copy()->addWeek(1);
+                }
+
+                usort($dates, function ($a, $b) {
+                    return $a->getTimestamp() - $b->getTimestamp();
+                });
+
+                return collect($dates);
             }
-        }
-
-        foreach ($dates as $date) {
-            $dates[] = $date->copy()->addWeek(1);
-        }
-
-        usort($dates, function ($a, $b) {
-            return $a->getTimestamp() - $b->getTimestamp();
-        });
-
-        return collect($dates);
+        );
     }
 
     public function getNextDeliveryDatesAttribute()
