@@ -24,7 +24,9 @@
                 ]"
               >
                 <img
-                  v-b-popover.hover="''"
+                  v-b-popover.hover="
+                    'Timed Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Period to 1 day and 12 hours. This will lock in orders for Sunday on Friday at 12 PM and lock in orders for Wednesday on Monday at 12 PM. Single Day Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Day to Friday at 12 PM. This locks in orders for BOTH Sunday & Wednesday on Friday at 12 PM. If you only have one delivery/pickup day, then choose either option and it will work the same way.'
+                  "
                   title="Cut Off Type"
                   src="/images/store/popover.png"
                   class="popover-size"
