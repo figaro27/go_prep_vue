@@ -557,8 +557,8 @@ class Store extends Model
         if (!$date) {
             return false;
         }
-        return $now->getTimestamp() >
-            $date->getTimestamp() - $this->getCutoffSeconds();
+        $cutoff = $this->getCutoffDate($date);
+        return $cutoff->isPast();
     }
 
     public function getNextCutoffDateAttribute()
