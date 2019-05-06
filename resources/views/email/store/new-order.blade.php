@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+                        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -264,6 +264,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         $processingFee = $order->processingFee;
                         $salesTax = $order->salesTax;
                         $coupon = $order->couponReduction;
+                        $couponCode = $order->couponCode;
                         @endphp
 
                         @if ($mealPlanDiscount > 0 || $deliveryFee > 0 || $processingFee > 0)
@@ -280,7 +281,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         @endif
                         Sales Tax<br>
                         @if ($coupon > 0)
-                        Coupon<br>
+                        Coupon ({{ $couponCode }})<br>
                         @endif<br><br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span>
                       </td>
