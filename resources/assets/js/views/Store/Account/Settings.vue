@@ -909,8 +909,12 @@ export default {
       storeSubscriptions: "storeSubscriptions",
       storeCoupons: "storeCoupons"
     }),
+    ...mapActions({
+      refreshStoreCoupons: "refreshStoreCoupons"
+    }),
     tableData() {
-      return this.storeCoupons;
+      if (this.storeCoupons.length > 0) return this.storeCoupons;
+      else return [];
     },
     storeDetails() {
       return this.storeDetail;
@@ -1041,15 +1045,11 @@ export default {
         this.refreshCoupons();
         this.$toastr.s("Coupon Added", "Success");
       });
-    },
-    refreshCoupons() {
-      axios.get("/api/me/coupons").then(resp => {
-        this.storeCoupons = resp.data;
-      });
+      this.refreshStoreCoupons();
     },
     deleteCoupon(id) {
       axios.delete("/api/me/coupons/" + id).then(response => {
-        this.refreshCoupons();
+        this.refreshStoreCoupons();
         this.$toastr.s("Coupon Deleted", "Success");
       });
     },
