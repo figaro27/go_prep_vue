@@ -315,6 +315,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         $deliveryFee = $order->deliveryFee;
                         $processingFee = $order->processingFee;
                         $salesTax = $order->salesTax;
+                        $coupon = $order->couponReduction;
                         @endphp
 
                         @if ($mealPlanDiscount > 0 || $deliveryFee > 0 || $processingFee > 0)
@@ -329,7 +330,10 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         @if ($processingFee > 0)
                         Processing Fee<br>
                         @endif
-                        Sales Tax<br><br>
+                        Sales Tax<br>
+                        @if ($coupon > 0)
+                        Coupon<br>
+                        @endif<br><br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span>
                       </td>
 
@@ -347,7 +351,10 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           @if ($processingFee > 0)
                           ${{ number_format($processingFee, 2) }}<br>
                           @endif
-                          ${{ number_format($salesTax, 2) }}<br><br>
+                          ${{ number_format($salesTax, 2) }}<br>
+                          @if ($coupon > 0)
+                          (${{ number_format($coupon, 2) }})<br>
+                          @endif<br><br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($order->amount, 2) }}</span>
                         </td>
                       </tr>
