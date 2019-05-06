@@ -206,7 +206,7 @@
                     <strong>{{ format.money(afterDiscountAfterFees) }}</strong>
                     <br />
                     <strong
-                      ><span class="text-success" v-if="couponApplied"
+                      ><span class="text-success pb-3" v-if="couponApplied"
                         >({{ format.money(couponReduction) }})</span
                       ></strong
                     >
@@ -256,42 +256,44 @@
 
               <li>
                 <div>
-                  <p
-                    v-if="
-                      pickup === 0 &&
-                        transferTypeCheck !== 'pickup' &&
-                        deliveryDaysOptions.length > 1
-                    "
-                  >
-                    Delivery Day
-                  </p>
-                  <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
-                    Pickup Day
-                  </p>
-                  <b-form-group
-                    v-if="deliveryDaysOptions.length > 1"
-                    description
-                  >
-                    <b-select
-                      :options="deliveryDaysOptions"
-                      v-model="deliveryDay"
-                      @input="val => (deliveryDay = val)"
-                      class="delivery-select"
-                      required
+                  <span v-if="hasCoupons" class="mt-3">
+                    <p
+                      v-if="
+                        pickup === 0 &&
+                          transferTypeCheck !== 'pickup' &&
+                          deliveryDaysOptions.length > 1
+                      "
                     >
-                      <option slot="top" disabled
-                        >-- Select delivery day --</option
+                      Delivery Day
+                    </p>
+                    <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
+                      Pickup Day
+                    </p>
+                    <b-form-group
+                      v-if="deliveryDaysOptions.length > 1"
+                      description
+                    >
+                      <b-select
+                        :options="deliveryDaysOptions"
+                        v-model="deliveryDay"
+                        @input="val => (deliveryDay = val)"
+                        class="delivery-select"
+                        required
                       >
-                    </b-select>
-                  </b-form-group>
-                  <div v-else-if="deliveryDaysOptions.length === 1">
-                    <p v-if="pickup === 0">
-                      Delivery Day: {{ deliveryDaysOptions[0].text }}
-                    </p>
-                    <p v-if="pickup === 1">
-                      Pickup Day: {{ deliveryDaysOptions[0].text }}
-                    </p>
-                  </div>
+                        <option slot="top" disabled
+                          >-- Select delivery day --</option
+                        >
+                      </b-select>
+                    </b-form-group>
+                    <div v-else-if="deliveryDaysOptions.length === 1">
+                      <p v-if="pickup === 0">
+                        Delivery Day: {{ deliveryDaysOptions[0].text }}
+                      </p>
+                      <p v-if="pickup === 1">
+                        Pickup Day: {{ deliveryDaysOptions[0].text }}
+                      </p>
+                    </div>
+                  </span>
                 </div>
               </li>
 
