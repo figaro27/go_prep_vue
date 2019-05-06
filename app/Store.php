@@ -8,8 +8,8 @@ use App\Mail\Store\NewSubscription;
 use App\Mail\Store\ReadyToPrint;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 
 class Store extends Model
 {
@@ -326,7 +326,7 @@ class Store extends Model
             $date = $this->getNextDeliveryDay($weekIndex);
         }
 
-        return $date ? $date->subSeconds($this->getCutoffSeconds()) : null;
+        return $date ? $this->getCutoffDate($date) : null;
     }
 
     /**
@@ -343,10 +343,21 @@ class Store extends Model
             $deliveryDate->day,
             $this->settings->timezone
         );
-        return $cutoffDate
-            ->setTime(0, 0, 0)
-            ->subSeconds($this->getCutoffSeconds())
-            ->setTimezone('utc');
+        if ($this->settings->cutoff_type === 'timed') {
+            return $cutoffDate
+                ->setTime(0, 0, 0)
+                ->subSeconds($this->getCutoffSeconds())
+                ->setTimezone('utc');
+        } elseif ($this->settings->cutoff_type === 'single_day') {
+            $dayName = date(
+                'l',
+                strtotime("Sunday +{$this->settings->cutoff_days} days")
+            );
+            return $cutoffDate
+                ->modify('last ' . $dayName)
+                ->setTime($this->settings->cutoff_hours, 0, 0)
+                ->setTimezone('utc');
+        }
     }
 
     public function getOrders(
@@ -546,8 +557,8 @@ class Store extends Model
         if (!$date) {
             return false;
         }
-        return $now->getTimestamp() >
-            $date->getTimestamp() - $this->getCutoffSeconds();
+        $cutoff = $this->getCutoffDate($date);
+        return $cutoff->isPast();
     }
 
     public function getNextCutoffDateAttribute()

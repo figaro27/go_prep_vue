@@ -78,6 +78,7 @@ class StoreSettingController extends StoreController
     public function update(Request $request, StoreSetting $storeSetting)
     {
         $validatedData = $request->validate([
+            'cutoff_type' => 'required|in:timed,single_day',
             'mealPlanDiscount' =>
                 'required_if:applyMealPlanDiscount,true|integer|nullable|max:99',
             'deliveryFee' => 'required_if:applyDeliveryFee,true|nullable',

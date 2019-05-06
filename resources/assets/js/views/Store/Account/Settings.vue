@@ -1,16 +1,45 @@
 <template>
   <div class="row">
     <div class="col-md-8 offset-md-2">
-      <b-alert :show="!canOpen" variant="success">
-        Welcome to GoPrep! Enter all settings to open your store for business.
-      </b-alert>
+      <b-alert :show="!canOpen" variant="success"
+        >Welcome to GoPrep! Enter all settings to open your store for
+        business.</b-alert
+      >
       <p>Orders</p>
       <div class="card">
         <div class="card-body">
           <p>https://{{ storeDetails.domain }}.goprep.com</p>
           <b-form @submit.prevent="updateStoreSettings">
             <b-form-group
-              label="Cut Off Period"
+              label="Cut Off Period Type"
+              label-for="cut-off-period-type"
+              :state="true"
+              inline
+            >
+              <b-form-radio-group
+                v-model="storeSettings.cutoff_type"
+                :options="[
+                  { text: 'Timed', value: 'timed' },
+                  { text: 'Single Day', value: 'single_day' }
+                ]"
+              >
+                <img
+                  v-b-popover.hover="
+                    'Timed Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Period to 1 day and 12 hours. This will lock in orders for Sunday on Friday at 12 PM and lock in orders for Wednesday on Monday at 12 PM. Single Day Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Day to Friday at 12 PM. This locks in orders for BOTH Sunday & Wednesday on Friday at 12 PM. If you only have one delivery/pickup day, then choose either option and it will work the same way.'
+                  "
+                  title="Cut Off Type"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </b-form-radio-group>
+            </b-form-group>
+
+            <b-form-group
+              :label="
+                storeSettings.cutoff_type === 'timed'
+                  ? 'Cut Off Period'
+                  : 'Cut Off Day'
+              "
               label-for="cut-off-period"
               :state="true"
               inline
@@ -603,7 +632,7 @@
               <b-btn
                 variant="danger"
                 size="sm"
-                @click="deleteCoupon(props.row.id)"
+                @click="e => deleteCoupon(props.row.id)"
                 >Delete</b-btn
               >
             </div>
@@ -930,14 +959,22 @@ export default {
     cutoffDaysOptions() {
       let options = [];
       for (let i = 0; i <= 7; i++) {
-        options.push({ value: i, text: i + " Days" });
+        if (this.storeSettings.cutoff_type === "timed") {
+          options.push({ value: i, text: i + " Days" });
+        } else if (this.storeSettings.cutoff_type === "single_day" && i < 7) {
+          options.push({ value: i, text: moment(i, "e").format("dddd") });
+        }
       }
       return options;
     },
     cutoffHoursOptions() {
       let options = [];
       for (let i = 0; i <= 23; i++) {
-        options.push({ value: i, text: i + " Hours" });
+        if (this.storeSettings.cutoff_type === "timed") {
+          options.push({ value: i, text: i + " Hours" });
+        } else if (this.storeSettings.cutoff_type === "single_day") {
+          options.push({ value: i, text: moment(i, "H").format("HH:00") });
+        }
       }
       return options;
     },
@@ -1055,10 +1092,14 @@ export default {
       this.refreshStoreCoupons();
     },
     deleteCoupon(id) {
-      axios.delete("/api/me/coupons/" + id).then(response => {
-        this.$toastr.s("Coupon Deleted", "Success");
-      });
-      this.refreshStoreCoupons();
+      axios
+        .delete("/api/me/coupons/" + id)
+        .then(response => {
+          this.$toastr.s("Coupon Deleted", "Success");
+        })
+        .finally(() => {
+          this.refreshStoreCoupons();
+        });
     },
     closeStore() {
       let activeSubscriptions = false;
