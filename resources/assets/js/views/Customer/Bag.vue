@@ -206,7 +206,7 @@
                     <strong>{{ format.money(afterDiscountAfterFees) }}</strong>
                     <br />
                     <strong
-                      ><span class="text-success pb-3" v-if="couponApplied"
+                      ><span class="text-success" v-if="couponApplied"
                         >({{ format.money(couponReduction) }})</span
                       ></strong
                     >
@@ -222,7 +222,7 @@
 
               <li :class="couponClass" v-if="hasCoupons">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-xs-6 pl-3">
                     <b-form-group id="coupon">
                       <b-form-input
                         id="coupon-code"
@@ -232,12 +232,11 @@
                       ></b-form-input>
                     </b-form-group>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-xs-6 pl-2">
                     <b-btn variant="primary" @click="applyCoupon">Apply</b-btn>
                   </div>
                 </div>
               </li>
-
               <li
                 class="checkout-item"
                 v-if="transferTypeCheckDelivery && transferTypeCheckPickup"
@@ -256,44 +255,42 @@
 
               <li>
                 <div>
-                  <span v-if="hasCoupons" class="mt-3">
-                    <p
-                      v-if="
-                        pickup === 0 &&
-                          transferTypeCheck !== 'pickup' &&
-                          deliveryDaysOptions.length > 1
-                      "
+                  <p
+                    v-if="
+                      pickup === 0 &&
+                        transferTypeCheck !== 'pickup' &&
+                        deliveryDaysOptions.length > 1
+                    "
+                  >
+                    Delivery Day
+                  </p>
+                  <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
+                    Pickup Day
+                  </p>
+                  <b-form-group
+                    v-if="deliveryDaysOptions.length > 1"
+                    description
+                  >
+                    <b-select
+                      :options="deliveryDaysOptions"
+                      v-model="deliveryDay"
+                      @input="val => (deliveryDay = val)"
+                      class="delivery-select"
+                      required
                     >
-                      Delivery Day
-                    </p>
-                    <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
-                      Pickup Day
-                    </p>
-                    <b-form-group
-                      v-if="deliveryDaysOptions.length > 1"
-                      description
-                    >
-                      <b-select
-                        :options="deliveryDaysOptions"
-                        v-model="deliveryDay"
-                        @input="val => (deliveryDay = val)"
-                        class="delivery-select"
-                        required
+                      <option slot="top" disabled
+                        >-- Select delivery day --</option
                       >
-                        <option slot="top" disabled
-                          >-- Select delivery day --</option
-                        >
-                      </b-select>
-                    </b-form-group>
-                    <div v-else-if="deliveryDaysOptions.length === 1">
-                      <p v-if="pickup === 0">
-                        Delivery Day: {{ deliveryDaysOptions[0].text }}
-                      </p>
-                      <p v-if="pickup === 1">
-                        Pickup Day: {{ deliveryDaysOptions[0].text }}
-                      </p>
-                    </div>
-                  </span>
+                    </b-select>
+                  </b-form-group>
+                  <div v-else-if="deliveryDaysOptions.length === 1">
+                    <p v-if="pickup === 0">
+                      Delivery Day: {{ deliveryDaysOptions[0].text }}
+                    </p>
+                    <p v-if="pickup === 1">
+                      Pickup Day: {{ deliveryDaysOptions[0].text }}
+                    </p>
+                  </div>
                 </div>
               </li>
 
