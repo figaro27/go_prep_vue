@@ -168,7 +168,8 @@ class SpaController extends Controller
                 'meals.categories',
                 'meals.allergies',
                 'settings',
-                'details'
+                'details',
+                'coupons'
             ])->find(STORE_ID)
             : null;
 

@@ -15,8 +15,7 @@ class CouponController extends StoreController
      */
     public function index()
     {
-        $storeId = $this->store->id;
-        return Coupon::where('store_id', 3)->get();
+        return $this->store->coupons;
     }
 
     /**
@@ -90,7 +89,7 @@ class CouponController extends StoreController
      */
     public function destroy($id)
     {
-        $coupon = Coupon::find($id);
+        $coupon = $this->store->coupons()->findOrFail($id);
         $coupon->delete();
     }
 }

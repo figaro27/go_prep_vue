@@ -453,26 +453,6 @@ export default {
       salesTax: 0,
       coupon: {},
       couponCode: "",
-      storeCoupons: [
-        {
-          amount: 10,
-          code: "GOPREP",
-          created_at: "2019-05-04 05:12:48",
-          id: 1,
-          store_id: 3,
-          type: "percent",
-          updated_at: "2019-05-04 05:12:48"
-        },
-        {
-          amount: 11,
-          code: "BACKTO3",
-          created_at: "2019-05-05 18:13:23",
-          id: 8,
-          store_id: 3,
-          type: "flat",
-          updated_at: "2019-05-05 18:13:23"
-        }
-      ],
       couponApplied: false,
       checkoutClass: "checkout-item",
       couponClass: "checkout-item"
@@ -494,8 +474,8 @@ export default {
       loggedIn: "loggedIn",
       minOption: "minimumOption",
       minMeals: "minimumMeals",
-      minPrice: "minimumPrice"
-      // storeCoupons: "storeCoupons"
+      minPrice: "minimumPrice",
+      coupons: "viewedStoreCoupons"
     }),
     card() {
       if (this.cards.length != 1) return null;
@@ -573,7 +553,7 @@ export default {
       }
     },
     hasCoupons() {
-      if (this.storeCoupons.length > 0) {
+      if (this.coupons.length > 0) {
         return true;
       } else {
         return false;
@@ -702,7 +682,7 @@ export default {
       this.salesTax = rate;
     },
     applyCoupon() {
-      this.storeCoupons.forEach(coupon => {
+      this.coupons.forEach(coupon => {
         if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
           this.coupon = coupon;
           this.couponApplied = true;

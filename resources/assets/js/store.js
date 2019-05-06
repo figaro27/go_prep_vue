@@ -28,7 +28,8 @@ const state = {
       minimumOption: "",
       minimumMeals: 0,
       minimumPrice: 0
-    }
+    },
+    coupons: []
   },
   stores: {},
   tags: [],
@@ -152,6 +153,9 @@ const mutations = {
   },
   setViewedStoreDistance(state, distance) {
     state.viewed_store.distance = distance;
+  },
+  setViewedStoreCoupons(state, { coupons }) {
+    state.viewed_store.coupons = coupons;
   },
   addBagItems(state, items) {
     state.bag.items = _.keyBy(items, "id");
@@ -628,6 +632,16 @@ const actions = {
     } catch (e) {
       console.log(e);
     }
+
+    try {
+      if (!_.isEmpty(data.coupons)) {
+        let coupons = data.coupons;
+
+        if (!_.isEmpty(coupons)) {
+          commit("setViewedStoreCoupons", { coupons });
+        }
+      }
+    } catch (e) {}
   },
 
   async refreshStores({ commit, state }, args = {}) {
@@ -983,6 +997,13 @@ const getters = {
   viewedStoreLogo(state, getters) {
     try {
       return state.viewed_store.details.logo;
+    } catch (e) {
+      return null;
+    }
+  },
+  viewedStoreCoupons(state, getters) {
+    try {
+      return state.viewed_store.coupons;
     } catch (e) {
       return null;
     }
