@@ -316,7 +316,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         $processingFee = $order->processingFee;
                         $salesTax = $order->salesTax;
                         $coupon = $order->couponReduction;
-                        $couponCode = $subscription->couponCode;
+                        $couponCode = $order->couponCode;
                         @endphp
 
                         @if ($mealPlanDiscount > 0 || $deliveryFee > 0 || $processingFee > 0)
