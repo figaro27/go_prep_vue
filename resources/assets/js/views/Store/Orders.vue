@@ -178,15 +178,12 @@
           <div class="col-md-4">
             <h4>Customer</h4>
             <p>{{ user_detail.firstname }} {{ user_detail.lastname }}</p>
-
-            <h4>Phone</h4>
-            <p>{{ user_detail.phone }}</p>
           </div>
           <div class="col-md-4">
             <h4>Address</h4>
             <p>
               {{ user_detail.address }}<br />
-              {{ user_detail.city }}, {{ user_detail.state }}<br />
+              {{ user_detail.city }}, {{ user_detail.state }}
               {{ user_detail.zip }}
             </p>
           </div>
@@ -194,10 +191,22 @@
             <h4 v-if="!order.pickup">Delivery Day</h4>
             <h4 v-if="order.pickup">Pickup Day</h4>
             {{ moment(order.delivery_date).format("dddd, MMM Do") }}
-            <p v-if="!order.pickup" class="mt-3">
-              <strong>Delivery Instructions</strong>
-              {{ user_detail.delivery }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <h4>Phone</h4>
+            <p>{{ user_detail.phone }}</p>
+          </div>
+          <div class="col-md-4">
+            <h4>Email</h4>
+            <p>
+              {{ email }}
             </p>
+          </div>
+          <div class="col-md-4">
+            <h4 v-if="!order.pickup">Delivery Instructions</h4>
+            {{ user_detail.delivery }}
           </div>
         </div>
         <div class="row">
@@ -271,6 +280,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      email: "",
       dateColor: "",
       deliveryDate: "All",
       filter: false,
@@ -468,6 +478,7 @@ export default {
           this.user_detail = response.data.user.user_detail;
           this.meals = response.data.meals;
           this.viewOrderModal = true;
+          this.email = response.data.user.email;
 
           this.$nextTick(function() {
             window.dispatchEvent(new window.Event("resize"));

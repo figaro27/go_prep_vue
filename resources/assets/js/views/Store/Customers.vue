@@ -63,12 +63,14 @@
 
             <h4>Phone</h4>
             <p>{{ customer.phone }}</p>
+
+            <h4>Email</h4>
+            <p>{{ customer.email }}</p>
           </div>
           <div class="col-md-4 pt-4">
             <h4>Address</h4>
             <p>{{ customer.address }}</p>
-            <p>{{ customer.city }}, {{ customer.state }}</p>
-            <p>{{ customer.zip }}</p>
+            <p>{{ customer.city }}, {{ customer.state }} {{ customer.zip }}</p>
           </div>
           <div class="col-md-4 pt-4">
             <h4>Delivery Instructions</h4>

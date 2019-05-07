@@ -86,7 +86,7 @@
       >
         <div class="row mt-4">
           <div class="col-md-4">
-            <h4>Meal Plan #</h4>
+            <h4>Meal Plan ID</h4>
             <p>{{ subscription.stripe_id }}</p>
           </div>
           <div class="col-md-4">
@@ -144,15 +144,12 @@
           <div class="col-md-4">
             <h4>Customer</h4>
             <p>{{ user_detail.firstname }} {{ user_detail.lastname }}</p>
-
-            <h4>Phone</h4>
-            <p>{{ user_detail.phone }}</p>
           </div>
           <div class="col-md-4">
             <h4>Address</h4>
             <p>
               {{ user_detail.address }}<br />
-              {{ user_detail.city }}, {{ user_detail.state }}<br />
+              {{ user_detail.city }}, {{ user_detail.state }}
               {{ user_detail.zip }}
             </p>
           </div>
@@ -160,10 +157,22 @@
             <h4 v-if="!subscription.pickup">Delivery Day</h4>
             <h4 v-if="subscription.pickup">Pickup Day</h4>
             {{ moment(subscription.delivery_date).format("dddd, MMM Do") }}
-            <p v-if="!subscription.pickup" class="mt-3">
-              <strong>Delivery Instructions</strong>
-              {{ user_detail.delivery }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <h4>Phone</h4>
+            <p>{{ user_detail.phone }}</p>
+          </div>
+          <div class="col-md-4">
+            <h4>Email</h4>
+            <p>
+              {{ email }}
             </p>
+          </div>
+          <div class="col-md-4">
+            <h4 v-if="!subscription.pickup">Delivery Instructions</h4>
+            <p>{{ user_detail.delivery }}</p>
           </div>
         </div>
         <div class="row">
@@ -232,6 +241,7 @@ export default {
 
   data() {
     return {
+      email: "",
       showCancelModal: false,
       deliveryDate: "All",
       filter: false,
@@ -415,6 +425,7 @@ export default {
         this.user_detail = response.data.user.user_detail;
         this.meals = response.data.meals;
         this.delivery_day = response.data.delivery_day;
+        this.email = response.data.user.email;
 
         this.$nextTick(function() {
           window.dispatchEvent(new window.Event("resize"));

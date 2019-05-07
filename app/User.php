@@ -46,7 +46,8 @@ class User extends Authenticatable implements JWTSubject
         'stripe_id',
         'orders',
         'store',
-        'last_viewed_store'
+        'last_viewed_store',
+        'cards'
     ];
 
     protected $casts = [

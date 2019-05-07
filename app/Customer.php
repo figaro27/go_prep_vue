@@ -37,7 +37,8 @@ class Customer extends Model
         'city',
         'state',
         'zip',
-        'delivery'
+        'delivery',
+        'email'
     ];
 
     public function user()
@@ -67,6 +68,11 @@ class Customer extends Model
             ->pluck('id')
             ->first();
         return $storeID;
+    }
+
+    public function getEmailAttribute()
+    {
+        return $this->user->email;
     }
 
     public function getPaidOrdersAttribute()

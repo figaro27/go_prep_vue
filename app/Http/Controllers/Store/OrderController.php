@@ -15,14 +15,24 @@ class OrderController extends StoreController
      */
     public function index()
     {
-        return $this->store->has('orders') ?
-            $this->store->orders()->with(['user:id'])->where(['paid' => 1, 'fulfilled' => 0])->get() : [];
+        return $this->store->has('orders')
+            ? $this->store
+                ->orders()
+                ->with(['user'])
+                ->where(['paid' => 1, 'fulfilled' => 0])
+                ->get()
+            : [];
     }
 
     public function getFulfilledOrders()
     {
-        return $this->store->has('orders') ?
-            $this->store->orders()->with(['user:id'])->where(['paid' => 1, 'fulfilled' => 1])->get() : [];
+        return $this->store->has('orders')
+            ? $this->store
+                ->orders()
+                ->with(['user'])
+                ->where(['paid' => 1, 'fulfilled' => 1])
+                ->get()
+            : [];
     }
 
     /**
@@ -54,7 +64,11 @@ class OrderController extends StoreController
      */
     public function show($id)
     {
-        return $this->store->orders()->with(['user', 'user.userDetail', 'meals'])->where('id', $id)->first();
+        return $this->store
+            ->orders()
+            ->with(['user', 'user.userDetail', 'meals'])
+            ->where('id', $id)
+            ->first();
     }
 
     /**
@@ -91,7 +105,8 @@ class OrderController extends StoreController
         //
     }
 
-    public function updateViewed(){
+    public function updateViewed()
+    {
         Order::where('viewed', 0)->update(['viewed' => 1]);
     }
 }
