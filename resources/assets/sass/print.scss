@@ -55,6 +55,7 @@ th,
 tbody,
 thead,
 tfoot {
+  page-break-inside: avoid !important;
 }
 table {
   font-family: "gotham-narrow";
@@ -67,11 +68,6 @@ table {
   margin-left: auto;
   margin-right: auto;
   page-break-inside: auto;
-}
-
-table tr {
-  page-break-inside: avoid !important;
-  page-break-before: avoid !important;
 }
 
 // Fix header row overflow
