@@ -25,27 +25,29 @@
       @endif
       
       @foreach($orderGroup['orders'] as $order)
-      
-      <h4>Order #{{$order['order_number']}}</h4>
-      <h4>Customer: {{$orderGroup['user']->name }}</h4>
-      <h4>Address: {{$order['address']}}, {{$order['city']}}, {{$order['state']}}, {{$order['zip']}}</h4>
-      <h5>Delivery Instructions: {{$order['delivery']}}</h5>
+      <div class="unbreakable">
+        <h4>Order #{{$order['order_number']}}</h4>
+        <h4>Customer: {{$orderGroup['user']->name }}</h4>
+        <h4>Address: {{$order['address']}}, {{$order['city']}}, {{$order['state']}}, {{$order['zip']}}</h4>
+        <h5>Delivery Instructions: {{$order['delivery']}}</h5>
 
-        @if(!count($order['meal_quantities']))
-          None
-        @else
-          <table border="1" width="100">
-            <tbody>
-              @foreach($order['meal_quantities'] as $i => $row)
-                <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-                  @foreach($row as $value)
-                    <td>{{ $value }}</td>
-                  @endforeach
-                </tr>
-              @endforeach
-            </tbody>
-          </table>
-        @endif
+          @if(!count($order['meal_quantities']))
+            None
+          @else
+            <table border="1" width="100">
+              <tbody>
+                @foreach($order['meal_quantities'] as $i => $row)
+                  <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+                    @foreach($row as $value)
+                      <td>{{ $value }}</td>
+                    @endforeach
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          @endif
+
+      </div>
 
       @endforeach
     @endforeach
