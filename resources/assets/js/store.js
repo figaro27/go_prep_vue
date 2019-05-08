@@ -16,6 +16,7 @@ const ttl = 60; // 60 seconds
 const state = {
   jobs: {},
   viewed_store: {
+    distance: 0,
     meals: [],
     will_deliver: true,
     settings: {
@@ -620,6 +621,14 @@ const actions = {
     try {
       if (data.store_distance) {
         commit("setViewedStoreDistance", data.store_distance);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
+    try {
+      if (data.distance) {
+        commit("setViewedStoreDistance", data.distance);
       }
     } catch (e) {
       console.log(e);

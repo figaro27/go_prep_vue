@@ -468,7 +468,8 @@ export default {
       coupon: {},
       couponCode: "",
       couponApplied: false,
-      couponClass: "checkout-item"
+      couponClass: "checkout-item",
+      deliveryFee: 0
     };
   },
   computed: {
@@ -490,16 +491,13 @@ export default {
       minPrice: "minimumPrice",
       coupons: "viewedStoreCoupons"
     }),
-    miles() {
-      return 5;
-    },
-    deliveryFee() {
+    deliveryFeeAmount() {
       if (this.storeSettings.deliveryFeeType === "flat") {
         return this.storeSettings.deliveryFee;
       } else if (this.storeSettings.deliveryFeeType === "mileage") {
         return (
           this.storeSettings.mileageBase +
-          this.storeSettings.mileagePerMile * this.miles
+          this.storeSettings.mileagePerMile * this.store.distance
         );
       }
     },
@@ -659,6 +657,7 @@ export default {
     },
     checkout() {
       // this.loading = true;
+      this.deliveryFee = this.deliveryFeeAmount;
       axios
         .post("/api/bag/checkout", {
           bag: this.bag,
@@ -670,7 +669,8 @@ export default {
           salesTax: this.tax,
           coupon_id: this.coupon.id,
           couponReduction: this.couponReduction,
-          couponCode: this.coupon.code
+          couponCode: this.coupon.code,
+          deliveryFee: this.deliveryFee
         })
         .then(async resp => {
           this.emptyBag();
