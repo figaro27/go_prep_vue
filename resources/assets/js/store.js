@@ -1073,7 +1073,7 @@ const getters = {
       mealPackage = true;
     }
 
-    if (size) {
+    if (_.isObject(size)) {
       mealId = "size-" + mealId + "-" + size.id;
     }
 

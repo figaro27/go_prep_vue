@@ -474,7 +474,7 @@
                             name
                             id
                             class="quantity"
-                            :value="quantity(meal)"
+                            :value="quantity(meal, false, true)"
                             readonly
                           ></b-form-input>
                           <b-btn
@@ -1245,7 +1245,18 @@ export default {
       );
     },
     quantity(meal, mealPackage = false, size = null) {
-      const qty = this.$store.getters.bagItemQuantity(meal, mealPackage, size);
+      let qty = this.$store.getters.bagItemQuantity(meal, mealPackage, size);
+
+      // size === true gets quantity for all sizes
+      if (size === true) {
+        meal.sizes.forEach(sizeObj => {
+          qty += this.$store.getters.bagItemQuantity(
+            meal,
+            mealPackage,
+            sizeObj
+          );
+        });
+      }
       return qty;
     },
     addOne(meal, mealPackage = false, size = null) {
