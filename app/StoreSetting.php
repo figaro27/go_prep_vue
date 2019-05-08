@@ -143,7 +143,7 @@ class StoreSetting extends Model
                 $ddays = $this->delivery_days;
 
                 if (!is_array($ddays)) {
-                    return [];
+                    return collect([]);
                 }
 
                 foreach ($ddays as $i => $day) {
