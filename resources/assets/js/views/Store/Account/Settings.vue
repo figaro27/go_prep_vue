@@ -1088,8 +1088,10 @@ export default {
         })
         .catch(response => {
           this.$toastr.e("Failed to add coupon.", "Error");
+        })
+        .finally(() => {
+          this.refreshStoreCoupons();
         });
-      this.refreshStoreCoupons();
     },
     deleteCoupon(id) {
       axios
