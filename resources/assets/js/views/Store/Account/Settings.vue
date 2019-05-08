@@ -337,13 +337,66 @@
                 size="lg"
                 v-model="storeSettings.applyDeliveryFee"
               />
-              <b-form-input
-                v-if="storeSettings.applyDeliveryFee"
-                type="string"
-                v-model="storeSettings.deliveryFee"
-                placeholder="Delivery Fee"
-                required
-              ></b-form-input>
+
+              <div v-if="storeSettings.applyDeliveryFee">
+                <p>
+                  <span class="mr-1">Delivery Fee Type</span>
+                  <img
+                    v-b-popover.hover="
+                      'Either choose to apply a flat fee no matter how far the customer is, or a fee based on the distance of the customer.'
+                    "
+                    title="Delivery Fee"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <b-form-radio-group v-model="storeSettings.deliveryFeeType">
+                  <b-form-radio name="flat" value="flat">Flat</b-form-radio>
+                  <b-form-radio name="mileage" value="mileage"
+                    >Mileage</b-form-radio
+                  >
+                </b-form-radio-group>
+
+                <b-form-input
+                  class="mt-3"
+                  v-if="
+                    storeSettings.applyDeliveryFee &&
+                      storeSettings.deliveryFeeType === 'flat'
+                  "
+                  type="string"
+                  v-model="storeSettings.deliveryFee"
+                  placeholder="Delivery Fee"
+                  required
+                ></b-form-input>
+                <div class="row">
+                  <div class="col-md-6">
+                    <b-form-input
+                      class="mt-3"
+                      v-if="
+                        storeSettings.applyDeliveryFee &&
+                          storeSettings.deliveryFeeType === 'mileage'
+                      "
+                      type="string"
+                      v-model="storeSettings.mileageBase"
+                      placeholder="Base Amount"
+                      required
+                    ></b-form-input>
+                  </div>
+                  <div class="col-md-6">
+                    <b-form-input
+                      class="mt-3"
+                      v-if="
+                        storeSettings.applyDeliveryFee &&
+                          storeSettings.deliveryFeeType === 'mileage'
+                      "
+                      type="string"
+                      v-model="storeSettings.mileagePerMile"
+                      placeholder="Per Mile"
+                      required
+                    ></b-form-input>
+                  </div>
+                </div>
+              </div>
             </b-form-group>
             <b-form-group :state="true">
               <p>

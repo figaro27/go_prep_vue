@@ -173,7 +173,7 @@
                     <strong>Delivery Fee:</strong>
                   </div>
                   <div class="col-md-3 offset-5">
-                    {{ format.money(storeSettings.deliveryFee) }}
+                    {{ format.money(deliveryFee) }}
                   </div>
                 </div>
               </li>
@@ -490,6 +490,19 @@ export default {
       minPrice: "minimumPrice",
       coupons: "viewedStoreCoupons"
     }),
+    miles() {
+      return 5;
+    },
+    deliveryFee() {
+      if (this.storeSettings.deliveryFeeType === "flat") {
+        return this.storeSettings.deliveryFee;
+      } else if (this.storeSettings.deliveryFeeType === "mileage") {
+        return (
+          this.storeSettings.mileageBase +
+          this.storeSettings.mileagePerMile * this.miles
+        );
+      }
+    },
     card() {
       if (this.cards.length != 1) return null;
       else return this.cards[0].id;
