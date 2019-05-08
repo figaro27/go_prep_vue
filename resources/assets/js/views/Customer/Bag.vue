@@ -173,7 +173,7 @@
                     <strong>Delivery Fee:</strong>
                   </div>
                   <div class="col-md-3 offset-5">
-                    {{ format.money(deliveryFee) }}
+                    {{ format.money(deliveryFeeAmount) }}
                   </div>
                 </div>
               </li>
