@@ -142,6 +142,10 @@ class StoreSetting extends Model
 
                 $ddays = $this->delivery_days;
 
+                if (!is_array($ddays)) {
+                    return [];
+                }
+
                 foreach ($ddays as $i => $day) {
                     $date = Carbon::createFromFormat(
                         'D',
