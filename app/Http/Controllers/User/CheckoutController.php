@@ -32,6 +32,7 @@ class CheckoutController extends UserController
         $couponId = $request->get('coupon_id');
         $couponReduction = $request->get('couponReduction');
         $couponCode = $request->get('couponCode');
+        $deliveryFee = $request->get('deliveryFee');
         //$stripeToken = $request->get('token');
 
         $cardId = $request->get('card_id');
@@ -43,7 +44,6 @@ class CheckoutController extends UserController
         $afterDiscountBeforeFees = $bag->getTotal();
         $preFeePreDiscount = $bag->getTotal();
 
-        $deliveryFee = 0;
         $processingFee = 0;
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
@@ -56,7 +56,6 @@ class CheckoutController extends UserController
         }
 
         if ($store->settings->applyDeliveryFee) {
-            $deliveryFee += $store->settings->deliveryFee;
             $total += $deliveryFee;
         }
 
