@@ -110,6 +110,15 @@
         Company to carry out the terms of this Section five.
       </li>
       <li>
+        The Service Provider agrees to take no legal action under and
+        circumstances against the Company for any claims involving disputes
+        between the Service Provider and their Customers, any use of the Service
+        Providers content on the Company’s server, any intellectual property or
+        proprietary claims of ownership over the design, structure, function and
+        usage of the application, and any potential technical issues that may
+        cause disruption to the Service Provider services.
+      </li>
+      <li>
         <strong> <u>TERM AND TERMINATION</u>. </strong>This Agreement shall
         remain in effect until terminated by either party upon thirty (30) days’
         written notice
