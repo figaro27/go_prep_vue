@@ -174,7 +174,11 @@ class SpaController extends Controller
             ])->find(STORE_ID)
             : null;
 
-        $distance = $user->distanceFrom($store);
+        if ($user) {
+            $distance = $user->distanceFrom($store);
+        } else {
+            $distance = 1;
+        }
 
         if ($user && $store) {
             if ($store->settings->delivery_distance_type === 'radius') {
