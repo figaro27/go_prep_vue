@@ -6,7 +6,7 @@
 </head>
 
 <body class="{{ $body_classes }}">
-  <div id="print-area">
+  <div id="print-area" class="unbreakable">
     <h1>Delivery Routes</h1>
     @if ($delivery_dates)
       <h2>
