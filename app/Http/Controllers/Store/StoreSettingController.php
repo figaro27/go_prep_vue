@@ -81,7 +81,9 @@ class StoreSettingController extends StoreController
             'cutoff_type' => 'required|in:timed,single_day',
             'mealPlanDiscount' =>
                 'required_if:applyMealPlanDiscount,true|integer|nullable|max:99',
-            'deliveryFee' => 'required_if:applyDeliveryFee,true|nullable',
+            'deliveryFee' => 'required_if:deliveryFeeType,flat|nullable',
+            'mileageBase' => 'required_if:deliveryFeeType,mileage|nullable',
+            'mileagePerMile' => 'required_if:deliveryFeeType,mileage|nullable',
             'processingFee' => 'required_if:applyProcessingFee,true|nullable',
             'minimumPrice' => 'required_if:minimumOption,price',
             'minimumMeals' => 'required_if:minimumOption,meals',
