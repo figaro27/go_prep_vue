@@ -25,7 +25,7 @@
               >
                 <img
                   v-b-popover.hover="
-                    'Timed Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Period to 1 day and 12 hours. This will lock in orders for Sunday on Friday at 12 PM and lock in orders for Wednesday on Monday at 12 PM. Single Day Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Day to Friday at 12 PM. This locks in orders for BOTH Sunday & Wednesday on Friday at 12 PM. If you only have one delivery/pickup day, then choose either option and it will work the same way.'
+                    'If you only have one delivery/pickup day, then choose either option and it will work the same way. Timed Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Period to 1 day and 12 hours. This will lock in orders for Sunday on Friday at 12 PM and lock in orders for Wednesday on Monday at 12 PM. Single Day Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Day to Friday at 12 PM. This locks in orders for BOTH Sunday & Wednesday on Friday at 12 PM.'
                   "
                   title="Cut Off Type"
                   src="/images/store/popover.png"
@@ -75,7 +75,7 @@
             </b-form-group>
 
             <b-form-group
-              label="Delivery Day(s)"
+              label="Delivery / Day(s)"
               label-for="delivery-days"
               :state="true"
             >
@@ -96,7 +96,7 @@
               ></b-form-checkbox-group>
               <img
                 v-b-popover.hover="
-                  'These are the day(s) you plan on delivering your meals to your customers and will show up as options on the checkout page for the customer. You can set it to one day per week as many smaller meal prep companies do, or as many as you like.'
+                  'These are the day(s) you plan on delivering your meals or allowing pickup to your customers and will show up as options on the checkout page for the customer. Please choose at least one day to allow orders on your menu.'
                 "
                 title="Delivery / Pickup Day(s)"
                 src="/images/store/popover.png"
@@ -203,7 +203,7 @@
               ></b-form-radio-group>
               <img
                 v-b-popover.hover="
-                  'As you do local delivery, you may have a certain cutoff distance. Here you can set this distance by radius by the number of miles around you or by zip codes separated by commas.'
+                  'As you do local delivery, you may have a certain cutoff distance. Here you can set this distance by radius by the number of miles around you or by zip codes separated by commas. If you offer pickup, and the customer chooses pickup, this will not apply to them.'
                 "
                 title="Delivery Distance Type"
                 src="/images/store/popover.png"
@@ -257,7 +257,7 @@
                 <span class="mr-1">Minimum Price Requirement</span>
                 <img
                   v-b-popover.hover="
-                    'Here you can set a minimum bag price required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'
+                    'Here you can set a minimum price required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'
                   "
                   title="Minimum Price Requirement"
                   src="/images/store/popover.png"
@@ -298,7 +298,7 @@
                 <span class="mr-1">Weekly Meal Plan Discount</span>
                 <img
                   v-b-popover.hover="
-                    'Give your customers an incentive to create a weekly meal plan with you by offering a discount percentage.'
+                    'Give your customers an incentive to create a weekly meal plan with you by offering a discount percentage. Please keep in mind the customer can still cancel at any time after their first order.'
                   "
                   title="Weekly Meal Plan Discount"
                   src="/images/store/popover.png"
@@ -343,7 +343,7 @@
                   <span class="mr-1">Delivery Fee Type</span>
                   <img
                     v-b-popover.hover="
-                      'Either choose to apply a flat fee no matter how far the customer is, or a fee based on the distance of the customer.'
+                      'Either choose to apply a flat fee no matter how far the customer is, or a fee based on the distance of the customer in miles.'
                     "
                     title="Delivery Fee"
                     src="/images/store/popover.png"
@@ -437,7 +437,7 @@
               type="text"
               rows="3"
               v-model="storeSettings.deliveryInstructions"
-              placeholder="Please include delivery instructions to your customers (time window, how long your driver will wait, etc.)."
+              placeholder="Please include delivery instructions to your customers (time window, how long your driver will wait, etc.) This will be shown on the checkout page as well as email notifications the customer receives."
               class="mb-2"
             ></b-form-textarea>
             <p v-if="transferTypeCheckPickup">Pickup Instructions:</p>
@@ -446,14 +446,14 @@
               type="text"
               rows="3"
               v-model="storeSettings.pickupInstructions"
-              placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time)."
+              placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time). This will be shown on the checkout page as well as email notifications the customer receives."
             ></b-form-textarea>
 
             <p class="mt-2">
               <span class="mr-1">Notes For Customer</span>
               <img
                 v-b-popover.hover="
-                  'Here you can optionally add any notes that you want to communicate to your customer on your packing slips and new order email notifications. Some examples include heating instructions, expiration periods of your meals, or any personalized message.'
+                  'Here you can optionally add any notes that you want to communicate to your customer on your packing slips and new order email notifications. Some examples include heating instructions, expiration periods of your meals, or any personalized message. This will be shown on your packing slips as well as email notifications the customer receives.'
                 "
                 title="Notes For Customer"
                 src="/images/store/popover.png"
@@ -503,7 +503,7 @@
             <span class="mr-1">Show Ingredients</span>
             <img
               v-b-popover.hover="
-                'Ingredients of your meals are listed at the bottom of the nutrition facts that show on your menu. You can choose to show or hide them with this option.'
+                'Ingredients of your meals are shown for each meal on your menu if the user clicks on the meal. You can choose to show or hide them with this option.'
               "
               title="Show Ingredients"
               src="/images/store/popover.png"
@@ -526,7 +526,7 @@
             <span class="mr-1">Allow Meal Packages</span>
             <img
               v-b-popover.hover="
-                'Enables a button on your menu page which lets you create meal packages. These are groupings of individual meals on your menu and are displayed to your customer on your menu through a scrolling carousel. Enabling this also adds a Packages category to your menu.'
+                'Enables a button on your menu page which lets you create meal packages. These are groupings of individual meals and quantities on your menu and are displayed to your customer on your menu through a scrolling carousel. Enabling this also adds a Packages category to your menu.'
               "
               title="Allow Meal Packages"
               src="/images/store/popover.png"
@@ -549,7 +549,7 @@
             <span class="mr-1">Categories</span>
             <img
               v-b-popover.hover="
-                'Categories are ways to group your meals together into different sections that show up on your menu. Some examples include Entrees and Breakfast. You can then rearrange the order of the categories which rearranges the order they are shown on your menu to customers.'
+                'Categories are ways to group your meals together into different sections that show up on your menu. Some examples include Breakfast, Snacks, or certain diet types like Keto Friendly. You can then rearrange the order of the categories which rearranges the order they are shown on your menu.'
               "
               title="Categories"
               src="/images/store/popover.png"
@@ -597,7 +597,7 @@
                 <span class="mr-1">Menu Brand Color</span>
                 <img
                   v-b-popover.hover="
-                    'Set the main color to show on your menu for buttons & the top navigation area. Try to match this to the main color of your logo.'
+                    'Set the main color to show on your menu for buttons & the top navigation area. Try to match this to the main color of your logo. If you would like a color not shown in the color picker, please contact us.'
                   "
                   title="Menu Brand Color"
                   src="/images/store/popover.png"
@@ -876,7 +876,7 @@
               <span class="mr-1">Open</span>
               <img
                 v-b-popover.hover="
-                  'You can toggle this off to stop showing your menu page and accepting new orders for any reason. Be sure to fill out the reason below to communicate to your customers.'
+                  'You can toggle this off to stop accepting new orders from customers for any reason. Please be sure to fill out the reason below to communicate to your customers.'
                 "
                 title="Open or Closed"
                 src="/images/store/popover.png"
