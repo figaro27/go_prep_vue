@@ -64,6 +64,7 @@
                 <b-form-input
                   placeholder="Weight"
                   v-model="ingredient.quantity"
+                  :formatter="(val, e) => val.replace(/[^\d.-]/g, '')"
                 ></b-form-input>
               </b-form-group>
             </td>
