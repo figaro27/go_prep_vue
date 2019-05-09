@@ -160,10 +160,10 @@
               </li>
               <li class="checkout-item">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-6 col-md-4">
                     <strong>Subtotal:</strong>
                   </div>
-                  <div class="col-md-3 offset-5">
+                  <div class="col-6 col-md-3 offset-md-5">
                     {{ format.money(preFeePreDiscount) }}
                   </div>
                 </div>
@@ -173,10 +173,10 @@
                 v-if="deliveryPlan && applyMealPlanDiscount"
               >
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-6 col-md-4">
                     <strong>Meal Plan Discount:</strong>
                   </div>
-                  <div class="col-md-3 offset-5 text-success">
+                  <div class="col-6 col-md-3 offset-md-5 text-success">
                     ({{ format.money(mealPlanDiscount) }})
                   </div>
                 </div>
@@ -186,20 +186,20 @@
                 v-if="storeSettings.applyDeliveryFee && pickup === 0"
               >
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-6 col-md-4">
                     <strong>Delivery Fee:</strong>
                   </div>
-                  <div class="col-md-3 offset-5">
+                  <div class="col-6 col-md-3 offset-md-5">
                     {{ format.money(deliveryFeeAmount) }}
                   </div>
                 </div>
               </li>
               <li class="checkout-item" v-if="storeSettings.applyProcessingFee">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-6 col-md-4">
                     <strong>Processing Fee:</strong>
                   </div>
-                  <div class="col-md-3 offset-5">
+                  <div class="col-6 col-md-3 offset-md-5">
                     {{ format.money(storeSettings.processingFee) }}
                   </div>
                 </div>
@@ -207,20 +207,22 @@
 
               <li class="checkout-item">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-6 col-md-4">
                     <strong>Sales Tax:</strong>
                   </div>
-                  <div class="col-md-3 offset-5">{{ format.money(tax) }}</div>
+                  <div class="col-6 col-md-3 offset-md-5">
+                    {{ format.money(tax) }}
+                  </div>
                 </div>
               </li>
 
               <li class="checkout-item">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-6 col-md-4">
                     <span v-if="!couponApplied"><strong>Total</strong></span>
                     <span v-if="couponApplied">Pre-Coupon Total</span>
                   </div>
-                  <div class="col-md-3 offset-5">
+                  <div class="col-6 col-md-3 offset-md-5">
                     <strong>{{ format.money(afterDiscountAfterFees) }}</strong>
                   </div>
                 </div>
@@ -228,10 +230,10 @@
 
               <li class="checkout-item" v-if="couponApplied">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-6 col-md-4">
                     <span class="text-success">({{ coupon.code }})</span>
                   </div>
-                  <div class="col-md-3 offset-5">
+                  <div class="col-6 col-md-3 offset-md-5">
                     <span class="text-success"
                       >({{ format.money(couponReduction) }})</span
                     >
@@ -241,10 +243,10 @@
 
               <li class="checkout-item" v-if="couponApplied">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-6 col-md-4">
                     <strong>Total</strong>
                   </div>
-                  <div class="col-md-3 offset-5">
+                  <div class="col-6 col-md-3 offset-md-5">
                     <strong>{{
                       format.money(afterDiscountAfterFeesAfterCoupon)
                     }}</strong>
