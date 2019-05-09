@@ -112,6 +112,8 @@
     "v-money": "^0.8.1",
     "vue-carousel": "^0.18.0",
     "vue-disable-autocomplete": "^0.0.4",
+    "vue-image-lightbox": "^6.2.0",
+    "vue-lazyload": "^1.2.6",
     "vue-rangedate-picker": "https://github.com/msolda2/vue-rangedate-picker/archive/v0.3.4.tar.gz",
     "vue-swatches": "^1.0.3",
     "vue-wysiwyg": "^1.7.2",
