@@ -48,12 +48,11 @@ import VueLazyLoad from "vue-lazyload";
 import Slick from "vue-slick";
 import "slick-carousel/slick/slick.css";
 import VueObserveVisibility from "vue-observe-visibility";
+import i18n from "./i18n";
 
 Vue.use(VueObserveVisibility);
 Vue.component("slick", Slick);
 Vue.use(VueLazyLoad);
-
-import i18n from "./i18n";
 Vue.use(i18n);
 Vue.use(wysiwyg, {});
 Vue.use(VueRouter);
