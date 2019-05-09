@@ -495,10 +495,10 @@ export default {
       if (this.storeSettings.deliveryFeeType === "flat") {
         return this.storeSettings.deliveryFee;
       } else if (this.storeSettings.deliveryFeeType === "mileage") {
-        return (
-          this.storeSettings.mileageBase +
-          this.storeSettings.mileagePerMile * this.store.distance
-        );
+        let mileageBase = parseFloat(this.storeSettings.mileageBase);
+        let mileagePerMile = parseFloat(this.storeSettings.mileagePerMile);
+        let distance = parseFloat(this.store.distance);
+        return mileageBase + mileagePerMile * distance;
       }
     },
     card() {
