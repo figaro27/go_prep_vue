@@ -383,6 +383,9 @@ const mutations = {
 // operations.
 const actions = {
   async init({ commit, state, dispatch }, args = {}) {
+    state.isLoading = true;
+    state.initialized = false;
+
     const res = await axios.get("/api");
     const { data } = await res;
 
