@@ -47,8 +47,6 @@ import wysiwyg from "vue-wysiwyg";
 import "vue-wysiwyg/dist/vueWysiwyg.css";
 import VueLazyLoad from "vue-lazyload";
 
-require("vue-image-lightbox/dist/vue-image-lightbox.min.css");
-
 Vue.use(VueLazyLoad);
 Vue.use(wysiwyg, {});
 Vue.use(VueCarousel);
