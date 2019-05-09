@@ -561,7 +561,7 @@ export default {
     afterDiscountAfterFeesBeforeTax() {
       let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
       let applyProcessingFee = this.storeSettings.applyProcessingFee;
-      let deliveryFee = this.storeSettings.deliveryFee;
+      let deliveryFee = this.deliveryFeeAmount;
       let processingFee = this.storeSettings.processingFee;
       let subtotal = this.afterDiscountBeforeFees;
 
