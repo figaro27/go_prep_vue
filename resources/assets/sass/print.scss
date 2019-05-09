@@ -119,6 +119,7 @@ th {
   padding-right: 2mm;
   padding-top: 0.5mm;
   padding-bottom: 0.5mm;
+  font-size: 18px;
 }
 td {
   padding-left: 2mm;
@@ -174,7 +175,7 @@ pre {
 }
 h1 {
   font-weight: normal;
-  font-size: 26pt;
+  font-size: 30pt;
   font-family: "gotham", sans-serif;
   margin-top: 6pt;
   margin-bottom: 6pt;
@@ -187,7 +188,7 @@ h1 {
 }
 h2 {
   font-weight: bold;
-  font-size: 16pt;
+  font-size: 24pt;
   font-family: "gotham", sans-serif;
   margin-top: 6pt;
   margin-bottom: 6pt;
@@ -213,7 +214,7 @@ h3 {
 }
 h4 {
   font-weight: bold;
-  font-size: 13pt;
+  font-size: 18pt;
   font-family: "gotham", sans-serif;
   margin-top: 10pt;
   margin-bottom: 7pt;
@@ -274,4 +275,7 @@ h6 {
 .col-8 {
   float: left;
   width: 66.66665%;
+}
+p {
+  font-size: 16px;
 }
