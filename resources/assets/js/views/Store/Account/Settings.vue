@@ -11,71 +11,7 @@
           <p>https://{{ storeDetails.domain }}.goprep.com</p>
           <b-form @submit.prevent="updateStoreSettings">
             <b-form-group
-              label="Cut Off Period Type"
-              label-for="cut-off-period-type"
-              :state="true"
-              inline
-            >
-              <b-form-radio-group
-                v-model="storeSettings.cutoff_type"
-                :options="[
-                  { text: 'Timed', value: 'timed' },
-                  { text: 'Single Day', value: 'single_day' }
-                ]"
-              >
-                <img
-                  v-b-popover.hover="
-                    'If you only have one delivery/pickup day, then choose either option and it will work the same way. Timed Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Period to 1 day and 12 hours. This will lock in orders for Sunday on Friday at 12 PM and lock in orders for Wednesday on Monday at 12 PM. Single Day Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Day to Friday at 12 PM. This locks in orders for BOTH Sunday & Wednesday on Friday at 12 PM.'
-                  "
-                  title="Cut Off Type"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </b-form-radio-group>
-            </b-form-group>
-
-            <b-form-group
-              :label="
-                storeSettings.cutoff_type === 'timed'
-                  ? 'Cut Off Period'
-                  : 'Cut Off Day'
-              "
-              label-for="cut-off-period"
-              :state="true"
-              inline
-            >
-              <b-select
-                v-model="storeSettings.cutoff_days"
-                class="d-inline w-auto mr-1"
-                :options="cutoffDaysOptions"
-                @change.native="checkCutoffMealPlans"
-              ></b-select>
-              <b-select
-                v-model="storeSettings.cutoff_hours"
-                class="d-inline w-auto mr-1 custom-select"
-                :options="cutoffHoursOptions"
-                @change.native="checkCutoffMealPlans"
-              ></b-select>
-              <img
-                v-b-popover.hover="
-                  'This is the amount of time you want to lock in orders before a specific delivery day. For example - you set the cut off period to 1 day, and it is currently Tuesday. If you have a Wednesday delivery day, your customer will not see Wednesday as a delivery day option. They will see the next available delivery day. This prevents you from getting new orders right before your delivery day and possibly already after you prepped your meals for that day.'
-                "
-                title="Cut Off Period"
-                src="/images/store/popover.png"
-                class="popover-size"
-              />
-            </b-form-group>
-
-            <b-form-group label="Timezone">
-              <b-select
-                :options="timezoneOptions"
-                v-model="storeSettings.timezone"
-                class="w-100"
-              ></b-select>
-            </b-form-group>
-
-            <b-form-group
-              label="Delivery / Day(s)"
+              label="Delivery / Pickup Day(s)"
               label-for="delivery-days"
               :state="true"
             >
@@ -240,6 +176,70 @@
                 class="form-control"
                 placeholder="Zip Codes"
               ></textarea>
+            </b-form-group>
+
+            <b-form-group
+              label="Cut Off Period Type"
+              label-for="cut-off-period-type"
+              :state="true"
+              inline
+            >
+              <b-form-radio-group
+                v-model="storeSettings.cutoff_type"
+                :options="[
+                  { text: 'Timed', value: 'timed' },
+                  { text: 'Single Day', value: 'single_day' }
+                ]"
+              >
+                <img
+                  v-b-popover.hover="
+                    'If you only have one delivery/pickup day, then choose either option and it will work the same way. Timed Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Period to 1 day and 12 hours. This will lock in orders for Sunday on Friday at 12 PM and lock in orders for Wednesday on Monday at 12 PM. Single Day Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Day to Friday at 12 PM. This locks in orders for BOTH Sunday & Wednesday on Friday at 12 PM.'
+                  "
+                  title="Cut Off Type"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </b-form-radio-group>
+            </b-form-group>
+
+            <b-form-group
+              :label="
+                storeSettings.cutoff_type === 'timed'
+                  ? 'Cut Off Period'
+                  : 'Cut Off Day'
+              "
+              label-for="cut-off-period"
+              :state="true"
+              inline
+            >
+              <b-select
+                v-model="storeSettings.cutoff_days"
+                class="d-inline w-auto mr-1"
+                :options="cutoffDaysOptions"
+                @change.native="checkCutoffMealPlans"
+              ></b-select>
+              <b-select
+                v-model="storeSettings.cutoff_hours"
+                class="d-inline w-auto mr-1 custom-select"
+                :options="cutoffHoursOptions"
+                @change.native="checkCutoffMealPlans"
+              ></b-select>
+              <img
+                v-b-popover.hover="
+                  'This is the amount of time you want to lock in orders before a specific delivery day. For example - you set the cut off period to 1 day, and it is currently Tuesday. If you have a Wednesday delivery day, your customer will not see Wednesday as a delivery day option. They will see the next available delivery day. This prevents you from getting new orders right before your delivery day and possibly already after you prepped your meals for that day.'
+                "
+                title="Cut Off Period"
+                src="/images/store/popover.png"
+                class="popover-size"
+              />
+            </b-form-group>
+
+            <b-form-group label="Timezone">
+              <b-select
+                :options="timezoneOptions"
+                v-model="storeSettings.timezone"
+                class="w-100"
+              ></b-select>
             </b-form-group>
 
             <b-form-group>
