@@ -45,6 +45,7 @@ import DisableAutocomplete from "vue-disable-autocomplete";
 import VueCarousel from "vue-carousel";
 import wysiwyg from "vue-wysiwyg";
 import "vue-wysiwyg/dist/vueWysiwyg.css";
+import slugify from "slugify";
 
 Vue.use(wysiwyg, {});
 Vue.use(VueCarousel);
@@ -111,6 +112,7 @@ moment.tz.setDefault(moment.tz.guess());
 Vue.prototype.format = format;
 Vue.prototype.moment = moment;
 Vue.prototype.momentTimezone = momentTimezone;
+Vue.prototype.slugify = slugify;
 Vue.prototype.icons = require("./lib/icons");
 
 const files = require.context("./components", true, /\.vue$/i);

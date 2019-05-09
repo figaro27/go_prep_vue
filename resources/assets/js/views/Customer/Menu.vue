@@ -73,9 +73,9 @@
               :key="`tag-${tag}`"
               class="filters col-6 col-sm-4 col-md-3 mb-3"
             >
-              <b-button :pressed="active[tag]" @click="filterByTag(tag)">
-                {{ tag }}
-              </b-button>
+              <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{
+                tag
+              }}</b-button>
             </div>
           </div>
           <b-button
@@ -156,9 +156,10 @@
                             v-for="size in meal.sizes"
                             :key="size.id"
                             @click="addOne(meal, false, size)"
-                            >{{ size.title }} -
-                            {{ format.money(size.price) }}</b-dropdown-item
                           >
+                            {{ size.title }} -
+                            {{ format.money(size.price) }}
+                          </b-dropdown-item>
                         </b-dropdown>
                       </div>
                     </div>
@@ -219,9 +220,10 @@
                             v-for="size in meal.sizes"
                             :key="size.id"
                             @click="addOne(meal, false, size)"
-                            >{{ size.title }} -
-                            {{ format.money(size.price) }}</b-dropdown-item
                           >
+                            {{ size.title }} -
+                            {{ format.money(size.price) }}
+                          </b-dropdown-item>
                         </b-dropdown>
                       </div>
                     </div>
@@ -413,7 +415,7 @@
                         <li
                           v-for="category in categories"
                           :key="category"
-                          @click.prevent="goToCategory(category)"
+                          @click.prevent="goToCategory(slugify(category))"
                           class="ml-4"
                         >
                           {{ category }}
@@ -439,7 +441,7 @@
                   <div
                     v-for="group in meals"
                     :key="group.category"
-                    :id="group.category"
+                    :id="slugify(group.category)"
                     class="categories"
                   >
                     <h2 class="text-center mb-3 dbl-underline">
@@ -498,9 +500,10 @@
                               v-for="size in meal.sizes"
                               :key="size.id"
                               @click="addOne(meal, false, size)"
-                              >{{ size.title }} -
-                              {{ format.money(size.price) }}</b-dropdown-item
                             >
+                              {{ size.title }} -
+                              {{ format.money(size.price) }}
+                            </b-dropdown-item>
                           </b-dropdown>
 
                           <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
@@ -606,12 +609,12 @@
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
-                          <span v-if="item.meal_package">{{
-                            item.meal.title
-                          }}</span>
-                          <span v-else-if="item.size">
-                            {{ item.size.full_title }}
+                          <span v-if="item.meal_package">
+                            {{ item.meal.title }}
                           </span>
+                          <span v-else-if="item.size">{{
+                            item.size.full_title
+                          }}</span>
                           <span v-else>{{ item.meal.item_title }}</span>
                         </div>
                         <div class="flex-grow-0">
@@ -675,7 +678,7 @@
                       <strong>Total&nbsp;</strong>
                       {{ format.money(afterDiscountAfterFees) }}
                     </p>
-                  </div> -->
+                  </div>-->
 
                   <div
                     v-if="
@@ -1404,9 +1407,14 @@ export default {
       }
     },
     goToCategory(category) {
-      $(".main-menu-area").scrollTop(0);
-      const top = $(`#${category}`).position().top;
-      $(".main-menu-area").scrollTop(top);
+      if ($("#xs").is(":visible")) {
+        const top = $(`#${category}`).offset().top;
+        $(document).scrollTop(top - 55);
+      } else {
+        $(".main-menu-area").scrollTop(0);
+        const top = $(`#${category}`).position().top;
+        $(".main-menu-area").scrollTop(top);
+      }
     },
     viewFilters() {
       this.viewFilterModal = true;
