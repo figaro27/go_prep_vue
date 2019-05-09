@@ -777,7 +777,14 @@ export default {
       this.createMealModal = true;
     },
     createMealPackage() {
-      this.createPackageModal = true;
+      if (this.meals.length > 0) {
+        this.createPackageModal = true;
+      } else {
+        this.$toastr.e(
+          "Please add at least one meal before creating a meal package.",
+          "Error"
+        );
+      }
     },
 
     async viewMeal(id) {
