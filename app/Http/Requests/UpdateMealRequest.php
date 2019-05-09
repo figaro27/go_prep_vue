@@ -32,7 +32,7 @@ class UpdateMealRequest extends FormRequest
                 'default_size_title' => '',
                 'sizes.*.title' => 'required|distinct',
                 'sizes.*.price' => 'required|gte:0.1|lte:1000',
-                'sizes.*.multiplier' => 'required|distinct|gte:0.1|lte:20'
+                'sizes.*.multiplier' => 'required|gte:0.1|lte:20'
             ];
         } else {
             return [
