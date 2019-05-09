@@ -46,7 +46,9 @@ import VueCarousel from "vue-carousel";
 import wysiwyg from "vue-wysiwyg";
 import "vue-wysiwyg/dist/vueWysiwyg.css";
 import slugify from "slugify";
+import VueLazyLoad from "vue-lazyload";
 
+Vue.use(VueLazyLoad);
 Vue.use(wysiwyg, {});
 Vue.use(VueCarousel);
 Vue.use(VueRouter);
