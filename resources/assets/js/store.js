@@ -562,7 +562,7 @@ const actions = {
     auth.deleteToken();
 
     if (data.store) {
-      dispatch("refreshViewedStore");
+      await dispatch("refreshViewedStore");
     }
 
     dispatch("refreshStores");
@@ -961,7 +961,7 @@ const actions = {
 // getters are functions
 const getters = {
   loggedIn(state) {
-    return !_.isEmpty(state.user.data) || auth.hasToken();
+    return !_.isEmpty(state.user.data) && state.user.data.id && auth.hasToken();
   },
   tags(state) {
     return state.tags || [];

@@ -212,7 +212,7 @@ export default {
   },
   mounted() {},
   methods: {
-    ...mapActions(["refreshUser"]),
+    ...mapActions(["refreshUser", "refreshViewedStore"]),
     updateCustomer() {
       this.spliceZip();
       axios
@@ -220,6 +220,7 @@ export default {
         .then(response => {
           this.$toastr.s("Profile updated.");
           this.refreshUser();
+          this.refreshViewedStore();
         })
         .catch(e => {
           this.$toastr.e("Failed to update profile.");
