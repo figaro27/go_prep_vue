@@ -21,8 +21,8 @@
       <table border="1" width="100">
         <thead>
           <tr>
-            <th>Meal</th>
-            <th>Orders</th>
+            <th><h4>Meal</h4></th>
+            <th><h4>Orders</h4></th>
             <!-- <th>Total Price</th> -->
           </tr>
         </thead>

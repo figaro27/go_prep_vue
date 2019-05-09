@@ -26,9 +26,9 @@
       
       @foreach($orderGroup['orders'] as $order)
       <div class="unbreakable">
-        <h4>Order #{{$order['order_number']}}</h4>
-        <h4>Customer: {{$orderGroup['user']->name }}</h4>
-        <h4>Address: {{$order['address']}}, {{$order['city']}}, {{$order['state']}}, {{$order['zip']}}</h4>
+        <h5>Order #{{$order['order_number']}}</h5>
+        <h5>Customer: {{$orderGroup['user']->name }}</h5>
+        <h5>Address: {{$order['address']}}, {{$order['city']}}, {{$order['state']}}, {{$order['zip']}}</h5>
         <h5>Delivery Instructions: {{$order['delivery']}}</h5>
 
           @if(!count($order['meal_quantities']))

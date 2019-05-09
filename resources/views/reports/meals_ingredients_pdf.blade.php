@@ -13,10 +13,10 @@
       <table border="1" width="100">
         <thead>
           <tr>
-            <th>Meal</th>
-            <th>Ingredient</th>
-            <th>Quantity</th>
-            <th>Unit</th>
+            <th><h4>Meal</h4></th>
+            <th><h4>Ingredient</h4></th>
+            <th><h4>Quantity</h4></th>
+            <th><h4>Unit</h4></th>
 
           </tr>
         </thead>
