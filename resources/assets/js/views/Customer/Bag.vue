@@ -108,9 +108,14 @@
             <ul class="list-group">
               <li class="bag-item">
                 <div class="row">
-                  <div class="col-md-4 pb-1">
+                  <div class="col-md-8 pb-1">
                     <h3>
-                      <strong>Weekly Meal Plan</strong>
+                      <strong
+                        >Weekly Meal Plan
+                        <span v-if="storeSettings.applyMealPlanDiscount"
+                          >{{ storeSettings.mealPlanDiscount }}% Off</span
+                        ></strong
+                      >
                       <img
                         v-b-popover.hover="
                           'Choose a weekly meal plan instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals as well as pause or cancel the meal plan at any time. This will apply to the following week\'s renewal.'
@@ -121,15 +126,27 @@
                       />
                     </h3>
                   </div>
-                  <div class="col-md-4 pt-2">
-                    <div class="aside-options">
-                      <c-switch
-                        color="success"
-                        variant="pill"
-                        size="lg"
-                        v-model="deliveryPlan"
-                      />
-                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-9">
+                    <strong
+                      ><p
+                        class="mr-1"
+                        v-if="storeSettings.applyMealPlanDiscount"
+                      >
+                        Create a meal plan and you'll save
+                        <span class="text-success standout">{{
+                          format.money(mealPlanDiscount)
+                        }}</span>
+                        on each order.
+                        <c-switch
+                          color="success"
+                          variant="pill"
+                          size="lg"
+                          v-model="deliveryPlan"
+                          class="pt-3"
+                        /></p
+                    ></strong>
                   </div>
                 </div>
               </li>
