@@ -20,12 +20,12 @@
 
     <div>
     @foreach($data as $i => $row)
-      {{$i + 1}}.<br>
-      Order #{{$row['order']->order_number}}<br>
-      {{$row['name']}}<br>
-      {{$row['address']}}<br>
-      {{$row['phone']}}<br>
-      Instructions: {{$row['instructions']}}<br>
+      <h5>{{$i + 1}}.</h5>
+      <h5>Order #{{$row['order']->order_number}}</h5>
+      <h5>{{$row['name']}}</h5>
+      <h5>{{$row['address']}}</h5>
+      <h5>{{$row['phone']}}</h5>
+      <h5>Instructions: {{$row['instructions']}}</h5>
       <hr align="left" width="50%">
     @endforeach
     </div>
