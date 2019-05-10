@@ -3,6 +3,7 @@
     <b-navbar toggleable="lg" class="app-header" fixed>
       <b-link class="navbar-brand" to="/customer/home">
         <img
+          v-if="showLogo"
           class="navbar-brand-full"
           src="/images/logo.png"
           width="90"
@@ -10,6 +11,7 @@
           alt="GoPrep Logo"
         />
         <img
+          v-if="showLogo"
           class="navbar-brand-minimized"
           src="/images/logo.png"
           width="33"
@@ -150,6 +152,9 @@ export default {
       return this.$route.matched.filter(
         route => route.name || route.meta.label
       );
+    },
+    showLogo() {
+      return this.viewedStore.settings.showLogo;
     }
   },
   updated() {
