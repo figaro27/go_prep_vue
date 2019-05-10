@@ -10,26 +10,25 @@
     <div class="row">
       <div class="col-8 address">
         <h4>Customer</h4>
-        <p>
-          {{$order->user->name}}<br>
-          {{$order->user->details->address}}<br>
-          {{$order->user->details->city}},
+        <p>{{$order->user->name}}</p>
+          <p>{{$order->user->details->address}}</p>
+          <p>{{$order->user->details->city}},
           {{$order->user->details->state}}
-          {{$order->user->details->zip}}
+          {{$order->user->details->zip}}</p>
         </p>
         <h4 class="mt-3">Order Details</h4>
-            Order #{{$order->order_number}}<br>
+            <p>Order #{{$order->order_number}}</p>
             @if ($order->subscription)
-            Meal Plan #{{ $order->subscription->stripe_id }}<br>
+            <p>Meal Plan #{{ $order->subscription->stripe_id }}</p>
             @endif
-            Order Placed: {{$order->created_at->format('D, m/d/Y')}}<br>
-            To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}}<br>
-            <strong>Total: ${{number_format($order->amount, 2)}}</strong>
+            <p>Order Placed: {{$order->created_at->format('D, m/d/Y')}}</p>
+            <p>To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}}</p>
+            <p><strong>Total: ${{number_format($order->amount, 2)}}</strong></p>
       </div>
       <div class="col-4">
         <img src="{{$logo}}" style="zoom: 0.5" />
         <br><br>
-        <p><a href="http://{{$order->store->details->domain}}.goprep.com">www.{{$order->store->details->domain}}.goprep.com</a></p>
+        <p>{{$order->store->details->domain}}.goprep.com</p>
       </div>
     </div>
 
