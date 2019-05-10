@@ -113,6 +113,14 @@
                       :images="images"
                       :showLightBox="false"
                     ></LightBox>
+                    <span v-for="image in images" :key="images.id">
+                      <img
+                        style="width:50px;height:50px"
+                        :src="image.thumb"
+                        @click="$refs.lightbox.showImage(image.id)"
+                      />
+                    </span>
+
                     <p
                       v-if="storeSettings.showNutrition"
                       v-html="mealDescription"
@@ -891,6 +899,12 @@ export default {
     return {
       images: [
         {
+          id: 0,
+          thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
+          src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
+        },
+        {
+          id: 1,
           thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
           src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
         }
