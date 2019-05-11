@@ -1082,7 +1082,7 @@ const getters = {
   },
   viewedStorePickupLocations(state, getters) {
     try {
-      return 5;
+      return state.viewed_store.pickupLocations;
     } catch (e) {
       return null;
     }
