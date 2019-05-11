@@ -325,6 +325,12 @@
                       Pickup Day: {{ deliveryDaysOptions[0].text }}
                     </p>
                   </div>
+                  <div v-if="storeSettings.hasPickupLocations && pickup === 1">
+                    <b-form-select
+                      v-model="selectedPickupLocation"
+                      :options="pickupLocations"
+                    ></b-form-select>
+                  </div>
                 </div>
               </li>
 
@@ -508,7 +514,8 @@ export default {
       minOption: "minimumOption",
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
-      coupons: "viewedStoreCoupons"
+      coupons: "viewedStoreCoupons",
+      pickupLocations: "viewedStorePickupLocations"
     }),
     deliveryFeeAmount() {
       if (this.storeSettings.deliveryFeeType === "flat") {

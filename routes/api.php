@@ -129,6 +129,10 @@ foreach (
                             Route::resource('categories', 'CategoryController');
                             Route::resource('coupons', 'CouponController');
                             Route::resource(
+                                'pickupLocations',
+                                'PickupLocationController'
+                            );
+                            Route::resource(
                                 'settings',
                                 'StoreSettingController'
                             );

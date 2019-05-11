@@ -113,6 +113,11 @@ class Store extends Model
         return $this->hasMany('App\Coupon');
     }
 
+    public function pickupLocations()
+    {
+        return $this->hasMany('App\PickupLocation');
+    }
+
     public function clearCaches()
     {
         Cache::forget('store_order_ingredients' . $this->id);

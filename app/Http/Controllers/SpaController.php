@@ -78,7 +78,8 @@ class SpaController extends Controller
                         'units',
                         'settings',
                         'storeDetail',
-                        'coupons'
+                        'coupons',
+                        'pickupLocations'
                     ])
                     ->first();
 
@@ -170,7 +171,8 @@ class SpaController extends Controller
                 'meals.allergies',
                 'settings',
                 'details',
-                'coupons'
+                'coupons',
+                'pickupLocations'
             ])->find(STORE_ID)
             : null;
 

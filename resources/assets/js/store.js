@@ -30,7 +30,8 @@ const state = {
       minimumMeals: 0,
       minimumPrice: 0
     },
-    coupons: []
+    coupons: [],
+    pickupLocations: []
   },
   stores: {},
   tags: [],
@@ -102,6 +103,10 @@ const state = {
     coupons: {
       data: {},
       expires: 0
+    },
+    pickupLocations: {
+      data: {},
+      expires: 0
     }
   },
   orders: {
@@ -157,6 +162,9 @@ const mutations = {
   },
   setViewedStoreCoupons(state, { coupons }) {
     state.viewed_store.coupons = coupons;
+  },
+  setViewedStorePickupLocations(state, { pickupLocations }) {
+    state.viewed_store.pickupLocations = pickupLocations;
   },
   addBagItems(state, items) {
     state.bag.items = _.keyBy(items, "id");
@@ -302,6 +310,17 @@ const mutations = {
 
     state.store.coupons.data = coupons;
     state.store.coupons.expires = expires;
+  },
+
+  storePickupLocations(state, { pickupLocations, expires }) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, "seconds")
+        .unix();
+    }
+
+    state.store.pickupLocations.data = pickupLocations;
+    state.store.pickupLocations.expires = expires;
   },
 
   storeMeals(state, { meals, expires }) {
@@ -470,6 +489,16 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.store.pickupLocations)) {
+        let pickupLocations = data.store.pickupLocations;
+
+        if (!_.isEmpty(pickupLocations)) {
+          commit("storePickupLocations", { pickupLocations });
+        }
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.tags)) {
         let tags = data.tags;
 
@@ -503,6 +532,16 @@ const actions = {
       if (!_.isEmpty(data.store.coupons) && _.isObject(data.store.coupons)) {
         let coupons = data.store.coupons;
         commit("storeCoupons", { coupons });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.pickupLocations) &&
+        _.isObject(data.store.pickupLocations)
+      ) {
+        let pickupLocations = data.store.pickupLocations;
+        commit("storePickupLocations", { pickupLocations });
       }
     } catch (e) {}
 
@@ -654,6 +693,16 @@ const actions = {
         }
       }
     } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.pickupLocations)) {
+        let pickupLocations = data.pickupLocations;
+
+        if (!_.isEmpty(pickupLocations)) {
+          commit("setViewedStorePickupLocations", { pickupLocations });
+        }
+      }
+    } catch (e) {}
   },
 
   async refreshStores({ commit, state }, args = {}) {
@@ -695,6 +744,17 @@ const actions = {
       commit("storeCoupons", { coupons: data });
     } else {
       throw new Error("Failed to retrieve coupons");
+    }
+  },
+
+  async refreshStorePickupLocations({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/pickupLocations");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      commit("storePickupLocations", { pickupLocations: data });
+    } else {
+      throw new Error("Failed to retrieve pickupLocations");
     }
   },
 
@@ -1020,6 +1080,13 @@ const getters = {
       return null;
     }
   },
+  viewedStorePickupLocations(state, getters) {
+    try {
+      return 5;
+    } catch (e) {
+      return null;
+    }
+  },
 
   isLoading(state) {
     return state.isLoading || !_.isEmpty(state.jobs);
@@ -1168,6 +1235,13 @@ const getters = {
   storeCoupons: state => {
     try {
       return state.store.coupons.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storePickupLocations: state => {
+    try {
+      return state.store.pickupLocations.data || {};
     } catch (e) {
       return {};
     }
