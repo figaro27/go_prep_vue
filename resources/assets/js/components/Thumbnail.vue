@@ -36,7 +36,7 @@
       }"
     />
 
-    <div class="spinner" v-if="spinner">
+    <div class="spinner" v-if="spinner && lazy">
       <div class="lds-ring">
         <div></div>
         <div></div>

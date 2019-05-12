@@ -73,9 +73,9 @@
               :key="`tag-${tag}`"
               class="filters col-6 col-sm-4 col-md-3 mb-3"
             >
-              <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{
-                tag
-              }}</b-button>
+              <b-button :pressed="active[tag]" @click="filterByTag(tag)">
+                {{ tag }}
+              </b-button>
             </div>
           </div>
           <b-button
@@ -113,13 +113,22 @@
                       :images="images"
                       :showLightBox="false"
                     ></LightBox>
-                    <span v-for="image in images" :key="images.id">
-                      <img
-                        style="width:50px;height:50px"
-                        :src="image.thumb"
-                        @click="$refs.lightbox.showImage(image.id)"
-                      />
-                    </span>
+
+                    <slick ref="mealGallery" :options="slickOptions">
+                      <div v-for="image in images" :key="image.id">
+                        <div style="image">
+                          <thumbnail
+                            v-if="image.thumb"
+                            :src="image.thumb"
+                            :aspect="true"
+                            :lazy="false"
+                            :spinner="false"
+                            :width="'70px'"
+                            @click="$refs.lightbox.showImage(image.id)"
+                          ></thumbnail>
+                        </div>
+                      </div>
+                    </slick>
 
                     <p
                       v-if="storeSettings.showNutrition"
@@ -624,12 +633,12 @@
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
-                          <span v-if="item.meal_package">
-                            {{ item.meal.title }}
-                          </span>
-                          <span v-else-if="item.size">{{
-                            item.size.full_title
+                          <span v-if="item.meal_package">{{
+                            item.meal.title
                           }}</span>
+                          <span v-else-if="item.size">
+                            {{ item.size.full_title }}
+                          </span>
                           <span v-else>{{ item.meal.item_title }}</span>
                         </div>
                         <div class="flex-grow-0">
@@ -900,6 +909,15 @@ export default {
   },
   data() {
     return {
+      slickOptions: {
+        slidesToShow: 4,
+        infinite: false,
+        arrows: true,
+        prevArrow:
+          '<a class="slick-prev"><i class="fa fa-chevron-left"></i></a>',
+        nextArrow:
+          '<a class="slick-next"><i class="fa fa-chevron-right"></i></a>'
+      },
       images: [
         {
           id: 0,
@@ -908,6 +926,31 @@ export default {
         },
         {
           id: 1,
+          thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
+          src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
+        },
+        {
+          id: 2,
+          thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
+          src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
+        },
+        {
+          id: 3,
+          thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
+          src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
+        },
+        {
+          id: 4,
+          thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
+          src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
+        },
+        {
+          id: 5,
+          thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
+          src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
+        },
+        {
+          id: 6,
           thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
           src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
         }
@@ -1331,6 +1374,7 @@ export default {
 
       this.$nextTick(() => {
         this.getNutritionFacts(this.meal.ingredients, this.meal);
+        this.$refs.mealGallery.reSlick();
       });
     },
     showMealPackageModal(mealPackage) {
