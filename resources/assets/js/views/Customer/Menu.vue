@@ -3,6 +3,31 @@
     <floating-action-button class="d-sm-none brand-color" to="/customer/bag">
       <i class="fa fa-shopping-bag text-white"></i>
     </floating-action-button>
+
+    <div
+      class="position-fixed"
+      style="top: 55px; left: 0; right: 0; background: gray; z-index: 1000"
+    >
+      <slick
+        ref="categorySlider"
+        :options="{
+          arrows: false,
+          centerMode: true,
+          variableWidth: true,
+          infinite: false
+        }"
+      >
+        <div
+          v-for="category in categories"
+          :key="category"
+          @click.prevent="goToCategory(slugify(category))"
+          class="m-2"
+        >
+          {{ category }}
+        </div>
+      </slick>
+    </div>
+
     <!-- <div class="menu ml-auto mr-auto"> -->
     <div class="menu ml-auto mr-auto">
       <div v-if="!willDeliver && !preview && loggedIn">
@@ -73,9 +98,9 @@
               :key="`tag-${tag}`"
               class="filters col-6 col-sm-4 col-md-3 mb-3"
             >
-              <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{
-                tag
-              }}</b-button>
+              <b-button :pressed="active[tag]" @click="filterByTag(tag)">
+                {{ tag }}
+              </b-button>
             </div>
           </div>
           <b-button
@@ -416,7 +441,7 @@
                           v-for="category in categories"
                           :key="category"
                           @click.prevent="goToCategory(slugify(category))"
-                          class="ml-4"
+                          class="ml-sm-4"
                         >
                           {{ category }}
                         </li>
@@ -439,9 +464,13 @@
                 <div :class="`col-md-9 main-menu-area`">
                   <Spinner v-if="!meals.length" position="absolute" />
                   <div
-                    v-for="group in meals"
+                    v-for="(group, catIndex) in meals"
                     :key="group.category"
                     :id="slugify(group.category)"
+                    v-observe-visibility="
+                      (isVisible, entry) =>
+                        onCategoryVisible(isVisible, catIndex)
+                    "
                     class="categories"
                   >
                     <h2 class="text-center mb-3 dbl-underline">
@@ -609,12 +638,12 @@
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
-                          <span v-if="item.meal_package">
-                            {{ item.meal.title }}
-                          </span>
-                          <span v-else-if="item.size">{{
-                            item.size.full_title
+                          <span v-if="item.meal_package">{{
+                            item.meal.title
                           }}</span>
+                          <span v-else-if="item.size">
+                            {{ item.size.full_title }}
+                          </span>
                           <span v-else>{{ item.meal.item_title }}</span>
                         </div>
                         <div class="flex-grow-0">
@@ -1230,6 +1259,9 @@ export default {
   },
   methods: {
     ...mapActions(["refreshSubscriptions", "emptyBag"]),
+    onCategoryVisible(isVisible, entry) {
+      console.log(isVisible, entry);
+    },
     showActiveFilters() {
       let tags = this.tags;
       this.active = tags.reduce((acc, tag) => {

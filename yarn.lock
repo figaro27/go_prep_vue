@@ -7615,6 +7615,11 @@ slice-ansi@0.0.4:
   resolved "https://registry.yarnpkg.com/slice-ansi/-/slice-ansi-0.0.4.tgz#edbf8903f66f7ce2f8eafd6ceed65e264c831b35"
   integrity sha1-7b+JA/ZvfOL46v1s7tZeJkyDGzU=
 
+slick-carousel@^1.6.0:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/slick-carousel/-/slick-carousel-1.8.1.tgz#a4bfb29014887bb66ce528b90bd0cda262cc8f8d"
+  integrity sha512-XB9Ftrf2EEKfzoQXt3Nitrt/IPbT+f1fgqBdoxO3W/+JYvtEOW6EgxnWfr9GH6nmULv7Y2tPmEX3koxThVmebA==
+
 slugify@^1.3.4:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.3.4.tgz#78d2792d7222b55cd9fc81fa018df99af779efeb"
@@ -8540,6 +8545,11 @@ vue-notifications@0.9.0:
   resolved "https://registry.yarnpkg.com/vue-notifications/-/vue-notifications-0.9.0.tgz#7d25e19a5e4872442e3527f252007d538af4ba6e"
   integrity sha512-stS61dn/xmMJOrt9JKn+FYBjuHeScAkhPB5zl/rEvVhtLnOWCLmFFDM62wW90YjQ1vsr+cK8DpH2QVPrTFNLAg==
 
+vue-observe-visibility@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/vue-observe-visibility/-/vue-observe-visibility-0.4.4.tgz#cf3e945bf80c1317a1c32bc516d6cfd4dda8f8fd"
+  integrity sha512-2eDYHgL2MJ2wkkNZnus56D0CG8m80BFLuvEcGnD7rQ9jxFogpXMsM9aM5Md+XT8AmYGYCqVfOVBaWFtVvwbpmw==
+
 vue-pagination-2@^1.6:
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/vue-pagination-2/-/vue-pagination-2-1.6.2.tgz#9555a7c1d330cb0d290c9a06dc77d2883ac3e83d"
@@ -8597,6 +8607,13 @@ vue-simple-calendar@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/vue-simple-calendar/-/vue-simple-calendar-3.0.2.tgz#b2ca80a96c97c1ab12d53bbb76865f10ecf46dfb"
   integrity sha512-dRxt6ZPi7mkWtjNTSZQqi9dz4Zl7Rcx+Ox7GPGOD2IbotKb1Bg3IQEisJC4NY3Wp07+vabMVNoRnDg9W34AgSg==
+
+vue-slick@^1.1.15:
+  version "1.1.15"
+  resolved "https://registry.yarnpkg.com/vue-slick/-/vue-slick-1.1.15.tgz#2916134531fd1f9638548f2ba1526e4f11032588"
+  integrity sha512-FnoeFMmxj+3Y1iE1HjNsB0SPpcTxJ8y2FIgndwMP6WkQph3FkPQLdqz24MwH4RszCXXH8reoANV6DMIC07jEbQ==
+  dependencies:
+    slick-carousel "^1.6.0"
 
 vue-stripe-elements-plus@^0.2.9:
   version "0.2.9"

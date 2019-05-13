@@ -46,7 +46,12 @@ import VueCarousel from "vue-carousel";
 import wysiwyg from "vue-wysiwyg";
 import "vue-wysiwyg/dist/vueWysiwyg.css";
 import slugify from "slugify";
+import Slick from "vue-slick";
+import "slick-carousel/slick/slick.css";
+import VueObserveVisibility from "vue-observe-visibility";
 
+Vue.use(VueObserveVisibility);
+Vue.component("slick", Slick);
 Vue.use(wysiwyg, {});
 Vue.use(VueCarousel);
 Vue.use(VueRouter);
