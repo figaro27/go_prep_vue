@@ -708,6 +708,9 @@ export default {
     checkout() {
       // this.loading = true;
       this.deliveryFee = this.deliveryFeeAmount;
+      if (this.pickup === 0) {
+        this.selectedPickupLocation = null;
+      }
       axios
         .post("/api/bag/checkout", {
           bag: this.bag,
