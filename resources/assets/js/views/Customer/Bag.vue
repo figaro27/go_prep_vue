@@ -328,7 +328,7 @@
                   <div v-if="storeSettings.hasPickupLocations && pickup === 1">
                     <b-form-select
                       v-model="selectedPickupLocation"
-                      :options="pickupLocations"
+                      :options="pickupLocationOptions"
                     ></b-form-select>
                   </div>
                 </div>
@@ -517,6 +517,14 @@ export default {
       coupons: "viewedStoreCoupons",
       pickupLocations: "viewedStorePickupLocations"
     }),
+    pickupLocationOptions() {
+      return this.pickupLocations.map(loc => {
+        return {
+          value: loc.id,
+          text: loc.name
+        };
+      });
+    },
     deliveryFeeAmount() {
       if (this.storeSettings.deliveryFeeType === "flat") {
         return this.storeSettings.deliveryFee;

@@ -695,8 +695,8 @@ const actions = {
     } catch (e) {}
 
     try {
-      if (!_.isEmpty(data.pickupLocations)) {
-        let pickupLocations = data.pickupLocations;
+      if (!_.isEmpty(data.store.pickup_locations)) {
+        let pickupLocations = data.store.pickup_locations;
 
         if (!_.isEmpty(pickupLocations)) {
           commit("setViewedStorePickupLocations", { pickupLocations });
