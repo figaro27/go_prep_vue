@@ -426,10 +426,8 @@
                   storeSettings.deliveryInstructions
               "
             >
-              <p>
-                <strong>Delivery Instructions:</strong>
-                {{ storeSettings.deliveryInstructions }}
-              </p>
+              <p class="strong">Delivery Instructions:</p>
+              <p v-html="deliveryInstructions"></p>
             </li>
             <li
               class="transfer-instruction mt-2"
@@ -439,10 +437,8 @@
                   storeSettings.pickupInstructions
               "
             >
-              <p>
-                <strong>Pickup Instructions:</strong>
-                {{ storeSettings.pickupInstructions }}
-              </p>
+              <p class="strong">Pickup Instructions:</p>
+              <p v-html="pickupInstructions">{{ pickupInstructions }}</p>
             </li>
 
             <div v-if="storeSettings.open === false">
@@ -521,6 +517,12 @@ export default {
       coupons: "viewedStoreCoupons",
       pickupLocations: "viewedStorePickupLocations"
     }),
+    deliveryInstructions() {
+      return this.storeSettings.deliveryInstructions.replace(/\n/g, "<br>");
+    },
+    pickupInstructions() {
+      return this.storeSettings.pickupInstructions.replace(/\n/g, "<br>");
+    },
     pickupLocationOptions() {
       return this.pickupLocations.map(loc => {
         return {

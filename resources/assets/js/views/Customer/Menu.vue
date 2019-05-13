@@ -1295,7 +1295,7 @@ export default {
     showMealModal(meal) {
       this.meal = meal;
       this.mealModal = true;
-      this.mealDescription = meal.description;
+      this.mealDescription = meal.description.replace(/\n/g, "<br>");
 
       this.$nextTick(() => {
         this.getNutritionFacts(this.meal.ingredients, this.meal);
