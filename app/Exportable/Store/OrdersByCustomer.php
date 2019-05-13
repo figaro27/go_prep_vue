@@ -67,6 +67,9 @@ class OrdersByCustomer
                             'state' => $order->user->userDetail->state,
                             'zip' => $order->user->userDetail->zip,
                             'delivery' => $order->user->userDetail->delivery,
+                            'pickup' => $order->pickup,
+                            'pickup_location_id' => $order->pickup_location_id,
+                            'pickup_location' => $order->pickup_location,
                             'meal_quantities' => array_merge(
                                 [['Meal', 'Quantity']], // Heading
                                 $order->meals

@@ -29,7 +29,18 @@
         <h5>Order #{{$order['order_number']}}</h5>
         <h5>Customer: {{$orderGroup['user']->name }}</h5>
         <h5>Address: {{$order['address']}}, {{$order['city']}}, {{$order['state']}}, {{$order['zip']}}</h5>
+        @if ($order['pickup'] === 0)
         <h5>Delivery Instructions: {{$order['delivery']}}</h5>
+        @endif
+        @if ($order['pickup_location_id'] != null)
+        <h5>Pickup Location: 
+          {{ $order['pickup_location']->name }}<br>
+          {{ $order['pickup_location']->address }},
+          {{ $order['pickup_location']->city }},
+          {{ $order['pickup_location']->state }}
+          {{ $order['pickup_location']->zip }}
+        </h5>
+        @endif
 
           @if(!count($order['meal_quantities']))
             None

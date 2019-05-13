@@ -150,9 +150,17 @@ u + .body .full { width:100% !important; width:100vw !important;}
     <tr>
       <td align="center">
         <table align="center" width="600" style="max-width:600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
-          <tr>
-            <td height="50"></td>
-          </tr>
+              @if ($subscription->pickup_location_id != null)
+              <tr>
+                <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d;"> Pickup Location:
+                {{ $subscription->pickup_location->name }}<br>
+                {{ $subscription->pickup_location->address }},
+                {{ $subscription->pickup_location->city }},
+                {{ $subscription->pickup_location->state }},
+                {{ $subscription->pickup_location->zip }}
+                </td>
+              </tr>
+              @endif
           <!-- header -->
           <tr>
             <td>

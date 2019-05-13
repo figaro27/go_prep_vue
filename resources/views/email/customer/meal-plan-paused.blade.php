@@ -131,6 +131,17 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $subscription->next_delivery_date->format('D, m/d/Y') }}</td>
                       </tr>
                       @endif
+                      @if ($subscription->pickup_location_id != null)
+                      <tr>
+                        <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d;"> Pickup Location:
+                        {{ $subscription->pickup_location->name }}<br>
+                        {{ $subscription->pickup_location->address }},
+                        {{ $subscription->pickup_location->city }},
+                        {{ $subscription->pickup_location->state }},
+                        {{ $subscription->pickup_location->zip }}
+                        </td>
+                      </tr>
+                      @endif
                       <!-- end address -->
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Meal Plan #{{ $subscription->stripe_id }}</td>
