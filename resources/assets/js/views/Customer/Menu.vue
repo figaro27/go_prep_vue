@@ -5,8 +5,8 @@
     </floating-action-button>
 
     <div
-      class="position-fixed"
-      style="top: 55px; left: 0; right: 0; background: gray; z-index: 1000"
+      class="position-fixed d-block d-sm-none"
+      style="top: 55px; left: 0; right: 0; background: #f0f0f0; z-index: 1000"
     >
       <slick
         ref="categorySlider"
@@ -1259,8 +1259,10 @@ export default {
   },
   methods: {
     ...mapActions(["refreshSubscriptions", "emptyBag"]),
-    onCategoryVisible(isVisible, entry) {
-      console.log(isVisible, entry);
+    onCategoryVisible(isVisible, index) {
+      if (isVisible) {
+        this.$refs.categorySlider.goTo(index);
+      }
     },
     showActiveFilters() {
       let tags = this.tags;
