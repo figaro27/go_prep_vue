@@ -18,7 +18,7 @@ class OrderController extends StoreController
         return $this->store->has('orders')
             ? $this->store
                 ->orders()
-                ->with(['user'])
+                ->with(['user', 'pickup_location'])
                 ->where(['paid' => 1, 'fulfilled' => 0])
                 ->get()
             : [];
@@ -29,7 +29,7 @@ class OrderController extends StoreController
         return $this->store->has('orders')
             ? $this->store
                 ->orders()
-                ->with(['user'])
+                ->with(['user', 'pickup_location'])
                 ->where(['paid' => 1, 'fulfilled' => 1])
                 ->get()
             : [];
@@ -66,7 +66,7 @@ class OrderController extends StoreController
     {
         return $this->store
             ->orders()
-            ->with(['user', 'user.userDetail', 'meals'])
+            ->with(['user', 'user.userDetail', 'meals', 'pickup_location'])
             ->where('id', $id)
             ->first();
     }

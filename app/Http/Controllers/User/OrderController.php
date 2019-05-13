@@ -13,6 +13,9 @@ class OrderController extends UserController
      */
     public function index()
     {
-        return $this->user->orders()->with(['meals'])->get();
+        return $this->user
+            ->orders()
+            ->with(['meals', 'pickup_location'])
+            ->get();
     }
 }

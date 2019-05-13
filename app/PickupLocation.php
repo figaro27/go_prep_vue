@@ -10,4 +10,14 @@ class PickupLocation extends Model
     {
         return $this->belongsTo('App\Store');
     }
+
+    public function order()
+    {
+        return $this->belongsToMany('App\Order');
+    }
+
+    public function subscription()
+    {
+        return $this->belongsToMany('App\Subscription');
+    }
 }

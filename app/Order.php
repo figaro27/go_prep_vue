@@ -82,6 +82,11 @@ class Order extends Model
         return $this->hasOne('App\Coupon');
     }
 
+    public function pickup_location()
+    {
+        return $this->belongsTo('App\PickupLocation');
+    }
+
     public function getPreCouponAttribute()
     {
         return $this->amount + $this->couponReduction;

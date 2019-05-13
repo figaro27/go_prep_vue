@@ -326,10 +326,13 @@
                     </p>
                   </div>
                   <div v-if="storeSettings.hasPickupLocations && pickup === 1">
-                    <b-form-select
+                    <p>Pickup Location</p>
+                    <b-select
                       v-model="selectedPickupLocation"
                       :options="pickupLocationOptions"
-                    ></b-form-select>
+                      class="delivery-select mb-3"
+                      required
+                    ></b-select>
                   </div>
                 </div>
               </li>
@@ -483,6 +486,7 @@ export default {
   },
   data() {
     return {
+      selectedPickupLocation: null,
       pickup: 0,
       deliveryPlan: false,
       deliveryDay: undefined,
@@ -660,6 +664,8 @@ export default {
     this.getSalesTax(this.store.details.state);
 
     if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
+
+    this.selectedPickupLocation = this.pickupLocationOptions[0].value;
   },
   methods: {
     ...mapActions(["refreshSubscriptions", "refreshCustomerOrders"]),
@@ -714,7 +720,8 @@ export default {
           coupon_id: this.coupon.id,
           couponReduction: this.couponReduction,
           couponCode: this.coupon.code,
-          deliveryFee: this.deliveryFee
+          deliveryFee: this.deliveryFee,
+          pickupLocation: this.selectedPickupLocation
         })
         .then(async resp => {
           this.emptyBag();

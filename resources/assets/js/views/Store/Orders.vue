@@ -191,6 +191,13 @@
             <h4 v-if="!order.pickup">Delivery Day</h4>
             <h4 v-if="order.pickup">Pickup Day</h4>
             {{ moment(order.delivery_date).format("dddd, MMM Do") }}
+            <p v-if="order.pickup_location_id != null">
+              {{ order.pickup_location.name }}<br />
+              {{ order.pickup_location.address }},
+              {{ order.pickup_location.city }},
+              {{ order.pickup_location.state }}
+              {{ order.pickup_location.zip }}
+            </p>
           </div>
         </div>
         <div class="row">

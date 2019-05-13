@@ -135,6 +135,13 @@
                           ).format("dddd, MMM Do")
                         }}
                       </p>
+                      <p v-if="subscription.pickup_location_id != null">
+                        {{ subscription.pickup_location.name }}<br />
+                        {{ subscription.pickup_location.address }},
+                        {{ subscription.pickup_location.city }},
+                        {{ subscription.pickup_location.state }}
+                        {{ subscription.pickup_location.zip }}
+                      </p>
                     </div>
                     <div class="col-md-4">
                       <h4>Company</h4>

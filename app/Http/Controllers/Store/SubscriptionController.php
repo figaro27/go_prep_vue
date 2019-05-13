@@ -16,7 +16,7 @@ class SubscriptionController extends StoreController
     {
         return $this->store
             ->subscriptions()
-            ->with(['user:id'])
+            ->with(['user:id', 'pickup_location'])
             ->orderBy('created_at')
             ->get();
     }
@@ -31,7 +31,13 @@ class SubscriptionController extends StoreController
     {
         return $this->store
             ->subscriptions()
-            ->with(['user', 'user.userDetail', 'orders', 'orders.meals'])
+            ->with([
+                'user',
+                'user.userDetail',
+                'orders',
+                'orders.meals',
+                'pickup_location'
+            ])
             ->where('id', $id)
             ->first();
     }

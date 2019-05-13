@@ -19,7 +19,7 @@ class SubscriptionController extends UserController
     {
         return $this->user
             ->subscriptions()
-            ->with(['orders', 'meals'])
+            ->with(['orders', 'meals', 'pickup_location'])
             ->get();
     }
 
