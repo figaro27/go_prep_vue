@@ -499,11 +499,11 @@
                               {{ meal.title }}
                             </div>
 
-                            <div class="description">
+                            <div class="description d-md-none">
                               {{ meal.description }}
                             </div>
 
-                            <div
+                            <!-- <div
                               class="tags text-muted"
                               v-if="meal.tag_titles.length"
                             >
@@ -516,7 +516,7 @@
                             >
                               Contains:
                               {{ meal.allergy_titles.join(", ") }}
-                            </div>
+                            </div> -->
 
                             <div class="price">
                               {{ format.money(meal.price) }}
