@@ -12,55 +12,68 @@ use Auth;
 
 class ContactFormController extends Controller
 {
-    public function submitStore(Request $request) {
+    public function submitStore(Request $request)
+    {
         $this->validate($request, [
             'message' => 'required',
             'subject' => 'required'
         ]);
 
-        $email = auth('api')->user()->email;;
-        $id = auth('api')->user()->id;;
-  		$storeID = Store::where('user_id', $id)->pluck('id')->first();
-  		$storeName = StoreDetail::where('store_id', $storeID)->pluck('name')->first();
+        $email = auth('api')->user()->email;
+        $id = auth('api')->user()->id;
+        $storeID = Store::where('user_id', $id)
+            ->pluck('id')
+            ->first();
+        $storeName = StoreDetail::where('store_id', $storeID)
+            ->pluck('name')
+            ->first();
 
-  		$data = array(
-        	'email' => $email,
-        	'storeID' => $storeID,
-        	'storeName' => $storeName,
+        $data = array(
+            'email' => $email,
+            'storeID' => $storeID,
+            'storeName' => $storeName,
             'subject' => $request->subject,
-        	'body' => $request->message
+            'body' => $request->message
         );
 
-  		Mail::send('email.contact-store', $data, function($message) use ($data){
-        	$message->from($data['email']);
-        	$message->to('admin@goprep.com');
+        Mail::send('email.contact-store', $data, function ($message) use (
+            $data
+        ) {
+            $message->from($data['email']);
+            $message->to('support@goprep.com');
         });
     }
 
-
-    public function submitCustomer(Request $request) {
+    public function submitCustomer(Request $request)
+    {
         $this->validate($request, [
             'message' => 'required',
             'subject' => 'required'
         ]);
 
-        $email = auth('api')->user()->email;;
-        $id = auth('api')->user()->id;;
-  		$firstname = UserDetail::where('user_id', $id)->pluck('firstname')->first();
-  		$lastname = UserDetail::where('user_id', $id)->pluck('lastname')->first();
+        $email = auth('api')->user()->email;
+        $id = auth('api')->user()->id;
+        $firstname = UserDetail::where('user_id', $id)
+            ->pluck('firstname')
+            ->first();
+        $lastname = UserDetail::where('user_id', $id)
+            ->pluck('lastname')
+            ->first();
 
-  		$data = array(
-        	'firstname' => $firstname,
-        	'lastname' => $lastname,
+        $data = array(
+            'firstname' => $firstname,
+            'lastname' => $lastname,
             'customerID' => $id,
-        	'email' => $email,
+            'email' => $email,
             'subject' => $request->subject,
-        	'body' => $request->message
+            'body' => $request->message
         );
 
-  		Mail::send('email.contact-customer', $data, function($message) use ($data){
-        	$message->from($data['email']);
-        	$message->to('admin@goprep.com');
+        Mail::send('email.contact-customer', $data, function ($message) use (
+            $data
+        ) {
+            $message->from($data['email']);
+            $message->to('support@goprep.com');
         });
     }
 }
