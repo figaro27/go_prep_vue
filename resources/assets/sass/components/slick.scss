@@ -1,0 +1,34 @@
+.slick-slider {
+  margin-bottom: 20px;
+
+  .slick-list {
+    margin: 0 30px;
+  }
+
+  .slick-prev {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+
+    width: 30px;
+
+    display: flex;
+    align-items: center;
+  }
+
+  .slick-next {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+
+    width: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}

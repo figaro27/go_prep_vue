@@ -73,9 +73,9 @@
               :key="`tag-${tag}`"
               class="filters col-6 col-sm-4 col-md-3 mb-3"
             >
-              <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{
-                tag
-              }}</b-button>
+              <b-button :pressed="active[tag]" @click="filterByTag(tag)">
+                {{ tag }}
+              </b-button>
             </div>
           </div>
           <b-button
@@ -104,8 +104,35 @@
                       :src="meal.image.url"
                       :aspect="false"
                       width="100%"
+                      @click="$refs.lightbox.showImage(0)"
                     ></thumbnail>
                     <img v-else :src="meal.featured_image" />
+
+                    <LightBox
+                      ref="lightbox"
+                      :images="getMealGallery(meal)"
+                      :showLightBox="false"
+                    ></LightBox>
+
+                    <slick ref="mealGallery" :options="slickOptions">
+                      <div
+                        v-for="image in getMealGallery(meal)"
+                        :key="image.id"
+                      >
+                        <div style="image">
+                          <thumbnail
+                            v-if="image.url"
+                            :src="image.url"
+                            :aspect="true"
+                            :lazy="false"
+                            :spinner="false"
+                            :width="'70px'"
+                            @click="$refs.lightbox.showImage(image.id)"
+                          ></thumbnail>
+                        </div>
+                      </div>
+                    </slick>
+
                     <p
                       v-if="storeSettings.showNutrition"
                       v-html="mealDescription"
@@ -609,12 +636,12 @@
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
-                          <span v-if="item.meal_package">
-                            {{ item.meal.title }}
-                          </span>
-                          <span v-else-if="item.size">{{
-                            item.size.full_title
+                          <span v-if="item.meal_package">{{
+                            item.meal.title
                           }}</span>
+                          <span v-else-if="item.size">
+                            {{ item.size.full_title }}
+                          </span>
                           <span v-else>{{ item.meal.item_title }}</span>
                         </div>
                         <div class="flex-grow-0">
@@ -848,6 +875,8 @@
   </div>
 </template>
 
+<style></style>
+
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
@@ -857,6 +886,8 @@ import nutrition from "../../data/nutrition";
 import format from "../../lib/format";
 import SalesTax from "sales-tax";
 import keyboardJS from "keyboardjs";
+import LightBox from "vue-image-lightbox";
+import "vue-image-lightbox/src/components/style.css";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -865,7 +896,8 @@ window.addEventListener("hashchange", function() {
 export default {
   components: {
     Spinner,
-    SalesTax
+    SalesTax,
+    LightBox
   },
   props: {
     preview: {
@@ -880,6 +912,15 @@ export default {
   },
   data() {
     return {
+      slickOptions: {
+        slidesToShow: 4,
+        infinite: false,
+        arrows: true,
+        prevArrow:
+          '<a class="slick-prev"><i class="fa fa-chevron-left"></i></a>',
+        nextArrow:
+          '<a class="slick-next"><i class="fa fa-chevron-right"></i></a>'
+      },
       salesTax: 0,
       mealDescription: "",
       loaded: false,
@@ -1299,6 +1340,7 @@ export default {
 
       this.$nextTick(() => {
         this.getNutritionFacts(this.meal.ingredients, this.meal);
+        this.$refs.mealGallery.reSlick();
       });
     },
     showMealPackageModal(mealPackage) {
@@ -1497,6 +1539,15 @@ export default {
         .then(response => {
           this.pickup = response.data;
         });
+    },
+    getMealGallery(meal) {
+      return meal.gallery.map((item, i) => {
+        return {
+          id: i,
+          url: item.url,
+          url_thumb: item.url_thumb
+        };
+      });
     }
   }
 };
