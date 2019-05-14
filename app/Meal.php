@@ -193,15 +193,15 @@ class Meal extends Model implements HasMedia
         $this->addMediaConversion('full')
             ->width(1024)
             ->height(1024)
-            ->performOnCollections(['featured_image', 'gallery']);
+            ->performOnCollections('featured_image', 'gallery');
 
         $this->addMediaConversion('thumb')
             ->fit(Manipulations::FIT_CROP, 180, 180)
-            ->performOnCollections(['featured_image', 'gallery']);
+            ->performOnCollections('featured_image', 'gallery');
 
         $this->addMediaConversion('medium')
             ->fit(Manipulations::FIT_CROP, 360, 360)
-            ->performOnCollections(['featured_image', 'gallery']);
+            ->performOnCollections('featured_image', 'gallery');
     }
 
     public function getLifetimeOrdersAttribute()
