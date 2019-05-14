@@ -152,7 +152,11 @@
                 </button>
                 <button
                   class="btn btn-danger btn-sm"
-                  @click="() => deleteMeal(props.row.id)"
+                  @click="
+                    props.row.meal_package
+                      ? deleteMealPackage(props.row.id)
+                      : deleteMeal(props.row.id)
+                  "
                 >
                   Delete
                 </button>
@@ -361,6 +365,26 @@
       </b-modal>
     </div>
     <b-modal
+      title="Delete Meal Package"
+      v-model="deleteMealPackageModal"
+      v-if="deleteMealPackageModal"
+      :hide-footer="true"
+    >
+      <p class="center-text mb-3 mt-3">
+        Are you sure you want to delete this meal package?
+      </p>
+      <p class="center-text mb-3 mt-3">
+        Note: This does not delete the meals inside the meal package. You may
+        have active meal plans with those meals that will be unaffected.
+      </p>
+      <b-btn
+        variant="danger"
+        class="center"
+        @click="destroyMealPackage(mealPackageId)"
+        >Delete</b-btn
+      >
+    </b-modal>
+    <b-modal
       title="Delete Meal"
       v-model="deleteMealModalNonSubstitute"
       v-if="deleteMealModalNonSubstitute"
@@ -502,6 +526,8 @@ export default {
       deleteMealModal: false,
       deleteMealModalNonSubstitute: false,
       viewPackageModal: false,
+      deleteMealPackageModal: false,
+      mealPackageId: null,
       deletingMeal: {},
       substitute_id: null,
 
@@ -900,6 +926,18 @@ export default {
           this.deleteMealModalNonSubstitute = false;
           this.$toastr.s("Meal deleted!");
         });
+    },
+    deleteMealPackage(id) {
+      this.mealPackageId = id;
+      this.deleteMealPackageModal = true;
+    },
+    destroyMealPackage() {
+      let id = this.mealPackageId;
+      axios.delete(`/api/me/packages/${id}`).then(resp => {
+        this.refreshTable();
+        this.deleteMealPackageModal = false;
+        this.$toastr.s("Meal package deleted!");
+      });
     },
     getNutrition: function() {
       axios

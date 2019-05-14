@@ -128,34 +128,10 @@ class MealPackageController extends StoreController
      * @param  \App\Meal  $meal
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
         $package = $this->store->packages()->find($id);
-
-        $subId = $request->get('substitute_id', null);
-        if ($subId) {
-            $sub = $this->store->package()->find($subId);
-        }
-
-        if (!$package) {
-            return response()->json(
-                [
-                    'error' => 'Invalid meal ID'
-                ],
-                400
-            );
-        }
-
-        if ($package->substitute && !$sub) {
-            return response()->json(
-                [
-                    'error' => 'Invalid substitute package ID'
-                ],
-                400
-            );
-        }
-
-        return $package->_delete($id, $subId);
+        $package->delete();
     }
 
     public function destroyPackageNonSubtitute(Request $request)
