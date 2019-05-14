@@ -113,6 +113,7 @@
     "vue-disable-autocomplete": "^0.0.4",
     "vue-image-lightbox": "^6.2.0",
     "vue-lazyload": "^1.2.6",
+    "vue-observe-visibility": "^0.4.4",
     "vue-rangedate-picker": "https://github.com/msolda2/vue-rangedate-picker/archive/v0.3.4.tar.gz",
     "vue-slick": "^1.1.15",
     "vue-swatches": "^1.0.3",

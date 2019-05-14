@@ -59,6 +59,7 @@ class Meal extends Model implements HasMedia
         'order_ids',
         'created_at_local',
         'image',
+        'gallery',
         'quantity',
         'meal_size',
 
@@ -109,8 +110,8 @@ class Meal extends Model implements HasMedia
             if ($this->pivot && $this->pivot->meal_size_id) {
                 return $title . ' - ' . $this->meal_size->title;
             } /*elseif ($this->default_size_title) {
-                return $title . ' - ' . $this->default_size_title;
-            }*/
+        return $title . ' - ' . $this->default_size_title;
+        }*/
         }
 
         return $title;
@@ -158,6 +159,7 @@ class Meal extends Model implements HasMedia
         }
 
         return [
+            'id' => $mediaItems[0]->id,
             'url' => $this->store->getUrl($mediaItems[0]->getUrl('full')),
             'url_thumb' => $this->store->getUrl(
                 $mediaItems[0]->getUrl('thumb')
@@ -168,20 +170,38 @@ class Meal extends Model implements HasMedia
         ];
     }
 
+    public function getGalleryAttribute()
+    {
+        $mediaItems = $this->getMedia('gallery');
+
+        if (!count($mediaItems)) {
+            return [];
+        }
+
+        return collect($mediaItems)->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'url' => $this->store->getUrl($item->getUrl('full')),
+                'url_thumb' => $this->store->getUrl($item->getUrl('thumb')),
+                'url_medium' => $this->store->getUrl($item->getUrl('medium'))
+            ];
+        });
+    }
+
     public function registerMediaConversions(Media $media = null)
     {
         $this->addMediaConversion('full')
             ->width(1024)
             ->height(1024)
-            ->performOnCollections('featured_image');
+            ->performOnCollections(['featured_image', 'gallery']);
 
         $this->addMediaConversion('thumb')
             ->fit(Manipulations::FIT_CROP, 180, 180)
-            ->performOnCollections('featured_image');
+            ->performOnCollections(['featured_image', 'gallery']);
 
         $this->addMediaConversion('medium')
             ->fit(Manipulations::FIT_CROP, 360, 360)
-            ->performOnCollections('featured_image');
+            ->performOnCollections(['featured_image', 'gallery']);
     }
 
     public function getLifetimeOrdersAttribute()
@@ -472,6 +492,7 @@ class Meal extends Model implements HasMedia
         $props = $props->only([
             'active',
             'featured_image',
+            'gallery',
             'photo',
             'title',
             'description',
@@ -511,6 +532,20 @@ class Meal extends Model implements HasMedia
             } else {
                 $defaultImageUrl = '/images/defaultMeal.jpg';
                 $props->put('featured_image', $defaultImageUrl);
+            }
+
+            if ($props->has('gallery')) {
+                foreach ($props->get('gallery') as $image) {
+                    $imagePath = Utils\Images::uploadB64(
+                        $image['url'],
+                        'path',
+                        'meals/'
+                    );
+                    $fullImagePath = \Storage::disk('public')->path($imagePath);
+                    $meal
+                        ->addMedia($fullImagePath)
+                        ->toMediaCollection('gallery');
+                }
             }
 
             $newIngredients = $props->get('ingredients');
@@ -637,7 +672,9 @@ class Meal extends Model implements HasMedia
                 }
             }
 
-            $meal->update($props->except(['featured_image'])->toArray());
+            $meal->update(
+                $props->except(['featured_image', 'gallery'])->toArray()
+            );
         } catch (\Exception $e) {
             $meal->delete();
             throw new \Exception($e);
@@ -664,6 +701,7 @@ class Meal extends Model implements HasMedia
         $props = collect($props)->only([
             'active',
             'featured_image',
+            'gallery',
             'photo',
             'title',
             'description',
@@ -689,6 +727,32 @@ class Meal extends Model implements HasMedia
                 ->addMedia($fullImagePath)
                 ->toMediaCollection('featured_image');
             //$props->put('featured_image', $imageUrl);
+        }
+
+        if ($props->has('gallery')) {
+            $mediaItems = $meal->getMedia('gallery')->keyBy('id');
+            $ids = [];
+
+            foreach ($props->get('gallery') as $image) {
+                if (isset($image['id']) && $image['id']) {
+                    $ids[] = $image['id'];
+                    continue;
+                }
+
+                $imagePath = Utils\Images::uploadB64(
+                    $image['url'],
+                    'path',
+                    'meals/'
+                );
+                $fullImagePath = \Storage::disk('public')->path($imagePath);
+                $meal->addMedia($fullImagePath)->toMediaCollection('gallery');
+            }
+
+            foreach ($mediaItems as $id => $mediaItem) {
+                if (!in_array($id, $ids)) {
+                    $mediaItem->delete();
+                }
+            }
         }
 
         /*

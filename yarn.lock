@@ -8543,6 +8543,11 @@ vue-notifications@0.9.0:
   resolved "https://registry.yarnpkg.com/vue-notifications/-/vue-notifications-0.9.0.tgz#7d25e19a5e4872442e3527f252007d538af4ba6e"
   integrity sha512-stS61dn/xmMJOrt9JKn+FYBjuHeScAkhPB5zl/rEvVhtLnOWCLmFFDM62wW90YjQ1vsr+cK8DpH2QVPrTFNLAg==
 
+vue-observe-visibility@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/vue-observe-visibility/-/vue-observe-visibility-0.4.4.tgz#cf3e945bf80c1317a1c32bc516d6cfd4dda8f8fd"
+  integrity sha512-2eDYHgL2MJ2wkkNZnus56D0CG8m80BFLuvEcGnD7rQ9jxFogpXMsM9aM5Md+XT8AmYGYCqVfOVBaWFtVvwbpmw==
+
 vue-pagination-2@^1.6:
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/vue-pagination-2/-/vue-pagination-2-1.6.2.tgz#9555a7c1d330cb0d290c9a06dc77d2883ac3e83d"

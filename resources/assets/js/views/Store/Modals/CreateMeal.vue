@@ -81,6 +81,42 @@
                 @changeDefault="val => (meal.default_size_title = val)"
               ></meal-sizes>
             </b-tab>
+
+            <b-tab title="Gallery">
+              <div class="gallery row">
+                <div
+                  v-for="(image, i) in meal.gallery"
+                  :key="i"
+                  class="col-sm-4 col-md-3 mb-3"
+                >
+                  <div class="position-relative">
+                    <b-btn
+                      @click="deleteGalleryImage(i)"
+                      variant="danger"
+                      size="sm"
+                      class="position-absolute"
+                      style="top: 5px; right: 5px; z-index: 1"
+                    >
+                      <i class="fa fa-trash"></i>
+                    </b-btn>
+                    <thumbnail :src="image.url_thumb" width="100%"></thumbnail>
+                  </div>
+                </div>
+
+                <div class="col-sm-4 col-md-3">
+                  <picture-input
+                    :ref="`galleryImageInput`"
+                    :alertOnError="false"
+                    :autoToggleAspectRatio="true"
+                    margin="0"
+                    size="10"
+                    button-class="btn"
+                    @change="val => changeGalleryImage(val)"
+                    v-observe-visibility="forceResize"
+                  ></picture-input>
+                </div>
+              </div>
+            </b-tab>
           </b-tabs>
         </b-col>
 
@@ -189,7 +225,8 @@ export default {
   data() {
     return {
       meal: {
-        sizes: []
+        sizes: [],
+        gallery: []
       }
     };
   },
@@ -238,6 +275,20 @@ export default {
       refreshMeals: "refreshMeals",
       _updateMeal: "updateMeal"
     }),
+    forceResize() {
+      window.dispatchEvent(new window.Event("resize"));
+    },
+    async changeGalleryImage(val) {
+      let b64 = await fs.getBase64(this.$refs.galleryImageInput.file);
+      this.meal.gallery.push({
+        url: b64,
+        url_thumb: b64
+      });
+      this.$refs.galleryImageInput.removeImage();
+    },
+    async deleteGalleryImage(index) {
+      this.meal.gallery.splice(index, 1);
+    },
     async storeMeal(e) {
       try {
         const { data } = await axios.post("/api/me/meals", this.meal);
