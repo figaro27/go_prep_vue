@@ -116,7 +116,7 @@
 
                     <slick ref="mealGallery" :options="slickOptions">
                       <div
-                        v-for="image in getMealGallery(meal)"
+                        v-for="(image, i) in getMealGallery(meal)"
                         :key="image.id"
                       >
                         <div style="image">
@@ -127,7 +127,7 @@
                             :lazy="false"
                             :spinner="false"
                             :width="'70px'"
-                            @click="$refs.lightbox.showImage(image.id)"
+                            @click="$refs.lightbox.showImage(i)"
                           ></thumbnail>
                         </div>
                       </div>
@@ -1544,8 +1544,9 @@ export default {
       return meal.gallery.map((item, i) => {
         return {
           id: i,
+          src: item.url,
           url: item.url,
-          url_thumb: item.url_thumb
+          thumb: item.url_thumb
         };
       });
     }
