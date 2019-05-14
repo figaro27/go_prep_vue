@@ -431,6 +431,7 @@ class Meal extends Model implements HasMedia
                     "id" => $meal->id,
                     "active" => $meal->active,
                     "featured_image" => $meal->featured_image,
+                    "gallery" => $meal->gallery,
                     "title" => $meal->title,
                     "description" => $meal->description,
                     "price" => $meal->price,
@@ -457,6 +458,7 @@ class Meal extends Model implements HasMedia
                     "id" => $meal->id,
                     "active" => $meal->active,
                     "featured_image" => $meal->featured_image,
+                    "gallery" => $meal->gallery,
                     "title" => $meal->title,
                     "description" => $meal->description,
                     "price" => '$' . $meal->price,
@@ -934,7 +936,7 @@ class Meal extends Model implements HasMedia
                 ->delete();
         }
 
-        $meal->update($props->except('featured_image')->toArray());
+        $meal->update($props->except(['featured_image', 'gallery'])->toArray());
 
         return Meal::getMeal($id);
     }
