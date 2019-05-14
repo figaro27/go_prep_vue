@@ -952,7 +952,11 @@ export default {
       }
     },
     async deleteGalleryImage(index) {
-      this.meal.gallery.splice(index, 1);
+      if (!this.meal.gallery) {
+        this.meal.gallery = [];
+      } else {
+        this.meal.gallery.splice(index, 1);
+      }
       this.updateMeal(this.meal.id, { gallery: this.meal.gallery });
     },
     onChangeIngredients(mealId, ingredients) {
