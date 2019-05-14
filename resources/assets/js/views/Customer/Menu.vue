@@ -110,16 +110,19 @@
 
                     <LightBox
                       ref="lightbox"
-                      :images="images"
+                      :images="getMealGallery(meal)"
                       :showLightBox="false"
                     ></LightBox>
 
                     <slick ref="mealGallery" :options="slickOptions">
-                      <div v-for="image in images" :key="image.id">
+                      <div
+                        v-for="image in getMealGallery(meal)"
+                        :key="image.id"
+                      >
                         <div style="image">
                           <thumbnail
-                            v-if="image.thumb"
-                            :src="image.thumb"
+                            v-if="image.url"
+                            :src="image.url"
                             :aspect="true"
                             :lazy="false"
                             :spinner="false"
@@ -918,43 +921,6 @@ export default {
         nextArrow:
           '<a class="slick-next"><i class="fa fa-chevron-right"></i></a>'
       },
-      images: [
-        {
-          id: 0,
-          thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
-          src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
-        },
-        {
-          id: 1,
-          thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
-          src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
-        },
-        {
-          id: 2,
-          thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
-          src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
-        },
-        {
-          id: 3,
-          thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
-          src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
-        },
-        {
-          id: 4,
-          thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
-          src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
-        },
-        {
-          id: 5,
-          thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
-          src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
-        },
-        {
-          id: 6,
-          thumb: "http://store3.goprep.localhost/images/store/store-logo.jpg",
-          src: "http://store3.goprep.localhost/images/store/store-logo.jpg"
-        }
-      ],
       salesTax: 0,
       mealDescription: "",
       loaded: false,
@@ -1573,6 +1539,15 @@ export default {
         .then(response => {
           this.pickup = response.data;
         });
+    },
+    getMealGallery(meal) {
+      return meal.gallery.map((item, i) => {
+        return {
+          id: i,
+          url: item.url,
+          url_thumb: item.url_thumb
+        };
+      });
     }
   }
 };
