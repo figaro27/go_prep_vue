@@ -351,11 +351,15 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 <!-- content -->
                 @if ($subscription->pickup === 0)
 				<tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->delivery }} </td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                    {!! nl2br($subscription->store->settings->deliveryInstructions) !!}
+                  </td>
                 </tr>
                 @else
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->store->settings->pickupInstructions }} </td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                    {!! nl2br($subscription->store->settings->pickupInstructions) !!}
+                  </td>
                 </tr>
 				        @endif
                 
