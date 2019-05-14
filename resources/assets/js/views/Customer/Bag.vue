@@ -489,6 +489,7 @@ export default {
       stripeKey: window.app.stripe_key,
       // stripeOptions,
       loading: false,
+      checkingOut: false,
       salesTax: 0,
       coupon: {},
       couponCode: "",
@@ -708,7 +709,13 @@ export default {
       this.$store.commit("addBagItems", bag);
     },
     checkout() {
+      if (this.checkingOut) {
+        return;
+      }
+
       // this.loading = true;
+      this.checkingOut = true;
+
       this.deliveryFee = this.deliveryFeeAmount;
       if (this.pickup === 0) {
         this.selectedPickupLocation = null;
@@ -754,6 +761,7 @@ export default {
         })
         .finally(() => {
           this.loading = false;
+          this.checkingOut = false;
         });
     },
     getSalesTax(state) {
