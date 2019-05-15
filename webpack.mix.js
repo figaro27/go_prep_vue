@@ -22,11 +22,19 @@ mix.options({
 mix
   .js("resources/assets/js/app.js", "public/js")
   .version()
-  .sourceMaps(true);
+  .sourceMaps(true)
+  .version();
 
 mix
   .sass("resources/assets/sass/app.scss", "public/css")
   .sass("resources/assets/sass/print.scss", "public/css")
-  .sourceMaps(true);
+  .sourceMaps(true)
+  .version();
+
+mix.browserSync({
+  proxy: "goprep.localhost"
+});
+
+mix.disableNotifications();
 
 mix.copyDirectory("resources/assets/images", "public/images");
