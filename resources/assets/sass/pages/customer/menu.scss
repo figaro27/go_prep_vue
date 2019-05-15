@@ -52,6 +52,11 @@ body.customermenu {
     .title {
       font-weight: bold;
       margin-bottom: 10px;
+      text-align: left;
+
+      @include media-breakpoint-up(md) {
+        text-align: center;
+      }
     }
 
     .allergies {
