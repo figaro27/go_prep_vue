@@ -9,6 +9,7 @@
 
     <div class="category-slider d-block d-md-none">
       <slick
+        v-if="categories.length > 4"
         ref="categorySlider"
         :options="{
           arrows: false,
@@ -26,6 +27,17 @@
           {{ category }}
         </div>
       </slick>
+
+      <div v-else class="text-center">
+        <span
+          v-for="category in categories"
+          :key="category"
+          @click.prevent="goToCategory(slugify(category))"
+          class="d-inline-block m-2"
+        >
+          {{ category }}
+        </span>
+      </div>
     </div>
 
     <!-- <div class="menu ml-auto mr-auto"> -->
@@ -505,7 +517,7 @@
                     </h2>
                     <div class="row">
                       <div
-                        class="item col-sm-6 col-lg-4 col-xl-3"
+                        class="item col-sm-6 col-lg-4 col-xl-3 pl-2 pr-0 pl-sm-3 pr-sm-3"
                         v-for="(meal, i) in group.meals"
                         :key="meal.id"
                       >
@@ -1381,7 +1393,7 @@ export default {
   methods: {
     ...mapActions(["refreshSubscriptions", "emptyBag"]),
     onCategoryVisible(isVisible, index) {
-      if (isVisible) {
+      if (isVisible && this.$refs.categorySlider) {
         this.$refs.categorySlider.goTo(index);
       }
     },
@@ -1658,8 +1670,8 @@ export default {
       return meal.gallery.map((item, i) => {
         return {
           id: i,
-          src: item.url,
-          url: item.url,
+          url: item.url_original,
+          src: item.url_original,
           thumb: item.url_thumb
         };
       });

@@ -756,7 +756,7 @@ export default {
         e.preventDefault();
       }
     },
-    async updateMeal(id, changes, toast = false) {
+    async updateMeal(id, changes, toast = false, updateLocal = true) {
       const i = this.getTableDataIndexById(id);
       if (i === -1) {
         return this.getTableData();
@@ -766,7 +766,7 @@ export default {
       }
 
       try {
-        const meal = await this._updateMeal({ id, data: changes });
+        const meal = await this._updateMeal({ id, data: changes, updateLocal });
 
         if (toast) {
           this.$toastr.s("Meal updated!");
@@ -970,9 +970,11 @@ export default {
       }
     },
     async changeGalleryImage(val, mealId = null) {
+      let gallery = [...this.meal.gallery];
+
       if (!mealId) {
         let b64 = await fs.getBase64(this.$refs.galleryImageInput.file);
-        this.meal.gallery.push({
+        gallery.push({
           url: b64,
           url_thumb: b64
         });
@@ -981,21 +983,22 @@ export default {
         let b64 = await fs.getBase64(
           this.$refs[`galleryImageInput${mealId}`].file
         );
-        this.meal.gallery.push({
+        gallery.push({
           url: b64,
           url_thumb: b64
         });
         this.$refs[`galleryImageInput${mealId}`].removeImage();
-        this.updateMeal(mealId, { gallery: this.meal.gallery });
+        this.updateMeal(mealId, { gallery }, false, false);
       }
     },
     async deleteGalleryImage(index) {
-      if (!this.meal.gallery) {
-        this.meal.gallery = [];
-      } else {
-        this.meal.gallery.splice(index, 1);
+      let gallery = [];
+
+      if (this.meal.gallery) {
+        gallery = [...this.meal.gallery];
+        gallery.splice(index, 1);
       }
-      this.updateMeal(this.meal.id, { gallery: this.meal.gallery });
+      this.updateMeal(this.meal.id, { gallery });
     },
     onChangeIngredients(mealId, ingredients) {
       if (!_.isNumber(mealId) || !_.isArray(ingredients)) {

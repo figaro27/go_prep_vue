@@ -182,6 +182,7 @@ class Meal extends Model implements HasMedia
             return [
                 'id' => $item->id,
                 'url' => $this->store->getUrl($item->getUrl('full')),
+                'url_original' => $this->store->getUrl($item->getUrl()),
                 'url_thumb' => $this->store->getUrl($item->getUrl('thumb')),
                 'url_medium' => $this->store->getUrl($item->getUrl('medium'))
             ];
@@ -750,8 +751,8 @@ class Meal extends Model implements HasMedia
                 $meal->addMedia($fullImagePath)->toMediaCollection('gallery');
             }
 
-            foreach ($mediaItems as $id => $mediaItem) {
-                if (!in_array($id, $ids)) {
+            foreach ($mediaItems as $mediaItemId => $mediaItem) {
+                if (!in_array($mediaItemId, $ids)) {
                     $mediaItem->delete();
                 }
             }
@@ -938,7 +939,7 @@ class Meal extends Model implements HasMedia
 
         $meal->update($props->except(['featured_image', 'gallery'])->toArray());
 
-        return Meal::getMeal($id);
+        return Meal::getMeal($meal->id);
     }
 
     public static function updateActive($id, $active)
