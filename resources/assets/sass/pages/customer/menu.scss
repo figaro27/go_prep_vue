@@ -34,6 +34,7 @@ body.customermenu {
     }
 
     .image {
+      position: relative;
       width: 45%;
       order: 1;
 
@@ -58,6 +59,7 @@ body.customermenu {
     }
 
     .title {
+      width: 100%;
       font-weight: bold;
       margin-bottom: 6px;
       text-align: left;
