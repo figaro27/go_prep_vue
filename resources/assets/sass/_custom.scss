@@ -344,7 +344,7 @@ body.sidebar-minimized {
 }
 
 .modal-meal-image img {
-  width: 100% !important;
+  //width: 100% !important;
 
   @include media-breakpoint-down(md) {
     margin-bottom: 30px;

@@ -1658,8 +1658,8 @@ export default {
       return meal.gallery.map((item, i) => {
         return {
           id: i,
-          src: item.url,
-          url: item.url,
+          url: item.url_original,
+          src: item.url_original,
           thumb: item.url_thumb
         };
       });

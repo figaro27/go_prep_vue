@@ -182,6 +182,7 @@ class Meal extends Model implements HasMedia
             return [
                 'id' => $item->id,
                 'url' => $this->store->getUrl($item->getUrl('full')),
+                'url_original' => $this->store->getUrl($item->getUrl()),
                 'url_thumb' => $this->store->getUrl($item->getUrl('thumb')),
                 'url_medium' => $this->store->getUrl($item->getUrl('medium'))
             ];

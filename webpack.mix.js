@@ -31,9 +31,11 @@ mix
   .sourceMaps(true)
   .version();
 
+/*
 mix.browserSync({
   proxy: "goprep.localhost"
 });
+*/
 
 mix.disableNotifications();
 
