@@ -970,9 +970,11 @@ export default {
       }
     },
     async changeGalleryImage(val, mealId = null) {
+      let gallery = [...this.meal.gallery];
+
       if (!mealId) {
         let b64 = await fs.getBase64(this.$refs.galleryImageInput.file);
-        this.meal.gallery.push({
+        gallery.push({
           url: b64,
           url_thumb: b64
         });
@@ -981,21 +983,22 @@ export default {
         let b64 = await fs.getBase64(
           this.$refs[`galleryImageInput${mealId}`].file
         );
-        this.meal.gallery.push({
+        gallery.push({
           url: b64,
           url_thumb: b64
         });
         this.$refs[`galleryImageInput${mealId}`].removeImage();
-        this.updateMeal(mealId, { gallery: this.meal.gallery });
+        this.updateMeal(mealId, { gallery });
       }
     },
     async deleteGalleryImage(index) {
-      if (!this.meal.gallery) {
-        this.meal.gallery = [];
-      } else {
-        this.meal.gallery.splice(index, 1);
+      let gallery = [];
+
+      if (this.meal.gallery) {
+        gallery = [...this.meal.gallery];
+        gallery.splice(index, 1);
       }
-      this.updateMeal(this.meal.id, { gallery: this.meal.gallery });
+      this.updateMeal(this.meal.id, { gallery });
     },
     onChangeIngredients(mealId, ingredients) {
       if (!_.isNumber(mealId) || !_.isArray(ingredients)) {
