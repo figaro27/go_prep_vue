@@ -1,8 +1,33 @@
 <template>
   <div>
-    <floating-action-button class="d-sm-none brand-color" to="/customer/bag">
-      <i class="fa fa-shopping-bag text-white"></i>
+    <floating-action-button class="d-md-none brand-color" to="/customer/bag">
+      <div class="d-flex flex-column h-100">
+        <i class="fa fa-shopping-bag text-white"></i>
+        <i v-if="total" class="text-white mt-1">{{ total }}</i>
+      </div>
     </floating-action-button>
+
+    <div class="category-slider d-block d-md-none">
+      <slick
+        ref="categorySlider"
+        :options="{
+          arrows: false,
+          centerMode: true,
+          variableWidth: true,
+          infinite: false
+        }"
+      >
+        <div
+          v-for="category in categories"
+          :key="category"
+          @click.prevent="goToCategory(slugify(category))"
+          class="m-2"
+        >
+          {{ category }}
+        </div>
+      </slick>
+    </div>
+
     <!-- <div class="menu ml-auto mr-auto"> -->
     <div class="menu ml-auto mr-auto">
       <div v-if="!willDeliver && !preview && loggedIn">
@@ -438,12 +463,12 @@
                         </b-button>
                       </div>
 
-                      <ul>
+                      <ul class="d-none d-sm-block">
                         <li
                           v-for="category in categories"
                           :key="category"
                           @click.prevent="goToCategory(slugify(category))"
-                          class="ml-4"
+                          class="d-inline ml-sm-4"
                         >
                           {{ category }}
                         </li>
@@ -466,9 +491,13 @@
                 <div :class="`col-md-9 main-menu-area`">
                   <Spinner v-if="!meals.length" position="absolute" />
                   <div
-                    v-for="group in meals"
+                    v-for="(group, catIndex) in meals"
                     :key="group.category"
                     :id="slugify(group.category)"
+                    v-observe-visibility="
+                      (isVisible, entry) =>
+                        onCategoryVisible(isVisible, catIndex)
+                    "
                     class="categories"
                   >
                     <h2 class="text-center mb-3 dbl-underline">
@@ -476,71 +505,151 @@
                     </h2>
                     <div class="row">
                       <div
-                        class="col-sm-6 col-lg-4 col-xl-3"
+                        class="item col-sm-6 col-lg-4 col-xl-3"
                         v-for="(meal, i) in group.meals"
                         :key="meal.id"
                       >
-                        <thumbnail
-                          v-if="meal.image.url_medium"
-                          :src="meal.image.url_medium"
-                          class="menu-item-img"
-                          width="100%"
-                          @click="showMealModal(meal)"
-                          style="background-color:#ffffff"
-                        ></thumbnail>
-                        <div
-                          class="d-flex justify-content-between align-items-center mb-2 mt-1"
-                        >
-                          <b-btn
-                            @click="minusOne(meal)"
-                            class="plus-minus gray"
-                          >
-                            <i>-</i>
-                          </b-btn>
-                          <!-- <img src="/images/customer/minus.jpg" @click="minusOne(meal)" class="plus-minus"> -->
-                          <b-form-input
-                            type="text"
-                            name
-                            id
-                            class="quantity"
-                            :value="quantity(meal, false, true)"
-                            readonly
-                          ></b-form-input>
-                          <b-btn
-                            v-if="meal.sizes.length === 0"
-                            @click="addOne(meal)"
-                            class="menu-bag-btn plus-minus"
-                          >
-                            <i>+</i>
-                          </b-btn>
-                          <b-dropdown
-                            v-else
-                            toggle-class="menu-bag-btn plus-minus"
-                            :right="i > 0 && (i + 1) % 4 === 0"
-                          >
-                            <i slot="button-content">+</i>
-                            <b-dropdown-item @click="addOne(meal)">
-                              {{ meal.default_size_title || "Regular" }} -
-                              {{ format.money(meal.item_price) }}
-                            </b-dropdown-item>
-                            <b-dropdown-item
-                              v-for="size in meal.sizes"
-                              :key="size.id"
-                              @click="addOne(meal, false, size)"
-                            >
-                              {{ size.title }} -
-                              {{ format.money(size.price) }}
-                            </b-dropdown-item>
-                          </b-dropdown>
+                        <div class="item-wrap">
+                          <div class="image">
+                            <thumbnail
+                              v-if="meal.image.url_medium"
+                              :src="meal.image.url_medium"
+                              class="menu-item-img"
+                              width="100%"
+                              @click="showMealModal(meal)"
+                              style="background-color:#ffffff"
+                            ></thumbnail>
+                          </div>
 
-                          <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
+                          <div class="meta">
+                            <div class="title">
+                              {{ meal.title }}
+                            </div>
+
+                            <div class="description d-md-none">
+                              {{ meal.description }}
+                            </div>
+
+                            <!-- <div
+                              class="tags text-muted"
+                              v-if="meal.tag_titles.length"
+                            >
+                              {{ meal.tag_titles.join(" - ") }}
+                            </div>
+
+                            <div
+                              class="allergies text-muted"
+                              v-if="meal.allergy_titles.length"
+                            >
+                              Contains:
+                              {{ meal.allergy_titles.join(", ") }}
+                            </div> -->
+
+                            <div class="price">
+                              {{ format.money(meal.price) }}
+                            </div>
+
+                            <div class="actions">
+                              <div
+                                class="d-flex justify-content-between align-items-center mb-2 mt-1"
+                              >
+                                <b-btn
+                                  @click="minusOne(meal)"
+                                  class="plus-minus gray"
+                                >
+                                  <i>-</i>
+                                </b-btn>
+                                <b-form-input
+                                  type="text"
+                                  name
+                                  id
+                                  class="quantity"
+                                  :value="quantity(meal, false, true)"
+                                  readonly
+                                ></b-form-input>
+                                <b-btn
+                                  v-if="meal.sizes.length === 0"
+                                  @click="addOne(meal)"
+                                  class="menu-bag-btn plus-minus"
+                                >
+                                  <i>+</i>
+                                </b-btn>
+                                <b-dropdown
+                                  v-else
+                                  toggle-class="menu-bag-btn plus-minus"
+                                  :right="i > 0 && (i + 1) % 4 === 0"
+                                >
+                                  <i slot="button-content">+</i>
+                                  <b-dropdown-item @click="addOne(meal)">
+                                    {{ meal.default_size_title || "Regular" }} -
+                                    {{ format.money(meal.item_price) }}
+                                  </b-dropdown-item>
+                                  <b-dropdown-item
+                                    v-for="size in meal.sizes"
+                                    :key="size.id"
+                                    @click="addOne(meal, false, size)"
+                                  >
+                                    {{ size.title }} -
+                                    {{ format.money(size.price) }}
+                                  </b-dropdown-item>
+                                </b-dropdown>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <p class="center-text strong featured">
-                          {{ meal.title }}
-                        </p>
-                        <p class="center-text featured">
-                          {{ format.money(meal.price) }}
-                        </p>
+
+                        <!--
+                        <div class="row">
+                          <div class="col-8 col-sm-12">
+                            <div
+                              class="d-flex justify-content-between align-items-center mb-2 mt-1"
+                            >
+                              <b-btn @click="minusOne(meal)" class="plus-minus gray">
+                                <i>-</i>
+                              </b-btn>
+                              <b-form-input
+                                type="text"
+                                name
+                                id
+                                class="quantity"
+                                :value="quantity(meal, false, true)"
+                                readonly
+                              ></b-form-input>
+                              <b-btn
+                                v-if="meal.sizes.length === 0"
+                                @click="addOne(meal)"
+                                class="menu-bag-btn plus-minus"
+                              >
+                                <i>+</i>
+                              </b-btn>
+                              <b-dropdown
+                                v-else
+                                toggle-class="menu-bag-btn plus-minus"
+                                :right="i > 0 && (i + 1) % 4 === 0"
+                              >
+                                <i slot="button-content">+</i>
+                                <b-dropdown-item @click="addOne(meal)">
+                                  {{ meal.default_size_title || "Regular" }} -
+                                  {{ format.money(meal.item_price) }}
+                                </b-dropdown-item>
+                                <b-dropdown-item
+                                  v-for="size in meal.sizes"
+                                  :key="size.id"
+                                  @click="addOne(meal, false, size)"
+                                >
+                                  {{ size.title }} -
+                                  {{ format.money(size.price) }}
+                                </b-dropdown-item>
+                              </b-dropdown>
+
+                            </div>
+                            <p class="center-text strong featured">{{ meal.title }}</p>
+                            <p class="price center-text featured">{{ format.money(meal.price) }}</p>
+                          </div>
+                          <div class="col-4 col-sm-12">
+
+                          </div>
+                        </div>-->
                       </div>
                     </div>
                   </div>
@@ -874,8 +983,8 @@
     </div>
   </div>
 </template>
-
 <style></style>
+<style lang="scss" scoped></style>
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
@@ -1271,6 +1380,11 @@ export default {
   },
   methods: {
     ...mapActions(["refreshSubscriptions", "emptyBag"]),
+    onCategoryVisible(isVisible, index) {
+      if (isVisible) {
+        this.$refs.categorySlider.goTo(index);
+      }
+    },
     showActiveFilters() {
       let tags = this.tags;
       this.active = tags.reduce((acc, tag) => {

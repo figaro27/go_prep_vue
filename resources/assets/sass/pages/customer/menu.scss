@@ -1,0 +1,85 @@
+body.customermenu {
+  .app-body {
+    margin-top: 95px;
+  }
+
+  .category-slider {
+    position: fixed;
+    top: 55px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    z-index: 1000;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+  }
+
+  .item {
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #f3ecec;
+
+    .item-wrap {
+      display: flex;
+      position: relative;
+      flex-wrap: wrap;
+      height: 100%;
+    }
+
+    .image {
+      width: 45%;
+      order: 1;
+
+      @include media-breakpoint-up(sm) {
+        width: 100%;
+        order: 0;
+      }
+    }
+
+    .meta {
+      width: 55%;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-right: 15px;
+
+      @include media-breakpoint-up(sm) {
+        width: 100%;
+        padding-right: 0;
+      }
+    }
+
+    .title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .allergies {
+      font-size: 14px;
+    }
+
+    .price {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 2px 5px;
+      background: #fff;
+      border-radius: 3px;
+      font-weight: bold;
+      box-shadow: 0px 0px 2px 0px rgba(168, 168, 168, 0.6);
+    }
+
+    .actions {
+      width: 100%;
+      order: 2;
+
+      @include media-breakpoint-up(sm) {
+        margin-top: 5px;
+      }
+
+      .quantity {
+        width: 70px;
+      }
+    }
+  }
+}

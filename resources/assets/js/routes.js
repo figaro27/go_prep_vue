@@ -104,7 +104,10 @@ let routes = [
   {
     path: "/customer/menu",
     component: CustomerMenu,
-    name: "customer-menu"
+    name: "customer-menu",
+    meta: {
+      bodyClass: "menu"
+    }
   },
   {
     path: "/customer/account/contact",
@@ -206,7 +209,13 @@ const router = new VueRouter({ mode: "history", routes });
 
 router.beforeEach((to, from, next) => {
   // Routes to add class to body. Exclude leading /
-  const classRoutes = ["login", "register", "forgot", "forgot/reset/:token"];
+  const classRoutes = [
+    "login",
+    "register",
+    "forgot",
+    "forgot/reset/:token",
+    "customer/menu"
+  ];
 
   // Handle body classes
   classRoutes.forEach(route => {
