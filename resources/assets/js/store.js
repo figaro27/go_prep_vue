@@ -874,7 +874,10 @@ const actions = {
     }
   },
 
-  async updateMeal({ commit, state, getters, dispatch }, { id, data }) {
+  async updateMeal(
+    { commit, state, getters, dispatch },
+    { id, data, updateLocal = true }
+  ) {
     if (!id || !data) {
       return;
     }
@@ -885,11 +888,13 @@ const actions = {
       return;
     }
 
-    Vue.set(
-      state.store.meals.data,
-      index,
-      _.merge(state.store.meals.data[index], data)
-    );
+    if (updateLocal || updateLocal === undefined) {
+      Vue.set(
+        state.store.meals.data,
+        index,
+        _.merge(state.store.meals.data[index], data)
+      );
+    }
     const resp = await axios.patch(`/api/me/meals/${id}`, data);
     Vue.set(state.store.meals.data, index, resp.data);
     return resp.data;

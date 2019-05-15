@@ -756,7 +756,7 @@ export default {
         e.preventDefault();
       }
     },
-    async updateMeal(id, changes, toast = false) {
+    async updateMeal(id, changes, toast = false, updateLocal = true) {
       const i = this.getTableDataIndexById(id);
       if (i === -1) {
         return this.getTableData();
@@ -766,7 +766,7 @@ export default {
       }
 
       try {
-        const meal = await this._updateMeal({ id, data: changes });
+        const meal = await this._updateMeal({ id, data: changes, updateLocal });
 
         if (toast) {
           this.$toastr.s("Meal updated!");
@@ -988,7 +988,7 @@ export default {
           url_thumb: b64
         });
         this.$refs[`galleryImageInput${mealId}`].removeImage();
-        this.updateMeal(mealId, { gallery });
+        this.updateMeal(mealId, { gallery }, false, false);
       }
     },
     async deleteGalleryImage(index) {
