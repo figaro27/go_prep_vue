@@ -522,6 +522,10 @@
                         :key="meal.id"
                       >
                         <div class="item-wrap">
+                          <div class="title d-md-none">
+                            {{ meal.title }}
+                          </div>
+
                           <div class="image">
                             <thumbnail
                               v-if="meal.image.url_medium"
@@ -531,10 +535,14 @@
                               @click="showMealModal(meal)"
                               style="background-color:#ffffff"
                             ></thumbnail>
+
+                            <div class="price">
+                              {{ format.money(meal.price) }}
+                            </div>
                           </div>
 
                           <div class="meta">
-                            <div class="title">
+                            <div class="title d-none d-md-block">
                               {{ meal.title }}
                             </div>
 
@@ -556,10 +564,6 @@
                               Contains:
                               {{ meal.allergy_titles.join(", ") }}
                             </div> -->
-
-                            <div class="price">
-                              {{ format.money(meal.price) }}
-                            </div>
 
                             <div class="actions">
                               <div
