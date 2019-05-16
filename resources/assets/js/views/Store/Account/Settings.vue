@@ -1196,6 +1196,24 @@ export default {
         }
       }
 
+      if (this.storeSettings.mileageBase != null) {
+        let mileageBase = this.storeSettings.mileageBase;
+        if (mileageBase.toString().includes("$")) {
+          let intToString = mileageBase.toString();
+          let newFee = intToString.replace("$", "");
+          this.storeSettings.mileageBase = newFee;
+        }
+      }
+
+      if (this.storeSettings.mileagePerMile != null) {
+        let mileagePerMile = this.storeSettings.mileagePerMile;
+        if (mileagePerMile.toString().includes("$")) {
+          let intToString = mileagePerMile.toString();
+          let newFee = intToString.replace("$", "");
+          this.storeSettings.mileagePerMile = newFee;
+        }
+      }
+
       if (this.storeSettings.processingFee != null) {
         let processingFee = this.storeSettings.processingFee;
         if (processingFee.toString().includes("$")) {
