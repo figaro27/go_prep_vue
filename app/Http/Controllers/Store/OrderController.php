@@ -19,7 +19,7 @@ class OrderController extends StoreController
             ? $this->store
                 ->orders()
                 ->with(['user', 'pickup_location'])
-                ->where(['paid' => 1, 'fulfilled' => 0])
+                ->where(['paid' => 1])
                 ->get()
             : [];
     }
