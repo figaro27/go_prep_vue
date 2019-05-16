@@ -1133,6 +1133,7 @@ export default {
         });
     },
     saveCoupon() {
+      this.spliceCharacters();
       axios
         .post("/api/me/coupons", this.coupon)
         .then(response => {
@@ -1238,6 +1239,24 @@ export default {
           let intToString = this.storeSettings.minimumPrice.toString();
           let newPrice = intToString.replace("$", "");
           this.storeSettings.minimumPrice = newPrice;
+        }
+      }
+
+      if (this.coupon.amount != null) {
+        let couponAmount = this.coupon.amount;
+        if (this.coupon.amount.toString().includes("$")) {
+          let intToString = this.coupon.amount.toString();
+          let newPrice = intToString.replace("$", "");
+          this.coupon.amount = newPrice;
+        }
+      }
+
+      if (this.coupon.amount != null) {
+        let couponAmount = this.coupon.amount;
+        if (this.coupon.amount.toString().includes("%")) {
+          let intToString = this.coupon.amount.toString();
+          let newPrice = intToString.replace("%", "");
+          this.coupon.amount = newPrice;
         }
       }
     },
