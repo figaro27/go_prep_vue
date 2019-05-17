@@ -301,6 +301,13 @@
                 ></meal-sizes>
               </b-tab>
 
+              <b-tab title="Components">
+                <meal-components
+                  :meal="meal"
+                  @change="val => (meal.components = val)"
+                ></meal-components>
+              </b-tab>
+
               <b-tab title="Gallery">
                 <div class="gallery row">
                   <div
@@ -476,6 +483,7 @@
 import Spinner from "../../components/Spinner";
 import IngredientPicker from "../../components/IngredientPicker";
 import MealSizes from "../../components/Menu/MealSizes";
+import MealComponents from "../../components/Menu/MealComponents";
 import CreateMealModal from "./Modals/CreateMeal";
 import CreatePackageModal from "./Modals/CreateMealPackage";
 import ViewPackageModal from "./Modals/ViewMealPackage";
@@ -497,7 +505,8 @@ export default {
     CreateMealModal,
     CreatePackageModal,
     ViewPackageModal,
-    MealSizes
+    MealSizes,
+    MealComponents
   },
   updated() {
     //$(window).trigger("resize");
@@ -746,7 +755,8 @@ export default {
         category_ids: this.meal.category_ids,
         ingredients: this.meal.ingredients,
         sizes: this.meal.sizes,
-        default_size_title: this.meal.default_size_title
+        default_size_title: this.meal.default_size_title,
+        components: this.meal.components
       };
       const updated = await this.updateMeal(this.meal.id, data, true);
 
