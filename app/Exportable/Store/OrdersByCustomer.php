@@ -25,15 +25,14 @@ class OrdersByCustomer
         $dateRange = $this->getDeliveryDates();
         $params = $this->params;
 
-        if ($params->has('fulfilled')) {
-            $fulfilled = $params->get('fulfilled');
-        } else {
-            $fulfilled = 0;
-        }
+        // if ($params->has('fulfilled')) {
+        //     $fulfilled = $params->get('fulfilled');
+        // } else {
+        //     $fulfilled = 0;
+        // }
 
-        $orders = $this->store
-            ->orders()
-            ->where(['fulfilled' => $fulfilled, 'paid' => 1]);
+        $orders = $this->store->orders()->where(['paid' => 1]);
+        // ->where(['fulfilled' => $fulfilled, 'paid' => 1]);
 
         if (isset($dateRange['from'])) {
             $from = Carbon::parse($dateRange['from']);

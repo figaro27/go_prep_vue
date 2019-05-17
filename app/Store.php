@@ -180,10 +180,9 @@ class Store extends Model
             });
     }
 
-    public function getOrderIngredients(
-        $dateRange = [],
-        $excludeFulfilled = true
-    ) {
+    public function getOrderIngredients($dateRange = [])
+    {
+        // $excludeFulfilled = true
         $ingredients = [];
 
         $orders = $this->orders()
@@ -216,9 +215,9 @@ class Store extends Model
             );
         }
 
-        if ($excludeFulfilled) {
-            $orders = $orders->where('fulfilled', false);
-        }
+        // if ($excludeFulfilled) {
+        //     $orders = $orders->where('fulfilled', false);
+        // }
 
         $orders = $orders->get();
 
@@ -391,9 +390,9 @@ class Store extends Model
             );
         }
 
-        if ($onlyUnfulfilled) {
-            $orders = $orders->where('fulfilled', 0);
-        }
+        // if ($onlyUnfulfilled) {
+        //     $orders = $orders->where('fulfilled', 0);
+        // }
         if ($onlyPaid) {
             $orders = $orders->where('paid', 1);
         }

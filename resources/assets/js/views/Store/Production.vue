@@ -163,7 +163,7 @@ export default {
 
       let mealCounts = {};
 
-      filteredOrders.forEach(order => {
+      filteredByDate.forEach(order => {
         _.forEach(order.meal_quantities, (quantity, mealId) => {
           //mealId = parseInt(mealIdParts[0]);
 
