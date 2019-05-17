@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\MealComponent;
+use App\MealComponentOption;
 use App\MealOrder;
 use App\MealSize;
 use App\Store;
@@ -393,6 +395,11 @@ class Meal extends Model implements HasMedia
         return $this->hasMany('App\MealSize', 'meal_id', 'id');
     }
 
+    public function components()
+    {
+        return $this->hasMany('App\MealComponent', 'meal_id', 'id');
+    }
+
     public function tags()
     {
         return $this->belongsToMany('App\MealTag', 'meal_meal_tag');
@@ -475,7 +482,13 @@ class Meal extends Model implements HasMedia
 
     public static function getMeal($id)
     {
-        return Meal::with('ingredients', 'tags', 'categories', 'sizes')
+        return Meal::with(
+            'ingredients',
+            'tags',
+            'categories',
+            'sizes',
+            'components'
+        )
             ->where('id', $id)
             ->first();
     }
@@ -715,7 +728,8 @@ class Meal extends Model implements HasMedia
             'ingredients',
             'allergy_ids',
             'sizes',
-            'default_size_title'
+            'default_size_title',
+            'components'
         ]);
 
         if ($props->has('featured_image')) {
@@ -803,68 +817,13 @@ class Meal extends Model implements HasMedia
                         )->findOrFail($ingredientId);
                         $ingredients->push($ingredient);
                     } else {
-                        // Check if ingredient with same name and unit type already exists
-                        $ingredient = Ingredient::where([
-                            'store_id' => $meal->store_id,
-                            'food_name' => $newIngredient['food_name'],
-                            'unit_type' => Unit::getType(
-                                $newIngredient['serving_unit']
-                            )
-                        ])->first();
+                        $ingredient = Ingredient::fromNutritionix(
+                            $meal->id,
+                            $newIngredient
+                        );
 
                         if ($ingredient) {
                             $ingredients->push($ingredient);
-                        }
-                        // Nope. Create a new one
-                        else {
-                            $newIngredient = collect($newIngredient)
-                                ->only([
-                                    'food_name',
-                                    'photo',
-                                    'serving_qty',
-                                    'serving_unit',
-                                    'serving_weight_grams',
-                                    'calories',
-                                    'totalFat',
-                                    'satFat',
-                                    'transFat',
-                                    'cholesterol',
-                                    'sodium',
-                                    'totalCarb',
-                                    'fibers',
-                                    'sugars',
-                                    'proteins',
-                                    'vitaminD',
-                                    'potassium',
-                                    'calcium',
-                                    'iron',
-                                    'sugars'
-                                ])
-                                ->map(function ($val) {
-                                    return is_null($val) ? 0 : $val;
-                                });
-
-                            $ingredientArr = Ingredient::normalize(
-                                $newIngredient->toArray()
-                            );
-                            $ingredient = new Ingredient($ingredientArr);
-                            $ingredient->store_id = $meal->store_id;
-                            if ($ingredient->save()) {
-                                $ingredients->push($ingredient);
-
-                                $meal->store->units()->create([
-                                    'store_id' => $meal->store_id,
-                                    'ingredient_id' => $ingredient->id,
-                                    'unit' => $newIngredient->get(
-                                        'serving_unit',
-                                        Format::baseUnit($ingredient->unit_type)
-                                    )
-                                ]);
-                            } else {
-                                throw new \Exception(
-                                    'Failed to create ingredient'
-                                );
-                            }
                         }
                     }
                 } catch (\Exception $e) {
@@ -934,6 +893,71 @@ class Meal extends Model implements HasMedia
             $meal
                 ->sizes()
                 ->whereNotIn('id', $sizeIds)
+                ->delete();
+        }
+
+        // Meal components
+        $components = $props->get('components');
+        if (is_array($components)) {
+            $componentIds = [];
+            $optionIds = [];
+
+            foreach ($components as $component) {
+                if (isset($component['id'])) {
+                    $mealComponent = $meal
+                        ->components()
+                        ->find($component['id']);
+                }
+
+                if (!$mealComponent) {
+                    $mealComponent = new MealComponent();
+                    $mealComponent->meal_id = $meal->id;
+                    $mealComponent->store_id = $meal->store_id;
+                }
+
+                $mealComponent->title = $component['title'];
+                $mealComponent->minimum = $component['minimum'];
+                $mealComponent->maximum = $component['maximum'];
+                $mealComponent->save();
+
+                foreach ($component['options'] as $optionArr) {
+                    $option = null;
+
+                    if (isset($optionArr['id'])) {
+                        $option = $mealComponent
+                            ->options()
+                            ->find($optionArr['id']);
+                    }
+
+                    if (!$option) {
+                        $option = new MealComponentOption();
+                        $option->meal_component_id = $mealComponent->id;
+                        $option->store_id = $mealComponent->store_id;
+                    }
+
+                    $option->title = $optionArr['title'];
+                    $option->price = $optionArr['price'];
+                    $option->meal_size_id = $optionArr['meal_size_id'];
+                    $option->save();
+
+                    $option->syncIngredients($optionArr['ingredients']);
+
+                    $optionIds[] = $option->id;
+                }
+
+                $componentIds[] = $mealComponent->id;
+
+                // Deleted component options
+                $mealComponent
+                    ->options()
+                    ->whereNotIn('id', $optionIds)
+                    ->delete();
+            }
+
+            // Deleted components
+            $meal
+                ->components()
+                ->whereNotIn('id', $componentIds)
                 ->delete();
         }
 

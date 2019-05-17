@@ -107,7 +107,8 @@ class MealController extends StoreController
                 'gallery',
                 'ingredients',
                 'sizes',
-                'default_size_title'
+                'default_size_title',
+                'components'
             ])
         );
     }
