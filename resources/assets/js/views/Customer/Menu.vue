@@ -1013,6 +1013,7 @@ import SalesTax from "sales-tax";
 import keyboardJS from "keyboardjs";
 import LightBox from "vue-image-lightbox";
 import "vue-image-lightbox/src/components/style.css";
+import { Carousel, Slide } from "vue-carousel";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -1022,7 +1023,9 @@ export default {
   components: {
     Spinner,
     SalesTax,
-    LightBox
+    LightBox,
+    Carousel,
+    Slide
   },
   props: {
     preview: {
