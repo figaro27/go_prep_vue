@@ -1,6 +1,10 @@
 body.customermenu {
   .app-body {
     margin-top: 95px;
+
+    @include media-breakpoint-up(md) {
+      margin-top: 0;
+    }
   }
 
   .category-slider {
