@@ -164,7 +164,19 @@
                     <strong>Subtotal:</strong>
                   </div>
                   <div class="col-6 col-md-3 offset-md-5">
-                    {{ format.money(preFeePreDiscount) }}
+                    {{ format.money(subtotal) }}
+                  </div>
+                </div>
+              </li>
+              <li class="checkout-item" v-if="couponApplied">
+                <div class="row">
+                  <div class="col-6 col-md-4">
+                    <span class="text-success">({{ coupon.code }})</span>
+                  </div>
+                  <div class="col-6 col-md-3 offset-md-5">
+                    <span class="text-success"
+                      >({{ format.money(couponReduction) }})</span
+                    >
                   </div>
                 </div>
               </li>
@@ -219,37 +231,10 @@
               <li class="checkout-item">
                 <div class="row">
                   <div class="col-6 col-md-4">
-                    <span v-if="!couponApplied"><strong>Total</strong></span>
-                    <span v-if="couponApplied">Pre-Coupon Total</span>
-                  </div>
-                  <div class="col-6 col-md-3 offset-md-5">
-                    <strong>{{ format.money(afterDiscountAfterFees) }}</strong>
-                  </div>
-                </div>
-              </li>
-
-              <li class="checkout-item" v-if="couponApplied">
-                <div class="row">
-                  <div class="col-6 col-md-4">
-                    <span class="text-success">({{ coupon.code }})</span>
-                  </div>
-                  <div class="col-6 col-md-3 offset-md-5">
-                    <span class="text-success"
-                      >({{ format.money(couponReduction) }})</span
-                    >
-                  </div>
-                </div>
-              </li>
-
-              <li class="checkout-item" v-if="couponApplied">
-                <div class="row">
-                  <div class="col-6 col-md-4">
                     <strong>Total</strong>
                   </div>
                   <div class="col-6 col-md-3 offset-md-5">
-                    <strong>{{
-                      format.money(afterDiscountAfterFeesAfterCoupon)
-                    }}</strong>
+                    <strong>{{ format.money(grandTotal) }}</strong>
                   </div>
                 </div>
               </li>
@@ -573,32 +558,9 @@ export default {
     remainingPrice() {
       return this.minPrice - this.totalBagPricePreFees;
     },
-    preFeePreDiscount() {
+    subtotal() {
       let subtotal = this.totalBagPricePreFees;
       return subtotal;
-    },
-    afterDiscountBeforeFees() {
-      if (this.applyMealPlanDiscount && this.deliveryPlan) {
-        return this.preFeePreDiscount - this.mealPlanDiscount;
-      } else return this.preFeePreDiscount;
-    },
-    afterDiscountAfterFeesBeforeTax() {
-      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
-      let applyProcessingFee = this.storeSettings.applyProcessingFee;
-      let deliveryFee = this.deliveryFeeAmount;
-      let processingFee = this.storeSettings.processingFee;
-      let subtotal = this.afterDiscountBeforeFees;
-
-      if (applyDeliveryFee & (this.pickup === 0)) subtotal += deliveryFee;
-      if (applyProcessingFee) subtotal += processingFee;
-
-      return subtotal;
-    },
-    afterDiscountAfterFees() {
-      let salesTax = 1 + this.salesTax;
-      let subtotal = this.afterDiscountAfterFeesBeforeTax;
-
-      return subtotal * salesTax;
     },
     couponReduction() {
       let coupon = this.coupon;
@@ -609,13 +571,37 @@ export default {
         return (coupon.amount / 100) * afterDiscountAfterFees;
       }
     },
-    afterDiscountAfterFeesAfterCoupon() {
-      let coupon = this.coupon;
-      if (coupon.type === "flat") {
-        return this.afterDiscountAfterFees - this.couponReduction;
-      } else if (coupon.type === "percent") {
-        return this.afterDiscountAfterFees - this.couponReduction;
-      }
+    afterCoupon() {
+      if (this.couponApplied) {
+        let subtotal = this.subtotal - this.couponReduction;
+        return subtotal;
+      } else return this.subtotal;
+    },
+    mealPlanDiscount() {
+      return this.afterCoupon * (this.storeSettings.mealPlanDiscount / 100);
+    },
+    afterDiscount() {
+      if (this.applyMealPlanDiscount && this.deliveryPlan) {
+        return this.afterCoupon - this.mealPlanDiscount;
+      } else return this.afterCoupon;
+    },
+    afterFees() {
+      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+      let applyProcessingFee = this.storeSettings.applyProcessingFee;
+      let deliveryFee = this.deliveryFeeAmount;
+      let processingFee = this.storeSettings.processingFee;
+      let subtotal = this.afterDiscount;
+
+      if (applyDeliveryFee & (this.pickup === 0)) subtotal += deliveryFee;
+      if (applyProcessingFee) subtotal += processingFee;
+
+      return subtotal;
+    },
+    grandTotal() {
+      let salesTax = 1 + this.salesTax;
+      let subtotal = this.afterFees;
+
+      return subtotal * salesTax;
     },
     hasCoupons() {
       if (this.coupons.length > 0) {
@@ -626,11 +612,6 @@ export default {
     },
     applyMealPlanDiscount() {
       return this.storeSettings.applyMealPlanDiscount;
-    },
-    mealPlanDiscount() {
-      return (
-        this.preFeePreDiscount * (this.storeSettings.mealPlanDiscount / 100)
-      );
     },
     singOrPlural() {
       if (this.remainingMeals > 1) {
@@ -659,7 +640,7 @@ export default {
       );
     },
     tax() {
-      return this.salesTax * this.afterDiscountAfterFeesBeforeTax;
+      return this.salesTax * this.afterFees;
     }
   },
   mounted() {
@@ -722,6 +703,7 @@ export default {
       }
       axios
         .post("/api/bag/checkout", {
+          subtotal: this.afterDiscount,
           bag: this.bag,
           plan: this.deliveryPlan,
           pickup: this.pickup,
