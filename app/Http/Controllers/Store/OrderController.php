@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Store;
 use App\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
+use Illuminate\Support\Carbon;
 
 class OrderController extends StoreController
 {
@@ -20,6 +21,18 @@ class OrderController extends StoreController
                 ->orders()
                 ->with(['user', 'pickup_location'])
                 ->where(['paid' => 1])
+                ->get()
+            : [];
+    }
+
+    public function getUpcomingOrders()
+    {
+        return $this->store->has('orders')
+            ? $this->store
+                ->orders()
+                ->with(['user', 'pickup_location'])
+                ->where(['paid' => 1])
+                ->where('delivery_date', '>=', Carbon::now())
                 ->get()
             : [];
     }

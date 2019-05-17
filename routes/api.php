@@ -113,6 +113,10 @@ foreach (
                             Route::resource('orders', 'OrderController');
                             Route::post('getOrders', 'OrderController@index');
                             Route::post(
+                                'getUpcomingOrders',
+                                'OrderController@getUpcomingOrders'
+                            );
+                            Route::post(
                                 'getFulfilledOrders',
                                 'OrderController@getFulfilledOrders'
                             );

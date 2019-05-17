@@ -113,6 +113,10 @@ const state = {
     data: [],
     expires: 0
   },
+  upcomingOrders: {
+    data: [],
+    expires: 0
+  },
   subscriptions: {
     data: {},
     expires: 0
@@ -367,6 +371,17 @@ const mutations = {
     state.orders.expires = expires;
   },
 
+  storeUpcomingOrders(state, { orders, expires }) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, "seconds")
+        .unix();
+    }
+
+    state.upcomingOrders.data = orders;
+    state.upcomingOrders.expires = expires;
+  },
+
   storeSubscriptions(state, { subscriptions, expires }) {
     if (!expires) {
       expires = moment()
@@ -570,6 +585,13 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.upcomingOrders) && _.isObject(data.upcomingOrders)) {
+        let orders = data.upcomingOrders;
+        commit("storeUpcomingOrders", { orders });
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.subscriptions) && _.isObject(data.subscriptions)) {
         let subscriptions = data.subscriptions;
         commit("storeSubscriptions", { subscriptions });
@@ -580,7 +602,8 @@ const actions = {
     await Promise.all([
       dispatch("refreshMeals"),
       dispatch("refreshMealPackages"),
-      dispatch("refreshOrders")
+      dispatch("refreshOrders"),
+      dispatch("refreshUpcomingOrders")
     ]);
 
     dispatch("refreshStoreCustomers");
@@ -975,6 +998,24 @@ const actions = {
     }
   },
 
+  async refreshUpcomingOrders({ commit, state }, args = {}) {
+    const res = await axios.post("/api/me/getUpcomingOrders");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      const orders = _.map(data, order => {
+        order.created_at = moment.utc(order.created_at).local(); //.format('ddd, MMMM Do')
+        order.updated_at = moment.utc(order.updated_at).local(); //.format('ddd, MMMM Do')
+        order.delivery_date = moment.utc(order.delivery_date);
+        //.local(); //.format('ddd, MMMM Do')
+        return order;
+      });
+      commit("storeUpcomingOrders", { orders });
+    } else {
+      throw new Error("Failed to retrieve orders");
+    }
+  },
+
   async refreshOrdersWithFulfilled({ commit, state }, args = {}) {
     const res = await axios.post("/api/me/getFulfilledOrders");
     const { data } = await res;
@@ -1307,6 +1348,13 @@ const getters = {
   storeOrders: state => {
     try {
       return state.orders.data || [];
+    } catch (e) {
+      return {};
+    }
+  },
+  storeUpcomingOrders: state => {
+    try {
+      return state.upcomingOrders.data || [];
     } catch (e) {
       return {};
     }

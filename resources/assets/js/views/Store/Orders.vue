@@ -22,7 +22,7 @@
                   >
                 </div>
                 <div class="d-inline-block mr-2 flex-grow-0">
-                  <b-btn
+                  <!-- <b-btn
                     @click="showFulfilledOrders()"
                     :selected="filters.fulfilled"
                     variant="warning"
@@ -37,7 +37,7 @@
                     class="filter-btn"
                     v-if="filters.fulfilled"
                     >View Open Orders</b-btn
-                  >
+                  > -->
                   <!-- <router-link to="/store/menu/manual-order">
                     <b-btn class="btn btn-success filter-btn">Create Manual Order</b-btn>
                   </router-link> -->
@@ -98,7 +98,7 @@
               >
                 View Order
               </button>
-              <b-btn
+              <!-- <b-btn
                 v-if="!props.row.fulfilled"
                 class="btn btn-primary btn-sm"
                 @click="fulfill(props.row.id)"
@@ -111,7 +111,7 @@
                 @click="unfulfill(props.row.id)"
                 variant="danger"
                 >Unmark As Complete</b-btn
-              >
+              > -->
             </div>
 
             <div slot="amount" slot-scope="props">
@@ -365,7 +365,8 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
-      orders: "storeOrders",
+      // orders: "storeOrders",
+      upcomingOrders: "storeUpcomingOrders",
       isLoading: "isLoading",
       initialized: "initialized",
       customers: "storeCustomers",
@@ -374,7 +375,7 @@ export default {
     tableData() {
       let filters = { ...this.filters };
 
-      let filtered = _.filter(this.orders, order => {
+      let filtered = _.filter(this.upcomingOrders, order => {
         if ("paid" in filters && filters.paid !== order.paid) {
           return false;
         }
@@ -407,7 +408,7 @@ export default {
         }
 
         if (filters.has_notes && !order.has_notes) return false;
-        if (order.fulfilled != filters.fulfilled) return false;
+        // if (order.fulfilled != filters.fulfilled) return false;
 
         return true;
       });
@@ -420,7 +421,7 @@ export default {
   },
   beforeDestroy() {
     this.updateViewedOrders();
-    this.refreshOrders();
+    // this.refreshOrders();
   },
   methods: {
     ...mapActions({
