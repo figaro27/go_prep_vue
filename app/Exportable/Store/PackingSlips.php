@@ -26,21 +26,32 @@ class PackingSlips
     public function exportData($type = null)
     {
         $orders = $this->store->orders()->where([
-          'paid' => 1,
-          'fulfilled' => 0
+            'paid' => 1
+            // 'fulfilled' => 0
         ]);
 
         $dateRange = $this->getDeliveryDates();
         if ($dateRange === []) {
-            $orders = $orders->where('delivery_date', $this->store->getNextDeliveryDate());
+            $orders = $orders->where(
+                'delivery_date',
+                $this->store->getNextDeliveryDate()
+            );
         }
         if (isset($dateRange['from'])) {
             $from = Carbon::parse($dateRange['from']);
-            $orders = $orders->where('delivery_date', '>=', $from->format('Y-m-d'));
+            $orders = $orders->where(
+                'delivery_date',
+                '>=',
+                $from->format('Y-m-d')
+            );
         }
         if (isset($dateRange['to'])) {
             $to = Carbon::parse($dateRange['to']);
-            $orders = $orders->where('delivery_date', '<=', $to->format('Y-m-d'));
+            $orders = $orders->where(
+                'delivery_date',
+                '<=',
+                $to->format('Y-m-d')
+            );
         }
 
         $orders = $orders->get();
@@ -63,7 +74,7 @@ class PackingSlips
 
         $orders = $this->exportData();
 
-        Log::info('Found '.count($orders).' orders');
+        Log::info('Found ' . count($orders) . ' orders');
 
         if (!count($orders)) {
             throw new \Exception('No orders');
@@ -80,15 +91,15 @@ class PackingSlips
             //'margin-bottom' => 0,
             //'margin-left' => 0,
             //'margin-right' => 0,
-            'disable-smart-shrinking',
+            'disable-smart-shrinking'
         ];
 
         if (config('pdf.xserver')) {
             $pdfConfig = array_merge($pdfConfig, [
                 'use-xserver',
                 'commandOptions' => array(
-                    'enableXvfb' => true,
-                ),
+                    'enableXvfb' => true
+                )
             ]);
         }
 
@@ -97,22 +108,21 @@ class PackingSlips
         $pdf = new Pdf($pdfConfig);
 
         try {
-          $logo = \App\Utils\Images::encodeB64(
-            url($this->store->details->logo)
-          );
-        }
-        catch(\Exception $e) {
-          $logo = $this->store->getUrl($this->store->details->logo);
+            $logo = \App\Utils\Images::encodeB64(
+                url($this->store->details->logo)
+            );
+        } catch (\Exception $e) {
+            $logo = $this->store->getUrl($this->store->details->logo);
         }
 
-        Log::info('Logo URL: '.$logo);
+        Log::info('Logo URL: ' . $logo);
 
         $vars = [
-          'order' => null,
-          'params' => $this->params,
-          'delivery_dates' => $this->getDeliveryDates(),
-          'body_classes' => implode(' ', [$this->orientation]),
-          'logo' => $logo,
+            'order' => null,
+            'params' => $this->params,
+            'delivery_dates' => $this->getDeliveryDates(),
+            'body_classes' => implode(' ', [$this->orientation]),
+            'logo' => $logo
         ];
 
         Log::info($vars);
@@ -120,19 +130,18 @@ class PackingSlips
         foreach ($orders as $i => $order) {
             $vars['order'] = $order;
             $html = view($this->exportPdfView(), $vars)->render();
-            Log::info('Page HTML: '.$html);
+            Log::info('Page HTML: ' . $html);
             $pdf->addPage($html);
         }
 
         $output = $pdf->toString();
 
-        Log::info('Output: '.$output);
+        Log::info('Output: ' . $output);
 
         Storage::disk('local')->put($filename, $output);
 
-        Log::info('Saved to '.$filename);
+        Log::info('Saved to ' . $filename);
 
         return Storage::url($filename);
-
     }
 }
