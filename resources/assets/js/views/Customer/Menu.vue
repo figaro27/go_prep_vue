@@ -1436,7 +1436,13 @@ export default {
       }
       return qty;
     },
-    addOne(meal, mealPackage = false, size = null) {
+    async addOne(meal, mealPackage = false, size = null) {
+      if (meal.components.length && _.maxBy(meal.component, "minimum")) {
+        this.$refs.componentModal.show();
+        let components = await this.$refs.componentModal.once("done");
+        console.log(components);
+      }
+
       this.$store.commit("addToBag", { meal, quantity: 1, mealPackage, size });
       this.mealModal = false;
       this.mealPackageModal = false;
