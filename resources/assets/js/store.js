@@ -175,11 +175,16 @@ const mutations = {
       state.bag.total = 0;
     }
   },
-  addToBag(state, { meal, quantity = 1, mealPackage = false, size = null }) {
+  addToBag(
+    state,
+    { meal, quantity = 1, mealPackage = false, size = null, components = null }
+  ) {
     let mealId = meal;
     if (!_.isNumber(mealId)) {
       mealId = meal.id;
     }
+
+    let guid = uuid.v4({ meal, quantity, mealPackage, size, components });
 
     if (mealPackage || meal.meal_package) {
       mealId = "package-" + mealId;
@@ -188,6 +193,10 @@ const mutations = {
 
     if (size) {
       mealId = "size-" + mealId + "-" + size.id;
+    }
+
+    if (components) {
+      mealId += JSON.stringify(components);
     }
 
     if (!_.has(state.bag.items, mealId)) {

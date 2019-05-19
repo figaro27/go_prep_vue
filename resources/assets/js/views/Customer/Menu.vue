@@ -7,6 +7,8 @@
       </div>
     </floating-action-button>
 
+    <meal-components-modal ref="componentModal"></meal-components-modal>
+
     <div class="category-slider d-block d-md-none">
       <slick
         v-if="categories.length > 4"
@@ -1006,6 +1008,7 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
 import Spinner from "../../components/Spinner";
+import MealComponentsModal from "../../components/Modals/MealComponentsModal";
 import units from "../../data/units";
 import nutrition from "../../data/nutrition";
 import format from "../../lib/format";
@@ -1025,7 +1028,8 @@ export default {
     SalesTax,
     LightBox,
     Carousel,
-    Slide
+    Slide,
+    MealComponentsModal
   },
   props: {
     preview: {
@@ -1437,13 +1441,20 @@ export default {
       return qty;
     },
     async addOne(meal, mealPackage = false, size = null) {
-      if (meal.components.length && _.maxBy(meal.component, "minimum")) {
-        this.$refs.componentModal.show();
-        let components = await this.$refs.componentModal.once("done");
+      let components = null;
+
+      if (meal.components.length && _.maxBy(meal.components, "minimum")) {
+        components = await this.$refs.componentModal.show(meal);
         console.log(components);
       }
 
-      this.$store.commit("addToBag", { meal, quantity: 1, mealPackage, size });
+      this.$store.commit("addToBag", {
+        meal,
+        quantity: 1,
+        mealPackage,
+        size,
+        components
+      });
       this.mealModal = false;
       this.mealPackageModal = false;
     },
