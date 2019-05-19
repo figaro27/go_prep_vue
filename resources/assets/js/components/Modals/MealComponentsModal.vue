@@ -1,6 +1,6 @@
 <template>
   <div class="modal-full">
-    <b-modal title="Edit Package" ref="modal" @ok.prevent="e => ok(e)">
+    <b-modal title="Choose Options" ref="modal" @ok.prevent="e => ok(e)">
       <div v-if="meal">
         <b-row>
           <b-col>
@@ -9,27 +9,35 @@
               :key="component.id"
               class=""
             >
-              {{ component.title }}
+              <b-form-group :label="component.title">
+                <b-checkbox-group
+                  v-model="choices[component.id]"
+                  :options="getOptions(component)"
+                  :min="component.minimum"
+                  :max="component.maximum"
+                >
+                </b-checkbox-group>
+              </b-form-group>
 
-              Minimum: {{ component.minimum }}<br />
-              Maximum: {{ component.maximum }}
-
-              <b-checkbox-group
-                v-model="choices[component.id]"
-                :options="getOptions(component)"
-                :min="component.minimum"
-                :max="component.maximum"
-              >
-              </b-checkbox-group>
-
-              <div v-if="!$v.choices[component.id].required" class="error">
-                This field is required
-              </div>
-              <div v-if="!$v.choices[component.id].minimum" class="error">
-                Minimum {{ component.minimum }}
-              </div>
-              <div v-if="!$v.choices[component.id].minimum" class="error">
-                Maximum {{ component.maximum }}
+              <div v-if="$v.$dirty">
+                <div
+                  v-if="!$v.choices[component.id].required"
+                  class="invalid-feedback"
+                >
+                  This field is required
+                </div>
+                <div
+                  v-if="!$v.choices[component.id].minimum"
+                  class="invalid-feedback"
+                >
+                  Minimum {{ component.minimum }}
+                </div>
+                <div
+                  v-if="!$v.choices[component.id].minimum"
+                  class="invalid-feedback"
+                >
+                  Maximum {{ component.maximum }}
+                </div>
               </div>
             </div>
           </b-col>
@@ -50,16 +58,24 @@ export default {
   data() {
     return {
       meal: null,
+      mealPackage: false,
+      size: null,
       choices: {}
     };
   },
+  computed: {},
   validations() {
     let componentValidations = _.mapValues(
       _.keyBy(this.meal.components, "id"),
       component => {
         return {
           required,
-          minimum: minLength(3)
+          minimum: value => {
+            return _.isArray(value) && value.length >= component.minimum;
+          },
+          maximum: value => {
+            return _.isArray(value) && value.length <= component.maximum;
+          }
         };
       }
     );
@@ -69,16 +85,24 @@ export default {
     };
   },
   methods: {
-    show(meal) {
+    show(meal, mealPackage = false, size = null) {
       this.meal = meal;
+      this.mealPackage = mealPackage;
+      this.size = size;
+
       this.$refs.modal.show();
 
       return new Promise((resolve, reject) => {
         this.$on("done", () => {
           this.$v.$touch();
 
-          if (!this.$v.$invalid) {
+          if (1 || !this.$v.$invalid) {
             resolve(this.choices);
+            this.hide();
+            this.meal = null;
+            this.mealPackage = false;
+            this.size = null;
+            this.choices = {};
           }
         });
       });
@@ -87,7 +111,10 @@ export default {
       this.$emit("done");
     },
     getOptions(component) {
-      return _.map(component.options, option => {
+      let options = _.filter(component.options, option => {
+        return option.meal_size_id == this.size;
+      });
+      return _.map(options, option => {
         return {
           value: option.id,
           text: `${option.title} - ${format.money(option.price)}`

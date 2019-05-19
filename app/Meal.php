@@ -125,7 +125,16 @@ class Meal extends Model implements HasMedia
 
         if ($this->has('sizes')) {
             if ($this->pivot && $this->pivot->meal_size_id) {
-                return $this->meal_size->price;
+                $price = $this->meal_size->price;
+            }
+        }
+
+        if ($this->has('components')) {
+            if ($this->pivot && $this->pivot->components) {
+                $a = $this->pivot->components;
+                foreach ($this->pivot->components as $component) {
+                    $price += $component->option->price;
+                }
             }
         }
 

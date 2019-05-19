@@ -1444,7 +1444,11 @@ export default {
       let components = null;
 
       if (meal.components.length && _.maxBy(meal.components, "minimum")) {
-        components = await this.$refs.componentModal.show(meal);
+        components = await this.$refs.componentModal.show(
+          meal,
+          mealPackage,
+          size
+        );
         console.log(components);
       }
 

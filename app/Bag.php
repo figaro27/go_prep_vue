@@ -2,6 +2,7 @@
 
 namespace App;
 use App\Store;
+use App\MealComponentOption;
 
 class Bag
 {
@@ -99,7 +100,16 @@ class Bag
         $total = 0.0;
 
         foreach ($this->getItems() as $item) {
-            $total += $item['quantity'] * $item['price'];
+            $price = $item['price'];
+            if ($item['components']) {
+                foreach ($item['components'] as $componentId => $choices) {
+                    foreach ($choices as $optionId) {
+                        $option = MealComponentOption::find($optionId);
+                        $price += $option->price;
+                    }
+                }
+            }
+            $total += $price * $item['quantity'];
         }
 
         return $total;

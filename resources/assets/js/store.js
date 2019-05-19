@@ -187,64 +187,67 @@ const mutations = {
     let guid = uuid.v4({ meal, quantity, mealPackage, size, components });
 
     if (mealPackage || meal.meal_package) {
-      mealId = "package-" + mealId;
+      //mealId = "package-" + mealId;
       mealPackage = true;
     }
 
     if (size) {
-      mealId = "size-" + mealId + "-" + size.id;
+      //mealId = "size-" + mealId + "-" + size.id;
     }
 
     if (components) {
-      mealId += JSON.stringify(components);
+      //mealId += JSON.stringify(components);
     }
 
-    if (!_.has(state.bag.items, mealId)) {
-      Vue.set(state.bag.items, mealId, {
+    if (!_.has(state.bag.items, guid)) {
+      Vue.set(state.bag.items, guid, {
         quantity: 0,
         meal,
         meal_package: mealPackage,
         added: moment().unix(),
-        size
+        size,
+        components
       });
     }
 
     let item = {
-      ...state.bag.items[mealId]
+      ...state.bag.items[guid]
     };
     item.quantity = (item.quantity || 0) + quantity;
     if (!item.added) {
       item.added = moment().unix();
     }
 
-    Vue.set(state.bag.items, mealId, item);
+    Vue.set(state.bag.items, guid, item);
   },
   removeFromBag(
     state,
-    { meal, quantity = 1, mealPackage = false, size = null }
+    { meal, quantity = 1, mealPackage = false, size = null, components = null }
   ) {
     let mealId = meal;
     if (!_.isNumber(mealId)) {
       mealId = meal.id;
     }
 
+    let guid = uuid.v4({ meal, quantity, mealPackage, size, components });
+
     if (mealPackage || meal.meal_package) {
-      mealId = "package-" + mealId;
+      //mealId = "package-" + mealId;
       mealPackage = true;
     }
 
     if (size) {
-      mealId = "size-" + mealId + "-" + size.id;
+      //mealId = "size-" + mealId + "-" + size.id;
     }
 
-    if (!_.has(state.bag.items, mealId)) {
+    if (!_.has(state.bag.items, guid)) {
       return;
     }
 
-    state.bag.items[mealId].quantity -= quantity;
+    state.bag.items[guid].quantity -= quantity;
 
-    if (state.bag.items[mealId].quantity <= 0) {
-      Vue.delete(state.bag.items, mealId);
+    if (state.bag.items[guid].quantity <= 0) {
+      Vue.delete(state.bag.items, guid);
     }
   },
   emptyBag(state) {
@@ -1183,7 +1186,18 @@ const getters = {
     let items = _.compact(_.toArray(state.bag.items));
     let totalBagPricePreFees = 0;
     items.forEach(item => {
-      const price = item.size ? item.size.price : item.meal.price;
+      let price = item.size ? item.size.price : item.meal.price;
+      if (item.components) {
+        _.forEach(item.components, (choices, componentId) => {
+          let component = _.find(item.meal.components, {
+            id: parseInt(componentId)
+          });
+          _.forEach(choices, optionId => {
+            let option = _.find(component.options, { id: parseInt(optionId) });
+            price += option.price;
+          });
+        });
+      }
       totalBagPricePreFees += item.quantity * price;
     });
 
