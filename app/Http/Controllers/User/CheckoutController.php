@@ -7,6 +7,7 @@ use App\Http\Controllers\User\UserController;
 use App\Mail\Customer\MealPlan;
 use App\Mail\Customer\NewOrder;
 use App\MealOrder;
+use App\MealOrderComponent;
 use App\MealSubscription;
 use App\Order;
 use App\Store;
@@ -143,6 +144,18 @@ class CheckoutController extends UserController
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
                 $mealOrder->save();
+
+                if (isset($item['components']) && $item['components']) {
+                    foreach ($item['components'] as $componentId => $choices) {
+                        foreach ($choices as $optionId) {
+                            MealOrderComponent::create([
+                                'meal_order_id' => $mealOrder->id,
+                                'meal_component_id' => $componentId,
+                                'meal_component_option_id' => $optionId
+                            ]);
+                        }
+                    }
+                }
             }
 
             // Send notification to store
@@ -295,6 +308,18 @@ class CheckoutController extends UserController
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
                 $mealOrder->save();
+
+                if (isset($item['components']) && $item['components']) {
+                    foreach ($item['components'] as $componentId => $choices) {
+                        foreach ($choices as $optionId) {
+                            MealOrderComponent::create([
+                                'meal_order_id' => $mealOrder->id,
+                                'meal_component_id' => $componentId,
+                                'meal_component_option_id' => $optionId
+                            ]);
+                        }
+                    }
+                }
             }
 
             foreach ($bag->getItems() as $item) {
