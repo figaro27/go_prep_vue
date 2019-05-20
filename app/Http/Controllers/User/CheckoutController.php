@@ -42,6 +42,7 @@ class CheckoutController extends UserController
 
         $application_fee = $store->settings->application_fee;
         $total = $bag->getTotal();
+        $subtotal = $request->get('subtotal');
         $afterDiscountBeforeFees = $bag->getTotal();
         $preFeePreDiscount = $bag->getTotal();
 
@@ -100,9 +101,7 @@ class CheckoutController extends UserController
                     "amount" => round($total * 100),
                     "currency" => "usd",
                     "source" => $storeSource,
-                    "application_fee" => round(
-                        $afterDiscountBeforeFees * $application_fee
-                    )
+                    "application_fee" => round($subtotal * $application_fee)
                 ],
                 ["stripe_account" => $store->settings->stripe_id]
             );
