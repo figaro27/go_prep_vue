@@ -36,10 +36,10 @@
         <br><br>
         <p>{{$order->store->details->domain}}.goprep.com</p>
         @if ($order->pickup === 0)
-        <h3>DELIVERY</h3>
+        <h4>DELIVERY</h4>
         @endif
         @if ($order->pickup === 1)
-        <h3>PICKUP</h3>
+        <h4>PICKUP</h4>
         @endif
       </div>
     </div>
