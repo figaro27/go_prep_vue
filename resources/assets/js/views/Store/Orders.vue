@@ -134,43 +134,24 @@
             <p>{{ moment(order.created_at).format("dddd, MMM Do") }}</p>
           </div>
           <div class="col-md-4 pt-4">
-            <span> Subtotal: {{ format.money(order.preFeePreDiscount) }} </span
-            ><br />
-            <span v-if="order.mealPlanDiscount > 0">
-              Meal Plan Discount:
-              <span class="text-success"
-                >({{ format.money(order.mealPlanDiscount) }})
-              </span>
-              <br />
-            </span>
-            <span v-if="order.deliveryFee > 0">
+            <p>Subtotal: {{ format.money(order.preFeePreDiscount) }}</p>
+            <p class="text-success" v-if="order.couponReduction > 0">
+              Coupon {{ order.couponCode }}: ({{
+                format.money(order.couponReduction)
+              }})
+            </p>
+            <p v-if="order.mealPlanDiscount > 0" class="text-success">
+              Meal Plan Discount: ({{ format.money(order.mealPlanDiscount) }})
+            </p>
+            <p v-if="order.deliveryFee > 0">
               Delivery Fee: {{ format.money(order.deliveryFee) }}
-              <br />
-            </span>
-            <span v-if="order.processingFee > 0">
+            </p>
+            <p v-if="order.processingFee > 0">
               Processing Fee:
               {{ format.money(order.processingFee) }}
-              <br />
-            </span>
-            <span>Sales Tax: {{ format.money(order.salesTax) }}</span
-            ><br />
-            <span>
-              <strong
-                ><span v-if="order.couponReduction === null"
-                  >Total: {{ format.money(order.amount) }}</span
-                ></strong
-              >
-              <div v-if="order.couponReduction > 0">
-                Pre-Coupon Total: {{ format.money(order.pre_coupon) }}
-                <br />
-                <span class="text-success"
-                  >(Coupon {{ order.couponCode }}:
-                  {{ format.money(order.couponReduction) }})</span
-                >
-                <br />
-                <strong>Total: {{ format.money(order.amount) }}</strong>
-              </div>
-            </span>
+            </p>
+            <p>Sales Tax: {{ format.money(order.salesTax) }}</p>
+            <p class="strong">Total: {{ format.money(order.amount) }}</p>
           </div>
         </div>
 
