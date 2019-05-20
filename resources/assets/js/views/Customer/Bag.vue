@@ -518,14 +518,16 @@ export default {
       });
     },
     deliveryFeeAmount() {
-      if (this.storeSettings.deliveryFeeType === "flat") {
-        return this.storeSettings.deliveryFee;
-      } else if (this.storeSettings.deliveryFeeType === "mileage") {
-        let mileageBase = parseFloat(this.storeSettings.mileageBase);
-        let mileagePerMile = parseFloat(this.storeSettings.mileagePerMile);
-        let distance = parseFloat(this.store.distance);
-        return mileageBase + mileagePerMile * distance;
-      }
+      if (this.storeSettings.applyDeliveryFee) {
+        if (this.storeSettings.deliveryFeeType === "flat") {
+          return this.storeSettings.deliveryFee;
+        } else if (this.storeSettings.deliveryFeeType === "mileage") {
+          let mileageBase = parseFloat(this.storeSettings.mileageBase);
+          let mileagePerMile = parseFloat(this.storeSettings.mileagePerMile);
+          let distance = parseFloat(this.store.distance);
+          return mileageBase + mileagePerMile * distance;
+        }
+      } else return 0;
     },
     card() {
       if (this.cards.length != 1) return null;
@@ -578,7 +580,7 @@ export default {
       } else return this.subtotal;
     },
     mealPlanDiscount() {
-      return this.afterCoupon * (this.storeSettings.mealPlanDiscount / 100);
+      return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
     },
     afterDiscount() {
       if (this.applyMealPlanDiscount && this.deliveryPlan) {
