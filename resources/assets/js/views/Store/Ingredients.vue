@@ -300,7 +300,7 @@ export default {
         });
     },
     onChangeDateFilter() {
-      this.dateColor = "#5c6873 !important";
+      this.refreshOrderIngredients();
     },
     clearDeliveryDates() {
       this.filters.delivery_dates.start = null;
