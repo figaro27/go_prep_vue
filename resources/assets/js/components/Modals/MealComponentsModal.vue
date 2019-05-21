@@ -65,6 +65,8 @@ export default {
   },
   computed: {},
   validations() {
+    if (!this.meal) return {};
+
     let componentValidations = _.mapValues(
       _.keyBy(this.meal.components, "id"),
       component => {
