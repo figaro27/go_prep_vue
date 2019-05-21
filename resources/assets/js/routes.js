@@ -32,6 +32,7 @@ import StoreContact from "./views/Store/Account/Contact.vue";
 import StoreSettings from "./views/Store/Account/Settings.vue";
 import StoreMenuPreview from "./views/Store/MenuPreview.vue";
 import StoreManualOrder from "./views/Store/ManualOrder.vue";
+import StoreBag from "./views/Store/Bag.vue";
 
 import Spinner from "./components/Spinner.vue";
 
@@ -195,9 +196,14 @@ let routes = [
     name: "store-menu-preview"
   },
   {
-    path: "/store/menu/manual-order",
+    path: "/store/manual-order",
     component: StoreManualOrder,
-    name: "store-menu-manual-order"
+    name: "store-manual-order"
+  },
+  {
+    path: "/store/bag",
+    component: StoreBag,
+    name: "store-bag"
   },
   {
     path: "/spinner",

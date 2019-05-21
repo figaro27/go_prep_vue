@@ -550,21 +550,6 @@
                               {{ meal.description }}
                             </div>
 
-                            <!-- <div
-                              class="tags text-muted"
-                              v-if="meal.tag_titles.length"
-                            >
-                              {{ meal.tag_titles.join(" - ") }}
-                            </div>
-
-                            <div
-                              class="allergies text-muted"
-                              v-if="meal.allergy_titles.length"
-                            >
-                              Contains:
-                              {{ meal.allergy_titles.join(", ") }}
-                            </div> -->
-
                             <div class="actions">
                               <div
                                 class="d-flex justify-content-between align-items-center mb-2 mt-1"
@@ -613,59 +598,6 @@
                             </div>
                           </div>
                         </div>
-
-                        <!--
-                        <div class="row">
-                          <div class="col-8 col-sm-12">
-                            <div
-                              class="d-flex justify-content-between align-items-center mb-2 mt-1"
-                            >
-                              <b-btn @click="minusOne(meal)" class="plus-minus gray">
-                                <i>-</i>
-                              </b-btn>
-                              <b-form-input
-                                type="text"
-                                name
-                                id
-                                class="quantity"
-                                :value="quantity(meal, false, true)"
-                                readonly
-                              ></b-form-input>
-                              <b-btn
-                                v-if="meal.sizes.length === 0"
-                                @click="addOne(meal)"
-                                class="menu-bag-btn plus-minus"
-                              >
-                                <i>+</i>
-                              </b-btn>
-                              <b-dropdown
-                                v-else
-                                toggle-class="menu-bag-btn plus-minus"
-                                :right="i > 0 && (i + 1) % 4 === 0"
-                              >
-                                <i slot="button-content">+</i>
-                                <b-dropdown-item @click="addOne(meal)">
-                                  {{ meal.default_size_title || "Regular" }} -
-                                  {{ format.money(meal.item_price) }}
-                                </b-dropdown-item>
-                                <b-dropdown-item
-                                  v-for="size in meal.sizes"
-                                  :key="size.id"
-                                  @click="addOne(meal, false, size)"
-                                >
-                                  {{ size.title }} -
-                                  {{ format.money(size.price) }}
-                                </b-dropdown-item>
-                              </b-dropdown>
-
-                            </div>
-                            <p class="center-text strong featured">{{ meal.title }}</p>
-                            <p class="price center-text featured">{{ format.money(meal.price) }}</p>
-                          </div>
-                          <div class="col-4 col-sm-12">
-
-                          </div>
-                        </div>-->
                       </div>
                     </div>
                   </div>
@@ -792,59 +724,19 @@
                     continue.
                   </p>
 
-                  <!--  <p class="align-right">
-                    <strong>Subtotal:&nbsp;</strong>
-                    {{ format.money(preFeePreDiscount) }}
-                  </p>
-                  <div v-if="subscriptionId">
-                    <p
-                      class="align-right text-success"
-                      v-if="storeSettings.applyMealPlanDiscount"
-                    >
-                      <strong>Meal Plan Discount:&nbsp;</strong>
-                      ({{ format.money(mealPlanDiscount) }})
-                    </p>
-
-                    <p
-                      class="align-right"
-                      v-if="storeSettings.applyDeliveryFee && pickup === 0"
-                    >
-                      <strong>Delivery Fee:&nbsp;</strong>
-                      {{ format.money(storeSettings.deliveryFee) }}
-                    </p>
-
-                    <p
-                      class="align-right"
-                      v-if="storeSettings.applyProcessingFee"
-                    >
-                      <strong>Processing Fee:&nbsp;</strong>
-                      {{ format.money(storeSettings.processingFee) }}
-                    </p>
-
-                    <p class="align-right">
-                      <strong>Sales Tax:&nbsp;</strong>
-                      {{ format.money(tax) }}
-                    </p>
-
-                    <p class="align-right">
-                      <strong>Total&nbsp;</strong>
-                      {{ format.money(afterDiscountAfterFees) }}
-                    </p>
-                  </div>-->
-
                   <div
                     v-if="
-                      minOption === 'meals' &&
-                        total >= minimumMeals &&
-                        !preview &&
-                        !manualOrder
+                      minOption === 'meals' && total >= minimumMeals && !preview
                     "
                   >
-                    <router-link to="/customer/bag" v-if="!subscriptionId">
+                    <router-link
+                      to="/customer/bag"
+                      v-if="!subscriptionId && !manualOrder"
+                    >
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
                     <b-btn
-                      v-else
+                      v-if="subscriptionId"
                       class="menu-bag-btn"
                       @click="updateSubscriptionMeals"
                       >UPDATE MEALS</b-btn
@@ -866,129 +758,29 @@
                     v-if="
                       minOption === 'price' &&
                         totalBagPricePreFees >= minPrice &&
-                        !preview &&
-                        !manualOrder
+                        !preview
                     "
                   >
-                    <router-link to="/customer/bag" v-if="!subscriptionId">
+                    <router-link
+                      to="/customer/bag"
+                      v-if="!subscriptionId && !manualOrder"
+                    >
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
                     <b-btn
-                      v-else
+                      v-if="subscriptionId"
                       class="menu-bag-btn"
                       @click="updateSubscriptionMeals"
                       >UPDATE MEALS</b-btn
                     >
                   </div>
-                  <div v-if="manualOrder">
-                    <div
-                      v-if="transferTypeCheck === 'both'"
-                      class="center-text"
+                  <div>
+                    <router-link
+                      to="/store/bag"
+                      v-if="!subscriptionId && manualOrder"
                     >
-                      <b-form-group>
-                        <b-form-radio-group v-model="pickup" name="pickup">
-                          <b-form-radio :value="0" @click="pickup = 0">
-                            <strong>Delivery</strong>
-                          </b-form-radio>
-                          <b-form-radio :value="1" @click="pickup = 1">
-                            <strong>Pickup</strong>
-                          </b-form-radio>
-                        </b-form-radio-group>
-                      </b-form-group>
-                    </div>
-                    <div>
-                      <p
-                        v-if="pickup === 0 && transferTypeCheck !== 'pickup'"
-                        class="center-text"
-                      >
-                        Delivery Day
-                      </p>
-                      <p
-                        v-if="pickup === 1 || transferTypeCheck === 'pickup'"
-                        class="center-text"
-                      >
-                        Pickup Day
-                      </p>
-                      <b-form-group
-                        v-if="deliveryDaysOptions.length > 1"
-                        description
-                      >
-                        <b-select
-                          :options="deliveryDaysOptions"
-                          v-model="deliveryDay"
-                          class="bag-select"
-                          required
-                        >
-                          <option slot="top" disabled
-                            >-- Select delivery day --</option
-                          >
-                        </b-select>
-                      </b-form-group>
-                      <div v-else-if="deliveryDaysOptions.length === 1">
-                        <p>Delivery day: {{ deliveryDaysOptions[0].text }}</p>
-                      </div>
-                    </div>
-
-                    <b-form-group description>
-                      <p class="center-text mt-3">Choose Customer</p>
-                      <b-select
-                        :options="customers"
-                        v-model="customer"
-                        class="bag-select"
-                        required
-                      >
-                        <option slot="top" disabled
-                          >-- Select Customer --</option
-                        >
-                      </b-select>
-                    </b-form-group>
-
-                    <b-btn
-                      variant="success"
-                      v-if="storeSettings.applyDeliveryFee"
-                      @click="addDeliveryFee = true"
-                      class="center"
-                      >Add Delivery Fee</b-btn
-                    >
-                    <b-btn
-                      variant="success"
-                      v-if="storeSettings.applyProcessingFee"
-                      @click="addProcessingFee = true"
-                      class="center mt-2"
-                      >Add Processing Fee</b-btn
-                    >
-
-                    <div>
-                      <h6
-                        class="mt-2 center-text"
-                        v-if="!addDeliveryFee && !addProcessingFee"
-                      >
-                        Total: {{ format.money(totalBagPriceBeforeFees) }}
-                      </h6>
-                      <p
-                        class="mt-2 center-text"
-                        v-if="addDeliveryFee || addProcessingFee"
-                      >
-                        Subtotal: {{ format.money(totalBagPriceBeforeFees) }}
-                      </p>
-                      <p class="mt-2 center-text" v-if="addDeliveryFee">
-                        Delivery Fee:
-                        {{ format.money(storeSettings.deliveryFee) }}
-                      </p>
-                      <p class="mt-2 center-text" v-if="addProcessingFee">
-                        Processing Fee:
-                        {{ format.money(storeSettings.processingFee) }}
-                      </p>
-                      <h6
-                        class="mt-2 center-text"
-                        v-if="addDeliveryFee || addProcessingFee"
-                      >
-                        Total: {{ format.money(totalBagPriceAfterFees) }}
-                      </h6>
-                    </div>
-                    <b-btn class="menu-bag-btn mt-2" @click="checkout"
-                      >Create Manual Order</b-btn
-                    >
+                      <b-btn class="menu-bag-btn">NEXT</b-btn>
+                    </router-link>
                   </div>
                 </div>
               </div>
@@ -1603,31 +1395,6 @@ export default {
 
       this.active = _.mapValues(this.active, () => false);
       this.filteredView = false;
-    },
-    checkout() {
-      this.loading = true;
-      axios
-        .post("/api/bag/checkout", {
-          bag: this.bag,
-          plan: this.deliveryPlan,
-          pickup: this.pickup,
-          delivery_day: this.deliveryDay,
-          card_id: this.card,
-          store_id: this.store.id
-        })
-        .then(async resp => {
-          this.emptyBag();
-        })
-        .catch(response => {
-          let error = _.first(Object.values(response.response.data.errors)) || [
-            "Please try again"
-          ];
-          error = error.join(" ");
-          this.$toastr.e(error, "Error");
-        })
-        .finally(() => {
-          this.loading = false;
-        });
     },
     async updateSubscriptionMeals() {
       try {

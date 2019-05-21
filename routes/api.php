@@ -133,6 +133,10 @@ foreach (
                                 'SubscriptionController'
                             );
                             Route::resource('customers', 'CustomerController');
+                            Route::post(
+                                'getCard',
+                                'CustomerController@getCard'
+                            );
                             Route::resource('units', 'UnitController');
                             Route::resource('categories', 'CategoryController');
                             Route::resource('coupons', 'CouponController');

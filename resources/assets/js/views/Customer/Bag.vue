@@ -12,6 +12,15 @@
               size="lg"
               class="brand-color white-text"
               to="/customer/menu"
+              v-if="!manualOrder"
+            >
+              <span class="d-sm-inline">Change Meals</span>
+            </b-button>
+            <b-button
+              size="lg"
+              class="brand-color white-text"
+              to="/store/manual-order"
+              v-if="manualOrder"
             >
               <span class="d-sm-inline">Change Meals</span>
             </b-button>
@@ -78,7 +87,24 @@
             </p>
             <router-link to="/customer/menu">
               <b-btn
-                v-if="minOption === 'meals' && total < minMeals && !preview"
+                v-if="
+                  minOption === 'meals' &&
+                    total < minMeals &&
+                    !preview &&
+                    !manualOrder
+                "
+                class="menu-bag-btn mb-2"
+                >BACK</b-btn
+              >
+            </router-link>
+            <router-link to="/store/manual-order">
+              <b-btn
+                v-if="
+                  minOption === 'meals' &&
+                    total < minMeals &&
+                    !preview &&
+                    manualOrder
+                "
                 class="menu-bag-btn mb-2"
                 >BACK</b-btn
               >
@@ -96,7 +122,20 @@
                   v-if="
                     minOption === 'price' &&
                       totalBagPrice <= minPrice &&
-                      !preview
+                      !preview &&
+                      !manualOrder
+                  "
+                  class="menu-bag-btn"
+                  >BACK</b-btn
+                >
+              </router-link>
+              <router-link to="/store/manual-order">
+                <b-btn
+                  v-if="
+                    minOption === 'price' &&
+                      totalBagPrice <= minPrice &&
+                      !preview &&
+                      manualOrder
                   "
                   class="menu-bag-btn"
                   >BACK</b-btn
@@ -355,8 +394,33 @@
                   >
                 </div>
                 <div v-else>
+                  <div v-if="manualOrder">
+                    <b-form-group description>
+                      <h4 class="mt-2 mb-3">Choose Customer</h4>
+                      <b-select
+                        :options="customers"
+                        v-model="customer"
+                        class="bag-select"
+                        @change="getCard"
+                        required
+                      >
+                        <option slot="top" disabled
+                          >-- Select Customer --</option
+                        >
+                      </b-select>
+                    </b-form-group>
+                  </div>
                   <h4 class="mt-2 mb-3">Choose Payment Method</h4>
-                  <card-picker :selectable="true" v-model="card"></card-picker>
+                  <card-picker
+                    :selectable="true"
+                    v-model="card"
+                    v-if="!manualOrder"
+                  ></card-picker>
+                  <card-picker
+                    :selectable="true"
+                    v-model="creditCard"
+                    v-if="manualOrder"
+                  ></card-picker>
                   <b-btn
                     v-if="card && minOption === 'meals' && total >= minMeals"
                     @click="checkout"
@@ -453,7 +517,6 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
-// import { stripeKey, stripeOptions } from "../../config/stripe.json";
 import { createToken } from "vue-stripe-elements-plus";
 import SalesTax from "sales-tax";
 
@@ -465,14 +528,20 @@ export default {
     CardPicker,
     SalesTax
   },
+  props: {
+    manualOrder: {
+      default: false
+    }
+  },
   data() {
     return {
+      creditCard: null,
+      customer: null,
       selectedPickupLocation: null,
       pickup: 0,
       deliveryPlan: false,
       deliveryDay: undefined,
       stripeKey: window.app.stripe_key,
-      // stripeOptions,
       loading: false,
       checkingOut: false,
       salesTax: 0,
@@ -488,6 +557,7 @@ export default {
       cards: "cards",
       store: "viewedStore",
       storeSetting: "viewedStoreSetting",
+      storeCustomers: "storeCustomers",
       total: "bagQuantity",
       bag: "bagItems",
       hasMeal: "bagHasMeal",
@@ -503,6 +573,14 @@ export default {
       coupons: "viewedStoreCoupons",
       pickupLocations: "viewedStorePickupLocations"
     }),
+    customers() {
+      let customers = this.storeCustomers;
+      let grouped = {};
+      customers.forEach(customer => {
+        grouped[customer.id] = customer.name;
+      });
+      return grouped;
+    },
     deliveryInstructions() {
       return this.storeSettings.deliveryInstructions.replace(/\n/g, "<br>");
     },
@@ -767,6 +845,15 @@ export default {
           return;
         }
       });
+    },
+    getCard() {
+      axios
+        .post("/api/me/getCard", {
+          id: this.customer
+        })
+        .then(response => {
+          this.creditCard = response.data.id;
+        });
     }
   }
 };
