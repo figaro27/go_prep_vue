@@ -1,26 +1,39 @@
 <template>
   <div class="row">
     <div class="col-md-12">
-      <Spinner v-if="isLoading"/>
+      <Spinner v-if="isLoading" />
       <div class="card">
         <div class="card-body">
-          <v-client-table :columns="columns" :data="tableData" :options="options">
+          <v-client-table
+            :columns="columns"
+            :data="tableData"
+            :options="options"
+          >
             <div slot="beforeTable" class="mb-2">
               <div class="d-flex align-items-center">
-                <delivery-date-picker v-model="filters.delivery_dates" @change="onChangeDateFilter"></delivery-date-picker>
+                <delivery-date-picker
+                  v-model="filters.delivery_dates"
+                  @change="onChangeDateFilter"
+                  ref="deliveryDates"
+                ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
               </div>
             </div>
 
             <span slot="beforeLimit">
               <b-btn variant="primary" @click="print('pdf')">
-                <i class="fa fa-print"></i>&nbsp;
-                Print
+                <i class="fa fa-print"></i>&nbsp; Print
               </b-btn>
               <b-dropdown class="mx-1" right text="Export as">
-                <b-dropdown-item @click="exportData('csv')">CSV</b-dropdown-item>
-                <b-dropdown-item @click="exportData('xls')">XLS</b-dropdown-item>
-                <b-dropdown-item @click="exportData('pdf')">PDF</b-dropdown-item>
+                <b-dropdown-item @click="exportData('csv')"
+                  >CSV</b-dropdown-item
+                >
+                <b-dropdown-item @click="exportData('xls')"
+                  >XLS</b-dropdown-item
+                >
+                <b-dropdown-item @click="exportData('pdf')"
+                  >PDF</b-dropdown-item
+                >
               </b-dropdown>
               <!--
               <label>Weight unit:</label>
@@ -42,7 +55,7 @@
                 v-if="props.row.unit_type !== 'unit'"
                 :value="displayUnits[props.row.id]"
                 :options="unitOptions(props.row.unit_type)"
-                @change="(val) => saveUnit(props.row.id, val)"
+                @change="val => saveUnit(props.row.id, val)"
               >
                 <option slot="top" disabled>-- Select unit --</option>
               </b-select>
@@ -53,10 +66,9 @@
       </div>
     </div>
     <v-style>
-        .input-date{
-          color: {{ dateColor }}
-        }
-      </v-style>
+      .input-date{ color: {{ dateColor }}
+      }
+    </v-style>
   </div>
 </template>
 
@@ -91,7 +103,7 @@ export default {
           actions: "Unit"
         },
         orderBy: {
-          column: 'food_name',
+          column: "food_name",
           ascending: true
         }
       }
@@ -290,10 +302,10 @@ export default {
     onChangeDateFilter() {
       this.dateColor = "#5c6873 !important";
     },
-    clearDeliveryDates(){
+    clearDeliveryDates() {
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
-      this.dateColor = "#ffffff !important";
+      this.$refs.deliveryDates.clearDates();
       this.refreshOrderIngredients();
     }
   }

@@ -290,7 +290,6 @@ export default {
     return {
       ordersByDate: {},
       email: "",
-      dateColor: "",
       deliveryDate: "All",
       filter: false,
       pastOrder: false,
@@ -382,51 +381,8 @@ export default {
         orders = this.upcomingOrders;
       } else {
         orders = this.ordersByDate;
-        return orders;
       }
-
-      let filtered = _.filter(orders, order => {
-        if ("paid" in filters && filters.paid !== order.paid) {
-          return false;
-        }
-        if (
-          "delivery_dates" in filters &&
-          (filters.delivery_dates.start || filters.delivery_dates.end)
-        ) {
-          let dateMatch = false;
-
-          if (filters.delivery_dates.start && filters.delivery_dates.end) {
-            dateMatch = order.delivery_date
-              .hours(12)
-              .isBetween(
-                filters.delivery_dates.start,
-                filters.delivery_dates.end,
-                "date",
-                "[]"
-              );
-          } else if (filters.delivery_dates.start) {
-            dateMatch = order.delivery_date
-              .hours(12)
-              .isSameOrAfter(filters.delivery_dates.start, "date", "[]");
-          } else if (filters.delivery_dates.end) {
-            dateMatch = order.delivery_date
-              .hours(12)
-              .isSameOrBefore(filters.delivery_dates.end, "date", "[]");
-          }
-
-          if (!dateMatch) return false;
-        }
-
-        if (filters.has_notes && !order.has_notes) return false;
-        // if (order.fulfilled != filters.fulfilled) return false;
-
-        return true;
-      });
-
-      return filtered.map(order => {
-        order.customer = _.find(this.customers, { user_id: order.user_id });
-        return order;
-      });
+      return orders;
     }
   },
   beforeDestroy() {
@@ -567,7 +523,6 @@ export default {
         });
     },
     onChangeDateFilter() {
-      this.dateColor = "#5c6873 !important";
       axios
         .post("/api/me/getOrdersWithDates", {
           start: this.filters.delivery_dates.start,
