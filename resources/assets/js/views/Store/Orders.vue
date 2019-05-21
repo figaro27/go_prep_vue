@@ -46,6 +46,7 @@
                   v-model="filters.delivery_dates"
                   @change="onChangeDateFilter"
                   class="mt-3 mt-sm-0"
+                  ref="deliveryDates"
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
               </div>
@@ -287,6 +288,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      ordersByDate: {},
       email: "",
       dateColor: "",
       deliveryDate: "All",
@@ -375,7 +377,15 @@ export default {
     tableData() {
       let filters = { ...this.filters };
 
-      let filtered = _.filter(this.upcomingOrders, order => {
+      let orders = {};
+      if (this.filters.delivery_dates.start === null) {
+        orders = this.upcomingOrders;
+      } else {
+        orders = this.ordersByDate;
+        return orders;
+      }
+
+      let filtered = _.filter(orders, order => {
         if ("paid" in filters && filters.paid !== order.paid) {
           return false;
         }
@@ -558,6 +568,14 @@ export default {
     },
     onChangeDateFilter() {
       this.dateColor = "#5c6873 !important";
+      axios
+        .post("/api/me/getOrdersWithDates", {
+          start: this.filters.delivery_dates.start,
+          end: this.filters.delivery_dates.end
+        })
+        .then(response => {
+          this.ordersByDate = response.data;
+        });
     },
     updateViewedOrders() {
       axios.get(`/api/me/ordersUpdateViewed`);
@@ -565,7 +583,7 @@ export default {
     clearDeliveryDates() {
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
-      this.dateColor = "#ffffff !important";
+      this.$refs.deliveryDates.clearDates();
     },
     showFulfilledOrders() {
       this.filters.fulfilled = 1;

@@ -602,7 +602,7 @@ const actions = {
     await Promise.all([
       dispatch("refreshMeals"),
       dispatch("refreshMealPackages"),
-      dispatch("refreshOrders"),
+      // dispatch("refreshOrders"),
       dispatch("refreshUpcomingOrders")
     ]);
 
@@ -981,7 +981,7 @@ const actions = {
   },
 
   async refreshOrders({ commit, state }, args = {}) {
-    const res = await axios.post("/api/me/getOrders");
+    const res = await axios.get("/api/me/orders");
     const { data } = await res;
 
     if (_.isArray(data)) {

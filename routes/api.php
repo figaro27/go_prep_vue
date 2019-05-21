@@ -120,6 +120,10 @@ foreach (
                                 'getFulfilledOrders',
                                 'OrderController@getFulfilledOrders'
                             );
+                            Route::post(
+                                'getOrdersWithDates',
+                                'OrderController@getOrdersWithDates'
+                            );
                             Route::get(
                                 'ordersUpdateViewed',
                                 'OrderController@updateViewed'

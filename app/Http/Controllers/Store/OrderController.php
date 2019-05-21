@@ -48,6 +48,19 @@ class OrderController extends StoreController
             : [];
     }
 
+    public function getOrdersWithDates(Request $request)
+    {
+        return $this->store->has('orders')
+            ? $this->store
+                ->orders()
+                ->with(['user', 'pickup_location'])
+                ->where(['paid' => 1])
+                ->where('delivery_date', '>=', $request->get('start'))
+                ->where('delivery_date', '<=', $request->get('end'))
+                ->get()
+            : [];
+    }
+
     /**
      * Show the form for creating a new resource.
      *

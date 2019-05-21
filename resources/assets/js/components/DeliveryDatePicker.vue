@@ -1,8 +1,12 @@
 <template>
   <div class="delivery-date-picker mb-0 flex-grow-0">
     <div class="d-flex flex-wrap align-items-center">
-      <div class="mr-sm-2 flex-grow-0" v-if="!storeSettings.allowPickup">Delivery Dates:</div>
-      <div class="mr-sm-2 flex-grow-0" v-if="storeSettings.allowPickup">Delivery / Pickup Dates:</div>
+      <div class="mr-sm-2 flex-grow-0" v-if="!storeSettings.allowPickup">
+        Delivery Dates:
+      </div>
+      <div class="mr-sm-2 flex-grow-0" v-if="storeSettings.allowPickup">
+        Delivery / Pickup Dates:
+      </div>
 
       <div class="flex-grow-0">
         <date-range-picker
@@ -119,6 +123,10 @@ export default {
     ...mapGetters({
       getStoreSetting: "storeSetting"
     }),
+    clearDates() {
+      this.$refs.picker.dateRange.start = null;
+      this.$refs.picker.dateRange.end = null;
+    },
     setInitialRange() {
       return; // Disabled
       if (
