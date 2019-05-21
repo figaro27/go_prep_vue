@@ -749,7 +749,14 @@
                           </div>
                           <p class="bag-quantity">{{ item.quantity }}</p>
                           <div
-                            @click="minusOne(item.meal, false, item.size)"
+                            @click="
+                              minusOne(
+                                item.meal,
+                                false,
+                                item.size,
+                                item.components
+                              )
+                            "
                             class="bag-plus-minus gray white-text"
                           >
                             <i>-</i>
@@ -774,7 +781,14 @@
                         <div class="flex-grow-0">
                           <img
                             src="/images/customer/x.png"
-                            @click="clearMeal(item.meal, false, item.size)"
+                            @click="
+                              clearMeal(
+                                item.meal,
+                                false,
+                                item.size,
+                                item.components
+                              )
+                            "
                             class="clear-meal"
                           />
                         </div>
@@ -1425,8 +1439,13 @@ export default {
         {}
       );
     },
-    quantity(meal, mealPackage = false, size = null) {
-      let qty = this.$store.getters.bagItemQuantity(meal, mealPackage, size);
+    quantity(meal, mealPackage = false, size = null, components = null) {
+      let qty = this.$store.getters.bagItemQuantity(
+        meal,
+        mealPackage,
+        size,
+        components
+      );
 
       // size === true gets quantity for all sizes
       if (size === true) {
@@ -1462,21 +1481,23 @@ export default {
       this.mealModal = false;
       this.mealPackageModal = false;
     },
-    minusOne(meal, mealPackage = false, size = null) {
+    minusOne(meal, mealPackage = false, size = null, components = null) {
       this.$store.commit("removeFromBag", {
         meal,
         quantity: 1,
         mealPackage,
-        size
+        size,
+        components
       });
     },
-    clearMeal(meal, mealPackage = false, size = null) {
-      let quantity = this.quantity(meal, mealPackage, size);
+    clearMeal(meal, mealPackage = false, size = null, components = null) {
+      let quantity = this.quantity(meal, mealPackage, size, components);
       this.$store.commit("removeFromBag", {
         meal,
         quantity,
         mealPackage,
-        size
+        size,
+        components
       });
     },
     clearAll() {

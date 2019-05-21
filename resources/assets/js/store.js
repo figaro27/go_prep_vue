@@ -5,6 +5,7 @@ import createPersistedState from "vuex-persistedstate";
 import router from "./routes";
 import auth from "./lib/auth";
 import uuid from "uuid";
+import CryptoJS from "crypto-js";
 
 const Cookies = require("js-cookie");
 
@@ -188,8 +189,6 @@ const mutations = {
       mealId = meal.id;
     }
 
-    let guid = uuid.v4({ meal, quantity, mealPackage, size, components });
-
     if (mealPackage || meal.meal_package) {
       //mealId = "package-" + mealId;
       mealPackage = true;
@@ -202,6 +201,10 @@ const mutations = {
     if (components) {
       //mealId += JSON.stringify(components);
     }
+
+    let guid = CryptoJS.MD5(
+      JSON.stringify({ meal: mealId, mealPackage, size, components })
+    ).toString();
 
     if (!_.has(state.bag.items, guid)) {
       Vue.set(state.bag.items, guid, {
@@ -233,8 +236,6 @@ const mutations = {
       mealId = meal.id;
     }
 
-    let guid = uuid.v4({ meal, quantity, mealPackage, size, components });
-
     if (mealPackage || meal.meal_package) {
       //mealId = "package-" + mealId;
       mealPackage = true;
@@ -243,6 +244,10 @@ const mutations = {
     if (size) {
       //mealId = "size-" + mealId + "-" + size.id;
     }
+
+    let guid = CryptoJS.MD5(
+      JSON.stringify({ meal: mealId, mealPackage, size, components })
+    ).toString();
 
     if (!_.has(state.bag.items, guid)) {
       return;
@@ -1195,7 +1200,12 @@ const getters = {
 
     return _.has(state.bag.items, meal);
   },
-  bagItemQuantity: state => (meal, mealPackage = false, size = null) => {
+  bagItemQuantity: state => (
+    meal,
+    mealPackage = false,
+    size = null,
+    components = null
+  ) => {
     if (!meal) {
       return 0;
     }
@@ -1206,22 +1216,21 @@ const getters = {
     }
 
     if (mealPackage || meal.meal_package) {
-      mealId = "package-" + mealId;
       mealPackage = true;
     }
 
     if (_.isObject(size)) {
-      mealId = "size-" + mealId + "-" + size.id;
     }
 
-    if (
-      !_.has(state.bag.items, mealId) ||
-      !_.isObject(state.bag.items[mealId])
-    ) {
+    let guid = CryptoJS.MD5(
+      JSON.stringify({ meal: mealId, mealPackage, size, components })
+    ).toString();
+
+    if (!_.has(state.bag.items, guid) || !_.isObject(state.bag.items[guid])) {
       return 0;
     }
 
-    return state.bag.items[mealId].quantity || 0;
+    return state.bag.items[guid].quantity || 0;
   },
   totalBagPricePreFees(state, getters) {
     let items = _.compact(_.toArray(state.bag.items));
