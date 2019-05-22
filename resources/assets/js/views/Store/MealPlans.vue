@@ -94,45 +94,26 @@
             <p>{{ moment(subscription.created_at).format("dddd, MMM Do") }}</p>
           </div>
           <div class="col-md-4">
-            <span>
-              Subtotal:
-              {{ format.money(subscription.preFeePreDiscount) }} </span
-            ><br />
-            <span v-if="subscription.mealPlanDiscount > 0">
-              Meal Plan Discount:
-              <span class="text-success"
-                >({{ format.money(subscription.mealPlanDiscount) }})
-              </span>
-              <br />
-            </span>
-            <span v-if="subscription.deliveryFee > 0">
+            <p>Subtotal: {{ format.money(subscription.preFeePreDiscount) }}</p>
+            <p class="text-success" v-if="subscription.couponReduction > 0">
+              Coupon {{ subscription.couponCode }}: ({{
+                format.money(subscription.couponReduction)
+              }})
+            </p>
+            <p v-if="subscription.mealPlanDiscount > 0" class="text-success">
+              Meal Plan Discount: ({{
+                format.money(subscription.mealPlanDiscount)
+              }})
+            </p>
+            <p v-if="subscription.deliveryFee > 0">
               Delivery Fee: {{ format.money(subscription.deliveryFee) }}
-              <br />
-            </span>
-            <span v-if="subscription.processingFee > 0">
+            </p>
+            <p v-if="subscription.processingFee > 0">
               Processing Fee:
               {{ format.money(subscription.processingFee) }}
-              <br />
-            </span>
-            <span>Sales Tax: {{ format.money(subscription.salesTax) }}</span
-            ><br />
-            <span>
-              <strong
-                ><span v-if="subscription.couponReduction === null"
-                  >Total: {{ format.money(subscription.amount) }}</span
-                ></strong
-              >
-              <div v-if="subscription.couponReduction > 0">
-                Pre-Coupon Total: {{ format.money(subscription.pre_coupon) }}
-                <br />
-                <span class="text-success"
-                  >(Coupon {{ subscription.couponCode }}:
-                  {{ format.money(subscription.couponReduction) }})</span
-                >
-                <br />
-                <strong>Total: {{ format.money(subscription.amount) }}</strong>
-              </div>
-            </span>
+            </p>
+            <p>Sales Tax: {{ format.money(subscription.salesTax) }}</p>
+            <p class="strong">Total: {{ format.money(subscription.amount) }}</p>
           </div>
         </div>
         <div class="row">

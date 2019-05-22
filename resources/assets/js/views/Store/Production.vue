@@ -15,6 +15,7 @@
                 <delivery-date-picker
                   v-model="filters.delivery_dates"
                   @change="onChangeDateFilter"
+                  ref="deliveryDates"
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
               </div>
@@ -58,10 +59,6 @@
         </div>
       </div>
     </div>
-    <v-style>
-      .input-date{ color: {{ dateColor }}
-      }
-    </v-style>
   </div>
 </template>
 
@@ -81,10 +78,10 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      dateColor: "",
+      ordersByDate: [],
       filters: {
         delivery_dates: {
-          start: moment(),
+          start: null,
           end: null
         }
       },
@@ -118,52 +115,24 @@ export default {
     ...mapGetters({
       meals: "storeMeals",
       getMeal: "storeMeal",
-      orders: "storeOrders",
+      upcomingOrders: "storeUpcomingOrders",
+      // orders: "storeOrders",
       isLoading: "isLoading",
       nextDeliveryDates: "storeNextDeliveryDates"
     }),
     tableData() {
       let filters = { ...this.filters };
 
-      let filteredByDate = _.filter(this.orders, order => {
-        if (
-          "delivery_dates" in filters &&
-          (filters.delivery_dates.start || filters.delivery_dates.end)
-        ) {
-          let dateMatch = false;
-
-          if (filters.delivery_dates.start && filters.delivery_dates.end) {
-            dateMatch = order.delivery_date
-              .hours(12)
-              .isBetween(
-                filters.delivery_dates.start,
-                filters.delivery_dates.end,
-                "date",
-                "[]"
-              );
-          } else if (filters.delivery_dates.start) {
-            dateMatch = order.delivery_date
-              .hours(12)
-              .isSameOrAfter(filters.delivery_dates.start, "date", "[]");
-          } else if (filters.delivery_dates.end) {
-            dateMatch = order.delivery_date
-              .hours(12)
-              .isSameOrBefore(filters.delivery_dates.end, "date", "[]");
-          }
-
-          if (!dateMatch) return false;
-        }
-
-        return true;
-      });
-
-      let filteredOrders = _.filter(filteredByDate, order => {
-        if (order.fulfilled === 0) return true;
-      });
+      let orders = {};
+      if (this.filters.delivery_dates.start === null) {
+        orders = this.upcomingOrders;
+      } else {
+        orders = this.ordersByDate;
+      }
 
       let mealCounts = {};
 
-      filteredByDate.forEach(order => {
+      orders.forEach(order => {
         _.forEach(order.meal_quantities, (quantity, mealId) => {
           //mealId = parseInt(mealIdParts[0]);
 
@@ -282,12 +251,19 @@ export default {
         });
     },
     onChangeDateFilter() {
-      this.dateColor = "#5c6873 !important";
+      axios
+        .post("/api/me/getOrdersWithDates", {
+          start: this.filters.delivery_dates.start,
+          end: this.filters.delivery_dates.end
+        })
+        .then(response => {
+          this.ordersByDate = response.data;
+        });
     },
     clearDeliveryDates() {
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
-      this.dateColor = "#ffffff !important";
+      this.$refs.deliveryDates.clearDates();
     }
   }
 };

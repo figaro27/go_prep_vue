@@ -15,6 +15,7 @@
           <p>{{$order->user->details->city}},
           {{$order->user->details->state}}
           {{$order->user->details->zip}}</p>
+          <p>{{$order->user->details->phone}}</p>
         </p>
         <h4 class="mt-3">Order Details</h4>
             <p>Order #{{$order->order_number}}</p>
@@ -22,13 +23,24 @@
             <p>Meal Plan #{{ $order->subscription->stripe_id }}</p>
             @endif
             <p>Order Placed: {{$order->created_at->format('D, m/d/Y')}}</p>
+            @if ($order->pickup === 0)
             <p>To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}}</p>
+            @endif
+            @if ($order->pickup === 1)
+            <p>To Be Picked Up: {{$order->delivery_date->format('D, m/d/Y')}}</p>
+            @endif
             <p><strong>Total: ${{number_format($order->amount, 2)}}</strong></p>
       </div>
       <div class="col-4">
         <img src="{{$logo}}" style="zoom: 0.5" />
         <br><br>
         <p>{{$order->store->details->domain}}.goprep.com</p>
+        @if ($order->pickup === 0)
+        <h4>DELIVERY</h4>
+        @endif
+        @if ($order->pickup === 1)
+        <h4>PICKUP</h4>
+        @endif
       </div>
     </div>
 

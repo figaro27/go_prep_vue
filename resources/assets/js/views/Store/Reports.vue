@@ -24,7 +24,9 @@
             <div class="report-date-picker">
               <delivery-date-picker
                 v-model="delivery_dates.meal_orders"
+                ref="mealOrdersDates"
               ></delivery-date-picker>
+              <b-btn @click="clearMealOrders()" class="ml-1">Clear</b-btn>
             </div>
             <p class="mt-4 center-text">
               Shows how many of each meal to make based on your orders.
@@ -69,7 +71,11 @@
               <delivery-date-picker
                 v-model="delivery_dates.ingredient_quantities"
                 :rtl="true"
+                ref="ingredientQuantitiesDates"
               ></delivery-date-picker>
+              <b-btn @click="clearIngredientQuantities()" class="ml-1"
+                >Clear</b-btn
+              >
             </div>
             <p class="mt-4 center-text">
               Shows how much of each ingredient is needed based on your orders.
@@ -122,7 +128,9 @@
             <div class="report-date-picker">
               <delivery-date-picker
                 v-model="delivery_dates.orders_by_customer"
+                ref="ordersByCustomerDates"
               ></delivery-date-picker>
+              <b-btn @click="clearOrdersByCustomer()" class="ml-1">Clear</b-btn>
             </div>
             <p class="mt-4 center-text">
               Shows how to bag up your meals for each customer.
@@ -169,7 +177,9 @@
               <delivery-date-picker
                 v-model="delivery_dates.packing_slips"
                 :rtl="true"
+                ref="packingSlipsDates"
               ></delivery-date-picker>
+              <b-btn @click="clearPackingSlips()" class="ml-1">Clear</b-btn>
             </div>
             <p class="mt-4 center-text">
               Show packing slips or order summaries to include in your bag to
@@ -215,7 +225,9 @@
             <div class="report-date-picker">
               <delivery-date-picker
                 v-model="delivery_dates.delivery_routes"
+                ref="deliveryRoutesDates"
               ></delivery-date-picker>
+              <b-btn @click="clearDeliveryRoutes()" class="ml-1">Clear</b-btn>
             </div>
             <p class="mt-4 center-text">
               Shows you the quickest route to make your deliveries.
@@ -395,6 +407,31 @@ export default {
         .finally(() => {
           this.loading = false;
         });
+    },
+    clearMealOrders() {
+      this.delivery_dates.meal_orders.start = null;
+      this.delivery_dates.meal_orders.end = null;
+      this.$refs.mealOrdersDates.clearDates();
+    },
+    clearIngredientQuantities() {
+      this.delivery_dates.ingredient_quantities.start = null;
+      this.delivery_dates.ingredient_quantities.end = null;
+      this.$refs.ingredientQuantitiesDates.clearDates();
+    },
+    clearOrdersByCustomer() {
+      this.delivery_dates.orders_by_customer.start = null;
+      this.delivery_dates.orders_by_customer.end = null;
+      this.$refs.ordersByCustomerDates.clearDates();
+    },
+    clearPackingSlips() {
+      this.delivery_dates.packing_slips.start = null;
+      this.delivery_dates.packing_slips.end = null;
+      this.$refs.packingSlipsDates.clearDates();
+    },
+    clearDeliveryRoutes() {
+      this.delivery_dates.delivery_routes.start = null;
+      this.delivery_dates.delivery_routes.end = null;
+      this.$refs.deliveryRoutesDates.clearDates();
     }
   }
 };

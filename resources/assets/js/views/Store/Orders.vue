@@ -22,7 +22,7 @@
                   >
                 </div>
                 <div class="d-inline-block mr-2 flex-grow-0">
-                  <b-btn
+                  <!-- <b-btn
                     @click="showFulfilledOrders()"
                     :selected="filters.fulfilled"
                     variant="warning"
@@ -37,7 +37,7 @@
                     class="filter-btn"
                     v-if="filters.fulfilled"
                     >View Open Orders</b-btn
-                  >
+                  > -->
                   <!-- <router-link to="/store/menu/manual-order">
                     <b-btn class="btn btn-success filter-btn">Create Manual Order</b-btn>
                   </router-link> -->
@@ -46,6 +46,7 @@
                   v-model="filters.delivery_dates"
                   @change="onChangeDateFilter"
                   class="mt-3 mt-sm-0"
+                  ref="deliveryDates"
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
               </div>
@@ -98,7 +99,7 @@
               >
                 View Order
               </button>
-              <b-btn
+              <!-- <b-btn
                 v-if="!props.row.fulfilled"
                 class="btn btn-primary btn-sm"
                 @click="fulfill(props.row.id)"
@@ -111,7 +112,7 @@
                 @click="unfulfill(props.row.id)"
                 variant="danger"
                 >Unmark As Complete</b-btn
-              >
+              > -->
             </div>
 
             <div slot="amount" slot-scope="props">
@@ -134,43 +135,24 @@
             <p>{{ moment(order.created_at).format("dddd, MMM Do") }}</p>
           </div>
           <div class="col-md-4 pt-4">
-            <span> Subtotal: {{ format.money(order.preFeePreDiscount) }} </span
-            ><br />
-            <span v-if="order.mealPlanDiscount > 0">
-              Meal Plan Discount:
-              <span class="text-success"
-                >({{ format.money(order.mealPlanDiscount) }})
-              </span>
-              <br />
-            </span>
-            <span v-if="order.deliveryFee > 0">
+            <p>Subtotal: {{ format.money(order.preFeePreDiscount) }}</p>
+            <p class="text-success" v-if="order.couponReduction > 0">
+              Coupon {{ order.couponCode }}: ({{
+                format.money(order.couponReduction)
+              }})
+            </p>
+            <p v-if="order.mealPlanDiscount > 0" class="text-success">
+              Meal Plan Discount: ({{ format.money(order.mealPlanDiscount) }})
+            </p>
+            <p v-if="order.deliveryFee > 0">
               Delivery Fee: {{ format.money(order.deliveryFee) }}
-              <br />
-            </span>
-            <span v-if="order.processingFee > 0">
+            </p>
+            <p v-if="order.processingFee > 0">
               Processing Fee:
               {{ format.money(order.processingFee) }}
-              <br />
-            </span>
-            <span>Sales Tax: {{ format.money(order.salesTax) }}</span
-            ><br />
-            <span>
-              <strong
-                ><span v-if="order.couponReduction === null"
-                  >Total: {{ format.money(order.amount) }}</span
-                ></strong
-              >
-              <div v-if="order.couponReduction > 0">
-                Pre-Coupon Total: {{ format.money(order.pre_coupon) }}
-                <br />
-                <span class="text-success"
-                  >(Coupon {{ order.couponCode }}:
-                  {{ format.money(order.couponReduction) }})</span
-                >
-                <br />
-                <strong>Total: {{ format.money(order.amount) }}</strong>
-              </div>
-            </span>
+            </p>
+            <p>Sales Tax: {{ format.money(order.salesTax) }}</p>
+            <p class="strong">Total: {{ format.money(order.amount) }}</p>
           </div>
         </div>
 
@@ -287,8 +269,8 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      ordersByDate: {},
       email: "",
-      dateColor: "",
       deliveryDate: "All",
       filter: false,
       pastOrder: false,
@@ -365,7 +347,8 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
-      orders: "storeOrders",
+      // orders: "storeOrders",
+      upcomingOrders: "storeUpcomingOrders",
       isLoading: "isLoading",
       initialized: "initialized",
       customers: "storeCustomers",
@@ -374,53 +357,18 @@ export default {
     tableData() {
       let filters = { ...this.filters };
 
-      let filtered = _.filter(this.orders, order => {
-        if ("paid" in filters && filters.paid !== order.paid) {
-          return false;
-        }
-        if (
-          "delivery_dates" in filters &&
-          (filters.delivery_dates.start || filters.delivery_dates.end)
-        ) {
-          let dateMatch = false;
-
-          if (filters.delivery_dates.start && filters.delivery_dates.end) {
-            dateMatch = order.delivery_date
-              .hours(12)
-              .isBetween(
-                filters.delivery_dates.start,
-                filters.delivery_dates.end,
-                "date",
-                "[]"
-              );
-          } else if (filters.delivery_dates.start) {
-            dateMatch = order.delivery_date
-              .hours(12)
-              .isSameOrAfter(filters.delivery_dates.start, "date", "[]");
-          } else if (filters.delivery_dates.end) {
-            dateMatch = order.delivery_date
-              .hours(12)
-              .isSameOrBefore(filters.delivery_dates.end, "date", "[]");
-          }
-
-          if (!dateMatch) return false;
-        }
-
-        if (filters.has_notes && !order.has_notes) return false;
-        if (order.fulfilled != filters.fulfilled) return false;
-
-        return true;
-      });
-
-      return filtered.map(order => {
-        order.customer = _.find(this.customers, { user_id: order.user_id });
-        return order;
-      });
+      let orders = {};
+      if (this.filters.delivery_dates.start === null) {
+        orders = this.upcomingOrders;
+      } else {
+        orders = this.ordersByDate;
+      }
+      return orders;
     }
   },
   beforeDestroy() {
     this.updateViewedOrders();
-    this.refreshOrders();
+    // this.refreshOrders();
   },
   methods: {
     ...mapActions({
@@ -556,7 +504,14 @@ export default {
         });
     },
     onChangeDateFilter() {
-      this.dateColor = "#5c6873 !important";
+      axios
+        .post("/api/me/getOrdersWithDates", {
+          start: this.filters.delivery_dates.start,
+          end: this.filters.delivery_dates.end
+        })
+        .then(response => {
+          this.ordersByDate = response.data;
+        });
     },
     updateViewedOrders() {
       axios.get(`/api/me/ordersUpdateViewed`);
@@ -564,7 +519,7 @@ export default {
     clearDeliveryDates() {
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
-      this.dateColor = "#ffffff !important";
+      this.$refs.deliveryDates.clearDates();
     },
     showFulfilledOrders() {
       this.filters.fulfilled = 1;
