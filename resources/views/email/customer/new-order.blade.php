@@ -295,6 +295,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           ${{ number_format($subtotal, 2) }}<br>
                           @if ($coupon > 0)
                           (${{ number_format($coupon, 2) }})<br>
+                          @endif
                           @if ($mealPlanDiscount > 0)
                           (${{ number_format($mealPlanDiscount, 2) }})<br>
                           @endif
@@ -305,7 +306,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           ${{ number_format($processingFee, 2) }}<br>
                           @endif
                           ${{ number_format($salesTax, 2) }}<br>
-                          @endif<br><br>
+                          <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($order->amount, 2) }}</span>
                         </td>
                       </tr>

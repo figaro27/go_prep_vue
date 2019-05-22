@@ -345,6 +345,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           ${{ number_format($subtotal, 2) }}<br>
                           @if ($coupon > 0)
                           (${{ number_format($coupon, 2) }})<br>
+                          @endif
                           @if ($mealPlanDiscount > 0)
                           (${{ number_format($mealPlanDiscount, 2) }})<br>
                           @endif
