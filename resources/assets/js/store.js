@@ -1150,7 +1150,36 @@ const getters = {
       return null;
     }
   },
+  viewedStoreMeal: state => id => {
+    try {
+      let meal = _.find(state.viewed_store.meals, ["id", parseInt(id)]) || null;
+      if (!meal) {
+        return null;
+      }
 
+      meal.getSize = sizeId => {
+        return _.find(meal.sizes, ["id", parseInt(sizeId)]);
+      };
+
+      meal.getTitle = (size = null, components = null) => {
+        let title = meal.title;
+
+        if (size) {
+          title = size.title;
+        }
+
+        if (_.isArray(components) && components.length) {
+          title += " - " + _.map(components, "option").join(", ");
+        }
+
+        return title;
+      };
+
+      return meal;
+    } catch (e) {
+      return null;
+    }
+  },
   isLoading(state) {
     return state.isLoading || !_.isEmpty(state.jobs);
   },
@@ -1334,12 +1363,31 @@ const getters = {
   storeMeal: state => id => {
     try {
       let meal = _.find(state.store.meals.data, ["id", parseInt(id)]) || null;
+      if (!meal) {
+        return null;
+      }
+
       meal.getSize = sizeId => {
         return _.find(meal.sizes, ["id", parseInt(sizeId)]);
       };
+
+      meal.getTitle = (size = null, components = null) => {
+        let title = meal.title;
+
+        if (size) {
+          title = size.title;
+        }
+
+        if (_.isArray(components) && components.length) {
+          title += " - " + _.map(components, "option").join(", ");
+        }
+
+        return title;
+      };
+
       return meal;
     } catch (e) {
-      return {};
+      return null;
     }
   },
   storeCategories: state => {

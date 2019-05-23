@@ -28,21 +28,29 @@ class MealOrders
 
         $orders = $this->store->getOrders(null, $dates, true);
         $orders->map(function ($order) use (&$mealQuantities) {
-            foreach ($order->meal_quantities as $id => $qty) {
-                $idParts = explode('-', $id);
-                $meal = Meal::find($idParts[0]);
+            foreach ($order->meal_quantities as $i => $qty) {
+                //$idParts = explode('-', $id);
+                $meal = Meal::find($qty->meal_id);
                 $title = $meal->item_title;
-                if (isset($idParts[1])) {
-                    $size = MealSize::find($idParts[1]);
+                if ($qty->meal_size_id) {
+                    $size = MealSize::find($qty->meal_size_id);
                     if ($size) {
                         $title = $size->full_title;
                     }
+                }
+                if (count($qty->components)) {
+                    $comp = $qty->components
+                        ->map(function ($component) {
+                            return $component->option;
+                        })
+                        ->implode(', ');
+                    $title .= ' - ' . $comp;
                 }
                 if (!isset($mealQuantities[$title])) {
                     $mealQuantities[$title] = 0;
                 }
 
-                $mealQuantities[$title] += $qty;
+                $mealQuantities[$title] += $qty->quantity;
             }
         });
 

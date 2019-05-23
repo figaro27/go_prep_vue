@@ -9,6 +9,8 @@ class MealComponent extends Model
 {
     use SoftDeletes;
 
+    protected $table = 'meal_components';
+
     protected $fillable = [];
 
     protected $casts = [

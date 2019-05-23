@@ -149,7 +149,9 @@ export default {
   computed: {
     ...mapGetters({
       _orders: "orders",
-      isLoading: "isLoading"
+      initialized: "initialized",
+      isLoading: "isLoading",
+      getStoreMeal: "viewedStoreMeal"
     }),
     orders() {
       return this._orders.filter(meal => {
@@ -161,17 +163,29 @@ export default {
   methods: {
     ...mapActions(["refreshCustomerOrders"]),
     getMealTableData(order) {
-      return order.meals.map(meal => {
+      if (!this.initialized) return [];
+
+      let data = order.meal_quantities.map(qty => {
+        const meal = this.getStoreMeal(qty.meal_id);
+        if (!meal) {
+          return null;
+        }
+
         const price = meal.item_price;
         const quantity = meal.item_quantity;
+        const size = meal.getSize(qty.meal_size_id);
+        const title = meal.getTitle(size, qty.components);
 
         return {
           image: meal.image.url_thumb,
-          meal: meal.item_title,
+          meal: title,
           quantity: quantity,
-          subtotal: format.money(price * quantity)
+          unit_price: format.money(qty.unit_price),
+          subtotal: format.money(qty.price)
         };
       });
+
+      return _.filter(data);
     }
   }
 };

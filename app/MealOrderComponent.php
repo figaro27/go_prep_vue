@@ -26,11 +26,14 @@ class MealOrderComponent extends Pivot
 
     public function component()
     {
-        return $this->belongsTo('App\MealComponent');
+        return $this->belongsTo('App\MealComponent', 'meal_component_id');
     }
 
     public function option()
     {
-        return $this->belongsTo('App\MealComponentOption');
+        return $this->belongsTo(
+            'App\MealComponentOption',
+            'meal_component_option_id'
+        );
     }
 }

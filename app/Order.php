@@ -126,6 +126,31 @@ class Order extends Model
     }
     public function getMealQuantitiesAttribute()
     {
+        return $this->meal_orders()
+            ->with(['components', 'components.component', 'components.option'])
+            ->get()
+            ->map(function ($mealOrder) {
+                return (object) [
+                    'meal_id' => $mealOrder->meal_id,
+                    'meal_size_id' => $mealOrder->meal_size_id,
+                    'quantity' => $mealOrder->quantity,
+                    'unit_price' => $mealOrder->unit_price,
+                    'price' => $mealOrder->price,
+                    'components' => $mealOrder->components->map(function (
+                        $component
+                    ) {
+                        return (object) [
+                            'meal_component_id' => $component->component->id,
+                            'meal_component_option_id' =>
+                                $component->option->id,
+                            'component' => $component->component->title,
+                            'option' => $component->option->title
+                        ];
+                    }),
+                    'addons' => []
+                ];
+            });
+        //
         return $this->meals()
             ->get()
             ->keyBy(function ($meal) {

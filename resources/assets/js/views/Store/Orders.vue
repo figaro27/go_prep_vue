@@ -222,7 +222,7 @@
             <h4>Meals</h4>
             <hr />
             <ul class="meal-quantities">
-              <li v-for="meal in getMealQuantities(order.meals)">
+              <li v-for="meal in getMealQuantities(order)" :key="meal.id">
                 <div class="row">
                   <div class="col-md-5 pr-0">
                     <span class="order-quantity">{{ meal.quantity }}</span>
@@ -235,9 +235,9 @@
                     ></thumbnail>
                   </div>
                   <div class="col-md-7 pt-3 nopadding pl-0 ml-0">
-                    <p>{{ meal.title }}</p>
+                    <p>{{ meal.meal }}</p>
                     <p class="strong">
-                      {{ format.money(meal.price * meal.quantity) }}
+                      {{ format.money(meal.subtotal) }}
                     </p>
                   </div>
                 </div>
@@ -352,7 +352,8 @@ export default {
       isLoading: "isLoading",
       initialized: "initialized",
       customers: "storeCustomers",
-      nextDeliveryDates: "storeNextDeliveryDates"
+      nextDeliveryDates: "storeNextDeliveryDates",
+      getMeal: "storeMeal"
     }),
     tableData() {
       let filters = { ...this.filters };
@@ -409,18 +410,30 @@ export default {
       this.$toastr.s("Order notes saved!");
       this.$forceUpdate();
     },
-    getMealQuantities(meals) {
-      if (!_.isArray(meals)) {
-        return [];
-      }
-      return meals.map((meal, id) => {
+    getMealQuantities(order) {
+      if (!this.initialized || !order.meal_quantities) return [];
+
+      let data = order.meal_quantities.map(qty => {
+        const meal = this.getMeal(qty.meal_id);
+        if (!meal) {
+          return null;
+        }
+
+        const price = meal.item_price;
+        const quantity = meal.item_quantity;
+        const size = meal.getSize(qty.meal_size_id);
+        const title = meal.getTitle(size, qty.components);
+
         return {
-          quantity: meal.pivot.quantity,
-          image: meals[id].image,
-          title: meal.item_title,
-          price: meal.item_price
+          image: meal.image,
+          meal: title,
+          quantity: quantity,
+          unit_price: format.money(qty.unit_price),
+          subtotal: format.money(qty.price)
         };
       });
+
+      return _.filter(data);
     },
     async viewOrder(id) {
       const jobId = await this.addJob();
