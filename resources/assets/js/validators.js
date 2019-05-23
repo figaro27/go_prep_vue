@@ -4,7 +4,7 @@ const validators = {
   required,
   password: {
     required,
-    minLength: minLength(7)
+    minLength: minLength(6)
   },
   email: {
     required,
