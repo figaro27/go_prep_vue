@@ -34,7 +34,7 @@ const validators = {
   },
   delivery: {
     required,
-    minLength: minLength(5)
+    minLength: minLength(0)
   },
   store_name: {
     required,
