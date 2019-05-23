@@ -298,7 +298,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           ${{ number_format($processingFee, 2) }}<br>
                           @endif
                           ${{ number_format($salesTax, 2) }}<br>
-                          @endif<br><br>
+                          <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($subscription->amount, 2) }}</span>
                         </td>
                       </tr>
