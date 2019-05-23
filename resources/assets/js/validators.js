@@ -33,7 +33,6 @@ const validators = {
     minLength: minLength(5)
   },
   delivery: {
-    required,
     minLength: minLength(0)
   },
   store_name: {
