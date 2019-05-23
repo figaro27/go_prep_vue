@@ -31,25 +31,6 @@
                     <div class="col-md-4">
                       <h4>Order ID</h4>
                       <p>{{ order.order_number }}</p>
-                    </div>
-                    <div class="col-md-4">
-                      <h4>Placed On</h4>
-                      <p>
-                        {{
-                          moment
-                            .utc(order.created_at)
-                            .local()
-                            .format("dddd, MMM Do, Y")
-                        }}
-                      </p>
-                    </div>
-                    <div class="col-md-4">
-                      <h2>{{ format.money(order.amount) }}</h2>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-4">
                       <h4>
                         {{ order.pickup ? "Pickup Day" : "Delivery Day" }}
                       </h4>
@@ -69,10 +50,44 @@
                       </p>
                     </div>
                     <div class="col-md-4">
+                      <h4>Placed On</h4>
+                      <p>
+                        {{
+                          moment
+                            .utc(order.created_at)
+                            .local()
+                            .format("dddd, MMM Do, Y")
+                        }}
+                      </p>
                       <h4>Company</h4>
                       <p>{{ order.store_name }}</p>
                     </div>
                     <div class="col-md-4">
+                      <h4>Amount</h4>
+                      <p>
+                        Subtotal: {{ format.money(order.preFeePreDiscount) }}
+                      </p>
+                      <p class="text-success" v-if="order.couponReduction > 0">
+                        Coupon {{ order.couponCode }}: ({{
+                          format.money(order.couponReduction)
+                        }})
+                      </p>
+                      <p v-if="order.mealPlanDiscount > 0" class="text-success">
+                        Meal Plan Discount: ({{
+                          format.money(order.mealPlanDiscount)
+                        }})
+                      </p>
+                      <p v-if="order.deliveryFee > 0">
+                        Delivery Fee: {{ format.money(order.deliveryFee) }}
+                      </p>
+                      <p v-if="order.processingFee > 0">
+                        Processing Fee:
+                        {{ format.money(order.processingFee) }}
+                      </p>
+                      <p>Sales Tax: {{ format.money(order.salesTax) }}</p>
+                      <p class="strong">
+                        Total: {{ format.money(order.amount) }}
+                      </p>
                       <img src="/images/collapse-arrow.png" class="mt-2 pt-3" />
                     </div>
                   </div>
@@ -86,39 +101,6 @@
                     >
                       <template slot="image" slot-scope="row">
                         <img :src="row.value" class="modalMeal" />
-                      </template>
-
-                      <template slot="FOOT_subtotal" slot-scope="row">
-                        <p>
-                          Subtotal: {{ format.money(order.preFeePreDiscount) }}
-                        </p>
-                        <p
-                          class="text-success"
-                          v-if="order.couponReduction > 0"
-                        >
-                          Coupon {{ order.couponCode }}: ({{
-                            format.money(order.couponReduction)
-                          }})
-                        </p>
-                        <p
-                          v-if="order.mealPlanDiscount > 0"
-                          class="text-success"
-                        >
-                          Meal Plan Discount: ({{
-                            format.money(order.mealPlanDiscount)
-                          }})
-                        </p>
-                        <p v-if="order.deliveryFee > 0">
-                          Delivery Fee: {{ format.money(order.deliveryFee) }}
-                        </p>
-                        <p v-if="order.processingFee > 0">
-                          Processing Fee:
-                          {{ format.money(order.processingFee) }}
-                        </p>
-                        <p>Sales Tax: {{ format.money(order.salesTax) }}</p>
-                        <p class="strong">
-                          Total: {{ format.money(order.amount) }}
-                        </p>
                       </template>
 
                       <template slot="table-caption"></template>
