@@ -20,7 +20,8 @@ class Subscription extends Model
         'next_delivery_date',
         'meal_ids',
         'meal_quantities',
-        'pre_coupon'
+        'pre_coupon',
+        'items'
     ];
 
     protected $casts = [
@@ -146,6 +147,36 @@ class Subscription extends Model
     public function getStoreNameAttribute()
     {
         return $this->store->storeDetail->name;
+    }
+
+    public function getItemsAttribute()
+    {
+        return $this->meal_subscriptions()
+            ->with(['components', 'components.component', 'components.option'])
+            ->get()
+            ->map(function ($mealSub) {
+                return (object) [
+                    'meal_id' => $mealSub->meal_id,
+                    'meal_size_id' => $mealSub->meal_size_id,
+                    'meal_title' => $mealSub->title,
+                    'title' => $mealSub->title,
+                    'quantity' => $mealSub->quantity,
+                    'unit_price' => $mealSub->unit_price,
+                    'price' => $mealSub->price,
+                    'components' => $mealSub->components->map(function (
+                        $component
+                    ) {
+                        return (object) [
+                            'meal_component_id' => $component->component->id,
+                            'meal_component_option_id' =>
+                                $component->option->id,
+                            'component' => $component->component->title,
+                            'option' => $component->option->title
+                        ];
+                    }),
+                    'addons' => []
+                ];
+            });
     }
 
     public function isPaused()

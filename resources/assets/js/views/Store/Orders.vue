@@ -235,7 +235,7 @@
                     ></thumbnail>
                   </div>
                   <div class="col-md-7 pt-3 nopadding pl-0 ml-0">
-                    <p>{{ meal.meal }}</p>
+                    <p>{{ meal.title }}</p>
                     <p class="strong">
                       {{ format.money(meal.subtotal) }}
                     </p>
@@ -424,7 +424,7 @@ export default {
 
         return {
           image: meal.image,
-          meal: title,
+          title: title,
           quantity: item.quantity,
           unit_price: format.money(item.unit_price),
           subtotal: format.money(item.price)

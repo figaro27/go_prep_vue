@@ -241,7 +241,9 @@ export default {
   computed: {
     ...mapGetters(["subscriptions"]),
     ...mapGetters({
-      storeSettings: "storeSettings"
+      storeSettings: "storeSettings",
+      initialized: "initialized",
+      getStoreMeal: "viewedStoreMeal"
     })
   },
   mounted() {},
@@ -267,21 +269,29 @@ export default {
       });
     },
     getMealTableData(subscription) {
-      if (!subscription || !_.isArray(subscription.meals)) {
-        return [];
-      }
+      if (!this.initialized) return [];
 
-      return subscription.meals.map(meal => {
+      let data = subscription.items.map(item => {
+        const meal = this.getStoreMeal(item.meal_id);
+        if (!meal) {
+          return null;
+        }
+
         const price = meal.item_price;
         const quantity = meal.item_quantity;
+        const size = meal.getSize(item.meal_size_id);
+        const title = meal.getTitle(size, item.components);
 
         return {
-          image: meal.image.url,
-          meal: meal.item_title,
+          image: meal.image.url_thumb,
+          meal: title,
           quantity: quantity,
-          subtotal: format.money(price * quantity)
+          unit_price: format.money(item.unit_price),
+          subtotal: format.money(item.price)
         };
       });
+
+      return _.filter(data);
     },
     async pauseSubscription(subscription) {
       try {
