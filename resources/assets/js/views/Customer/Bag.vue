@@ -671,52 +671,10 @@ export default {
   methods: {
     ...mapActions(["refreshSubscriptions", "refreshCustomerOrders"]),
     ...mapMutations(["emptyBag"]),
-    quantity(meal, mealPackage = false, size = null, components = null) {
-      const qty = this.$store.getters.bagItemQuantity(
-        meal,
-        mealPackage,
-        size,
-        components
-      );
-      return qty;
-    },
-    addOne(meal, mealPackage = false, size = null, components = null) {
-      this.$store.commit("addToBag", {
-        meal,
-        quantity: 1,
-        mealPackage,
-        size,
-        components
-      });
-    },
-    minusOne(meal, mealPackage = false, size = null, components = null) {
-      this.$store.commit("removeFromBag", {
-        meal,
-        quantity: 1,
-        mealPackage,
-        size,
-        components
-      });
-    },
-    clearMeal(meal, mealPackage = false, size = null) {
-      let quantity = this.quantity(meal, mealPackage, size);
-      this.$store.commit("removeFromBag", {
-        meal,
-        quantity,
-        mealPackage,
-        size
-      });
-    },
-    clearAll() {
-      this.$store.commit("emptyBag");
-    },
     preventNegative() {
       if (this.total < 0) {
         this.total += 1;
       }
-    },
-    addBagItems(bag) {
-      this.$store.commit("addBagItems", bag);
     },
     checkout() {
       if (this.checkingOut) {
@@ -774,14 +732,6 @@ export default {
           this.loading = false;
           this.checkingOut = false;
         });
-    },
-    getSalesTax(state) {
-      SalesTax.getSalesTax("US", state).then(tax => {
-        this.setSalesTax(tax.rate);
-      });
-    },
-    setSalesTax(rate) {
-      this.salesTax = rate;
     },
     applyCoupon() {
       this.coupons.forEach(coupon => {

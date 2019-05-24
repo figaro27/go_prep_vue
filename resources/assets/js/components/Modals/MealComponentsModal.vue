@@ -6,7 +6,7 @@
           <b-col>
             <div
               v-for="(component, i) in meal.components"
-              :key="component.id"
+              :key="meal.id + component.id"
               class=""
             >
               <b-form-group :label="component.title">
@@ -94,12 +94,16 @@ export default {
 
       this.$refs.modal.show();
 
+      this.$forceUpdate();
+
       return new Promise((resolve, reject) => {
         this.$on("done", () => {
           this.$v.$touch();
 
-          if (1 || !this.$v.$invalid) {
-            resolve(this.choices);
+          if (!this.$v.$invalid) {
+            if (!_.isEmpty(this.choices)) {
+              resolve({ ...this.choices });
+            }
             this.hide();
             this.meal = null;
             this.mealPackage = false;
