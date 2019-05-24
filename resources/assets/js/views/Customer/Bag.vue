@@ -34,14 +34,18 @@
                 >
                   <div class="bag-item-quantity mr-2">
                     <div
-                      @click="addOne(item.meal, false, item.size)"
+                      @click="
+                        addOne(item.meal, false, item.size, item.components)
+                      "
                       class="bag-plus-minus brand-color white-text"
                     >
                       <i>+</i>
                     </div>
                     <p class="bag-quantity">{{ item.quantity }}</p>
                     <div
-                      @click="minusOne(item.meal, false, item.size)"
+                      @click="
+                        minusOne(item.meal, false, item.size, item.components)
+                      "
                       class="bag-plus-minus gray white-text"
                     >
                       <i>-</i>
@@ -66,7 +70,9 @@
                   <div class="flex-grow-0">
                     <img
                       src="/images/customer/x.png"
-                      @click="clearMeal(item.meal, false, item.size)"
+                      @click="
+                        clearMeal(item.meal, false, item.size, item.components)
+                      "
                       class="clear-meal"
                     />
                   </div>
@@ -656,19 +662,31 @@ export default {
   methods: {
     ...mapActions(["refreshSubscriptions", "refreshCustomerOrders"]),
     ...mapMutations(["emptyBag"]),
-    quantity(meal, mealPackage = false, size = null) {
-      const qty = this.$store.getters.bagItemQuantity(meal, mealPackage, size);
+    quantity(meal, mealPackage = false, size = null, components = null) {
+      const qty = this.$store.getters.bagItemQuantity(
+        meal,
+        mealPackage,
+        size,
+        components
+      );
       return qty;
     },
-    addOne(meal, mealPackage = false, size = null) {
-      this.$store.commit("addToBag", { meal, quantity: 1, mealPackage, size });
+    addOne(meal, mealPackage = false, size = null, components = null) {
+      this.$store.commit("addToBag", {
+        meal,
+        quantity: 1,
+        mealPackage,
+        size,
+        components
+      });
     },
-    minusOne(meal, mealPackage = false, size = null) {
+    minusOne(meal, mealPackage = false, size = null, components = null) {
       this.$store.commit("removeFromBag", {
         meal,
         quantity: 1,
         mealPackage,
-        size
+        size,
+        components
       });
     },
     clearMeal(meal, mealPackage = false, size = null) {

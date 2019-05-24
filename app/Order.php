@@ -32,7 +32,7 @@ class Order extends Model
     protected $appends = [
         'has_notes',
         'meal_ids',
-        'meal_quantities',
+        'items',
         'store_name',
         'cutoff_date',
         'cutoff_passed',
@@ -124,7 +124,7 @@ class Order extends Model
             ->pluck('id')
             ->unique();
     }
-    public function getMealQuantitiesAttribute()
+    public function getItemsAttribute()
     {
         return $this->meal_orders()
             ->with(['components', 'components.component', 'components.option'])
@@ -133,6 +133,8 @@ class Order extends Model
                 return (object) [
                     'meal_id' => $mealOrder->meal_id,
                     'meal_size_id' => $mealOrder->meal_size_id,
+                    'meal_title' => $mealOrder->title,
+                    'title' => $mealOrder->title,
                     'quantity' => $mealOrder->quantity,
                     'unit_price' => $mealOrder->unit_price,
                     'price' => $mealOrder->price,

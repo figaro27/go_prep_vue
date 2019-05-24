@@ -1175,6 +1175,22 @@ const getters = {
         return title;
       };
 
+      meal.getComponent = componentId => {
+        return _.find(meal.components, { id: parseInt(componentId) });
+      };
+      meal.getComponentOption = (component, optionId) => {
+        return _.find(component.options, { id: parseInt(optionId) });
+      };
+
+      meal.getComponentTitle = componentId => {
+        const component = meal.getComponent(componentId);
+        if (component) {
+          return component.title;
+        } else {
+          return null;
+        }
+      };
+
       return meal;
     } catch (e) {
       return null;
@@ -1260,6 +1276,22 @@ const getters = {
     }
 
     return state.bag.items[guid].quantity || 0;
+  },
+  bagMealQuantity: state => meal => {
+    if (!meal) {
+      return 0;
+    }
+
+    let mealId = meal;
+    if (!_.isNumber(mealId)) {
+      mealId = meal.id;
+    }
+
+    return _.sumBy(Object.values(state.bag.items), item => {
+      if (item.meal.id === mealId) {
+        return item.quantity;
+      }
+    });
   },
   totalBagPricePreFees(state, getters) {
     let items = _.compact(_.toArray(state.bag.items));

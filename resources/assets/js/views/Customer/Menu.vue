@@ -582,7 +582,7 @@
                                   name
                                   id
                                   class="quantity"
-                                  :value="quantity(meal, false, true)"
+                                  :value="mealQuantity(meal)"
                                   readonly
                                 ></b-form-input>
                                 <b-btn
@@ -742,7 +742,14 @@
                       >
                         <div class="bag-item-quantity mr-2">
                           <div
-                            @click="addOne(item.meal, false, item.size)"
+                            @click="
+                              addOne(
+                                item.meal,
+                                false,
+                                item.size,
+                                item.components
+                              )
+                            "
                             class="bag-plus-minus brand-color white-text"
                           >
                             <i>+</i>
@@ -777,6 +784,12 @@
                             {{ item.size.full_title }}
                           </span>
                           <span v-else>{{ item.meal.item_title }}</span>
+
+                          <ul v-if="item.components" class="dash">
+                            <li v-for="component in itemComponents(item)">
+                              {{ component }}
+                            </li>
+                          </ul>
                         </div>
                         <div class="flex-grow-0">
                           <img
@@ -1127,7 +1140,8 @@ export default {
       loggedIn: "loggedIn",
       minOption: "minimumOption",
       minMeals: "minimumMeals",
-      minPrice: "minimumPrice"
+      minPrice: "minimumPrice",
+      getMeal: "viewedStoreMeal"
     }),
     tax() {
       return this.salesTax * this.afterDiscountAfterFeesBeforeTax;
@@ -1417,6 +1431,28 @@ export default {
   },
   methods: {
     ...mapActions(["refreshSubscriptions", "emptyBag"]),
+    itemComponents(item) {
+      const meal = this.getMeal(item.meal.id);
+      let wat = _(item.components)
+        .map((options, componentId) => {
+          const component = meal.getComponent(componentId);
+
+          const optionTitles = _(options)
+            .map(optionId => {
+              const option = meal.getComponentOption(component, optionId);
+              return option ? option.title : null;
+            })
+            .filter()
+            .toArray()
+            .value();
+
+          return optionTitles;
+        })
+        .flatten()
+        .value();
+
+      return wat;
+    },
     onCategoryVisible(isVisible, index) {
       if (isVisible && this.$refs.categorySlider) {
         this.$refs.categorySlider.goTo(index);
@@ -1453,16 +1489,24 @@ export default {
           qty += this.$store.getters.bagItemQuantity(
             meal,
             mealPackage,
-            sizeObj
+            sizeObj,
+            components
           );
         });
       }
       return qty;
     },
-    async addOne(meal, mealPackage = false, size = null) {
-      let components = null;
-
-      if (meal.components.length && _.maxBy(meal.components, "minimum")) {
+    // Total quantity of a meal regardless of size, components etc.
+    mealQuantity(meal) {
+      return this.$store.getters.bagMealQuantity(meal);
+    },
+    async addOne(meal, mealPackage = false, size = null, components = null) {
+      const min = _.maxBy(meal.components, "minimum");
+      if (
+        meal.components.length &&
+        _.maxBy(meal.components, "minimum") &&
+        !components
+      ) {
         components = await this.$refs.componentModal.show(
           meal,
           mealPackage,

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class MealOrder extends Pivot
 {
     protected $table = 'meal_orders';
-    protected $appends = ['unit_price', 'price'];
+    protected $appends = ['title', 'unit_price', 'price'];
     protected $with = ['components'];
 
     public function meals()
@@ -38,6 +38,24 @@ class MealOrder extends Pivot
     public function components()
     {
         return $this->hasMany('App\MealOrderComponent', 'meal_order_id', 'id');
+    }
+
+    public function getTitleAttribute()
+    {
+        $title = $this->meal->title;
+
+        if ($this->meal_size_id) {
+            $title = $this->meal_size->full_title;
+        }
+        if (count($this->components)) {
+            $comp = $this->components
+                ->map(function ($component) {
+                    return $component->option->title;
+                })
+                ->implode(', ');
+            $title .= ' - ' . $comp;
+        }
+        return $title;
     }
 
     public function getUnitPriceAttribute()

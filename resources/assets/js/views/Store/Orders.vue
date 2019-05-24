@@ -411,25 +411,23 @@ export default {
       this.$forceUpdate();
     },
     getMealQuantities(order) {
-      if (!this.initialized || !order.meal_quantities) return [];
+      if (!this.initialized || !order.items) return [];
 
-      let data = order.meal_quantities.map(qty => {
-        const meal = this.getMeal(qty.meal_id);
+      let data = order.items.map(item => {
+        const meal = this.getMeal(item.meal_id);
         if (!meal) {
           return null;
         }
 
-        const price = meal.item_price;
-        const quantity = meal.item_quantity;
-        const size = meal.getSize(qty.meal_size_id);
-        const title = meal.getTitle(size, qty.components);
+        const size = meal.getSize(item.meal_size_id);
+        const title = meal.getTitle(size, item.components);
 
         return {
           image: meal.image,
           meal: title,
-          quantity: quantity,
-          unit_price: format.money(qty.unit_price),
-          subtotal: format.money(qty.price)
+          quantity: item.quantity,
+          unit_price: format.money(item.unit_price),
+          subtotal: format.money(item.price)
         };
       });
 

@@ -133,13 +133,11 @@ export default {
       let mealCounts = {};
 
       orders.forEach(order => {
-        _.forEach(order.meal_quantities, (quantity, mealId) => {
-          //mealId = parseInt(mealIdParts[0]);
-
-          if (!mealCounts[mealId]) {
-            mealCounts[mealId] = 0;
+        _.forEach(order.items, item => {
+          if (!mealCounts[item.title]) {
+            mealCounts[item.title] = 0;
           }
-          mealCounts[mealId] += quantity;
+          mealCounts[item.title] += quantity;
         });
       });
 
