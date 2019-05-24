@@ -34,4 +34,13 @@ class MealSubscription extends Pivot
     {
         return $this->belongsTo('App\Subscription');
     }
+
+    public function components()
+    {
+        return $this->hasMany(
+            'App\MealSubscriptionComponent',
+            'meal_subscription_id',
+            'id'
+        );
+    }
 }

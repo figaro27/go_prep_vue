@@ -165,23 +165,23 @@ export default {
     getMealTableData(order) {
       if (!this.initialized) return [];
 
-      let data = order.meal_quantities.map(qty => {
-        const meal = this.getStoreMeal(qty.meal_id);
+      let data = order.items.map(item => {
+        const meal = this.getStoreMeal(item.meal_id);
         if (!meal) {
           return null;
         }
 
         const price = meal.item_price;
         const quantity = meal.item_quantity;
-        const size = meal.getSize(qty.meal_size_id);
-        const title = meal.getTitle(size, qty.components);
+        const size = meal.getSize(item.meal_size_id);
+        const title = meal.getTitle(size, item.components);
 
         return {
           image: meal.image.url_thumb,
           meal: title,
           quantity: quantity,
-          unit_price: format.money(qty.unit_price),
-          subtotal: format.money(qty.price)
+          unit_price: format.money(item.unit_price),
+          subtotal: format.money(item.price)
         };
       });
 

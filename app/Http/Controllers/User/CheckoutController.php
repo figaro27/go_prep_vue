@@ -8,6 +8,7 @@ use App\Mail\Customer\MealPlan;
 use App\Mail\Customer\NewOrder;
 use App\MealOrder;
 use App\MealOrderComponent;
+use App\MealSubscriptionComponent;
 use App\MealSubscription;
 use App\Order;
 use App\Store;
@@ -332,6 +333,18 @@ class CheckoutController extends UserController
                     $mealSub->meal_size_id = $item['size']['id'];
                 }
                 $mealSub->save();
+
+                if (isset($item['components']) && $item['components']) {
+                    foreach ($item['components'] as $componentId => $choices) {
+                        foreach ($choices as $optionId) {
+                            MealSubscriptionComponent::create([
+                                'meal_subscription_id' => $mealSub->id,
+                                'meal_component_id' => $componentId,
+                                'meal_component_option_id' => $optionId
+                            ]);
+                        }
+                    }
+                }
             }
 
             // Send notification to store

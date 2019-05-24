@@ -1036,6 +1036,7 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
 import Spinner from "../../components/Spinner";
 import MealComponentsModal from "../../components/Modals/MealComponentsModal";
+import MenuBag from "../../mixins/menuBag";
 import units from "../../data/units";
 import nutrition from "../../data/nutrition";
 import format from "../../lib/format";
@@ -1058,6 +1059,7 @@ export default {
     Slide,
     MealComponentsModal
   },
+  mixins: [MenuBag],
   props: {
     preview: {
       default: false
@@ -1431,28 +1433,6 @@ export default {
   },
   methods: {
     ...mapActions(["refreshSubscriptions", "emptyBag"]),
-    itemComponents(item) {
-      const meal = this.getMeal(item.meal.id);
-      let wat = _(item.components)
-        .map((options, componentId) => {
-          const component = meal.getComponent(componentId);
-
-          const optionTitles = _(options)
-            .map(optionId => {
-              const option = meal.getComponentOption(component, optionId);
-              return option ? option.title : null;
-            })
-            .filter()
-            .toArray()
-            .value();
-
-          return optionTitles;
-        })
-        .flatten()
-        .value();
-
-      return wat;
-    },
     onCategoryVisible(isVisible, index) {
       if (isVisible && this.$refs.categorySlider) {
         this.$refs.categorySlider.goTo(index);
@@ -1505,6 +1485,9 @@ export default {
       if (
         meal.components.length &&
         _.maxBy(meal.components, "minimum") &&
+        _.find(meal.components, component => {
+          return _.find(component.options, { meal_size_id: size });
+        }) &&
         !components
       ) {
         components = await this.$refs.componentModal.show(

@@ -215,13 +215,24 @@ class Subscription extends Model
         $newOrder->save();
 
         // Assign subscription meals to new order
-        foreach ($this->meals as $meal) {
-            $mealSub = new MealOrder();
-            $mealSub->order_id = $newOrder->id;
-            $mealSub->store_id = $this->store->id;
-            $mealSub->meal_id = $meal->id;
-            $mealSub->quantity = $meal->pivot->quantity;
-            $mealSub->save();
+        foreach ($this->meal_subscriptions as $mealSub) {
+            $mealOrder = new MealOrder();
+            $mealOrder->order_id = $newOrder->id;
+            $mealOrder->store_id = $this->store->id;
+            $mealOrder->meal_id = $mealSub->meal_id;
+            $mealOrder->quantity = $mealSub->quantity;
+            $mealOrder->save();
+
+            if ($mealSub->has('components')) {
+                foreach ($mealSub->components as $component) {
+                    MealOrderComponent::create([
+                        'meal_order_id' => $mealOrder->id,
+                        'meal_component_id' => $component->meal_component_id,
+                        'meal_component_option_id' =>
+                            $component->meal_component_option_id
+                    ]);
+                }
+            }
         }
 
         // Store next charge time as reported by Stripe

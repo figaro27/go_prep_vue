@@ -66,6 +66,12 @@
                       {{ item.size.full_title }}
                     </span>
                     <span v-else>{{ item.meal.item_title }}</span>
+
+                    <ul v-if="item.components" class="dash">
+                      <li v-for="component in itemComponents(item)">
+                        {{ component }}
+                      </li>
+                    </ul>
                   </div>
                   <div class="flex-grow-0">
                     <img
@@ -463,6 +469,7 @@ import { Switch as cSwitch } from "@coreui/vue";
 import { createToken } from "vue-stripe-elements-plus";
 import SalesTax from "sales-tax";
 
+import MenuBag from "../../mixins/menuBag";
 import CardPicker from "../../components/Billing/CardPicker";
 
 export default {
@@ -471,6 +478,7 @@ export default {
     CardPicker,
     SalesTax
   },
+  mixins: [MenuBag],
   data() {
     return {
       selectedPickupLocation: null,
@@ -507,7 +515,8 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
       coupons: "viewedStoreCoupons",
-      pickupLocations: "viewedStorePickupLocations"
+      pickupLocations: "viewedStorePickupLocations",
+      getMeal: "viewedStoreMeal"
     }),
     deliveryInstructions() {
       return this.storeSettings.deliveryInstructions.replace(/\n/g, "<br>");
