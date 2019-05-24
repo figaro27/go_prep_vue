@@ -84,12 +84,21 @@ class CheckoutController extends StoreController
 
         $apiKey = \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        $token = \Stripe\Token::create(
-            ["customer" => $customer->stripe_id],
+        // $token = \Stripe\Token::create(
+        //     ["customer" => $customer->stripe_id],
+        //     [
+        //         "stripe_account" =>
+        //             'acct_1DytLMHoLjZBBJiv'
+        //     ]
+        // );
+
+        $token = \Stripe\Source::create(
             [
-                "stripe_account" =>
-                    $store->settings->stripe_account->stripe_user_id
-            ]
+                "customer" => $customer->stripe_id,
+                "original_source" => $card->stripe_id,
+                "usage" => "reusable"
+            ],
+            ["stripe_account" => "acct_1DytLMHoLjZBBJiv"]
         );
 
         if (!$weeklyPlan) {

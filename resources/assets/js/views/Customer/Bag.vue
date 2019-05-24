@@ -409,6 +409,19 @@
                         >
                       </b-select>
                     </b-form-group>
+                    <b-btn
+                      variant="success"
+                      @click="showAddNewCustomerModal = true"
+                      >Add New Customer</b-btn
+                    >
+                    <b-modal
+                      size="lg"
+                      v-model="showAddNewCustomerModal"
+                      title="Add New Customer"
+                      hide-footer
+                    >
+                      <register :manualOrder="true"></register>
+                    </b-modal>
                   </div>
                   <h4 class="mt-2 mb-3">Choose Payment Method</h4>
                   <card-picker
@@ -520,6 +533,7 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
 import { createToken } from "vue-stripe-elements-plus";
 import SalesTax from "sales-tax";
+import Register from "../Register";
 
 import CardPicker from "../../components/Billing/CardPicker";
 
@@ -527,7 +541,8 @@ export default {
   components: {
     cSwitch,
     CardPicker,
-    SalesTax
+    SalesTax,
+    Register
   },
   props: {
     manualOrder: {
@@ -536,6 +551,7 @@ export default {
   },
   data() {
     return {
+      showAddNewCustomerModal: false,
       creditCard: null,
       customer: null,
       selectedPickupLocation: null,
