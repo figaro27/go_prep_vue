@@ -196,6 +196,10 @@ foreach (
                                 'getAcceptedTOA',
                                 'StoreDetailController@getAcceptedTOA'
                             );
+                            Route::post(
+                                'checkout',
+                                'CheckoutController@checkout'
+                            );
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {

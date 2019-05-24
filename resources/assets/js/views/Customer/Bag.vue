@@ -418,6 +418,7 @@
                   ></card-picker>
                   <card-picker
                     :selectable="true"
+                    :creditCard="creditCard"
                     v-model="creditCard"
                     v-if="manualOrder"
                   ></card-picker>
@@ -554,7 +555,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      cards: "cards",
+      creditCards: "cards",
       store: "viewedStore",
       storeSetting: "viewedStoreSetting",
       storeCustomers: "storeCustomers",
@@ -607,7 +608,15 @@ export default {
         }
       } else return 0;
     },
+    cards() {
+      if (this.creditCard != null) return [this.creditCard];
+      else return this.creditCards;
+    },
     card() {
+      if (this.creditCard != null) {
+        return this.creditCard;
+      }
+
       if (this.cards.length != 1) return null;
       else return this.cards[0].id;
     },
@@ -781,8 +790,15 @@ export default {
       if (this.pickup === 0) {
         this.selectedPickupLocation = null;
       }
+
+      let endPoint = "";
+      if (this.manualOrder === true) {
+        endPoint = "/api/me/checkout";
+      } else {
+        endPoint = "/api/bag/checkout";
+      }
       axios
-        .post("/api/bag/checkout", {
+        .post(endPoint, {
           subtotal: this.afterDiscount,
           bag: this.bag,
           plan: this.deliveryPlan,
@@ -795,7 +811,8 @@ export default {
           couponReduction: this.couponReduction,
           couponCode: this.coupon.code,
           deliveryFee: this.deliveryFee,
-          pickupLocation: this.selectedPickupLocation
+          pickupLocation: this.selectedPickupLocation,
+          customer: this.customer
         })
         .then(async resp => {
           this.emptyBag();
@@ -847,13 +864,15 @@ export default {
       });
     },
     getCard() {
-      axios
-        .post("/api/me/getCard", {
-          id: this.customer
-        })
-        .then(response => {
-          this.creditCard = response.data.id;
-        });
+      this.$nextTick(() => {
+        axios
+          .post("/api/me/getCard", {
+            id: this.customer
+          })
+          .then(response => {
+            this.creditCard = response.data.id;
+          });
+      });
     }
   }
 };

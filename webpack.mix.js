@@ -37,6 +37,6 @@ mix.browserSync({
 });
 */
 
-mix.disableNotifications();
+// mix.disableNotifications();
 
 mix.copyDirectory("resources/assets/images", "public/images");
