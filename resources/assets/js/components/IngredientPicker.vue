@@ -111,6 +111,117 @@
 
       <div class="ml-5" ref="nutritionFacts"></div>
     </div>
+    <h3>Add Custom Ingredient</h3>
+    <b-form @submit.prevent="addCustomIngredient">
+      <b-form-group>
+        <b-form-input
+          type="string"
+          v-model="customIngredient.food_name"
+          placeholder="Food Name"
+          required
+        ></b-form-input>
+      </b-form-group>
+      <b-form-group>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.quantity"
+          placeholder="Quantity"
+          required
+        ></b-form-input>
+      </b-form-group>
+      <b-form-group label="Unit Type">
+        <b-form-select
+          v-model="customIngredient.quantity_unit"
+          :options="allUnitOptions"
+        ></b-form-select>
+      </b-form-group>
+      <b-form-group label="Nutrition">
+        <b-form-input
+          type="int"
+          v-model="customIngredient.calories"
+          placeholder="Calories"
+          required
+        ></b-form-input>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.totalfat"
+          placeholder="Total Fat"
+          required
+        ></b-form-input>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.satfat"
+          placeholder="Saturated Fat"
+          required
+        ></b-form-input>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.transfat"
+          placeholder="Trans Fat"
+          required
+        ></b-form-input>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.cholesterol"
+          placeholder="Cholesterol"
+          required
+        ></b-form-input>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.sodium"
+          placeholder="Sodium"
+          required
+        ></b-form-input>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.totalcarb"
+          placeholder="Total Carb"
+          required
+        ></b-form-input>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.fibers"
+          placeholder="Fibers"
+          required
+        ></b-form-input>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.sugars"
+          placeholder="Sugars"
+          required
+        ></b-form-input>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.proteins"
+          placeholder="Proteins"
+          required
+        ></b-form-input>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.vitamind"
+          placeholder="Vitamin D"
+          required
+        ></b-form-input>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.potassium"
+          placeholder="Potassium"
+          required
+        ></b-form-input>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.calcium"
+          placeholder="Calcium"
+          required
+        ></b-form-input>
+        <b-form-input
+          type="int"
+          v-model="customIngredient.iron"
+          placeholder="Iron"
+          required
+        ></b-form-input>
+      </b-form-group>
+    </b-form>
   </div>
 </template>
 <style lang="scss">
@@ -170,6 +281,7 @@ export default {
   },
   data() {
     return {
+      customIngredient: {},
       recipe: "",
       ingredients: [],
       newIngredients: [],
@@ -198,6 +310,12 @@ export default {
     unitOptions: () => ingredient => {
       let type = ingredient.unit_type;
       return units[type].selectOptions();
+    },
+    allUnitOptions() {
+      const massOptions = units["mass"].selectOptions();
+      const volumeOptions = units["volume"].selectOptions();
+      const allOptions = _.concat(massOptions, volumeOptions);
+      return allOptions;
     },
     canSave() {
       return true;
