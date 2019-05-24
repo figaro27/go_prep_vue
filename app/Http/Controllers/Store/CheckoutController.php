@@ -98,7 +98,7 @@ class CheckoutController extends StoreController
                 "original_source" => $card->stripe_id,
                 "usage" => "reusable"
             ],
-            ["stripe_account" => "acct_1DytLMHoLjZBBJiv"]
+            ["stripe_account" => $store->settings[`stripe_account`]]
         );
 
         if (!$weeklyPlan) {
