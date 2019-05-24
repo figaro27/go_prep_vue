@@ -566,11 +566,11 @@ export default {
     },
     couponReduction() {
       let coupon = this.coupon;
-      let afterDiscountAfterFees = this.afterDiscountAfterFees;
+      let subtotal = this.subtotal;
       if (coupon.type === "flat") {
         return coupon.amount;
       } else if (coupon.type === "percent") {
-        return (coupon.amount / 100) * afterDiscountAfterFees;
+        return (coupon.amount / 100) * subtotal;
       }
     },
     afterCoupon() {
