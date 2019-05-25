@@ -2,13 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-use App\MealOrder;
-use App\Meal;
-use App\OrderEvent;
 use App\Coupon;
-
-use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
@@ -127,7 +122,12 @@ class Order extends Model
     public function getItemsAttribute()
     {
         return $this->meal_orders()
-            ->with(['components', 'components.component', 'components.option'])
+            ->with([
+                'components',
+                'components.component',
+                'components.option',
+                'addons'
+            ])
             ->get()
             ->map(function ($mealOrder) {
                 return (object) [
@@ -149,7 +149,12 @@ class Order extends Model
                             'option' => $component->option->title
                         ];
                     }),
-                    'addons' => []
+                    'addons' => $mealOrder->addons->map(function ($addon) {
+                        return (object) [
+                            'meal_addon_id' => $addon->addon->id,
+                            'addon' => $addon->addon->title
+                        ];
+                    })
                 ];
             });
         //
@@ -184,12 +189,12 @@ class Order extends Model
         return $this->store->getCutoffDate($this->delivery_date);
 
         /*$ddate = new Carbon(
-            $this->delivery_date,
-            $this->store->settings->timezone
-        );
-        $ddate->setTime(0, 0);
-        $cutoff = $ddate->subSeconds($this->store->getCutoffSeconds());
-        return $cutoff;*/
+    $this->delivery_date,
+    $this->store->settings->timezone
+    );
+    $ddate->setTime(0, 0);
+    $cutoff = $ddate->subSeconds($this->store->getCutoffSeconds());
+    return $cutoff;*/
     }
 
     public static function updateOrder($id, $props)

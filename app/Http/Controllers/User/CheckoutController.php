@@ -9,6 +9,8 @@ use App\Mail\Customer\NewOrder;
 use App\MealOrder;
 use App\MealOrderComponent;
 use App\MealSubscriptionComponent;
+use App\MealOrderAddon;
+use App\MealSubscriptionAddon;
 use App\MealSubscription;
 use App\Order;
 use App\Store;
@@ -155,6 +157,15 @@ class CheckoutController extends UserController
                                 'meal_component_option_id' => $optionId
                             ]);
                         }
+                    }
+                }
+
+                if (isset($item['addons']) && $item['addons']) {
+                    foreach ($item['addons'] as $addonId) {
+                        MealOrderAddon::create([
+                            'meal_order_id' => $mealOrder->id,
+                            'meal_addon_id' => $addonId
+                        ]);
                     }
                 }
             }
@@ -321,6 +332,15 @@ class CheckoutController extends UserController
                         }
                     }
                 }
+
+                if (isset($item['addons']) && $item['addons']) {
+                    foreach ($item['addons'] as $addonId) {
+                        MealOrderAddon::create([
+                            'meal_order_id' => $mealOrder->id,
+                            'meal_addon_id' => $addonId
+                        ]);
+                    }
+                }
             }
 
             foreach ($bag->getItems() as $item) {
@@ -343,6 +363,15 @@ class CheckoutController extends UserController
                                 'meal_component_option_id' => $optionId
                             ]);
                         }
+                    }
+                }
+
+                if (isset($item['addons']) && $item['addons']) {
+                    foreach ($item['addons'] as $addonId) {
+                        MealSubscriptionAddon::create([
+                            'meal_subscription_id' => $mealSub->id,
+                            'meal_addon_id' => $addonId
+                        ]);
                     }
                 }
             }

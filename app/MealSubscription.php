@@ -43,6 +43,15 @@ class MealSubscription extends Pivot
         );
     }
 
+    public function addons()
+    {
+        return $this->hasMany(
+            'App\MealSubscriptionAddon',
+            'meal_subscription_id',
+            'id'
+        );
+    }
+
     public function getTitleAttribute()
     {
         $title = $this->meal->title;
@@ -50,12 +59,19 @@ class MealSubscription extends Pivot
         if ($this->meal_size_id) {
             $title = $this->meal_size->full_title;
         }
-        if (count($this->components)) {
+        if (count($this->components) || count($this->addons)) {
             $comp = $this->components
                 ->map(function ($component) {
                     return $component->option->title;
                 })
                 ->implode(', ');
+
+            $comp .= $this->addons
+                ->map(function ($addon) {
+                    return $addon->title;
+                })
+                ->implode(', ');
+
             $title .= ' - ' . $comp;
         }
         return $title;
@@ -72,6 +88,11 @@ class MealSubscription extends Pivot
         if ($this->meal->has('components') && $this->components) {
             foreach ($this->components as $component) {
                 $price += $component->option->price;
+            }
+        }
+        if ($this->meal->has('addons') && $this->addons) {
+            foreach ($this->addons as $addon) {
+                $price += $addon->price;
             }
         }
 

@@ -40,6 +40,11 @@ class MealOrder extends Pivot
         return $this->hasMany('App\MealOrderComponent', 'meal_order_id', 'id');
     }
 
+    public function addons()
+    {
+        return $this->hasMany('App\MealOrderAddon', 'meal_order_id', 'id');
+    }
+
     public function getTitleAttribute()
     {
         $title = $this->meal->title;
@@ -51,6 +56,14 @@ class MealOrder extends Pivot
             $comp = $this->components
                 ->map(function ($component) {
                     return $component->option->title;
+                })
+                ->implode(', ');
+            $title .= ' - ' . $comp;
+        }
+        if (count($this->addons)) {
+            $comp = $this->addons
+                ->map(function ($addon) {
+                    return $addon->title;
                 })
                 ->implode(', ');
             $title .= ' - ' . $comp;
@@ -69,6 +82,11 @@ class MealOrder extends Pivot
         if ($this->meal->has('components') && $this->components) {
             foreach ($this->components as $component) {
                 $price += $component->option->price;
+            }
+        }
+        if ($this->meal->has('addons') && $this->addons) {
+            foreach ($this->addons as $addon) {
+                $price += $addon->price;
             }
         }
 

@@ -275,6 +275,29 @@ class Store extends Model
                         }
                     }
                 }
+
+                $addons = collect($mealOrder->addons);
+
+                foreach ($addons as $addon) {
+                    foreach ($addon->ingredients as $ingredient) {
+                        $quantity_unit = $ingredient->pivot->quantity_unit;
+                        $quantity_base =
+                            $ingredient->pivot->quantity_base * $quantity;
+                        //* $multiplier;
+
+                        $key = $ingredient->id;
+
+                        if (!isset($ingredients[$key])) {
+                            $ingredients[$key] = [
+                                'id' => $ingredient->id,
+                                'ingredient' => $ingredient,
+                                'quantity' => $quantity_base
+                            ];
+                        } else {
+                            $ingredients[$key]['quantity'] += $quantity_base;
+                        }
+                    }
+                }
             }
         }
 

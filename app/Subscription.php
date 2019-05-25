@@ -264,6 +264,15 @@ class Subscription extends Model
                     ]);
                 }
             }
+
+            if ($mealSub->has('addons')) {
+                foreach ($mealSub->addons as $addon) {
+                    MealOrderAddon::create([
+                        'meal_order_id' => $mealOrder->id,
+                        'meal_addon_id' => $component->meal_addon_id
+                    ]);
+                }
+            }
         }
 
         // Store next charge time as reported by Stripe

@@ -1176,7 +1176,7 @@ const getters = {
         return _.find(meal.sizes, ["id", parseInt(sizeId)]);
       };
 
-      meal.getTitle = (size = null, components = null) => {
+      meal.getTitle = (size = null, components = null, addons = null) => {
         let title = meal.title;
 
         if (size) {
@@ -1185,6 +1185,10 @@ const getters = {
 
         if (_.isArray(components) && components.length) {
           title += " - " + _.map(components, "option").join(", ");
+        }
+
+        if (_.isArray(addons) && addons.length) {
+          title += " - " + addons.join(", ");
         }
 
         return title;
@@ -1429,7 +1433,7 @@ const getters = {
         return _.find(meal.sizes, ["id", parseInt(sizeId)]);
       };
 
-      meal.getTitle = (size = null, components = null) => {
+      meal.getTitle = (size = null, components = null, addons = null) => {
         let title = meal.title;
 
         if (size) {
@@ -1438,6 +1442,10 @@ const getters = {
 
         if (_.isArray(components) && components.length) {
           title += " - " + _.map(components, "option").join(", ");
+        }
+
+        if (_.isArray(addons) && addons.length) {
+          title += " - " + addons.join(", ");
         }
 
         return title;

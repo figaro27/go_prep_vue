@@ -1,8 +1,9 @@
 <?php
 
 namespace App;
-use App\Store;
+
 use App\MealComponentOption;
+use App\Store;
 
 class Bag
 {
@@ -107,6 +108,12 @@ class Bag
                         $option = MealComponentOption::find($optionId);
                         $price += $option->price;
                     }
+                }
+            }
+            if ($item['addons']) {
+                foreach ($item['addons'] as $addonId) {
+                    $addon = MealAddon::find($addonId);
+                    $price += $addon->price;
                 }
             }
             $total += $price * $item['quantity'];
