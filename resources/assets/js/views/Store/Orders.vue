@@ -420,7 +420,7 @@ export default {
         }
 
         const size = meal.getSize(item.meal_size_id);
-        const title = meal.getTitle(size, item.components);
+        const title = meal.getTitle(size, item.components, item.addons);
 
         return {
           image: meal.image,

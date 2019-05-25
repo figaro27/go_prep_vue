@@ -182,7 +182,14 @@ const mutations = {
   },
   addToBag(
     state,
-    { meal, quantity = 1, mealPackage = false, size = null, components = null }
+    {
+      meal,
+      quantity = 1,
+      mealPackage = false,
+      size = null,
+      components = null,
+      addons = null
+    }
   ) {
     let mealId = meal;
     if (!_.isNumber(mealId)) {
@@ -203,7 +210,7 @@ const mutations = {
     }
 
     let guid = CryptoJS.MD5(
-      JSON.stringify({ meal: mealId, mealPackage, size, components })
+      JSON.stringify({ meal: mealId, mealPackage, size, components, addons })
     ).toString();
 
     if (!_.has(state.bag.items, guid)) {
@@ -229,7 +236,14 @@ const mutations = {
   },
   removeFromBag(
     state,
-    { meal, quantity = 1, mealPackage = false, size = null, components = null }
+    {
+      meal,
+      quantity = 1,
+      mealPackage = false,
+      size = null,
+      components = null,
+      addons = null
+    }
   ) {
     let mealId = meal;
     if (!_.isNumber(mealId)) {
@@ -246,7 +260,7 @@ const mutations = {
     }
 
     let guid = CryptoJS.MD5(
-      JSON.stringify({ meal: mealId, mealPackage, size, components })
+      JSON.stringify({ meal: mealId, mealPackage, size, components, addons })
     ).toString();
 
     if (!_.has(state.bag.items, guid)) {
