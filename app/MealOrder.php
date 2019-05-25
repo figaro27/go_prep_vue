@@ -8,7 +8,7 @@ class MealOrder extends Pivot
 {
     protected $table = 'meal_orders';
     protected $appends = ['title', 'unit_price', 'price'];
-    protected $with = ['components'];
+    protected $with = ['components', 'addons'];
 
     public function meals()
     {
@@ -63,7 +63,7 @@ class MealOrder extends Pivot
         if (count($this->addons)) {
             $comp = $this->addons
                 ->map(function ($addon) {
-                    return $addon->title;
+                    return $addon->addon->title;
                 })
                 ->implode(', ');
             $title .= ' - ' . $comp;
