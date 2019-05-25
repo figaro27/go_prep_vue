@@ -1445,7 +1445,7 @@ const getters = {
         }
 
         if (_.isArray(addons) && addons.length) {
-          title += " - " + addons.join(", ");
+          title += " - " + _.map(addons, "addon").join(", ");
         }
 
         return title;
