@@ -7,7 +7,7 @@
             <div
               v-for="(component, i) in meal.components"
               :key="meal.id + component.id"
-              class=""
+              class
             >
               <b-form-group :label="component.title">
                 <b-checkbox-group
@@ -15,8 +15,7 @@
                   :options="getOptions(component)"
                   :min="component.minimum"
                   :max="component.maximum"
-                >
-                </b-checkbox-group>
+                ></b-checkbox-group>
               </b-form-group>
 
               <div v-if="$v.$dirty">
@@ -42,6 +41,26 @@
             </div>
           </b-col>
         </b-row>
+
+        <b-row>
+          <b-col>
+            <b-form-group label="Addons">
+              <b-checkbox-group
+                v-model="addons"
+                :options="getAddonOptions(meal.addons)"
+              ></b-checkbox-group>
+            </b-form-group>
+
+            <div v-if="$v.$dirty">
+              <div
+                v-if="!$v.choices[component.id].required"
+                class="invalid-feedback"
+              >
+                This field is required
+              </div>
+            </div>
+          </b-col>
+        </b-row>
       </div>
     </b-modal>
   </div>
@@ -60,7 +79,8 @@ export default {
       meal: null,
       mealPackage: false,
       size: null,
-      choices: {}
+      choices: {},
+      addons: []
     };
   },
   computed: {},
@@ -102,7 +122,10 @@ export default {
 
           if (!this.$v.$invalid) {
             if (!_.isEmpty(this.choices)) {
-              resolve({ ...this.choices });
+              resolve({
+                components: { ...this.choices },
+                addons: [...this.addons]
+              });
             }
             this.hide();
             this.meal = null;
@@ -124,6 +147,14 @@ export default {
         return {
           value: option.id,
           text: `${option.title} - ${format.money(option.price)}`
+        };
+      });
+    },
+    getAddonOptions(addons) {
+      return _.map(addons, addon => {
+        return {
+          value: addon.id,
+          text: `${addon.title} - ${format.money(addon.price)}`
         };
       });
     }

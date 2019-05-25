@@ -220,7 +220,8 @@ const mutations = {
         meal_package: mealPackage,
         added: moment().unix(),
         size,
-        components
+        components,
+        addons
       });
     }
 
@@ -1205,6 +1206,10 @@ const getters = {
         }
       };
 
+      meal.getAddon = addonId => {
+        return _.find(meal.addons, { id: parseInt(addonId) });
+      };
+
       return meal;
     } catch (e) {
       return null;
@@ -1312,6 +1317,7 @@ const getters = {
     let totalBagPricePreFees = 0;
     items.forEach(item => {
       let price = item.size ? item.size.price : item.meal.price;
+      let meal = getters.viewedStoreMeal(item.meal.id);
       if (item.components) {
         _.forEach(item.components, (choices, componentId) => {
           let component = _.find(item.meal.components, {
@@ -1321,6 +1327,12 @@ const getters = {
             let option = _.find(component.options, { id: parseInt(optionId) });
             price += option.price;
           });
+        });
+      }
+      if (item.addons) {
+        _.forEach(item.addons, addonId => {
+          let addon = _.find(meal.addons, { id: parseInt(addonId) });
+          price += addon.price;
         });
       }
       totalBagPricePreFees += item.quantity * price;

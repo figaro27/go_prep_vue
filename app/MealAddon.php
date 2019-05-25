@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Ingredient;
 
 class MealAddon extends Model
 {
@@ -22,7 +23,7 @@ class MealAddon extends Model
 
     protected $hidden = [];
 
-    protected $with = [];
+    protected $with = ['ingredients'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -46,5 +47,39 @@ class MealAddon extends Model
         return $this->belongsToMany('App\Ingredient')
             ->withPivot('quantity', 'quantity_unit', 'quantity_unit_display')
             ->using('App\IngredientMealAddon');
+    }
+
+    public function syncIngredients($rawIngredients)
+    {
+        $ingredients = collect();
+
+        foreach ($rawIngredients as $ingredientArr) {
+            $ingredient = Ingredient::fromNutritionix(
+                $this->meal_id,
+                $ingredientArr
+            );
+
+            if ($ingredient) {
+                $ingredients->push($ingredient);
+            }
+        }
+
+        $syncIngredients = $ingredients->mapWithKeys(function ($val, $key) use (
+            $rawIngredients
+        ) {
+            return [
+                $val->id => [
+                    'quantity' => $rawIngredients[$key]['quantity'] ?? 1,
+                    'quantity_unit' =>
+                        $rawIngredients[$key]['quantity_unit'] ??
+                        Format::baseUnit($val->unit_type),
+                    'quantity_unit_display' =>
+                        $rawIngredients[$key]['quantity_unit_display'] ??
+                        Format::baseUnit($val->unit_type)
+                ]
+            ];
+        });
+
+        $this->ingredients()->sync($syncIngredients);
     }
 }

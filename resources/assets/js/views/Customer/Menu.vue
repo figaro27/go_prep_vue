@@ -750,7 +750,8 @@
                                 item.meal,
                                 false,
                                 item.size,
-                                item.components
+                                item.components,
+                                item.addons
                               )
                             "
                             class="bag-plus-minus brand-color white-text"
@@ -764,7 +765,8 @@
                                 item.meal,
                                 false,
                                 item.size,
-                                item.components
+                                item.components,
+                                item.addons
                               )
                             "
                             class="bag-plus-minus gray white-text"
@@ -788,9 +790,15 @@
                           </span>
                           <span v-else>{{ item.meal.item_title }}</span>
 
-                          <ul v-if="item.components" class="dash">
+                          <ul
+                            v-if="item.components || item.addons"
+                            class="dash"
+                          >
                             <li v-for="component in itemComponents(item)">
                               {{ component }}
+                            </li>
+                            <li v-for="addon in itemAddons(item)">
+                              {{ addon }}
                             </li>
                           </ul>
                         </div>
@@ -802,7 +810,8 @@
                                 item.meal,
                                 false,
                                 item.size,
-                                item.components
+                                item.components,
+                                item.addons
                               )
                             "
                             class="clear-meal"

@@ -308,7 +308,7 @@
                 ></meal-components>
               </b-tab>
 
-              <b-tab title="Components">
+              <b-tab title="Addons">
                 <meal-addons
                   :meal="meal"
                   @change="val => (meal.addons = val)"

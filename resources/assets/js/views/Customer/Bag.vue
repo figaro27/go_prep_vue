@@ -35,7 +35,13 @@
                   <div class="bag-item-quantity mr-2">
                     <div
                       @click="
-                        addOne(item.meal, false, item.size, item.components)
+                        addOne(
+                          item.meal,
+                          false,
+                          item.size,
+                          item.components,
+                          item.addons
+                        )
                       "
                       class="bag-plus-minus brand-color white-text"
                     >
@@ -44,7 +50,13 @@
                     <p class="bag-quantity">{{ item.quantity }}</p>
                     <div
                       @click="
-                        minusOne(item.meal, false, item.size, item.components)
+                        minusOne(
+                          item.meal,
+                          false,
+                          item.size,
+                          item.components,
+                          item.addons
+                        )
                       "
                       class="bag-plus-minus gray white-text"
                     >
@@ -71,13 +83,22 @@
                       <li v-for="component in itemComponents(item)">
                         {{ component }}
                       </li>
+                      <li v-for="addon in itemAddons(item)">
+                        {{ addon }}
+                      </li>
                     </ul>
                   </div>
                   <div class="flex-grow-0">
                     <img
                       src="/images/customer/x.png"
                       @click="
-                        clearMeal(item.meal, false, item.size, item.components)
+                        clearMeal(
+                          item.meal,
+                          false,
+                          item.size,
+                          item.components,
+                          item.addons
+                        )
                       "
                       class="clear-meal"
                     />

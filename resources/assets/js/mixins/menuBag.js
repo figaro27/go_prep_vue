@@ -1,21 +1,32 @@
+import SalesTax from "sales-tax";
+
 export default {
   computed: {},
   methods: {
-    async addOne(meal, mealPackage = false, size = null, components = null) {
+    async addOne(
+      meal,
+      mealPackage = false,
+      size = null,
+      components = null,
+      addons = null
+    ) {
       const min = _.maxBy(meal.components, "minimum");
       if (
-        meal.components.length &&
-        _.maxBy(meal.components, "minimum") &&
-        _.find(meal.components, component => {
-          return _.find(component.options, { meal_size_id: size });
-        }) &&
-        !components
+        (meal.components.length &&
+          _.maxBy(meal.components, "minimum") &&
+          _.find(meal.components, component => {
+            return _.find(component.options, { meal_size_id: size });
+          }) &&
+          !components) ||
+        (meal.addons.length && !addons)
       ) {
-        components = await this.$refs.componentModal.show(
+        const result = await this.$refs.componentModal.show(
           meal,
           mealPackage,
           size
         );
+        components = { ...result.components };
+        addons = [...result.addons];
       }
 
       this.$store.commit("addToBag", {
@@ -23,42 +34,64 @@ export default {
         quantity: 1,
         mealPackage,
         size,
-        components
+        components,
+        addons
       });
       this.mealModal = false;
       this.mealPackageModal = false;
     },
-    minusOne(meal, mealPackage = false, size = null, components = null) {
+    minusOne(
+      meal,
+      mealPackage = false,
+      size = null,
+      components = null,
+      addons = null
+    ) {
       this.$store.commit("removeFromBag", {
         meal,
         quantity: 1,
         mealPackage,
         size,
-        components
+        components,
+        addons
       });
     },
     addBagItems(bag) {
       this.$store.commit("addBagItems", bag);
     },
-    clearMeal(meal, mealPackage = false, size = null, components = null) {
-      let quantity = this.quantity(meal, mealPackage, size, components);
+    clearMeal(
+      meal,
+      mealPackage = false,
+      size = null,
+      components = null,
+      addons = null
+    ) {
+      let quantity = this.quantity(meal, mealPackage, size, components, addons);
       this.$store.commit("removeFromBag", {
         meal,
         quantity,
         mealPackage,
         size,
-        components
+        components,
+        addons
       });
     },
     clearAll() {
       this.$store.commit("emptyBag");
     },
-    quantity(meal, mealPackage = false, size = null, components = null) {
+    quantity(
+      meal,
+      mealPackage = false,
+      size = null,
+      components = null,
+      addons = null
+    ) {
       let qty = this.$store.getters.bagItemQuantity(
         meal,
         mealPackage,
         size,
-        components
+        components,
+        (addons = null)
       );
 
       // size === true gets quantity for all sizes
@@ -68,7 +101,8 @@ export default {
             meal,
             mealPackage,
             sizeObj,
-            components
+            components,
+            addons
           );
         });
       }
@@ -96,6 +130,18 @@ export default {
           return optionTitles;
         })
         .flatten()
+        .value();
+
+      return wat;
+    },
+    itemAddons(item) {
+      const meal = this.getMeal(item.meal.id);
+      let wat = _(item.addons)
+        .map(addonId => {
+          const addon = meal.getAddon(addonId);
+          return addon ? addon.title : null;
+        })
+        .filter()
         .value();
 
       return wat;

@@ -409,6 +409,11 @@ class Meal extends Model implements HasMedia
         return $this->hasMany('App\MealComponent', 'meal_id', 'id');
     }
 
+    public function addons()
+    {
+        return $this->hasMany('App\MealAddon', 'meal_id', 'id');
+    }
+
     public function tags()
     {
         return $this->belongsToMany('App\MealTag', 'meal_meal_tag');
@@ -496,7 +501,8 @@ class Meal extends Model implements HasMedia
             'tags',
             'categories',
             'sizes',
-            'components'
+            'components',
+            'addons'
         )
             ->where('id', $id)
             ->first();
@@ -738,7 +744,8 @@ class Meal extends Model implements HasMedia
             'allergy_ids',
             'sizes',
             'default_size_title',
-            'components'
+            'components',
+            'addons'
         ]);
 
         if ($props->has('featured_image')) {
@@ -967,6 +974,38 @@ class Meal extends Model implements HasMedia
             $meal
                 ->components()
                 ->whereNotIn('id', $componentIds)
+                ->delete();
+        }
+
+        // Meal addons
+        $addons = $props->get('addons');
+        if (is_array($addons)) {
+            $addonIds = [];
+
+            foreach ($addons as $addon) {
+                if (isset($addon['id'])) {
+                    $mealAddon = $meal->addons()->find($addon['id']);
+                }
+
+                if (!$mealAddon) {
+                    $mealAddon = new MealAddon();
+                    $mealAddon->meal_id = $meal->id;
+                    $mealAddon->store_id = $meal->store_id;
+                }
+
+                $mealAddon->title = $addon['title'];
+                $mealAddon->price = $addon['price'];
+                $mealAddon->save();
+
+                $mealAddon->syncIngredients($addon['ingredients']);
+
+                $addonIds[] = $mealAddon->id;
+            }
+
+            // Deleted addons
+            $meal
+                ->addons()
+                ->whereNotIn('id', $addonIds)
                 ->delete();
         }
 

@@ -27,7 +27,12 @@
       >
         <div class="component-header mb-2">
           <h4 class="d-inline-block">#{{ i + 1 }}. {{ component.title }}</h4>
-          <b-btn variant="danger" class="pull-right">Delete</b-btn>
+          <b-btn
+            variant="danger"
+            class="pull-right"
+            @click="deleteComponent(component.id)"
+            >Delete</b-btn
+          >
         </div>
         <b-row>
           <b-col cols="6">
