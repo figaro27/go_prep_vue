@@ -158,6 +158,10 @@ export default {
     }
   },
   updated() {
+    if (screenWidth < 500) {
+      this.navBgColor === "#ffffff !important";
+      return;
+    }
     let page = this.name;
     // if (page != 'customer-home' && page != 'login' && page != 'register' && page != 'customer-orders' && page != 'customer-meal-plans')
     //   this.navBgColor = this.viewedStore.settings.color + ' !important';
@@ -177,10 +181,6 @@ export default {
     }
 
     let screenWidth = window.innerWidth;
-
-    if (screenWidth < 500) {
-      this.navBgColor === "#ffffff !important";
-    }
   },
   created() {},
   methods: {}
