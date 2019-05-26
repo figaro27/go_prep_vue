@@ -158,6 +158,7 @@ export default {
     }
   },
   updated() {
+    let screenWidth = window.innerWidth;
     if (screenWidth < 500) {
       this.navBgColor === "#ffffff !important";
       return;
@@ -179,8 +180,6 @@ export default {
     } else {
       this.bgColor = this.viewedStore.settings.color + " !important";
     }
-
-    let screenWidth = window.innerWidth;
   },
   created() {},
   methods: {}
