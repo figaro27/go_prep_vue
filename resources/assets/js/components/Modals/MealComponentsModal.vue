@@ -1,6 +1,11 @@
 <template>
   <div class="modal-full">
-    <b-modal title="Choose Options" ref="modal" @ok.prevent="e => ok(e)">
+    <b-modal
+      title="Choose Options"
+      ref="modal"
+      size="sm"
+      @ok.prevent="e => ok(e)"
+    >
       <div v-if="meal">
         <b-row v-if="meal.components.length">
           <b-col>
@@ -19,19 +24,19 @@
 
                 <div v-if="$v.choices[component.id].$dirty">
                   <div
-                    v-if="!$v.choices[component.id].required"
+                    v-if="false === $v.choices[component.id].required"
                     class="invalid-feedback d-block"
                   >
                     This field is required
                   </div>
                   <div
-                    v-if="!$v.choices[component.id].minimum"
+                    v-if="false === $v.choices[component.id].minimum"
                     class="invalid-feedback d-block"
                   >
                     Minimum {{ component.minimum }}
                   </div>
                   <div
-                    v-if="!$v.choices[component.id].maximum"
+                    v-if="false === $v.choices[component.id].maximum"
                     class="invalid-feedback d-block"
                   >
                     Maximum {{ component.maximum }}
@@ -82,12 +87,16 @@ export default {
       _.keyBy(this.meal.components, "id"),
       component => {
         return {
-          required,
           minimum: value => {
-            return _.isArray(value) && value.length >= component.minimum;
+            return (
+              component.minimum === 0 ||
+              (_.isArray(value) && value.length >= component.minimum)
+            );
           },
           maximum: value => {
-            return _.isArray(value) && value.length <= component.maximum;
+            return (
+              !value || (_.isArray(value) && value.length <= component.maximum)
+            );
           }
         };
       }
@@ -112,7 +121,6 @@ export default {
           this.$v.$touch();
 
           if (this.$v.$invalid) {
-            this.$toastr.e("");
             this.$forceUpdate();
           } else {
             if (!_.isEmpty(this.choices) || !_.isEmpty(this.addons)) {

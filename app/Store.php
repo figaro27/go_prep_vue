@@ -279,7 +279,7 @@ class Store extends Model
                 $addons = collect($mealOrder->addons);
 
                 foreach ($addons as $addon) {
-                    foreach ($addon->ingredients as $ingredient) {
+                    foreach ($addon->addon->ingredients as $ingredient) {
                         $quantity_unit = $ingredient->pivot->quantity_unit;
                         $quantity_base =
                             $ingredient->pivot->quantity_base * $quantity;
