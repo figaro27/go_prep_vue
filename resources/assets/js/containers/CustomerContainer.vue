@@ -5,7 +5,7 @@
         <img
           v-if="showLogo"
           class="navbar-brand-full"
-          src="/images/logo.png"
+          :src="topLogo"
           width="90"
           height="40"
           alt="GoPrep Logo"
@@ -13,7 +13,7 @@
         <img
           v-if="showLogo"
           class="navbar-brand-minimized"
-          src="/images/logo.png"
+          :src="topLogo"
           width="33"
           height="40"
           alt="GoPrep Logo"
@@ -155,11 +155,17 @@ export default {
     },
     showLogo() {
       return this.viewedStore.settings.showLogo;
+    },
+    screenWidth() {
+      return window.innerWidth;
+    },
+    topLogo() {
+      if (this.screenWidth < 500) return this.storeLogo;
+      else return "/images/logo.png";
     }
   },
   updated() {
-    let screenWidth = window.innerWidth;
-    if (screenWidth < 500) {
+    if (this.screenWidth < 500) {
       this.navBgColor === "#ffffff !important";
       return;
     }
