@@ -73,7 +73,7 @@
     <!-- <TheFooter>
     </TheFooter>-->
     <v-style>
-      .navbar { background: {{ navBgColor }}; height: {{ navHeight }} }
+      .navbar { background: {{ navBgColor }}; min-height: {{ navHeight }} }
       .menu-bag-btn, .brand-color, .filters .active { background: {{ bgColor }};
       } .dbl-underline:after { border-bottom: 3px double {{ bgColor }}; }
       .nav-item a:hover { background-color: #afafaf !important; }
@@ -168,7 +168,7 @@ export default {
   updated() {
     if (this.screenWidth < 500) {
       this.navBgColor === "#ffffff !important";
-      this.navHeight === "180px !important";
+      this.navHeight === "120px !important";
       return;
     }
     let page = this.name;
