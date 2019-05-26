@@ -73,10 +73,10 @@
     <!-- <TheFooter>
     </TheFooter>-->
     <v-style>
-      .navbar { background: {{ navBgColor }}; } .menu-bag-btn, .brand-color,
-      .filters .active { background: {{ bgColor }}; } .dbl-underline:after {
-      border-bottom: 3px double {{ bgColor }}; } .nav-item a:hover {
-      background-color: #afafaf !important; }
+      .navbar { background: {{ navBgColor }}; height: {{ navHeight }} }
+      .menu-bag-btn, .brand-color, .filters .active { background: {{ bgColor }};
+      } .dbl-underline:after { border-bottom: 3px double {{ bgColor }}; }
+      .nav-item a:hover { background-color: #afafaf !important; }
     </v-style>
   </div>
 </template>
@@ -137,7 +137,8 @@ export default {
   data() {
     return {
       navBgColor: "",
-      bgColor: ""
+      bgColor: "",
+      navHeight: ""
     };
   },
   computed: {
@@ -167,6 +168,7 @@ export default {
   updated() {
     if (this.screenWidth < 500) {
       this.navBgColor === "#ffffff !important";
+      this.navHeight === "90px !important";
       return;
     }
     let page = this.name;
