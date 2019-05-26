@@ -1272,7 +1272,8 @@ const getters = {
     meal,
     mealPackage = false,
     size = null,
-    components = null
+    components = null,
+    addons = null
   ) => {
     if (!meal) {
       return 0;
@@ -1291,7 +1292,7 @@ const getters = {
     }
 
     let guid = CryptoJS.MD5(
-      JSON.stringify({ meal: mealId, mealPackage, size, components })
+      JSON.stringify({ meal: mealId, mealPackage, size, components, addons })
     ).toString();
 
     if (!_.has(state.bag.items, guid) || !_.isObject(state.bag.items[guid])) {

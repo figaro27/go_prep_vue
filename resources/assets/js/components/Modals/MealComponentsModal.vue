@@ -9,44 +9,35 @@
               :key="meal.id + component.id"
               class
             >
-              <b-form-group :label="component.title">
+              <b-form-group :label="getComponentLabel(component)">
                 <b-checkbox-group
                   v-model="choices[component.id]"
                   :options="getOptions(component)"
                   :min="component.minimum"
                   :max="component.maximum"
                 ></b-checkbox-group>
-              </b-form-group>
 
-              <div>
-                <div
-                  v-if="
-                    $v.choices[component.id] &&
-                      !$v.choices[component.id].required
-                  "
-                  class="invalid-feedback"
-                >
-                  This field is required
+                <div v-if="$v.choices[component.id].$dirty">
+                  <div
+                    v-if="!$v.choices[component.id].required"
+                    class="invalid-feedback d-block"
+                  >
+                    This field is required
+                  </div>
+                  <div
+                    v-if="!$v.choices[component.id].minimum"
+                    class="invalid-feedback d-block"
+                  >
+                    Minimum {{ component.minimum }}
+                  </div>
+                  <div
+                    v-if="!$v.choices[component.id].maximum"
+                    class="invalid-feedback d-block"
+                  >
+                    Maximum {{ component.maximum }}
+                  </div>
                 </div>
-                <div
-                  v-if="
-                    $v.choices[component.id] &&
-                      !$v.choices[component.id].minimum
-                  "
-                  class="invalid-feedback"
-                >
-                  Minimum {{ component.minimum }}
-                </div>
-                <div
-                  v-if="
-                    $v.choices[component.id] &&
-                      !$v.choices[component.id].minimum
-                  "
-                  class="invalid-feedback"
-                >
-                  Maximum {{ component.maximum }}
-                </div>
-              </div>
+              </b-form-group>
             </div>
           </b-col>
         </b-row>
@@ -59,15 +50,6 @@
                 :options="getAddonOptions(meal.addons)"
               ></b-checkbox-group>
             </b-form-group>
-
-            <div v-if="$v.$dirty">
-              <div
-                v-if="!$v.choices[component.id].required"
-                class="invalid-feedback"
-              >
-                This field is required
-              </div>
-            </div>
           </b-col>
         </b-row>
       </div>
@@ -131,6 +113,7 @@ export default {
 
           if (this.$v.$invalid) {
             this.$toastr.e("");
+            this.$forceUpdate();
           } else {
             if (!_.isEmpty(this.choices) || !_.isEmpty(this.addons)) {
               resolve({
@@ -168,6 +151,16 @@ export default {
           text: `${addon.title} - ${format.money(addon.price)}`
         };
       });
+    },
+    getComponentLabel(component) {
+      let qty = "";
+      if (component.minimum === component.maximum) {
+        qty = `Choose ${component.minimum}`;
+      } else {
+        qty = `Choose up to ${component.maximum}`;
+      }
+
+      return `${component.title} - ${qty}`;
     }
   }
 };

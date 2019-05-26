@@ -16,7 +16,7 @@ class OrderController extends UserController
     {
         return $this->user
             ->orders()
-            ->with(['meals', 'pickup_location', 'meals.meal_orders'])
+            ->with(['pickup_location'])
             ->get();
     }
 }
