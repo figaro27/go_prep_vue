@@ -91,7 +91,7 @@ export default {
         mealPackage,
         size,
         components,
-        (addons = null)
+        addons
       );
 
       // size === true gets quantity for all sizes

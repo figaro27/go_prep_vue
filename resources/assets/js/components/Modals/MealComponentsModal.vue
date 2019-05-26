@@ -2,7 +2,7 @@
   <div class="modal-full">
     <b-modal title="Choose Options" ref="modal" @ok.prevent="e => ok(e)">
       <div v-if="meal">
-        <b-row>
+        <b-row v-if="meal.components.length">
           <b-col>
             <div
               v-for="(component, i) in meal.components"
@@ -18,21 +18,30 @@
                 ></b-checkbox-group>
               </b-form-group>
 
-              <div v-if="$v.$dirty">
+              <div>
                 <div
-                  v-if="!$v.choices[component.id].required"
+                  v-if="
+                    $v.choices[component.id] &&
+                      !$v.choices[component.id].required
+                  "
                   class="invalid-feedback"
                 >
                   This field is required
                 </div>
                 <div
-                  v-if="!$v.choices[component.id].minimum"
+                  v-if="
+                    $v.choices[component.id] &&
+                      !$v.choices[component.id].minimum
+                  "
                   class="invalid-feedback"
                 >
                   Minimum {{ component.minimum }}
                 </div>
                 <div
-                  v-if="!$v.choices[component.id].minimum"
+                  v-if="
+                    $v.choices[component.id] &&
+                      !$v.choices[component.id].minimum
+                  "
                   class="invalid-feedback"
                 >
                   Maximum {{ component.maximum }}
@@ -42,7 +51,7 @@
           </b-col>
         </b-row>
 
-        <b-row>
+        <b-row v-if="meal.addons.length">
           <b-col>
             <b-form-group label="Addons">
               <b-checkbox-group
@@ -120,8 +129,10 @@ export default {
         this.$on("done", () => {
           this.$v.$touch();
 
-          if (!this.$v.$invalid) {
-            if (!_.isEmpty(this.choices)) {
+          if (this.$v.$invalid) {
+            this.$toastr.e("");
+          } else {
+            if (!_.isEmpty(this.choices) || !_.isEmpty(this.addons)) {
               resolve({
                 components: { ...this.choices },
                 addons: [...this.addons]
