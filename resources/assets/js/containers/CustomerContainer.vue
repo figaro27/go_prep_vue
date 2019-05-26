@@ -6,12 +6,16 @@
           v-if="showLogo"
           class="navbar-brand-full"
           :src="topLogo"
+          width="90"
+          height="90"
           alt="GoPrep Logo"
         />
         <img
           v-if="showLogo"
           class="navbar-brand-minimized"
           :src="topLogo"
+          width="40"
+          height="40"
           alt="GoPrep Logo"
         />
       </b-link>
@@ -136,7 +140,7 @@ export default {
     return {
       navBgColor: "",
       bgColor: "",
-      navHeight: "150px !important"
+      navHeight: ""
     };
   },
   computed: {
@@ -166,7 +170,7 @@ export default {
   updated() {
     if (this.screenWidth < 500) {
       this.navBgColor === "#ffffff !important";
-      this.navHeight === "220px !important";
+      this.navHeight === "90px !important";
       return;
     }
     let page = this.name;
