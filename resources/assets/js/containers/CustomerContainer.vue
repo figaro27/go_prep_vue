@@ -168,7 +168,7 @@ export default {
   updated() {
     if (this.screenWidth < 500) {
       this.navBgColor === "#ffffff !important";
-      this.navHeight === "120px !important";
+      this.navHeight === "220px !important";
       return;
     }
     let page = this.name;
