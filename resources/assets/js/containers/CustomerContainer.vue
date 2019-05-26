@@ -140,7 +140,7 @@ export default {
     return {
       navBgColor: "",
       bgColor: "",
-      navHeight: ""
+      navHeight: "90px !important"
     };
   },
   computed: {
