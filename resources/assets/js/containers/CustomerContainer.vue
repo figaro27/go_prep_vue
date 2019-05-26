@@ -6,16 +6,12 @@
           v-if="showLogo"
           class="navbar-brand-full"
           :src="topLogo"
-          width="90"
-          height="40"
           alt="GoPrep Logo"
         />
         <img
           v-if="showLogo"
           class="navbar-brand-minimized"
           :src="topLogo"
-          width="33"
-          height="40"
           alt="GoPrep Logo"
         />
       </b-link>
