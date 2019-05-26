@@ -73,12 +73,12 @@
     <!-- <TheFooter>
     </TheFooter>-->
     <v-style>
-      .navbar { background: {{ navBgColor }}; min-height: {{ navHeight }};
-      height: {{ navHeight }}; max-height: {{ navHeight }}; line-height:
-      {{ navHeight }}; } .menu-bag-btn, .brand-color, .filters .active {
-      background: {{ bgColor }}; } .dbl-underline:after { border-bottom: 3px
-      double {{ bgColor }}; } .nav-item a:hover { background-color: #afafaf
-      !important; }
+      .navbar, .navbar-brand, .navbar-brand-minimized { background:
+      {{ navBgColor }}; min-height: {{ navHeight }}; height: {{ navHeight }};
+      max-height: {{ navHeight }}; line-height: {{ navHeight }}; }
+      .menu-bag-btn, .brand-color, .filters .active { background: {{ bgColor }};
+      } .dbl-underline:after { border-bottom: 3px double {{ bgColor }}; }
+      .nav-item a:hover { background-color: #afafaf !important; }
     </v-style>
   </div>
 </template>
@@ -140,7 +140,7 @@ export default {
     return {
       navBgColor: "",
       bgColor: "",
-      navHeight: "220px !important"
+      navHeight: "150px !important"
     };
   },
   computed: {
