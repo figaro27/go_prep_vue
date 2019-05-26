@@ -222,6 +222,7 @@
         ></b-form-input>
       </b-form-group>
     </b-form>
+    <b-button @click="addToRecipe" variant="primary">Add</b-button>
   </div>
 </template>
 <style lang="scss">
@@ -281,7 +282,7 @@ export default {
   },
   data() {
     return {
-      customIngredient: {},
+      customIngredient: { added: true },
       recipe: "",
       ingredients: [],
       newIngredients: [],
@@ -451,6 +452,10 @@ export default {
         .catch(e => {
           this.$toastr.e("No ingredients found.", "Sorry!");
         });
+    },
+    addToRecipe() {
+      let customIngredient = this.processFoods(this.customIngredient);
+      this.ingredients = _.concat(this.ingredients, customIngredient);
     },
     onSearch(search, loading) {
       loading(true);
