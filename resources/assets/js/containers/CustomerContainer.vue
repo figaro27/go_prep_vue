@@ -178,7 +178,7 @@ export default {
 
     let screenWidth = window.innerWidth;
 
-    if (screenWidth < 480) {
+    if (screenWidth < 500) {
       this.navBgColor === "#ffffff !important";
     }
   },
