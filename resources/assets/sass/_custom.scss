@@ -224,7 +224,7 @@ body.sidebar-minimized {
   margin-left: -5px;
   margin-right: -5px;
 
-  li {
+  > li {
     flex: 0 1 calc(50% - 10px);
     margin-left: 5px;
     margin-right: 5px;

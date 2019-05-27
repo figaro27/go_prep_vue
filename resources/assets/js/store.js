@@ -1176,19 +1176,42 @@ const getters = {
         return _.find(meal.sizes, ["id", parseInt(sizeId)]);
       };
 
-      meal.getTitle = (size = null, components = null, addons = null) => {
+      meal.getTitle = (
+        html = false,
+        size = null,
+        components = null,
+        addons = null
+      ) => {
         let title = meal.title;
 
         if (size) {
           title = size.title;
         }
 
-        if (_.isArray(components) && components.length) {
-          title += " - " + _.map(components, "option").join(", ");
-        }
+        let hasComponents = _.isArray(addons) && addons.length;
+        let hasAddons = _.isArray(addons) && addons.length;
 
-        if (_.isArray(addons) && addons.length) {
-          title += " - " + _.map(addons, "addon").join(", ");
+        if (!html) {
+          if (hasComponents) {
+            title += " - " + _.map(components, "option").join(", ");
+          }
+
+          if (hasAddons) {
+            title += " - " + _.map(addons, "addon").join(", ");
+          }
+        } else if (hasComponents || hasAddons) {
+          title += '<ul class="meal-components plain mb-0">';
+          if (hasComponents) {
+            _.forEach(components, component => {
+              title += `<li class="plain">${component.option}</li>`;
+            });
+          }
+          if (hasAddons) {
+            _.forEach(addons, addon => {
+              title += `<li class="plus">${addon.addon}</li>`;
+            });
+          }
+          title += "</ul>";
         }
 
         return title;
@@ -1434,19 +1457,42 @@ const getters = {
         return _.find(meal.sizes, ["id", parseInt(sizeId)]);
       };
 
-      meal.getTitle = (size = null, components = null, addons = null) => {
+      meal.getTitle = (
+        html = false,
+        size = null,
+        components = null,
+        addons = null
+      ) => {
         let title = meal.title;
 
         if (size) {
           title = size.title;
         }
 
-        if (_.isArray(components) && components.length) {
-          title += " - " + _.map(components, "option").join(", ");
-        }
+        let hasComponents = _.isArray(addons) && addons.length;
+        let hasAddons = _.isArray(addons) && addons.length;
 
-        if (_.isArray(addons) && addons.length) {
-          title += " - " + _.map(addons, "addon").join(", ");
+        if (!html) {
+          if (hasComponents) {
+            title += " - " + _.map(components, "option").join(", ");
+          }
+
+          if (hasAddons) {
+            title += " - " + _.map(addons, "addon").join(", ");
+          }
+        } else if (hasComponents || hasAddons) {
+          title += '<ul class="plain mb-0">';
+          if (hasComponents) {
+            _.forEach(components, component => {
+              title += `<li class="plain">${component.option}</li>`;
+            });
+          }
+          if (hasAddons) {
+            _.forEach(addons, addon => {
+              title += `<li class="plus">${addon.addon}</li>`;
+            });
+          }
+          title += "</ul>";
         }
 
         return title;

@@ -176,6 +176,10 @@
                         <img :src="row.value" class="modalMeal" />
                       </template>
 
+                      <template slot="meal" slot-scope="row">
+                        <div v-html="row.value"></div>
+                      </template>
+
                       <template slot="FOOT_subtotal" slot-scope="row">
                         <p>
                           Subtotal:
@@ -278,7 +282,7 @@ export default {
         }
 
         const size = meal.getSize(item.meal_size_id);
-        const title = meal.getTitle(size, item.components, item.addons);
+        const title = meal.getTitle(true, size, item.components, item.addons);
 
         return {
           image: meal.image.url_thumb,

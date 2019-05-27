@@ -203,7 +203,7 @@
                     ></thumbnail>
                   </div>
                   <div class="col-md-7 pt-3 nopadding pl-0 ml-0">
-                    <p>{{ meal.title }}</p>
+                    <p v-html="meal.title"></p>
                     <p class="strong">
                       {{ format.money(meal.subtotal) }}
                     </p>
@@ -407,7 +407,7 @@ export default {
         }
 
         const size = meal.getSize(item.meal_size_id);
-        const title = meal.getTitle(size, item.components, item.addons);
+        const title = meal.getTitle(true, size, item.components, item.addons);
 
         return {
           image: meal.image,
