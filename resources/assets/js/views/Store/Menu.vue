@@ -300,6 +300,7 @@
                       :meal="meal"
                       @change="val => (meal.sizes = val)"
                       @changeDefault="val => (meal.default_size_title = val)"
+                      @save="val => updateMeal(meal.id, { sizes: val })"
                     ></meal-sizes>
                   </b-tab>
 
@@ -307,6 +308,7 @@
                     <meal-components
                       :meal="meal"
                       @change="val => (meal.components = val)"
+                      @save="val => updateMeal(meal.id, { components: val })"
                     ></meal-components>
                   </b-tab>
 
@@ -314,6 +316,7 @@
                     <meal-addons
                       :meal="meal"
                       @change="val => (meal.addons = val)"
+                      @save="val => updateMeal(meal.id, { addons: val })"
                     ></meal-addons>
                   </b-tab>
                 </b-tabs>

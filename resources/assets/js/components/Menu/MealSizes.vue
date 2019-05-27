@@ -79,6 +79,10 @@
         ></b-input>
       </div>
     </v-client-table>
+
+    <b-button variant="primary" @click="save()" class="pull-right"
+      >Save</b-button
+    >
   </div>
 </template>
 
@@ -142,6 +146,9 @@ export default {
       }
 
       this.$emit("change", this.meal.sizes);
+    },
+    save() {
+      this.$emit("save", this.meal.sizes);
     }
   }
 };

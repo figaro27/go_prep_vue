@@ -64,6 +64,9 @@
         <b-button variant="primary" @click="addAddon()"
           >Add Meal Addon</b-button
         >
+        <b-button variant="primary" @click="save()" class="pull-right"
+          >Save</b-button
+        >
       </div>
     </div>
   </div>
@@ -159,6 +162,9 @@ export default {
         this.meal.addons[this.ingredientAddonId].ingredients = ingredients;
       } catch (e) {}
       this.ingredientAddonId = null;
+    },
+    save() {
+      this.$emit("save", this.meal.addons);
     }
   }
 };

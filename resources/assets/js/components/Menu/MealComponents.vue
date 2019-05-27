@@ -128,6 +128,9 @@
         <b-button variant="primary" @click="addComponent()"
           >Add Meal Component</b-button
         >
+        <b-button variant="primary" @click="save()" class="pull-right"
+          >Save</b-button
+        >
       </div>
     </div>
   </div>
@@ -247,6 +250,9 @@ export default {
       } catch (e) {}
       this.ingredientComponentId = null;
       this.ingredientOptionId = null;
+    },
+    save() {
+      this.$emit("save", this.meal.components);
     }
   }
 };
