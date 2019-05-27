@@ -2,19 +2,19 @@
   <div class="app customer">
     <b-navbar toggleable="lg" class="app-header" fixed>
       <b-link class="navbar-brand" to="#">
-        <!-- <img
+        <img
           class="navbar-brand-full"
           :src="topLogo"
           width="70"
           height="70"
-          alt="GoPrep Logo"
-        /> -->
+          v-if="mobile"
+        />
         <img
           class="navbar-brand-minimized"
           :src="topLogo"
           width="40"
           height="40"
-          alt="GoPrep Logo"
+          v-if="mobile"
         />
       </b-link>
       <b-navbar-toggle target="nav_collapse" class="mr-auto ml-2" />
@@ -156,16 +156,17 @@ export default {
     showLogo() {
       return this.viewedStore.settings.showLogo;
     },
-    screenWidth() {
-      return window.innerWidth;
+    mobile() {
+      if (window.innerWidth < 500) return true;
+      else return false;
     },
     topLogo() {
-      if (this.screenWidth < 500) return this.storeLogo;
+      if (this.mobile) return this.storeLogo;
       else return "/images/logo.png";
     }
   },
   updated() {
-    if (this.screenWidth < 500) {
+    if (this.mobile) {
       this.navBgColor === "#ffffff !important";
       this.mobileMargin === "ml-5";
     } else {
