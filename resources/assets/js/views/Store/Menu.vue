@@ -293,26 +293,30 @@
                 ></ingredient-picker>
               </b-tab>
 
-              <b-tab title="Size Variations">
-                <meal-sizes
-                  :meal="meal"
-                  @change="val => (meal.sizes = val)"
-                  @changeDefault="val => (meal.default_size_title = val)"
-                ></meal-sizes>
-              </b-tab>
+              <b-tab title="Variations">
+                <b-tabs pills>
+                  <b-tab title="Size Variations">
+                    <meal-sizes
+                      :meal="meal"
+                      @change="val => (meal.sizes = val)"
+                      @changeDefault="val => (meal.default_size_title = val)"
+                    ></meal-sizes>
+                  </b-tab>
 
-              <b-tab title="Components">
-                <meal-components
-                  :meal="meal"
-                  @change="val => (meal.components = val)"
-                ></meal-components>
-              </b-tab>
+                  <b-tab title="Components">
+                    <meal-components
+                      :meal="meal"
+                      @change="val => (meal.components = val)"
+                    ></meal-components>
+                  </b-tab>
 
-              <b-tab title="Addons">
-                <meal-addons
-                  :meal="meal"
-                  @change="val => (meal.addons = val)"
-                ></meal-addons>
+                  <b-tab title="Addons">
+                    <meal-addons
+                      :meal="meal"
+                      @change="val => (meal.addons = val)"
+                    ></meal-addons>
+                  </b-tab>
+                </b-tabs>
               </b-tab>
 
               <b-tab title="Gallery">

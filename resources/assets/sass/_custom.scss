@@ -37,11 +37,9 @@ li {
   list-style-type: none;
 }
 ul {
+  &.dash,
   &.plain,
-  li.plain {
-    list-style: disc;
-  }
-  &.dash {
+  &.plus {
     margin-left: 0;
     padding-left: 1em;
   }
@@ -49,7 +47,8 @@ ul {
   li.dash {
     list-style: none;
 
-    li {
+    li,
+    &li {
       &:before {
         content: "—";
         display: inline-block;
@@ -58,8 +57,26 @@ ul {
       }
     }
   }
+  &.plus,
+  li.plus {
+    list-style: none;
+  }
   li {
     list-style: none;
+  }
+
+  li.plain:before {
+    content: "●";
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+    list-style: none;
+  }
+  li.plus:before {
+    content: "+";
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
   }
 }
 
@@ -69,12 +86,15 @@ ul {
   -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
   // background-color:#3082CF;
   border-bottom: 0px;
-}
 
-.nav-link h6,
-.nav-link div,
-.nav-item a {
-  color: #ffffff !important;
+  .nav-link h6,
+  .nav-link div,
+  .nav-item a {
+    color: #ffffff;
+  }
+  .nav-item a:hover {
+    background-color: #3082cf !important;
+  }
 }
 
 .navbar .navbar-toggler {
@@ -132,6 +152,7 @@ ul {
 
 .nav-tabs .nav-item .nav-link {
   background-color: #3082cf !important;
+  color: #fff;
 }
 
 .open-indicator {
@@ -913,10 +934,6 @@ table {
 
 .sidebar-minimizer {
   background-color: #384550 !important;
-}
-
-.nav-item a:hover {
-  background-color: #3082cf !important;
 }
 
 .main,

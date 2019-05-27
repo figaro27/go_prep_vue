@@ -792,12 +792,15 @@
 
                           <ul
                             v-if="item.components || item.addons"
-                            class="dash"
+                            class="plain"
                           >
-                            <li v-for="component in itemComponents(item)">
+                            <li
+                              v-for="component in itemComponents(item)"
+                              class="plain"
+                            >
                               {{ component }}
                             </li>
-                            <li v-for="addon in itemAddons(item)">
+                            <li v-for="addon in itemAddons(item)" class="plus">
                               {{ addon }}
                             </li>
                           </ul>
