@@ -162,9 +162,9 @@ class StoreSetting extends Model
                     }
                 }
 
-                foreach ($dates as $date) {
-                    $dates[] = $date->copy()->addWeek(1);
-                }
+                // foreach ($dates as $date) {
+                //     $dates[] = $date->copy()->addWeek(1);
+                // }
 
                 usort($dates, function ($a, $b) {
                     return $a->getTimestamp() - $b->getTimestamp();

@@ -1,22 +1,20 @@
 <template>
   <div class="app customer">
     <b-navbar toggleable="lg" class="app-header" fixed>
-      <b-link class="navbar-brand" to="/customer/home">
+      <b-link class="navbar-brand" to="#">
         <img
-          v-if="showLogo"
           class="navbar-brand-full"
-          src="/images/logo.png"
-          width="90"
-          height="40"
-          alt="GoPrep Logo"
+          :src="topLogo"
+          width="70"
+          height="70"
+          v-if="mobile"
         />
         <img
-          v-if="showLogo"
           class="navbar-brand-minimized"
-          src="/images/logo.png"
-          width="33"
+          :src="topLogo"
+          width="40"
           height="40"
-          alt="GoPrep Logo"
+          v-if="mobile"
         />
       </b-link>
       <b-navbar-toggle target="nav_collapse" class="mr-auto ml-2" />
@@ -34,7 +32,7 @@
             >Bag</b-nav-item
           >
         </b-navbar-nav>
-        <b-navbar-nav class="">
+        <b-navbar-nav>
           <b-nav-item v-if="'id' in viewedStore" to="/customer/menu"
             >Menu</b-nav-item
           >
@@ -73,10 +71,11 @@
     <!-- <TheFooter>
     </TheFooter>-->
     <v-style>
-      .navbar { background: {{ navBgColor }}; } .menu-bag-btn, .brand-color,
-      .filters .active { background: {{ bgColor }}; } .dbl-underline:after {
-      border-bottom: 3px double {{ bgColor }}; } .nav-item a:hover {
-      background-color: #afafaf !important; }
+      .navbar, .navbar-brand, .navbar-brand-minimized { background:
+      {{ navBgColor }}; } .menu-bag-btn, .brand-color, .filters .active {
+      background: {{ bgColor }}; } .dbl-underline:after { border-bottom: 3px
+      double {{ bgColor }}; } .nav-item a:hover { background-color: #afafaf
+      !important; }
     </v-style>
   </div>
 </template>
@@ -155,22 +154,41 @@ export default {
     },
     showLogo() {
       return this.viewedStore.settings.showLogo;
+    },
+    mobile() {
+      if (window.innerWidth < 500) return true;
+      else return false;
+    },
+    topLogo() {
+      if (this.mobile) return this.storeLogo;
+      else return "/images/logo.png";
     }
   },
   updated() {
-    let page = this.name;
-    // if (page != 'customer-home' && page != 'login' && page != 'register' && page != 'customer-orders' && page != 'customer-meal-plans')
-    //   this.navBgColor = this.viewedStore.settings.color + ' !important';
-    if (page === "customer-menu" || page === "customer-bag")
-      this.navBgColor = this.viewedStore.settings.color + " !important";
-    else this.navBgColor = "#3082cf !important";
+    if (this.mobile) {
+      this.navBgColor === "#ffffff !important";
+    } else {
+      this.navBgColor = this.viewedStore.settings.color + "!important";
+    }
+    this.bgColor = this.viewedStore.settings.color + " !important";
 
-    if (
-      this.navBgColor === "#3082cf !important" ||
-      this.navBgColor === "#3082CF !important"
-    ) {
-      this.bgColor = "#F25727 !important";
-    } else this.bgColor = this.viewedStore.settings.color + " !important";
+    // let page = this.name;
+    // // if (page != 'customer-home' && page != 'login' && page != 'register' && page != 'customer-orders' && page != 'customer-meal-plans')
+    // //   this.navBgColor = this.viewedStore.settings.color + ' !important';
+    // if (page === "customer-menu" || page === "customer-bag") {
+    //   this.navBgColor = this.viewedStore.settings.color + "!important";
+    // } else {
+    //   this.navBgColor = "#3082cf !important";
+    // }
+
+    // if (
+    //   this.navBgColor === "#3082cf !important" ||
+    //   this.navBgColor === "#3082CF !important"
+    // ) {
+    //   this.bgColor = "#F25727 !important";
+    // } else {
+    //   this.bgColor = this.viewedStore.settings.color + " !important";
+    // }
   },
   created() {},
   methods: {}

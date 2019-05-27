@@ -1,15 +1,17 @@
 body.customermenu {
   .app-body {
-    margin-top: 95px;
+    margin-top: 75px;
+    padding-top: 20px;
 
     @include media-breakpoint-up(md) {
       margin-top: 0;
+      padding-top: 0;
     }
   }
 
   .category-slider {
     position: fixed;
-    top: 55px;
+    top: 75px;
     left: 0;
     right: 0;
     background: #fff;
@@ -87,6 +89,7 @@ body.customermenu {
     }
 
     .price {
+      font-size: 16px;
       position: absolute;
       top: 10px;
       right: 10px;
