@@ -986,3 +986,12 @@ body.forgotresettoken {
 .ps__rail-y {
   opacity: 0.6;
 }
+
+.navbar,
+.navbar-brand,
+.navbar-brand-minimized {
+  min-height: 75px !important;
+  max-height: 75px !important;
+  height: 75px !important;
+  line-height: 75px !important;
+}

@@ -1,17 +1,15 @@
 <template>
   <div class="app customer">
     <b-navbar toggleable="lg" class="app-header" fixed>
-      <b-link class="navbar-brand" to="/customer/home">
+      <b-link class="navbar-brand" to="/customer/home" v-if="showLogo">
         <img
-          v-if="showLogo"
           class="navbar-brand-full"
           :src="topLogo"
-          width="90"
-          height="90"
+          width="75"
+          height="75"
           alt="GoPrep Logo"
         />
         <img
-          v-if="showLogo"
           class="navbar-brand-minimized"
           :src="topLogo"
           width="40"
@@ -34,7 +32,7 @@
             >Bag</b-nav-item
           >
         </b-navbar-nav>
-        <b-navbar-nav class="">
+        <b-navbar-nav class="ml-5">
           <b-nav-item v-if="'id' in viewedStore" to="/customer/menu"
             >Menu</b-nav-item
           >
@@ -74,11 +72,10 @@
     </TheFooter>-->
     <v-style>
       .navbar, .navbar-brand, .navbar-brand-minimized { background:
-      {{ navBgColor }}; min-height: {{ navHeight }}; height: {{ navHeight }};
-      max-height: {{ navHeight }}; line-height: {{ navHeight }}; }
-      .menu-bag-btn, .brand-color, .filters .active { background: {{ bgColor }};
-      } .dbl-underline:after { border-bottom: 3px double {{ bgColor }}; }
-      .nav-item a:hover { background-color: #afafaf !important; }
+      {{ navBgColor }}; } .menu-bag-btn, .brand-color, .filters .active {
+      background: {{ bgColor }}; } .dbl-underline:after { border-bottom: 3px
+      double {{ bgColor }}; } .nav-item a:hover { background-color: #afafaf
+      !important; }
     </v-style>
   </div>
 </template>
@@ -139,8 +136,7 @@ export default {
   data() {
     return {
       navBgColor: "",
-      bgColor: "",
-      navHeight: ""
+      bgColor: ""
     };
   },
   computed: {
@@ -170,7 +166,6 @@ export default {
   updated() {
     if (this.screenWidth < 500) {
       this.navBgColor === "#ffffff !important";
-      this.navHeight === "120px !important";
       return;
     }
     let page = this.name;
