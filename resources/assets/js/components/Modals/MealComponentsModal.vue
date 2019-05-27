@@ -1,65 +1,67 @@
 <template>
-  <div class="modal-full">
-    <b-modal
-      title="Choose Options"
-      ref="modal"
-      size="sm"
-      @ok.prevent="e => ok(e)"
-    >
-      <div v-if="meal">
-        <b-row v-if="meal.components.length">
-          <b-col>
-            <div
-              v-for="(component, i) in meal.components"
-              :key="meal.id + component.id"
-              class
-            >
-              <b-form-group :label="getComponentLabel(component)">
-                <b-checkbox-group
-                  v-model="choices[component.id]"
-                  :options="getOptions(component)"
-                  :min="component.minimum"
-                  :max="component.maximum"
-                ></b-checkbox-group>
-
-                <div v-if="$v.choices[component.id].$dirty">
-                  <div
-                    v-if="false === $v.choices[component.id].required"
-                    class="invalid-feedback d-block"
-                  >
-                    This field is required
-                  </div>
-                  <div
-                    v-if="false === $v.choices[component.id].minimum"
-                    class="invalid-feedback d-block"
-                  >
-                    Minimum {{ component.minimum }}
-                  </div>
-                  <div
-                    v-if="false === $v.choices[component.id].maximum"
-                    class="invalid-feedback d-block"
-                  >
-                    Maximum {{ component.maximum }}
-                  </div>
-                </div>
-              </b-form-group>
-            </div>
-          </b-col>
-        </b-row>
-
-        <b-row v-if="meal.addons.length">
-          <b-col>
-            <b-form-group label="Addons">
+  <b-modal
+    title="Choose Options"
+    ref="modal"
+    size="sm"
+    @ok.prevent="e => ok(e)"
+  >
+    <div v-if="meal">
+      <b-row v-if="meal.components.length" class="my-3">
+        <b-col>
+          <div
+            v-for="(component, i) in meal.components"
+            :key="meal.id + component.id"
+            class
+          >
+            <h4>{{ getComponentLabel(component) }}</h4>
+            <b-form-group :label="null">
               <b-checkbox-group
-                v-model="addons"
-                :options="getAddonOptions(meal.addons)"
+                v-model="choices[component.id]"
+                :options="getOptions(component)"
+                :min="component.minimum"
+                :max="component.maximum"
+                stacked
               ></b-checkbox-group>
+
+              <div v-if="$v.choices[component.id].$dirty">
+                <div
+                  v-if="false === $v.choices[component.id].required"
+                  class="invalid-feedback d-block"
+                >
+                  This field is required
+                </div>
+                <div
+                  v-if="false === $v.choices[component.id].minimum"
+                  class="invalid-feedback d-block"
+                >
+                  Minimum {{ component.minimum }}
+                </div>
+                <div
+                  v-if="false === $v.choices[component.id].maximum"
+                  class="invalid-feedback d-block"
+                >
+                  Maximum {{ component.maximum }}
+                </div>
+              </div>
             </b-form-group>
-          </b-col>
-        </b-row>
-      </div>
-    </b-modal>
-  </div>
+          </div>
+        </b-col>
+      </b-row>
+
+      <b-row v-if="meal.addons.length" class="my-3">
+        <b-col>
+          <h4>Add-ons</h4>
+          <b-form-group label="">
+            <b-checkbox-group
+              v-model="addons"
+              :options="getAddonOptions(meal.addons)"
+              stacked
+            ></b-checkbox-group>
+          </b-form-group>
+        </b-col>
+      </b-row>
+    </div>
+  </b-modal>
 </template>
 
 <script>
