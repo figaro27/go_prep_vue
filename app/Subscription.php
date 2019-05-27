@@ -152,7 +152,12 @@ class Subscription extends Model
     public function getItemsAttribute()
     {
         return $this->meal_subscriptions()
-            ->with(['components', 'components.component', 'components.option'])
+            ->with([
+                'components',
+                'components.component',
+                'components.option',
+                'addons'
+            ])
             ->get()
             ->map(function ($mealSub) {
                 return (object) [
@@ -174,7 +179,12 @@ class Subscription extends Model
                             'option' => $component->option->title
                         ];
                     }),
-                    'addons' => []
+                    'addons' => $mealSub->addons->map(function ($addon) {
+                        return (object) [
+                            'meal_addon_id' => $addon->addon->id,
+                            'addon' => $addon->addon->title
+                        ];
+                    })
                 ];
             });
     }
