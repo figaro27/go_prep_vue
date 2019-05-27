@@ -443,7 +443,7 @@
               <div class="row">
                 <div class="col-sm-12">
                   <div class="row">
-                    <div class="col-sm-12 store-logo-area">
+                    <div class="col-sm-12 store-logo-area" v-if="!mobile">
                       <img
                         v-if="storeLogo"
                         class="store-logo"
@@ -1111,6 +1111,10 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice"
     }),
+    mobile() {
+      if (window.innerWidth < 500) return true;
+      else return false;
+    },
     tax() {
       return this.salesTax * this.afterDiscountAfterFeesBeforeTax;
     },
