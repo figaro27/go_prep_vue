@@ -49,7 +49,10 @@
             </b-form-group>
           </b-col>
           <b-col>
-            <b-btn variant="primary" @click="changeAddonIngredients(i)"
+            <b-btn
+              variant="primary"
+              @click="changeAddonIngredients(i)"
+              style="margin-top: 28px;"
               >Adjust</b-btn
             >
           </b-col>
