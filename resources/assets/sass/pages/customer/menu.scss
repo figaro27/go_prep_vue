@@ -1,9 +1,11 @@
 body.customermenu {
   .app-body {
-    margin-top: 95px;
+    margin-top: 75px;
+    padding-top: 20px;
 
     @include media-breakpoint-up(md) {
       margin-top: 0;
+      padding-top: 0;
     }
   }
 
