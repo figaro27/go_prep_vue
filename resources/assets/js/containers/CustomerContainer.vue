@@ -5,8 +5,8 @@
         <img
           class="navbar-brand-full"
           :src="topLogo"
-          width="75"
-          height="75"
+          width="70"
+          height="70"
           alt="GoPrep Logo"
         />
         <img
@@ -166,8 +166,8 @@ export default {
   updated() {
     if (this.screenWidth < 500) {
       this.navBgColor === "#ffffff !important";
-      return;
     }
+
     let page = this.name;
     // if (page != 'customer-home' && page != 'login' && page != 'register' && page != 'customer-orders' && page != 'customer-meal-plans')
     //   this.navBgColor = this.viewedStore.settings.color + ' !important';
