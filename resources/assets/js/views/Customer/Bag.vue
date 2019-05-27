@@ -79,7 +79,7 @@
                     </span>
                     <span v-else>{{ item.meal.item_title }}</span>
 
-                    <ul v-if="item.components">
+                    <ul v-if="item.components" class="plain">
                       <li
                         v-for="component in itemComponents(item)"
                         class="plain"
