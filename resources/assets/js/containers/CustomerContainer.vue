@@ -32,7 +32,7 @@
             >Bag</b-nav-item
           >
         </b-navbar-nav>
-        <b-navbar-nav :class="mobileMargin">
+        <b-navbar-nav>
           <b-nav-item v-if="'id' in viewedStore" to="/customer/menu"
             >Menu</b-nav-item
           >
@@ -136,8 +136,7 @@ export default {
   data() {
     return {
       navBgColor: "",
-      bgColor: "",
-      mobileMargin: ""
+      bgColor: ""
     };
   },
   computed: {
@@ -168,7 +167,6 @@ export default {
   updated() {
     if (this.mobile) {
       this.navBgColor === "#ffffff !important";
-      this.mobileMargin === "ml-5";
     } else {
       this.navBgColor = this.viewedStore.settings.color + "!important";
     }
