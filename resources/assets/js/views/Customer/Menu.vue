@@ -7,7 +7,7 @@
       </div>
     </floating-action-button>
 
-    <div class="category-slider d-block d-md-none mt-3">
+    <div class="category-slider d-block d-md-none pt-3">
       <slick
         v-if="categories.length > 4"
         ref="categorySlider"
