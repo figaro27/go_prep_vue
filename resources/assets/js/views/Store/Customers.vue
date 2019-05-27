@@ -100,14 +100,15 @@
                   </p>
                 </div>
                 <div class="col-md-4">
-                  <span>
-                    Subtotal: {{ format.money(order.preFeePreDiscount) }} </span
-                  ><br />
+                  <span
+                    >Subtotal: {{ format.money(order.preFeePreDiscount) }}</span
+                  >
+                  <br />
                   <span v-if="order.mealPlanDiscount > 0">
                     Meal Plan Discount:
                     <span class="text-success"
-                      >({{ format.money(order.mealPlanDiscount) }})
-                    </span>
+                      >({{ format.money(order.mealPlanDiscount) }})</span
+                    >
                     <br />
                   </span>
                   <span v-if="order.deliveryFee > 0">
@@ -119,21 +120,21 @@
                     {{ format.money(order.processingFee) }}
                     <br />
                   </span>
-                  <span>Sales Tax: {{ format.money(order.salesTax) }}</span
-                  ><br />
+                  <span>Sales Tax: {{ format.money(order.salesTax) }}</span>
+                  <br />
                   <span>
-                    <strong
-                      ><span v-if="order.couponReduction === null"
+                    <strong>
+                      <span v-if="order.couponReduction === null"
                         >Total: {{ format.money(order.amount) }}</span
-                      ></strong
-                    >
+                      >
+                    </strong>
                     <div v-if="order.couponReduction > 0">
                       Pre-Coupon Total: {{ format.money(order.pre_coupon) }}
                       <br />
-                      <span class="text-success"
-                        >(Coupon {{ order.couponCode }}:
-                        {{ format.money(order.couponReduction) }})</span
-                      >
+                      <span class="text-success">
+                        (Coupon {{ order.couponCode }}:
+                        {{ format.money(order.couponReduction) }})
+                      </span>
                       <br />
                       <strong>Total: {{ format.money(order.amount) }}</strong>
                     </div>
@@ -155,22 +156,20 @@
                   >
                     <div class="row">
                       <div class="col-md-5 pr-0">
-                        <span class="order-quantity">
-                          {{ meal.quantity }}
-                        </span>
+                        <span class="order-quantity">{{ meal.quantity }}</span>
                         <img
                           src="/images/store/x-modal.png"
                           class="mr-2 ml-2"
                         />
                         <thumbnail
-                          v-if="meal.image.url_thumb"
-                          :src="meal.image.url_thumb"
+                          v-if="meal.image"
+                          :src="meal.image"
                           :spinner="false"
                         ></thumbnail>
                       </div>
                       <div class="col-md-7 pt-3 nopadding">
                         <p>{{ meal.title }}</p>
-                        <p>{{ format.money(meal.item_price) }}</p>
+                        <p>{{ format.money(meal.subtotal) }}</p>
                       </div>
                     </div>
                   </li>
@@ -187,6 +186,7 @@
 <script>
 import Spinner from "../../components/Spinner";
 // import ViewCustomer from "./Modals/ViewCustomer";
+import format from "../../lib/format";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
@@ -315,51 +315,25 @@ export default {
         });
     },
     getMealQuantities(order) {
-      let mealCounts = {};
-
-      _.forEach(order.meal_quantities, (quantity, mealId) => {
-        if (!mealCounts[mealId]) {
-          mealCounts[mealId] = 0;
+      let data = order.items.map(item => {
+        const meal = this.getMeal(item.meal_id);
+        if (!meal) {
+          return null;
         }
-        mealCounts[mealId] += quantity;
-      });
 
-      return _.map(mealCounts, (quantity, mealId) => {
-        let mealIdParts = mealId.split("-"); // mealId-sizeId
-        let meal = this.getMeal(mealIdParts[0]);
-        let size = null;
-        let title = null;
-        let price = meal.price;
-
-        if (mealIdParts[1]) {
-          size = meal.getSize(mealIdParts[1]);
-          title = size.full_title;
-          price = size.price;
-        } else {
-          title = meal.item_title;
-        }
+        const size = meal.getSize(item.meal_size_id);
+        const title = meal.getTitle(size, item.components, item.addons);
 
         return {
-          ...meal,
-          title,
-          price,
-          size,
-          quantity: quantity,
-          total: quantity * price
+          image: meal.image.url_thumb,
+          title: title,
+          quantity: item.quantity,
+          unit_price: format.money(item.unit_price),
+          subtotal: format.money(item.price)
         };
       });
 
-      if (!_.isArray(meals)) {
-        return [];
-      }
-      return meals.map((meal, id) => {
-        return {
-          quantity: meal.item_quantity,
-          image: meal.image,
-          title: meal.item_title,
-          price: meal.item_price
-        };
-      });
+      return _.filter(data);
     }
   }
 };
