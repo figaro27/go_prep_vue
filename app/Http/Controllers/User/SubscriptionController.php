@@ -4,7 +4,11 @@ namespace App\Http\Controllers\User;
 
 use App\Bag;
 use App\MealOrder;
+use App\MealOrderComponent;
+use App\MealOrderAddon;
 use App\MealSubscription;
+use App\MealSubscriptionComponent;
+use App\MealSubscriptionAddon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -261,6 +265,27 @@ class SubscriptionController extends UserController
                 $mealSub->meal_size_id = $item['size']['id'];
             }
             $mealSub->save();
+
+            if (isset($item['components']) && $item['components']) {
+                foreach ($item['components'] as $componentId => $choices) {
+                    foreach ($choices as $optionId) {
+                        MealSubscriptionComponent::create([
+                            'meal_subscription_id' => $mealSub->id,
+                            'meal_component_id' => $componentId,
+                            'meal_component_option_id' => $optionId
+                        ]);
+                    }
+                }
+            }
+
+            if (isset($item['addons']) && $item['addons']) {
+                foreach ($item['addons'] as $addonId) {
+                    MealSubscriptionAddon::create([
+                        'meal_subscription_id' => $mealSub->id,
+                        'meal_addon_id' => $addonId
+                    ]);
+                }
+            }
         }
 
         // Update subscription pricing
@@ -308,6 +333,27 @@ class SubscriptionController extends UserController
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
                 $mealOrder->save();
+
+                if (isset($item['components']) && $item['components']) {
+                    foreach ($item['components'] as $componentId => $choices) {
+                        foreach ($choices as $optionId) {
+                            MealOrderComponent::create([
+                                'meal_order_id' => $mealOrder->id,
+                                'meal_component_id' => $componentId,
+                                'meal_component_option_id' => $optionId
+                            ]);
+                        }
+                    }
+                }
+
+                if (isset($item['addons']) && $item['addons']) {
+                    foreach ($item['addons'] as $addonId) {
+                        MealOrderAddon::create([
+                            'meal_order_id' => $mealOrder->id,
+                            'meal_addon_id' => $addonId
+                        ]);
+                    }
+                }
             }
         }
     }

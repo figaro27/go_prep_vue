@@ -51,15 +51,17 @@ export default {
         }
 
         let components = _.mapValues(
-          _.keyBy(item.components, "meal_component_id"),
-          component => {
-            return component.meal_component_option_id;
+          _.groupBy(item.components, "meal_component_id"),
+          choices => {
+            return _.map(choices, "meal_component_option_id");
           }
         );
 
         let addons = _.map(item.addons, "meal_addon_id");
 
-        this.addOne(meal, false, item.meal_size_id, components, addons);
+        for (let i = 0; i < item.quantity; i++) {
+          this.addOne(meal, false, item.meal_size_id, components, addons);
+        }
       });
     }
   }

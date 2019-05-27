@@ -171,15 +171,13 @@ export default {
           return null;
         }
 
-        const price = meal.item_price;
-        const quantity = meal.item_quantity;
         const size = meal.getSize(item.meal_size_id);
         const title = meal.getTitle(size, item.components, item.addons);
 
         return {
           image: meal.image.url_thumb,
           meal: title,
-          quantity: quantity,
+          quantity: item.quantity,
           unit_price: format.money(item.unit_price),
           subtotal: format.money(item.price)
         };
