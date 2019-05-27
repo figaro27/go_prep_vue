@@ -166,25 +166,28 @@ export default {
   updated() {
     if (this.screenWidth < 500) {
       this.navBgColor === "#ffffff !important";
-    }
-
-    let page = this.name;
-    // if (page != 'customer-home' && page != 'login' && page != 'register' && page != 'customer-orders' && page != 'customer-meal-plans')
-    //   this.navBgColor = this.viewedStore.settings.color + ' !important';
-    if (page === "customer-menu" || page === "customer-bag") {
+    } else {
       this.navBgColor = this.viewedStore.settings.color + "!important";
-    } else {
-      this.navBgColor = "#3082cf !important";
     }
+    this.bgColor = this.viewedStore.settings.color + " !important";
 
-    if (
-      this.navBgColor === "#3082cf !important" ||
-      this.navBgColor === "#3082CF !important"
-    ) {
-      this.bgColor = "#F25727 !important";
-    } else {
-      this.bgColor = this.viewedStore.settings.color + " !important";
-    }
+    // let page = this.name;
+    // // if (page != 'customer-home' && page != 'login' && page != 'register' && page != 'customer-orders' && page != 'customer-meal-plans')
+    // //   this.navBgColor = this.viewedStore.settings.color + ' !important';
+    // if (page === "customer-menu" || page === "customer-bag") {
+    //   this.navBgColor = this.viewedStore.settings.color + "!important";
+    // } else {
+    //   this.navBgColor = "#3082cf !important";
+    // }
+
+    // if (
+    //   this.navBgColor === "#3082cf !important" ||
+    //   this.navBgColor === "#3082CF !important"
+    // ) {
+    //   this.bgColor = "#F25727 !important";
+    // } else {
+    //   this.bgColor = this.viewedStore.settings.color + " !important";
+    // }
   },
   created() {},
   methods: {}
