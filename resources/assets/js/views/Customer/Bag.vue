@@ -79,11 +79,14 @@
                     </span>
                     <span v-else>{{ item.meal.item_title }}</span>
 
-                    <ul v-if="item.components" class="dash">
-                      <li v-for="component in itemComponents(item)">
+                    <ul v-if="item.components">
+                      <li
+                        v-for="component in itemComponents(item)"
+                        class="plain"
+                      >
                         {{ component }}
                       </li>
-                      <li v-for="addon in itemAddons(item)">
+                      <li v-for="addon in itemAddons(item)" class="plus">
                         {{ addon }}
                       </li>
                     </ul>
