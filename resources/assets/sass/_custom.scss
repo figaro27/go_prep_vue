@@ -92,6 +92,9 @@ ul {
   .nav-item a {
     color: #ffffff;
   }
+  .navbar-nav:not(:last-child) a {
+    color: #fff !important;
+  }
   .nav-item a:hover {
     background-color: #3082cf !important;
   }
