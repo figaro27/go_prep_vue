@@ -1,14 +1,14 @@
 <template>
   <div class="app customer">
     <b-navbar toggleable="lg" class="app-header" fixed>
-      <!-- <b-link class="navbar-brand" to="#">
-        <img
+      <b-link class="navbar-brand" to="#">
+        <!-- <img
           class="navbar-brand-full"
           :src="topLogo"
           width="70"
           height="70"
           alt="GoPrep Logo"
-        />
+        /> -->
         <img
           class="navbar-brand-minimized"
           :src="topLogo"
@@ -16,7 +16,7 @@
           height="40"
           alt="GoPrep Logo"
         />
-      </b-link> -->
+      </b-link>
       <b-navbar-toggle target="nav_collapse" class="mr-auto ml-2" />
       <b-btn
         class="mr-2 d-lg-none"
