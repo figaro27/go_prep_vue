@@ -88,6 +88,10 @@
                         <img :src="row.value" class="modalMeal" />
                       </template>
 
+                      <template slot="meal" slot-scope="row">
+                        <div v-html="row.value"></div>
+                      </template>
+
                       <template slot="FOOT_subtotal" slot-scope="row">
                         <p>
                           Subtotal: {{ format.money(order.preFeePreDiscount) }}
@@ -149,7 +153,9 @@ export default {
   computed: {
     ...mapGetters({
       _orders: "orders",
-      isLoading: "isLoading"
+      initialized: "initialized",
+      isLoading: "isLoading",
+      getStoreMeal: "viewedStoreMeal"
     }),
     orders() {
       return this._orders.filter(meal => {
@@ -161,17 +167,27 @@ export default {
   methods: {
     ...mapActions(["refreshCustomerOrders"]),
     getMealTableData(order) {
-      return order.meals.map(meal => {
-        const price = meal.item_price;
-        const quantity = meal.item_quantity;
+      if (!this.initialized) return [];
+
+      let data = order.items.map(item => {
+        const meal = this.getStoreMeal(item.meal_id);
+        if (!meal) {
+          return null;
+        }
+
+        const size = meal.getSize(item.meal_size_id);
+        const title = meal.getTitle(true, size, item.components, item.addons);
 
         return {
           image: meal.image.url_thumb,
-          meal: meal.item_title,
-          quantity: quantity,
-          subtotal: format.money(price * quantity)
+          meal: title,
+          quantity: item.quantity,
+          unit_price: format.money(item.unit_price),
+          subtotal: format.money(item.price)
         };
       });
+
+      return _.filter(data);
     }
   }
 };

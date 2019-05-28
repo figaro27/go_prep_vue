@@ -29,7 +29,10 @@ class MakeDeliveryFeeTypeDefaultFlatOnStoreSettingsTable extends Migration
     public function down()
     {
         Schema::table('store_settings', function (Blueprint $table) {
-            $table->dropColumn('deliveryFeeType');
+            $table
+                ->string('deliveryFeeType')
+                ->default(null)
+                ->change();
         });
     }
 }

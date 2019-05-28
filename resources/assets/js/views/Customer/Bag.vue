@@ -43,14 +43,30 @@
                 >
                   <div class="bag-item-quantity mr-2">
                     <div
-                      @click="addOne(item.meal, false, item.size)"
+                      @click="
+                        addOne(
+                          item.meal,
+                          false,
+                          item.size,
+                          item.components,
+                          item.addons
+                        )
+                      "
                       class="bag-plus-minus brand-color white-text"
                     >
                       <i>+</i>
                     </div>
                     <p class="bag-quantity">{{ item.quantity }}</p>
                     <div
-                      @click="minusOne(item.meal, false, item.size)"
+                      @click="
+                        minusOne(
+                          item.meal,
+                          false,
+                          item.size,
+                          item.components,
+                          item.addons
+                        )
+                      "
                       class="bag-plus-minus gray white-text"
                     >
                       <i>-</i>
@@ -71,11 +87,31 @@
                       {{ item.size.full_title }}
                     </span>
                     <span v-else>{{ item.meal.item_title }}</span>
+
+                    <ul v-if="item.components" class="plain">
+                      <li
+                        v-for="component in itemComponents(item)"
+                        class="plain"
+                      >
+                        {{ component }}
+                      </li>
+                      <li v-for="addon in itemAddons(item)" class="plus">
+                        {{ addon }}
+                      </li>
+                    </ul>
                   </div>
                   <div class="flex-grow-0">
                     <img
                       src="/images/customer/x.png"
-                      @click="clearMeal(item.meal, false, item.size)"
+                      @click="
+                        clearMeal(
+                          item.meal,
+                          false,
+                          item.size,
+                          item.components,
+                          item.addons
+                        )
+                      "
                       class="clear-meal"
                     />
                   </div>
@@ -535,6 +571,7 @@ import { createToken } from "vue-stripe-elements-plus";
 import SalesTax from "sales-tax";
 import Register from "../Register";
 
+import MenuBag from "../../mixins/menuBag";
 import CardPicker from "../../components/Billing/CardPicker";
 
 export default {
@@ -549,6 +586,7 @@ export default {
       default: false
     }
   },
+  mixins: [MenuBag],
   data() {
     return {
       showAddNewCustomerModal: false,
@@ -588,7 +626,8 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
       coupons: "viewedStoreCoupons",
-      pickupLocations: "viewedStorePickupLocations"
+      pickupLocations: "viewedStorePickupLocations",
+      getMeal: "viewedStoreMeal"
     }),
     customers() {
       let customers = this.storeCustomers;
@@ -759,40 +798,10 @@ export default {
   methods: {
     ...mapActions(["refreshSubscriptions", "refreshCustomerOrders"]),
     ...mapMutations(["emptyBag"]),
-    quantity(meal, mealPackage = false, size = null) {
-      const qty = this.$store.getters.bagItemQuantity(meal, mealPackage, size);
-      return qty;
-    },
-    addOne(meal, mealPackage = false, size = null) {
-      this.$store.commit("addToBag", { meal, quantity: 1, mealPackage, size });
-    },
-    minusOne(meal, mealPackage = false, size = null) {
-      this.$store.commit("removeFromBag", {
-        meal,
-        quantity: 1,
-        mealPackage,
-        size
-      });
-    },
-    clearMeal(meal, mealPackage = false, size = null) {
-      let quantity = this.quantity(meal, mealPackage, size);
-      this.$store.commit("removeFromBag", {
-        meal,
-        quantity,
-        mealPackage,
-        size
-      });
-    },
-    clearAll() {
-      this.$store.commit("emptyBag");
-    },
     preventNegative() {
       if (this.total < 0) {
         this.total += 1;
       }
-    },
-    addBagItems(bag) {
-      this.$store.commit("addBagItems", bag);
     },
     checkout() {
       if (this.checkingOut) {
@@ -858,14 +867,6 @@ export default {
           this.loading = false;
           this.checkingOut = false;
         });
-    },
-    getSalesTax(state) {
-      SalesTax.getSalesTax("US", state).then(tax => {
-        this.setSalesTax(tax.rate);
-      });
-    },
-    setSalesTax(rate) {
-      this.salesTax = rate;
     },
     applyCoupon() {
       this.coupons.forEach(coupon => {

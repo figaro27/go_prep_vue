@@ -4,7 +4,7 @@ const validators = {
   required,
   password: {
     required,
-    minLength: minLength(7)
+    minLength: minLength(6)
   },
   email: {
     required,
@@ -33,8 +33,7 @@ const validators = {
     minLength: minLength(5)
   },
   delivery: {
-    required,
-    minLength: minLength(5)
+    minLength: minLength(0)
   },
   store_name: {
     required,

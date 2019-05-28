@@ -293,12 +293,33 @@
                 ></ingredient-picker>
               </b-tab>
 
-              <b-tab title="Size Variations">
-                <meal-sizes
-                  :meal="meal"
-                  @change="val => (meal.sizes = val)"
-                  @changeDefault="val => (meal.default_size_title = val)"
-                ></meal-sizes>
+              <b-tab title="Variations">
+                <b-tabs pills>
+                  <b-tab title="Sizes">
+                    <meal-sizes
+                      :meal="meal"
+                      @change="val => (meal.sizes = val)"
+                      @changeDefault="val => (meal.default_size_title = val)"
+                      @save="val => updateMeal(meal.id, { sizes: val })"
+                    ></meal-sizes>
+                  </b-tab>
+
+                  <b-tab title="Components">
+                    <meal-components
+                      :meal="meal"
+                      @change="val => (meal.components = val)"
+                      @save="val => updateMeal(meal.id, { components: val })"
+                    ></meal-components>
+                  </b-tab>
+
+                  <b-tab title="Addons">
+                    <meal-addons
+                      :meal="meal"
+                      @change="val => (meal.addons = val)"
+                      @save="val => updateMeal(meal.id, { addons: val })"
+                    ></meal-addons>
+                  </b-tab>
+                </b-tabs>
               </b-tab>
 
               <b-tab title="Gallery">
@@ -476,6 +497,8 @@
 import Spinner from "../../components/Spinner";
 import IngredientPicker from "../../components/IngredientPicker";
 import MealSizes from "../../components/Menu/MealSizes";
+import MealComponents from "../../components/Menu/MealComponents";
+import MealAddons from "../../components/Menu/MealAddons";
 import CreateMealModal from "./Modals/CreateMeal";
 import CreatePackageModal from "./Modals/CreateMealPackage";
 import ViewPackageModal from "./Modals/ViewMealPackage";
@@ -497,7 +520,9 @@ export default {
     CreateMealModal,
     CreatePackageModal,
     ViewPackageModal,
-    MealSizes
+    MealSizes,
+    MealComponents,
+    MealAddons
   },
   updated() {
     //$(window).trigger("resize");
@@ -746,7 +771,9 @@ export default {
         category_ids: this.meal.category_ids,
         ingredients: this.meal.ingredients,
         sizes: this.meal.sizes,
-        default_size_title: this.meal.default_size_title
+        default_size_title: this.meal.default_size_title,
+        components: this.meal.components,
+        addons: this.meal.addons
       };
       const updated = await this.updateMeal(this.meal.id, data, true);
 

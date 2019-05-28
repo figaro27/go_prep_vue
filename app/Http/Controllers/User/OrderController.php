@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
+use App\Order;
 
 class OrderController extends UserController
 {
@@ -15,7 +16,7 @@ class OrderController extends UserController
     {
         return $this->user
             ->orders()
-            ->with(['meals', 'pickup_location'])
+            ->with(['pickup_location'])
             ->get();
     }
 }

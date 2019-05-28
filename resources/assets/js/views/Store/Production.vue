@@ -131,32 +131,22 @@ export default {
       }
 
       let mealCounts = {};
+      let mealIds = {};
 
       orders.forEach(order => {
-        _.forEach(order.meal_quantities, (quantity, mealId) => {
-          //mealId = parseInt(mealIdParts[0]);
-
-          if (!mealCounts[mealId]) {
-            mealCounts[mealId] = 0;
+        _.forEach(order.items, item => {
+          if (!mealCounts[item.title]) {
+            mealCounts[item.title] = 0;
+            mealIds[item.title] = item.meal_id;
           }
-          mealCounts[mealId] += quantity;
+          mealCounts[item.title] += item.quantity;
         });
       });
 
-      return _.map(mealCounts, (quantity, mealId) => {
-        let mealIdParts = mealId.split("-"); // mealId-sizeId
-        let meal = this.getMeal(mealIdParts[0]);
+      return _.map(mealCounts, (quantity, title) => {
+        let meal = this.getMeal(mealIds[title]);
         let size = null;
-        let title = null;
         let price = meal.price;
-
-        if (mealIdParts[1]) {
-          size = meal.getSize(mealIdParts[1]);
-          title = meal.title + " - " + size.title;
-          price = size.price;
-        } else {
-          title = meal.item_title;
-        }
 
         return {
           ...meal,
