@@ -13,7 +13,7 @@
             :key="meal.id + component.id"
             class
           >
-            <h4>{{ getComponentLabel(component) }}</h4>
+            <h6>{{ getComponentLabel(component) }}</h6>
             <b-form-group :label="null">
               <b-checkbox-group
                 v-model="choices[component.id]"
@@ -50,7 +50,7 @@
 
       <b-row v-if="meal.addons.length" class="my-3">
         <b-col>
-          <h4>Add-ons</h4>
+          <h6>Add-ons</h6>
           <b-form-group label="">
             <b-checkbox-group
               v-model="addons"

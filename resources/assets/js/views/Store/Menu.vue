@@ -295,7 +295,7 @@
 
               <b-tab title="Variations">
                 <b-tabs pills>
-                  <b-tab title="Size Variations">
+                  <b-tab title="Sizes">
                     <meal-sizes
                       :meal="meal"
                       @change="val => (meal.sizes = val)"

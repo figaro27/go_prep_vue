@@ -11,7 +11,8 @@
         orderBy: {
           column: 'id',
           ascending: true
-        }
+        },
+        filterable: false
       }"
     >
       <div slot="beforeTable" class="mb-2">
@@ -27,6 +28,14 @@
           "
           >Add Meal Size</b-button
         >
+        <img
+          v-b-popover.hover="
+            'Example: Medium, Large, Family Sized, etc. Please indicate the price for each size. For ingredient multiplier, please indicate the ratio of how many more ingredients are used for the new size. For example if the meal is twice as large, put 2. If you don\'t use ingredients, just put 1 in each field.'
+          "
+          title="Meal Sizes"
+          src="/images/store/popover.png"
+          class="popover-size"
+        />
       </div>
       <div slot="actions" slot-scope="props" v-if="props.row.id !== -1">
         <b-btn variant="danger" size="sm" @click="deleteSize(props.row.id)"

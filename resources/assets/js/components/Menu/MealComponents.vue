@@ -18,6 +18,14 @@
         <b-button variant="primary" @click="addComponent()"
           >Add Meal Component</b-button
         >
+        <img
+          v-b-popover.hover="
+            'Example: Choose your protein. Choose your vegetable. Minimum and maximum sets the requirement that the customer needs to choose. For example - minimum 1 would be \'Choose at least 1 protein.\' Maximum 3 would be \'Choose up to 3 veggies.\''
+          "
+          title="Meal Components"
+          src="/images/store/popover.png"
+          class="popover-size"
+        />
       </div>
 
       <div
@@ -26,7 +34,7 @@
         role="tablist"
       >
         <div class="component-header mb-2">
-          <h4 class="d-inline-block">#{{ i + 1 }}. {{ component.title }}</h4>
+          <h5 class="d-inline-block">#{{ i + 1 }}. {{ component.title }}</h5>
           <b-btn
             variant="danger"
             class="pull-right"
@@ -54,8 +62,6 @@
             </b-form-group>
           </b-col>
         </b-row>
-
-        <h5>Options</h5>
 
         <table class="table">
           <thead>

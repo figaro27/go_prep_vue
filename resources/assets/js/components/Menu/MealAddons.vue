@@ -15,17 +15,19 @@
         <b-button variant="primary" @click="addAddon()"
           >Add Meal Addon</b-button
         >
+        <img
+          v-b-popover.hover="
+            'Example: Extra meat. Extra veggies. Please indicate the price increase that will be added to the overall meal. If you use ingredients, the Adjust button lets you adjust how the particular addon affects the overall ingredients for the meal.'
+          "
+          title="Meal Addon"
+          src="/images/store/popover.png"
+          class="popover-size"
+        />
       </div>
 
       <div v-for="(addon, i) in meal.addons" :key="addon.id" role="tablist">
         <div class="addon-header mb-2">
-          <h4 class="d-inline-block">#{{ i + 1 }}. {{ addon.title }}</h4>
-          <b-btn
-            variant="danger"
-            class="pull-right"
-            @click="deleteAddon(addon.id)"
-            >Delete</b-btn
-          >
+          <h5 class="d-inline-block">#{{ i + 1 }}. {{ addon.title }}</h5>
         </div>
         <b-row>
           <b-col cols="6">
@@ -54,6 +56,15 @@
               @click="changeAddonIngredients(i)"
               style="margin-top: 28px;"
               >Adjust</b-btn
+            >
+          </b-col>
+          <b-col>
+            <b-btn
+              variant="danger"
+              @click="deleteAddon(addon.id)"
+              style="margin-top: 28px;"
+              class="pull-right"
+              >Delete</b-btn
             >
           </b-col>
         </b-row>
