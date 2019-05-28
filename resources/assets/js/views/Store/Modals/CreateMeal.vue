@@ -74,12 +74,30 @@
               ></ingredient-picker>
             </b-tab>
 
-            <b-tab title="Size Variations">
-              <meal-sizes
-                :meal="meal"
-                @change="val => onChangeSizes(val)"
-                @changeDefault="val => (meal.default_size_title = val)"
-              ></meal-sizes>
+            <b-tab title="Variations">
+              <b-tabs pills>
+                <b-tab title="Sizes">
+                  <meal-sizes
+                    :meal="meal"
+                    @change="val => (meal.sizes = val)"
+                    @changeDefault="val => (meal.default_size_title = val)"
+                  ></meal-sizes>
+                </b-tab>
+
+                <b-tab title="Components">
+                  <meal-components
+                    :meal="meal"
+                    @change="val => (meal.components = val)"
+                  ></meal-components>
+                </b-tab>
+
+                <b-tab title="Addons">
+                  <meal-addons
+                    :meal="meal"
+                    @change="val => (meal.addons = val)"
+                  ></meal-addons>
+                </b-tab>
+              </b-tabs>
             </b-tab>
 
             <b-tab title="Gallery">
@@ -213,6 +231,8 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import Spinner from "../../../components/Spinner";
 import IngredientPicker from "../../../components/IngredientPicker";
 import MealSizes from "../../../components/Menu/MealSizes";
+import MealComponents from "../../../components/Menu/MealComponents";
+import MealAddons from "../../../components/Menu/MealAddons";
 import fs from "../../../lib/fs.js";
 
 export default {
@@ -220,12 +240,16 @@ export default {
     Spinner,
     PictureInput,
     IngredientPicker,
-    MealSizes
+    MealSizes,
+    MealComponents,
+    MealAddons
   },
   data() {
     return {
       meal: {
         sizes: [],
+        components: [],
+        addons: [],
         gallery: []
       }
     };

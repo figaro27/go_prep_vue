@@ -175,7 +175,7 @@ export default {
     sizeOptions() {
       return _.concat(
         {
-          text: this.meal.default_size_title,
+          text: this.meal.default_size_title || "Default",
           value: null
         },
         this.meal.sizes.map(size => {

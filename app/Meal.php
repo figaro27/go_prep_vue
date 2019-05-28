@@ -534,7 +534,9 @@ class Meal extends Model implements HasMedia
             'allergy_ids',
             'ingredients',
             'sizes',
-            'default_size_title'
+            'default_size_title',
+            'components',
+            'addons'
         ]);
 
         $meal = new Meal();
@@ -700,6 +702,85 @@ class Meal extends Model implements HasMedia
                     $mealSize->price = $size['price'];
                     $mealSize->multiplier = $size['multiplier'];
                     $mealSize->save();
+                }
+            }
+
+            // Meal components
+            $components = $props->get('components');
+            if (is_array($components)) {
+                $componentIds = [];
+                $optionIds = [];
+
+                foreach ($components as $component) {
+                    if (isset($component['id'])) {
+                        $mealComponent = $meal
+                            ->components()
+                            ->find($component['id']);
+                    }
+
+                    if (!$mealComponent) {
+                        $mealComponent = new MealComponent();
+                        $mealComponent->meal_id = $meal->id;
+                        $mealComponent->store_id = $meal->store_id;
+                    }
+
+                    $mealComponent->title = $component['title'];
+                    $mealComponent->minimum = $component['minimum'];
+                    $mealComponent->maximum = $component['maximum'];
+                    $mealComponent->save();
+
+                    foreach ($component['options'] as $optionArr) {
+                        $option = null;
+
+                        if (isset($optionArr['id'])) {
+                            $option = $mealComponent
+                                ->options()
+                                ->find($optionArr['id']);
+                        }
+
+                        if (!$option) {
+                            $option = new MealComponentOption();
+                            $option->meal_component_id = $mealComponent->id;
+                            $option->store_id = $mealComponent->store_id;
+                        }
+
+                        $option->title = $optionArr['title'];
+                        $option->price = $optionArr['price'];
+                        $option->meal_size_id = $optionArr['meal_size_id'];
+                        $option->save();
+
+                        $option->syncIngredients($optionArr['ingredients']);
+
+                        $optionIds[] = $option->id;
+                    }
+
+                    $componentIds[] = $mealComponent->id;
+                }
+            }
+
+            // Meal addons
+            $addons = $props->get('addons');
+            if (is_array($addons)) {
+                $addonIds = [];
+
+                foreach ($addons as $addon) {
+                    if (isset($addon['id'])) {
+                        $mealAddon = $meal->addons()->find($addon['id']);
+                    }
+
+                    if (!$mealAddon) {
+                        $mealAddon = new MealAddon();
+                        $mealAddon->meal_id = $meal->id;
+                        $mealAddon->store_id = $meal->store_id;
+                    }
+
+                    $mealAddon->title = $addon['title'];
+                    $mealAddon->price = $addon['price'];
+                    $mealAddon->save();
+
+                    $mealAddon->syncIngredients($addon['ingredients']);
+
+                    $addonIds[] = $mealAddon->id;
                 }
             }
 
