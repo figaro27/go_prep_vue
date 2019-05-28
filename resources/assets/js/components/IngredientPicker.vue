@@ -302,7 +302,11 @@ export default {
   },
   data() {
     return {
-      customIngredient: { serving_unit: "g" },
+      customIngredient: {
+        serving_unit: "g",
+        image: "http://goprep.com/images/defaultIngredient.jpg",
+        image_thumb: "http://goprep.com/images/defaultIngredient.jpg"
+      },
       recipe: "",
       ingredients: [],
       newIngredients: [],
@@ -489,7 +493,11 @@ export default {
     addToRecipe() {
       let customIngr = this.processCustomIngredient(this.customIngredient);
       this.ingredients = _.concat(this.ingredients, customIngr);
-      this.customIngredient = {};
+      this.customIngredient = {
+        serving_unit: "g",
+        image: "http://goprep.com/images/defaultIngredient.jpg",
+        image_thumb: "http://goprep.com/images/defaultIngredient.jpg"
+      };
       this.$toastr.s("Ingredient Added");
     },
     searchRecipe() {
