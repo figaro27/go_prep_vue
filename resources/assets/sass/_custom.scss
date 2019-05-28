@@ -36,6 +36,49 @@ h6 {
 li {
   list-style-type: none;
 }
+ul {
+  &.dash,
+  &.plain,
+  &.plus {
+    margin-left: 0;
+    padding-left: 1em;
+  }
+  &.dash,
+  li.dash {
+    list-style: none;
+
+    li,
+    &li {
+      &:before {
+        content: "—";
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+      }
+    }
+  }
+  &.plus,
+  li.plus {
+    list-style: none;
+  }
+  li {
+    list-style: none;
+  }
+
+  li.plain:before {
+    content: "●";
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+    list-style: none;
+  }
+  li.plus:before {
+    content: "+";
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+  }
+}
 
 /*Nav Area*/
 
@@ -43,12 +86,18 @@ li {
   -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
   // background-color:#3082CF;
   border-bottom: 0px;
-}
 
-.nav-link h6,
-.nav-link div,
-.nav-item a {
-  color: #ffffff !important;
+  .nav-link h6,
+  .nav-link div,
+  .nav-item a {
+    color: #ffffff;
+  }
+  .navbar-nav:not(:last-child) a {
+    color: #fff !important;
+  }
+  .nav-item a:hover {
+    background-color: #3082cf !important;
+  }
 }
 
 .navbar .navbar-toggler {
@@ -106,6 +155,7 @@ li {
 
 .nav-tabs .nav-item .nav-link {
   background-color: #3082cf !important;
+  color: #fff;
 }
 
 .open-indicator {
@@ -174,7 +224,7 @@ body.sidebar-minimized {
   margin-left: -5px;
   margin-right: -5px;
 
-  li {
+  > li {
     flex: 0 1 calc(50% - 10px);
     margin-left: 5px;
     margin-right: 5px;
@@ -887,10 +937,6 @@ table {
 
 .sidebar-minimizer {
   background-color: #384550 !important;
-}
-
-.nav-item a:hover {
-  background-color: #3082cf !important;
 }
 
 .main,

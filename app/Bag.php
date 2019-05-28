@@ -1,6 +1,8 @@
 <?php
 
 namespace App;
+
+use App\MealComponentOption;
 use App\Store;
 
 class Bag
@@ -27,10 +29,7 @@ class Bag
 
         // Deduplicate items
         collect($_items)->map(function ($item) use (&$items) {
-            $itemId =
-                isset($item['size']) && $item['size']
-                    ? $item['meal']['id'] . '-' . $item['size']['id']
-                    : $item['meal']['id'];
+            $itemId = $this->getItemId($item);
 
             if (!isset($items[$itemId])) {
                 $items[$itemId] = $item;
@@ -40,6 +39,19 @@ class Bag
         });
 
         $this->items = array_values($items);
+    }
+
+    public function getItemId($item)
+    {
+        return md5(
+            json_encode([
+                'meal' => $item['meal']['id'],
+                'meal_package' => $item['meal_package'],
+                'size' => $item['size'],
+                'components' => $item['components'],
+                'addons' => $item['addons']
+            ])
+        );
     }
 
     public function getItems()
@@ -67,12 +79,12 @@ class Bag
                     }
                 }
             } else {
-                $itemId = $item['meal']['id'];
-                $price = $meals[$itemId]->price;
+                $mealId = $item['meal']['id'];
+                $itemId = $this->getItemId($item);
+                $price = $meals[$mealId]->price;
 
                 // Ensure size variations are counted separately
                 if (isset($item['size']) && $item['size']) {
-                    $itemId .= '-' . $item['size']['id'];
                     $price = $item['size']['price'];
                 }
 
@@ -99,7 +111,22 @@ class Bag
         $total = 0.0;
 
         foreach ($this->getItems() as $item) {
-            $total += $item['quantity'] * $item['price'];
+            $price = $item['price'];
+            if ($item['components']) {
+                foreach ($item['components'] as $componentId => $choices) {
+                    foreach ($choices as $optionId) {
+                        $option = MealComponentOption::find($optionId);
+                        $price += $option->price;
+                    }
+                }
+            }
+            if ($item['addons']) {
+                foreach ($item['addons'] as $addonId) {
+                    $addon = MealAddon::find($addonId);
+                    $price += $addon->price;
+                }
+            }
+            $total += $price * $item['quantity'];
         }
 
         return $total;

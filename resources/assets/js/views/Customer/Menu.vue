@@ -7,6 +7,11 @@
       </div>
     </floating-action-button>
 
+    <meal-components-modal
+      ref="componentModal"
+      :key="total"
+    ></meal-components-modal>
+
     <div class="category-slider d-block d-md-none">
       <slick
         v-if="categories.length > 4"
@@ -580,7 +585,7 @@
                                   name
                                   id
                                   class="quantity"
-                                  :value="quantity(meal, false, true)"
+                                  :value="mealQuantity(meal)"
                                   readonly
                                 ></b-form-input>
                                 <b-btn
@@ -740,14 +745,30 @@
                       >
                         <div class="bag-item-quantity mr-2">
                           <div
-                            @click="addOne(item.meal, false, item.size)"
+                            @click="
+                              addOne(
+                                item.meal,
+                                false,
+                                item.size,
+                                item.components,
+                                item.addons
+                              )
+                            "
                             class="bag-plus-minus brand-color white-text"
                           >
                             <i>+</i>
                           </div>
                           <p class="bag-quantity">{{ item.quantity }}</p>
                           <div
-                            @click="minusOne(item.meal, false, item.size)"
+                            @click="
+                              minusOne(
+                                item.meal,
+                                false,
+                                item.size,
+                                item.components,
+                                item.addons
+                              )
+                            "
                             class="bag-plus-minus gray white-text"
                           >
                             <i>-</i>
@@ -768,11 +789,34 @@
                             {{ item.size.full_title }}
                           </span>
                           <span v-else>{{ item.meal.item_title }}</span>
+
+                          <ul
+                            v-if="item.components || item.addons"
+                            class="plain"
+                          >
+                            <li
+                              v-for="component in itemComponents(item)"
+                              class="plain"
+                            >
+                              {{ component }}
+                            </li>
+                            <li v-for="addon in itemAddons(item)" class="plus">
+                              {{ addon }}
+                            </li>
+                          </ul>
                         </div>
                         <div class="flex-grow-0">
                           <img
                             src="/images/customer/x.png"
-                            @click="clearMeal(item.meal, false, item.size)"
+                            @click="
+                              clearMeal(
+                                item.meal,
+                                false,
+                                item.size,
+                                item.components,
+                                item.addons
+                              )
+                            "
                             class="clear-meal"
                           />
                         </div>
@@ -1006,6 +1050,8 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
 import Spinner from "../../components/Spinner";
+import MealComponentsModal from "../../components/Modals/MealComponentsModal";
+import MenuBag from "../../mixins/menuBag";
 import units from "../../data/units";
 import nutrition from "../../data/nutrition";
 import format from "../../lib/format";
@@ -1025,8 +1071,10 @@ export default {
     SalesTax,
     LightBox,
     Carousel,
-    Slide
+    Slide,
+    MealComponentsModal
   },
+  mixins: [MenuBag],
   props: {
     preview: {
       default: false
@@ -1109,7 +1157,8 @@ export default {
       loggedIn: "loggedIn",
       minOption: "minimumOption",
       minMeals: "minimumMeals",
-      minPrice: "minimumPrice"
+      minPrice: "minimumPrice",
+      getMeal: "viewedStoreMeal"
     }),
     mobile() {
       if (window.innerWidth < 500) return true;
@@ -1425,46 +1474,6 @@ export default {
         {}
       );
     },
-    quantity(meal, mealPackage = false, size = null) {
-      let qty = this.$store.getters.bagItemQuantity(meal, mealPackage, size);
-
-      // size === true gets quantity for all sizes
-      if (size === true) {
-        meal.sizes.forEach(sizeObj => {
-          qty += this.$store.getters.bagItemQuantity(
-            meal,
-            mealPackage,
-            sizeObj
-          );
-        });
-      }
-      return qty;
-    },
-    addOne(meal, mealPackage = false, size = null) {
-      this.$store.commit("addToBag", { meal, quantity: 1, mealPackage, size });
-      this.mealModal = false;
-      this.mealPackageModal = false;
-    },
-    minusOne(meal, mealPackage = false, size = null) {
-      this.$store.commit("removeFromBag", {
-        meal,
-        quantity: 1,
-        mealPackage,
-        size
-      });
-    },
-    clearMeal(meal, mealPackage = false, size = null) {
-      let quantity = this.quantity(meal, mealPackage, size);
-      this.$store.commit("removeFromBag", {
-        meal,
-        quantity,
-        mealPackage,
-        size
-      });
-    },
-    clearAll() {
-      this.$store.commit("emptyBag");
-    },
     preventNegative() {
       if (this.total < 0) {
         this.total += 1;
@@ -1541,9 +1550,6 @@ export default {
         valueAddedSugars: nutrition.addedSugars,
         showLegacyVersion: false
       });
-    },
-    addBagItems(bag) {
-      this.$store.commit("addBagItems", bag);
     },
     filterByCategory(category) {
       this.filteredView = true;
@@ -1658,14 +1664,6 @@ export default {
         }
         return;
       }
-    },
-    getSalesTax(state) {
-      SalesTax.getSalesTax("US", state).then(tax => {
-        this.setSalesTax(tax.rate);
-      });
-    },
-    setSalesTax(rate) {
-      this.salesTax = rate;
     },
     showDescription() {
       this.showDescriptionModal = true;

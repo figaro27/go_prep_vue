@@ -199,6 +199,47 @@
                       <template slot="image" slot-scope="row">
                         <img :src="row.value" class="modalMeal" />
                       </template>
+
+                      <template slot="meal" slot-scope="row">
+                        <div v-html="row.value"></div>
+                      </template>
+
+                      <template slot="FOOT_subtotal" slot-scope="row">
+                        <p>
+                          Subtotal:
+                          {{ format.money(subscription.preFeePreDiscount) }}
+                        </p>
+                        <p
+                          class="text-success"
+                          v-if="subscription.couponReduction > 0"
+                        >
+                          Coupon {{ subscription.couponCode }}: ({{
+                            format.money(subscription.couponReduction)
+                          }})
+                        </p>
+                        <p
+                          v-if="subscription.mealPlanDiscount > 0"
+                          class="text-success"
+                        >
+                          Meal Plan Discount: ({{
+                            format.money(subscription.mealPlanDiscount)
+                          }})
+                        </p>
+                        <p v-if="subscription.deliveryFee > 0">
+                          Delivery Fee:
+                          {{ format.money(subscription.deliveryFee) }}
+                        </p>
+                        <p v-if="subscription.processingFee > 0">
+                          Processing Fee:
+                          {{ format.money(subscription.processingFee) }}
+                        </p>
+                        <p>
+                          Sales Tax: {{ format.money(subscription.salesTax) }}
+                        </p>
+                        <p class="strong">
+                          Total: {{ format.money(subscription.amount) }}
+                        </p>
+                      </template>
                     </b-table>
                   </b-collapse>
                 </b-list-group-item>
@@ -228,7 +269,9 @@ export default {
   computed: {
     ...mapGetters(["subscriptions"]),
     ...mapGetters({
-      storeSettings: "storeSettings"
+      storeSettings: "storeSettings",
+      initialized: "initialized",
+      getStoreMeal: "viewedStoreMeal"
     })
   },
   mounted() {},
@@ -254,21 +297,27 @@ export default {
       });
     },
     getMealTableData(subscription) {
-      if (!subscription || !_.isArray(subscription.meals)) {
-        return [];
-      }
+      if (!this.initialized) return [];
 
-      return subscription.meals.map(meal => {
-        const price = meal.item_price;
-        const quantity = meal.item_quantity;
+      let data = subscription.items.map(item => {
+        const meal = this.getStoreMeal(item.meal_id);
+        if (!meal) {
+          return null;
+        }
+
+        const size = meal.getSize(item.meal_size_id);
+        const title = meal.getTitle(true, size, item.components, item.addons);
 
         return {
-          image: meal.image.url,
-          meal: meal.item_title,
-          quantity: quantity,
-          subtotal: format.money(price * quantity)
+          image: meal.image.url_thumb,
+          meal: title,
+          quantity: item.quantity,
+          unit_price: format.money(item.unit_price),
+          subtotal: format.money(item.price)
         };
       });
+
+      return _.filter(data);
     },
     async pauseSubscription(subscription) {
       try {
@@ -319,7 +368,7 @@ export default {
         return {
           id: meal.id,
           meal: meal,
-          quantity: meal.pivot.quantity,
+          quantity: meal.quantity,
           added: moment().unix()
         };
       });

@@ -186,7 +186,7 @@ class Store extends Model
         $ingredients = [];
 
         $orders = $this->orders()
-            ->with(['meals', 'meals.ingredients'])
+            ->with(['meals', 'meals.ingredients', 'meal_orders'])
             ->where('paid', 1);
 
         if ($dateRange === []) {
@@ -222,13 +222,15 @@ class Store extends Model
         $orders = $orders->get();
 
         foreach ($orders as $order) {
-            foreach ($order->meals as $meal) {
-                $quantity = $meal->pivot->quantity;
+            $mealOrders = $order->meal_orders()->get();
+            foreach ($mealOrders as $mealOrder) {
+                $quantity = $mealOrder->quantity;
+                $meal = $mealOrder->meal;
                 $multiplier = 1;
 
                 // A size was chosen. Use the multiplier
-                if ($meal->meal_size) {
-                    $multiplier = $meal->meal_size->multiplier;
+                if ($mealOrder->meal_size_id) {
+                    $multiplier = $mealOrder->meal_size->multiplier;
                 }
 
                 foreach ($meal->ingredients as $ingredient) {
@@ -248,6 +250,52 @@ class Store extends Model
                         ];
                     } else {
                         $ingredients[$key]['quantity'] += $quantity_base;
+                    }
+                }
+
+                $components = collect($mealOrder->components);
+
+                foreach ($components as $component) {
+                    foreach ($component->option->ingredients as $ingredient) {
+                        $quantity_unit = $ingredient->pivot->quantity_unit;
+                        $quantity_base =
+                            $ingredient->pivot->quantity_base * $quantity;
+                        //* $multiplier;
+
+                        $key = $ingredient->id;
+
+                        if (!isset($ingredients[$key])) {
+                            $ingredients[$key] = [
+                                'id' => $ingredient->id,
+                                'ingredient' => $ingredient,
+                                'quantity' => $quantity_base
+                            ];
+                        } else {
+                            $ingredients[$key]['quantity'] += $quantity_base;
+                        }
+                    }
+                }
+
+                $addons = collect($mealOrder->addons);
+
+                foreach ($addons as $addon) {
+                    foreach ($addon->addon->ingredients as $ingredient) {
+                        $quantity_unit = $ingredient->pivot->quantity_unit;
+                        $quantity_base =
+                            $ingredient->pivot->quantity_base * $quantity;
+                        //* $multiplier;
+
+                        $key = $ingredient->id;
+
+                        if (!isset($ingredients[$key])) {
+                            $ingredients[$key] = [
+                                'id' => $ingredient->id,
+                                'ingredient' => $ingredient,
+                                'quantity' => $quantity_base
+                            ];
+                        } else {
+                            $ingredients[$key]['quantity'] += $quantity_base;
+                        }
                     }
                 }
             }
@@ -371,7 +419,7 @@ class Store extends Model
         $onlyPaid = true,
         $onlyDelivery = false
     ) {
-        $orders = $this->orders()->with('meals');
+        $orders = $this->orders()->with(['meals', 'meal_orders']);
 
         if (isset($dateRange['from'])) {
             $from = Carbon::parse($dateRange['from']);
