@@ -35,6 +35,138 @@
             >
           </div>
         </b-tab>
+        <b-tab title="Add Custom Ingredient">
+          <p>
+            Nutritional info is optional but required if you display nutrition
+            facts to customers.
+          </p>
+          <b-form @submit.prevent="addToRecipe">
+            <div class="row">
+              <div class="col-md-6">
+                <b-form-input
+                  type="string"
+                  v-model="customIngredient.food_name"
+                  placeholder="Ingredient Name"
+                  required
+                ></b-form-input>
+              </div>
+              <div class="col-md-3">
+                <b-form-input
+                  type="int"
+                  v-model="customIngredient.serving_qty"
+                  placeholder="Weight"
+                  required
+                ></b-form-input>
+              </div>
+              <div class="col-md-3">
+                <b-form-select
+                  v-model="customIngredient.serving_unit"
+                  :options="allUnitOptions"
+                ></b-form-select>
+              </div>
+            </div>
+            <hr />
+            <b-form-group>
+              <div class="row">
+                <div class="col-md-2">
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.calories"
+                    placeholder="Calories"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.cholesterol"
+                    placeholder="Cholesterol"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.vitamind"
+                    placeholder="Vitamin D"
+                    class="mt-2"
+                  ></b-form-input>
+                </div>
+                <div class="col-md-2">
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.totalfat"
+                    placeholder="Total Fat"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.satfat"
+                    placeholder="Saturated Fat"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.transfat"
+                    placeholder="Trans Fat"
+                    class="mt-2"
+                  ></b-form-input>
+                </div>
+                <div class="col-md-2">
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.totalcarb"
+                    placeholder="Total Carb"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.sugars"
+                    placeholder="Sugars"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.sodium"
+                    placeholder="Sodium"
+                    class="mt-2"
+                  ></b-form-input>
+                </div>
+                <div class="col-md-2">
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.proteins"
+                    placeholder="Proteins"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.potassium"
+                    placeholder="Potassium"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.calcium"
+                    placeholder="Calcium"
+                    class="mt-2"
+                  ></b-form-input>
+                </div>
+                <div class="col-md-2">
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.fibers"
+                    placeholder="Fibers"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="int"
+                    v-model="customIngredient.iron"
+                    placeholder="Iron"
+                    class="mt-2"
+                  ></b-form-input>
+                </div>
+              </div>
+            </b-form-group>
+            <b-button type="submit" variant="primary">Add</b-button>
+          </b-form>
+        </b-tab>
       </b-tabs>
     </b-form>
 
@@ -111,118 +243,6 @@
 
       <div class="ml-5" ref="nutritionFacts"></div>
     </div>
-    <h3>Add Custom Ingredient</h3>
-    <b-form @submit.prevent="addCustomIngredient">
-      <b-form-group>
-        <b-form-input
-          type="string"
-          v-model="customIngredient.food_name"
-          placeholder="Food Name"
-          required
-        ></b-form-input>
-      </b-form-group>
-      <b-form-group>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.quantity"
-          placeholder="Quantity"
-          required
-        ></b-form-input>
-      </b-form-group>
-      <b-form-group label="Unit Type">
-        <b-form-select
-          v-model="customIngredient.quantity_unit"
-          :options="allUnitOptions"
-        ></b-form-select>
-      </b-form-group>
-      <b-form-group label="Nutrition">
-        <b-form-input
-          type="int"
-          v-model="customIngredient.calories"
-          placeholder="Calories"
-          required
-        ></b-form-input>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.totalfat"
-          placeholder="Total Fat"
-          required
-        ></b-form-input>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.satfat"
-          placeholder="Saturated Fat"
-          required
-        ></b-form-input>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.transfat"
-          placeholder="Trans Fat"
-          required
-        ></b-form-input>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.cholesterol"
-          placeholder="Cholesterol"
-          required
-        ></b-form-input>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.sodium"
-          placeholder="Sodium"
-          required
-        ></b-form-input>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.totalcarb"
-          placeholder="Total Carb"
-          required
-        ></b-form-input>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.fibers"
-          placeholder="Fibers"
-          required
-        ></b-form-input>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.sugars"
-          placeholder="Sugars"
-          required
-        ></b-form-input>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.proteins"
-          placeholder="Proteins"
-          required
-        ></b-form-input>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.vitamind"
-          placeholder="Vitamin D"
-          required
-        ></b-form-input>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.potassium"
-          placeholder="Potassium"
-          required
-        ></b-form-input>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.calcium"
-          placeholder="Calcium"
-          required
-        ></b-form-input>
-        <b-form-input
-          type="int"
-          v-model="customIngredient.iron"
-          placeholder="Iron"
-          required
-        ></b-form-input>
-      </b-form-group>
-    </b-form>
-    <b-button @click="addToRecipe" variant="primary">Add</b-button>
   </div>
 </template>
 <style lang="scss">
@@ -282,7 +302,7 @@ export default {
   },
   data() {
     return {
-      customIngredient: { added: true },
+      customIngredient: { serving_unit: "g" },
       recipe: "",
       ingredients: [],
       newIngredients: [],
@@ -439,6 +459,39 @@ export default {
         return ingredient;
       });
     },
+    processCustomIngredient(ingredient) {
+      let unit = units.normalize(ingredient.serving_unit);
+      ingredient.unit_type = units.type(unit);
+      ingredient.quantity_unit_display = unit;
+
+      if (ingredient.unit_type === "unit") {
+        unit = "unit";
+      }
+
+      ingredient.quantity = ingredient.serving_qty;
+      ingredient.quantity_unit = unit;
+      ingredient.added = true;
+
+      let multiplier =
+        units.convert(1, units.base(ingredient.unit_type), unit, false) /
+        ingredient.quantity;
+
+      let totals = nutrition.getTotals([ingredient], false);
+      if (totals) {
+        totals = _.mapValues(totals, prop => {
+          return prop * multiplier;
+        });
+        ingredient = _.merge(ingredient, totals);
+      }
+
+      return ingredient;
+    },
+    addToRecipe() {
+      let customIngr = this.processCustomIngredient(this.customIngredient);
+      this.ingredients = _.concat(this.ingredients, customIngr);
+      this.customIngredient = {};
+      this.$toastr.s("Ingredient Added");
+    },
     searchRecipe() {
       axios
         .post("/api/nutrients", {
@@ -452,10 +505,6 @@ export default {
         .catch(e => {
           this.$toastr.e("No ingredients found.", "Sorry!");
         });
-    },
-    addToRecipe() {
-      let customIngredient = this.processFoods(this.customIngredient);
-      this.ingredients = _.concat(this.ingredients, customIngredient);
     },
     onSearch(search, loading) {
       loading(true);
