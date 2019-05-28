@@ -592,7 +592,9 @@ class Meal extends Model implements HasMedia
                                     'potassium',
                                     'calcium',
                                     'iron',
-                                    'sugars'
+                                    'sugars',
+                                    'image',
+                                    'image_thumb'
                                 ])
                                 ->map(function ($val) {
                                     return is_null($val) ? 0 : $val;
