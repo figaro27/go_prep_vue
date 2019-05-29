@@ -472,7 +472,13 @@
                     v-if="manualOrder"
                   ></card-picker>
                   <b-btn
-                    v-if="card && minOption === 'meals' && total >= minMeals"
+                    v-if="
+                      card &&
+                        minOption === 'meals' &&
+                        total >= minMeals &&
+                        storeSettings.open &&
+                        !manualOrder
+                    "
                     @click="checkout"
                     class="menu-bag-btn"
                     >CHECKOUT</b-btn
@@ -482,8 +488,15 @@
                       card != null &&
                         minOption === 'price' &&
                         totalBagPrice >= minPrice &&
-                        storeSettings.open
+                        storeSettings.open &&
+                        !manualOrder
                     "
+                    @click="checkout"
+                    class="menu-bag-btn"
+                    >CHECKOUT</b-btn
+                  >
+                  <b-btn
+                    v-if="card && manualOrder"
                     @click="checkout"
                     class="menu-bag-btn"
                     >CHECKOUT</b-btn
@@ -796,7 +809,12 @@ export default {
     this.selectedPickupLocation = this.pickupLocationOptions[0].value;
   },
   methods: {
-    ...mapActions(["refreshSubscriptions", "refreshCustomerOrders"]),
+    ...mapActions([
+      "refreshSubscriptions",
+      "refreshCustomerOrders",
+      "refreshOrders",
+      "refreshStoreSubscriptions"
+    ]),
     ...mapMutations(["emptyBag"]),
     preventNegative() {
       if (this.total < 0) {
@@ -840,7 +858,12 @@ export default {
           customer: this.customer
         })
         .then(async resp => {
-          this.emptyBag();
+          if (this.manualOrder && this.deliveryPlan) {
+            window.location.href = "/store/meal-plans";
+          } else if (this.manualOrder && !this.deliveryPlan) {
+            window.location.href = "/store/orders";
+          }
+          return;
 
           if (this.deliveryPlan) {
             await this.refreshSubscriptions();
@@ -855,6 +878,8 @@ export default {
               query: { created: true, pickup: this.pickup }
             });
           }
+
+          this.emptyBag();
         })
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors)) || [

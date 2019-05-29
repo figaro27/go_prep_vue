@@ -82,47 +82,28 @@ class CheckoutController extends StoreController
         $cardId = $request->get('card_id');
         $card = Card::where('id', $cardId)->first();
 
-        $apiKey = \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-
-        // $token = \Stripe\Token::create(
-        //     ["customer" => $customer->stripe_id],
-        //     [
-        //         "stripe_account" =>
-        //             'acct_1DytLMHoLjZBBJiv'
-        //     ]
-        // );
-
-        $token = \Stripe\Source::create(
-            [
-                "customer" => $customer->stripe_id,
-                "original_source" => $card->stripe_id,
-                "usage" => "reusable"
-            ],
-            ["stripe_account" => $store->settings[`stripe_account`]]
-        );
-
         if (!$weeklyPlan) {
-            // $storeSource = \Stripe\Source::create(
-            //     [
-            //         "customer" => $customer->user->stripe_id,
-            //         "original_source" => $card->stripe_id,
-            //         "usage" => "single_use"
-            //     ],
-            //     ["stripe_account" => $store->settings->stripe_id]
-            // );
+            $storeSource = \Stripe\Source::create(
+                [
+                    "customer" => $customer->user->stripe_id,
+                    "original_source" => $card->stripe_id,
+                    "usage" => "single_use"
+                ],
+                ["stripe_account" => $store->settings->stripe_id]
+            );
 
             $charge = \Stripe\Charge::create(
                 [
                     "amount" => round($total * 100),
                     "currency" => "usd",
-                    "source" => $token->id,
+                    "source" => $storeSource,
                     "application_fee" => round($subtotal * $application_fee)
                 ],
                 ["stripe_account" => $store->settings->stripe_id]
             );
 
             $order = new Order();
-            $order->user_id = $user->id;
+            $order->user_id = $customer->user->id;
             $order->customer_id = $customer->id;
             $order->store_id = $store->id;
             $order->order_number = strtoupper(
@@ -180,7 +161,7 @@ class CheckoutController extends StoreController
                 'subscription' => null
             ]);
             try {
-                Mail::to($user)
+                Mail::to($customer->user)
                     ->bcc('mike@goprep.com')
                     ->send($email);
             } catch (\Exception $e) {
@@ -244,7 +225,7 @@ class CheckoutController extends StoreController
             );
 
             $userSubscription = new Subscription();
-            $userSubscription->user_id = $user->id;
+            $userSubscription->user_id = $customer->user->id;
             $userSubscription->customer_id = $customer->id;
             $userSubscription->stripe_customer_id = $storeCustomer->id;
             $userSubscription->store_id = $store->id;
@@ -351,11 +332,5 @@ class CheckoutController extends StoreController
             } catch (\Exception $e) {
             }
         }
-
-        /*
-    $subscription = $user->newSubscription('main', $plan->id)->create($stripeToken['id']);
-    $subscription->store_id = $this->store->id;
-    $subscription->amount = $total;
-    $subscription->interval = 'week';*/
     }
 }
