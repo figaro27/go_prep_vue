@@ -11,14 +11,22 @@ export default {
       addons = null
     ) {
       const min = _.maxBy(meal.components, "minimum");
+
+      let sizeId = size;
+      if (_.isObject(size) && size.id) {
+        sizeId = size.id;
+      }
+
       if (
         (meal.components.length &&
           _.maxBy(meal.components, "minimum") &&
           _.find(meal.components, component => {
-            return _.find(component.options, { meal_size_id: size });
+            return _.find(component.options, { meal_size_id: sizeId });
           }) &&
           !components) ||
-        (meal.addons.length && !addons)
+        (meal.addons.length &&
+          _.find(meal.addons, { meal_size_id: sizeId }) &&
+          !addons)
       ) {
         const result = await this.$refs.componentModal.show(
           meal,
