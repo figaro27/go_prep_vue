@@ -158,6 +158,7 @@ export default {
     },
     save() {
       this.$emit("save", this.meal.sizes);
+      this.$toastr.s("Meal variation saved.");
     }
   }
 };

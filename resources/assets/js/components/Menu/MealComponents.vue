@@ -259,6 +259,7 @@ export default {
     },
     save() {
       this.$emit("save", this.meal.components);
+      this.$toastr.s("Meal variation saved.");
     }
   }
 };

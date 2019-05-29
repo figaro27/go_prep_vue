@@ -184,6 +184,7 @@ export default {
     },
     save() {
       this.$emit("save", this.meal.addons);
+      this.$toastr.s("Meal variation saved.");
     }
   }
 };
