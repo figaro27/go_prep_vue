@@ -468,6 +468,7 @@
                   <card-picker
                     :selectable="true"
                     :creditCard="creditCard"
+                    :manualOrder="true"
                     v-model="creditCard"
                     v-if="manualOrder"
                   ></card-picker>
@@ -496,7 +497,7 @@
                     >CHECKOUT</b-btn
                   >
                   <b-btn
-                    v-if="card && manualOrder"
+                    v-if="manualOrder && cards.length > 0"
                     @click="checkout"
                     class="menu-bag-btn"
                     >CHECKOUT</b-btn
@@ -603,7 +604,8 @@ export default {
   data() {
     return {
       showAddNewCustomerModal: false,
-      creditCard: null,
+      creditCard: {},
+      creditCardId: null,
       customer: null,
       selectedPickupLocation: null,
       pickup: 0,
@@ -681,8 +683,8 @@ export default {
       else return this.creditCards;
     },
     card() {
-      if (this.creditCard != null) {
-        return this.creditCard;
+      if (this.creditCardId != null) {
+        return this.creditCardId;
       }
 
       if (this.cards.length != 1) return null;
@@ -912,7 +914,8 @@ export default {
             id: this.customer
           })
           .then(response => {
-            this.creditCard = response.data.id;
+            this.creditCardId = response.data.id;
+            this.creditCard = response.data;
           });
       });
     }

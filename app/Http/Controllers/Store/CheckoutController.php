@@ -69,18 +69,18 @@ class CheckoutController extends StoreController
         }
 
         if (!$user->hasStoreCustomer($store->id)) {
-            $storeCustomer = $user->createStoreCustomer($store->id);
+            $storeCustomer = $customer->user->createStoreCustomer($store->id);
         }
 
         $total += $salesTax;
-
-        // $storeCustomer = $user->getStoreCustomer($store->id);
-        // $customer = $user->getStoreCustomer($store->id, false);
 
         $customerId = $request->get('customer');
         $customer = Customer::where('id', $customerId)->first();
         $cardId = $request->get('card_id');
         $card = Card::where('id', $cardId)->first();
+
+        $storeCustomer = $customer->user->getStoreCustomer($store->id);
+        $customer = $customer->user->getStoreCustomer($store->id, false);
 
         if (!$weeklyPlan) {
             $storeSource = \Stripe\Source::create(

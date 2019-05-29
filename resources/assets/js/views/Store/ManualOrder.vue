@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Spinner v-if="isLoading" />
+    <Spinner v-if="loading" />
     <customer-menu :manualOrder="true"></customer-menu>
   </div>
 </template>
@@ -16,7 +16,9 @@ export default {
     CustomerMenu
   },
   data() {
-    return {};
+    return {
+      loading: true
+    };
   },
   computed: {
     ...mapGetters({
@@ -30,7 +32,10 @@ export default {
   methods: {
     ...mapActions({
       refreshViewedStore: "refreshViewedStore"
-    })
+    }),
+    setLoadingToFalse() {
+      this.loading = false;
+    }
   }
 };
 </script>

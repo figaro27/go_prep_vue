@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="cards.length && creditCard === 0">
+    <div v-if="cards.length && !manualOrder">
       <b-list-group class="card-list">
         <b-list-group-item
           v-for="card in cards"
@@ -25,11 +25,11 @@
       </b-list-group>
       <hr />
     </div>
-
-    <div v-if="creditCard > 0">
+    <div v-if="manualOrder">
       <b-list-group class="card-list">
         <b-list-group-item
-          v-for="card in creditCards"
+          v-if="manualOrder"
+          v-for="card in manualOrderCards"
           :key="card.id"
           :active="value === card.id"
           @click="e => selectCard(card.id)"
@@ -104,6 +104,9 @@ export default {
     },
     creditCard: {
       default: 0
+    },
+    manualOrder: {
+      default: false
     }
   },
   data() {
@@ -117,7 +120,10 @@ export default {
   computed: {
     ...mapGetters({
       cards: "cards"
-    })
+    }),
+    manualOrderCards() {
+      return [this.creditCard];
+    }
   },
   methods: {
     ...mapActions(["refreshCards"]),
