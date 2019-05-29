@@ -51,6 +51,14 @@
             </b-form-group>
           </b-col>
           <b-col>
+            <b-form-group label="Meal Size">
+              <b-select
+                v-model="addon.meal_size_id"
+                :options="sizeOptions"
+              ></b-select>
+            </b-form-group>
+          </b-col>
+          <b-col>
             <b-btn
               variant="primary"
               @click="changeAddonIngredients(i)"

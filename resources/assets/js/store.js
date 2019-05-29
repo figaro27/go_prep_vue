@@ -1184,8 +1184,8 @@ const getters = {
       ) => {
         let title = meal.title;
 
-        if (size) {
-          title = size.title;
+        if (_.isObject(size)) {
+          title = size.full_title;
         }
 
         let hasComponents = _.isArray(addons) && addons.length;
@@ -1465,8 +1465,8 @@ const getters = {
       ) => {
         let title = meal.title;
 
-        if (size) {
-          title = size.title;
+        if (_.isObject(size)) {
+          title = size.full_title;
         }
 
         let hasComponents = _.isArray(addons) && addons.length;

@@ -778,6 +778,7 @@ class Meal extends Model implements HasMedia
 
                     $mealAddon->title = $addon['title'];
                     $mealAddon->price = $addon['price'];
+                    $mealAddon->meal_size_id = $addon['meal_size_id'];
                     $mealAddon->save();
 
                     $mealAddon->syncIngredients($addon['ingredients']);
@@ -1078,6 +1079,7 @@ class Meal extends Model implements HasMedia
 
                 $mealAddon->title = $addon['title'];
                 $mealAddon->price = $addon['price'];
+                $mealAddon->meal_size_id = $addon['meal_size_id'];
                 $mealAddon->save();
 
                 $mealAddon->syncIngredients($addon['ingredients']);

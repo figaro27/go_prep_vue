@@ -6,10 +6,10 @@
     @ok.prevent="e => ok(e)"
   >
     <div v-if="meal">
-      <b-row v-if="meal.components.length" class="my-3">
+      <b-row v-if="components.length" class="my-3">
         <b-col>
           <div
-            v-for="(component, i) in meal.components"
+            v-for="(component, i) in components"
             :key="meal.id + component.id"
             class
           >
@@ -48,13 +48,13 @@
         </b-col>
       </b-row>
 
-      <b-row v-if="meal.addons.length" class="my-3">
+      <b-row v-if="mealAddons.length" class="my-3">
         <b-col>
           <h6>Add-ons</h6>
           <b-form-group label="">
             <b-checkbox-group
               v-model="addons"
-              :options="getAddonOptions(meal.addons)"
+              :options="getAddonOptions(mealAddons)"
               stacked
             ></b-checkbox-group>
           </b-form-group>
@@ -81,7 +81,21 @@ export default {
       addons: []
     };
   },
-  computed: {},
+  computed: {
+    sizeId() {
+      return _.isObject(this.size) ? this.size.id : null;
+    },
+    components() {
+      return _.filter(this.meal.components, component => {
+        return _.find(component.options, { meal_size_id: this.sizeId });
+      });
+    },
+    mealAddons() {
+      return _.filter(this.meal.addons, addon => {
+        return addon.meal_size_id === this.sizeId;
+      });
+    }
+  },
   validations() {
     if (!this.meal) return {};
 
@@ -145,7 +159,7 @@ export default {
     },
     getOptions(component) {
       let options = _.filter(component.options, option => {
-        return option.meal_size_id == this.size;
+        return option.meal_size_id == this.sizeId;
       });
       return _.map(options, option => {
         return {
@@ -155,6 +169,9 @@ export default {
       });
     },
     getAddonOptions(addons) {
+      addons = _.filter(addons, addon => {
+        return addon.meal_size_id == this.sizeId;
+      });
       return _.map(addons, addon => {
         return {
           value: addon.id,
