@@ -176,24 +176,17 @@
                 ></b-input>
               </b-form-group>
 
-              <!-- <b-input
-                  v-model="form[1].state"
-                  type="text"
-                  @input="$v.form[1].state.$touch(); clearFeedback(1, 'state')"
-                  :state="state(1, 'state')"
-                  autocomplete="new-password"
-              ></b-input>-->
               <b-form-group horizontal label="State" :state="state(1, 'state')">
                 <v-select
                   label="name"
-                  :options="stateNames"
+                  :options="getStateNames(form[1].country)"
                   :on-change="val => changeState(val, 1)"
                 ></v-select>
               </b-form-group>
 
               <b-form-group
                 horizontal
-                label="Zip Code"
+                label="Postal Code"
                 :state="state(1, 'zip')"
               >
                 <b-input
@@ -206,6 +199,18 @@
                   :state="state(1, 'zip')"
                   autocomplete="new-password"
                 ></b-input>
+              </b-form-group>
+
+              <b-form-group
+                horizontal
+                label="Country"
+                :state="state(1, 'country')"
+              >
+                <v-select
+                  label="name"
+                  :options="countryNames"
+                  :on-change="val => changeCountry(val, 1)"
+                ></v-select>
               </b-form-group>
 
               <b-form-group
@@ -350,32 +355,17 @@
                 ></b-input>
               </b-form-group>
 
-              <!-- <b-form-group
-                horizontal
-                label="State"
-                :state="state(2, 'state')"
-                :invalid-feedback="invalidFeedback(2, 'state')"
-                :valid-feedback="validFeedback(2, 'state')"
-              >
-                <b-input
-                  v-model="form[2].state"
-                  type="text"
-                  @input="$v.form[2].state.$touch(); clearFeedback(2, 'state')"
-                  :state="state(2, 'state')"
-                  autocomplete="new-password"
-                ></b-input>
-              </b-form-group>-->
               <b-form-group horizontal label="State" :state="state(2, 'state')">
                 <v-select
                   label="name"
-                  :options="stateNames"
+                  :options="getStateNames(form[2].country)"
                   :on-change="val => changeState(val, 2)"
                 ></v-select>
               </b-form-group>
 
               <b-form-group
                 horizontal
-                label="Zip Code"
+                label="Postal Code"
                 :state="state(2, 'zip')"
                 :invalid-feedback="invalidFeedback(2, 'zip')"
                 :valid-feedback="validFeedback(2, 'zip')"
@@ -390,6 +380,18 @@
                   :state="state(2, 'zip')"
                   autocomplete="new-password"
                 ></b-input>
+              </b-form-group>
+
+              <b-form-group
+                horizontal
+                label="Country"
+                :state="state(2, 'country')"
+              >
+                <v-select
+                  label="name"
+                  :options="countryNames"
+                  :on-change="val => changeCountry(val, 2)"
+                ></v-select>
               </b-form-group>
 
               <b-form-group horizontal :state="state(2, 'accepted_tos')">
@@ -480,6 +482,7 @@ export default {
           city: null,
           state: null,
           zip: null,
+          country: "US",
           delivery: "Please call my phone when outside.",
           accepted_tos: 0
         },
@@ -490,6 +493,7 @@ export default {
           city: null,
           state: null,
           zip: null,
+          country: "US",
           accepted_tos: 0
           //accepted_toa: 0
         }
@@ -500,11 +504,7 @@ export default {
       }
     };
   },
-  computed: {
-    stateNames() {
-      return states.stateNames();
-    }
-  },
+  computed: {},
   validations: {
     form: {
       0: {
@@ -521,6 +521,7 @@ export default {
         city: validators.city,
         state: validators.state,
         zip: validators.zip,
+        country: validators.required,
         delivery: validators.delivery,
         accepted_tos: validators.required
       },
@@ -531,6 +532,7 @@ export default {
         city: validators.city,
         state: validators.state,
         zip: validators.zip,
+        country: validators.required,
         accepted_tos: validators.required
         //accepted_toa: validators.required
       }
@@ -545,8 +547,15 @@ export default {
   mounted() {},
   methods: {
     ...mapActions(["init", "setToken"]),
+    getStateNames(country = "US") {
+      return states.stateNames(country);
+    },
     state(step, key) {
-      if (!_.isEmpty(this.form[step][key]) && this.$v.form[step][key].$dirty) {
+      if (
+        !_.isEmpty(this.form[step][key]) &&
+        this.$v.form[step][key] &&
+        this.$v.form[step][key].$dirty
+      ) {
         if (
           this.$v.form[step][key].$error ||
           !_.isNull(this.invalidFeedback(step, key))
@@ -667,6 +676,9 @@ export default {
     },
     changeState(state, formNumber) {
       this.form[formNumber].state = state.abbreviation;
+    },
+    changeCountry(state, formNumber) {
+      this.form[formNumber].country = country.abbreviation;
     }
   }
 };
