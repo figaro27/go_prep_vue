@@ -1,5 +1,35 @@
 @import "fonts";
 
+ul {
+  margin: 0;
+  padding: 0 !important;
+  list-style: none;
+
+  li {
+    margin-left: -1em;
+  }
+
+  li.plus {
+    &:before {
+      content: "+";
+      text-align: left;
+      width: 1em;
+      display: inline-block;
+      margin-right: 1.5em;
+    }
+  }
+
+  li.plain {
+    &:before {
+      content: "●";
+      text-align: left;
+      width: 1em;
+      display: inline-block;
+      margin-right: 1.5em;
+    }
+  }
+}
+
 html,
 body {
   margin: 0;

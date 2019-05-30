@@ -77,7 +77,10 @@ class OrdersByCustomer
                                     ->get()
                                     ->map(function ($mealOrder) {
                                         return [
-                                            'title' => $mealOrder->title,
+                                            'title' =>
+                                                $this->type !== 'pdf'
+                                                    ? $mealOrder->title
+                                                    : $mealOrder->html_title,
                                             'quantity' =>
                                                 $mealOrder->quantity ?? 1
                                         ];
