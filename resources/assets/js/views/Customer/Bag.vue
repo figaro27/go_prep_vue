@@ -4,8 +4,13 @@
       <div class="card-body">
         <spinner v-if="loading" position="absolute"></spinner>
         <div class="row">
-          <div class="col-md-12">
-            <h2 class="center-text dbl-underline">Checkout</h2>
+          <div class="col-sm-12 store-logo-area" v-if="!mobile">
+            <img
+              v-if="storeLogo"
+              class="store-logo"
+              :src="storeLogo"
+              alt="Company Logo"
+            />
           </div>
           <div class="col-md-12 mb-2 bag-actions">
             <b-button
@@ -542,6 +547,10 @@ export default {
       pickupLocations: "viewedStorePickupLocations",
       getMeal: "viewedStoreMeal"
     }),
+    mobile() {
+      if (window.innerWidth < 500) return true;
+      else return false;
+    },
     deliveryInstructions() {
       return this.storeSettings.deliveryInstructions.replace(/\n/g, "<br>");
     },
