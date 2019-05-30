@@ -261,24 +261,16 @@ u + .body .full { width:100% !important; width:100vw !important;}
           <tr>
             <td align="center">
               <table width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
-              	@php
-              		$lineItemTotal = 0;
-              	@endphp
-              	@foreach($order->meals as $meal)
-              		@php
-		            	$lineItemTotal += $meal->item_price * $meal->item_quantity;
-		            @endphp
-              	<tr>
-	              	<td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $meal->item_title }}</td>
-	              	<td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
-	              		${{ number_format($meal->item_price, 2) }}</td>
-	              	<td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $meal->item_quantity }}</td>
-	              	<td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;  font-weight: bold;">${{ number_format($lineItemTotal, 2) }}</td>
-              	</tr>
-              		@php
-		            	$lineItemTotal = 0;
-		            @endphp
-				@endforeach
+                @foreach($order->items as $item)
+
+                <tr>
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
+                    ${{ number_format($item->unit_price, 2) }}</td>
+                  <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;  font-weight: bold;">${{ number_format($item->price, 2) }}</td>
+                </tr>
+              @endforeach
               </table>
             </td>
           </tr>
