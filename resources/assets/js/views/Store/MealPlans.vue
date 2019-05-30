@@ -187,7 +187,10 @@
             <h4>Meals</h4>
             <hr />
             <ul class="meal-quantities">
-              <li v-for="meal in getMealData(subscription)" :key="meal.id">
+              <li
+                v-for="meal in getMealQuantities(subscription)"
+                :key="meal.id"
+              >
                 <div class="row">
                   <div class="col-md-5 pr-0">
                     <span class="order-quantity">{{ meal.quantity }}</span>
@@ -200,9 +203,9 @@
                     ></thumbnail>
                   </div>
                   <div class="col-md-7 pt-3 nopadding pl-0 ml-0">
-                    <p>{{ meal.title }}</p>
+                    <p v-html="meal.title"></p>
                     <p class="strong">
-                      {{ format.money(meal.price * meal.quantity) }}
+                      {{ format.money(meal.subtotal) }}
                     </p>
                   </div>
                 </div>
@@ -308,6 +311,7 @@ export default {
       storeSettings: "storeSettings",
       subscriptions: "storeSubscriptions",
       isLoading: "isLoading",
+      initialized: "initialized",
       getMeal: "storeMeal"
     }),
     tableData() {
@@ -393,17 +397,28 @@ export default {
       let deliveryNote = deliveryNote;
       await this.updateSubscription({ id, data: { notes: this.deliveryNote } });
     },
-    getMealQuantities(meals) {
-      let subscription = _.toArray(_.countBy(meals, "id"));
+    getMealQuantities(subscription) {
+      if (!this.initialized || !subscription.items) return [];
 
-      return subscription.map((subscription, id) => {
+      let data = subscription.items.map(item => {
+        const meal = this.getMeal(item.meal_id);
+        if (!meal) {
+          return null;
+        }
+
+        const size = meal.getSize(item.meal_size_id);
+        const title = meal.getTitle(true, size, item.components, item.addons);
+
         return {
-          subscription,
-          featured_image: meals[id].image.url_thumb,
-          title: meals[id].title,
-          price: meals[id].price
+          image: meal.image,
+          title: title,
+          quantity: item.quantity,
+          unit_price: format.money(item.unit_price),
+          subtotal: format.money(item.price)
         };
       });
+
+      return _.filter(data);
     },
     viewSubscription(id) {
       axios.get(`/api/me/subscriptions/${id}`).then(response => {

@@ -28,7 +28,7 @@ class Ingredient extends Model
         'iron',
         'addedSugars',
         'image',
-        'image_thumb',
+        'image_thumb'
     ];
 
     const NUTRITION_FIELDS = [
@@ -46,35 +46,43 @@ class Ingredient extends Model
         'potassium',
         'calcium',
         'iron',
-        'sugars',
+        'sugars'
     ];
 
     public $appends = ['quantity', 'quantity_unit', 'quantity_unit_display'];
 
-    public function getQuantityAttribute() {
-      if($this->pivot && $this->pivot->quantity) {
-        return $this->pivot->quantity;
-      }
-      else return null;
+    public function getQuantityAttribute()
+    {
+        if ($this->pivot && $this->pivot->quantity) {
+            return $this->pivot->quantity;
+        } else {
+            return null;
+        }
     }
 
-    public function getQuantityUnitAttribute() {
-      if($this->pivot && $this->pivot->quantity_unit) {
-        return $this->pivot->quantity_unit;
-      }
-      else return null;
+    public function getQuantityUnitAttribute()
+    {
+        if ($this->pivot && $this->pivot->quantity_unit) {
+            return $this->pivot->quantity_unit;
+        } else {
+            return null;
+        }
     }
 
-    public function getQuantityUnitDisplayAttribute() {
-      if($this->pivot && $this->pivot->quantity_unit_display) {
-        return $this->pivot->quantity_unit_display;
-      }
-      else return null;
+    public function getQuantityUnitDisplayAttribute()
+    {
+        if ($this->pivot && $this->pivot->quantity_unit_display) {
+            return $this->pivot->quantity_unit_display;
+        } else {
+            return null;
+        }
     }
 
     public function meals()
     {
-        return $this->belongsToMany('App\Meal')->withPivot('quantity', 'quantity_unit', 'quantity_unit_display')->using('App\IngredientMeal');
+        return $this->belongsToMany('App\Meal')
+            ->withPivot('quantity', 'quantity_unit', 'quantity_unit_display')
+            ->using('App\IngredientMeal');
     }
 
     public function store()
@@ -85,10 +93,15 @@ class Ingredient extends Model
     public static function getIngredients()
     {
         $id = Auth::user()->id;
-        $storeID = Store::where('user_id', $id)->pluck('id')->first();
+        $storeID = Store::where('user_id', $id)
+            ->pluck('id')
+            ->first();
 
-        return \DB::table('ingredients')->groupBy('food_name')->select('food_name as ingredient')->selectRaw('SUM(serving_qty) as total')->get();
-
+        return \DB::table('ingredients')
+            ->groupBy('food_name')
+            ->select('food_name as ingredient')
+            ->selectRaw('SUM(serving_qty) as total')
+            ->get();
     }
 
     /**
@@ -100,7 +113,9 @@ class Ingredient extends Model
     public static function normalize($mealArr)
     {
         if (!is_array($mealArr)) {
-            throw new \Exception('Invalid meal array. It should be supplied in nutritionix format.');
+            throw new \Exception(
+                'Invalid meal array. It should be supplied in nutritionix format.'
+            );
         }
         if (!array_key_exists('serving_qty', $mealArr)) {
             throw new \Exception('No serving quantity provided.');
@@ -116,33 +131,53 @@ class Ingredient extends Model
             // We already have the nutrition for a gram weight
             if (array_key_exists('serving_weight_grams', $mealArr)) {
                 $unitFactor = $mealArr['serving_weight_grams'];
-            } elseif (array_key_exists('serving_qty', $mealArr) && array_key_exists('serving_unit', $mealArr)) {
-                $weight = new Mass($mealArr['serving_qty'], $mealArr['serving_unit']);
+            } elseif (
+                array_key_exists('serving_qty', $mealArr) &&
+                array_key_exists('serving_unit', $mealArr)
+            ) {
+                $weight = new Mass(
+                    $mealArr['serving_qty'],
+                    $mealArr['serving_unit']
+                );
                 $unitFactor = $weight->toUnit('g');
             } else {
-                throw new \Exception('Unable to determine base weight for ingredient');
+                throw new \Exception(
+                    'Unable to determine base weight for ingredient'
+                );
             }
         } elseif ($mealArr['unit_type'] === 'volume') {
-            if (array_key_exists('serving_qty', $mealArr) && array_key_exists('serving_unit', $mealArr)) {
-                $volume = new Volume($mealArr['serving_qty'], $mealArr['serving_unit']);
+            if (
+                array_key_exists('serving_qty', $mealArr) &&
+                array_key_exists('serving_unit', $mealArr)
+            ) {
+                $volume = new Volume(
+                    $mealArr['serving_qty'],
+                    $mealArr['serving_unit']
+                );
                 $unitFactor = $volume->toUnit('ml');
             } else {
-                throw new \Exception('Unable to determine base volume for ingredient');
+                throw new \Exception(
+                    'Unable to determine base volume for ingredient'
+                );
             }
         } else {
             $unitFactor = 1;
         }
 
         foreach (self::NUTRITION_FIELDS as $field) {
-            if (!array_key_exists($field, $mealArr) || !is_numeric($mealArr[$field])) {
+            if (
+                !array_key_exists($field, $mealArr) ||
+                !is_numeric($mealArr[$field])
+            ) {
+                $mealArr[$field] = 0;
                 continue;
             }
 
             // We already do this in the FE
             //$mealArr[$field] /= $unitFactor;
 
-            if(in_array($field, ['totalFat', 'satFat', 'totalCarb'])) {
-              $mealArr[$field] *= $unitFactor;
+            if (in_array($field, ['totalFat', 'satFat', 'totalCarb'])) {
+                $mealArr[$field] *= $unitFactor;
             }
         }
 
@@ -161,5 +196,44 @@ class Ingredient extends Model
         unset($mealArr['photo']);
 
         return $mealArr;
+    }
+
+    public static function fromNutritionix(
+        $mealId,
+        $ingredientArr,
+        $create = true
+    ) {
+        $meal = Meal::findOrFail($mealId);
+
+        // Check if ingredient with same name and unit type already exists
+        $ingredient = Ingredient::where([
+            'store_id' => $meal->store_id,
+            'food_name' => $ingredientArr['food_name'],
+            'unit_type' => $ingredientArr['unit_type']
+        ])->first();
+
+        if ($ingredient) {
+            return $ingredient;
+        }
+        // Nope. Create a new one
+        elseif ($create) {
+            $ingredientArr = Ingredient::normalize($ingredientArr);
+
+            $ingredient = new Ingredient($ingredientArr);
+            $ingredient->store_id = $meal->store_id;
+            if ($ingredient->save()) {
+                $meal->store->units()->create([
+                    'store_id' => $meal->store_id,
+                    'ingredient_id' => $ingredient->id,
+                    'unit' => $ingredientArr['quantity_unit_display']
+                ]);
+
+                return $ingredient;
+            } else {
+                throw new \Exception('Failed to create ingredient');
+            }
+        }
+
+        return null;
     }
 }

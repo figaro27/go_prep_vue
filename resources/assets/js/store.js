@@ -5,6 +5,7 @@ import createPersistedState from "vuex-persistedstate";
 import router from "./routes";
 import auth from "./lib/auth";
 import uuid from "uuid";
+import CryptoJS from "crypto-js";
 
 const Cookies = require("js-cookie");
 
@@ -179,44 +180,16 @@ const mutations = {
       state.bag.total = 0;
     }
   },
-  addToBag(state, { meal, quantity = 1, mealPackage = false, size = null }) {
-    let mealId = meal;
-    if (!_.isNumber(mealId)) {
-      mealId = meal.id;
-    }
-
-    if (mealPackage || meal.meal_package) {
-      mealId = "package-" + mealId;
-      mealPackage = true;
-    }
-
-    if (size) {
-      mealId = "size-" + mealId + "-" + size.id;
-    }
-
-    if (!_.has(state.bag.items, mealId)) {
-      Vue.set(state.bag.items, mealId, {
-        quantity: 0,
-        meal,
-        meal_package: mealPackage,
-        added: moment().unix(),
-        size
-      });
-    }
-
-    let item = {
-      ...state.bag.items[mealId]
-    };
-    item.quantity = (item.quantity || 0) + quantity;
-    if (!item.added) {
-      item.added = moment().unix();
-    }
-
-    Vue.set(state.bag.items, mealId, item);
-  },
-  removeFromBag(
+  addToBag(
     state,
-    { meal, quantity = 1, mealPackage = false, size = null }
+    {
+      meal,
+      quantity = 1,
+      mealPackage = false,
+      size = null,
+      components = null,
+      addons = null
+    }
   ) {
     let mealId = meal;
     if (!_.isNumber(mealId)) {
@@ -224,22 +197,81 @@ const mutations = {
     }
 
     if (mealPackage || meal.meal_package) {
-      mealId = "package-" + mealId;
+      //mealId = "package-" + mealId;
       mealPackage = true;
     }
 
     if (size) {
-      mealId = "size-" + mealId + "-" + size.id;
+      //mealId = "size-" + mealId + "-" + size.id;
     }
 
-    if (!_.has(state.bag.items, mealId)) {
+    if (components) {
+      //mealId += JSON.stringify(components);
+    }
+
+    let guid = CryptoJS.MD5(
+      JSON.stringify({ meal: mealId, mealPackage, size, components, addons })
+    ).toString();
+
+    if (!_.has(state.bag.items, guid)) {
+      Vue.set(state.bag.items, guid, {
+        quantity: 0,
+        meal,
+        meal_package: mealPackage,
+        added: moment().unix(),
+        size,
+        components,
+        addons
+      });
+    }
+
+    let item = {
+      ...state.bag.items[guid]
+    };
+    item.quantity = (item.quantity || 0) + quantity;
+    if (!item.added) {
+      item.added = moment().unix();
+    }
+
+    Vue.set(state.bag.items, guid, item);
+  },
+  removeFromBag(
+    state,
+    {
+      meal,
+      quantity = 1,
+      mealPackage = false,
+      size = null,
+      components = null,
+      addons = null
+    }
+  ) {
+    let mealId = meal;
+    if (!_.isNumber(mealId)) {
+      mealId = meal.id;
+    }
+
+    if (mealPackage || meal.meal_package) {
+      //mealId = "package-" + mealId;
+      mealPackage = true;
+    }
+
+    if (size) {
+      //mealId = "size-" + mealId + "-" + size.id;
+    }
+
+    let guid = CryptoJS.MD5(
+      JSON.stringify({ meal: mealId, mealPackage, size, components, addons })
+    ).toString();
+
+    if (!_.has(state.bag.items, guid)) {
       return;
     }
 
-    state.bag.items[mealId].quantity -= quantity;
+    state.bag.items[guid].quantity -= quantity;
 
-    if (state.bag.items[mealId].quantity <= 0) {
-      Vue.delete(state.bag.items, mealId);
+    if (state.bag.items[guid].quantity <= 0) {
+      Vue.delete(state.bag.items, guid);
     }
   },
   emptyBag(state) {
@@ -1133,7 +1165,83 @@ const getters = {
       return null;
     }
   },
+  viewedStoreMeal: state => id => {
+    try {
+      let meal = _.find(state.viewed_store.meals, ["id", parseInt(id)]) || null;
+      if (!meal) {
+        return null;
+      }
 
+      meal.getSize = sizeId => {
+        return _.find(meal.sizes, ["id", parseInt(sizeId)]);
+      };
+
+      meal.getTitle = (
+        html = false,
+        size = null,
+        components = null,
+        addons = null
+      ) => {
+        let title = meal.title;
+
+        if (_.isObject(size)) {
+          title = size.full_title;
+        }
+
+        let hasComponents = _.isArray(components) && components.length;
+        let hasAddons = _.isArray(addons) && addons.length;
+
+        if (!html) {
+          if (hasComponents) {
+            title += " - " + _.map(components, "option").join(", ");
+          }
+
+          if (hasAddons) {
+            title += " - " + _.map(addons, "addon").join(", ");
+          }
+        } else if (hasComponents || hasAddons) {
+          title += '<ul class="meal-components plain mb-0">';
+          if (hasComponents) {
+            _.forEach(components, component => {
+              title += `<li class="plain">${component.option}</li>`;
+            });
+          }
+          if (hasAddons) {
+            _.forEach(addons, addon => {
+              title += `<li class="plus">${addon.addon}</li>`;
+            });
+          }
+          title += "</ul>";
+        }
+
+        return title;
+      };
+
+      meal.getComponent = componentId => {
+        return _.find(meal.components, { id: parseInt(componentId) });
+      };
+      meal.getComponentOption = (component, optionId) => {
+        return _.find(component.options, { id: parseInt(optionId) });
+      };
+
+      meal.getComponentTitle = componentId => {
+        const component = meal.getComponent(componentId);
+        if (component) {
+          return component.title;
+        } else {
+          return null;
+        }
+      };
+
+      meal.getAddon = addonId => {
+        return _.find(meal.addons, { id: parseInt(addonId) });
+      };
+
+      return meal;
+    } catch (e) {
+      return null;
+    }
+  },
   isLoading(state) {
     return state.isLoading || !_.isEmpty(state.jobs);
   },
@@ -1183,7 +1291,13 @@ const getters = {
 
     return _.has(state.bag.items, meal);
   },
-  bagItemQuantity: state => (meal, mealPackage = false, size = null) => {
+  bagItemQuantity: state => (
+    meal,
+    mealPackage = false,
+    size = null,
+    components = null,
+    addons = null
+  ) => {
     if (!meal) {
       return 0;
     }
@@ -1194,28 +1308,61 @@ const getters = {
     }
 
     if (mealPackage || meal.meal_package) {
-      mealId = "package-" + mealId;
       mealPackage = true;
     }
 
     if (_.isObject(size)) {
-      mealId = "size-" + mealId + "-" + size.id;
     }
 
-    if (
-      !_.has(state.bag.items, mealId) ||
-      !_.isObject(state.bag.items[mealId])
-    ) {
+    let guid = CryptoJS.MD5(
+      JSON.stringify({ meal: mealId, mealPackage, size, components, addons })
+    ).toString();
+
+    if (!_.has(state.bag.items, guid) || !_.isObject(state.bag.items[guid])) {
       return 0;
     }
 
-    return state.bag.items[mealId].quantity || 0;
+    return state.bag.items[guid].quantity || 0;
+  },
+  bagMealQuantity: state => meal => {
+    if (!meal) {
+      return 0;
+    }
+
+    let mealId = meal;
+    if (!_.isNumber(mealId)) {
+      mealId = meal.id;
+    }
+
+    return _.sumBy(Object.values(state.bag.items), item => {
+      if (item.meal.id === mealId) {
+        return item.quantity;
+      }
+    });
   },
   totalBagPricePreFees(state, getters) {
     let items = _.compact(_.toArray(state.bag.items));
     let totalBagPricePreFees = 0;
     items.forEach(item => {
-      const price = item.size ? item.size.price : item.meal.price;
+      let price = item.size ? item.size.price : item.meal.price;
+      let meal = getters.viewedStoreMeal(item.meal.id);
+      if (item.components) {
+        _.forEach(item.components, (choices, componentId) => {
+          let component = _.find(item.meal.components, {
+            id: parseInt(componentId)
+          });
+          _.forEach(choices, optionId => {
+            let option = _.find(component.options, { id: parseInt(optionId) });
+            price += option.price;
+          });
+        });
+      }
+      if (item.addons) {
+        _.forEach(item.addons, addonId => {
+          let addon = _.find(meal.addons, { id: parseInt(addonId) });
+          price += addon.price;
+        });
+      }
       totalBagPricePreFees += item.quantity * price;
     });
 
@@ -1302,12 +1449,58 @@ const getters = {
   storeMeal: state => id => {
     try {
       let meal = _.find(state.store.meals.data, ["id", parseInt(id)]) || null;
+      if (!meal) {
+        return null;
+      }
+
       meal.getSize = sizeId => {
         return _.find(meal.sizes, ["id", parseInt(sizeId)]);
       };
+
+      meal.getTitle = (
+        html = false,
+        size = null,
+        components = null,
+        addons = null
+      ) => {
+        let title = meal.title;
+
+        if (_.isObject(size)) {
+          title = size.full_title;
+        }
+
+        let hasComponents = _.isArray(components) && components.length;
+        let hasAddons = _.isArray(addons) && addons.length;
+
+        if (!html) {
+          if (hasComponents) {
+            title += " - " + _.map(components, "option").join(", ");
+          }
+
+          if (hasAddons) {
+            title += " - " + _.map(addons, "addon").join(", ");
+          }
+        } else if (hasComponents || hasAddons) {
+          title += '<ul class="plain mb-0">';
+          if (hasComponents) {
+            _.forEach(components, component => {
+              title += `<li class="plain">${component.option}</li>`;
+            });
+          }
+          if (hasAddons) {
+            _.forEach(addons, addon => {
+              title += `<li class="plus">${addon.addon}</li>`;
+            });
+          }
+          title += "</ul>";
+        }
+
+        return title;
+      };
+
       return meal;
     } catch (e) {
-      return {};
+      return null;
     }
   },
   storeCategories: state => {

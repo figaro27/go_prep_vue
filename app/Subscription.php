@@ -20,7 +20,8 @@ class Subscription extends Model
         'next_delivery_date',
         'meal_ids',
         'meal_quantities',
-        'pre_coupon'
+        'pre_coupon',
+        'items'
     ];
 
     protected $casts = [
@@ -148,6 +149,47 @@ class Subscription extends Model
         return $this->store->storeDetail->name;
     }
 
+    public function getItemsAttribute()
+    {
+        return $this->meal_subscriptions()
+            ->with([
+                'components',
+                'components.component',
+                'components.option',
+                'addons'
+            ])
+            ->get()
+            ->map(function ($mealSub) {
+                return (object) [
+                    'meal_id' => $mealSub->meal_id,
+                    'meal_size_id' => $mealSub->meal_size_id,
+                    'meal_title' => $mealSub->title,
+                    'title' => $mealSub->title,
+                    'html_title' => $mealSub->html_title,
+                    'quantity' => $mealSub->quantity,
+                    'unit_price' => $mealSub->unit_price,
+                    'price' => $mealSub->price,
+                    'components' => $mealSub->components->map(function (
+                        $component
+                    ) {
+                        return (object) [
+                            'meal_component_id' => $component->component->id,
+                            'meal_component_option_id' =>
+                                $component->option->id,
+                            'component' => $component->component->title,
+                            'option' => $component->option->title
+                        ];
+                    }),
+                    'addons' => $mealSub->addons->map(function ($addon) {
+                        return (object) [
+                            'meal_addon_id' => $addon->addon->id,
+                            'addon' => $addon->addon->title
+                        ];
+                    })
+                ];
+            });
+    }
+
     public function isPaused()
     {
         return $this->status === 'paused';
@@ -215,13 +257,33 @@ class Subscription extends Model
         $newOrder->save();
 
         // Assign subscription meals to new order
-        foreach ($this->meals as $meal) {
-            $mealSub = new MealOrder();
-            $mealSub->order_id = $newOrder->id;
-            $mealSub->store_id = $this->store->id;
-            $mealSub->meal_id = $meal->id;
-            $mealSub->quantity = $meal->pivot->quantity;
-            $mealSub->save();
+        foreach ($this->meal_subscriptions as $mealSub) {
+            $mealOrder = new MealOrder();
+            $mealOrder->order_id = $newOrder->id;
+            $mealOrder->store_id = $this->store->id;
+            $mealOrder->meal_id = $mealSub->meal_id;
+            $mealOrder->quantity = $mealSub->quantity;
+            $mealOrder->save();
+
+            if ($mealSub->has('components')) {
+                foreach ($mealSub->components as $component) {
+                    MealOrderComponent::create([
+                        'meal_order_id' => $mealOrder->id,
+                        'meal_component_id' => $component->meal_component_id,
+                        'meal_component_option_id' =>
+                            $component->meal_component_option_id
+                    ]);
+                }
+            }
+
+            if ($mealSub->has('addons')) {
+                foreach ($mealSub->addons as $addon) {
+                    MealOrderAddon::create([
+                        'meal_order_id' => $mealOrder->id,
+                        'meal_addon_id' => $component->meal_addon_id
+                    ]);
+                }
+            }
         }
 
         // Store next charge time as reported by Stripe

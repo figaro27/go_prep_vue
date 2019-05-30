@@ -2,13 +2,8 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-use App\MealOrder;
-use App\Meal;
-use App\OrderEvent;
 use App\Coupon;
-
-use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
@@ -32,7 +27,7 @@ class Order extends Model
     protected $appends = [
         'has_notes',
         'meal_ids',
-        'meal_quantities',
+        'items',
         'store_name',
         'cutoff_date',
         'cutoff_passed',
@@ -62,6 +57,7 @@ class Order extends Model
     public function meals()
     {
         return $this->belongsToMany('App\Meal', 'meal_orders')
+            ->with('components')
             ->withPivot('quantity', 'meal_size_id')
             ->withTrashed()
             ->using('App\MealOrder');
@@ -123,8 +119,46 @@ class Order extends Model
             ->pluck('id')
             ->unique();
     }
-    public function getMealQuantitiesAttribute()
+    public function getItemsAttribute()
     {
+        return $this->meal_orders()
+            ->with([
+                'components',
+                'components.component',
+                'components.option',
+                'addons'
+            ])
+            ->get()
+            ->map(function ($mealOrder) {
+                return (object) [
+                    'meal_id' => $mealOrder->meal_id,
+                    'meal_size_id' => $mealOrder->meal_size_id,
+                    'meal_title' => $mealOrder->title,
+                    'title' => $mealOrder->title,
+                    'html_title' => $mealOrder->html_title,
+                    'quantity' => $mealOrder->quantity,
+                    'unit_price' => $mealOrder->unit_price,
+                    'price' => $mealOrder->price,
+                    'components' => $mealOrder->components->map(function (
+                        $component
+                    ) {
+                        return (object) [
+                            'meal_component_id' => $component->component->id,
+                            'meal_component_option_id' =>
+                                $component->option->id,
+                            'component' => $component->component->title,
+                            'option' => $component->option->title
+                        ];
+                    }),
+                    'addons' => $mealOrder->addons->map(function ($addon) {
+                        return (object) [
+                            'meal_addon_id' => $addon->addon->id,
+                            'addon' => $addon->addon->title
+                        ];
+                    })
+                ];
+            });
+        //
         return $this->meals()
             ->get()
             ->keyBy(function ($meal) {
@@ -156,12 +190,12 @@ class Order extends Model
         return $this->store->getCutoffDate($this->delivery_date);
 
         /*$ddate = new Carbon(
-            $this->delivery_date,
-            $this->store->settings->timezone
-        );
-        $ddate->setTime(0, 0);
-        $cutoff = $ddate->subSeconds($this->store->getCutoffSeconds());
-        return $cutoff;*/
+    $this->delivery_date,
+    $this->store->settings->timezone
+    );
+    $ddate->setTime(0, 0);
+    $cutoff = $ddate->subSeconds($this->store->getCutoffSeconds());
+    return $cutoff;*/
     }
 
     public static function updateOrder($id, $props)

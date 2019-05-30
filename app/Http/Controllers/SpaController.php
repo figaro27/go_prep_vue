@@ -169,6 +169,8 @@ class SpaController extends Controller
                 'meals.sizes',
                 'meals.categories',
                 'meals.allergies',
+                'meals.components',
+                'meals.addons',
                 'settings',
                 'details',
                 'coupons',

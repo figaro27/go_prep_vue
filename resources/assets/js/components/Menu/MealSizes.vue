@@ -1,6 +1,27 @@
 <template>
   <div>
+    <b-button
+      variant="primary"
+      @click="
+        meal.sizes.push({
+          id: 100 + meal.sizes.length, // push to the end of table
+          title: '',
+          price: meal.price,
+          multiplier: 1
+        })
+      "
+      >Add Meal Size</b-button
+    >
+    <img
+      v-b-popover.hover="
+        'Example: Medium, Large, Family Sized, etc. Please indicate the price for each size. For ingredient multiplier, please indicate the ratio of how many more ingredients are used for the new size. For example if the meal is twice as large, put 2. If you don\'t use ingredients, just put 1 in each field.'
+      "
+      title="Meal Sizes"
+      src="/images/store/popover.png"
+      class="popover-size"
+    />
     <v-client-table
+      v-if="meal.sizes.length > 0"
       :columns="columns"
       :data="tableData"
       :options="{
@@ -11,23 +32,11 @@
         orderBy: {
           column: 'id',
           ascending: true
-        }
+        },
+        filterable: false
       }"
     >
-      <div slot="beforeTable" class="mb-2">
-        <b-button
-          variant="primary"
-          @click="
-            meal.sizes.push({
-              id: 100 + meal.sizes.length, // push to the end of table
-              title: '',
-              price: meal.price,
-              multiplier: 1
-            })
-          "
-          >Add Meal Size</b-button
-        >
-      </div>
+      <div slot="beforeTable" class="mb-2"></div>
       <div slot="actions" slot-scope="props" v-if="props.row.id !== -1">
         <b-btn variant="danger" size="sm" @click="deleteSize(props.row.id)"
           >Delete</b-btn
@@ -79,6 +88,10 @@
         ></b-input>
       </div>
     </v-client-table>
+
+    <b-button variant="primary" @click="save()" class="pull-right"
+      >Save</b-button
+    >
   </div>
 </template>
 
@@ -142,6 +155,10 @@ export default {
       }
 
       this.$emit("change", this.meal.sizes);
+    },
+    save() {
+      this.$emit("save", this.meal.sizes);
+      this.$toastr.s("Meal variation saved.");
     }
   }
 };

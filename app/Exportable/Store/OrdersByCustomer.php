@@ -52,6 +52,7 @@ class OrdersByCustomer
         }
 
         $customerOrders = $orders
+            ->with(['meal_orders'])
             ->get()
             ->groupBy('user_id')
             ->map(function ($orders, $userId) {
@@ -71,12 +72,17 @@ class OrdersByCustomer
                             'pickup_location' => $order->pickup_location,
                             'meal_quantities' => array_merge(
                                 [['Meal', 'Quantity']], // Heading
-                                $order->meals
-                                    ->map(function ($meal) {
+                                $order
+                                    ->meal_orders()
+                                    ->get()
+                                    ->map(function ($mealOrder) {
                                         return [
-                                            'title' => $meal->item_title,
+                                            'title' =>
+                                                $this->type !== 'pdf'
+                                                    ? $mealOrder->title
+                                                    : $mealOrder->html_title,
                                             'quantity' =>
-                                                $meal->item_quantity ?? 1
+                                                $mealOrder->quantity ?? 1
                                         ];
                                     })
                                     ->toArray()
