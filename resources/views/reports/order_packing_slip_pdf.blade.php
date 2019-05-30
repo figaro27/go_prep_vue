@@ -59,7 +59,7 @@
         @foreach ($order->items as $i => $item)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
             <td>{{$item->quantity}}</td>
-            <td>{{$item->title}}</td>
+            <td>{!! $item->html_title !!}</td>
             <td>${{number_format($item->price)}}</td>
         </tr>
         @endforeach

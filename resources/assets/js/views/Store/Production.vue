@@ -28,6 +28,9 @@
                 class="thumb"
               ></thumbnail>
             </div>
+
+            <div slot="title" slot-scope="props" v-html="props.row.title"></div>
+
             <div slot="price" slot-scope="props">
               {{ format.money(props.row.price) }}
             </div>
@@ -135,11 +138,15 @@ export default {
 
       orders.forEach(order => {
         _.forEach(order.items, item => {
-          if (!mealCounts[item.title]) {
-            mealCounts[item.title] = 0;
-            mealIds[item.title] = item.meal_id;
+          let meal = this.getMeal(item.meal_id);
+          let size = meal.getSize(item.meal_size_id);
+          let title = meal.getTitle(true, size, item.components, item.addons);
+
+          if (!mealCounts[title]) {
+            mealCounts[title] = 0;
+            mealIds[title] = item.meal_id;
           }
-          mealCounts[item.title] += item.quantity;
+          mealCounts[title] += item.quantity;
         });
       });
 

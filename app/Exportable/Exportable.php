@@ -11,6 +11,7 @@ trait Exportable
 {
     protected $orientation = 'landscape';
     protected $params = [];
+    protected $type = null;
 
     abstract public function exportData($type = null);
     abstract public function exportPdfView();
@@ -20,6 +21,8 @@ trait Exportable
         if (!in_array($type, ['pdf', 'csv', 'xls'])) {
             return null;
         }
+
+        $this->type = $type;
 
         $data = $this->exportData($type);
 

@@ -29,11 +29,16 @@ class MealOrders
         $orders = $this->store->getOrders(null, $dates, true);
         $orders->map(function ($order) use (&$mealQuantities) {
             foreach ($order->meal_orders()->get() as $i => $mealOrder) {
-                if (!isset($mealQuantities[$mealOrder->title])) {
-                    $mealQuantities[$mealOrder->title] = 0;
+                $title =
+                    $this->type !== 'pdf'
+                        ? $mealOrder->title
+                        : $mealOrder->html_title;
+
+                if (!isset($mealQuantities[$title])) {
+                    $mealQuantities[$title] = 0;
                 }
 
-                $mealQuantities[$mealOrder->title] += $mealOrder->quantity;
+                $mealQuantities[$title] += $mealOrder->quantity;
             }
         });
 
