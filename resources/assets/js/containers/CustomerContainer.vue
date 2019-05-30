@@ -49,8 +49,13 @@
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <CustomerDropdown v-if="loggedIn" />
-          <b-nav-item v-if="!loggedIn" to="/login">Log In</b-nav-item>
-          <b-nav-item v-if="!loggedIn" class="px-3 mr-4" to="/register"
+          <b-nav-item v-if="!loggedIn" to="/login" class="white-text"
+            >Log In</b-nav-item
+          >
+          <b-nav-item
+            v-if="!loggedIn"
+            class="px-3 mr-4 white-text"
+            to="/register"
             >Register</b-nav-item
           >
         </b-navbar-nav>
