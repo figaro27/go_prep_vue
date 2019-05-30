@@ -127,12 +127,26 @@ export default {
       this.meal = meal;
       this.mealPackage = mealPackage;
       this.size = size;
+      this.choices = {};
+      this.addons = [];
 
       this.$refs.modal.show();
 
       this.$forceUpdate();
 
+      this.$nextTick(() => {
+        this.$v.$reset();
+      });
+
       return new Promise((resolve, reject) => {
+        this.$refs.modal.$on("cancel", () => {
+          resolve(null);
+          this.meal = null;
+          this.mealPackage = false;
+          this.size = null;
+          this.choices = {};
+          this.$v.$reset();
+        });
         this.$on("done", () => {
           this.$v.$touch();
 
@@ -150,6 +164,7 @@ export default {
             this.mealPackage = false;
             this.size = null;
             this.choices = {};
+            this.$v.$reset();
           }
         });
       });

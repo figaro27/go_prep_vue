@@ -28,11 +28,20 @@ export default {
           _.find(meal.addons, { meal_size_id: sizeId }) &&
           !addons)
       ) {
+        if (this.mealModal && this.hideMealModal) {
+          await this.hideMealModal();
+        }
+
         const result = await this.$refs.componentModal.show(
           meal,
           mealPackage,
           size
         );
+
+        if (!result) {
+          return;
+        }
+
         components = { ...result.components };
         addons = [...result.addons];
       }
