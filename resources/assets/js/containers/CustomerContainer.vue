@@ -170,7 +170,12 @@ export default {
     } else {
       this.navBgColor = this.viewedStore.settings.color + "!important";
     }
-    this.bgColor = this.viewedStore.settings.color + " !important";
+
+    if (this.viewedStore.settings.color != "#3082cf") {
+      this.bgColor = this.viewedStore.settings.color + " !important";
+    } else {
+      this.bgColor = "#F25727";
+    }
 
     // let page = this.name;
     // // if (page != 'customer-home' && page != 'login' && page != 'register' && page != 'customer-orders' && page != 'customer-meal-plans')
