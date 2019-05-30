@@ -1489,6 +1489,13 @@ export default {
         this.$refs.mealGallery.reSlick();
       });
     },
+    hideMealModal() {
+      this.mealModal = false;
+
+      return new Promise(resolve => {
+        this.$nextTick(resolve);
+      });
+    },
     showMealPackageModal(mealPackage) {
       this.mealPackage = { ...mealPackage };
       this.mealPackageModal = true;
