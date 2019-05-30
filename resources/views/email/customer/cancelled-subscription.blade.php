@@ -184,24 +184,16 @@ u + .body .full { width:100% !important; width:100vw !important;}
           <tr>
             <td align="center">
               <table width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
-              	@php
-              		$lineItemTotal = 0;
-              	@endphp
-              	@foreach($subscription->meals as $meal)
-              		@php
-		            	$lineItemTotal += $meal->item_price * $meal->item_quantity;
-		            @endphp
-              	<tr>
-	              	<td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $meal->item_title }}</td>
-	              	<td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
-	              		${{ number_format($meal->item_price, 2) }}</td>
-	              	<td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $meal->item_quantity }}</td>
-	              	<td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;  font-weight: bold;">${{ number_format($lineItemTotal, 2) }}</td>
-              	</tr>
-              		@php
-		            	$lineItemTotal = 0;
-		            @endphp
-				        @endforeach
+                @foreach($subscription->items as $item)
+
+                <tr>
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
+                    ${{ number_format($item->unit_price, 2) }}</td>
+                  <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;  font-weight: bold;">${{ number_format($item->price, 2) }}</td>
+                </tr>
+              @endforeach
               </table>
             </td>
           </tr>
@@ -333,26 +325,27 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- content -->
                 @if ($subscription->pickup === 0)
-				<tr>
+				        <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
-                    {!! nl2br($order->store->settings->deliveryInstructions) !!} 
+                    {!! nl2br($subscription->store->settings->deliveryInstructions) !!} 
                   </td>
                 </tr>
-                @else
+                @endif
+                @if ($subscription->pickup === 1)
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">Pickup Instructions</td>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
-                    {!! nl2br($order->store->settings->pickupInstructions !!} 
+                    {!! nl2br($subscription->store->settings->pickupInstructions) !!} 
                   </td>
                 </tr>
-				@endif
+				        @endif
                 
                 <!-- end content -->
                 <tr>
                   <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
                 </tr>
                 <tr>
-                  <td height="45" style="text-align: center;"><a href="https://goprep.com/store/account/settings">Unsubscribe</a></td>
+                  <td height="45" style="text-align: center;"><a href="https://goprep.com/customer/account/my-account">Unsubscribe</a></td>
                 </tr>
               </table>
             </td>
