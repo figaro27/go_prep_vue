@@ -5,7 +5,6 @@
         <img
           class="navbar-brand-full"
           :src="topLogo"
-          width="70"
           height="70"
           v-if="mobile"
         />
