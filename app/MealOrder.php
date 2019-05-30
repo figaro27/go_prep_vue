@@ -12,12 +12,12 @@ class MealOrder extends Pivot
 
     public function meals()
     {
-        return $this->belongsTo('App\Meal');
+        return $this->belongsTo('App\Meal')->withTrashed();
     }
 
     public function meal()
     {
-        return $this->belongsTo('App\Meal');
+        return $this->belongsTo('App\Meal')->withTrashed();
     }
 
     public function meal_size()
