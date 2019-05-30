@@ -424,7 +424,7 @@ export default {
 
         return {
           image: meal.image,
-          title: item.title,
+          title: title,
           quantity: item.quantity,
           unit_price: format.money(item.unit_price),
           subtotal: format.money(item.price)

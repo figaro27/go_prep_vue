@@ -1188,7 +1188,7 @@ const getters = {
           title = size.full_title;
         }
 
-        let hasComponents = _.isArray(addons) && addons.length;
+        let hasComponents = _.isArray(components) && components.length;
         let hasAddons = _.isArray(addons) && addons.length;
 
         if (!html) {
@@ -1469,7 +1469,7 @@ const getters = {
           title = size.full_title;
         }
 
-        let hasComponents = _.isArray(addons) && addons.length;
+        let hasComponents = _.isArray(components) && components.length;
         let hasAddons = _.isArray(addons) && addons.length;
 
         if (!html) {
