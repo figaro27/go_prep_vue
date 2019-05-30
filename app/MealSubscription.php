@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class MealSubscription extends Pivot
 {
     protected $table = 'meal_subscriptions';
-    protected $appends = ['title', 'unit_price', 'price'];
+    protected $appends = ['title', 'html_title', 'unit_price', 'price'];
 
     public function meals()
     {
@@ -73,6 +73,40 @@ class MealSubscription extends Pivot
                 ->implode(', ');
 
             $title .= ' - ' . $comp;
+        }
+        return $title;
+    }
+
+    public function getHtmlTitleAttribute()
+    {
+        $title = $this->meal->title;
+
+        if ($this->meal_size_id) {
+            $title = $this->meal_size->full_title;
+        }
+
+        $hasComponents = count($this->components);
+        $hasAddons = count($this->addons);
+
+        if ($hasComponents || $hasAddons) {
+            $title .= '<ul class="plain mb-0">';
+
+            if ($hasComponents) {
+                foreach ($this->components as $component) {
+                    $title .=
+                        '<li class="plain">' .
+                        $component->option->title .
+                        '</li>';
+                }
+            }
+            if ($hasAddons) {
+                foreach ($this->addons as $addon) {
+                    $title .=
+                        '<li class="plus">' . $addon->addon->title . '</li>';
+                }
+            }
+
+            $title .= '</ul>';
         }
         return $title;
     }

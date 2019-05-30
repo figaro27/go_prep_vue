@@ -165,6 +165,7 @@ class Subscription extends Model
                     'meal_size_id' => $mealSub->meal_size_id,
                     'meal_title' => $mealSub->title,
                     'title' => $mealSub->title,
+                    'html_title' => $mealSub->html_title,
                     'quantity' => $mealSub->quantity,
                     'unit_price' => $mealSub->unit_price,
                     'price' => $mealSub->price,
