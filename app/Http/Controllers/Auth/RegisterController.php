@@ -9,6 +9,8 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Store\Onboarding;
 
 class RegisterController extends Controller
 {
@@ -263,6 +265,15 @@ class RegisterController extends Controller
 
         // Determine redirect URL
         if ($user->hasRole('store')) {
+            $email = new Onboarding([
+                'user' => $user ?? null
+            ]);
+            try {
+                Mail::to($user)
+                    ->bcc('mike@goprep.com')
+                    ->send($email);
+            } catch (\Exception $e) {
+            }
             $redirect = '/store/account/settings';
         } else {
             $store = defined('STORE_ID') ? Store::find(STORE_ID) : null;
