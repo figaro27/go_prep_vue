@@ -112,7 +112,7 @@ class Bag
 
         foreach ($this->getItems() as $item) {
             $price = $item['price'];
-            if ($item['components']) {
+            if (isset($item['components']) && $item['components']) {
                 foreach ($item['components'] as $componentId => $choices) {
                     foreach ($choices as $optionId) {
                         $option = MealComponentOption::find($optionId);
@@ -120,7 +120,7 @@ class Bag
                     }
                 }
             }
-            if ($item['addons']) {
+            if (isset($item['addons']) && $item['addons']) {
                 foreach ($item['addons'] as $addonId) {
                     $addon = MealAddon::find($addonId);
                     $price += $addon->price;
