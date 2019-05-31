@@ -449,8 +449,16 @@
                 <div class="col-sm-12">
                   <div class="row">
                     <div class="col-sm-12 store-logo-area" v-if="!mobile">
+                      <a :href="storeWebsite" v-if="storeWebsite != null">
+                        <img
+                          v-if="storeLogo"
+                          class="store-logo"
+                          :src="storeLogo"
+                          alt="Company Logo"
+                        />
+                      </a>
                       <img
-                        v-if="storeLogo"
+                        v-if="storeLogo && storeWebsite === null"
                         class="store-logo"
                         :src="storeLogo"
                         alt="Company Logo"
@@ -1160,6 +1168,17 @@ export default {
       minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal"
     }),
+    storeWebsite() {
+      if (!this.storeSettings.website) {
+        return null;
+      } else {
+        let website = this.storeSettings.website;
+        if (!website.includes("http")) {
+          website = "http://" + website;
+        }
+        return website;
+      }
+    },
     mobile() {
       if (window.innerWidth < 500) return true;
       else return false;

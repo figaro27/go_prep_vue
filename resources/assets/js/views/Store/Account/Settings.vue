@@ -605,8 +605,26 @@
                 />
               </p>
               <swatches v-model="color"></swatches>
-              <b-button type="submit" variant="primary mt-2">Save</b-button>
             </b-form-group>
+            <b-form-group :state="true">
+              <p>
+                <span class="mr-1">Main Website URL</span>
+                <img
+                  v-b-popover.hover="
+                    'Optionally link up your main website to your menu and checkout page. If your customer clicks your logo they will be redirected back to your main website.'
+                  "
+                  title="Main Website URL"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+              <b-form-input
+                id="website"
+                v-model="storeSettings.website"
+                placeholder="Example: http://goprep.com"
+              ></b-form-input>
+            </b-form-group>
+            <b-button type="submit" variant="primary mt-2">Save</b-button>
           </b-form>
         </div>
       </div>
