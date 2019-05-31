@@ -1,21 +1,36 @@
 <template>
   <div class="app customer">
     <b-navbar toggleable="lg" class="app-header" fixed>
-      <b-link class="navbar-brand" :to="storeWebsite">
+      <div class="navbar-brand">
+        <a :href="storeWebsite" v-if="storeWebsite != null">
+          <img
+            class="navbar-brand-full"
+            :src="topLogo"
+            height="70"
+            v-if="mobile"
+          />
+          <img
+            class="navbar-brand-minimized"
+            :src="topLogo"
+            width="40"
+            height="40"
+            v-if="mobile"
+          />
+        </a>
         <img
           class="navbar-brand-full"
           :src="topLogo"
           height="70"
-          v-if="mobile"
+          v-if="mobile && storeWebsite === null"
         />
         <img
           class="navbar-brand-minimized"
           :src="topLogo"
           width="40"
           height="40"
-          v-if="mobile"
+          v-if="mobile && storeWebsite === null"
         />
-      </b-link>
+      </div>
       <b-navbar-toggle target="nav_collapse" class="mr-auto ml-2" />
       <b-btn
         class="mr-2 d-lg-none"
