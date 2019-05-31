@@ -16,16 +16,16 @@ export default {
       }
 
       if (
-        (!mealPackage &&
-          (meal.components.length &&
-            _.maxBy(meal.components, "minimum") &&
-            _.find(meal.components, component => {
-              return _.find(component.options, { meal_size_id: sizeId });
-            }) &&
-            !components)) ||
-        (meal.addons.length &&
-          _.find(meal.addons, { meal_size_id: sizeId }) &&
-          !addons)
+        !mealPackage &&
+        ((meal.components.length &&
+          _.maxBy(meal.components, "minimum") &&
+          _.find(meal.components, component => {
+            return _.find(component.options, { meal_size_id: sizeId });
+          }) &&
+          !components) ||
+          (meal.addons.length &&
+            _.find(meal.addons, { meal_size_id: sizeId }) &&
+            !addons))
       ) {
         if (this.mealModal && this.hideMealModal) {
           await this.hideMealModal();
