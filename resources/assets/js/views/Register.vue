@@ -148,6 +148,19 @@
 
               <b-form-group
                 horizontal
+                label="Country"
+                :state="state(1, 'country')"
+              >
+                <b-select
+                  label="name"
+                  :options="countryNames"
+                  v-model="form[1].country"
+                  class="w-100"
+                ></b-select>
+              </b-form-group>
+
+              <b-form-group
+                horizontal
                 label="Address"
                 :state="state(1, 'address')"
               >
@@ -182,6 +195,7 @@
                   :options="getStateNames(form[1].country)"
                   v-model="form[1].state"
                   :on-change="val => changeState(val, 1)"
+                  class="w-100"
                 ></b-select>
               </b-form-group>
 
@@ -200,18 +214,6 @@
                   :state="state(1, 'zip')"
                   autocomplete="new-password"
                 ></b-input>
-              </b-form-group>
-
-              <b-form-group
-                horizontal
-                label="Country"
-                :state="state(1, 'country')"
-              >
-                <b-select
-                  label="name"
-                  :options="countryNames"
-                  v-model="form[1].country"
-                ></b-select>
               </b-form-group>
 
               <b-form-group
@@ -318,12 +320,38 @@
                 </div>
               </b-form-group>
 
+              <b-form-group
+                horizontal
+                label="Currency"
+                :state="state(2, 'currency')"
+              >
+                <b-select
+                  :options="currencyOptions"
+                  v-model="form[2].currency"
+                  class="w-100"
+                ></b-select>
+              </b-form-group>
+
+              <b-form-group
+                horizontal
+                label="Country"
+                :state="state(2, 'country')"
+              >
+                <b-select
+                  label="name"
+                  :options="countryNames"
+                  v-model="form[2].country"
+                  class="w-100"
+                ></b-select>
+              </b-form-group>
+
               <b-form-group horizontal label="State" :state="state(2, 'state')">
                 <b-select
                   label="name"
                   :options="getStateNames(form[2].country)"
                   v-model="form[2].state"
                   :on-change="val => changeState(val, 2)"
+                  class="w-100"
                 ></b-select>
               </b-form-group>
 
@@ -382,18 +410,6 @@
                   :state="state(2, 'zip')"
                   autocomplete="new-password"
                 ></b-input>
-              </b-form-group>
-
-              <b-form-group
-                horizontal
-                label="Country"
-                :state="state(2, 'country')"
-              >
-                <b-select
-                  label="name"
-                  :options="countryNames"
-                  v-model="form[2].country"
-                ></b-select>
               </b-form-group>
 
               <b-form-group horizontal :state="state(2, 'accepted_tos')">
@@ -458,6 +474,7 @@ import auth from "../lib/auth";
 import TermsOfService from "./TermsOfService";
 import TermsOfAgreement from "./TermsOfAgreement";
 import countries from "../data/countries.js";
+import currencies from "../data/currencies.js";
 import states from "../data/states.js";
 
 export default {
@@ -492,6 +509,7 @@ export default {
         2: {
           store_name: null,
           domain: null,
+          currency: "USD",
           address: null,
           city: null,
           state: null,
@@ -510,6 +528,9 @@ export default {
   computed: {
     countryNames() {
       return countries.selectOptions();
+    },
+    currencyOptions() {
+      return currencies.selectOptions();
     }
   },
   validations: {

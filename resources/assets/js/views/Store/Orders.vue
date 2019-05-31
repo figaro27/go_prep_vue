@@ -116,7 +116,7 @@
             </div>
 
             <div slot="amount" slot-scope="props">
-              <div>{{ formatMoney(props.row.amount) }}</div>
+              <div>{{ formatMoney(props.row.amount, props.row.currency) }}</div>
             </div>
           </v-client-table>
         </div>

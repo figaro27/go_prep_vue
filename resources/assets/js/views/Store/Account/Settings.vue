@@ -242,14 +242,6 @@
               ></b-select>
             </b-form-group>
 
-            <b-form-group label="Currency">
-              <b-select
-                :options="currencyOptions"
-                v-model="storeSettings.currency"
-                class="w-100"
-              ></b-select>
-            </b-form-group>
-
             <b-form-group>
               <b-form-radio-group
                 v-model="storeSettings.minimumOption"

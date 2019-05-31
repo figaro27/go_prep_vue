@@ -103,7 +103,7 @@ class CheckoutController extends UserController
             $charge = \Stripe\Charge::create(
                 [
                     "amount" => round($total * 100),
-                    "currency" => "usd",
+                    "currency" => $store->settings->currency,
                     "source" => $storeSource,
                     "application_fee" => round($subtotal * $application_fee)
                 ],
@@ -124,6 +124,7 @@ class CheckoutController extends UserController
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
             $order->amount = $total;
+            $order->currency = $store->settings->currency;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
@@ -223,7 +224,7 @@ class CheckoutController extends UserController
                             $store->storeDetail->name .
                             ")"
                     ],
-                    "currency" => "usd"
+                    "currency" => $store->settings->currency
                 ],
                 ['stripe_account' => $store->settings->stripe_id]
             );
@@ -270,6 +271,7 @@ class CheckoutController extends UserController
             $userSubscription->deliveryFee = $deliveryFee;
             $userSubscription->salesTax = $salesTax;
             $userSubscription->amount = $total;
+            $userSubscription->currency = $store->settings->currency;
             $userSubscription->pickup = $request->get('pickup', 0);
             $userSubscription->interval = 'week';
             $userSubscription->delivery_day = date(
@@ -301,6 +303,7 @@ class CheckoutController extends UserController
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
             $order->amount = $total;
+            $order->currency = $store->settings->currency;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = (new Carbon($deliveryDay))->toDateString();

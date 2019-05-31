@@ -336,8 +336,6 @@ const mutations = {
 
     state.store.settings.data = settings;
     state.store.settings.expires = expires;
-
-    numeral.locale("fr");
   },
 
   storeCoupons(state, { coupons, expires }) {

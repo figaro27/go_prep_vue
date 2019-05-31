@@ -125,6 +125,7 @@ class RegisterController extends Controller
                         'unique:store_details,domain',
                         'regex:' . $this->regex['domain']
                     ],
+                    'currency' => ['required', 'in:USD,GBP,CAD'],
                     'address' => 'required',
                     'city' => 'required',
                     'state' => 'required',
@@ -206,13 +207,20 @@ class RegisterController extends Controller
                     $timezone = 'America/New_York';
             }
 
-            switch ($data['store']['country']) {
-                case 'GB':
-                    $currency = 'GBP';
-                case 'CA':
-                    $currency = 'CAD';
-                default:
-                    $currency = 'USD';
+            if (
+                isset($data['store']['currency']) &&
+                in_array($data['store']['currency'], ['USD', 'GBP', 'CAD'])
+            ) {
+                $currency = $data['store']['currency'];
+            } else {
+                switch ($data['store']['country']) {
+                    case 'GB':
+                        $currency = 'GBP';
+                    case 'CA':
+                        $currency = 'CAD';
+                    default:
+                        $currency = 'USD';
+                }
             }
 
             $storeSettings = $store->settings()->create([

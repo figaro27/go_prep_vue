@@ -132,7 +132,7 @@
               </div>
 
               <div slot="price" slot-scope="props">
-                {{ formatMoney(props.row.price) }}
+                {{ formatMoney(props.row.price, storeSettings.currency) }}
               </div>
 
               <div slot="current_orders" slot-scope="props">

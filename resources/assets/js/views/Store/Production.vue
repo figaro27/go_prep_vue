@@ -121,7 +121,8 @@ export default {
       upcomingOrders: "storeUpcomingOrders",
       // orders: "storeOrders",
       isLoading: "isLoading",
-      nextDeliveryDates: "storeNextDeliveryDates"
+      nextDeliveryDates: "storeNextDeliveryDates",
+      storeSettings: "storeSettings"
     }),
     tableData() {
       let filters = { ...this.filters };
