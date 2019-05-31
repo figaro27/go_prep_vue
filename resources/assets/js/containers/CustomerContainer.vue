@@ -2,18 +2,33 @@
   <div class="app customer">
     <b-navbar toggleable="lg" class="app-header" fixed>
       <b-link class="navbar-brand" to="#">
+        <a :href="storeWebsite" v-if="storeWebsite != null">
+          <img
+            class="navbar-brand-full"
+            :src="topLogo"
+            height="70"
+            v-if="mobile"
+          />
+          <img
+            class="navbar-brand-minimized"
+            :src="topLogo"
+            width="40"
+            height="40"
+            v-if="mobile"
+          />
+        </a>
         <img
           class="navbar-brand-full"
           :src="topLogo"
           height="70"
-          v-if="mobile"
+          v-if="mobile && storeWebsite === null"
         />
         <img
           class="navbar-brand-minimized"
           :src="topLogo"
           width="40"
           height="40"
-          v-if="mobile"
+          v-if="mobile && storeWebsite === null"
         />
       </b-link>
       <b-navbar-toggle target="nav_collapse" class="mr-auto ml-2" />
@@ -146,8 +161,23 @@ export default {
   computed: {
     ...mapGetters(["initialized", "viewedStore", "loggedIn", "isLoading"]),
     ...mapGetters({
-      storeLogo: "viewedStoreLogo"
+      storeLogo: "viewedStoreLogo",
+      store: "viewedStore"
     }),
+    storeSettings() {
+      return this.store.settings;
+    },
+    storeWebsite() {
+      if (!this.storeSettings.website) {
+        return null;
+      } else {
+        let website = this.storeSettings.website;
+        if (!website.includes("http")) {
+          website = "http://" + website;
+        }
+        return website;
+      }
+    },
     name() {
       return this.$route.name;
     },
