@@ -52,7 +52,8 @@
 
                 <span slot="beforeLimit">
                   <div class="mr-2">
-                    Total meal price: {{ format.money(mealPriceTotal) }}
+                    Total meal price:
+                    {{ format.money(mealPriceTotal, storeSettings.currency) }}
                   </div>
                 </span>
 

@@ -135,24 +135,32 @@
             <p>{{ moment(order.created_at).format("dddd, MMM Do") }}</p>
           </div>
           <div class="col-md-4 pt-4">
-            <p>Subtotal: {{ format.money(order.preFeePreDiscount) }}</p>
+            <p>
+              Subtotal:
+              {{ format.money(order.preFeePreDiscount, order.currency) }}
+            </p>
             <p class="text-success" v-if="order.couponReduction > 0">
               Coupon {{ order.couponCode }}: ({{
-                format.money(order.couponReduction)
+                format.money(order.couponReduction, order.currency)
               }})
             </p>
             <p v-if="order.mealPlanDiscount > 0" class="text-success">
-              Meal Plan Discount: ({{ format.money(order.mealPlanDiscount) }})
+              Meal Plan Discount: ({{
+                format.money(order.mealPlanDiscount, order.currency)
+              }})
             </p>
             <p v-if="order.deliveryFee > 0">
-              Delivery Fee: {{ format.money(order.deliveryFee) }}
+              Delivery Fee:
+              {{ format.money(order.deliveryFee, order.currency) }}
             </p>
             <p v-if="order.processingFee > 0">
               Processing Fee:
-              {{ format.money(order.processingFee) }}
+              {{ format.money(order.processingFee, order.currency) }}
             </p>
-            <p>Sales Tax: {{ format.money(order.salesTax) }}</p>
-            <p class="strong">Total: {{ format.money(order.amount) }}</p>
+            <p>Sales Tax: {{ format.money(order.salesTax, order.currency) }}</p>
+            <p class="strong">
+              Total: {{ format.money(order.amount, order.currency) }}
+            </p>
           </div>
         </div>
 
@@ -237,7 +245,7 @@
                   <div class="col-md-7 pt-3 nopadding pl-0 ml-0">
                     <p v-html="meal.title"></p>
                     <p class="strong">
-                      {{ format.money(meal.subtotal) }}
+                      {{ format.money(meal.subtotal, order.currency) }}
                     </p>
                   </div>
                 </div>
@@ -426,8 +434,8 @@ export default {
           image: meal.image,
           title: title,
           quantity: item.quantity,
-          unit_price: format.money(item.unit_price),
-          subtotal: format.money(item.price)
+          unit_price: format.money(item.unit_price, order.currency),
+          subtotal: format.money(item.price, order.currency)
         };
       });
 

@@ -102,14 +102,22 @@
                       <h4>Amount</h4>
                       <p>
                         Subtotal:
-                        {{ format.money(subscription.preFeePreDiscount) }}
+                        {{
+                          format.money(
+                            subscription.preFeePreDiscount,
+                            subscription.currency
+                          )
+                        }}
                       </p>
                       <p
                         class="text-success"
                         v-if="subscription.couponReduction > 0"
                       >
                         Coupon {{ subscription.couponCode }}: ({{
-                          format.money(subscription.couponReduction)
+                          format.money(
+                            subscription.couponReduction,
+                            subscription.currency
+                          )
                         }})
                       </p>
                       <p
@@ -117,22 +125,43 @@
                         class="text-success"
                       >
                         Meal Plan Discount: ({{
-                          format.money(subscription.mealPlanDiscount)
+                          format.money(
+                            subscription.mealPlanDiscount,
+                            subscription.currency
+                          )
                         }})
                       </p>
                       <p v-if="subscription.deliveryFee > 0">
                         Delivery Fee:
-                        {{ format.money(subscription.deliveryFee) }}
+                        {{
+                          format.money(
+                            subscription.deliveryFee,
+                            subscription.currency
+                          )
+                        }}
                       </p>
                       <p v-if="subscription.processingFee > 0">
                         Processing Fee:
                         {{ format.money(subscription.processingFee) }}
                       </p>
                       <p>
-                        Sales Tax: {{ format.money(subscription.salesTax) }}
+                        Sales Tax:
+                        {{
+                          format.money(
+                            subscription.salesTax,
+                            subscription.currency
+                          )
+                        }}
                       </p>
                       <p class="strong">
-                        Total: {{ format.money(subscription.amount) }} per week.
+                        Total:
+                        {{
+                          format.money(
+                            subscription.amount,
+                            subscription.currency
+                          )
+                        }}
+                        per week.
                       </p>
                       <b-btn
                         variant="warning"
@@ -207,14 +236,22 @@
                       <template slot="FOOT_subtotal" slot-scope="row">
                         <p>
                           Subtotal:
-                          {{ format.money(subscription.preFeePreDiscount) }}
+                          {{
+                            format.money(
+                              subscription.preFeePreDiscount,
+                              subscription.currency
+                            )
+                          }}
                         </p>
                         <p
                           class="text-success"
                           v-if="subscription.couponReduction > 0"
                         >
                           Coupon {{ subscription.couponCode }}: ({{
-                            format.money(subscription.couponReduction)
+                            format.money(
+                              subscription.couponReduction,
+                              subscription.currency
+                            )
                           }})
                         </p>
                         <p
@@ -222,22 +259,47 @@
                           class="text-success"
                         >
                           Meal Plan Discount: ({{
-                            format.money(subscription.mealPlanDiscount)
+                            format.money(
+                              subscription.mealPlanDiscount,
+                              subscription.currency
+                            )
                           }})
                         </p>
                         <p v-if="subscription.deliveryFee > 0">
                           Delivery Fee:
-                          {{ format.money(subscription.deliveryFee) }}
+                          {{
+                            format.money(
+                              subscription.deliveryFee,
+                              subscription.currency
+                            )
+                          }}
                         </p>
                         <p v-if="subscription.processingFee > 0">
                           Processing Fee:
-                          {{ format.money(subscription.processingFee) }}
+                          {{
+                            format.money(
+                              subscription.processingFee,
+                              subscription.currency
+                            )
+                          }}
                         </p>
                         <p>
-                          Sales Tax: {{ format.money(subscription.salesTax) }}
+                          Sales Tax:
+                          {{
+                            format.money(
+                              subscription.salesTax,
+                              subscription.currency
+                            )
+                          }}
                         </p>
                         <p class="strong">
-                          Total: {{ format.money(subscription.amount) }}
+                          Total:
+                          {{
+                            format.money(
+                              subscription.amount,
+                              subscription.currency
+                            )
+                          }}
                         </p>
                       </template>
                     </b-table>
@@ -312,8 +374,8 @@ export default {
           image: meal.image.url_thumb,
           meal: title,
           quantity: item.quantity,
-          unit_price: format.money(item.unit_price),
-          subtotal: format.money(item.price)
+          unit_price: format.money(item.unit_price, subscription.currency),
+          subtotal: format.money(item.price, subscription.currency)
         };
       });
 

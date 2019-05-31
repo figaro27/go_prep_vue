@@ -242,6 +242,14 @@
               ></b-select>
             </b-form-group>
 
+            <b-form-group label="Currency">
+              <b-select
+                :options="currencyOptions"
+                v-model="storeSettings.currency"
+                class="w-100"
+              ></b-select>
+            </b-form-group>
+
             <b-form-group>
               <b-form-radio-group
                 v-model="storeSettings.minimumOption"
@@ -940,6 +948,7 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
 import timezones from "../../../data/timezones.js";
+import currencies from "../../../data/currencies.js";
 import Swatches from "vue-swatches";
 import "vue-swatches/dist/vue-swatches.min.css";
 import fs from "../../../lib/fs.js";
@@ -1064,6 +1073,9 @@ export default {
     },
     timezoneOptions() {
       return timezones.selectOptions();
+    },
+    currencyOptions() {
+      return currencies.selectOptions();
     },
     canOpen() {
       return (

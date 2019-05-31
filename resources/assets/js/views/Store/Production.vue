@@ -32,11 +32,11 @@
             <div slot="title" slot-scope="props" v-html="props.row.title"></div>
 
             <div slot="price" slot-scope="props">
-              {{ format.money(props.row.price) }}
+              {{ format.money(props.row.price, storeSettings.currency) }}
             </div>
 
             <div slot="total" slot-scope="props">
-              {{ format.money(props.row.total) }}
+              {{ format.money(props.row.total, storeSettings.currency) }}
             </div>
 
             <span slot="beforeLimit">

@@ -177,11 +177,12 @@
               </b-form-group>
 
               <b-form-group horizontal label="State" :state="state(1, 'state')">
-                <v-select
+                <b-select
                   label="name"
                   :options="getStateNames(form[1].country)"
+                  v-model="form[1].state"
                   :on-change="val => changeState(val, 1)"
-                ></v-select>
+                ></b-select>
               </b-form-group>
 
               <b-form-group
@@ -206,11 +207,11 @@
                 label="Country"
                 :state="state(1, 'country')"
               >
-                <v-select
+                <b-select
                   label="name"
                   :options="countryNames"
-                  :on-change="val => changeCountry(val, 1)"
-                ></v-select>
+                  v-model="form[1].country"
+                ></b-select>
               </b-form-group>
 
               <b-form-group
@@ -317,6 +318,15 @@
                 </div>
               </b-form-group>
 
+              <b-form-group horizontal label="State" :state="state(2, 'state')">
+                <b-select
+                  label="name"
+                  :options="getStateNames(form[2].country)"
+                  v-model="form[2].state"
+                  :on-change="val => changeState(val, 2)"
+                ></b-select>
+              </b-form-group>
+
               <b-form-group
                 horizontal
                 label="Address"
@@ -355,14 +365,6 @@
                 ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="State" :state="state(2, 'state')">
-                <v-select
-                  label="name"
-                  :options="getStateNames(form[2].country)"
-                  :on-change="val => changeState(val, 2)"
-                ></v-select>
-              </b-form-group>
-
               <b-form-group
                 horizontal
                 label="Postal Code"
@@ -387,11 +389,11 @@
                 label="Country"
                 :state="state(2, 'country')"
               >
-                <v-select
+                <b-select
                   label="name"
                   :options="countryNames"
-                  :on-change="val => changeCountry(val, 2)"
-                ></v-select>
+                  v-model="form[2].country"
+                ></b-select>
               </b-form-group>
 
               <b-form-group horizontal :state="state(2, 'accepted_tos')">
@@ -455,6 +457,7 @@ import validators from "../validators";
 import auth from "../lib/auth";
 import TermsOfService from "./TermsOfService";
 import TermsOfAgreement from "./TermsOfAgreement";
+import countries from "../data/countries.js";
 import states from "../data/states.js";
 
 export default {
@@ -504,7 +507,11 @@ export default {
       }
     };
   },
-  computed: {},
+  computed: {
+    countryNames() {
+      return countries.selectOptions();
+    }
+  },
   validations: {
     form: {
       0: {
@@ -548,7 +555,7 @@ export default {
   methods: {
     ...mapActions(["init", "setToken"]),
     getStateNames(country = "US") {
-      return states.stateNames(country);
+      return states.selectOptions(country);
     },
     state(step, key) {
       if (
@@ -677,8 +684,8 @@ export default {
     changeState(state, formNumber) {
       this.form[formNumber].state = state.abbreviation;
     },
-    changeCountry(state, formNumber) {
-      this.form[formNumber].country = country.abbreviation;
+    changeCountry(country, formNumber) {
+      this.form[formNumber].country = country;
     }
   }
 };

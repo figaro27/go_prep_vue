@@ -462,7 +462,9 @@
               />
               <div class="flex-grow-1 mr-2">
                 <p>{{ meal.title }}</p>
-                <p class="strong">{{ format.money(meal.price) }}</p>
+                <p class="strong">
+                  {{ format.money(meal.price, storeSettings.currency) }}
+                </p>
               </div>
               <b-btn variant="warning">Select</b-btn>
             </div>

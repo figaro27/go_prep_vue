@@ -165,7 +165,7 @@ class RegisterController extends Controller
             'city' => $data['user_details']['city'],
             'state' => $data['user_details']['state'],
             'zip' => $data['user_details']['zip'],
-            'country' => 'USA',
+            'country' => $data['user_details']['country'],
             'delivery' => isset($data['user_details']['delivery'])
                 ? $data['user_details']['delivery']
                 : '',
@@ -193,13 +193,31 @@ class RegisterController extends Controller
                 'city' => $data['store']['city'],
                 'state' => $data['store']['state'],
                 'zip' => $data['store']['zip'],
+                'country' => $data['store']['country'],
                 'logo' => '',
                 'domain' => $data['store']['domain'],
                 'created_at' => now()
             ]);
 
+            switch ($data['store']['country']) {
+                case 'GB':
+                    $timezone = 'Europe/London';
+                default:
+                    $timezone = 'America/New_York';
+            }
+
+            switch ($data['store']['country']) {
+                case 'GB':
+                    $currency = 'GBP';
+                case 'CA':
+                    $currency = 'CAD';
+                default:
+                    $currency = 'USD';
+            }
+
             $storeSettings = $store->settings()->create([
-                'timezone' => 'America/New_York',
+                'timezone' => $timezone,
+                'currency' => $currency,
                 'open' => 0,
                 'notifications' => [],
                 'transferType' => 'delivery',

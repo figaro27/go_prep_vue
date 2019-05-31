@@ -124,7 +124,9 @@
               class="mt-3"
               v-if="minOption === 'price' && totalBagPrice < minPrice"
             >
-              Please add {{ format.money(remainingPrice) }} more to continue.
+              Please add
+              {{ format.money(remainingPrice, storeSettings.currency) }} more to
+              continue.
             </p>
             <div>
               <router-link to="/customer/menu">
@@ -172,7 +174,7 @@
                       >
                         Create a meal plan and you'll save
                         <span class="text-success standout">{{
-                          format.money(mealPlanDiscount)
+                          format.money(mealPlanDiscount, storeSettings.currency)
                         }}</span>
                         on each order.
                         <c-switch
@@ -200,7 +202,7 @@
                     <strong>Subtotal:</strong>
                   </div>
                   <div class="col-6 col-md-3 offset-md-5">
-                    {{ format.money(subtotal) }}
+                    {{ format.money(subtotal, storeSettings.currency) }}
                   </div>
                 </div>
               </li>
@@ -211,7 +213,9 @@
                   </div>
                   <div class="col-6 col-md-3 offset-md-5">
                     <span class="text-success"
-                      >({{ format.money(couponReduction) }})</span
+                      >({{
+                        format.money(couponReduction, storeSettings.currency)
+                      }})</span
                     >
                   </div>
                 </div>
@@ -225,7 +229,9 @@
                     <strong>Meal Plan Discount:</strong>
                   </div>
                   <div class="col-6 col-md-3 offset-md-5 text-success">
-                    ({{ format.money(mealPlanDiscount) }})
+                    ({{
+                      format.money(mealPlanDiscount, storeSettings.currency)
+                    }})
                   </div>
                 </div>
               </li>
@@ -238,7 +244,9 @@
                     <strong>Delivery Fee:</strong>
                   </div>
                   <div class="col-6 col-md-3 offset-md-5">
-                    {{ format.money(deliveryFeeAmount) }}
+                    {{
+                      format.money(deliveryFeeAmount, storeSettings.currency)
+                    }}
                   </div>
                 </div>
               </li>
@@ -248,7 +256,12 @@
                     <strong>Processing Fee:</strong>
                   </div>
                   <div class="col-6 col-md-3 offset-md-5">
-                    {{ format.money(storeSettings.processingFee) }}
+                    {{
+                      format.money(
+                        storeSettings.processingFee,
+                        storeSettings.currency
+                      )
+                    }}
                   </div>
                 </div>
               </li>
@@ -259,7 +272,7 @@
                     <strong>Sales Tax:</strong>
                   </div>
                   <div class="col-6 col-md-3 offset-md-5">
-                    {{ format.money(tax) }}
+                    {{ format.money(tax, storeSettings.currency) }}
                   </div>
                 </div>
               </li>
@@ -270,7 +283,9 @@
                     <strong>Total</strong>
                   </div>
                   <div class="col-6 col-md-3 offset-md-5">
-                    <strong>{{ format.money(grandTotal) }}</strong>
+                    <strong>{{
+                      format.money(grandTotal, storeSettings.currency)
+                    }}</strong>
                   </div>
                 </div>
               </li>
@@ -379,8 +394,11 @@
                 "
               >
                 <p>
-                  Please add {{ format.money(remainingPrice) }} more to
-                  continue.
+                  Please add
+                  {{
+                    format.money(remainingPrice, storeSettings.currency)
+                  }}
+                  more to continue.
                 </p>
               </li>
 

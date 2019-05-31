@@ -6,6 +6,7 @@ import router from "./routes";
 import auth from "./lib/auth";
 import uuid from "uuid";
 import CryptoJS from "crypto-js";
+import numeral from "numeral";
 
 const Cookies = require("js-cookie");
 
@@ -335,6 +336,8 @@ const mutations = {
 
     state.store.settings.data = settings;
     state.store.settings.expires = expires;
+
+    numeral.locale("fr");
   },
 
   storeCoupons(state, { coupons, expires }) {

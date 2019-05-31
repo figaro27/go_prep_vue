@@ -23,7 +23,8 @@ class StoreSetting extends Model
         'delivery_days',
         'view_delivery_days',
         'open',
-        'meal_packages'
+        'meal_packages',
+        'currency'
     ];
 
     /**

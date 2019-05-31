@@ -26,6 +26,20 @@ class AddInternationalFieldsToStoreTables extends Migration
                 ->default('USD')
                 ->after('timezone');
         });
+
+        Schema::table('orders', function (Blueprint $table) {
+            $table
+                ->string('currency', 3)
+                ->default('USD')
+                ->after('amount');
+        });
+
+        Schema::table('subscriptions', function (Blueprint $table) {
+            $table
+                ->string('currency', 3)
+                ->default('USD')
+                ->after('amount');
+        });
     }
 
     /**

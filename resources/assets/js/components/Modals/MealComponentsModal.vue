@@ -179,7 +179,10 @@ export default {
       return _.map(options, option => {
         return {
           value: option.id,
-          text: `${option.title} - ${format.money(option.price)}`
+          text: `${option.title} - ${format.money(
+            option.price,
+            storeSettings.currency
+          )}`
         };
       });
     },
@@ -190,7 +193,10 @@ export default {
       return _.map(addons, addon => {
         return {
           value: addon.id,
-          text: `${addon.title} - ${format.money(addon.price)}`
+          text: `${addon.title} - ${format.money(
+            addon.price,
+            storeSettings.currency
+          )}`
         };
       });
     },

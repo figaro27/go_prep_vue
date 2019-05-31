@@ -2,6 +2,12 @@ let states = {
   stateNames(country = "US") {
     return states[country].values;
   },
+  selectOptions(country = "US") {
+    return Object.keys(states[country].values).map(key => {
+      let state = states[country].values[key].name;
+      return { value: state, text: state, name: state };
+    });
+  },
   CA: {
     values: [
       {
