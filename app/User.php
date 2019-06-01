@@ -365,7 +365,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function hasCustomer()
     {
-        return !!$this->stripe_id || $this->has('customers');
+        return !!$this->stripe_id; // || $this->has('customers');
     }
 
     public function createCard($token)

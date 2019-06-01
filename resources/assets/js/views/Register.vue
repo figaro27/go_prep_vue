@@ -320,7 +320,7 @@
                 </div>
               </b-form-group>
 
-              <b-form-group
+              <!--b-form-group
                 horizontal
                 label="Currency"
                 :state="state(2, 'currency')"
@@ -330,7 +330,7 @@
                   v-model="form[2].currency"
                   class="w-100"
                 ></b-select>
-              </b-form-group>
+              </b-form-group-->
 
               <b-form-group
                 horizontal
@@ -509,7 +509,7 @@ export default {
         2: {
           store_name: null,
           domain: null,
-          currency: "USD",
+          //currency: "USD",
           address: null,
           city: null,
           state: null,

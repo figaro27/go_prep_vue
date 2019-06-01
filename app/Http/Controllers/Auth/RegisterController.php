@@ -125,7 +125,7 @@ class RegisterController extends Controller
                         'unique:store_details,domain',
                         'regex:' . $this->regex['domain']
                     ],
-                    'currency' => ['required', 'in:USD,GBP,CAD'],
+                    //'currency' => ['required', 'in:USD,GBP,CAD'],
                     'address' => 'required',
                     'city' => 'required',
                     'state' => 'required',
@@ -203,6 +203,7 @@ class RegisterController extends Controller
             switch ($data['store']['country']) {
                 case 'GB':
                     $timezone = 'Europe/London';
+                    break;
                 default:
                     $timezone = 'America/New_York';
             }
@@ -216,8 +217,10 @@ class RegisterController extends Controller
                 switch ($data['store']['country']) {
                     case 'GB':
                         $currency = 'GBP';
+                        break;
                     case 'CA':
                         $currency = 'CAD';
+                        break;
                     default:
                         $currency = 'USD';
                 }
