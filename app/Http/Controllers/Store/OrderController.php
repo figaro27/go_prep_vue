@@ -32,7 +32,7 @@ class OrderController extends StoreController
                 ->orders()
                 ->with(['user', 'pickup_location'])
                 ->where(['paid' => 1])
-                ->where('delivery_date', '>=', Carbon::now())
+                ->where('delivery_date', '>=', Carbon::now()->subDays(1))
                 ->get()
             : [];
     }
