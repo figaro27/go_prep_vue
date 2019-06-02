@@ -248,7 +248,8 @@ class Store extends Model
                         $ingredients[$key] = [
                             'id' => $ingredient->id,
                             'ingredient' => $ingredient,
-                            'quantity' => $quantity_base
+                            'quantity' => $quantity_base,
+                            'adjuster' => $adjuster
                         ];
                     } else {
                         $ingredients[$key]['quantity'] += $quantity_base;
@@ -270,7 +271,8 @@ class Store extends Model
                             $ingredients[$key] = [
                                 'id' => $ingredient->id,
                                 'ingredient' => $ingredient,
-                                'quantity' => $quantity_base
+                                'quantity' => $quantity_base,
+                                'adjuster' => $adjuster
                             ];
                         } else {
                             $ingredients[$key]['quantity'] += $quantity_base;
@@ -293,7 +295,8 @@ class Store extends Model
                             $ingredients[$key] = [
                                 'id' => $ingredient->id,
                                 'ingredient' => $ingredient,
-                                'quantity' => $quantity_base
+                                'quantity' => $quantity_base,
+                                'adjuster' => $adjuster
                             ];
                         } else {
                             $ingredients[$key]['quantity'] += $quantity_base;

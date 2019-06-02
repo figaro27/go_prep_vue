@@ -110,6 +110,10 @@ foreach (
                                 'ingredients',
                                 'IngredientController'
                             );
+                            Route::post(
+                                'ingredients/adjust',
+                                'IngredientController@adjust'
+                            );
                             Route::resource('orders', 'OrderController');
                             Route::post('getOrders', 'OrderController@index');
                             Route::post(
