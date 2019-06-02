@@ -144,7 +144,7 @@
                         Processing Fee:
                         {{ format.money(subscription.processingFee) }}
                       </p>
-                      <p>
+                      <p v-if="subscription.salesTax > 0">
                         Sales Tax:
                         {{
                           format.money(

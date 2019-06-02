@@ -266,7 +266,7 @@
                 </div>
               </li>
 
-              <li class="checkout-item">
+              <li class="checkout-item" v-if="storeSettings.enableSalesTax">
                 <div class="row">
                   <div class="col-6 col-md-4">
                     <strong>Sales Tax:</strong>
@@ -395,9 +395,7 @@
               >
                 <p>
                   Please add
-                  {{
-                    format.money(remainingPrice, storeSettings.currency)
-                  }}
+                  {{ format.money(remainingPrice, storeSettings.currency) }}
                   more to continue.
                 </p>
               </li>
@@ -657,10 +655,13 @@ export default {
       return subtotal;
     },
     grandTotal() {
-      let salesTax = 1 + this.salesTax;
       let subtotal = this.afterFees;
+      let tax = 1;
 
-      return subtotal * salesTax;
+      if (this.storeSettings.enableSalesTax) {
+        tax = 1 + this.salesTax;
+      }
+      return subtotal * tax;
     },
     hasCoupons() {
       if (this.coupons.length > 0) {
@@ -699,7 +700,9 @@ export default {
       );
     },
     tax() {
-      return this.salesTax * this.afterFees;
+      if (this.storeSettings.enableSalesTax)
+        return this.salesTax * this.afterFees;
+      else return 0;
     }
   },
   mounted() {

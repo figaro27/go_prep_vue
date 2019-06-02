@@ -126,7 +126,7 @@
                     {{ format.money(order.processingFee, order.currency) }}
                     <br />
                   </span>
-                  <span
+                  <span v-if="order.salesTax > 0"
                     >Sales Tax:
                     {{ format.money(order.salesTax, order.currency) }}</span
                   >
