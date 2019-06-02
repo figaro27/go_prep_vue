@@ -219,6 +219,7 @@
                     :min="0.1"
                     :max="999.99"
                     class="form-control"
+                    v-bind="{ prefix: storeCurrencySymbol }"
                     @blur.native="
                       e => updateMeal(meal.id, { price: meal.price })
                     "
@@ -668,7 +669,8 @@ export default {
       getCategoryTitle: "storeCategoryTitle",
       getAllergyTitle: "storeAllergyTitle",
       allergies: "allergies",
-      isLoading: "isLoading"
+      isLoading: "isLoading",
+      storeCurrencySymbol: "storeCurrencySymbol"
     }),
     storeURLcheck() {
       let URL = window.location.href;

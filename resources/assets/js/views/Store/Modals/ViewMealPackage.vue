@@ -37,6 +37,7 @@
                   v-model="package.price"
                   :min="0.1"
                   class="form-control"
+                  v-bind="{ prefix: storeCurrencySymbol }"
                 ></money>
               </b-form-group>
             </b-tab>
@@ -167,7 +168,8 @@ export default {
       store: "viewedStore",
       meals: "storeMeals",
       findMeal: "storeMeal",
-      isLoading: "isLoading"
+      isLoading: "isLoading",
+      storeCurrencySymbol: "storeCurrencySymbol"
     }),
     tableData() {
       return this.meals.map(meal => {

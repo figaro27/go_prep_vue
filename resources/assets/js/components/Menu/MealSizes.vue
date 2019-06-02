@@ -69,6 +69,7 @@
           :min="0.1"
           :max="999.99"
           class="form-control"
+          v-bind="{ prefix: storeCurrencySymbol }"
           @blur.native="
             e => {
               meal.sizes[props.index - 2].price = props.row.price;
@@ -96,6 +97,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   props: {
     meal: {
@@ -108,6 +111,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      storeCurrencySymbol: "storeCurrencySymbol"
+    }),
     columns() {
       let cols = ["title", "price", "multiplier"];
 
