@@ -352,12 +352,12 @@
                     </b-select>
                   </b-form-group>
                   <div v-else-if="deliveryDaysOptions.length === 1">
-                    <p v-if="pickup === 0">
+                    <h6 v-if="pickup === 0">
                       Delivery Day: {{ deliveryDaysOptions[0].text }}
-                    </p>
-                    <p v-if="pickup === 1">
+                    </h6>
+                    <h6 v-if="pickup === 1">
                       Pickup Day: {{ deliveryDaysOptions[0].text }}
-                    </p>
+                    </h6>
                   </div>
                   <div v-if="storeSettings.hasPickupLocations && pickup === 1">
                     <p>Pickup Location</p>
