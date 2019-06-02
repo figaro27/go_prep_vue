@@ -125,8 +125,8 @@ const state = {
   cards: {},
   customer: {
     data: {
-      subscriptions: [],
-      orders: []
+      subscriptions: null,
+      orders: null
     },
     expires: 0
   },
@@ -1575,9 +1575,11 @@ const getters = {
   },
 
   subscriptions: state => {
+    if (_.isNull(state.customer.data.subscriptions)) return null;
     return _.orderBy(state.customer.data.subscriptions, "id", "desc");
   },
   orders: state => {
+    if (_.isNull(state.customer.data.orders)) return null;
     return _.orderBy(state.customer.data.orders, "id", "desc");
   },
 

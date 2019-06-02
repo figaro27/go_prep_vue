@@ -1,12 +1,15 @@
 <template>
-  <customer-menu :preview="true" :subscription-id="$route.params.id"></customer-menu>
+  <customer-menu
+    :preview="true"
+    :subscription-id="$route.params.id"
+  ></customer-menu>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
 import format from "../../lib/format.js";
 import Spinner from "../../components/Spinner";
-import CustomerMenu from './Menu';
+import CustomerMenu from "./Menu";
 
 export default {
   components: {
@@ -31,8 +34,9 @@ export default {
     ...mapActions(["refreshSubscriptions"]),
     async initBag() {
       await this.refreshSubscriptions();
-      const subscription = _.find(this.subscriptions, {id: this.subscriptionId});
-      console.log(subscription);
+      const subscription = _.find(this.subscriptions, {
+        id: this.subscriptionId
+      });
     }
   }
 };

@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-md-12">
       <b-alert
-        v-if="subscriptions[0]"
+        v-if="subscriptions && subscriptions[0]"
         :show="!!$route.query.created || false"
         variant="success"
       >
@@ -21,7 +21,7 @@
       </b-alert>
 
       <b-alert
-        v-if="subscriptions[0]"
+        v-if="subscriptions && subscriptions[0]"
         :show="!!$route.query.updated || false"
         variant="success"
       >
@@ -30,14 +30,17 @@
         </p>
       </b-alert>
 
-      <b-alert :show="0 === subscriptions.length || false" variant="warning">
+      <b-alert
+        :show="null !== subscriptions && 0 === subscriptions.length"
+        variant="warning"
+      >
         <p class="center-text mt-3">You have no meal plans.</p>
       </b-alert>
 
       <div class="card">
         <div class="card-body">
           <Spinner v-if="isLoading" />
-          <div class="order-list">
+          <div class="order-list" v-if="null !== subscriptions">
             <div
               v-for="subscription in subscriptions"
               :key="subscription.id"
