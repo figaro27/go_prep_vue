@@ -234,11 +234,13 @@ class Store extends Model
                 }
 
                 foreach ($meal->ingredients as $ingredient) {
+                    $adjuster = $ingredient->adjuster / 100;
                     $quantity_unit = $ingredient->pivot->quantity_unit;
                     $quantity_base =
                         $ingredient->pivot->quantity_base *
                         $quantity *
-                        $multiplier;
+                        $multiplier *
+                        $adjuster;
 
                     $key = $ingredient->id;
 

@@ -50,6 +50,13 @@
               ></thumbnail>
             </div>
 
+            <div slot="adjuster" slot-scope="props">
+              <b-form-input
+                v-model="props.row.adjuster"
+                @change="adjustQuantity(props.row.id, props.row.adjuster)"
+              ></b-form-input>
+            </div>
+
             <div slot="actions" slot-scope="props">
               <b-select
                 v-if="props.row.unit_type !== 'unit'"
@@ -93,11 +100,12 @@ export default {
           end: null
         }
       },
-      columns: ["image", "food_name", "quantity", "actions"],
+      columns: ["image", "food_name", "adjuster", "quantity", "actions"],
       options: {
         headings: {
           image: "",
           food_name: "Ingredient",
+          adjuster: "Adjustment",
           quantity: "Quantity",
           quantity_unit: "Unit",
           actions: "Unit"
@@ -106,7 +114,8 @@ export default {
           column: "food_name",
           ascending: true
         }
-      }
+      },
+      percentages: [5, 10, 15, 20]
     };
   },
   watch: {
@@ -212,6 +221,12 @@ export default {
         .finally(() => {
           this.loading = false;
         });
+    },
+    adjustQuantity(id, adjustment) {
+      axios.patch(`/api/me/ingredients/${id}`, {
+        id: id,
+        adjustment: adjustment
+      });
     },
     async exportData(format = "csv") {
       const warning = this.checkDateRange({ ...this.filters.delivery_dates });
