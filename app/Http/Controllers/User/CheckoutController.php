@@ -45,10 +45,10 @@ class CheckoutController extends UserController
         $card = $this->user->cards()->findOrFail($cardId);
 
         $application_fee = $store->settings->application_fee;
-        $total = $bag->getTotal();
+        $total = $request->get('subtotal');
         $subtotal = $request->get('subtotal');
-        $afterDiscountBeforeFees = $bag->getTotal();
-        $preFeePreDiscount = $bag->getTotal();
+        $afterDiscountBeforeFees = $request->get('subtotal');
+        $preFeePreDiscount = $request->get('subtotal');
 
         $processingFee = 0;
         $mealPlanDiscount = 0;
