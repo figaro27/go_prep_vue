@@ -32,7 +32,6 @@ class NewOrder extends Mailable
     {
         return $this->view('email.customer.new-order')
             ->with($this->data)
-            ->subject('New Order')
-            ->replyTo($this->data->email, 'Reply Guy');
+            ->subject('New Order');
     }
 }
