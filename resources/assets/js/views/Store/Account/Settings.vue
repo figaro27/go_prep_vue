@@ -958,6 +958,7 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
 import timezones from "../../../data/timezones.js";
+import currencies from "../../../data/currencies.js";
 import Swatches from "vue-swatches";
 import "vue-swatches/dist/vue-swatches.min.css";
 import fs from "../../../lib/fs.js";
@@ -1082,6 +1083,9 @@ export default {
     },
     timezoneOptions() {
       return timezones.selectOptions();
+    },
+    currencyOptions() {
+      return currencies.selectOptions();
     },
     canOpen() {
       return (

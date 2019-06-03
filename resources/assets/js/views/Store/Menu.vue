@@ -132,7 +132,7 @@
               </div>
 
               <div slot="price" slot-scope="props">
-                {{ formatMoney(props.row.price) }}
+                {{ formatMoney(props.row.price, storeSettings.currency) }}
               </div>
 
               <div slot="current_orders" slot-scope="props">
@@ -219,6 +219,7 @@
                     :min="0.1"
                     :max="999.99"
                     class="form-control"
+                    v-bind="{ prefix: storeCurrencySymbol }"
                     @blur.native="
                       e => updateMeal(meal.id, { price: meal.price })
                     "
@@ -462,7 +463,9 @@
               />
               <div class="flex-grow-1 mr-2">
                 <p>{{ meal.title }}</p>
-                <p class="strong">{{ format.money(meal.price) }}</p>
+                <p class="strong">
+                  {{ format.money(meal.price, storeSettings.currency) }}
+                </p>
               </div>
               <b-btn variant="warning">Select</b-btn>
             </div>
@@ -666,7 +669,8 @@ export default {
       getCategoryTitle: "storeCategoryTitle",
       getAllergyTitle: "storeAllergyTitle",
       allergies: "allergies",
-      isLoading: "isLoading"
+      isLoading: "isLoading",
+      storeCurrencySymbol: "storeCurrencySymbol"
     }),
     storeURLcheck() {
       let URL = window.location.href;

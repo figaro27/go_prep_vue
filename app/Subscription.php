@@ -251,6 +251,7 @@ class Subscription extends Model
         $newOrder->processingFee = $this->processingFee;
         $newOrder->salesTax = $this->salesTax;
         $newOrder->amount = $this->amount;
+        $newOrder->currency = $this->currency;
         $newOrder->fulfilled = false;
         $newOrder->pickup = $this->pickup;
         $newOrder->delivery_date = $latestOrder->delivery_date->addWeeks(1);

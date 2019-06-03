@@ -6,6 +6,8 @@ import router from "./routes";
 import auth from "./lib/auth";
 import uuid from "uuid";
 import CryptoJS from "crypto-js";
+import numeral from "numeral";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 const Cookies = require("js-cookie");
 
@@ -1573,7 +1575,11 @@ const getters = {
       return [];
     }
   },
-
+  storeCurrencySymbol: state => {
+    let currency = state.store.settings.data.currency;
+    let symbol = getSymbolFromCurrency(currency);
+    return symbol;
+  },
   subscriptions: state => {
     return _.orderBy(state.customer.data.subscriptions, "id", "desc");
   },

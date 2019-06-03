@@ -101,42 +101,58 @@
                 </div>
                 <div class="col-md-4">
                   <span
-                    >Subtotal: {{ format.money(order.preFeePreDiscount) }}</span
+                    >Subtotal:
+                    {{
+                      format.money(order.preFeePreDiscount, order.currency)
+                    }}</span
                   >
                   <br />
                   <span v-if="order.mealPlanDiscount > 0">
                     Meal Plan Discount:
                     <span class="text-success"
-                      >({{ format.money(order.mealPlanDiscount) }})</span
+                      >({{
+                        format.money(order.mealPlanDiscount, order.currency)
+                      }})</span
                     >
                     <br />
                   </span>
                   <span v-if="order.deliveryFee > 0">
-                    Delivery Fee: {{ format.money(order.deliveryFee) }}
+                    Delivery Fee:
+                    {{ format.money(order.deliveryFee, order.currency) }}
                     <br />
                   </span>
                   <span v-if="order.processingFee > 0">
                     Processing Fee:
-                    {{ format.money(order.processingFee) }}
+                    {{ format.money(order.processingFee, order.currency) }}
                     <br />
                   </span>
-                  <span>Sales Tax: {{ format.money(order.salesTax) }}</span>
+                  <span v-if="order.salesTax > 0"
+                    >Sales Tax:
+                    {{ format.money(order.salesTax, order.currency) }}</span
+                  >
                   <br />
                   <span>
                     <strong>
                       <span v-if="order.couponReduction === null"
-                        >Total: {{ format.money(order.amount) }}</span
+                        >Total:
+                        {{ format.money(order.amount, order.currency) }}</span
                       >
                     </strong>
                     <div v-if="order.couponReduction > 0">
-                      Pre-Coupon Total: {{ format.money(order.pre_coupon) }}
+                      Pre-Coupon Total:
+                      {{ format.money(order.pre_coupon, order.currency) }}
                       <br />
                       <span class="text-success">
                         (Coupon {{ order.couponCode }}:
-                        {{ format.money(order.couponReduction) }})
+                        {{
+                          format.money(order.couponReduction, order.currency)
+                        }})
                       </span>
                       <br />
-                      <strong>Total: {{ format.money(order.amount) }}</strong>
+                      <strong
+                        >Total:
+                        {{ format.money(order.amount, order.currency) }}</strong
+                      >
                     </div>
                   </span>
                 </div>
@@ -169,7 +185,7 @@
                       </div>
                       <div class="col-md-7 pt-3 nopadding">
                         <p v-html="meal.title"></p>
-                        <p>{{ format.money(meal.subtotal) }}</p>
+                        <p>{{ format.money(meal.subtotal, order.currency) }}</p>
                       </div>
                     </div>
                   </li>
@@ -328,8 +344,8 @@ export default {
           image: meal.image.url_thumb,
           title: title,
           quantity: item.quantity,
-          unit_price: format.money(item.unit_price),
-          subtotal: format.money(item.price)
+          unit_price: format.money(item.unit_price, order.currency),
+          subtotal: format.money(item.price, order.currency)
         };
       });
 

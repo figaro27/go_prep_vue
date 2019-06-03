@@ -206,7 +206,9 @@
 
                     <div class="row mt-2" v-if="storeSettings.showNutrition">
                       <div class="col-lg-5 mt-3">
-                        <h5>{{ format.money(meal.price) }}</h5>
+                        <h5>
+                          {{ format.money(meal.price, storeSettings.currency) }}
+                        </h5>
                       </div>
                       <div class="col-lg-5">
                         <b-btn
@@ -219,7 +221,12 @@
                           <span slot="button-content">+ ADD</span>
                           <b-dropdown-item @click="addOne(meal)">
                             {{ meal.default_size_title }} -
-                            {{ format.money(meal.item_price) }}
+                            {{
+                              format.money(
+                                meal.item_price,
+                                storeSettings.currency
+                              )
+                            }}
                           </b-dropdown-item>
                           <b-dropdown-item
                             v-for="size in meal.sizes"
@@ -227,7 +234,9 @@
                             @click="addOne(meal, false, size)"
                           >
                             {{ size.title }} -
-                            {{ format.money(size.price) }}
+                            {{
+                              format.money(size.price, storeSettings.currency)
+                            }}
                           </b-dropdown-item>
                         </b-dropdown>
                       </div>
@@ -260,7 +269,9 @@
                     </div>
                     <div class="row mt-5" v-if="storeSettings.showNutrition">
                       <div class="col-lg-8">
-                        <h5>{{ format.money(meal.price) }}</h5>
+                        <h5>
+                          {{ format.money(meal.price, storeSettings.currency) }}
+                        </h5>
                       </div>
                       <div class="col-lg-4">
                         <b-btn @click="addOne(meal)" class="menu-bag-btn"
@@ -270,7 +281,9 @@
                     </div>
                     <div class="row mt-5" v-if="!storeSettings.showNutrition">
                       <div class="col-lg-6">
-                        <h5>{{ format.money(meal.price) }}</h5>
+                        <h5>
+                          {{ format.money(meal.price, storeSettings.currency) }}
+                        </h5>
                       </div>
                       <div class="col-lg-6">
                         <b-btn
@@ -283,7 +296,12 @@
                           <span slot="button-content">+ ADD</span>
                           <b-dropdown-item @click="addOne(meal)">
                             {{ meal.default_size_title }} -
-                            {{ format.money(meal.item_price) }}
+                            {{
+                              format.money(
+                                meal.item_price,
+                                storeSettings.currency
+                              )
+                            }}
                           </b-dropdown-item>
                           <b-dropdown-item
                             v-for="size in meal.sizes"
@@ -291,7 +309,9 @@
                             @click="addOne(meal, false, size)"
                           >
                             {{ size.title }} -
-                            {{ format.money(size.price) }}
+                            {{
+                              format.money(size.price, storeSettings.currency)
+                            }}
                           </b-dropdown-item>
                         </b-dropdown>
                       </div>
@@ -344,7 +364,12 @@
 
                           <div class="modal-meal-package-price">
                             <h5 class="mt-3 mb-3">
-                              {{ format.money(mealPackage.price) }}
+                              {{
+                                format.money(
+                                  mealPackage.price,
+                                  storeSettings.currency
+                                )
+                              }}
                             </h5>
                           </div>
                           <b-btn
@@ -550,7 +575,9 @@
                             ></thumbnail>
 
                             <div class="price">
-                              {{ format.money(meal.price) }}
+                              {{
+                                format.money(meal.price, storeSettings.currency)
+                              }}
                             </div>
                           </div>
 
@@ -611,7 +638,12 @@
                                   <i slot="button-content">+</i>
                                   <b-dropdown-item @click="addOne(meal)">
                                     {{ meal.default_size_title || "Regular" }} -
-                                    {{ format.money(meal.item_price) }}
+                                    {{
+                                      format.money(
+                                        meal.item_price,
+                                        storeSettings.currency
+                                      )
+                                    }}
                                   </b-dropdown-item>
                                   <b-dropdown-item
                                     v-for="size in meal.sizes"
@@ -619,7 +651,12 @@
                                     @click="addOne(meal, false, size)"
                                   >
                                     {{ size.title }} -
-                                    {{ format.money(size.price) }}
+                                    {{
+                                      format.money(
+                                        size.price,
+                                        storeSettings.currency
+                                      )
+                                    }}
                                   </b-dropdown-item>
                                 </b-dropdown>
                               </div>
@@ -659,7 +696,7 @@
                                 <i slot="button-content">+</i>
                                 <b-dropdown-item @click="addOne(meal)">
                                   {{ meal.default_size_title || "Regular" }} -
-                                  {{ format.money(meal.item_price) }}
+                                  {{ format.money(meal.item_price, storeSettings.currency) }}
                                 </b-dropdown-item>
                                 <b-dropdown-item
                                   v-for="size in meal.sizes"
@@ -667,13 +704,13 @@
                                   @click="addOne(meal, false, size)"
                                 >
                                   {{ size.title }} -
-                                  {{ format.money(size.price) }}
+                                  {{ format.money(size.price, storeSettings.currency) }}
                                 </b-dropdown-item>
                               </b-dropdown>
 
                             </div>
                             <p class="center-text strong featured">{{ meal.title }}</p>
-                            <p class="price center-text featured">{{ format.money(meal.price) }}</p>
+                            <p class="price center-text featured">{{ format.money(meal.price, storeSettings.currency) }}</p>
                           </div>
                           <div class="col-4 col-sm-12">
 
@@ -733,7 +770,9 @@
                           {{ mealPkg.title }}
                         </p>
                         <p class="center-text featured">
-                          {{ format.money(mealPkg.price) }}
+                          {{
+                            format.money(mealPkg.price, storeSettings.currency)
+                          }}
                         </p>
                       </div>
                     </div>
@@ -846,7 +885,7 @@
 
                   <!--  <p class="align-right">
                     <strong>Subtotal:&nbsp;</strong>
-                    {{ format.money(preFeePreDiscount) }}
+                    {{ format.money(preFeePreDiscount, storeSettings.currency) }}
                   </p>
                   <div v-if="subscriptionId">
                     <p
@@ -854,7 +893,7 @@
                       v-if="storeSettings.applyMealPlanDiscount"
                     >
                       <strong>Meal Plan Discount:&nbsp;</strong>
-                      ({{ format.money(mealPlanDiscount) }})
+                      ({{ format.money(mealPlanDiscount, storeSettings.currency) }})
                     </p>
 
                     <p
@@ -862,7 +901,7 @@
                       v-if="storeSettings.applyDeliveryFee && pickup === 0"
                     >
                       <strong>Delivery Fee:&nbsp;</strong>
-                      {{ format.money(storeSettings.deliveryFee) }}
+                      {{ format.money(storeSettings.deliveryFee, storeSettings.currency) }}
                     </p>
 
                     <p
@@ -870,17 +909,17 @@
                       v-if="storeSettings.applyProcessingFee"
                     >
                       <strong>Processing Fee:&nbsp;</strong>
-                      {{ format.money(storeSettings.processingFee) }}
+                      {{ format.money(storeSettings.processingFee, storeSettings.currency) }}
                     </p>
 
                     <p class="align-right">
                       <strong>Sales Tax:&nbsp;</strong>
-                      {{ format.money(tax) }}
+                      {{ format.money(tax, storeSettings.currency) }}
                     </p>
 
                     <p class="align-right">
                       <strong>Total&nbsp;</strong>
-                      {{ format.money(afterDiscountAfterFees) }}
+                      {{ format.money(afterDiscountAfterFees, storeSettings.currency) }}
                     </p>
                   </div>-->
 
@@ -910,8 +949,11 @@
                     "
                   >
                     <p class="align-right">
-                      Please add {{ format.money(remainingPrice) }} more to
-                      continue.
+                      Please add
+                      {{
+                        format.money(remainingPrice, storeSettings.currency)
+                      }}
+                      more to continue.
                     </p>
                   </div>
                   <div
@@ -1015,27 +1057,55 @@
                         class="mt-2 center-text"
                         v-if="!addDeliveryFee && !addProcessingFee"
                       >
-                        Total: {{ format.money(totalBagPriceBeforeFees) }}
+                        Total:
+                        {{
+                          format.money(
+                            totalBagPriceBeforeFees,
+                            storeSettings.currency
+                          )
+                        }}
                       </h6>
                       <p
                         class="mt-2 center-text"
                         v-if="addDeliveryFee || addProcessingFee"
                       >
-                        Subtotal: {{ format.money(totalBagPriceBeforeFees) }}
+                        Subtotal:
+                        {{
+                          format.money(
+                            totalBagPriceBeforeFees,
+                            storeSettings.currency
+                          )
+                        }}
                       </p>
                       <p class="mt-2 center-text" v-if="addDeliveryFee">
                         Delivery Fee:
-                        {{ format.money(storeSettings.deliveryFee) }}
+                        {{
+                          format.money(
+                            storeSettings.deliveryFee,
+                            storeSettings.currency
+                          )
+                        }}
                       </p>
                       <p class="mt-2 center-text" v-if="addProcessingFee">
                         Processing Fee:
-                        {{ format.money(storeSettings.processingFee) }}
+                        {{
+                          format.money(
+                            storeSettings.processingFee,
+                            storeSettings.currency
+                          )
+                        }}
                       </p>
                       <h6
                         class="mt-2 center-text"
                         v-if="addDeliveryFee || addProcessingFee"
                       >
-                        Total: {{ format.money(totalBagPriceAfterFees) }}
+                        Total:
+                        {{
+                          format.money(
+                            totalBagPriceAfterFees,
+                            storeSettings.currency
+                          )
+                        }}
                       </h6>
                     </div>
                     <b-btn class="menu-bag-btn mt-2" @click="checkout"

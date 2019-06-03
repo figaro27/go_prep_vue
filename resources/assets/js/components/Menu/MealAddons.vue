@@ -47,6 +47,7 @@
                 :min="0.1"
                 :max="999.99"
                 class="form-control"
+                v-bind="{ prefix: storeCurrencySymbol }"
               ></money>
             </b-form-group>
           </b-col>
@@ -104,6 +105,7 @@
 
 <script>
 import IngredientPicker from "../IngredientPicker";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -120,6 +122,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      storeCurrencySymbol: "storeCurrencySymbol"
+    }),
     sizeOptions() {
       return _.concat(
         {

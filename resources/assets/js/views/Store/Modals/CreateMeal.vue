@@ -37,6 +37,7 @@
                   v-model="meal.price"
                   :min="0.1"
                   class="form-control"
+                  v-bind="{ prefix: storeCurrencySymbol }"
                 ></money>
               </b-form-group>
               <br />
@@ -261,7 +262,8 @@ export default {
       storeCategories: "storeCategories",
       getCategoryTitle: "storeCategoryTitle",
       allergies: "allergies",
-      isLoading: "isLoading"
+      isLoading: "isLoading",
+      storeCurrencySymbol: "storeCurrencySymbol"
     }),
     tagOptions() {
       return Object.values(this.tags).map(tag => {

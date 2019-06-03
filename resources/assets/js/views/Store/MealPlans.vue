@@ -71,7 +71,7 @@
             </div>
 
             <div slot="amount" slot-scope="props">
-              <div>{{ formatMoney(props.row.amount) }}</div>
+              <div>{{ formatMoney(props.row.amount, props.row.currency) }}</div>
             </div>
           </v-client-table>
         </div>
@@ -94,26 +94,51 @@
             <p>{{ moment(subscription.created_at).format("dddd, MMM Do") }}</p>
           </div>
           <div class="col-md-4">
-            <p>Subtotal: {{ format.money(subscription.preFeePreDiscount) }}</p>
+            <p>
+              Subtotal:
+              {{
+                format.money(
+                  subscription.preFeePreDiscount,
+                  subscription.currency
+                )
+              }}
+            </p>
             <p class="text-success" v-if="subscription.couponReduction > 0">
               Coupon {{ subscription.couponCode }}: ({{
-                format.money(subscription.couponReduction)
+                format.money(
+                  subscription.couponReduction,
+                  subscription.currency
+                )
               }})
             </p>
             <p v-if="subscription.mealPlanDiscount > 0" class="text-success">
               Meal Plan Discount: ({{
-                format.money(subscription.mealPlanDiscount)
+                format.money(
+                  subscription.mealPlanDiscount,
+                  subscription.currency
+                )
               }})
             </p>
             <p v-if="subscription.deliveryFee > 0">
-              Delivery Fee: {{ format.money(subscription.deliveryFee) }}
+              Delivery Fee:
+              {{
+                format.money(subscription.deliveryFee, subscription.currency)
+              }}
             </p>
             <p v-if="subscription.processingFee > 0">
               Processing Fee:
-              {{ format.money(subscription.processingFee) }}
+              {{
+                format.money(subscription.processingFee, subscription.currency)
+              }}
             </p>
-            <p>Sales Tax: {{ format.money(subscription.salesTax) }}</p>
-            <p class="strong">Total: {{ format.money(subscription.amount) }}</p>
+            <p v-if="subscription.salesTax > 0">
+              Sales Tax:
+              {{ format.money(subscription.salesTax, subscription.currency) }}
+            </p>
+            <p class="strong">
+              Total:
+              {{ format.money(subscription.amount, subscription.currency) }}
+            </p>
           </div>
         </div>
         <div class="row">
@@ -205,7 +230,7 @@
                   <div class="col-md-7 pt-3 nopadding pl-0 ml-0">
                     <p v-html="meal.title"></p>
                     <p class="strong">
-                      {{ format.money(meal.subtotal) }}
+                      {{ format.money(meal.subtotal, subscription.currency) }}
                     </p>
                   </div>
                 </div>
@@ -413,8 +438,8 @@ export default {
           image: meal.image,
           title: title,
           quantity: item.quantity,
-          unit_price: format.money(item.unit_price),
-          subtotal: format.money(item.price)
+          unit_price: format.money(item.unit_price, subscription.currency),
+          subtotal: format.money(item.price, subscription.currency)
         };
       });
 

@@ -32,6 +32,9 @@ const validators = {
     required,
     minLength: minLength(5)
   },
+  country: {
+    required
+  },
   delivery: {
     minLength: minLength(0)
   },

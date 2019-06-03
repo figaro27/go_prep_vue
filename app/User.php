@@ -96,6 +96,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne('App\UserDetail');
     }
 
+    public function customers()
+    {
+        return $this->hasMany('App\Customer');
+    }
+
     public function order()
     {
         return $this->hasMany('App\Order');
@@ -290,21 +295,26 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
-    public function hasStoreCustomer($storeId)
+    public function hasStoreCustomer($storeId, $currency = 'USD')
     {
         $customer = Customer::where([
             'user_id' => $this->id,
-            'store_id' => $storeId
+            'store_id' => $storeId,
+            'currency' => $currency
         ])->first();
         return !is_null($customer);
     }
 
-    public function getStoreCustomer($storeId, $stripe = true)
-    {
+    public function getStoreCustomer(
+        $storeId,
+        $stripe = true,
+        $currency = 'USD'
+    ) {
         $store = Store::find($storeId);
         $customer = Customer::where([
             'user_id' => $this->id,
-            'store_id' => $storeId
+            'store_id' => $storeId,
+            'currency' => $currency
         ])->first();
 
         if (!$stripe) {
@@ -319,7 +329,7 @@ class User extends Authenticatable implements JWTSubject
         return $stripeCustomer;
     }
 
-    public function createStoreCustomer($storeId)
+    public function createStoreCustomer($storeId, $currency = 'USD')
     {
         $store = Store::find($storeId);
 
@@ -335,6 +345,7 @@ class User extends Authenticatable implements JWTSubject
         $customer->user_id = $this->id;
         $customer->store_id = $storeId;
         $customer->stripe_id = $stripeCustomer->id;
+        $customer->currency = $currency;
         $customer->save();
 
         return $stripeCustomer;
@@ -354,7 +365,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function hasCustomer()
     {
-        return !!$this->stripe_id;
+        return !!$this->stripe_id; // || $this->has('customers');
     }
 
     public function createCard($token)

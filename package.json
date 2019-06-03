@@ -100,6 +100,7 @@
     "@chenfengyuan/vue-number-input": "^1.1.0",
     "PureDrawer": "https://github.com/mac81/pure-drawer",
     "crypto-js": "^3.1.9-1",
+    "currency-symbol-map": "^4.0.4",
     "intersection-observer": "^0.5.1",
     "js-cookie": "^2.2.0",
     "keyboardjs": "^2.5.1",

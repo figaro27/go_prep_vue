@@ -1,11 +1,10 @@
 import numeral from "numeral";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 export default {
-  money(val) {
-    return numeral(val).format("$0,0.00");
-  },
-  price(val) {
-    return numeral(val).format("$0,0.00");
+  money(val, currency = "USD") {
+    let symbol = getSymbolFromCurrency(currency);
+    return symbol + numeral(val).format("0,0.00");
   },
   date(val) {
     // todo: implement

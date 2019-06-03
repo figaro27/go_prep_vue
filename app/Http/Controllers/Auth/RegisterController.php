@@ -127,6 +127,7 @@ class RegisterController extends Controller
                         'unique:store_details,domain',
                         'regex:' . $this->regex['domain']
                     ],
+                    //'currency' => ['required', 'in:USD,GBP,CAD'],
                     'address' => 'required',
                     'city' => 'required',
                     'state' => 'required',
@@ -167,7 +168,7 @@ class RegisterController extends Controller
             'city' => $data['user_details']['city'],
             'state' => $data['user_details']['state'],
             'zip' => $data['user_details']['zip'],
-            'country' => 'USA',
+            'country' => $data['user_details']['country'],
             'delivery' => isset($data['user_details']['delivery'])
                 ? $data['user_details']['delivery']
                 : '',
@@ -195,13 +196,41 @@ class RegisterController extends Controller
                 'city' => $data['store']['city'],
                 'state' => $data['store']['state'],
                 'zip' => $data['store']['zip'],
+                'country' => $data['store']['country'],
                 'logo' => '',
                 'domain' => $data['store']['domain'],
                 'created_at' => now()
             ]);
 
+            switch ($data['store']['country']) {
+                case 'GB':
+                    $timezone = 'Europe/London';
+                    break;
+                default:
+                    $timezone = 'America/New_York';
+            }
+
+            if (
+                isset($data['store']['currency']) &&
+                in_array($data['store']['currency'], ['USD', 'GBP', 'CAD'])
+            ) {
+                $currency = $data['store']['currency'];
+            } else {
+                switch ($data['store']['country']) {
+                    case 'GB':
+                        $currency = 'GBP';
+                        break;
+                    case 'CA':
+                        $currency = 'CAD';
+                        break;
+                    default:
+                        $currency = 'USD';
+                }
+            }
+
             $storeSettings = $store->settings()->create([
-                'timezone' => 'America/New_York',
+                'timezone' => $timezone,
+                'currency' => $currency,
                 'open' => 0,
                 'notifications' => [],
                 'transferType' => 'delivery',

@@ -65,28 +65,35 @@
                     <div class="col-md-4">
                       <h4>Amount</h4>
                       <p>
-                        Subtotal: {{ format.money(order.preFeePreDiscount) }}
+                        Subtotal:
+                        {{
+                          format.money(order.preFeePreDiscount, order.currency)
+                        }}
                       </p>
                       <p class="text-success" v-if="order.couponReduction > 0">
                         Coupon {{ order.couponCode }}: ({{
-                          format.money(order.couponReduction)
+                          format.money(order.couponReduction, order.currency)
                         }})
                       </p>
                       <p v-if="order.mealPlanDiscount > 0" class="text-success">
                         Meal Plan Discount: ({{
-                          format.money(order.mealPlanDiscount)
+                          format.money(order.mealPlanDiscount, order.currency)
                         }})
                       </p>
                       <p v-if="order.deliveryFee > 0">
-                        Delivery Fee: {{ format.money(order.deliveryFee) }}
+                        Delivery Fee:
+                        {{ format.money(order.deliveryFee, order.currency) }}
                       </p>
                       <p v-if="order.processingFee > 0">
                         Processing Fee:
-                        {{ format.money(order.processingFee) }}
+                        {{ format.money(order.processingFee, order.currency) }}
                       </p>
-                      <p>Sales Tax: {{ format.money(order.salesTax) }}</p>
+                      <p v-if="order.salesTax > 0">
+                        Sales Tax:
+                        {{ format.money(order.salesTax, order.currency) }}
+                      </p>
                       <p class="strong">
-                        Total: {{ format.money(order.amount) }}
+                        Total: {{ format.money(order.amount, order.currency) }}
                       </p>
                       <img src="/images/collapse-arrow.png" class="mt-2 pt-3" />
                     </div>
@@ -109,14 +116,20 @@
 
                       <template slot="FOOT_subtotal" slot-scope="row">
                         <p>
-                          Subtotal: {{ format.money(order.preFeePreDiscount) }}
+                          Subtotal:
+                          {{
+                            format.money(
+                              order.preFeePreDiscount,
+                              order.currency
+                            )
+                          }}
                         </p>
                         <p
                           class="text-success"
                           v-if="order.couponReduction > 0"
                         >
                           Coupon {{ order.couponCode }}: ({{
-                            format.money(order.couponReduction)
+                            format.money(order.couponReduction, order.currency)
                           }})
                         </p>
                         <p
@@ -124,19 +137,29 @@
                           class="text-success"
                         >
                           Meal Plan Discount: ({{
-                            format.money(order.mealPlanDiscount)
+                            format.money(
+                              order.mealPlanDiscount,
+                              order.currency
+                            )
                           }})
                         </p>
                         <p v-if="order.deliveryFee > 0">
-                          Delivery Fee: {{ format.money(order.deliveryFee) }}
+                          Delivery Fee:
+                          {{ format.money(order.deliveryFee, order.currency) }}
                         </p>
                         <p v-if="order.processingFee > 0">
                           Processing Fee:
-                          {{ format.money(order.processingFee) }}
+                          {{
+                            format.money(order.processingFee, order.currency)
+                          }}
                         </p>
-                        <p>Sales Tax: {{ format.money(order.salesTax) }}</p>
+                        <p>
+                          Sales Tax:
+                          {{ format.money(order.salesTax, order.currency) }}
+                        </p>
                         <p class="strong">
-                          Total: {{ format.money(order.amount) }}
+                          Total:
+                          {{ format.money(order.amount, order.currency) }}
                         </p>
                       </template>
 
@@ -197,8 +220,8 @@ export default {
           image: meal.image.url_thumb,
           meal: title,
           quantity: item.quantity,
-          unit_price: format.money(item.unit_price),
-          subtotal: format.money(item.price)
+          unit_price: format.money(item.unit_price, order.currency),
+          subtotal: format.money(item.price, order.currency)
         };
       });
 
