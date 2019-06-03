@@ -314,8 +314,15 @@ export default {
         });
     },
     async exportData(report, format = "pdf", print = false) {
+      let params = {};
+
       let dates = this.delivery_dates[report];
       if (dates.start && dates.end) {
+        params.delivery_dates = {
+          from: dates.start,
+          to: dates.end
+        };
+
         const warning = this.checkDateRange({ ...dates });
         if (warning) {
           try {
@@ -331,7 +338,9 @@ export default {
       }
 
       axios
-        .get(`/api/me/print/${report}/${format}`)
+        .get(`/api/me/print/${report}/${format}`, {
+          params
+        })
         .then(response => {
           if (!_.isEmpty(response.data.url)) {
             let win = window.open(response.data.url);
