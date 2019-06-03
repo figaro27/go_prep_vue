@@ -560,7 +560,7 @@
                         :key="meal.id"
                       >
                         <div :class="card" :style="borderRadius">
-                          <div :class="cardBody">
+                          <div :class="cardBody" :style="borderRadius">
                             <div class="item-wrap">
                               <div class="title d-md-none">
                                 {{ meal.title }}
