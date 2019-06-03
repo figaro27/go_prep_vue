@@ -136,34 +136,13 @@
               Shows how to bag up your meals for each customer.
             </p>
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-12">
                 <button
                   @click="print('orders_by_customer', 'pdf')"
-                  class="btn btn-primary btn-md center mt-2 pull-right"
+                  class="btn btn-primary btn-md center mt-2 center"
                 >
                   Print
                 </button>
-              </div>
-              <div class="col-md-6">
-                <b-dropdown
-                  variant="warning"
-                  class="center mt-2"
-                  right
-                  text="Export as"
-                >
-                  <b-dropdown-item
-                    @click="exportData('orders_by_customer', 'csv')"
-                    >CSV</b-dropdown-item
-                  >
-                  <b-dropdown-item
-                    @click="exportData('orders_by_customer', 'xls')"
-                    >XLS</b-dropdown-item
-                  >
-                  <b-dropdown-item
-                    @click="exportData('orders_by_customer', 'pdf')"
-                    >PDF</b-dropdown-item
-                  >
-                </b-dropdown>
               </div>
             </div>
           </div>
@@ -186,31 +165,13 @@
               the customers.
             </p>
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-12">
                 <button
                   @click="print('packing_slips', 'pdf')"
-                  class="btn btn-primary btn-md center mt-2 pull-right"
+                  class="btn btn-primary btn-md center mt-2 center"
                 >
                   Print
                 </button>
-              </div>
-              <div class="col-md-6">
-                <b-dropdown
-                  variant="warning"
-                  class="center mt-2"
-                  right
-                  text="Export as"
-                >
-                  <b-dropdown-item @click="exportData('packing_slips', 'csv')"
-                    >CSV</b-dropdown-item
-                  >
-                  <b-dropdown-item @click="exportData('packing_slips', 'xls')"
-                    >XLS</b-dropdown-item
-                  >
-                  <b-dropdown-item @click="exportData('packing_slips', 'pdf')"
-                    >PDF</b-dropdown-item
-                  >
-                </b-dropdown>
               </div>
             </div>
           </div>
@@ -233,31 +194,13 @@
               Shows you the quickest route to make your deliveries.
             </p>
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-12">
                 <button
                   @click="print('delivery_routes', 'pdf')"
-                  class="btn btn-primary btn-md center mt-2 pull-right"
+                  class="btn btn-primary btn-md center mt-2 center"
                 >
                   Print
                 </button>
-              </div>
-              <div class="col-md-6">
-                <b-dropdown
-                  variant="warning"
-                  class="center mt-2"
-                  right
-                  text="Export as"
-                >
-                  <b-dropdown-item @click="exportData('delivery_routes', 'csv')"
-                    >CSV</b-dropdown-item
-                  >
-                  <b-dropdown-item @click="exportData('delivery_routes', 'xls')"
-                    >XLS</b-dropdown-item
-                  >
-                  <b-dropdown-item @click="exportData('delivery_routes', 'pdf')"
-                    >PDF</b-dropdown-item
-                  >
-                </b-dropdown>
               </div>
             </div>
           </div>
