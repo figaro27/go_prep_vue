@@ -30,9 +30,10 @@ class NewOrder extends Mailable
      */
     public function build()
     {
+        $email = $this->data->order->store->user->email;
         return $this->view('email.customer.new-order')
             ->with($this->data)
             ->subject('New Order')
-            ->replyTo('reply@example.com', 'Reply Guy');
+            ->replyTo($email, 'Reply Guy');
     }
 }
