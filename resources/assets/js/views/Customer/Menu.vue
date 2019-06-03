@@ -1247,12 +1247,12 @@ export default {
     }),
     card() {
       if (this.mobile) {
-        return "card bg-light mb-0 mt-0 mr-1";
+        return "card rounded-0 mb-0 mt-0 mr-1";
       } else return "";
     },
     cardBody() {
       if (this.mobile) {
-        return "card-body bg-light mb-0 mt-0 mr-1";
+        return "card-body rounded-0 mb-0 mt-0 mr-1";
       } else return "";
     },
     desktopCard() {
