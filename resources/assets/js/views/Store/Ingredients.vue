@@ -61,6 +61,29 @@
               </b-select>
               <span v-else>Units</span>
             </div>
+
+            <div slot="adjuster" slot-scope="props">
+              <div class="row">
+                <div class="col-md-2">
+                  <b-form-input v-model="props.row.adjuster"></b-form-input>
+                </div>
+                <div class="col-md-10">
+                  <b-btn
+                    variant="primary"
+                    @click="adjustQuantity(props.row.id, props.row.adjuster)"
+                    >Adjust
+                  </b-btn>
+                  <img
+                    v-b-popover.hover="
+                      'This optionally lets you adjust the quantity amount of each ingredient in your reporting. The same recipe you added for each meal to generate the nutrition facts may not be the same pre-cooked amount. You may adjust the weight of chicken for example as it shrinks during cooking, and you may adjust rice as it grows during cooking. This option also lets you account for spoilage as well.'
+                    "
+                    title="Ingredient Adjustment"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </div>
+              </div>
+            </div>
           </v-client-table>
         </div>
       </div>
@@ -93,11 +116,12 @@ export default {
           end: null
         }
       },
-      columns: ["image", "food_name", "quantity", "actions"],
+      columns: ["image", "food_name", "quantity", "actions", "adjuster"],
       options: {
         headings: {
           image: "",
           food_name: "Ingredient",
+          adjuster: "Adjustment %",
           quantity: "Quantity",
           quantity_unit: "Unit",
           actions: "Unit"
@@ -106,7 +130,8 @@ export default {
           column: "food_name",
           ascending: true
         }
-      }
+      },
+      percentages: [5, 10, 15, 20]
     };
   },
   watch: {
@@ -211,6 +236,16 @@ export default {
         })
         .finally(() => {
           this.loading = false;
+        });
+    },
+    adjustQuantity(id, adjustment) {
+      axios
+        .post(`/api/me/ingredients/adjust`, {
+          id: id,
+          adjustment: adjustment
+        })
+        .then(response => {
+          this.refreshOrderIngredients();
         });
     },
     async exportData(format = "csv") {

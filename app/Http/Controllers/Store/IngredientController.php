@@ -17,8 +17,12 @@ class IngredientController extends StoreController
      */
     public function index()
     {
-        return $this->store->has('ingredients') ?
-        $this->store->ingredients()->with([])->get() : [];
+        return $this->store->has('ingredients')
+            ? $this->store
+                ->ingredients()
+                ->with([])
+                ->get()
+            : [];
     }
 
     /**
@@ -87,11 +91,23 @@ class IngredientController extends StoreController
         //
     }
 
-    public function exportData($type = null) {
-      
+    public function exportData($type = null)
+    {
     }
 
-    public function exportPdfView() {
-      return 'reports.ingredients_pdf';
+    public function exportPdfView()
+    {
+        return 'reports.ingredients_pdf';
+    }
+
+    public function adjust(Request $request)
+    {
+        $ingredientId = $request->get('id');
+        $adjustment = $request->get('adjustment');
+
+        $ingredient = Ingredient::where('id', $ingredientId)->first();
+
+        $ingredient->adjuster = $adjustment;
+        $ingredient->save();
     }
 }

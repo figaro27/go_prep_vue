@@ -234,11 +234,13 @@ class Store extends Model
                 }
 
                 foreach ($meal->ingredients as $ingredient) {
+                    $adjuster = $ingredient->adjuster / 100;
                     $quantity_unit = $ingredient->pivot->quantity_unit;
                     $quantity_base =
                         $ingredient->pivot->quantity_base *
                         $quantity *
-                        $multiplier;
+                        $multiplier *
+                        $adjuster;
 
                     $key = $ingredient->id;
 
@@ -246,7 +248,8 @@ class Store extends Model
                         $ingredients[$key] = [
                             'id' => $ingredient->id,
                             'ingredient' => $ingredient,
-                            'quantity' => $quantity_base
+                            'quantity' => $quantity_base,
+                            'adjuster' => $adjuster
                         ];
                     } else {
                         $ingredients[$key]['quantity'] += $quantity_base;
@@ -268,7 +271,8 @@ class Store extends Model
                             $ingredients[$key] = [
                                 'id' => $ingredient->id,
                                 'ingredient' => $ingredient,
-                                'quantity' => $quantity_base
+                                'quantity' => $quantity_base,
+                                'adjuster' => $adjuster
                             ];
                         } else {
                             $ingredients[$key]['quantity'] += $quantity_base;
@@ -291,7 +295,8 @@ class Store extends Model
                             $ingredients[$key] = [
                                 'id' => $ingredient->id,
                                 'ingredient' => $ingredient,
-                                'quantity' => $quantity_base
+                                'quantity' => $quantity_base,
+                                'adjuster' => $adjuster
                             ];
                         } else {
                             $ingredients[$key]['quantity'] += $quantity_base;
