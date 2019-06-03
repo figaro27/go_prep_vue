@@ -195,6 +195,9 @@ export default {
       refreshMeals: "refreshMeals",
       _updateMeal: "updateMeal"
     }),
+    storeSettings() {
+      return this.store.settings;
+    },
     findMealIndex(id) {
       return _.findIndex(this.package.meals, { id });
     },
