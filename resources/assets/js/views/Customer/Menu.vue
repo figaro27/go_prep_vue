@@ -373,7 +373,7 @@
                             </h5>
                           </div>
                           <b-btn
-                            @click="addOne(mealPackage)"
+                            @click="addOne(mealPackage, true)"
                             class="menu-bag-btn width-80"
                             >+ ADD</b-btn
                           >
@@ -950,9 +950,7 @@
                   >
                     <p class="align-right">
                       Please add
-                      {{
-                        format.money(remainingPrice, storeSettings.currency)
-                      }}
+                      {{ format.money(remainingPrice, storeSettings.currency) }}
                       more to continue.
                     </p>
                   </div>
