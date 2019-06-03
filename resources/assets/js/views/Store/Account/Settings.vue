@@ -363,7 +363,7 @@
                     storeSettings.applyDeliveryFee &&
                       storeSettings.deliveryFeeType === 'flat'
                   "
-                  type="string"
+                  type="text"
                   v-model="storeSettings.deliveryFee"
                   placeholder="Delivery Fee"
                   required
@@ -376,7 +376,7 @@
                         storeSettings.applyDeliveryFee &&
                           storeSettings.deliveryFeeType === 'mileage'
                       "
-                      type="string"
+                      type="text"
                       v-model="storeSettings.mileageBase"
                       placeholder="Base Amount"
                       required
@@ -389,7 +389,7 @@
                         storeSettings.applyDeliveryFee &&
                           storeSettings.deliveryFeeType === 'mileage'
                       "
-                      type="string"
+                      type="text"
                       v-model="storeSettings.mileagePerMile"
                       placeholder="Per Mile"
                       required
@@ -418,7 +418,7 @@
               />
               <b-form-input
                 v-if="storeSettings.applyProcessingFee"
-                type="string"
+                type="text"
                 v-model="storeSettings.processingFee"
                 placeholder="Processing Fee"
                 required
