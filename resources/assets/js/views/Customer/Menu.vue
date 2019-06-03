@@ -555,7 +555,7 @@
                     </h2>
                     <div class="row">
                       <div
-                        class="item col-sm-6 col-lg-4 col-xl-3"
+                        class="item col-sm-6 col-lg-4 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3"
                         v-for="(meal, i) in group.meals"
                         :key="meal.id"
                       >
