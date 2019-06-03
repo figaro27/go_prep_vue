@@ -13,7 +13,6 @@
               <div class="d-flex align-items-center">
                 <delivery-date-picker
                   v-model="filters.delivery_dates"
-                  @change="onChangeDateFilter"
                   ref="deliveryDates"
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
@@ -335,9 +334,6 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    },
-    onChangeDateFilter() {
-      this.refreshOrderIngredients();
     },
     clearDeliveryDates() {
       this.filters.delivery_dates.start = null;
