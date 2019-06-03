@@ -6,12 +6,13 @@
 
 .calendar-root {
   // Day highlights
-  $days: 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat';
-    
+  $days: "sun", "mon", "tue", "wed", "thu", "fri", "sat";
+
   @each $day in $days {
     $i: index($days, $day);
     &.highlight-#{$day} {
-      .calendar_days li:not(.calendar_days--disabled):not(.calendar_days_in-range):not(.calendar_days_selected):nth-child(#{$i}) {
+      .calendar_days
+        li:not(.calendar_days--disabled):not(.calendar_days_in-range):not(.calendar_days_selected):nth-child(#{$i}) {
         background-color: #eee;
       }
     }
@@ -23,7 +24,7 @@
     //width: auto !important;
 
     &:before {
-      border-color: rgba(60,60,60,.5);
+      border-color: rgba(60, 60, 60, 0.5);
       border-style: solid;
       border-width: 3px 3px 0 0;
       content: "";
@@ -33,8 +34,8 @@
       vertical-align: text-top;
       transform: rotate(133deg);
       box-sizing: inherit;
-      transition: all .15s cubic-bezier(1,-.115,.975,.855);
-      transition-timing-function: cubic-bezier(1,-.115,.975,.855);
+      transition: all 0.15s cubic-bezier(1, -0.115, 0.975, 0.855);
+      transition-timing-function: cubic-bezier(1, -0.115, 0.975, 0.855);
 
       position: absolute;
       right: 16px;
@@ -85,7 +86,18 @@
       //float: none !important;
     }
     .calendar-range {
-      display: none;
+      width: 100%;
+
+      .calendar_preset-ranges {
+        display: none;
+      }
+
+      li {
+        text-align: center;
+      }
+      .calendar-btn-apply {
+        width: 120px;
+      }
     }
     .calendar_month_right {
       width: 20px !important;
