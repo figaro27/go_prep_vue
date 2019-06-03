@@ -70,8 +70,8 @@
                   <b-btn
                     variant="primary ml-2 mb-1"
                     @click="adjustQuantity(props.row.id, props.row.adjuster)"
-                    >Adjust
-                  </b-btn>
+                    >Adjust</b-btn
+                  >
                 </div>
               </div>
             </div>
@@ -245,7 +245,9 @@ export default {
           id: id,
           adjustment: adjustment
         })
-        .then(response => {
+        .then(async response => {
+          await this.refreshIngredients();
+          await this.refreshIngredientUnits();
           this.refreshOrderIngredients();
         });
     },

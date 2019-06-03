@@ -13,19 +13,22 @@ class AddMissingCurrencyFields extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table
-                ->string('currency', 5)
-                ->default('USD')
-                ->after('amount');
-        });
+        try {
+            Schema::table('orders', function (Blueprint $table) {
+                $table
+                    ->string('currency', 5)
+                    ->default('USD')
+                    ->after('amount');
+            });
 
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table
-                ->string('currency', 5)
-                ->default('USD')
-                ->after('amount');
-        });
+            Schema::table('subscriptions', function (Blueprint $table) {
+                $table
+                    ->string('currency', 5)
+                    ->default('USD')
+                    ->after('amount');
+            });
+        } catch (\Exception $e) {
+        }
     }
 
     /**
