@@ -559,8 +559,8 @@
                         v-for="(meal, i) in group.meals"
                         :key="meal.id"
                       >
-                        <div :class="card">
-                          <div :class="cardBody">
+                        <div :class="card" style="border-radius:1px">
+                          <div :class="cardBody" style="border-radius:1px">
                             <div class="item-wrap">
                               <div class="title d-md-none">
                                 {{ meal.title }}
