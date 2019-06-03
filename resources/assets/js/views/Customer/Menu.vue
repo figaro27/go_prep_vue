@@ -559,8 +559,8 @@
                         v-for="(meal, i) in group.meals"
                         :key="meal.id"
                       >
-                        <div :class="card" style="border-radius:1px">
-                          <div :class="cardBody" style="border-radius:1px">
+                        <div :class="card">
+                          <div :class="cardBody">
                             <div class="item-wrap">
                               <div class="title d-md-none">
                                 {{ meal.title }}
@@ -1247,12 +1247,12 @@ export default {
     }),
     card() {
       if (this.mobile) {
-        return "card mb-0 mt-0 mr-1";
+        return "card bg-light mb-0 mt-0 mr-1";
       } else return "";
     },
     cardBody() {
       if (this.mobile) {
-        return "card-body mb-0 mt-0 mr-1";
+        return "card-body bg-light mb-0 mt-0 mr-1";
       } else return "";
     },
     desktopCard() {
