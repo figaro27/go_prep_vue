@@ -559,38 +559,43 @@
                         v-for="(meal, i) in group.meals"
                         :key="meal.id"
                       >
-                        <div class="item-wrap">
-                          <div class="title d-md-none">
-                            {{ meal.title }}
-                          </div>
+                        <div :class="card">
+                          <div :class="cardBody">
+                            <div class="item-wrap">
+                              <div class="title d-md-none">
+                                {{ meal.title }}
+                              </div>
 
-                          <div class="image">
-                            <thumbnail
-                              v-if="meal.image.url_medium"
-                              :src="meal.image.url_medium"
-                              class="menu-item-img"
-                              width="100%"
-                              @click="showMealModal(meal)"
-                              style="background-color:#ffffff"
-                            ></thumbnail>
+                              <div class="image">
+                                <thumbnail
+                                  v-if="meal.image.url_medium"
+                                  :src="meal.image.url_medium"
+                                  class="menu-item-img"
+                                  width="100%"
+                                  @click="showMealModal(meal)"
+                                  style="background-color:#ffffff"
+                                ></thumbnail>
 
-                            <div class="price">
-                              {{
-                                format.money(meal.price, storeSettings.currency)
-                              }}
-                            </div>
-                          </div>
+                                <div class="price">
+                                  {{
+                                    format.money(
+                                      meal.price,
+                                      storeSettings.currency
+                                    )
+                                  }}
+                                </div>
+                              </div>
 
-                          <div class="meta">
-                            <div class="title d-none d-md-block">
-                              {{ meal.title }}
-                            </div>
+                              <div class="meta">
+                                <div class="title d-none d-md-block">
+                                  {{ meal.title }}
+                                </div>
 
-                            <div class="description d-md-none">
-                              {{ meal.description }}
-                            </div>
+                                <div class="description d-md-none">
+                                  {{ meal.description }}
+                                </div>
 
-                            <!-- <div
+                                <!-- <div
                               class="tags text-muted"
                               v-if="meal.tag_titles.length"
                             >
@@ -605,66 +610,69 @@
                               {{ meal.allergy_titles.join(", ") }}
                             </div> -->
 
-                            <div class="actions">
-                              <div
-                                class="d-flex justify-content-between align-items-center mb-2 mt-1"
-                              >
-                                <b-btn
-                                  @click="minusOne(meal)"
-                                  class="plus-minus gray"
-                                >
-                                  <i>-</i>
-                                </b-btn>
-                                <b-form-input
-                                  type="text"
-                                  name
-                                  id
-                                  class="quantity"
-                                  :value="mealQuantity(meal)"
-                                  readonly
-                                ></b-form-input>
-                                <b-btn
-                                  v-if="meal.sizes.length === 0"
-                                  @click="addOne(meal)"
-                                  class="menu-bag-btn plus-minus"
-                                >
-                                  <i>+</i>
-                                </b-btn>
-                                <b-dropdown
-                                  v-else
-                                  toggle-class="menu-bag-btn plus-minus"
-                                  :right="i > 0 && (i + 1) % 4 === 0"
-                                >
-                                  <i slot="button-content">+</i>
-                                  <b-dropdown-item @click="addOne(meal)">
-                                    {{ meal.default_size_title || "Regular" }} -
-                                    {{
-                                      format.money(
-                                        meal.item_price,
-                                        storeSettings.currency
-                                      )
-                                    }}
-                                  </b-dropdown-item>
-                                  <b-dropdown-item
-                                    v-for="size in meal.sizes"
-                                    :key="size.id"
-                                    @click="addOne(meal, false, size)"
+                                <div class="actions">
+                                  <div
+                                    class="d-flex justify-content-between align-items-center mb-2 mt-1"
                                   >
-                                    {{ size.title }} -
-                                    {{
-                                      format.money(
-                                        size.price,
-                                        storeSettings.currency
-                                      )
-                                    }}
-                                  </b-dropdown-item>
-                                </b-dropdown>
+                                    <b-btn
+                                      @click="minusOne(meal)"
+                                      class="plus-minus gray"
+                                    >
+                                      <i>-</i>
+                                    </b-btn>
+                                    <b-form-input
+                                      type="text"
+                                      name
+                                      id
+                                      class="quantity"
+                                      :value="mealQuantity(meal)"
+                                      readonly
+                                    ></b-form-input>
+                                    <b-btn
+                                      v-if="meal.sizes.length === 0"
+                                      @click="addOne(meal)"
+                                      class="menu-bag-btn plus-minus"
+                                    >
+                                      <i>+</i>
+                                    </b-btn>
+                                    <b-dropdown
+                                      v-else
+                                      toggle-class="menu-bag-btn plus-minus"
+                                      :right="i > 0 && (i + 1) % 4 === 0"
+                                    >
+                                      <i slot="button-content">+</i>
+                                      <b-dropdown-item @click="addOne(meal)">
+                                        {{
+                                          meal.default_size_title || "Regular"
+                                        }}
+                                        -
+                                        {{
+                                          format.money(
+                                            meal.item_price,
+                                            storeSettings.currency
+                                          )
+                                        }}
+                                      </b-dropdown-item>
+                                      <b-dropdown-item
+                                        v-for="size in meal.sizes"
+                                        :key="size.id"
+                                        @click="addOne(meal, false, size)"
+                                      >
+                                        {{ size.title }} -
+                                        {{
+                                          format.money(
+                                            size.price,
+                                            storeSettings.currency
+                                          )
+                                        }}
+                                      </b-dropdown-item>
+                                    </b-dropdown>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-
-                        <!--
+                          <!--
                         <div class="row">
                           <div class="col-8 col-sm-12">
                             <div
@@ -716,6 +724,7 @@
 
                           </div>
                         </div>-->
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1236,6 +1245,16 @@ export default {
       minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal"
     }),
+    card() {
+      if (this.mobile) {
+        return "card";
+      } else return "";
+    },
+    cardBody() {
+      if (this.mobile) {
+        return "card-body";
+      } else return "";
+    },
     storeWebsite() {
       if (!this.storeSettings.website) {
         return null;
