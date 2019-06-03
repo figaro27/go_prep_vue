@@ -130,8 +130,8 @@
 
       <div class="row">
         <div class="col-sm-12 mt-3">
-          <div class="card">
-            <div class="card-body">
+          <div :class="desktopCard">
+            <div :class="desktopCardBody">
               <b-modal
                 ref="mealModal"
                 size="lg"
@@ -1252,6 +1252,16 @@ export default {
     },
     cardBody() {
       if (this.mobile) {
+        return "card-body";
+      } else return "";
+    },
+    desktopCard() {
+      if (!this.mobile) {
+        return "card";
+      } else return "";
+    },
+    desktopCardBody() {
+      if (!this.mobile) {
         return "card-body";
       } else return "";
     },
