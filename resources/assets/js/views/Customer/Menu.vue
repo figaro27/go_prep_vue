@@ -612,7 +612,7 @@
 
                                 <div class="actions">
                                   <div
-                                    class="d-flex justify-content-between align-items-center mb-2 mt-1"
+                                    class="d-flex justify-content-between align-items-center mt-1"
                                   >
                                     <b-btn
                                       @click="minusOne(meal)"
@@ -1247,12 +1247,12 @@ export default {
     }),
     card() {
       if (this.mobile) {
-        return "card border-light rounded-0 mb-0 mt-0 mr-1";
+        return "card border-light mb-0 mt-0 mr-1";
       } else return "";
     },
     cardBody() {
       if (this.mobile) {
-        return "card-body border-light rounded-0 mb-0 mt-0 mr-1";
+        return "card-body border-light mb-0 mt-0 mr-1";
       } else return "";
     },
     desktopCard() {
