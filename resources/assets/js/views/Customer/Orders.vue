@@ -5,7 +5,7 @@
         <div class="card-body">
           <Spinner v-if="isLoading" />
           <b-alert
-            v-if="orders[0]"
+            v-if="orders && orders[0]"
             :show="!!$route.query.created || false"
             variant="success"
           >
@@ -20,10 +20,13 @@
               }}
             </p>
           </b-alert>
-          <b-alert :show="0 === orders.length || false" variant="warning">
+          <b-alert
+            :show="null !== orders && 0 === orders.length"
+            variant="warning"
+          >
             <p class="center-text mt-3">You currently have no orders.</p>
           </b-alert>
-          <div class="order-list">
+          <div class="order-list" v-if="null !== orders">
             <div v-for="order in orders" :key="order.id" class="mb-4">
               <div v-b-toggle="'collapse' + order.id">
                 <b-list-group-item class="order-list-item">
@@ -196,6 +199,9 @@ export default {
       getStoreMeal: "viewedStoreMeal"
     }),
     orders() {
+      if (_.isNull(this._orders)) {
+        return null;
+      }
       return this._orders.filter(meal => {
         return meal.paid === 1;
       });
