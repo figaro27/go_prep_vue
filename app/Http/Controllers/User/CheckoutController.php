@@ -184,6 +184,7 @@ class CheckoutController extends UserController
 
             // Send notification
             $email = new NewOrder([
+                'email' => 'test@aol.com',
                 'order' => $order ?? null,
                 'pickup' => $pickup ?? null,
                 'card' => $card ?? null,

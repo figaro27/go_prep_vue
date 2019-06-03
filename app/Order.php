@@ -29,7 +29,6 @@ class Order extends Model
         'meal_ids',
         'items',
         'store_name',
-        'store_email',
         'cutoff_date',
         'cutoff_passed',
         'pre_coupon'
@@ -111,11 +110,6 @@ class Order extends Model
     public function getStoreNameAttribute()
     {
         return $this->store->storeDetail->name;
-    }
-
-    public function getStoreEmailAttribute()
-    {
-        return $this->store->user->email;
     }
 
     public function getMealIdsAttribute()
