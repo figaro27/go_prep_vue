@@ -763,7 +763,8 @@ export default {
       }
       axios
         .post("/api/bag/checkout", {
-          subtotal: this.afterDiscount,
+          subtotal: this.subtotal,
+          afterDiscount: this.afterDiscount,
           bag: this.bag,
           plan: this.deliveryPlan,
           pickup: this.pickup,
