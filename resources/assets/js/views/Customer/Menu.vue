@@ -559,7 +559,7 @@
                         v-for="(meal, i) in group.meals"
                         :key="meal.id"
                       >
-                        <div :class="card">
+                        <div :class="card" :style="borderRadius">
                           <div :class="cardBody">
                             <div class="item-wrap">
                               <div class="title d-md-none">
@@ -1253,6 +1253,11 @@ export default {
     cardBody() {
       if (this.mobile) {
         return "card-body mb-0 mt-0 mr-1";
+      } else return "";
+    },
+    borderRadius() {
+      if (this.mobile) {
+        return "border-radius: 1px";
       } else return "";
     },
     desktopCard() {
