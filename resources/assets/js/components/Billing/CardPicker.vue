@@ -29,7 +29,7 @@
       <b-list-group class="card-list">
         <b-list-group-item
           v-if="manualOrder"
-          v-for="card in manualOrderCards"
+          v-for="card in creditCards"
           :key="card.id"
           :active="value === card.id"
           @click="e => selectCard(card.id)"
@@ -38,15 +38,6 @@
         >
           <img class="card-logo" :src="icons.cards[card.brand.toLowerCase()]" />
           <div class="flex-grow-1">Ending in {{ card.last4 }}</div>
-          <div>
-            <b-btn
-              class="card-delete"
-              variant="plain"
-              @click="e => deleteCard(card.id)"
-            >
-              <i class="fa fa-minus-circle text-danger"></i>
-            </b-btn>
-          </div>
         </b-list-group-item>
       </b-list-group>
       <hr />
@@ -102,7 +93,7 @@ export default {
     selectable: {
       default: false
     },
-    creditCard: {
+    creditCards: {
       default: 0
     },
     manualOrder: {
@@ -120,14 +111,12 @@ export default {
   computed: {
     ...mapGetters({
       cards: "cards"
-    }),
-    manualOrderCards() {
-      return [this.creditCard];
-    }
+    })
   },
   methods: {
     ...mapActions(["refreshCards"]),
     createCard() {
+      let customer = this.$parent.getCustomer();
       // this.$parent.loading = true;
       createToken().then(data => {
         console.log(data);
@@ -139,10 +128,15 @@ export default {
 
         axios
           .post("/api/me/cards", {
-            token: data.token
+            token: data.token,
+            customer: customer
           })
           .then(async resp => {
-            await this.refreshCards();
+            if (this.manualOrder) {
+              this.$parent.getCards();
+            } else {
+              await this.refreshCards();
+            }
             this.selectedCard = resp.id;
             this.newCard = null;
             this.$toastr.s("Payment method saved.");

@@ -134,8 +134,8 @@ foreach (
                             );
                             Route::resource('customers', 'CustomerController');
                             Route::post(
-                                'getCard',
-                                'CustomerController@getCard'
+                                'getCards',
+                                'CustomerController@getCards'
                             );
                             Route::resource('units', 'UnitController');
                             Route::resource('categories', 'CategoryController');
@@ -148,6 +148,7 @@ foreach (
                                 'settings',
                                 'StoreSettingController'
                             );
+                            Route::resource('cards', 'CardController');
                             Route::post(
                                 'pauseMealPlans',
                                 'StoreSettingController@pauseMealPlans'

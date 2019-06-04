@@ -71,10 +71,6 @@ class CheckoutController extends StoreController
         $customerId = $request->get('customer');
         $customer = Customer::where('id', $customerId)->first();
 
-        if (!$user->hasStoreCustomer($store->id)) {
-            $storeCustomer = $customer->user->createStoreCustomer($store->id);
-        }
-
         $total += $salesTax;
 
         $cardId = $request->get('card_id');

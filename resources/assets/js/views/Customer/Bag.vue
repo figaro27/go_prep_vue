@@ -437,7 +437,7 @@
                         :options="customers"
                         v-model="customer"
                         class="bag-select"
-                        @change="getCard"
+                        @change="getCards"
                         required
                       >
                         <option slot="top" disabled
@@ -467,14 +467,14 @@
                   ></card-picker>
                   <card-picker
                     :selectable="true"
-                    :creditCard="creditCard"
+                    :creditCards="creditCardList"
                     :manualOrder="true"
-                    v-model="card"
+                    v-model="cards"
                     v-if="manualOrder"
                   ></card-picker>
                   <b-btn
                     v-if="
-                      card &&
+                      creditCardId &&
                         minOption === 'meals' &&
                         total >= minMeals &&
                         storeSettings.open &&
@@ -486,7 +486,7 @@
                   >
                   <b-btn
                     v-if="
-                      card != null &&
+                      creditCardId != null &&
                         minOption === 'price' &&
                         totalBagPrice >= minPrice &&
                         storeSettings.open &&
@@ -604,6 +604,7 @@ export default {
   data() {
     return {
       showAddNewCustomerModal: false,
+      creditCardList: [],
       creditCard: {},
       creditCardId: null,
       customer: null,
@@ -679,6 +680,9 @@ export default {
       } else return 0;
     },
     cards() {
+      if (this.manualOrder) {
+        return this.creditCardList;
+      }
       if (this.creditCard != null) return [this.creditCard];
       else return this.creditCards;
     },
@@ -862,10 +866,11 @@ export default {
         .then(async resp => {
           if (this.manualOrder && this.deliveryPlan) {
             window.location.href = "/store/meal-plans";
+            return;
           } else if (this.manualOrder && !this.deliveryPlan) {
             window.location.href = "/store/orders";
+            return;
           }
-          return;
 
           if (this.deliveryPlan) {
             await this.refreshSubscriptions();
@@ -907,17 +912,21 @@ export default {
         }
       });
     },
-    getCard() {
+    getCards() {
       this.$nextTick(() => {
         axios
-          .post("/api/me/getCard", {
+          .post("/api/me/getCards", {
             id: this.customer
           })
           .then(response => {
-            this.creditCardId = response.data.id;
-            this.creditCard = response.data;
+            this.creditCardId = response.data[0].id;
+            this.creditCard = response.data[0];
+            this.creditCardList = response.data;
           });
       });
+    },
+    getCustomer() {
+      return this.customer;
     }
   }
 };
