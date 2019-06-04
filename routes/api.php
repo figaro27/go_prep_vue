@@ -88,6 +88,8 @@ foreach (
                             Route::patch('user', 'UserController@update');
                             Route::get('user', 'UserController@show');
 
+                            Route::resource('register', 'RegisterController');
+
                             Route::get(
                                 'orders/ingredients/export/{type}',
                                 'OrderIngredientController@export'

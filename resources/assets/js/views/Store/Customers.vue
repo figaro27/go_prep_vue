@@ -9,7 +9,7 @@
           v-model="addCustomerModal"
           v-if="addCustomerModal"
         >
-          <b-form @submit="addCustomer">
+          <b-form @submit.prevent="addCustomer">
             <b-form-group horizontal label="First Name">
               <b-form-input
                 v-model="form.first_name"
@@ -72,6 +72,9 @@
                 placeholder="Zip"
               ></b-form-input>
             </b-form-group>
+            <b-button type="submit" variant="primary" class="float-right"
+              >Add</b-button
+            >
           </b-form>
         </b-modal>
         <div class="card">
@@ -85,7 +88,7 @@
               <div slot="beforeTable" class="mb-2">
                 <button
                   class="btn btn-success btn-md mb-2 mb-sm-0"
-                  @click="addCustomer"
+                  @click="showAddCustomerModal"
                 >
                   Add Customer
                 </button>
@@ -366,6 +369,9 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    ...mapActions({
+      refreshStoreCustomers: "refreshStoreCustomers"
+    }),
     resetUserId() {
       this.userId = 0;
       this.editUserId = 0;
@@ -420,8 +426,21 @@ export default {
 
       return _.filter(data);
     },
-    addCustomer() {
+    showAddCustomerModal() {
       this.addCustomerModal = true;
+    },
+    addCustomer() {
+      let form = this.form;
+
+      axios
+        .post("/api/me/register", form)
+        .then(async response => {
+          this.addCustomerModal = false;
+          await this.refreshStoreCustomers();
+        })
+        .catch(e => {
+          this.$toastr.e("Please try again.", "Registration failed");
+        });
     },
     changeState(state) {
       this.form.state = state.abbreviation;

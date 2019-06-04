@@ -13,7 +13,7 @@ class Customer extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['store_id', 'user_id', 'currency'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -87,6 +87,9 @@ class Customer extends Model
 
     public function getFirstOrderAttribute()
     {
+        if (count($this->user->order) === 0) {
+            return $this->user->created_at->format('F d, Y');
+        }
         $date = $this->user->order
             ->where('store_id', $this->getStoreID())
             ->min("created_at");
