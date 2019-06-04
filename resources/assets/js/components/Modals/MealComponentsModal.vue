@@ -179,12 +179,15 @@ export default {
         return option.meal_size_id == this.sizeId;
       });
       return _.map(options, option => {
+        let title = option.title;
+        if (option.price && option.price > 0) {
+          title +=
+            " - " + format.money(option.price, this.storeSettings.currency);
+        }
+
         return {
           value: option.id,
-          text: `${option.title} - ${format.money(
-            option.price,
-            this.storeSettings.currency
-          )}`
+          text: title
         };
       });
     },
@@ -193,12 +196,15 @@ export default {
         return addon.meal_size_id == this.sizeId;
       });
       return _.map(addons, addon => {
+        let title = addon.title;
+        if (addon.price && addon.price > 0) {
+          title +=
+            " - " + format.money(addon.price, this.storeSettings.currency);
+        }
+
         return {
           value: addon.id,
-          text: `${addon.title} - ${format.money(
-            addon.price,
-            this.storeSettings.currency
-          )}`
+          text: title
         };
       });
     },
