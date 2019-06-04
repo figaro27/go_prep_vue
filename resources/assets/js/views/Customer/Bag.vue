@@ -469,7 +469,7 @@
                     :selectable="true"
                     :creditCard="creditCard"
                     :manualOrder="true"
-                    v-model="creditCard"
+                    v-model="card"
                     v-if="manualOrder"
                   ></card-picker>
                   <b-btn

@@ -180,7 +180,6 @@ export default {
       }
 
       if (this.creditCard > 0) {
-        this.value = this.creditCard;
         this.$emit("input", this.creditCard);
         this.creditCards.push(this.creditCard);
         return;

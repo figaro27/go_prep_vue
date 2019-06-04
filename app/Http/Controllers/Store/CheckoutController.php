@@ -68,14 +68,15 @@ class CheckoutController extends StoreController
             $total -= $couponReduction;
         }
 
+        $customerId = $request->get('customer');
+        $customer = Customer::where('id', $customerId)->first();
+
         if (!$user->hasStoreCustomer($store->id)) {
             $storeCustomer = $customer->user->createStoreCustomer($store->id);
         }
 
         $total += $salesTax;
 
-        $customerId = $request->get('customer');
-        $customer = Customer::where('id', $customerId)->first();
         $cardId = $request->get('card_id');
         $card = Card::where('id', $cardId)->first();
 
