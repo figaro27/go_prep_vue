@@ -3,6 +3,77 @@
     <div class="row">
       <div class="col-md-12">
         <Spinner v-if="isLoading" />
+        <b-modal
+          size="lg"
+          title="Add New Customer"
+          v-model="addCustomerModal"
+          v-if="addCustomerModal"
+        >
+          <b-form @submit="addCustomer">
+            <b-form-group horizontal label="First Name">
+              <b-form-input
+                v-model="form.first_name"
+                type="text"
+                required
+                placeholder="First name"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group horizontal label="Last Name">
+              <b-form-input
+                v-model="form.last_name"
+                type="text"
+                required
+                placeholder="Last name"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group horizontal label="Email">
+              <b-form-input
+                v-model="form.email"
+                type="email"
+                required
+                placeholder="Enter email"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group horizontal label="Phone">
+              <b-form-input
+                v-model="form.phone"
+                type="text"
+                required
+                placeholder="Phone"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group horizontal label="Address">
+              <b-form-input
+                v-model="form.address"
+                type="text"
+                required
+                placeholder="Address"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group horizontal label="City">
+              <b-form-input
+                v-model="form.city"
+                type="text"
+                required
+                placeholder="City"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group horizontal label="State">
+              <v-select
+                :options="stateNames"
+                :on-change="val => changeState(val)"
+              ></v-select>
+            </b-form-group>
+            <b-form-group horizontal label="Zip">
+              <b-form-input
+                v-model="form.zip"
+                type="text"
+                required
+                placeholder="Zip"
+              ></b-form-input>
+            </b-form-group>
+          </b-form>
+        </b-modal>
         <div class="card">
           <div class="card-body">
             <v-client-table
@@ -11,6 +82,14 @@
               :options="options"
               v-show="!isLoading"
             >
+              <div slot="beforeTable" class="mb-2">
+                <button
+                  class="btn btn-success btn-md mb-2 mb-sm-0"
+                  @click="addCustomer"
+                >
+                  Add Customer
+                </button>
+              </div>
               <span slot="beforeLimit">
                 <b-btn
                   variant="primary"
@@ -188,6 +267,7 @@ import Spinner from "../../components/Spinner";
 // import ViewCustomer from "./Modals/ViewCustomer";
 import format from "../../lib/format";
 import { mapGetters, mapActions, mapMutations } from "vuex";
+import states from "../../data/states.js";
 
 export default {
   components: {
@@ -196,6 +276,8 @@ export default {
   },
   data() {
     return {
+      form: {},
+      addCustomerModal: false,
       viewCustomerModal: false,
       userId: "",
       editUserId: "",
@@ -271,6 +353,9 @@ export default {
       isLoading: "isLoading",
       _storeOrdersByCustomer: "storeOrdersByCustomer"
     }),
+    stateNames() {
+      return states.stateNames();
+    },
     tableData() {
       return Object.values(this.customers);
     },
@@ -334,6 +419,12 @@ export default {
       });
 
       return _.filter(data);
+    },
+    addCustomer() {
+      this.addCustomerModal = true;
+    },
+    changeState(state) {
+      this.form.state = state.abbreviation;
     }
   }
 };
