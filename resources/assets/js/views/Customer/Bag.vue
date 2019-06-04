@@ -47,10 +47,26 @@
                 >
                   <div class="bag-item-quantity mr-2">
                     <div
+                      v-if="!item.meal_package"
                       @click="
                         addOne(
                           item.meal,
                           false,
+                          item.size,
+                          item.components,
+                          item.addons
+                        )
+                      "
+                      class="bag-plus-minus brand-color white-text"
+                    >
+                      <i>+</i>
+                    </div>
+                    <div
+                      v-if="item.meal_package"
+                      @click="
+                        addOne(
+                          item.meal,
+                          true,
                           item.size,
                           item.components,
                           item.addons
