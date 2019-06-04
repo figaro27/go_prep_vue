@@ -68,6 +68,7 @@
 import modal from "../../mixins/modal";
 import format from "../../lib/format";
 import { required, minLength } from "vuelidate/lib/validators";
+import { mapGetters } from "vuex";
 
 export default {
   mixins: [modal],
@@ -82,6 +83,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["storeSettings"]),
     sizeId() {
       return _.isObject(this.size) ? this.size.id : null;
     },
@@ -181,7 +183,7 @@ export default {
           value: option.id,
           text: `${option.title} - ${format.money(
             option.price,
-            storeSettings.currency
+            this.storeSettings.currency
           )}`
         };
       });
@@ -195,7 +197,7 @@ export default {
           value: addon.id,
           text: `${addon.title} - ${format.money(
             addon.price,
-            storeSettings.currency
+            this.storeSettings.currency
           )}`
         };
       });
