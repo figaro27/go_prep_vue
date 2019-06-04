@@ -436,6 +436,7 @@ export default {
         .post("/api/me/register", form)
         .then(async response => {
           this.addCustomerModal = false;
+          this.form = {};
           await this.refreshStoreCustomers();
         })
         .catch(e => {

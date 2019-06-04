@@ -88,6 +88,8 @@ class RegisterController extends StoreController
         $customer->store_id = $storeId;
         $customer->stripe_id = $stripeCustomer->id;
         $customer->save();
+
+        $user->update(['stripe_id' => $stripeCustomer->id]);
     }
 
     /**

@@ -445,19 +445,6 @@
                         >
                       </b-select>
                     </b-form-group>
-                    <b-btn
-                      variant="success"
-                      @click="showAddNewCustomerModal = true"
-                      >Add New Customer</b-btn
-                    >
-                    <b-modal
-                      size="lg"
-                      v-model="showAddNewCustomerModal"
-                      title="Add New Customer"
-                      hide-footer
-                    >
-                      <register :manualOrder="true"></register>
-                    </b-modal>
                   </div>
                   <h4 class="mt-2 mb-3">Choose Payment Method</h4>
                   <card-picker
@@ -603,7 +590,6 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
-      showAddNewCustomerModal: false,
       creditCardList: [],
       creditCard: {},
       creditCardId: null,
