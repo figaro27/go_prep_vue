@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+f<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -145,7 +145,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
           <br>
           <tr>
             <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">
-              Unfortunately, this company had to cancel your meal plan. This is usually a result in a change of menu or a change of business operations such as a change in the delivery day.
+              This meal plan has been cancelled either by you or by the company.
             </td>
           </tr>
 
