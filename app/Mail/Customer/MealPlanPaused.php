@@ -30,6 +30,11 @@ class MealPlanPaused extends Mailable
      */
     public function build()
     {
-        return $this->view('email.customer.meal-plan-paused')->with($this->data)->subject('Your Meal Plan Was Paused');
+        $subscription = $this->data['subscription'];
+        $storeEmail = $subscription->store->user->email;
+        return $this->view('email.customer.meal-plan-paused')
+            ->with($this->data)
+            ->subject('Your Meal Plan Was Paused')
+            ->replyTo($storeEmail);
     }
 }
