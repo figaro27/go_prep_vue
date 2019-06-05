@@ -30,6 +30,12 @@ class SubscriptionRenewing extends Mailable
      */
     public function build()
     {
-        return $this->view('email.customer.subscription-renewing')->with($this->data)->subject('Your Meal Plan is Renewing');
+        $subscription = $this->data['subscription'];
+        $storeEmail = $subscription->store->user->email;
+
+        return $this->view('email.customer.subscription-renewing')
+            ->with($this->data)
+            ->subject('Your Meal Plan is Renewing')
+            ->replyTo($storeEmail);
     }
 }

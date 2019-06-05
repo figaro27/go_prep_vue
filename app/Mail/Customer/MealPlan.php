@@ -30,6 +30,11 @@ class MealPlan extends Mailable
      */
     public function build()
     {
-        return $this->view('email.customer.meal-plan')->with($this->data)->subject('New Meal Plan');
+        $subscription = $this->data['subscription'];
+        $storeEmail = $subscription->store->user->email;
+        return $this->view('email.customer.meal-plan')
+            ->with($this->data)
+            ->subject('New Meal Plan')
+            ->replyTo($storeEmail);
     }
 }
