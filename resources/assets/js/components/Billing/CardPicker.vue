@@ -23,7 +23,6 @@
           </div>
         </b-list-group-item>
       </b-list-group>
-      <hr />
     </div>
     <div v-if="manualOrder">
       <b-list-group class="card-list">
@@ -40,7 +39,6 @@
           <div class="flex-grow-1">Ending in {{ card.last4 }}</div>
         </b-list-group-item>
       </b-list-group>
-      <hr />
     </div>
 
     <b-form-group label="Add New Card">
