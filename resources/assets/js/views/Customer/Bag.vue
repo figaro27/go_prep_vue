@@ -182,7 +182,7 @@
           <div class="col-md-6 offset-md-1">
             <ul class="list-group">
               <li class="bag-item">
-                <div class="row">
+                <div class="row" v-if="!manualOrder">
                   <div class="col-md-8 pb-1">
                     <h3>
                       <strong
@@ -202,7 +202,7 @@
                     </h3>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row" v-if="!manualOrder">
                   <div class="col-md-9">
                     <strong
                       ><p
@@ -225,7 +225,7 @@
                   </div>
                 </div>
               </li>
-              <li class="checkout-item">
+              <li class="checkout-item" v-if="!manualOrder">
                 <p>
                   <strong>
                     {{ total }} {{ singOrPluralTotal }}
