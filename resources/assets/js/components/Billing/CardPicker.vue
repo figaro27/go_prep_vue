@@ -1,5 +1,15 @@
 <template>
   <div>
+    <b-form-group label="Add New Card">
+      <card
+        class="stripe-card"
+        :class="{ newCard }"
+        :stripe="stripeKey"
+        :options="stripeOptions"
+        @change="newCard = $event.complete"
+      />
+    </b-form-group>
+    <b-btn v-if="newCard" variant="primary" @click="createCard">Add Card</b-btn>
     <div v-if="cards.length && !manualOrder">
       <b-list-group class="card-list">
         <b-list-group-item
@@ -40,17 +50,6 @@
         </b-list-group-item>
       </b-list-group>
     </div>
-
-    <b-form-group label="Add New Card">
-      <card
-        class="stripe-card"
-        :class="{ newCard }"
-        :stripe="stripeKey"
-        :options="stripeOptions"
-        @change="newCard = $event.complete"
-      />
-    </b-form-group>
-    <b-btn v-if="newCard" variant="primary" @click="createCard">Add Card</b-btn>
   </div>
 </template>
 

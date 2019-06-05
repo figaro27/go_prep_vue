@@ -459,15 +459,6 @@
                     v-model="cards"
                     v-if="manualOrder"
                   ></card-picker>
-                  <b-form-group v-if="manualOrder" horizontal label="Deposit %">
-                    <b-form-input
-                      v-model="deposit"
-                      type="text"
-                      required
-                      placeholder="Deposit %"
-                      class="short-field"
-                    ></b-form-input>
-                  </b-form-group>
                   <b-btn
                     v-if="
                       creditCardId &&
@@ -492,12 +483,27 @@
                     class="menu-bag-btn"
                     >CHECKOUT</b-btn
                   >
-                  <b-btn
-                    v-if="manualOrder && cards.length > 0"
-                    @click="checkout"
-                    class="menu-bag-btn"
-                    >CHECKOUT</b-btn
-                  >
+                  <div v-if="manualOrder && cards.length > 0" class="row mt-4">
+                    <div class="col-md-6">
+                      <b-form-group
+                        v-if="manualOrder"
+                        horizontal
+                        label="Deposit %"
+                      >
+                        <b-form-input
+                          v-model="deposit"
+                          type="text"
+                          required
+                          placeholder="Deposit %"
+                        ></b-form-input>
+                      </b-form-group>
+                    </div>
+                    <div class="col-md-6">
+                      <b-btn @click="checkout" class="menu-bag-btn"
+                        >CHECKOUT</b-btn
+                      >
+                    </div>
+                  </div>
                 </div>
               </li>
 
@@ -532,7 +538,8 @@
               v-if="
                 transferTypeCheckDelivery &&
                   pickup === 0 &&
-                  storeSettings.deliveryInstructions
+                  storeSettings.deliveryInstructions &&
+                  !manualOrder
               "
             >
               <p class="strong">Delivery Instructions:</p>
@@ -543,7 +550,8 @@
               v-if="
                 transferTypeCheckPickup &&
                   pickup === 1 &&
-                  storeSettings.pickupInstructions
+                  storeSettings.pickupInstructions &&
+                  !manualOrder
               "
             >
               <p class="strong">Pickup Instructions:</p>

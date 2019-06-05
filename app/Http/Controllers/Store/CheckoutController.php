@@ -27,6 +27,7 @@ class CheckoutController extends StoreController
         $user = auth('api')->user();
         $storeId = $request->get('store_id');
         $store = Store::with(['settings', 'storeDetail'])->findOrFail($storeId);
+        $storeName = strtolower($store->storeDetail->name);
 
         $bag = new Bag($request->get('bag'), $store);
         $weeklyPlan = $request->get('plan');
@@ -82,26 +83,28 @@ class CheckoutController extends StoreController
         $customer = $customer->user->getStoreCustomer($store->id, false);
 
         if (!$weeklyPlan) {
-            $storeSource = \Stripe\Source::create(
-                [
-                    "customer" => $customer->user->stripe_id,
-                    "original_source" => $card->stripe_id,
-                    "usage" => "single_use"
-                ],
-                ["stripe_account" => $store->settings->stripe_id]
-            );
+            if (strpos($storeName, 'livoti') === false) {
+                $storeSource = \Stripe\Source::create(
+                    [
+                        "customer" => $customer->user->stripe_id,
+                        "original_source" => $card->stripe_id,
+                        "usage" => "single_use"
+                    ],
+                    ["stripe_account" => $store->settings->stripe_id]
+                );
 
-            $charge = \Stripe\Charge::create(
-                [
-                    "amount" => round($total * 100 * $deposit),
-                    "currency" => "usd",
-                    "source" => $storeSource,
-                    "application_fee" => round(
-                        $subtotal * $deposit * $application_fee
-                    )
-                ],
-                ["stripe_account" => $store->settings->stripe_id]
-            );
+                $charge = \Stripe\Charge::create(
+                    [
+                        "amount" => round($total * 100 * $deposit),
+                        "currency" => "usd",
+                        "source" => $storeSource,
+                        "application_fee" => round(
+                            $subtotal * $deposit * $application_fee
+                        )
+                    ],
+                    ["stripe_account" => $store->settings->stripe_id]
+                );
+            }
 
             $order = new Order();
             $order->user_id = $customer->user->id;
@@ -122,7 +125,11 @@ class CheckoutController extends StoreController
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
             $order->paid = true;
-            $order->stripe_id = $charge->id;
+            if (strpos($storeName, 'livoti') === false) {
+                $order->stripe_id = $charge->id;
+            } else {
+                $order->stripe_id = null;
+            }
             $order->paid_at = new Carbon();
             $order->coupon_id = $couponId;
             $order->couponReduction = $couponReduction;
@@ -347,32 +354,35 @@ class CheckoutController extends StoreController
         $balance = (100 - $order->deposit) / 100;
         $store = $this->store;
         $application_fee = $store->settings->application_fee;
+        $storeName = strtolower($this->store->storeDetail->name);
 
         $customer = Customer::where('id', $order->customer_id)->first();
         $cardId = $order->card_id;
 
         $card = Card::where('id', $cardId)->first();
 
-        $storeSource = \Stripe\Source::create(
-            [
-                "customer" => $customer->user->stripe_id,
-                "original_source" => $card->stripe_id,
-                "usage" => "single_use"
-            ],
-            ["stripe_account" => $store->settings->stripe_id]
-        );
+        if (strpos($storeName, 'livoti') === false) {
+            $storeSource = \Stripe\Source::create(
+                [
+                    "customer" => $customer->user->stripe_id,
+                    "original_source" => $card->stripe_id,
+                    "usage" => "single_use"
+                ],
+                ["stripe_account" => $store->settings->stripe_id]
+            );
 
-        $charge = \Stripe\Charge::create(
-            [
-                "amount" => round(100 * ($amount * $balance)),
-                "currency" => "usd",
-                "source" => $storeSource,
-                "application_fee" => round(
-                    $subtotal * $balance * $application_fee
-                )
-            ],
-            ["stripe_account" => $store->settings->stripe_id]
-        );
+            $charge = \Stripe\Charge::create(
+                [
+                    "amount" => round(100 * ($amount * $balance)),
+                    "currency" => "usd",
+                    "source" => $storeSource,
+                    "application_fee" => round(
+                        $subtotal * $balance * $application_fee
+                    )
+                ],
+                ["stripe_account" => $store->settings->stripe_id]
+            );
+        }
 
         $order->deposit = 100;
         $order->save();
