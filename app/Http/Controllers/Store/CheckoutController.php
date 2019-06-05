@@ -18,6 +18,7 @@ use App\Customer;
 use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
 
 class CheckoutController extends StoreController
 {
@@ -43,6 +44,7 @@ class CheckoutController extends StoreController
         $subtotal = $request->get('subtotal');
         $afterDiscountBeforeFees = $bag->getTotal();
         $preFeePreDiscount = $bag->getTotal();
+        $deposit = $request->get('deposit') / 100;
 
         $processingFee = 0;
         $mealPlanDiscount = 0;
@@ -91,10 +93,12 @@ class CheckoutController extends StoreController
 
             $charge = \Stripe\Charge::create(
                 [
-                    "amount" => round($total * 100),
+                    "amount" => round($total * 100 * $deposit),
                     "currency" => "usd",
                     "source" => $storeSource,
-                    "application_fee" => round($subtotal * $application_fee)
+                    "application_fee" => round(
+                        $subtotal * $deposit * $application_fee
+                    )
                 ],
                 ["stripe_account" => $store->settings->stripe_id]
             );
@@ -102,6 +106,7 @@ class CheckoutController extends StoreController
             $order = new Order();
             $order->user_id = $customer->user->id;
             $order->customer_id = $customer->id;
+            $order->card_id = $cardId;
             $order->store_id = $store->id;
             $order->order_number = strtoupper(
                 substr(uniqid(rand(10, 99), false), 0, 10)
@@ -123,6 +128,7 @@ class CheckoutController extends StoreController
             $order->couponReduction = $couponReduction;
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
+            $order->deposit = $deposit * 100;
             $order->save();
 
             $items = $bag->getItems();
@@ -329,5 +335,45 @@ class CheckoutController extends StoreController
             } catch (\Exception $e) {
             }
         }
+    }
+
+    public function chargeBalance(Request $request)
+    {
+        $orderId = $request->get('id');
+        $order = Order::where('id', $orderId)->first();
+        $subtotal = $order->preFeePreDiscount;
+        $amount = $order->amount;
+        $balance = (100 - $order->deposit) / 100;
+        $store = $this->store;
+        $application_fee = $store->settings->application_fee;
+
+        $customer = Customer::where('id', $order->customer_id)->first();
+        $cardId = $order->card_id;
+
+        $card = Card::where('id', $cardId)->first();
+
+        $storeSource = \Stripe\Source::create(
+            [
+                "customer" => $customer->user->stripe_id,
+                "original_source" => $card->stripe_id,
+                "usage" => "single_use"
+            ],
+            ["stripe_account" => $store->settings->stripe_id]
+        );
+
+        $charge = \Stripe\Charge::create(
+            [
+                "amount" => round(100 * ($amount * $balance)),
+                "currency" => "usd",
+                "source" => $storeSource,
+                "application_fee" => round(
+                    $subtotal * $balance * $application_fee
+                )
+            ],
+            ["stripe_account" => $store->settings->stripe_id]
+        );
+
+        $order->deposit = 100;
+        $order->save();
     }
 }

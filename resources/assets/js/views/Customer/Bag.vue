@@ -459,6 +459,15 @@
                     v-model="cards"
                     v-if="manualOrder"
                   ></card-picker>
+                  <b-form-group v-if="manualOrder" horizontal label="Deposit %">
+                    <b-form-input
+                      v-model="deposit"
+                      type="text"
+                      required
+                      placeholder="Deposit %"
+                      class="short-field"
+                    ></b-form-input>
+                  </b-form-group>
                   <b-btn
                     v-if="
                       creditCardId &&
@@ -590,6 +599,7 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
+      deposit: 100,
       creditCardList: [],
       creditCard: {},
       creditCardId: null,
@@ -805,7 +815,8 @@ export default {
       "refreshSubscriptions",
       "refreshCustomerOrders",
       "refreshOrders",
-      "refreshStoreSubscriptions"
+      "refreshStoreSubscriptions",
+      "refreshUpcomingOrders"
     ]),
     ...mapMutations(["emptyBag"]),
     preventNegative() {
@@ -824,6 +835,12 @@ export default {
       this.deliveryFee = this.deliveryFeeAmount;
       if (this.pickup === 0) {
         this.selectedPickupLocation = null;
+      }
+
+      let deposit = this.deposit;
+      if (deposit.toString().includes("%")) {
+        deposit.replace("%", "");
+        deposit = parseInt(deposit);
       }
 
       let endPoint = "";
@@ -847,14 +864,21 @@ export default {
           couponCode: this.coupon.code,
           deliveryFee: this.deliveryFee,
           pickupLocation: this.selectedPickupLocation,
-          customer: this.customer
+          customer: this.customer,
+          deposit: deposit
         })
         .then(async resp => {
           if (this.manualOrder && this.deliveryPlan) {
-            window.location.href = "/store/meal-plans";
+            this.refreshStoreSubscriptions();
+            this.$router.push({
+              path: "/store/meal-plans"
+            });
             return;
           } else if (this.manualOrder && !this.deliveryPlan) {
-            window.location.href = "/store/orders";
+            this.refreshUpcomingOrders();
+            this.$router.push({
+              path: "/store/orders"
+            });
             return;
           }
 
