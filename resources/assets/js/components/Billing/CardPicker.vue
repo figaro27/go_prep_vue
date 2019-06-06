@@ -135,7 +135,7 @@ export default {
         }
 
         axios
-          .post("/api/me/cards", {
+          .post("/api/bag/cards", {
             token: data.token,
             customer: customer
           })
