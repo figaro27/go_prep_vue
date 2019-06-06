@@ -151,7 +151,7 @@
 
             <p
               class="mt-3"
-              v-if="minOption === 'price' && totalBagPrice < minPrice"
+              v-if="minOption === 'price' && totalBagPricePreFees < minPrice"
             >
               Please add
               {{ format.money(remainingPrice, storeSettings.currency) }} more to
@@ -162,7 +162,7 @@
                 <b-btn
                   v-if="
                     minOption === 'price' &&
-                      totalBagPrice <= minPrice &&
+                      totalBagPricePreFees <= minPrice &&
                       !preview
                   "
                   class="menu-bag-btn"
@@ -418,7 +418,7 @@
                 class="checkout-item"
                 v-if="
                   minOption === 'price' &&
-                    totalBagPrice < minPrice &&
+                    totalBagPricePreFees < minPrice &&
                     !manualOrder
                 "
               >
@@ -448,7 +448,7 @@
                     v-if="
                       card != null &&
                         minOption === 'price' &&
-                        totalBagPrice >= minPrice &&
+                        totalBagPricePreFees >= minPrice &&
                         storeSettings.open
                     "
                     @click="checkout"
