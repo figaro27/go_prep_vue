@@ -458,6 +458,7 @@
                     :selectable="true"
                     v-model="card"
                     v-if="!manualOrder"
+                    class="mb-3"
                   ></card-picker>
                   <card-picker
                     :selectable="true"
@@ -465,10 +466,11 @@
                     :manualOrder="true"
                     v-model="cards"
                     v-if="manualOrder"
+                    class="mb-3"
                   ></card-picker>
                   <b-btn
                     v-if="
-                      creditCardId &&
+                      creditCardId != null &&
                         minOption === 'meals' &&
                         total >= minMeals &&
                         storeSettings.open &&
@@ -657,12 +659,16 @@ export default {
       getMeal: "viewedStoreMeal"
     }),
     customers() {
-      let customers = this.storeCustomers;
-      let grouped = {};
-      customers.forEach(customer => {
-        grouped[customer.id] = customer.name;
-      });
-      return grouped;
+      if (this.manualOrder) {
+        let customers = this.storeCustomers;
+        let grouped = {};
+        customers.forEach(customer => {
+          grouped[customer.id] = customer.name;
+        });
+        return grouped;
+      } else {
+        return null;
+      }
     },
     deliveryInstructions() {
       return this.storeSettings.deliveryInstructions.replace(/\n/g, "<br>");
@@ -702,8 +708,8 @@ export default {
         return this.creditCardId;
       }
 
-      if (this.cards.length != 1) return null;
-      else return this.cards[0].id;
+      if (this.creditCards.length != 1) return null;
+      else return this.creditCards[0].id;
     },
     storeSettings() {
       return this.store.settings;

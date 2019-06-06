@@ -9,7 +9,9 @@
         @change="newCard = $event.complete"
       />
     </b-form-group>
-    <b-btn v-if="newCard" variant="primary" @click="createCard">Add Card</b-btn>
+    <b-btn v-if="newCard" variant="primary" @click="createCard" class="mb-3"
+      >Add Card</b-btn
+    >
     <div v-if="cards.length && !manualOrder">
       <b-list-group class="card-list">
         <b-list-group-item
@@ -176,6 +178,7 @@ export default {
         return;
       }
 
+      this.$parent.creditCardId = id;
       this.value = id;
       this.$emit("input", id);
     }
