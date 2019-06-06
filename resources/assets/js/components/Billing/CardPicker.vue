@@ -49,6 +49,15 @@
         >
           <img class="card-logo" :src="icons.cards[card.brand.toLowerCase()]" />
           <div class="flex-grow-1">Ending in {{ card.last4 }}</div>
+          <div>
+            <b-btn
+              class="card-delete"
+              variant="plain"
+              @click="e => deleteCard(card.id)"
+            >
+              <i class="fa fa-minus-circle text-danger"></i>
+            </b-btn>
+          </div>
         </b-list-group-item>
       </b-list-group>
     </div>
@@ -158,7 +167,13 @@ export default {
       });
     },
     deleteCard(id) {
-      axios.delete(`/api/me/cards/${id}`).then(async resp => {
+      let endpoint = "";
+      if (this.manualOrder === true) {
+        endpoint = "/api/me/cards/";
+      } else {
+        endpoint = "/api/bag/cards/";
+      }
+      axios.delete(endpoint + id).then(async resp => {
         await this.refreshCards();
         this.$parent.card = null;
         if (this.value === id) {
