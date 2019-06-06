@@ -824,12 +824,16 @@ export default {
     }
   },
   mounted() {
+    this.creditCardId = this.card;
     this.deliveryDay = this.deliveryDaysOptions[0].value;
     this.getSalesTax(this.store.details.state);
 
     if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
 
     this.selectedPickupLocation = this.pickupLocationOptions[0].value;
+  },
+  updated() {
+    this.creditCardId = this.card;
   },
   methods: {
     ...mapActions([
