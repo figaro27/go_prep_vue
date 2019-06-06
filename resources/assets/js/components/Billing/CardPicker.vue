@@ -119,7 +119,14 @@ export default {
   computed: {
     ...mapGetters({
       cards: "cards"
-    })
+    }),
+    endpoint() {
+      if (this.manualOrder === true) {
+        return "/api/me/cards/";
+      } else {
+        return "/api/bag/cards/";
+      }
+    }
   },
   methods: {
     ...mapActions(["refreshCards"]),
@@ -135,7 +142,7 @@ export default {
         }
 
         axios
-          .post("/api/bag/cards", {
+          .post(this.endpoint, {
             token: data.token,
             customer: customer
           })
@@ -167,13 +174,7 @@ export default {
       });
     },
     deleteCard(id) {
-      let endpoint = "";
-      if (this.manualOrder === true) {
-        endpoint = "/api/me/cards/";
-      } else {
-        endpoint = "/api/bag/cards/";
-      }
-      axios.delete(endpoint + id).then(async resp => {
+      axios.delete(this.endpoint + id).then(async resp => {
         await this.refreshCards();
         this.$parent.card = null;
         if (this.value === id) {
