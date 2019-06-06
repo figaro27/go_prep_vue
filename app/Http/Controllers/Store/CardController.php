@@ -6,6 +6,7 @@ use App\Http\Controllers\Store\StoreController;
 use Illuminate\Http\Request;
 use App\Customer;
 use App\User;
+use App\Card;
 
 class CardController extends StoreController
 {
@@ -108,7 +109,7 @@ class CardController extends StoreController
      */
     public function destroy(Request $request, $id)
     {
-        $card = $this->user->cards()->find($id);
+        $card = Card::where('id', $id)->first();
 
         if (!$card) {
             return response('', 404);
