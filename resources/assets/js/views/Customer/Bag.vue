@@ -118,7 +118,10 @@
                 </div>
               </li>
             </ul>
-            <p class="mt-3" v-if="minOption === 'meals' && total < minMeals">
+            <p
+              class="mt-3"
+              v-if="minOption === 'meals' && total < minMeals && !manualOrder"
+            >
               Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
             </p>
             <router-link to="/customer/menu">
@@ -148,7 +151,11 @@
 
             <p
               class="mt-3"
-              v-if="minOption === 'price' && totalBagPrice < minPrice"
+              v-if="
+                minOption === 'price' &&
+                  totalBagPricePreFees < minPrice &&
+                  !manualOrder
+              "
             >
               Please add {{ format.money(remainingPrice) }} more to continue.
             </p>
@@ -157,7 +164,7 @@
                 <b-btn
                   v-if="
                     minOption === 'price' &&
-                      totalBagPrice <= minPrice &&
+                      totalBagPricePreFees <= minPrice &&
                       !preview &&
                       !manualOrder
                   "
@@ -169,7 +176,7 @@
                 <b-btn
                   v-if="
                     minOption === 'price' &&
-                      totalBagPrice <= minPrice &&
+                      totalBagPricePreFees <= minPrice &&
                       !preview &&
                       manualOrder
                   "
@@ -413,7 +420,7 @@
                 class="checkout-item"
                 v-if="
                   minOption === 'price' &&
-                    totalBagPrice < minPrice &&
+                    totalBagPricePreFees < minPrice &&
                     !manualOrder
                 "
               >
@@ -475,7 +482,7 @@
                     v-if="
                       creditCardId != null &&
                         minOption === 'price' &&
-                        totalBagPrice >= minPrice &&
+                        totalBagPricePreFees >= minPrice &&
                         storeSettings.open &&
                         !manualOrder
                     "
