@@ -659,16 +659,12 @@ export default {
       getMeal: "viewedStoreMeal"
     }),
     customers() {
-      if (this.manualOrder) {
-        let customers = this.storeCustomers;
-        let grouped = {};
-        customers.forEach(customer => {
-          grouped[customer.id] = customer.name;
-        });
-        return grouped;
-      } else {
-        return null;
-      }
+      let customers = this.storeCustomers;
+      let grouped = {};
+      customers.forEach(customer => {
+        grouped[customer.id] = customer.name;
+      });
+      return grouped;
     },
     deliveryInstructions() {
       return this.storeSettings.deliveryInstructions.replace(/\n/g, "<br>");

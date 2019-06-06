@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Spinner v-if="loading" />
+    <!-- <Spinner v-if="loading" /> -->
     <customer-menu :manualOrder="true"></customer-menu>
   </div>
 </template>
@@ -25,7 +25,9 @@ export default {
       isLoading: "isLoading"
     })
   },
-  created() {},
+  created() {
+    this.refreshViewedStore();
+  },
   mounted() {},
   methods: {
     ...mapActions({
