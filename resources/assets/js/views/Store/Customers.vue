@@ -60,6 +60,7 @@
             </b-form-group>
             <b-form-group horizontal label="State">
               <v-select
+                label="name"
                 :options="stateNames"
                 :on-change="val => changeState(val)"
               ></v-select>
