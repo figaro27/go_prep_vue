@@ -353,6 +353,9 @@ export default {
       deliveryNote: ""
     };
   },
+  created() {
+    this.refreshViewedStore();
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -387,7 +390,8 @@ export default {
       refreshUpcomingOrders: "refreshUpcomingOrders",
       updateOrder: "updateOrder",
       addJob: "addJob",
-      removeJob: "removeJob"
+      removeJob: "removeJob",
+      refreshViewedStore: "refreshViewedStore"
     }),
     refreshTable() {
       this.refreshOrders();
