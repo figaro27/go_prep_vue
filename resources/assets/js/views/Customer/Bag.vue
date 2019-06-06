@@ -944,6 +944,8 @@ export default {
       });
     },
     getCards() {
+      this.creditCardId = null;
+      this.creditCards = null;
       this.$nextTick(() => {
         axios
           .post("/api/me/getCards", {
