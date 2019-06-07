@@ -195,10 +195,9 @@
                         "
                       >
                         <p>
-                          Your credit card has been charged and your order is
-                          locked in for this week. You will be able to pause /
-                          cancel / or change meals in your meal plan after your
-                          food gets delivered on
+                          Your order is locked in for this week. You will be
+                          able to pause /cancel / or change meals in your meal
+                          plan after your food gets delivered on
                           {{
                             moment(
                               subscription.latest_paid_order.delivery_date
