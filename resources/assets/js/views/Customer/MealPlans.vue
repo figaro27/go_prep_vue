@@ -198,9 +198,12 @@
                           Your credit card has been charged and your order is
                           locked in for this week. You will be able to pause /
                           cancel / or change meals in your meal plan after your
-                          food gets delivered on moment(
-                          subscription.latest_paid_order.delivery_date
-                          ).format("dddd, MMM Do").
+                          food gets delivered on
+                          {{
+                            moment(
+                              subscription.latest_paid_order.delivery_date
+                            ).format("dddd, MMM Do")
+                          }}.
                         </p>
                       </div>
                       <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
