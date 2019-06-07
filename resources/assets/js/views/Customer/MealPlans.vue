@@ -168,7 +168,7 @@
                       </p>
                       <div
                         v-if="
-                          subscription.latest_paid_order.delivery_date >
+                          subscription.latest_paid_order.delivery_date <
                             moment().format()
                         "
                       >
@@ -190,7 +190,7 @@
                       </div>
                       <div
                         v-if="
-                          subscription.latest_paid_order.delivery_date <
+                          subscription.latest_paid_order.delivery_date >
                             moment().format()
                         "
                       >
