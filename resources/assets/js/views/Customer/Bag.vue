@@ -530,6 +530,21 @@
     </div>
   </div>
 </template>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script
+  v-if="(storeId = 13)"
+  async
+  src="https://www.googletagmanager.com/gtag/js?id=UA-63352850-49"
+></script>
+<script v-if="(storeId = 13)">
+window.dataLayer = window.dataLayer || [];
+function gtag() {
+  dataLayer.push(arguments);
+}
+gtag("js", new Date());
+
+gtag("config", "UA-63352850-49");
+</script>
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
@@ -587,6 +602,9 @@ export default {
       pickupLocations: "viewedStorePickupLocations",
       getMeal: "viewedStoreMeal"
     }),
+    storeId() {
+      return this.store.id;
+    },
     storeWebsite() {
       if (!this.storeSettings.website) {
         return null;
