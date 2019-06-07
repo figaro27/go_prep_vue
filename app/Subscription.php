@@ -93,7 +93,7 @@ class Subscription extends Model
     public function getLatestUnpaidOrderAttribute()
     {
         $latestOrder = $this->orders()
-            ->where([['paid', 0]])
+            ->where('paid', 0)
             ->whereDate('delivery_date', '>=', Carbon::now())
             ->orderBy('delivery_date', 'desc')
             ->first();
@@ -104,7 +104,7 @@ class Subscription extends Model
     public function getLatestPaidOrderAttribute()
     {
         $latestOrder = $this->orders()
-            ->where([['paid', 1]])
+            ->where('paid', 1)
             ->orderBy('delivery_date', 'desc')
             ->first();
 
