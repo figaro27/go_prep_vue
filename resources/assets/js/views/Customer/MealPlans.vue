@@ -65,7 +65,7 @@
                       >
                         {{
                           moment(
-                            subscription.latest_order.delivery_date
+                            subscription.latest_paid_order.delivery_date
                           ).format("dddd, MMM Do")
                         }}
                       </p>
@@ -73,7 +73,7 @@
                         Delivered On:
                         {{
                           moment(
-                            subscription.latest_order.delivery_date
+                            subscription.latest_paid_order.delivery_date
                           ).format("dddd, MMM Do")
                         }}
                       </p>
@@ -166,21 +166,32 @@
                         }}
                         per week.
                       </p>
-                      <b-btn
-                        variant="warning"
-                        @click.stop="() => pauseSubscription(subscription)"
-                        >Pause</b-btn
-                      >
-                      <b-btn
-                        variant="danger"
-                        @click.stop="() => cancelSubscription(subscription)"
-                        >Cancel</b-btn
-                      >
-                      <b-btn
-                        variant="success"
-                        @click.stop="() => editSubscription(subscription)"
-                        >Change Meals</b-btn
-                      >
+                      <div v-if="subscription.next_delivery_date > moment()">
+                        <b-btn
+                          variant="warning"
+                          @click.stop="() => pauseSubscription(subscription)"
+                          >Pause</b-btn
+                        >
+                        <b-btn
+                          variant="danger"
+                          @click.stop="() => cancelSubscription(subscription)"
+                          >Cancel</b-btn
+                        >
+                        <b-btn
+                          variant="success"
+                          @click.stop="() => editSubscription(subscription)"
+                          >Change Meals</b-btn
+                        >
+                      </div>
+                      <div v-if="subscription.next_delivery_date < moment()">
+                        <p>
+                          Your credit card has been charged and your order is
+                          locked in for this week. You will be able to pause /
+                          cancel / or change meals in your meal plan after your
+                          food gets delivered on
+                          {{ subscription.latest_paid_order.delivery_date }}.
+                        </p>
+                      </div>
                       <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
                     </div>
                     <div
@@ -209,7 +220,7 @@
                   </div>
 
                   <b-collapse :id="'collapse' + subscription.id" class="mt-2">
-                    <div class="row">
+                    <!-- <div class="row">
                       <div class="col-md-12">
                         <p>
                           Your card will be charged on
@@ -221,7 +232,7 @@
                           applied to <strong>next week's</strong> order.
                         </p>
                       </div>
-                    </div>
+                    </div> -->
                     <b-table
                       striped
                       stacked="sm"
@@ -321,6 +332,7 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import format from "../../lib/format.js";
 import Spinner from "../../components/Spinner";
+import moment from "moment";
 
 export default {
   components: {
