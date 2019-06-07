@@ -168,7 +168,8 @@
                       </p>
                       <div
                         v-if="
-                          subscription.latest_order.delivery_date > moment()
+                          subscription.latest_paid_order.delivery_date >
+                            moment()
                         "
                       >
                         <b-btn
@@ -189,7 +190,8 @@
                       </div>
                       <div
                         v-if="
-                          subscription.latest_order.delivery_date < moment()
+                          subscription.latest_paid_order.delivery_date <
+                            moment()
                         "
                       >
                         <p>
