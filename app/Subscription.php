@@ -108,7 +108,15 @@ class Subscription extends Model
             ->orderBy('delivery_date', 'desc')
             ->first();
 
-        return $latestOrder;
+        $arr = (array) $latestOrder;
+
+        if (!empty($arr)) {
+            return $latestOrder;
+        } else {
+            return $this->orders()
+                ->orderBy('delivery_date', 'desc')
+                ->first();
+        }
     }
 
     public function getNextDeliveryDateAttribute()
