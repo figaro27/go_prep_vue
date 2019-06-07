@@ -166,7 +166,11 @@
                         }}
                         per week.
                       </p>
-                      <div v-if="subscription.next_delivery_date > moment()">
+                      <div
+                        v-if="
+                          subscription.latest_order.delivery_date > moment()
+                        "
+                      >
                         <b-btn
                           variant="warning"
                           @click.stop="() => pauseSubscription(subscription)"
@@ -183,7 +187,11 @@
                           >Change Meals</b-btn
                         >
                       </div>
-                      <div v-if="subscription.next_delivery_date < moment()">
+                      <div
+                        v-if="
+                          subscription.latest_order.delivery_date < moment()
+                        "
+                      >
                         <p>
                           Your credit card has been charged and your order is
                           locked in for this week. You will be able to pause /
