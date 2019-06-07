@@ -63,11 +63,11 @@
                             !subscription.latest_order.fulfilled
                         "
                       >
-                        <!-- {{
+                        {{
                           moment(
-                            subscription.latest_paid_order.delivery_date
+                            subscription.latest_order.delivery_date
                           ).format("dddd, MMM Do")
-                        }} -->
+                        }}
                       </p>
                       <p v-else-if="subscription.latest_order">
                         Delivered On:
