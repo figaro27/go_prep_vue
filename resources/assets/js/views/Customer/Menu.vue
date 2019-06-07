@@ -1,6 +1,10 @@
 <template>
   <div>
-    <floating-action-button class="d-md-none brand-color" to="/customer/bag">
+    <floating-action-button
+      class="d-md-none brand-color"
+      to="/customer/bag"
+      v-if="!subscriptionId"
+    >
       <div class="d-flex flex-column h-100">
         <i class="fa fa-shopping-bag text-white"></i>
         <i v-if="total" class="text-white mt-1">{{ total }}</i>
