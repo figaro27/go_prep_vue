@@ -65,7 +65,7 @@
                       >
                         {{
                           moment(
-                            subscription.latest_order.delivery_date
+                            subscription.latest_paid_order.delivery_date
                           ).format("dddd, MMM Do")
                         }}
                       </p>
