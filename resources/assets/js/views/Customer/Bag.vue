@@ -633,6 +633,10 @@ export default {
     }),
     customers() {
       let customers = this.storeCustomers;
+      if (_.isEmpty(customers)) {
+        return [];
+      }
+
       let grouped = {};
       customers.forEach(customer => {
         grouped[customer.id] = customer.name;
@@ -905,9 +909,12 @@ export default {
             id: this.customer
           })
           .then(response => {
-            this.creditCardId = response.data[0].id;
-            this.creditCard = response.data[0];
             this.creditCardList = response.data;
+
+            if (response.data.length) {
+              this.creditCardId = response.data[0].id;
+              this.creditCard = response.data[0];
+            }
           });
       });
     },

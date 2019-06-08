@@ -1203,6 +1203,9 @@ export default {
     },
     customers() {
       let customers = this.storeCustomers;
+      if (_.isEmpty(customers)) {
+        return [];
+      }
       let grouped = {};
       customers.forEach(customer => {
         grouped[customer.id] = customer.name;
