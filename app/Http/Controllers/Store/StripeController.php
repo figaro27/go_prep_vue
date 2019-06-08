@@ -12,6 +12,27 @@ use Stripe;
 class StripeController extends StoreController
 {
     /**
+     * Returns the URL to connect
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function connectUrl(Request $request)
+    {
+        if (env('APP_ENV') === 'production') {
+            $ca = 'ca_ER2OUNQq30X2xHMqkWo8ilUSz7Txyn1A';
+        } else {
+            $ca = 'ca_ER2OYlaTUrWz7LRQvhtKLIjZsRcM8mh9';
+        }
+
+        if (in_array($this->store->details->country, ['US', 'CA'])) {
+            return "https://connect.stripe.com/express/oauth/authorize?client_id=$ca";
+        } else {
+            return "https://connect.stripe.com/oauth/authorize?client_id=$ca&response_type=code&scope=read_write";
+        }
+    }
+
+    /**
      * Connect a stripe account
      *
      * @param  \Illuminate\Http\Request  $request
@@ -27,13 +48,17 @@ class StripeController extends StoreController
 
         try {
             $client = new GuzzleHttp\Client();
-            $res = $client->request('POST', 'https://connect.stripe.com/oauth/token', [
-                'form_params' => [
-                    'client_secret' => config('services.stripe.secret'),
-                    'code' => $code,
-                    'grant_type' => 'authorization_code',
-                ],
-            ]);
+            $res = $client->request(
+                'POST',
+                'https://connect.stripe.com/oauth/token',
+                [
+                    'form_params' => [
+                        'client_secret' => config('services.stripe.secret'),
+                        'code' => $code,
+                        'grant_type' => 'authorization_code'
+                    ]
+                ]
+            );
         } catch (ClientException $e) {
             return redirect('/store');
         }
@@ -49,7 +74,6 @@ class StripeController extends StoreController
         $this->store->settings->save();
 
         return redirect('/store/account/settings');
-
     }
 
     public function getLoginLinks()
@@ -60,11 +84,13 @@ class StripeController extends StoreController
             return null;
         }
 
-        $cacheId = 'stripe_login_url_'.$this->store->id;
-        
-        if(Cache::has($cacheId)) {
-          $link = Cache::get($cacheId, null);
-          if($link) return $link;
+        $cacheId = 'stripe_login_url_' . $this->store->id;
+
+        if (Cache::has($cacheId)) {
+            $link = Cache::get($cacheId, null);
+            if ($link) {
+                return $link;
+            }
         }
 
         try {
@@ -86,7 +112,6 @@ class StripeController extends StoreController
         if (!$this->store->hasStripe()) {
             return;
         }
-
     }
 
     /**
@@ -115,7 +140,7 @@ class StripeController extends StoreController
             $account = Stripe\Account::create([
                 "type" => "custom",
                 "country" => "US",
-                "email" => $this->store->user->email,
+                "email" => $this->store->user->email
             ]);
         }
 
@@ -153,7 +178,6 @@ class StripeController extends StoreController
      */
     public function update(Request $request)
     {
-
     }
 
     /**

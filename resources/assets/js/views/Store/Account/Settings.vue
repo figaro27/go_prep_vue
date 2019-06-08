@@ -832,13 +832,7 @@
         <div class="card-body">
           <div v-if="!storeSettings.stripe_id">
             <b-form-group :state="true">
-              <b-button
-                variant="primary"
-                :href="
-                  `https://connect.stripe.com/express/oauth/authorize?client_id=ca_ER2OUNQq30X2xHMqkWo8ilUSz7Txyn1A&state=${
-                    store.id
-                  }`
-                "
+              <b-button variant="primary" :href="stripeConnectUrl"
                 >Connect Account</b-button
               >
             </b-form-group>
@@ -998,7 +992,8 @@ export default {
       coupon: { type: "flat" },
       columns: ["code", "type", "amount", "actions"],
       deselectedDeliveryDay: null,
-      showCutoffModal: false
+      showCutoffModal: false,
+      stripeConnectUrl: null
     };
   },
   computed: {
@@ -1096,7 +1091,11 @@ export default {
       );
     }
   },
-  created() {},
+  created() {
+    axios.get("/api/me/stripe/connect/url").then(resp => {
+      this.stripeConnectUrl = resp.data;
+    });
+  },
   mounted() {
     this.view_delivery_days = this.storeSettings.view_delivery_days;
     this.color = this.storeSettings.color;
