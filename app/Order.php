@@ -14,6 +14,7 @@ class Order extends Model
     protected $casts = [
         'delivery_date' => 'date:Y-m-d',
         'cutoff_date' => 'date:Y-m-d H:i:s',
+        'deposit' => 'float',
         'preFeePreDiscount' => 'float',
         'afterDiscountBeforeFees' => 'float',
         'processingFee' => 'float',
@@ -81,6 +82,11 @@ class Order extends Model
     public function pickup_location()
     {
         return $this->belongsTo('App\PickupLocation');
+    }
+
+    public function card()
+    {
+        return $this->hasOne('App\Card');
     }
 
     public function getPreCouponAttribute()

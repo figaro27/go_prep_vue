@@ -25,6 +25,15 @@
               size="lg"
               class="brand-color white-text"
               to="/customer/menu"
+              v-if="!manualOrder"
+            >
+              <span class="d-sm-inline">Change Meals</span>
+            </b-button>
+            <b-button
+              size="lg"
+              class="brand-color white-text"
+              to="/store/manual-order"
+              v-if="manualOrder"
             >
               <span class="d-sm-inline">Change Meals</span>
             </b-button>
@@ -138,12 +147,32 @@
                 </div>
               </li>
             </ul>
-            <p class="mt-3" v-if="minOption === 'meals' && total < minMeals">
+            <p
+              class="mt-3"
+              v-if="minOption === 'meals' && total < minMeals && !manualOrder"
+            >
               Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
             </p>
             <router-link to="/customer/menu">
               <b-btn
-                v-if="minOption === 'meals' && total < minMeals && !preview"
+                v-if="
+                  minOption === 'meals' &&
+                    total < minMeals &&
+                    !preview &&
+                    !manualOrder
+                "
+                class="menu-bag-btn mb-2"
+                >BACK</b-btn
+              >
+            </router-link>
+            <router-link to="/store/manual-order">
+              <b-btn
+                v-if="
+                  minOption === 'meals' &&
+                    total < minMeals &&
+                    !preview &&
+                    manualOrder
+                "
                 class="menu-bag-btn mb-2"
                 >BACK</b-btn
               >
@@ -151,7 +180,11 @@
 
             <p
               class="mt-3"
-              v-if="minOption === 'price' && totalBagPricePreFees < minPrice"
+              v-if="
+                minOption === 'price' &&
+                  totalBagPricePreFees < minPrice &&
+                  !manualOrder
+              "
             >
               Please add
               {{ format.money(remainingPrice, storeSettings.currency) }} more to
@@ -163,7 +196,20 @@
                   v-if="
                     minOption === 'price' &&
                       totalBagPricePreFees <= minPrice &&
-                      !preview
+                      !preview &&
+                      !manualOrder
+                  "
+                  class="menu-bag-btn"
+                  >BACK</b-btn
+                >
+              </router-link>
+              <router-link to="/store/manual-order">
+                <b-btn
+                  v-if="
+                    minOption === 'price' &&
+                      totalBagPricePreFees <= minPrice &&
+                      !preview &&
+                      manualOrder
                   "
                   class="menu-bag-btn"
                   >BACK</b-btn
@@ -174,7 +220,7 @@
           <div class="col-md-6 offset-md-1">
             <ul class="list-group">
               <li class="bag-item">
-                <div class="row">
+                <div class="row" v-if="!manualOrder">
                   <div class="col-md-8 pb-1">
                     <h3>
                       <strong
@@ -194,7 +240,7 @@
                     </h3>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row" v-if="!manualOrder">
                   <div class="col-md-9">
                     <strong
                       ><p
@@ -217,7 +263,7 @@
                   </div>
                 </div>
               </li>
-              <li class="checkout-item">
+              <li class="checkout-item" v-if="!manualOrder">
                 <p>
                   <strong>
                     {{ total }} {{ singOrPluralTotal }}
@@ -436,25 +482,82 @@
                   >
                 </div>
                 <div v-else>
+                  <div v-if="manualOrder">
+                    <b-form-group description>
+                      <h4 class="mt-2 mb-3">Choose Customer</h4>
+                      <b-select
+                        :options="customers"
+                        v-model="customer"
+                        class="bag-select"
+                        @change="getCards"
+                        required
+                      >
+                        <option slot="top" disabled
+                          >-- Select Customer --</option
+                        >
+                      </b-select>
+                    </b-form-group>
+                  </div>
                   <h4 class="mt-2 mb-3">Choose Payment Method</h4>
-                  <card-picker :selectable="true" v-model="card"></card-picker>
+                  <card-picker
+                    :selectable="true"
+                    v-model="card"
+                    v-if="!manualOrder"
+                    class="mb-3"
+                  ></card-picker>
+                  <card-picker
+                    :selectable="true"
+                    :creditCards="creditCardList"
+                    :manualOrder="true"
+                    v-model="cards"
+                    v-if="manualOrder"
+                    class="mb-3"
+                  ></card-picker>
                   <b-btn
-                    v-if="card && minOption === 'meals' && total >= minMeals"
+                    v-if="
+                      creditCardId != null &&
+                        minOption === 'meals' &&
+                        total >= minMeals &&
+                        storeSettings.open &&
+                        !manualOrder
+                    "
                     @click="checkout"
                     class="menu-bag-btn"
                     >CHECKOUT</b-btn
                   >
                   <b-btn
                     v-if="
-                      card != null &&
+                      creditCardId != null &&
                         minOption === 'price' &&
                         totalBagPricePreFees >= minPrice &&
-                        storeSettings.open
+                        storeSettings.open &&
+                        !manualOrder
                     "
                     @click="checkout"
                     class="menu-bag-btn"
                     >CHECKOUT</b-btn
                   >
+                  <div v-if="manualOrder && cards.length > 0" class="row mt-4">
+                    <div class="col-md-6">
+                      <b-form-group
+                        v-if="manualOrder"
+                        horizontal
+                        label="Deposit %"
+                      >
+                        <b-form-input
+                          v-model="deposit"
+                          type="text"
+                          required
+                          placeholder="Deposit %"
+                        ></b-form-input>
+                      </b-form-group>
+                    </div>
+                    <div class="col-md-6">
+                      <b-btn @click="checkout" class="menu-bag-btn"
+                        >CHECKOUT</b-btn
+                      >
+                    </div>
+                  </div>
                 </div>
               </li>
 
@@ -489,7 +592,8 @@
               v-if="
                 transferTypeCheckDelivery &&
                   pickup === 0 &&
-                  storeSettings.deliveryInstructions
+                  storeSettings.deliveryInstructions &&
+                  !manualOrder
               "
             >
               <p class="strong">Delivery Instructions:</p>
@@ -500,7 +604,8 @@
               v-if="
                 transferTypeCheckPickup &&
                   pickup === 1 &&
-                  storeSettings.pickupInstructions
+                  storeSettings.pickupInstructions &&
+                  !manualOrder
               "
             >
               <p class="strong">Pickup Instructions:</p>
@@ -534,9 +639,9 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
-// import { stripeKey, stripeOptions } from "../../config/stripe.json";
 import { createToken } from "vue-stripe-elements-plus";
 import SalesTax from "sales-tax";
+import Register from "../Register";
 
 import MenuBag from "../../mixins/menuBag";
 import CardPicker from "../../components/Billing/CardPicker";
@@ -545,17 +650,27 @@ export default {
   components: {
     cSwitch,
     CardPicker,
-    SalesTax
+    SalesTax,
+    Register
+  },
+  props: {
+    manualOrder: {
+      default: false
+    }
   },
   mixins: [MenuBag],
   data() {
     return {
+      deposit: 100,
+      creditCardList: [],
+      creditCard: {},
+      creditCardId: null,
+      customer: null,
       selectedPickupLocation: null,
       pickup: 0,
       deliveryPlan: false,
       deliveryDay: undefined,
       stripeKey: window.app.stripe_key,
-      // stripeOptions,
       loading: false,
       checkingOut: false,
       salesTax: 0,
@@ -568,9 +683,10 @@ export default {
   },
   computed: {
     ...mapGetters({
-      cards: "cards",
+      creditCards: "cards",
       store: "viewedStore",
       storeSetting: "viewedStoreSetting",
+      storeCustomers: "storeCustomers",
       total: "bagQuantity",
       bag: "bagItems",
       hasMeal: "bagHasMeal",
@@ -587,6 +703,18 @@ export default {
       pickupLocations: "viewedStorePickupLocations",
       getMeal: "viewedStoreMeal"
     }),
+    customers() {
+      let customers = this.storeCustomers;
+      if (_.isEmpty(customers)) {
+        return [];
+      }
+
+      let grouped = {};
+      customers.forEach(customer => {
+        grouped[customer.id] = customer.name;
+      });
+      return grouped;
+    },
     storeId() {
       return this.store.id;
     },
@@ -631,9 +759,20 @@ export default {
         }
       } else return 0;
     },
+    cards() {
+      if (this.manualOrder) {
+        return this.creditCardList;
+      }
+      if (this.creditCard != null) return [this.creditCard];
+      else return this.creditCards;
+    },
     card() {
-      if (this.cards.length != 1) return null;
-      else return this.cards[0].id;
+      if (this.creditCardId != null) {
+        return this.creditCardId;
+      }
+
+      if (this.creditCards.length != 1) return null;
+      else return this.creditCards[0].id;
     },
     storeSettings() {
       return this.store.settings;
@@ -753,6 +892,7 @@ export default {
     }
   },
   mounted() {
+    this.creditCardId = this.card;
     this.deliveryDay = this.deliveryDaysOptions[0].value;
     this.getSalesTax(this.store.details.state);
 
@@ -760,8 +900,17 @@ export default {
 
     this.selectedPickupLocation = this.pickupLocationOptions[0].value;
   },
+  updated() {
+    this.creditCardId = this.card;
+  },
   methods: {
-    ...mapActions(["refreshSubscriptions", "refreshCustomerOrders"]),
+    ...mapActions([
+      "refreshSubscriptions",
+      "refreshCustomerOrders",
+      "refreshOrders",
+      "refreshStoreSubscriptions",
+      "refreshUpcomingOrders"
+    ]),
     ...mapMutations(["emptyBag"]),
     preventNegative() {
       if (this.total < 0) {
@@ -780,9 +929,22 @@ export default {
       if (this.pickup === 0) {
         this.selectedPickupLocation = null;
       }
+
+      let deposit = this.deposit;
+      if (deposit.toString().includes("%")) {
+        deposit.replace("%", "");
+        deposit = parseInt(deposit);
+      }
+
+      let endPoint = "";
+      if (this.manualOrder === true) {
+        endPoint = "/api/me/checkout";
+      } else {
+        endPoint = "/api/bag/checkout";
+      }
       axios
-        .post("/api/bag/checkout", {
-          subtotal: this.subtotal,
+        .post(endPoint, {
+          subtotal: this.afterDiscount,
           afterDiscount: this.afterDiscount,
           bag: this.bag,
           plan: this.deliveryPlan,
@@ -795,10 +957,24 @@ export default {
           couponReduction: this.couponReduction,
           couponCode: this.coupon.code,
           deliveryFee: this.deliveryFee,
-          pickupLocation: this.selectedPickupLocation
+          pickupLocation: this.selectedPickupLocation,
+          customer: this.customer,
+          deposit: deposit
         })
         .then(async resp => {
-          this.emptyBag();
+          if (this.manualOrder && this.deliveryPlan) {
+            this.refreshStoreSubscriptions();
+            this.$router.push({
+              path: "/store/meal-plans"
+            });
+            return;
+          } else if (this.manualOrder && !this.deliveryPlan) {
+            this.refreshUpcomingOrders();
+            this.$router.push({
+              path: "/store/orders"
+            });
+            return;
+          }
 
           if (this.deliveryPlan) {
             await this.refreshSubscriptions();
@@ -813,6 +989,8 @@ export default {
               query: { created: true, pickup: this.pickup }
             });
           }
+
+          this.emptyBag();
         })
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors)) || [
@@ -837,6 +1015,27 @@ export default {
           return;
         }
       });
+    },
+    getCards() {
+      this.creditCardId = null;
+      this.creditCards = null;
+      this.$nextTick(() => {
+        axios
+          .post("/api/me/getCards", {
+            id: this.customer
+          })
+          .then(response => {
+            this.creditCardList = response.data;
+
+            if (response.data.length) {
+              this.creditCardId = response.data[0].id;
+              this.creditCard = response.data[0];
+            }
+          });
+      });
+    },
+    getCustomer() {
+      return this.customer;
     }
   }
 };

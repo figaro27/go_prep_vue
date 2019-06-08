@@ -1,24 +1,19 @@
 <template>
-  <div>
-    <!-- <Spinner v-if="loading" /> -->
-    <customer-menu :manualOrder="true"></customer-menu>
-  </div>
+  <customer-bag :manualOrder="true"></customer-bag>
 </template>
 
 <script>
 import Spinner from "../../components/Spinner";
 import { mapGetters, mapActions, mapMutations } from "vuex";
-import CustomerMenu from "../Customer/Menu";
+import CustomerBag from "../Customer/Bag";
 
 export default {
   components: {
     Spinner,
-    CustomerMenu
+    CustomerBag
   },
   data() {
-    return {
-      loading: true
-    };
+    return {};
   },
   computed: {
     ...mapGetters({
@@ -32,10 +27,7 @@ export default {
   methods: {
     ...mapActions({
       refreshViewedStore: "refreshViewedStore"
-    }),
-    setLoadingToFalse() {
-      this.loading = false;
-    }
+    })
   }
 };
 </script>

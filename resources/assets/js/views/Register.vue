@@ -19,7 +19,9 @@
                   name="user-type"
                 >
                   <b-form-radio value="customer">Customer</b-form-radio>
-                  <b-form-radio value="store">Company</b-form-radio>
+                  <b-form-radio value="store" v-if="!manualOrder"
+                    >Company</b-form-radio
+                  >
                 </b-form-radio-group>
               </b-form-group>
 
@@ -453,9 +455,19 @@
               <b-form-group horizontal>
                 <b-button
                   type="submit"
+                  v-if="!manualOrder"
                   :disabled="$v.form[2].$invalid"
                   variant="primary"
                   >Submit</b-button
+                >
+              </b-form-group>
+              <b-form-group horizontal>
+                <b-button
+                  type="submit"
+                  v-if="manualOrder"
+                  :disabled="$v.form[2].$invalid"
+                  variant="primary"
+                  >Add New Customer</b-button
                 >
               </b-form-group>
             </div>
@@ -481,6 +493,11 @@ export default {
   components: {
     TermsOfService,
     TermsOfAgreement
+  },
+  props: {
+    manualOrder: {
+      default: false
+    }
   },
   data() {
     return {

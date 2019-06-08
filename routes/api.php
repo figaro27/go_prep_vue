@@ -88,6 +88,8 @@ foreach (
                             Route::patch('user', 'UserController@update');
                             Route::get('user', 'UserController@show');
 
+                            Route::resource('register', 'RegisterController');
+
                             Route::get(
                                 'orders/ingredients/export/{type}',
                                 'OrderIngredientController@export'
@@ -137,6 +139,10 @@ foreach (
                                 'SubscriptionController'
                             );
                             Route::resource('customers', 'CustomerController');
+                            Route::post(
+                                'getCards',
+                                'CustomerController@getCards'
+                            );
                             Route::resource('units', 'UnitController');
                             Route::resource('categories', 'CategoryController');
                             Route::resource('coupons', 'CouponController');
@@ -148,6 +154,7 @@ foreach (
                                 'settings',
                                 'StoreSettingController'
                             );
+                            Route::resource('cards', 'CardController');
                             Route::post(
                                 'pauseMealPlans',
                                 'StoreSettingController@pauseMealPlans'
@@ -199,6 +206,14 @@ foreach (
                             Route::get(
                                 'getAcceptedTOA',
                                 'StoreDetailController@getAcceptedTOA'
+                            );
+                            Route::post(
+                                'checkout',
+                                'CheckoutController@checkout'
+                            );
+                            Route::post(
+                                'chargeBalance',
+                                'CheckoutController@chargeBalance'
                             );
                         }
                     );
@@ -258,7 +273,7 @@ foreach (
                             Route::get('store/meals', 'StoreController@meals');
 
                             Route::resource(
-                                'me/cards',
+                                'bag/cards',
                                 'Billing\CardController'
                             );
 

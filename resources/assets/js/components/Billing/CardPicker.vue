@@ -1,26 +1,5 @@
 <template>
   <div>
-    <div v-if="cards.length">
-      <b-list-group class="card-list">
-        <b-list-group-item
-          v-for="card in cards" :key="card.id"
-          :active="value === card.id"
-          @click="e => selectCard(card.id)"
-          class="card-list-item"
-          :href="selectable ? '#' : ''">
-
-          <img class="card-logo" :src="icons.cards[card.brand.toLowerCase()]">
-          <div class="flex-grow-1">Ending in {{ card.last4 }}</div>
-          <div>
-            <b-btn class="card-delete" variant="plain" @click="e => deleteCard(card.id)">
-              <i class="fa fa-minus-circle text-danger"></i>
-            </b-btn>
-          </div>
-        </b-list-group-item>
-      </b-list-group>
-      <hr>
-    </div>
-
     <b-form-group label="Add New Card">
       <card
         class="stripe-card"
@@ -30,7 +9,58 @@
         @change="newCard = $event.complete"
       />
     </b-form-group>
-    <b-btn v-if="newCard" variant="primary" @click="createCard">Add Card</b-btn>
+    <b-btn v-if="newCard" variant="primary" @click="createCard" class="mb-3"
+      >Add Card</b-btn
+    >
+    <div v-if="cards.length && !manualOrder">
+      <b-list-group class="card-list">
+        <b-list-group-item
+          v-for="card in cards"
+          :key="card.id"
+          :active="value === card.id"
+          @click="e => selectCard(card.id)"
+          class="card-list-item"
+          :href="selectable ? '#' : ''"
+        >
+          <img class="card-logo" :src="icons.cards[card.brand.toLowerCase()]" />
+          <div class="flex-grow-1">Ending in {{ card.last4 }}</div>
+          <div>
+            <b-btn
+              class="card-delete"
+              variant="plain"
+              @click="e => deleteCard(card.id)"
+            >
+              <i class="fa fa-minus-circle text-danger"></i>
+            </b-btn>
+          </div>
+        </b-list-group-item>
+      </b-list-group>
+    </div>
+    <div v-if="manualOrder">
+      <b-list-group class="card-list">
+        <b-list-group-item
+          v-if="manualOrder"
+          v-for="card in creditCards"
+          :key="card.id"
+          :active="value === card.id"
+          @click="e => selectCard(card.id)"
+          class="card-list-item"
+          :href="selectable ? '#' : ''"
+        >
+          <img class="card-logo" :src="icons.cards[card.brand.toLowerCase()]" />
+          <div class="flex-grow-1">Ending in {{ card.last4 }}</div>
+          <div>
+            <b-btn
+              class="card-delete"
+              variant="plain"
+              @click="e => deleteCard(card.id)"
+            >
+              <i class="fa fa-minus-circle text-danger"></i>
+            </b-btn>
+          </div>
+        </b-list-group-item>
+      </b-list-group>
+    </div>
   </div>
 </template>
 
@@ -70,6 +100,12 @@ export default {
     },
     selectable: {
       default: false
+    },
+    creditCards: {
+      default: 0
+    },
+    manualOrder: {
+      default: false
     }
   },
   data() {
@@ -77,16 +113,25 @@ export default {
       stripeKey: window.app.stripe_key,
       // stripeOptions,
       newCard: null,
+      creditCards: []
     };
   },
   computed: {
     ...mapGetters({
       cards: "cards"
-    })
+    }),
+    endpoint() {
+      if (this.manualOrder === true) {
+        return "/api/me/cards/";
+      } else {
+        return "/api/bag/cards/";
+      }
+    }
   },
   methods: {
     ...mapActions(["refreshCards"]),
     createCard() {
+      let customer = this.$parent.getCustomer();
       // this.$parent.loading = true;
       createToken().then(data => {
         console.log(data);
@@ -97,19 +142,24 @@ export default {
         }
 
         axios
-          .post("/api/me/cards", {
-            token: data.token
+          .post(this.endpoint, {
+            token: data.token,
+            customer: customer
           })
           .then(async resp => {
-            await this.refreshCards();
+            if (this.manualOrder) {
+              this.$parent.getCards();
+            } else {
+              await this.refreshCards();
+            }
             this.selectedCard = resp.id;
             this.newCard = null;
             this.$toastr.s("Payment method saved.");
           })
           .catch(resp => {
             let error = "Failed to add card.";
-            
-            if(!_.isEmpty(resp.response.data.error)) {
+
+            if (!_.isEmpty(resp.response.data.error)) {
               error = resp.response.data.error;
             }
 
@@ -124,26 +174,32 @@ export default {
       });
     },
     deleteCard(id) {
-      axios.delete(`/api/me/cards/${id}`).then(async resp => {
+      axios.delete(this.endpoint + id).then(async resp => {
         await this.refreshCards();
         this.$parent.card = null;
-        if(this.value === id) {
+        if (this.value === id) {
           this.selectCard(_.first(this.cards).id);
         }
         this.$toastr.s("Payment method deleted.");
       });
     },
     selectCard(id) {
-      if(!this.selectable) {
+      if (!this.selectable) {
         return;
       }
 
+      if (this.creditCard > 0) {
+        this.$emit("input", this.creditCard);
+        this.creditCards.push(this.creditCard);
+        return;
+      }
+
+      this.$parent.creditCardId = id;
       this.value = id;
-      this.$emit('input', id);
+      this.$emit("input", id);
     }
   }
 };
 </script>
 
-<style>
-</style>
+<style></style>

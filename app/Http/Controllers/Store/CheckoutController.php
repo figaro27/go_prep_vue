@@ -1,33 +1,33 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Store;
 
 use App\Bag;
-use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Store\StoreController;
 use App\Mail\Customer\MealPlan;
 use App\Mail\Customer\NewOrder;
 use App\MealOrder;
-use App\MealOrderComponent;
-use App\MealSubscriptionComponent;
-use App\MealOrderAddon;
-use App\MealSubscriptionAddon;
 use App\MealSubscription;
 use App\Order;
 use App\Store;
 use App\StoreDetail;
 use App\Subscription;
 use App\Coupon;
+use App\Card;
+use App\Customer;
 use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
 
-class CheckoutController extends UserController
+class CheckoutController extends StoreController
 {
     public function checkout(\App\Http\Requests\CheckoutRequest $request)
     {
         $user = auth('api')->user();
         $storeId = $request->get('store_id');
         $store = Store::with(['settings', 'storeDetail'])->findOrFail($storeId);
+        $storeName = strtolower($store->storeDetail->name);
 
         $bag = new Bag($request->get('bag'), $store);
         $weeklyPlan = $request->get('plan');
@@ -40,15 +40,12 @@ class CheckoutController extends UserController
         $pickupLocation = $request->get('pickupLocation');
         //$stripeToken = $request->get('token');
 
-        $cardId = $request->get('card_id');
-
-        $card = $this->user->cards()->findOrFail($cardId);
-
         $application_fee = $store->settings->application_fee;
-        $total = $request->get('subtotal');
+        $total = $bag->getTotal();
         $subtotal = $request->get('subtotal');
-        $afterDiscountBeforeFees = $request->get('afterDiscount');
-        $preFeePreDiscount = $request->get('subtotal');
+        $afterDiscountBeforeFees = $bag->getTotal();
+        $preFeePreDiscount = $bag->getTotal();
+        $deposit = $request->get('deposit') / 100;
 
         $processingFee = 0;
         $mealPlanDiscount = 0;
@@ -71,47 +68,46 @@ class CheckoutController extends UserController
         }
 
         if ($couponId != null) {
-            // $coupon = Coupon::where('id', $couponId)->first();
-            // $couponReduction = 0;
-            // if ($coupon->type === 'flat') {
-            //     $couponReduction = $coupon->amount;
-            // } elseif ($coupon->type === 'percent') {
-            //     $couponReduction = ($coupon->amount / 100) * $total;
-            // }
             $total -= $couponReduction;
         }
 
-        if (!$user->hasStoreCustomer($store->id)) {
-            $storeCustomer = $user->createStoreCustomer($store->id);
-        }
+        $customerId = $request->get('customer');
+        $customer = Customer::where('id', $customerId)->first();
 
         $total += $salesTax;
 
-        $storeCustomer = $user->getStoreCustomer($store->id);
-        $customer = $user->getStoreCustomer($store->id, false);
+        $cardId = $request->get('card_id');
+        $card = Card::where('id', $cardId)->first();
+
+        $storeCustomer = $customer->user->getStoreCustomer($store->id);
+        $customer = $customer->user->getStoreCustomer($store->id, false);
 
         if (!$weeklyPlan) {
-            $storeSource = \Stripe\Source::create(
-                [
-                    "customer" => $this->user->stripe_id,
-                    "original_source" => $card->stripe_id,
-                    "usage" => "single_use"
-                ],
-                ["stripe_account" => $store->settings->stripe_id]
-            );
+            if (strpos($storeName, 'livoti') === false) {
+                $storeSource = \Stripe\Source::create(
+                    [
+                        "customer" => $customer->user->stripe_id,
+                        "original_source" => $card->stripe_id,
+                        "usage" => "single_use"
+                    ],
+                    ["stripe_account" => $store->settings->stripe_id]
+                );
 
-            $charge = \Stripe\Charge::create(
-                [
-                    "amount" => round($total * 100),
-                    "currency" => $store->settings->currency,
-                    "source" => $storeSource,
-                    "application_fee" => round($subtotal * $application_fee)
-                ],
-                ["stripe_account" => $store->settings->stripe_id]
-            );
+                $charge = \Stripe\Charge::create(
+                    [
+                        "amount" => round($total * 100 * $deposit),
+                        "currency" => "usd",
+                        "source" => $storeSource,
+                        "application_fee" => round(
+                            $subtotal * $deposit * $application_fee
+                        )
+                    ],
+                    ["stripe_account" => $store->settings->stripe_id]
+                );
+            }
 
             $order = new Order();
-            $order->user_id = $user->id;
+            $order->user_id = $customer->user->id;
             $order->customer_id = $customer->id;
             $order->card_id = $cardId;
             $order->store_id = $store->id;
@@ -125,17 +121,22 @@ class CheckoutController extends UserController
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
             $order->amount = $total;
-            $order->currency = $store->settings->currency;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
             $order->paid = true;
-            $order->stripe_id = $charge->id;
+            if (strpos($storeName, 'livoti') === false) {
+                $order->stripe_id = $charge->id;
+            } else {
+                $order->stripe_id = null;
+            }
             $order->paid_at = new Carbon();
             $order->coupon_id = $couponId;
             $order->couponReduction = $couponReduction;
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
+            $order->deposit = $deposit * 100;
+            $order->manual = 1;
             $order->save();
 
             $items = $bag->getItems();
@@ -149,27 +150,6 @@ class CheckoutController extends UserController
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
                 $mealOrder->save();
-
-                if (isset($item['components']) && $item['components']) {
-                    foreach ($item['components'] as $componentId => $choices) {
-                        foreach ($choices as $optionId) {
-                            MealOrderComponent::create([
-                                'meal_order_id' => $mealOrder->id,
-                                'meal_component_id' => $componentId,
-                                'meal_component_option_id' => $optionId
-                            ]);
-                        }
-                    }
-                }
-
-                if (isset($item['addons']) && $item['addons']) {
-                    foreach ($item['addons'] as $addonId) {
-                        MealOrderAddon::create([
-                            'meal_order_id' => $mealOrder->id,
-                            'meal_addon_id' => $addonId
-                        ]);
-                    }
-                }
             }
 
             // Send notification to store
@@ -192,7 +172,7 @@ class CheckoutController extends UserController
                 'subscription' => null
             ]);
             try {
-                Mail::to($user)
+                Mail::to($customer->user)
                     ->bcc('mike@goprep.com')
                     ->send($email);
             } catch (\Exception $e) {
@@ -225,14 +205,14 @@ class CheckoutController extends UserController
                             $store->storeDetail->name .
                             ")"
                     ],
-                    "currency" => $store->settings->currency
+                    "currency" => "usd"
                 ],
                 ['stripe_account' => $store->settings->stripe_id]
             );
 
             $token = \Stripe\Token::create(
                 [
-                    "customer" => $this->user->stripe_id
+                    "customer" => $customer->user->stripe_id
                 ],
                 ['stripe_account' => $store->settings->stripe_id]
             );
@@ -256,7 +236,7 @@ class CheckoutController extends UserController
             );
 
             $userSubscription = new Subscription();
-            $userSubscription->user_id = $user->id;
+            $userSubscription->user_id = $customer->user->id;
             $userSubscription->customer_id = $customer->id;
             $userSubscription->stripe_customer_id = $storeCustomer->id;
             $userSubscription->store_id = $store->id;
@@ -272,7 +252,6 @@ class CheckoutController extends UserController
             $userSubscription->deliveryFee = $deliveryFee;
             $userSubscription->salesTax = $salesTax;
             $userSubscription->amount = $total;
-            $userSubscription->currency = $store->settings->currency;
             $userSubscription->pickup = $request->get('pickup', 0);
             $userSubscription->interval = 'week';
             $userSubscription->delivery_day = date(
@@ -304,7 +283,6 @@ class CheckoutController extends UserController
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
             $order->amount = $total;
-            $order->currency = $store->settings->currency;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = (new Carbon($deliveryDay))->toDateString();
@@ -324,27 +302,6 @@ class CheckoutController extends UserController
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
                 $mealOrder->save();
-
-                if (isset($item['components']) && $item['components']) {
-                    foreach ($item['components'] as $componentId => $choices) {
-                        foreach ($choices as $optionId) {
-                            MealOrderComponent::create([
-                                'meal_order_id' => $mealOrder->id,
-                                'meal_component_id' => $componentId,
-                                'meal_component_option_id' => $optionId
-                            ]);
-                        }
-                    }
-                }
-
-                if (isset($item['addons']) && $item['addons']) {
-                    foreach ($item['addons'] as $addonId) {
-                        MealOrderAddon::create([
-                            'meal_order_id' => $mealOrder->id,
-                            'meal_addon_id' => $addonId
-                        ]);
-                    }
-                }
             }
 
             foreach ($bag->getItems() as $item) {
@@ -357,27 +314,6 @@ class CheckoutController extends UserController
                     $mealSub->meal_size_id = $item['size']['id'];
                 }
                 $mealSub->save();
-
-                if (isset($item['components']) && $item['components']) {
-                    foreach ($item['components'] as $componentId => $choices) {
-                        foreach ($choices as $optionId) {
-                            MealSubscriptionComponent::create([
-                                'meal_subscription_id' => $mealSub->id,
-                                'meal_component_id' => $componentId,
-                                'meal_component_option_id' => $optionId
-                            ]);
-                        }
-                    }
-                }
-
-                if (isset($item['addons']) && $item['addons']) {
-                    foreach ($item['addons'] as $addonId) {
-                        MealSubscriptionAddon::create([
-                            'meal_subscription_id' => $mealSub->id,
-                            'meal_addon_id' => $addonId
-                        ]);
-                    }
-                }
             }
 
             // Send notification to store
@@ -407,11 +343,48 @@ class CheckoutController extends UserController
             } catch (\Exception $e) {
             }
         }
+    }
 
-        /*
-    $subscription = $user->newSubscription('main', $plan->id)->create($stripeToken['id']);
-    $subscription->store_id = $this->store->id;
-    $subscription->amount = $total;
-    $subscription->interval = 'week';*/
+    public function chargeBalance(Request $request)
+    {
+        $orderId = $request->get('id');
+        $order = Order::where('id', $orderId)->first();
+        $subtotal = $order->preFeePreDiscount;
+        $amount = $order->amount;
+        $balance = (100 - $order->deposit) / 100;
+        $store = $this->store;
+        $application_fee = $store->settings->application_fee;
+        $storeName = strtolower($this->store->storeDetail->name);
+
+        $customer = Customer::where('id', $order->customer_id)->first();
+        $cardId = $order->card_id;
+
+        $card = Card::where('id', $cardId)->first();
+
+        if (strpos($storeName, 'livoti') === false) {
+            $storeSource = \Stripe\Source::create(
+                [
+                    "customer" => $customer->user->stripe_id,
+                    "original_source" => $card->stripe_id,
+                    "usage" => "single_use"
+                ],
+                ["stripe_account" => $store->settings->stripe_id]
+            );
+
+            $charge = \Stripe\Charge::create(
+                [
+                    "amount" => round(100 * ($amount * $balance)),
+                    "currency" => "usd",
+                    "source" => $storeSource,
+                    "application_fee" => round(
+                        $subtotal * $balance * $application_fee
+                    )
+                ],
+                ["stripe_account" => $store->settings->stripe_id]
+            );
+        }
+
+        $order->deposit = 100;
+        $order->save();
     }
 }
