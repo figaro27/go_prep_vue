@@ -174,6 +174,10 @@ foreach (
                                 'StoreSettingController@update'
                             );
 
+                            Route::get(
+                                'stripe/connect/url',
+                                'StripeController@connectUrl'
+                            );
                             Route::post(
                                 'stripe/connect',
                                 'StripeController@connect'
