@@ -196,8 +196,8 @@
                       >
                         <p>
                           Your order is locked in for this week. You will be
-                          able to pause /cancel / or change meals in your meal
-                          plan after your food gets delivered on
+                          able to pause, cancel, or change meals in your meal
+                          plan the day after your food gets delivered on
                           {{
                             moment(
                               subscription.latest_paid_order.delivery_date
