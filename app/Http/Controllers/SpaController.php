@@ -139,7 +139,9 @@ class SpaController extends Controller
             }
         } else {
             $user = auth()->user();
-            return view('app');
+            return view('app', [
+                'store' => Store::find(STORE_ID)
+            ]);
 
             if ($user) {
                 if ($user->user_role_id === 2) {

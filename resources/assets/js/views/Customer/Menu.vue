@@ -1151,21 +1151,6 @@
 <style></style>
 <style lang="scss" scoped></style>
 
-<script
-  v-if="(storeId = 13)"
-  async
-  src="https://www.googletagmanager.com/gtag/js?id=UA-63352850-49"
-></script>
-<script v-if="(storeId = 13)">
-window.dataLayer = window.dataLayer || [];
-function gtag() {
-  dataLayer.push(arguments);
-}
-gtag("js", new Date());
-
-gtag("config", "UA-63352850-49");
-</script>
-
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
