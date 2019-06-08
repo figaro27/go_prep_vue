@@ -101,6 +101,13 @@
               >
                 View Order
               </button>
+              <button
+                v-if="props.row.deposit != 100"
+                class="btn view btn-success btn-sm"
+                @click="chargeBalance(props.row.id)"
+              >
+                Charge {{ 100 - props.row.deposit }}% Balance
+              </button>
               <!-- <b-btn
                 v-if="!props.row.fulfilled"
                 class="btn btn-primary btn-sm"
@@ -346,6 +353,9 @@ export default {
       deliveryNote: ""
     };
   },
+  created() {
+    this.refreshViewedStore();
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -377,9 +387,11 @@ export default {
     ...mapActions({
       refreshOrders: "refreshOrders",
       refreshOrdersWithFulfilled: "refreshOrdersWithFulfilled",
+      refreshUpcomingOrders: "refreshUpcomingOrders",
       updateOrder: "updateOrder",
       addJob: "addJob",
-      removeJob: "removeJob"
+      removeJob: "removeJob",
+      refreshViewedStore: "refreshViewedStore"
     }),
     refreshTable() {
       this.refreshOrders();
@@ -541,6 +553,16 @@ export default {
     showUnfulfilledOrders() {
       this.filters.fulfilled = 0;
       this.refreshTable();
+    },
+    chargeBalance(id) {
+      axios
+        .post("/api/me/chargeBalance", {
+          id: id
+        })
+        .then(response => {
+          this.$toastr.s("Balance successfully charged.");
+          this.refreshUpcomingOrders();
+        });
     }
   }
 };

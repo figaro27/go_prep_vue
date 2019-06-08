@@ -60,6 +60,7 @@
             </b-form-group>
             <b-form-group horizontal label="State">
               <v-select
+                label="name"
                 :options="stateNames"
                 :on-change="val => changeState(val)"
               ></v-select>
@@ -72,6 +73,19 @@
                 placeholder="Zip"
               ></b-form-input>
             </b-form-group>
+            <b-form-checkbox
+              id="accepted-tos"
+              name="accepted-tos"
+              v-model="form.accepted_tos"
+              :value="1"
+              :unchecked-value="0"
+            >
+              This customer gave me permission to create his account and accepts
+              the
+              <a href="https://www.goprep.com/terms-of-service/" target="_blank"
+                ><span class="strong">terms of service</span></a
+              >
+            </b-form-checkbox>
             <b-button type="submit" variant="primary" class="float-right"
               >Add</b-button
             >
@@ -431,6 +445,14 @@ export default {
     },
     addCustomer() {
       let form = this.form;
+
+      if (!form.accepted_tos) {
+        this.$toastr.e(
+          "Please accept the terms of service.",
+          "Registration failed"
+        );
+        return;
+      }
 
       axios
         .post("/api/me/register", form)

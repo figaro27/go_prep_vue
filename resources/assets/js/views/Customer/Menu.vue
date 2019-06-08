@@ -1241,9 +1241,6 @@ export default {
   beforeDestroy() {
     this.showActiveFilters();
   },
-  updated() {
-    this.$parent.setLoadingToFalse();
-  },
   methods: {
     ...mapActions(["refreshSubscriptions", "emptyBag"]),
     onCategoryVisible(isVisible, index) {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Spinner v-if="loading" />
+    <!-- <Spinner v-if="loading" /> -->
     <customer-menu :manualOrder="true"></customer-menu>
   </div>
 </template>

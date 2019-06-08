@@ -1,5 +1,17 @@
 <template>
   <div>
+    <b-form-group label="Add New Card">
+      <card
+        class="stripe-card"
+        :class="{ newCard }"
+        :stripe="stripeKey"
+        :options="stripeOptions"
+        @change="newCard = $event.complete"
+      />
+    </b-form-group>
+    <b-btn v-if="newCard" variant="primary" @click="createCard" class="mb-3"
+      >Add Card</b-btn
+    >
     <div v-if="cards.length && !manualOrder">
       <b-list-group class="card-list">
         <b-list-group-item
@@ -23,7 +35,6 @@
           </div>
         </b-list-group-item>
       </b-list-group>
-      <hr />
     </div>
     <div v-if="manualOrder">
       <b-list-group class="card-list">
@@ -38,21 +49,18 @@
         >
           <img class="card-logo" :src="icons.cards[card.brand.toLowerCase()]" />
           <div class="flex-grow-1">Ending in {{ card.last4 }}</div>
+          <div>
+            <b-btn
+              class="card-delete"
+              variant="plain"
+              @click="e => deleteCard(card.id)"
+            >
+              <i class="fa fa-minus-circle text-danger"></i>
+            </b-btn>
+          </div>
         </b-list-group-item>
       </b-list-group>
-      <hr />
     </div>
-
-    <b-form-group label="Add New Card">
-      <card
-        class="stripe-card"
-        :class="{ newCard }"
-        :stripe="stripeKey"
-        :options="stripeOptions"
-        @change="newCard = $event.complete"
-      />
-    </b-form-group>
-    <b-btn v-if="newCard" variant="primary" @click="createCard">Add Card</b-btn>
   </div>
 </template>
 
@@ -111,7 +119,14 @@ export default {
   computed: {
     ...mapGetters({
       cards: "cards"
-    })
+    }),
+    endpoint() {
+      if (this.manualOrder === true) {
+        return "/api/me/cards/";
+      } else {
+        return "/api/bag/cards/";
+      }
+    }
   },
   methods: {
     ...mapActions(["refreshCards"]),
@@ -127,7 +142,7 @@ export default {
         }
 
         axios
-          .post("/api/me/cards", {
+          .post(this.endpoint, {
             token: data.token,
             customer: customer
           })
@@ -159,7 +174,7 @@ export default {
       });
     },
     deleteCard(id) {
-      axios.delete(`/api/me/cards/${id}`).then(async resp => {
+      axios.delete(this.endpoint + id).then(async resp => {
         await this.refreshCards();
         this.$parent.card = null;
         if (this.value === id) {
@@ -179,6 +194,7 @@ export default {
         return;
       }
 
+      this.$parent.creditCardId = id;
       this.value = id;
       this.$emit("input", id);
     }

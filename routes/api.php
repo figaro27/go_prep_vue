@@ -203,6 +203,10 @@ foreach (
                                 'checkout',
                                 'CheckoutController@checkout'
                             );
+                            Route::post(
+                                'chargeBalance',
+                                'CheckoutController@chargeBalance'
+                            );
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {
@@ -261,7 +265,7 @@ foreach (
                             Route::get('store/meals', 'StoreController@meals');
 
                             Route::resource(
-                                'me/cards',
+                                'bag/cards',
                                 'Billing\CardController'
                             );
 
