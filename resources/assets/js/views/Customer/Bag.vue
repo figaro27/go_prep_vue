@@ -891,6 +891,9 @@ export default {
       else return 0;
     }
   },
+  created() {
+    this.deliveryDay = this.deliveryDaysOptions[0].value;
+  },
   mounted() {
     this.creditCardId = this.card;
     this.deliveryDay = this.deliveryDaysOptions[0].value;
