@@ -80,8 +80,8 @@
               :value="1"
               :unchecked-value="0"
             >
-              This customer gave me permission to create his account and accepts
-              the
+              This customer gave me permission to create their account and
+              accepts the
               <a href="https://www.goprep.com/terms-of-service/" target="_blank"
                 ><span class="strong">terms of service</span></a
               >
