@@ -9,7 +9,7 @@
           v-model="addCustomerModal"
           v-if="addCustomerModal"
         >
-          <b-form @submit.prevent="addCustomer">
+          <b-form @submit.prevent="addCustomer" class="mt-3">
             <b-form-group horizontal label="First Name">
               <b-form-input
                 v-model="form.first_name"
