@@ -75,6 +75,10 @@ class RegisterController extends StoreController
         $store = $this->store;
         $storeId = $this->store->id;
 
+        $user->createStoreCustomer($storeId);
+
+        /*
+
         $acct = $store->settings->stripe_account;
         \Stripe\Stripe::setApiKey($acct['access_token']);
         $stripeCustomer = \Stripe\Customer::create([
@@ -86,10 +90,10 @@ class RegisterController extends StoreController
         $customer = new Customer();
         $customer->user_id = $userId;
         $customer->store_id = $storeId;
-        $customer->stripe_id = $stripeCustomer->id;
+        $customer->stripe_id = null; //$stripeCustomer->id;
+        $customer->currency = $store->settings->currency;
         $customer->save();
-
-        $user->update(['stripe_id' => $stripeCustomer->id]);
+        */
     }
 
     /**

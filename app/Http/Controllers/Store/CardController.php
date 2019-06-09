@@ -42,16 +42,20 @@ class CardController extends StoreController
         $customerId = $request->get('customer');
         $customer = Customer::where('id', $customerId)->first();
 
-        try {
-            $customer->user->createCard($token['id']);
-        } catch (\Stripe\Error\Card $e) {
-            return response()->json(
-                [
-                    'error' =>
-                        'Your card was declined. Please verify the entered information and try again.'
-                ],
-                400
-            );
+        if (!$customer->user->hasCustomer()) {
+            $customer->user->createCustomer($token['id']);
+        } else {
+            try {
+                $customer->user->createCard($token['id']);
+            } catch (\Stripe\Error\Card $e) {
+                return response()->json(
+                    [
+                        'error' =>
+                            'Your card was declined. Please verify the entered information and try again.'
+                    ],
+                    400
+                );
+            }
         }
 
         $customer = \Stripe\Customer::retrieve($customer->user->stripe_id);
