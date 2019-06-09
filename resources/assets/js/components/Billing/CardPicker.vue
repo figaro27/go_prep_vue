@@ -197,6 +197,9 @@ export default {
       this.$parent.creditCardId = id;
       this.value = id;
       this.$emit("input", id);
+    },
+    setCard(id) {
+      this.value = id;
     }
   }
 };

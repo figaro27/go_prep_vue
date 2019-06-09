@@ -504,6 +504,7 @@
                     v-model="card"
                     v-if="!manualOrder"
                     class="mb-3"
+                    ref="cardPicker"
                   ></card-picker>
                   <card-picker
                     :selectable="true"
@@ -512,6 +513,7 @@
                     v-model="cards"
                     v-if="manualOrder"
                     class="mb-3"
+                    ref="cardPicker"
                   ></card-picker>
                   <b-btn
                     v-if="
@@ -1030,6 +1032,7 @@ export default {
             if (response.data.length) {
               this.creditCardId = response.data[0].id;
               this.creditCard = response.data[0];
+              this.$refs.cardPicker.setCard(response.data[0].id);
             }
           });
       });
