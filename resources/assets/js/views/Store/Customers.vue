@@ -8,6 +8,7 @@
           title="Add New Customer"
           v-model="addCustomerModal"
           v-if="addCustomerModal"
+          hide-footer
         >
           <b-form @submit.prevent="addCustomer" class="mt-3">
             <b-form-group horizontal label="First Name">
