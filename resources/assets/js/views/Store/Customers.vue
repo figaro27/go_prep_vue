@@ -74,6 +74,14 @@
                 placeholder="Zip"
               ></b-form-input>
             </b-form-group>
+            <b-form-group horizontal label="Delivery">
+              <b-form-input
+                v-model="form.delivery"
+                type="text"
+                required
+                placeholder="Delivery Instructions"
+              ></b-form-input>
+            </b-form-group>
             <b-form-checkbox
               id="accepted-tos"
               name="accepted-tos"

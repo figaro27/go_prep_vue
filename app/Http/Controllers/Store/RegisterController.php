@@ -55,6 +55,7 @@ class RegisterController extends StoreController
             'city' => $request->get('city'),
             'state' => $request->get('state'),
             'zip' => $request->get('zip'),
+            'delivery' => $request->get('delivery'),
             'country' => 'USA',
             'created_at' => now(),
             'updated_at' => now(),
