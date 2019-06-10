@@ -182,7 +182,23 @@
                           @click.stop="() => editSubscription(subscription)"
                           >Change Meals</b-btn
                         >
+                        <p>
+                          Your order is locked in for the upcoming delivery day
+                          of
+                          {{
+                            moment(
+                              subscription.latest_paid_order.delivery_date
+                            ).format("dddd, MMM Do")
+                          }}. Any changes to this meal plan will be applied to
+                          the following order on
+                          {{
+                            moment(subscription.latest_paid_order.delivery_date)
+                              .add(7, "days")
+                              .format("dddd, MMM Do")
+                          }}.
+                        </p>
                       </div>
+
                       <!-- <div
                         v-if="
                           subscription.latest_paid_order.delivery_date >
