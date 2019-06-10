@@ -170,7 +170,7 @@
                         v-if="
                           subscription.latest_paid_order.delivery_date <
                             moment()
-                              .add(1, 'days')
+                              .add(5, 'days')
                               .format()
                         "
                       >
@@ -194,7 +194,7 @@
                         v-if="
                           subscription.latest_paid_order.delivery_date >
                             moment()
-                              .add(1, 'days')
+                              .add(5, 'days')
                               .format()
                         "
                       >
