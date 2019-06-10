@@ -1,5 +1,6 @@
 <template>
   <div class="row">
+    {{ moment().format("Y-M-d") }}
     <div class="col-md-12">
       <b-alert
         v-if="subscriptions && subscriptions[0]"
@@ -166,14 +167,7 @@
                         }}
                         per week.
                       </p>
-                      <div
-                        v-if="
-                          subscription.latest_paid_order.delivery_date <
-                            moment()
-                              .add(1, 'd')
-                              .format()
-                        "
-                      >
+                      <div>
                         <b-btn
                           variant="warning"
                           @click.stop="() => pauseSubscription(subscription)"
@@ -190,7 +184,7 @@
                           >Change Meals</b-btn
                         >
                       </div>
-                      <div
+                      <!-- <div
                         v-if="
                           subscription.latest_paid_order.delivery_date >
                             moment().format()
@@ -206,7 +200,7 @@
                             ).format("dddd, MMM Do")
                           }}.
                         </p>
-                      </div>
+                      </div> -->
                       <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
                     </div>
                     <div
