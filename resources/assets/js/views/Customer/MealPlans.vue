@@ -191,7 +191,9 @@
                       <div
                         v-if="
                           subscription.latest_paid_order.delivery_date >
-                            moment().format()
+                            moment()
+                              .add(1, 'day')
+                              .format()
                         "
                       >
                         <p>
