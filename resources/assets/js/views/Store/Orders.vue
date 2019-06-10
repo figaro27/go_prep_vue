@@ -264,6 +264,15 @@
             </ul>
           </div>
         </div>
+        <div class="row">
+          <div class="col-md-12">
+            <router-link
+              :to="{ name: 'store-adjust-order', params: { order: order } }"
+            >
+              <b-btn class="btn btn-success filter-btn">Adjust Order</b-btn>
+            </router-link>
+          </div>
+        </div>
       </b-modal>
     </div>
     <v-style>

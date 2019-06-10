@@ -120,6 +120,10 @@ class OrderController extends StoreController
         return Order::updateOrder($id, $request->all());
     }
 
+    public function updateOrder(Request $request, $id)
+    {
+    }
+
     /**
      * Remove the specified resource from storage.
      *

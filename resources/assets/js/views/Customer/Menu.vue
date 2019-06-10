@@ -739,7 +739,7 @@
                     </div>
                   </div>
                 </div>
-
+                <!-- BAG AREA -->
                 <div class="col-sm-5 col-md-3 bag-area">
                   <ul class="list-group">
                     <li
@@ -862,7 +862,11 @@
 
                   <div
                     v-if="
-                      minOption === 'meals' && total >= minimumMeals && !preview
+                      minOption === 'meals' &&
+                        total >= minimumMeals &&
+                        !preview &&
+                        !manualOrder &&
+                        !adjustOrder
                     "
                   >
                     <router-link
@@ -882,7 +886,8 @@
                     v-if="
                       minOption === 'price' &&
                         totalBagPricePreFees < minPrice &&
-                        !manualOrder
+                        !manualOrder &&
+                        !adjustOrder
                     "
                   >
                     <p class="align-right">
@@ -900,7 +905,7 @@
                   >
                     <router-link
                       to="/customer/bag"
-                      v-if="!subscriptionId && !manualOrder"
+                      v-if="!subscriptionId && !manualOrder && !adjustOrder"
                     >
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
@@ -909,6 +914,12 @@
                       class="menu-bag-btn"
                       @click="updateSubscriptionMeals"
                       >UPDATE MEALS</b-btn
+                    >
+                    <b-btn
+                      v-if="adjustOrder"
+                      class="menu-bag-btn"
+                      @click="adjustOrder"
+                      >Adjust Order</b-btn
                     >
                   </div>
                   <div>
@@ -966,6 +977,12 @@ export default {
     },
     manualOrder: {
       default: false
+    },
+    adjustOrder: {
+      default: false
+    },
+    order: {
+      default: {}
     },
     subscriptionId: {
       default: null
@@ -1353,6 +1370,9 @@ export default {
   },
   created() {},
   mounted() {
+    if (this.adjustOrder) {
+      this.addMealOrdersToBag();
+    }
     try {
       this.getSalesTax(this.store.details.state);
     } catch (e) {}
@@ -1588,6 +1608,49 @@ export default {
           thumb: item.url_thumb
         };
       });
+    },
+    addMealOrdersToBag() {
+      //conact item with meal
+      this.order.items.forEach(item => {
+        this.bag.push({
+          added: 1560197380,
+          addons: null,
+          components: null,
+          meal: item,
+          meal_package: false,
+          quantity: item.quantity,
+          size: item.meal_size
+        });
+      });
+    },
+    async adjustOrder() {
+      try {
+        const { data } = await axios.post(
+          `/api/me/orders/${this.orderId}/meals`,
+          {
+            bag: this.bag,
+            deliveryDate: this.order.delivery_date
+          }
+        );
+        await this.refreshOrders();
+        this.emptyBag();
+        this.$router.push({
+          path: "/store/orders",
+          query: {
+            updated: true
+          }
+        });
+      } catch (e) {
+        if (!_.isEmpty(e.response.data.error)) {
+          this.$toastr.e(e.response.data.error);
+        } else {
+          this.$toastr.e(
+            "Please try again or contact our support team",
+            "Failed to update order!"
+          );
+        }
+        return;
+      }
     }
   }
 };
