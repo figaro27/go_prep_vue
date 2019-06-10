@@ -18,7 +18,7 @@
     }
     </script>
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-63352850-49"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $store->settings->gaCode }}"></script>
     <script >
         window.dataLayer = window.dataLayer || [];
         function gtag() {
@@ -26,9 +26,8 @@
         }
         gtag("js", new Date());
 
-        gtag("config", "UA-63352850-49");
+        gtag("config", "{{ $store->settings->gaCode }}");
     </script>
-
 </head>
 <body>
         <script type="text/javascript">
