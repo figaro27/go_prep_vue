@@ -167,6 +167,28 @@
                         per week.
                       </p>
                       <div>
+                        <p>
+                          Your order is locked in for the upcoming delivery day
+                          of
+                          <strong>
+                            {{
+                              moment(
+                                subscription.latest_paid_order.delivery_date
+                              ).format("dddd, MMM Do")
+                            }}.</strong
+                          >
+                          Any changes to this meal plan will be applied to the
+                          following order on
+                          <strong>
+                            {{
+                              moment(
+                                subscription.latest_paid_order.delivery_date
+                              )
+                                .add(7, "days")
+                                .format("dddd, MMM Do")
+                            }}.</strong
+                          >
+                        </p>
                         <b-btn
                           variant="warning"
                           @click.stop="() => pauseSubscription(subscription)"
@@ -182,21 +204,6 @@
                           @click.stop="() => editSubscription(subscription)"
                           >Change Meals</b-btn
                         >
-                        <p>
-                          Your order is locked in for the upcoming delivery day
-                          of
-                          {{
-                            moment(
-                              subscription.latest_paid_order.delivery_date
-                            ).format("dddd, MMM Do")
-                          }}. Any changes to this meal plan will be applied to
-                          the following order on
-                          {{
-                            moment(subscription.latest_paid_order.delivery_date)
-                              .add(7, "days")
-                              .format("dddd, MMM Do")
-                          }}.
-                        </p>
                       </div>
 
                       <!-- <div
