@@ -170,8 +170,8 @@
                         v-if="
                           subscription.latest_paid_order.delivery_date <
                             moment()
+                              .add(1, 'd')
                               .format()
-                              .add(1, 'days')
                         "
                       >
                         <b-btn
