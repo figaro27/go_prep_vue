@@ -1,6 +1,5 @@
 <template>
   <div class="row">
-    {{ moment().format("Y-M-d") }}
     <div class="col-md-12">
       <b-alert
         v-if="subscriptions && subscriptions[0]"
