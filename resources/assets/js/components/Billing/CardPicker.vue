@@ -119,14 +119,7 @@ export default {
   computed: {
     ...mapGetters({
       cards: "cards"
-    }),
-    endpoint() {
-      if (this.manualOrder === true) {
-        return "/api/me/cards/";
-      } else {
-        return "/api/bag/cards/";
-      }
-    }
+    })
   },
   methods: {
     ...mapActions(["refreshCards"]),
@@ -142,7 +135,7 @@ export default {
         }
 
         axios
-          .post(this.endpoint, {
+          .post("/api/me/cards/", {
             token: data.token,
             customer: customer
           })
