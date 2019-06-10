@@ -273,7 +273,7 @@ foreach (
                             Route::get('store/meals', 'StoreController@meals');
 
                             Route::resource(
-                                'bag/cards',
+                                'me/cards',
                                 'Billing\CardController'
                             );
 
