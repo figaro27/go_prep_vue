@@ -17,7 +17,18 @@
       stripe_key: "{{ config('app.stripe_key') }}"
     }
     </script>
+@if ($store->settings->gaCode)
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $store->settings->gaCode }}"></script>
+    <script >
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
 
+        gtag("config", "{{ $store->settings->gaCode }}");
+    </script>
+@endif
 </head>
 <body>
         <script type="text/javascript">
