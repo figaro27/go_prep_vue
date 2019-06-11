@@ -1390,7 +1390,7 @@ export default {
   created() {},
   mounted() {
     if (this.adjustOrder) {
-      this.deliveryDay = this.deliveryDaysOptions[0].value;
+      this.deliveryDay = this.order.delivery_date + " 00:00:00";
       this.addMealOrdersToBag();
     }
     try {
