@@ -1023,8 +1023,7 @@ body.forgotresettoken {
 
 .update-meals-btn {
   @include media-breakpoint-down(md) {
-    position: -webkit-sticky;
-    position: sticky;
+    position: fixed;
     bottom: 10px;
   }
 }
