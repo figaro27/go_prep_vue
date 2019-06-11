@@ -3,7 +3,7 @@
     <floating-action-button
       class="d-md-none brand-color"
       to="/customer/bag"
-      v-if="!subscriptionId"
+      v-if="!subscriptionId || !adjustOrder"
     >
       <div class="d-flex flex-column h-100">
         <i class="fa fa-shopping-bag text-white"></i>
