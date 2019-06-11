@@ -37,6 +37,18 @@
     <div id="app">
         @yield("content")
     </div>
+    @if ($store->settings->gaCode)
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $store->settings->gaCode }}"></script>
+        <script >
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+
+            gtag("config", "{{ $store->settings->gaCode }}");
+        </script>
+    @endif
     <script src="https://js.stripe.com/v3/"></script>
     <script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=default%2CIntersectionObserver%2CIntersectionObserverEntry"></script>
     <script src="{{ mix('/js/app.js') }}"></script>
