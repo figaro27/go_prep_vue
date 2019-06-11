@@ -135,7 +135,7 @@ export default {
         }
 
         axios
-          .post("/api/me/cards/", {
+          .post("/api/me/cards", {
             token: data.token,
             customer: customer
           })
@@ -167,7 +167,7 @@ export default {
       });
     },
     deleteCard(id) {
-      axios.delete(this.endpoint + id).then(async resp => {
+      axios.delete("/api/me/cards/" + id).then(async resp => {
         await this.refreshCards();
         this.$parent.card = null;
         if (this.value === id) {
