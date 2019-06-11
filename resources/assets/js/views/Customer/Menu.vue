@@ -916,19 +916,20 @@
                       >UPDATE MEALS</b-btn
                     >
                   </div>
-                  <b-form-select
-                    v-if="adjustOrder"
-                    v-model="selectedDeliveryDate"
-                    :options="deliveryDaysOptions"
-                    class="w-100 mt-3 mb-3"
-                  >
-                    <option slot="top" disabled
-                      >-- Select delivery day --</option
+                  <div v-if="adjustOrder">
+                    <p v-if="!order.pickup">Delivery Day</p>
+                    <p v-if="order.pickup">Pickup Day</p>
+                    <b-form-select
+                      v-if="adjustOrder"
+                      v-model="deliveryDay"
+                      :options="deliveryDaysOptions"
+                      class="w-100 mb-3"
                     >
-                  </b-form-select>
-                  <b-btn v-if="adjustOrder" class="menu-bag-btn" @click="adjust"
-                    >ADJUST ORDER</b-btn
-                  >
+                    </b-form-select>
+                    <b-btn class="menu-bag-btn" @click="adjust"
+                      >ADJUST ORDER</b-btn
+                    >
+                  </div>
                   <div>
                     <router-link
                       to="/store/bag"
@@ -997,7 +998,7 @@ export default {
   },
   data() {
     return {
-      selectedDeliveryDate: "",
+      deliveryDay: "",
       slickOptions: {
         slidesToShow: 4,
         infinite: false,
@@ -1389,6 +1390,7 @@ export default {
   created() {},
   mounted() {
     if (this.adjustOrder) {
+      this.deliveryDay = this.deliveryDaysOptions[0].value;
       this.addMealOrdersToBag();
     }
     try {
@@ -1650,7 +1652,7 @@ export default {
         .post(`/api/me/orders/adjustOrder`, {
           bag: this.bag,
           orderId: this.order.id,
-          deliveryDate: this.selectedDeliveryDate
+          deliveryDate: this.deliveryDay
         })
         .then(resp => {
           this.$toastr.s("Order Adjusted");
