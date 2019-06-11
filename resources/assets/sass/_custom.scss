@@ -1022,7 +1022,7 @@ body.forgotresettoken {
 }
 
 .update-meals-btn {
-  @include media-breakpoint-down(md) {
+  @include media-breakpoint-down(sm) {
     position: absolute;
     bottom: 10px;
   }
