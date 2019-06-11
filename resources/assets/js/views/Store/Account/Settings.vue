@@ -848,6 +848,37 @@
         </div>
       </div>
 
+      <p>Traffic Reporting</p>
+      <div class="card">
+        <div class="card-body">
+          <div>
+            <b-form @submit.prevent="updateStoreSettings">
+              <p>
+                <span class="mr-1">Google Analytics Code</span>
+                <img
+                  v-b-popover.hover="
+                    'Create a Google Analytics account and paste in your tracking code below. You\'ll then be able to see all kinds of traffic reports about who viewed your menu page. Please follow the exact format that is shown to you which looks like this: UA-00000000-00. If you need help setting up your Google Analytics account, please contact us and we\'ll be glad to set it up for you.'
+                  "
+                  title="Google Analytics"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+              <b-form-group :state="true">
+                <b-form-input
+                  class="mt-3"
+                  type="text"
+                  v-model="storeSettings.gaCode"
+                  placeholder="UA-00000000-00"
+                  required
+                ></b-form-input>
+              </b-form-group>
+              <b-button type="submit" variant="primary">Save</b-button>
+            </b-form>
+          </div>
+        </div>
+      </div>
+
       <b-modal
         v-model="showTOAModal"
         title="Service Agreement"
