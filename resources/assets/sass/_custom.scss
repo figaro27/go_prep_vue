@@ -1020,3 +1020,10 @@ body.forgotresettoken {
 .container-fluid {
   padding-top: 20px !important;
 }
+
+.update-meals-btn {
+  @include media-breakpoint-down(md) {
+    position: absolute;
+    bottom: 10px;
+  }
+}

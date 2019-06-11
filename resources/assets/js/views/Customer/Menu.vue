@@ -873,7 +873,7 @@
                     </router-link>
                     <b-btn
                       v-if="subscriptionId"
-                      class="menu-bag-btn"
+                      class="menu-bag-btn update-meals-btn"
                       @click="updateSubscriptionMeals"
                       >UPDATE MEALS</b-btn
                     >
