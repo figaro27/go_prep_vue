@@ -915,13 +915,20 @@
                       @click="updateSubscriptionMeals"
                       >UPDATE MEALS</b-btn
                     >
-                    <b-btn
-                      v-if="adjustOrder"
-                      class="menu-bag-btn"
-                      @click="adjustOrder"
-                      >Adjust Order</b-btn
-                    >
                   </div>
+                  <b-form-select
+                    v-if="adjustOrder"
+                    v-model="selectedDeliveryDate"
+                    :options="deliveryDaysOptions"
+                    class="w-100 mt-3 mb-3"
+                  >
+                    <option slot="top" disabled
+                      >-- Select delivery day --</option
+                    >
+                  </b-form-select>
+                  <b-btn v-if="adjustOrder" class="menu-bag-btn" @click="adjust"
+                    >ADJUST ORDER</b-btn
+                  >
                   <div>
                     <router-link
                       to="/store/bag"
@@ -990,6 +997,7 @@ export default {
   },
   data() {
     return {
+      selectedDeliveryDate: "",
       slickOptions: {
         slidesToShow: 4,
         infinite: false,
@@ -1062,6 +1070,16 @@ export default {
       minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal"
     }),
+    deliveryDaysOptions() {
+      return this.storeSetting("next_orderable_delivery_dates", []).map(
+        date => {
+          return {
+            value: date.date,
+            text: moment(date.date).format("dddd MMM Do")
+          };
+        }
+      );
+    },
     storeId() {
       return this.store.id;
     },
@@ -1393,7 +1411,11 @@ export default {
     this.showActiveFilters();
   },
   methods: {
-    ...mapActions(["refreshSubscriptions", "emptyBag"]),
+    ...mapActions([
+      "refreshSubscriptions",
+      "emptyBag",
+      "refreshUpcomingOrders"
+    ]),
     onCategoryVisible(isVisible, index) {
       if (isVisible && this.$refs.categorySlider) {
         this.$refs.categorySlider.goTo(index);
@@ -1611,46 +1633,30 @@ export default {
     },
     addMealOrdersToBag() {
       //conact item with meal
-      this.order.items.forEach(item => {
+      this.order.meals.forEach(meal => {
         this.bag.push({
           added: 1560197380,
           addons: null,
           components: null,
-          meal: item,
+          meal: meal,
           meal_package: false,
-          quantity: item.quantity,
-          size: item.meal_size
+          quantity: meal.quantity,
+          size: meal.meal_size
         });
       });
     },
-    async adjustOrder() {
-      try {
-        const { data } = await axios.post(
-          `/api/me/orders/${this.orderId}/meals`,
-          {
-            bag: this.bag,
-            deliveryDate: this.order.delivery_date
-          }
-        );
-        await this.refreshOrders();
-        this.emptyBag();
-        this.$router.push({
-          path: "/store/orders",
-          query: {
-            updated: true
-          }
+    async adjust() {
+      axios
+        .post(`/api/me/orders/adjustOrder`, {
+          bag: this.bag,
+          orderId: this.order.id,
+          deliveryDate: this.selectedDeliveryDate
+        })
+        .then(resp => {
+          this.$toastr.s("Order Adjusted");
+          this.$router.push({ path: "/store/orders" });
+          this.refreshUpcomingOrders();
         });
-      } catch (e) {
-        if (!_.isEmpty(e.response.data.error)) {
-          this.$toastr.e(e.response.data.error);
-        } else {
-          this.$toastr.e(
-            "Please try again or contact our support team",
-            "Failed to update order!"
-          );
-        }
-        return;
-      }
     }
   }
 };

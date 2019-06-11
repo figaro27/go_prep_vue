@@ -135,8 +135,8 @@ foreach (
                                 'OrderController@updateViewed'
                             );
                             Route::post(
-                                'orders/{id}/meals',
-                                'OrderController@updateOrder'
+                                'orders/adjustOrder',
+                                'OrderController@adjustOrder'
                             );
                             Route::resource(
                                 'subscriptions',
