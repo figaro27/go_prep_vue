@@ -224,4 +224,10 @@ class StoreSettingController extends StoreController
             }
         }
     }
+
+    public function getApplicationFee()
+    {
+        $store = $this->store;
+        return $store->settings->application_fee;
+    }
 }

@@ -154,6 +154,10 @@ foreach (
                                 'settings',
                                 'StoreSettingController'
                             );
+                            Route::get(
+                                'getApplicationFee',
+                                'StoreSettingController@getApplicationFee'
+                            );
                             Route::resource('cards', 'CardController');
                             Route::post(
                                 'pauseMealPlans',
