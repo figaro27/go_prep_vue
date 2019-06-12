@@ -37,6 +37,18 @@ class OrderController extends StoreController
             : [];
     }
 
+    public function getOrdersToday()
+    {
+        return $this->store->has('orders')
+            ? $this->store
+                ->orders()
+                ->with(['user', 'pickup_location'])
+                ->where(['paid' => 1])
+                ->where('created_at', '>=', Carbon::now()->startOfDay())
+                ->get()
+            : [];
+    }
+
     public function getFulfilledOrders()
     {
         return $this->store->has('orders')

@@ -227,7 +227,7 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
-      orders: "storeOrders",
+      ordersToday: "storeOrdersToday",
       upcomingOrders: "storeUpcomingOrders",
       isLoading: "isLoading",
       initialized: "initialized",
@@ -240,10 +240,39 @@ export default {
 
       let orders = {};
       if (this.filters.delivery_dates.start === null) {
-        orders = this.upcomingOrders;
+        orders = this.ordersToday;
       } else {
         orders = this.ordersByDate;
       }
+
+      let sums = {
+        order_number: "Sums",
+        subtotal: 0,
+        salesTax: 0,
+        total: 0,
+        goPrepFee: 0,
+        stripeFee: 0,
+        grandTotal: 0
+      };
+
+      orders.forEach(order => {
+        sums.subtotal += order.subtotal;
+        sums.salesTax += order.salesTax;
+        sums.total += order.amount;
+        sums.goPrepFee += order.amount;
+        sums.stripeFee += order.amount;
+        sums.grandTotal += order.amount;
+      });
+
+      orders.push({
+        order_number: sums.order_number,
+        subtotal: sums.subtotal,
+        salesTax: sums.salesTax,
+        amount: sums.total,
+        goPrepFee: sums.goPrepfee,
+        stripeFee: sums.stripeFee,
+        grandTotal: sums.grandTotal
+      });
       return orders;
     },
     columns() {
@@ -291,6 +320,7 @@ export default {
     ...mapActions({
       refreshOrders: "refreshOrders",
       refreshUpcomingOrders: "refreshUpcomingOrders",
+      refreshOrdersToday: "refreshOrdersToday",
       updateOrder: "updateOrder",
       refreshViewedStore: "refreshViewedStore"
     }),

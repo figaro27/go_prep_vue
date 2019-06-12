@@ -123,6 +123,10 @@ foreach (
                                 'OrderController@getUpcomingOrders'
                             );
                             Route::post(
+                                'getOrdersToday',
+                                'OrderController@getOrdersToday'
+                            );
+                            Route::post(
                                 'getFulfilledOrders',
                                 'OrderController@getFulfilledOrders'
                             );
