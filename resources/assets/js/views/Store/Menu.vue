@@ -301,7 +301,13 @@
                       :meal="meal"
                       @change="val => (meal.sizes = val)"
                       @changeDefault="val => (meal.default_size_title = val)"
-                      @save="val => updateMeal(meal.id, { sizes: val })"
+                      @save="
+                        val =>
+                          updateMeal(meal.id, {
+                            sizes: val,
+                            default_size_title: meal.default_size_title
+                          })
+                      "
                     ></meal-sizes>
                   </b-tab>
 
