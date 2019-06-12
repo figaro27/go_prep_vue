@@ -652,6 +652,9 @@
                 column: 'id',
                 ascending: true
               },
+              headings: {
+                freeDelivery: 'Free Delivery'
+              },
               filterable: false
             }"
           >
@@ -659,7 +662,7 @@
               <b-form @submit.prevent="saveCoupon">
                 <b-form-group id="coupon">
                   <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                       <b-form-input
                         id="coupon-code"
                         v-model="coupon.code"
@@ -687,16 +690,30 @@
                       <b-form-input
                         id="coupon-code"
                         v-model="coupon.amount"
-                        required
                         placeholder="Enter Amount"
                       ></b-form-input>
                     </div>
                     <div class="col-md-2">
+                      <b-form-checkbox
+                        v-model="coupon.freeDelivery"
+                        value="1"
+                        unchecked-value="0"
+                        class="pt-2"
+                      >
+                        Free Delivery
+                      </b-form-checkbox>
+                    </div>
+                    <div class="col-md-1">
                       <b-button type="submit" variant="success">Add</b-button>
                     </div>
                   </div>
                 </b-form-group>
               </b-form>
+            </div>
+
+            <div slot="freeDelivery" slot-scope="props">
+              <p v-if="props.row.freeDelivery" class="text-success">✓</p>
+              <p v-if="!props.row.freeDelivery" class="red">X</p>
             </div>
 
             <div slot="actions" slot-scope="props" v-if="props.row.id !== -1">
@@ -1021,7 +1038,7 @@ export default {
       view_delivery_days: 1,
       payments_url: "",
       coupon: { type: "flat" },
-      columns: ["code", "type", "amount", "actions"],
+      columns: ["code", "type", "amount", "freeDelivery", "actions"],
       deselectedDeliveryDay: null,
       showCutoffModal: false,
       stripeConnectUrl: null

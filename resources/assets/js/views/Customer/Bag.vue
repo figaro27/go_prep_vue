@@ -287,10 +287,19 @@
                     <span class="text-success">({{ coupon.code }})</span>
                   </div>
                   <div class="col-6 col-md-3 offset-md-5">
-                    <span class="text-success"
+                    <span class="text-success" v-if="couponReduction > 0"
                       >({{
                         format.money(couponReduction, storeSettings.currency)
                       }})</span
+                    >
+                    <span
+                      class="text-success"
+                      v-if="couponReduction > 0 && couponFreeDelivery"
+                    >
+                      +
+                    </span>
+                    <span class="text-success" v-if="couponFreeDelivery"
+                      >Free Delivery</span
                     >
                   </div>
                 </div>
@@ -312,7 +321,11 @@
               </li>
               <li
                 class="checkout-item"
-                v-if="storeSettings.applyDeliveryFee && pickup === 0"
+                v-if="
+                  storeSettings.applyDeliveryFee &&
+                    pickup === 0 &&
+                    !couponFreeDelivery
+                "
               >
                 <div class="row">
                   <div class="col-6 col-md-4">
@@ -663,6 +676,7 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
+      couponFreeDelivery: 0,
       deposit: 100,
       creditCardList: [],
       creditCard: {},
@@ -750,15 +764,17 @@ export default {
       });
     },
     deliveryFeeAmount() {
-      if (this.storeSettings.applyDeliveryFee) {
-        if (this.storeSettings.deliveryFeeType === "flat") {
-          return this.storeSettings.deliveryFee;
-        } else if (this.storeSettings.deliveryFeeType === "mileage") {
-          let mileageBase = parseFloat(this.storeSettings.mileageBase);
-          let mileagePerMile = parseFloat(this.storeSettings.mileagePerMile);
-          let distance = parseFloat(this.store.distance);
-          return mileageBase + mileagePerMile * distance;
-        }
+      if (!this.couponFreeDelivery) {
+        if (this.storeSettings.applyDeliveryFee) {
+          if (this.storeSettings.deliveryFeeType === "flat") {
+            return this.storeSettings.deliveryFee;
+          } else if (this.storeSettings.deliveryFeeType === "mileage") {
+            let mileageBase = parseFloat(this.storeSettings.mileageBase);
+            let mileagePerMile = parseFloat(this.storeSettings.mileagePerMile);
+            let distance = parseFloat(this.store.distance);
+            return mileageBase + mileagePerMile * distance;
+          }
+        } else return 0;
       } else return 0;
     },
     cards() {
@@ -1012,6 +1028,7 @@ export default {
           this.coupon = coupon;
           this.couponApplied = true;
           this.couponCode = "";
+          this.couponFreeDelivery = coupon.freeDelivery;
           this.couponClass = "checkout-item-hide";
           this.$toastr.s("Coupon Applied.", "Success");
           return;
