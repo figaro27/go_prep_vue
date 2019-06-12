@@ -1034,7 +1034,7 @@ export default {
       new_category: "",
       view_delivery_days: 1,
       payments_url: "",
-      coupon: { type: "flat" },
+      coupon: { type: "flat", freeDelivery: 0 },
       columns: ["code", "type", "amount", "freeDelivery", "actions"],
       deselectedDeliveryDay: null,
       showCutoffModal: false,
