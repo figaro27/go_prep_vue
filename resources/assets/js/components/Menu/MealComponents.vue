@@ -225,14 +225,14 @@ export default {
       });
       this.onChangeComponents();
     },
-    deleteComponentOption(componentId, id) {
-      let options = this.meal.components[componentId].options;
+    deleteComponentOption(componentIndex, optionIndex) {
+      let options = this.meal.components[componentIndex].options;
 
-      options = _.filter(options, option => {
-        return option.id !== id;
+      options = _.filter(options, (option, i) => {
+        return i !== optionIndex;
       });
 
-      this.meal.components[componentId].options = options;
+      this.meal.components[componentIndex].options = options;
       this.onChangeComponents();
     },
     onChangeComponents() {
