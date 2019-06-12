@@ -733,9 +733,6 @@
         <div class="card-body">
           <b-form @submit.prevent="updateStoreLogo">
             <b-form-group label="Logo" :state="true">
-              <p class="small">
-                Please keep height & width dimensions the exact same.
-              </p>
               <picture-input
                 :ref="`storeImageInput`"
                 :prefill="storeDetail.logo ? storeDetail.logo : ''"
