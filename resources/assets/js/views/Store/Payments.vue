@@ -61,7 +61,12 @@
               </b-dropdown>
             </span>
             <div slot="created_at" slot-scope="props">
-              {{ moment(props.row.created_at).format("dddd, MMM Do") }}
+              <span v-if="props.row.created_at != 'TOTALS'">{{
+                moment(props.row.created_at).format("dddd, MMM Do")
+              }}</span>
+              <span v-if="props.row.created_at === 'TOTALS'">{{
+                props.row.created_at
+              }}</span>
             </div>
             <div slot="subtotal" slot-scope="props">
               <div>
@@ -71,20 +76,18 @@
               </div>
             </div>
             <div slot="mealPlanDiscount" slot-scope="props">
-              <div class="red">
-                ({{
+              <div>
+                {{
                   formatMoney(props.row.mealPlanDiscount, props.row.currency)
-                }})
+                }}
               </div>
             </div>
             <div slot="couponCode" slot-scope="props">
               <div>{{ props.row.couponCode }}</div>
             </div>
             <div slot="couponReduction" slot-scope="props">
-              <div class="red">
-                ({{
-                  formatMoney(props.row.couponReduction, props.row.currency)
-                }})
+              <div>
+                {{ formatMoney(props.row.couponReduction, props.row.currency) }}
               </div>
             </div>
             <div slot="processingFee" slot-scope="props">
@@ -106,36 +109,42 @@
               <div>{{ formatMoney(props.row.amount, props.row.currency) }}</div>
             </div>
             <div slot="goPrepFee" slot-scope="props">
-              <div class="red">
-                ({{
+              <div>
+                {{
                   formatMoney(
-                    props.row.preFeePreDiscount * goPrepFee,
+                    props.row.afterDiscountBeforeFees * goPrepFee,
                     props.row.currency
                   )
-                }})
+                }}
               </div>
             </div>
             <div slot="stripeFee" slot-scope="props">
-              <div class="red">
-                ({{
+              <div v-if="props.row.amount > 0">
+                {{
                   formatMoney(
                     props.row.amount * stripeFee + 0.3,
                     props.row.currency
                   )
-                }})
+                }}
+              </div>
+              <div v-else>
+                $0.00
               </div>
             </div>
             <div slot="grandTotal" slot-scope="props">
-              <div class="strong">
+              <div v-if="props.row.amount > 0">
                 {{
                   formatMoney(
                     props.row.amount -
-                      (props.row.amount * goPrepFee +
+                      (props.row.afterDiscountBeforeFees * goPrepFee +
                         props.row.amount * stripeFee) -
                       0.3,
                     props.row.currency
                   )
                 }}
+              </div>
+              <div v-else>
+                $0.00
               </div>
             </div>
             <div slot="deposit" slot-scope="props">
@@ -165,7 +174,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      goPrepFee: 0,
+      goPrepFee: 0.05,
       stripeFee: 0.029,
       stripeUrl: "",
       ordersByDate: {},
@@ -175,7 +184,8 @@ export default {
         delivery_dates: {
           start: null,
           end: null
-        }
+        },
+        couponCode: "test"
       },
       order: {},
       orderId: "",
@@ -212,7 +222,7 @@ export default {
         },
         rowClassCallback: function(row) {
           let classes = `payment-${row.id}`;
-          classes += row.sums ? " strong" : "";
+          classes += row.sumRow ? " strong" : "";
           return classes;
         }
       }
@@ -232,6 +242,7 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
+      storeCoupons: "storeCoupons",
       ordersToday: "storeOrdersToday",
       upcomingOrders: "storeUpcomingOrders",
       isLoading: "isLoading",
@@ -250,41 +261,51 @@ export default {
         orders = this.ordersByDate;
       }
 
+      if (this.filters.couponCode != null) {
+        orders = orders.filter(
+          order => order.couponCode === this.filters.couponCode
+        );
+      }
+
       let sums = {
-        order_number: "Sums",
-        subtotal: 0,
+        preFeePreDiscount: 0,
+        mealPlanDiscount: 0,
+        couponReduction: 0,
+        afterDiscountBeforeFees: 0,
+        processingFee: 0,
+        deliveryFee: 0,
         salesTax: 0,
-        total: 0,
-        goPrepFee: 0,
-        stripeFee: 0,
-        grandTotal: 0
+        amount: 0
       };
 
       orders.forEach(order => {
-        sums.subtotal += order.subtotal;
+        sums.preFeePreDiscount += order.preFeePreDiscount;
+        sums.mealPlanDiscount += order.mealPlanDiscount;
+        sums.couponReduction += order.couponReduction;
+        sums.afterDiscountBeforeFees += order.afterDiscountBeforeFees;
+        sums.processingFee += order.processingFee;
+        sums.deliveryFee += order.deliveryFee;
         sums.salesTax += order.salesTax;
-        sums.total += order.amount;
-        sums.goPrepFee += order.amount;
-        sums.stripeFee += order.amount;
-        sums.grandTotal += order.amount;
+        sums.amount += order.amount;
       });
 
       orders.unshift({
-        order_number: sums.order_number,
-        subtotal: sums.subtotal,
+        created_at: "TOTALS",
+        preFeePreDiscount: sums.preFeePreDiscount,
+        mealPlanDiscount: sums.mealPlanDiscount,
+        couponReduction: sums.couponReduction,
+        afterDiscountBeforeFees: sums.afterDiscountBeforeFees,
+        processingFee: sums.processingFee,
+        deliveryFee: sums.deliveryFee,
         salesTax: sums.salesTax,
-        amount: sums.total,
-        goPrepFee: sums.goPrepfee,
+        amount: sums.amount,
         stripeFee: sums.stripeFee,
-        grandTotal: sums.grandTotal,
-        sums: 1
+        sumRow: 1
       });
       return orders;
     },
     columns() {
       let columns = [
-        "order_number",
-        "user.user_detail.full_name",
         "created_at",
         "subtotal",
         "salesTax",
@@ -296,7 +317,6 @@ export default {
 
       let addedColumns = [];
 
-      // Change to go through ALL orders
       this.upcomingOrders.forEach(order => {
         if (!columns.includes("couponCode") && order.couponCode != null) {
           columns.splice(4, 0, "couponReduction");
@@ -320,6 +340,13 @@ export default {
       });
 
       return columns;
+    },
+    coupons() {
+      let coupons = [];
+      this.storeCoupons.forEach(coupon => {
+        coupons.push(coupon.code);
+      });
+      return coupons;
     }
   },
   methods: {
@@ -402,12 +429,12 @@ export default {
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
       this.$refs.deliveryDates.clearDates();
-    },
-    getApplicationFee() {
-      axios.get("/api/me/getApplicationFee").then(resp => {
-        this.goPrepFee = resp.data / 100;
-      });
     }
+    // getApplicationFee() {
+    //   axios.get("/api/me/getApplicationFee").then(resp => {
+    //     this.goPrepFee = resp.data / 100;
+    //   });
+    // }
   }
 };
 </script>
