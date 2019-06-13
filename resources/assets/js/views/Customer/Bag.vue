@@ -243,15 +243,17 @@
                 <div class="row" v-if="!manualOrder">
                   <div class="col-md-9">
                     <strong
-                      ><p
-                        class="mr-1"
-                        v-if="storeSettings.applyMealPlanDiscount"
-                      >
-                        Create a meal plan and you'll save
-                        <span class="text-success standout">{{
-                          format.money(mealPlanDiscount, storeSettings.currency)
-                        }}</span>
-                        on each order.
+                      ><p class="mr-1">
+                        <span v-if="storeSettings.applyMealPlanDiscount">
+                          Create a meal plan and you'll save
+                          <span class="text-success standout">{{
+                            format.money(
+                              mealPlanDiscount,
+                              storeSettings.currency
+                            )
+                          }}</span>
+                          on each order.
+                        </span>
                         <c-switch
                           color="success"
                           variant="pill"
