@@ -190,7 +190,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      goPrepFee: 0.05,
+      goPrepFee: 0,
       stripeFee: 0.029,
       stripeUrl: "",
       ordersByDate: {},
@@ -219,10 +219,10 @@ export default {
           processingFee: "Processing Fee",
           deliveryFee: "Delivery Fee",
           salesTax: "Sales Tax",
-          total: "Total",
+          total: "PreFee Total",
           goPrepFee: "GoPrep Fee",
           stripeFee: "Stripe Fee",
-          grandTotal: "Grand Total",
+          grandTotal: "Total",
           deposit: "Balance Remaining"
         },
         customSorting: {
@@ -344,20 +344,20 @@ export default {
 
       this.upcomingOrders.forEach(order => {
         if (!columns.includes("couponCode") && order.couponCode != null) {
-          columns.splice(4, 0, "couponReduction");
-          columns.splice(4, 0, "couponCode");
+          columns.splice(2, 0, "couponReduction");
+          columns.splice(2, 0, "couponCode");
         }
         if (
           !columns.includes("mealPlanDiscount") &&
           order.mealPlanDiscount > 0
         ) {
-          columns.splice(4, 0, "mealPlanDiscount");
+          columns.splice(2, 0, "mealPlanDiscount");
         }
         if (!columns.includes("processingFee") && order.processingFee > 0) {
-          columns.splice(4, 0, "processingFee");
+          columns.splice(2, 0, "processingFee");
         }
         if (!columns.includes("deliveryFee") && order.deliveryFee > 0) {
-          columns.splice(4, 0, "deliveryFee");
+          columns.splice(2, 0, "deliveryFee");
         }
         if (!columns.includes("deposit") && order.deposit < 100) {
           columns.splice(columns.length, 0, "deposit");
@@ -454,12 +454,12 @@ export default {
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
       this.$refs.deliveryDates.clearDates();
+    },
+    getApplicationFee() {
+      axios.get("/api/me/getApplicationFee").then(resp => {
+        this.goPrepFee = resp.data / 100;
+      });
     }
-    // getApplicationFee() {
-    //   axios.get("/api/me/getApplicationFee").then(resp => {
-    //     this.goPrepFee = resp.data / 100;
-    //   });
-    // }
   }
 };
 </script>
