@@ -38,6 +38,16 @@
                     class="popover-size mr-2"
                   />Fees
                 </p>
+                <b-form-select
+                  v-model="filters.couponCode"
+                  :options="coupons"
+                  class="ml-3"
+                  v-if="coupons.length > 0"
+                >
+                  <template slot="first">
+                    <option :value="null">All Coupons</option>
+                  </template>
+                </b-form-select>
               </div>
             </div>
 
@@ -159,6 +169,12 @@
   </div>
 </template>
 
+<style>
+#__BVID__86 {
+  width: 170px !important;
+}
+</style>
+
 <script>
 import Spinner from "../../components/Spinner";
 import format from "../../lib/format";
@@ -185,7 +201,7 @@ export default {
           start: null,
           end: null
         },
-        couponCode: "test"
+        couponCode: null
       },
       order: {},
       orderId: "",
@@ -267,41 +283,50 @@ export default {
         );
       }
 
-      let sums = {
-        preFeePreDiscount: 0,
-        mealPlanDiscount: 0,
-        couponReduction: 0,
-        afterDiscountBeforeFees: 0,
-        processingFee: 0,
-        deliveryFee: 0,
-        salesTax: 0,
-        amount: 0
-      };
-
+      let totalsRowCheck = 0;
       orders.forEach(order => {
-        sums.preFeePreDiscount += order.preFeePreDiscount;
-        sums.mealPlanDiscount += order.mealPlanDiscount;
-        sums.couponReduction += order.couponReduction;
-        sums.afterDiscountBeforeFees += order.afterDiscountBeforeFees;
-        sums.processingFee += order.processingFee;
-        sums.deliveryFee += order.deliveryFee;
-        sums.salesTax += order.salesTax;
-        sums.amount += order.amount;
+        if (order.created_at === "TOTALS") {
+          totalsRowCheck = 1;
+        }
       });
 
-      orders.unshift({
-        created_at: "TOTALS",
-        preFeePreDiscount: sums.preFeePreDiscount,
-        mealPlanDiscount: sums.mealPlanDiscount,
-        couponReduction: sums.couponReduction,
-        afterDiscountBeforeFees: sums.afterDiscountBeforeFees,
-        processingFee: sums.processingFee,
-        deliveryFee: sums.deliveryFee,
-        salesTax: sums.salesTax,
-        amount: sums.amount,
-        stripeFee: sums.stripeFee,
-        sumRow: 1
-      });
+      if (!totalsRowCheck) {
+        let sums = {
+          preFeePreDiscount: 0,
+          mealPlanDiscount: 0,
+          couponReduction: 0,
+          afterDiscountBeforeFees: 0,
+          processingFee: 0,
+          deliveryFee: 0,
+          salesTax: 0,
+          amount: 0
+        };
+
+        orders.forEach(order => {
+          sums.preFeePreDiscount += order.preFeePreDiscount;
+          sums.mealPlanDiscount += order.mealPlanDiscount;
+          sums.couponReduction += order.couponReduction;
+          sums.afterDiscountBeforeFees += order.afterDiscountBeforeFees;
+          sums.processingFee += order.processingFee;
+          sums.deliveryFee += order.deliveryFee;
+          sums.salesTax += order.salesTax;
+          sums.amount += order.amount;
+        });
+
+        orders.unshift({
+          created_at: "TOTALS",
+          preFeePreDiscount: sums.preFeePreDiscount,
+          mealPlanDiscount: sums.mealPlanDiscount,
+          couponReduction: sums.couponReduction,
+          afterDiscountBeforeFees: sums.afterDiscountBeforeFees,
+          processingFee: sums.processingFee,
+          deliveryFee: sums.deliveryFee,
+          salesTax: sums.salesTax,
+          amount: sums.amount,
+          stripeFee: sums.stripeFee,
+          sumRow: 1
+        });
+      }
       return orders;
     },
     columns() {
