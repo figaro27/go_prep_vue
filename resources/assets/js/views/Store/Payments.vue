@@ -54,18 +54,18 @@
             <span slot="beforeLimit">
               <b-btn
                 variant="primary"
-                @click="exportData('orders', 'pdf', true)"
+                @click="exportData('payments', 'pdf', true)"
               >
                 <i class="fa fa-print"></i>&nbsp; Print Report
               </b-btn>
               <b-dropdown class="mx-1 mt-2 mt-sm-0" right text="Export as">
-                <b-dropdown-item @click="exportData('orders', 'csv')"
+                <b-dropdown-item @click="exportData('payments', 'csv')"
                   >CSV</b-dropdown-item
                 >
-                <b-dropdown-item @click="exportData('orders', 'xls')"
+                <b-dropdown-item @click="exportData('payments', 'xls')"
                   >XLS</b-dropdown-item
                 >
-                <b-dropdown-item @click="exportData('orders', 'pdf')"
+                <b-dropdown-item @click="exportData('payments', 'pdf')"
                   >PDF</b-dropdown-item
                 >
               </b-dropdown>
@@ -169,12 +169,6 @@
   </div>
 </template>
 
-<style>
-#__BVID__86 {
-  width: 170px !important;
-}
-</style>
-
 <script>
 import Spinner from "../../components/Spinner";
 import format from "../../lib/format";
@@ -211,7 +205,7 @@ export default {
           notes: "Notes",
           order_number: "Order #",
           "user.user_detail.full_name": "Name",
-          created_at: "Payment Made",
+          created_at: "Payment Date",
           subtotal: "Subtotal",
           mealPlanDiscount: "Meal Plan Discount",
           couponCode: "Coupon",
@@ -368,9 +362,11 @@ export default {
     },
     coupons() {
       let coupons = [];
-      this.storeCoupons.forEach(coupon => {
-        coupons.push(coupon.code);
-      });
+      if (this.storeCoupons.length > 0) {
+        this.storeCoupons.forEach(coupon => {
+          coupons.push(coupon.code);
+        });
+      }
       return coupons;
     }
   },
@@ -398,10 +394,7 @@ export default {
     async exportData(report, format = "pdf", print = false) {
       const warning = this.checkDateRange({ ...this.filters.delivery_dates });
 
-      let params = {
-        has_notes: this.filters.has_notes ? 1 : 0,
-        fulfilled: this.filters.fulfilled ? 1 : 0
-      };
+      let params = {};
 
       if (
         this.filters.delivery_dates.start &&
