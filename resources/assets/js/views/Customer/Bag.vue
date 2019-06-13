@@ -912,7 +912,11 @@ export default {
   mounted() {
     this.creditCardId = this.card;
     this.deliveryDay = this.deliveryDaysOptions[0].value;
-    this.getSalesTax(this.store.details.state);
+    if (this.storeSettings.salesTax > 0) {
+      this.salesTax = this.storeSettings.salesTax / 100;
+    } else {
+      this.getSalesTax(this.store.details.state);
+    }
 
     if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
 
