@@ -209,6 +209,11 @@ export default {
               return a.isAfter(b, "day") ? 1 : -1;
             };
           }
+        },
+        rowClassCallback: function(row) {
+          let classes = `payment-${row.id}`;
+          classes += row.sums ? " strong" : "";
+          return classes;
         }
       }
     };
@@ -264,14 +269,15 @@ export default {
         sums.grandTotal += order.amount;
       });
 
-      orders.push({
+      orders.unshift({
         order_number: sums.order_number,
         subtotal: sums.subtotal,
         salesTax: sums.salesTax,
         amount: sums.total,
         goPrepFee: sums.goPrepfee,
         stripeFee: sums.stripeFee,
-        grandTotal: sums.grandTotal
+        grandTotal: sums.grandTotal,
+        sums: 1
       });
       return orders;
     },
