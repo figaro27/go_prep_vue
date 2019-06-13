@@ -835,16 +835,20 @@ export default {
       } else return this.afterCoupon;
     },
     deliveryFeeAmount() {
-      if (!this.couponFreeDelivery) {
-        if (this.storeSettings.applyDeliveryFee) {
-          if (this.storeSettings.deliveryFeeType === "flat") {
-            return this.storeSettings.deliveryFee;
-          } else if (this.storeSettings.deliveryFeeType === "mileage") {
-            let mileageBase = parseFloat(this.storeSettings.mileageBase);
-            let mileagePerMile = parseFloat(this.storeSettings.mileagePerMile);
-            let distance = parseFloat(this.store.distance);
-            return mileageBase + mileagePerMile * distance;
-          }
+      if (!this.pickup) {
+        if (!this.couponFreeDelivery) {
+          if (this.storeSettings.applyDeliveryFee) {
+            if (this.storeSettings.deliveryFeeType === "flat") {
+              return this.storeSettings.deliveryFee;
+            } else if (this.storeSettings.deliveryFeeType === "mileage") {
+              let mileageBase = parseFloat(this.storeSettings.mileageBase);
+              let mileagePerMile = parseFloat(
+                this.storeSettings.mileagePerMile
+              );
+              let distance = parseFloat(this.store.distance);
+              return mileageBase + mileagePerMile * distance;
+            }
+          } else return 0;
         } else return 0;
       } else return 0;
     },
