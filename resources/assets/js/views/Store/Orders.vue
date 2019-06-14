@@ -38,11 +38,11 @@
                     v-if="filters.fulfilled"
                     >View Open Orders</b-btn
                   > -->
-                  <!-- <router-link to="/store/manual-order">
+                  <router-link to="/store/manual-order">
                     <b-btn class="btn btn-success filter-btn"
                       >Create Manual Order</b-btn
                     >
-                  </router-link> -->
+                  </router-link>
                 </div>
                 <delivery-date-picker
                   v-model="filters.delivery_dates"
