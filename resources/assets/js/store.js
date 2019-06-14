@@ -17,6 +17,7 @@ const ttl = 60; // 60 seconds
 
 // root state object. each Vuex instance is just a single state tree.
 const state = {
+  context: null,
   jobs: {},
   viewed_store: {
     distance: 0,
@@ -465,23 +466,12 @@ const actions = {
     } catch (e) {}
 
     const context = data.context;
+    state.context = context;
 
     if (context === "store") {
       await dispatch("initStore", data);
-
-      if (router.currentRoute.fullPath === "/") {
-        router.replace("/store/orders");
-      }
     } else if (context === "customer") {
       await dispatch("initCustomer", data);
-
-      if (router.currentRoute.fullPath === "/") {
-        if (_.isNull(data.store)) {
-          router.replace("/customer/home");
-        } else {
-          router.replace("/customer/menu");
-        }
-      }
     } else {
       await dispatch("initGuest", data);
     }
@@ -567,6 +557,18 @@ const actions = {
     /**
      * Extra actions
      */
+  },
+
+  async ensureInitialized({ commit, state, dispatch }) {
+    return new Promise((resolve, reject) => {
+      if (state.initialized) resolve();
+      let interval = setInterval(() => {
+        if (state.initialized) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
   },
 
   async initStore({ commit, state, dispatch }, data = {}) {

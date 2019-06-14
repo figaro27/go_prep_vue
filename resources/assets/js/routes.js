@@ -213,7 +213,21 @@ let routes = [
 
 const router = new VueRouter({ mode: "history", routes });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  await store.dispatch("ensureInitialized");
+
+  if (to.fullPath === "/") {
+    if (store.state.context === "store") {
+      return next("/store/orders");
+    } else if (store.state.context === "customer") {
+      if (_.isNull(store.getters.viewedStore)) {
+        return next("/customer/home");
+      } else {
+        return next("/customer/menu");
+      }
+    }
+  }
+
   // Routes to add class to body. Exclude leading /
   const classRoutes = [
     "login",
