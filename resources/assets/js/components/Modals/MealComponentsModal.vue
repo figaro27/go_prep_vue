@@ -51,7 +51,7 @@
       <b-row v-if="mealAddons.length" class="my-3">
         <b-col>
           <h6>Add-ons</h6>
-          <b-form-group label="">
+          <b-form-group label>
             <b-checkbox-group
               v-model="addons"
               :options="getAddonOptions(mealAddons)"
@@ -160,7 +160,13 @@ export default {
                 components: { ...this.choices },
                 addons: [...this.addons]
               });
+            } else {
+              resolve({
+                components: {},
+                addons: []
+              });
             }
+
             this.hide();
             this.meal = null;
             this.mealPackage = false;

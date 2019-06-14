@@ -31,6 +31,8 @@ export default {
           await this.hideMealModal();
         }
 
+        //const required =
+
         const result = await this.$refs.componentModal.show(
           meal,
           mealPackage,
