@@ -51,7 +51,7 @@
 
     <!-- <div class="menu ml-auto mr-auto"> -->
     <div class="menu ml-auto mr-auto">
-      <div v-if="!willDeliver && !preview && loggedIn">
+      <div v-if="!willDeliver && !preview && !manualOrder && loggedIn">
         <b-alert variant="danger center-text" show
           >You are outside of the delivery area.</b-alert
         >

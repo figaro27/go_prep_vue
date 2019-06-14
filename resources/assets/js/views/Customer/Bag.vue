@@ -491,7 +491,7 @@
               </li>
 
               <li v-else-if="loggedIn">
-                <div v-if="!willDeliver && pickup != 1">
+                <div v-if="!willDeliver && !manualOrder && pickup != 1">
                   <b-alert v-if="!loading" variant="danger center-text" show
                     >You are outside of the delivery area.</b-alert
                   >
