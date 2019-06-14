@@ -4,8 +4,9 @@ let states = {
   },
   selectOptions(country = "US") {
     return Object.keys(states[country].values).map(key => {
-      let state = states[country].values[key].name;
-      return { value: state, text: state, name: state };
+      let text = states[country].values[key].name;
+      let value = states[country].values[key].abbreviation;
+      return { value, text, name: text };
     });
   },
   CA: {
