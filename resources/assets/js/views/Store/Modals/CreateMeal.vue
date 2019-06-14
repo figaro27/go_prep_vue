@@ -316,6 +316,10 @@ export default {
       this.meal.gallery.splice(index, 1);
     },
     async storeMeal(e) {
+      if (this.isLoading) {
+        return;
+      }
+
       try {
         const { data } = await axios.post("/api/me/meals", this.meal);
       } catch (response) {

@@ -255,6 +255,10 @@ export default {
       }
     },
     async storePackage(e) {
+      if (this.isLoading) {
+        return;
+      }
+
       try {
         const { data } = await axios.post("/api/me/packages", this.package);
       } catch (response) {
