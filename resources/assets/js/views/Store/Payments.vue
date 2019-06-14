@@ -406,6 +406,8 @@ export default {
         };
       }
 
+      params.couponCode = this.filters.couponCode;
+
       axios
         .get(`/api/me/print/${report}/${format}`, {
           params

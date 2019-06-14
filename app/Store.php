@@ -423,7 +423,8 @@ class Store extends Model
         $onlyUnfulfilled = false,
         $onlyPaid = true,
         $onlyDelivery = false,
-        $orderDates = false
+        $orderDates = false,
+        $couponCode = ''
     ) {
         $orders = $this->orders()->with(['meals', 'meal_orders']);
 
@@ -451,6 +452,10 @@ class Store extends Model
         }
         if ($onlyDelivery) {
             $orders = $orders->where('pickup', 0);
+        }
+
+        if ($couponCode != '') {
+            $orders = $orders->where('couponCode', $couponCode);
         }
 
         $orders = $orders->get();

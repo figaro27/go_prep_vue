@@ -21,13 +21,22 @@ class Payments
     public function exportData($type = null)
     {
         $params = $this->params;
+        $couponCode = $this->params->get('couponCode');
 
         $payments = $this->store
-            ->getOrders(null, $this->getDeliveryDates(), null, null, null, true)
+            ->getOrders(
+                null,
+                $this->getDeliveryDates(),
+                null,
+                null,
+                null,
+                true,
+                $couponCode
+            )
             ->map(function ($payment) {
                 $goPrepFee = $this->store->settings->application_fee / 100;
                 $stripeFee = 0.029;
-                return [
+                $paymentsRows = [
                     $payment->created_at->format('D, m/d/Y'),
                     '$' . number_format($payment->preFeePreDiscount, 2),
                     $payment->couponCode,
@@ -53,6 +62,8 @@ class Payments
                         ),
                     100 - $payment->deposit . '%'
                 ];
+
+                return $paymentsRows;
             });
 
         if ($type !== 'pdf') {

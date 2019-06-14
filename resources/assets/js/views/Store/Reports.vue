@@ -207,6 +207,60 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h2 class="center-text mb-4">Payments</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body m-sm-4">
+            <h4 class="center-text mb-4">Payments</h4>
+            <div class="report-date-picker">
+              <delivery-date-picker
+                v-model="delivery_dates.payments"
+                ref="payments"
+                :orderDate="true"
+              ></delivery-date-picker>
+              <b-btn @click="clearDeliveryRoutes()" class="ml-1">Clear</b-btn>
+            </div>
+            <p class="mt-4 center-text">
+              Gives you breakdowns of all your payments as well as totals for
+              the date range you pick.
+            </p>
+            <div class="row">
+              <div class="col-md-6">
+                <button
+                  @click="print('payments', 'pdf')"
+                  class="btn btn-primary btn-md center mt-2 pull-right"
+                >
+                  Print
+                </button>
+              </div>
+              <div class="col-md-6">
+                <b-dropdown
+                  variant="warning"
+                  class="center mt-2"
+                  right
+                  text="Export as"
+                >
+                  <b-dropdown-item @click="exportData('payments', 'csv')"
+                    >CSV</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('payments', 'xls')"
+                    >XLS</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('payments', 'pdf')"
+                    >PDF</b-dropdown-item
+                  >
+                </b-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -236,7 +290,8 @@ export default {
         ingredient_quantities: [],
         orders_by_customer: [],
         packing_slips: [],
-        delivery_routes: []
+        delivery_routes: [],
+        payments: []
       }
     };
   },
@@ -274,15 +329,17 @@ export default {
         };
 
         const warning = this.checkDateRange({ ...dates });
-        if (warning) {
-          try {
-            let dialog = await this.$dialog.confirm(
-              "You have selected a date range which includes delivery days which haven't passe" +
-                "d their cutoff period. This means new orders can still come in for those days. Continue?"
-            );
-            dialog.close();
-          } catch (e) {
-            return;
+        if (report != "payments") {
+          if (warning) {
+            try {
+              let dialog = await this.$dialog.confirm(
+                "You have selected a date range which includes delivery days which haven't passe" +
+                  "d their cutoff period. This means new orders can still come in for those days. Continue?"
+              );
+              dialog.close();
+            } catch (e) {
+              return;
+            }
           }
         }
       }
@@ -384,6 +441,11 @@ export default {
       this.delivery_dates.delivery_routes.start = null;
       this.delivery_dates.delivery_routes.end = null;
       this.$refs.deliveryRoutesDates.clearDates();
+    },
+    clearPayments() {
+      this.delivery_dates.delivery_routes.start = null;
+      this.delivery_dates.delivery_routes.end = null;
+      this.$refs.payments.clearDates();
     }
   }
 };
