@@ -1023,7 +1023,17 @@ body.forgotresettoken {
 
 .update-meals-btn {
   @include media-breakpoint-down(md) {
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .update-meals-btn-wrap {
     position: fixed;
-    bottom: 10px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 5px 15px;
+    background: #efefef;
+    z-index: 10;
   }
 }

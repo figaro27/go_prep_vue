@@ -864,6 +864,7 @@
                     v-if="
                       minOption === 'meals' && total >= minimumMeals && !preview
                     "
+                    class="menu-btns-container"
                   >
                     <router-link
                       to="/customer/bag"
@@ -871,12 +872,13 @@
                     >
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
-                    <b-btn
-                      v-if="subscriptionId"
-                      class="menu-bag-btn update-meals-btn"
-                      @click="updateSubscriptionMeals"
-                      >UPDATE MEALS</b-btn
-                    >
+                    <div v-if="subscriptionId" class="update-meals-btn-wrap">
+                      <b-btn
+                        class="menu-bag-btn update-meals-btn"
+                        @click="updateSubscriptionMeals"
+                        >UPDATE MEALS</b-btn
+                      >
+                    </div>
                   </div>
                   <div
                     v-if="
@@ -884,6 +886,7 @@
                         totalBagPricePreFees < minPrice &&
                         !manualOrder
                     "
+                    class="menu-btns-container"
                   >
                     <p class="align-right">
                       Please add
@@ -904,12 +907,14 @@
                     >
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
-                    <b-btn
-                      v-if="subscriptionId"
-                      class="menu-bag-btn"
-                      @click="updateSubscriptionMeals"
-                      >UPDATE MEALS</b-btn
-                    >
+
+                    <div v-if="subscriptionId" class="update-meals-btn-wrap">
+                      <b-btn
+                        class="menu-bag-btn update-meals-btn"
+                        @click="updateSubscriptionMeals"
+                        >UPDATE MEALS</b-btn
+                      >
+                    </div>
                   </div>
                   <div>
                     <router-link
