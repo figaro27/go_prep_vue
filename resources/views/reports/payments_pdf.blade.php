@@ -10,12 +10,12 @@
     <h1>Payments</h1>
     @if ($delivery_dates)
       <h2>
-        Delivery Days: 
+        Order Dates: 
         {{ $delivery_dates['from']->format('D, m/d/Y') }} -
         {{ $delivery_dates['to']->format('D, m/d/Y') }}
       </h2>
     @else
-      <h2>All Delivery Dates</h2>
+      <h2>All Order Dates</h2>
     @endif
     <div class="unbreakable">
       <table border="1" width="100">
@@ -23,11 +23,17 @@
           <tr>
             <th>Payment Date</th>
             <th>Subtotal</th>
+            <th>Coupon</th>
+            <th>Coupon Reduction</th>
+            <th>Meal Plan Discount</th>
+            <th>Processing Fee</th>
+            <th>Delivery Fee</th>
             <th>Sales Tax</th>
             <th>PreFee Total</th>
             <th>GoPrep Fee</th>
             <th>Stripe Fee</th>
             <th>Total</th>
+            <th>Balance</th>
           </tr>
         </thead>
         <tbody>

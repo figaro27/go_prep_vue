@@ -146,8 +146,8 @@
                 {{
                   formatMoney(
                     props.row.amount -
-                      (props.row.afterDiscountBeforeFees * goPrepFee +
-                        props.row.amount * stripeFee) -
+                      props.row.afterDiscountBeforeFees * goPrepFee -
+                      props.row.amount * stripeFee -
                       0.3,
                     props.row.currency
                   )
@@ -184,7 +184,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      goPrepFee: 0,
+      goPrepFee: 0.05,
       stripeFee: 0.029,
       stripeUrl: "",
       ordersByDate: {},
