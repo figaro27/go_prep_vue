@@ -29,7 +29,7 @@ class MealController extends StoreController
     public function getStoreMeals()
     {
         $id = auth()->id;
-        $storeID = Store::where('user_id', $id)
+        $storeId = Store::where('user_id', $id)
             ->pluck('id')
             ->first();
 

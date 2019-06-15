@@ -204,7 +204,7 @@ export default {
   methods: {
     addComponent() {
       this.meal.components.push({
-        id: 100 + this.meal.components.length, // push to the end of table
+        id: 1000000 + this.meal.components.length, // push to the end of table
         title: "",
         minimum: 1,
         maximum: 1,

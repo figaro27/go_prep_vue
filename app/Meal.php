@@ -696,6 +696,7 @@ class Meal extends Model implements HasMedia
 
             // Meal sizes
             $sizes = $props->get('sizes');
+            $sizeIds = collect();
             if (is_array($sizes)) {
                 foreach ($sizes as $size) {
                     $mealSize = new MealSize();
@@ -704,6 +705,9 @@ class Meal extends Model implements HasMedia
                     $mealSize->price = $size['price'];
                     $mealSize->multiplier = $size['multiplier'];
                     $mealSize->save();
+
+                    // Map the fake size ID to the real one for components and addons
+                    $sizeIds->put($size['id'], $mealSize->id);
                 }
             }
 
@@ -748,7 +752,10 @@ class Meal extends Model implements HasMedia
 
                         $option->title = $optionArr['title'];
                         $option->price = $optionArr['price'];
-                        $option->meal_size_id = $optionArr['meal_size_id'];
+                        $option->meal_size_id = $sizeIds->get(
+                            $optionArr['meal_size_id'],
+                            null
+                        );
                         $option->save();
 
                         $option->syncIngredients($optionArr['ingredients']);
@@ -778,7 +785,10 @@ class Meal extends Model implements HasMedia
 
                     $mealAddon->title = $addon['title'];
                     $mealAddon->price = $addon['price'];
-                    $mealAddon->meal_size_id = $addon['meal_size_id'];
+                    $mealAddon->meal_size_id = $sizeIds->get(
+                        $addon['meal_size_id'],
+                        null
+                    );
                     $mealAddon->save();
 
                     $mealAddon->syncIngredients($addon['ingredients']);
@@ -968,9 +978,9 @@ class Meal extends Model implements HasMedia
 
         // Meal sizes
         $sizes = $props->get('sizes');
-        if (is_array($sizes)) {
-            $sizeIds = [];
+        $sizeIds = collect();
 
+        if (is_array($sizes)) {
             foreach ($sizes as $size) {
                 if (isset($size['id'])) {
                     $mealSize = $meal->sizes()->find($size['id']);
@@ -986,7 +996,7 @@ class Meal extends Model implements HasMedia
                 $mealSize->multiplier = $size['multiplier'];
                 $mealSize->save();
 
-                $sizeIds[] = $mealSize->id;
+                $sizeIds->put($size['id'], $mealSize->id);
             }
 
             // Deleted sizes
@@ -1037,7 +1047,10 @@ class Meal extends Model implements HasMedia
 
                     $option->title = $optionArr['title'];
                     $option->price = $optionArr['price'];
-                    $option->meal_size_id = $optionArr['meal_size_id'];
+                    $option->meal_size_id = $sizeIds->get(
+                        $optionArr['meal_size_id'],
+                        null
+                    );
                     $option->save();
 
                     $option->syncIngredients($optionArr['ingredients']);
@@ -1079,7 +1092,10 @@ class Meal extends Model implements HasMedia
 
                 $mealAddon->title = $addon['title'];
                 $mealAddon->price = $addon['price'];
-                $mealAddon->meal_size_id = $addon['meal_size_id'];
+                $mealAddon->meal_size_id = $sizeIds->get(
+                    $addon['meal_size_id'],
+                    null
+                );
                 $mealAddon->save();
 
                 $mealAddon->syncIngredients($addon['ingredients']);

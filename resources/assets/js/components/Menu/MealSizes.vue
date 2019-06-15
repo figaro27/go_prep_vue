@@ -4,7 +4,7 @@
       variant="primary"
       @click="
         meal.sizes.push({
-          id: 100 + meal.sizes.length, // push to the end of table
+          id: 1000000 + meal.sizes.length, // push to the end of table
           title: '',
           price: meal.price,
           multiplier: 1

@@ -152,7 +152,7 @@ export default {
   methods: {
     addAddon() {
       this.meal.addons.push({
-        id: 100 + this.meal.addons.length, // push to the end of table
+        id: 1000000 + this.meal.addons.length, // push to the end of table
         title: "",
         price: null,
         ingredients: []
