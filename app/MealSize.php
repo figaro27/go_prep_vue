@@ -9,6 +9,7 @@ class MealSize extends Model
 {
     public $fillable = [];
     public $appends = ['full_title'];
+    public $hidden = ['meal'];
 
     public function meal()
     {
