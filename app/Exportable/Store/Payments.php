@@ -36,6 +36,10 @@ class Payments
             ->map(function ($payment) {
                 $goPrepFee = $this->store->settings->application_fee / 100;
                 $stripeFee = 0.029;
+
+                // I want to make this the top row in the reports. I will replace these values to be the actual sums of the orders.
+                $sums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+
                 $paymentsRows = [
                     $payment->created_at->format('D, m/d/Y'),
                     '$' . number_format($payment->preFeePreDiscount, 2),

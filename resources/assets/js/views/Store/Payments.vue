@@ -202,9 +202,6 @@ export default {
       user_detail: {},
       options: {
         headings: {
-          notes: "Notes",
-          order_number: "Order #",
-          "user.user_detail.full_name": "Name",
           created_at: "Payment Date",
           subtotal: "Subtotal",
           mealPlanDiscount: "Meal Plan Discount",
