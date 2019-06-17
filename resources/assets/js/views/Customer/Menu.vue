@@ -43,9 +43,8 @@
           :key="category"
           @click.prevent="goToCategory(slugify(category))"
           class="d-inline-block m-2"
+          >{{ category }}</span
         >
-          {{ category }}
-        </span>
       </div>
     </div>
 
@@ -119,9 +118,9 @@
               :key="`tag-${tag}`"
               class="filters col-6 col-sm-4 col-md-3 mb-3"
             >
-              <b-button :pressed="active[tag]" @click="filterByTag(tag)">
-                {{ tag }}
-              </b-button>
+              <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{
+                tag
+              }}</b-button>
             </div>
           </div>
           <b-button
@@ -612,7 +611,7 @@
                             >
                               Contains:
                               {{ meal.allergy_titles.join(", ") }}
-                            </div> -->
+                                </div>-->
 
                                 <div class="actions">
                                   <div
@@ -806,12 +805,12 @@
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
-                          <span v-if="item.meal_package">{{
-                            item.meal.title
-                          }}</span>
-                          <span v-else-if="item.size">
-                            {{ item.size.full_title }}
+                          <span v-if="item.meal_package">
+                            {{ item.meal.title }}
                           </span>
+                          <span v-else-if="item.size">{{
+                            item.size.full_title
+                          }}</span>
                           <span v-else>{{ item.meal.item_title }}</span>
 
                           <ul
@@ -935,22 +934,7 @@
                       v-model="deliveryDay"
                       :options="deliveryDaysOptions"
                       class="w-100 mb-3"
-                    >
-                    </b-form-select>
-                    <b-btn class="menu-bag-btn" @click="adjust"
-                      >ADJUST ORDER</b-btn
-                    >
-                  </div>
-                  <div v-if="adjustOrder">
-                    <p v-if="!order.pickup">Delivery Day</p>
-                    <p v-if="order.pickup">Pickup Day</p>
-                    <b-form-select
-                      v-if="adjustOrder"
-                      v-model="deliveryDay"
-                      :options="deliveryDaysOptions"
-                      class="w-100 mb-3"
-                    >
-                    </b-form-select>
+                    ></b-form-select>
                     <b-btn class="menu-bag-btn" @click="adjust"
                       >ADJUST ORDER</b-btn
                     >
@@ -1416,6 +1400,7 @@ export default {
   mounted() {
     if (this.adjustOrder) {
       this.deliveryDay = this.order.delivery_date + " 00:00:00";
+      this.emptyBag();
       this.addMealOrdersToBag();
     }
     try {
@@ -1660,16 +1645,25 @@ export default {
     },
     addMealOrdersToBag() {
       //conact item with meal
-      this.order.meals.forEach(meal => {
-        this.bag.push({
-          added: 1560197380,
-          addons: null,
-          components: null,
-          meal: meal,
-          meal_package: false,
-          quantity: meal.quantity,
-          size: meal.meal_size
-        });
+      this.order.items.forEach(item => {
+        const meal = this.getMeal(item.meal_id);
+
+        if (!meal) {
+          return;
+        }
+
+        let components = _.mapValues(
+          _.groupBy(item.components, "meal_component_id"),
+          choices => {
+            return _.map(choices, "meal_component_option_id");
+          }
+        );
+
+        let addons = _.map(item.addons, "meal_addon_id");
+
+        for (let i = 0; i < item.quantity; i++) {
+          this.addOne(meal, false, item.meal_size_id, components, addons);
+        }
       });
     },
     async adjust() {
