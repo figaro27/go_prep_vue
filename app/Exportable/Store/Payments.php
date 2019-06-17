@@ -23,7 +23,7 @@ class Payments
         $params = $this->params;
         $couponCode = $this->params->get('couponCode');
 
-        $sums = ['TOTALS', 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+        $sums = ['TOTALS', 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         $payments = $this->store
             ->getOrders(
@@ -39,8 +39,33 @@ class Payments
                 $goPrepFee = $this->store->settings->application_fee / 100;
                 $stripeFee = 0.029;
 
-                // manipulate $sums here
-                $sums[1]++;
+                $sums[1] += number_format($payment->preFeePreDiscount, 2);
+                $sums[3] += $payment->couponReduction;
+                $sums[4] += $payment->mealPlanDiscount;
+                $sums[5] += $payment->processingFee;
+                $sums[6] += $payment->deliveryFee;
+                $sums[7] += $payment->salesTax;
+                $sums[8] += $payment->amount;
+                $sums[9] += $payment->afterDiscountBeforeFees * $goPrepFee;
+                $sums[10] += $payment->amount * $stripeFee + 0.3;
+                $sums[11] +=
+                    $payment->amount -
+                    $payment->afterDiscountBeforeFees * $goPrepFee -
+                    $payment->amount * $stripeFee -
+                    0.3;
+                $sums[12] = 100 - $payment->deposit;
+
+                $sums[1] = number_format($sums[1], 2);
+                $sums[3] = number_format($sums[3], 2);
+                $sums[4] = number_format($sums[4], 2);
+                $sums[5] = number_format($sums[5], 2);
+                $sums[6] = number_format($sums[6], 2);
+                $sums[7] = number_format($sums[7], 2);
+                $sums[8] = number_format($sums[8], 2);
+                $sums[9] = number_format($sums[9], 2);
+                $sums[10] = number_format($sums[10], 2);
+                $sums[11] = number_format($sums[11], 2);
+                $sums[12] = number_format($sums[12], 2);
 
                 $paymentsRows = [
                     $payment->created_at->format('D, m/d/Y'),
