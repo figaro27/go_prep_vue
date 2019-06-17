@@ -3,6 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="{{ asset('css/print.css') }}">
+
+  <style>
+  table tbody tr:first-child {
+    font-weight: bold;
+  }
+  </style>
 </head>
 
 <body class="{{ $body_classes }}">

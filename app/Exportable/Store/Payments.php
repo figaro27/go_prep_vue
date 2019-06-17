@@ -23,6 +23,8 @@ class Payments
         $params = $this->params;
         $couponCode = $this->params->get('couponCode');
 
+        $sums = ['TOTALS', 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+
         $payments = $this->store
             ->getOrders(
                 null,
@@ -33,12 +35,12 @@ class Payments
                 true,
                 $couponCode
             )
-            ->map(function ($payment) {
+            ->map(function ($payment) use (&$sums) {
                 $goPrepFee = $this->store->settings->application_fee / 100;
                 $stripeFee = 0.029;
 
-                // I want to make this the top row in the reports. I will replace these values to be the actual sums of the orders.
-                $sums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+                // manipulate $sums here
+                $sums[1]++;
 
                 $paymentsRows = [
                     $payment->created_at->format('D, m/d/Y'),
@@ -69,6 +71,9 @@ class Payments
 
                 return $paymentsRows;
             });
+
+        // Push the sums to the start of the list
+        $payments->prepend($sums);
 
         if ($type !== 'pdf') {
             $payments->prepend([

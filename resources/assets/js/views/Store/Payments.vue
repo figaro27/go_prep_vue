@@ -187,7 +187,7 @@ export default {
       goPrepFee: 0.05,
       stripeFee: 0.029,
       stripeUrl: "",
-      ordersByDate: {},
+      ordersByDate: [],
       filter: false,
       pastOrder: false,
       filters: {
@@ -261,7 +261,7 @@ export default {
     tableData() {
       let filters = { ...this.filters };
 
-      let orders = {};
+      let orders = [];
       if (this.filters.delivery_dates.start === null) {
         orders = this.ordersToday;
       } else {
