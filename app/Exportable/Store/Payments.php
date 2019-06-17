@@ -39,7 +39,7 @@ class Payments
                 $goPrepFee = $this->store->settings->application_fee / 100;
                 $stripeFee = 0.029;
 
-                $sums[1] += number_format($payment->preFeePreDiscount, 2);
+                $sums[1] += $payment->preFeePreDiscount;
                 $sums[3] += $payment->couponReduction;
                 $sums[4] += $payment->mealPlanDiscount;
                 $sums[5] += $payment->processingFee;
