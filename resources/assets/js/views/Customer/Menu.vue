@@ -1400,7 +1400,7 @@ export default {
   mounted() {
     if (this.adjustOrder) {
       this.deliveryDay = this.order.delivery_date + " 00:00:00";
-      this.emptyBag();
+      this.clearAll();
       this.addMealOrdersToBag();
     }
     try {
