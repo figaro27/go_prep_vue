@@ -941,6 +941,20 @@
                       >ADJUST ORDER</b-btn
                     >
                   </div>
+                  <div v-if="adjustOrder">
+                    <p v-if="!order.pickup">Delivery Day</p>
+                    <p v-if="order.pickup">Pickup Day</p>
+                    <b-form-select
+                      v-if="adjustOrder"
+                      v-model="deliveryDay"
+                      :options="deliveryDaysOptions"
+                      class="w-100 mb-3"
+                    >
+                    </b-form-select>
+                    <b-btn class="menu-bag-btn" @click="adjust"
+                      >ADJUST ORDER</b-btn
+                    >
+                  </div>
                   <div>
                     <router-link
                       to="/store/bag"
