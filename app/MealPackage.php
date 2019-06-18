@@ -32,6 +32,26 @@ class MealPackage extends Model implements HasMedia
         return $this->belongsTo('App\\Store');
     }
 
+    public function sizes()
+    {
+        return $this->hasMany('App\MealPackageSize', 'id');
+    }
+
+    public function components()
+    {
+        return $this->hasMany('App\MealPackageComponent', 'id');
+    }
+
+    public function selections()
+    {
+        return $this->hasMany('App\MealPackageSelections', 'id');
+    }
+
+    public function addons()
+    {
+        return $this->hasMany('App\MealPackageAddon', 'id');
+    }
+
     public function getImageAttribute()
     {
         $mediaItems = $this->getMedia('featured_image');
