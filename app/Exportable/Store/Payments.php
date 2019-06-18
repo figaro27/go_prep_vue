@@ -55,18 +55,6 @@ class Payments
                     0.3;
                 $sums[12] = 100 - $payment->deposit;
 
-                $sums[1] = number_format($sums[1], 2);
-                $sums[3] = number_format($sums[3], 2);
-                $sums[4] = number_format($sums[4], 2);
-                $sums[5] = number_format($sums[5], 2);
-                $sums[6] = number_format($sums[6], 2);
-                $sums[7] = number_format($sums[7], 2);
-                $sums[8] = number_format($sums[8], 2);
-                $sums[9] = number_format($sums[9], 2);
-                $sums[10] = number_format($sums[10], 2);
-                $sums[11] = number_format($sums[11], 2);
-                $sums[12] = number_format($sums[12], 2);
-
                 $paymentsRows = [
                     $payment->created_at->format('D, m/d/Y'),
                     '$' . number_format($payment->preFeePreDiscount, 2),
@@ -96,6 +84,11 @@ class Payments
 
                 return $paymentsRows;
             });
+
+        // Format the sum row
+        foreach ([1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as $i) {
+            $sums[$i] = '$' . number_format($sums[$i], 2);
+        }
 
         // Push the sums to the start of the list
         $payments->prepend($sums);
