@@ -899,6 +899,8 @@ export default {
     },
 
     async viewMeal(id) {
+      this.viewMealModal = false;
+
       const jobId = await this.addJob();
       axios
         .get(`/api/me/meals/${id}`)
@@ -918,6 +920,8 @@ export default {
         });
     },
     async viewMealPackage(id) {
+      this.viewPackageModal = false;
+
       const jobId = await this.addJob();
       axios
         .get(`/api/me/packages/${id}`)
