@@ -690,14 +690,6 @@ const actions = {
     }
 
     dispatch("refreshStores");
-
-    if (router.currentRoute.path === "/") {
-      if (_.isNull(data.store)) {
-        router.replace("/customer/home");
-      } else {
-        router.replace("/customer/menu");
-      }
-    }
   },
 
   async logout({ commit, state }) {

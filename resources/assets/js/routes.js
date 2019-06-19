@@ -225,7 +225,10 @@ router.beforeEach(async (to, from, next) => {
   if (to.fullPath === "/") {
     if (store.state.context === "store") {
       return next("/store/orders");
-    } else if (store.state.context === "customer") {
+    } else if (
+      store.state.context === "customer" ||
+      store.state.context === "guest"
+    ) {
       if (_.isNull(store.getters.viewedStore)) {
         return next("/customer/home");
       } else {
