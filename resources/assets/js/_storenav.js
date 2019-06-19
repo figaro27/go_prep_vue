@@ -1,9 +1,9 @@
 export default {
   items: [
     {
-      name: 'Orders',
-      url: '/store/orders',
-      icon: 'fa fa-shopping-bag'
+      name: "Orders",
+      url: "/store/orders",
+      icon: "fa fa-shopping-bag"
     },
     // {
     //   name: 'Past Orders',
@@ -12,25 +12,25 @@ export default {
     //   // class: 'nav-child'
     // },
     {
-      name: 'Meal Plans',
-      url: '/store/meal-plans',
-      icon: 'fa fa-shopping-cart',
+      name: "Meal Plans",
+      url: "/store/meal-plans",
+      icon: "fa fa-shopping-cart"
       // class: 'nav-child'
     },
     {
-      name: 'Menu',
-      url: '/store/menu',
-      icon: 'fa fa-utensils'
+      name: "Menu",
+      url: "/store/menu",
+      icon: "fa fa-utensils"
     },
     {
-      name: 'Production',
-      url: '/store/production',
-      icon: 'fa fa-line-chart'
+      name: "Production",
+      url: "/store/production",
+      icon: "fa fa-line-chart"
     },
     {
-      name: 'Ingredients',
-      url: '/store/ingredients',
-      icon: 'fa fa-lemon-o',
+      name: "Ingredients",
+      url: "/store/ingredients",
+      icon: "fa fa-lemon-o"
       // class: 'nav-child'
     },
     // {
@@ -40,27 +40,26 @@ export default {
     //   // class: 'nav-child'
     // },
     {
-      name: 'Reports',
-      url: '/store/reports',
-      icon: 'fa fa-file'
+      name: "Reports",
+      url: "/store/reports",
+      icon: "fa fa-file"
     },
     {
-      name: 'Customers',
-      url: '/store/customers',
-      icon: 'fa fa-users',
+      name: "Customers",
+      url: "/store/customers",
+      icon: "fa fa-users"
       // class: 'nav-child'
     },
     {
-      name: 'Payments',
-      url: '#payments',
-      icon: 'fa fa-money',
+      name: "Payments",
+      url: "/store/payments",
+      icon: "fa fa-money"
       // class: 'nav-child',
-      attributes: { target: '_blank', rel: "noopener" },
     },
     {
-      name: 'Settings',
-      url: '/store/account/settings',
-      icon: 'fa fa-cog'
-    },
-    ]
-}
+      name: "Settings",
+      url: "/store/account/settings",
+      icon: "fa fa-cog"
+    }
+  ]
+};

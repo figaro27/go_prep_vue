@@ -21,7 +21,8 @@ class Order extends Model
         'deliveryFee' => 'float',
         'amount' => 'float',
         'salesTax' => 'float',
-        'mealPlanDiscount' => 'float'
+        'mealPlanDiscount' => 'float',
+        'couponReduction' => 'float'
         //'created_at' => 'date:F d, Y'
     ];
 

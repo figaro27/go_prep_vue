@@ -422,25 +422,26 @@ class Store extends Model
         $dateRange = [],
         $onlyUnfulfilled = false,
         $onlyPaid = true,
-        $onlyDelivery = false
+        $onlyDelivery = false,
+        $orderDates = false,
+        $couponCode = ''
     ) {
         $orders = $this->orders()->with(['meals', 'meal_orders']);
 
+        $date = '';
+        if ($orderDates === false) {
+            $date = 'delivery_date';
+        } else {
+            $date = 'created_at';
+        }
+
         if (isset($dateRange['from'])) {
             $from = Carbon::parse($dateRange['from']);
-            $orders = $orders->where(
-                'delivery_date',
-                '>=',
-                $from->format('Y-m-d')
-            );
+            $orders = $orders->where($date, '>=', $from->format('Y-m-d'));
         }
         if (isset($dateRange['to'])) {
             $to = Carbon::parse($dateRange['to']);
-            $orders = $orders->where(
-                'delivery_date',
-                '<=',
-                $to->format('Y-m-d')
-            );
+            $orders = $orders->where($date, '<=', $to->format('Y-m-d'));
         }
 
         // if ($onlyUnfulfilled) {
@@ -451,6 +452,10 @@ class Store extends Model
         }
         if ($onlyDelivery) {
             $orders = $orders->where('pickup', 0);
+        }
+
+        if ($couponCode != '') {
+            $orders = $orders->where('couponCode', $couponCode);
         }
 
         $orders = $orders->get();

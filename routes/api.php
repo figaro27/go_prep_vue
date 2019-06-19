@@ -123,6 +123,10 @@ foreach (
                                 'OrderController@getUpcomingOrders'
                             );
                             Route::post(
+                                'getOrdersToday',
+                                'OrderController@getOrdersToday'
+                            );
+                            Route::post(
                                 'getFulfilledOrders',
                                 'OrderController@getFulfilledOrders'
                             );
@@ -153,6 +157,10 @@ foreach (
                             Route::resource(
                                 'settings',
                                 'StoreSettingController'
+                            );
+                            Route::get(
+                                'getApplicationFee',
+                                'StoreSettingController@getApplicationFee'
                             );
                             Route::resource('cards', 'CardController');
                             Route::post(

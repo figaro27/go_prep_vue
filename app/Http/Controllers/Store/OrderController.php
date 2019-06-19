@@ -27,12 +27,32 @@ class OrderController extends StoreController
 
     public function getUpcomingOrders()
     {
+        $fromDate = Carbon::today(
+            $this->store->settings->timezone
+        )->startOfDay();
+
         return $this->store->has('orders')
             ? $this->store
                 ->orders()
                 ->with(['user', 'pickup_location'])
                 ->where(['paid' => 1])
-                ->where('delivery_date', '>=', Carbon::now()->startOfDay())
+                ->where('delivery_date', '>=', $fromDate)
+                ->get()
+            : [];
+    }
+
+    public function getOrdersToday()
+    {
+        $fromDate = Carbon::today(
+            $this->store->settings->timezone
+        )->startOfDay();
+
+        return $this->store->has('orders')
+            ? $this->store
+                ->orders()
+                ->with(['user', 'pickup_location'])
+                ->where(['paid' => 1])
+                ->where('created_at', '>=', $fromDate)
                 ->get()
             : [];
     }
@@ -50,13 +70,21 @@ class OrderController extends StoreController
 
     public function getOrdersWithDates(Request $request)
     {
+        $paymentsPage = $request->get('payments');
+        $date = '';
+        if ($paymentsPage) {
+            $date = 'created_at';
+        } else {
+            $date = 'delivery_date';
+        }
+
         return $this->store->has('orders')
             ? $this->store
                 ->orders()
                 ->with(['user', 'pickup_location'])
                 ->where(['paid' => 1])
-                ->where('delivery_date', '>=', $request->get('start'))
-                ->where('delivery_date', '<=', $request->get('end'))
+                ->where($date, '>=', $request->get('start'))
+                ->where($date, '<=', $request->get('end'))
                 ->get()
             : [];
     }
