@@ -14,7 +14,7 @@
         Delivery / Pickup Dates:
       </div>
       <div class="mr-sm-2 flex-grow-0" v-if="orderDate">
-        Dates:
+        Order Dates:
       </div>
       <div class="flex-grow-0">
         <date-range-picker
