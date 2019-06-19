@@ -8,6 +8,10 @@
   table tbody tr:first-child {
     font-weight: bold;
   }
+  table tr td:nth-child(3) {
+    width: 100px;
+    word-break: break-all;
+    }
   </style>
 </head>
 
