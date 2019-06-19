@@ -61,6 +61,7 @@ class StoreSetting extends Model
         'showIngredients' => 'boolean',
         'applyDeliveryFee' => 'boolean',
         'applyProcessingFee' => 'boolean',
+        'allowMealPlans' => 'boolean',
         'applyMealPlanDiscount' => 'boolean',
         'allowPickup' => 'boolean',
         'meal_packages' => 'boolean',
