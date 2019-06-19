@@ -115,9 +115,9 @@
                 {{ formatMoney(props.row.salesTax, props.row.currency) }}
               </div>
             </div>
-            <div slot="total" slot-scope="props">
+            <!-- <div slot="total" slot-scope="props">
               <div>{{ formatMoney(props.row.amount, props.row.currency) }}</div>
-            </div>
+            </div> -->
             <div slot="goPrepFee" slot-scope="props">
               <div>
                 {{
@@ -210,7 +210,7 @@ export default {
           processingFee: "Processing Fee",
           deliveryFee: "Delivery Fee",
           salesTax: "Sales Tax",
-          total: "PreFee Total",
+          // total: "PreFee Total",
           goPrepFee: "GoPrep Fee",
           stripeFee: "Stripe Fee",
           grandTotal: "Total",
@@ -325,7 +325,7 @@ export default {
         "created_at",
         "subtotal",
         "salesTax",
-        "total",
+        // "total",
         "goPrepFee",
         "stripeFee",
         "grandTotal"

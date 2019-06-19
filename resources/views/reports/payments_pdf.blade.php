@@ -36,7 +36,6 @@
             <th>Delivery Fee</th>
             <th>Sales Tax</th>
             <th>PreFee Total</th>
-            <th>GoPrep Fee</th>
             <th>Stripe Fee</th>
             <th>Total</th>
             <th>Balance</th>

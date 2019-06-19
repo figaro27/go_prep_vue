@@ -23,7 +23,7 @@ class Payments
         $params = $this->params;
         $couponCode = $this->params->get('couponCode');
 
-        $sums = ['TOTALS', 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        $sums = ['TOTALS', 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         $payments = $this->store
             ->getOrders(
@@ -45,15 +45,14 @@ class Payments
                 $sums[5] += $payment->processingFee;
                 $sums[6] += $payment->deliveryFee;
                 $sums[7] += $payment->salesTax;
-                $sums[8] += $payment->amount;
-                $sums[9] += $payment->afterDiscountBeforeFees * $goPrepFee;
-                $sums[10] += $payment->amount * $stripeFee + 0.3;
-                $sums[11] +=
+                $sums[8] += $payment->afterDiscountBeforeFees * $goPrepFee;
+                $sums[9] += $payment->amount * $stripeFee + 0.3;
+                $sums[10] +=
                     $payment->amount -
                     $payment->afterDiscountBeforeFees * $goPrepFee -
                     $payment->amount * $stripeFee -
                     0.3;
-                $sums[12] = 100 - $payment->deposit;
+                $sums[11] = 100 - $payment->deposit;
 
                 $paymentsRows = [
                     $payment->created_at->format('D, m/d/Y'),
@@ -64,7 +63,6 @@ class Payments
                     '$' . number_format($payment->processingFee, 2),
                     '$' . number_format($payment->deliveryFee, 2),
                     '$' . number_format($payment->salesTax, 2),
-                    '$' . number_format($payment->amount, 2),
                     '$' .
                         number_format(
                             $payment->afterDiscountBeforeFees * $goPrepFee,
@@ -86,7 +84,7 @@ class Payments
             });
 
         // Format the sum row
-        foreach ([1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as $i) {
+        foreach ([1, 3, 4, 5, 6, 7, 8, 9, 10, 11] as $i) {
             $sums[$i] = '$' . number_format($sums[$i], 2);
         }
 
@@ -103,7 +101,6 @@ class Payments
                 'Processing Fee',
                 'Delivery Fee',
                 'Sales Tax',
-                'PreFee Total',
                 'GoPrep Fee',
                 'Stripe Fee',
                 'Total',
