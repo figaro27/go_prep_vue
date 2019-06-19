@@ -884,6 +884,29 @@
               <b-button type="submit" variant="primary">View Account</b-button>
             </a>
           </div>
+          <b-form @submit.prevent="updateStoreSettings">
+            <p class="mt-3 mb-0 pb-0">
+              <span class="mr-1">Sales Tax %</span>
+              <img
+                v-b-popover.hover="
+                  'Our system figures out your sales tax using the state you signed up with. You can override the number in the field below.'
+                "
+                title="Sales Tax"
+                src="/images/store/popover.png"
+                class="popover-size"
+              />
+            </p>
+            <b-form-group :state="true">
+              <b-form-input
+                label="Sales Tax"
+                class="mt-3"
+                type="text"
+                v-model="salesTax"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <b-button type="submit" variant="primary">Save</b-button>
+          </b-form>
         </div>
       </div>
 
@@ -1028,6 +1051,7 @@ import "vue-swatches/dist/vue-swatches.min.css";
 import fs from "../../../lib/fs.js";
 import TermsOfService from "../../TermsOfService";
 import TermsOfAgreement from "../../TermsOfAgreement";
+import SalesTax from "sales-tax";
 
 export default {
   components: {
@@ -1063,7 +1087,8 @@ export default {
       columns: ["code", "type", "amount", "freeDelivery", "actions"],
       deselectedDeliveryDay: null,
       showCutoffModal: false,
-      stripeConnectUrl: null
+      stripeConnectUrl: null,
+      salesTax: 0
     };
   },
   computed: {
@@ -1167,6 +1192,12 @@ export default {
     });
   },
   mounted() {
+    if (this.storeSettings.salesTax > 0) {
+      this.salesTax = this.storeSettings.salesTax;
+    } else {
+      this.getSalesTax(this.storeDetail.state);
+    }
+
     this.view_delivery_days = this.storeSettings.view_delivery_days;
     this.color = this.storeSettings.color;
 
@@ -1207,6 +1238,7 @@ export default {
           settings.view_delivery_days = null;
         }
       }
+      settings.salesTax = this.salesTax;
       settings.transferType = this.transferTypes;
       settings.delivery_distance_zipcodes = this.zipCodes;
       settings.color = this.color;
@@ -1490,6 +1522,14 @@ export default {
       if (this.storeSubscriptions.length > 0) {
         this.showCutoffModal = true;
       }
+    },
+    getSalesTax(state) {
+      SalesTax.getSalesTax("US", state).then(tax => {
+        this.setSalesTax(tax.rate);
+      });
+    },
+    setSalesTax(rate) {
+      this.salesTax = rate * 100;
     }
   }
 };
