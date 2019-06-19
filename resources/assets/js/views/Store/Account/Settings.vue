@@ -533,6 +533,7 @@
               class="popover-size"
             />
           </p>
+
           <b-form @submit.prevent="updateStoreSettings">
             <b-form-group :state="true">
               <c-switch
@@ -540,6 +541,30 @@
                 variant="pill"
                 size="lg"
                 v-model="storeSettings.meal_packages"
+                @change.native="updateStoreSettings"
+              />
+            </b-form-group>
+          </b-form>
+
+          <p>
+            <span class="mr-1">Allow Weekly Meal Plans</span>
+            <img
+              v-b-popover.hover="
+                'Shows a section on your bag/checkout page that lets the customer opt in for a weekly meal plan for an optional discount. The customer will then be charged every week. They can pause, cancel, or change meals in their meal plans.'
+              "
+              title="Allow Weekly Meal Plans"
+              src="/images/store/popover.png"
+              class="popover-size"
+            />
+          </p>
+
+          <b-form @submit.prevent="updateStoreSettings">
+            <b-form-group :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.allowMealPlans"
                 @change.native="updateStoreSettings"
               />
             </b-form-group>

@@ -219,7 +219,7 @@
           </div>
           <div class="col-md-6 offset-md-1">
             <ul class="list-group">
-              <li class="bag-item">
+              <li class="bag-item" v-if="storeSettings.allowMealPlans">
                 <div class="row" v-if="!manualOrder">
                   <div class="col-md-8 pb-1">
                     <h3>
