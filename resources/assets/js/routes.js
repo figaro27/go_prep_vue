@@ -229,7 +229,10 @@ router.beforeEach(async (to, from, next) => {
       store.state.context === "customer" ||
       store.state.context === "guest"
     ) {
-      if (_.isNull(store.getters.viewedStore)) {
+      if (
+        _.isNull(store.getters.viewedStore) ||
+        !store.getters.viewedStore.id
+      ) {
         return next("/customer/home");
       } else {
         return next("/customer/menu");
