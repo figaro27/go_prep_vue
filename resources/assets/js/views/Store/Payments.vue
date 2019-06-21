@@ -355,6 +355,28 @@ export default {
         }
       });
 
+      this.ordersByDate.forEach(order => {
+        if (!columns.includes("couponCode") && order.couponCode != null) {
+          columns.splice(2, 0, "couponReduction");
+          columns.splice(2, 0, "couponCode");
+        }
+        if (
+          !columns.includes("mealPlanDiscount") &&
+          order.mealPlanDiscount > 0
+        ) {
+          columns.splice(2, 0, "mealPlanDiscount");
+        }
+        if (!columns.includes("processingFee") && order.processingFee > 0) {
+          columns.splice(2, 0, "processingFee");
+        }
+        if (!columns.includes("deliveryFee") && order.deliveryFee > 0) {
+          columns.splice(2, 0, "deliveryFee");
+        }
+        if (!columns.includes("deposit") && order.deposit < 100) {
+          columns.splice(columns.length, 0, "deposit");
+        }
+      });
+
       return columns;
     },
     coupons() {
