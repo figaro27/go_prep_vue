@@ -11,7 +11,10 @@
       </div>
     </floating-action-button>
 
-    <div v-if="subscriptionId" class="update-meals-btn-wrap d-block d-lg-none">
+    <div
+      v-if="subscriptionId && canProgress"
+      class="update-meals-btn-wrap d-block d-lg-none"
+    >
       <b-btn
         class="menu-bag-btn update-meals-btn"
         @click="updateSubscriptionMeals"
@@ -1060,6 +1063,16 @@ export default {
     }),
     storeId() {
       return this.store.id;
+    },
+    canProgress() {
+      return (
+        (this.minOption === "meals" &&
+          this.total >= this.minimumMeals &&
+          !this.preview) ||
+        (this.minOption === "price" &&
+          this.totalBagPricePreFees >= this.minPrice &&
+          !this.preview)
+      );
     },
     card() {
       if (this.mobile) {
