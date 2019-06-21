@@ -138,6 +138,10 @@ foreach (
                                 'ordersUpdateViewed',
                                 'OrderController@updateViewed'
                             );
+                            Route::post(
+                                'orders/adjustOrder',
+                                'OrderController@adjustOrder'
+                            );
                             Route::resource(
                                 'subscriptions',
                                 'SubscriptionController'

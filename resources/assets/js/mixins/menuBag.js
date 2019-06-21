@@ -13,6 +13,8 @@ export default {
       let sizeId = size;
       if (_.isObject(size) && size.id) {
         sizeId = size.id;
+      } else {
+        size = meal.getSize(sizeId);
       }
 
       if (

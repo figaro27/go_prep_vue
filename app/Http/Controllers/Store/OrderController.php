@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Store;
 
 use App\Order;
+use App\Bag;
+use App\MealOrder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Carbon;
@@ -146,6 +148,51 @@ class OrderController extends StoreController
     public function update(Request $request, $id)
     {
         return Order::updateOrder($id, $request->all());
+    }
+
+    public function adjustOrder(Request $request)
+    {
+        $order = Order::where('id', $request->get('orderId'))->first();
+        $store = $order->store;
+        $bag = new Bag($request->get('bag'), $store);
+
+        $order->meal_orders()->delete();
+        foreach ($bag->getItems() as $item) {
+            $mealOrder = new MealOrder();
+            $mealOrder->order_id = $order->id;
+            $mealOrder->store_id = $store->id;
+            $mealOrder->meal_id = $item['meal']['id'];
+            $mealOrder->quantity = $item['quantity'];
+            if (isset($item['size']) && $item['size']) {
+                $mealOrder->meal_size_id = $item['size']['id'];
+            }
+            $mealOrder->save();
+
+            if (isset($item['components']) && $item['components']) {
+                foreach ($item['components'] as $componentId => $choices) {
+                    foreach ($choices as $optionId) {
+                        MealOrderComponent::create([
+                            'meal_order_id' => $mealOrder->id,
+                            'meal_component_id' => $componentId,
+                            'meal_component_option_id' => $optionId
+                        ]);
+                    }
+                }
+            }
+
+            if (isset($item['addons']) && $item['addons']) {
+                foreach ($item['addons'] as $addonId) {
+                    MealOrderAddon::create([
+                        'meal_order_id' => $mealOrder->id,
+                        'meal_addon_id' => $addonId
+                    ]);
+                }
+            }
+        }
+
+        $order->delivery_date = $request->get('deliveryDate');
+        $order->adjusted = 1;
+        $order->save();
     }
 
     /**
