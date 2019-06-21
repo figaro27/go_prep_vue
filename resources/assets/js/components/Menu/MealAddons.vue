@@ -155,7 +155,8 @@ export default {
         id: 1000000 + this.meal.addons.length, // push to the end of table
         title: "",
         price: null,
-        ingredients: []
+        ingredients: [],
+        meal_size_id: null
       });
     },
     deleteAddon(id) {
