@@ -13,13 +13,13 @@
             <div slot="beforeTable" class="mb-2">
               <div class="table-before d-flex flex-wrap align-items-center">
                 <div class="d-inline-block mb-2 mb-md-0 mr-2 flex-grow-0">
-                  <b-btn
+                  <!-- <b-btn
                     @click="$set(filters, 'has_notes', !filters.has_notes)"
                     :selected="filters.has_notes"
                     variant="primary"
                     class="filter-btn"
                     >Filter Notes</b-btn
-                  >
+                  > -->
                 </div>
                 <div class="d-inline-block mr-2 flex-grow-0">
                   <!-- <b-btn
@@ -134,16 +134,28 @@
 
     <div class="modal-basic modal-wider">
       <b-modal v-model="viewOrderModal" size="lg" title="Order Information">
+        <div class="row light-background" v-if="order.adjusted">
+          <div class="col-md-12">
+            <p class="center-text red pt-3">
+              The meals and/or delivery date of this order was adjusted.
+            </p>
+          </div>
+        </div>
         <div class="row light-background border-bottom mb-3">
-          <div class="col-md-4 pt-4">
+          <div class="col-md-4 pt-1">
             <h4>Order ID</h4>
             <p>{{ order.order_number }}</p>
+            <router-link
+              :to="{ name: 'store-adjust-order', params: { order: order } }"
+            >
+              <b-btn class="btn btn-success mb-2">Adjust Order</b-btn>
+            </router-link>
           </div>
-          <div class="col-md-4 pt-4">
+          <div class="col-md-4 pt-1">
             <h4>Placed On</h4>
             <p>{{ moment(order.created_at).format("dddd, MMM Do") }}</p>
           </div>
-          <div class="col-md-4 pt-4">
+          <div class="col-md-4 pt-1">
             <p>
               Subtotal:
               {{ format.money(order.preFeePreDiscount, order.currency) }}
