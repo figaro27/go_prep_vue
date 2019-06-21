@@ -148,9 +148,8 @@
             <router-link
               :to="{ name: 'store-adjust-order', params: { order: order } }"
             >
-              <b-btn class="btn btn-success">Adjust Order</b-btn>
+              <b-btn class="btn btn-success mb-2">Adjust Order</b-btn>
             </router-link>
-            <span class="mb-3"></span>
           </div>
           <div class="col-md-4 pt-1">
             <h4>Placed On</h4>
