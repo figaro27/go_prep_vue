@@ -166,7 +166,7 @@
                         }}
                         per week.
                       </p>
-                      <div>
+                      <div v-if="subscription.latest_paid_order">
                         <p>
                           Your order is locked in for the upcoming delivery day
                           of
