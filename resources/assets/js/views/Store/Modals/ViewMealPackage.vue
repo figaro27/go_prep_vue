@@ -86,6 +86,54 @@
                 </div>
               </v-client-table>
             </b-tab>
+            <b-tab title="Variations">
+              <b-tabs pills>
+                <b-tab title="Sizes">
+                  <meal-package-sizes
+                    :package="package"
+                    @change="val => (package.sizes = val)"
+                    @changeDefault="val => (package.default_size_title = val)"
+                    @save="
+                      val =>
+                        updateMealPackage(package.id, {
+                          sizes: val,
+                          default_size_title: package.default_size_title
+                        })
+                    "
+                  ></meal-package-sizes>
+                </b-tab>
+
+                <b-tab title="Components">
+                  <meal-package-components
+                    :package="package"
+                    @change="val => (package.components = val)"
+                    @save="
+                      val => updateMealPackage(package.id, { components: val })
+                    "
+                  ></meal-package-components>
+                </b-tab>
+
+                <b-tab title="Selections">
+                  <meal-package-selections
+                    :package="package"
+                    @change="val => (package.components = val)"
+                    @save="
+                      val => updateMealPackage(package.id, { components: val })
+                    "
+                  ></meal-package-selections>
+                </b-tab>
+
+                <b-tab title="Addons">
+                  <meal-package-addons
+                    :package="package"
+                    @change="val => (package.addons = val)"
+                    @save="
+                      val => updateMealPackage(package.id, { addons: val })
+                    "
+                  ></meal-package-addons>
+                </b-tab>
+              </b-tabs>
+            </b-tab>
           </b-tabs>
         </b-col>
 
@@ -126,11 +174,19 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import Spinner from "../../../components/Spinner";
 import IngredientPicker from "../../../components/IngredientPicker";
 import fs from "../../../lib/fs.js";
+import MealPackageSizes from "../../../components/Menu/MealPackageSizes";
+import MealPackageComponents from "../../../components/Menu/MealPackageComponents";
+import MealPackageSelections from "../../../components/Menu/MealPackageSelections";
+import MealPackageAddons from "../../../components/Menu/MealPackageAddons";
 
 export default {
   components: {
     Spinner,
-    PictureInput
+    PictureInput,
+    MealPackageSizes,
+    MealPackageComponents,
+    MealPackageSelections,
+    MealPackageAddons
   },
   props: {
     meal_package: {
