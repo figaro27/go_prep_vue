@@ -40,7 +40,9 @@ const state = {
   stores: {},
   tags: [],
   bag: {
-    items: {}
+    items: {},
+    coupon: null,
+    meal_plan: false
   },
 
   allergies: {},
@@ -283,6 +285,12 @@ const mutations = {
   },
   emptyBag(state) {
     state.bag.items = {};
+  },
+  setBagCoupon(state, coupon) {
+    state.bag.coupon = coupon;
+  },
+  setBagMealPlan(state, mealPlan) {
+    state.bag.meal_plan = mealPlan;
   },
 
   ingredients(state, { ingredients, expires }) {
@@ -1320,6 +1328,12 @@ const getters = {
         );
       }
     });
+  },
+  bagCoupon(state) {
+    return state.bag.coupon;
+  },
+  bagMealPlan(state) {
+    return state.bag.meal_plan;
   },
   bagHasMeal: state => meal => {
     if (!_.isNumber(meal)) {

@@ -258,8 +258,13 @@
                           color="success"
                           variant="pill"
                           size="lg"
-                          v-model="deliveryPlan"
+                          :value="deliveryPlan"
                           class="pt-3"
+                          @change="
+                            val => {
+                              setBagMealPlan(val);
+                            }
+                          "
                         /></p
                     ></strong>
                   </div>
@@ -386,7 +391,7 @@
                     <b-form-group id="coupon">
                       <b-form-input
                         id="coupon-code"
-                        v-model="couponCode"
+                        v-model="_coupon"
                         required
                         placeholder="Enter Coupon Code"
                       ></b-form-input>
@@ -678,7 +683,7 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
-      couponFreeDelivery: 0,
+      //couponFreeDelivery: 0,
       deposit: 100,
       creditCardList: [],
       creditCard: {},
@@ -686,15 +691,14 @@ export default {
       customer: null,
       selectedPickupLocation: null,
       pickup: 0,
-      deliveryPlan: false,
+      //deliveryPlan: false,
       deliveryDay: undefined,
       stripeKey: window.app.stripe_key,
       loading: false,
       checkingOut: false,
       salesTax: 0,
-      coupon: {},
       couponCode: "",
-      couponApplied: false,
+      //couponApplied: false,
       couponClass: "checkout-item",
       deliveryFee: 0
     };
@@ -714,6 +718,9 @@ export default {
       storeCustomers: "storeCustomers",
       total: "bagQuantity",
       bag: "bagItems",
+      coupon: "bagCoupon",
+      deliveryPlan: "bagMealPlan",
+      mealPlan: "bagMealPlan",
       hasMeal: "bagHasMeal",
       totalBagPricePreFees: "totalBagPricePreFees",
       totalBagPrice: "totalBagPrice",
@@ -728,6 +735,12 @@ export default {
       pickupLocations: "viewedStorePickupLocations",
       getMeal: "viewedStoreMeal"
     }),
+    couponFreeDelivery() {
+      return this.coupon ? this.coupon.freeDelivery : 0;
+    },
+    couponApplied() {
+      return !_.isNull(this.coupon);
+    },
     customers() {
       let customers = this.storeCustomers;
       if (_.isEmpty(customers)) {
@@ -949,7 +962,7 @@ export default {
       "refreshStoreSubscriptions",
       "refreshUpcomingOrders"
     ]),
-    ...mapMutations(["emptyBag"]),
+    ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
     preventNegative() {
       if (this.total < 0) {
         this.total += 1;
@@ -1053,9 +1066,10 @@ export default {
       this.coupons.forEach(coupon => {
         if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
           this.coupon = coupon;
-          this.couponApplied = true;
+          this.setBagCoupon(coupon);
+          //this.couponApplied = true;
           this.couponCode = "";
-          this.couponFreeDelivery = coupon.freeDelivery;
+          //this.couponFreeDelivery = coupon.freeDelivery;
           this.couponClass = "checkout-item-hide";
           this.$toastr.s("Coupon Applied.", "Success");
           return;
