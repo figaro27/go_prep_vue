@@ -11,12 +11,10 @@
       </div>
     </floating-action-button>
 
-    <div
-      v-if="subscriptionId && canProgress"
-      class="update-meals-btn-wrap d-block d-lg-none"
-    >
+    <div v-if="subscriptionId" class="update-meals-btn-wrap d-block d-lg-none">
       <b-btn
         class="menu-bag-btn update-meals-btn"
+        :disabled="!canProgress"
         @click="updateSubscriptionMeals"
         >UPDATE MEALS</b-btn
       >
@@ -1570,6 +1568,10 @@ export default {
       this.filteredView = false;
     },
     async updateSubscriptionMeals() {
+      if (!this.canProgress) {
+        return;
+      }
+
       try {
         const { data } = await axios.post(
           `/api/me/subscriptions/${this.subscriptionId}/meals`,
