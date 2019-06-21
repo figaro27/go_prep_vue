@@ -11,6 +11,14 @@
       </div>
     </floating-action-button>
 
+    <div v-if="subscriptionId" class="update-meals-btn-wrap d-block d-lg-none">
+      <b-btn
+        class="menu-bag-btn update-meals-btn"
+        @click="updateSubscriptionMeals"
+        >UPDATE MEALS</b-btn
+      >
+    </div>
+
     <meal-components-modal
       ref="componentModal"
       :key="total"
@@ -872,7 +880,7 @@
                     >
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
-                    <div v-if="subscriptionId" class="update-meals-btn-wrap">
+                    <div v-if="subscriptionId" class="d-none d-lg-block">
                       <b-btn
                         class="menu-bag-btn update-meals-btn"
                         @click="updateSubscriptionMeals"
@@ -908,7 +916,7 @@
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
 
-                    <div v-if="subscriptionId" class="update-meals-btn-wrap">
+                    <div v-if="subscriptionId" class="d-none d-lg-block">
                       <b-btn
                         class="menu-bag-btn update-meals-btn"
                         @click="updateSubscriptionMeals"
