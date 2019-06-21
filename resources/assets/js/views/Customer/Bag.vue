@@ -699,6 +699,13 @@ export default {
       deliveryFee: 0
     };
   },
+  watch: {
+    deliveryDaysOptions(val) {
+      if (!this.deliveryDay && val[0]) {
+        this.deliveryDay = val[0].value;
+      }
+    }
+  },
   computed: {
     ...mapGetters({
       creditCards: "cards",
@@ -917,7 +924,6 @@ export default {
   },
   mounted() {
     this.creditCardId = this.card;
-    this.deliveryDay = this.deliveryDaysOptions[0].value;
     if (this.storeSettings.salesTax > 0) {
       this.salesTax = this.storeSettings.salesTax / 100;
     } else {
