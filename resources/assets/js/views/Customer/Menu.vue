@@ -928,12 +928,6 @@
                         >UPDATE MEALS</b-btn
                       >
                     </div>
-                    <b-btn
-                      v-if="adjustOrder"
-                      class="menu-bag-btn"
-                      @click="adjustOrder"
-                      >Adjust Order</b-btn
-                    >
                   </div>
                   <div v-if="adjustOrder">
                     <p v-if="!order.pickup">Delivery Day</p>

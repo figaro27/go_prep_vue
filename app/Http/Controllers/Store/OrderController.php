@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Store;
 use App\Order;
 use App\Bag;
 use App\MealOrder;
+use App\MealOrderComponent;
+use App\MealOrderAddon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Carbon;
