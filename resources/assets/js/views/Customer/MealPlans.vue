@@ -385,7 +385,12 @@ export default {
   mounted() {},
   methods: {
     ...mapActions(["refreshSubscriptions"]),
-    ...mapMutations(["emptyBag", "addBagItems"]),
+    ...mapMutations([
+      "emptyBag",
+      "addBagItems",
+      "setBagMealPlan",
+      "setBagCoupon"
+    ]),
     getOrderTableData(subscription) {
       if (!subscription || !_.isArray(subscription.orders)) {
         return [];
@@ -471,6 +476,8 @@ export default {
     },
     editSubscription(subscription) {
       this.emptyBag();
+      this.setBagMealPlan(false);
+      this.setBagCoupon(null);
 
       const items = _.map(subscription.meals, meal => {
         return {

@@ -1020,6 +1020,10 @@ export default {
           deposit: deposit
         })
         .then(async resp => {
+          this.emptyBag();
+          this.setBagMealPlan(false);
+          this.setBagCoupon(null);
+
           if (this.manualOrder && this.deliveryPlan) {
             this.refreshStoreSubscriptions();
             this.$router.push({
@@ -1047,8 +1051,6 @@ export default {
               query: { created: true, pickup: this.pickup }
             });
           }
-
-          this.emptyBag();
         })
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors)) || [

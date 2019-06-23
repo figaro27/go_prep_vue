@@ -1441,6 +1441,7 @@ export default {
       "emptyBag",
       "refreshUpcomingOrders"
     ]),
+    ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
     onCategoryVisible(isVisible, index) {
       if (isVisible && this.$refs.categorySlider) {
         this.$refs.categorySlider.goTo(index);
@@ -1622,6 +1623,9 @@ export default {
         );
         await this.refreshSubscriptions();
         this.emptyBag();
+        this.setBagMealPlan(false);
+        this.setBagCoupon(null);
+
         this.$router.push({
           path: "/customer/meal-plans",
           query: {
