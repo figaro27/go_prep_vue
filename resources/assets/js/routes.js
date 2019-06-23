@@ -205,7 +205,11 @@ let routes = [
   {
     path: "/store/manual-order",
     component: StoreManualOrder,
-    name: "store-manual-order"
+    name: "store-manual-order",
+    async beforeEnter(to, from, next) {
+      await store.dispatch("refreshViewedStore");
+      next();
+    }
   },
   {
     path: "/store/adjust-order",
@@ -215,7 +219,11 @@ let routes = [
   {
     path: "/store/bag",
     component: StoreBag,
-    name: "store-bag"
+    name: "store-bag",
+    async beforeEnter(to, from, next) {
+      await store.dispatch("refreshViewedStore");
+      next();
+    }
   },
   {
     path: "/spinner",

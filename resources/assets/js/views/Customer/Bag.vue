@@ -933,6 +933,10 @@ export default {
     if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
 
     this.selectedPickupLocation = this.pickupLocationOptions[0].value;
+
+    if (!this.deliveryDay && this.deliveryDaysOptions) {
+      this.deliveryDay = this.deliveryDaysOptions[0].value;
+    }
   },
   updated() {
     this.creditCardId = this.card;
@@ -953,6 +957,13 @@ export default {
     },
     checkout() {
       if (this.checkingOut) {
+        return;
+      }
+
+      // Ensure delivery day is set
+      if (!this.deliveryDay && this.deliveryDaysOptions) {
+        this.deliveryDay = this.deliveryDaysOptions[0].value;
+      } else if (!this.deliveryDaysOptions) {
         return;
       }
 
