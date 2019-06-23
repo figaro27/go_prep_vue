@@ -258,7 +258,7 @@
                           color="success"
                           variant="pill"
                           size="lg"
-                          :value="deliveryPlan"
+                          :checked="deliveryPlan"
                           class="pt-3"
                           @change="
                             val => {
@@ -391,7 +391,7 @@
                     <b-form-group id="coupon">
                       <b-form-input
                         id="coupon-code"
-                        v-model="_coupon"
+                        v-model="couponCode"
                         required
                         placeholder="Enter Coupon Code"
                       ></b-form-input>
