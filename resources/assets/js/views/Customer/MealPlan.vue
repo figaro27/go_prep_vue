@@ -21,7 +21,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["subscriptions", "store", "bag", "viewedStoreMeal"]),
+    ...mapGetters({
+      subscriptions: "subscriptions",
+      store: "store",
+      bag: "bag",
+      getMeal: "viewedStoreMeal"
+    }),
     subscriptionId() {
       return this.$route.params.id;
     }
@@ -45,7 +50,7 @@ export default {
       this.clearAll();
 
       _.forEach(subscription.items, item => {
-        const meal = this.viewedStoreMeal(item.meal_id);
+        const meal = this.getMeal(item.meal_id);
         if (!meal) {
           return;
         }

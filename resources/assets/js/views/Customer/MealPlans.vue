@@ -476,8 +476,8 @@ export default {
     },
     editSubscription(subscription) {
       this.emptyBag();
-      this.setBagMealPlan(false);
       this.setBagCoupon(null);
+      this.setBagMealPlan(true);
 
       const items = _.map(subscription.meals, meal => {
         return {
@@ -488,6 +488,7 @@ export default {
         };
       });
       this.addBagItems(items);
+
       window.location = `${subscription.store.url}/customer/meal-plans/${
         subscription.id
       }`;
