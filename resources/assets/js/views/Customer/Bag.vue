@@ -258,8 +258,13 @@
                           color="success"
                           variant="pill"
                           size="lg"
-                          v-model="deliveryPlan"
+                          :checked="deliveryPlan"
                           class="pt-3"
+                          @change="
+                            val => {
+                              setBagMealPlan(val);
+                            }
+                          "
                         /></p
                     ></strong>
                   </div>
@@ -678,7 +683,7 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
-      couponFreeDelivery: 0,
+      //couponFreeDelivery: 0,
       deposit: 100,
       creditCardList: [],
       creditCard: {},
@@ -686,18 +691,24 @@ export default {
       customer: null,
       selectedPickupLocation: null,
       pickup: 0,
-      deliveryPlan: false,
+      //deliveryPlan: false,
       deliveryDay: undefined,
       stripeKey: window.app.stripe_key,
       loading: false,
       checkingOut: false,
       salesTax: 0,
-      coupon: {},
       couponCode: "",
-      couponApplied: false,
+      //couponApplied: false,
       couponClass: "checkout-item",
       deliveryFee: 0
     };
+  },
+  watch: {
+    deliveryDaysOptions(val) {
+      if (!this.deliveryDay && val[0]) {
+        this.deliveryDay = val[0].value;
+      }
+    }
   },
   computed: {
     ...mapGetters({
@@ -707,6 +718,9 @@ export default {
       storeCustomers: "storeCustomers",
       total: "bagQuantity",
       bag: "bagItems",
+      coupon: "bagCoupon",
+      deliveryPlan: "bagMealPlan",
+      mealPlan: "bagMealPlan",
       hasMeal: "bagHasMeal",
       totalBagPricePreFees: "totalBagPricePreFees",
       totalBagPrice: "totalBagPrice",
@@ -721,6 +735,12 @@ export default {
       pickupLocations: "viewedStorePickupLocations",
       getMeal: "viewedStoreMeal"
     }),
+    couponFreeDelivery() {
+      return this.coupon ? this.coupon.freeDelivery : 0;
+    },
+    couponApplied() {
+      return !_.isNull(this.coupon);
+    },
     customers() {
       let customers = this.storeCustomers;
       if (_.isEmpty(customers)) {
@@ -917,7 +937,6 @@ export default {
   },
   mounted() {
     this.creditCardId = this.card;
-    this.deliveryDay = this.deliveryDaysOptions[0].value;
     if (this.storeSettings.salesTax > 0) {
       this.salesTax = this.storeSettings.salesTax / 100;
     } else {
@@ -927,6 +946,10 @@ export default {
     if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
 
     this.selectedPickupLocation = this.pickupLocationOptions[0].value;
+
+    if (!this.deliveryDay && this.deliveryDaysOptions) {
+      this.deliveryDay = this.deliveryDaysOptions[0].value;
+    }
   },
   updated() {
     this.creditCardId = this.card;
@@ -939,7 +962,7 @@ export default {
       "refreshStoreSubscriptions",
       "refreshUpcomingOrders"
     ]),
-    ...mapMutations(["emptyBag"]),
+    ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
     preventNegative() {
       if (this.total < 0) {
         this.total += 1;
@@ -947,6 +970,13 @@ export default {
     },
     checkout() {
       if (this.checkingOut) {
+        return;
+      }
+
+      // Ensure delivery day is set
+      if (!this.deliveryDay && this.deliveryDaysOptions) {
+        this.deliveryDay = this.deliveryDaysOptions[0].value;
+      } else if (!this.deliveryDaysOptions) {
         return;
       }
 
@@ -990,6 +1020,10 @@ export default {
           deposit: deposit
         })
         .then(async resp => {
+          this.emptyBag();
+          this.setBagMealPlan(false);
+          this.setBagCoupon(null);
+
           if (this.manualOrder && this.deliveryPlan) {
             this.refreshStoreSubscriptions();
             this.$router.push({
@@ -1017,8 +1051,6 @@ export default {
               query: { created: true, pickup: this.pickup }
             });
           }
-
-          this.emptyBag();
         })
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors)) || [
@@ -1036,9 +1068,10 @@ export default {
       this.coupons.forEach(coupon => {
         if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
           this.coupon = coupon;
-          this.couponApplied = true;
+          this.setBagCoupon(coupon);
+          //this.couponApplied = true;
           this.couponCode = "";
-          this.couponFreeDelivery = coupon.freeDelivery;
+          //this.couponFreeDelivery = coupon.freeDelivery;
           this.couponClass = "checkout-item-hide";
           this.$toastr.s("Coupon Applied.", "Success");
           return;

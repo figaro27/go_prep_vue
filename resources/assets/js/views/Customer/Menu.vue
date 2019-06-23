@@ -3,13 +3,22 @@
     <floating-action-button
       class="d-md-none brand-color"
       to="/customer/bag"
-      v-if="!subscriptionId"
+      v-if="!subscriptionId || !adjustOrder"
     >
       <div class="d-flex flex-column h-100">
         <i class="fa fa-shopping-bag text-white"></i>
         <i v-if="total" class="text-white mt-1">{{ total }}</i>
       </div>
     </floating-action-button>
+
+    <div v-if="subscriptionId" class="update-meals-btn-wrap d-block d-lg-none">
+      <b-btn
+        class="menu-bag-btn update-meals-btn"
+        :disabled="!canProgress"
+        @click="updateSubscriptionMeals"
+        >UPDATE MEALS</b-btn
+      >
+    </div>
 
     <meal-components-modal
       ref="componentModal"
@@ -43,9 +52,8 @@
           :key="category"
           @click.prevent="goToCategory(slugify(category))"
           class="d-inline-block m-2"
+          >{{ category }}</span
         >
-          {{ category }}
-        </span>
       </div>
     </div>
 
@@ -119,9 +127,9 @@
               :key="`tag-${tag}`"
               class="filters col-6 col-sm-4 col-md-3 mb-3"
             >
-              <b-button :pressed="active[tag]" @click="filterByTag(tag)">
-                {{ tag }}
-              </b-button>
+              <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{
+                tag
+              }}</b-button>
             </div>
           </div>
           <b-button
@@ -612,7 +620,7 @@
                             >
                               Contains:
                               {{ meal.allergy_titles.join(", ") }}
-                            </div> -->
+                                </div>-->
 
                                 <div class="actions">
                                   <div
@@ -739,7 +747,7 @@
                     </div>
                   </div>
                 </div>
-
+                <!-- BAG AREA -->
                 <div class="col-sm-5 col-md-3 bag-area">
                   <ul class="list-group">
                     <li
@@ -806,12 +814,12 @@
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
-                          <span v-if="item.meal_package">{{
-                            item.meal.title
-                          }}</span>
-                          <span v-else-if="item.size">
-                            {{ item.size.full_title }}
+                          <span v-if="item.meal_package">
+                            {{ item.meal.title }}
                           </span>
+                          <span v-else-if="item.size">{{
+                            item.size.full_title
+                          }}</span>
                           <span v-else>{{ item.meal.item_title }}</span>
 
                           <ul
@@ -862,7 +870,11 @@
 
                   <div
                     v-if="
-                      minOption === 'meals' && total >= minimumMeals && !preview
+                      minOption === 'meals' &&
+                        total >= minimumMeals &&
+                        !preview &&
+                        !manualOrder &&
+                        !adjustOrder
                     "
                     class="menu-btns-container"
                   >
@@ -872,7 +884,7 @@
                     >
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
-                    <div v-if="subscriptionId" class="update-meals-btn-wrap">
+                    <div v-if="subscriptionId" class="d-none d-lg-block">
                       <b-btn
                         class="menu-bag-btn update-meals-btn"
                         @click="updateSubscriptionMeals"
@@ -884,7 +896,8 @@
                     v-if="
                       minOption === 'price' &&
                         totalBagPricePreFees < minPrice &&
-                        !manualOrder
+                        !manualOrder &&
+                        !adjustOrder
                     "
                     class="menu-btns-container"
                   >
@@ -903,18 +916,31 @@
                   >
                     <router-link
                       to="/customer/bag"
-                      v-if="!subscriptionId && !manualOrder"
+                      v-if="!subscriptionId && !manualOrder && !adjustOrder"
                     >
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
 
-                    <div v-if="subscriptionId" class="update-meals-btn-wrap">
+                    <div v-if="subscriptionId" class="d-none d-lg-block">
                       <b-btn
                         class="menu-bag-btn update-meals-btn"
                         @click="updateSubscriptionMeals"
                         >UPDATE MEALS</b-btn
                       >
                     </div>
+                  </div>
+                  <div v-if="adjustOrder">
+                    <p v-if="!order.pickup">Delivery Day</p>
+                    <p v-if="order.pickup">Pickup Day</p>
+                    <b-form-select
+                      v-if="adjustOrder"
+                      v-model="deliveryDay"
+                      :options="deliveryDaysOptions"
+                      class="w-100 mb-3"
+                    ></b-form-select>
+                    <b-btn class="menu-bag-btn" @click="adjust"
+                      >ADJUST ORDER</b-btn
+                    >
                   </div>
                   <div>
                     <router-link
@@ -972,12 +998,19 @@ export default {
     manualOrder: {
       default: false
     },
+    adjustOrder: {
+      default: false
+    },
+    order: {
+      default: {}
+    },
     subscriptionId: {
       default: null
     }
   },
   data() {
     return {
+      deliveryDay: "",
       slickOptions: {
         slidesToShow: 4,
         infinite: false,
@@ -1050,8 +1083,28 @@ export default {
       minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal"
     }),
+    deliveryDaysOptions() {
+      return this.storeSetting("next_orderable_delivery_dates", []).map(
+        date => {
+          return {
+            value: date.date,
+            text: moment(date.date).format("dddd MMM Do")
+          };
+        }
+      );
+    },
     storeId() {
       return this.store.id;
+    },
+    canProgress() {
+      return (
+        (this.minOption === "meals" &&
+          this.total >= this.minimumMeals &&
+          !this.preview) ||
+        (this.minOption === "price" &&
+          this.totalBagPricePreFees >= this.minPrice &&
+          !this.preview)
+      );
     },
     card() {
       if (this.mobile) {
@@ -1358,6 +1411,11 @@ export default {
   },
   created() {},
   mounted() {
+    if (this.adjustOrder) {
+      this.deliveryDay = this.order.delivery_date + " 00:00:00";
+      this.clearAll();
+      this.addMealOrdersToBag();
+    }
     try {
       this.getSalesTax(this.store.details.state);
     } catch (e) {}
@@ -1378,7 +1436,12 @@ export default {
     this.showActiveFilters();
   },
   methods: {
-    ...mapActions(["refreshSubscriptions", "emptyBag"]),
+    ...mapActions([
+      "refreshSubscriptions",
+      "emptyBag",
+      "refreshUpcomingOrders"
+    ]),
+    ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
     onCategoryVisible(isVisible, index) {
       if (isVisible && this.$refs.categorySlider) {
         this.$refs.categorySlider.goTo(index);
@@ -1549,6 +1612,10 @@ export default {
       this.filteredView = false;
     },
     async updateSubscriptionMeals() {
+      if (!this.canProgress) {
+        return;
+      }
+
       try {
         const { data } = await axios.post(
           `/api/me/subscriptions/${this.subscriptionId}/meals`,
@@ -1556,6 +1623,9 @@ export default {
         );
         await this.refreshSubscriptions();
         this.emptyBag();
+        this.setBagMealPlan(false);
+        this.setBagCoupon(null);
+
         this.$router.push({
           path: "/customer/meal-plans",
           query: {
@@ -1593,6 +1663,42 @@ export default {
           thumb: item.url_thumb
         };
       });
+    },
+    addMealOrdersToBag() {
+      //conact item with meal
+      this.order.items.forEach(item => {
+        const meal = this.getMeal(item.meal_id);
+
+        if (!meal) {
+          return;
+        }
+
+        let components = _.mapValues(
+          _.groupBy(item.components, "meal_component_id"),
+          choices => {
+            return _.map(choices, "meal_component_option_id");
+          }
+        );
+
+        let addons = _.map(item.addons, "meal_addon_id");
+
+        for (let i = 0; i < item.quantity; i++) {
+          this.addOne(meal, false, item.meal_size_id, components, addons);
+        }
+      });
+    },
+    async adjust() {
+      axios
+        .post(`/api/me/orders/adjustOrder`, {
+          bag: this.bag,
+          orderId: this.order.id,
+          deliveryDate: this.deliveryDay
+        })
+        .then(resp => {
+          this.$toastr.s("Order Adjusted");
+          this.$router.push({ path: "/store/orders" });
+          this.refreshUpcomingOrders();
+        });
     }
   }
 };

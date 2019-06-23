@@ -33,6 +33,7 @@ import StoreContact from "./views/Store/Account/Contact.vue";
 import StoreSettings from "./views/Store/Account/Settings.vue";
 import StoreMenuPreview from "./views/Store/MenuPreview.vue";
 import StoreManualOrder from "./views/Store/ManualOrder.vue";
+import StoreAdjustOrder from "./views/Store/AdjustOrder.vue";
 import StoreBag from "./views/Store/Bag.vue";
 
 import Spinner from "./components/Spinner.vue";
@@ -204,12 +205,25 @@ let routes = [
   {
     path: "/store/manual-order",
     component: StoreManualOrder,
-    name: "store-manual-order"
+    name: "store-manual-order",
+    async beforeEnter(to, from, next) {
+      await store.dispatch("refreshViewedStore");
+      next();
+    }
+  },
+  {
+    path: "/store/adjust-order",
+    component: StoreAdjustOrder,
+    name: "store-adjust-order"
   },
   {
     path: "/store/bag",
     component: StoreBag,
-    name: "store-bag"
+    name: "store-bag",
+    async beforeEnter(to, from, next) {
+      await store.dispatch("refreshViewedStore");
+      next();
+    }
   },
   {
     path: "/spinner",

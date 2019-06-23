@@ -10,9 +10,17 @@ export default {
       components = null,
       addons = null
     ) {
+      meal = this.getMeal(meal.id);
+
+      if (!meal) {
+        return;
+      }
+
       let sizeId = size;
       if (_.isObject(size) && size.id) {
         sizeId = size.id;
+      } else {
+        size = meal.getSize(sizeId);
       }
 
       if (

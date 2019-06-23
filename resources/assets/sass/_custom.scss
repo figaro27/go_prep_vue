@@ -1035,6 +1035,11 @@ body.forgotresettoken {
     padding: 5px 15px;
     background: #efefef;
     z-index: 10;
+    text-align: center;
+
+    .update-meals-btn {
+      max-width: 240px;
+    }
   }
 }
 

@@ -166,7 +166,7 @@
                         }}
                         per week.
                       </p>
-                      <div>
+                      <div v-if="subscription.latest_paid_order">
                         <p>
                           Your order is locked in for the upcoming delivery day
                           of
@@ -385,7 +385,12 @@ export default {
   mounted() {},
   methods: {
     ...mapActions(["refreshSubscriptions"]),
-    ...mapMutations(["emptyBag", "addBagItems"]),
+    ...mapMutations([
+      "emptyBag",
+      "addBagItems",
+      "setBagMealPlan",
+      "setBagCoupon"
+    ]),
     getOrderTableData(subscription) {
       if (!subscription || !_.isArray(subscription.orders)) {
         return [];
@@ -471,6 +476,8 @@ export default {
     },
     editSubscription(subscription) {
       this.emptyBag();
+      this.setBagCoupon(null);
+      this.setBagMealPlan(true);
 
       const items = _.map(subscription.meals, meal => {
         return {
@@ -481,6 +488,7 @@ export default {
         };
       });
       this.addBagItems(items);
+
       window.location = `${subscription.store.url}/customer/meal-plans/${
         subscription.id
       }`;
