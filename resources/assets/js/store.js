@@ -670,7 +670,8 @@ const actions = {
       dispatch("refreshMealPackages"),
       // dispatch("refreshOrders"),
       dispatch("refreshUpcomingOrders"),
-      dispatch("refreshOrdersToday")
+      dispatch("refreshOrdersToday"),
+      dispatch("refreshViewedStore")
     ]);
 
     dispatch("refreshStoreCustomers");
