@@ -745,6 +745,8 @@ export default {
     }
   },
   created() {
+    this.setBagMealPlan(false);
+
     this.updateMealDescription = _.debounce((id, description) => {
       this.updateMeal(id, { description }, true);
     }, 300);
@@ -758,6 +760,9 @@ export default {
       _updateMealPackage: "updateMealPackage",
       addJob: "addJob",
       removeJob: "removeJob"
+    }),
+    ...mapMutations({
+      setBagMealPlan: "setBagMealPlan"
     }),
     formatMoney: format.money,
     refreshTable() {

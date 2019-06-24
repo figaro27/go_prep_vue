@@ -20,11 +20,16 @@ export default {
       isLoading: "isLoading"
     })
   },
-  created() {},
+  created() {
+    this.setBagMealPlan(false);
+  },
   mounted() {},
   methods: {
     ...mapActions({
       refreshViewedStore: "refreshViewedStore"
+    }),
+    ...mapMutations({
+      setBagMealPlan: "setBagMealPlan"
     })
   }
 };

@@ -1016,7 +1016,7 @@ export default {
           salesTax: this.tax,
           coupon_id: this.couponApplied ? this.coupon.id : null,
           couponReduction: this.couponReduction,
-          couponCode: this.coupon.code,
+          couponCode: this.couponApplied ? this.coupon.code : null,
           deliveryFee: this.deliveryFee,
           pickupLocation: this.selectedPickupLocation,
           customer: this.customer,
