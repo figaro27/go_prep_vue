@@ -1011,7 +1011,7 @@ export default {
           card_id: this.card,
           store_id: this.store.id,
           salesTax: this.tax,
-          coupon_id: this.coupon.id,
+          coupon_id: this.couponApplied ? this.coupon.id : null,
           couponReduction: this.couponReduction,
           couponCode: this.coupon.code,
           deliveryFee: this.deliveryFee,
