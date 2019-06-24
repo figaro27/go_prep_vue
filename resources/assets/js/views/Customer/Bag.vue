@@ -832,6 +832,9 @@ export default {
       return subtotal;
     },
     couponReduction() {
+      if (!this.couponApplied) {
+        return 0;
+      }
       let coupon = this.coupon;
       let subtotal = this.subtotal;
       if (coupon.type === "flat") {
