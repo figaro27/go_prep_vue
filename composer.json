@@ -14,6 +14,7 @@
     "braintree/braintree_php": "^3.37",
     "cloudflare/sdk": "^1.1",
     "doctrine/dbal": "^2.8",
+    "elic-dev/laravel-site-protection": "^1.0",
     "fideloper/proxy": "^4.0",
     "guzzlehttp/guzzle": "^6.3",
     "laravel/cashier": "^9.0",
