@@ -29,6 +29,7 @@ class CreateMealPackageAddonsTable extends Migration
                 ->on('meal_package_sizes');
             $table->string('title');
             $table->double('price', 4, 2);
+            $table->boolean('selectable')->default(0);
             $table->timestamps();
         });
     }

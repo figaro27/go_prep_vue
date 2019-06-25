@@ -113,16 +113,6 @@
                   ></meal-package-components>
                 </b-tab>
 
-                <b-tab title="Selections">
-                  <meal-package-selections
-                    :package="package"
-                    @change="val => (package.components = val)"
-                    @save="
-                      val => updateMealPackage(package.id, { components: val })
-                    "
-                  ></meal-package-selections>
-                </b-tab>
-
                 <b-tab title="Addons">
                   <meal-package-addons
                     :package="package"
@@ -176,7 +166,6 @@ import IngredientPicker from "../../../components/IngredientPicker";
 import fs from "../../../lib/fs.js";
 import MealPackageSizes from "../../../components/Menu/MealPackageSizes";
 import MealPackageComponents from "../../../components/Menu/MealPackageComponents";
-import MealPackageSelections from "../../../components/Menu/MealPackageSelections";
 import MealPackageAddons from "../../../components/Menu/MealPackageAddons";
 
 export default {
@@ -185,7 +174,6 @@ export default {
     PictureInput,
     MealPackageSizes,
     MealPackageComponents,
-    MealPackageSelections,
     MealPackageAddons
   },
   props: {
