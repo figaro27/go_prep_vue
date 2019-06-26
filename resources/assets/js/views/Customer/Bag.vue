@@ -7,16 +7,16 @@
           <div class="col-sm-12 store-logo-area" v-if="!mobile">
             <a :href="storeWebsite" v-if="storeWebsite != null">
               <img
-                v-if="storeLogo"
+                v-if="storeLogo.url_thumb"
                 class="store-logo"
-                :src="storeLogo"
+                :src="storeLogo.url_thumb"
                 alt="Company Logo"
               />
             </a>
             <img
               v-if="storeLogo && storeWebsite === null"
               class="store-logo"
-              :src="storeLogo"
+              :src="storeLogo.url_thumb"
               alt="Company Logo"
             />
           </div>
