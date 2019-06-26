@@ -1260,7 +1260,10 @@ export default {
       axios
         .post("/api/me/coupons", this.coupon)
         .then(response => {
-          this.coupon = {};
+          this.coupon = {
+            type: "flat",
+            freeDelivery: 0
+          };
           this.$toastr.s("Coupon Added", "Success");
         })
         .catch(response => {
