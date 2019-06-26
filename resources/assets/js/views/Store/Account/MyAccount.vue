@@ -66,7 +66,7 @@
               </p>
               <picture-input
                 :ref="`storeImageInput`"
-                :prefill="storeDetail.logo ? storeDetail.logo : ''"
+                :prefill="storeDetail.logo ? storeDetail.logo.url_thumb : ''"
                 @prefill="$refs[`storeImageInput`].onResize()"
                 :alertOnError="false"
                 :autoToggleAspectRatio="true"

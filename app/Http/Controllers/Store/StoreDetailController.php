@@ -108,11 +108,10 @@ class StoreDetailController extends StoreController
         $store->update($request->except('logo'));
 
         if ($newLogo) {
-            $imageUrl = Images::uploadB64($request->get('logo'));
+            $imagePath = Images::uploadB64($request->get('logo'), 'path');
 
-            if ($imageUrl) {
-                $store->logo = $imageUrl;
-                $store->save();
+            if ($imagePath) {
+                $store->updateLogo($imagePath);
             }
         }
 
@@ -143,10 +142,11 @@ class StoreDetailController extends StoreController
         }*/
 
         if ($newLogo) {
-            $imageUrl = Images::uploadB64($request->get('logo'));
+            $imagePath = Images::uploadB64($request->get('logo'), 'path');
 
-            $store->logo = $imageUrl;
-            $store->save();
+            if ($imagePath) {
+                $store->updateLogo($imagePath);
+            }
         }
 
         return $store;

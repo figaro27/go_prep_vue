@@ -32,7 +32,7 @@
             <p><strong>Total: ${{number_format($order->amount, 2)}}</strong></p>
       </div>
       <div class="col-4">
-        <img src="{{$logo}}" style="zoom: 0.5" />
+        <img src="{{$logo}}" style="zoom: 0.5; max-width: 50%; height: auto;" />
         <br><br>
         <p>{{$order->store->details->domain}}.goprep.com</p>
         @if ($order->pickup === 0)

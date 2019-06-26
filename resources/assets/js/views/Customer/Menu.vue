@@ -494,14 +494,14 @@
                         <img
                           v-if="storeLogo"
                           class="store-logo"
-                          :src="storeLogo"
+                          :src="storeLogo.url_thumb"
                           alt="Company Logo"
                         />
                       </a>
                       <img
                         v-if="storeLogo && storeWebsite === null"
                         class="store-logo"
-                        :src="storeLogo"
+                        :src="storeLogo.url_thumb"
                         alt="Company Logo"
                       />
                     </div>

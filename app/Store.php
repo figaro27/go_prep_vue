@@ -121,6 +121,7 @@ class Store extends Model
     public function clearCaches()
     {
         Cache::forget('store_order_ingredients' . $this->id);
+        Cache::forget('store_logo_' . $this->id);
         Cache::forget('store_' . $this->id . '_subscribed_delivery_days');
     }
 
