@@ -1049,7 +1049,7 @@ class Meal extends Model implements HasMedia
                     $option->price = $optionArr['price'];
                     $option->meal_size_id = $sizeIds->get(
                         $optionArr['meal_size_id'],
-                        null
+                        $optionArr['meal_size_id']
                     );
                     $option->save();
 
