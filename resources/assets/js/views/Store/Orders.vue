@@ -145,11 +145,11 @@
           <div class="col-md-4 pt-1">
             <h4>Order ID</h4>
             <p>{{ order.order_number }}</p>
-            <router-link
+            <!-- <router-link
               :to="{ name: 'store-adjust-order', params: { order: order } }"
             >
               <b-btn class="btn btn-success mb-2">Adjust Order</b-btn>
-            </router-link>
+            </router-link> -->
           </div>
           <div class="col-md-4 pt-1">
             <h4>Placed On</h4>
