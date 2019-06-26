@@ -18,8 +18,9 @@ export default {
         return;
       }
 
+      let sizeId = size;
+
       if (!mealPackage) {
-        let sizeId = size;
         if (_.isObject(size) && size.id) {
           sizeId = size.id;
         } else {
