@@ -102,7 +102,7 @@ export default {
     if (!this.meal) return {};
 
     let componentValidations = _.mapValues(
-      _.keyBy(this.meal.components, "id"),
+      _.keyBy(this.components, "id"),
       component => {
         return {
           minimum: value => {
