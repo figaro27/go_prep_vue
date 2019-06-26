@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\StoreDetail;
+use Illuminate\Console\Command;
 
 class MigrateLogos extends Command
 {
@@ -46,7 +46,11 @@ class MigrateLogos extends Command
 
             if ($logoOrig && !$logo) {
                 try {
-                    $fullImagePath = resource_path('assets/' . $logoOrig);
+                    $fullImagePath =
+                        $logoOrig === '/images/store/store-logo.jpg'
+                            ? resource_path('assets/' . $logoOrig)
+                            : $logoOrig;
+
                     $detail->clearMediaCollection('logo');
                     $this->comment('Migrating ' . $fullImagePath);
                     $detail
