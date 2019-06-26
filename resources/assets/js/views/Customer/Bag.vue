@@ -1075,7 +1075,7 @@ export default {
           //this.couponApplied = true;
           this.couponCode = "";
           //this.couponFreeDelivery = coupon.freeDelivery;
-          this.couponClass = "checkout-item-hide";
+          //this.couponClass = "checkout-item-hide";
           this.$toastr.s("Coupon Applied.", "Success");
           return;
         }
