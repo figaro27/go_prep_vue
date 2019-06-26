@@ -1094,7 +1094,7 @@ class Meal extends Model implements HasMedia
                 $mealAddon->price = $addon['price'];
                 $mealAddon->meal_size_id = $sizeIds->get(
                     $addon['meal_size_id'],
-                    null
+                    $addon['meal_size_id']
                 );
                 $mealAddon->save();
 
