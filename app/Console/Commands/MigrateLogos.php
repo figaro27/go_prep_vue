@@ -49,7 +49,7 @@ class MigrateLogos extends Command
                     $fullImagePath =
                         $logoOrig === '/images/store/store-logo.jpg'
                             ? resource_path('assets/' . $logoOrig)
-                            : $logoOrig;
+                            : public_path($logoOrig);
 
                     $detail->clearMediaCollection('logo');
                     $this->comment('Migrating ' . $fullImagePath);
