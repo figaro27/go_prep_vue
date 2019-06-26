@@ -7,7 +7,7 @@
           <!-- toastr -->
           <!--           <b-btn @click="toast('s')">Success</b-btn>
           <b-btn @click="toast('w')">Warning</b-btn>
-          <b-btn @click="toast('e')">Error</b-btn> -->
+          <b-btn @click="toast('e')">Error</b-btn>-->
           <!-- /toastr -->
           <b-form @submit.prevent="updateLogin">
             <b-form-group label="Email address" label-for="email" :state="true">
@@ -66,7 +66,7 @@
               </p>
               <picture-input
                 :ref="`storeImageInput`"
-                :prefill="storeDetail.logo ? storeDetail.logo.url_thumb : ''"
+                :prefill="logoPrefill"
                 @prefill="$refs[`storeImageInput`].onResize()"
                 :alertOnError="false"
                 :autoToggleAspectRatio="true"
@@ -154,7 +154,7 @@
 
 
             
-            -->
+          -->
         </div>
       </div>
     </div>
@@ -207,6 +207,16 @@ export default {
     },
     storeDetails() {
       return this.storeDetail;
+    },
+    logoPrefill() {
+      if (this.storeDetail.logo) {
+        if (this.storeDetail.logo.url_thumb) {
+          return this.storeDetail.logo.url_thumb;
+        } else if (_.isString(this.storeDetail.logo)) {
+          return this.this.storeDetail.logo;
+        }
+      }
+      return null;
     }
   },
   mounted() {},
