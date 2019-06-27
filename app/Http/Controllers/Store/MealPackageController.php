@@ -51,7 +51,11 @@ class MealPackageController extends StoreController
                 'description',
                 'price',
                 'featured_image',
-                'meals'
+                'meals',
+                'sizes',
+                'default_size_title',
+                'components',
+                'addons'
             ])
         );
         $props->put('store_id', $this->store->id);
@@ -74,7 +78,7 @@ class MealPackageController extends StoreController
     {
         return $this->store
             ->packages()
-            ->with(['meals'])
+            ->with(['meals', 'sizes', 'components', 'addons'])
             ->find($id);
     }
 
@@ -106,7 +110,11 @@ class MealPackageController extends StoreController
                 'description',
                 'price',
                 'featured_image',
-                'meals'
+                'meals',
+                'sizes',
+                'default_size_title',
+                'components',
+                'addons'
             ])
         );
 

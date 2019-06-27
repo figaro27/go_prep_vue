@@ -102,7 +102,11 @@ class MealPackage extends Model implements HasMedia
             'description',
             'price',
             'meals',
-            'store_id'
+            'store_id',
+            'sizes',
+            'default_size_title',
+            'components',
+            'addons'
         ]);
 
         $package = MealPackage::create(
@@ -142,7 +146,11 @@ class MealPackage extends Model implements HasMedia
             'title',
             'description',
             'price',
-            'meals'
+            'meals',
+            'sizes',
+            'default_size_title',
+            'components',
+            'addons'
         ]);
 
         if ($props->has('featured_image')) {
@@ -156,6 +164,137 @@ class MealPackage extends Model implements HasMedia
             $this->addMedia($fullImagePath)->toMediaCollection(
                 'featured_image'
             );
+        }
+
+        $sizes = $props->get('sizes');
+        $sizeIds = collect();
+
+        if (is_array($sizes)) {
+            foreach ($sizes as $size) {
+                if (isset($size['id'])) {
+                    $mealPackageSize = $this->sizes()->find($size['id']);
+                }
+
+                if (!$mealPackageSize) {
+                    $mealPackageSize = new MealPackageSize();
+                    $mealPackageSize->meal_package_id = $this->id;
+                }
+
+                $mealPackageSize->title = $size['title'];
+                $mealPackageSize->price = $size['price'];
+                //$mealPackageSize->multiplier = $size['multiplier'];
+                $mealPackageSize->save();
+
+                $sizeIds->put($size['id'], $mealPackageSize->id);
+            }
+
+            // Deleted sizes
+            $this->sizes()
+                ->whereNotIn('id', $sizeIds)
+                ->delete();
+        }
+
+        // Meal components
+        $components = $props->get('components');
+        if (is_array($components)) {
+            $componentIds = [];
+            $optionIds = [];
+
+            foreach ($components as $component) {
+                if (isset($component['id'])) {
+                    $mealPackageComponent = $this->components()->find(
+                        $component['id']
+                    );
+                }
+
+                if (!$mealPackageComponent) {
+                    $mealPackageComponent = new MealPackageComponent();
+                    $mealPackageComponent->meal_package_id = $this->id;
+                    $mealPackageComponent->store_id = $this->store_id;
+                }
+
+                $mealPackageComponent->title = $component['title'];
+                $mealPackageComponent->minimum = $component['minimum'];
+                $mealPackageComponent->maximum = $component['maximum'];
+                $mealPackageComponent->save();
+
+                foreach ($component['options'] as $optionArr) {
+                    $option = null;
+
+                    if (isset($optionArr['id'])) {
+                        $option = $mealPackageComponent
+                            ->options()
+                            ->find($optionArr['id']);
+                    }
+
+                    if (!$option) {
+                        $option = new MealComponentOption();
+                        $option->meal_package_component_id =
+                            $mealPackageComponent->id;
+                        $option->store_id = $mealPackageComponent->store_id;
+                    }
+
+                    $option->title = $optionArr['title'];
+                    $option->price = $optionArr['price'];
+                    $option->meal_package_size_id = $sizeIds->get(
+                        $optionArr['meal_package_size_id'],
+                        $optionArr['meal_package_size_id']
+                    );
+                    $option->save();
+
+                    $option->syncIngredients($optionArr['ingredients']);
+
+                    $optionIds[] = $option->id;
+                }
+
+                $componentIds[] = $mealPackageComponent->id;
+
+                // Deleted component options
+                $mealPackageComponent
+                    ->options()
+                    ->whereNotIn('id', $optionIds)
+                    ->delete();
+            }
+
+            // Deleted components
+            $this->components()
+                ->whereNotIn('id', $componentIds)
+                ->delete();
+        }
+
+        // Meal addons
+        $addons = $props->get('addons');
+        if (is_array($addons)) {
+            $addonIds = [];
+
+            foreach ($addons as $addon) {
+                if (isset($addon['id'])) {
+                    $mealPackageAddon = $this->addons()->find($addon['id']);
+                }
+
+                if (!$mealPackageAddon) {
+                    $mealPackageAddon = new MealPackageAddon();
+                    $mealPackageAddon->meal_package_id = $this->id;
+                    $mealPackageAddon->store_id = $this->store_id;
+                }
+
+                $mealPackageAddon->title = $addon['title'];
+                $mealPackageAddon->price = $addon['price'];
+                $mealPackageAddon->meal_package_size_id = $sizeIds->get(
+                    $addon['meal_package_size_id'],
+                    $addon['meal_package_size_id']
+                );
+                $mealPackageAddon->save();
+
+                $mealPackageAddon->syncIngredients($addon['ingredients']);
+
+                $addonIds[] = $mealPackageAddon->id;
+            }
+
+            // Deleted addons
+            $this->addons()
+                ->whereNotIn('id', $addonIds)
+                ->delete();
         }
 
         $this->update($props->except('featured_image')->toArray());

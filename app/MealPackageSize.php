@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MealPackageSizes extends Model
+class MealPackageSize extends Model
 {
     public $fillable = [];
     public $casts = [];

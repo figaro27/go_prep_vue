@@ -3,25 +3,24 @@
     <b-button
       variant="primary"
       @click="
-        meal.sizes.push({
-          id: 1000000 + meal.sizes.length, // push to the end of table
+        mealPackage.sizes.push({
+          id: 1000000 + mealPackage.sizes.length, // push to the end of table
           title: '',
-          price: meal.price,
-          multiplier: 1
+          price: mealPackage.price
         })
       "
-      >Add Meal Size</b-button
+      >Add Meal Package Size</b-button
     >
     <img
       v-b-popover.hover="
         'Example: Medium, Large, Family Sized, etc. Please indicate the price for each size. For ingredient multiplier, please indicate the ratio of how many more ingredients are used for the new size. For example if the meal is twice as large, put 2. If you don\'t use ingredients, just put 1 in each field.'
       "
-      title="Meal Sizes"
+      title="Meal Packages"
       src="/images/store/popover.png"
       class="popover-size"
     />
     <v-client-table
-      v-if="meal.sizes.length > 0"
+      v-if="mealPackage.sizes.length > 0"
       :columns="columns"
       :data="tableData"
       :options="{
@@ -46,15 +45,17 @@
         <b-input
           v-model="props.row.title"
           :placeholder="
-            props.row.id === -1 ? 'Default meal size title' : 'Meal size title'
+            props.row.id === -1
+              ? 'Default meal package size title'
+              : 'Meal package size title'
           "
           @change="
             val => {
               if (props.row.id !== -1) {
-                meal.sizes[props.index - 2].title = val;
+                mealPackage.sizes[props.index - 2].title = val;
                 onChangeSizes();
               } else {
-                meal.default_size_title = val;
+                mealPackage.default_size_title = val;
                 $emit('changeDefault', val);
               }
             }
@@ -72,7 +73,7 @@
           v-bind="{ prefix: storeCurrencySymbol }"
           @blur.native="
             e => {
-              meal.sizes[props.index - 2].price = props.row.price;
+              mealPackage.sizes[props.index - 2].price = props.row.price;
               onChangeSizes();
             }
           "
@@ -83,7 +84,8 @@
           :disabled="props.row.id === -1"
           v-model="props.row.multiplier"
           @change="
-            meal.sizes[props.index - 2].multiplier = props.row.multiplier;
+            mealPackage.sizes[props.index - 2].multiplier =
+              props.row.multiplier;
             onChangeSizes();
           "
         ></b-input>
@@ -101,7 +103,7 @@ import { mapGetters } from "vuex";
 
 export default {
   props: {
-    meal: {
+    mealPackage: {
       required: true
     }
   },
@@ -127,44 +129,46 @@ export default {
       return _.concat(
         {
           id: -1,
-          title: this.meal.default_size_title,
-          price: this.meal.price,
+          title: this.mealPackage.default_size_title,
+          price: this.mealPackage.price,
           multiplier: 1
         },
-        this.meal.sizes
+        this.mealPackage.sizes
       );
     }
   },
   watch: {},
   created() {
-    this.sizes = _.isArray(this.meal.sizes) ? this.meal.sizes : [];
+    this.sizes = _.isArray(this.mealPackage.sizes)
+      ? this.mealPackage.sizes
+      : [];
     this.onChangeSizes = _.debounce(this.onChangeSizes, 2000);
   },
   mounted() {},
   methods: {
     deleteSize(id) {
-      this.meal.sizes = _.filter(this.meal.sizes, size => {
+      this.mealPackage.sizes = _.filter(this.mealPackage.sizes, size => {
         return size.id !== id;
       });
       this.onChangeSizes();
     },
     onChangeSizes() {
-      if (!_.isArray(this.meal.sizes)) {
+      if (!_.isArray(this.mealPackage.sizes)) {
         throw new Error("Invalid sizes");
       }
 
       // Validate all rows
-      for (let size of this.meal.sizes) {
+      for (let size of this.mealPackage.sizes) {
         if (!size.title || !size.price || !size.multiplier) {
           return;
         }
       }
 
-      this.$emit("change", this.meal.sizes);
+      this.$emit("change", this.mealPackage.sizes);
     },
     save() {
-      this.$emit("save", this.meal.sizes);
-      this.$toastr.s("Meal variation saved.");
+      this.$emit("save", this.mealPackage.sizes);
+      this.$toastr.s("Meal package variation saved.");
     }
   }
 };

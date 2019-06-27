@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MealPackageComponents extends Model
+class MealPackageComponent extends Model
 {
     public $fillable = [];
     public $casts = [];
