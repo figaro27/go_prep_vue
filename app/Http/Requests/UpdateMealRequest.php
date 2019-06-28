@@ -30,14 +30,14 @@ class UpdateMealRequest extends FormRequest
                 'price' => 'required|numeric|between:0.01,999.99', // todo: update price limits
                 'category_ids' => 'required',
                 'default_size_title' => '',
-                'sizes.*.title' => 'required|distinct',
+                'sizes.*.title' => 'required',
                 'sizes.*.price' => 'required|gte:0.1|lte:1000',
                 'sizes.*.multiplier' => 'required|gte:0.1|lte:20',
-                'components.*.title' => 'required|distinct',
-                'components.*.options.*.title' => 'required|distinct',
+                'components.*.title' => 'required',
+                'components.*.options.*.title' => 'required',
                 'components.*.options.*.price' => 'required|gte:0|lte:1000',
                 'addons.*.price' => 'required|gte:0|lte:1000',
-                'addons.*.title' => 'required|distinct'
+                'addons.*.title' => 'required'
             ];
         } else {
             return [
