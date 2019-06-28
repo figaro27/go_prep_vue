@@ -213,7 +213,7 @@ export default {
         if (this.storeDetail.logo.url_thumb) {
           return this.storeDetail.logo.url_thumb;
         } else if (_.isString(this.storeDetail.logo)) {
-          return this.this.storeDetail.logo;
+          return this.storeDetail.logo;
         }
       }
       return null;
