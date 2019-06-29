@@ -194,8 +194,9 @@ export default {
       else return false;
     },
     topLogo() {
-      if (this.mobile) return this.storeLogo;
-      else return "/images/logo.png";
+      if (this.mobile) {
+        return this.storeLogo ? this.storeLogo.url_thumb : "";
+      } else return "/images/logo.png";
     }
   },
   updated() {
