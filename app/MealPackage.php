@@ -34,22 +34,30 @@ class MealPackage extends Model implements HasMedia
 
     public function sizes()
     {
-        return $this->hasMany('App\MealPackageSize', 'id');
+        return $this->hasMany('App\MealPackageSize', 'meal_package_id', 'id');
     }
 
     public function components()
     {
-        return $this->hasMany('App\MealPackageComponent', 'id');
+        return $this->hasMany(
+            'App\MealPackageComponent',
+            'meal_package_id',
+            'id'
+        );
     }
 
     public function selections()
     {
-        return $this->hasMany('App\MealPackageSelections', 'id');
+        return $this->hasMany(
+            'App\MealPackageSelections',
+            'meal_package_id',
+            'id'
+        );
     }
 
     public function addons()
     {
-        return $this->hasMany('App\MealPackageAddon', 'id');
+        return $this->hasMany('App\MealPackageAddon', 'meal_package_id', 'id');
     }
 
     public function getImageAttribute()
@@ -178,6 +186,7 @@ class MealPackage extends Model implements HasMedia
                 if (!$mealPackageSize) {
                     $mealPackageSize = new MealPackageSize();
                     $mealPackageSize->meal_package_id = $this->id;
+                    $mealPackageSize->store_id = $this->store_id;
                 }
 
                 $mealPackageSize->title = $size['title'];

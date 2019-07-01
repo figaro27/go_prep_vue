@@ -1,5 +1,7 @@
 <template>
   <div>
+    <meal-picker v-if="meal_picker_id"></meal-picker>
+
     <b-button
       variant="primary"
       @click="
@@ -25,8 +27,7 @@
       :data="tableData"
       :options="{
         headings: {
-          actions: '',
-          multiplier: 'Ingredient Multiplier'
+          actions: ''
         },
         orderBy: {
           column: 'id',
@@ -79,16 +80,8 @@
           "
         ></money>
       </div>
-      <div slot="multiplier" slot-scope="props">
-        <b-input
-          :disabled="props.row.id === -1"
-          v-model="props.row.multiplier"
-          @change="
-            mealPackage.sizes[props.index - 2].multiplier =
-              props.row.multiplier;
-            onChangeSizes();
-          "
-        ></b-input>
+      <div slot="meals" slot-scope="props">
+        <b-btn @click.prevent="selectMeals(props.row.id)">Select</b-btn>
       </div>
     </v-client-table>
 
@@ -109,7 +102,8 @@ export default {
   },
   data() {
     return {
-      sizes: []
+      sizes: [],
+      meal_picker_id: null
     };
   },
   computed: {
@@ -117,7 +111,7 @@ export default {
       storeCurrencySymbol: "storeCurrencySymbol"
     }),
     columns() {
-      let cols = ["title", "price", "multiplier"];
+      let cols = ["title", "price", "meals"];
 
       if (this.tableData.length) {
         cols = ["actions", ...cols];
@@ -131,7 +125,7 @@ export default {
           id: -1,
           title: this.mealPackage.default_size_title,
           price: this.mealPackage.price,
-          multiplier: 1
+          meals: []
         },
         this.mealPackage.sizes
       );
@@ -159,13 +153,14 @@ export default {
 
       // Validate all rows
       for (let size of this.mealPackage.sizes) {
-        if (!size.title || !size.price || !size.multiplier) {
+        if (!size.title || !size.price || !size.meals) {
           return;
         }
       }
 
       this.$emit("change", this.mealPackage.sizes);
     },
+    selectMeals(mealPackageId) {},
     save() {
       this.$emit("save", this.mealPackage.sizes);
       this.$toastr.s("Meal package variation saved.");

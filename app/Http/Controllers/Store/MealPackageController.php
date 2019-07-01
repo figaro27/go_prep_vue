@@ -7,6 +7,7 @@ use App\Http\Requests\StoreMealPackageRequest;
 use App\Meal;
 use App\MealPackage;
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdateMealPackageRequest;
 
 class MealPackageController extends StoreController
 {
@@ -99,7 +100,7 @@ class MealPackageController extends StoreController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateMealPackageRequest $request, $id)
     {
         $package = $this->store->packages()->find($id);
 

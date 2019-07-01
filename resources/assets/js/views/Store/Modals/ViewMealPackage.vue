@@ -3,7 +3,7 @@
     <b-modal
       title="Edit Package"
       ref="modal"
-      @ok.prevent="e => updatePackage(e)"
+      @ok.prevent="e => updateMealPackage(e)"
       @cancel.prevent="toggleModal()"
       @hidden="toggleModal"
     >
@@ -309,11 +309,16 @@ export default {
         return this.mealPackage.meals[index].quantity;
       }
     },
-    async updatePackage(e) {
+    async updateMealPackage(e) {
+      const req = {
+        ...this.mealPackage,
+        validate_all: true
+      };
+
       try {
         const { data } = await axios.patch(
           `/api/me/packages/${this.mealPackage.id}`,
-          this.mealPackage
+          req
         );
       } catch (response) {
         e.preventDefault();
