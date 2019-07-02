@@ -79,7 +79,8 @@ class SpaController extends Controller
                         'settings',
                         'storeDetail',
                         'coupons',
-                        'pickupLocations'
+                        'pickupLocations',
+                        'modules'
                     ])
                     ->first();
 

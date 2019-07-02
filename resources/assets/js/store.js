@@ -1191,6 +1191,11 @@ const getters = {
   },
   userDetail(state, getters) {
     let userDetail = state.user.data.user_detail;
+
+    if (!userDetail) {
+      return null;
+    }
+
     if (!userDetail.notifications) {
       userDetail.notifications = {};
     }
