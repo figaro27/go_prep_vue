@@ -122,7 +122,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           <br /> {{ $customer->city }}, {{ $customer->state }} {{ $customer->zip }}
                           </td>
                       </tr>
-                      @if ($subscription->latest_order->pickup === 0)
+                      @if (!$subscription->latest_order || $subscription->latest_order->pickup === 0)
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $subscription->next_delivery_date->format('D, m/d/Y') }}</td>
                       </tr>
@@ -312,10 +312,11 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         $processingFee = $subscription->processingFee;
                         $salesTax = $subscription->salesTax;
                         $couponCode = $subscription->couponCode;
+                        $couponReduction = $subscription->couponReduction;
                         @endphp
 
                         Subtotal: <br>
-                        @if ($coupon > 0)
+                        @if ($couponCode)
                         Coupon ({{ $couponCode }})<br>
                         @endif
                         @if ($mealPlanDiscount > 0)
@@ -337,8 +338,8 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       
                         <td bgcolor="#e1e6e7" style="padding-left:15px;font-family: 'Open Sans', Arial, sans-serif; font-size:12px; color:#3b3b3b; line-height:26px; text-transform:uppercase;line-height:24px;">
                           ${{ number_format($subtotal, 2) }}<br>
-                          @if ($coupon > 0)
-                          (${{ number_format($coupon, 2) }})<br>
+                          @if ($couponReduction > 0)
+                          (${{ number_format($couponReduction, 2) }})<br>
                           @endif
                           @if ($mealPlanDiscount > 0)
                           (${{ number_format($mealPlanDiscount, 2) }})<br>
@@ -397,12 +398,12 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td height="5"></td>
                 </tr>
                 <!-- content -->
-                @if ($subscription->latest_order->pickup === 0)
+                @if (!$subscription->latest_order || $subscription->latest_order->pickup === 0)
 				        <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->delivery }} </td>
                 </tr>
                 @endif
-                @if ($subscription->latest_order->pickup === 1)
+                @if ($subscription->latest_order && $subscription->latest_order->pickup === 1)
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">Pickup </td>
                 </tr>

@@ -95,7 +95,9 @@ class Hourly extends Command
         )->get();
 
         foreach ($subs as $sub) {
-            $sub->user->sendNotification('subscription_renewing', $sub);
+            $sub->user->sendNotification('subscription_renewing', [
+                'subscription' => $sub
+            ]);
             $count++;
         }
         $this->info($count . ' `Meal Plan Renewing` notifications sent');
