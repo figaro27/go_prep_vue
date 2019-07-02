@@ -1,11 +1,17 @@
 <?php
 
+/**
+ * Meals assigned to meal package sizes
+ */
+
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class MealMealPackageSizes extends Model
+class MealMealPackageSize extends Pivot
 {
+    public $table = 'meal_meal_package_size';
+
     public $fillable = [];
     public $casts = [];
     public $appends = [];
@@ -17,12 +23,12 @@ class MealMealPackageSizes extends Model
 
     public function mealPackage()
     {
-        return $this->belongsTo('App\MealPackage');
+        return $this->belongsTo('App\MealPackage', 'meal_package_id');
     }
 
     public function mealPackageSize()
     {
-        return $this->belongsTo('App\MealPackageSize');
+        return $this->belongsTo('App\MealPackageSize', 'meal_package_size_id');
     }
 
     public function meal()
@@ -32,6 +38,6 @@ class MealMealPackageSizes extends Model
 
     public function mealSize()
     {
-        return $this->belongsTo('App\MealSize');
+        return $this->belongsTo('App\MealSize', 'meal_size_id');
     }
 }

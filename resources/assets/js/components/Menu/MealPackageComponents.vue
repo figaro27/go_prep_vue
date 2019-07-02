@@ -1,16 +1,12 @@
 <template>
   <div>
-    <div v-if="ingredientComponentId !== null && ingredientOptionId !== null">
-      <ingredient-picker
-        ref="ingredientPicker"
-        v-model="
-          meal.components[ingredientComponentId].options[ingredientOptionId]
-            .ingredients
-        "
-        :options="{ saveButton: true }"
-        :meal="meal"
-        @save="val => onChangeIngredients(val)"
-      ></ingredient-picker>
+    <div v-if="!_.isNull(meal_picker_component_id)">
+      <meal-picker
+        ref="mealPicker"
+        :meal_sizes="true"
+        v-model="meal_picker_meals"
+        @save="meals => onChangeMeals(meals)"
+      ></meal-picker>
     </div>
 
     <div v-else>
@@ -29,7 +25,7 @@
       </div>
 
       <div
-        v-for="(component, i) in meal.components"
+        v-for="(component, i) in meal_package.components"
         :key="component.id"
         role="tablist"
       >
@@ -42,6 +38,13 @@
             >Delete</b-btn
           >
         </div>
+        <c-switch
+          color="success"
+          variant="pill"
+          size="lg"
+          v-model="component.type"
+          @change.native="updateCustomer"
+        />
         <b-row>
           <b-col cols="6">
             <b-form-group label="Title">
@@ -67,8 +70,8 @@
           <thead>
             <th>Title</th>
             <th>Price</th>
-            <th>Meal Size</th>
-            <th>Ingredients</th>
+            <th>Meal Package Size</th>
+            <th>Meals</th>
             <th></th>
           </thead>
 
@@ -95,7 +98,7 @@
                 ></b-select>
               </td>
               <td>
-                <b-btn variant="primary" @click="changeOptionIngredients(i, x)"
+                <b-btn variant="primary" @click="changeOptionMeals(i, x)"
                   >Adjust</b-btn
                 >
               </td>
@@ -117,8 +120,8 @@
                       //id: 100 + component.options.length,
                       title: '',
                       price: null,
-                      ingredients: [],
-                      meal_size_id: null
+                      meals: [],
+                      meal_package_size_id: null
                     })
                   "
                   >Add Option</b-btn
@@ -128,10 +131,10 @@
           </tfoot>
         </table>
 
-        <hr v-if="i < meal.components.length - 1" class="my-4" />
+        <hr v-if="i < meal_package.components.length - 1" class="my-4" />
       </div>
 
-      <div v-if="meal.components.length" class="mt-4">
+      <div v-if="meal_package.components.length" class="mt-4">
         <b-button variant="primary" @click="addComponent()"
           >Add Meal Component</b-button
         >
@@ -163,14 +166,15 @@ export default {
     IngredientPicker
   },
   props: {
-    meal: {
+    meal_package: {
       required: true
     }
   },
   data() {
     return {
-      ingredientComponentId: null,
-      ingredientOptionId: null
+      meal_picker_component_id: null,
+      meal_picker_option_id: null,
+      meal_picker_meals: []
     };
   },
   computed: {
@@ -180,10 +184,10 @@ export default {
     sizeOptions() {
       return _.concat(
         {
-          text: this.meal.default_size_title || "Default",
+          text: this.meal_package.default_size_title || "Default",
           value: null
         },
-        this.meal.sizes.map(size => {
+        this.meal_package.sizes.map(size => {
           return {
             text: size.title,
             value: size.id
@@ -193,7 +197,7 @@ export default {
     }
   },
   watch: {
-    "meal.components": function() {
+    "meal_package.components": function() {
       this.onChangeComponents();
     }
   },
@@ -203,8 +207,8 @@ export default {
   mounted() {},
   methods: {
     addComponent() {
-      this.meal.components.push({
-        id: 1000000 + this.meal.components.length, // push to the end of table
+      this.meal_package.components.push({
+        id: 1000000 + this.meal_package.components.length, // push to the end of table
         title: "",
         minimum: 1,
         maximum: 1,
@@ -213,57 +217,77 @@ export default {
             id: 0,
             title: "",
             price: null,
-            ingredients: [],
-            meal_size_id: null
+            meals: [],
+            meal_package_size_id: null
           }
         ]
       });
     },
     deleteComponent(id) {
-      this.meal.components = _.filter(this.meal.components, component => {
-        return component.id !== id;
-      });
+      this.meal_package.components = _.filter(
+        this.meal_package.components,
+        component => {
+          return component.id !== id;
+        }
+      );
       this.onChangeComponents();
     },
     deleteComponentOption(componentIndex, optionIndex) {
-      let options = this.meal.components[componentIndex].options;
+      let options = this.meal_package.components[componentIndex].options;
 
       options = _.filter(options, (option, i) => {
         return i !== optionIndex;
       });
 
-      this.meal.components[componentIndex].options = options;
+      this.meal_package.components[componentIndex].options = options;
       this.onChangeComponents();
     },
     onChangeComponents() {
-      if (!_.isArray(this.meal.components)) {
+      if (!_.isArray(this.meal_package.components)) {
         throw new Error("Invalid components");
       }
 
       // Validate all rows
-      for (let component of this.meal.components) {
+      for (let component of this.meal_package.components) {
         if (!component.title || !component.minimum || !component.maximum) {
           return;
         }
       }
 
-      this.$emit("change", this.meal.components);
+      this.$emit("change", this.meal_package.components);
     },
-    changeOptionIngredients(componentId, optionId) {
-      this.ingredientComponentId = componentId;
-      this.ingredientOptionId = optionId;
+    changeOptionMeals(componentIndex, optionIndex) {
+      let component = this.meal_package.components[componentIndex];
+      let option = component ? component.options[optionIndex] : null;
+
+      if (!component || !option) {
+        return;
+      }
+
+      this.meal_picker_component_id = componentIndex;
+      this.meal_picker_option_id = optionIndex;
+
+      this.meal_picker_meals = option
+        ? _.map(option.meals, meal => {
+            return {
+              id: meal.id,
+              meal_size_id: meal.meal_size_id,
+              quantity: meal.quantity
+            };
+          })
+        : [];
     },
-    onChangeIngredients(ingredients) {
-      try {
-        this.meal.components[this.ingredientComponentId].options[
-          this.ingredientOptionId
-        ].ingredients = ingredients;
-      } catch (e) {}
-      this.ingredientComponentId = null;
-      this.ingredientOptionId = null;
+    onChangeMeals(meals) {
+      this.meal_package.components[this.meal_picker_component_id].options[
+        this.meal_picker_option_id
+      ].meals = meals;
+
+      this.meal_picker_meals = [];
+      this.meal_picker_component_id = null;
+      this.meal_picker_option_id = null;
     },
     save() {
-      this.$emit("save", this.meal.components);
+      this.$emit("save", this.meal_package.components);
       this.$toastr.s("Meal variation saved.");
     }
   }

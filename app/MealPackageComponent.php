@@ -9,6 +9,7 @@ class MealPackageComponent extends Model
     public $fillable = [];
     public $casts = [];
     public $appends = [];
+    public $with = ['options'];
 
     public function store()
     {
@@ -18,5 +19,10 @@ class MealPackageComponent extends Model
     public function mealPackage()
     {
         return $this->belongsTo('App\MealPackage');
+    }
+
+    public function options()
+    {
+        return $this->hasMany('App\MealPackageComponentOption');
     }
 }

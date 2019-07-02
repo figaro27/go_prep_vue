@@ -108,6 +108,9 @@ Vue.component("page-spinner", PageSpinner);
 import FloatingActionButton from "./components/FloatingActionButton";
 Vue.component("floating-action-button", FloatingActionButton);
 
+import MealPicker from "./components/Menu/MealPicker";
+Vue.component("meal-picker", MealPicker);
+
 /*
 moment.defaultFormat = 'ddd, MMMM Do';
 moment.defaultFormatUtc = 'ddd, MMMM Do';
@@ -119,6 +122,7 @@ Vue.prototype.format = format;
 Vue.prototype.moment = moment;
 Vue.prototype.momentTimezone = momentTimezone;
 Vue.prototype.slugify = slugify;
+Vue.prototype._ = require("lodash");
 Vue.prototype.icons = require("./lib/icons");
 
 const files = require.context("./components", true, /\.vue$/i);

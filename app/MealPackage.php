@@ -174,6 +174,20 @@ class MealPackage extends Model implements HasMedia
             );
         }
 
+        // Associate meals
+        $meals = [];
+        $rawMeals = $props->get('meals');
+
+        if (is_array($rawMeals)) {
+            foreach ($rawMeals as $rawMeal) {
+                $meals[$rawMeal['id']] = [
+                    'quantity' => $rawMeal['quantity']
+                ];
+            }
+
+            $this->meals()->sync($meals);
+        }
+
         $sizes = $props->get('sizes');
         $sizeIds = collect();
 
@@ -193,6 +207,15 @@ class MealPackage extends Model implements HasMedia
                 $mealPackageSize->price = $size['price'];
                 //$mealPackageSize->multiplier = $size['multiplier'];
                 $mealPackageSize->save();
+
+                $meals = [];
+                foreach ($size['meals'] as $meal) {
+                    $meals[$meal['id']] = [
+                        'quantity' => $meal['quantity'],
+                        'meal_size_id' => $meal['meal_size_id'] ?? null
+                    ];
+                }
+                $mealPackageSize->meals()->sync($meals);
 
                 $sizeIds->put($size['id'], $mealPackageSize->id);
             }
@@ -237,10 +260,9 @@ class MealPackage extends Model implements HasMedia
                     }
 
                     if (!$option) {
-                        $option = new MealComponentOption();
+                        $option = new MealPackageComponentOption();
                         $option->meal_package_component_id =
                             $mealPackageComponent->id;
-                        $option->store_id = $mealPackageComponent->store_id;
                     }
 
                     $option->title = $optionArr['title'];
@@ -251,7 +273,14 @@ class MealPackage extends Model implements HasMedia
                     );
                     $option->save();
 
-                    $option->syncIngredients($optionArr['ingredients']);
+                    $meals = [];
+                    foreach ($optionArr['meals'] as $meal) {
+                        $meals[$meal['id']] = [
+                            'quantity' => $meal['quantity'],
+                            'meal_size_id' => $meal['meal_size_id'] ?? null
+                        ];
+                    }
+                    $mealPackageSize->meals()->sync($meals);
 
                     $optionIds[] = $option->id;
                 }

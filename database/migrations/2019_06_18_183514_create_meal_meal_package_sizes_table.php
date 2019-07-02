@@ -13,9 +13,9 @@ class CreateMealMealPackageSizesTable extends Migration
      */
     public function up()
     {
-        Schema::create('meal_meal_package_sizes', function (Blueprint $table) {
+        Schema::create('meal_meal_package_size', function (Blueprint $table) {
             $table->increments('id');
-            $table
+            /*$table
                 ->unsignedInteger('store_id')
                 ->references('id')
                 ->on('stores');
@@ -23,6 +23,7 @@ class CreateMealMealPackageSizesTable extends Migration
                 ->unsignedInteger('meal_package_id')
                 ->references('id')
                 ->on('meal_packages');
+            */
             $table
                 ->unsignedInteger('meal_package_size_id')
                 ->references('id')
@@ -48,6 +49,6 @@ class CreateMealMealPackageSizesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('meal_meal_package_sizes');
+        Schema::dropIfExists('meal_meal_package_size');
     }
 }

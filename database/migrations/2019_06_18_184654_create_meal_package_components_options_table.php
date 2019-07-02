@@ -13,20 +13,25 @@ class CreateMealPackageComponentsOptionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('meal_package_components_options', function (
+        Schema::create('meal_package_component_options', function (
             Blueprint $table
         ) {
             $table->increments('id');
-            $table
+            /*$table
                 ->unsignedInteger('store_id')
                 ->references('id')
                 ->on('stores');
             $table
                 ->unsignedInteger('meal_package_id')
                 ->references('id')
-                ->on('meal_packages');
+                ->on('meal_packages');*/
+            $table
+                ->unsignedInteger('meal_package_component_id')
+                ->references('id')
+                ->on('meal_package_components');
             $table
                 ->unsignedInteger('meal_package_size_id')
+                ->nullable()
                 ->references('id')
                 ->on('meal_package_sizes');
             $table->string('title');
@@ -43,6 +48,6 @@ class CreateMealPackageComponentsOptionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('meal_package_components_options');
+        Schema::dropIfExists('meal_package_component_options');
     }
 }

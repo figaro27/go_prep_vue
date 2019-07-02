@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MealPackageComponentsOptions extends Model
+class MealPackageComponentOption extends Model
 {
     public $fillable = [];
     public $casts = [];
@@ -20,13 +20,17 @@ class MealPackageComponentsOptions extends Model
         return $this->belongsTo('App\MealPackage');
     }
 
-    public function mealPackageSize()
+    public function size()
     {
         return $this->belongsTo('App\MealPackageSize');
     }
 
-    public function mealPackageComponent()
+    public function component()
     {
         return $this->belongsTo('App\MealPackageComponent');
+    }
+
+    public function syncMeals($meals)
+    {
     }
 }

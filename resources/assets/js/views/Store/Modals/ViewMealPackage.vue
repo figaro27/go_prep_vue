@@ -105,17 +105,20 @@
                   ></meal-package-sizes>
                 </b-tab>
 
-                <!--
                 <b-tab title="Components">
                   <meal-package-components
-                    :package="mealPackage"
-                    @change="val => (package.components = val)"
+                    :meal_package="mealPackage"
+                    @change="val => (mealPackage.components = val)"
                     @save="
-                      val => updateMealPackage(package.id, { components: val })
+                      val =>
+                        updateMealPackage(mealPackage.id, {
+                          components: val
+                        })
                     "
                   ></meal-package-components>
                 </b-tab>
 
+                <!--
                 <b-tab title="Addons">
                   <meal-package-addons
                     :package="mealPackage"

@@ -17,6 +17,13 @@ class MealPackageSize extends Model
 
     public function mealPackage()
     {
-        return $this->belongsTo('App\MealPackage');
+        return $this->belongsTo('App\MealPackage', 'meal_package_id');
+    }
+
+    public function meals()
+    {
+        return $this->belongsToMany('App\Meal', 'meal_meal_package_size')
+            ->using('App\MealMealPackageSize')
+            ->withPivot(['quantity', 'meal_size_id']);
     }
 }

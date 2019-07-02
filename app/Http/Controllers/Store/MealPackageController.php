@@ -79,7 +79,7 @@ class MealPackageController extends StoreController
     {
         return $this->store
             ->packages()
-            ->with(['meals', 'sizes', 'components', 'addons'])
+            ->with(['meals', 'sizes', 'sizes.meals', 'components', 'addons'])
             ->find($id);
     }
 
