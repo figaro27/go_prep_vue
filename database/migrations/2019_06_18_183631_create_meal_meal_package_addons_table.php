@@ -16,18 +16,6 @@ class CreateMealMealPackageAddonsTable extends Migration
         Schema::create('meal_meal_package_addons', function (Blueprint $table) {
             $table->increments('id');
             $table
-                ->unsignedInteger('store_id')
-                ->references('id')
-                ->on('stores');
-            $table
-                ->unsignedInteger('meal_package_id')
-                ->references('id')
-                ->on('meal_packages');
-            $table
-                ->unsignedInteger('meal_package_size_id')
-                ->references('id')
-                ->on('meal_package_sizes');
-            $table
                 ->unsignedInteger('meal_package_addon_id')
                 ->references('id')
                 ->on('meal_package_addons');

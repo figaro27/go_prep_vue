@@ -253,6 +253,10 @@ class MealPackage extends Model implements HasMedia
                 foreach ($component['options'] as $optionArr) {
                     $option = null;
 
+                    if (!isset($optionArr['meals'])) {
+                        $optionArr['meals'] = [];
+                    }
+
                     if (isset($optionArr['id'])) {
                         $option = $mealPackageComponent
                             ->options()
@@ -280,7 +284,7 @@ class MealPackage extends Model implements HasMedia
                             'meal_size_id' => $meal['meal_size_id'] ?? null
                         ];
                     }
-                    $mealPackageSize->meals()->sync($meals);
+                    $option->meals()->sync($meals);
 
                     $optionIds[] = $option->id;
                 }
@@ -313,7 +317,6 @@ class MealPackage extends Model implements HasMedia
                 if (!$mealPackageAddon) {
                     $mealPackageAddon = new MealPackageAddon();
                     $mealPackageAddon->meal_package_id = $this->id;
-                    $mealPackageAddon->store_id = $this->store_id;
                 }
 
                 $mealPackageAddon->title = $addon['title'];
@@ -324,7 +327,14 @@ class MealPackage extends Model implements HasMedia
                 );
                 $mealPackageAddon->save();
 
-                $mealPackageAddon->syncIngredients($addon['ingredients']);
+                $meals = [];
+                foreach ($addon['meals'] as $meal) {
+                    $meals[$meal['id']] = [
+                        'quantity' => $meal['quantity'],
+                        'meal_size_id' => $meal['meal_size_id'] ?? null
+                    ];
+                }
+                $mealPackageAddon->meals()->sync($meals);
 
                 $addonIds[] = $mealPackageAddon->id;
             }

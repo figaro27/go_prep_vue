@@ -179,8 +179,8 @@ export default {
         ? _.map(size.meals, meal => {
             return {
               id: meal.id,
-              meal_size_id: meal.pivot.meal_size_id,
-              quantity: meal.pivot.quantity
+              meal_size_id: meal.meal_size_id,
+              quantity: meal.quantity
             };
           })
         : [];

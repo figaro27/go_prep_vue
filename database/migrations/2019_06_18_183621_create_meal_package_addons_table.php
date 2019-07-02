@@ -16,19 +16,16 @@ class CreateMealPackageAddonsTable extends Migration
         Schema::create('meal_package_addons', function (Blueprint $table) {
             $table->increments('id');
             $table
-                ->unsignedInteger('store_id')
-                ->references('id')
-                ->on('stores');
-            $table
                 ->unsignedInteger('meal_package_id')
                 ->references('id')
                 ->on('meal_packages');
             $table
                 ->unsignedInteger('meal_package_size_id')
+                ->nullable()
                 ->references('id')
                 ->on('meal_package_sizes');
             $table->string('title');
-            $table->double('price', 4, 2);
+            $table->double('price', 6, 2);
             $table->boolean('selectable')->default(0);
             $table->timestamps();
         });

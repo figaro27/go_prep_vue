@@ -93,7 +93,7 @@
               </td>
               <td>
                 <b-select
-                  v-model="option.meal_size_id"
+                  v-model="option.meal_package_size_id"
                   :options="sizeOptions"
                 ></b-select>
               </td>

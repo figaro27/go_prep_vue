@@ -1,13 +1,12 @@
 <template>
   <div>
-    <div v-if="ingredientAddonId !== null">
-      <ingredient-picker
-        ref="ingredientPicker"
-        v-model="meal.addons[ingredientAddonId].ingredients"
-        :options="{ saveButton: true }"
-        :meal="meal"
-        @save="val => onChangeIngredients(val)"
-      ></ingredient-picker>
+    <div v-if="!_.isNull(meal_picker_addon_id)">
+      <meal-picker
+        ref="mealPicker"
+        :meal_sizes="true"
+        v-model="meal_picker_meals"
+        @save="meals => onChangeMeals(meals)"
+      ></meal-picker>
     </div>
 
     <div v-else>
@@ -25,7 +24,11 @@
         />
       </div>
 
-      <div v-for="(addon, i) in meal.addons" :key="addon.id" role="tablist">
+      <div
+        v-for="(addon, i) in meal_package.addons"
+        :key="addon.id"
+        role="tablist"
+      >
         <div class="addon-header mb-2">
           <h5 class="d-inline-block">#{{ i + 1 }}. {{ addon.title }}</h5>
         </div>
@@ -52,9 +55,9 @@
             </b-form-group>
           </b-col>
           <b-col>
-            <b-form-group label="Meal Size">
+            <b-form-group label="Meal Package Size">
               <b-select
-                v-model="addon.meal_size_id"
+                v-model="addon.meal_package_size_id"
                 :options="sizeOptions"
               ></b-select>
             </b-form-group>
@@ -62,7 +65,7 @@
           <b-col>
             <b-btn
               variant="primary"
-              @click="changeAddonIngredients(i)"
+              @click="changeAddonMeals(i)"
               style="margin-top: 28px;"
               >Adjust</b-btn
             >
@@ -77,10 +80,10 @@
             >
           </b-col>
         </b-row>
-        <hr v-if="i < meal.addons.length - 1" class="my-4" />
+        <hr v-if="i < meal_package.addons.length - 1" class="my-4" />
       </div>
 
-      <div v-if="meal.addons.length" class="mt-4">
+      <div v-if="meal_package.addons.length" class="mt-4">
         <b-button variant="primary" @click="addAddon()"
           >Add Meal Addon</b-button
         >
@@ -112,13 +115,14 @@ export default {
     IngredientPicker
   },
   props: {
-    meal: {
+    meal_package: {
       required: true
     }
   },
   data() {
     return {
-      ingredientAddonId: null
+      meal_picker_addon_id: null,
+      meal_picker_meals: []
     };
   },
   computed: {
@@ -128,10 +132,10 @@ export default {
     sizeOptions() {
       return _.concat(
         {
-          text: this.meal.default_size_title || "Default",
+          text: this.meal_package.default_size_title || "Default",
           value: null
         },
-        this.meal.sizes.map(size => {
+        this.meal_package.sizes.map(size => {
           return {
             text: size.title,
             value: size.id
@@ -141,7 +145,7 @@ export default {
     }
   },
   watch: {
-    "meal.addons": function() {
+    "meal_package.addons": function() {
       this.onChangeAddons();
     }
   },
@@ -151,44 +155,61 @@ export default {
   mounted() {},
   methods: {
     addAddon() {
-      this.meal.addons.push({
-        id: 1000000 + this.meal.addons.length, // push to the end of table
+      this.meal_package.addons.push({
+        id: 1000000 + this.meal_package.addons.length, // push to the end of table
         title: "",
         price: null,
-        ingredients: []
+        meal_package_size_id: null,
+        meals: []
       });
     },
     deleteAddon(id) {
-      this.meal.addons = _.filter(this.meal.addons, addon => {
+      this.meal_package.addons = _.filter(this.meal_package.addons, addon => {
         return addon.id !== id;
       });
       this.onChangeAddons();
     },
     onChangeAddons() {
-      if (!_.isArray(this.meal.addons)) {
+      if (!_.isArray(this.meal_package.addons)) {
         throw new Error("Invalid addons");
       }
 
       // Validate all rows
-      for (let addon of this.meal.addons) {
+      for (let addon of this.meal_package.addons) {
         if (!addon.title || !addon.price) {
           return;
         }
       }
 
-      this.$emit("change", this.meal.addons);
+      this.$emit("change", this.meal_package.addons);
     },
-    changeAddonIngredients(addonId) {
-      this.ingredientAddonId = addonId;
+    changeAddonMeals(addonIndex) {
+      let addon = this.meal_package.addons[addonIndex];
+
+      if (!addon) {
+        return;
+      }
+
+      this.meal_picker_addon_id = addonIndex;
+
+      this.meal_picker_meals = addon
+        ? _.map(addon.meals, meal => {
+            return {
+              id: meal.id,
+              meal_size_id: meal.meal_size_id,
+              quantity: meal.quantity
+            };
+          })
+        : [];
     },
-    onChangeIngredients(ingredients) {
-      try {
-        this.meal.addons[this.ingredientAddonId].ingredients = ingredients;
-      } catch (e) {}
-      this.ingredientAddonId = null;
+    onChangeMeals(meals) {
+      this.meal_package.addons[this.meal_picker_addon_id].meals = meals;
+
+      this.meal_picker_meals = [];
+      this.meal_picker_addon_id = null;
     },
     save() {
-      this.$emit("save", this.meal.addons);
+      this.$emit("save", this.meal_package.addons);
       this.$toastr.s("Meal variation saved.");
     }
   }

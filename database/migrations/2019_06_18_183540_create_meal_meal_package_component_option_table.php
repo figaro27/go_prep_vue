@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMealMealPackageComponentsTable extends Migration
+class CreateMealMealPackageComponentOptionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,26 +13,14 @@ class CreateMealMealPackageComponentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('meal_meal_package_components', function (
+        Schema::create('meal_meal_package_component_option', function (
             Blueprint $table
         ) {
             $table->increments('id');
             $table
-                ->unsignedInteger('store_id')
+                ->unsignedInteger('meal_package_component_option_id')
                 ->references('id')
-                ->on('stores');
-            $table
-                ->unsignedInteger('meal_package_id')
-                ->references('id')
-                ->on('meal_packages');
-            $table
-                ->unsignedInteger('meal_package_size_id')
-                ->references('id')
-                ->on('meal_package_sizes');
-            $table
-                ->unsignedInteger('meal_package_component_id')
-                ->references('id')
-                ->on('meal_package_components');
+                ->on('meal_package_component_options');
             $table
                 ->unsignedInteger('meal_id')
                 ->references('id')
