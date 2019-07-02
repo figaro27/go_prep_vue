@@ -831,6 +831,7 @@ export default {
       creditCards: "cards",
       store: "viewedStore",
       storeSetting: "viewedStoreSetting",
+      storeModules: "storeModules",
       storeCustomers: "storeCustomers",
       total: "bagQuantity",
       bag: "bagItems",

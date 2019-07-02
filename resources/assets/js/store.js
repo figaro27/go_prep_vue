@@ -1510,6 +1510,13 @@ const getters = {
       return {};
     }
   },
+  storeModules: state => {
+    try {
+      return state.store.modules.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
   storeCoupons: state => {
     try {
       return state.store.coupons.data || {};
