@@ -7,7 +7,13 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class MealOrder extends Pivot
 {
     protected $table = 'meal_orders';
-    protected $appends = ['title', 'html_title', 'unit_price', 'price'];
+    protected $appends = [
+        'title',
+        'html_title',
+        'unit_price',
+        'price',
+        'instructions'
+    ];
     protected $with = ['components', 'addons'];
 
     public function meals()
@@ -130,5 +136,10 @@ class MealOrder extends Pivot
     public function getPriceAttribute()
     {
         return $this->unit_price * $this->quantity;
+    }
+
+    public function getInstructionsAttribute()
+    {
+        return $this->meal->instructions;
     }
 }
