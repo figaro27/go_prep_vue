@@ -283,7 +283,7 @@
                   ></b-form-checkbox-group>
                 </b-form-group>
 
-                <h4 v-if="storeSettings.mealInstructions">
+                <h4 v-if="storeSettings.mealInstructions" class="mt-4">
                   Special Meal Instructions
                   <img
                     v-b-popover.hover="
