@@ -1085,7 +1085,8 @@ export default {
       minOption: "minimumOption",
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
-      getMeal: "viewedStoreMeal"
+      getMeal: "viewedStoreMeal",
+      getMealPackage: "viewedStoreMealPackage"
     }),
     deliveryDaysOptions() {
       return this.storeSetting("next_orderable_delivery_dates", []).map(
