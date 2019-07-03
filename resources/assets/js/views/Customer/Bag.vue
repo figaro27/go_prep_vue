@@ -523,7 +523,7 @@
                   </div>
                   <h4 class="mt-2 mb-3">Choose Payment Method</h4>
                   <b-form-checkbox
-                    v-if="manualOrder"
+                    v-if="manualOrder && storeModules.allowCashOrders"
                     v-model="cashOrder"
                     class="pb-2"
                   >
