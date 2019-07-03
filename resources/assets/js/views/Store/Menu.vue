@@ -301,7 +301,7 @@
                   class="form-control"
                   :rows="2"
                   :maxlength="150"
-                  @change="val => updateMeal(meal.id, { instructions: val })"
+                  @change="e => updateMealInstructions(meal.id, e.target.value)"
                 ></textarea>
               </b-tab>
 
