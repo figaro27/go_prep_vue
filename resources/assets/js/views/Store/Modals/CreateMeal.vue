@@ -65,6 +65,26 @@
                 :options="allergyOptions"
                 class="storeFilters"
               ></b-form-checkbox-group>
+
+              <h4 v-if="storeSettings.mealInstructions">
+                Special Meal Instructions
+                <img
+                  v-b-popover.hover="
+                    'Here you can include special heating instructions, preparation instructions, or expiration info to your customers for this particular meal. If this meal is ordered, these specific instructions will be shown on the customer\'s packing slips & email receipts.'
+                  "
+                  title="Special Meal Instructions"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </h4>
+              <textarea
+                v-if="storeSettings.mealInstructions"
+                v-model.lazy="meal.instructions"
+                id="meal-instructions"
+                class="form-control"
+                :rows="2"
+                :maxlength="150"
+              ></textarea>
             </b-tab>
 
             <b-tab title="Ingredients">
@@ -258,6 +278,7 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
+      storeSettings: "storeSettings",
       tags: "tags",
       storeCategories: "storeCategories",
       getCategoryTitle: "storeCategoryTitle",
