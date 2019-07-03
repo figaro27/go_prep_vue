@@ -839,7 +839,8 @@ class Meal extends Model implements HasMedia
             'sizes',
             'default_size_title',
             'components',
-            'addons'
+            'addons',
+            'instructions'
         ]);
 
         if ($props->has('featured_image')) {
