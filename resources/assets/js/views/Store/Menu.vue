@@ -301,7 +301,7 @@
                   class="form-control"
                   :rows="2"
                   :maxlength="150"
-                  @change="e => updateMealInstructions(meal.id, e.target.value)"
+                  @change="val => updateMeal(meal.id, { instructions: val })"
                 ></textarea>
               </b-tab>
 
@@ -574,7 +574,7 @@ export default {
         num_orders: "",
         created_at: "",
         categories: [],
-        image: {},
+        image: {}
       },
       createMealModal: false,
       createPackageModal: false,
@@ -600,10 +600,10 @@ export default {
         featured_image: "",
         title: "",
         description: "",
-        instructions: ""
+        instructions: "",
         price: "",
         ingredients: [],
-        image: {},
+        image: {}
       },
       nutrition: {
         calories: null,
@@ -1143,7 +1143,7 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    },
+    }
   }
 };
 </script>

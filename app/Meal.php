@@ -31,6 +31,7 @@ class Meal extends Model implements HasMedia
         'featured_image',
         'title',
         'description',
+        'instructions',
         'price',
         'default_size_title',
         'created_at'
@@ -456,6 +457,7 @@ class Meal extends Model implements HasMedia
                     "gallery" => $meal->gallery,
                     "title" => $meal->title,
                     "description" => $meal->description,
+                    "instructions" => $meal->instructions,
                     "price" => $meal->price,
                     "created_at" => $meal->created_at
                 ];
@@ -483,6 +485,7 @@ class Meal extends Model implements HasMedia
                     "gallery" => $meal->gallery,
                     "title" => $meal->title,
                     "description" => $meal->description,
+                    "instructions" => $meal->instructions,
                     "price" => '$' . $meal->price,
                     "current_orders" => $meal->meal_order
                         ->where('store_id', $storeID)
@@ -527,6 +530,7 @@ class Meal extends Model implements HasMedia
             'photo',
             'title',
             'description',
+            'instructions',
             'price',
             'created_at',
             'tag_ids',
@@ -544,6 +548,7 @@ class Meal extends Model implements HasMedia
         $meal->active = true;
         $meal->title = $props->get('title', '');
         $meal->description = $props->get('description', '');
+        $meal->instructions = $props->get('instructions', '');
         $meal->price = $props->get('price', 0);
         $meal->default_size_title = $props->get('default_size_title', '');
         $meal->save();
@@ -814,6 +819,7 @@ class Meal extends Model implements HasMedia
         $meal->featured_image = $request->featured_image;
         $meal->title = $request->title;
         $meal->description = $request->description;
+        $meal->instructions = $request->instructions;
         $meal->price = $request->price;
 
         $meal->save();
@@ -830,6 +836,7 @@ class Meal extends Model implements HasMedia
             'photo',
             'title',
             'description',
+            'instructions',
             'price',
             'created_at',
             'tag_ids',
@@ -839,8 +846,7 @@ class Meal extends Model implements HasMedia
             'sizes',
             'default_size_title',
             'components',
-            'addons',
-            'instructions'
+            'addons'
         ]);
 
         if ($props->has('featured_image')) {
