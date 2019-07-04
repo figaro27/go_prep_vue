@@ -14,6 +14,7 @@ class MealPackage extends Model implements HasMedia
 
     public $fillable = ['title', 'description', 'store_id', 'price', 'active'];
     public $appends = ['image'];
+    public $hidden = ['store'];
 
     protected $casts = [
         'price' => 'double',

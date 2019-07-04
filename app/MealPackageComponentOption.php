@@ -11,7 +11,27 @@ class MealPackageComponentOption extends Model
     public $fillable = [];
     public $casts = [];
     public $appends = [];
-    public $with = ['meals'];
+    public $with = [];
+    public $hidden = ['created_at', 'updated_at'];
+
+    /**
+     * Get the instance as an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $arr = parent::toArray();
+
+        $arr['meals'] = $this->meals->map(function ($meal) {
+            return [
+                'meal_id' => $meal->id,
+                'quantity' => $meal->quantity
+            ];
+        });
+
+        return $arr;
+    }
 
     public function store()
     {

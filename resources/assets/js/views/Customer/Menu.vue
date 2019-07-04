@@ -131,9 +131,9 @@
               :key="`tag-${tag}`"
               class="filters col-6 col-sm-4 col-md-3 mb-3"
             >
-              <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{
-                tag
-              }}</b-button>
+              <b-button :pressed="active[tag]" @click="filterByTag(tag)">
+                {{ tag }}
+              </b-button>
             </div>
           </div>
           <b-button
@@ -389,10 +389,33 @@
                             </h5>
                           </div>
                           <b-btn
+                            v-if="mealPackage.sizes.length === 0"
                             @click="addOne(mealPackage, true)"
-                            class="menu-bag-btn width-80"
+                            class="menu-bag-btn"
                             >+ ADD</b-btn
                           >
+                          <b-dropdown v-else toggle-class="menu-bag-btn">
+                            <span slot="button-content">+ ADD</span>
+                            <b-dropdown-item @click="addOne(mealPackage, true)">
+                              {{ mealPackage.default_size_title }} -
+                              {{
+                                format.money(
+                                  mealPackage.price,
+                                  storeSettings.currency
+                                )
+                              }}
+                            </b-dropdown-item>
+                            <b-dropdown-item
+                              v-for="size in mealPackage.sizes"
+                              :key="size.id"
+                              @click="addOne(mealPackage, true, size)"
+                            >
+                              {{ size.title }} -
+                              {{
+                                format.money(size.price, storeSettings.currency)
+                              }}
+                            </b-dropdown-item>
+                          </b-dropdown>
                         </div>
                       </div>
                     </div>
@@ -732,11 +755,34 @@
                             readonly
                           ></b-form-input>
                           <b-btn
+                            v-if="mealPkg.sizes.length === 0"
                             @click="addOne(mealPkg, true)"
-                            class="menu-bag-btn plus-minus"
+                            class="menu-bag-btn"
                           >
-                            <i>+</i>
+                            <i>-</i>
                           </b-btn>
+                          <b-dropdown v-else toggle-class="menu-bag-btn">
+                            <span slot="button-content">+</span>
+                            <b-dropdown-item @click="addOne(mealPkg, true)">
+                              {{ mealPkg.default_size_title }} -
+                              {{
+                                format.money(
+                                  mealPkg.price,
+                                  storeSettings.currency
+                                )
+                              }}
+                            </b-dropdown-item>
+                            <b-dropdown-item
+                              v-for="size in mealPkg.sizes"
+                              :key="size.id"
+                              @click="addOne(mealPkg, true, size)"
+                            >
+                              {{ size.title }} -
+                              {{
+                                format.money(size.price, storeSettings.currency)
+                              }}
+                            </b-dropdown-item>
+                          </b-dropdown>
                           <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
                         </div>
                         <p class="center-text strong featured">
@@ -818,12 +864,12 @@
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
-                          <span v-if="item.meal_package">
-                            {{ item.meal.title }}
-                          </span>
-                          <span v-else-if="item.size">{{
-                            item.size.full_title
+                          <span v-if="item.meal_package">{{
+                            item.meal.title
                           }}</span>
+                          <span v-else-if="item.size">
+                            {{ item.size.full_title }}
+                          </span>
                           <span v-else>{{ item.meal.item_title }}</span>
 
                           <ul

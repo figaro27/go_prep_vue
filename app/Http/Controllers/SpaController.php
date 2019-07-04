@@ -180,7 +180,9 @@ class SpaController extends Controller
                 'details',
                 'coupons',
                 'pickupLocations'
-            ])->find(STORE_ID)
+            ])
+                ->without([])
+                ->find(STORE_ID)
             : null;
 
         if ($user) {

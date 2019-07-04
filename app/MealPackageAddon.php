@@ -9,6 +9,7 @@ class MealPackageAddon extends Model
     public $fillable = [];
     public $casts = [];
     public $appends = [];
+    public $hidden = ['store'];
 
     public function store()
     {

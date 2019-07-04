@@ -21,7 +21,7 @@ class MealController extends StoreController
             ? $this->store
                 ->meals()
                 ->with(['orders', 'tags', 'ingredients', 'sizes'])
-                ->without(['allergies', 'categories'])
+                ->without(['allergies', 'categories', 'store'])
                 ->get()
             : [];
     }

@@ -10,6 +10,7 @@ class MealPackageComponent extends Model
     public $casts = [];
     public $appends = [];
     public $with = ['options'];
+    public $hidden = [];
 
     public function store()
     {

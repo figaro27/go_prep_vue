@@ -186,9 +186,7 @@ export default {
       this.$emit("done");
     },
     getOptions(component) {
-      let options = _.filter(component.options, option => {
-        return option.meal_size_id == this.sizeId;
-      });
+      let options = _.filter(component.options, this.sizeCriteria);
       return _.map(options, option => {
         let title = option.title;
         if (option.price && option.price > 0) {

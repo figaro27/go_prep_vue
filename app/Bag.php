@@ -2,7 +2,10 @@
 
 namespace App;
 
+use App\MealAddon;
 use App\MealComponentOption;
+use App\MealPackageAddon;
+use App\MealPackageComponentOption;
 use App\Store;
 
 class Bag
@@ -47,9 +50,9 @@ class Bag
             json_encode([
                 'meal' => $item['meal']['id'],
                 'meal_package' => $item['meal_package'],
-                'size' => $item['size'],
-                'components' => $item['components'],
-                'addons' => $item['addons']
+                'size' => $item['size'] ?? null,
+                'components' => $item['components'] ?? [],
+                'addons' => $item['addons'] ?? []
             ])
         );
     }
@@ -63,10 +66,13 @@ class Bag
             ->keyBy('id');
 
         collect($this->items)->map(function ($item) use (&$items, $meals) {
+            $itemId = $this->getItemId($item);
+
             if (isset($item['meal_package']) && $item['meal_package']) {
+                // Repeat for item quantity
                 for ($i = 0; $i < $item['quantity']; $i++) {
+                    // Add regular pagacke means
                     foreach ($item['meal']['meals'] as $meal) {
-                        $itemId = $meal['id'];
                         if (!isset($items[$itemId])) {
                             $items[$itemId] = [
                                 'meal' => $meal,
@@ -75,6 +81,48 @@ class Bag
                             ];
                         } else {
                             $items[$itemId]['quantity'] += $meal['quantity'];
+                        }
+                    }
+
+                    if (isset($item['components']) && $item['components']) {
+                        foreach (
+                            $item['components']
+                            as $componentId => $choices
+                        ) {
+                            foreach ($choices as $optionId) {
+                                $option = MealPackageComponentOption::find(
+                                    $optionId
+                                );
+
+                                foreach ($option->meals as $meal) {
+                                    $mealItem = [
+                                        'meal' => $meal,
+                                        'meal_package' => false,
+                                        'size' => $meal->pivot->mealSize,
+                                        'quantity' => $meal->pivot->quantity
+                                    ];
+
+                                    $mealItemId = $this->getItemId($mealItem);
+
+                                    if (!isset($items[$mealItemId])) {
+                                        $items[$mealItemId] = [
+                                            'meal' => $meal,
+                                            'quantity' =>
+                                                $meal->pivot->quantity,
+                                            'price' => $meal->price,
+                                            'size' => $meal->pivot->mealSize
+                                        ];
+                                    } else {
+                                        $items[$mealItemId]['quantity'] +=
+                                            $meal->pivot->quantity;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (isset($item['addons']) && $item['addons']) {
+                        foreach ($item['addons'] as $addonId) {
+                            $addon = MealPackageAddon::find($addonId);
                         }
                     }
                 }
