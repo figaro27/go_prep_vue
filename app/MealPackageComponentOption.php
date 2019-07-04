@@ -26,7 +26,8 @@ class MealPackageComponentOption extends Model
         $arr['meals'] = $this->meals->map(function ($meal) {
             return [
                 'meal_id' => $meal->id,
-                'quantity' => $meal->quantity
+                'quantity' => $meal->quantity,
+                'meal_size_id' => $meal->pivot->meal_size_id
             ];
         });
 

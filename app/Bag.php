@@ -95,10 +95,13 @@ class Bag
                                 );
 
                                 foreach ($option->meals as $meal) {
+                                    $s = $meal->pivot->mealSize;
                                     $mealItem = [
                                         'meal' => $meal,
                                         'meal_package' => false,
-                                        'size' => $meal->pivot->mealSize,
+                                        'size' => [
+                                            'id' => $meal->pivot->meal_size_id
+                                        ],
                                         'quantity' => $meal->pivot->quantity
                                     ];
 
@@ -110,7 +113,10 @@ class Bag
                                             'quantity' =>
                                                 $meal->pivot->quantity,
                                             'price' => $meal->price,
-                                            'size' => $meal->pivot->mealSize
+                                            'size' => [
+                                                'id' =>
+                                                    $meal->pivot->meal_size_id
+                                            ]
                                         ];
                                     } else {
                                         $items[$mealItemId]['quantity'] +=

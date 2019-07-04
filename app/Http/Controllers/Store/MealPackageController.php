@@ -139,13 +139,11 @@ class MealPackageController extends StoreController
                                                 $meal
                                             ) {
                                                 return [
-                                                    'id' => $meal['id'],
+                                                    'id' => $meal['meal_id'],
                                                     'quantity' =>
                                                         $meal['quantity'],
                                                     'meal_size_id' =>
-                                                        $meal['pivot'][
-                                                            'meal_size_id'
-                                                        ]
+                                                        $meal['meal_size_id']
                                                 ];
                                             });
                                         }
