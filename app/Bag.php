@@ -94,11 +94,16 @@ class Bag
                                     $optionId
                                 );
 
-                                foreach ($option->meals as $meal) {
-                                    $s = $meal->pivot->mealSize;
+                                $meals = MealMealPackageComponentOption::where([
+                                    'meal_package_component_option_id' => $optionId
+                                ])->get();
+
+                                foreach ($meals as $meal) {
                                     $mealItem = [
                                         'meal' => $meal,
                                         'meal_package' => false,
+                                        'quantity' => $meal->pivot->quantity,
+                                        'price' => $meal->price,
                                         'size' => [
                                             'id' => $meal->pivot->meal_size_id
                                         ],
@@ -108,16 +113,7 @@ class Bag
                                     $mealItemId = $this->getItemId($mealItem);
 
                                     if (!isset($items[$mealItemId])) {
-                                        $items[$mealItemId] = [
-                                            'meal' => $meal,
-                                            'quantity' =>
-                                                $meal->pivot->quantity,
-                                            'price' => $meal->price,
-                                            'size' => [
-                                                'id' =>
-                                                    $meal->pivot->meal_size_id
-                                            ]
-                                        ];
+                                        $items[$mealItemId] = $mealItem;
                                     } else {
                                         $items[$mealItemId]['quantity'] +=
                                             $meal->pivot->quantity;

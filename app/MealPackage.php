@@ -272,6 +272,7 @@ class MealPackage extends Model implements HasMedia
 
                     $option->title = $optionArr['title'];
                     $option->price = $optionArr['price'];
+                    $option->selectable = $optionArr['selectable'];
                     $option->meal_package_size_id = $sizeIds->get(
                         $optionArr['meal_package_size_id'],
                         $optionArr['meal_package_size_id']

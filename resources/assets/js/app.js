@@ -88,7 +88,7 @@ Vue.use(VuejsDialog, {
   cancelText: "Cancel",
   animation: "bounce"
 });
-Vue.use(DisableAutocomplete);
+//Vue.use(DisableAutocomplete);
 
 import Thumbnail from "./components/Thumbnail";
 Vue.component("thumbnail", Thumbnail);

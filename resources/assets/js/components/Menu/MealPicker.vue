@@ -6,7 +6,18 @@
       :data="tableData"
       :options="options"
     >
-      <div slot="beforeTable" class="mb-2"></div>
+      <div slot="beforeTable" class="mb-2">
+        <b-form-group label="Selection type" v-if="selectable_toggle">
+          <b-form-radio-group
+            v-model="_selectable"
+            :options="[
+              { text: 'Preset', value: false },
+              { text: 'Selectable', value: true }
+            ]"
+            name="radio-options"
+          ></b-form-radio-group>
+        </b-form-group>
+      </div>
 
       <span slot="beforeLimit">
         <div class="mr-2">
@@ -42,6 +53,15 @@
         ></b-input>
       </div>
 
+      <div slot="added_price" slot-scope="props">
+        <money
+          v-model="props.row.added_price"
+          class="form-control"
+          v-bind="{ prefix: storeCurrencySymbol }"
+          @blur.native="val => setMealAddedPrice(props.row.id, val)"
+        ></money>
+      </div>
+
       <div slot="meal_size_id" slot-scope="props">
         <b-select
           v-model="props.row.meal_size_id"
@@ -61,8 +81,12 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { Switch as cSwitch } from "@coreui/vue";
 
 export default {
+  components: {
+    cSwitch
+  },
   props: {
     meal_sizes: {
       type: Boolean,
@@ -71,18 +95,28 @@ export default {
     value: {
       type: Array,
       default: []
+    },
+    selectable_toggle: {
+      type: Boolean,
+      default: false
+    },
+    selectable: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       selected: [],
+      _selectable: false,
       options: {
         headings: {
           included: "Included",
           featured_image: "Image",
           title: "Title",
           meal_size_id: "Meal Size",
-          quantity: "Quantity"
+          quantity: "Quantity",
+          added_price: "Added Price"
         },
         rowClassCallback: function(row) {
           let classes = `meal meal-${row.id}`;
@@ -110,6 +144,9 @@ export default {
         cols.push("meal_size_id");
       }
       cols.push("quantity");
+      if (this.selectable_toggle && this.selectable) {
+        cols.push("added_price");
+      }
       return cols;
     },
     canSave() {
@@ -136,10 +173,14 @@ export default {
   },
   created() {
     this.selected = _.isArray(this.value) ? this.value : [];
+    this._selectable = !!this.selectable;
   },
   methods: {
     save() {
-      this.$emit("save", this.selected);
+      this.$emit("save", {
+        meals: this.selected,
+        selectable: this._selectable
+      });
     },
     findMealIndex(id) {
       return _.findIndex(this.selected, { id });

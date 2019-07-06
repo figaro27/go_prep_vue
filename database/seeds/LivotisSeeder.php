@@ -730,6 +730,16 @@ class LivotisSeeder extends Seeder
                             })
                             ->get();
 
+                        $option = $_component->options()->create([
+                            'meal_package_size_id' => $packageSizeId,
+                            'title' =>
+                                $component['title'] .
+                                ' - ' .
+                                $packageSize['title'],
+                            'price' => 0,
+                            'selectable' => 1
+                        ]);
+
                         foreach ($mealOptions as $meal) {
                             $mealSizeId = null;
 
@@ -744,12 +754,6 @@ class LivotisSeeder extends Seeder
                                     $mealSizeId = $mealSize->id;
                                 }
                             }
-
-                            $option = $_component->options()->create([
-                                'meal_package_size_id' => $packageSizeId,
-                                'title' => $meal->title,
-                                'price' => $meal->price
-                            ]);
 
                             $option->meals()->attach([
                                 $meal->id => [

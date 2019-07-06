@@ -4,8 +4,10 @@
       <meal-picker
         ref="mealPicker"
         :meal_sizes="true"
+        :selectable_toggle="true"
+        :selectable="meal_picker_selectable"
         v-model="meal_picker_meals"
-        @save="meals => onChangeMeals(meals)"
+        @save="val => onChangeMeals(val.meals, val.selectable)"
       ></meal-picker>
     </div>
 
@@ -38,13 +40,6 @@
             >Delete</b-btn
           >
         </div>
-        <c-switch
-          color="success"
-          variant="pill"
-          size="lg"
-          v-model="component.type"
-          @change.native="updateCustomer"
-        />
         <b-row>
           <b-col cols="6">
             <b-form-group label="Title">
@@ -174,7 +169,8 @@ export default {
     return {
       meal_picker_component_id: null,
       meal_picker_option_id: null,
-      meal_picker_meals: []
+      meal_picker_meals: [],
+      meal_picker_selectable: false
     };
   },
   computed: {
@@ -267,6 +263,7 @@ export default {
       this.meal_picker_component_id = componentIndex;
       this.meal_picker_option_id = optionIndex;
 
+      this.meal_picker_selectable = option.selectable;
       this.meal_picker_meals = option
         ? _.map(option.meals, meal => {
             return {
@@ -277,12 +274,17 @@ export default {
           })
         : [];
     },
-    onChangeMeals(meals) {
+    onChangeMeals(meals, selectable = false) {
       this.meal_package.components[this.meal_picker_component_id].options[
         this.meal_picker_option_id
       ].meals = meals;
 
+      this.meal_package.components[this.meal_picker_component_id].options[
+        this.meal_picker_option_id
+      ].selectable = selectable;
+
       this.meal_picker_meals = [];
+      this.meal_picker_selectable = false;
       this.meal_picker_component_id = null;
       this.meal_picker_option_id = null;
     },
