@@ -583,7 +583,10 @@
               <!-- Meals Area -->
               <div class="row">
                 <div :class="`col-md-9 main-menu-area`">
-                  <Spinner v-if="!meals.length" position="absolute" />
+                  <Spinner
+                    v-if="!meals.length && !mealPackages.length"
+                    position="absolute"
+                  />
                   <div
                     v-for="(group, catIndex) in meals"
                     :key="group.category"
