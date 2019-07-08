@@ -31,6 +31,7 @@ class CreateMealMealPackageComponentOptionTable extends Migration
                 ->on('meal_sizes')
                 ->nullable();
             $table->unsignedInteger('quantity');
+            $table->double('price', 6, 2);
             $table->timestamps();
         });
     }

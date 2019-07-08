@@ -47,11 +47,9 @@ export default {
           await this.hideMealModal();
         }
 
-        const result = await this.$refs.componentModal.show(
-          meal,
-          mealPackage,
-          size
-        );
+        const result = !mealPackage
+          ? await this.$refs.componentModal.show(meal, mealPackage, size)
+          : await this.$refs.packageComponentModal.show(meal, size);
 
         if (!result) {
           return;

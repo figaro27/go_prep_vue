@@ -7,6 +7,7 @@ use App\MealComponentOption;
 use App\MealPackageAddon;
 use App\MealPackageComponentOption;
 use App\Store;
+use stdClass;
 
 class Bag
 {
@@ -89,25 +90,76 @@ class Bag
                             $item['components']
                             as $componentId => $choices
                         ) {
-                            foreach ($choices as $optionId) {
+                            foreach ($choices as $optionId => $optionItems) {
+                                $optionItems = collect($optionItems);
+
                                 $option = MealPackageComponentOption::find(
                                     $optionId
                                 );
 
-                                $meals = MealMealPackageComponentOption::where([
-                                    'meal_package_component_option_id' => $optionId
-                                ])->get();
+                                $meals = collect();
+
+                                if (!$option->selectable) {
+                                    $mealOptions = MealMealPackageComponentOption::where(
+                                        [
+                                            'meal_package_component_option_id' => $optionId
+                                        ]
+                                    )->get();
+
+                                    foreach ($mealOptions as $mealOption) {
+                                        $meals->push([
+                                            'meal' => [
+                                                'id' => $mealOption->meal_id
+                                            ],
+                                            'quantity' => $mealOption->quantity,
+                                            'price' => $mealOption->price,
+                                            'meal_size_id' =>
+                                                $mealOption->meal_size_id
+                                        ]);
+                                    }
+                                } else {
+                                    foreach ($optionItems as $optionItem) {
+                                        $mealOption = MealMealPackageComponentOption::where(
+                                            [
+                                                'meal_package_component_option_id' => $optionId
+                                            ]
+                                        )
+                                            ->where(
+                                                'meal_id',
+                                                $optionItem['meal_id']
+                                            )
+                                            ->where(
+                                                'meal_size_id',
+                                                $optionItem['meal_size_id'] ??
+                                                    null
+                                            )
+                                            ->first();
+
+                                        if ($mealOption) {
+                                            $meals->push([
+                                                'meal' => [
+                                                    'id' => $mealOption->meal_id
+                                                ],
+                                                'quantity' =>
+                                                    $optionItem['quantity'],
+                                                'price' => $mealOption->price,
+                                                'meal_size_id' =>
+                                                    $mealOption->meal_size_id
+                                            ]);
+                                        }
+                                    }
+                                }
 
                                 foreach ($meals as $meal) {
                                     $mealItem = [
-                                        'meal' => $meal,
+                                        'meal' => $meal['meal'],
                                         'meal_package' => false,
-                                        'quantity' => $meal->pivot->quantity,
-                                        'price' => $meal->price,
+                                        'quantity' => $meal['quantity'],
+                                        'price' => $meal['price'],
                                         'size' => [
-                                            'id' => $meal->pivot->meal_size_id
+                                            'id' => $meal['meal_size_id']
                                         ],
-                                        'quantity' => $meal->pivot->quantity
+                                        'quantity' => $meal['quantity']
                                     ];
 
                                     $mealItemId = $this->getItemId($mealItem);

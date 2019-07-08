@@ -25,6 +25,11 @@
       :key="total"
     ></meal-components-modal>
 
+    <meal-package-components-modal
+      ref="packageComponentModal"
+      :key="total"
+    ></meal-package-components-modal>
+
     <div class="category-slider d-block d-md-none">
       <slick
         v-if="categories.length > 4"
@@ -1017,6 +1022,7 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
 import Spinner from "../../components/Spinner";
 import MealComponentsModal from "../../components/Modals/MealComponentsModal";
+import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 import MenuBag from "../../mixins/menuBag";
 import units from "../../data/units";
 import nutrition from "../../data/nutrition";
@@ -1038,7 +1044,8 @@ export default {
     LightBox,
     Carousel,
     Slide,
-    MealComponentsModal
+    MealComponentsModal,
+    MealPackageComponentsModal
   },
   mixins: [MenuBag],
   props: {

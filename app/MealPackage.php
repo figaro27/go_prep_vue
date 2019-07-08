@@ -283,7 +283,8 @@ class MealPackage extends Model implements HasMedia
                     foreach ($optionArr['meals'] as $meal) {
                         $meals[$meal['id']] = [
                             'quantity' => $meal['quantity'],
-                            'meal_size_id' => $meal['meal_size_id'] ?? null
+                            'meal_size_id' => $meal['meal_size_id'] ?? null,
+                            'price' => $meal['price'] ?? 0
                         ];
                     }
                     $option->meals()->sync($meals);

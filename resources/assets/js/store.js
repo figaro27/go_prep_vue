@@ -1481,10 +1481,21 @@ const getters = {
           let component = _.find(item.meal.components, {
             id: parseInt(componentId)
           });
-          _.forEach(choices, optionId => {
-            let option = _.find(component.options, { id: parseInt(optionId) });
-            price += option.price;
-          });
+          if (!item.meal_package) {
+            _.forEach(choices, optionId => {
+              let option = _.find(component.options, {
+                id: parseInt(optionId)
+              });
+              price += option.price;
+            });
+          } else {
+            _.forEach(choices, (meals, optionId) => {
+              let option = _.find(component.options, {
+                id: parseInt(optionId)
+              });
+              price += option.price;
+            });
+          }
         });
       }
       if (item.addons) {

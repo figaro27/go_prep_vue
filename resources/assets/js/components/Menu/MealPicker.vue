@@ -58,7 +58,7 @@
           v-model="props.row.added_price"
           class="form-control"
           v-bind="{ prefix: storeCurrencySymbol }"
-          @blur.native="val => setMealAddedPrice(props.row.id, val)"
+          @blur.native="e => setMealAddedPrice(props.row.id, e.target.value)"
         ></money>
       </div>
 
@@ -267,6 +267,14 @@ export default {
         return null;
       } else {
         return this.selected[index].meal_size_id;
+      }
+    },
+    setMealAddedPrice(id, price) {
+      const index = this.findMealIndex(id);
+      if (index !== -1) {
+        let meal = { ...this.selected[index] };
+        meal.price = price.replace(/[^\d.-]/g, "");
+        this.$set(this.selected, index, meal);
       }
     }
   }

@@ -27,7 +27,8 @@ class MealPackageComponentOption extends Model
             return [
                 'meal_id' => $meal->id,
                 'quantity' => $meal->quantity,
-                'meal_size_id' => $meal->pivot->meal_size_id
+                'meal_size_id' => $meal->pivot->meal_size_id,
+                'meal_size_id' => $meal->pivot->price
             ];
         });
 
@@ -61,7 +62,7 @@ class MealPackageComponentOption extends Model
             'meal_meal_package_component_option'
         )
             ->using('App\MealMealPackageSize')
-            ->withPivot(['quantity', 'meal_size_id']);
+            ->withPivot(['quantity', 'meal_size_id', 'price']);
     }
 
     public function syncMeals($meals)
