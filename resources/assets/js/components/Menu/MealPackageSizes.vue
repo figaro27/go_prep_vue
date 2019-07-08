@@ -6,7 +6,7 @@
         ref="mealPicker"
         :meal_sizes="true"
         v-model="meal_picker_meals"
-        @save="meals => onChangeSizeMeals(meals)"
+        @save="val => onChangeSizeMeals(val.meals)"
       ></meal-picker>
     </div>
 

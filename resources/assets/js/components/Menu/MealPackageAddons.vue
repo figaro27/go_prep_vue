@@ -4,8 +4,10 @@
       <meal-picker
         ref="mealPicker"
         :meal_sizes="true"
+        :selectable_toggle="true"
+        :selectable="meal_picker_selectable"
         v-model="meal_picker_meals"
-        @save="meals => onChangeMeals(meals)"
+        @save="val => onChangeMeals(val.meals, val.selectable)"
       ></meal-picker>
     </div>
 
@@ -122,7 +124,8 @@ export default {
   data() {
     return {
       meal_picker_addon_id: null,
-      meal_picker_meals: []
+      meal_picker_meals: [],
+      meal_picker_selectable: false
     };
   },
   computed: {
@@ -202,10 +205,14 @@ export default {
           })
         : [];
     },
-    onChangeMeals(meals) {
+    onChangeMeals(meals, selectable = false) {
       this.meal_package.addons[this.meal_picker_addon_id].meals = meals;
+      this.meal_package.addons[
+        this.meal_picker_addon_id
+      ].selectable = selectable;
 
       this.meal_picker_meals = [];
+      this.meal_picker_selectable = false;
       this.meal_picker_addon_id = null;
     },
     save() {

@@ -16,7 +16,7 @@
                 <b-form-input
                   id="meal-title"
                   type="text"
-                  v-model="package.title"
+                  v-model="mealPackage.title"
                   placeholder="Meal Name"
                   required
                 ></b-form-input>
@@ -24,7 +24,7 @@
               <h4>Package Description</h4>
               <b-form-group label-for="meal-description" :state="true">
                 <textarea
-                  v-model.lazy="package.description"
+                  v-model.lazy="mealPackage.description"
                   id="meal-description"
                   class="form-control"
                   :rows="4"
@@ -34,7 +34,7 @@
                 <h4>Price</h4>
                 <money
                   required
-                  v-model="package.price"
+                  v-model="mealPackage.price"
                   :min="0.1"
                   class="form-control"
                   v-bind="{ prefix: storeCurrencySymbol }"
@@ -90,36 +90,25 @@
               <b-tabs pills>
                 <b-tab title="Sizes">
                   <meal-package-sizes
-                    :package="package"
-                    @change="val => (package.sizes = val)"
-                    @changeDefault="val => (package.default_size_title = val)"
-                    @save="
-                      val =>
-                        updateMealPackage(package.id, {
-                          sizes: val,
-                          default_size_title: package.default_size_title
-                        })
+                    :mealPackage="mealPackage"
+                    @change="val => (mealPackage.sizes = val)"
+                    @changeDefault="
+                      val => (mealPackage.default_size_title = val)
                     "
                   ></meal-package-sizes>
                 </b-tab>
 
                 <b-tab title="Components">
                   <meal-package-components
-                    :package="package"
-                    @change="val => (package.components = val)"
-                    @save="
-                      val => updateMealPackage(package.id, { components: val })
-                    "
+                    :meal_package="mealPackage"
+                    @change="val => (mealPackage.components = val)"
                   ></meal-package-components>
                 </b-tab>
 
                 <b-tab title="Addons">
                   <meal-package-addons
-                    :package="package"
-                    @change="val => (package.addons = val)"
-                    @save="
-                      val => updateMealPackage(package.id, { addons: val })
-                    "
+                    :meal_package="mealPackage"
+                    @change="val => (mealPackage.addons = val)"
                   ></meal-package-addons>
                 </b-tab>
               </b-tabs>
@@ -178,9 +167,12 @@ export default {
   },
   data() {
     return {
-      package: {
+      mealPackage: {
         active: true,
-        meals: []
+        meals: [],
+        addons: [],
+        components: [],
+        sizes: []
       },
       columns: ["included", "featured_image", "title", "quantity"],
       options: {
@@ -219,7 +211,7 @@ export default {
     },
     mealPriceTotal() {
       let total = 0;
-      this.package.meals.forEach(meal => {
+      this.mealPackage.meals.forEach(meal => {
         const _meal = this.findMeal(meal.id);
         if (_meal) {
           total += _meal.price * meal.quantity;
@@ -243,7 +235,7 @@ export default {
       return this.store.settings;
     },
     findMealIndex(id) {
-      return _.findIndex(this.package.meals, { id });
+      return _.findIndex(this.mealPackage.meals, { id });
     },
     hasMeal(id) {
       return this.findMealIndex(id) !== -1;
@@ -256,21 +248,21 @@ export default {
       }
     },
     removeMeal(id) {
-      this.package.meals = _.filter(this.package.meals, meal => {
+      this.mealPackage.meals = _.filter(this.mealPackage.meals, meal => {
         return meal.id !== id;
       });
     },
     addMeal(id, quantity = 1) {
       const index = this.findMealIndex(id);
       if (index === -1) {
-        this.package.meals.push({
+        this.mealPackage.meals.push({
           id,
           quantity
         });
       } else {
-        let meal = this.package.meals[index];
+        let meal = this.mealPackage.meals[index];
         meal.quantity += 1;
-        this.$set(this.package.meals, index, meal);
+        this.$set(this.mealPackage.meals, index, meal);
       }
     },
     setMealQuantity(id, quantity) {
@@ -280,14 +272,14 @@ export default {
         return this.removeMeal(id);
       }
       if (index === -1) {
-        this.package.meals.push({
+        this.mealPackage.meals.push({
           id,
           quantity
         });
       } else {
-        let meal = { ...this.package.meals[index] };
+        let meal = { ...this.mealPackage.meals[index] };
         meal.quantity = quantity;
-        this.$set(this.package.meals, index, meal);
+        this.$set(this.mealPackage.meals, index, meal);
       }
     },
     getMealQuantity(id) {
@@ -295,7 +287,7 @@ export default {
       if (index === -1) {
         return 0;
       } else {
-        return this.package.meals[index].quantity;
+        return this.mealPackage.meals[index].quantity;
       }
     },
     async storePackage(e) {
@@ -304,7 +296,7 @@ export default {
       }
 
       try {
-        const { data } = await axios.post("/api/me/packages", this.package);
+        const { data } = await axios.post("/api/me/packages", this.mealPackage);
       } catch (response) {
         e.preventDefault();
         let error = _.first(Object.values(response.response.data.errors));
@@ -320,7 +312,7 @@ export default {
     },
     async changeImage(val) {
       let b64 = await fs.getBase64(this.$refs.featuredImageInput.file);
-      this.package.featured_image = b64;
+      this.mealPackage.featured_image = b64;
     },
     toggleModal() {
       this.$parent.createPackageModal = false;

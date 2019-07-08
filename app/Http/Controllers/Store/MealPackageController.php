@@ -144,6 +144,7 @@ class MealPackageController extends StoreController
                                                         $meal['quantity'],
                                                     'meal_size_id' =>
                                                         $meal['meal_size_id']
+                                                    //'price' => $meal['price']
                                                 ];
                                             });
                                         }
@@ -162,7 +163,14 @@ class MealPackageController extends StoreController
             if ($key === 'addons') {
                 return collect($val)->map(function ($addon) {
                     return collect($addon)
-                        ->only(['id', 'title', 'meals', 'meal_package_size_id'])
+                        ->only([
+                            'id',
+                            'title',
+                            'meals',
+                            'meal_package_size_id',
+                            'selectable',
+                            'price'
+                        ])
                         ->map(function ($val, $key) {
                             if ($key === 'meals') {
                                 return collect($val)->map(function ($meal) {
