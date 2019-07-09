@@ -345,7 +345,7 @@
                     v-b-popover.hover="
                       'Either choose to apply a flat fee no matter how far the customer is, or a fee based on the distance of the customer in miles.'
                     "
-                    title="Delivery Fee"
+                    title="Delivery Fee Type"
                     src="/images/store/popover.png"
                     class="popover-size"
                   />
@@ -416,14 +416,37 @@
                 size="lg"
                 v-model="storeSettings.applyProcessingFee"
               />
+            </b-form-group>
+
+            <div v-if="storeSettings.applyProcessingFee">
+              <p>
+                <span class="mr-1">Processing Fee Type</span>
+                <img
+                  v-b-popover.hover="
+                    'Either choose to apply a flat processing fee or a percentage amount based off of the subtotal.'
+                  "
+                  title="Processing Fee Type"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+              <b-form-radio-group
+                v-model="storeSettings.processingFeeType"
+                class="mt-2 mb-2"
+              >
+                <b-form-radio name="flat" value="flat">Flat</b-form-radio>
+                <b-form-radio name="percent" value="percent"
+                  >Percent</b-form-radio
+                >
+              </b-form-radio-group>
               <b-form-input
-                v-if="storeSettings.applyProcessingFee"
+                class="mb-4"
                 type="text"
                 v-model="storeSettings.processingFee"
                 placeholder="Processing Fee"
                 required
               ></b-form-input>
-            </b-form-group>
+            </div>
 
             <b-form-group label="I Will Be:">
               <b-form-checkbox-group

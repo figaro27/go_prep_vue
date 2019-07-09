@@ -78,7 +78,6 @@
               <b-form-input
                 v-model="form.delivery"
                 type="text"
-                required
                 placeholder="Delivery Instructions"
               ></b-form-input>
             </b-form-group>
