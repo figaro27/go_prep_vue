@@ -34,6 +34,9 @@ const state = {
       minimumMeals: 0,
       minimumPrice: 0
     },
+    modules: {
+      data: {}
+    },
     coupons: [],
     pickupLocations: []
   },

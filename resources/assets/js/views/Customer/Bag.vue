@@ -465,6 +465,21 @@
                       required
                     ></b-select>
                   </div>
+
+                  <div class="pt-2 pb-2">
+                    <strong>Pickup / Delivery Time</strong>
+                    <b-form-select
+                      v-model="transferTimeHour"
+                      :options="transferTimeHoursOptions"
+                    ></b-form-select>
+                    <b-form-select
+                      v-model="transferTimePeriod"
+                      :options="[
+                        { value: 'AM', text: 'AM' },
+                        { value: 'PM', text: 'PM' }
+                      ]"
+                    ></b-form-select>
+                  </div>
                 </div>
               </li>
 
@@ -625,11 +640,6 @@
               </li>
             </ul>
 
-            <vue-timepicker
-              v-model="transferTime"
-              format="hh:mm A"
-            ></vue-timepicker>
-
             <li
               class="transfer-instruction mt-2"
               v-if="
@@ -786,15 +796,12 @@ import MenuBag from "../../mixins/menuBag";
 import CardPicker from "../../components/Billing/CardPicker";
 import states from "../../data/states.js";
 
-import VueTimepicker from "vue2-timepicker";
-
 export default {
   components: {
     cSwitch,
     CardPicker,
     SalesTax,
-    Register,
-    VueTimepicker
+    Register
   },
   props: {
     manualOrder: {
@@ -805,11 +812,8 @@ export default {
   data() {
     return {
       //couponFreeDelivery: 0,
-      transferTime: {
-        HH: "00",
-        mm: "00",
-        ss: "00"
-      },
+      transferTimeHour: 1,
+      transferTimePeriod: "AM",
       cashOrder: false,
       form: {},
       addCustomerModal: false,
@@ -932,6 +936,9 @@ export default {
     },
     storeSettings() {
       return this.store.settings;
+    },
+    transferTimeHoursOptions() {
+      return [1, 2, 3];
     },
     transferType() {
       return this.storeSettings.transferType.split(",");
