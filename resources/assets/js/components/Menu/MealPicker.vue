@@ -24,15 +24,23 @@
             Selectable <hint title="Selectable">Hint content</hint>
           </b-form-radio>
         </b-form-group>
+
+        <b-button
+          variant="primary"
+          :disabled="!canSave"
+          @click.prevent="save"
+          class="pull-right"
+          >Save Meals</b-button
+        >
       </div>
 
-      <span slot="beforeLimit" class="d-flex">
+      <span slot="beforeLimit" class="d-flex align-items-center">
         <div class="mr-2">
           <b-form-radio-group
             v-model="filter_deselected"
             :options="[
               { text: 'Show all', value: false },
-              { text: 'Show selected', value: true }
+              { text: 'Show included', value: true }
             ]"
             buttons
             button-variant="outline-primary"
@@ -91,7 +99,7 @@
 
       <div slot="afterTable">
         <b-button variant="primary" :disabled="!canSave" @click.prevent="save"
-          >Save</b-button
+          >Save Meals</b-button
         >
       </div>
     </v-client-table>
@@ -130,6 +138,7 @@ export default {
       _selectable: false,
       filter_deselected: false,
       options: {
+        perPage: 100,
         headings: {
           included: "Included",
           featured_image: "Image",
