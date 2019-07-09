@@ -12,7 +12,14 @@ class MealPackage extends Model implements HasMedia
 {
     use HasMediaTrait;
 
-    public $fillable = ['title', 'description', 'store_id', 'price', 'active'];
+    public $fillable = [
+        'title',
+        'description',
+        'store_id',
+        'price',
+        'active',
+        'default_size_title'
+    ];
     public $appends = ['image'];
     public $hidden = ['store'];
 
