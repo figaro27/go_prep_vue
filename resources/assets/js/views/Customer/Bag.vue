@@ -625,6 +625,11 @@
               </li>
             </ul>
 
+            <vue-timepicker
+              v-model="transferTime"
+              format="hh:mm A"
+            ></vue-timepicker>
+
             <li
               class="transfer-instruction mt-2"
               v-if="
@@ -781,12 +786,15 @@ import MenuBag from "../../mixins/menuBag";
 import CardPicker from "../../components/Billing/CardPicker";
 import states from "../../data/states.js";
 
+import VueTimepicker from "vue2-timepicker";
+
 export default {
   components: {
     cSwitch,
     CardPicker,
     SalesTax,
-    Register
+    Register,
+    VueTimepicker
   },
   props: {
     manualOrder: {
@@ -797,6 +805,11 @@ export default {
   data() {
     return {
       //couponFreeDelivery: 0,
+      transferTime: {
+        HH: "00",
+        mm: "00",
+        ss: "00"
+      },
       cashOrder: false,
       form: {},
       addCustomerModal: false,
