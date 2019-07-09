@@ -111,6 +111,9 @@ Vue.component("floating-action-button", FloatingActionButton);
 import MealPicker from "./components/Menu/MealPicker";
 Vue.component("meal-picker", MealPicker);
 
+import Hint from "./components/Hint";
+Vue.component("hint", Hint);
+
 /*
 moment.defaultFormat = 'ddd, MMMM Do';
 moment.defaultFormatUtc = 'ddd, MMMM Do';

@@ -8,14 +8,30 @@
     >
       <div slot="beforeTable" class="mb-2">
         <b-form-group label="Selection type" v-if="selectable_toggle">
-          <b-form-radio-group
+          <b-form-radio
+            v-model="_selectable"
+            :value="false"
+            name="radio-options"
+          >
+            Preset <hint title="Preset">Hint content</hint>
+          </b-form-radio>
+
+          <b-form-radio
+            v-model="_selectable"
+            :value="true"
+            name="radio-options"
+          >
+            Selectable <hint title="Selectable">Hint content</hint>
+          </b-form-radio>
+
+          <!--<b-form-radio-group
             v-model="_selectable"
             :options="[
               { text: 'Preset', value: false },
               { text: 'Selectable', value: true }
             ]"
             name="radio-options"
-          ></b-form-radio-group>
+          ></b-form-radio-group>-->
         </b-form-group>
       </div>
 
