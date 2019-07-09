@@ -169,7 +169,8 @@ export default {
       meals: "storeMeals",
       findMeal: "storeMeal",
       isLoading: "isLoading",
-      storeCurrencySymbol: "storeCurrencySymbol"
+      storeCurrencySymbol: "storeCurrencySymbol",
+      storeSettings: "storeSettings"
     }),
     tableData() {
       return this.meals.map(meal => {
