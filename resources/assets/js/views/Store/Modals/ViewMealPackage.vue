@@ -261,8 +261,16 @@ export default {
       }
     },
     async updatePackage(e) {
+      const req = {
+        ...this.package,
+        validate_all: true
+      };
+
       try {
-        const { data } = await axios.post("/api/me/packages", this.package);
+        const { data } = await axios.patch(
+          `/api/me/packages/${this.package.id}`,
+          req
+        );
       } catch (response) {
         e.preventDefault();
         let error = _.first(Object.values(response.response.data.errors));
@@ -271,8 +279,8 @@ export default {
         return;
       }
 
-      this.$toastr.s("Package created!");
-      this.$emit("created");
+      this.$toastr.s("Package updated!");
+      this.$emit("updated");
       this.$refs.modal.hide();
       this.$parent.modal = false;
     },

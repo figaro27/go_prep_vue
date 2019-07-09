@@ -138,6 +138,20 @@ class MealPackage extends Model implements HasMedia
             );
         }
 
+        // Associate meals
+        $meals = [];
+        $rawMeals = $props->get('meals');
+
+        if (is_array($rawMeals)) {
+            foreach ($rawMeals as $rawMeal) {
+                $meals[$rawMeal['id']] = [
+                    'quantity' => $rawMeal['quantity']
+                ];
+            }
+
+            $this->meals()->sync($meals);
+        }
+
         $this->update($props->except('featured_image')->toArray());
 
         return $this;
