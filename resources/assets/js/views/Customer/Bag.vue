@@ -352,10 +352,7 @@
                   </div>
                   <div class="col-6 col-md-3 offset-md-5">
                     {{
-                      format.money(
-                        storeSettings.processingFee,
-                        storeSettings.currency
-                      )
+                      format.money(processingFeeAmount, storeSettings.currency)
                     }}
                   </div>
                 </div>
@@ -977,11 +974,18 @@ export default {
         } else return 0;
       } else return 0;
     },
+    processingFeeAmount() {
+      if (this.storeSettings.processingFeeType === "flat") {
+        return this.storeSettings.processingFee;
+      } else if (this.storeSettings.processingFeeType === "percent") {
+        return (this.storeSettings.processingFee / 100) * this.subtotal;
+      }
+    },
     afterFees() {
       let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
       let applyProcessingFee = this.storeSettings.applyProcessingFee;
       let deliveryFee = this.deliveryFeeAmount;
-      let processingFee = this.storeSettings.processingFee;
+      let processingFee = this.processingFeeAmount;
       let subtotal = this.afterDiscount;
 
       if (applyDeliveryFee & (this.pickup === 0)) subtotal += deliveryFee;
