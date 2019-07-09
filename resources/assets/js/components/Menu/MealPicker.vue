@@ -23,19 +23,22 @@
           >
             Selectable <hint title="Selectable">Hint content</hint>
           </b-form-radio>
-
-          <!--<b-form-radio-group
-            v-model="_selectable"
-            :options="[
-              { text: 'Preset', value: false },
-              { text: 'Selectable', value: true }
-            ]"
-            name="radio-options"
-          ></b-form-radio-group>-->
         </b-form-group>
       </div>
 
-      <span slot="beforeLimit">
+      <span slot="beforeLimit" class="d-flex">
+        <div class="mr-2">
+          <b-form-radio-group
+            v-model="filter_deselected"
+            :options="[
+              { text: 'Show all', value: false },
+              { text: 'Show selected', value: true }
+            ]"
+            buttons
+            button-variant="outline-primary"
+          >
+          </b-form-radio-group>
+        </div>
         <div class="mr-2">
           Total meal price:
           {{ format.money(mealPriceTotal, storeSettings.currency) }}
@@ -125,6 +128,7 @@ export default {
     return {
       selected: [],
       _selectable: false,
+      filter_deselected: false,
       options: {
         headings: {
           included: "Included",
@@ -169,12 +173,18 @@ export default {
       return this.selected.length > 0;
     },
     tableData() {
-      return this.meals.map(meal => {
+      let meals = this.meals.map(meal => {
         meal.included = this.hasMeal(meal.id);
         meal.quantity = this.getMealQuantity(meal.id);
         meal.meal_size_id = this.getMealSizeId(meal.id);
         return meal;
       });
+
+      if (this.filter_deselected) {
+        meals = _.filter(meals, meal => meal.included);
+      }
+
+      return meals;
     },
     mealPriceTotal() {
       let total = 0;
