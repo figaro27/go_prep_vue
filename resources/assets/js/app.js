@@ -127,6 +127,7 @@ Vue.prototype.momentTimezone = momentTimezone;
 Vue.prototype.slugify = slugify;
 Vue.prototype._ = require("lodash");
 Vue.prototype.icons = require("./lib/icons");
+Vue.prototype.console = console;
 
 const files = require.context("./components", true, /\.vue$/i);
 files.keys().map(key => {

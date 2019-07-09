@@ -2,8 +2,9 @@
   <b-modal
     title="Choose Options"
     ref="modal"
-    size="sm"
+    size="lg"
     @ok.prevent="e => ok(e)"
+    class="meal-package-components-modal"
   >
     <div v-if="mealPackage">
       <b-row v-if="components.length" class="my-3">
@@ -16,7 +17,7 @@
             <h6>{{ getComponentLabel(component) }}</h6>
 
             <b-form-group :label="null">
-              meals rem: {{ getRemainingMeals(component.id) }}
+              Remaining: {{ getRemainingMeals(component.id) }}
 
               <div v-for="option in getOptions(component)" :key="option.id">
                 <b-checkbox @input="toggleOption(component.id, option.id)">{{
@@ -27,8 +28,10 @@
                   v-if="
                     option.selectable && optionSelected(component.id, option.id)
                   "
+                  class="my-2 px-2 py-2 px-lg-3 py-lg-3 bg-light"
                 >
                   <b-checkbox-group
+                    class="meal-checkboxes"
                     v-model="choices[component.id][option.id]"
                     :options="
                       getMealOptions(getOptionMeals(component.id, option.id))
@@ -36,6 +39,8 @@
                     :min="component.minimum"
                     :max="component.maximum"
                     stacked
+                    @input.native="e => console.log(e)"
+                    @change="e => console.log(e)"
                   ></b-checkbox-group>
                 </div>
               </div>
@@ -350,4 +355,18 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.meal-checkboxes {
+  columns: 1;
+
+  @media screen and (min-width: 768px) {
+    columns: 2;
+  }
+  @media screen and (min-width: 1200px) {
+    columns: 3;
+  }
+
+  .custom-checkbox {
+  }
+}
+</style>
