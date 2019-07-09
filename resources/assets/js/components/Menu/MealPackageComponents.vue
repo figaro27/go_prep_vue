@@ -1,6 +1,9 @@
 <template>
   <div>
     <div v-if="!_.isNull(meal_picker_component_id)">
+      <b-btn @click.prevent="meal_picker_component_id = null" class="mb-3"
+        >Back</b-btn
+      >
       <meal-picker
         ref="mealPicker"
         :meal_sizes="true"
