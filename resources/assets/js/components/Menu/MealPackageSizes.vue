@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="meal_picker_id">
-      <b-btn @click.prevent="meal_picker_id = null" class="mb-3">Back</b-btn>
+      <b-btn @click.prevent="hideMealPicker()" class="mb-3">Back</b-btn>
       <meal-picker
         ref="mealPicker"
         :meal_sizes="true"
@@ -193,11 +193,15 @@ export default {
         return size;
       });
 
-      this.meal_picker_id = null;
+      this.hideMealPicker();
     },
     save() {
       this.$emit("save", this.sizes);
       this.$toastr.s("Meal package variation saved.");
+    },
+    hideMealPicker() {
+      this.meal_picker_id = null;
+      this.meal_picker_meals = [];
     }
   }
 };

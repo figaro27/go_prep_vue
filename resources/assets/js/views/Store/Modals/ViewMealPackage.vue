@@ -88,8 +88,12 @@
             </b-tab>
             <b-tab title="Variations">
               <b-tabs pills>
-                <b-tab title="Sizes">
+                <b-tab
+                  title="Sizes"
+                  @click="$refs.meal_package_sizes.hideMealPicker()"
+                >
                   <meal-package-sizes
+                    ref="meal_package_sizes"
                     :mealPackage="mealPackage"
                     @change="val => (mealPackage.sizes = val)"
                     @changeDefault="
@@ -105,8 +109,12 @@
                   ></meal-package-sizes>
                 </b-tab>
 
-                <b-tab title="Components">
+                <b-tab
+                  title="Components"
+                  @click="$refs.meal_package_components.hideMealPicker()"
+                >
                   <meal-package-components
+                    ref="meal_package_components"
                     :meal_package="mealPackage"
                     @change="val => (mealPackage.components = val)"
                     @save="
@@ -118,8 +126,12 @@
                   ></meal-package-components>
                 </b-tab>
 
-                <b-tab title="Addons">
+                <b-tab
+                  title="Addons"
+                  @click="$refs.meal_package_addons.hideMealPicker()"
+                >
                   <meal-package-addons
+                    ref="meal_package_addons"
                     :meal_package="mealPackage"
                     @change="val => (mealPackage.addons = val)"
                     @save="
