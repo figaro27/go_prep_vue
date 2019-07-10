@@ -72,16 +72,32 @@ class Bag
             if (isset($item['meal_package']) && $item['meal_package']) {
                 // Repeat for item quantity
                 for ($i = 0; $i < $item['quantity']; $i++) {
-                    // Add regular pagacke means
+                    // Add regular package meals
                     foreach ($item['meal']['meals'] as $meal) {
-                        if (!isset($items[$itemId])) {
-                            $items[$itemId] = [
-                                'meal' => $meal,
-                                'quantity' => $meal['quantity'],
-                                'price' => $meals[$itemId]->price
-                            ];
+                        if (!$meals[$meal['id']]->active) {
+                            continue;
+                        }
+
+                        $mealItem = [
+                            'meal' => [
+                                'id' => $meal['id']
+                            ],
+                            'meal_package' => false,
+                            'quantity' => $meal['quantity'],
+                            'price' => $meal['price'],
+                            'size' => [
+                                'id' => $meal['meal_size_id']
+                            ],
+                            'quantity' => $meal['quantity']
+                        ];
+
+                        $mealItemId = $this->getItemId($mealItem);
+
+                        if (!isset($items[$mealItemId])) {
+                            $items[$mealItemId] = $mealItem;
                         } else {
-                            $items[$itemId]['quantity'] += $meal['quantity'];
+                            $items[$mealItemId]['quantity'] +=
+                                $mealItem['quantity'];
                         }
                     }
 

@@ -28,7 +28,7 @@ class MealPackageComponentOption extends Model
                 'meal_id' => $meal->id,
                 'quantity' => $meal->quantity,
                 'meal_size_id' => $meal->pivot->meal_size_id,
-                'meal_size_id' => $meal->pivot->price
+                'price' => $meal->pivot->price
             ];
         });
 
