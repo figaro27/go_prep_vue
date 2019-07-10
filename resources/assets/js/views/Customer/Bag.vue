@@ -849,6 +849,7 @@ export default {
       store: "viewedStore",
       storeSetting: "viewedStoreSetting",
       storeModules: "storeModules",
+      storeModuleSettings: "storeModuleSettings",
       storeCustomers: "storeCustomers",
       total: "bagQuantity",
       bag: "bagItems",

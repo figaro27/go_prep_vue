@@ -97,6 +97,10 @@ const state = {
       data: {},
       expires: 0
     },
+    moduleSettings: {
+      data: {},
+      expires: 0
+    },
     meals: {
       data: {},
       expires: 0
@@ -370,6 +374,17 @@ const mutations = {
     state.store.modules.expires = expires;
   },
 
+  storeModuleSettings(state, { moduleSettings, expires }) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, "seconds")
+        .unix();
+    }
+
+    state.store.moduleSettings.data = moduleSettings;
+    state.store.moduleSettings.expires = expires;
+  },
+
   storeCoupons(state, { coupons, expires }) {
     if (!expires) {
       expires = moment()
@@ -628,6 +643,16 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (
+        !_.isEmpty(data.store.moduleSettings) &&
+        _.isObject(data.store.moduleSettings)
+      ) {
+        let moduleSettings = data.store.moduleSettings;
+        commit("storeModuleSettings", { moduleSettings });
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.coupons) && _.isObject(data.store.coupons)) {
         let coupons = data.store.coupons;
         commit("storeCoupons", { coupons });
@@ -850,6 +875,17 @@ const actions = {
 
     if (_.isObject(data)) {
       commit("storeModules", { modules: data });
+    } else {
+      throw new Error("Failed to retrieve modules");
+    }
+  },
+
+  async refreshStoreModuleSettings({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/moduleSettings");
+    const { data } = await res;
+
+    if (_.isObject(data)) {
+      commit("storeModuleSettings", { modules: data });
     } else {
       throw new Error("Failed to retrieve modules");
     }
@@ -1521,6 +1557,13 @@ const getters = {
   storeModules: state => {
     try {
       return state.store.modules.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeModuleSettings: state => {
+    try {
+      return state.store.moduleSettings.data || {};
     } catch (e) {
       return {};
     }
