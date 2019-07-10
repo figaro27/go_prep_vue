@@ -100,7 +100,9 @@ class SpaController extends Controller
                         'categories',
                         'meals.categories',
                         'meals.allergies',
-                        'settings'
+                        'settings',
+                        'modules',
+                        'moduleSettings'
                     ])->find(STORE_ID)
                     : $user->last_viewed_store;
 
@@ -177,7 +179,9 @@ class SpaController extends Controller
                 'settings',
                 'details',
                 'coupons',
-                'pickupLocations'
+                'pickupLocations',
+                'modules',
+                'moduleSettings'
             ])->find(STORE_ID)
             : null;
 

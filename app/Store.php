@@ -103,6 +103,11 @@ class Store extends Model
         return $this->hasOne('App\StoreModule');
     }
 
+    public function moduleSettings()
+    {
+        return $this->hasMany('App\StoreModuleSettings');
+    }
+
     public function categories()
     {
         return $this->hasMany('App\Category')->orderBy('order');
