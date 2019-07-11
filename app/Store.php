@@ -105,7 +105,7 @@ class Store extends Model
 
     public function moduleSettings()
     {
-        return $this->hasMany('App\StoreModuleSettings');
+        return $this->hasOne('App\StoreModuleSettings');
     }
 
     public function categories()

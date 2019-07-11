@@ -466,18 +466,12 @@
                     ></b-select>
                   </div>
 
-                  <div class="pt-2 pb-2">
+                  <div class="pt-2 pb-2" v-if="storeModules.transferHours">
                     <strong>Pickup / Delivery Time</strong>
                     <b-form-select
+                      class="ml-2"
                       v-model="transferTimeHour"
                       :options="transferTimeHoursOptions"
-                    ></b-form-select>
-                    <b-form-select
-                      v-model="transferTimePeriod"
-                      :options="[
-                        { value: 'AM', text: 'AM' },
-                        { value: 'PM', text: 'PM' }
-                      ]"
                     ></b-form-select>
                   </div>
                 </div>
@@ -813,7 +807,6 @@ export default {
     return {
       //couponFreeDelivery: 0,
       transferTimeHour: 1,
-      transferTimePeriod: "AM",
       cashOrder: false,
       form: {},
       addCustomerModal: false,
@@ -939,7 +932,36 @@ export default {
       return this.store.settings;
     },
     transferTimeHoursOptions() {
-      return [1, 2, 3];
+      let startTime = parseInt(
+        this.storeModuleSettings.transferStartTime.substr(0, 2)
+      );
+      let endTime = parseInt(
+        this.storeModuleSettings.transferEndTime.substr(0, 2)
+      );
+      let hourOptions = [];
+
+      while (startTime <= endTime) {
+        hourOptions.push(startTime);
+        startTime++;
+      }
+
+      let newHourOptions = [];
+      hourOptions.forEach(option => {
+        if (option < 12) {
+          option = option.toString();
+          let newOption = option.concat(" ", "AM");
+          newHourOptions.push(newOption);
+        } else {
+          if (option > 12) {
+            option = option - 12;
+          }
+          option = option.toString();
+          let newOption = option.concat(" ", "PM");
+          newHourOptions.push(newOption);
+        }
+      });
+
+      return newHourOptions;
     },
     transferType() {
       return this.storeSettings.transferType.split(",");
