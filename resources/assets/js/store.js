@@ -97,7 +97,7 @@ const state = {
       data: {},
       expires: 0
     },
-    moduleSettings: {
+    module_settings: {
       data: {},
       expires: 0
     },
@@ -381,8 +381,8 @@ const mutations = {
         .unix();
     }
 
-    state.store.moduleSettings.data = moduleSettings;
-    state.store.moduleSettings.expires = expires;
+    state.store.module_settings.data = moduleSettings;
+    state.store.module_settings.expires = expires;
   },
 
   storeCoupons(state, { coupons, expires }) {
@@ -644,10 +644,10 @@ const actions = {
 
     try {
       if (
-        !_.isEmpty(data.store.moduleSettings) &&
-        _.isObject(data.store.moduleSettings)
+        !_.isEmpty(data.store.module_settings) &&
+        _.isObject(data.store.module_settings)
       ) {
-        let moduleSettings = data.store.moduleSettings;
+        let moduleSettings = data.store.module_settings;
         commit("storeModuleSettings", { moduleSettings });
       }
     } catch (e) {}
@@ -1365,6 +1365,20 @@ const getters = {
       return null;
     }
   },
+  viewedStoreModules: state => {
+    try {
+      return state.viewed_store.modules || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  viewedStoreModuleSettings: state => {
+    try {
+      return state.viewed_store.module_settings || {};
+    } catch (e) {
+      return {};
+    }
+  },
   isLoading(state) {
     return state.isLoading || !_.isEmpty(state.jobs);
   },
@@ -1563,7 +1577,7 @@ const getters = {
   },
   storeModuleSettings: state => {
     try {
-      return state.store.moduleSettings.data || {};
+      return state.store.module_settings.data || {};
     } catch (e) {
       return {};
     }
