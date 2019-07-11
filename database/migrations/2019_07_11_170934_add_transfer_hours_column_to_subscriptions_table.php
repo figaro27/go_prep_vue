@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddTransferTimeColumnToOrdersTable extends Migration
+class AddTransferHoursColumnToSubscriptionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class AddTransferTimeColumnToOrdersTable extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
+        Schema::table('subscriptions', function (Blueprint $table) {
             $table->string('transferTime')->nullable();
         });
     }
@@ -25,7 +25,7 @@ class AddTransferTimeColumnToOrdersTable extends Migration
      */
     public function down()
     {
-        Schema::table('orders', function (Blueprint $table) {
+        Schema::table('subscriptions', function (Blueprint $table) {
             $table->dropColumn('transferTime');
         });
     }

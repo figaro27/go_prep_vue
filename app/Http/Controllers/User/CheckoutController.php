@@ -38,6 +38,7 @@ class CheckoutController extends UserController
         $couponCode = $request->get('couponCode');
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
+        $transferTime = $request->get('transferTime');
         //$stripeToken = $request->get('token');
 
         $cardId = $request->get('card_id');
@@ -138,6 +139,7 @@ class CheckoutController extends UserController
             $order->couponReduction = $couponReduction;
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
+            $order->transferTime = $transferTime;
             $order->save();
 
             $items = $bag->getItems();
@@ -288,6 +290,7 @@ class CheckoutController extends UserController
             // In this case the 'next renewal time' is actually the first charge time
             $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
             $userSubscription->pickup_location_id = $pickupLocation;
+            $userSubscription->transferTime = $transferTime;
             $userSubscription->save();
 
             // Create initial order
@@ -314,6 +317,7 @@ class CheckoutController extends UserController
             $order->couponReduction = $couponReduction;
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
+            $order->transferTime = $transferTime;
             $order->save();
 
             foreach ($bag->getItems() as $item) {

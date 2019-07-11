@@ -470,8 +470,8 @@
                     <strong>Pickup / Delivery Time</strong>
                     <b-form-select
                       class="ml-2"
-                      v-model="transferTimeHour"
-                      :options="transferTimeHoursOptions"
+                      v-model="transferTime"
+                      :options="transferTimeOptions"
                     ></b-form-select>
                   </div>
                 </div>
@@ -806,7 +806,7 @@ export default {
   data() {
     return {
       //couponFreeDelivery: 0,
-      transferTimeHour: 1,
+      transferTime: "",
       cashOrder: false,
       form: {},
       addCustomerModal: false,
@@ -931,7 +931,7 @@ export default {
     storeSettings() {
       return this.store.settings;
     },
-    transferTimeHoursOptions() {
+    transferTimeOptions() {
       let startTime = parseInt(
         this.storeModuleSettings.transferStartTime.substr(0, 2)
       );
@@ -1191,7 +1191,8 @@ export default {
           pickupLocation: this.selectedPickupLocation,
           customer: this.customer,
           deposit: deposit,
-          cashOrder: this.cashOrder
+          cashOrder: this.cashOrder,
+          transferTime: this.transferTime
         })
         .then(async resp => {
           this.emptyBag();
