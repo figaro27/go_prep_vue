@@ -8,21 +8,15 @@
     >
       <div slot="beforeTable" class="mb-2">
         <b-form-group label="Selection type" v-if="selectable_toggle">
-          <b-form-radio
-            v-model="_selectable"
-            :value="false"
-            name="radio-options"
-          >
-            Preset <hint title="Preset">Hint content</hint>
-          </b-form-radio>
+          <b-form-radio-group v-model="meals_selectable">
+            <b-form-radio :value="false" name="radio-options">
+              Preset <hint title="Preset">Hint content</hint>
+            </b-form-radio>
 
-          <b-form-radio
-            v-model="_selectable"
-            :value="true"
-            name="radio-options"
-          >
-            Selectable <hint title="Selectable">Hint content</hint>
-          </b-form-radio>
+            <b-form-radio :value="true" name="radio-options">
+              Selectable <hint title="Selectable">Hint content</hint>
+            </b-form-radio>
+          </b-form-radio-group>
         </b-form-group>
 
         <b-button
@@ -135,7 +129,7 @@ export default {
   data() {
     return {
       selected: [],
-      _selectable: false,
+      meals_selectable: false,
       filter_deselected: false,
       options: {
         perPage: 100,
@@ -173,7 +167,7 @@ export default {
         cols.push("meal_size_id");
       }
       cols.push("quantity");
-      if (this.selectable_toggle && this.selectable) {
+      if (this.selectable_toggle && this.meals_selectable) {
         cols.push("added_price");
       }
       return cols;
@@ -213,13 +207,13 @@ export default {
   },
   created() {
     this.selected = _.isArray(this.value) ? this.value : [];
-    this._selectable = !!this.selectable;
+    this.meals_selectable = this.selectable == true;
   },
   methods: {
     save() {
       this.$emit("save", {
         meals: this.selected,
-        selectable: this._selectable
+        selectable: this.meals_selectable
       });
     },
     findMealIndex(id) {

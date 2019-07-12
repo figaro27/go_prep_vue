@@ -273,7 +273,7 @@ export default {
       this.meal_picker_component_id = componentIndex;
       this.meal_picker_option_id = optionIndex;
 
-      this.meal_picker_selectable = option.selectable;
+      this.meal_picker_selectable = !!option.selectable;
       this.meal_picker_meals = option
         ? _.map(option.meals, meal => {
             return {
@@ -306,6 +306,10 @@ export default {
       this.meal_picker_option_id = null;
     },
     canRestrictMeals(component, option) {
+      if (!option.selectable) {
+        return false;
+      }
+
       if (option.restrict_meals_option_id) {
         return true;
       }

@@ -40,7 +40,10 @@
                     :max="component.maximum"
                     stacked
                     @input.native="e => console.log(e)"
-                    @change="e => console.log(e)"
+                    @change="
+                      choices =>
+                        onChangeOptionChoices(component, option, choices)
+                    "
                   ></b-checkbox-group>
                 </div>
               </div>
@@ -213,9 +216,56 @@ export default {
         ? !!this.choices[componentId][optionId]
         : false;
     },
+    optionMealSelected(componentId, optionId, mealId) {
+      return this.optionSelected(componentId, optionId)
+        ? _.find(this.choices[componentId][optionId], { meal_id: mealId }) !==
+            undefined
+        : false;
+    },
+    onChangeOptionChoices(component, option, choices) {
+      _.forEach(component.options, opt => {
+        if (opt.id === option.id) {
+          return;
+        }
+
+        if (
+          opt.restrict_meals_option_id === option.id &&
+          this.optionSelected(component.id, opt.id)
+        ) {
+          // Check this option doesn't contain any restricted meals
+          let optChoices = _.filter(opt.meals, meal => {
+            return this.optionMealSelected(component.id, option.id, meal.id);
+          });
+
+          this.$set(this.choices[component.id], opt.id, optChoices);
+        }
+      });
+    },
     getOptionMeals(componentId, optionId) {
       const option = this.getComponentOption(componentId, optionId);
-      return option ? option.meals : [];
+
+      if (!option) {
+        return [];
+      }
+
+      if (option.restrict_meals_option_id) {
+        const restrictOption = this.getComponentOption(
+          componentId,
+          option.restrict_meals_option_id
+        );
+
+        let m = _.filter(option.meals, meal => {
+          return this.optionMealSelected(
+            componentId,
+            option.restrict_meals_option_id,
+            meal.meal_id
+          );
+        });
+
+        return m;
+      }
+
+      return option.meals;
     },
     show(meal, size = null) {
       this.mealPackage = meal;
