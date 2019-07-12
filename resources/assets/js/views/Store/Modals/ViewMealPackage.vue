@@ -40,6 +40,23 @@
                   v-bind="{ prefix: storeCurrencySymbol }"
                 ></money>
               </b-form-group>
+
+              <p>
+                <span class="mr-1">Display Included Meals in Packages</span>
+                <hint title="Display Included Meals in Packages">
+                  Creates a slider in the meal package popup which allows users
+                  to view the meals which are included in that package.
+                </hint>
+              </p>
+
+              <b-form-group :state="true">
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="mealPackage.meal_carousel"
+                />
+              </b-form-group>
             </b-tab>
             <b-tab title="Meals">
               <h4>Meals</h4>

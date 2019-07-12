@@ -18,7 +18,8 @@ class MealPackage extends Model implements HasMedia
         'store_id',
         'price',
         'active',
-        'default_size_title'
+        'default_size_title',
+        'meal_carousel'
     ];
     public $appends = ['image'];
     public $hidden = ['store'];
@@ -27,7 +28,8 @@ class MealPackage extends Model implements HasMedia
         'price' => 'double',
         'active_orders_price' => 'decimal:2',
         'created_at' => 'date:F d, Y',
-        'created_at_local' => 'date:F d, Y'
+        'created_at_local' => 'date:F d, Y',
+        'meal_carousel' => 'boolean'
     ];
 
     public function meals()
@@ -329,7 +331,8 @@ class MealPackage extends Model implements HasMedia
             'sizes',
             'default_size_title',
             'components',
-            'addons'
+            'addons',
+            'meal_carousel'
         ]);
 
         if ($props->has('featured_image')) {

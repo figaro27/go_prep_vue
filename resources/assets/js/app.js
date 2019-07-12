@@ -114,6 +114,9 @@ Vue.component("meal-picker", MealPicker);
 import Hint from "./components/Hint";
 Vue.component("hint", Hint);
 
+import { Switch } from "@coreui/vue";
+Vue.component("c-switch", Switch);
+
 /*
 moment.defaultFormat = 'ddd, MMMM Do';
 moment.defaultFormatUtc = 'ddd, MMMM Do';

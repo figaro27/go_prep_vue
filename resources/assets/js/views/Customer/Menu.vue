@@ -429,6 +429,7 @@
                   <!-- Text slides with image -->
                   <slide
                     v-for="meal in mealPackage.meals"
+                    v-if="mealPackage.meal_carousel"
                     :key="meal.id"
                     :caption="meal.title"
                   >
