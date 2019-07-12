@@ -197,10 +197,15 @@ export default {
     },
     mealPriceTotal() {
       let total = 0;
-      this.selected.forEach(meal => {
-        const _meal = this.findMeal(meal.id);
-        if (_meal) {
-          total += _meal.price * meal.quantity;
+      this.selected.forEach(_meal => {
+        const meal = this.findMeal(_meal.id);
+
+        if (this.selectable_toggle && this.selectable) {
+          total += _meal.price ? parseFloat(_meal.price) : 0;
+        } else {
+          if (_meal) {
+            total += meal.price * _meal.quantity;
+          }
         }
       });
       return total;
@@ -308,7 +313,7 @@ export default {
       const index = this.findMealIndex(id);
       if (index !== -1) {
         let meal = { ...this.selected[index] };
-        meal.price = price.replace(/[^\d.-]/g, "");
+        meal.price = parseFloat(price.replace(/[^\d.-]/g, ""));
         this.$set(this.selected, index, meal);
       }
     }

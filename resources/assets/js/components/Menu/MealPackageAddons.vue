@@ -195,6 +195,7 @@ export default {
       }
 
       this.meal_picker_addon_id = addonIndex;
+      this.meal_picker_selectable = addon.selectable;
 
       this.meal_picker_meals = addon
         ? _.map(addon.meals, meal => {
