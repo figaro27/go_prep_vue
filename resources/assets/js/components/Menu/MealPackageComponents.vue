@@ -67,6 +67,7 @@
             <th>Title</th>
             <th>Price</th>
             <th>Meal Package Size</th>
+            <th>Restrict Meals To</th>
             <th>Meals</th>
             <th></th>
           </thead>
@@ -94,6 +95,13 @@
                 ></b-select>
               </td>
               <td>
+                <b-select
+                  v-model="option.restrict_meals_option_id"
+                  :options="restrictMealsOptions(component, option.id)"
+                  v-if="canRestrictMeals(component, option)"
+                ></b-select>
+              </td>
+              <td>
                 <b-btn variant="primary" @click="changeOptionMeals(i, x)"
                   >Adjust</b-btn
                 >
@@ -113,11 +121,12 @@
                   variant="secondary"
                   @click="
                     component.options.push({
-                      //id: 100 + component.options.length,
+                      id: 1000000 + component.options.length,
                       title: '',
                       price: null,
                       meals: [],
-                      meal_package_size_id: null
+                      meal_package_size_id: null,
+                      restrict_meals_option_id: null
                     })
                   "
                   >Add Option</b-btn
@@ -295,6 +304,49 @@ export default {
       this.meal_picker_selectable = false;
       this.meal_picker_component_id = null;
       this.meal_picker_option_id = null;
+    },
+    canRestrictMeals(component, option) {
+      if (option.restrict_meals_option_id) {
+        return true;
+      }
+
+      // cannot if
+      // - the LAST unrestricted
+
+      let siblingOptions = _(component.options)
+        .filter(opt => {
+          return opt.meal_package_size_id === option.meal_package_size_id;
+        })
+        .value();
+
+      let unrestricted = _(siblingOptions)
+        .filter(opt => {
+          return opt.restrict_meals_option_id === null;
+        })
+        .value();
+
+      return unrestricted.length !== 1;
+    },
+    restrictMealsOptions(component, optionId) {
+      let options = _(component.options)
+        .filter(opt => {
+          return opt.id !== optionId && !opt.restrict_meals_option_id;
+        })
+        .map(opt => {
+          return {
+            text: opt.title,
+            value: opt.id
+          };
+        })
+        .value();
+
+      return _.concat(
+        {
+          text: "Unrestricted",
+          value: null
+        },
+        options
+      );
     }
   }
 };

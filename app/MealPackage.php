@@ -424,6 +424,8 @@ class MealPackage extends Model implements HasMedia
                 $mealPackageComponent->maximum = $component['maximum'];
                 $mealPackageComponent->save();
 
+                $optionIdMap = [];
+
                 foreach ($component['options'] as $optionArr) {
                     $option = null;
 
@@ -452,6 +454,9 @@ class MealPackage extends Model implements HasMedia
                     );
                     $option->save();
 
+                    // Store ID from creation ID
+                    $optionIdMap[$optionArr['id']] = $option->id;
+
                     $meals = [];
                     foreach ($optionArr['meals'] as $meal) {
                         $meals[$meal['id']] = [
@@ -472,6 +477,33 @@ class MealPackage extends Model implements HasMedia
                     ->options()
                     ->whereNotIn('id', $optionIds)
                     ->delete();
+
+                // Get resulting options
+                $options = $mealPackageComponent
+                    ->options()
+                    ->get()
+                    ->keyBy('id');
+
+                // Loop through options array again
+                foreach ($component['options'] as $optionArr) {
+                    // Get real ID and model
+                    $optionId = $optionIdMap[$optionArr['id']];
+                    $option = $options->get($optionId, null);
+
+                    // Get real restrict option ID
+                    $restrictOptionId =
+                        $optionArr['restrict_meals_option_id'] ?? null;
+                    if ($restrictOptionId) {
+                        $restrictOptionId = $optionIdMap[$restrictOptionId];
+                    }
+
+                    if ($option) {
+                        // Set the restrict option
+                        $option->restrict_meals_option_id =
+                            $restrictOptionId ?? null;
+                        $option->save();
+                    }
+                }
             }
 
             // Deleted components
