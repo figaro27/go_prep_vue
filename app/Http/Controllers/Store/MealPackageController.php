@@ -56,7 +56,8 @@ class MealPackageController extends StoreController
                 'sizes',
                 'default_size_title',
                 'components',
-                'addons'
+                'addons',
+                'meal_carousel'
             ])
         );
         $props->put('store_id', $this->store->id);

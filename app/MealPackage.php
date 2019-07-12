@@ -126,7 +126,8 @@ class MealPackage extends Model implements HasMedia
             'sizes',
             'default_size_title',
             'components',
-            'addons'
+            'addons',
+            'meal_carousel'
         ]);
 
         $package = MealPackage::create(
@@ -150,6 +151,7 @@ class MealPackage extends Model implements HasMedia
         foreach ($props->get('meals') as $meal) {
             MealPackageMeal::create([
                 'meal_id' => $meal['id'],
+                'meal_size_id' => $meal['meal_size_id'] ?? null,
                 'meal_package_id' => $package->id,
                 'quantity' => $meal['quantity']
             ]);
