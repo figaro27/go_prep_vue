@@ -101,6 +101,14 @@
                     @change="val => setMealQuantity(props.row.id, val)"
                   ></b-input>
                 </div>
+
+                <div slot="meal_size_id" slot-scope="props">
+                  <b-select
+                    v-model="props.row.meal_size_id"
+                    :options="sizeOptions(props.row)"
+                    @change="val => setMealSizeId(props.row.id, val)"
+                  ></b-select>
+                </div>
               </v-client-table>
             </b-tab>
             <b-tab title="Variations">
@@ -221,13 +229,20 @@ export default {
       mealPackage: {
         meals: []
       },
-      columns: ["included", "featured_image", "title", "quantity"],
+      columns: [
+        "included",
+        "featured_image",
+        "title",
+        "quantity",
+        "meal_size_id"
+      ],
       options: {
         headings: {
           included: "Included",
           featured_image: "Image",
           title: "Title",
-          quantity: "Quantity"
+          quantity: "Quantity",
+          meal_size_id: "Meal Size"
         },
         rowClassCallback: function(row) {
           let classes = `meal meal-${row.id}`;
@@ -254,6 +269,7 @@ export default {
       return this.meals.map(meal => {
         meal.included = this.hasMeal(meal.id);
         meal.quantity = this.getMealQuantity(meal.id);
+        meal.meal_size_id = this.getMealSizeId(meal.id);
         return meal;
       });
     },
@@ -336,6 +352,36 @@ export default {
         return 0;
       } else {
         return this.mealPackage.meals[index].quantity;
+      }
+    },
+    sizeOptions(meal) {
+      return _.concat(
+        {
+          text: meal.default_size_title || "Default",
+          value: null
+        },
+        meal.sizes.map(size => {
+          return {
+            text: size.title,
+            value: size.id
+          };
+        })
+      );
+    },
+    setMealSizeId(id, mealSizeId) {
+      const index = this.findMealIndex(id);
+      if (index !== -1) {
+        let meal = { ...this.mealPackage.meals[index] };
+        meal.meal_size_id = mealSizeId;
+        this.$set(this.mealPackage.meals, index, meal);
+      }
+    },
+    getMealSizeId(id) {
+      const index = this.findMealIndex(id);
+      if (index === -1) {
+        return null;
+      } else {
+        return this.mealPackage.meals[index].meal_size_id;
       }
     },
     async updateMealPackage(e) {

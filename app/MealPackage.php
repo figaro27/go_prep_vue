@@ -34,7 +34,9 @@ class MealPackage extends Model implements HasMedia
 
     public function meals()
     {
-        return $this->belongsToMany('App\\Meal')->withPivot('quantity');
+        return $this->belongsToMany('App\\Meal')
+            ->withPivot(['meal_size_id', 'quantity'])
+            ->using('App\\MealMealPackage');
     }
 
     public function store()
@@ -355,7 +357,8 @@ class MealPackage extends Model implements HasMedia
         if (is_array($rawMeals)) {
             foreach ($rawMeals as $rawMeal) {
                 $meals[$rawMeal['id']] = [
-                    'quantity' => $rawMeal['quantity']
+                    'quantity' => $rawMeal['quantity'],
+                    'meal_size_id' => $rawMeal['meal_size_id'] ?? null
                 ];
             }
 
