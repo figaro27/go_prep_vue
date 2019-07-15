@@ -76,7 +76,7 @@
 
       <div slot="added_price" slot-scope="props">
         <money
-          v-model="props.row.added_price"
+          v-model="props.row.price"
           class="form-control"
           v-bind="{ prefix: storeCurrencySymbol }"
           @blur.native="e => setMealAddedPrice(props.row.id, e.target.value)"
@@ -180,6 +180,7 @@ export default {
         meal.included = this.hasMeal(meal.id);
         meal.quantity = this.getMealQuantity(meal.id);
         meal.meal_size_id = this.getMealSizeId(meal.id);
+        meal.price = this.getMealAddedPrice(meal.id);
         return meal;
       });
 
@@ -309,6 +310,14 @@ export default {
         let meal = { ...this.selected[index] };
         meal.price = parseFloat(price.replace(/[^\d.-]/g, ""));
         this.$set(this.selected, index, meal);
+      }
+    },
+    getMealAddedPrice(id) {
+      const index = this.findMealIndex(id);
+      if (index === -1) {
+        return 0;
+      } else {
+        return this.selected[index].price || 0;
       }
     }
   }

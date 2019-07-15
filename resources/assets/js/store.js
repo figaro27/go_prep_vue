@@ -1489,6 +1489,9 @@ const getters = {
               price += option.price;
             });
           } else {
+            if (component.price) {
+              price += component.price;
+            }
             _.forEach(choices, (meals, optionId) => {
               let option = _.find(component.options, {
                 id: parseInt(optionId)

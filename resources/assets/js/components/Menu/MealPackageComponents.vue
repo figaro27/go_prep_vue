@@ -279,7 +279,8 @@ export default {
             return {
               id: meal.id,
               meal_size_id: meal.meal_size_id,
-              quantity: meal.quantity
+              quantity: meal.quantity,
+              price: meal.price || 0
             };
           })
         : [];

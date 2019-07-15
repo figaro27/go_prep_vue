@@ -298,6 +298,7 @@ class MealPackage extends Model implements HasMedia
                     $addon['meal_package_size_id'],
                     $addon['meal_package_size_id']
                 );
+                $mealPackageAddon->selectable = $addon['selectable'] ?? false;
                 $mealPackageAddon->save();
 
                 $meals = [];
@@ -538,6 +539,7 @@ class MealPackage extends Model implements HasMedia
                     $addon['meal_package_size_id'],
                     $addon['meal_package_size_id']
                 );
+                $mealPackageAddon->selectable = $addon['selectable'] ?? false;
                 $mealPackageAddon->save();
 
                 $meals = [];

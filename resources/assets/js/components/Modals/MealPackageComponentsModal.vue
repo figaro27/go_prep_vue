@@ -143,9 +143,7 @@ export default {
       });
     },
     mealAddons() {
-      return _.filter(this.mealPackage.addons, addon => {
-        return addon.meal_size_id === this.sizeId;
-      });
+      return _.filter(this.mealPackage.addons, this.sizeCriteria);
     },
     choice_objects() {
       return _.transform(this.choices, (result, optionIds, componentId) => {

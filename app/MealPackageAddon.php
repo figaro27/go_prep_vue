@@ -11,6 +11,27 @@ class MealPackageAddon extends Model
     public $appends = [];
     public $hidden = ['store'];
 
+    /**
+     * Get the instance as an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $arr = parent::toArray();
+
+        $arr['meals'] = $this->meals->map(function ($meal) {
+            return [
+                'meal_id' => $meal->id,
+                'quantity' => $meal->quantity,
+                'meal_size_id' => $meal->pivot->meal_size_id,
+                'price' => $meal->pivot->price
+            ];
+        });
+
+        return $arr;
+    }
+
     public function store()
     {
         return $this->belongsTo('App\Store');

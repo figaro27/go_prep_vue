@@ -13,7 +13,7 @@ class CreateMealMealPackageAddonsTable extends Migration
      */
     public function up()
     {
-        Schema::create('meal_meal_package_addons', function (Blueprint $table) {
+        Schema::create('meal_meal_package_addon', function (Blueprint $table) {
             $table->increments('id');
             $table
                 ->unsignedInteger('meal_package_addon_id')
@@ -44,6 +44,6 @@ class CreateMealMealPackageAddonsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('meal_meal_package_addons');
+        Schema::dropIfExists('meal_meal_package_addon');
     }
 }

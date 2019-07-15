@@ -147,8 +147,8 @@ class MealPackageController extends StoreController
                                                     'quantity' =>
                                                         $meal['quantity'],
                                                     'meal_size_id' =>
-                                                        $meal['meal_size_id']
-                                                    //'price' => $meal['price']
+                                                        $meal['meal_size_id'],
+                                                    'price' => $meal['price']
                                                 ];
                                             });
                                         }
@@ -179,10 +179,10 @@ class MealPackageController extends StoreController
                             if ($key === 'meals') {
                                 return collect($val)->map(function ($meal) {
                                     return [
-                                        'id' => $meal['id'],
+                                        'id' => $meal['meal_id'],
                                         'quantity' => $meal['quantity'],
-                                        'meal_size_id' =>
-                                            $meal['pivot']['meal_size_id']
+                                        'meal_size_id' => $meal['meal_size_id'],
+                                        'price' => $meal['price']
                                     ];
                                 });
                             }
