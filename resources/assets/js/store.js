@@ -1288,6 +1288,84 @@ const getters = {
       return null;
     }
   },
+  viewedStoreMealPackage: state => id => {
+    try {
+      let meal =
+        _.find(state.viewed_store.packages, ["id", parseInt(id)]) || null;
+      if (!meal) {
+        return null;
+      }
+
+      meal.getSize = sizeId => {
+        return _.find(meal.sizes, ["id", parseInt(sizeId)]);
+      };
+
+      meal.getTitle = (
+        html = false,
+        size = null,
+        components = null,
+        addons = null
+      ) => {
+        let title = meal.title;
+
+        if (_.isObject(size)) {
+          title = size.full_title;
+        }
+
+        let hasComponents = _.isArray(components) && components.length;
+        let hasAddons = _.isArray(addons) && addons.length;
+
+        if (!html) {
+          if (hasComponents) {
+            title += " - " + _.map(components, "option").join(", ");
+          }
+
+          if (hasAddons) {
+            title += " - " + _.map(addons, "addon").join(", ");
+          }
+        } else if (hasComponents || hasAddons) {
+          title += '<ul class="meal-components plain mb-0">';
+          if (hasComponents) {
+            _.forEach(components, component => {
+              title += `<li class="plain">${component.option}</li>`;
+            });
+          }
+          if (hasAddons) {
+            _.forEach(addons, addon => {
+              title += `<li class="plus">${addon.addon}</li>`;
+            });
+          }
+          title += "</ul>";
+        }
+
+        return title;
+      };
+
+      meal.getComponent = componentId => {
+        return _.find(meal.components, { id: parseInt(componentId) });
+      };
+      meal.getComponentOption = (component, optionId) => {
+        return _.find(component.options, { id: parseInt(optionId) });
+      };
+
+      meal.getComponentTitle = componentId => {
+        const component = meal.getComponent(componentId);
+        if (component) {
+          return component.title;
+        } else {
+          return null;
+        }
+      };
+
+      meal.getAddon = addonId => {
+        return _.find(meal.addons, { id: parseInt(addonId) });
+      };
+
+      return meal;
+    } catch (e) {
+      return null;
+    }
+  },
   isLoading(state) {
     return state.isLoading || !_.isEmpty(state.jobs);
   },
@@ -1403,10 +1481,24 @@ const getters = {
           let component = _.find(item.meal.components, {
             id: parseInt(componentId)
           });
-          _.forEach(choices, optionId => {
-            let option = _.find(component.options, { id: parseInt(optionId) });
-            price += option.price;
-          });
+          if (!item.meal_package) {
+            _.forEach(choices, optionId => {
+              let option = _.find(component.options, {
+                id: parseInt(optionId)
+              });
+              price += option.price;
+            });
+          } else {
+            if (component.price) {
+              price += component.price;
+            }
+            _.forEach(choices, (meals, optionId) => {
+              let option = _.find(component.options, {
+                id: parseInt(optionId)
+              });
+              price += option.price;
+            });
+          }
         });
       }
       if (item.addons) {

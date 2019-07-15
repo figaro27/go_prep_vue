@@ -832,7 +832,8 @@ export default {
       minPrice: "minimumPrice",
       coupons: "viewedStoreCoupons",
       pickupLocations: "viewedStorePickupLocations",
-      getMeal: "viewedStoreMeal"
+      getMeal: "viewedStoreMeal",
+      getMealPackage: "viewedStoreMealPackage"
     }),
     couponFreeDelivery() {
       return this.coupon ? this.coupon.freeDelivery : 0;

@@ -1,0 +1,420 @@
+<template>
+  <b-modal
+    title="Choose Options"
+    ref="modal"
+    size="lg"
+    @ok.prevent="e => ok(e)"
+    class="meal-package-components-modal"
+  >
+    <div v-if="mealPackage">
+      <b-row v-if="components.length" class="my-3">
+        <b-col>
+          <div
+            v-for="(component, i) in components"
+            :key="mealPackage.id + component.id"
+            class
+          >
+            <h6>{{ getComponentLabel(component) }}</h6>
+
+            <b-form-group :label="null">
+              Remaining: {{ getRemainingMeals(component.id) }}
+
+              <div v-for="option in getOptions(component)" :key="option.id">
+                <b-checkbox @input="toggleOption(component.id, option.id)">{{
+                  option.text
+                }}</b-checkbox>
+
+                <div
+                  v-if="
+                    option.selectable && optionSelected(component.id, option.id)
+                  "
+                  class="my-2 px-2 py-2 px-lg-3 py-lg-3 bg-light"
+                >
+                  <b-checkbox-group
+                    class="meal-checkboxes"
+                    v-model="choices[component.id][option.id]"
+                    :options="
+                      getMealOptions(getOptionMeals(component.id, option.id))
+                    "
+                    :min="component.minimum"
+                    :max="component.maximum"
+                    stacked
+                    @input.native="e => console.log(e)"
+                    @change="
+                      choices =>
+                        onChangeOptionChoices(component, option, choices)
+                    "
+                  ></b-checkbox-group>
+                </div>
+              </div>
+
+              <!--<b-radio-group
+                v-if="component.maximum === 1"
+                v-model="choices[component.id]"
+                :options="getOptions(component)"
+                :min="component.minimum"
+                :max="component.maximum"
+                stacked
+              ></b-radio-group>
+
+              <b-checkbox-group
+                v-else
+                v-model="choices[component.id]"
+                :options="getOptions(component)"
+                :min="component.minimum"
+                :max="component.maximum"
+                stacked
+              ></b-checkbox-group>
+              -->
+
+              <div v-if="0 && $v.choices[component.id].$dirty">
+                <div
+                  v-if="false === $v.choices[component.id].required"
+                  class="invalid-feedback d-block"
+                >
+                  This field is required
+                </div>
+                <div
+                  v-if="false === $v.choices[component.id].minimum"
+                  class="invalid-feedback d-block"
+                >
+                  Minimum {{ component.minimum }}
+                </div>
+                <div
+                  v-if="false === $v.choices[component.id].maximum"
+                  class="invalid-feedback d-block"
+                >
+                  Maximum {{ component.maximum }}
+                </div>
+              </div>
+            </b-form-group>
+          </div>
+        </b-col>
+      </b-row>
+
+      <b-row v-if="mealAddons.length" class="my-3">
+        <b-col>
+          <h6>Add-ons</h6>
+          <b-form-group label>
+            <b-checkbox-group
+              v-model="addons"
+              :options="getAddonOptions(mealAddons)"
+              stacked
+            ></b-checkbox-group>
+          </b-form-group>
+        </b-col>
+      </b-row>
+    </div>
+  </b-modal>
+</template>
+
+<script>
+import modal from "../../mixins/modal";
+import format from "../../lib/format";
+import { required, minLength } from "vuelidate/lib/validators";
+import { mapGetters } from "vuex";
+
+export default {
+  mixins: [modal],
+  props: {},
+  data() {
+    return {
+      mealPackage: null,
+      size: null,
+      choices: {},
+      meal_choices: {},
+      addons: []
+    };
+  },
+  computed: {
+    ...mapGetters({
+      storeSettings: "storeSettings",
+      getMeal: "viewedStoreMeal"
+    }),
+    sizeId() {
+      return _.isObject(this.size) ? this.size.id : null;
+    },
+    sizeCriteria() {
+      return { meal_package_size_id: this.sizeId };
+    },
+    components() {
+      return _.filter(this.mealPackage.components, component => {
+        return _.find(component.options, this.sizeCriteria);
+      });
+    },
+    mealAddons() {
+      return _.filter(this.mealPackage.addons, this.sizeCriteria);
+    },
+    choice_objects() {
+      return _.transform(this.choices, (result, optionIds, componentId) => {
+        let component = _.find(this.mealPackage.components, {
+          id: parseInt(componentId)
+        });
+        if (!component) return result;
+
+        if (!_.isArray(optionIds)) {
+          result[componentId] = _.find(component.options, { id: optionIds });
+        } else {
+          result[componentId] = [];
+          return _.map(optionIds, optionId => {
+            result[componentId].push(
+              _.find(component.options, { id: optionId })
+            );
+          });
+        }
+
+        return result;
+      });
+    }
+  },
+  validations() {
+    return {}; // temp
+    if (!this.mealPackage) return {};
+
+    let componentValidations = _.mapValues(
+      _.keyBy(this.components, "id"),
+      component => {
+        return {
+          minimum: value => {
+            return (
+              component.minimum === 0 ||
+              (_.isArray(value) && value.length >= component.minimum)
+            );
+          },
+          maximum: value => {
+            return (
+              !value || (_.isArray(value) && value.length <= component.maximum)
+            );
+          }
+        };
+      }
+    );
+
+    return {
+      choices: { ...componentValidations }
+    };
+  },
+  methods: {
+    toggleOption(componentId, optionId) {
+      const option = this.getComponentOption(componentId, optionId);
+
+      if (!this.choices[componentId]) {
+        this.$set(this.choices, componentId, {});
+      }
+
+      if (this.choices[componentId][optionId]) {
+        this.$delete(this.choices[componentId], optionId);
+      } else {
+        let meals = option.selectable ? [] : option.meals;
+        this.$set(this.choices[componentId], optionId, meals);
+      }
+    },
+    optionSelected(componentId, optionId) {
+      return this.choices[componentId]
+        ? !!this.choices[componentId][optionId]
+        : false;
+    },
+    optionMealSelected(componentId, optionId, mealId) {
+      return this.optionSelected(componentId, optionId)
+        ? _.find(this.choices[componentId][optionId], { meal_id: mealId }) !==
+            undefined
+        : false;
+    },
+    onChangeOptionChoices(component, option, choices) {
+      _.forEach(component.options, opt => {
+        if (opt.id === option.id) {
+          return;
+        }
+
+        if (
+          opt.restrict_meals_option_id === option.id &&
+          this.optionSelected(component.id, opt.id)
+        ) {
+          // Check this option doesn't contain any restricted meals
+          let optChoices = _.filter(opt.meals, meal => {
+            return this.optionMealSelected(component.id, option.id, meal.id);
+          });
+
+          this.$set(this.choices[component.id], opt.id, optChoices);
+        }
+      });
+    },
+    getOptionMeals(componentId, optionId) {
+      const option = this.getComponentOption(componentId, optionId);
+
+      if (!option) {
+        return [];
+      }
+
+      if (option.restrict_meals_option_id) {
+        const restrictOption = this.getComponentOption(
+          componentId,
+          option.restrict_meals_option_id
+        );
+
+        let m = _.filter(option.meals, meal => {
+          return this.optionMealSelected(
+            componentId,
+            option.restrict_meals_option_id,
+            meal.meal_id
+          );
+        });
+
+        return m;
+      }
+
+      return option.meals;
+    },
+    show(meal, size = null) {
+      this.mealPackage = meal;
+      this.size = size;
+      this.choices = {};
+      this.addons = [];
+
+      this.$refs.modal.show();
+
+      this.$forceUpdate();
+
+      this.$nextTick(() => {
+        this.$v.$reset();
+      });
+
+      return new Promise((resolve, reject) => {
+        this.$refs.modal.$on("cancel", () => {
+          resolve(null);
+          this.mealPackage = null;
+          this.size = null;
+          this.choices = {};
+          this.$v.$reset();
+        });
+        this.$on("done", () => {
+          this.$v.$touch();
+
+          if (this.$v.$invalid) {
+            this.$forceUpdate();
+          } else {
+            if (!_.isEmpty(this.choices) || !_.isEmpty(this.addons)) {
+              resolve({
+                components: { ...this.choices },
+                addons: [...this.addons]
+              });
+            } else {
+              resolve({
+                components: {},
+                addons: []
+              });
+            }
+
+            this.hide();
+            this.mealPackage = null;
+            this.size = null;
+            this.choices = {};
+            this.$v.$reset();
+          }
+        });
+      });
+    },
+    ok() {
+      this.$emit("done");
+    },
+    getOptions(component) {
+      let options = _.filter(component.options, this.sizeCriteria);
+      return _.map(options, option => {
+        let title = option.title;
+        if (option.price && option.price > 0) {
+          title +=
+            " - " + format.money(option.price, this.storeSettings.currency);
+        }
+
+        return {
+          id: option.id,
+          selectable: option.selectable,
+          text: title
+        };
+      });
+    },
+    getComponent(id) {
+      return _.find(this.mealPackage.components, { id });
+    },
+    getComponentChoices(id) {
+      return this.choices[id] ? this.choices[id] : [];
+    },
+    getComponentOption(componentId, optionId) {
+      const component = this.getComponent(componentId);
+      return _.find(component.options, { id: optionId });
+    },
+    getMealOptions(mealOptions) {
+      return _(mealOptions)
+        .map(mealOption => {
+          const meal = this.getMeal(mealOption.meal_id);
+
+          if (!meal) return null;
+
+          const size = meal.getSize(mealOption.meal_size_id);
+
+          return {
+            text: size ? size.full_title : meal.title,
+            value: mealOption
+          };
+        })
+        .value();
+    },
+    getAddonOptions(addons) {
+      addons = _.filter(addons, addon => {
+        return addon.meal_size_id == this.sizeId;
+      });
+      return _.map(addons, addon => {
+        let title = addon.title;
+        if (addon.price && addon.price > 0) {
+          title +=
+            " - " + format.money(addon.price, this.storeSettings.currency);
+        }
+
+        return {
+          value: addon.id,
+          text: title
+        };
+      });
+    },
+    getComponentLabel(component) {
+      let qty = "";
+      if (component.minimum === component.maximum) {
+        qty = `Choose ${component.minimum}`;
+      } else {
+        qty = `Choose up to ${component.maximum}`;
+      }
+
+      return `${component.title} - ${qty}`;
+    },
+    getRemainingMeals(componentId) {
+      const component = this.getComponent(componentId);
+      const max = component.maximum;
+      const choices = this.getComponentChoices(componentId);
+
+      return _.reduce(
+        choices,
+        (remaining, meals) => {
+          return remaining - meals.length;
+        },
+        max
+      );
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.meal-checkboxes {
+  columns: 1;
+
+  @media screen and (min-width: 768px) {
+    columns: 2;
+  }
+  @media screen and (min-width: 1200px) {
+    columns: 3;
+  }
+
+  .custom-checkbox {
+  }
+}
+</style>

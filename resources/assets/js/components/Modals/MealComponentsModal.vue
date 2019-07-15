@@ -87,9 +87,14 @@ export default {
     sizeId() {
       return _.isObject(this.size) ? this.size.id : null;
     },
+    sizeCriteria() {
+      return !this.mealPackage
+        ? { meal_size_id: this.sizeId }
+        : { meal_package_size_id: this.sizeId };
+    },
     components() {
       return _.filter(this.meal.components, component => {
-        return _.find(component.options, { meal_size_id: this.sizeId });
+        return _.find(component.options, this.sizeCriteria);
       });
     },
     mealAddons() {
@@ -181,9 +186,7 @@ export default {
       this.$emit("done");
     },
     getOptions(component) {
-      let options = _.filter(component.options, option => {
-        return option.meal_size_id == this.sizeId;
-      });
+      let options = _.filter(component.options, this.sizeCriteria);
       return _.map(options, option => {
         let title = option.title;
         if (option.price && option.price > 0) {

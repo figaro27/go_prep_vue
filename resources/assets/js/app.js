@@ -88,7 +88,7 @@ Vue.use(VuejsDialog, {
   cancelText: "Cancel",
   animation: "bounce"
 });
-Vue.use(DisableAutocomplete);
+//Vue.use(DisableAutocomplete);
 
 import Thumbnail from "./components/Thumbnail";
 Vue.component("thumbnail", Thumbnail);
@@ -108,6 +108,15 @@ Vue.component("page-spinner", PageSpinner);
 import FloatingActionButton from "./components/FloatingActionButton";
 Vue.component("floating-action-button", FloatingActionButton);
 
+import MealPicker from "./components/Menu/MealPicker";
+Vue.component("meal-picker", MealPicker);
+
+import Hint from "./components/Hint";
+Vue.component("hint", Hint);
+
+import { Switch } from "@coreui/vue";
+Vue.component("c-switch", Switch);
+
 /*
 moment.defaultFormat = 'ddd, MMMM Do';
 moment.defaultFormatUtc = 'ddd, MMMM Do';
@@ -119,7 +128,9 @@ Vue.prototype.format = format;
 Vue.prototype.moment = moment;
 Vue.prototype.momentTimezone = momentTimezone;
 Vue.prototype.slugify = slugify;
+Vue.prototype._ = require("lodash");
 Vue.prototype.icons = require("./lib/icons");
+Vue.prototype.console = console;
 
 const files = require.context("./components", true, /\.vue$/i);
 files.keys().map(key => {

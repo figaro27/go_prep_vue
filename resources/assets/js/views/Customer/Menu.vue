@@ -25,6 +25,11 @@
       :key="total"
     ></meal-components-modal>
 
+    <meal-package-components-modal
+      ref="packageComponentModal"
+      :key="total"
+    ></meal-package-components-modal>
+
     <div class="category-slider d-block d-md-none">
       <slick
         v-if="categories.length > 4"
@@ -131,9 +136,9 @@
               :key="`tag-${tag}`"
               class="filters col-6 col-sm-4 col-md-3 mb-3"
             >
-              <b-button :pressed="active[tag]" @click="filterByTag(tag)">{{
-                tag
-              }}</b-button>
+              <b-button :pressed="active[tag]" @click="filterByTag(tag)">
+                {{ tag }}
+              </b-button>
             </div>
           </div>
           <b-button
@@ -389,10 +394,33 @@
                             </h5>
                           </div>
                           <b-btn
+                            v-if="mealPackage.sizes.length === 0"
                             @click="addOne(mealPackage, true)"
-                            class="menu-bag-btn width-80"
+                            class="menu-bag-btn"
                             >+ ADD</b-btn
                           >
+                          <b-dropdown v-else toggle-class="menu-bag-btn">
+                            <span slot="button-content">+ ADD</span>
+                            <b-dropdown-item @click="addOne(mealPackage, true)">
+                              {{ mealPackage.default_size_title }} -
+                              {{
+                                format.money(
+                                  mealPackage.price,
+                                  storeSettings.currency
+                                )
+                              }}
+                            </b-dropdown-item>
+                            <b-dropdown-item
+                              v-for="size in mealPackage.sizes"
+                              :key="size.id"
+                              @click="addOne(mealPackage, true, size)"
+                            >
+                              {{ size.title }} -
+                              {{
+                                format.money(size.price, storeSettings.currency)
+                              }}
+                            </b-dropdown-item>
+                          </b-dropdown>
                         </div>
                       </div>
                     </div>
@@ -401,6 +429,7 @@
                   <!-- Text slides with image -->
                   <slide
                     v-for="meal in mealPackage.meals"
+                    v-if="mealPackage.meal_carousel"
                     :key="meal.id"
                     :caption="meal.title"
                   >
@@ -555,7 +584,10 @@
               <!-- Meals Area -->
               <div class="row">
                 <div :class="`col-md-9 main-menu-area`">
-                  <Spinner v-if="!meals.length" position="absolute" />
+                  <Spinner
+                    v-if="!meals.length && !mealPackages.length"
+                    position="absolute"
+                  />
                   <div
                     v-for="(group, catIndex) in meals"
                     :key="group.category"
@@ -732,11 +764,34 @@
                             readonly
                           ></b-form-input>
                           <b-btn
+                            v-if="mealPkg.sizes.length === 0"
                             @click="addOne(mealPkg, true)"
-                            class="menu-bag-btn plus-minus"
+                            class="menu-bag-btn"
                           >
-                            <i>+</i>
+                            <i>-</i>
                           </b-btn>
+                          <b-dropdown v-else toggle-class="menu-bag-btn">
+                            <span slot="button-content">+</span>
+                            <b-dropdown-item @click="addOne(mealPkg, true)">
+                              {{ mealPkg.default_size_title }} -
+                              {{
+                                format.money(
+                                  mealPkg.price,
+                                  storeSettings.currency
+                                )
+                              }}
+                            </b-dropdown-item>
+                            <b-dropdown-item
+                              v-for="size in mealPkg.sizes"
+                              :key="size.id"
+                              @click="addOne(mealPkg, true, size)"
+                            >
+                              {{ size.title }} -
+                              {{
+                                format.money(size.price, storeSettings.currency)
+                              }}
+                            </b-dropdown-item>
+                          </b-dropdown>
                           <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
                         </div>
                         <p class="center-text strong featured">
@@ -818,12 +873,12 @@
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
-                          <span v-if="item.meal_package">
-                            {{ item.meal.title }}
-                          </span>
-                          <span v-else-if="item.size">{{
-                            item.size.full_title
+                          <span v-if="item.meal_package">{{
+                            item.meal.title
                           }}</span>
+                          <span v-else-if="item.size">
+                            {{ item.size.full_title }}
+                          </span>
                           <span v-else>{{ item.meal.item_title }}</span>
 
                           <ul
@@ -971,6 +1026,7 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
 import Spinner from "../../components/Spinner";
 import MealComponentsModal from "../../components/Modals/MealComponentsModal";
+import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 import MenuBag from "../../mixins/menuBag";
 import units from "../../data/units";
 import nutrition from "../../data/nutrition";
@@ -992,7 +1048,8 @@ export default {
     LightBox,
     Carousel,
     Slide,
-    MealComponentsModal
+    MealComponentsModal,
+    MealPackageComponentsModal
   },
   mixins: [MenuBag],
   props: {
@@ -1085,7 +1142,8 @@ export default {
       minOption: "minimumOption",
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
-      getMeal: "viewedStoreMeal"
+      getMeal: "viewedStoreMeal",
+      getMealPackage: "viewedStoreMealPackage"
     }),
     deliveryDaysOptions() {
       return this.storeSetting("next_orderable_delivery_dates", []).map(
@@ -1367,7 +1425,7 @@ export default {
       this.store.meals.forEach(meal => {
         meal.category_ids.forEach(categoryId => {
           let category = _.find(this._categories, { id: categoryId });
-          if (!_.includes(grouped, category.category)) {
+          if (category && !_.includes(grouped, category.category)) {
             grouped.push(category.category);
           }
         });

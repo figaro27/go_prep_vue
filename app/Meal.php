@@ -75,7 +75,8 @@ class Meal extends Model implements HasMedia
         'allergies',
         'categories',
         'orders',
-        'subscriptions'
+        'subscriptions',
+        'store'
         //'ingredients',
     ];
 
