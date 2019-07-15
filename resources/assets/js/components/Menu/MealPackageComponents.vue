@@ -62,14 +62,16 @@
           </b-col>
         </b-row>
 
+        <div class="font-weight-bold">Component Options:</div>
+
         <table class="table">
           <thead>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Meal Package Size</th>
-            <th>Restrict Meals To</th>
-            <th>Meals</th>
-            <th></th>
+            <th class="border-top-0">Title</th>
+            <th class="border-top-0">Price</th>
+            <th class="border-top-0">Meal Package Size</th>
+            <th class="border-top-0">Restrict Meals To</th>
+            <th class="border-top-0">Meals</th>
+            <th class="border-top-0"></th>
           </thead>
 
           <tbody>

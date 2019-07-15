@@ -63,13 +63,15 @@
           </b-col>
         </b-row>
 
+        <div class="font-weight-bold">Component Options:</div>
+
         <table class="table">
           <thead>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Meal Size</th>
-            <th>Ingredients</th>
-            <th></th>
+            <th class="border-top-0">Title</th>
+            <th class="border-top-0">Price</th>
+            <th class="border-top-0">Meal Size</th>
+            <th class="border-top-0">Ingredients</th>
+            <th class="border-top-0"></th>
           </thead>
 
           <tbody>
