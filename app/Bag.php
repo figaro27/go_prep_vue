@@ -75,7 +75,7 @@ class Bag
                     // Add regular package meals
                     foreach ($item['meal']['meals'] as $meal) {
                         if (!$meals[$meal['id']]->active) {
-                            continue;
+                            //continue;
                         }
 
                         $mealItem = [
@@ -86,7 +86,9 @@ class Bag
                             'quantity' => $meal['quantity'],
                             'price' => $meal['price'],
                             'size' => [
-                                'id' => $meal['meal_size_id']
+                                'id' => $meal['meal_size']
+                                    ? $meal['meal_size']['id']
+                                    : null
                             ],
                             'quantity' => $meal['quantity']
                         ];
