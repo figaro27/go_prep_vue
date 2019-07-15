@@ -2,7 +2,7 @@
   <b-modal
     title="Choose Options"
     ref="modal"
-    size="lg"
+    size="lgx"
     @ok.prevent="e => ok(e)"
     class="meal-package-components-modal"
   >
