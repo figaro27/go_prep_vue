@@ -4,6 +4,51 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-body">
+            <b-modal
+              v-model="showCategoriesModal"
+              title="Menu Categories"
+              size="sm"
+              @ok="updateCategories"
+              @cancel="updateCategories"
+              @hidden="updateCategories"
+            >
+              <b-form-group :state="true">
+                <div class="categories">
+                  <draggable
+                    v-model="categories"
+                    @change="onChangeCategories"
+                    element="ol"
+                    class="plain"
+                  >
+                    <li
+                      v-for="category in categories"
+                      :key="`category-${category.id}`"
+                      style="cursor: n-resize"
+                    >
+                      <p>
+                        {{ category.category }}
+                        <i
+                          v-if="category.id"
+                          @click="deleteCategory(category.id)"
+                          class="fa fa-minus-circle text-danger"
+                        ></i>
+                      </p>
+                    </li>
+                  </draggable>
+                </div>
+
+                <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
+                  <b-input
+                    v-model="new_category"
+                    type="text"
+                    placeholder="New Category..."
+                  ></b-input>
+                  <b-button type="submit" variant="primary ml-2"
+                    >Create</b-button
+                  >
+                </b-form>
+              </b-form-group>
+            </b-modal>
             <Spinner v-if="isLoading" />
 
             <v-client-table
@@ -50,6 +95,9 @@
                   class="btn btn-warning btn-md"
                   tag="button"
                   >Preview Menu</a
+                >
+                <b-btn variant="danger" @click="showCategoriesModal = true"
+                  >Edit Categories</b-btn
                 >
               </div>
 
@@ -498,7 +546,23 @@
 </template>
 
 <style lang="scss" scoped>
-.gallery {
+.categories {
+  .btn {
+    position: relative;
+
+    i {
+      position: absolute;
+      top: 0;
+      right: 0;
+      opacity: 0;
+    }
+
+    &:hover {
+      i {
+        opacity: 1;
+      }
+    }
+  }
 }
 </style>
 
@@ -554,6 +618,8 @@ export default {
         categories: [],
         image: {}
       },
+      showCategoriesModal: false,
+      new_category: "",
       createMealModal: false,
       createPackageModal: false,
       viewMealModal: false,
@@ -684,6 +750,12 @@ export default {
       if (subdomainCheck.includes("goprep")) return true;
       else return false;
     },
+    categories() {
+      return _.chain(this.storeCategories)
+        .orderBy("order")
+        .toArray()
+        .value();
+    },
     storeURL() {
       return (
         "http://" + this.storeDetail.domain + ".goprep.com/store/menu/preview"
@@ -758,6 +830,7 @@ export default {
       refreshMealPackages: "refreshMealPackages",
       _updateMeal: "updateMeal",
       _updateMealPackage: "updateMealPackage",
+      refreshCategories: "refreshCategories",
       addJob: "addJob",
       removeJob: "removeJob"
     }),
@@ -1115,6 +1188,37 @@ export default {
         .finally(() => {
           this.loading = false;
         });
+    },
+    onAddCategory() {
+      axios
+        .post("/api/me/categories", { category: this.new_category })
+        .then(response => {
+          this.refreshCategories();
+          this.new_category = "";
+        });
+    },
+    onChangeCategories(e) {
+      if (_.isObject(e.moved)) {
+        let newCats = _.toArray({ ...this.categories });
+        newCats[e.moved.oldIndex] = this.categories[e.moved.newIndex];
+        newCats[e.moved.newIndex] = this.categories[e.moved.oldIndex];
+
+        newCats = _.map(newCats, (cat, i) => {
+          cat.order = i;
+          return cat;
+        });
+
+        axios
+          .post("/api/me/categories", { categories: newCats })
+          .then(response => {
+            this.refreshCategories();
+          });
+      }
+    },
+    deleteCategory(id) {
+      axios.delete("/api/me/categories/" + id).then(response => {
+        this.refreshCategories();
+      });
     }
   }
 };
