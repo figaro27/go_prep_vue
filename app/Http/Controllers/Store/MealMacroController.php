@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Store;
 
+use App\Http\Controllers\Store\StoreController;
 use App\MealMacro;
 use Illuminate\Http\Request;
 
-class MealMacroController extends Controller
+class MealMacroController extends StoreController
 {
     /**
      * Display a listing of the resource.
