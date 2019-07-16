@@ -273,6 +273,61 @@
                     "
                   ></money>
                   <br />
+                  <h4 v-if="storeSettings.showMacros">
+                    Macros
+                    <img
+                      v-b-popover.hover="
+                        'Here you can enter the main macro-nutrients for your meals which will then show underneath the meal titles on your menu page. If you have Nutrition Facts enabled, be sure to keep these numbers consistent as your customers will see the differences.'
+                      "
+                      title="Macros"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </h4>
+                  <b-form-group
+                    label-for="meal-macros"
+                    :state="true"
+                    v-if="storeSettings.showMacros"
+                  >
+                    <div class="row">
+                      <div class="col-md-3">
+                        <b-form-input
+                          id="macros-calories"
+                          type="text"
+                          v-model="macros.calories"
+                          placeholder="Calories"
+                          required
+                        ></b-form-input>
+                      </div>
+                      <div class="col-md-3">
+                        <b-form-input
+                          id="macros-carbs"
+                          type="text"
+                          v-model="macros.carbs"
+                          placeholder="Carbs"
+                          required
+                        ></b-form-input>
+                      </div>
+                      <div class="col-md-3">
+                        <b-form-input
+                          id="macros-protein"
+                          type="text"
+                          v-model="macros.protein"
+                          placeholder="Protein"
+                          required
+                        ></b-form-input>
+                      </div>
+                      <div class="col-md-3">
+                        <b-form-input
+                          id="macros-fat"
+                          type="text"
+                          v-model="macros.fat"
+                          placeholder="Fat"
+                          required
+                        ></b-form-input>
+                      </div>
+                    </div>
+                  </b-form-group>
                   <h4>
                     Categories
                     <img
@@ -617,6 +672,12 @@ export default {
         created_at: "",
         categories: [],
         image: {}
+      },
+      macros: {
+        calories: null,
+        carbs: null,
+        protein: null,
+        fat: null
       },
       showCategoriesModal: false,
       new_category: "",
