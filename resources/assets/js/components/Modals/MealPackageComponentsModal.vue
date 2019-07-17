@@ -95,13 +95,33 @@
       <b-row v-if="mealAddons.length" class="my-3">
         <b-col>
           <h6>Add-ons</h6>
-          <b-form-group label>
+          <!--<b-form-group label>
             <b-checkbox-group
               v-model="addons"
               :options="getAddonOptions(mealAddons)"
               stacked
             ></b-checkbox-group>
-          </b-form-group>
+          </b-form-group>-->
+
+          <div v-for="addon in mealAddons" :key="addon.id">
+            <b-checkbox @input="toggleAddon(addon.id)">{{
+              addon.title
+            }}</b-checkbox>
+
+            <div
+              v-if="addon.selectable && addonSelected(addon.id)"
+              class="my-2 px-2 py-2 px-lg-3 py-lg-3 bg-light"
+            >
+              <b-checkbox-group
+                class="meal-checkboxes"
+                v-model="addons[addon.id]"
+                :options="getMealOptions(addon.meals)"
+                stacked
+                @input.native="e => console.log(e)"
+                @change="choices => onChangeAddonChoices(addon, choices)"
+              ></b-checkbox-group>
+            </div>
+          </div>
         </b-col>
       </b-row>
     </div>
@@ -123,7 +143,7 @@ export default {
       size: null,
       choices: {},
       meal_choices: {},
-      addons: []
+      addons: {}
     };
   },
   computed: {
@@ -265,6 +285,23 @@ export default {
 
       return option.meals;
     },
+    getAddon(addonId) {
+      return _.find(this.mealAddons, { id: addonId });
+    },
+    toggleAddon(addonId) {
+      const addon = this.getAddon(addonId);
+
+      if (!this.addons[addonId]) {
+        let meals = addon.selectable ? [] : addon.meals;
+        this.$set(this.addons, addonId, meals);
+      } else {
+        this.$delete(this.addons, addonId);
+      }
+    },
+    onChangeAddonChoices(addon, choices) {},
+    addonSelected(addonId) {
+      return !!this.addons[addonId];
+    },
     show(meal, size = null) {
       this.mealPackage = meal;
       this.size = size;
@@ -296,12 +333,12 @@ export default {
             if (!_.isEmpty(this.choices) || !_.isEmpty(this.addons)) {
               resolve({
                 components: { ...this.choices },
-                addons: [...this.addons]
+                addons: { ...this.addons }
               });
             } else {
               resolve({
                 components: {},
-                addons: []
+                addons: {}
               });
             }
 
