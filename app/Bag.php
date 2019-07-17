@@ -186,15 +186,87 @@ class Bag
                                         $items[$mealItemId] = $mealItem;
                                     } else {
                                         $items[$mealItemId]['quantity'] +=
-                                            $meal->pivot->quantity;
+                                            $meal['quantity'];
                                     }
                                 }
                             }
                         }
                     }
                     if (isset($item['addons']) && $item['addons']) {
-                        foreach ($item['addons'] as $addonId) {
+                        foreach ($item['addons'] as $addonId => $addonItems) {
+                            $addonItems = collect($addonItems);
+
                             $addon = MealPackageAddon::find($addonId);
+
+                            $meals = collect();
+
+                            if (!$addon->selectable) {
+                                $mealOptions = MealMealPackageAddon::where([
+                                    'meal_package_addon_id' => $addonId
+                                ])->get();
+
+                                foreach ($mealOptions as $mealOption) {
+                                    $meals->push([
+                                        'meal' => [
+                                            'id' => $mealOption->meal_id
+                                        ],
+                                        'quantity' => $mealOption->quantity,
+                                        'price' => $mealOption->price,
+                                        'meal_size_id' =>
+                                            $mealOption->meal_size_id
+                                    ]);
+                                }
+                            } else {
+                                foreach ($addonItems as $addonItem) {
+                                    $mealOption = MealMealPackageAddon::where([
+                                        'meal_package_addon_id' => $addonId
+                                    ])
+                                        ->where(
+                                            'meal_id',
+                                            $addonItem['meal_id']
+                                        )
+                                        ->where(
+                                            'meal_size_id',
+                                            $addonItem['meal_size_id'] ?? null
+                                        )
+                                        ->first();
+
+                                    if ($mealOption) {
+                                        $meals->push([
+                                            'meal' => [
+                                                'id' => $mealOption->meal_id
+                                            ],
+                                            'quantity' =>
+                                                $optionItem['quantity'],
+                                            'price' => $mealOption->price,
+                                            'meal_size_id' =>
+                                                $mealOption->meal_size_id
+                                        ]);
+                                    }
+                                }
+                            }
+
+                            foreach ($meals as $meal) {
+                                $mealItem = [
+                                    'meal' => $meal['meal'],
+                                    'meal_package' => false,
+                                    'quantity' => $meal['quantity'],
+                                    'price' => $meal['price'],
+                                    'size' => [
+                                        'id' => $meal['meal_size_id']
+                                    ],
+                                    'quantity' => $meal['quantity']
+                                ];
+
+                                $mealItemId = $this->getItemId($mealItem);
+
+                                if (!isset($items[$mealItemId])) {
+                                    $items[$mealItemId] = $mealItem;
+                                } else {
+                                    $items[$mealItemId]['quantity'] +=
+                                        $meal['quantity'];
+                                }
+                            }
                         }
                     }
                 }

@@ -56,7 +56,7 @@ export default {
         }
 
         components = { ...result.components };
-        addons = [...result.addons];
+        addons = { ...result.addons };
       }
 
       this.$store.commit("addToBag", {

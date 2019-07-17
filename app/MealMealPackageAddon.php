@@ -3,8 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class MealMealPackageAddons extends Model
+class MealMealPackageAddon extends Pivot
 {
     public $fillable = [];
     public $casts = [];

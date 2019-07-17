@@ -1502,10 +1502,26 @@ const getters = {
         });
       }
       if (item.addons) {
-        _.forEach(item.addons, addonId => {
-          let addon = _.find(meal.addons, { id: parseInt(addonId) });
-          price += addon.price;
-        });
+        if (!item.meal_package) {
+          _.forEach(item.addons, addonId => {
+            let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
+            price += addon.price;
+          });
+        } else {
+          _.forEach(item.addons, (choices, addonId) => {
+            let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
+
+            if (addon.price) {
+              price += addon.price;
+            }
+
+            _.forEach(choices, choice => {
+              if (choice.price) {
+                price += choice.price;
+              }
+            });
+          });
+        }
       }
       totalBagPricePreFees += item.quantity * price;
     });
