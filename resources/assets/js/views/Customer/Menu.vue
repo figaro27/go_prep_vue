@@ -196,6 +196,40 @@
                       </div>
                     </slick>
 
+                    <div
+                      class="title d-none d-md-block"
+                      v-if="meal.macros && storeSettings.showMacros"
+                    >
+                      <div class="row">
+                        <div class="col-md-3">
+                          <p class="small strong">Calories</p>
+                        </div>
+                        <div class="col-md-3">
+                          <p class="small strong">Carbs</p>
+                        </div>
+                        <div class="col-md-3">
+                          <p class="small strong">Protein</p>
+                        </div>
+                        <div class="col-md-3">
+                          <p class="small strong">Fat</p>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-3">
+                          <p class="small">{{ meal.macros.calories }}</p>
+                        </div>
+                        <div class="col-md-3">
+                          <p class="small">{{ meal.macros.carbs }}</p>
+                        </div>
+                        <div class="col-md-3">
+                          <p class="small">{{ meal.macros.protein }}</p>
+                        </div>
+                        <div class="col-md-3">
+                          <p class="small">{{ meal.macros.fat }}</p>
+                        </div>
+                      </div>
+                    </div>
+
                     <p
                       v-if="storeSettings.showNutrition"
                       v-html="mealDescription"
@@ -637,6 +671,45 @@
                               <div class="meta">
                                 <div class="title d-none d-md-block">
                                   {{ meal.title }}
+                                </div>
+                                <div
+                                  class="title d-none d-md-block"
+                                  v-if="meal.macros && storeSettings.showMacros"
+                                >
+                                  <div class="row">
+                                    <div class="col-md-3">
+                                      <p class="small strong">Calories</p>
+                                    </div>
+                                    <div class="col-md-3">
+                                      <p class="small strong">Carbs</p>
+                                    </div>
+                                    <div class="col-md-3">
+                                      <p class="small strong">Protein</p>
+                                    </div>
+                                    <div class="col-md-3">
+                                      <p class="small strong">Fat</p>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-md-3">
+                                      <p class="small">
+                                        {{ meal.macros.calories }}
+                                      </p>
+                                    </div>
+                                    <div class="col-md-3">
+                                      <p class="small">
+                                        {{ meal.macros.carbs }}
+                                      </p>
+                                    </div>
+                                    <div class="col-md-3">
+                                      <p class="small">
+                                        {{ meal.macros.protein }}
+                                      </p>
+                                    </div>
+                                    <div class="col-md-3">
+                                      <p class="small">{{ meal.macros.fat }}</p>
+                                    </div>
+                                  </div>
                                 </div>
 
                                 <div class="description d-md-none">
