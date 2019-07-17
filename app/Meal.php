@@ -6,6 +6,7 @@ use App\MealComponent;
 use App\MealComponentOption;
 use App\MealOrder;
 use App\MealSize;
+use App\MealMacro;
 use App\Store;
 use App\Subscription;
 use App\Traits\LocalizesDates;
@@ -420,6 +421,11 @@ class Meal extends Model implements HasMedia
         return $this->belongsToMany('App\MealTag', 'meal_meal_tag');
     }
 
+    public function macros()
+    {
+        return $this->hasOne('App\MealMacro', 'meal_id', 'id');
+    }
+
     public function getTagTitlesAttribute()
     {
         return collect($this->tags)->map(function ($meal) {
@@ -503,7 +509,8 @@ class Meal extends Model implements HasMedia
             'categories',
             'sizes',
             'components',
-            'addons'
+            'addons',
+            'macros'
         )
             ->where('id', $id)
             ->first();
@@ -537,7 +544,8 @@ class Meal extends Model implements HasMedia
             'sizes',
             'default_size_title',
             'components',
-            'addons'
+            'addons',
+            'macros'
         ]);
 
         $meal = new Meal();
@@ -805,6 +813,23 @@ class Meal extends Model implements HasMedia
             $meal->delete();
             throw new \Exception($e);
         }
+
+        $macros = $props->get('macros');
+        $calories = $macros['calories'];
+        $carbs = $macros['carbs'];
+        $protein = $macros['protein'];
+        $fat = $macros['fat'];
+
+        $macro = new MealMacro();
+
+        $macro->store_id = $meal->store->id;
+        $macro->meal_id = $meal->id;
+        $macro->calories = $calories;
+        $macro->carbs = $carbs;
+        $macro->protein = $protein;
+        $macro->fat = $fat;
+
+        $macro->save();
     }
 
     public static function storeMealAdmin($request)
@@ -840,7 +865,8 @@ class Meal extends Model implements HasMedia
             'sizes',
             'default_size_title',
             'components',
-            'addons'
+            'addons',
+            'macros'
         ]);
 
         if ($props->has('featured_image')) {
@@ -1112,6 +1138,27 @@ class Meal extends Model implements HasMedia
         }
 
         $meal->update($props->except(['featured_image', 'gallery'])->toArray());
+
+        $macros = $props->get('macros');
+        $calories = $macros['calories'];
+        $carbs = $macros['carbs'];
+        $protein = $macros['protein'];
+        $fat = $macros['fat'];
+
+        $macro = MealMacro::where('meal_id', $meal->id)->first();
+
+        if (!$macro) {
+            $macro = new MealMacro();
+        }
+
+        $macro->store_id = $meal->store->id;
+        $macro->meal_id = $meal->id;
+        $macro->calories = $calories;
+        $macro->carbs = $carbs;
+        $macro->protein = $protein;
+        $macro->fat = $fat;
+
+        $macro->save();
 
         return Meal::getMeal($meal->id);
     }

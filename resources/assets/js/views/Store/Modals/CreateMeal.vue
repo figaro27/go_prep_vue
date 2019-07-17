@@ -40,7 +40,71 @@
                   v-bind="{ prefix: storeCurrencySymbol }"
                 ></money>
               </b-form-group>
-              <br />
+              <h4 v-if="storeSettings.showMacros" class="mt-4">
+                Macros
+                <img
+                  v-b-popover.hover="
+                    'Here you can enter the main macro-nutrients for your meals which will then show underneath the meal titles on your menu page. If you have Nutrition Facts enabled, be sure to keep these numbers consistent as your customers will see the differences.'
+                  "
+                  title="Macros"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </h4>
+              <b-form-group
+                label-for="meal-macros"
+                :state="true"
+                v-if="storeSettings.showMacros"
+              >
+                <div class="row">
+                  <div class="col-md-3">
+                    Calories
+                  </div>
+                  <div class="col-md-3">
+                    Carbs
+                  </div>
+                  <div class="col-md-3">
+                    Protein
+                  </div>
+                  <div class="col-md-3">
+                    Fat
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-3">
+                    <b-form-input
+                      id="macros-calories"
+                      type="text"
+                      v-model="meal.macros.calories"
+                      required
+                    ></b-form-input>
+                  </div>
+                  <div class="col-md-3">
+                    <b-form-input
+                      id="macros-carbs"
+                      type="text"
+                      v-model="meal.macros.carbs"
+                      required
+                    ></b-form-input>
+                  </div>
+                  <div class="col-md-3">
+                    <b-form-input
+                      id="macros-protein"
+                      type="text"
+                      v-model="meal.macros.protein"
+                      required
+                    ></b-form-input>
+                  </div>
+                  <div class="col-md-3">
+                    <b-form-input
+                      id="macros-fat"
+                      type="text"
+                      v-model="meal.macros.fat"
+                      required
+                    ></b-form-input>
+                  </div>
+                </div>
+              </b-form-group>
               <h4>Categories</h4>
               <b-form-checkbox-group
                 buttons
@@ -251,7 +315,13 @@ export default {
         sizes: [],
         components: [],
         addons: [],
-        gallery: []
+        gallery: [],
+        macros: {
+          calories: null,
+          carbs: null,
+          protein: null,
+          fat: null
+        }
       }
     };
   },
@@ -260,6 +330,7 @@ export default {
       store: "viewedStore",
       tags: "tags",
       storeCategories: "storeCategories",
+      storeSettings: "storeSettings",
       getCategoryTitle: "storeCategoryTitle",
       allergies: "allergies",
       isLoading: "isLoading",
