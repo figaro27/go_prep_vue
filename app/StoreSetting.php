@@ -24,7 +24,8 @@ class StoreSetting extends Model
         'view_delivery_days',
         'open',
         'meal_packages',
-        'currency'
+        'currency',
+        'showMacros'
     ];
 
     /**
@@ -58,6 +59,7 @@ class StoreSetting extends Model
     protected $casts = [
         'open' => 'boolean',
         'showNutrition' => 'boolean',
+        'showMacros' => 'boolean',
         'showIngredients' => 'boolean',
         'applyDeliveryFee' => 'boolean',
         'applyProcessingFee' => 'boolean',

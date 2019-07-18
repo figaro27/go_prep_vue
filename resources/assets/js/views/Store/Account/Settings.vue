@@ -521,7 +521,28 @@
               />
             </b-form-group>
           </b-form>
-
+          <p>
+            <span class="mr-1">Show Macros</span>
+            <img
+              v-b-popover.hover="
+                'Enables input fields for your to add your meal\'s calories, carbs, protein, and fat. This then shows up underneath your meal titles on your menu page. If you have Nutrition Facts enabled as well, please keep the numbers the same as your customers will see any differences.'
+              "
+              title="Show Macros"
+              src="/images/store/popover.png"
+              class="popover-size"
+            />
+          </p>
+          <b-form @submit.prevent="updateStoreSettings">
+            <b-form-group :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.showMacros"
+                @change.native="updateStoreSettings"
+              />
+            </b-form-group>
+          </b-form>
           <p>
             <span class="mr-1">Show Ingredients</span>
             <img

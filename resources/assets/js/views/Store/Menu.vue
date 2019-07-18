@@ -273,6 +273,71 @@
                     "
                   ></money>
                   <br />
+                  <h4 v-if="storeSettings.showMacros">
+                    Macros
+                    <img
+                      v-b-popover.hover="
+                        'Here you can enter the main macro-nutrients for your meals which will then show underneath the meal titles on your menu page. If you have Nutrition Facts enabled, be sure to keep these numbers consistent as your customers will see the differences.'
+                      "
+                      title="Macros"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </h4>
+                  <b-form-group
+                    label-for="meal-macros"
+                    :state="true"
+                    v-if="storeSettings.showMacros"
+                  >
+                    <div class="row">
+                      <div class="col-md-3">
+                        Calories
+                      </div>
+                      <div class="col-md-3">
+                        Carbs
+                      </div>
+                      <div class="col-md-3">
+                        Protein
+                      </div>
+                      <div class="col-md-3">
+                        Fat
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-3">
+                        <b-form-input
+                          id="macros-calories"
+                          type="text"
+                          v-model="meal.macros.calories"
+                          required
+                        ></b-form-input>
+                      </div>
+                      <div class="col-md-3">
+                        <b-form-input
+                          id="macros-carbs"
+                          type="text"
+                          v-model="meal.macros.carbs"
+                          required
+                        ></b-form-input>
+                      </div>
+                      <div class="col-md-3">
+                        <b-form-input
+                          id="macros-protein"
+                          type="text"
+                          v-model="meal.macros.protein"
+                          required
+                        ></b-form-input>
+                      </div>
+                      <div class="col-md-3">
+                        <b-form-input
+                          id="macros-fat"
+                          type="text"
+                          v-model="meal.macros.fat"
+                          required
+                        ></b-form-input>
+                      </div>
+                    </div>
+                  </b-form-group>
                   <h4>
                     Categories
                     <img
@@ -616,7 +681,8 @@ export default {
         num_orders: "",
         created_at: "",
         categories: [],
-        image: {}
+        image: {},
+        macros: {}
       },
       showCategoriesModal: false,
       new_category: "",
@@ -861,7 +927,8 @@ export default {
         sizes: this.meal.sizes,
         default_size_title: this.meal.default_size_title,
         components: this.meal.components,
-        addons: this.meal.addons
+        addons: this.meal.addons,
+        macros: this.meal.macros
       };
       const updated = await this.updateMeal(this.meal.id, data, true);
 
@@ -984,6 +1051,9 @@ export default {
         .get(`/api/me/meals/${id}`)
         .then(response => {
           this.meal = response.data;
+          if (!response.data.macros) {
+            this.meal.macros = {};
+          }
           this.ingredients = response.data.ingredient;
           //this.tags = response.data.meal_tag;
           this.mealID = response.data.id;
