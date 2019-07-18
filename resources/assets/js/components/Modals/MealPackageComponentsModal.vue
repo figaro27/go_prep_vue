@@ -188,23 +188,18 @@ export default {
     }
   },
   validations() {
-    return {}; // temp
     if (!this.mealPackage) return {};
 
     let componentValidations = _.mapValues(
       _.keyBy(this.components, "id"),
       component => {
+        const qty = this.getComponentQuantity(component.id);
         return {
           minimum: value => {
-            return (
-              component.minimum === 0 ||
-              (_.isArray(value) && value.length >= component.minimum)
-            );
+            return component.minimum === 0 || qty >= component.minimum;
           },
           maximum: value => {
-            return (
-              !value || (_.isArray(value) && value.length <= component.maximum)
-            );
+            return !value || qty <= component.maximum;
           }
         };
       }
@@ -256,6 +251,15 @@ export default {
           });
 
           this.$set(this.choices[component.id], opt.id, optChoices);
+        }
+      });
+
+      this.$nextTick(() => {
+        // Ensure maximum hasn't been exceeded
+        const remaining = this.getRemainingMeals(component.id);
+        if (remaining < 0) {
+          const truncated = choices.slice(0, remaining);
+          this.$set(this.choices[component.id], option.id, truncated);
         }
       });
     },
@@ -434,6 +438,18 @@ export default {
           return remaining - meals.length;
         },
         max
+      );
+    },
+    getComponentQuantity(componentId) {
+      const component = this.getComponent(componentId);
+      const choices = this.getComponentChoices(componentId);
+
+      return _.reduce(
+        choices,
+        (qty, meals) => {
+          return qty + meals.length;
+        },
+        0
       );
     }
   }
