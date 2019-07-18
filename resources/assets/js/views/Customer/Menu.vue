@@ -1546,6 +1546,7 @@ export default {
     hideMealModal() {
       this.mealModal = false;
 
+      // Ensure modal is fully closed
       return new Promise(resolve => {
         this.$nextTick(resolve);
       });
@@ -1567,6 +1568,14 @@ export default {
       //this.$nextTick(() => {
       //  this.getNutritionFacts(this.meal.ingredients, this.meal);
       //});
+    },
+    hideMealPackageModal() {
+      this.mealPackageModal = false;
+
+      // Ensure modal is fully closed
+      return new Promise(resolve => {
+        this.$nextTick(resolve);
+      });
     },
     getNutritionFacts(ingredients, meal, ref = null) {
       const nutrition = this.nutrition.getTotals(ingredients);

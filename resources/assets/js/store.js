@@ -1297,7 +1297,7 @@ const getters = {
       }
 
       meal.getSize = sizeId => {
-        return _.find(meal.sizes, ["id", parseInt(sizeId)]);
+        return _.find(meal.sizes, ["id", parseInt(sizeId)]) || null;
       };
 
       meal.getTitle = (

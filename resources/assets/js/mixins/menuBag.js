@@ -28,6 +28,10 @@ export default {
       } else {
         size = meal.getSize(sizeId);
       }
+
+      if (!size) {
+        size = null;
+      }
       //}
 
       let sizeCriteria = !mealPackage
@@ -45,6 +49,9 @@ export default {
       ) {
         if (this.mealModal && this.hideMealModal) {
           await this.hideMealModal();
+        }
+        if (this.mealPackageModal && this.hideMealPackageModal) {
+          await this.hideMealPackageModal();
         }
 
         const result = !mealPackage
