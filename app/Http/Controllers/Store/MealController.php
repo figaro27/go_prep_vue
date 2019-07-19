@@ -99,6 +99,7 @@ class MealController extends StoreController
                 'active',
                 'title',
                 'description',
+                'instructions',
                 'price',
                 'category_ids',
                 'tag_ids',

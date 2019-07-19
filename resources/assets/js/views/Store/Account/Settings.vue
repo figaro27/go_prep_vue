@@ -614,6 +614,76 @@
             </b-form-group>
           </b-form>
 
+          <p>
+            <span class="mr-1">Enable Meal Instructions</span>
+            <img
+              v-b-popover.hover="
+                'Adds a new form field on each of your meals on the Menu page on your dashboard. Within that box you can type in special instructions specific to that particular meal such as heating instructions. If your customer orders that particular meal, these instructions will then be shown in their packing slips & email receipts. This is similar to the \'Notes for Customer\' option above, but for particular meals.'
+              "
+              title="Enable Meal Instructions"
+              src="/images/store/popover.png"
+              class="popover-size"
+            />
+          </p>
+
+          <b-form @submit.prevent="updateStoreSettings">
+            <b-form-group :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.mealInstructions"
+                @change.native="updateStoreSettings"
+              />
+            </b-form-group>
+          </b-form>
+
+          <p class="mb-0 pb-0">
+            <span class="mr-1">Categories</span>
+            <img
+              v-b-popover.hover="
+                'Categories are ways to group your meals together into different sections that show up on your menu. Some examples include Breakfast, Snacks, or certain diet types like Keto Friendly. You can then rearrange the order of the categories which rearranges the order they are shown on your menu.'
+              "
+              title="Categories"
+              src="/images/store/popover.png"
+              class="popover-size"
+            />
+          </p>
+          <b-form-group :state="true">
+            <div class="categories">
+              <draggable
+                v-model="categories"
+                @change="onChangeCategories"
+                element="ol"
+                class="plain"
+              >
+                <li
+                  v-for="category in categories"
+                  :key="`category-${category.id}`"
+                  style="cursor: n-resize"
+                >
+                  <p>
+                    {{ category.category }}
+                    <i
+                      v-if="category.id"
+                      @click="deleteCategory(category.id)"
+                      class="fa fa-minus-circle text-danger"
+                    ></i>
+                  </p>
+                </li>
+              </draggable>
+            </div>
+
+            <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
+              <b-input
+                v-model="new_category"
+                type="text"
+                placeholder="New Category..."
+              ></b-input>
+              <b-button type="submit" variant="primary ml-2">Create</b-button>
+            </b-form>
+          </b-form-group>
+
           <b-form @submit.prevent="updateStoreSettings">
             <b-form-group :state="true">
               <p>
@@ -827,7 +897,7 @@
       <!-- <div class="card">
         <div class="card-body">
           <p>Automatic Ordering</p>
-          
+
           <p>Low Threshold</p>
         </div>
       </div>-->

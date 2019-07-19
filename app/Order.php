@@ -141,6 +141,7 @@ class Order extends Model
                     'meal_id' => $mealOrder->meal_id,
                     'meal_size_id' => $mealOrder->meal_size_id,
                     'meal_title' => $mealOrder->title,
+                    'instructions' => $mealOrder->instructions,
                     'title' => $mealOrder->title,
                     'html_title' => $mealOrder->html_title,
                     'quantity' => $mealOrder->quantity,

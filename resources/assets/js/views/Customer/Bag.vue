@@ -519,6 +519,13 @@
                     >
                   </div>
                   <h4 class="mt-2 mb-3">Choose Payment Method</h4>
+                  <b-form-checkbox
+                    v-if="manualOrder && storeModules.allowCashOrders"
+                    v-model="cashOrder"
+                    class="pb-2"
+                  >
+                    Cash Order
+                  </b-form-checkbox>
                   <card-picker
                     :selectable="true"
                     v-model="card"
@@ -531,7 +538,7 @@
                     :creditCards="creditCardList"
                     :manualOrder="true"
                     v-model="cards"
-                    v-if="manualOrder"
+                    v-if="manualOrder && !cashOrder"
                     class="mb-3"
                     ref="cardPicker"
                   ></card-picker>
@@ -559,7 +566,13 @@
                     class="menu-bag-btn"
                     >CHECKOUT</b-btn
                   >
-                  <div v-if="manualOrder && cards.length > 0" class="row mt-4">
+                  <div
+                    v-if="
+                      (manualOrder && cards.length > 0) ||
+                        (cashOrder && customer != null)
+                    "
+                    class="row mt-4"
+                  >
                     <div class="col-md-6">
                       <b-form-group
                         v-if="manualOrder"
@@ -781,6 +794,7 @@ export default {
   data() {
     return {
       //couponFreeDelivery: 0,
+      cashOrder: false,
       form: {},
       addCustomerModal: false,
       deposit: 100,
@@ -814,6 +828,7 @@ export default {
       creditCards: "cards",
       store: "viewedStore",
       storeSetting: "viewedStoreSetting",
+      storeModules: "storeModules",
       storeCustomers: "storeCustomers",
       total: "bagQuantity",
       bag: "bagItems",
@@ -1114,6 +1129,12 @@ export default {
       } else {
         endPoint = "/api/bag/checkout";
       }
+
+      let cardId = this.card;
+
+      if (this.cashOrder === true) {
+        cardId = 0;
+      }
       axios
         .post(endPoint, {
           subtotal: this.subtotal,
@@ -1122,7 +1143,7 @@ export default {
           plan: this.deliveryPlan,
           pickup: this.pickup,
           delivery_day: this.deliveryDay,
-          card_id: this.card,
+          card_id: cardId,
           store_id: this.store.id,
           salesTax: this.tax,
           coupon_id: this.couponApplied ? this.coupon.id : null,
@@ -1131,7 +1152,8 @@ export default {
           deliveryFee: this.deliveryFee,
           pickupLocation: this.selectedPickupLocation,
           customer: this.customer,
-          deposit: deposit
+          deposit: deposit,
+          cashOrder: this.cashOrder
         })
         .then(async resp => {
           this.emptyBag();
