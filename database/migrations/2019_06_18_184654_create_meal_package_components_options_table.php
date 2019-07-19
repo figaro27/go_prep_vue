@@ -34,7 +34,7 @@ class CreateMealPackageComponentsOptionsTable extends Migration
                 ->nullable()
                 ->references('id')
                 ->on('meal_package_sizes');
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->double('price', 6, 2);
             $table->boolean('selectable')->default(0);
             $table->timestamps();

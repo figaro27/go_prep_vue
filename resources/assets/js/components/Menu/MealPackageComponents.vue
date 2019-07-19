@@ -69,7 +69,12 @@
             <th class="border-top-0">Title</th>
             <th class="border-top-0">Price</th>
             <th class="border-top-0">Meal Package Size</th>
-            <th class="border-top-0">Restrict Meals To</th>
+            <th
+              class="border-top-0"
+              v-if="storeModules.package_component_restrictions"
+            >
+              Restrict Meals To
+            </th>
             <th class="border-top-0">Meals</th>
             <th class="border-top-0"></th>
           </thead>
@@ -77,7 +82,13 @@
           <tbody>
             <tr v-for="(option, x) in component.options" :key="option.id">
               <td>
-                <b-input v-model="option.title"></b-input>
+                <b-input
+                  v-model="option.title"
+                  v-if="!option.selectable && option.meals.length"
+                ></b-input>
+                <div v-else>
+                  N/A
+                </div>
               </td>
               <td>
                 <money
@@ -96,12 +107,15 @@
                   :options="sizeOptions"
                 ></b-select>
               </td>
-              <td>
+              <td v-if="storeModules.package_component_restrictions">
                 <b-select
                   v-model="option.restrict_meals_option_id"
                   :options="restrictMealsOptions(component, option.id)"
                   v-if="canRestrictMeals(component, option)"
                 ></b-select>
+                <div v-else>
+                  N/A
+                </div>
               </td>
               <td>
                 <b-btn variant="primary" @click="changeOptionMeals(i, x)"
@@ -187,7 +201,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      storeCurrencySymbol: "storeCurrencySymbol"
+      storeCurrencySymbol: "storeCurrencySymbol",
+      storeModules: "storeModules"
     }),
     sizeOptions() {
       return _.concat(
