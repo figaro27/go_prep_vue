@@ -20,9 +20,12 @@
               Remaining: {{ getRemainingMeals(component.id) }}
 
               <div v-for="option in getOptions(component)" :key="option.id">
-                <b-checkbox @input="toggleOption(component.id, option.id)">{{
-                  option.text
-                }}</b-checkbox>
+                <b-checkbox
+                  @input="toggleOption(component.id, option.id)"
+                  :checked="optionSelected(component.id, option.id)"
+                >
+                  {{ option.text || "" }}
+                </b-checkbox>
 
                 <div
                   v-if="
@@ -212,15 +215,18 @@ export default {
   methods: {
     toggleOption(componentId, optionId) {
       const option = this.getComponentOption(componentId, optionId);
+      let meals = option.selectable ? [] : option.meals;
 
       if (!this.choices[componentId]) {
         this.$set(this.choices, componentId, {});
       }
 
-      if (this.choices[componentId][optionId]) {
+      if (
+        this.choices[componentId][optionId] ||
+        meals.length > this.getRemainingMeals(componentId)
+      ) {
         this.$delete(this.choices[componentId], optionId);
       } else {
-        let meals = option.selectable ? [] : option.meals;
         this.$set(this.choices[componentId], optionId, meals);
       }
     },

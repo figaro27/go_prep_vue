@@ -853,9 +853,9 @@
                           <b-btn
                             v-if="mealPkg.sizes.length === 0"
                             @click="addOne(mealPkg, true)"
-                            class="menu-bag-btn"
+                            class="plus-minus menu-bag-btn"
                           >
-                            <i>-</i>
+                            <i>+</i>
                           </b-btn>
                           <b-dropdown v-else toggle-class="menu-bag-btn">
                             <span slot="button-content">+</span>
