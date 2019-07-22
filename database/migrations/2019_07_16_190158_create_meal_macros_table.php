@@ -28,10 +28,10 @@ class CreateMealMacrosTable extends Migration
                 ->references('id')
                 ->on('meal_sizes')
                 ->nullable();
-            $table->unsignedInteger('calories');
-            $table->unsignedInteger('carbs');
-            $table->unsignedInteger('protein');
-            $table->unsignedInteger('fat');
+            $table->unsignedInteger('calories')->nullable();
+            $table->unsignedInteger('carbs')->nullable();
+            $table->unsignedInteger('protein')->nullable();
+            $table->unsignedInteger('fat')->nullable();
             $table->timestamps();
         });
     }
