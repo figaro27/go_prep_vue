@@ -164,7 +164,7 @@ class Meal extends Model implements HasMedia
 
         if (!count($mediaItems)) {
             if ($this->store->storeDetail->logo) {
-                $url = $this->store->storeDetail->logo->url_thumb;
+                $url = $this->store->storeDetail->logo['url_thumb'];
             } else {
                 $url = asset('images/defaultMeal.jpg');
             }
