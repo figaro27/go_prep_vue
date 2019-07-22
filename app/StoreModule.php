@@ -2,7 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Model;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class StoreModule extends Model
 {
@@ -12,7 +15,8 @@ class StoreModule extends Model
     }
 
     protected $casts = [
-        'allowCashOrders' => 'boolean'
+        'allowCashOrders' => 'boolean',
+        'transferHours' => 'boolean'
     ];
 
     protected $fillable = ['allowCashOrders'];

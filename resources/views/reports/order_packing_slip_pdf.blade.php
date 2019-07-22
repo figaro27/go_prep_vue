@@ -24,10 +24,18 @@
             @endif
             <p>Order Placed: {{$order->created_at->format('D, m/d/Y')}}</p>
             @if ($order->pickup === 0)
-            <p>To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}}</p>
+            <p>To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}} 
+              @if ($order->transferTime)
+                - {{ $order->transferTime }}
+              @endif
+            </p>
             @endif
             @if ($order->pickup === 1)
-            <p>To Be Picked Up: {{$order->delivery_date->format('D, m/d/Y')}}</p>
+            <p>To Be Picked Up: {{$order->delivery_date->format('D, m/d/Y')}}
+              @if ($order->transferTime)
+                - {{ $order->transferTime }}
+              @endif
+            </p>
             @endif
             <p><strong>Total: ${{number_format($order->amount, 2)}}</strong></p>
       </div>

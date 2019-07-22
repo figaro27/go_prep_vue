@@ -462,6 +462,15 @@
                       required
                     ></b-select>
                   </div>
+
+                  <div class="pt-2 pb-2" v-if="storeModules.transferHours">
+                    <strong>Pickup / Delivery Time</strong>
+                    <b-form-select
+                      class="ml-2"
+                      v-model="transferTime"
+                      :options="transferTimeOptions"
+                    ></b-form-select>
+                  </div>
                 </div>
               </li>
 
@@ -794,6 +803,7 @@ export default {
   data() {
     return {
       //couponFreeDelivery: 0,
+      transferTime: "",
       cashOrder: false,
       form: {},
       addCustomerModal: false,
@@ -828,7 +838,8 @@ export default {
       creditCards: "cards",
       store: "viewedStore",
       storeSetting: "viewedStoreSetting",
-      storeModules: "storeModules",
+      storeModules: "viewedStoreModules",
+      storeModuleSettings: "viewedStoreModuleSettings",
       storeCustomers: "storeCustomers",
       total: "bagQuantity",
       bag: "bagItems",
@@ -917,6 +928,38 @@ export default {
     },
     storeSettings() {
       return this.store.settings;
+    },
+    transferTimeOptions() {
+      let startTime = parseInt(
+        this.storeModuleSettings.transferStartTime.substr(0, 2)
+      );
+      let endTime = parseInt(
+        this.storeModuleSettings.transferEndTime.substr(0, 2)
+      );
+      let hourOptions = [];
+
+      while (startTime <= endTime) {
+        hourOptions.push(startTime);
+        startTime++;
+      }
+
+      let newHourOptions = [];
+      hourOptions.forEach(option => {
+        if (option < 12) {
+          option = option.toString();
+          let newOption = option.concat(" ", "AM");
+          newHourOptions.push(newOption);
+        } else {
+          if (option > 12) {
+            option = option - 12;
+          }
+          option = option.toString();
+          let newOption = option.concat(" ", "PM");
+          newHourOptions.push(newOption);
+        }
+      });
+
+      return newHourOptions;
     },
     transferType() {
       return this.storeSettings.transferType.split(",");
@@ -1153,7 +1196,8 @@ export default {
           pickupLocation: this.selectedPickupLocation,
           customer: this.customer,
           deposit: deposit,
-          cashOrder: this.cashOrder
+          cashOrder: this.cashOrder,
+          transferTime: this.transferTime
         })
         .then(async resp => {
           this.emptyBag();
