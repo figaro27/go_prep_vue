@@ -170,6 +170,9 @@ class SpaController extends Controller
                 'meals',
                 'packages',
                 'packages.meals',
+                'packages.sizes',
+                'packages.components',
+                'packages.addons',
                 'units',
                 'categories',
                 'meals.sizes',
@@ -177,13 +180,16 @@ class SpaController extends Controller
                 'meals.allergies',
                 'meals.components',
                 'meals.addons',
+                'meals.macros',
                 'settings',
                 'details',
                 'coupons',
                 'pickupLocations',
                 'modules',
                 'moduleSettings'
-            ])->find(STORE_ID)
+            ])
+                ->without([])
+                ->find(STORE_ID)
             : null;
 
         if ($user) {

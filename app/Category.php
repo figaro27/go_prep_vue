@@ -7,19 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-
-    protected $fillable = [
-      'store_id',
-      'category',
-    ];
+    protected $fillable = ['store_id', 'category'];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = [
-    ];
+    protected $hidden = [];
 
     public $appends = [];
 
@@ -28,8 +23,10 @@ class Category extends Model
         return $this->belongsTo('App\Store');
     }
 
-    protected $casts = [
-       
-    ];
+    public function meals()
+    {
+        return $this->belongsToMany('App\Meal')->using('App\MealCategory');
+    }
 
+    protected $casts = [];
 }

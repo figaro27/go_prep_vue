@@ -12,6 +12,8 @@ export default {
     ) {
       if (!mealPackage) {
         meal = this.getMeal(meal.id);
+      } else {
+        meal = this.getMealPackage(meal.id);
       }
 
       if (!meal) {
@@ -20,44 +22,48 @@ export default {
 
       let sizeId = size;
 
-      if (!mealPackage) {
-        if (_.isObject(size) && size.id) {
-          sizeId = size.id;
-        } else {
-          size = meal.getSize(sizeId);
-        }
+      //if (!mealPackage) {
+      if (_.isObject(size) && size.id) {
+        sizeId = size.id;
+      } else {
+        size = meal.getSize(sizeId);
       }
 
+      if (!size) {
+        size = null;
+      }
+      //}
+
+      let sizeCriteria = !mealPackage
+        ? { meal_size_id: sizeId }
+        : { meal_package_size_id: sizeId };
+
       if (
-        !mealPackage &&
-        ((meal.components.length &&
+        (meal.components.length &&
           _.maxBy(meal.components, "minimum") &&
           _.find(meal.components, component => {
-            return _.find(component.options, { meal_size_id: sizeId });
+            return _.find(component.options, sizeCriteria);
           }) &&
           !components) ||
-          (meal.addons.length &&
-            _.find(meal.addons, { meal_size_id: sizeId }) &&
-            !addons))
+        (meal.addons.length && _.find(meal.addons, sizeCriteria) && !addons)
       ) {
         if (this.mealModal && this.hideMealModal) {
           await this.hideMealModal();
         }
+        if (this.mealPackageModal && this.hideMealPackageModal) {
+          await this.hideMealPackageModal();
+        }
 
-        //const required =
-
-        const result = await this.$refs.componentModal.show(
-          meal,
-          mealPackage,
-          size
-        );
+        const result = !mealPackage
+          ? await this.$refs.componentModal.show(meal, mealPackage, size)
+          : await this.$refs.packageComponentModal.show(meal, size);
 
         if (!result) {
           return;
         }
 
         components = { ...result.components };
-        addons = [...result.addons];
+        addons = { ...result.addons };
       }
 
       this.$store.commit("addToBag", {
@@ -144,7 +150,9 @@ export default {
       return this.$store.getters.bagMealQuantity(meal);
     },
     itemComponents(item) {
-      const meal = this.getMeal(item.meal.id);
+      const meal = !item.meal_package
+        ? this.getMeal(item.meal.id)
+        : this.getMealPackage(item.meal.id);
       let wat = _(item.components)
         .map((options, componentId) => {
           const component = meal.getComponent(componentId);

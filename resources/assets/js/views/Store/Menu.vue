@@ -4,6 +4,51 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-body">
+            <b-modal
+              v-model="showCategoriesModal"
+              title="Menu Categories"
+              size="sm"
+              @ok="updateCategories"
+              @cancel="updateCategories"
+              @hidden="updateCategories"
+            >
+              <b-form-group :state="true">
+                <div class="categories">
+                  <draggable
+                    v-model="categories"
+                    @change="onChangeCategories"
+                    element="ol"
+                    class="plain"
+                  >
+                    <li
+                      v-for="category in categories"
+                      :key="`category-${category.id}`"
+                      style="cursor: n-resize"
+                    >
+                      <p>
+                        {{ category.category }}
+                        <i
+                          v-if="category.id"
+                          @click="deleteCategory(category.id)"
+                          class="fa fa-minus-circle text-danger"
+                        ></i>
+                      </p>
+                    </li>
+                  </draggable>
+                </div>
+
+                <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
+                  <b-input
+                    v-model="new_category"
+                    type="text"
+                    placeholder="New Category..."
+                  ></b-input>
+                  <b-button type="submit" variant="primary ml-2"
+                    >Create</b-button
+                  >
+                </b-form>
+              </b-form-group>
+            </b-modal>
             <Spinner v-if="isLoading" />
 
             <v-client-table
@@ -50,6 +95,9 @@
                   class="btn btn-warning btn-md"
                   tag="button"
                   >Preview Menu</a
+                >
+                <b-btn variant="danger" @click="showCategoriesModal = true"
+                  >Edit Categories</b-btn
                 >
               </div>
 
@@ -225,6 +273,71 @@
                     "
                   ></money>
                   <br />
+                  <h4 v-if="storeSettings.showMacros">
+                    Macros
+                    <img
+                      v-b-popover.hover="
+                        'Here you can enter the main macro-nutrients for your meals which will then show underneath the meal titles on your menu page. If you have Nutrition Facts enabled, be sure to keep these numbers consistent as your customers will see the differences.'
+                      "
+                      title="Macros"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </h4>
+                  <b-form-group
+                    label-for="meal-macros"
+                    :state="true"
+                    v-if="storeSettings.showMacros"
+                  >
+                    <div class="row">
+                      <div class="col-md-3">
+                        Calories
+                      </div>
+                      <div class="col-md-3">
+                        Carbs
+                      </div>
+                      <div class="col-md-3">
+                        Protein
+                      </div>
+                      <div class="col-md-3">
+                        Fat
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-3">
+                        <b-form-input
+                          id="macros-calories"
+                          type="text"
+                          v-model="meal.macros.calories"
+                          required
+                        ></b-form-input>
+                      </div>
+                      <div class="col-md-3">
+                        <b-form-input
+                          id="macros-carbs"
+                          type="text"
+                          v-model="meal.macros.carbs"
+                          required
+                        ></b-form-input>
+                      </div>
+                      <div class="col-md-3">
+                        <b-form-input
+                          id="macros-protein"
+                          type="text"
+                          v-model="meal.macros.protein"
+                          required
+                        ></b-form-input>
+                      </div>
+                      <div class="col-md-3">
+                        <b-form-input
+                          id="macros-fat"
+                          type="text"
+                          v-model="meal.macros.fat"
+                          required
+                        ></b-form-input>
+                      </div>
+                    </div>
+                  </b-form-group>
                   <h4>
                     Categories
                     <img
@@ -519,7 +632,23 @@
 </template>
 
 <style lang="scss" scoped>
-.gallery {
+.categories {
+  .btn {
+    position: relative;
+
+    i {
+      position: absolute;
+      top: 0;
+      right: 0;
+      opacity: 0;
+    }
+
+    &:hover {
+      i {
+        opacity: 1;
+      }
+    }
+  }
 }
 </style>
 
@@ -574,8 +703,11 @@ export default {
         num_orders: "",
         created_at: "",
         categories: [],
-        image: {}
+        image: {},
+        macros: {}
       },
+      showCategoriesModal: false,
+      new_category: "",
       createMealModal: false,
       createPackageModal: false,
       viewMealModal: false,
@@ -707,6 +839,12 @@ export default {
       if (subdomainCheck.includes("goprep")) return true;
       else return false;
     },
+    categories() {
+      return _.chain(this.storeCategories)
+        .orderBy("order")
+        .toArray()
+        .value();
+    },
     storeURL() {
       return (
         "http://" + this.storeDetail.domain + ".goprep.com/store/menu/preview"
@@ -785,6 +923,7 @@ export default {
       refreshMealPackages: "refreshMealPackages",
       _updateMeal: "updateMeal",
       _updateMealPackage: "updateMealPackage",
+      refreshCategories: "refreshCategories",
       addJob: "addJob",
       removeJob: "removeJob"
     }),
@@ -816,7 +955,8 @@ export default {
         sizes: this.meal.sizes,
         default_size_title: this.meal.default_size_title,
         components: this.meal.components,
-        addons: this.meal.addons
+        addons: this.meal.addons,
+        macros: this.meal.macros
       };
       const updated = await this.updateMeal(this.meal.id, data, true);
 
@@ -939,6 +1079,9 @@ export default {
         .get(`/api/me/meals/${id}`)
         .then(response => {
           this.meal = response.data;
+          if (!response.data.macros) {
+            this.meal.macros = {};
+          }
           this.ingredients = response.data.ingredient;
           //this.tags = response.data.meal_tag;
           this.mealID = response.data.id;
@@ -1143,6 +1286,37 @@ export default {
         .finally(() => {
           this.loading = false;
         });
+    },
+    onAddCategory() {
+      axios
+        .post("/api/me/categories", { category: this.new_category })
+        .then(response => {
+          this.refreshCategories();
+          this.new_category = "";
+        });
+    },
+    onChangeCategories(e) {
+      if (_.isObject(e.moved)) {
+        let newCats = _.toArray({ ...this.categories });
+        newCats[e.moved.oldIndex] = this.categories[e.moved.newIndex];
+        newCats[e.moved.newIndex] = this.categories[e.moved.oldIndex];
+
+        newCats = _.map(newCats, (cat, i) => {
+          cat.order = i;
+          return cat;
+        });
+
+        axios
+          .post("/api/me/categories", { categories: newCats })
+          .then(response => {
+            this.refreshCategories();
+          });
+      }
+    },
+    deleteCategory(id) {
+      axios.delete("/api/me/categories/" + id).then(response => {
+        this.refreshCategories();
+      });
     }
   }
 };

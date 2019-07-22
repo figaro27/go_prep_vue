@@ -45,6 +45,17 @@ class Store extends Model
         });
     }
 
+    /**
+     * Get the instance as an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $arr = parent::toArray();
+        return $arr;
+    }
+
     public function user()
     {
         return $this->belongsTo('App\User');

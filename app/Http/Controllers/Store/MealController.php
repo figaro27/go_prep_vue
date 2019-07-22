@@ -21,7 +21,7 @@ class MealController extends StoreController
             ? $this->store
                 ->meals()
                 ->with(['orders', 'tags', 'ingredients', 'sizes'])
-                ->without(['allergies', 'categories'])
+                ->without(['allergies', 'categories', 'store'])
                 ->get()
             : [];
     }
@@ -110,7 +110,8 @@ class MealController extends StoreController
                 'sizes',
                 'default_size_title',
                 'components',
-                'addons'
+                'addons',
+                'macros'
             ])
         );
     }

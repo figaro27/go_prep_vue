@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Store\StoreController;
 use App\Http\Requests\StoreMealPackageRequest;
+use App\Http\Requests\UpdateMealPackageRequest;
 use App\Meal;
 use App\MealPackage;
 use Illuminate\Http\Request;
@@ -51,7 +52,12 @@ class MealPackageController extends StoreController
                 'description',
                 'price',
                 'featured_image',
-                'meals'
+                'meals',
+                'sizes',
+                'default_size_title',
+                'components',
+                'addons',
+                'meal_carousel'
             ])
         );
         $props->put('store_id', $this->store->id);
@@ -72,10 +78,122 @@ class MealPackageController extends StoreController
      */
     public function show(Request $request, $id)
     {
-        return $this->store
-            ->packages()
-            ->with(['meals'])
-            ->find($id);
+        $package = collect(
+            $this->store
+                ->packages()
+                ->with([
+                    'meals',
+                    'sizes',
+                    'sizes.meals',
+                    'components',
+                    'addons',
+                    'addons.meals'
+                ])
+                ->find($id)
+        );
+
+        return $package->map(function ($val, $key) {
+            if ($key === 'meals') {
+                return collect($val)->map(function ($meal) {
+                    $meal = collect($meal);
+                    $size = $meal->get('meal_size');
+
+                    return [
+                        'id' => $meal->get('id'),
+                        'quantity' => $meal->get('quantity'),
+                        'meal_size_id' => $size ? $size['id'] : null
+                    ];
+                });
+            }
+
+            if ($key === 'sizes') {
+                return collect($val)->map(function ($size) {
+                    return collect($size)
+                        ->only(['id', 'title', 'price', 'meals'])
+                        ->map(function ($val, $key) {
+                            if ($key === 'meals') {
+                                return collect($val)->map(function ($meal) {
+                                    return [
+                                        'id' => $meal['id'],
+                                        'quantity' => $meal['quantity'],
+                                        'meal_size_id' =>
+                                            $meal['pivot']['meal_size_id']
+                                    ];
+                                });
+                            }
+                            return $val;
+                        });
+                });
+            }
+
+            // components
+            if ($key === 'components') {
+                return collect($val)->map(function ($component) {
+                    return collect($component)
+                        ->only(['id', 'title', 'minimum', 'maximum', 'options'])
+                        ->map(function ($val, $key) {
+                            if ($key === 'options') {
+                                return collect($val)->map(function ($option) {
+                                    return collect($option)->map(function (
+                                        $val,
+                                        $key
+                                    ) {
+                                        if ($key === 'meals') {
+                                            return collect($val)->map(function (
+                                                $meal
+                                            ) {
+                                                return [
+                                                    'id' => $meal['meal_id'],
+                                                    'quantity' =>
+                                                        $meal['quantity'],
+                                                    'meal_size_id' =>
+                                                        $meal['meal_size_id'],
+                                                    'price' => $meal['price']
+                                                ];
+                                            });
+                                        }
+                                        return $val;
+                                    });
+                                });
+                            }
+
+                            return $val;
+                        });
+                });
+            }
+            // - components
+
+            // addons
+            if ($key === 'addons') {
+                return collect($val)->map(function ($addon) {
+                    return collect($addon)
+                        ->only([
+                            'id',
+                            'title',
+                            'meals',
+                            'meal_package_size_id',
+                            'selectable',
+                            'price'
+                        ])
+                        ->map(function ($val, $key) {
+                            if ($key === 'meals') {
+                                return collect($val)->map(function ($meal) {
+                                    return [
+                                        'id' => $meal['meal_id'],
+                                        'quantity' => $meal['quantity'],
+                                        'meal_size_id' => $meal['meal_size_id'],
+                                        'price' => $meal['price']
+                                    ];
+                                });
+                            }
+                            return $val;
+                        });
+                });
+            }
+            // - addons
+
+            return $val;
+        });
     }
 
     /**
@@ -95,7 +213,7 @@ class MealPackageController extends StoreController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateMealPackageRequest $request, $id)
     {
         $package = $this->store->packages()->find($id);
 
@@ -106,7 +224,12 @@ class MealPackageController extends StoreController
                 'description',
                 'price',
                 'featured_image',
-                'meals'
+                'meals',
+                'sizes',
+                'default_size_title',
+                'components',
+                'addons',
+                'meal_carousel'
             ])
         );
 

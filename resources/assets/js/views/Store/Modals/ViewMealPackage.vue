@@ -3,7 +3,7 @@
     <b-modal
       title="Edit Package"
       ref="modal"
-      @ok.prevent="e => updatePackage(e)"
+      @ok.prevent="e => updateMealPackage(e)"
       @cancel.prevent="toggleModal()"
       @hidden="toggleModal"
     >
@@ -16,7 +16,7 @@
                 <b-form-input
                   id="meal-title"
                   type="text"
-                  v-model="package.title"
+                  v-model="mealPackage.title"
                   placeholder="Meal Name"
                   required
                 ></b-form-input>
@@ -24,7 +24,7 @@
               <h4>Package Description</h4>
               <b-form-group label-for="meal-description" :state="true">
                 <textarea
-                  v-model.lazy="package.description"
+                  v-model.lazy="mealPackage.description"
                   id="meal-description"
                   class="form-control"
                   :rows="4"
@@ -34,17 +34,34 @@
                 <h4>Price</h4>
                 <money
                   required
-                  v-model="package.price"
+                  v-model="mealPackage.price"
                   :min="0.1"
                   class="form-control"
                   v-bind="{ prefix: storeCurrencySymbol }"
                 ></money>
               </b-form-group>
+
+              <p>
+                <span class="mr-1">Display Included Meals in Packages</span>
+                <hint title="Display Included Meals in Packages">
+                  Creates a slider in the meal package popup which allows users
+                  to view the meals which are included in that package.
+                </hint>
+              </p>
+
+              <b-form-group :state="true">
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="mealPackage.meal_carousel"
+                />
+              </b-form-group>
             </b-tab>
             <b-tab title="Meals">
               <h4>Meals</h4>
               <v-client-table
-                ref="packageMealsTable"
+                ref="mealPackageMealsTable"
                 :columns="columns"
                 :data="tableData"
                 :options="options"
@@ -84,7 +101,70 @@
                     @change="val => setMealQuantity(props.row.id, val)"
                   ></b-input>
                 </div>
+
+                <div slot="meal_size_id" slot-scope="props">
+                  <b-select
+                    v-model="props.row.meal_size_id"
+                    :options="sizeOptions(props.row)"
+                    @change="val => setMealSizeId(props.row.id, val)"
+                  ></b-select>
+                </div>
               </v-client-table>
+            </b-tab>
+            <b-tab title="Variations">
+              <b-tabs pills>
+                <b-tab
+                  title="Sizes"
+                  @click="$refs.meal_package_sizes.hideMealPicker()"
+                >
+                  <meal-package-sizes
+                    ref="meal_package_sizes"
+                    :mealPackage="mealPackage"
+                    @change="val => (mealPackage.sizes = val)"
+                    @changeDefault="
+                      val => (mealPackage.default_size_title = val)
+                    "
+                    @save="
+                      val =>
+                        updateMealPackage(mealPackage.id, {
+                          sizes: val,
+                          default_size_title: mealPackage.default_size_title
+                        })
+                    "
+                  ></meal-package-sizes>
+                </b-tab>
+
+                <b-tab
+                  title="Components"
+                  @click="$refs.meal_package_components.hideMealPicker()"
+                >
+                  <meal-package-components
+                    ref="meal_package_components"
+                    :meal_package="mealPackage"
+                    @change="val => (mealPackage.components = val)"
+                    @save="
+                      val =>
+                        updateMealPackage(mealPackage.id, {
+                          components: val
+                        })
+                    "
+                  ></meal-package-components>
+                </b-tab>
+
+                <b-tab
+                  title="Addons"
+                  @click="$refs.meal_package_addons.hideMealPicker()"
+                >
+                  <meal-package-addons
+                    ref="meal_package_addons"
+                    :meal_package="mealPackage"
+                    @change="val => (mealPackage.addons = val)"
+                    @save="
+                      val => updateMealPackage(mealPackage.id, { addons: val })
+                    "
+                  ></meal-package-addons>
+                </b-tab>
+              </b-tabs>
             </b-tab>
           </b-tabs>
         </b-col>
@@ -103,7 +183,7 @@
             Image size too big?
             <br />You can compress images
             <a href="https://imagecompressor.com/" target="_blank">here.</a>
-          </p> -->
+          </p>-->
         </b-col>
       </b-row>
     </b-modal>
@@ -126,11 +206,17 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import Spinner from "../../../components/Spinner";
 import IngredientPicker from "../../../components/IngredientPicker";
 import fs from "../../../lib/fs.js";
+import MealPackageSizes from "../../../components/Menu/MealPackageSizes";
+import MealPackageComponents from "../../../components/Menu/MealPackageComponents";
+import MealPackageAddons from "../../../components/Menu/MealPackageAddons";
 
 export default {
   components: {
     Spinner,
-    PictureInput
+    PictureInput,
+    MealPackageSizes,
+    MealPackageComponents,
+    MealPackageAddons
   },
   props: {
     meal_package: {
@@ -140,16 +226,23 @@ export default {
   },
   data() {
     return {
-      package: {
+      mealPackage: {
         meals: []
       },
-      columns: ["included", "featured_image", "title", "quantity"],
+      columns: [
+        "included",
+        "featured_image",
+        "title",
+        "quantity",
+        "meal_size_id"
+      ],
       options: {
         headings: {
           included: "Included",
           featured_image: "Image",
           title: "Title",
-          quantity: "Quantity"
+          quantity: "Quantity",
+          meal_size_id: "Meal Size"
         },
         rowClassCallback: function(row) {
           let classes = `meal meal-${row.id}`;
@@ -176,12 +269,13 @@ export default {
       return this.meals.map(meal => {
         meal.included = this.hasMeal(meal.id);
         meal.quantity = this.getMealQuantity(meal.id);
+        meal.meal_size_id = this.getMealSizeId(meal.id);
         return meal;
       });
     },
     mealPriceTotal() {
       let total = 0;
-      this.package.meals.forEach(meal => {
+      this.mealPackage.meals.forEach(meal => {
         const _meal = this.findMeal(meal.id);
         if (_meal) {
           total += _meal.price * meal.quantity;
@@ -191,7 +285,7 @@ export default {
     }
   },
   created() {
-    this.package = { ...this.meal_package };
+    this.mealPackage = { ...this.meal_package };
   },
   mounted() {
     this.$refs.modal.show();
@@ -205,7 +299,7 @@ export default {
       _updateMeal: "updateMeal"
     }),
     findMealIndex(id) {
-      return _.findIndex(this.package.meals, { id });
+      return _.findIndex(this.mealPackage.meals, { id });
     },
     hasMeal(id) {
       return this.findMealIndex(id) !== -1;
@@ -218,21 +312,21 @@ export default {
       }
     },
     removeMeal(id) {
-      this.package.meals = _.filter(this.package.meals, meal => {
+      this.mealPackage.meals = _.filter(this.mealPackage.meals, meal => {
         return meal.id !== id;
       });
     },
     addMeal(id, quantity = 1) {
       const index = this.findMealIndex(id);
       if (index === -1) {
-        this.package.meals.push({
+        this.mealPackage.meals.push({
           id,
           quantity
         });
       } else {
-        let meal = this.package.meals[index];
+        let meal = this.mealPackage.meals[index];
         meal.quantity += 1;
-        this.$set(this.package.meals, index, meal);
+        this.$set(this.mealPackage.meals, index, meal);
       }
     },
     setMealQuantity(id, quantity) {
@@ -242,14 +336,14 @@ export default {
         return this.removeMeal(id);
       }
       if (index === -1) {
-        this.package.meals.push({
+        this.mealPackage.meals.push({
           id,
           quantity
         });
       } else {
-        let meal = { ...this.package.meals[index] };
+        let meal = { ...this.mealPackage.meals[index] };
         meal.quantity = quantity;
-        this.$set(this.package.meals, index, meal);
+        this.$set(this.mealPackage.meals, index, meal);
       }
     },
     getMealQuantity(id) {
@@ -257,18 +351,48 @@ export default {
       if (index === -1) {
         return 0;
       } else {
-        return this.package.meals[index].quantity;
+        return this.mealPackage.meals[index].quantity;
       }
     },
-    async updatePackage(e) {
+    sizeOptions(meal) {
+      return _.concat(
+        {
+          text: meal.default_size_title || "Default",
+          value: null
+        },
+        meal.sizes.map(size => {
+          return {
+            text: size.title,
+            value: size.id
+          };
+        })
+      );
+    },
+    setMealSizeId(id, mealSizeId) {
+      const index = this.findMealIndex(id);
+      if (index !== -1) {
+        let meal = { ...this.mealPackage.meals[index] };
+        meal.meal_size_id = mealSizeId;
+        this.$set(this.mealPackage.meals, index, meal);
+      }
+    },
+    getMealSizeId(id) {
+      const index = this.findMealIndex(id);
+      if (index === -1) {
+        return null;
+      } else {
+        return this.mealPackage.meals[index].meal_size_id;
+      }
+    },
+    async updateMealPackage(e) {
       const req = {
-        ...this.package,
+        ...this.mealPackage,
         validate_all: true
       };
 
       try {
         const { data } = await axios.patch(
-          `/api/me/packages/${this.package.id}`,
+          `/api/me/packages/${this.mealPackage.id}`,
           req
         );
       } catch (response) {
@@ -286,7 +410,7 @@ export default {
     },
     async changeImage(val) {
       let b64 = await fs.getBase64(this.$refs.featuredImageInput.file);
-      this.package.featured_image = b64;
+      this.mealPackage.featured_image = b64;
     },
     toggleModal() {
       this.$parent.viewPackageModal = false;

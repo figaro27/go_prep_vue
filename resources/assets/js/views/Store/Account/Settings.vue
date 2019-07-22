@@ -521,7 +521,28 @@
               />
             </b-form-group>
           </b-form>
-
+          <p>
+            <span class="mr-1">Show Macros</span>
+            <img
+              v-b-popover.hover="
+                'Enables input fields for your to add your meal\'s calories, carbs, protein, and fat. This then shows up underneath your meal titles on your menu page. If you have Nutrition Facts enabled as well, please keep the numbers the same as your customers will see any differences.'
+              "
+              title="Show Macros"
+              src="/images/store/popover.png"
+              class="popover-size"
+            />
+          </p>
+          <b-form @submit.prevent="updateStoreSettings">
+            <b-form-group :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.showMacros"
+                @change.native="updateStoreSettings"
+              />
+            </b-form-group>
+          </b-form>
           <p>
             <span class="mr-1">Show Ingredients</span>
             <img
@@ -876,7 +897,7 @@
       <!-- <div class="card">
         <div class="card-body">
           <p>Automatic Ordering</p>
-          
+
           <p>Low Threshold</p>
         </div>
       </div>-->
@@ -1064,25 +1085,6 @@
 </template>
 
 <style lang="scss" scoped>
-.categories {
-  .btn {
-    position: relative;
-
-    i {
-      position: absolute;
-      top: 0;
-      right: 0;
-      opacity: 0;
-    }
-
-    &:hover {
-      i {
-        opacity: 1;
-      }
-    }
-  }
-}
-
 .VueTables__search {
   display: none;
 }
@@ -1127,7 +1129,6 @@ export default {
       loginAlertSuccess: false,
       loginAlertFail: false,
       zipCodes: [],
-      new_category: "",
       view_delivery_days: 1,
       payments_url: "",
       coupon: { type: "flat", freeDelivery: 0 },
@@ -1155,12 +1156,6 @@ export default {
     },
     storeDetails() {
       return this.storeDetail;
-    },
-    categories() {
-      return _.chain(this.storeCategories)
-        .orderBy("order")
-        .toArray()
-        .value();
     },
     // storeDetail(){
     //     return this.store.store_detail;
@@ -1441,37 +1436,6 @@ export default {
         if (resp.data.url) {
           window.location = resp.data.url;
         }
-      });
-    },
-    onAddCategory() {
-      axios
-        .post("/api/me/categories", { category: this.new_category })
-        .then(response => {
-          this.refreshCategories();
-          this.new_category = "";
-        });
-    },
-    onChangeCategories(e) {
-      if (_.isObject(e.moved)) {
-        let newCats = _.toArray({ ...this.categories });
-        newCats[e.moved.oldIndex] = this.categories[e.moved.newIndex];
-        newCats[e.moved.newIndex] = this.categories[e.moved.oldIndex];
-
-        newCats = _.map(newCats, (cat, i) => {
-          cat.order = i;
-          return cat;
-        });
-
-        axios
-          .post("/api/me/categories", { categories: newCats })
-          .then(response => {
-            this.refreshCategories();
-          });
-      }
-    },
-    deleteCategory(id) {
-      axios.delete("/api/me/categories/" + id).then(response => {
-        this.refreshCategories();
       });
     },
     toast(type) {
