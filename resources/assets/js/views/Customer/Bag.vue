@@ -352,10 +352,7 @@
                   </div>
                   <div class="col-6 col-md-3 offset-md-5">
                     {{
-                      format.money(
-                        storeSettings.processingFee,
-                        storeSettings.currency
-                      )
+                      format.money(processingFeeAmount, storeSettings.currency)
                     }}
                   </div>
                 </div>
@@ -466,8 +463,11 @@
                     ></b-select>
                   </div>
 
-                  <div class="pt-2 pb-2" v-if="storeModules.transferHours">
-                    <strong>Pickup / Delivery Time</strong>
+                  <div
+                    class="pt-2 pb-2"
+                    v-if="storeModules.transferHours && pickup === 1"
+                  >
+                    <strong>Pickup Time</strong>
                     <b-form-select
                       class="ml-2"
                       v-model="transferTime"
@@ -861,7 +861,8 @@ export default {
       minPrice: "minimumPrice",
       coupons: "viewedStoreCoupons",
       pickupLocations: "viewedStorePickupLocations",
-      getMeal: "viewedStoreMeal"
+      getMeal: "viewedStoreMeal",
+      getMealPackage: "viewedStoreMealPackage"
     }),
     couponFreeDelivery() {
       return this.coupon ? this.coupon.freeDelivery : 0;
@@ -1035,11 +1036,18 @@ export default {
         } else return 0;
       } else return 0;
     },
+    processingFeeAmount() {
+      if (this.storeSettings.processingFeeType === "flat") {
+        return this.storeSettings.processingFee;
+      } else if (this.storeSettings.processingFeeType === "percent") {
+        return (this.storeSettings.processingFee / 100) * this.subtotal;
+      }
+    },
     afterFees() {
       let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
       let applyProcessingFee = this.storeSettings.applyProcessingFee;
       let deliveryFee = this.deliveryFeeAmount;
-      let processingFee = this.storeSettings.processingFee;
+      let processingFee = this.processingFeeAmount;
       let subtotal = this.afterDiscount;
 
       if (applyDeliveryFee & (this.pickup === 0)) subtotal += deliveryFee;
