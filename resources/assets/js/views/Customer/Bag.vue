@@ -463,8 +463,11 @@
                     ></b-select>
                   </div>
 
-                  <div class="pt-2 pb-2" v-if="storeModules.transferHours">
-                    <strong>Pickup / Delivery Time</strong>
+                  <div
+                    class="pt-2 pb-2"
+                    v-if="storeModules.transferHours && pickup === 1"
+                  >
+                    <strong>Pickup Time</strong>
                     <b-form-select
                       class="ml-2"
                       v-model="transferTime"
