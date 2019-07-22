@@ -34,6 +34,9 @@ const state = {
       minimumMeals: 0,
       minimumPrice: 0
     },
+    modules: {
+      data: {}
+    },
     coupons: [],
     pickupLocations: []
   },
@@ -88,6 +91,14 @@ const state = {
           ready_to_print: true
         }
       },
+      expires: 0
+    },
+    modules: {
+      data: {},
+      expires: 0
+    },
+    module_settings: {
+      data: {},
       expires: 0
     },
     meals: {
@@ -352,6 +363,28 @@ const mutations = {
     state.store.settings.expires = expires;
   },
 
+  storeModules(state, { modules, expires }) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, "seconds")
+        .unix();
+    }
+
+    state.store.modules.data = modules;
+    state.store.modules.expires = expires;
+  },
+
+  storeModuleSettings(state, { moduleSettings, expires }) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, "seconds")
+        .unix();
+    }
+
+    state.store.module_settings.data = moduleSettings;
+    state.store.module_settings.expires = expires;
+  },
+
   storeCoupons(state, { coupons, expires }) {
     if (!expires) {
       expires = moment()
@@ -603,6 +636,23 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.store.modules) && _.isObject(data.store.modules)) {
+        let modules = data.store.modules;
+        commit("storeModules", { modules });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.module_settings) &&
+        _.isObject(data.store.module_settings)
+      ) {
+        let moduleSettings = data.store.module_settings;
+        commit("storeModuleSettings", { moduleSettings });
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.coupons) && _.isObject(data.store.coupons)) {
         let coupons = data.store.coupons;
         commit("storeCoupons", { coupons });
@@ -816,6 +866,28 @@ const actions = {
       commit("storeSettings", { settings: data });
     } else {
       throw new Error("Failed to retrieve settings");
+    }
+  },
+
+  async refreshStoreModules({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/modules");
+    const { data } = await res;
+
+    if (_.isObject(data)) {
+      commit("storeModules", { modules: data });
+    } else {
+      throw new Error("Failed to retrieve modules");
+    }
+  },
+
+  async refreshStoreModuleSettings({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/moduleSettings");
+    const { data } = await res;
+
+    if (_.isObject(data)) {
+      commit("storeModuleSettings", { modules: data });
+    } else {
+      throw new Error("Failed to retrieve modules");
     }
   },
 
@@ -1158,6 +1230,11 @@ const getters = {
   },
   userDetail(state, getters) {
     let userDetail = state.user.data.user_detail;
+
+    if (!userDetail) {
+      return null;
+    }
+
     if (!userDetail.notifications) {
       userDetail.notifications = {};
     }
@@ -1286,6 +1363,20 @@ const getters = {
       return meal;
     } catch (e) {
       return null;
+    }
+  },
+  viewedStoreModules: state => {
+    try {
+      return state.viewed_store.modules || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  viewedStoreModuleSettings: state => {
+    try {
+      return state.viewed_store.module_settings || {};
+    } catch (e) {
+      return {};
     }
   },
   isLoading(state) {
@@ -1473,6 +1564,20 @@ const getters = {
   storeSettings: state => {
     try {
       return state.store.settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeModules: state => {
+    try {
+      return state.store.modules.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeModuleSettings: state => {
+    try {
+      return state.store.module_settings.data || {};
     } catch (e) {
       return {};
     }

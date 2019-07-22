@@ -593,6 +593,30 @@
             </b-form-group>
           </b-form>
 
+          <p>
+            <span class="mr-1">Enable Meal Instructions</span>
+            <img
+              v-b-popover.hover="
+                'Adds a new form field on each of your meals on the Menu page on your dashboard. Within that box you can type in special instructions specific to that particular meal such as heating instructions. If your customer orders that particular meal, these instructions will then be shown in their packing slips & email receipts. This is similar to the \'Notes for Customer\' option above, but for particular meals.'
+              "
+              title="Enable Meal Instructions"
+              src="/images/store/popover.png"
+              class="popover-size"
+            />
+          </p>
+
+          <b-form @submit.prevent="updateStoreSettings">
+            <b-form-group :state="true">
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.mealInstructions"
+                @change.native="updateStoreSettings"
+              />
+            </b-form-group>
+          </b-form>
+
           <p class="mb-0 pb-0">
             <span class="mr-1">Categories</span>
             <img

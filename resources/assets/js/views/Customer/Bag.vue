@@ -462,6 +462,15 @@
                       required
                     ></b-select>
                   </div>
+
+                  <div class="pt-2 pb-2" v-if="storeModules.transferHours">
+                    <strong>Pickup / Delivery Time</strong>
+                    <b-form-select
+                      class="ml-2"
+                      v-model="transferTime"
+                      :options="transferTimeOptions"
+                    ></b-form-select>
+                  </div>
                 </div>
               </li>
 
@@ -519,6 +528,13 @@
                     >
                   </div>
                   <h4 class="mt-2 mb-3">Choose Payment Method</h4>
+                  <b-form-checkbox
+                    v-if="manualOrder && storeModules.allowCashOrders"
+                    v-model="cashOrder"
+                    class="pb-2"
+                  >
+                    Cash Order
+                  </b-form-checkbox>
                   <card-picker
                     :selectable="true"
                     v-model="card"
@@ -531,7 +547,7 @@
                     :creditCards="creditCardList"
                     :manualOrder="true"
                     v-model="cards"
-                    v-if="manualOrder"
+                    v-if="manualOrder && !cashOrder"
                     class="mb-3"
                     ref="cardPicker"
                   ></card-picker>
@@ -559,7 +575,13 @@
                     class="menu-bag-btn"
                     >CHECKOUT</b-btn
                   >
-                  <div v-if="manualOrder && cards.length > 0" class="row mt-4">
+                  <div
+                    v-if="
+                      (manualOrder && cards.length > 0) ||
+                        (cashOrder && customer != null)
+                    "
+                    class="row mt-4"
+                  >
                     <div class="col-md-6">
                       <b-form-group
                         v-if="manualOrder"
@@ -781,6 +803,8 @@ export default {
   data() {
     return {
       //couponFreeDelivery: 0,
+      transferTime: "",
+      cashOrder: false,
       form: {},
       addCustomerModal: false,
       deposit: 100,
@@ -814,6 +838,8 @@ export default {
       creditCards: "cards",
       store: "viewedStore",
       storeSetting: "viewedStoreSetting",
+      storeModules: "viewedStoreModules",
+      storeModuleSettings: "viewedStoreModuleSettings",
       storeCustomers: "storeCustomers",
       total: "bagQuantity",
       bag: "bagItems",
@@ -901,6 +927,38 @@ export default {
     },
     storeSettings() {
       return this.store.settings;
+    },
+    transferTimeOptions() {
+      let startTime = parseInt(
+        this.storeModuleSettings.transferStartTime.substr(0, 2)
+      );
+      let endTime = parseInt(
+        this.storeModuleSettings.transferEndTime.substr(0, 2)
+      );
+      let hourOptions = [];
+
+      while (startTime <= endTime) {
+        hourOptions.push(startTime);
+        startTime++;
+      }
+
+      let newHourOptions = [];
+      hourOptions.forEach(option => {
+        if (option < 12) {
+          option = option.toString();
+          let newOption = option.concat(" ", "AM");
+          newHourOptions.push(newOption);
+        } else {
+          if (option > 12) {
+            option = option - 12;
+          }
+          option = option.toString();
+          let newOption = option.concat(" ", "PM");
+          newHourOptions.push(newOption);
+        }
+      });
+
+      return newHourOptions;
     },
     transferType() {
       return this.storeSettings.transferType.split(",");
@@ -1113,6 +1171,12 @@ export default {
       } else {
         endPoint = "/api/bag/checkout";
       }
+
+      let cardId = this.card;
+
+      if (this.cashOrder === true) {
+        cardId = 0;
+      }
       axios
         .post(endPoint, {
           subtotal: this.subtotal,
@@ -1121,7 +1185,7 @@ export default {
           plan: this.deliveryPlan,
           pickup: this.pickup,
           delivery_day: this.deliveryDay,
-          card_id: this.card,
+          card_id: cardId,
           store_id: this.store.id,
           salesTax: this.tax,
           coupon_id: this.couponApplied ? this.coupon.id : null,
@@ -1130,7 +1194,9 @@ export default {
           deliveryFee: this.deliveryFee,
           pickupLocation: this.selectedPickupLocation,
           customer: this.customer,
-          deposit: deposit
+          deposit: deposit,
+          cashOrder: this.cashOrder,
+          transferTime: this.transferTime
         })
         .then(async resp => {
           this.emptyBag();

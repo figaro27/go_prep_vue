@@ -24,10 +24,18 @@
             @endif
             <p>Order Placed: {{$order->created_at->format('D, m/d/Y')}}</p>
             @if ($order->pickup === 0)
-            <p>To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}}</p>
+            <p>To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}} 
+              @if ($order->transferTime)
+                - {{ $order->transferTime }}
+              @endif
+            </p>
             @endif
             @if ($order->pickup === 1)
-            <p>To Be Picked Up: {{$order->delivery_date->format('D, m/d/Y')}}</p>
+            <p>To Be Picked Up: {{$order->delivery_date->format('D, m/d/Y')}}
+              @if ($order->transferTime)
+                - {{ $order->transferTime }}
+              @endif
+            </p>
             @endif
             <p><strong>Total: ${{number_format($order->amount, 2)}}</strong></p>
       </div>
@@ -71,6 +79,13 @@
     <h2>Notes</h2>
     <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
     @endif
+
+    <h2>Special Meal Instructions</h2>
+    @foreach ($order->items as $i => $item)
+      @if ($item->instructions)
+        <p><b>{!! $item->html_title !!}</b> - {{ $item->instructions }}</p>
+      @endif
+    @endforeach
   </div>
 </body>
 

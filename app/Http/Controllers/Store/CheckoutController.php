@@ -79,11 +79,16 @@ class CheckoutController extends StoreController
         $cardId = $request->get('card_id');
         $card = Card::where('id', $cardId)->first();
 
+        $cashOrder = $request->get('cashOrder');
+        if ($cashOrder) {
+            $cardId = null;
+            $card = null;
+        }
+
         $storeCustomer = $customer->user->getStoreCustomer($store->id);
         $customer = $customer->user->getStoreCustomer($store->id, false);
-
         if (!$weeklyPlan) {
-            if (strpos($storeName, 'livoti') === false) {
+            if (!$cashOrder) {
                 $storeSource = \Stripe\Source::create(
                     [
                         "customer" => $customer->user->stripe_id,
@@ -125,7 +130,7 @@ class CheckoutController extends StoreController
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
             $order->paid = true;
-            if (strpos($storeName, 'livoti') === false) {
+            if ($cashOrder === false) {
                 $order->stripe_id = $charge->id;
             } else {
                 $order->stripe_id = null;

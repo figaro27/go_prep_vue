@@ -38,7 +38,12 @@
                         {{ order.pickup ? "Pickup Day" : "Delivery Day" }}
                       </h4>
                       <p v-if="!order.fulfilled">
-                        {{ moment(order.delivery_date).format("dddd, MMM Do") }}
+                        {{
+                          moment(order.delivery_date).format("dddd, MMM Do")
+                        }}
+                        <span v-if="order.transferTime">
+                          - {{ order.transferTime }}</span
+                        >
                       </p>
                       <p v-else>
                         Delivered On:

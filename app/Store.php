@@ -98,6 +98,16 @@ class Store extends Model
         return $this->hasOne('App\StoreSetting');
     }
 
+    public function modules()
+    {
+        return $this->hasOne('App\StoreModule');
+    }
+
+    public function moduleSettings()
+    {
+        return $this->hasOne('App\StoreModuleSettings');
+    }
+
     public function categories()
     {
         return $this->hasMany('App\Category')->orderBy('order');

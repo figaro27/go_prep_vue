@@ -282,6 +282,27 @@
                     class="storeFilters"
                   ></b-form-checkbox-group>
                 </b-form-group>
+
+                <h4 v-if="storeSettings.mealInstructions" class="mt-4">
+                  Special Meal Instructions
+                  <img
+                    v-b-popover.hover="
+                      'Here you can include special heating instructions, preparation instructions, or expiration info to your customers for this particular meal. If this meal is ordered, these specific instructions will be shown on the customer\'s packing slips & email receipts.'
+                    "
+                    title="Special Meal Instructions"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </h4>
+                <textarea
+                  v-if="storeSettings.mealInstructions"
+                  v-model.lazy="meal.instructions"
+                  id="meal-instructions"
+                  class="form-control"
+                  :rows="2"
+                  :maxlength="150"
+                  @change="e => updateMealInstructions(meal.id, e.target.value)"
+                ></textarea>
               </b-tab>
 
               <b-tab title="Ingredients">
@@ -546,6 +567,7 @@ export default {
         title: "",
         featured_image: "",
         description: "",
+        instructions: "",
         new_category: "",
         tags: "",
         price: "",
@@ -578,6 +600,7 @@ export default {
         featured_image: "",
         title: "",
         description: "",
+        instructions: "",
         price: "",
         ingredients: [],
         image: {}
@@ -750,6 +773,10 @@ export default {
     this.updateMealDescription = _.debounce((id, description) => {
       this.updateMeal(id, { description }, true);
     }, 300);
+
+    this.updateMealInstructions = _.debounce((id, instructions) => {
+      this.updateMeal(id, { instructions }, true);
+    }, 300);
   },
   mounted() {},
   methods: {
@@ -782,6 +809,7 @@ export default {
         validate_all: true,
         title: this.meal.title,
         description: this.meal.description,
+        instructions: this.meal.instructions,
         price: this.meal.price,
         category_ids: this.meal.category_ids,
         ingredients: this.meal.ingredients,

@@ -127,7 +127,11 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       @if ($pickup === 0)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format('D, m/d/Y') }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format('D, m/d/Y') }}
+                          @if ($order->transferTime)
+                            - {{ $order->transferTime }}
+                          @endif
+                        </td>
                       </tr>
                       @else ($pickup === 1)
                       <tr>
