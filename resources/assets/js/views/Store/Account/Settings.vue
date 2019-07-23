@@ -685,7 +685,7 @@
           </b-form-group>
 
           <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group :state="true">
+            <b-form-group :state="true" v-if="storeModules.branding">
               <p>
                 <span class="mr-1">Menu Brand Color</span>
                 <img
@@ -699,7 +699,7 @@
               </p>
               <swatches v-model="color"></swatches>
             </b-form-group>
-            <b-form-group :state="true">
+            <b-form-group :state="true" v-if="storeModules.branding">
               <p>
                 <span class="mr-1">Main Website URL</span>
                 <img
@@ -821,8 +821,8 @@
         </div>
       </div>
 
-      <p>Logo</p>
-      <div class="card">
+      <p v-if="storeModules.branding">Logo</p>
+      <div class="card" v-if="storeModules.branding">
         <div class="card-body">
           <b-form @submit.prevent="updateStoreLogo">
             <b-form-group label="Logo" :state="true">
@@ -1148,7 +1148,8 @@ export default {
       storeSettings: "storeSettings",
       storeCategories: "storeCategories",
       storeSubscriptions: "storeSubscriptions",
-      storeCoupons: "storeCoupons"
+      storeCoupons: "storeCoupons",
+      storeModules: "storeModules"
     }),
     tableData() {
       if (this.storeCoupons.length > 0) return this.storeCoupons;
