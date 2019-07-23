@@ -71,7 +71,7 @@
             <th class="border-top-0">Meal Package Size</th>
             <th
               class="border-top-0"
-              v-if="storeModules.package_component_restrictions"
+              v-if="storeModules.packageComponentRestrictions"
             >
               Restrict Meals To
             </th>
@@ -107,7 +107,7 @@
                   :options="sizeOptions"
                 ></b-select>
               </td>
-              <td v-if="storeModules.package_component_restrictions">
+              <td v-if="storeModules.packageComponentRestrictions">
                 <b-select
                   v-model="option.restrict_meals_option_id"
                   :options="restrictMealsOptions(component, option.id)"

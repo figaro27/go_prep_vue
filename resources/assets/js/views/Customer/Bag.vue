@@ -453,7 +453,7 @@
                       Pickup Day: {{ deliveryDaysOptions[0].text }}
                     </h6>
                   </div>
-                  <div v-if="storeSettings.hasPickupLocations && pickup === 1">
+                  <div v-if="storeModules.pickupLocations && pickup">
                     <p>Pickup Location</p>
                     <b-select
                       v-model="selectedPickupLocation"
@@ -532,7 +532,7 @@
                   </div>
                   <h4 class="mt-2 mb-3">Choose Payment Method</h4>
                   <b-form-checkbox
-                    v-if="manualOrder && storeModules.allowCashOrders"
+                    v-if="manualOrder && storeModules.cashOrders"
                     v-model="cashOrder"
                     class="pb-2"
                   >
