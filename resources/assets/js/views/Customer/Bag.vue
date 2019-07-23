@@ -453,7 +453,7 @@
                       Pickup Day: {{ deliveryDaysOptions[0].text }}
                     </h6>
                   </div>
-                  <div v-if="storeSettings.hasPickupLocations && pickup === 1">
+                  <div v-if="storeModules.pickupLocations && pickup">
                     <p>Pickup Location</p>
                     <b-select
                       v-model="selectedPickupLocation"
