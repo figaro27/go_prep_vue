@@ -93,6 +93,9 @@ Vue.use(VuejsDialog, {
 import Thumbnail from "./components/Thumbnail";
 Vue.component("thumbnail", Thumbnail);
 
+import IngredientPicker from "./components/IngredientPicker";
+Vue.component("ingredient-picker", IngredientPicker);
+
 import IngredientSearch from "./components/IngredientSearch";
 Vue.component("ingredient-search", IngredientSearch);
 

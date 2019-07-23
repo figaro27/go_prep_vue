@@ -16,6 +16,11 @@ class MealSize extends Model
         return $this->belongsTo('App\Meal');
     }
 
+    public function ingredients()
+    {
+        return $this->belongsToMany('App\Ingredient');
+    }
+
     public function getFullTitleAttribute()
     {
         return $this->meal->title . ' - ' . $this->title;
