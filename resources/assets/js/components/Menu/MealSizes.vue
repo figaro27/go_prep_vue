@@ -138,7 +138,7 @@ export default {
       storeCurrencySymbol: "storeCurrencySymbol"
     }),
     columns() {
-      let cols = ["title", "price", "multiplier", "ingredients"];
+      let cols = ["title", "price", "ingredients"];
 
       if (this.tableData.length) {
         cols = ["actions", ...cols];
@@ -192,6 +192,10 @@ export default {
     editIngredients(sizeId) {
       this.ingredient_picker_id = sizeId;
       this.ingredient_picker_size = _.find(this.meal.sizes, { id: sizeId });
+
+      if (!this.ingredient_picker_size.ingredients.length) {
+        this.ingredient_picker_size.ingredients = [...this.meal.ingredients];
+      }
     },
     onChangeIngredients(ingredients) {
       const index = _.findIndex(this.meal.sizes, {
