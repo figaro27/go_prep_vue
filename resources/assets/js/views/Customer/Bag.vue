@@ -240,7 +240,7 @@
                       />
                       <img
                         v-if="mobile"
-                        v-b-popover.click="
+                        v-b-popover.click.top="
                           'Choose a weekly meal plan instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals as well as pause or cancel the meal plan at any time. This will apply to the following week\'s renewal.'
                         "
                         title="Weekly Meal Plan"
