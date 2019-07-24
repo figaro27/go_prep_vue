@@ -828,7 +828,7 @@
             <b-form-group label="Logo" :state="true">
               <picture-input
                 :ref="`storeImageInput`"
-                :prefill="storeDetail.logo ? storeDetail.logo : ''"
+                :prefill="logoPrefill"
                 @prefill="$refs[`storeImageInput`].onResize()"
                 :alertOnError="false"
                 :autoToggleAspectRatio="true"
@@ -1227,6 +1227,16 @@ export default {
         this.storeSettings.delivery_distance_radius > 0 &&
         !_.isEmpty(this.storeSettings.stripe_id)
       );
+    },
+    logoPrefill() {
+      if (this.storeDetail.logo) {
+        if (this.storeDetail.logo.url_thumb) {
+          return this.storeDetail.logo.url_thumb;
+        } else if (_.isString(this.storeDetail.logo)) {
+          return this.storeDetail.logo;
+        }
+      }
+      return null;
     }
   },
   created() {
