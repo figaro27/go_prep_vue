@@ -73,6 +73,7 @@
             >Register</b-nav-item
           >
         </b-navbar-nav>
+        <div class="navbar-brand"></div>
         <!--<AsideToggler class="d-lg-none" mobile />-->
       </b-collapse>
     </b-navbar>
