@@ -1,6 +1,8 @@
 <template>
   <div>
     <div v-if="ingredient_picker_id">
+      <b-btn @click="closeIngredientPicker()">Back</b-btn>
+
       <ingredient-picker
         ref="ingredientPicker"
         v-model="ingredient_picker_size.ingredients"
@@ -198,6 +200,9 @@ export default {
       this.ingredient_picker_size.ingredients = ingredients;
       this.$set(this.meal.sizes, index, this.ingredient_picker_size);
 
+      this.closeIngredientPicker();
+    },
+    closeIngredientPicker() {
       this.ingredient_picker_id = null;
       this.ingredient_picker_size = null;
     }

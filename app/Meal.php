@@ -1030,6 +1030,8 @@ class Meal extends Model implements HasMedia
                 $mealSize->multiplier = $size['multiplier'];
                 $mealSize->save();
 
+                $mealSize->syncIngredients($size['ingredients']);
+
                 $sizeIds->put($size['id'], $mealSize->id);
             }
 
