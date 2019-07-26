@@ -80,12 +80,14 @@
     <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
     @endif
 
-    <h2>Special Meal Instructions</h2>
-    @foreach ($order->items as $i => $item)
-      @if ($item->instructions)
-        <p><b>{!! $item->html_title !!}</b> - {{ $item->instructions }}</p>
-      @endif
-    @endforeach
+    @if ($order->store->settings->mealInstructions)
+      <h2>Special Meal Instructions</h2>
+      @foreach ($order->items as $i => $item)
+        @if ($item->instructions)
+          <p><b>{!! $item->html_title !!}</b> - {{ $item->instructions }}</p>
+        @endif
+      @endforeach
+    @endif
   </div>
 </body>
 
