@@ -90,11 +90,4 @@
     @endif
   </div>
 </body>
-
-</html>
-      @endforeach
-    @endif
-  </div>
-</body>
-
 </html>
