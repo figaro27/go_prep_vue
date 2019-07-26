@@ -8,22 +8,22 @@
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <div class="row">
-      <div class="col-5 address">
+      <div class="col-4 address">
         <h4 class="mt-3">Order Details</h4>
             <p>Order #{{$order->order_number}}</p>
             @if ($order->subscription)
             <p>Meal Plan #{{ $order->subscription->stripe_id }}</p>
             @endif
-            <p>Order Placed: {{$order->created_at->format('D, m/d/Y')}}</p>
+            <p>Order Date: {{$order->created_at->format('D, m/d/Y')}}</p>
             @if ($order->pickup === 0)
-            <p>To Be Delivered: {{$order->delivery_date->format('D, m/d/Y')}} 
+            <p>Delivery Date: {{$order->delivery_date->format('D, m/d/Y')}} 
               @if ($order->transferTime)
                 - {{ $order->transferTime }}
               @endif
             </p>
             @endif
             @if ($order->pickup === 1)
-            <p>To Be Picked Up: {{$order->delivery_date->format('D, m/d/Y')}}
+            <p>Pick Up Date: {{$order->delivery_date->format('D, m/d/Y')}}
               @if ($order->transferTime)
                 - {{ $order->transferTime }}
               @endif
@@ -31,7 +31,7 @@
             @endif
             <p><strong>Total: ${{number_format($order->amount, 2)}}</strong></p>
       </div>
-      <div class="col-3">
+      <div class="col-4 address">
         <h4>Customer</h4>
         <p>{{$order->user->name}}</p>
           <p>{{$order->user->details->address}}</p>
