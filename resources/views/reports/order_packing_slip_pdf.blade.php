@@ -42,20 +42,16 @@
         </p>
       </div>
       <div class="col-4">
-        <div class="row">
-          <div class="col-6">
+
             <img src="{{$logo}}" style="zoom: 0.5; max-width: 50%; height: auto;" />
-          </div>
-          <div class="col-6">
+
             @if ($order->pickup === 0)
             <h4>DELIVERY</h4>
             @endif
             @if ($order->pickup === 1)
             <h4>PICKUP</h4>
             @endif
-          </div>
-        </div>
-         <p>{{$order->store->details->domain}}.goprep.com</p>
+         <!-- <p>{{$order->store->details->domain}}.goprep.com</p> -->
       </div>
     </div>
 
