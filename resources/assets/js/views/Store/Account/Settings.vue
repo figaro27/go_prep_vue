@@ -639,7 +639,7 @@
           </b-form>
 
           <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group :state="true" v-if="storeModules.branding">
+            <b-form-group :state="true" v-if="!storeModules.hideBranding">
               <p>
                 <span class="mr-1">Menu Brand Color</span>
                 <img
@@ -653,7 +653,7 @@
               </p>
               <swatches v-model="color"></swatches>
             </b-form-group>
-            <b-form-group :state="true" v-if="storeModules.branding">
+            <b-form-group :state="true" v-if="!storeModules.hideBranding">
               <p>
                 <span class="mr-1">Main Website URL</span>
                 <img
@@ -775,8 +775,8 @@
         </div>
       </div>
 
-      <p v-if="storeModules.branding">Logo</p>
-      <div class="card" v-if="storeModules.branding">
+      <p v-if="!storeModules.hideBranding">Logo</p>
+      <div class="card" v-if="!storeModules.hideBranding">
         <div class="card-body">
           <b-form @submit.prevent="updateStoreLogo">
             <b-form-group label="Logo" :state="true">
