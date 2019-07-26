@@ -89,12 +89,12 @@ class MealOrder extends Pivot
         $hasAddons = count($this->addons);
 
         if ($hasComponents || $hasAddons) {
-            $title .= '<ul class="plain mb-0">';
+            $title .= '<ul class="plain mb-0 pb-0">';
 
             if ($hasComponents) {
                 foreach ($this->components as $component) {
                     $title .=
-                        '<li class="plain" style="font-size:13px;height:30px">' .
+                        '<li class="plain" style="font-size:14px">' .
                         $component->option->title .
                         '</li>';
                 }
@@ -102,7 +102,7 @@ class MealOrder extends Pivot
             if ($hasAddons) {
                 foreach ($this->addons as $addon) {
                     $title .=
-                        '<li class="plus" style="font-size:13px;height:30px">' .
+                        '<li class="plus" style="font-size:14px;">' .
                         $addon->addon->title .
                         '</li>';
                 }
