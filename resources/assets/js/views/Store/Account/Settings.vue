@@ -638,52 +638,6 @@
             </b-form-group>
           </b-form>
 
-          <p class="mb-0 pb-0">
-            <span class="mr-1">Categories</span>
-            <img
-              v-b-popover.hover="
-                'Categories are ways to group your meals together into different sections that show up on your menu. Some examples include Breakfast, Snacks, or certain diet types like Keto Friendly. You can then rearrange the order of the categories which rearranges the order they are shown on your menu.'
-              "
-              title="Categories"
-              src="/images/store/popover.png"
-              class="popover-size"
-            />
-          </p>
-          <b-form-group :state="true">
-            <div class="categories">
-              <draggable
-                v-model="categories"
-                @change="onChangeCategories"
-                element="ol"
-                class="plain"
-              >
-                <li
-                  v-for="category in categories"
-                  :key="`category-${category.id}`"
-                  style="cursor: n-resize"
-                >
-                  <p>
-                    {{ category.category }}
-                    <i
-                      v-if="category.id"
-                      @click="deleteCategory(category.id)"
-                      class="fa fa-minus-circle text-danger"
-                    ></i>
-                  </p>
-                </li>
-              </draggable>
-            </div>
-
-            <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
-              <b-input
-                v-model="new_category"
-                type="text"
-                placeholder="New Category..."
-              ></b-input>
-              <b-button type="submit" variant="primary ml-2">Create</b-button>
-            </b-form>
-          </b-form-group>
-
           <b-form @submit.prevent="updateStoreSettings">
             <b-form-group :state="true" v-if="storeModules.branding">
               <p>
