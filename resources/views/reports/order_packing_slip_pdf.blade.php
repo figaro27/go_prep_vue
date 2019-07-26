@@ -8,17 +8,7 @@
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <div class="row">
-      <div class="col-4 address">
-        <h4>Customer</h4>
-        <p>{{$order->user->name}}</p>
-          <p>{{$order->user->details->address}}</p>
-          <p>{{$order->user->details->city}},
-          {{$order->user->details->state}}
-          {{$order->user->details->zip}}</p>
-          <p>{{$order->user->details->phone}}</p>
-        </p>
-      </div>
-      <div class="col-4 address">
+      <div class="col-5 address">
         <h4 class="mt-3">Order Details</h4>
             <p>Order #{{$order->order_number}}</p>
             @if ($order->subscription)
@@ -40,6 +30,16 @@
             </p>
             @endif
             <p><strong>Total: ${{number_format($order->amount, 2)}}</strong></p>
+      </div>
+      <div class="col-4 address">
+        <h4>Customer</h4>
+        <p>{{$order->user->name}}</p>
+          <p>{{$order->user->details->address}}</p>
+          <p>{{$order->user->details->city}},
+          {{$order->user->details->state}}
+          {{$order->user->details->zip}}</p>
+          <p>{{$order->user->details->phone}}</p>
+        </p>
       </div>
       <div class="col-4">
         <img src="{{$logo}}" style="zoom: 0.5; max-width: 50%; height: auto;" />
