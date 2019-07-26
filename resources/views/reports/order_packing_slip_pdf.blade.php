@@ -8,7 +8,7 @@
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <div class="row">
-      <div class="col-5 address">
+      <div class="col-4 address">
         <h4 class="mt-3">Order Details</h4>
             <p>Order #{{$order->order_number}}</p>
             @if ($order->subscription)
@@ -41,8 +41,8 @@
           <p>{{$order->user->details->phone}}</p>
         </p>
       </div>
-      <div class="col-3">
-        <img src="{{$logo}}" style="zoom: 0.4; max-width: 50%; height: auto;" />
+      <div class="col-4">
+        <img src="{{$logo}}" style="zoom: 0.5; max-width: 50%; height: auto;" />
         <br><br>
         <p>{{$order->store->details->domain}}.goprep.com</p>
         @if ($order->pickup === 0)
