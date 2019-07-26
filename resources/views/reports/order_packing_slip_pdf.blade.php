@@ -47,7 +47,6 @@
             <img src="{{$logo}}" style="zoom: 0.5; max-width: 50%; height: auto;" />
           </div>
           <div class="col-6">
-            <p>{{$order->store->details->domain}}.goprep.com</p>
             @if ($order->pickup === 0)
             <h4>DELIVERY</h4>
             @endif
@@ -56,6 +55,7 @@
             @endif
           </div>
         </div>
+         <p>{{$order->store->details->domain}}.goprep.com</p>
       </div>
     </div>
 
