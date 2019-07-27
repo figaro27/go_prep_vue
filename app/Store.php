@@ -25,7 +25,7 @@ class Store extends Model
      *
      * @var array
      */
-    protected $hidden = ['orders', 'customers'];
+    protected $hidden = ['orders', 'customers', 'plan'];
 
     protected $appends = [
         'cutoff_passed',
@@ -139,6 +139,11 @@ class Store extends Model
         return $this->hasMany('App\PickupLocation');
     }
 
+    public function plan()
+    {
+        return $this->hasOne('App\StorePlan');
+    }
+
     public function clearCaches()
     {
         Cache::forget('store_order_ingredients' . $this->id);
@@ -159,6 +164,21 @@ class Store extends Model
             config('app.domain') .
             $append;
         return $url;
+    }
+
+    public function getConnectUrl()
+    {
+        if (env('APP_ENV') === 'production') {
+            $ca = 'ca_ER2OUNQq30X2xHMqkWo8ilUSz7Txyn1A';
+        } else {
+            $ca = 'ca_ER2OYlaTUrWz7LRQvhtKLIjZsRcM8mh9';
+        }
+
+        if (in_array($this->details->country, ['US', 'CA'])) {
+            return "https://connect.stripe.com/express/oauth/authorize?client_id=$ca";
+        } else {
+            return "https://connect.stripe.com/oauth/authorize?client_id=$ca&response_type=code&scope=read_write";
+        }
     }
 
     public static function getStore($id)

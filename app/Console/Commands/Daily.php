@@ -8,6 +8,7 @@ use App\Store;
 use App\Subscription;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
+use App\Facades\StorePlanService;
 
 class Daily extends Command
 {
@@ -42,8 +43,9 @@ class Daily extends Command
      */
     public function handle()
     {
-        // Orders
+        $this->storePlanRenewals();
 
+        // Orders
         $orders = Order::where([
             'delivery_date' => date('Y-m-d'),
             'paid' => 1
@@ -64,6 +66,16 @@ class Daily extends Command
             } catch (\Exception $e) {
                 // Should not be fatal
             }
+        }
+    }
+
+    protected function storePlanRenewals()
+    {
+        $plans = StorePlanService::getRenewingPlans();
+        $this->info(count($plans) . ' store plans renewing today');
+
+        foreach ($plans as $plan) {
+            StorePlanService::renew($plan);
         }
     }
 }

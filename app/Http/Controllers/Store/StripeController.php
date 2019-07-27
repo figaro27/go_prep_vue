@@ -19,17 +19,7 @@ class StripeController extends StoreController
      */
     public function connectUrl(Request $request)
     {
-        if (env('APP_ENV') === 'production') {
-            $ca = 'ca_ER2OUNQq30X2xHMqkWo8ilUSz7Txyn1A';
-        } else {
-            $ca = 'ca_ER2OYlaTUrWz7LRQvhtKLIjZsRcM8mh9';
-        }
-
-        if (in_array($this->store->details->country, ['US', 'CA'])) {
-            return "https://connect.stripe.com/express/oauth/authorize?client_id=$ca";
-        } else {
-            return "https://connect.stripe.com/oauth/authorize?client_id=$ca&response_type=code&scope=read_write";
-        }
+        return $this->store->getConnectUrl();
     }
 
     /**

@@ -303,7 +303,7 @@ class RegisterController extends Controller
                     ->send($email);
             } catch (\Exception $e) {
             }
-            $redirect = '/store/account/settings';
+            $redirect = $user->store->getConnectUrl(); //'/store/account/settings';
         } else {
             $store = defined('STORE_ID') ? Store::find(STORE_ID) : null;
             $redirect = $store ? '/customer/menu' : '/customer/home';

@@ -10,6 +10,7 @@ use Braintree_Configuration;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
+use App\Services\StorePlanService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->app->bind('storeplan.service', StorePlanService::class);
+
         if (
             config('app.env') === 'production' ||
             config('app.env') === 'staging'
