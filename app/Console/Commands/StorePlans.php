@@ -63,7 +63,7 @@ class StorePlans extends Command
             $commands = collect([
                 'l' => 'List current plan',
                 'c' => 'Create plan',
-                'u' => 'Update plan',
+                //'u' => 'Update plan',
                 'q' => 'Quit'
             ]);
             $command = $this->choice(
@@ -73,7 +73,7 @@ class StorePlans extends Command
 
             switch ($command) {
                 case 'l':
-                    $this->info($this->store->plan);
+                    $this->info($this->store->plan ?? 'This store has no plan');
                     break;
 
                 case 'c':
@@ -81,6 +81,7 @@ class StorePlans extends Command
                     break;
 
                 case 'u':
+                    //$this->update();
                     break;
 
                 case 'q':
@@ -97,7 +98,9 @@ class StorePlans extends Command
         $price = null;
 
         while (!is_numeric($price)) {
-            $price = $this->ask('What price? In dollars');
+            $price = $this->ask(
+                'What price, in cents? i.e. Enter $10.00 as 1000'
+            );
         }
 
         $period = $this->choice('What period?', [
