@@ -71,17 +71,31 @@
         <strong> <u>PRICING</u>.</strong>
       </li>
     </ol>
-    3.1          Customer payments (the “Payments”) shall be collected by the
-    Company and processed via a gateway of our choosing. 3.2          The
-    Company fee is a percentage based on an aforementioned agreement between the
-    Company and the Service Provider based on the gross order amount, minus the
-    processing and shipping fees. There is an additional two and nine-tenth
-    percent (2.9%) and .30 cents credit card processing fee per transaction.
-    3.3          100% minus 2.9% and .30 cents plus the transaction fee
-    percentage agreed upon by the Company and the Service Provider shall be paid
-    to Service Provider at the time of payment by the customer. 3.4         
-    Pricing is subject to change at the discretion of the Company upon sixty
-    (60) days’ written notice to Service Provider.
+    3.1 Customer payments (the “Payments”) shall be collected by the Company and
+    processed via a gateway of our choosing which is currently Stripe. The
+    Customer may also opt in to process payments with their preferred gateway
+    for an additional monthly fee. 3.2 The Company fee is a percentage based on
+    an aforementioned agreement between the Company and the Service Provider
+    based on the gross order amount, minus the processing and shipping fees.
+    There is an additional two and nine-tenth percent (2.9%) and .30 cents
+    credit card processing fee per transaction if the Customer is using the
+    standard Stripe payment processing. 3.3 100% minus 2.9% and .30 cents plus
+    the transaction fee percentage agreed upon by the Company and the Service
+    Provider shall be paid to Service Provider at the time of payment by the
+    customer. 3.4 Pricing is subject to change at the discretion of the Company
+    upon sixty (60) days’ written notice to Service Provider. 3.5 The Customer
+    may also choose to pay a flat monthly fee based on the amount of monthly
+    orders collected, with no additional percentage per transaction with the
+    exception of credit card processing fees from Stripe or the Customer’s
+    preferred payment processor. Flat monthly fees are billed automatically from
+    the Customer’s connected Stripe account balance per month. 3.6 A Customer
+    may also choose to pay a flat rate for an extended period of time, such as
+    three months, six months, or one year. In this case the Customer must pay
+    the agreed upon amount at the commencement of the contract for access to the
+    Service Provider’s platform for the agreed upon amount of time. The Customer
+    will be charged recurringly after the agreed upon duration of time has
+    expired. Any cancellation of services before the duration has expired does
+    not warrant a refund.
     <ol start="4">
       <li>
         <strong> <u>INDEPENDENT CONTRACTOR</u>. </strong>Parties are and shall

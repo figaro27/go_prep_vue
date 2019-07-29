@@ -8,11 +8,10 @@ f<template>
     &nbsp; GoPrep provides an online platform for consumers (“Users”) to find
     and order weekly meals from meal preparation companies (the online platform
     shall hereinafter be referred to as the “Company Service”) via the Company
-    website(s) offered from time to time at http://goprep.com  and/or via an App
-    (collectively, the “Site,” or “Sites”).  The Company Service is owned and
-    operated by GoPrep, (“Company” “we” or “us”). Your use of the Service is
-    subject to the terms and conditions set forth in these Terms of Service (the
-    “Terms of Service”).
+    website(s) offered from time to time at http://goprep.com and/or via an App
+    (collectively, the “Site,” or “Sites”). The Company Service is owned and
+    operated by My Quick Startup LLC located in Brooklyn NY, doing business as
+    GoPrep, (“Company” “we” or “us”).
 
     <strong
       >PLEASE READ THE TERMS OF SERVICE CAREFULLY. BY ACCESSING OR USING ANY
@@ -50,10 +49,14 @@ f<template>
       </li>
       <li>
         <strong>Privacy Policy</strong>. Use of the Company Service is subject
-        to the terms of our <u>Privacy Policy</u> which is hereby incorporated
-        into and made part of these Terms of Service. Please carefully review
-        our Privacy Policy. By using or accessing the Company Service, you agree
-        to be bound by the terms of our Privacy Policy.
+        to the terms of our
+        <a href="https://www.goprep.com/privacy-policy/" target="_blank"
+          >Privacy Policy</a
+        >
+        which is hereby incorporated into and made part of these Terms of
+        Service. Please carefully review our Privacy Policy. By using or
+        accessing the Company Service, you agree to be bound by the terms of our
+        Privacy Policy.
       </li>
       <li>
         <strong>Age.</strong> The Company Service is meant for those at least
