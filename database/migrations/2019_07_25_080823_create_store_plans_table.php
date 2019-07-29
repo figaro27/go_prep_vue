@@ -15,7 +15,7 @@ class CreateStorePlansTable extends Migration
     {
         Schema::create('store_plans', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('store_id');
+            $table->unsignedInteger('store_id')->unique();
             $table->boolean('active');
             $table->unsignedInteger('amount')->comment('In cents');
             $table->string('period');

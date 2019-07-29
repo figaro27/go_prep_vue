@@ -126,6 +126,8 @@ class StorePlans extends Command
 
         StorePlan::create($this->store, $price, $period, $day);
 
+        $this->store->refresh();
+
         $this->info('Plan created!');
     }
 }
