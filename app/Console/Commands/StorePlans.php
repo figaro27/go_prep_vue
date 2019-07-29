@@ -88,7 +88,6 @@ class StorePlans extends Command
                     return;
 
                 default:
-                    continue;
             }
         }
     }
