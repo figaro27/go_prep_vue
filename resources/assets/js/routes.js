@@ -68,6 +68,9 @@ let routes = [
     name: "register",
     meta: {
       bodyClass: "register"
+    },
+    props(route) {
+      return route.query;
     }
   },
   {

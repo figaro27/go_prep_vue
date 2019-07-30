@@ -497,6 +497,9 @@ export default {
   props: {
     manualOrder: {
       default: false
+    },
+    plan_id: {
+      default: null
     }
   },
   data() {
@@ -681,7 +684,8 @@ export default {
       let data = {
         user: this.form[0],
         user_details: this.form[1],
-        store: this.form[2]
+        store: this.form[2],
+        plan_id: this.plan_id
       };
 
       if (data.user.role === "store") {

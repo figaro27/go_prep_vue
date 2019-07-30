@@ -130,6 +130,14 @@ return [
     // Whether https is used
     'secure' => env('APP_SECURE', true),
 
+    // Store plans
+    'store_plans' => [
+        1 => ['name' => 'Basic', 'period' => 'month', 'value' => 14900],
+        2 => ['name' => 'Standard', 'period' => 'month', 'value' => 34900],
+        3 => ['name' => 'Premium', 'period' => 'month', 'value' => 54900],
+        4 => ['name' => 'Enterprise', 'period' => 'month', 'value' => 74900]
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

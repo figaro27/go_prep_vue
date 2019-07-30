@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Store;
 use App\User;
+use App\StorePlan;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Store\Onboarding;
+use Carbon\Carbon;
 
 class RegisterController extends Controller
 {
@@ -302,6 +304,20 @@ class RegisterController extends Controller
                     ->bcc('mike@goprep.com')
                     ->send($email);
             } catch (\Exception $e) {
+            }
+            if ($request->has('plan_id')) {
+                $plans = collect(config('app.store_plans'));
+
+                $plan = $plans->get($request->get('plan_id'));
+
+                if ($plan) {
+                    StorePlan::create(
+                        $user->store,
+                        $plan['value'],
+                        $plan['period'],
+                        Carbon::tomorrow()
+                    );
+                }
             }
             $redirect = $user->store->getConnectUrl(); //'/store/account/settings';
         } else {
