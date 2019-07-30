@@ -536,7 +536,10 @@
                         >
                       </b-select>
                     </b-form-group>
-                    <b-btn variant="primary" @click="showAddCustomerModal"
+                    <b-btn
+                      variant="primary"
+                      v-if="storeModules.manualCustomers"
+                      @click="showAddCustomerModal"
                       >Add New Customer</b-btn
                     >
                   </div>
@@ -610,7 +613,10 @@
                       </b-form-group>
                     </div>
                     <div class="col-md-6">
-                      <b-btn @click="checkout" class="menu-bag-btn"
+                      <b-btn
+                        @click="checkout"
+                        v-if="storeModules.manualOrders"
+                        class="menu-bag-btn"
                         >CHECKOUT</b-btn
                       >
                     </div>

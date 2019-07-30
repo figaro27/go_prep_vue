@@ -38,7 +38,10 @@
                     v-if="filters.fulfilled"
                     >View Open Orders</b-btn
                   > -->
-                  <router-link to="/store/manual-order">
+                  <router-link
+                    to="/store/manual-order"
+                    v-if="storeModules.manualOrders"
+                  >
                     <b-btn class="btn btn-success filter-btn"
                       >Create Manual Order</b-btn
                     >
@@ -388,7 +391,8 @@ export default {
       initialized: "initialized",
       customers: "storeCustomers",
       nextDeliveryDates: "storeNextDeliveryDates",
-      getMeal: "storeMeal"
+      getMeal: "storeMeal",
+      storeModules: "storeModules"
     }),
     tableData() {
       let filters = { ...this.filters };

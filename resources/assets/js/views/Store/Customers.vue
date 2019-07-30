@@ -109,6 +109,7 @@
             >
               <div slot="beforeTable" class="mb-2">
                 <button
+                  v-if="storeModules.manualCustomers"
                   class="btn btn-success btn-md mb-2 mb-sm-0"
                   @click="showAddCustomerModal"
                 >
@@ -392,7 +393,8 @@ export default {
       customers: "storeCustomers",
       //orders: "storeOrders",
       isLoading: "isLoading",
-      _storeOrdersByCustomer: "storeOrdersByCustomer"
+      _storeOrdersByCustomer: "storeOrdersByCustomer",
+      storeModules: "storeModules"
     }),
     stateNames() {
       return states.stateNames();
