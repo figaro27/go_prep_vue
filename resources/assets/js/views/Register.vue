@@ -304,6 +304,7 @@
                 :state="state(2, 'domain')"
                 :invalid-feedback="invalidFeedback(2, 'domain')"
                 :valid-feedback="validFeedback(2, 'domain')"
+                class="w-100"
               >
                 <div class="input-group">
                   <b-input
