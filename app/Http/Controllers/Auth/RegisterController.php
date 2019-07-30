@@ -311,11 +311,15 @@ class RegisterController extends Controller
                 $plan = $plans->get($request->get('plan_id'));
 
                 if ($plan) {
+                    $tom = Carbon::tomorrow();
+                    $dom = $tom->day;
+                    $dow = $tom->dayOfWeekIso;
+
                     StorePlan::create(
                         $user->store,
                         $plan['value'],
                         $plan['period'],
-                        Carbon::tomorrow()
+                        $plan['period'] === 'week' ? $dow : $dom
                     );
                 }
             }
