@@ -77,7 +77,8 @@ class StoreSetting extends Model
         'deliveryFee' => 'float',
         'processingFee' => 'float',
         'application_fee' => 'float',
-        'mealPlanDiscount' => 'float'
+        'mealPlanDiscount' => 'float',
+        'mealInstructions' => 'boolean'
     ];
 
     public function setAttributeVisibility()
