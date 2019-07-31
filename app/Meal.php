@@ -823,22 +823,24 @@ class Meal extends Model implements HasMedia
             throw new \Exception($e);
         }
 
-        $macros = $props->get('macros');
-        $calories = $macros['calories'];
-        $carbs = $macros['carbs'];
-        $protein = $macros['protein'];
-        $fat = $macros['fat'];
+        if ($meal->store->settings->showMacros) {
+            $macros = $props->get('macros');
+            $calories = $macros['calories'];
+            $carbs = $macros['carbs'];
+            $protein = $macros['protein'];
+            $fat = $macros['fat'];
 
-        $macro = new MealMacro();
+            $macro = new MealMacro();
 
-        $macro->store_id = $meal->store->id;
-        $macro->meal_id = $meal->id;
-        $macro->calories = $calories;
-        $macro->carbs = $carbs;
-        $macro->protein = $protein;
-        $macro->fat = $fat;
+            $macro->store_id = $meal->store->id;
+            $macro->meal_id = $meal->id;
+            $macro->calories = $calories;
+            $macro->carbs = $carbs;
+            $macro->protein = $protein;
+            $macro->fat = $fat;
 
-        $macro->save();
+            $macro->save();
+        }
     }
 
     public static function storeMealAdmin($request)
@@ -1150,26 +1152,28 @@ class Meal extends Model implements HasMedia
 
         $meal->update($props->except(['featured_image', 'gallery'])->toArray());
 
-        $macros = $props->get('macros');
-        $calories = $macros['calories'];
-        $carbs = $macros['carbs'];
-        $protein = $macros['protein'];
-        $fat = $macros['fat'];
+        if ($meal->store->settings->showMacros) {
+            $macros = $props->get('macros');
+            $calories = $macros['calories'];
+            $carbs = $macros['carbs'];
+            $protein = $macros['protein'];
+            $fat = $macros['fat'];
 
-        $macro = MealMacro::where('meal_id', $meal->id)->first();
+            $macro = MealMacro::where('meal_id', $meal->id)->first();
 
-        if (!$macro) {
-            $macro = new MealMacro();
+            if (!$macro) {
+                $macro = new MealMacro();
+            }
+
+            $macro->store_id = $meal->store->id;
+            $macro->meal_id = $meal->id;
+            $macro->calories = $calories;
+            $macro->carbs = $carbs;
+            $macro->protein = $protein;
+            $macro->fat = $fat;
+
+            $macro->save();
         }
-
-        $macro->store_id = $meal->store->id;
-        $macro->meal_id = $meal->id;
-        $macro->calories = $calories;
-        $macro->carbs = $carbs;
-        $macro->protein = $protein;
-        $macro->fat = $fat;
-
-        $macro->save();
 
         return Meal::getMeal($meal->id);
     }
