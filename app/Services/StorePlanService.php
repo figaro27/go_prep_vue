@@ -45,7 +45,11 @@ class StorePlanService
      */
     public function renew(StorePlan $plan)
     {
-        if (!$plan->isToday()) {
+        if (
+            !$plan->isToday() ||
+            !$plan->active ||
+            !$plan->store->settings->stripe_id
+        ) {
             return false;
         }
 
