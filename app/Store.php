@@ -636,14 +636,23 @@ class Store extends Model
             $this->settings->cutoff_days * (60 * 60 * 24) +
             $this->settings->cutoff_hours * (60 * 60);
 
-        foreach ($this->settings->delivery_days as $day) {
-            $date = Carbon::createFromFormat(
-                'D',
-                $day,
-                $this->settings->timezone
-            )->setTime(0, 0, 0);
-            $diff = $date->getTimestamp() - $now->getTimestamp() - $cutoff;
-            //echo $diff."\r\n";
+        if ($this->settings->cutoff_type === 'timed') {
+            foreach ($this->settings->delivery_days as $day) {
+                $date = Carbon::createFromFormat(
+                    'D',
+                    $day,
+                    $this->settings->timezone
+                )->setTime(0, 0, 0);
+                $diff = $date->getTimestamp() - $now->getTimestamp() - $cutoff;
+                //echo $diff."\r\n";
+
+                // Cutoff passed less than an hour ago
+                if ($period === 'hour' && $diff >= -60 * 60 && $diff < 0) {
+                    return true;
+                }
+            }
+        } elseif ($this->settings->cutoff_type === 'single_day') {
+            $diff = $now->getTimestamp() - $cutoff;
 
             // Cutoff passed less than an hour ago
             if ($period === 'hour' && $diff >= -60 * 60 && $diff < 0) {
