@@ -18,14 +18,12 @@
 
             <b-form-group :label="null">
               Remaining: {{ getRemainingMeals(component.id) }}
-
               <div v-for="option in getOptions(component)" :key="option.id">
                 <b-checkbox
                   @input="toggleOption(component.id, option.id)"
                   :checked="optionSelected(component.id, option.id)"
+                  >{{ option.text || "" }}</b-checkbox
                 >
-                  {{ option.text || "" }}
-                </b-checkbox>
 
                 <div
                   v-if="
@@ -33,6 +31,7 @@
                   "
                   class="my-2 px-2 py-2 px-lg-3 py-lg-3 bg-light"
                 >
+                  <!-- 2019-08-01 DB: Now using images
                   <b-checkbox-group
                     class="meal-checkboxes"
                     v-model="choices[component.id][option.id]"
@@ -48,6 +47,79 @@
                         onChangeOptionChoices(component, option, choices)
                     "
                   ></b-checkbox-group>
+                  -->
+
+                  <b-row>
+                    <div
+                      class="item col-sm-6 col-lg-4 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3"
+                      v-for="meal in getMealOptions(
+                        getOptionMeals(component.id, option.id),
+                        false
+                      )"
+                      :key="meal.meal_id"
+                    >
+                      <div class="item-wrap">
+                        <div class="title d-md-none">{{ meal.meal.title }}</div>
+
+                        <div class="image">
+                          <thumbnail
+                            v-if="meal.meal.image.url_medium"
+                            :src="meal.meal.image.url_medium"
+                            class="menu-item-img"
+                            width="100%"
+                            style="background-color:#ffffff"
+                          ></thumbnail>
+                        </div>
+
+                        <div class="meta">
+                          <div class="title d-none d-md-block">
+                            {{ meal.meal.title }}
+                            <span v-if="meal.quantity > 1">
+                              x {{ meal.quantity }}</span
+                            >
+                            <div v-if="meal.size">
+                              {{ meal.size.title }}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="actions">
+                          <div
+                            class="d-flex justify-content-between align-items-center mt-1"
+                          >
+                            <b-btn
+                              @click="
+                                minusOptionChoice(component, option, meal)
+                              "
+                              class="plus-minus gray"
+                            >
+                              <i>-</i>
+                            </b-btn>
+                            <b-form-input
+                              type="text"
+                              name
+                              id
+                              class="quantity"
+                              :value="
+                                getOptionChoiceQuantity(
+                                  component.id,
+                                  option.id,
+                                  meal.meal_id
+                                )
+                              "
+                              readonly
+                            ></b-form-input>
+                            <b-btn
+                              @click="addOptionChoice(component, option, meal)"
+                              class="menu-bag-btn plus-minus"
+                            >
+                              <i>+</i>
+                            </b-btn>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </b-row>
                 </div>
               </div>
 
@@ -107,9 +179,9 @@
           </b-form-group>-->
 
           <div v-for="addon in mealAddons" :key="addon.id">
-            <b-checkbox @input="toggleAddon(addon.id)">{{
-              addon.title
-            }}</b-checkbox>
+            <b-checkbox @input="toggleAddon(addon.id)">
+              {{ addon.title }}
+            </b-checkbox>
 
             <div
               v-if="addon.selectable && addonSelected(addon.id)"
@@ -240,6 +312,25 @@ export default {
         ? _.find(this.choices[componentId][optionId], { meal_id: mealId }) !==
             undefined
         : false;
+    },
+    getOptionChoiceQuantity(componentId, optionId, mealId) {
+      return this.optionSelected(componentId, optionId)
+        ? _.filter(this.choices[componentId][optionId], { meal_id: mealId })
+            .length
+        : 0;
+    },
+    addOptionChoice(component, option, choice) {
+      let choices = this.choices[component.id][option.id];
+      choices.push(choice);
+      this.onChangeOptionChoices(component, option, choices);
+    },
+    minusOptionChoice(component, option, choice) {
+      let choices = this.choices[component.id][option.id];
+      const index = _.findLastIndex(choices, { meal_id: choice.meal_id });
+      if (index > -1) {
+        choices.splice(index, 1);
+      }
+      this.onChangeOptionChoices(component, option, choices);
     },
     onChangeOptionChoices(component, option, choices) {
       _.forEach(component.options, opt => {
@@ -390,7 +481,7 @@ export default {
       const component = this.getComponent(componentId);
       return _.find(component.options, { id: optionId });
     },
-    getMealOptions(mealOptions) {
+    getMealOptions(mealOptions, checkboxes = true) {
       return _(mealOptions)
         .map(mealOption => {
           const meal = this.getMeal(mealOption.meal_id);
@@ -399,10 +490,18 @@ export default {
 
           const size = meal.getSize(mealOption.meal_size_id);
 
-          return {
-            text: size ? size.full_title : meal.title,
-            value: mealOption
-          };
+          if (checkboxes) {
+            return {
+              text: size ? size.full_title : meal.title,
+              value: mealOption
+            };
+          } else {
+            return {
+              ...mealOption,
+              meal,
+              size
+            };
+          }
         })
         .value();
     },
