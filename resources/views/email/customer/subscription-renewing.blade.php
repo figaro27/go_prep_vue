@@ -113,13 +113,13 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $subscription->store_name }}</td>
                       </tr>
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $customer->name }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $subscription->user->userDetail->full_name }}</td>
                       </tr>
                       <!-- end company name -->
                       <!-- address -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->address }}
-                          <br /> {{ $customer->city }}, {{ $customer->state }} {{ $customer->zip }}
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->user->userDetail->address }}
+                          <br /> {{ $subscription->user->userDetail->city }}, {{ $subscription->user->userDetail->state }} {{ $subscription->user->userDetail->zip }}
                           </td>
                       </tr>
                       @if (!$subscription->latest_order || $subscription->latest_order->pickup === 0)
@@ -162,7 +162,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 <!-- title -->
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase"> 
-                  	Hello {{ $customer->name }},
+                  	Hello {{ $subscription->user->userDetail->full_name }},
                   </td>
                 </tr>
                 <!-- end title -->
@@ -400,7 +400,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 <!-- content -->
                 @if (!$subscription->latest_order || $subscription->latest_order->pickup === 0)
 				        <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->delivery }} </td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->user->userDetail->delivery }} </td>
                 </tr>
                 @endif
                 @if ($subscription->latest_order && $subscription->latest_order->pickup === 1)
