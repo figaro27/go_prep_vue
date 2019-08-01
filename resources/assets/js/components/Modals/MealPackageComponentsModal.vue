@@ -74,6 +74,12 @@
                         <div class="meta">
                           <div class="title d-none d-md-block">
                             {{ meal.meal.title }}
+                            <span v-if="meal.quantity > 1">
+                              x {{ meal.quantity }}</span
+                            >
+                            <div v-if="meal.size">
+                              {{ meal.size.title }}
+                            </div>
                           </div>
                         </div>
 
