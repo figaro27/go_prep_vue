@@ -60,6 +60,15 @@ class SubscriptionController extends StoreController
             );
         }
 
-        $sub->cancel();
+        try {
+            $sub->cancel();
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'error' => 'Failed to cancel Meal Plan'
+                ],
+                500
+            );
+        }
     }
 }
