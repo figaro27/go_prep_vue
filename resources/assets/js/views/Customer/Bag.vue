@@ -527,7 +527,6 @@
                       <b-select
                         :options="customers"
                         v-model="customer"
-                        class="bag-select"
                         @change="getCards"
                         required
                       >
