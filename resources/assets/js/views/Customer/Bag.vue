@@ -520,9 +520,9 @@
                     >You are outside of the delivery area.</b-alert
                   >
                 </div>
-                <div>
+                <div v-else>
                   <div v-if="manualOrder">
-                    <b-form-group description>
+                    <b-form-group>
                       <h4 class="mt-2 mb-3">Choose Customer</h4>
                       <b-select
                         :options="customers"
