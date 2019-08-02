@@ -652,7 +652,6 @@ class Store extends Model
                 }
             }
         } elseif ($this->settings->cutoff_type === 'single_day') {
-            return true;
             $diff = $now->getTimestamp() - $cutoff;
 
             // Cutoff passed less than an hour ago
