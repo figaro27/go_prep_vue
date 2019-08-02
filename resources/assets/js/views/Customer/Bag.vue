@@ -520,13 +520,14 @@
                     >You are outside of the delivery area.</b-alert
                   >
                 </div>
-                <div v-else>
+                <div>
                   <div v-if="manualOrder">
                     <b-form-group description>
                       <h4 class="mt-2 mb-3">Choose Customer</h4>
                       <b-select
                         :options="customers"
                         v-model="customer"
+                        class="bag-select"
                         @change="getCards"
                         required
                       >
