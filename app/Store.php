@@ -269,13 +269,17 @@ class Store extends Model
                 $quantity = $mealOrder->quantity;
                 $meal = $mealOrder->meal;
                 $multiplier = 1;
+                $ingredients = $meal->ingredients;
 
                 // A size was chosen. Use the multiplier
+                // 2019-07-24 DB - multipliers no longer used for meal sizes
+                //                 store now manually assigns ingredients
                 if ($mealOrder->meal_size_id) {
-                    $multiplier = $mealOrder->meal_size->multiplier;
+                    $multiplier = 1; //$mealOrder->meal_size->multiplier;
+                    $ingredients = $mealOrder->meal_size->ingredients;
                 }
 
-                foreach ($meal->ingredients as $ingredient) {
+                foreach ($ingredients as $ingredient) {
                     $adjuster = $ingredient->adjuster / 100;
                     $quantity_unit = $ingredient->pivot->quantity_unit;
                     $quantity_base =
