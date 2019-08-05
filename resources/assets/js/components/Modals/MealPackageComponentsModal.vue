@@ -20,17 +20,13 @@
               Remaining: {{ getRemainingMeals(component.id) }}
               <div v-for="option in getOptions(component)" :key="option.id">
                 <b-checkbox
+                  v-if="!option.selectable"
                   @input="toggleOption(component.id, option.id)"
                   :checked="optionSelected(component.id, option.id)"
                   >{{ option.text || "" }}</b-checkbox
                 >
 
-                <div
-                  v-if="
-                    option.selectable && optionSelected(component.id, option.id)
-                  "
-                  class="my-2 px-2 py-2 px-lg-3 py-lg-3 bg-light"
-                >
+                <div v-else class="my-2">
                   <!-- 2019-08-01 DB: Now using images
                   <b-checkbox-group
                     class="meal-checkboxes"
@@ -302,6 +298,11 @@ export default {
         this.$set(this.choices[componentId], optionId, meals);
       }
     },
+    selectOption(componentId, optionId) {
+      if (!this.choices[componentId]) {
+        this.$set(this.choices, componentId, {});
+      }
+    },
     optionSelected(componentId, optionId) {
       return this.choices[componentId]
         ? !!this.choices[componentId][optionId]
@@ -320,8 +321,13 @@ export default {
         : 0;
     },
     addOptionChoice(component, option, choice) {
-      let choices = this.choices[component.id][option.id];
+      if (!this.choices[component.id]) {
+        this.$set(this.choices, component.id, {});
+      }
+
+      let choices = this.choices[component.id][option.id] || [];
       choices.push(choice);
+      this.$set(this.choices[component.id], option.id, choices);
       this.onChangeOptionChoices(component, option, choices);
     },
     minusOptionChoice(component, option, choice) {
@@ -355,6 +361,7 @@ export default {
         // Ensure maximum hasn't been exceeded
         const remaining = this.getRemainingMeals(component.id);
         if (remaining < 0) {
+          this.$toastr.w("You have selected the maximum number of options!");
           const truncated = choices.slice(0, remaining);
           this.$set(this.choices[component.id], option.id, truncated);
         }

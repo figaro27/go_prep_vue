@@ -176,7 +176,7 @@ export default {
       return this.selected.length > 0;
     },
     tableData() {
-      let meals = this.meals.map(meal => {
+      let meals = _.cloneDeep(this.meals).map(meal => {
         meal.included = this.hasMeal(meal.id);
         meal.quantity = this.getMealQuantity(meal.id);
         meal.meal_size_id = this.getMealSizeId(meal.id);
