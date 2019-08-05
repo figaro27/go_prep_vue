@@ -1220,24 +1220,24 @@ export default {
         })
         .then(async resp => {
           this.emptyBag();
+          let weeklyDelivery = this.deliveryPlan;
           this.setBagMealPlan(false);
           this.setBagCoupon(null);
 
-          if (this.manualOrder && this.deliveryPlan) {
+          if (this.manualOrder && weeklyDelivery) {
             this.refreshStoreSubscriptions();
             this.$router.push({
               path: "/store/meal-plans"
             });
             return;
-          } else if (this.manualOrder && !this.deliveryPlan) {
+          } else if (this.manualOrder && !weeklyDelivery) {
             this.refreshUpcomingOrders();
             this.$router.push({
               path: "/store/orders"
             });
             return;
           }
-
-          if (this.deliveryPlan) {
+          if (weeklyDelivery) {
             await this.refreshSubscriptions();
             this.$router.push({
               path: "/customer/meal-plans",
