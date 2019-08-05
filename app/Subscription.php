@@ -343,6 +343,11 @@ class Subscription extends Model
             'type' => 'payment_failed',
             'stripe_event' => $stripeEvent
         ]);
+
+        if ($stripeInvoice->get('status') === 'void') {
+            $latestOrder->delivery_date->addWeeks(1);
+            $latestOrder->save();
+        }
     }
 
     /**

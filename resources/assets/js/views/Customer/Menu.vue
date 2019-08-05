@@ -1465,7 +1465,9 @@ export default {
       meals.forEach(meal => {
         meal.category_ids.forEach(categoryId => {
           let category = _.find(this._categories, { id: categoryId });
-          if (!_.has(grouped, category.category)) {
+          if (!category) {
+            return;
+          } else if (!_.has(grouped, category.category)) {
             grouped[category.category] = [meal];
           } else {
             grouped[category.category].push(meal);

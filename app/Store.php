@@ -656,7 +656,12 @@ class Store extends Model
                 }
             }
         } elseif ($this->settings->cutoff_type === 'single_day') {
-            $diff = $now->getTimestamp() - $cutoff;
+            $date = $this->getNextDeliveryDate();
+            if (!$date) {
+                return false;
+            }
+            $cutoff = $this->getCutoffDate($date);
+            $diff = $cutoff->getTimestamp() - $now->getTimestamp();
 
             // Cutoff passed less than an hour ago
             if ($period === 'hour' && $diff >= -60 * 60 && $diff < 0) {
