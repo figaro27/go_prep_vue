@@ -683,7 +683,7 @@
                                   v-if="meal.macros && storeSettings.showMacros"
                                 >
                                   <div class="row">
-                                    <div class="col-12 col-md-6">
+                                    <div class="col-12 col-md-3">
                                       <div class="row">
                                         <p class="small strong col-6 col-md-12">
                                           Calories
@@ -693,7 +693,7 @@
                                         </p>
                                       </div>
                                     </div>
-                                    <div class="col-12 col-md-6">
+                                    <div class="col-12 col-md-3">
                                       <div class="row">
                                         <p class="small strong col-6 col-md-12">
                                           Carbs
@@ -703,7 +703,7 @@
                                         </p>
                                       </div>
                                     </div>
-                                    <div class="col-12 col-md-6">
+                                    <div class="col-12 col-md-3">
                                       <div class="row">
                                         <p class="small strong col-6 col-md-12">
                                           Protein
@@ -713,7 +713,7 @@
                                         </p>
                                       </div>
                                     </div>
-                                    <div class="col-12 col-md-6">
+                                    <div class="col-12 col-md-3">
                                       <div class="row">
                                         <p class="small strong col-6 col-md-12">
                                           Fat
