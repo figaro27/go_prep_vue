@@ -543,9 +543,13 @@
                       >Add New Customer</b-btn
                     >
                   </div>
-                  <h4 class="mt-2 mb-3">Choose Payment Method</h4>
+                  <h4 class="mt-2 mb-3" v-if="!subscriptionId">
+                    Choose Payment Method
+                  </h4>
                   <b-form-checkbox
-                    v-if="manualOrder && storeModules.cashOrders"
+                    v-if="
+                      manualOrder && storeModules.cashOrders && !subscriptionId
+                    "
                     v-model="cashOrder"
                     class="pb-2"
                   >
@@ -554,7 +558,7 @@
                   <card-picker
                     :selectable="true"
                     v-model="card"
-                    v-if="!manualOrder"
+                    v-if="!manualOrder && !subscriptionId"
                     class="mb-3"
                     ref="cardPicker"
                   ></card-picker>
@@ -573,7 +577,8 @@
                         minOption === 'meals' &&
                         total >= minMeals &&
                         storeSettings.open &&
-                        !manualOrder
+                        !manualOrder &&
+                        !subscriptionId
                     "
                     @click="checkout"
                     class="menu-bag-btn"
@@ -585,12 +590,20 @@
                         minOption === 'price' &&
                         totalBagPricePreFees >= minPrice &&
                         storeSettings.open &&
-                        !manualOrder
+                        !manualOrder &&
+                        !subscriptionId
                     "
                     @click="checkout"
                     class="menu-bag-btn"
                     >CHECKOUT</b-btn
                   >
+                  <div v-if="subscriptionId" class="d-none d-lg-block">
+                    <b-btn
+                      class="menu-bag-btn update-meals-btn"
+                      @click="updateSubscriptionMeals"
+                      >UPDATE MEALS</b-btn
+                    >
+                  </div>
                   <div
                     v-if="
                       (manualOrder && cards.length > 0) ||
@@ -1123,6 +1136,9 @@ export default {
     },
     stateNames() {
       return states.stateNames();
+    },
+    subscriptionId() {
+      return this.$route.params.subscriptionId;
     }
   },
   mounted() {
@@ -1326,6 +1342,35 @@ export default {
     },
     changeState(state) {
       this.form.state = state.abbreviation;
+    },
+    async updateSubscriptionMeals() {
+      try {
+        const { data } = await axios.post(
+          `/api/me/subscriptions/${this.subscriptionId}/meals`,
+          { bag: this.bag, salesTaxRate: this.salesTax }
+        );
+        await this.refreshSubscriptions();
+        this.emptyBag();
+        this.setBagMealPlan(false);
+        this.setBagCoupon(null);
+
+        this.$router.push({
+          path: "/customer/meal-plans",
+          query: {
+            updated: true
+          }
+        });
+      } catch (e) {
+        if (!_.isEmpty(e.response.data.error)) {
+          this.$toastr.e(e.response.data.error);
+        } else {
+          this.$toastr.e(
+            "Please try again or contact our support team",
+            "Failed to update meals!"
+          );
+        }
+        return;
+      }
     }
   }
 };
