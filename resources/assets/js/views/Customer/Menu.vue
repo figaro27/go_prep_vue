@@ -1018,7 +1018,6 @@
                     v-if="
                       minOption === 'meals' &&
                         total >= minimumMeals &&
-                        !preview &&
                         !manualOrder &&
                         !adjustOrder
                     "
@@ -1055,9 +1054,7 @@
                   </div>
                   <div
                     v-if="
-                      minOption === 'price' &&
-                        totalBagPricePreFees >= minPrice &&
-                        !preview
+                      minOption === 'price' && totalBagPricePreFees >= minPrice
                     "
                   >
                     <router-link
