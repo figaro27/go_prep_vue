@@ -58,450 +58,450 @@ class LivotisSeeder extends Seeder
             $meals = collect([
                 [
                     'title' => 'Linguine & Clams',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Stuffed Shells',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Baked Ziti',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Lasagna',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Rigatoni Di Pomodoro',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Pasta Primavera',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Farfalle Siciliano',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Rigatoni Bolognese',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Cavatelli with Broccoli',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Creamy Pesto Rigatoni',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Orecchiette Pasta',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Penne Alla Vokda',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Macaroni and Cheese',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Tri-Color Tortellini',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Fusilli Alfredo',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Lobster Ravioli + $0.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Manicotti',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['pasta']
                 ],
                 [
                     'title' => 'Eggplant Parmigiana',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['vegetable']
                 ],
                 [
                     'title' => 'Eggplant Rollatini',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['vegetable']
                 ],
                 [
                     'title' => 'Eggplant Corrozza',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['vegetable']
                 ],
                 [
                     'title' => 'Eggplant Rolled with Spinach',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['vegetable']
                 ],
                 [
                     'title' => 'Zucchini Lasagna',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['vegetable']
                 ],
                 [
                     'title' => 'Eggplant Bianco',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['vegetable']
                 ],
                 [
                     'title' => 'Stuffed Portobello Mushrooms',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['vegetable']
                 ],
                 [
                     'title' => 'Asparagus Parmigiana',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['vegetable']
                 ],
                 [
                     'title' => 'Pepper Steak',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Grilled Tri-Tip',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Meatballs in Sauce',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Roast Beef with Mushroom Gravy',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Filet Mignon Medallions + $3.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Beef Teriyaki',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Grilled Skirt Steak',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Flat Iron Capriati',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Steak Siciliano',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Beef & Broccoli',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Chicken Cutlet Parmesan',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Chicken Francaise',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Chicken Marsala',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Chicken Fontinella',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Chicken Oreganata',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Chicken Rollatini',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Livoti’s Chicken Roulade',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Chicken Sorrentino',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Grilled Chicken',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Chicken and Artichokes',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Chicken Fico',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Nona’s Baked Chicken',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Captain Crunch Chicken Fingers',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Livoti’s Chicken Portobello',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Stuffed Chicken Ala Livoti’s',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Chicken Murphy',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Chicken Rapini',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Sausage & Peppers',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Stuffed Loin of Pork',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'BBQ Ribs',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Southern Style Pulled Pork',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Pork Tenderloin',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Stuffed Pork Filet Mignon',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Veal Cutlet Parmesan + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Veal Marsala + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Veal Saltimbocca + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Veal Picatta + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Veal Francaise + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Veal Sorrentino + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Veal Milanese + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Sautéed Calamari + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Zuppa Di Mussels + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Panko Parmesan Crusted Salmon + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Shrimp Scampi + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Shrimp Oreganata + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Stuffed Filet of Sole + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Shrimp Parmesan + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Seafood Fra Diavolo or Marinara + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Tilapia Francaise + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Tilapia Oreganata + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Lemon Thyme Filet of Sole + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Bang Bang Shrimp + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
                 [
                     'title' => 'Penne Vodka w/Shrimp + $2.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['entree']
                 ],
 
                 [
                     'title' => 'Broccoli Oreganata + $0.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['side']
                 ],
                 [
                     'title' => 'String Beans Almondine + $0.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['side']
                 ],
                 [
                     'title' => 'Broccoli Rabe + $0.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['side']
                 ],
                 [
                     'title' => 'Crispy Roasted Potatoes + $0.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['side']
                 ],
                 [
                     'title' => 'Risotto Milanese + $0.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['side']
                 ],
                 [
                     'title' => 'Roasted Vegetables + $0.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['side']
                 ],
                 [
                     'title' => 'Asparagus Almondine + $0.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['side']
                 ],
                 [
                     'title' => 'Mini Rice Balls + $0.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['side']
                 ],
                 [
                     'title' => 'Mini Potato Croquettes + $0.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['side']
                 ],
                 [
                     'title' =>
                         'Mini Sicilian Rice Balls and Broccoli Rabe Rice Balls + $0.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['side']
                 ],
                 [
                     'title' =>
                         'Mini Sausage and Broccoli Rabe Rice Balls + $0.99',
-                    'price' => 0,
+                    'price' => 10,
                     'category' => ['side']
                 ]
             ]);
@@ -736,7 +736,7 @@ class LivotisSeeder extends Seeder
                                 $component['title'] .
                                 ' - ' .
                                 $packageSize['title'],
-                            'price' => 0,
+                            'price' => 10,
                             'selectable' => 1
                         ]);
 
