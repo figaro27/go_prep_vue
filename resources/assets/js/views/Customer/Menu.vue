@@ -1018,7 +1018,6 @@
                     v-if="
                       minOption === 'meals' &&
                         total >= minimumMeals &&
-                        !preview &&
                         !manualOrder &&
                         !adjustOrder
                     "
@@ -1055,9 +1054,7 @@
                   </div>
                   <div
                     v-if="
-                      minOption === 'price' &&
-                        totalBagPricePreFees >= minPrice &&
-                        !preview
+                      minOption === 'price' && totalBagPricePreFees >= minPrice
                     "
                   >
                     <router-link
@@ -1067,13 +1064,23 @@
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
 
-                    <div v-if="subscriptionId" class="d-none d-lg-block">
+                    <!--Moving to Bag page-->
+                    <!-- <div v-if="subscriptionId" class="d-none d-lg-block">
                       <b-btn
                         class="menu-bag-btn update-meals-btn"
                         @click="updateSubscriptionMeals"
                         >UPDATE MEALS</b-btn
                       >
-                    </div>
+                    </div> -->
+                    <router-link
+                      :to="{
+                        name: 'customer-bag',
+                        params: { subscriptionId: subscriptionId }
+                      }"
+                      v-if="subscriptionId"
+                    >
+                      <b-btn class="menu-bag-btn">NEXT</b-btn>
+                    </router-link>
                   </div>
                   <div v-if="adjustOrder">
                     <p v-if="!order.pickup">Delivery Day</p>
@@ -1772,39 +1779,6 @@ export default {
 
       this.active = _.mapValues(this.active, () => false);
       this.filteredView = false;
-    },
-    async updateSubscriptionMeals() {
-      if (!this.canProgress) {
-        return;
-      }
-
-      try {
-        const { data } = await axios.post(
-          `/api/me/subscriptions/${this.subscriptionId}/meals`,
-          { bag: this.bag, salesTaxRate: this.salesTax }
-        );
-        await this.refreshSubscriptions();
-        this.emptyBag();
-        this.setBagMealPlan(false);
-        this.setBagCoupon(null);
-
-        this.$router.push({
-          path: "/customer/meal-plans",
-          query: {
-            updated: true
-          }
-        });
-      } catch (e) {
-        if (!_.isEmpty(e.response.data.error)) {
-          this.$toastr.e(e.response.data.error);
-        } else {
-          this.$toastr.e(
-            "Please try again or contact our support team",
-            "Failed to update meals!"
-          );
-        }
-        return;
-      }
     },
     showDescription() {
       this.showDescriptionModal = true;
