@@ -1154,8 +1154,9 @@ class Meal extends Model implements HasMedia
 
         $meal->update($props->except(['featured_image', 'gallery'])->toArray());
 
-        if ($meal->store->settings->showMacros) {
-            $macros = $props->get('macros');
+        $macros = $props->get('macros');
+
+        if ($macros && $meal->store->settings->showMacros) {
             $calories = $macros['calories'];
             $carbs = $macros['carbs'];
             $protein = $macros['protein'];
