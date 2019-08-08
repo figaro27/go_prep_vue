@@ -14,6 +14,7 @@
         <thead>
           <tr>
             <th>Name</th>
+            <th>Email</th>
             <th>Phone</th>
             <th>Address</th>
             <th>City</th>
