@@ -611,7 +611,7 @@
                     "
                     class="row mt-4"
                   >
-                    <div class="col-md-6">
+                    <div class="col-md-6" v-if="storeModules.deposits">
                       <b-form-group
                         v-if="manualOrder"
                         horizontal
