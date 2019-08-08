@@ -891,7 +891,9 @@ export default {
       coupons: "viewedStoreCoupons",
       pickupLocations: "viewedStorePickupLocations",
       getMeal: "viewedStoreMeal",
-      getMealPackage: "viewedStoreMealPackage"
+      getMealPackage: "viewedStoreMealPackage",
+      _orders: "orders",
+      loggedIn: "loggedIn"
     }),
     couponFreeDelivery() {
       return this.coupon ? this.coupon.freeDelivery : 0;
@@ -1282,16 +1284,41 @@ export default {
     applyCoupon() {
       this.coupons.forEach(coupon => {
         if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
+          if (coupon.oneTime) {
+            let oneTimePass = this.oneTimeCouponCheck(coupon.id);
+            if (oneTimePass === "login") {
+              this.$toastr.e(
+                "This is a one-time coupon. Please log in or create an account to check if it has already been used."
+              );
+              return;
+            }
+            if (!oneTimePass) {
+              this.$toastr.e(
+                "This was a one-time coupon that has already been used.",
+                'Coupon Code: "' + this.couponCode + '"'
+              );
+              this.couponCode = "";
+              return;
+            }
+          }
           this.coupon = coupon;
           this.setBagCoupon(coupon);
-          //this.couponApplied = true;
           this.couponCode = "";
-          //this.couponFreeDelivery = coupon.freeDelivery;
-          //this.couponClass = "checkout-item-hide";
           this.$toastr.s("Coupon Applied.", "Success");
-          return;
         }
       });
+    },
+    oneTimeCouponCheck(couponId) {
+      if (!this.loggedIn) {
+        return "login";
+      }
+      let couponCheck = true;
+      this._orders.forEach(order => {
+        if (couponId === order.coupon_id) {
+          couponCheck = false;
+        }
+      });
+      return couponCheck;
     },
     getCards() {
       this.creditCardId = null;

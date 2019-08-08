@@ -700,7 +700,8 @@
                 ascending: true
               },
               headings: {
-                freeDelivery: 'Free Delivery'
+                freeDelivery: 'Free Delivery',
+                oneTime: 'One Time'
               },
               filterable: false
             }"
@@ -717,12 +718,12 @@
                         placeholder="Enter Coupon Code"
                       ></b-form-input>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                       <b-form-radio-group v-model="coupon.type">
                         <div class="row">
                           <div class="col-md-6 pt-2">
                             <b-form-radio name="coupon-type" value="flat"
-                              >Flat Amount</b-form-radio
+                              >Flat</b-form-radio
                             >
                           </div>
                           <div class="col-md-6 pt-2">
@@ -750,6 +751,16 @@
                         Free Delivery
                       </b-form-checkbox>
                     </div>
+                    <div class="col-md-2">
+                      <b-form-checkbox
+                        v-model="coupon.oneTime"
+                        value="1"
+                        unchecked-value="0"
+                        class="pt-2"
+                      >
+                        One Time
+                      </b-form-checkbox>
+                    </div>
                     <div class="col-md-1">
                       <b-button type="submit" variant="success">Add</b-button>
                     </div>
@@ -761,6 +772,11 @@
             <div slot="freeDelivery" slot-scope="props">
               <p v-if="props.row.freeDelivery" class="text-success">✓</p>
               <p v-if="!props.row.freeDelivery" class="red">X</p>
+            </div>
+
+            <div slot="oneTime" slot-scope="props">
+              <p v-if="props.row.oneTime" class="text-success">✓</p>
+              <p v-if="!props.row.oneTime" class="red">X</p>
             </div>
 
             <div slot="actions" slot-scope="props" v-if="props.row.id !== -1">
@@ -1085,8 +1101,8 @@ export default {
       zipCodes: [],
       view_delivery_days: 1,
       payments_url: "",
-      coupon: { type: "flat", freeDelivery: 0 },
-      columns: ["code", "type", "amount", "freeDelivery", "actions"],
+      coupon: { type: "flat", freeDelivery: 0, oneTime: 0 },
+      columns: ["code", "type", "amount", "freeDelivery", "oneTime", "actions"],
       deselectedDeliveryDay: null,
       showCutoffModal: false,
       stripeConnectUrl: null,
@@ -1269,7 +1285,8 @@ export default {
         .then(response => {
           this.coupon = {
             type: "flat",
-            freeDelivery: 0
+            freeDelivery: 0,
+            oneTime: 0
           };
           this.$toastr.s("Coupon Added", "Success");
         })
