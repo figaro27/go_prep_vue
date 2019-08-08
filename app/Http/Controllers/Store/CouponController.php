@@ -37,7 +37,13 @@ class CouponController extends StoreController
     public function store(Request $request)
     {
         $props = collect($request->all());
-        $props = $props->only(['code', 'type', 'amount', 'freeDelivery']);
+        $props = $props->only([
+            'code',
+            'type',
+            'amount',
+            'freeDelivery',
+            'oneTime'
+        ]);
         $amount = 0;
         if ($props->get('amount') != null) {
             $amount = $props->get('amount');
@@ -48,6 +54,7 @@ class CouponController extends StoreController
         $coupon->code = $props->get('code');
         $coupon->type = $props->get('type');
         $coupon->freeDelivery = $props->get('freeDelivery');
+        $coupon->oneTime = $props->get('oneTime');
         $coupon->amount = $amount;
         $coupon->save();
     }
