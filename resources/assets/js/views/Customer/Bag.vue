@@ -1284,27 +1284,27 @@ export default {
     applyCoupon() {
       this.coupons.forEach(coupon => {
         if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
-          let oneTimePass = this.oneTimeCouponCheck(coupon.id);
-          if (oneTimePass === "login") {
-            this.$toastr.e(
-              "This is a one-time coupon. Please log in or create an account to check if it has already been used."
-            );
-            return;
+          if (coupon.oneTime) {
+            let oneTimePass = this.oneTimeCouponCheck(coupon.id);
+            if (oneTimePass === "login") {
+              this.$toastr.e(
+                "This is a one-time coupon. Please log in or create an account to check if it has already been used."
+              );
+              return;
+            }
+            if (!oneTimePass) {
+              this.$toastr.e(
+                "This was a one-time coupon that has already been used.",
+                'Coupon Code: "' + this.couponCode + '"'
+              );
+              this.couponCode = "";
+              return;
+            }
           }
-          if (oneTimePass) {
-            this.coupon = coupon;
-            this.setBagCoupon(coupon);
-            this.couponCode = "";
-            this.$toastr.s("Coupon Applied.", "Success");
-            return;
-          } else {
-            this.$toastr.e(
-              "This was a one-time coupon that has already been used.",
-              'Coupon Code: "' + this.couponCode + '"'
-            );
-            this.couponCode = "";
-            return;
-          }
+          this.coupon = coupon;
+          this.setBagCoupon(coupon);
+          this.couponCode = "";
+          this.$toastr.s("Coupon Applied.", "Success");
         }
       });
     },
@@ -1312,11 +1312,13 @@ export default {
       if (!this.loggedIn) {
         return "login";
       }
-      let orders = this._orders;
-      orders.forEach(order => {
-        if (1 === 2) return true;
-        else return true;
+      let couponCheck = true;
+      this._orders.forEach(order => {
+        if (couponId === order.coupon_id) {
+          couponCheck = false;
+        }
       });
+      return couponCheck;
     },
     getCards() {
       this.creditCardId = null;
