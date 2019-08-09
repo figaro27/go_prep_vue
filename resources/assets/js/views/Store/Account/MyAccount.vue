@@ -130,7 +130,6 @@
             <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
 
-          <p><b-btn @click="customerNewOrder">customerNewOrder</b-btn></p>
           <!--        
             <p><b-btn @click="getDeliveryRoutes">TEST DELIVERY ROUTE</b-btn></p>
 
