@@ -10,11 +10,19 @@
         <b-form-group label="Selection type" v-if="selectable_toggle">
           <b-form-radio-group v-model="meals_selectable">
             <b-form-radio :value="false" name="radio-options">
-              Preset <hint title="Preset">Hint content</hint>
+              Preset
+              <hint title="Preset"
+                >Choose this option to pre-select the meals that will be
+                included in this variation.</hint
+              >
             </b-form-radio>
 
             <b-form-radio :value="true" name="radio-options">
-              Selectable <hint title="Selectable">Hint content</hint>
+              Selectable
+              <hint title="Selectable"
+                >Choose this option to let your customer choose which meals they
+                want to make up this variation.</hint
+              >
             </b-form-radio>
           </b-form-radio-group>
         </b-form-group>
