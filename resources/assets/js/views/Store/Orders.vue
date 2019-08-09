@@ -59,6 +59,12 @@
 
             <span slot="beforeLimit">
               <b-btn
+                variant="warning"
+                @click="exportData('packing_slips', 'pdf', true)"
+              >
+                <i class="fa fa-print"></i>&nbsp; Print Packing Slips
+              </b-btn>
+              <b-btn
                 variant="success"
                 @click="exportData('orders_by_customer', 'pdf', true)"
               >
