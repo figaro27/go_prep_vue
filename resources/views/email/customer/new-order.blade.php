@@ -49,14 +49,14 @@ u + .body .full { width:100% !important; width:100vw !important;}
             <td align="center">
               <table width="200" class="table-full" align="left" border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td bgcolor="#3082CF" align="center">
+                  <td bgcolor="#FFFFFF" align="center">
                     <table width="80%" class="table-inner" border="0" align="center" cellpadding="0" cellspacing="0">
                       <tr>
                         <td height="50"></td>
                       </tr>
                       <!-- logo -->
                       <tr>
-                        <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px;" src="https://goprep.com/logo.png" alt="GoPrep" title="GoPrep" /></td>
+                        <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px;" src="/{{ $order->store->details->logo['url_thumb'] }}" alt="GoPrep" title="GoPrep" /></td>
                       </tr>
                       <!-- end logo -->
                       <tr>
