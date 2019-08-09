@@ -18,7 +18,7 @@ class UsersSeeder extends Seeder
         for ($i = 1; $i <= 10; $i++) {
             DB::table('users')->insert([
                 'user_role_id' => 2,
-                'email' => 'store' . $i . '@goprepdev.com',
+                'email' => 'store' . $i . '@goprepdemo.com',
                 'email_verified_at' => now(),
                 'password' => bcrypt('secret'),
                 'remember_token' => str_random(10),
@@ -32,7 +32,7 @@ class UsersSeeder extends Seeder
         for ($i = 1; $i <= 20; $i++) {
             DB::table('users')->insert([
                 'user_role_id' => 1,
-                'email' => 'customer' . $i . '@goprepdev.com',
+                'email' => 'customer' . $i . '@goprepdemo.com',
                 'email_verified_at' => now(),
                 'password' => bcrypt('secret'),
                 'remember_token' => str_random(10),
