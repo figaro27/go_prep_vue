@@ -456,6 +456,7 @@ class Store extends Model
                 'l',
                 strtotime("Sunday +{$this->settings->cutoff_days} days")
             );
+
             return $cutoffDate
                 ->modify('last ' . $dayName)
                 ->setTime($this->settings->cutoff_hours, 0, 0)
@@ -656,11 +657,22 @@ class Store extends Model
                 }
             }
         } elseif ($this->settings->cutoff_type === 'single_day') {
-            $date = $this->getNextDeliveryDate();
+            /*$date = $this->getNextDeliveryDate();
             if (!$date) {
                 return false;
             }
-            $cutoff = $this->getCutoffDate($date);
+            $cutoff = $this->getCutoffDate($date);*/
+
+            $dayName = date(
+                'l',
+                strtotime("Sunday +{$this->settings->cutoff_days} days")
+            );
+
+            $cutoff = Carbon::parse(
+                "this $dayName",
+                $this->settings->timezone
+            )->setTime($this->settings->cutoff_hours, 0, 0);
+
             $diff = $cutoff->getTimestamp() - $now->getTimestamp();
 
             // Cutoff passed less than an hour ago
