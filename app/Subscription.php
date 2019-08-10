@@ -15,7 +15,6 @@ class Subscription extends Model
     protected $appends = [
         'store_name',
         'latest_order',
-        'latest_unpaid_order',
         'latest_paid_order',
         'next_delivery_date',
         'meal_ids',
@@ -90,15 +89,27 @@ class Subscription extends Model
             ->first();
     }
 
-    public function getLatestUnpaidOrderAttribute()
+    /**
+     * Returns the most recent unpaid order.
+     *
+     * @param boolean $futureDeliveryDate
+     * @return App\Order
+     */
+    public function getLatestUnpaidOrder($futureDeliveryDate = true)
     {
         $latestOrder = $this->orders()
             ->where('paid', 0)
-            ->whereDate('delivery_date', '>=', Carbon::now())
-            ->orderBy('delivery_date', 'desc')
-            ->first();
+            ->orderBy('delivery_date', 'desc');
 
-        return $latestOrder;
+        if ($futureDeliveryDate) {
+            $latestOrder = $latestOrder->whereDate(
+                'delivery_date',
+                '>=',
+                Carbon::now()
+            );
+        }
+
+        return $latestOrder->first();
     }
 
     public function getLatestPaidOrderAttribute()
@@ -210,7 +221,7 @@ class Subscription extends Model
      */
     public function renew(Collection $stripeInvoice, Collection $stripeEvent)
     {
-        $latestOrder = $this->latest_unpaid_order;
+        $latestOrder = $this->getLatestUnpaidOrder();
 
         if (!$latestOrder) {
             throw new \Exception(
@@ -331,7 +342,7 @@ class Subscription extends Model
         Collection $stripeInvoice,
         Collection $stripeEvent
     ) {
-        $latestOrder = $this->latest_unpaid_order;
+        $latestOrder = $this->getLatestUnpaidOrder(false);
 
         if (!$latestOrder) {
             throw new \Exception(
