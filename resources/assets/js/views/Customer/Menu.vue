@@ -581,6 +581,13 @@
                         >About</b-btn
                       >
                     </div>
+                    <div class="col-sm-2">
+                      <b-form-input
+                        type="text"
+                        v-model="search"
+                        placeholder="Search"
+                      />
+                    </div>
                     <div class="col-sm-12 category-area">
                       <div class="filter-area">
                         <b-button
@@ -1165,6 +1172,7 @@ export default {
   },
   data() {
     return {
+      search: "",
       deliveryDay: "",
       slickOptions: {
         slidesToShow: 4,
@@ -1430,6 +1438,10 @@ export default {
 
       meals = _.filter(meals, meal => {
         return meal.active;
+      });
+
+      meals = _.filter(meals, meal => {
+        return meal.title.match(this.search);
       });
 
       if (this.filteredView) {
