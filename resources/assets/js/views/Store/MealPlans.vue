@@ -66,7 +66,13 @@
                 class="btn view btn-danger btn-sm"
                 @click="deleteMealPlan(props.row.id)"
               >
-                Cancel Meal Plan
+                Cancel
+              </button>
+              <button
+                class="btn view btn-success btn-sm"
+                @click.stop="() => editSubscription(subscription)"
+              >
+                Change Meals
               </button>
             </div>
 
@@ -408,6 +414,12 @@ export default {
       refreshSubscriptions: "refreshStoreSubscriptions",
       updateSubscription: "updateSubscription"
     }),
+    ...mapMutations([
+      "emptyBag",
+      "addBagItems",
+      "setBagMealPlan",
+      "setBagCoupon"
+    ]),
     refreshTable() {
       this.refreshSubscriptions();
     },
@@ -506,6 +518,25 @@ export default {
         this.showCancelModal = false;
         this.$toastr.s("Meal Plan Cancelled");
       });
+    },
+    editSubscription(subscription) {
+      this.emptyBag();
+      this.setBagCoupon(null);
+      this.setBagMealPlan(true);
+
+      const items = _.map(subscription.meals, meal => {
+        return {
+          id: meal.id,
+          meal: meal,
+          quantity: meal.quantity,
+          added: moment().unix()
+        };
+      });
+      this.addBagItems(items);
+
+      window.location = `${subscription.store.url}/customer/meal-plans/${
+        subscription.id
+      }`;
     }
   }
 };
