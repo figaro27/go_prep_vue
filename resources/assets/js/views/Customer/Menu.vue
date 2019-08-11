@@ -1436,12 +1436,18 @@ export default {
         return [];
       }
 
-      meals = _.filter(meals, meal => {
-        return meal.active;
-      });
+      const search = this.search.toLowerCase();
 
+      // Meal filtering logic
       meals = _.filter(meals, meal => {
-        return meal.title.match(this.search);
+        if (
+          !meal.active ||
+          (this.search && !meal.title.toLowerCase().includes(search))
+        ) {
+          return false;
+        }
+
+        return true;
       });
 
       if (this.filteredView) {
