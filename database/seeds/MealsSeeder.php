@@ -93,7 +93,7 @@ class MealsSeeder extends Seeder
 
         $daysAgo = [Carbon::now()->subDays(30), Carbon::now()->subDays(25)];
 
-        for ($store = 1; $store <= 10; $store++) {
+        for ($store = 1; $store <= 30; $store++) {
             for ($i = 0; $i <= 22; $i++) {
                 $id = DB::table('meals')->insertGetId([
                     'active' => 1,

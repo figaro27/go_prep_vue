@@ -15,7 +15,7 @@ class StoresSeeder extends Seeder
     {
         $faker = Faker\Factory::create();
 
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 30; $i++) {
             DB::table('stores')->insert([
                 'user_id' => $i,
                 'accepted_toa' => 1

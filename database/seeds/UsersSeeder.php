@@ -15,7 +15,7 @@ class UsersSeeder extends Seeder
         $faker = Faker\Factory::create();
 
         // Creating Store Users
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 30; $i++) {
             DB::table('users')->insert([
                 'user_role_id' => 2,
                 'email' => 'store' . $i . '@goprepdemo.com',
@@ -43,8 +43,8 @@ class UsersSeeder extends Seeder
         }
 
         // Creating Customers
-        for ($u = 1; $u <= 10; $u++) {
-            for ($i = 11; $i <= 30; $i++) {
+        for ($u = 1; $u <= 30; $u++) {
+            for ($i = 31; $i <= 50; $i++) {
                 DB::table('customers')->insert([
                     'store_id' => $u,
                     'user_id' => $i,

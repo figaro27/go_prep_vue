@@ -11,7 +11,7 @@ class AllergyMealSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 0; $i <= 207; $i += 23) {
+        for ($i = 0; $i <= 600; $i += 23) {
             DB::table('allergy_meal')->insert([
                 'meal_id' => 1 + $i,
                 'allergy_id' => 7

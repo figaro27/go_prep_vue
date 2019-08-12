@@ -12,7 +12,7 @@ class CategoryMealSeeder extends Seeder
     public function run()
     {
         $c = 0;
-        for ($u = 0; $u <= 207; $u += 23) {
+        for ($u = 0; $u <= 600; $u += 23) {
             for ($i = 1; $i <= 15; $i++) {
                 DB::table('category_meal')->insert([
                     'meal_id' => $i + $u,

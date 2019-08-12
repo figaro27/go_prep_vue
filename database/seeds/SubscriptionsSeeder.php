@@ -14,7 +14,7 @@ class SubscriptionsSeeder extends Seeder
      */
     public function run()
     {
-        for ($u = 1; $u <= 10; $u++) {
+        for ($u = 1; $u <= 30; $u++) {
             for ($i = 11; $i <= 20; $i++) {
                 DB::table('subscriptions')->insert([
                     'user_id' => $i,
