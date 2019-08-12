@@ -146,6 +146,22 @@ foreach (
                                 'subscriptions',
                                 'SubscriptionController'
                             );
+                            // Route::post(
+                            //     'subscriptions/{id}/meals',
+                            //     'SubscriptionController@updateMeals'
+                            // );
+                            Route::post(
+                                'subscriptions/updateMeals',
+                                'SubscriptionController@updateMeals'
+                            );
+                            Route::post(
+                                'subscriptions/pause',
+                                'SubscriptionController@pause'
+                            );
+                            Route::post(
+                                'subscriptions/resume',
+                                'SubscriptionController@resume'
+                            );
                             Route::resource('customers', 'CustomerController');
                             Route::post(
                                 'getCards',

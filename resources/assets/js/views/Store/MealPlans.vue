@@ -66,8 +66,32 @@
                 class="btn view btn-danger btn-sm"
                 @click="deleteMealPlan(props.row.id)"
               >
-                Cancel Meal Plan
+                Cancel
               </button>
+              <b-btn
+                v-if="props.row.status === 'active'"
+                class="btn view btn-warning btn-sm"
+                @click.stop="() => pauseSubscription(props.row.id)"
+                >Pause</b-btn
+              >
+              <b-btn
+                v-if="props.row.status === 'paused'"
+                class="btn view btn-warning btn-sm"
+                @click.stop="() => resumeSubscription(props.row.id)"
+                >Resume</b-btn
+              >
+              <router-link
+                :to="{
+                  name: 'store-adjust-meal-plan',
+                  params: { subscription: props.row }
+                }"
+              >
+                <b-btn
+                  class="btn view btn-success btn-sm"
+                  @click="editSubscription(props.row.id)"
+                  >Change Meals</b-btn
+                >
+              </router-link>
             </div>
 
             <div slot="amount" slot-scope="props">
@@ -333,6 +357,11 @@ export default {
       deliveryNote: ""
     };
   },
+  mounted() {
+    if (this.$route.query.updated) {
+      this.$toastr.s("Meal Plan Updated");
+    }
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -408,6 +437,12 @@ export default {
       refreshSubscriptions: "refreshStoreSubscriptions",
       updateSubscription: "updateSubscription"
     }),
+    ...mapMutations([
+      "emptyBag",
+      "addBagItems",
+      "setBagMealPlan",
+      "setBagCoupon"
+    ]),
     refreshTable() {
       this.refreshSubscriptions();
     },
@@ -506,6 +541,47 @@ export default {
         this.showCancelModal = false;
         this.$toastr.s("Meal Plan Cancelled");
       });
+    },
+    editSubscription(subscription) {
+      this.emptyBag();
+      this.setBagCoupon(null);
+      this.setBagMealPlan(true);
+
+      const items = _.map(subscription.meals, meal => {
+        return {
+          id: meal.id,
+          meal: meal,
+          quantity: meal.quantity,
+          added: moment().unix()
+        };
+      });
+      this.addBagItems(items);
+    },
+    pauseSubscription(id) {
+      try {
+        axios.post("/api/me/subscriptions/pause", { id: id }).then(resp => {
+          this.refreshSubscriptions();
+          this.$toastr.s("Meal Plan paused!");
+        });
+      } catch (e) {
+        this.$toastr.e(
+          "Please get in touch with our support team.",
+          "Failed to pause Meal Plan"
+        );
+      }
+    },
+    resumeSubscription(id) {
+      try {
+        axios.post("/api/me/subscriptions/resume", { id: id }).then(resp => {
+          this.refreshSubscriptions();
+          this.$toastr.s("Meal Plan resumed!");
+        });
+      } catch (e) {
+        this.$toastr.e(
+          "Please get in touch with our support team.",
+          "Failed to resume Meal Plan"
+        );
+      }
     }
   }
 };

@@ -66,7 +66,12 @@
     <div class="menu ml-auto mr-auto">
       <div
         v-if="
-          !willDeliver && !preview && !manualOrder && loggedIn && !adjustOrder
+          !willDeliver &&
+            !preview &&
+            !manualOrder &&
+            loggedIn &&
+            !adjustOrder &&
+            !adjustMealPlan
         "
       >
         <b-alert variant="danger center-text" show
@@ -1026,7 +1031,8 @@
                       minOption === 'meals' &&
                         total >= minimumMeals &&
                         !manualOrder &&
-                        !adjustOrder
+                        !adjustOrder &&
+                        !adjustMealPlan
                     "
                     class="menu-btns-container"
                   >
@@ -1049,7 +1055,8 @@
                       minOption === 'price' &&
                         totalBagPricePreFees < minPrice &&
                         !manualOrder &&
-                        !adjustOrder
+                        !adjustOrder &&
+                        !adjustMealPlan
                     "
                     class="menu-btns-container"
                   >
@@ -1066,7 +1073,12 @@
                   >
                     <router-link
                       to="/customer/bag"
-                      v-if="!subscriptionId && !manualOrder && !adjustOrder"
+                      v-if="
+                        !subscriptionId &&
+                          !manualOrder &&
+                          !adjustOrder &&
+                          !adjustMealPlan
+                      "
                     >
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
@@ -1106,6 +1118,20 @@
                     <router-link
                       to="/store/bag"
                       v-if="!subscriptionId && manualOrder"
+                    >
+                      <b-btn class="menu-bag-btn">NEXT</b-btn>
+                    </router-link>
+                  </div>
+                  <div>
+                    <router-link
+                      :to="{
+                        name: 'store-bag',
+                        params: {
+                          subscriptionId: subscription.id,
+                          mealPlanAdjustment: true
+                        }
+                      }"
+                      v-if="adjustMealPlan"
                     >
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
@@ -1163,7 +1189,13 @@ export default {
     adjustOrder: {
       default: false
     },
+    adjustMealPlan: {
+      default: false
+    },
     order: {
+      default: {}
+    },
+    subscription: {
       default: {}
     },
     subscriptionId: {
@@ -1592,6 +1624,10 @@ export default {
       this.clearAll();
       this.addMealOrdersToBag();
     }
+    if (this.adjustMealPlan) {
+      this.clearAll();
+      this.addMealsSubscriptionToBag();
+    }
     try {
       this.getSalesTax(this.store.details.state);
     } catch (e) {}
@@ -1821,6 +1857,29 @@ export default {
     addMealOrdersToBag() {
       //conact item with meal
       this.order.items.forEach(item => {
+        const meal = this.getMeal(item.meal_id);
+
+        if (!meal) {
+          return;
+        }
+
+        let components = _.mapValues(
+          _.groupBy(item.components, "meal_component_id"),
+          choices => {
+            return _.map(choices, "meal_component_option_id");
+          }
+        );
+
+        let addons = _.map(item.addons, "meal_addon_id");
+
+        for (let i = 0; i < item.quantity; i++) {
+          this.addOne(meal, false, item.meal_size_id, components, addons);
+        }
+      });
+    },
+    addMealsSubscriptionToBag() {
+      //conact item with meal
+      this.subscription.items.forEach(item => {
         const meal = this.getMeal(item.meal_id);
 
         if (!meal) {
