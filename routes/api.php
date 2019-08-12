@@ -105,6 +105,10 @@ foreach (
                                 'MealPackageController'
                             );
                             Route::post(
+                                'deactivateAndReplace',
+                                'MealController@deactivateAndReplace'
+                            );
+                            Route::post(
                                 'destroyMealNonSubstitute',
                                 'MealController@destroyMealNonSubtitute'
                             );

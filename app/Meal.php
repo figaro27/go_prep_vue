@@ -1190,7 +1190,7 @@ class Meal extends Model implements HasMedia
         ]);
     }
 
-    public static function deleteMeal($id, $subId = null)
+    public static function deleteMeal($id, $subId = null, $replaceOnly = false)
     {
         $meal = Meal::find($id);
         $sub = Meal::find($subId);
@@ -1211,7 +1211,6 @@ class Meal extends Model implements HasMedia
                 }
                 $subscriptionMeal->meal_id = $subId;
                 try {
-                    $subscriptionMeal->save();
                 } catch (\Illuminate\Database\QueryException $e) {
                     $errorCode = $e->errorInfo[1];
 
@@ -1237,20 +1236,22 @@ class Meal extends Model implements HasMedia
 
                 $user = $subscriptionMeal->subscription->user;
 
-                if ($user) {
-                    $user->sendNotification('subscription_meal_substituted', [
-                        'user' => $user,
-                        'customer' => $subscriptionMeal->subscription->customer,
-                        'subscription' => $subscriptionMeal->subscription,
-                        'old_meal' => $meal,
-                        'sub_meal' => $sub,
-                        'store' => $subscriptionMeal->subscription->store
-                    ]);
-                }
+                // if ($user) {
+                //     $user->sendNotification('subscription_meal_substituted', [
+                //         'user' => $user,
+                //         'customer' => $subscriptionMeal->subscription->customer,
+                //         'subscription' => $subscriptionMeal->subscription,
+                //         'old_meal' => $meal,
+                //         'sub_meal' => $sub,
+                //         'store' => $subscriptionMeal->subscription->store
+                //     ]);
+                // }
             });
         }
 
-        $meal->delete();
+        if (!$replaceOnly) {
+            $meal->delete();
+        }
     }
 
     public static function generateImageFilename($image, $ext)

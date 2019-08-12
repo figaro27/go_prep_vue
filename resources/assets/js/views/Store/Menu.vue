@@ -628,6 +628,76 @@
         </button>
       </center>
     </b-modal>
+    <b-modal
+      title="Deactivate Meal"
+      v-model="deactivateMealModal"
+      v-if="deactivateMealModal"
+      :hide-footer="true"
+    >
+      <center>
+        <h5 class="mt-3">
+          This meal is tied to one or more meal plans.
+          <img
+            v-b-popover.hover="
+              'You currently have one or more meal plans with your customers that contain this meal. Please select a substitute and your customers will be informed via email. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of allergies, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'
+            "
+            title="Replacement Meal"
+            src="/images/store/popover.png"
+            class="popover-size"
+          />
+        </h5>
+        <h5 class="mb-3">Please select a recommended replacement meal.</h5>
+
+        <b-list-group>
+          <b-list-group-item
+            v-for="meal in mealSubstituteOptions(deactivatingMeal)"
+            :active="substitute_id === meal.id"
+            @click="
+              () => {
+                substitute_id = meal.id;
+              }
+            "
+            :key="meal.id"
+          >
+            <div class="d-flex align-items-center text-left">
+              <img
+                class="mr-2"
+                style="width:65px"
+                :src="meal.image.thumb_url"
+                v-if="meal.image.thumb_url"
+              />
+              <div class="flex-grow-1 mr-2">
+                <p>{{ meal.title }}</p>
+                <p class="strong">
+                  {{ format.money(meal.price, storeSettings.currency) }}
+                </p>
+              </div>
+              <b-btn variant="warning">Select</b-btn>
+            </div>
+          </b-list-group-item>
+        </b-list-group>
+
+        <div v-if="mealSubstituteOptions(deactivatingMeal).length <= 0">
+          There are currently no substitute options for this meal. Please add a
+          similar meal that 1) doesn't contain the same allergies, and 2) is
+          within the same meal category.
+        </div>
+
+        <button
+          class="btn btn-warning btn-lg mt-3"
+          @click="deactivateMealModal = false"
+        >
+          Deactivate & Keep
+        </button>
+        <button
+          v-if="substitute_id"
+          class="btn btn-danger btn-lg mt-3"
+          @click="deactivateAndReplace(deactivatingMeal.id, substitute_id)"
+        >
+          Deactivate & Replace
+        </button>
+      </center>
+    </b-modal>
   </div>
 </template>
 
@@ -713,10 +783,12 @@ export default {
       viewMealModal: false,
       deleteMealModal: false,
       deleteMealModalNonSubstitute: false,
+      deactivateMealModal: false,
       viewPackageModal: false,
       deleteMealPackageModal: false,
       mealPackageId: null,
       deletingMeal: {},
+      deactivatingMeal: {},
       substitute_id: null,
 
       newTags: [],
@@ -925,7 +997,8 @@ export default {
       _updateMealPackage: "updateMealPackage",
       refreshCategories: "refreshCategories",
       addJob: "addJob",
-      removeJob: "removeJob"
+      removeJob: "removeJob",
+      refreshSubscriptions: "refreshStoreSubscriptions"
     }),
     ...mapMutations({
       setBagMealPlan: "setBagMealPlan"
@@ -1049,6 +1122,17 @@ export default {
         await this._updateMealPackage({ id, data: { active } });
       }
 
+      this.deactivatingMeal = this.getMeal(id);
+
+      if (!this.deactivatingMeal) {
+        return;
+      }
+
+      if (!this.deactivatingMeal.active && this.deactivatingMeal.substitute) {
+        this.deactivateMealModal = true;
+        return;
+      }
+
       if (active) {
         this.$toastr.s("Meal activated!");
       } else {
@@ -1056,7 +1140,18 @@ export default {
       }
       //this.refreshTable();
     },
-
+    deactivateAndReplace(mealId, substituteId) {
+      axios
+        .post("/api/me/deactivateAndReplace", {
+          mealId: mealId,
+          substituteId: substituteId
+        })
+        .then(resp => {
+          this.deactivateMealModal = false;
+          this.refreshSubscriptions();
+          this.$toastr.s("Meal deactivated and replaced.");
+        });
+    },
     createMeal() {
       this.createMealModal = true;
     },
@@ -1130,6 +1225,7 @@ export default {
     destroyMeal: function(id, subId) {
       axios.delete(`/api/me/meals/${id}?substitute_id=${subId}`).then(resp => {
         this.refreshTable();
+        this.refreshSubscriptions();
         this.deleteMealModal = false;
         this.$toastr.s("Meal deleted!");
         this.substitute_id = null;

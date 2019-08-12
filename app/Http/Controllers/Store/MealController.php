@@ -123,6 +123,38 @@ class MealController extends StoreController
         }
     }
 
+    public function deactivateAndReplace(Request $request)
+    {
+        $mealId = $request->get('mealId');
+        $subId = $request->get('substituteId');
+
+        $meal = $this->store->meals()->find($mealId);
+
+        if ($subId) {
+            $sub = $this->store->meals()->find($subId);
+        }
+
+        if (!$meal) {
+            return response()->json(
+                [
+                    'error' => 'Invalid meal ID'
+                ],
+                400
+            );
+        }
+
+        if ($meal->substitute && !$sub) {
+            return response()->json(
+                [
+                    'error' => 'Invalid substitute meal ID'
+                ],
+                400
+            );
+        }
+
+        return Meal::deleteMeal($mealId, $subId, true);
+    }
+
     /**
      * Remove the specified resource from storage.
      *
