@@ -521,7 +521,7 @@
                   >
                 </div>
                 <div v-else>
-                  <div v-if="manualOrder">
+                  <div v-if="manualOrder && !subscriptionId">
                     <b-form-group>
                       <h4 class="mt-2 mb-3">Choose Customer</h4>
                       <b-select
@@ -567,7 +567,7 @@
                     :creditCards="creditCardList"
                     :manualOrder="true"
                     v-model="cards"
-                    v-if="manualOrder && !cashOrder"
+                    v-if="manualOrder && !cashOrder && !subscriptionId"
                     class="mb-3"
                     ref="cardPicker"
                   ></card-picker>
@@ -1165,6 +1165,7 @@ export default {
   methods: {
     ...mapActions([
       "refreshSubscriptions",
+      "refreshStoreSubscriptions",
       "refreshCustomerOrders",
       "refreshOrders",
       "refreshStoreSubscriptions",
@@ -1371,32 +1372,53 @@ export default {
       this.form.state = state.abbreviation;
     },
     async updateSubscriptionMeals() {
-      try {
-        const { data } = await axios.post(
-          `/api/me/subscriptions/${this.subscriptionId}/meals`,
-          { bag: this.bag, salesTaxRate: this.salesTax }
-        );
-        await this.refreshSubscriptions();
-        this.emptyBag();
-        this.setBagMealPlan(false);
-        this.setBagCoupon(null);
-
-        this.$router.push({
-          path: "/customer/meal-plans",
-          query: {
-            updated: true
-          }
-        });
-      } catch (e) {
-        if (!_.isEmpty(e.response.data.error)) {
-          this.$toastr.e(e.response.data.error);
-        } else {
-          this.$toastr.e(
-            "Please try again or contact our support team",
-            "Failed to update meals!"
+      if (this.$route.params.mealPlanAdjustment) {
+        axios
+          .post("/api/me/subscriptions/updateMeals", {
+            bag: this.bag,
+            salesTaxRate: this.salesTax,
+            subscriptionId: this.subscriptionId
+          })
+          .then(resp => {
+            this.refreshStoreSubscriptions();
+            this.emptyBag();
+            this.setBagMealPlan(false);
+            this.setBagCoupon(null);
+            this.$router.push({
+              path: "/store/meal-plans",
+              query: {
+                updated: true
+              }
+            });
+          });
+      } else {
+        try {
+          const { data } = await axios.post(
+            `/api/me/subscriptions/${this.subscriptionId}/meals`,
+            { bag: this.bag, salesTaxRate: this.salesTax }
           );
+          await this.refreshSubscriptions();
+          this.emptyBag();
+          this.setBagMealPlan(false);
+          this.setBagCoupon(null);
+
+          this.$router.push({
+            path: "/customer/meal-plans",
+            query: {
+              updated: true
+            }
+          });
+        } catch (e) {
+          if (!_.isEmpty(e.response.data.error)) {
+            this.$toastr.e(e.response.data.error);
+          } else {
+            this.$toastr.e(
+              "Please try again or contact our support team",
+              "Failed to update meals!"
+            );
+          }
+          return;
         }
-        return;
       }
     }
   }

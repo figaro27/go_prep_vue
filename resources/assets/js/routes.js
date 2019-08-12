@@ -34,6 +34,7 @@ import StoreSettings from "./views/Store/Account/Settings.vue";
 import StoreMenuPreview from "./views/Store/MenuPreview.vue";
 import StoreManualOrder from "./views/Store/ManualOrder.vue";
 import StoreAdjustOrder from "./views/Store/AdjustOrder.vue";
+import StoreAdjustMealPlan from "./views/Store/AdjustMealPlan.vue";
 import StoreBag from "./views/Store/Bag.vue";
 
 import Spinner from "./components/Spinner.vue";
@@ -222,6 +223,11 @@ let routes = [
     path: "/store/adjust-order",
     component: StoreAdjustOrder,
     name: "store-adjust-order"
+  },
+  {
+    path: "/store/adjust-meal-plan",
+    component: StoreAdjustMealPlan,
+    name: "store-adjust-meal-plan"
   },
   {
     path: "/store/bag",

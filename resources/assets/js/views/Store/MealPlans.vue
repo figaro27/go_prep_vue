@@ -68,12 +68,30 @@
               >
                 Cancel
               </button>
-              <button
-                class="btn view btn-success btn-sm"
-                @click.stop="() => editSubscription(subscription)"
+              <b-btn
+                v-if="props.row.status === 'active'"
+                class="btn view btn-warning btn-sm"
+                @click.stop="() => pauseSubscription(props.row.id)"
+                >Pause</b-btn
               >
-                Change Meals
-              </button>
+              <b-btn
+                v-if="props.row.status === 'paused'"
+                class="btn view btn-warning btn-sm"
+                @click.stop="() => resumeSubscription(props.row.id)"
+                >Resume</b-btn
+              >
+              <router-link
+                :to="{
+                  name: 'store-adjust-meal-plan',
+                  params: { subscription: props.row }
+                }"
+              >
+                <b-btn
+                  class="btn view btn-success btn-sm"
+                  @click="editSubscription(props.row.id)"
+                  >Change Meals</b-btn
+                >
+              </router-link>
             </div>
 
             <div slot="amount" slot-scope="props">
@@ -339,6 +357,11 @@ export default {
       deliveryNote: ""
     };
   },
+  mounted() {
+    if (this.$route.query.updated) {
+      this.$toastr.s("Meal Plan Updated");
+    }
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -533,10 +556,32 @@ export default {
         };
       });
       this.addBagItems(items);
-
-      window.location = `${subscription.store.url}/customer/meal-plans/${
-        subscription.id
-      }`;
+    },
+    pauseSubscription(id) {
+      try {
+        axios.post("/api/me/subscriptions/pause", { id: id }).then(resp => {
+          this.refreshSubscriptions();
+          this.$toastr.s("Meal Plan paused!");
+        });
+      } catch (e) {
+        this.$toastr.e(
+          "Please get in touch with our support team.",
+          "Failed to pause Meal Plan"
+        );
+      }
+    },
+    resumeSubscription(id) {
+      try {
+        axios.post("/api/me/subscriptions/resume", { id: id }).then(resp => {
+          this.refreshSubscriptions();
+          this.$toastr.s("Meal Plan resumed!");
+        });
+      } catch (e) {
+        this.$toastr.e(
+          "Please get in touch with our support team.",
+          "Failed to resume Meal Plan"
+        );
+      }
     }
   }
 };

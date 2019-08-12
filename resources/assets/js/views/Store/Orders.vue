@@ -105,7 +105,7 @@
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
-                class="btn view btn-warning btn-sm"
+                class="btn view btn-primary btn-sm"
                 @click="viewOrder(props.row.id)"
               >
                 View Order
