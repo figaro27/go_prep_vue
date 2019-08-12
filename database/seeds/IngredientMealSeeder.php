@@ -31,7 +31,7 @@ class IngredientMealSeeder extends Seeder
         DB::statement($createIngredientsMealsTable);
 
         $m = 0;
-        for ($i = 0; $i <= 639; $i += 71) {
+        for ($i = 0; $i <= 2059; $i += 71) {
             $insertIngredientsMeals = "
     		INSERT INTO `ingredient_meal` 
         (ingredient_id,meal_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)

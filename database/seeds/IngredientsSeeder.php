@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `ingredients` (
 
         DB::statement($createIngredientsTable);
 
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 30; $i++) {
             $insertIngredients =
                 "
     INSERT INTO `ingredients` (store_id,food_name,image,image_thumb,unit_type,calories,fatcalories,totalfat,satfat,transfat,cholesterol,sodium,totalcarb,fibers,sugars,proteins,vitamind,potassium,calcium,iron,addedsugars,created_at,updated_at) VALUES (" .

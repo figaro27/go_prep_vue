@@ -11,7 +11,7 @@ class MealMealTagSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 0; $i <= 207; $i += 23) {
+        for ($i = 0; $i <= 600; $i += 23) {
             DB::table('meal_meal_tag')->insert([
                 'meal_id' => 1 + $i,
                 'meal_tag_id' => 4
