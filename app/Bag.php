@@ -50,7 +50,7 @@ class Bag
         return md5(
             json_encode([
                 'meal' => $item['meal']['id'],
-                'meal_package' => $item['meal_package'],
+                'meal_package' => $item['meal_package'] ?? false,
                 'size' => $item['size'] ?? null,
                 'components' => $item['components'] ?? [],
                 'addons' => $item['addons'] ?? []

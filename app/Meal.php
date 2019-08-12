@@ -1211,6 +1211,7 @@ class Meal extends Model implements HasMedia
                 }
                 $subscriptionMeal->meal_id = $subId;
                 try {
+                    $subscriptionMeal->save();
                 } catch (\Illuminate\Database\QueryException $e) {
                     $errorCode = $e->errorInfo[1];
 
