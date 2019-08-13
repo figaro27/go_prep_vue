@@ -6,6 +6,7 @@ use App\Http\Controllers\Store\StoreController;
 use App\Http\Requests\StoreMealRequest;
 use App\Http\Requests\UpdateMealRequest;
 use App\Meal;
+use App\MealMealPackage;
 use Illuminate\Http\Request;
 
 class MealController extends StoreController
@@ -152,6 +153,8 @@ class MealController extends StoreController
             );
         }
 
+        MealMealPackage::substituteMeal($mealId, $subId);
+
         return Meal::deleteMeal($mealId, $subId, true);
     }
 
@@ -187,6 +190,8 @@ class MealController extends StoreController
                 400
             );
         }
+
+        MealMealPackage::substituteMeal($meal->id, $subId);
 
         return Meal::deleteMeal($id, $subId);
     }
