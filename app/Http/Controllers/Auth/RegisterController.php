@@ -284,6 +284,15 @@ class RegisterController extends Controller
             } catch (\Exception $e) {
                 // todo: send notification to admin
             }
+
+            // If using credit card billing, charge here
+            try {
+                $plan = $data['store']['plan'];
+                $planId = config('plans');
+
+                \Stripe\Subscription::create([]);
+            } catch (\Exception $e) {
+            }
         }
 
         return $user;

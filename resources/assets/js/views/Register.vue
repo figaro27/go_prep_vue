@@ -11,6 +11,36 @@
         <div class="card-body p-lg-5">
           <b-form @submit.prevent="submit" autocomplete="off" ref="form">
             <div v-if="step === 0">
+              <h4>Payment Details</h4>
+
+              <b-form-group label="Billing method">
+                <b-form-radio-group
+                  v-model="form[3].plan_method"
+                  :options="[
+                    { text: 'Credit Card', value: 'credit_card' },
+                    { text: 'Bank transfer', value: 'bank_transfer' }
+                  ]"
+                ></b-form-radio-group>
+              </b-form-group>
+
+              <b-form-group label="Billing period">
+                <b-form-radio-group
+                  v-model="form[3].plan_period"
+                  :options="[
+                    { text: 'Monthly', value: 'monthly' },
+                    { text: 'Annually', value: 'annually' }
+                  ]"
+                ></b-form-radio-group>
+              </b-form-group>
+
+              <b-form-group label="Select Plan">
+                <b-form-radio-group
+                  v-model="form[3].plan"
+                  :options="planOptions"
+                  stacked
+                ></b-form-radio-group>
+              </b-form-group>
+
               <b-form-group horizontal label="Account Type">
                 <b-form-radio-group
                   horizontal
@@ -472,6 +502,8 @@
                 >
               </b-form-group>
             </div>
+
+            <div v-if="step === 3"></div>
           </b-form>
         </div>
       </div>
@@ -484,6 +516,7 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import { required, minLength, email, sameAs } from "vuelidate/lib/validators";
 import validators from "../validators";
 import auth from "../lib/auth";
+import format from "../lib/format";
 import TermsOfService from "./TermsOfService";
 import TermsOfAgreement from "./TermsOfAgreement";
 import countries from "../data/countries.js";
@@ -507,6 +540,7 @@ export default {
     return {
       redirect: null,
       step: 0,
+      plans: {},
 
       form: {
         0: {
@@ -538,6 +572,11 @@ export default {
           country: "US",
           accepted_tos: 0
           //accepted_toa: 0
+        },
+        3: {
+          plan_method: "credit_card",
+          plan_period: "monthly",
+          plan: null
         }
       },
       feedback: {
@@ -552,6 +591,17 @@ export default {
     },
     currencyOptions() {
       return currencies.selectOptions();
+    },
+    planOptions() {
+      return _.map(this.plans, plan => {
+        const period = this.form[3].plan_period;
+        const planDetails = plan[period];
+        return {
+          text: `${plan.title} - ${format.money(planDetails.price / 100)}
+                  ${period === "monthly" ? "per month" : "per year"}`,
+          value: plan
+        };
+      });
     }
   },
   validations: {
@@ -592,6 +642,10 @@ export default {
     if (!_.isEmpty(this.$route.query.redirect)) {
       this.redirect = this.$route.query.redirect;
     }
+
+    axios.get("/api/plans").then(resp => {
+      this.plans = resp.data.plans;
+    });
   },
   mounted() {},
   methods: {
