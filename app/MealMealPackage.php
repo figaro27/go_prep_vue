@@ -16,7 +16,8 @@ class MealMealPackage extends Pivot
             $mealIds = [];
             array_push($mealIds, $mealMealPackage->meal_id);
             if (in_array($mealId, $mealIds)) {
-                return 'test';
+                return;
+                // Need to work on this
             } else {
                 $mealMealPackage->update(['meal_id' => $subId]);
             }
