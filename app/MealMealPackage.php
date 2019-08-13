@@ -15,7 +15,7 @@ class MealMealPackage extends Pivot
         foreach ($mealMealPackages as $mealMealPackage) {
             $mealIds = [];
             array_push($mealIds, $mealMealPackage->meal_id);
-            if (in_array($mealIds, $mealId)) {
+            if (in_array($mealId, $mealIds)) {
                 return 'test';
             } else {
                 $mealMealPackage->update(['meal_id' => $subId]);
