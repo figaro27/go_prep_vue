@@ -582,7 +582,6 @@
           />
         </h5>
         <h5 class="mb-3">Please select a recommended replacement meal.</h5>
-
         <b-list-group>
           <b-list-group-item
             v-for="meal in mealSubstituteOptions(deletingMeal)"
@@ -593,6 +592,7 @@
               }
             "
             :key="meal.id"
+            class="mb-1"
           >
             <div class="d-flex align-items-center text-left">
               <img
@@ -647,12 +647,6 @@
           />
         </h5>
         <h5 class="mb-3">Please select a recommended replacement meal.</h5>
-        <b-form-input
-          type="text"
-          v-model="search"
-          placeholder="Search"
-          class="mb-2"
-        />
 
         <b-list-group>
           <b-list-group-item
@@ -664,6 +658,7 @@
               }
             "
             :key="meal.id"
+            class="mb-1"
           >
             <div class="d-flex align-items-center text-left">
               <img
