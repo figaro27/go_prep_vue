@@ -10,8 +10,16 @@ class MealMealPackage extends Pivot
     public static function substituteMeal($mealId, $subId)
     {
         $mealMealPackage = new MealMealPackage();
-        $mealMealPackage
-            ::where('meal_id', $mealId)
-            ->update(['meal_id' => $subId]);
+        $mealMealPackages = $mealMealPackage::where('meal_id', $mealId)->get();
+
+        foreach ($mealMealPackages as $mealMealPackage) {
+            $mealIds = [];
+            array_push($mealIds, $mealMealPackage->meal_id);
+            if (in_array($mealIds, $mealId)) {
+                return 'test';
+            } else {
+                $mealMealPackage->update(['meal_id' => $subId]);
+            }
+        }
     }
 }
