@@ -647,6 +647,12 @@
           />
         </h5>
         <h5 class="mb-3">Please select a recommended replacement meal.</h5>
+        <b-form-input
+          type="text"
+          v-model="search"
+          placeholder="Search"
+          class="mb-2"
+        />
 
         <b-list-group>
           <b-list-group-item
