@@ -130,7 +130,7 @@ class CheckoutController extends StoreController
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
             $order->paid = true;
-            if ($cashOrder === false) {
+            if (!$cashOrder) {
                 $order->stripe_id = $charge->id;
             } else {
                 $order->stripe_id = null;

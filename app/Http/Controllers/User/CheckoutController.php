@@ -41,9 +41,14 @@ class CheckoutController extends UserController
         $transferTime = $request->get('transferTime');
         //$stripeToken = $request->get('token');
 
-        $cardId = $request->get('card_id');
-
-        $card = $this->user->cards()->findOrFail($cardId);
+        $cashOrder = $request->get('cashOrder');
+        if ($cashOrder) {
+            $cardId = null;
+            $card = null;
+        } else {
+            $cardId = $request->get('card_id');
+            $card = $this->user->cards()->findOrFail($cardId);
+        }
 
         $application_fee = $store->settings->application_fee;
         $total = $request->get('subtotal');
@@ -98,26 +103,28 @@ class CheckoutController extends UserController
         $customer = $user->getStoreCustomer($store->id, false);
 
         if (!$weeklyPlan) {
-            $storeSource = \Stripe\Source::create(
-                [
-                    "customer" => $this->user->stripe_id,
-                    "original_source" => $card->stripe_id,
-                    "usage" => "single_use"
-                ],
-                ["stripe_account" => $store->settings->stripe_id]
-            );
+            if (!$cashOrder) {
+                $storeSource = \Stripe\Source::create(
+                    [
+                        "customer" => $this->user->stripe_id,
+                        "original_source" => $card->stripe_id,
+                        "usage" => "single_use"
+                    ],
+                    ["stripe_account" => $store->settings->stripe_id]
+                );
 
-            $charge = \Stripe\Charge::create(
-                [
-                    "amount" => round($total * 100),
-                    "currency" => $store->settings->currency,
-                    "source" => $storeSource,
-                    "application_fee" => round(
-                        $afterDiscountBeforeFees * $application_fee
-                    )
-                ],
-                ["stripe_account" => $store->settings->stripe_id]
-            );
+                $charge = \Stripe\Charge::create(
+                    [
+                        "amount" => round($total * 100),
+                        "currency" => $store->settings->currency,
+                        "source" => $storeSource,
+                        "application_fee" => round(
+                            $afterDiscountBeforeFees * $application_fee
+                        )
+                    ],
+                    ["stripe_account" => $store->settings->stripe_id]
+                );
+            }
 
             $order = new Order();
             $order->user_id = $user->id;
@@ -139,7 +146,11 @@ class CheckoutController extends UserController
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
             $order->paid = true;
-            $order->stripe_id = $charge->id;
+            if (!$cashOrder) {
+                $order->stripe_id = $charge->id;
+            } else {
+                $order->stripe_id = null;
+            }
             $order->paid_at = new Carbon();
             $order->coupon_id = $couponId;
             $order->couponReduction = $couponReduction;

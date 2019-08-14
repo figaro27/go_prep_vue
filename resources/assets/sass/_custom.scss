@@ -579,6 +579,14 @@ body.sidebar-minimized {
   margin-top: 30px;
 }
 
+.mediumCheckbox {
+  -ms-transform: scale(1.2); /* IE */
+  -moz-transform: scale(1.2); /* FF */
+  -webkit-transform: scale(1.2); /* Safari and Chrome */
+  -o-transform: scale(1.2); /* Opera */
+  padding-left: 35px;
+}
+
 .switch-slider {
   height: 20px !important;
   border: 1px solid #cbd1d5 !important;

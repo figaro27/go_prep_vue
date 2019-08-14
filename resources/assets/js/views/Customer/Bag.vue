@@ -547,18 +547,39 @@
                     Choose Payment Method
                   </h4>
                   <b-form-checkbox
-                    v-if="
-                      manualOrder && storeModules.cashOrders && !subscriptionId
-                    "
+                    v-if="storeModules.cashOrders && !subscriptionId"
                     v-model="cashOrder"
-                    class="pb-2"
+                    class="pb-2 mediumCheckbox"
                   >
-                    Cash Order
+                    Cash
                   </b-form-checkbox>
+                  <p
+                    v-if="
+                      cashOrder &&
+                        creditCardList.length === 0 &&
+                        creditCardId === null
+                    "
+                  >
+                    Please add a credit card on file in order to proceed with a
+                    cash order. In the event that cash is not paid, your credit
+                    card will be charged.
+                  </p>
                   <card-picker
                     :selectable="true"
                     v-model="card"
-                    v-if="!manualOrder && !subscriptionId"
+                    v-if="!manualOrder && !subscriptionId && !cashOrder"
+                    class="mb-3"
+                    ref="cardPicker"
+                  ></card-picker>
+                  <card-picker
+                    :selectable="true"
+                    v-model="card"
+                    v-if="
+                      !manualOrder &&
+                        !subscriptionId &&
+                        cashOrder &&
+                        creditCardId === null
+                    "
                     class="mb-3"
                     ref="cardPicker"
                   ></card-picker>
