@@ -18,8 +18,18 @@
                   ref="deliveryDates"
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
+
+                <b-form-checkbox-group
+                  v-if="storeModules.productionGroups"
+                  buttons
+                  v-model="productionGroups"
+                  class="storeFilters ml-2"
+                  @change=""
+                  :options="productionGroupOptions"
+                ></b-form-checkbox-group>
               </div>
             </div>
+
             <div slot="featured_image" slot-scope="props">
               <thumbnail
                 v-if="props.row.image.url_thumb"
@@ -81,6 +91,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      productionGroups: {},
       ordersByDate: [],
       filters: {
         delivery_dates: {
@@ -122,7 +133,9 @@ export default {
       // orders: "storeOrders",
       isLoading: "isLoading",
       nextDeliveryDates: "storeNextDeliveryDates",
-      storeSettings: "storeSettings"
+      storeSettings: "storeSettings",
+      storeModules: "storeModules",
+      productionGroups: "storeProductionGroups"
     }),
     tableData() {
       let filters = { ...this.filters };
@@ -165,6 +178,12 @@ export default {
           total: quantity * price
         };
       });
+    },
+    productionGroupOptions() {
+      return [
+        { text: "Delivering to Customers", value: "delivery" },
+        { text: "Letting Customers Pickup", value: "pickup" }
+      ];
     },
     storeMeals() {
       return this.meals;

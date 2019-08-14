@@ -124,6 +124,10 @@ const state = {
     pickupLocations: {
       data: {},
       expires: 0
+    },
+    productionGroups: {
+      data: {},
+      expires: 0
     }
   },
   orders: {
@@ -407,6 +411,17 @@ const mutations = {
     state.store.pickupLocations.expires = expires;
   },
 
+  storeProductionGroups(state, { productionGroups, expires }) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, "seconds")
+        .unix();
+    }
+
+    state.store.productionGroups.data = productionGroups;
+    state.store.productionGroups.expires = expires;
+  },
+
   storeMeals(state, { meals, expires }) {
     if (!expires) {
       expires = moment()
@@ -594,6 +609,16 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.store.productionGroups)) {
+        let productionGroups = data.store.productionGroups;
+
+        if (!_.isEmpty(productionGroups)) {
+          commit("storeProductionGroups", { productionGroups });
+        }
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.tags)) {
         let tags = data.tags;
 
@@ -666,6 +691,16 @@ const actions = {
       ) {
         let pickupLocations = data.store.pickupLocations;
         commit("storePickupLocations", { pickupLocations });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.productionGroups) &&
+        _.isObject(data.store.productionGroups)
+      ) {
+        let productionGroups = data.store.productionGroups;
+        commit("storeProductionGroups", { productionGroups });
       }
     } catch (e) {}
 
@@ -910,6 +945,17 @@ const actions = {
       commit("storePickupLocations", { pickupLocations: data });
     } else {
       throw new Error("Failed to retrieve pickupLocations");
+    }
+  },
+
+  async refreshStoreProductionGroups({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/productionGroups");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      commit("storeProductionGroups", { productionGroups: data });
+    } else {
+      throw new Error("Failed to retrieve productionGroups");
     }
   },
 
@@ -1700,6 +1746,13 @@ const getters = {
   storePickupLocations: state => {
     try {
       return state.store.pickupLocations.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeProductionGroups: state => {
+    try {
+      return state.store.productionGroups.data || {};
     } catch (e) {
       return {};
     }
