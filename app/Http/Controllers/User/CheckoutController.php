@@ -157,6 +157,7 @@ class CheckoutController extends UserController
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
+            $order->cashOrder = $cashOrder;
             $order->save();
 
             $items = $bag->getItems();

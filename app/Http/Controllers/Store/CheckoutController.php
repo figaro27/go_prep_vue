@@ -142,6 +142,7 @@ class CheckoutController extends StoreController
             $order->pickup_location_id = $pickupLocation;
             $order->deposit = $deposit * 100;
             $order->manual = 1;
+            $order->cashOrder = $cashOrder;
             $order->save();
 
             $items = $bag->getItems();
