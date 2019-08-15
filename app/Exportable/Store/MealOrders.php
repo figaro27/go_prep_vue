@@ -32,7 +32,9 @@ class MealOrders
         $orders->map(function ($order) use (&$mealQuantities) {
             $productionGroupId = $this->params->get('productionGroupId');
             foreach ($order->meal_orders()->get() as $i => $mealOrder) {
-                if ($mealOrder->production_group_id !== $productionGroupId) {
+                if (
+                    $mealOrder->meal->production_group_id !== $productionGroupId
+                ) {
                     return null;
                 }
                 $title =
