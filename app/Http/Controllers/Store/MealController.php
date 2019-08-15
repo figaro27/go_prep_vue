@@ -112,7 +112,8 @@ class MealController extends StoreController
                 'default_size_title',
                 'components',
                 'addons',
-                'macros'
+                'macros',
+                'production_group_id'
             ])
         );
     }

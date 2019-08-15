@@ -19,14 +19,15 @@
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
 
-                <b-form-checkbox-group
+                <b-form-radio-group
                   v-if="storeModules.productionGroups"
                   buttons
-                  v-model="productionGroups"
-                  class="storeFilters ml-2"
+                  v-model="productionGroupId"
+                  null
+                  class="storeFilters ml-2 mt-1"
                   @change="val => {}"
                   :options="productionGroupOptions"
-                ></b-form-checkbox-group>
+                ></b-form-radio-group>
               </div>
             </div>
 
@@ -91,7 +92,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      productionGroups: {},
+      productionGroupId: null,
       ordersByDate: [],
       filters: {
         delivery_dates: {
@@ -153,6 +154,7 @@ export default {
       orders.forEach(order => {
         _.forEach(order.items, item => {
           let meal = this.getMeal(item.meal_id);
+          if (meal.production_group_id !== this.productionGroupId) return null;
           let size = meal.getSize(item.meal_size_id);
           let title = meal.getTitle(true, size, item.components, item.addons);
 
@@ -180,10 +182,13 @@ export default {
       });
     },
     productionGroupOptions() {
-      return [
-        { text: "Delivering to Customers", value: "delivery" },
-        { text: "Letting Customers Pickup", value: "pickup" }
-      ];
+      let prodGroups = this.storeProductionGroups;
+      let prodGroupOptions = [{ text: "All", value: null }];
+
+      prodGroups.forEach(prodGroup => {
+        prodGroupOptions.push({ text: prodGroup.title, value: prodGroup.id });
+      });
+      return prodGroupOptions;
     },
     storeMeals() {
       return this.meals;
@@ -233,6 +238,10 @@ export default {
       }
 
       let params = {};
+
+      if (this.productionGroupId !== null) {
+        params.productionGroupId = this.productionGroupId;
+      }
 
       if (
         this.filters.delivery_dates.start &&

@@ -26,9 +26,15 @@ class MealOrders
         $mealQuantities = [];
         $dates = $this->getDeliveryDates();
 
+        $params = $this->params;
+
         $orders = $this->store->getOrders(null, $dates, true);
         $orders->map(function ($order) use (&$mealQuantities) {
+            $productionGroupId = $this->params->get('productionGroupId');
             foreach ($order->meal_orders()->get() as $i => $mealOrder) {
+                if ($mealOrder->production_group_id !== $productionGroupId) {
+                    return null;
+                }
                 $title =
                     $this->type !== 'pdf'
                         ? $mealOrder->title

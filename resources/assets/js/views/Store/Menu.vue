@@ -338,7 +338,18 @@
                       </div>
                     </div>
                   </b-form-group>
-                  <h4>
+                  <h4 v-if="storeModules.productionGroups">Production Group</h4>
+                  <b-form-radio-group
+                    v-if="storeModules.productionGroups"
+                    buttons
+                    v-model="productionGroups"
+                    class="storeFilters"
+                    @change="
+                      val => updateMeal(meal.id, { production_group_id: val })
+                    "
+                    :options="productionGroupOptions"
+                  ></b-form-radio-group>
+                  <h4 class="mt-4">
                     Categories
                     <img
                       v-b-popover.hover="
@@ -904,7 +915,9 @@ export default {
       getAllergyTitle: "storeAllergyTitle",
       allergies: "allergies",
       isLoading: "isLoading",
-      storeCurrencySymbol: "storeCurrencySymbol"
+      storeCurrencySymbol: "storeCurrencySymbol",
+      storeModules: "storeModules",
+      storeProductionGroups: "storeProductionGroups"
     }),
     storeURLcheck() {
       let URL = window.location.href;
@@ -976,6 +989,15 @@ export default {
           return sub;
         })
       );
+    },
+    productionGroupOptions() {
+      let prodGroups = this.storeProductionGroups;
+      let prodGroupOptions = [];
+
+      prodGroups.forEach(prodGroup => {
+        prodGroupOptions.push({ text: prodGroup.title, value: prodGroup.id });
+      });
+      return prodGroupOptions;
     }
   },
   created() {
