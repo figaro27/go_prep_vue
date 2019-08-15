@@ -42,10 +42,10 @@ class ProductionGroupController extends StoreController
     /**
      * Display the specified resource.
      *
-     * @param  \App\PickupLocation  $pickupLocation
+     * @param  \App\ProductionGroup  $productionGroup
      * @return \Illuminate\Http\Response
      */
-    public function show(PickupLocation $pickupLocation)
+    public function show(ProductionGroup $productionGroup)
     {
         //
     }
@@ -53,10 +53,10 @@ class ProductionGroupController extends StoreController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\PickupLocation  $pickupLocation
+     * @param  \App\ProductionGroup  $productionGroup
      * @return \Illuminate\Http\Response
      */
-    public function edit(PickupLocation $pickupLocation)
+    public function edit(ProductionGroup $productionGroup)
     {
         //
     }
@@ -65,10 +65,10 @@ class ProductionGroupController extends StoreController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\PickupLocation  $pickupLocation
+     * @param  \App\ProductionGroup  $productionGroup
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PickupLocation $pickupLocation)
+    public function update(Request $request, ProductionGroup $productionGroup)
     {
         //
     }
@@ -76,10 +76,10 @@ class ProductionGroupController extends StoreController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\PickupLocation  $pickupLocation
+     * @param  \App\ProductionGroup  $productionGroup
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PickupLocation $pickupLocation)
+    public function destroy(ProductionGroup $productionGroup)
     {
         //
     }
