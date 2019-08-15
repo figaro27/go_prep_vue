@@ -125,7 +125,7 @@ const state = {
       data: {},
       expires: 0
     },
-    productionGroups: {
+    production_groups: {
       data: {},
       expires: 0
     }
@@ -418,8 +418,8 @@ const mutations = {
         .unix();
     }
 
-    state.store.productionGroups.data = productionGroups;
-    state.store.productionGroups.expires = expires;
+    state.store.production_groups.data = productionGroups;
+    state.store.production_groups.expires = expires;
   },
 
   storeMeals(state, { meals, expires }) {
@@ -609,8 +609,8 @@ const actions = {
     } catch (e) {}
 
     try {
-      if (!_.isEmpty(data.store.productionGroups)) {
-        let productionGroups = data.store.productionGroups;
+      if (!_.isEmpty(data.store.production_groups)) {
+        let productionGroups = data.store.production_groups;
 
         if (!_.isEmpty(productionGroups)) {
           commit("storeProductionGroups", { productionGroups });
@@ -696,10 +696,10 @@ const actions = {
 
     try {
       if (
-        !_.isEmpty(data.store.productionGroups) &&
-        _.isObject(data.store.productionGroups)
+        !_.isEmpty(data.store.production_groups) &&
+        _.isObject(data.store.production_groups)
       ) {
-        let productionGroups = data.store.productionGroups;
+        let productionGroups = data.store.production_groups;
         commit("storeProductionGroups", { productionGroups });
       }
     } catch (e) {}
@@ -1752,7 +1752,7 @@ const getters = {
   },
   storeProductionGroups: state => {
     try {
-      return state.store.productionGroups.data || {};
+      return state.store.production_groups.data || {};
     } catch (e) {
       return {};
     }

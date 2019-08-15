@@ -24,7 +24,7 @@
                   buttons
                   v-model="productionGroups"
                   class="storeFilters ml-2"
-                  @change=""
+                  @change="val => {}"
                   :options="productionGroupOptions"
                 ></b-form-checkbox-group>
               </div>
@@ -135,7 +135,7 @@ export default {
       nextDeliveryDates: "storeNextDeliveryDates",
       storeSettings: "storeSettings",
       storeModules: "storeModules",
-      productionGroups: "storeProductionGroups"
+      storeProductionGroups: "storeProductionGroups"
     }),
     tableData() {
       let filters = { ...this.filters };
