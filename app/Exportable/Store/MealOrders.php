@@ -30,9 +30,16 @@ class MealOrders
 
         $orders = $this->store->getOrders(null, $dates, true);
         $orders->map(function ($order) use (&$mealQuantities) {
-            $productionGroupId = $this->params->get('productionGroupId');
-            foreach ($order->meal_orders()->get() as $i => $mealOrder) {
+            $productionGroupId = $this->params->get('productionGroupId', null);
+            foreach (
+                $order
+                    ->meal_orders()
+                    ->with('meal')
+                    ->get()
+                as $i => $mealOrder
+            ) {
                 if (
+                    $productionGroupId &&
                     $mealOrder->meal->production_group_id !== $productionGroupId
                 ) {
                     return null;
