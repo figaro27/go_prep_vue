@@ -171,7 +171,7 @@
                       </p>
                       <div v-if="subscription.latest_paid_order">
                         <p>
-                          Your order is locked in for the upcoming delivery day
+                          <!-- Your order is locked in for the upcoming delivery day
                           of
                           <strong>
                             {{
@@ -179,7 +179,7 @@
                                 subscription.next_order.delivery_date
                               ).format("dddd, MMM Do")
                             }}.</strong
-                          >
+                          > -->
                           Any changes to this meal plan will be applied to the
                           following order on
                           <strong>
