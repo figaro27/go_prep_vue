@@ -16,7 +16,9 @@ class Subscription extends Model
         'store_name',
         'latest_order',
         'latest_paid_order',
+        'latest_unpaid_order',
         'next_delivery_date',
+        'next_order',
         'meal_ids',
         'meal_quantities',
         'pre_coupon',
@@ -95,7 +97,7 @@ class Subscription extends Model
      * @param boolean $futureDeliveryDate
      * @return App\Order
      */
-    public function getLatestUnpaidOrder($futureDeliveryDate = true)
+    public function getLatestUnpaidOrderAttribute($futureDeliveryDate = true)
     {
         $latestOrder = $this->orders()
             ->where('paid', 0)
@@ -145,6 +147,24 @@ class Subscription extends Model
 
         // Catch all
         return $this->store->getNextDeliveryDay($this->delivery_day);
+    }
+
+    public function getNextOrderAttribute()
+    {
+        // if a subscription was just created and only 1 order exists, return the upcoming delivery day of that order
+        // if a week goes by and there are two orders and one is paid
+        // and if the current paid order's delivery date is still in the future, return that paid order
+        // else if the current paid order's delivery date is in the past, return the unpaid order
+
+        if ($this->orders()->count() === 2) {
+            return $this->latest_order;
+        } else {
+            if ($this->latest_paid_order->delivery_day > Carbon::now()) {
+                return $this->latest_paid_order;
+            } else {
+                return $this->latest_unpaid_order;
+            }
+        }
     }
 
     public function getMealIdsAttribute()
