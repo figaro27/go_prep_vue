@@ -97,7 +97,25 @@ class Subscription extends Model
      * @param boolean $futureDeliveryDate
      * @return App\Order
      */
-    public function getLatestUnpaidOrderAttribute($futureDeliveryDate = true)
+
+    public function getLatestUnpaidOrder($futureDeliveryDate = true)
+    {
+        $latestOrder = $this->orders()
+            ->where('paid', 0)
+            ->orderBy('delivery_date', 'desc');
+
+        if ($futureDeliveryDate) {
+            $latestOrder = $latestOrder->whereDate(
+                'delivery_date',
+                '>=',
+                Carbon::now()
+            );
+        }
+
+        return $latestOrder->first();
+    }
+
+    public function getLatestUnpaidOrderAttribute()
     {
         $latestOrder = $this->orders()
             ->where('paid', 0)
