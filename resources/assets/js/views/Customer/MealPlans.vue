@@ -59,8 +59,8 @@
                       </h4>
                       <p
                         v-if="
-                          subscription.latest_order &&
-                            !subscription.latest_order.fulfilled
+                          subscription.latest_paid_order &&
+                            !subscription.latest_paid_order.fulfilled
                         "
                       >
                         {{
