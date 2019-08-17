@@ -169,19 +169,10 @@ class Subscription extends Model
 
     public function getNextOrderAttribute()
     {
-        // if a subscription was just created and only 1 order exists, return the upcoming delivery day of that order
-        // if a week goes by and there are two orders and one is paid
-        // and if the current paid order's delivery date is still in the future, return that paid order
-        // else if the current paid order's delivery date is in the past, return the unpaid order
-
-        if ($this->orders()->count() === 2) {
-            return $this->latest_order;
+        if ($this->latest_paid_order->delivery_day > Carbon::now()) {
+            return $this->latest_paid_order;
         } else {
-            if ($this->latest_paid_order->delivery_day > Carbon::now()) {
-                return $this->latest_paid_order;
-            } else {
-                return $this->latest_unpaid_order;
-            }
+            return $this->latest_unpaid_order;
         }
     }
 
