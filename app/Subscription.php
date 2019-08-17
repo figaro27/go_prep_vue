@@ -16,7 +16,7 @@ class Subscription extends Model
         'store_name',
         'latest_order',
         'latest_paid_order',
-        'latest_unpaid_order',
+        'last_unpaid_order',
         'next_delivery_date',
         'next_order',
         'meal_ids',
@@ -115,7 +115,7 @@ class Subscription extends Model
         return $latestOrder->first();
     }
 
-    public function getLatestUnpaidOrderAttribute()
+    public function getLastUnpaidOrderAttribute()
     {
         $latestOrder = $this->orders()
             ->where('paid', 0)
