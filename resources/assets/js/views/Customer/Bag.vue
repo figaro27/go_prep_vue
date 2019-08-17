@@ -1391,56 +1391,6 @@ export default {
     },
     changeState(state) {
       this.form.state = state.abbreviation;
-    },
-    async updateSubscriptionMeals() {
-      if (this.$route.params.mealPlanAdjustment) {
-        axios
-          .post("/api/me/subscriptions/updateMeals", {
-            bag: this.bag,
-            salesTaxRate: this.salesTax,
-            subscriptionId: this.subscriptionId
-          })
-          .then(resp => {
-            this.refreshStoreSubscriptions();
-            this.emptyBag();
-            this.setBagMealPlan(false);
-            this.setBagCoupon(null);
-            this.$router.push({
-              path: "/store/meal-plans",
-              query: {
-                updated: true
-              }
-            });
-          });
-      } else {
-        try {
-          const { data } = await axios.post(
-            `/api/me/subscriptions/${this.subscriptionId}/meals`,
-            { bag: this.bag, salesTaxRate: this.salesTax }
-          );
-          await this.refreshSubscriptions();
-          this.emptyBag();
-          this.setBagMealPlan(false);
-          this.setBagCoupon(null);
-
-          this.$router.push({
-            path: "/customer/meal-plans",
-            query: {
-              updated: true
-            }
-          });
-        } catch (e) {
-          if (!_.isEmpty(e.response.data.error)) {
-            this.$toastr.e(e.response.data.error);
-          } else {
-            this.$toastr.e(
-              "Please try again or contact our support team",
-              "Failed to update meals!"
-            );
-          }
-          return;
-        }
-      }
     }
   }
 };
