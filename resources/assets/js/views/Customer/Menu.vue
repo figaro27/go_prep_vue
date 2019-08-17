@@ -1036,19 +1036,9 @@
                     "
                     class="menu-btns-container"
                   >
-                    <router-link
-                      to="/customer/bag"
-                      v-if="!subscriptionId && !manualOrder"
-                    >
+                    <router-link to="/customer/bag" v-if="!manualOrder">
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
-                    <div v-if="subscriptionId" class="d-none d-lg-block">
-                      <b-btn
-                        class="menu-bag-btn update-meals-btn"
-                        @click="updateSubscriptionMeals"
-                        >UPDATE MEALS</b-btn
-                      >
-                    </div>
                   </div>
                   <div
                     v-if="
@@ -1083,14 +1073,6 @@
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
 
-                    <!--Moving to Bag page-->
-                    <!-- <div v-if="subscriptionId" class="d-none d-lg-block">
-                      <b-btn
-                        class="menu-bag-btn update-meals-btn"
-                        @click="updateSubscriptionMeals"
-                        >UPDATE MEALS</b-btn
-                      >
-                    </div> -->
                     <router-link
                       :to="{
                         name: 'customer-bag',
