@@ -38,6 +38,16 @@
                     class="popover-size mr-2"
                   />Fees
                 </p>
+
+                <b-form-checkbox
+                  class="mediumCheckbox ml-3"
+                  type="checkbox"
+                  v-model="filters.dailySummary"
+                  :value="1"
+                  :unchecked-value="0"
+                  ><span class="paragraph">Daily Summary</span></b-form-checkbox
+                >
+
                 <b-form-select
                   v-model="filters.couponCode"
                   :options="coupons"
@@ -195,7 +205,8 @@ export default {
           start: null,
           end: null
         },
-        couponCode: null
+        couponCode: null,
+        dailySummary: 0
       },
       order: {},
       orderId: "",
@@ -203,6 +214,7 @@ export default {
       options: {
         headings: {
           created_at: "Payment Date",
+          totalOrders: "Orders",
           subtotal: "Subtotal",
           mealPlanDiscount: "Meal Plan Discount",
           couponCode: "Coupon",
@@ -274,6 +286,24 @@ export default {
         );
       }
 
+      if (this.filters.dailySummary) {
+        let dailySummaries = [];
+
+        dailySummaries = _.groupBy(
+          orders,
+          moment(created_at).format("dddd, MMM Do")
+        );
+
+        return dailySummaries;
+
+        // orders.forEach(order => {
+        //   dailySummaries.push(order.created_at);
+
+        // })
+
+        // return dailySummaries;
+      }
+
       let totalsRowCheck = 0;
       orders.forEach(order => {
         if (order.created_at === "TOTALS") {
@@ -318,6 +348,7 @@ export default {
           sumRow: 1
         });
       }
+
       return orders;
     },
     columns() {
@@ -376,6 +407,10 @@ export default {
           columns.splice(columns.length, 0, "deposit");
         }
       });
+
+      if (this.filters.dailySummary) {
+        columns.splice(1, 0, "totalOrders");
+      }
 
       return columns;
     },
