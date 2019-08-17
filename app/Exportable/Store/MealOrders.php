@@ -40,7 +40,8 @@ class MealOrders
             ) {
                 if (
                     $productionGroupId &&
-                    $mealOrder->meal->production_group_id !== $productionGroupId
+                    $mealOrder->meal->production_group_id !==
+                        intval($productionGroupId)
                 ) {
                     return null;
                 }
