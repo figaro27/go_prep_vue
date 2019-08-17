@@ -1036,7 +1036,19 @@
                     "
                     class="menu-btns-container"
                   >
-                    <router-link to="/customer/bag" v-if="!manualOrder">
+                    <router-link
+                      to="/customer/bag"
+                      v-if="!subscriptionId && !manualOrder"
+                    >
+                      <b-btn class="menu-bag-btn">NEXT</b-btn>
+                    </router-link>
+                    <router-link
+                      :to="{
+                        name: 'customer-bag',
+                        params: { subscriptionId: subscriptionId }
+                      }"
+                      v-if="subscriptionId"
+                    >
                       <b-btn class="menu-bag-btn">NEXT</b-btn>
                     </router-link>
                   </div>
