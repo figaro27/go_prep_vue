@@ -64,9 +64,9 @@
                         "
                       >
                         {{
-                          moment(
-                            subscription.latest_paid_order.delivery_date
-                          ).format("dddd, MMM Do")
+                          moment(subscription.next_delivery_date).format(
+                            "dddd, MMM Do"
+                          )
                         }}
                         <span v-if="subscription.transferTime">
                           - {{ subscription.transferTime }}</span
