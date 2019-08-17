@@ -7,7 +7,12 @@
 
 <body class="{{ $body_classes }}">
   <div id="print-area">
+    @if ($params->productionGroupTitle != null)
+    <h1>Meal Production - {{ $params->productionGroupTitle }}</h1>
+    @else
     <h1>Meal Production</h1>
+    @endif
+
     @if ($delivery_dates)
       <h2>
         Delivery Days: 
