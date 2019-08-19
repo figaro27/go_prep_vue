@@ -323,6 +323,7 @@ class RegisterController extends Controller
 
                 $storePlan->stripe_customer_id = $customer->id;
                 $storePlan->stripe_subscription_id = $subscription->id;
+                $storePlan->save();
             }
         }
 
