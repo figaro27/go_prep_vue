@@ -286,10 +286,12 @@ export default {
         );
       }
 
+      let grandTotalOrders = orders.length;
+
       if (this.filters.dailySummary) {
         let ordersByDay = Object.values(_.groupBy(orders, "order_day"));
 
-        let dailySums = [];
+        orders = [];
 
         ordersByDay.forEach(orderByDay => {
           let created_at = "";
@@ -317,7 +319,7 @@ export default {
             sums.salesTax += order.salesTax;
             sums.amount += order.amount;
           });
-          dailySums.push({
+          orders.push({
             created_at: created_at,
             totalOrders: totalOrders,
             preFeePreDiscount: sums.preFeePreDiscount,
@@ -331,7 +333,7 @@ export default {
           });
         });
 
-        return dailySums;
+        orders.shift();
       }
 
       let totalsRowCheck = 0;
@@ -342,6 +344,7 @@ export default {
       });
 
       if (!totalsRowCheck) {
+        let totalOrders = 0;
         let sums = {
           preFeePreDiscount: 0,
           mealPlanDiscount: 0,
@@ -366,6 +369,7 @@ export default {
 
         orders.unshift({
           created_at: "TOTALS",
+          totalOrders: grandTotalOrders,
           preFeePreDiscount: sums.preFeePreDiscount,
           mealPlanDiscount: sums.mealPlanDiscount,
           couponReduction: sums.couponReduction,
