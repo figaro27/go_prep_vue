@@ -453,10 +453,11 @@ export default {
       this.$forceUpdate();
     },
     async saveNotes(id) {
-      let deliveryNote = deliveryNote;
-      await this.updateOrder({ id, data: { notes: this.deliveryNote } });
-      this.$toastr.s("Order notes saved!");
-      this.$forceUpdate();
+      let data = { notes: this.deliveryNote };
+      axios.patch(`/api/me/orders/${id}`, data).then(resp => {
+        this.refreshTable();
+        this.$toastr.s("Order notes saved!");
+      });
     },
     getMealQuantities(order) {
       if (!this.initialized || !order.items) return [];
