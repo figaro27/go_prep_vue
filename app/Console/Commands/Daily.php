@@ -75,9 +75,11 @@ class Daily extends Command
         $this->info(count($plans) . ' store plans renewing today');
 
         foreach ($plans as $plan) {
-            dispatch(function () use ($plan) {
-                StorePlanService::renew($plan);
-            });
+            if ($plan->billing_method === 'connect') {
+                dispatch(function () use ($plan) {
+                    StorePlanService::renew($plan);
+                });
+            }
         }
     }
 }

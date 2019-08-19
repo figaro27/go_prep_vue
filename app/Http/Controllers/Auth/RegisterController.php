@@ -138,6 +138,11 @@ class RegisterController extends Controller
                     //'accepted_toa' => 'in:1'
                 ]);
                 break;
+
+            case '3':
+                $v = Validator::make($request->all(), [
+                    'plan' => 'required'
+                ]);
         }
 
         return $v->validate();
@@ -285,13 +290,39 @@ class RegisterController extends Controller
                 // todo: send notification to admin
             }
 
-            // If using credit card billing, charge here
-            try {
-                $plan = $data['store']['plan'];
-                $planId = config('plans');
+            // Create plan
+            $plans = config('plans');
+            $planObj = collect($data['plan']);
+            $planId = $planObj->get('plan');
+            $planMethod = $planObj->get('plan_method');
+            $planPeriod = $planObj->get('plan_period');
+            $planToken = $planObj->get('stripe_token');
 
-                \Stripe\Subscription::create([]);
-            } catch (\Exception $e) {
+            $storePlan = new StorePlan();
+            $storePlan->store_id = $store->id;
+            $storePlan->billing_method = $planMethod;
+
+            // If using credit card billing, charge here
+            if ($planMethod === 'credit_card') {
+                $plan = collect($plans[$planId][$planPeriod]);
+
+                // Create customer
+                $customer = \Stripe\Customer::create([
+                    'description' => '',
+                    'source' => $planToken
+                ]);
+
+                $subscription = \Stripe\Subscription::create([
+                    'customer' => $customer,
+                    'items' => [
+                        [
+                            'plan' => $plan->get('stripe_id')
+                        ]
+                    ]
+                ]);
+
+                $storePlan->stripe_customer_id = $customer->id;
+                $storePlan->stripe_subscription_id = $subscription->id;
             }
         }
 

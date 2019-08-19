@@ -11,36 +11,6 @@
         <div class="card-body p-lg-5">
           <b-form @submit.prevent="submit" autocomplete="off" ref="form">
             <div v-if="step === 0">
-              <h4>Payment Details</h4>
-
-              <b-form-group label="Billing method">
-                <b-form-radio-group
-                  v-model="form[3].plan_method"
-                  :options="[
-                    { text: 'Credit Card', value: 'credit_card' },
-                    { text: 'Bank transfer', value: 'bank_transfer' }
-                  ]"
-                ></b-form-radio-group>
-              </b-form-group>
-
-              <b-form-group label="Billing period">
-                <b-form-radio-group
-                  v-model="form[3].plan_period"
-                  :options="[
-                    { text: 'Monthly', value: 'monthly' },
-                    { text: 'Annually', value: 'annually' }
-                  ]"
-                ></b-form-radio-group>
-              </b-form-group>
-
-              <b-form-group label="Select Plan">
-                <b-form-radio-group
-                  v-model="form[3].plan"
-                  :options="planOptions"
-                  stacked
-                ></b-form-radio-group>
-              </b-form-group>
-
               <b-form-group horizontal label="Account Type">
                 <b-form-radio-group
                   horizontal
@@ -485,6 +455,60 @@
 
               <b-form-group horizontal>
                 <b-button
+                  @click="next()"
+                  :disabled="$v.form[0].$invalid"
+                  variant="primary"
+                  >Next</b-button
+                >
+              </b-form-group>
+            </div>
+
+            <div v-if="step === 3">
+              <h4>Payment Details</h4>
+
+              <b-form-group label="Billing method" horizontal>
+                <b-form-radio-group
+                  v-model="form[3].plan_method"
+                  :options="[
+                    { text: 'Credit Card', value: 'credit_card' },
+                    { text: 'Bank transfer', value: 'connect' }
+                  ]"
+                ></b-form-radio-group>
+              </b-form-group>
+
+              <b-form-group label="Billing period" horizontal>
+                <b-form-radio-group
+                  v-model="form[3].plan_period"
+                  :options="[
+                    { text: 'Monthly', value: 'monthly' },
+                    { text: 'Annually', value: 'annually' }
+                  ]"
+                ></b-form-radio-group>
+              </b-form-group>
+
+              <b-form-group label="Select Plan" horizontal>
+                <b-form-radio-group
+                  v-model="form[3].plan"
+                  :options="planOptions"
+                  stacked
+                ></b-form-radio-group>
+              </b-form-group>
+
+              <div v-if="form[3].plan_method === 'credit_card'" class="mb-2">
+                <card
+                  class="stripe-card"
+                  :stripe="stripeKey"
+                  :options="stripeOptions"
+                  :class="{ cardStatus }"
+                  @change="onChangeCard"
+                />
+              </div>
+              <div v-else>
+                You won't be billed now. Lorem ipsum.
+              </div>
+
+              <b-form-group horizontal>
+                <b-button
                   type="submit"
                   v-if="!manualOrder"
                   :disabled="$v.form[2].$invalid"
@@ -502,8 +526,6 @@
                 >
               </b-form-group>
             </div>
-
-            <div v-if="step === 3"></div>
           </b-form>
         </div>
       </div>
@@ -514,6 +536,7 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { required, minLength, email, sameAs } from "vuelidate/lib/validators";
+import { createToken } from "vue-stripe-elements-plus";
 import validators from "../validators";
 import auth from "../lib/auth";
 import format from "../lib/format";
@@ -541,6 +564,9 @@ export default {
       redirect: null,
       step: 0,
       plans: {},
+      stripeKey: window.app.stripe_key,
+      stripeOptions: {},
+      cardStatus: null,
 
       form: {
         0: {
@@ -574,9 +600,10 @@ export default {
           //accepted_toa: 0
         },
         3: {
+          plan: null,
           plan_method: "credit_card",
           plan_period: "monthly",
-          plan: null
+          stripe_token: null
         }
       },
       feedback: {
@@ -593,13 +620,13 @@ export default {
       return currencies.selectOptions();
     },
     planOptions() {
-      return _.map(this.plans, plan => {
+      return _.map(this.plans, (plan, planId) => {
         const period = this.form[3].plan_period;
         const planDetails = plan[period];
         return {
           text: `${plan.title} - ${format.money(planDetails.price / 100)}
                   ${period === "monthly" ? "per month" : "per year"}`,
-          value: plan
+          value: planId
         };
       });
     }
@@ -634,6 +661,12 @@ export default {
         country: validators.required,
         accepted_tos: validators.required
         //accepted_toa: validators.required
+      },
+      3: {
+        plan: validators.required,
+        plan_method: validators.required,
+        plan_period: validators.required,
+        stripe_token: validators.required
       }
     },
     validationGroup: ["form[0]", "form[1]", "form[3]"]
@@ -713,8 +746,10 @@ export default {
         if (await this.validate(this.step)) {
           if (this.form[0].role === "customer") {
             this.step++;
-          } else {
+          } else if (this.step === 0) {
             this.step += 2;
+          } else {
+            this.step++;
           }
         } else if (this.form[1].accepted_tos === 0) {
           this.$toastr.e(
@@ -740,7 +775,7 @@ export default {
         user: this.form[0],
         user_details: this.form[1],
         store: this.form[2],
-        plan_id: this.plan_id
+        plan: this.form[3]
       };
 
       if (data.user.role === "store") {
@@ -783,6 +818,17 @@ export default {
     },
     changeCountry(country, formNumber) {
       this.form[formNumber].country = country;
+    },
+    async onChangeCard($event) {
+      this.cardStatus = $event.complete;
+      if ($event.complete) {
+        const result = await createToken();
+
+        if (result.token && result.token.id) {
+          this.form[3].stripe_token = result.token.id;
+        } else if (result.error) {
+        }
+      }
     }
   }
 };

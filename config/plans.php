@@ -5,18 +5,18 @@ return [
         'title' => 'Basic',
         'monthly' => [
             'price' => 10000,
-            'stripe_id' => 'plan_Fc4eOyFTAH2ZWn'
+            'stripe_id' => env('plan_basic_monthly', 'plan_Fc4eOyFTAH2ZWn')
         ],
         'annually' => [
             'price' => 120000,
-            'stripe_id' => ''
+            'stripe_id' => env('plan_basic_annually')
         ]
     ],
     'standard' => [
         'title' => 'Standard',
         'monthly' => [
             'price' => 20000,
-            'stripe_id' => 'plan_Fc4fnXEBXrWlOO'
+            'stripe_id' => env('plan_basic_monthly', 'plan_Fc4fnXEBXrWlOO')
         ],
         'annually' => [
             'price' => 240000,
@@ -27,7 +27,7 @@ return [
         'title' => 'Premium',
         'monthly' => [
             'price' => 30000,
-            'stripe_id' => 'plan_Fc4fTbTtTr7LaN'
+            'stripe_id' => env('plan_premium_monthly', 'plan_Fc4fTbTtTr7LaN')
         ],
         'annually' => [
             'price' => 360000,
@@ -38,7 +38,7 @@ return [
         'title' => 'Enterprise',
         'monthly' => [
             'price' => 40000,
-            'stripe_id' => 'plan_Fc4fKkp5DzxqU8'
+            'stripe_id' => env('plan_enterprise_monthly', 'plan_Fc4fKkp5DzxqU8')
         ],
         'annually' => [
             'price' => 480000,
