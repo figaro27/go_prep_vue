@@ -33,7 +33,8 @@ class Order extends Model
         'store_name',
         'cutoff_date',
         'cutoff_passed',
-        'pre_coupon'
+        'pre_coupon',
+        'order_day'
     ];
 
     public function user()
@@ -88,6 +89,11 @@ class Order extends Model
     public function card()
     {
         return $this->hasOne('App\Card');
+    }
+
+    public function getOrderDayAttribute()
+    {
+        return $this->created_at->format('m d');
     }
 
     public function getPreCouponAttribute()

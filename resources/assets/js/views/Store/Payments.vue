@@ -287,21 +287,51 @@ export default {
       }
 
       if (this.filters.dailySummary) {
-        let dailySummaries = [];
+        let ordersByDay = Object.values(_.groupBy(orders, "order_day"));
 
-        dailySummaries = _.groupBy(
-          orders,
-          moment(created_at).format("dddd, MMM Do")
-        );
+        let dailySums = [];
 
-        return dailySummaries;
+        ordersByDay.forEach(orderByDay => {
+          let created_at = "";
+          let totalOrders = 0;
+          let sums = {
+            preFeePreDiscount: 0,
+            mealPlanDiscount: 0,
+            couponReduction: 0,
+            afterDiscountBeforeFees: 0,
+            processingFee: 0,
+            deliveryFee: 0,
+            salesTax: 0,
+            amount: 0
+          };
 
-        // orders.forEach(order => {
-        //   dailySummaries.push(order.created_at);
+          orderByDay.forEach(order => {
+            created_at = order.order_day;
+            totalOrders += 1;
+            sums.preFeePreDiscount += order.preFeePreDiscount;
+            sums.mealPlanDiscount += order.mealPlanDiscount;
+            sums.couponReduction += order.couponReduction;
+            sums.afterDiscountBeforeFees += order.afterDiscountBeforeFees;
+            sums.processingFee += order.processingFee;
+            sums.deliveryFee += order.deliveryFee;
+            sums.salesTax += order.salesTax;
+            sums.amount += order.amount;
+          });
+          dailySums.push({
+            created_at: created_at,
+            totalOrders: totalOrders,
+            preFeePreDiscount: sums.preFeePreDiscount,
+            mealPlanDiscount: sums.mealPlanDiscount,
+            couponReduction: sums.couponReduction,
+            afterDiscountBeforeFees: sums.afterDiscountBeforeFees,
+            processingFee: sums.processingFee,
+            deliveryFee: sums.deliveryFee,
+            salesTax: sums.salesTax,
+            amount: sums.amount
+          });
+        });
 
-        // })
-
-        // return dailySummaries;
+        return dailySums;
       }
 
       let totalsRowCheck = 0;
