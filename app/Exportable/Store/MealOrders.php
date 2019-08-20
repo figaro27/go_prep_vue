@@ -19,6 +19,9 @@ class MealOrders
     {
         $this->store = $store;
         $this->params = collect($params);
+        if (!$this->params->has('group_by_date')) {
+            $this->params->put('group_by_date', false);
+        }
         $this->orientation = 'portrait';
     }
 
@@ -33,7 +36,7 @@ class MealOrders
         $production = collect();
         $mealQuantities = [];
         $dates = $this->getDeliveryDates();
-        $groupByDate = $this->params->get('group_by_date', true);
+        $groupByDate = $this->params->get('group_by_date', false);
         $allDates = [];
 
         $orders = $this->store->getOrders(null, $dates, true);
@@ -115,9 +118,5 @@ class MealOrders
     public function exportPdfView()
     {
         return 'reports.meal_orders_pdf';
-        $groupByDate = $this->params->get('group_by_date', true);
-        return $groupByDate
-            ? 'reports.meal_orders_grouped_pdf'
-            : 'reports.meal_orders_pdf';
     }
 }
