@@ -495,6 +495,7 @@ export default {
       }
 
       params.couponCode = this.filters.couponCode;
+      params.dailySummary = this.filters.dailySummary;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
