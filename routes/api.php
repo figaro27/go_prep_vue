@@ -178,6 +178,7 @@ foreach (
                                 'pickupLocations',
                                 'PickupLocationController'
                             );
+                            Route::resource('lineItems', 'LineItemController');
                             Route::resource(
                                 'settings',
                                 'StoreSettingController'

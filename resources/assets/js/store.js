@@ -38,7 +38,8 @@ const state = {
       data: {}
     },
     coupons: [],
-    pickupLocations: []
+    pickupLocations: [],
+    lineItems: []
   },
   stores: {},
   tags: [],
@@ -124,6 +125,10 @@ const state = {
     pickupLocations: {
       data: {},
       expires: 0
+    },
+    lineItems: {
+      data: {},
+      expires: 0
     }
   },
   orders: {
@@ -190,6 +195,9 @@ const mutations = {
   },
   setViewedStorePickupLocations(state, { pickupLocations }) {
     state.viewed_store.pickupLocations = pickupLocations;
+  },
+  setViewedStoreLineItems(state, { lineItems }) {
+    state.viewed_store.lineItems = lineItems;
   },
   addBagItems(state, items) {
     state.bag.items = _.keyBy(items, "id");
@@ -407,6 +415,17 @@ const mutations = {
     state.store.pickupLocations.expires = expires;
   },
 
+  storeLineItems(state, { lineItems, expires }) {
+    if (!expires) {
+      expires = moment()
+        .add(ttl, "seconds")
+        .unix();
+    }
+
+    state.store.lineItems.data = lineItems;
+    state.store.lineItems.expires = expires;
+  },
+
   storeMeals(state, { meals, expires }) {
     if (!expires) {
       expires = moment()
@@ -594,6 +613,16 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.store.lineItems)) {
+        let lineItems = data.store.lineItems;
+
+        if (!_.isEmpty(lineItems)) {
+          commit("storeLineItems", { lineItems });
+        }
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.tags)) {
         let tags = data.tags;
 
@@ -666,6 +695,16 @@ const actions = {
       ) {
         let pickupLocations = data.store.pickupLocations;
         commit("storePickupLocations", { pickupLocations });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.lineItems) &&
+        _.isObject(data.store.lineItems)
+      ) {
+        let lineItems = data.store.lineItems;
+        commit("storeLineItems", { lineItems });
       }
     } catch (e) {}
 
@@ -836,6 +875,16 @@ const actions = {
         }
       }
     } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.line_items)) {
+        let lineItems = data.store.line_items;
+
+        if (!_.isEmpty(lineItems)) {
+          commit("setViewedStoreLineItems", { lineItems });
+        }
+      }
+    } catch (e) {}
   },
 
   async refreshStores({ commit, state }, args = {}) {
@@ -910,6 +959,17 @@ const actions = {
       commit("storePickupLocations", { pickupLocations: data });
     } else {
       throw new Error("Failed to retrieve pickupLocations");
+    }
+  },
+
+  async refreshStoreLineItems({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/lineItems");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      commit("storeLineItems", { lineItems: data });
+    } else {
+      throw new Error("Failed to retrieve lineItems");
     }
   },
 
@@ -1284,6 +1344,13 @@ const getters = {
   viewedStorePickupLocations(state, getters) {
     try {
       return state.viewed_store.pickupLocations;
+    } catch (e) {
+      return null;
+    }
+  },
+  viewedStoreLineItems(state, getters) {
+    try {
+      return state.viewed_store.lineItems;
     } catch (e) {
       return null;
     }
@@ -1700,6 +1767,13 @@ const getters = {
   storePickupLocations: state => {
     try {
       return state.store.pickupLocations.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeLineItems: state => {
+    try {
+      return state.store.lineItems.data || {};
     } catch (e) {
       return {};
     }

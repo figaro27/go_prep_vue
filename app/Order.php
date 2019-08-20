@@ -75,6 +75,11 @@ class Order extends Model
         return $this->hasMany('App\OrderEvent');
     }
 
+    public function lineItems()
+    {
+        return $this->hasMany('App\LineItems');
+    }
+
     public function coupon()
     {
         return $this->hasOne('App\Coupon');

@@ -139,6 +139,11 @@ class Store extends Model
         return $this->hasMany('App\PickupLocation');
     }
 
+    public function lineItems()
+    {
+        return $this->hasMany('App\LineItem');
+    }
+
     public function plan()
     {
         return $this->hasOne('App\StorePlan');

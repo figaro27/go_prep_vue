@@ -147,6 +147,63 @@
                 </div>
               </li>
             </ul>
+            <ul class="list-group">
+              <li
+                v-for="(orderLineItem, index) in orderLineItems"
+                class="bag-item"
+                v-if="orderLineItem.quantity > 0"
+              >
+                <div class="d-flex align-items-center">
+                  <div class="bag-item-quantity mr-2">
+                    <div
+                      class="bag-plus-minus brand-color white-text"
+                      @click="orderLineItem.quantity += 1"
+                    >
+                      <i>+</i>
+                    </div>
+                    <p class="bag-quantity">{{ orderLineItem.quantity }}</p>
+                    <div
+                      class="bag-plus-minus gray white-text"
+                      @click="orderLineItem.quantity -= 1"
+                    >
+                      <i>-</i>
+                    </div>
+                  </div>
+                  <div class="bag-item-image mr-2">
+                    <span class="cart-item-img" width="80px"></span>
+                  </div>
+                  <div class="flex-grow-1">
+                    <span>
+                      <b-form-select
+                        v-model="selectedLineItem"
+                        :options="lineItemOptions"
+                      ></b-form-select>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1">
+                    <b-button size="md" variant="primary" v-if="manualOrder"
+                      >Add New
+                    </b-button>
+                  </div>
+                  <div class="flex-grow-0">
+                    <img
+                      src="/images/customer/x.png"
+                      @click="removeLineItem(index)"
+                      class="clear-meal"
+                    />
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <b-button
+              size="md"
+              variant="success"
+              @click="addLineItem()"
+              v-if="manualOrder"
+            >
+              <span class="d-sm-inline">Add Line Item</span>
+            </b-button>
+
             <p
               class="mt-3"
               v-if="minOption === 'meals' && total < minMeals && !manualOrder"
@@ -876,7 +933,8 @@ export default {
       couponCode: "",
       //couponApplied: false,
       couponClass: "checkout-item",
-      deliveryFee: 0
+      deliveryFee: 0,
+      orderLineItems: []
     };
   },
   watch: {
@@ -911,11 +969,19 @@ export default {
       minPrice: "minimumPrice",
       coupons: "viewedStoreCoupons",
       pickupLocations: "viewedStorePickupLocations",
+      lineItems: "viewedStoreLineItems",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       _orders: "orders",
       loggedIn: "loggedIn"
     }),
+    lineItemOptions() {
+      let options = [];
+      this.lineItems.forEach(lineItem => {
+        options.push(lineItem.title);
+      });
+      return options;
+    },
     couponFreeDelivery() {
       return this.coupon ? this.coupon.freeDelivery : 0;
     },
@@ -1391,6 +1457,16 @@ export default {
     },
     changeState(state) {
       this.form.state = state.abbreviation;
+    },
+    addLineItem() {
+      this.orderLineItems.push({
+        quantity: 1,
+        title: "turtles",
+        price: 0
+      });
+    },
+    removeLineItem(index) {
+      this.orderLineItems.splice(index, 1);
     }
   }
 };
