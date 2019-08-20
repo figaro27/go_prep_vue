@@ -26,6 +26,7 @@ class Payments
         $dailySummary = $this->params->get('dailySummary');
 
         $sums = ['TOTALS', 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         if ($dailySummary != 1) {
             $payments = $this->store
@@ -100,7 +101,7 @@ class Payments
                 $salesTax = 0;
                 $goPrepFeeAmount = 0;
                 $stripeFeeAmount = 0;
-                $amount = 0;
+                $grandTotal = 0;
 
                 foreach ($orderByDay as $order) {
                     $created_at = $order->order_day;
@@ -113,7 +114,7 @@ class Payments
                     $salesTax += $order->salesTax;
                     $goPrepFeeAmount += $order->goprep_fee;
                     $stripeFeeAmount += $order->stripe_fee;
-                    $amount += $order->grandTotal;
+                    $grandTotal += $order->grandTotal;
                     // $deposit = 100 - $order->deposit;
                 }
                 $orderDay = Carbon::createFromFormat(
@@ -131,10 +132,26 @@ class Payments
                     '$' . number_format($salesTax, 2),
                     '$' . number_format($goPrepFeeAmount, 2),
                     '$' . number_format($stripeFeeAmount, 2),
-                    '$' . number_format($amount, 2)
+                    '$' . number_format($grandTotal, 2)
                 ]);
+
+                $sumsByDaily[1] += $totalOrders;
+                $sumsByDaily[2] += $preFeePreDiscount;
+                $sumsByDaily[3] += $couponReduction;
+                $sumsByDaily[4] += $mealPlanDiscount;
+                $sumsByDaily[5] += $deliveryFee;
+                $sumsByDaily[6] += $processingFee;
+                $sumsByDaily[7] += $salesTax;
+                $sumsByDaily[8] += $goPrepFeeAmount;
+                $sumsByDaily[9] += $stripeFeeAmount;
+                $sumsByDaily[10] += $grandTotal;
             }
 
+            foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10] as $i) {
+                $sumsByDaily[$i] = '$' . number_format($sumsByDaily[$i], 2);
+            }
+
+            array_unshift($dailySums, $sumsByDaily);
             return $dailySums;
         }
 

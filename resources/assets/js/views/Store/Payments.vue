@@ -262,7 +262,7 @@ export default {
         );
       }
 
-      let grandTotalOrders = orders.length;
+      let grandTotalOrders = orders.length - 1;
 
       if (this.filters.dailySummary) {
         let ordersByDay = Object.values(_.groupBy(orders, "order_day"));
@@ -335,7 +335,9 @@ export default {
           processingFee: 0,
           deliveryFee: 0,
           salesTax: 0,
-          amount: 0
+          goprep_fee: 0,
+          stripe_fee: 0,
+          grandTotal: 0
         };
 
         orders.forEach(order => {
@@ -346,7 +348,9 @@ export default {
           sums.processingFee += order.processingFee;
           sums.deliveryFee += order.deliveryFee;
           sums.salesTax += order.salesTax;
-          sums.amount += order.amount;
+          sums.goprep_fee += order.goprep_fee;
+          sums.stripe_fee += order.stripe_fee;
+          sums.grandTotal += order.grandTotal;
         });
 
         orders.unshift({
@@ -359,8 +363,9 @@ export default {
           processingFee: sums.processingFee,
           deliveryFee: sums.deliveryFee,
           salesTax: sums.salesTax,
-          amount: sums.amount,
-          stripeFee: sums.stripeFee,
+          goprep_fee: sums.goprep_fee,
+          stripe_fee: sums.stripe_fee,
+          grandTotal: sums.grandTotal,
           sumRow: 1
         });
       }
