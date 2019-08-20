@@ -48,13 +48,9 @@ class Payments
                     $sums[5] += $payment->processingFee;
                     $sums[6] += $payment->deliveryFee;
                     $sums[7] += $payment->salesTax;
-                    $sums[8] += $payment->afterDiscountBeforeFees * $goPrepFee;
-                    $sums[9] += $payment->amount * $stripeFee + 0.3;
-                    $sums[10] +=
-                        $payment->amount -
-                        $payment->afterDiscountBeforeFees * $goPrepFee -
-                        $payment->amount * $stripeFee -
-                        0.3;
+                    $sums[8] += $payment->goprep_fee;
+                    $sums[9] += $payment->stripe_fee;
+                    $sums[10] += $payment->grandTotal;
                     $sums[11] = 100 - $payment->deposit;
 
                     $paymentsRows = [
@@ -66,25 +62,9 @@ class Payments
                         '$' . number_format($payment->deliveryFee, 2),
                         '$' . number_format($payment->processingFee, 2),
                         '$' . number_format($payment->salesTax, 2),
-                        '$' .
-                            number_format(
-                                $payment->afterDiscountBeforeFees * $goPrepFee,
-                                2
-                            ),
-                        '$' .
-                            number_format(
-                                $payment->amount * $stripeFee + 0.3,
-                                2
-                            ),
-                        '$' .
-                            number_format(
-                                $payment->amount -
-                                    $payment->afterDiscountBeforeFees *
-                                        $goPrepFee -
-                                    $payment->amount * $stripeFee -
-                                    0.3,
-                                2
-                            ),
+                        '$' . number_format($payment->goprep_fee, 2),
+                        '$' . number_format($payment->stripe_fee, 2),
+                        '$' . number_format($payment->grandTotal, 2),
                         100 - $payment->deposit . '%'
                     ];
 
@@ -131,20 +111,9 @@ class Payments
                     $processingFee += $order->processingFee;
                     $deliveryFee += $order->deliveryFee;
                     $salesTax += $order->salesTax;
-                    $goPrepFeeAmount +=
-                        $order->afterDiscountBeforeFees * $goPrepFee;
-                    $stripeFeeAmount +=
-                        ($order->afterDiscountBeforeFees +
-                            $order->deliveryFee +
-                            $order->processingFee +
-                            $order->salesTax) *
-                            $stripeFee +
-                        0.3;
-                    $amount +=
-                        $order->amount -
-                        $goPrepFee * $order->amount -
-                        $stripeFee * $order->amount -
-                        0.3;
+                    $goPrepFeeAmount += $order->goprep_fee;
+                    $stripeFeeAmount += $order->stripe_fee;
+                    $amount += $order->grandTotal;
                     // $deposit = 100 - $order->deposit;
                 }
                 $orderDay = Carbon::createFromFormat(

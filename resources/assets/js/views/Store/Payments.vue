@@ -128,43 +128,19 @@
             <!-- <div slot="total" slot-scope="props">
               <div>{{ formatMoney(props.row.amount, props.row.currency) }}</div>
             </div> -->
-            <div slot="goPrepFee" slot-scope="props">
+            <div slot="goprep_fee" slot-scope="props">
               <div>
-                {{
-                  formatMoney(
-                    props.row.afterDiscountBeforeFees * goPrepFee,
-                    props.row.currency
-                  )
-                }}
+                {{ formatMoney(props.row.goprep_fee, props.row.currency) }}
               </div>
             </div>
-            <div slot="stripeFee" slot-scope="props">
-              <div v-if="props.row.amount > 0">
-                {{
-                  formatMoney(
-                    props.row.amount * stripeFee + 0.3,
-                    props.row.currency
-                  )
-                }}
-              </div>
-              <div v-else>
-                $0.00
+            <div slot="stripe_fee" slot-scope="props">
+              <div>
+                {{ formatMoney(props.row.stripe_fee, props.row.currency) }}
               </div>
             </div>
             <div slot="grandTotal" slot-scope="props">
-              <div v-if="props.row.amount > 0">
-                {{
-                  formatMoney(
-                    props.row.amount -
-                      props.row.afterDiscountBeforeFees * goPrepFee -
-                      props.row.amount * stripeFee -
-                      0.3,
-                    props.row.currency
-                  )
-                }}
-              </div>
-              <div v-else>
-                $0.00
+              <div>
+                {{ formatMoney(props.row.grandTotal, props.row.currency) }}
               </div>
             </div>
             <div slot="deposit" slot-scope="props">
@@ -223,8 +199,8 @@ export default {
           deliveryFee: "Delivery Fee",
           salesTax: "Sales Tax",
           // total: "PreFee Total",
-          goPrepFee: "GoPrep Fee",
-          stripeFee: "Stripe Fee",
+          goprep_fee: "GoPrep Fee",
+          stripe_fee: "Stripe Fee",
           grandTotal: "Total",
           deposit: "Balance Remaining"
         },
@@ -304,7 +280,9 @@ export default {
             processingFee: 0,
             deliveryFee: 0,
             salesTax: 0,
-            amount: 0
+            goprep_fee: 0,
+            stripe_fee: 0,
+            grandTotal: 0
           };
 
           orderByDay.forEach(order => {
@@ -317,7 +295,9 @@ export default {
             sums.processingFee += order.processingFee;
             sums.deliveryFee += order.deliveryFee;
             sums.salesTax += order.salesTax;
-            sums.amount += order.amount;
+            sums.goprep_fee += order.goprep_fee;
+            sums.stripe_fee += order.stripe_fee;
+            sums.grandTotal += order.grandTotal;
           });
           orders.push({
             created_at: created_at,
@@ -329,7 +309,9 @@ export default {
             processingFee: sums.processingFee,
             deliveryFee: sums.deliveryFee,
             salesTax: sums.salesTax,
-            amount: sums.amount
+            goprep_fee: sums.goprep_fee,
+            stripe_fee: sums.stripe_fee,
+            grandTotal: sums.grandTotal
           });
         });
 
@@ -391,8 +373,8 @@ export default {
         "subtotal",
         "salesTax",
         // "total",
-        "goPrepFee",
-        "stripeFee",
+        "goprep_fee",
+        "stripe_fee",
         "grandTotal"
       ];
 
