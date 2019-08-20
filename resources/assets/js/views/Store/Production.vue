@@ -223,6 +223,7 @@ export default {
           from: this.filters.delivery_dates.start,
           to: this.filters.delivery_dates.end
         };
+        params.group_by_date = true;
       }
 
       axios
