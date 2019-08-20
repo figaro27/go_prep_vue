@@ -298,14 +298,22 @@ class RegisterController extends Controller
             $planPeriod = $planObj->get('plan_period');
             $planToken = $planObj->get('stripe_token');
 
+            try {
+                $plan = collect($plans[$planId][$planPeriod]);
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
+            }
+
             $storePlan = new StorePlan();
+            $storePlan->active = 1;
             $storePlan->store_id = $store->id;
-            $storePlan->billing_method = $planMethod;
+            $storePlan->method = $planMethod;
+            $storePlan->amount = $plan->get('price');
+            $storePlan->period = $planPeriod;
+            $storePlan->day = date('d');
 
             // If using credit card billing, charge here
             if ($planMethod === 'credit_card') {
-                $plan = collect($plans[$planId][$planPeriod]);
-
                 // Create customer
                 $customer = \Stripe\Customer::create([
                     'description' => '',
@@ -323,8 +331,9 @@ class RegisterController extends Controller
 
                 $storePlan->stripe_customer_id = $customer->id;
                 $storePlan->stripe_subscription_id = $subscription->id;
-                $storePlan->save();
             }
+
+            $storePlan->save();
         }
 
         return $user;

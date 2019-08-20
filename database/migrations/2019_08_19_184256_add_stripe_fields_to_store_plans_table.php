@@ -13,8 +13,8 @@ class AddStripeFieldsToStorePlansTable extends Migration
      */
     public function up()
     {
-        Schema::table('stores', function (Blueprint $table) {
-            $table->string('billing_method')->nullable();
+        Schema::table('store_plans', function (Blueprint $table) {
+            $table->string('method')->default('connect');
             $table->string('stripe_customer_id')->nullable();
             $table->string('stripe_subscription_id')->nullable();
         });
@@ -27,8 +27,8 @@ class AddStripeFieldsToStorePlansTable extends Migration
      */
     public function down()
     {
-        Schema::table('stores', function (Blueprint $table) {
-            $table->dropColumn('billing_method')->default('connect');
+        Schema::table('store_plans', function (Blueprint $table) {
+            $table->dropColumn('method');
             $table->dropColumn('stripe_customer_id');
             $table->dropColumn('stripe_subscription_id');
         });
