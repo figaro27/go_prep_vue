@@ -19,6 +19,7 @@ use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use DB;
 
 class CheckoutController extends StoreController
 {
@@ -50,6 +51,14 @@ class CheckoutController extends StoreController
         $processingFee = 0;
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
+
+        $today = Carbon::now()->toDateString();
+        $count = DB::table('orders')
+            ->where('store_id', $storeId)
+            ->whereDate('created_at', $today)
+            ->get()
+            ->count();
+        $dailyOrderNumber = $count + 1;
 
         if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             $discount = $store->settings->mealPlanDiscount / 100;
@@ -143,6 +152,7 @@ class CheckoutController extends StoreController
             $order->deposit = $deposit * 100;
             $order->manual = 1;
             $order->cashOrder = $cashOrder;
+            $order->dailyOrderNumber = $dailyOrderNumber;
             $order->save();
 
             $items = $bag->getItems();
@@ -296,6 +306,7 @@ class CheckoutController extends StoreController
             $order->couponReduction = $couponReduction;
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
+            $order->dailyOrderNumber = $dailyOrderNumber;
             $order->save();
 
             foreach ($bag->getItems() as $item) {
