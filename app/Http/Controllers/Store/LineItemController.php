@@ -41,7 +41,6 @@ class LineItemController extends StoreController
 
         $lineItem = new LineItem();
         $lineItem->store_id = $this->store->id;
-        $lineItem->order_id = $props->get('order_id');
         $lineItem->title = $props->get('title');
         $lineItem->price = $props->get('price');
         $lineItem->save();

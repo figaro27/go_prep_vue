@@ -30,6 +30,7 @@ class CheckoutController extends StoreController
         $storeName = strtolower($store->storeDetail->name);
 
         $bag = new Bag($request->get('bag'), $store);
+        $bagTotal = $bag->getTotal() + $request->get('lineItemTotal');
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
         $deliveryDay = $request->get('delivery_day');
@@ -41,10 +42,10 @@ class CheckoutController extends StoreController
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
-        $total = $bag->getTotal();
+        $total = $bagTotal;
         $subtotal = $request->get('subtotal');
-        $afterDiscountBeforeFees = $bag->getTotal();
-        $preFeePreDiscount = $bag->getTotal();
+        $afterDiscountBeforeFees = $bagTotal;
+        $preFeePreDiscount = $bagTotal;
         $deposit = $request->get('deposit') / 100;
 
         $processingFee = 0;

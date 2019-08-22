@@ -1,26 +1,5 @@
 <template>
   <div class="bag">
-    <b-modal
-      size="lg"
-      title="Add New Line Item"
-      v-model="showLineItemModal"
-      v-if="showLineItemModal"
-      hide-footer
-    >
-      <p>Add New Line Item</p>
-      <b-form-input
-        v-model="lineItem.title"
-        placeholder="Line Item Title"
-      ></b-form-input>
-      <b-form-input v-model="lineItem.price" placeholder="Price"></b-form-input>
-      <b-btn variant="success" @click="addLineItem(0)">Add</b-btn>
-      <p>Or Select From Existing</p>
-      <b-form-select
-        v-model="selectedLineItem"
-        :options="lineItemOptions"
-      ></b-form-select>
-      <b-btn variant="success" @click="addLineItem(1)">Add</b-btn>
-    </b-modal>
     <div class="card">
       <div class="card-body">
         <spinner v-if="loading" position="absolute"></spinner>
@@ -224,6 +203,41 @@
             >
               <span class="d-sm-inline">Add Line Item</span>
             </b-button>
+
+            <b-modal
+              size="lg"
+              title="Add New Line Item"
+              v-model="showLineItemModal"
+              v-if="showLineItemModal"
+              hide-footer
+            >
+              <h3 class="center-text mt-3">Add New</h3>
+              <b-input-group>
+                <b-form-input
+                  v-model="lineItem.title"
+                  placeholder="Title"
+                  class="mr-3"
+                ></b-form-input>
+                <b-form-input
+                  v-model="lineItem.price"
+                  placeholder="Price"
+                  class="mr-3"
+                ></b-form-input>
+                <b-btn variant="success" @click="addLineItem(0)">Add</b-btn>
+              </b-input-group>
+              <h3 class="center-text mt-5">Or Select From Existing</h3>
+              <b-input-group>
+                <b-form-select
+                  v-model="selectedLineItem"
+                  :options="lineItemOptions"
+                  class="mr-3"
+                ></b-form-select>
+                <p>{{ selectedLineItem.price }}</p>
+                <b-btn class="mb-5" variant="success" @click="addLineItem(1)"
+                  >Add</b-btn
+                >
+              </b-input-group>
+            </b-modal>
 
             <p
               class="mt-3"
@@ -940,7 +954,7 @@ export default {
         price: null,
         quantity: 1
       },
-      selectedLineItem: "",
+      selectedLineItem: {},
       orderLineItems: [],
       transferTime: "",
       cashOrder: false,
@@ -1007,8 +1021,12 @@ export default {
       let options = [];
       this.lineItems.forEach(lineItem => {
         options.push({
-          value: lineItem.id,
-          text: lineItem.title
+          text: lineItem.title,
+          value: {
+            price: lineItem.price,
+            title: lineItem.title,
+            quantity: 1
+          }
         });
       });
       return options;
@@ -1137,8 +1155,19 @@ export default {
     remainingPrice() {
       return this.minPrice - this.totalBagPricePreFees;
     },
+    lineItemTotal() {
+      let totalLineItemsPrice = 0;
+      this.orderLineItems.forEach(orderLineItem => {
+        totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
+      });
+      return totalLineItemsPrice;
+    },
     subtotal() {
-      let subtotal = this.totalBagPricePreFees;
+      let totalLineItemsPrice = 0;
+      this.orderLineItems.forEach(orderLineItem => {
+        totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
+      });
+      let subtotal = this.totalBagPricePreFees + totalLineItemsPrice;
       return subtotal;
     },
     couponReduction() {
@@ -1337,6 +1366,7 @@ export default {
       axios
         .post(endPoint, {
           subtotal: this.subtotal,
+          lineItemTotal: this.lineItemTotal,
           afterDiscount: this.afterDiscount,
           bag: this.bag,
           plan: this.deliveryPlan,
@@ -1490,25 +1520,29 @@ export default {
       this.form.state = state.abbreviation;
     },
     addLineItem(existing) {
+      let orderLineItems = this.orderLineItems;
       if (existing) {
-        let lineItemId = this.selectedLineItem;
-        let lineItem = this.lineItems.find(
-          lineItem => (lineItem.id = lineItemId)
-        );
-        lineItem.quantity = 1;
-        this.orderLineItems.push(lineItem);
+        if (orderLineItems.includes(this.selectedLineItem)) {
+          let index = _.findIndex(orderLineItems, orderLineItem => {
+            return orderLineItem.title === this.selectedLineItem.title;
+          });
+          orderLineItems[index].quantity += 1;
+
+          // let test = orderLineItems.find(orderLineItem => {
+          //   orderLineItem.title = selectedLineItem.title;
+          // })
+          // test.quantity += 1;
+        } else {
+          orderLineItems.push(this.selectedLineItem);
+        }
       } else {
-        this.orderLineItems.push(this.lineItem);
+        axios.post("/api/me/lineItems", this.lineItem);
+        orderLineItems.push(this.lineItem);
       }
 
       this.showLineItemModal = false;
-      this.lineItem = {
-        title: "",
-        price: null,
-        quantity: 1
-      };
-
-      // Save to DB
+      this.lineItem = { title: "", price: null, quantity: 1 };
+      this.selectedLineItem = { title: "", price: null, quantity: 1 };
     },
     removeLineItem(index) {
       this.orderLineItems.splice(index, 1);
