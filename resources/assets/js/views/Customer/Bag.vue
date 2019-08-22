@@ -1,5 +1,26 @@
 <template>
   <div class="bag">
+    <b-modal
+      size="lg"
+      title="Add New Line Item"
+      v-model="showLineItemModal"
+      v-if="showLineItemModal"
+      hide-footer
+    >
+      <p>Add New Line Item</p>
+      <b-form-input
+        v-model="lineItem.title"
+        placeholder="Line Item Title"
+      ></b-form-input>
+      <b-form-input v-model="lineItem.price" placeholder="Price"></b-form-input>
+      <b-btn variant="success" @click="addLineItem(0)">Add</b-btn>
+      <p>Or Select From Existing</p>
+      <b-form-select
+        v-model="selectedLineItem"
+        :options="lineItemOptions"
+      ></b-form-select>
+      <b-btn variant="success" @click="addLineItem(1)">Add</b-btn>
+    </b-modal>
     <div class="card">
       <div class="card-body">
         <spinner v-if="loading" position="absolute"></spinner>
@@ -174,16 +195,16 @@
                   </div>
                   <div class="flex-grow-1">
                     <span>
-                      <b-form-select
-                        v-model="selectedLineItem"
-                        :options="lineItemOptions"
-                      ></b-form-select>
+                      <p>
+                        {{ orderLineItem.title }} -
+                        {{
+                          format.money(
+                            orderLineItem.price * orderLineItem.quantity,
+                            storeSettings.currency
+                          )
+                        }}
+                      </p>
                     </span>
-                  </div>
-                  <div class="flex-grow-1">
-                    <b-button size="md" variant="primary" v-if="manualOrder"
-                      >Add New
-                    </b-button>
                   </div>
                   <div class="flex-grow-0">
                     <img
@@ -198,7 +219,7 @@
             <b-button
               size="md"
               variant="success"
-              @click="addLineItem()"
+              @click="showLineItemModal = true"
               v-if="manualOrder"
             >
               <span class="d-sm-inline">Add Line Item</span>
@@ -913,6 +934,14 @@ export default {
   data() {
     return {
       //couponFreeDelivery: 0,
+      showLineItemModal: false,
+      lineItem: {
+        title: "",
+        price: null,
+        quantity: 1
+      },
+      selectedLineItem: "",
+      orderLineItems: [],
       transferTime: "",
       cashOrder: false,
       form: {},
@@ -933,8 +962,7 @@ export default {
       couponCode: "",
       //couponApplied: false,
       couponClass: "checkout-item",
-      deliveryFee: 0,
-      orderLineItems: []
+      deliveryFee: 0
     };
   },
   watch: {
@@ -978,7 +1006,10 @@ export default {
     lineItemOptions() {
       let options = [];
       this.lineItems.forEach(lineItem => {
-        options.push(lineItem.title);
+        options.push({
+          value: lineItem.id,
+          text: lineItem.title
+        });
       });
       return options;
     },
@@ -1458,12 +1489,26 @@ export default {
     changeState(state) {
       this.form.state = state.abbreviation;
     },
-    addLineItem() {
-      this.orderLineItems.push({
-        quantity: 1,
-        title: "turtles",
-        price: 0
-      });
+    addLineItem(existing) {
+      if (existing) {
+        let lineItemId = this.selectedLineItem;
+        let lineItem = this.lineItems.find(
+          lineItem => (lineItem.id = lineItemId)
+        );
+        lineItem.quantity = 1;
+        this.orderLineItems.push(lineItem);
+      } else {
+        this.orderLineItems.push(this.lineItem);
+      }
+
+      this.showLineItemModal = false;
+      this.lineItem = {
+        title: "",
+        price: null,
+        quantity: 1
+      };
+
+      // Save to DB
     },
     removeLineItem(index) {
       this.orderLineItems.splice(index, 1);
