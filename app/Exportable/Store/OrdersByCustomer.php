@@ -52,7 +52,7 @@ class OrdersByCustomer
         }
 
         $customerOrders = $orders
-            ->with(['meal_orders'])
+            ->with(['meal_orders', 'lineItemsOrders'])
             ->get()
             ->groupBy('user_id')
             ->map(function ($orders, $userId) {
@@ -83,6 +83,21 @@ class OrdersByCustomer
                                                     : $mealOrder->html_title,
                                             'quantity' =>
                                                 $mealOrder->quantity ?? 1
+                                        ];
+                                    })
+                                    ->toArray()
+                            ),
+                            'lineItemsOrders' => array_merge(
+                                [['Line Item', 'Quantity', 'Price']], // Heading
+                                $order
+                                    ->lineItemsOrders()
+                                    ->get()
+                                    ->map(function ($lineItemOrder) {
+                                        return [
+                                            'title' => $lineItemOrder->title,
+                                            'quantity' =>
+                                                $lineItemOrder->quantity,
+                                            'price' => $lineItemOrder->price
                                         ];
                                     })
                                     ->toArray()

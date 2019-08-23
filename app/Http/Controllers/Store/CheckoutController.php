@@ -15,6 +15,8 @@ use App\Subscription;
 use App\Coupon;
 use App\Card;
 use App\Customer;
+use App\LineItem;
+use App\LineItemOrder;
 use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -157,6 +159,22 @@ class CheckoutController extends StoreController
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
                 $mealOrder->save();
+            }
+
+            $lineItemsOrder = $request->get('lineItemsOrder');
+            foreach ($lineItemsOrder as $lineItemOrder) {
+                $title = $lineItemOrder['title'];
+                $id = LineItem::where('title', $title)
+                    ->pluck('id')
+                    ->first();
+                $quantity = $lineItemOrder['quantity'];
+
+                $lineItemOrder = new LineItemOrder();
+                $lineItemOrder->store_id = $store->id;
+                $lineItemOrder->line_item_id = $id;
+                $lineItemOrder->order_id = $order->id;
+                $lineItemOrder->quantity = $quantity;
+                $lineItemOrder->save();
             }
 
             // Send notification to store

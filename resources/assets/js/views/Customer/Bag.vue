@@ -147,62 +147,64 @@
                 </div>
               </li>
             </ul>
-            <ul class="list-group">
-              <li
-                v-for="(orderLineItem, index) in orderLineItems"
-                class="bag-item"
-                v-if="orderLineItem.quantity > 0"
+            <div v-if="storeModules.lineItems">
+              <ul class="list-group">
+                <li
+                  v-for="(orderLineItem, index) in orderLineItems"
+                  class="bag-item"
+                  v-if="orderLineItem.quantity > 0"
+                >
+                  <div class="d-flex align-items-center">
+                    <div class="bag-item-quantity mr-2">
+                      <div
+                        class="bag-plus-minus brand-color white-text"
+                        @click="orderLineItem.quantity += 1"
+                      >
+                        <i>+</i>
+                      </div>
+                      <p class="bag-quantity">{{ orderLineItem.quantity }}</p>
+                      <div
+                        class="bag-plus-minus gray white-text"
+                        @click="orderLineItem.quantity -= 1"
+                      >
+                        <i>-</i>
+                      </div>
+                    </div>
+                    <div class="bag-item-image mr-2">
+                      <span class="cart-item-img" width="80px"></span>
+                    </div>
+                    <div class="flex-grow-1">
+                      <span>
+                        <p>
+                          {{ orderLineItem.title }} -
+                          {{
+                            format.money(
+                              orderLineItem.price * orderLineItem.quantity,
+                              storeSettings.currency
+                            )
+                          }}
+                        </p>
+                      </span>
+                    </div>
+                    <div class="flex-grow-0">
+                      <img
+                        src="/images/customer/x.png"
+                        @click="removeLineItem(index)"
+                        class="clear-meal"
+                      />
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <b-button
+                size="md"
+                variant="success"
+                @click="showLineItemModal = true"
+                v-if="manualOrder"
               >
-                <div class="d-flex align-items-center">
-                  <div class="bag-item-quantity mr-2">
-                    <div
-                      class="bag-plus-minus brand-color white-text"
-                      @click="orderLineItem.quantity += 1"
-                    >
-                      <i>+</i>
-                    </div>
-                    <p class="bag-quantity">{{ orderLineItem.quantity }}</p>
-                    <div
-                      class="bag-plus-minus gray white-text"
-                      @click="orderLineItem.quantity -= 1"
-                    >
-                      <i>-</i>
-                    </div>
-                  </div>
-                  <div class="bag-item-image mr-2">
-                    <span class="cart-item-img" width="80px"></span>
-                  </div>
-                  <div class="flex-grow-1">
-                    <span>
-                      <p>
-                        {{ orderLineItem.title }} -
-                        {{
-                          format.money(
-                            orderLineItem.price * orderLineItem.quantity,
-                            storeSettings.currency
-                          )
-                        }}
-                      </p>
-                    </span>
-                  </div>
-                  <div class="flex-grow-0">
-                    <img
-                      src="/images/customer/x.png"
-                      @click="removeLineItem(index)"
-                      class="clear-meal"
-                    />
-                  </div>
-                </div>
-              </li>
-            </ul>
-            <b-button
-              size="md"
-              variant="success"
-              @click="showLineItemModal = true"
-              v-if="manualOrder"
-            >
-              <span class="d-sm-inline">Add Line Item</span>
-            </b-button>
+                <span class="d-sm-inline">Add Line Item</span>
+              </b-button>
+            </div>
 
             <b-modal
               size="lg"
@@ -232,7 +234,11 @@
                   :options="lineItemOptions"
                   class="mr-3"
                 ></b-form-select>
-                <p>{{ selectedLineItem.price }}</p>
+                <p class="pt-1 mr-3">
+                  {{
+                    format.money(selectedLineItem.price, storeSettings.currency)
+                  }}
+                </p>
                 <b-btn class="mb-5" variant="success" @click="addLineItem(1)"
                   >Add</b-btn
                 >
@@ -1383,7 +1389,8 @@ export default {
           customer: this.customer,
           deposit: deposit,
           cashOrder: this.cashOrder,
-          transferTime: this.transferTime
+          transferTime: this.transferTime,
+          lineItemsOrder: this.orderLineItems
         })
         .then(async resp => {
           this.emptyBag();
@@ -1527,11 +1534,6 @@ export default {
             return orderLineItem.title === this.selectedLineItem.title;
           });
           orderLineItems[index].quantity += 1;
-
-          // let test = orderLineItems.find(orderLineItem => {
-          //   orderLineItem.title = selectedLineItem.title;
-          // })
-          // test.quantity += 1;
         } else {
           orderLineItems.push(this.selectedLineItem);
         }

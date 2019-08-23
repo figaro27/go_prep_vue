@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class LineItemOrder extends Pivot
 {
-    protected $table = 'line_item_';
+    protected $table = 'line_item_orders';
+
+    protected $appends = ['title', 'price'];
 
     public function lineItem()
     {
@@ -16,5 +18,15 @@ class LineItemOrder extends Pivot
     public function order()
     {
         return $this->belongsTo('App\Order');
+    }
+
+    public function getTitleAttribute()
+    {
+        return $this->lineItem->title;
+    }
+
+    public function getPriceAttribute()
+    {
+        return $this->lineItem->price;
     }
 }

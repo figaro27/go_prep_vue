@@ -287,6 +287,38 @@
             </ul>
           </div>
         </div>
+        <div class="row">
+          <div class="col-md-12">
+            <h4>Line Items</h4>
+            <hr />
+            <ul class="meal-quantities">
+              <li
+                v-for="lineItemOrder in order.line_items_orders"
+                :key="order.line_items_orders.id"
+              >
+                <div class="row">
+                  <div class="col-md-3">
+                    <span class="order-quantity">{{
+                      lineItemOrder.quantity
+                    }}</span>
+                    <img src="/images/store/x-modal.png" class="mr-1 ml-1" />
+                  </div>
+                  <div class="col-md-9">
+                    <p class="mt-1">{{ lineItemOrder.title }}</p>
+                    <p class="strong">
+                      {{
+                        format.money(
+                          lineItemOrder.price * lineItemOrder.quantity,
+                          order.currency
+                        )
+                      }}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
       </b-modal>
     </div>
     <v-style>

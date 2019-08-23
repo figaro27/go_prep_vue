@@ -80,6 +80,11 @@ class Order extends Model
         return $this->hasMany('App\LineItems');
     }
 
+    public function lineItemsOrders()
+    {
+        return $this->hasMany('App\LineItemOrder');
+    }
+
     public function coupon()
     {
         return $this->hasOne('App\Coupon');
