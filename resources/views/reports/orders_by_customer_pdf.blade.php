@@ -57,10 +57,8 @@
               </tbody>
             </table>
           @endif
-            <div style="height:30px"></div>
-          @if(!count($order['meal_quantities']))
-            
-          @else
+            <div style="height:10px"></div>
+          @if(count($order['lineItemsOrders']) > 1)
             <table border="1" width="100">
               <tbody>
                 @foreach($order['lineItemsOrders'] as $i => $row)

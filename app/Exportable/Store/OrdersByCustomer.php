@@ -88,7 +88,7 @@ class OrdersByCustomer
                                     ->toArray()
                             ),
                             'lineItemsOrders' => array_merge(
-                                [['Line Item', 'Quantity', 'Price']], // Heading
+                                [['Extras', 'Quantity']], // Heading
                                 $order
                                     ->lineItemsOrders()
                                     ->get()
@@ -96,8 +96,7 @@ class OrdersByCustomer
                                         return [
                                             'title' => $lineItemOrder->title,
                                             'quantity' =>
-                                                $lineItemOrder->quantity,
-                                            'price' => $lineItemOrder->price
+                                                $lineItemOrder->quantity
                                         ];
                                     })
                                     ->toArray()

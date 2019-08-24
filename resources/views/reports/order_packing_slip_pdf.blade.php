@@ -77,6 +77,30 @@
       </tbody>
     
     </table>
+
+    @if (count($order->lineItemsOrders))
+    <h2>Extras</h2>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Quantity</th>
+            <th>Meal Name</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+      <tbody>
+          @foreach ($order->lineItemsOrders as $i => $lineItemOrder)
+          <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+              <td>{{$lineItemOrder->quantity}}</td>
+              <td>{!! $lineItemOrder->title !!}</td>
+              <td>${{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
+          </tr>
+          @endforeach
+      </tbody>
+      </table>
+    @endif
+
+
     <br>
     @if ($order->store->settings->notesForCustomer != null)
     <h2>Notes</h2>
