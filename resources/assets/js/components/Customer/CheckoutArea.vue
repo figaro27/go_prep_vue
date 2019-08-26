@@ -604,7 +604,11 @@ export default {
     transferTime: null,
     pickup: 0,
     orderLineItems: [],
-    checkoutData: null
+    checkoutData: null,
+    gateway: {
+      type: String,
+      default: 'stripe'
+    }
   },
   mounted: function() {
     if (this.forceValue) {
