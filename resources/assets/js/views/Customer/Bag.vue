@@ -566,6 +566,7 @@
                   </p>
                   <card-picker
                     :selectable="true"
+                    :gateway="storeSettings.payment_gateway"
                     v-model="card"
                     v-if="!manualOrder && !subscriptionId && !cashOrder"
                     class="mb-3"
@@ -573,6 +574,7 @@
                   ></card-picker>
                   <card-picker
                     :selectable="true"
+                    :gateway="storeSettings.payment_gateway"
                     v-model="card"
                     v-if="
                       !manualOrder &&
@@ -587,6 +589,7 @@
                     :selectable="true"
                     :creditCards="creditCardList"
                     :manualOrder="true"
+                    :gateway="storeSettings.payment_gateway"
                     v-model="cards"
                     v-if="manualOrder && !cashOrder && !subscriptionId"
                     class="mb-3"
