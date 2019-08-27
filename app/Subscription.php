@@ -252,7 +252,7 @@ class Subscription extends Model
     {
         $latestOrder = $this->getLatestUnpaidOrder();
 
-        if (!$latestOrder) {
+        if ($this->status != 'cancelled' && !$latestOrder) {
             throw new \Exception(
                 'No unpaid order for subscription #' . $this->id
             );
