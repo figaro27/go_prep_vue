@@ -60,24 +60,19 @@ const state = {
   // State for logged in customers State for logged in stores
   store: {
     detail: {
-      data: {},
-      expries: 0
+      data: {}
     },
     ingredients: {
-      data: {},
-      expries: 0
+      data: {}
     },
     order_ingredients: {
-      data: {},
-      expries: 0
+      data: {}
     },
     ingredient_units: {
-      data: {},
-      expires: 0
+      data: {}
     },
     categories: {
-      data: {},
-      expries: 0
+      data: {}
     },
     settings: {
       data: {
@@ -90,65 +85,51 @@ const state = {
           cancelled_subscription: true,
           ready_to_print: true
         }
-      },
-      expires: 0
+      }
     },
     modules: {
-      data: {},
-      expires: 0
+      data: {}
     },
     module_settings: {
-      data: {},
-      expires: 0
+      data: {}
     },
     meals: {
-      data: {},
-      expires: 0
+      data: {}
     },
     meal_packages: {
-      data: {},
-      expires: 0
+      data: {}
     },
     customers: {
-      data: {},
-      expires: 0
+      data: {}
     },
     payments: {
-      data: {},
-      expires: 0
+      data: {}
     },
     coupons: {
-      data: {},
-      expires: 0
+      data: {}
     },
     pickupLocations: {
-      data: {},
-      expires: 0
+      data: {}
     }
   },
   orders: {
-    data: [],
-    expires: 0
+    data: []
   },
   upcomingOrders: {
-    data: [],
-    expires: 0
+    data: []
   },
   ordersToday: {
-    data: [],
-    expires: 0
+    data: []
   },
   subscriptions: {
-    data: {},
-    expires: 0
+    data: {}
   },
   cards: {},
   customer: {
     data: {
       subscriptions: null,
       orders: null
-    },
-    expires: 0
+    }
   },
   isLoading: true,
   initialized: false
@@ -304,203 +285,84 @@ const mutations = {
     state.bag.meal_plan = mealPlan;
   },
 
-  ingredients(state, { ingredients, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  ingredients(state, { ingredients }) {
     state.store.ingredients.data = ingredients;
-    state.store.ingredients.expires = expires;
   },
 
-  ingredientUnits(state, { units, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  ingredientUnits(state, { units }) {
     state.store.ingredient_units.data = units;
-    state.store.ingredient_units.expires = expires;
   },
 
   ingredientUnit(state, { id, unit }) {
     Vue.set(state.store.ingredient_units.data, id, unit);
   },
 
-  orderIngredients(state, { ingredients, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  orderIngredients(state, { ingredients }) {
     state.store.order_ingredients.data = ingredients;
-    state.store.order_ingredients.expires = expires;
   },
 
-  storeDetail(state, { detail, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  storeDetail(state, { detail }) {
     state.store.detail.data = detail;
-    state.store.detail.expires = expires;
   },
 
-  storeSettings(state, { settings, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  storeSettings(state, { settings }) {
     state.store.settings.data = settings;
-    state.store.settings.expires = expires;
   },
 
-  storeModules(state, { modules, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  storeModules(state, { modules }) {
     state.store.modules.data = modules;
-    state.store.modules.expires = expires;
   },
 
-  storeModuleSettings(state, { moduleSettings, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  storeModuleSettings(state, { moduleSettings }) {
     state.store.module_settings.data = moduleSettings;
-    state.store.module_settings.expires = expires;
   },
 
-  storeCoupons(state, { coupons, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  storeCoupons(state, { coupons }) {
     state.store.coupons.data = coupons;
-    state.store.coupons.expires = expires;
   },
 
-  storePickupLocations(state, { pickupLocations, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  storePickupLocations(state, { pickupLocations }) {
     state.store.pickupLocations.data = pickupLocations;
-    state.store.pickupLocations.expires = expires;
   },
 
-  storeMeals(state, { meals, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  storeMeals(state, { meals }) {
     state.store.meals.data = meals;
-    state.store.meals.expires = expires;
   },
 
-  storeCategories(state, { categories, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  storeCategories(state, { categories }) {
     state.store.categories.data = categories;
-    state.store.categories.expires = expires;
   },
 
-  storeCustomers(state, { customers, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  storeCustomers(state, { customers }) {
     state.store.customers.data = customers;
-    state.store.customers.expires = expires;
   },
 
-  storeOrders(state, { orders, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  storeOrders(state, { orders }) {
     state.orders.data = orders;
-    state.orders.expires = expires;
   },
 
-  storeUpcomingOrders(state, { orders, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  storeUpcomingOrders(state, { orders }) {
     state.upcomingOrders.data = orders;
-    state.upcomingOrders.expires = expires;
   },
 
-  storeOrdersToday(state, { orders, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  storeOrdersToday(state, { orders }) {
     state.ordersToday.data = orders;
-    state.ordersToday.expires = expires;
   },
 
-  storeSubscriptions(state, { subscriptions, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  storeSubscriptions(state, { subscriptions }) {
     state.subscriptions.data = _.keyBy(subscriptions, "id");
-    state.subscriptions.expires = expires;
   },
 
-  customerSubscriptions(state, { subscriptions, expires }) {
+  customerSubscriptions(state, { subscriptions }) {
     state.customer.data.subscriptions = subscriptions;
   },
 
-  customerOrders(state, { orders, expires }) {
+  customerOrders(state, { orders }) {
     state.customer.data.orders = orders;
   },
 
-  categories(state, { categories, expires }) {
-    if (!expires) {
-      expires = moment()
-        .add(ttl, "seconds")
-        .unix();
-    }
-
+  categories(state, { categories }) {
     state.store.categories.data = units;
-    state.store.categories.expires = expires;
   }
 };
 
@@ -966,9 +828,6 @@ const actions = {
 
     if (_.isArray(data)) {
       state.store.categories.data = _.keyBy(data, "id");
-      state.store.categories.expires = moment()
-        .add(ttl, "seconds")
-        .unix();
     } else {
       throw new Error("Failed to retrieve ingredients");
     }
@@ -980,9 +839,6 @@ const actions = {
 
     if (_.isArray(data)) {
       state.store.ingredients.data = _.keyBy(data, "id");
-      state.store.ingredients.expires = moment()
-        .add(ttl, "seconds")
-        .unix();
     } else {
       throw new Error("Failed to retrieve ingredients");
     }
