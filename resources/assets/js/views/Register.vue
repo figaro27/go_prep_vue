@@ -471,7 +471,7 @@
                   v-model="form[3].plan_method"
                   :options="[
                     { text: 'Credit Card', value: 'credit_card' },
-                    { text: 'Bank transfer', value: 'connect' }
+                    { text: 'Bank Transfer', value: 'connect' }
                   ]"
                 ></b-form-radio-group>
               </b-form-group>
@@ -503,10 +503,7 @@
                   @change="onChangeCard"
                 />
               </div>
-              <div v-else>
-                You won't be billed now. Lorem ipsum.
-              </div>
-
+              <div v-else></div>
               <b-form-group horizontal>
                 <b-button
                   type="submit"
@@ -516,15 +513,11 @@
                   >Submit</b-button
                 >
               </b-form-group>
-              <b-form-group horizontal>
-                <b-button
-                  type="submit"
-                  v-if="manualOrder"
-                  :disabled="$v.form[2].$invalid"
-                  variant="primary"
-                  >Add New Customer</b-button
-                >
-              </b-form-group>
+              <p>
+                To choose the "Pay as you go" plan and pay a 5% transaction fee
+                per order with no monthly cost, please contact us
+                <a href="https://www.goprep.com/get-started/">here.</a>
+              </p>
             </div>
           </b-form>
         </div>
@@ -625,7 +618,7 @@ export default {
         const planDetails = plan[period];
         return {
           text: `${plan.title} - ${format.money(planDetails.price / 100)}
-                  ${period === "monthly" ? "per month" : "per year"}`,
+                  ${period === "monthly" ? "Per Month" : "Per Year"}`,
           value: planId
         };
       });
