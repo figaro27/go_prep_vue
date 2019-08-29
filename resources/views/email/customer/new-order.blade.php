@@ -424,7 +424,19 @@ u + .body .full { width:100% !important; width:100vw !important;}
     </tr>
   </table>
 
-  @if ($order->store->settings->mealInstructions)
+  @php
+      $mealInstructions = 0
+    @endphp
+
+    @foreach ($order->items as $i => $item)
+          @if ($item->instructions)
+            @php
+              $mealInstructions = 1
+            @endphp
+          @endif
+    @endforeach
+
+  @if ($mealInstructions)
 
   <table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
     <tr>
