@@ -342,7 +342,7 @@
                   <b-form-radio-group
                     v-if="storeModules.productionGroups"
                     buttons
-                    v-model="productionGroups"
+                    v-model="meal.production_group_id"
                     class="storeFilters"
                     @change="
                       val => updateMeal(meal.id, { production_group_id: val })
