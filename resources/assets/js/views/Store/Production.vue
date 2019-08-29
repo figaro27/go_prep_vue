@@ -45,7 +45,7 @@
                 :value="true"
                 :unchecked-value="false"
               >
-                Group meals by delivery date
+                Group By Day
               </b-form-checkbox>
               <b-btn
                 variant="primary"
