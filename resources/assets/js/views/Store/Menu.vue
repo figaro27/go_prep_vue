@@ -307,7 +307,7 @@
                       <div class="col-md-3">
                         <b-form-input
                           id="macros-calories"
-                          type="text"
+                          type="number"
                           v-model="meal.macros.calories"
                           required
                         ></b-form-input>
@@ -315,7 +315,7 @@
                       <div class="col-md-3">
                         <b-form-input
                           id="macros-carbs"
-                          type="text"
+                          type="number"
                           v-model="meal.macros.carbs"
                           required
                         ></b-form-input>
@@ -323,7 +323,7 @@
                       <div class="col-md-3">
                         <b-form-input
                           id="macros-protein"
-                          type="text"
+                          type="number"
                           v-model="meal.macros.protein"
                           required
                         ></b-form-input>
@@ -331,7 +331,7 @@
                       <div class="col-md-3">
                         <b-form-input
                           id="macros-fat"
-                          type="text"
+                          type="number"
                           v-model="meal.macros.fat"
                           required
                         ></b-form-input>
