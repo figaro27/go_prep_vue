@@ -62,7 +62,6 @@
       </div>
     </div>
 
-    <!-- <div class="menu ml-auto mr-auto"> -->
     <div class="menu ml-auto mr-auto">
       <div
         v-if="
@@ -244,9 +243,7 @@
                     <p
                       v-if="storeSettings.showNutrition"
                       v-html="mealDescription"
-                    >
-                      <!-- {{ meal.description }} -->
-                    </p>
+                    ></p>
                     <div
                       class="row mt-3 mb-5"
                       v-if="storeSettings.showNutrition"
@@ -309,9 +306,7 @@
                     </div>
                   </div>
                   <div class="col-lg-6" v-if="!storeSettings.showNutrition">
-                    <p v-html="mealDescription">
-                      <!-- {{ meal.description }} -->
-                    </p>
+                    <p v-html="mealDescription"></p>
                     <div class="row">
                       <div class="col-lg-6">
                         <h5>Tags</h5>
@@ -471,7 +466,6 @@
                     </div>
                   </slide>
 
-                  <!-- Text slides with image -->
                   <slide
                     v-for="meal in mealPackage.meals"
                     v-if="mealPackage.meal_carousel"
@@ -493,9 +487,7 @@
                         <p
                           v-if="storeSettings.showNutrition"
                           v-html="mealDescription"
-                        >
-                          <!-- {{ meal.description }} -->
-                        </p>
+                        ></p>
                         <div
                           class="row mt-3 mb-5"
                           v-if="storeSettings.showNutrition"
@@ -525,9 +517,7 @@
                         >
                       </div>
                       <div class="col-lg-6" v-if="!storeSettings.showNutrition">
-                        <p v-html="mealDescription">
-                          <!-- {{ meal.description }} -->
-                        </p>
+                        <p v-html="mealDescription"></p>
                         <div class="row">
                           <div class="col-lg-6">
                             <h5>Tags</h5>
@@ -633,7 +623,6 @@
                   </div>
                 </div>
               </div>
-              <!-- Meals Area -->
               <div class="row">
                 <div :class="`col-md-9 main-menu-area`">
                   <Spinner
@@ -742,21 +731,6 @@
                                   {{ meal.description }}
                                 </div>
 
-                                <!-- <div
-                              class="tags text-muted"
-                              v-if="meal.tag_titles.length"
-                            >
-                              {{ meal.tag_titles.join(" - ") }}
-                            </div>
-
-                            <div
-                              class="allergies text-muted"
-                              v-if="meal.allergy_titles.length"
-                            >
-                              Contains:
-                              {{ meal.allergy_titles.join(", ") }}
-                                </div>-->
-
                                 <div class="actions">
                                   <div
                                     class="d-flex justify-content-between align-items-center mt-1"
@@ -853,7 +827,6 @@
                           >
                             <i>-</i>
                           </b-btn>
-                          <!-- <img src="/images/customer/minus.jpg" @click="minusOne(meal)" class="plus-minus"> -->
                           <b-form-input
                             type="text"
                             name
@@ -891,7 +864,6 @@
                               }}
                             </b-dropdown-item>
                           </b-dropdown>
-                          <!-- <img src="/images/customer/plus.jpg" @click="addOne(meal)" class="plus-minus"> -->
                         </div>
                         <p class="center-text strong featured">
                           {{ mealPkg.title }}

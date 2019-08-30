@@ -855,7 +855,6 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
-      //couponFreeDelivery: 0,
       transferTime: "",
       cashOrder: false,
       form: {},
@@ -867,14 +866,12 @@ export default {
       customer: null,
       selectedPickupLocation: null,
       pickup: 0,
-      //deliveryPlan: false,
       deliveryDay: undefined,
       stripeKey: window.app.stripe_key,
       loading: false,
       checkingOut: false,
       salesTax: 0,
       couponCode: "",
-      //couponApplied: false,
       couponClass: "checkout-item",
       deliveryFee: 0
     };
@@ -1211,7 +1208,6 @@ export default {
         return;
       }
 
-      // this.loading = true;
       this.checkingOut = true;
 
       this.deliveryFee = this.deliveryFeeAmount;

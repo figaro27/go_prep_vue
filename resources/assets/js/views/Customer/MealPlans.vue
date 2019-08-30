@@ -171,15 +171,6 @@
                       </p>
                       <div v-if="subscription.latest_paid_order">
                         <p>
-                          <!-- Your order is locked in for the upcoming delivery day
-                          of
-                          <strong>
-                            {{
-                              moment(
-                                subscription.next_order.delivery_date
-                              ).format("dddd, MMM Do")
-                            }}.</strong
-                          > -->
                           Any changes to this meal plan will be applied to the
                           following order on
                           <strong>
@@ -208,24 +199,6 @@
                           >Change Meals</b-btn
                         >
                       </div>
-
-                      <!-- <div
-                        v-if="
-                          subscription.latest_paid_order.delivery_date >
-                            moment().format()
-                        "
-                      >
-                        <p>
-                          Your order is locked in for this week. You will be
-                          able to pause, cancel, or change meals in your meal
-                          plan the day after your food gets delivered on
-                          {{
-                            moment(
-                              subscription.latest_paid_order.delivery_date
-                            ).format("dddd, MMM Do")
-                          }}.
-                        </p>
-                      </div> -->
                       <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
                     </div>
                     <div
@@ -254,19 +227,6 @@
                   </div>
 
                   <b-collapse :id="'collapse' + subscription.id" class="mt-2">
-                    <!-- <div class="row">
-                      <div class="col-md-12">
-                        <p>
-                          Your card will be charged on
-                          {{
-                            moment(subscription.next_renewal_at).format("dddd")
-                          }}. You can Pause, Cancel, or Change Meals up until
-                          that time to affect this weeks order. If you Pause,
-                          Cancel, or Change Meals after this day, it will be
-                          applied to <strong>next week's</strong> order.
-                        </p>
-                      </div>
-                    </div> -->
                     <b-table
                       striped
                       stacked="sm"
