@@ -19,6 +19,8 @@ mix.options({
   ]
 });
 
+mix.extract();
+
 mix
   .js("resources/assets/js/app.js", "public/js")
   .version()
