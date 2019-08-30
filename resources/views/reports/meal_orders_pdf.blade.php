@@ -22,7 +22,7 @@
         <thead>
           <tr>
             <th><h4>Meal</h4></th>
-            @if(!$params['group_by_date'])
+            @if(!$params['group_by_date'] || $params['group_by_date'] === 'false')
             <th><h4>Orders</h4></th>
             @else
               @foreach($dates as $i => $date)

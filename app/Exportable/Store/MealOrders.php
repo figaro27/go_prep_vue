@@ -36,7 +36,7 @@ class MealOrders
         $production = collect();
         $mealQuantities = [];
         $dates = $this->getDeliveryDates();
-        $groupByDate = $this->params->get('group_by_date', false);
+        $groupByDate = 'true' === $this->params->get('group_by_date', false);
         $allDates = [];
 
         $orders = $this->store->getOrders(null, $dates, true);
