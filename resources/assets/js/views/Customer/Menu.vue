@@ -11,15 +11,6 @@
       </div>
     </floating-action-button>
 
-    <div v-if="subscriptionId" class="update-meals-btn-wrap d-block d-lg-none">
-      <b-btn
-        class="menu-bag-btn update-meals-btn"
-        :disabled="!canProgress"
-        @click="updateSubscriptionMeals"
-        >UPDATE MEALS</b-btn
-      >
-    </div>
-
     <meal-components-modal
       ref="componentModal"
       :key="total"
@@ -30,37 +21,7 @@
       :key="total"
     ></meal-package-components-modal>
 
-    <div class="category-slider d-block d-md-none">
-      <slick
-        v-if="categories.length > 4"
-        ref="categorySlider"
-        :options="{
-          arrows: false,
-          centerMode: true,
-          variableWidth: true,
-          infinite: false
-        }"
-      >
-        <div
-          v-for="category in categories"
-          :key="category"
-          @click.prevent="goToCategory(slugify(category))"
-          class="m-2"
-        >
-          {{ category }}
-        </div>
-      </slick>
-
-      <div v-else class="text-center">
-        <span
-          v-for="category in categories"
-          :key="category"
-          @click.prevent="goToCategory(slugify(category))"
-          class="d-inline-block m-2"
-          >{{ category }}</span
-        >
-      </div>
-    </div>
+    <category-slider></category-slider>
 
     <div class="menu ml-auto mr-auto">
       <div
@@ -1130,6 +1091,8 @@ import LightBox from "vue-image-lightbox";
 import "vue-image-lightbox/src/components/style.css";
 import { Carousel, Slide } from "vue-carousel";
 
+import CategorySlider from "./components/mobile/CategorySlider";
+
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
 });
@@ -1142,7 +1105,8 @@ export default {
     Carousel,
     Slide,
     MealComponentsModal,
-    MealPackageComponentsModal
+    MealPackageComponentsModal,
+    CategorySlider
   },
   mixins: [MenuBag],
   props: {
