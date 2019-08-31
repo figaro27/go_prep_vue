@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'pay-as-you-go' => [
+        'title' => "Pay as you go - 5% Transaction Fee",
+        'monthly' => [
+            'price' => 0,
+            'price_upfront' => 19500
+        ]
+    ],
     'basic' => [
         'title' => 'Basic - 50 Orders Per Month',
         'monthly' => [

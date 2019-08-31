@@ -494,7 +494,7 @@
                 ></b-form-radio-group>
               </b-form-group>
 
-              <div v-if="form[3].plan_method === 'credit_card'" class="mb-2">
+              <div v-if="planRequiresCard" class="mb-2">
                 <card
                   class="stripe-card"
                   :stripe="stripeKey"
@@ -508,7 +508,7 @@
                 <b-button
                   type="submit"
                   v-if="!manualOrder"
-                  :disabled="$v.form[2].$invalid"
+                  :disabled="$v.form[3].$invalid"
                   variant="primary"
                   >Submit</b-button
                 >
@@ -617,11 +617,39 @@ export default {
         const period = this.form[3].plan_period;
         const planDetails = plan[period];
         return {
-          text: `${plan.title} - ${format.money(planDetails.price / 100)}
-                  ${period === "monthly" ? "Per Month" : "Per Year"}`,
+          text: sprintf(
+            "%s - %s %s %s",
+            plan.title,
+            format.money(planDetails.price / 100),
+            period === "monthly" ? "Per Month" : "Per Year",
+            planDetails.price_upfront
+              ? ` &amp; ${format.money(
+                  planDetails.price_upfront / 100
+                )} up front`
+              : ""
+          ),
           value: planId
         };
       });
+    },
+    planSelected() {
+      if (!this.form[3].plan) {
+        return null;
+      }
+
+      const period = this.form[3].plan_period;
+      const planId = this.form[3].plan;
+
+      return this.plans[planId][period] || null;
+    },
+    planRequiresCard() {
+      let requires = this.form[3].plan_method === "credit_card";
+
+      if (this.planSelected && 0 < parseInt(this.planSelected.price_upfront)) {
+        requires = true;
+      }
+
+      return requires;
     }
   },
   validations: {
@@ -659,10 +687,12 @@ export default {
         plan: validators.required,
         plan_method: validators.required,
         plan_period: validators.required,
-        stripe_token: validators.required
+        stripe_token: validators.required(val => {
+          return this.planRequiresCard;
+        })
       }
     },
-    validationGroup: ["form[0]", "form[1]", "form[3]"]
+    validationGroup: ["form[0]", "form[1]", "form[2]", "form[3]"]
   },
   created() {
     if (!_.isEmpty(this.$route.query.redirect)) {

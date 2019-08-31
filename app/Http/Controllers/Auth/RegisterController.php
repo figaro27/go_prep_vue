@@ -304,6 +304,8 @@ class RegisterController extends Controller
                 Log::error($e->getMessage());
             }
 
+            $upfrontFee = $plan->get('price_upfront', null);
+
             $storePlan = new StorePlan();
             $storePlan->active = 1;
             $storePlan->store_id = $store->id;
@@ -312,14 +314,17 @@ class RegisterController extends Controller
             $storePlan->period = $planPeriod;
             $storePlan->day = date('d');
 
-            // If using credit card billing, charge here
-            if ($planMethod === 'credit_card') {
+            // A credit card was entered
+            if ($planToken) {
                 // Create customer
                 $customer = \Stripe\Customer::create([
                     'description' => '',
                     'source' => $planToken
                 ]);
+            }
 
+            // If using credit card billing, charge here
+            if ($planMethod === 'credit_card') {
                 $subscription = \Stripe\Subscription::create([
                     'customer' => $customer,
                     'items' => [
@@ -331,6 +336,16 @@ class RegisterController extends Controller
 
                 $storePlan->stripe_customer_id = $customer->id;
                 $storePlan->stripe_subscription_id = $subscription->id;
+            }
+
+            // Charge the up-front fee
+            if ($upfrontFee) {
+                $charge = \Stripe\Charge::create([
+                    'amount' => $upfrontFee,
+                    'currency' => 'usd',
+                    'customer' => $customer,
+                    'description' => 'GoPrep: One-time signup fee'
+                ]);
             }
 
             $storePlan->save();
