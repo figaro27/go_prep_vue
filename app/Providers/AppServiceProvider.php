@@ -35,6 +35,24 @@ class AppServiceProvider extends ServiceProvider
             }
         }
 
+        /**
+         * Handle custom store domains
+         */
+        $fullHost = request()->getHttpHost();
+        $extract = new \LayerShifter\TLDExtract\Extract();
+        $hostParts = $extract->parse($fullHost);
+        $domain = $hostParts->getRegistrableDomain();
+        $domains = config('app.domains');
+
+        if (array_key_exists($domain, $domains)) {
+            $hostConfig = $domains[$domain];
+            config([
+                'app.domain' => $domain,
+                'app.url' => 'https://' . $domain,
+                'app.front_url' => $hostConfig['front_url']
+            ]);
+        }
+
         Schema::defaultStringLength(191);
 
         \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
