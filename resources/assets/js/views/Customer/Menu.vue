@@ -1181,18 +1181,10 @@ export default {
         nextArrow:
           '<a class="slick-next"><i class="fa fa-chevron-right"></i></a>'
       },
-      salesTax: 0,
       mealDescription: "",
       loaded: false,
-      salesTaxRate: 0,
       active: {},
       loading: false,
-      pickup: 0,
-      deliveryDay: undefined,
-      deliveryPlan: false,
-      addDeliveryFee: false,
-      addProcessingFee: false,
-      customer: undefined,
       viewFilterModal: false,
       showDescriptionModal: false,
       filteredView: false,
@@ -1200,7 +1192,6 @@ export default {
         tags: [],
         allergies: []
       },
-      //bag: {},
       meal: null,
       mealPackage: null,
       ingredients: "",
@@ -1245,16 +1236,6 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
     }),
-    deliveryDaysOptions() {
-      return this.storeSetting("next_orderable_delivery_dates", []).map(
-        date => {
-          return {
-            value: date.date,
-            text: moment(date.date).format("dddd MMM Do")
-          };
-        }
-      );
-    },
     storeId() {
       return this.store.id;
     },
@@ -1303,47 +1284,6 @@ export default {
       if (window.innerWidth < 500) return true;
       else return false;
     },
-    tax() {
-      return this.salesTax * this.afterDiscountAfterFeesBeforeTax;
-    },
-    preFeePreDiscount() {
-      let subtotal = this.totalBagPricePreFees;
-      return subtotal;
-    },
-    applyMealPlanDiscount() {
-      return this.storeSettings.applyMealPlanDiscount;
-    },
-    afterDiscountBeforeFees() {
-      if (this.applyMealPlanDiscount) {
-        return this.preFeePreDiscount - this.mealPlanDiscount;
-      } else return this.preFeePreDiscount;
-    },
-    afterDiscountAfterFeesBeforeTax() {
-      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
-      let applyProcessingFee = this.storeSettings.applyProcessingFee;
-      let deliveryFee = this.storeSettings.deliveryFee;
-      let processingFee = this.storeSettings.processingFee;
-      let subtotal = this.afterDiscountBeforeFees;
-
-      if (applyDeliveryFee && this.pickup === 0) subtotal += deliveryFee;
-      if (applyProcessingFee) subtotal += processingFee;
-
-      return subtotal;
-    },
-    afterDiscountAfterFees() {
-      let salesTax = 1 + this.salesTax;
-      let subtotal = this.afterDiscountAfterFeesBeforeTax;
-
-      return subtotal * salesTax;
-    },
-    applyMealPlanDiscount() {
-      return this.storeSettings.applyMealPlanDiscount;
-    },
-    mealPlanDiscount() {
-      return (
-        this.preFeePreDiscount * (this.storeSettings.mealPlanDiscount / 100)
-      );
-    },
     description() {
       return this.store.details.description;
     },
@@ -1373,57 +1313,6 @@ export default {
         return "meals";
       }
       return "meal";
-    },
-    totalBagPriceBeforeFees() {
-      let deliveryFee = this.storeSettings.deliveryFee;
-      let processingFee = this.storeSettings.processingFee;
-      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
-      let applyProcessingFee = this.storeSettings.applyProcessingFee;
-
-      if (applyDeliveryFee && applyProcessingFee) {
-        return this.totalBagPrice - deliveryFee - processingFee;
-      } else if (applyDeliveryFee && !applyProcessingFee) {
-        return this.totalBagPrice - deliveryFee;
-      } else if (applyProcessingFee && !applyDeliveryFee) {
-        return this.totalBagPrice - processingFee;
-      } else return this.totalBagPrice;
-    },
-    totalBagPriceAfterFees() {
-      let deliveryFee = this.storeSettings.deliveryFee;
-      let processingFee = this.storeSettings.processingFee;
-
-      if (this.addDeliveryFee && this.addProcessingFee) {
-        return this.totalBagPriceBeforeFees + deliveryFee + processingFee;
-      } else if (this.addDeliveryFee && !this.addProcessingFee) {
-        return this.totalBagPriceBeforeFees + deliveryFee;
-      } else if (this.addProcessingFee && !this.addDeliveryFee) {
-        return this.totalBagPriceBeforeFees + processingFee;
-      } else return this.totalBagPriceBeforeFees;
-    },
-    transferType() {
-      return this.storeSettings.transferType.split(",");
-    },
-    transferTypeCheck() {
-      if (
-        _.includes(this.transferType, "delivery") &&
-        _.includes(this.transferType, "pickup")
-      ) {
-        return "both";
-      }
-      if (
-        !_.includes(this.transferType, "delivery") &&
-        _.includes(this.transferType, "pickup")
-      ) {
-        return "pickup";
-      }
-    },
-    deliveryDaysOptions() {
-      return this.storeSetting("next_delivery_dates", []).map(date => {
-        return {
-          value: date.date,
-          text: moment(date.date).format("dddd MMM Do")
-        };
-      });
     },
     meals() {
       let meals = this.store.meals;
@@ -1564,39 +1453,11 @@ export default {
       });
       return grouped;
     },
-    customers() {
-      let customers = this.storeCustomers;
-      if (_.isEmpty(customers)) {
-        return [];
-      }
-      let grouped = {};
-      customers.forEach(customer => {
-        grouped[customer.id] = customer.name;
-      });
-      return grouped;
-    },
     showIngredients() {
       return this.storeSettings.showIngredients;
-    },
-    preFeePreDiscount() {
-      let subtotal = this.totalBagPricePreFees;
-      return subtotal;
     }
   },
-  created() {},
   mounted() {
-    if (this.adjustOrder) {
-      this.deliveryDay = this.order.delivery_date + " 00:00:00";
-      this.clearAll();
-      this.addMealOrdersToBag();
-    }
-    if (this.adjustMealPlan) {
-      this.clearAll();
-      this.addMealsSubscriptionToBag();
-    }
-    try {
-      this.getSalesTax(this.store.details.state);
-    } catch (e) {}
     keyboardJS.bind("left", () => {
       if (this.$refs.carousel) {
         console.log(this.$refs.carousel);
@@ -1680,10 +1541,6 @@ export default {
           );
         });
       });
-
-      //this.$nextTick(() => {
-      //  this.getNutritionFacts(this.meal.ingredients, this.meal);
-      //});
     },
     hideMealPackageModal() {
       this.mealPackageModal = false;
@@ -1802,13 +1659,6 @@ export default {
     },
     showDescription() {
       this.showDescriptionModal = true;
-    },
-    setPickupIfMealPlan() {
-      axios
-        .get(`/api/me/getSubscriptionPickup/${this.subscriptionId}`)
-        .then(response => {
-          this.pickup = response.data;
-        });
     },
     getMealGallery(meal) {
       return meal.gallery.map((item, i) => {
