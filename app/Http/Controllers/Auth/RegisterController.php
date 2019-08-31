@@ -297,6 +297,7 @@ class RegisterController extends Controller
             $planMethod = $planObj->get('plan_method');
             $planPeriod = $planObj->get('plan_period');
             $planToken = $planObj->get('stripe_token');
+            $payAsYouGo = $planId === 'pay-as-you-go';
 
             try {
                 $plan = collect($plans[$planId][$planPeriod]);
@@ -306,13 +307,15 @@ class RegisterController extends Controller
 
             $upfrontFee = $plan->get('price_upfront', null);
 
-            $storePlan = new StorePlan();
-            $storePlan->active = 1;
-            $storePlan->store_id = $store->id;
-            $storePlan->method = $planMethod;
-            $storePlan->amount = $plan->get('price');
-            $storePlan->period = $planPeriod;
-            $storePlan->day = date('d');
+            if (!$payAsYouGo) {
+                $storePlan = new StorePlan();
+                $storePlan->active = 1;
+                $storePlan->store_id = $store->id;
+                $storePlan->method = $planMethod;
+                $storePlan->amount = $plan->get('price');
+                $storePlan->period = $planPeriod;
+                $storePlan->day = date('d');
+            }
 
             // A credit card was entered
             if ($planToken) {
@@ -324,7 +327,7 @@ class RegisterController extends Controller
             }
 
             // If using credit card billing, charge here
-            if ($planMethod === 'credit_card') {
+            if (!$payAsYouGo && $planMethod === 'credit_card') {
                 $subscription = \Stripe\Subscription::create([
                     'customer' => $customer,
                     'items' => [

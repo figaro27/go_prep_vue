@@ -6,6 +6,10 @@ return [
         'monthly' => [
             'price' => 0,
             'price_upfront' => 19500
+        ],
+        'annually' => [
+            'price' => 0,
+            'price_upfront' => 19500
         ]
     ],
     'basic' => [
