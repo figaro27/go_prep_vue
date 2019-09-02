@@ -97,7 +97,6 @@
 </style>
 
 <script>
-import authorizeConfig from "../../config/authorize.json";
 import { createToken } from "vue-stripe-elements-plus";
 import InlineCreditCardField from "vue-credit-card-field/src/Components/InlineCreditCardField.vue";
 import { mapGetters, mapActions } from "vuex";
@@ -129,8 +128,7 @@ export default {
       // stripeOptions,
       card: null,
       newCard: null,
-      creditCards: [],
-      gateway: "authorize"
+      creditCards: []
     };
   },
   computed: {
