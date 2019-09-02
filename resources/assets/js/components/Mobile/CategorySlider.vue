@@ -39,7 +39,8 @@ export default {
     ...mapGetters({
       _categories: "viewedStoreCategories",
       store: "viewedStore",
-      storeSetting: "viewedStoreSetting"
+      storeSetting: "viewedStoreSetting",
+      storeSettings: "viewedStoreSettings"
     }),
     categories() {
       let sorting = {};
@@ -61,7 +62,11 @@ export default {
         return cat in sorting ? sorting[cat] : 9999;
       });
 
-      if (this.storeSettings.meal_packages && this.mealPackages.length) {
+      if (
+        this.storeSettings &&
+        this.storeSettings.meal_packages &&
+        this.mealPackages.length
+      ) {
         categories.push("Packages");
       }
 

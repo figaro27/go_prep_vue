@@ -1091,7 +1091,7 @@ import LightBox from "vue-image-lightbox";
 import "vue-image-lightbox/src/components/style.css";
 import { Carousel, Slide } from "vue-carousel";
 
-import CategorySlider from "./components/mobile/CategorySlider";
+import CategorySlider from "../../components/Mobile/CategorySlider";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
