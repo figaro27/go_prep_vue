@@ -5,15 +5,16 @@ namespace App\Billing;
 use Illuminate\Support\Collection;
 use App\Store;
 use App\Customer;
+use App\Billing\Subscription;
 
 interface IBilling
 {
     public function setAuthContext(Store $store);
 
     /**
-     * @return bool
+     * @return string
      */
-    public function charge(Customer $customer, int $amount, Card $card = null);
+    public function charge(Charge $charge);
 
     /**
      * @return App\Billing\Card
@@ -21,7 +22,7 @@ interface IBilling
     public function createCard(Customer $customer, string $token);
 
     /**
-     * @return App\Subscription
+     * @return App\Billing\Subscription
      */
-    public function createSubscription();
+    public function subscribe(Subscription $subscription);
 }

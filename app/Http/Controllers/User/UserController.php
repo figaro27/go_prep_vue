@@ -16,11 +16,17 @@ class UserController extends Controller
 
     public function __construct()
     {
-        if (defined('STORE_ID')) {
-            $this->store = Store::with(['meals', 'settings'])->find(STORE_ID);
-        }
+        $this->middleware(function ($request, $next) {
+            if (defined('STORE_ID')) {
+                $this->store = Store::with(['meals', 'settings'])->find(
+                    STORE_ID
+                );
+            }
 
-        $this->user = auth('api')->user();
+            $this->user = auth('api')->user();
+
+            return $next($request);
+        });
     }
 
     public function index()
