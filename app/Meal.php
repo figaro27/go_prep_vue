@@ -176,15 +176,28 @@ class Meal extends Model implements HasMedia
             ];
         }
 
+        $storagePath = \Storage::disk('local')
+            ->getDriver()
+            ->getAdapter()
+            ->getPathPrefix();
+
+        $mediaPaths = array_map(
+            function ($size) use ($mediaItems, $storagePath) {
+                $mediaPath = $mediaItems[0]->getPath($size);
+                $mediaPath = substr(
+                    $mediaPath,
+                    strlen($storagePath . 'public')
+                );
+                return '/storage' . $mediaPath;
+            },
+            ['full', 'thumb', 'medium']
+        );
+
         return [
             'id' => $mediaItems[0]->id,
-            'url' => $this->store->getUrl($mediaItems[0]->getUrl('full')),
-            'url_thumb' => $this->store->getUrl(
-                $mediaItems[0]->getUrl('thumb')
-            ),
-            'url_medium' => $this->store->getUrl(
-                $mediaItems[0]->getUrl('medium')
-            )
+            'url' => $this->store->getUrl($mediaPaths[0]),
+            'url_thumb' => $this->store->getUrl($mediaPaths[1]),
+            'url_medium' => $this->store->getUrl($mediaPaths[2])
         ];
     }
 
