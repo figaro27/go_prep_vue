@@ -62,7 +62,7 @@ return [
     // 3rd party domains
     'domains' => [
         'fresh2gohealthymeals.com' => [
-            'front_url' => 'https://menu.fresh2gohealthymeals.com/login'
+            'front_url' => 'https://menu.fresh2gohealthymeals.com/customer/menu'
         ]
     ],
 
