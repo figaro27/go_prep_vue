@@ -18,8 +18,18 @@ class StoreSlug
     {
         $user = auth()->user();
         $host = $request->getHost();
+        $appDomain = config('app.domain');
+        $appDomains = config('app.domains');
+
+        $fullHost = $request->getHttpHost();
+        $extract = new \LayerShifter\TLDExtract\Extract();
+        $hostParts = $extract->parse($fullHost);
+        $domain = $hostParts->getRegistrableDomain();
+        $appDomains = config('app.domains');
+
         $hostParts = [];
-        preg_match('/(.+)\.' . config('app.domain') . '/i', $host, $hostParts);
+
+        preg_match('/(.+)\.' . $appDomain . '/i', $host, $hostParts);
 
         $slug = count($hostParts) > 1 ? $hostParts[1] : null;
         $storeId = $request->headers->get('x-viewed-store-id', null);
@@ -28,8 +38,16 @@ class StoreSlug
 
         if ($slug) {
             $store = Store::with('storeDetail')
-                ->whereHas('storeDetail', function ($query) use ($slug) {
-                    return $query->where('domain', $slug);
+                ->whereHas('storeDetail', function ($query) use (
+                    $slug,
+                    $appDomain,
+                    $appDomains
+                ) {
+                    $query = $query->where('domain', $slug);
+                    if (array_key_exists($appDomain, $appDomains)) {
+                        $query = $query->where('host', $appDomain);
+                    }
+                    return $query;
                 })
                 ->first();
         } elseif ($storeId) {

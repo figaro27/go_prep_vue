@@ -59,6 +59,13 @@ return [
     // Domain
     'domain' => env('APP_DOMAIN', 'goprep.localhost'),
 
+    // 3rd party domains
+    'domains' => [
+        'fresh2gohealthymeals.com' => [
+            'front_url' => 'https://menu.fresh2gohealthymeals.com/login'
+        ]
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
