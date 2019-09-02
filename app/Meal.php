@@ -20,6 +20,7 @@ use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
+use App\Media\Utils as MediaUtils;
 
 class Meal extends Model implements HasMedia
 {
@@ -176,28 +177,17 @@ class Meal extends Model implements HasMedia
             ];
         }
 
-        $storagePath = \Storage::disk('local')
-            ->getDriver()
-            ->getAdapter()
-            ->getPathPrefix();
-
-        $mediaPaths = array_map(
-            function ($size) use ($mediaItems, $storagePath) {
-                $mediaPath = $mediaItems[0]->getPath($size);
-                $mediaPath = substr(
-                    $mediaPath,
-                    strlen($storagePath . 'public')
-                );
-                return '/storage' . $mediaPath;
-            },
-            ['full', 'thumb', 'medium']
-        );
+        $media = $mediaItems[0];
 
         return [
             'id' => $mediaItems[0]->id,
-            'url' => $this->store->getUrl($mediaPaths[0]),
-            'url_thumb' => $this->store->getUrl($mediaPaths[1]),
-            'url_medium' => $this->store->getUrl($mediaPaths[2])
+            'url' => $this->store->getUrl(MediaUtils::getMediaPath($media)),
+            'url_thumb' => $this->store->getUrl(
+                MediaUtils::getMediaPath($media, 'thumb')
+            ),
+            'url_medium' => $this->store->getUrl(
+                MediaUtils::getMediaPath($media, 'medium')
+            )
         ];
     }
 

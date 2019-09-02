@@ -8,6 +8,7 @@ use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
+use App\Media\Utils as MediaUtils;
 
 class StoreDetail extends Model implements HasMedia
 {
@@ -68,9 +69,13 @@ class StoreDetail extends Model implements HasMedia
 
             return [
                 'id' => $logo->id,
-                'url' => $this->store->getUrl($logo->getUrl('full')),
-                'url_thumb' => $this->store->getUrl($logo->getUrl('thumb')),
-                'url_medium' => $this->store->getUrl($logo->getUrl('medium'))
+                'url' => $this->store->getUrl(MediaUtils::getMediaPath($logo)),
+                'url_thumb' => $this->store->getUrl(
+                    MediaUtils::getMediaPath($logo, 'thumb')
+                ),
+                'url_medium' => $this->store->getUrl(
+                    MediaUtils::getMediaPath($logo, 'medium')
+                )
             ];
         });
     }
