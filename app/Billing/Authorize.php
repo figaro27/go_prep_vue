@@ -2,6 +2,8 @@
 
 namespace App\Billing;
 
+use App\Billing\Card;
+use App\Billing\Subscription;
 use App\Billing\Exceptions\BillingException;
 use App\Store;
 use App\Customer;
@@ -9,20 +11,7 @@ use App\User;
 
 use net\authorize\api\contract\v1 as AnetApi;
 use net\authorize\api\controller as AnetController;
-
-use net\authorize\api\contract\v1\PaymentType;
-use net\authorize\api\constants\ANetEnvironment;
-use net\authorize\api\contract\v1\CreditCardType;
 use net\authorize\api\contract\v1\MerchantAuthenticationType;
-use net\authorize\api\controller\GetCustomerProfileController;
-
-use net\authorize\api\controller\CreateCustomerProfileController;
-use net\authorize\api\contract\v1\CustomerProfileType;
-use net\authorize\api\contract\v1\ANetApiRequestType;
-use net\authorize\api\contract\v1\ANetApiResponseType;
-use net\authorize\api\contract\v1\CreateCustomerProfileRequest;
-use net\authorize\api\contract\v1\GetCustomerProfileRequest;
-use net\authorize\api\controller;
 
 class Authorize implements IBilling
 {
@@ -44,6 +33,8 @@ class Authorize implements IBilling
         if ($store) {
             $this->setAuthContext($store);
         }
+
+        $this->setSandbox(env('APP_ENV') !== 'production');
     }
 
     public function setSandbox($sandbox)
@@ -74,42 +65,28 @@ class Authorize implements IBilling
             return $response;
         } else {
             $errorMessages = $response->getMessages()->getMessage();
-            throw new BillingException($errorMessages);
+            $message = $errorMessages
+                ? $errorMessages[0]->text
+                : 'Authorize billing exception';
+            throw new BillingException($message);
         }
     }
 
     /**
-     * @return CreateCustomerPaymentProfileResponse
+     * @return App\Billing\Card
      */
     public function createCard(Customer $customer, string $token)
     {
-        // Check that customer has an Authorize profile
+        $opaque = new AnetApi\OpaqueDataType();
+        $opaque->setDataDescriptor('COMMON.ACCEPT.INAPP.PAYMENT');
+        $opaque->setDataValue($token);
 
-        // Set credit card information for payment profile
-        $creditCard = new AnetAPI\CreditCardType();
-        $creditCard->setCardNumber($cardNumber);
-        $creditCard->setExpirationDate($expiration);
-        $creditCard->setCardCode($securityCode);
         $paymentCreditCard = new AnetAPI\PaymentType();
-        $paymentCreditCard->setCreditCard($creditCard);
-
-        // Create the Bill To info for new payment type
-        /*$billto = new AnetAPI\CustomerAddressType();
-        $billto->setFirstName("Ellen".$phoneNumber);
-        $billto->setLastName("Johnson");
-        $billto->setCompany("Souveniropolis");
-        $billto->setAddress("14 Main Street");
-        $billto->setCity("Pecan Springs");
-        $billto->setState("TX");
-        $billto->setZip("44628");
-        $billto->setCountry("USA");
-        $billto->setPhoneNumber($phoneNumber);
-        $billto->setfaxNumber("999-999-9999");*/
+        $paymentCreditCard->setOpaqueData($opaque);
 
         // Create a new Customer Payment Profile object
         $paymentprofile = new AnetAPI\CustomerPaymentProfileType();
         $paymentprofile->setCustomerType('individual');
-        //$paymentprofile->setBillTo($billto);
         $paymentprofile->setPayment($paymentCreditCard);
         $paymentprofile->setDefaultPaymentProfile(true);
 
@@ -131,10 +108,13 @@ class Authorize implements IBilling
             $paymentprofilerequest
         );
         $response = $controller->executeWithApiResponse($this->environment);
+        /**
+         * @var AnetApi\CreateCustomerPaymentProfileResponse
+         */
         $response = $this->validateResponse($response);
 
         $card = new Card();
-        $card->id = 123;
+        $card->id = $response->getCustomerPaymentProfileId();
 
         return $card;
     }
@@ -147,13 +127,13 @@ class Authorize implements IBilling
         $customerProfile = new AnetApi\CustomerProfileType();
         $customerProfile->setDescription('');
         $customerProfile->setMerchantCustomerId("M_" . time());
-        //$customerProfile->setEmail('');
+        $customerProfile->setEmail($user->email);
         //$customerProfile->setpaymentProfiles($paymentProfiles);
         //$customerProfile->setShipToList($shippingProfiles);
 
         $request = new AnetApi\CreateCustomerProfileRequest();
         $request->setMerchantAuthentication($this->authContext);
-        $request->setRefId('123');
+        $request->setRefId($user->id);
         $request->setProfile($customerProfile);
         $controller = new AnetController\CreateCustomerProfileController(
             $request
@@ -183,12 +163,86 @@ class Authorize implements IBilling
         return $response->getProfile();
     }
 
-    public function charge(Customer $customer, int $amount, Card $card = null)
+    public function charge(Charge $charge)
     {
+        $customer = $charge->customer;
+        $amount = $charge->amount;
+        $card = $charge->card;
+        $refId = $charge->refId ?? 'ref' . time();
+
+        $profileToCharge = new AnetAPI\CustomerProfilePaymentType();
+        $profileToCharge->setCustomerProfileId($customer->stripe_id);
+        $paymentProfile = new AnetAPI\PaymentProfileType();
+        $paymentProfile->setPaymentProfileId($card->stripe_id);
+        $profileToCharge->setPaymentProfile($paymentProfile);
+
+        $transactionRequestType = new AnetAPI\TransactionRequestType();
+        $transactionRequestType->setTransactionType("authCaptureTransaction");
+        $transactionRequestType->setAmount($amount);
+        $transactionRequestType->setProfile($profileToCharge);
+
+        $request = new AnetAPI\CreateTransactionRequest();
+        $request->setMerchantAuthentication($this->authContext);
+        $request->setRefId($refId);
+        $request->setTransactionRequest($transactionRequestType);
+        $controller = new AnetController\CreateTransactionController($request);
+        $response = $controller->executeWithApiResponse($this->environment);
+
+        $this->validateResponse($response);
+
+        return $response->getTransactionResponse()->getTransId();
     }
 
-    public function createSubscription()
+    /**
+     * @param
+     */
+    public function subscribe(Subscription $subscription)
     {
+        $customer = $subscription->customer;
+        $amount = $subscription->amount;
+        $card = $subscription->card;
+        $period = $subscription->period;
+        $startDate = $subscription->startDate;
+        $refId = $subscription->refId ?? 'ref' . time();
+
+        // Subscription Type Info
+        $subscription = new AnetAPI\ARBSubscriptionType();
+        $subscription->setName("GoPrep weekly subscription");
+
+        $interval = new AnetAPI\PaymentScheduleType\IntervalAType();
+        $interval->setLength($period === Constants::PERIOD_MONTHLY ? 1 : 7);
+        $interval->setUnit(
+            $period === Constants::PERIOD_MONTHLY ? 'months' : 'days'
+        );
+
+        $paymentSchedule = new AnetAPI\PaymentScheduleType();
+        $paymentSchedule->setInterval($interval);
+        $paymentSchedule->setStartDate(new \DateTime($startDate->toString()));
+
+        $subscription->setPaymentSchedule($paymentSchedule);
+        $subscription->setAmount($amount);
+        $subscription->setTrialAmount("0.00");
+
+        $profile = new AnetAPI\CustomerProfileIdType();
+        $profile->setCustomerProfileId($customer->stripe_id);
+        $profile->setCustomerPaymentProfileId($card->stripe_id);
+        //$profile->setCustomerAddressId($customerAddressId);
+
+        $subscription->setProfile($profile);
+
+        $request = new AnetAPI\ARBCreateSubscriptionRequest();
+        $request->setmerchantAuthentication($this->authContext);
+        $request->setRefId($refId);
+        $request->setSubscription($subscription);
+        $controller = new AnetController\ARBCreateSubscriptionController(
+            $request
+        );
+
+        $response = $controller->executeWithApiResponse($this->environment);
+
+        $this->validateResponse($response);
+
+        return $response->getTransactionResponse()->getTransId();
     }
 
     /**

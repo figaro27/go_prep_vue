@@ -17,6 +17,10 @@ use App\Store;
 use App\StoreDetail;
 use App\Subscription;
 use App\Coupon;
+use App\Billing\Billing;
+use App\Billing\Constants;
+use App\Billing\Charge;
+use App\Billing\Authorize;
 use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -28,6 +32,7 @@ class CheckoutController extends UserController
         $user = auth('api')->user();
         $storeId = $request->get('store_id');
         $store = Store::with(['settings', 'storeDetail'])->findOrFail($storeId);
+        $storeSettings = $store->settings;
 
         $bag = new Bag($request->get('bag'), $store);
         $weeklyPlan = $request->get('plan');
@@ -48,9 +53,10 @@ class CheckoutController extends UserController
         } else {
             $cardId = $request->get('card_id');
             $card = $this->user->cards()->findOrFail($cardId);
+            $gateway = $card->payment_gateway;
         }
 
-        $application_fee = $store->settings->application_fee;
+        $application_fee = $storeSettings->application_fee;
         $total = $request->get('subtotal');
         $subtotal = $request->get('subtotal');
         $preFeePreDiscount = $request->get('subtotal');
@@ -60,23 +66,23 @@ class CheckoutController extends UserController
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
 
-        if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
-            $discount = $store->settings->mealPlanDiscount / 100;
+        if ($storeSettings->applyMealPlanDiscount && $weeklyPlan) {
+            $discount = $storeSettings->mealPlanDiscount / 100;
             $mealPlanDiscount = $total * $discount;
             $total -= $mealPlanDiscount;
             $afterDiscountBeforeFees = $total;
         }
 
-        if ($store->settings->applyDeliveryFee) {
+        if ($storeSettings->applyDeliveryFee) {
             $total += $deliveryFee;
         }
 
-        if ($store->settings->applyProcessingFee) {
-            if ($store->settings->processingFeeType === 'flat') {
-                $processingFee += $store->settings->processingFee;
-            } elseif ($store->settings->processingFeeType === 'percent') {
+        if ($storeSettings->applyProcessingFee) {
+            if ($storeSettings->processingFeeType === 'flat') {
+                $processingFee += $storeSettings->processingFee;
+            } elseif ($storeSettings->processingFeeType === 'percent') {
                 $processingFee +=
-                    ($store->settings->processingFee / 100) * $subtotal;
+                    ($storeSettings->processingFee / 100) * $subtotal;
             }
 
             $total += $processingFee;
@@ -93,37 +99,62 @@ class CheckoutController extends UserController
             $total -= $couponReduction;
         }
 
-        if (!$user->hasStoreCustomer($store->id)) {
-            $storeCustomer = $user->createStoreCustomer($store->id);
+        if (
+            !$user->hasStoreCustomer(
+                $store->id,
+                $storeSettings->currency,
+                $gateway
+            )
+        ) {
+            $storeCustomer = $user->createStoreCustomer(
+                $store->id,
+                $storeSettings->currency,
+                $gateway
+            );
         }
 
         $total += $salesTax;
 
-        $storeCustomer = $user->getStoreCustomer($store->id);
-        $customer = $user->getStoreCustomer($store->id, false);
+        $customer = $user->getStoreCustomer(
+            $store->id,
+            $storeSettings->currency,
+            $gateway
+        );
 
         if (!$weeklyPlan) {
             if (!$cashOrder) {
-                $storeSource = \Stripe\Source::create(
-                    [
-                        "customer" => $this->user->stripe_id,
-                        "original_source" => $card->stripe_id,
-                        "usage" => "single_use"
-                    ],
-                    ["stripe_account" => $store->settings->stripe_id]
-                );
+                if ($gateway === Constants::GATEWAY_STRIPE) {
+                    $storeSource = \Stripe\Source::create(
+                        [
+                            "customer" => $this->user->stripe_id,
+                            "original_source" => $card->stripe_id,
+                            "usage" => "single_use"
+                        ],
+                        ["stripe_account" => $storeSettings->stripe_id]
+                    );
 
-                $charge = \Stripe\Charge::create(
-                    [
-                        "amount" => round($total * 100),
-                        "currency" => $store->settings->currency,
-                        "source" => $storeSource,
-                        "application_fee" => round(
-                            $afterDiscountBeforeFees * $application_fee
-                        )
-                    ],
-                    ["stripe_account" => $store->settings->stripe_id]
-                );
+                    $charge = \Stripe\Charge::create(
+                        [
+                            "amount" => round($total * 100),
+                            "currency" => $storeSettings->currency,
+                            "source" => $storeSource,
+                            "application_fee" => round(
+                                $afterDiscountBeforeFees * $application_fee
+                            )
+                        ],
+                        ["stripe_account" => $storeSettings->stripe_id]
+                    );
+                } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
+                    $billing = Billing::init($gateway, $store);
+
+                    $charge = new \App\Billing\Charge();
+                    $charge->amount = round($total * 100);
+                    $charge->customer = $customer;
+                    $charge->card = $card;
+
+                    $transactionId = $billing->charge($charge);
+                    $charge->id = $transactionId;
+                }
             }
 
             $order = new Order();
@@ -141,7 +172,7 @@ class CheckoutController extends UserController
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
             $order->amount = $total;
-            $order->currency = $store->settings->currency;
+            $order->currency = $storeSettings->currency;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
@@ -158,6 +189,7 @@ class CheckoutController extends UserController
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->cashOrder = $cashOrder;
+            $order->payment_gateway = $gateway;
             $order->save();
 
             $items = $bag->getItems();
@@ -195,7 +227,7 @@ class CheckoutController extends UserController
             }
 
             // Send notification to store
-            if ($store->settings->notificationEnabled('new_order')) {
+            if ($storeSettings->notificationEnabled('new_order')) {
                 $store->sendNotification('new_order', [
                     'order' => $order ?? null,
                     'pickup' => $pickup ?? null,
@@ -237,45 +269,59 @@ class CheckoutController extends UserController
                 $billingAnchor->addWeeks(1);
             }
 
-            $plan = \Stripe\Plan::create(
-                [
-                    "amount" => round($total * 100),
-                    "interval" => "week",
-                    "product" => [
-                        "name" =>
-                            "Weekly subscription (" .
-                            $store->storeDetail->name .
-                            ")"
+            if ($gateway === Constants::GATEWAY_STRIPE) {
+                $plan = \Stripe\Plan::create(
+                    [
+                        "amount" => round($total * 100),
+                        "interval" => "week",
+                        "product" => [
+                            "name" =>
+                                "Weekly subscription (" .
+                                $store->storeDetail->name .
+                                ")"
+                        ],
+                        "currency" => $storeSettings->currency
                     ],
-                    "currency" => $store->settings->currency
-                ],
-                ['stripe_account' => $store->settings->stripe_id]
-            );
+                    ['stripe_account' => $storeSettings->stripe_id]
+                );
 
-            $token = \Stripe\Token::create(
-                [
-                    "customer" => $this->user->stripe_id
-                ],
-                ['stripe_account' => $store->settings->stripe_id]
-            );
+                $token = \Stripe\Token::create(
+                    [
+                        "customer" => $this->user->stripe_id
+                    ],
+                    ['stripe_account' => $storeSettings->stripe_id]
+                );
 
-            $storeSource = $storeCustomer->sources->create(
-                [
-                    'source' => $token
-                ],
-                ['stripe_account' => $store->settings->stripe_id]
-            );
+                $storeSource = $storeCustomer->sources->create(
+                    [
+                        'source' => $token
+                    ],
+                    ['stripe_account' => $storeSettings->stripe_id]
+                );
 
-            $subscription = $storeCustomer->subscriptions->create(
-                [
-                    'default_source' => $storeSource,
-                    'items' => [['plan' => $plan]],
-                    'application_fee_percent' => $application_fee,
-                    'trial_end' => $billingAnchor->getTimestamp()
-                    //'prorate' => false
-                ],
-                ['stripe_account' => $store->settings->stripe_id]
-            );
+                $subscription = $storeCustomer->subscriptions->create(
+                    [
+                        'default_source' => $storeSource,
+                        'items' => [['plan' => $plan]],
+                        'application_fee_percent' => $application_fee,
+                        'trial_end' => $billingAnchor->getTimestamp()
+                        //'prorate' => false
+                    ],
+                    ['stripe_account' => $storeSettings->stripe_id]
+                );
+            } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
+                $billing = Billing::init($gateway, $store);
+
+                $subscription = new \App\Billing\Subscription();
+                $subscription->amount = round($total * 100);
+                $subscription->customer = $customer;
+                $subscription->card = $card;
+                $subscription->startDate = $billingAnchor;
+                $subscription->period = Constants::PERIOD_WEEKLY;
+
+                $transactionId = $billing->subscribe($subscription);
+                $subscription->id = $transactionId;
+            }
 
             $userSubscription = new Subscription();
             $userSubscription->user_id = $user->id;
@@ -294,7 +340,7 @@ class CheckoutController extends UserController
             $userSubscription->deliveryFee = $deliveryFee;
             $userSubscription->salesTax = $salesTax;
             $userSubscription->amount = $total;
-            $userSubscription->currency = $store->settings->currency;
+            $userSubscription->currency = $storeSettings->currency;
             $userSubscription->pickup = $request->get('pickup', 0);
             $userSubscription->interval = 'week';
             $userSubscription->delivery_day = date(
@@ -327,7 +373,7 @@ class CheckoutController extends UserController
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
             $order->amount = $total;
-            $order->currency = $store->settings->currency;
+            $order->currency = $storeSettings->currency;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = (new Carbon($deliveryDay))->toDateString();
@@ -405,7 +451,7 @@ class CheckoutController extends UserController
             }
 
             // Send notification to store
-            if ($store->settings->notificationEnabled('new_subscription')) {
+            if ($storeSettings->notificationEnabled('new_subscription')) {
                 $store->sendNotification('new_subscription', [
                     'order' => $order ?? null,
                     'pickup' => $pickup ?? null,
