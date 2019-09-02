@@ -135,7 +135,11 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       @else ($pickup === 1)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $order->delivery_date->format('D, m/d/Y') }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $order->delivery_date->format('D, m/d/Y') }}
+                          @if ($order->transferTime)
+                            - {{ $order->transferTime }}
+                          @endif
+                        </td>
                       </tr>
                       @endif
                       <!-- end address -->
@@ -334,6 +338,101 @@ u + .body .full { width:100% !important; width:100vw !important;}
     </tr>
   </table>
   <!-- end total -->
+  <table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td align="center">
+        <table align="center" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td width="600" align="center">
+              <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td height="40"></td>
+                </tr>
+                <!-- title -->
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Notes from {{ $order->store->details->name }}</td>
+                </tr>
+                <!-- end title -->
+                <tr>
+                  <td height="5"></td>
+                </tr>
+                <!-- content -->
+                @if ($order->store->settings->notesForCustomer != null)
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                    {!! nl2br($order->store->settings->notesForCustomer) !!} 
+                  </td>
+                </tr>
+                @endif
+                
+                <!-- end content -->
+                <tr>
+                  <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  @php
+      $mealInstructions = 0
+    @endphp
+
+    @foreach ($order->items as $i => $item)
+          @if ($item->instructions)
+            @php
+              $mealInstructions = 1
+            @endphp
+          @endif
+    @endforeach
+
+  @if ($mealInstructions)
+
+  <table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td align="center">
+        <table align="center" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td width="600" align="center">
+              <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td height="40"></td>
+                </tr>
+                <!-- title -->
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Special Meal Instructions</td>
+                </tr>
+                <!-- end title -->
+                <tr>
+                  <td height="5"></td>
+                </tr>
+                <!-- content -->
+                @foreach($order->items as $item)
+                  @if ($item->instructions)
+                    <tr>
+                      <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                        <b>{!! $item->html_title !!}</b> - {{ $item->instructions }}
+                      </td>
+                    </tr>
+                  @endif
+                @endforeach
+                
+                <!-- end content -->
+                <tr>
+                  <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  @endif
   <!-- note -->
   <table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
     <tr>

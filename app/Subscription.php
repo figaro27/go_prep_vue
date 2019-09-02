@@ -252,7 +252,7 @@ class Subscription extends Model
     {
         $latestOrder = $this->getLatestUnpaidOrder();
 
-        if (!$latestOrder) {
+        if ($this->status != 'cancelled' && !$latestOrder) {
             throw new \Exception(
                 'No unpaid order for subscription #' . $this->id
             );
@@ -329,7 +329,7 @@ class Subscription extends Model
                 foreach ($mealSub->addons as $addon) {
                     MealOrderAddon::create([
                         'meal_order_id' => $mealOrder->id,
-                        'meal_addon_id' => $component->meal_addon_id
+                        'meal_addon_id' => $addon->meal_addon_id
                     ]);
                 }
             }

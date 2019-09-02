@@ -83,7 +83,21 @@
     <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
     @endif
 
-    @if ($order->store->settings->mealInstructions)
+
+    @php
+      $mealInstructions = 0
+    @endphp
+
+    @foreach ($order->items as $i => $item)
+          @if ($item->instructions)
+            @php
+              $mealInstructions = 1
+            @endphp
+          @endif
+      @endforeach
+
+
+    @if ($mealInstructions)
       <h2>Special Meal Instructions</h2>
       @foreach ($order->items as $i => $item)
         @if ($item->instructions)
@@ -91,6 +105,7 @@
         @endif
       @endforeach
     @endif
+
   </div>
 </body>
 </html>
