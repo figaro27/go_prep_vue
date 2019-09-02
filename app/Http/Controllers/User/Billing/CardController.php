@@ -63,15 +63,6 @@ class CardController extends UserController
 
             $sources = $customer->sources->all()->getIterator();
             $source = end($sources);
-
-            return $this->user->cards()->create([
-                'stripe_id' => $source->id,
-                'brand' => $card['brand'],
-                'exp_month' => $card['exp_month'],
-                'exp_year' => $card['exp_year'],
-                'last4' => $card['last4'],
-                'country' => $card['country']
-            ]);
         } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
             $authorize = new Authorize($this->store);
 
@@ -79,31 +70,36 @@ class CardController extends UserController
                 !$this->user->hasStoreCustomer(
                     $this->store->id,
                     'USD',
-                    Constants::GATEWAY_AUTHORIZE
+                    $gateway
                 )
             ) {
                 $this->user->createStoreCustomer(
                     $this->store->id,
                     'USD',
-                    Constants::GATEWAY_AUTHORIZE
+                    $gateway
                 );
             }
 
-            $customer = $this->user->getStoreCustomer($this->store->id, false);
+            $customer = $this->user->getStoreCustomer(
+                $this->store->id,
+                'USD',
+                $gateway
+            );
 
-            $source = $authorize->createCard($customer, $token['id']);
-
-            return $this->user->cards()->create([
-                'authorize_id' => $source->id,
-                'brand' => $card['brand'],
-                'exp_month' => $card['exp_month'],
-                'exp_year' => $card['exp_year'],
-                'last4' => $card['last4'],
-                'country' => $card['country']
-            ]);
+            $source = $authorize->createCard($customer, $token);
         } else {
             return response()->json('Unrecognized gateway', 400);
         }
+
+        return $this->user->cards()->create([
+            'stripe_id' => $source->id,
+            'brand' => $card['brand'],
+            'exp_month' => $card['exp_month'],
+            'exp_year' => $card['exp_year'],
+            'last4' => $card['last4'],
+            'country' => $card['country'],
+            'payment_gateway' => $gateway
+        ]);
     }
 
     /**
