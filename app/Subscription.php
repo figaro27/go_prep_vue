@@ -169,7 +169,10 @@ class Subscription extends Model
 
     public function getNextOrderAttribute()
     {
-        if ($this->latest_paid_order->delivery_day > Carbon::now()) {
+        if (
+            $this->latest_paid_order &&
+            $this->latest_paid_order->delivery_day > Carbon::now()
+        ) {
             return $this->latest_paid_order;
         } else {
             return $this->latest_unpaid_order;
