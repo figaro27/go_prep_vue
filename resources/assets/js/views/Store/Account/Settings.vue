@@ -489,7 +489,7 @@
                 >
               </b-form>
             </b-tab>
-            <b-tab title="Menu" active>
+            <b-tab title="Menu">
               <p>
                 <span class="mr-1">Show Nutrition Facts</span>
                 <img
@@ -665,7 +665,7 @@
                 <b-button type="submit" variant="primary mt-2">Save</b-button>
               </b-form>
             </b-tab>
-            <b-tab title="Coupons" active>
+            <b-tab title="Coupons">
               <p>
                 <span class="mr-1">Coupons</span>
                 <img
@@ -782,7 +782,7 @@
                 </div>
               </v-client-table>
             </b-tab>
-            <b-tab title="Notifications" active>
+            <b-tab title="Notifications">
               <b-form @submit.prevent="updateStoreSettings">
                 <b-form-group label="New Orders" :state="true">
                   <c-switch
@@ -825,7 +825,7 @@
                 </b-form-group>
               </b-form>
             </b-tab>
-            <b-tab title="Other" active>
+            <b-tab title="Other">
               <p>https://{{ storeDetails.domain }}.goprep.com</p>
               <b-form
                 @submit.prevent="updateStoreLogo"
