@@ -351,7 +351,9 @@ class RegisterController extends Controller
                 ]);
             }
 
-            $storePlan->save();
+            if (!$payAsYouGo) {
+                $storePlan->save();
+            }
         }
 
         return $user;
