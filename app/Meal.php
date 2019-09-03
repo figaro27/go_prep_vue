@@ -368,7 +368,7 @@ class Meal extends Model implements HasMedia
 
                 return $meals
                     // ->concat($extraMeals)
-                    ->slice(0, 10)
+                    ->slice(0, 5)
                     ->pluck('id');
             }
         );

@@ -581,7 +581,21 @@
             class="popover-size"
           />
         </h5>
-        <h5 class="mb-3">Please select a recommended replacement meal.</h5>
+        <h5 class="mb-3">Please select a replacement meal.</h5>
+        <v-select
+          label="title"
+          :options="meals"
+          :reduce="meal => meal.id"
+          v-model="substitute_id"
+        ></v-select>
+        <button
+          v-if="substitute_id"
+          class="btn btn-danger btn-lg mt-3"
+          @click="destroyMeal(deletingMeal.id, substitute_id)"
+        >
+          Delete & Replace
+        </button>
+        <h5 class="mt-3">Recommended Replacements</h5>
         <b-list-group>
           <b-list-group-item
             v-for="meal in mealSubstituteOptions(deletingMeal)"
@@ -612,11 +626,11 @@
           </b-list-group-item>
         </b-list-group>
 
-        <div v-if="mealSubstituteOptions(deletingMeal).length <= 0">
+        <!-- <div v-if="mealSubstituteOptions(deletingMeal).length <= 0">
           There are currently no substitute options for this meal. Please add a
           similar meal that 1) doesn't contain the same allergies, and 2) is
           within the same meal category.
-        </div>
+        </div> -->
 
         <!--<b-select v-model="deleteMeal.subtitute_id" :options="mealSubstituteOptions(deleteMeal)"></b-select>-->
         <button
@@ -646,8 +660,28 @@
             class="popover-size"
           />
         </h5>
-        <h5 class="mb-3">Please select a recommended replacement meal.</h5>
+        <h5 class="mb-3">Please select a replacement meal.</h5>
 
+        <v-select
+          label="title"
+          :options="meals"
+          :reduce="meal => meal.id"
+          v-model="substitute_id"
+        ></v-select>
+        <button
+          class="btn btn-warning btn-lg mt-3"
+          @click="deactivateMealModal = false"
+        >
+          Deactivate & Keep
+        </button>
+        <button
+          v-if="substitute_id"
+          class="btn btn-danger btn-lg mt-3"
+          @click="deactivateAndReplace(deactivatingMeal.id, substitute_id)"
+        >
+          Deactivate & Replace
+        </button>
+        <h5 class="mt-3">Recommended Replacements</h5>
         <b-list-group>
           <b-list-group-item
             v-for="meal in mealSubstituteOptions(deactivatingMeal)"
@@ -741,6 +775,8 @@ import units from "../../data/units";
 import format from "../../lib/format";
 import fs from "../../lib/fs.js";
 import { mapGetters, mapActions, mapMutations } from "vuex";
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 
 export default {
   components: {
@@ -752,7 +788,8 @@ export default {
     ViewPackageModal,
     MealSizes,
     MealComponents,
-    MealAddons
+    MealAddons,
+    vSelect
   },
   updated() {
     //$(window).trigger("resize");
