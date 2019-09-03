@@ -1,5 +1,6 @@
 <template>
   <div>
+    <outside-delivery-area></outside-delivery-area>
     <floating-action-button
       class="d-md-none brand-color"
       to="/customer/bag"
@@ -24,21 +25,6 @@
     <category-slider></category-slider>
 
     <div class="menu ml-auto mr-auto">
-      <div
-        v-if="
-          !willDeliver &&
-            !preview &&
-            !manualOrder &&
-            loggedIn &&
-            !adjustOrder &&
-            !adjustMealPlan
-        "
-      >
-        <b-alert variant="danger center-text" show
-          >You are outside of the delivery area.</b-alert
-        >
-      </div>
-
       <div v-if="storeSettings.open === false">
         <div class="row">
           <div class="col-sm-12 mt-3">
@@ -1091,7 +1077,8 @@ import LightBox from "vue-image-lightbox";
 import "vue-image-lightbox/src/components/style.css";
 import { Carousel, Slide } from "vue-carousel";
 
-import CategorySlider from "../../components/Mobile/CategorySlider";
+import CategorySlider from "../../components/Customer/Mobile/CategorySlider";
+import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
