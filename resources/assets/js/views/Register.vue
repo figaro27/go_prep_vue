@@ -513,11 +513,6 @@
                   >Submit</b-button
                 >
               </b-form-group>
-              <p>
-                To choose the "Pay as you go" plan and pay a 5% transaction fee
-                per order with no monthly cost, please contact us
-                <a href="https://www.goprep.com/get-started/">here.</a>
-              </p>
             </div>
           </b-form>
         </div>
