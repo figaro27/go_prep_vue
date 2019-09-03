@@ -5,979 +5,949 @@
         >Welcome to GoPrep! Enter all settings to open your store for
         business.</b-alert
       >
-      <p>Orders</p>
-      <div class="card">
-        <div class="card-body">
-          <p>https://{{ storeDetails.domain }}.goprep.com</p>
-          <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group
-              label="Delivery / Pickup Day(s)"
-              label-for="delivery-days"
-              :state="true"
-            >
-              <b-form-checkbox-group
-                buttons
-                v-model="storeSettings.delivery_days"
-                class="storeFilters"
-                @change="val => onChangeDeliveryDays(val)"
-                :options="[
-                  { value: 'sun', text: 'Sunday' },
-                  { value: 'mon', text: 'Monday' },
-                  { value: 'tue', text: 'Tuesday' },
-                  { value: 'wed', text: 'Wednesday' },
-                  { value: 'thu', text: 'Thursday' },
-                  { value: 'fri', text: 'Friday' },
-                  { value: 'sat', text: 'Saturday' }
-                ]"
-              ></b-form-checkbox-group>
-              <img
-                v-b-popover.hover="
-                  'These are the day(s) you plan on delivering your meals or allowing pickup to your customers and will show up as options on the checkout page for the customer. Please choose at least one day to allow orders on your menu.'
-                "
-                title="Delivery / Pickup Day(s)"
-                src="/images/store/popover.png"
-                class="popover-size"
-              />
-            </b-form-group>
-            <b-modal
-              size="md"
-              v-model="showCutoffModal"
-              title="Warning"
-              hide-footer
-            >
-              <h6 class="center-text mt-3">
-                You potentially have active meal plans that are charged and
-                turned into orders at this cutoff period.
-              </h6>
-              <p class="center-text mt-3">
-                If you change your cutoff time, those active meal plans won't be
-                adjusted. They will still turn into orders at the time of your
-                old cutoff.
-              </p>
-              <p class="center-text mt-3">
-                If this is an issue, please either keep this cutoff period, or
-                you can individually cancel meal plans on the Meal Plans page.
-              </p>
-              <b-btn
-                class="center"
-                variant="primary"
-                @click="showCutoffModal = false"
-                >Confirm</b-btn
-              >
-            </b-modal>
-            <b-modal
-              size="xl"
-              ref="deliveryDaysModal"
-              title="Warning"
-              hide-footer
-            >
-              <h6 class="center-text mt-3">
-                There are active meal plans associated with this delivery day.
-                Please choose one of the three options below to continue.
-              </h6>
-              <div class="row mt-5">
-                <div class="col-sm-4">
-                  <p class="center-text">
-                    Cancel my action and keep this delivery day active for
-                    future meal plans & orders.
-                  </p>
-                </div>
-                <div class="col-sm-4">
-                  <p class="center-text">
-                    Remove this delivery day, but I will still fulfill meal plan
-                    orders attached to this day.
-                  </p>
-                </div>
-                <div class="col-sm-4">
-                  <p class="center-text">
-                    Remove this delivery day for future orders, and cancel all
-                    my meal plans attached to this day.
-                  </p>
-                </div>
-              </div>
-              <div class="row mb-5">
-                <div class="col-sm-4">
-                  <b-btn
-                    variant="success"
-                    class="center"
-                    @click="hideDeliveryDaysModal"
-                    >Keep Day</b-btn
-                  >
-                </div>
-                <div class="col-sm-4">
-                  <b-btn
-                    variant="warning"
-                    class="center"
-                    @click="removeDeliveryDay"
-                    >Remove Day & Honor</b-btn
-                  >
-                </div>
-                <div class="col-sm-4">
-                  <b-btn
-                    variant="danger"
-                    class="center"
-                    @click="cancelMealPlans"
-                    >Remove Day & Cancel</b-btn
-                  >
-                </div>
-              </div>
-            </b-modal>
-
-            <b-form-group
-              label="Delivery Distance Type"
-              label-for="delivery-distance-type"
-              :state="true"
-            >
-              <b-form-radio-group
-                buttons
-                v-model="storeSettings.delivery_distance_type"
-                class="storeFilters"
-                :options="[
-                  { value: 'radius', text: 'Radius' },
-                  { value: 'zipcodes', text: 'Zip Codes' }
-                ]"
-              ></b-form-radio-group>
-              <img
-                v-b-popover.hover="
-                  'As you do local delivery, you may have a certain cutoff distance. Here you can set this distance by radius by the number of miles around you or by zip codes separated by commas. If you offer pickup, and the customer chooses pickup, this will not apply to them.'
-                "
-                title="Delivery Distance Type"
-                src="/images/store/popover.png"
-                class="popover-size"
-              />
-            </b-form-group>
-            <b-form-group
-              v-if="storeSettings.delivery_distance_type === 'radius'"
-              label="Delivery Distance Radius"
-              label-for="delivery-distance-radius"
-              :state="true"
-            >
-              <b-form-input
-                type="number"
-                v-model="storeSettings.delivery_distance_radius"
-                placeholder="Radius (miles)"
-                required
-              ></b-form-input>
-            </b-form-group>
-            <b-form-group
-              v-if="storeSettings.delivery_distance_type === 'zipcodes'"
-              label="Delivery Zip Codes"
-              label-for="delivery-distance-zipcodes"
-              description="Separate zip codes by comma"
-              :state="true"
-            >
-              <textarea
-                v-model="deliveryDistanceZipcodes"
-                @input="
-                  e => {
-                    updateZips(e);
-                  }
-                "
-                class="form-control"
-                placeholder="Zip Codes"
-              ></textarea>
-            </b-form-group>
-
-            <b-form-group
-              label="Cut Off Period Type"
-              label-for="cut-off-period-type"
-              :state="true"
-              inline
-            >
-              <b-form-radio-group
-                v-model="storeSettings.cutoff_type"
-                :options="[
-                  { text: 'Timed', value: 'timed' },
-                  { text: 'Single Day', value: 'single_day' }
-                ]"
-              >
-                <img
-                  v-b-popover.hover="
-                    'If you only have one delivery/pickup day, then choose either option and it will work the same way. Timed Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Period to 1 day and 12 hours. This will lock in orders for Sunday on Friday at 12 PM and lock in orders for Wednesday on Monday at 12 PM. Single Day Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Day to Friday at 12 PM. This locks in orders for BOTH Sunday & Wednesday on Friday at 12 PM.'
-                  "
-                  title="Cut Off Type"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </b-form-radio-group>
-            </b-form-group>
-
-            <b-form-group
-              :label="
-                storeSettings.cutoff_type === 'timed'
-                  ? 'Cut Off Period'
-                  : 'Cut Off Day'
-              "
-              label-for="cut-off-period"
-              :state="true"
-              inline
-            >
-              <b-select
-                v-model="storeSettings.cutoff_days"
-                class="d-inline w-auto mr-1"
-                :options="cutoffDaysOptions"
-                @change.native="checkCutoffMealPlans"
-              ></b-select>
-              <b-select
-                v-model="storeSettings.cutoff_hours"
-                class="d-inline w-auto mr-1 custom-select"
-                :options="cutoffHoursOptions"
-                @change.native="checkCutoffMealPlans"
-              ></b-select>
-              <img
-                v-b-popover.hover="
-                  'This is the amount of time you want to lock in orders before a specific delivery day. For example - you set the cut off period to 1 day, and it is currently Tuesday. If you have a Wednesday delivery day, your customer will not see Wednesday as a delivery day option. They will see the next available delivery day. This prevents you from getting new orders right before your delivery day and possibly already after you prepped your meals for that day.'
-                "
-                title="Cut Off Period"
-                src="/images/store/popover.png"
-                class="popover-size"
-              />
-            </b-form-group>
-
-            <b-form-group label="Timezone">
-              <b-select
-                :options="timezoneOptions"
-                v-model="storeSettings.timezone"
-                class="w-100"
-              ></b-select>
-            </b-form-group>
-
-            <b-form-group>
-              <b-form-radio-group
-                v-model="storeSettings.minimumOption"
-                :options="minimumOptions"
-              ></b-form-radio-group>
-            </b-form-group>
-
-            <b-form-group
-              :state="true"
-              v-if="storeSettings.minimumOption === 'price'"
-            >
-              <p>
-                <span class="mr-1">Minimum Price Requirement</span>
-                <img
-                  v-b-popover.hover="
-                    'Here you can set a minimum price required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'
-                  "
-                  title="Minimum Price Requirement"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </p>
-              <b-form-input
-                type="text"
-                v-model="storeSettings.minimumPrice"
-                placeholder="Minimum Price"
-                required
-              ></b-form-input>
-            </b-form-group>
-            <b-form-group
-              :state="true"
-              v-if="storeSettings.minimumOption === 'meals'"
-            >
-              <p>
-                <span class="mr-1">Minimum Meals Requirement</span>
-                <img
-                  v-b-popover.hover="
-                    'Here you can set a minimum number of meals required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'
-                  "
-                  title="Minimum Meals Requirement"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </p>
-              <b-form-input
-                type="text"
-                v-model="storeSettings.minimumMeals"
-                placeholder="Minimum Number of Meals"
-                required
-              ></b-form-input>
-            </b-form-group>
-            <b-form-group :state="true">
-              <p>
-                <span class="mr-1">Weekly Meal Plan Discount</span>
-                <img
-                  v-b-popover.hover="
-                    'Give your customers an incentive to create a weekly meal plan with you by offering a discount percentage. Please keep in mind the customer can still cancel at any time after their first order.'
-                  "
-                  title="Weekly Meal Plan Discount"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </p>
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.applyMealPlanDiscount"
-              />
-              <b-form-input
-                v-if="storeSettings.applyMealPlanDiscount"
-                id="meal-plan-discount"
-                v-model="storeSettings.mealPlanDiscount"
-                placeholder="Weekly Meal Plan Discount %"
-                required
-              ></b-form-input>
-            </b-form-group>
-            <b-form-group :state="true">
-              <p>
-                <span class="mr-1">Delivery Fee</span>
-                <img
-                  v-b-popover.hover="
-                    'Here you can apply an optional delivery fee paid for by your customers.'
-                  "
-                  title="Delivery Fee"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </p>
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.applyDeliveryFee"
-              />
-
-              <div v-if="storeSettings.applyDeliveryFee">
-                <p>
-                  <span class="mr-1">Delivery Fee Type</span>
+      <b-row>
+        <b-col>
+          <b-tabs>
+            <b-tab title="Orders" active>
+              <b-form @submit.prevent="updateStoreSettings">
+                <b-form-group
+                  label="Delivery / Pickup Day(s)"
+                  label-for="delivery-days"
+                  :state="true"
+                >
+                  <b-form-checkbox-group
+                    buttons
+                    v-model="storeSettings.delivery_days"
+                    class="storeFilters"
+                    @change="val => onChangeDeliveryDays(val)"
+                    :options="[
+                      { value: 'sun', text: 'Sunday' },
+                      { value: 'mon', text: 'Monday' },
+                      { value: 'tue', text: 'Tuesday' },
+                      { value: 'wed', text: 'Wednesday' },
+                      { value: 'thu', text: 'Thursday' },
+                      { value: 'fri', text: 'Friday' },
+                      { value: 'sat', text: 'Saturday' }
+                    ]"
+                  ></b-form-checkbox-group>
                   <img
                     v-b-popover.hover="
-                      'Either choose to apply a flat fee no matter how far the customer is, or a fee based on the distance of the customer in miles.'
+                      'These are the day(s) you plan on delivering your meals or allowing pickup to your customers and will show up as options on the checkout page for the customer. Please choose at least one day to allow orders on your menu.'
                     "
-                    title="Delivery Fee Type"
+                    title="Delivery / Pickup Day(s)"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </b-form-group>
+                <b-modal
+                  size="md"
+                  v-model="showCutoffModal"
+                  title="Warning"
+                  hide-footer
+                >
+                  <h6 class="center-text mt-3">
+                    You potentially have active meal plans that are charged and
+                    turned into orders at this cutoff period.
+                  </h6>
+                  <p class="center-text mt-3">
+                    If you change your cutoff time, those active meal plans
+                    won't be adjusted. They will still turn into orders at the
+                    time of your old cutoff.
+                  </p>
+                  <p class="center-text mt-3">
+                    If this is an issue, please either keep this cutoff period,
+                    or you can individually cancel meal plans on the Meal Plans
+                    page.
+                  </p>
+                  <b-btn
+                    class="center"
+                    variant="primary"
+                    @click="showCutoffModal = false"
+                    >Confirm</b-btn
+                  >
+                </b-modal>
+                <b-modal
+                  size="xl"
+                  ref="deliveryDaysModal"
+                  title="Warning"
+                  hide-footer
+                >
+                  <h6 class="center-text mt-3">
+                    There are active meal plans associated with this delivery
+                    day. Please choose one of the three options below to
+                    continue.
+                  </h6>
+                  <div class="row mt-5">
+                    <div class="col-sm-4">
+                      <p class="center-text">
+                        Cancel my action and keep this delivery day active for
+                        future meal plans & orders.
+                      </p>
+                    </div>
+                    <div class="col-sm-4">
+                      <p class="center-text">
+                        Remove this delivery day, but I will still fulfill meal
+                        plan orders attached to this day.
+                      </p>
+                    </div>
+                    <div class="col-sm-4">
+                      <p class="center-text">
+                        Remove this delivery day for future orders, and cancel
+                        all my meal plans attached to this day.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row mb-5">
+                    <div class="col-sm-4">
+                      <b-btn
+                        variant="success"
+                        class="center"
+                        @click="hideDeliveryDaysModal"
+                        >Keep Day</b-btn
+                      >
+                    </div>
+                    <div class="col-sm-4">
+                      <b-btn
+                        variant="warning"
+                        class="center"
+                        @click="removeDeliveryDay"
+                        >Remove Day & Honor</b-btn
+                      >
+                    </div>
+                    <div class="col-sm-4">
+                      <b-btn
+                        variant="danger"
+                        class="center"
+                        @click="cancelMealPlans"
+                        >Remove Day & Cancel</b-btn
+                      >
+                    </div>
+                  </div>
+                </b-modal>
+
+                <b-form-group
+                  label="Delivery Distance Type"
+                  label-for="delivery-distance-type"
+                  :state="true"
+                >
+                  <b-form-radio-group
+                    buttons
+                    v-model="storeSettings.delivery_distance_type"
+                    class="storeFilters"
+                    :options="[
+                      { value: 'radius', text: 'Radius' },
+                      { value: 'zipcodes', text: 'Zip Codes' }
+                    ]"
+                  ></b-form-radio-group>
+                  <img
+                    v-b-popover.hover="
+                      'As you do local delivery, you may have a certain cutoff distance. Here you can set this distance by radius by the number of miles around you or by zip codes separated by commas. If you offer pickup, and the customer chooses pickup, this will not apply to them.'
+                    "
+                    title="Delivery Distance Type"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </b-form-group>
+                <b-form-group
+                  v-if="storeSettings.delivery_distance_type === 'radius'"
+                  label="Delivery Distance Radius"
+                  label-for="delivery-distance-radius"
+                  :state="true"
+                >
+                  <b-form-input
+                    type="number"
+                    v-model="storeSettings.delivery_distance_radius"
+                    placeholder="Radius (miles)"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+                <b-form-group
+                  v-if="storeSettings.delivery_distance_type === 'zipcodes'"
+                  label="Delivery Zip Codes"
+                  label-for="delivery-distance-zipcodes"
+                  description="Separate zip codes by comma"
+                  :state="true"
+                >
+                  <textarea
+                    v-model="deliveryDistanceZipcodes"
+                    @input="
+                      e => {
+                        updateZips(e);
+                      }
+                    "
+                    class="form-control"
+                    placeholder="Zip Codes"
+                  ></textarea>
+                </b-form-group>
+
+                <b-form-group
+                  label="Cut Off Period Type"
+                  label-for="cut-off-period-type"
+                  :state="true"
+                  inline
+                >
+                  <b-form-radio-group
+                    v-model="storeSettings.cutoff_type"
+                    :options="[
+                      { text: 'Timed', value: 'timed' },
+                      { text: 'Single Day', value: 'single_day' }
+                    ]"
+                  >
+                    <img
+                      v-b-popover.hover="
+                        'If you only have one delivery/pickup day, then choose either option and it will work the same way. Timed Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Period to 1 day and 12 hours. This will lock in orders for Sunday on Friday at 12 PM and lock in orders for Wednesday on Monday at 12 PM. Single Day Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Day to Friday at 12 PM. This locks in orders for BOTH Sunday & Wednesday on Friday at 12 PM.'
+                      "
+                      title="Cut Off Type"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </b-form-radio-group>
+                </b-form-group>
+
+                <b-form-group
+                  :label="
+                    storeSettings.cutoff_type === 'timed'
+                      ? 'Cut Off Period'
+                      : 'Cut Off Day'
+                  "
+                  label-for="cut-off-period"
+                  :state="true"
+                  inline
+                >
+                  <b-select
+                    v-model="storeSettings.cutoff_days"
+                    class="d-inline w-auto mr-1"
+                    :options="cutoffDaysOptions"
+                    @change.native="checkCutoffMealPlans"
+                  ></b-select>
+                  <b-select
+                    v-model="storeSettings.cutoff_hours"
+                    class="d-inline w-auto mr-1 custom-select"
+                    :options="cutoffHoursOptions"
+                    @change.native="checkCutoffMealPlans"
+                  ></b-select>
+                  <img
+                    v-b-popover.hover="
+                      'This is the amount of time you want to lock in orders before a specific delivery day. For example - you set the cut off period to 1 day, and it is currently Tuesday. If you have a Wednesday delivery day, your customer will not see Wednesday as a delivery day option. They will see the next available delivery day. This prevents you from getting new orders right before your delivery day and possibly already after you prepped your meals for that day.'
+                    "
+                    title="Cut Off Period"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </b-form-group>
+
+                <b-form-group>
+                  <b-form-radio-group
+                    v-model="storeSettings.minimumOption"
+                    :options="minimumOptions"
+                  ></b-form-radio-group>
+                </b-form-group>
+
+                <b-form-group
+                  :state="true"
+                  v-if="storeSettings.minimumOption === 'price'"
+                >
+                  <p>
+                    <span class="mr-1">Minimum Price Requirement</span>
+                    <img
+                      v-b-popover.hover="
+                        'Here you can set a minimum price required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'
+                      "
+                      title="Minimum Price Requirement"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <b-form-input
+                    type="text"
+                    v-model="storeSettings.minimumPrice"
+                    placeholder="Minimum Price"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+                <b-form-group
+                  :state="true"
+                  v-if="storeSettings.minimumOption === 'meals'"
+                >
+                  <p>
+                    <span class="mr-1">Minimum Meals Requirement</span>
+                    <img
+                      v-b-popover.hover="
+                        'Here you can set a minimum number of meals required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'
+                      "
+                      title="Minimum Meals Requirement"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <b-form-input
+                    type="text"
+                    v-model="storeSettings.minimumMeals"
+                    placeholder="Minimum Number of Meals"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+                <b-form-group :state="true">
+                  <p>
+                    <span class="mr-1">Weekly Meal Plan Discount</span>
+                    <img
+                      v-b-popover.hover="
+                        'Give your customers an incentive to create a weekly meal plan with you by offering a discount percentage. Please keep in mind the customer can still cancel at any time after their first order.'
+                      "
+                      title="Weekly Meal Plan Discount"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.applyMealPlanDiscount"
+                  />
+                  <b-form-input
+                    v-if="storeSettings.applyMealPlanDiscount"
+                    id="meal-plan-discount"
+                    v-model="storeSettings.mealPlanDiscount"
+                    placeholder="Weekly Meal Plan Discount %"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+                <b-form-group :state="true">
+                  <p>
+                    <span class="mr-1">Delivery Fee</span>
+                    <img
+                      v-b-popover.hover="
+                        'Here you can apply an optional delivery fee paid for by your customers.'
+                      "
+                      title="Delivery Fee"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.applyDeliveryFee"
+                  />
+
+                  <div v-if="storeSettings.applyDeliveryFee">
+                    <p>
+                      <span class="mr-1">Delivery Fee Type</span>
+                      <img
+                        v-b-popover.hover="
+                          'Either choose to apply a flat fee no matter how far the customer is, or a fee based on the distance of the customer in miles.'
+                        "
+                        title="Delivery Fee Type"
+                        src="/images/store/popover.png"
+                        class="popover-size"
+                      />
+                    </p>
+                    <b-form-radio-group v-model="storeSettings.deliveryFeeType">
+                      <b-form-radio name="flat" value="flat">Flat</b-form-radio>
+                      <b-form-radio name="mileage" value="mileage"
+                        >Mileage</b-form-radio
+                      >
+                    </b-form-radio-group>
+
+                    <b-form-input
+                      class="mt-3"
+                      v-if="
+                        storeSettings.applyDeliveryFee &&
+                          storeSettings.deliveryFeeType === 'flat'
+                      "
+                      type="text"
+                      v-model="storeSettings.deliveryFee"
+                      placeholder="Delivery Fee"
+                      required
+                    ></b-form-input>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <b-form-input
+                          class="mt-3"
+                          v-if="
+                            storeSettings.applyDeliveryFee &&
+                              storeSettings.deliveryFeeType === 'mileage'
+                          "
+                          type="text"
+                          v-model="storeSettings.mileageBase"
+                          placeholder="Base Amount"
+                          required
+                        ></b-form-input>
+                      </div>
+                      <div class="col-md-6">
+                        <b-form-input
+                          class="mt-3"
+                          v-if="
+                            storeSettings.applyDeliveryFee &&
+                              storeSettings.deliveryFeeType === 'mileage'
+                          "
+                          type="text"
+                          v-model="storeSettings.mileagePerMile"
+                          placeholder="Per Mile"
+                          required
+                        ></b-form-input>
+                      </div>
+                    </div>
+                  </div>
+                </b-form-group>
+                <b-form-group :state="true">
+                  <p>
+                    <span class="mr-1">Processing Fee</span>
+                    <img
+                      v-b-popover.hover="
+                        'Here you can apply an optional processing fee paid for by your customers.'
+                      "
+                      title="Processing Fee"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.applyProcessingFee"
+                  />
+                </b-form-group>
+
+                <div v-if="storeSettings.applyProcessingFee">
+                  <p>
+                    <span class="mr-1">Processing Fee Type</span>
+                    <img
+                      v-b-popover.hover="
+                        'Either choose to apply a flat processing fee or a percentage amount based off of the subtotal.'
+                      "
+                      title="Processing Fee Type"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <b-form-radio-group
+                    v-model="storeSettings.processingFeeType"
+                    class="mt-2 mb-2"
+                  >
+                    <b-form-radio name="flat" value="flat">Flat</b-form-radio>
+                    <b-form-radio name="percent" value="percent"
+                      >Percent</b-form-radio
+                    >
+                  </b-form-radio-group>
+                  <b-form-input
+                    class="mb-4"
+                    type="text"
+                    v-model="storeSettings.processingFee"
+                    placeholder="Processing Fee"
+                    required
+                  ></b-form-input>
+                </div>
+
+                <b-form-group label="I Will Be:">
+                  <b-form-checkbox-group
+                    v-model="transferSelected"
+                    :options="transferOptions"
+                  ></b-form-checkbox-group>
+                </b-form-group>
+                <p v-if="transferTypeCheckDelivery">Delivery Instructions:</p>
+                <b-form-textarea
+                  v-if="transferTypeCheckDelivery"
+                  type="text"
+                  rows="3"
+                  v-model="storeSettings.deliveryInstructions"
+                  placeholder="Please include delivery instructions to your customers (time window, how long your driver will wait, etc.) This will be shown on the checkout page as well as email notifications the customer receives."
+                  class="mb-2"
+                ></b-form-textarea>
+                <p v-if="transferTypeCheckPickup">Pickup Instructions:</p>
+                <b-form-textarea
+                  v-if="transferTypeCheckPickup"
+                  type="text"
+                  rows="3"
+                  v-model="storeSettings.pickupInstructions"
+                  placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time). This will be shown on the checkout page as well as email notifications the customer receives."
+                ></b-form-textarea>
+
+                <p class="mt-2">
+                  <span class="mr-1">Notes For Customer</span>
+                  <img
+                    v-b-popover.hover="
+                      'Here you can optionally add any notes that you want to communicate to your customer on your packing slips and new order email notifications. Some examples include heating instructions, expiration periods of your meals, or any personalized message. This will be shown on your packing slips as well as email notifications the customer receives.'
+                    "
+                    title="Notes For Customer"
                     src="/images/store/popover.png"
                     class="popover-size"
                   />
                 </p>
-                <b-form-radio-group v-model="storeSettings.deliveryFeeType">
-                  <b-form-radio name="flat" value="flat">Flat</b-form-radio>
-                  <b-form-radio name="mileage" value="mileage"
-                    >Mileage</b-form-radio
-                  >
-                </b-form-radio-group>
-
-                <b-form-input
-                  class="mt-3"
-                  v-if="
-                    storeSettings.applyDeliveryFee &&
-                      storeSettings.deliveryFeeType === 'flat'
-                  "
+                <b-form-textarea
                   type="text"
-                  v-model="storeSettings.deliveryFee"
-                  placeholder="Delivery Fee"
-                  required
-                ></b-form-input>
-                <div class="row">
-                  <div class="col-md-6">
-                    <b-form-input
-                      class="mt-3"
-                      v-if="
-                        storeSettings.applyDeliveryFee &&
-                          storeSettings.deliveryFeeType === 'mileage'
-                      "
-                      type="text"
-                      v-model="storeSettings.mileageBase"
-                      placeholder="Base Amount"
-                      required
-                    ></b-form-input>
-                  </div>
-                  <div class="col-md-6">
-                    <b-form-input
-                      class="mt-3"
-                      v-if="
-                        storeSettings.applyDeliveryFee &&
-                          storeSettings.deliveryFeeType === 'mileage'
-                      "
-                      type="text"
-                      v-model="storeSettings.mileagePerMile"
-                      placeholder="Per Mile"
-                      required
-                    ></b-form-input>
-                  </div>
-                </div>
-              </div>
-            </b-form-group>
-            <b-form-group :state="true">
-              <p>
-                <span class="mr-1">Processing Fee</span>
-                <img
-                  v-b-popover.hover="
-                    'Here you can apply an optional processing fee paid for by your customers.'
-                  "
-                  title="Processing Fee"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </p>
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.applyProcessingFee"
-              />
-            </b-form-group>
+                  rows="3"
+                  v-model="storeSettings.notesForCustomer"
+                  placeholder="E.G. Heating instructions, meal expiration periods, or any personalized message. This goes on your packing slips & email notifications to your customers."
+                ></b-form-textarea>
 
-            <div v-if="storeSettings.applyProcessingFee">
-              <p>
-                <span class="mr-1">Processing Fee Type</span>
-                <img
-                  v-b-popover.hover="
-                    'Either choose to apply a flat processing fee or a percentage amount based off of the subtotal.'
-                  "
-                  title="Processing Fee Type"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </p>
-              <b-form-radio-group
-                v-model="storeSettings.processingFeeType"
-                class="mt-2 mb-2"
-              >
-                <b-form-radio name="flat" value="flat">Flat</b-form-radio>
-                <b-form-radio name="percent" value="percent"
-                  >Percent</b-form-radio
+                <b-button type="submit" variant="primary" class="mt-3"
+                  >Save</b-button
                 >
-              </b-form-radio-group>
-              <b-form-input
-                class="mb-4"
-                type="text"
-                v-model="storeSettings.processingFee"
-                placeholder="Processing Fee"
-                required
-              ></b-form-input>
-            </div>
-
-            <b-form-group label="I Will Be:">
-              <b-form-checkbox-group
-                v-model="transferSelected"
-                :options="transferOptions"
-              ></b-form-checkbox-group>
-            </b-form-group>
-            <p v-if="transferTypeCheckDelivery">Delivery Instructions:</p>
-            <b-form-textarea
-              v-if="transferTypeCheckDelivery"
-              type="text"
-              rows="3"
-              v-model="storeSettings.deliveryInstructions"
-              placeholder="Please include delivery instructions to your customers (time window, how long your driver will wait, etc.) This will be shown on the checkout page as well as email notifications the customer receives."
-              class="mb-2"
-            ></b-form-textarea>
-            <p v-if="transferTypeCheckPickup">Pickup Instructions:</p>
-            <b-form-textarea
-              v-if="transferTypeCheckPickup"
-              type="text"
-              rows="3"
-              v-model="storeSettings.pickupInstructions"
-              placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time). This will be shown on the checkout page as well as email notifications the customer receives."
-            ></b-form-textarea>
-
-            <p class="mt-2">
-              <span class="mr-1">Notes For Customer</span>
-              <img
-                v-b-popover.hover="
-                  'Here you can optionally add any notes that you want to communicate to your customer on your packing slips and new order email notifications. Some examples include heating instructions, expiration periods of your meals, or any personalized message. This will be shown on your packing slips as well as email notifications the customer receives.'
-                "
-                title="Notes For Customer"
-                src="/images/store/popover.png"
-                class="popover-size"
-              />
-            </p>
-            <b-form-textarea
-              type="text"
-              rows="3"
-              v-model="storeSettings.notesForCustomer"
-              placeholder="E.G. Heating instructions, meal expiration periods, or any personalized message. This goes on your packing slips & email notifications to your customers."
-            ></b-form-textarea>
-
-            <b-button type="submit" variant="primary" class="mt-3"
-              >Save</b-button
-            >
-          </b-form>
-        </div>
-      </div>
-      <p>Menu</p>
-      <div class="card">
-        <div class="card-body">
-          <p>
-            <span class="mr-1">Show Nutrition Facts</span>
-            <img
-              v-b-popover.hover="
-                'Nutrition facts are generated based on the ingredients you enter in for each meal on your Menu page. The nutrition is then shown to your customers if they click on any of your meals when ordering from you.'
-              "
-              title="Show Nutrition Facts"
-              src="/images/store/popover.png"
-              class="popover-size"
-            />
-          </p>
-          <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group :state="true">
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.showNutrition"
-                @change.native="updateStoreSettings"
-              />
-            </b-form-group>
-          </b-form>
-          <p>
-            <span class="mr-1">Show Macros</span>
-            <img
-              v-b-popover.hover="
-                'Enables input fields for your to add your meal\'s calories, carbs, protein, and fat. This then shows up underneath your meal titles on your menu page. If you have Nutrition Facts enabled as well, please keep the numbers the same as your customers will see any differences.'
-              "
-              title="Show Macros"
-              src="/images/store/popover.png"
-              class="popover-size"
-            />
-          </p>
-          <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group :state="true">
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.showMacros"
-                @change.native="updateStoreSettings"
-              />
-            </b-form-group>
-          </b-form>
-          <p>
-            <span class="mr-1">Show Ingredients</span>
-            <img
-              v-b-popover.hover="
-                'Ingredients of your meals are shown for each meal on your menu if the user clicks on the meal. You can choose to show or hide them with this option.'
-              "
-              title="Show Ingredients"
-              src="/images/store/popover.png"
-              class="popover-size"
-            />
-          </p>
-          <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group :state="true">
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.showIngredients"
-                @change.native="updateStoreSettings"
-              />
-            </b-form-group>
-          </b-form>
-
-          <p>
-            <span class="mr-1">Allow Meal Packages</span>
-            <img
-              v-b-popover.hover="
-                'Enables a button on your menu page which lets you create meal packages. These are groupings of individual meals and quantities on your menu and are displayed to your customer on your menu through a scrolling carousel. Enabling this also adds a Packages category to your menu.'
-              "
-              title="Allow Meal Packages"
-              src="/images/store/popover.png"
-              class="popover-size"
-            />
-          </p>
-
-          <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group :state="true">
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.meal_packages"
-                @change.native="updateStoreSettings"
-              />
-            </b-form-group>
-          </b-form>
-
-          <p>
-            <span class="mr-1">Allow Weekly Meal Plans</span>
-            <img
-              v-b-popover.hover="
-                'Shows a section on your bag/checkout page that lets the customer opt in for a weekly meal plan for an optional discount. The customer will then be charged every week. They can pause, cancel, or change meals in their meal plans.'
-              "
-              title="Allow Weekly Meal Plans"
-              src="/images/store/popover.png"
-              class="popover-size"
-            />
-          </p>
-
-          <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group :state="true">
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.allowMealPlans"
-                @change.native="updateStoreSettings"
-              />
-            </b-form-group>
-          </b-form>
-
-          <p>
-            <span class="mr-1">Enable Meal Instructions</span>
-            <img
-              v-b-popover.hover="
-                'Adds a new form field on each of your meals on the Menu page on your dashboard. Within that box you can type in special instructions specific to that particular meal such as heating instructions. If your customer orders that particular meal, these instructions will then be shown in their packing slips & email receipts. This is similar to the \'Notes for Customer\' option above, but for particular meals.'
-              "
-              title="Enable Meal Instructions"
-              src="/images/store/popover.png"
-              class="popover-size"
-            />
-          </p>
-
-          <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group :state="true">
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.mealInstructions"
-                @change.native="updateStoreSettings"
-              />
-            </b-form-group>
-          </b-form>
-
-          <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group :state="true" v-if="!storeModules.hideBranding">
+              </b-form>
+            </b-tab>
+            <b-tab title="Menu" active>
               <p>
-                <span class="mr-1">Menu Brand Color</span>
+                <span class="mr-1">Show Nutrition Facts</span>
                 <img
                   v-b-popover.hover="
-                    'Set the main color to show on your menu for buttons & the top navigation area. Try to match this to the main color of your logo. If you would like a color not shown in the color picker, please contact us.'
+                    'Nutrition facts are generated based on the ingredients you enter in for each meal on your Menu page. The nutrition is then shown to your customers if they click on any of your meals when ordering from you.'
                   "
-                  title="Menu Brand Color"
+                  title="Show Nutrition Facts"
                   src="/images/store/popover.png"
                   class="popover-size"
                 />
               </p>
-              <swatches v-model="color"></swatches>
-            </b-form-group>
-            <b-form-group :state="true" v-if="!storeModules.hideBranding">
-              <p>
-                <span class="mr-1">Main Website URL</span>
-                <img
-                  v-b-popover.hover="
-                    'Optionally link up your main website to your menu and checkout page. If your customer clicks your logo they will be redirected back to your main website.'
-                  "
-                  title="Main Website URL"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </p>
-              <b-form-input
-                id="website"
-                v-model="storeSettings.website"
-                placeholder="Example: http://goprep.com"
-              ></b-form-input>
-            </b-form-group>
-            <b-button type="submit" variant="primary mt-2">Save</b-button>
-          </b-form>
-        </div>
-      </div>
-
-      <p>Coupons</p>
-      <div class="card">
-        <div class="card-body">
-          <p>
-            <span class="mr-1">Coupons</span>
-            <img
-              v-b-popover.hover="
-                'Add a coupon that your customers can use on your checkout page. Choose the type - either an overall percentage of the bag or a flat amount.'
-              "
-              title="Coupons"
-              src="/images/store/popover.png"
-              class="popover-size"
-            />
-          </p>
-
-          <v-client-table
-            :columns="columns"
-            :data="tableData"
-            :options="{
-              orderBy: {
-                column: 'id',
-                ascending: true
-              },
-              headings: {
-                freeDelivery: 'Free Delivery',
-                oneTime: 'One Time'
-              },
-              filterable: false
-            }"
-          >
-            <div slot="beforeTable" class="mb-2">
-              <b-form @submit.prevent="saveCoupon">
-                <b-form-group id="coupon">
-                  <div class="row">
-                    <div class="col-md-2">
-                      <b-form-input
-                        id="coupon-code"
-                        v-model="coupon.code"
-                        required
-                        placeholder="Enter Coupon Code"
-                      ></b-form-input>
-                    </div>
-                    <div class="col-md-2">
-                      <b-form-radio-group v-model="coupon.type">
-                        <div class="row">
-                          <div class="col-md-6 pt-2">
-                            <b-form-radio name="coupon-type" value="flat"
-                              >Flat</b-form-radio
-                            >
-                          </div>
-                          <div class="col-md-6 pt-2">
-                            <b-form-radio name="coupon-type" value="percent"
-                              >Percent</b-form-radio
-                            >
-                          </div>
-                        </div>
-                      </b-form-radio-group>
-                    </div>
-                    <div class="col-md-2">
-                      <b-form-input
-                        id="coupon-code"
-                        v-model="coupon.amount"
-                        placeholder="Enter Amount"
-                      ></b-form-input>
-                    </div>
-                    <div class="col-md-2">
-                      <b-form-checkbox
-                        v-model="coupon.freeDelivery"
-                        value="1"
-                        unchecked-value="0"
-                        class="pt-2"
-                      >
-                        Free Delivery
-                      </b-form-checkbox>
-                    </div>
-                    <div class="col-md-2">
-                      <b-form-checkbox
-                        v-model="coupon.oneTime"
-                        value="1"
-                        unchecked-value="0"
-                        class="pt-2"
-                      >
-                        One Time
-                      </b-form-checkbox>
-                    </div>
-                    <div class="col-md-1">
-                      <b-button type="submit" variant="success">Add</b-button>
-                    </div>
-                  </div>
+              <b-form @submit.prevent="updateStoreSettings">
+                <b-form-group :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.showNutrition"
+                    @change.native="updateStoreSettings"
+                  />
                 </b-form-group>
               </b-form>
-            </div>
-
-            <div slot="freeDelivery" slot-scope="props">
-              <p v-if="props.row.freeDelivery" class="text-success">✓</p>
-              <p v-if="!props.row.freeDelivery" class="red">X</p>
-            </div>
-
-            <div slot="oneTime" slot-scope="props">
-              <p v-if="props.row.oneTime" class="text-success">✓</p>
-              <p v-if="!props.row.oneTime" class="red">X</p>
-            </div>
-
-            <div slot="actions" slot-scope="props" v-if="props.row.id !== -1">
-              <b-btn
-                variant="danger"
-                size="sm"
-                @click="e => deleteCoupon(props.row.id)"
-                >Delete</b-btn
-              >
-            </div>
-          </v-client-table>
-        </div>
-      </div>
-
-      <p v-if="!storeModules.hideBranding">Logo</p>
-      <div class="card" v-if="!storeModules.hideBranding">
-        <div class="card-body">
-          <b-form @submit.prevent="updateStoreLogo">
-            <b-form-group label="Logo" :state="true">
-              <picture-input
-                :ref="`storeImageInput`"
-                :prefill="logoPrefill"
-                @prefill="$refs[`storeImageInput`].onResize()"
-                :alertOnError="false"
-                :autoToggleAspectRatio="true"
-                margin="0"
-                size="10"
-                button-class="btn"
-                style="width: 180px; height: auto; margin: 0;"
-                @change="val => updateLogo(val)"
-              ></picture-input>
-            </b-form-group>
-            <div class="mt-3">
-              <b-button type="submit" variant="primary">Save</b-button>
-            </div>
-          </b-form>
-        </div>
-      </div>
-
-      <p>Notifications</p>
-      <div class="card">
-        <div class="card-body">
-          <b-form @submit.prevent="updateStoreSettings">
-            <b-form-group label="New Orders" :state="true">
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.notifications.new_order"
-                @change.native="updateStoreSettings"
-              />
-            </b-form-group>
-
-            <b-form-group label="New Meal Plans" :state="true">
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.notifications.new_subscription"
-                @change.native="updateStoreSettings"
-              />
-            </b-form-group>
-
-            <b-form-group label="Cancelled Meal Plans" :state="true">
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.notifications.cancelled_subscription"
-                @change.native="updateStoreSettings"
-              />
-            </b-form-group>
-
-            <b-form-group label="Ready to Print" :state="true">
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.notifications.ready_to_print"
-                @change.native="updateStoreSettings"
-              />
-            </b-form-group>
-
-            <!-- <b-button type="submit" variant="primary">Save</b-button> -->
-          </b-form>
-        </div>
-      </div>
-      <!-- <div class="card">
-        <div class="card-body">
-          <p>Automatic Ordering</p>
-
-          <p>Low Threshold</p>
-        </div>
-      </div>-->
-      <!--
-      <p>Reporting</p>
-      <div class="card">
-        <div class="card-body">
-          <b-form @submit.prevent="updateStoreSettings">
               <p>
-              Show # Delivery Days By Default
-              <img
-                v-b-popover.hover="'This sets the default date view in the calendars on all of the tables of the application. You may only want to see information about the next single upcoming delivery day, or you may want to see the next two delivery days. Enter 0 to see all upcoming delivery days.'"
-                title="Default Delivery Days"
-                src="/images/store/popover.png"
-                class="popover-size"
-              >
-            </p>
-            <b-form-group description="Enter 0 to Display All" :state="true">
-              <number-input
-                v-if="storeSettings"
-                type="number"
-                :disabled="null === storeSettings.view_delivery_days"
-                v-model="storeSettings.view_delivery_days"
-                :min="0"
-                :max="100"
-                placeholder
-                required
-              ></number-input>
-            </b-form-group>
-
-            <b-button type="submit" variant="primary">Submit</b-button>
-          </b-form>
-        </div>
-      </div>
-      -->
-
-      <p>Payments</p>
-      <div class="card">
-        <div class="card-body">
-          <div v-if="!storeSettings.stripe_id">
-            <b-form-group :state="true">
-              <b-button variant="primary" :href="stripeConnectUrl"
-                >Connect Account</b-button
-              >
-            </b-form-group>
-          </div>
-          <div v-else>
-            <b-form-group label="Stripe" :state="true"
-              >ID: {{ storeSettings.stripe_id }}</b-form-group
-            >
-            <a :href="payments_url" target="_blank">
-              <b-button type="submit" variant="primary">View Account</b-button>
-            </a>
-          </div>
-          <b-form @submit.prevent="updateStoreSettings">
-            <p class="mt-3 mb-0 pb-0">
-              <span class="mr-1">Sales Tax %</span>
-              <img
-                v-b-popover.hover="
-                  'Our system figures out your sales tax using the state you signed up with. You can override the number in the field below.'
-                "
-                title="Sales Tax"
-                src="/images/store/popover.png"
-                class="popover-size"
-              />
-            </p>
-            <b-form-group :state="true">
-              <b-form-input
-                label="Sales Tax"
-                class="mt-3"
-                type="text"
-                v-model="salesTax"
-                required
-              ></b-form-input>
-            </b-form-group>
-            <b-button type="submit" variant="primary">Save</b-button>
-          </b-form>
-        </div>
-      </div>
-
-      <p>Traffic Reporting</p>
-      <div class="card">
-        <div class="card-body">
-          <div>
-            <b-form @submit.prevent="updateStoreSettings">
-              <p>
-                <span class="mr-1">Google Analytics Code</span>
+                <span class="mr-1">Show Macros</span>
                 <img
                   v-b-popover.hover="
-                    'Create a Google Analytics account and paste in your tracking code below. You\'ll then be able to see all kinds of traffic reports about who viewed your menu page. Please follow the exact format that is shown to you which looks like this: UA-00000000-00. If you need help setting up your Google Analytics account, please contact us and we\'ll be glad to set it up for you.'
+                    'Enables input fields for your to add your meal\'s calories, carbs, protein, and fat. This then shows up underneath your meal titles on your menu page. If you have Nutrition Facts enabled as well, please keep the numbers the same as your customers will see any differences.'
                   "
-                  title="Google Analytics"
+                  title="Show Macros"
                   src="/images/store/popover.png"
                   class="popover-size"
                 />
               </p>
-              <b-form-group :state="true">
+              <b-form @submit.prevent="updateStoreSettings">
+                <b-form-group :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.showMacros"
+                    @change.native="updateStoreSettings"
+                  />
+                </b-form-group>
+              </b-form>
+              <p>
+                <span class="mr-1">Show Ingredients</span>
+                <img
+                  v-b-popover.hover="
+                    'Ingredients of your meals are shown for each meal on your menu if the user clicks on the meal. You can choose to show or hide them with this option.'
+                  "
+                  title="Show Ingredients"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+              <b-form @submit.prevent="updateStoreSettings">
+                <b-form-group :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.showIngredients"
+                    @change.native="updateStoreSettings"
+                  />
+                </b-form-group>
+              </b-form>
+
+              <p>
+                <span class="mr-1">Allow Meal Packages</span>
+                <img
+                  v-b-popover.hover="
+                    'Enables a button on your menu page which lets you create meal packages. These are groupings of individual meals and quantities on your menu and are displayed to your customer on your menu through a scrolling carousel. Enabling this also adds a Packages category to your menu.'
+                  "
+                  title="Allow Meal Packages"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+
+              <b-form @submit.prevent="updateStoreSettings">
+                <b-form-group :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.meal_packages"
+                    @change.native="updateStoreSettings"
+                  />
+                </b-form-group>
+              </b-form>
+
+              <p>
+                <span class="mr-1">Allow Weekly Meal Plans</span>
+                <img
+                  v-b-popover.hover="
+                    'Shows a section on your bag/checkout page that lets the customer opt in for a weekly meal plan for an optional discount. The customer will then be charged every week. They can pause, cancel, or change meals in their meal plans.'
+                  "
+                  title="Allow Weekly Meal Plans"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+
+              <b-form @submit.prevent="updateStoreSettings">
+                <b-form-group :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.allowMealPlans"
+                    @change.native="updateStoreSettings"
+                  />
+                </b-form-group>
+              </b-form>
+
+              <p>
+                <span class="mr-1">Enable Meal Instructions</span>
+                <img
+                  v-b-popover.hover="
+                    'Adds a new form field on each of your meals on the Menu page on your dashboard. Within that box you can type in special instructions specific to that particular meal such as heating instructions. If your customer orders that particular meal, these instructions will then be shown in their packing slips & email receipts. This is similar to the \'Notes for Customer\' option above, but for particular meals.'
+                  "
+                  title="Enable Meal Instructions"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+
+              <b-form @submit.prevent="updateStoreSettings">
+                <b-form-group :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.mealInstructions"
+                    @change.native="updateStoreSettings"
+                  />
+                </b-form-group>
+              </b-form>
+
+              <b-form @submit.prevent="updateStoreSettings">
+                <b-form-group :state="true" v-if="!storeModules.hideBranding">
+                  <p>
+                    <span class="mr-1">Menu Brand Color</span>
+                    <img
+                      v-b-popover.hover="
+                        'Set the main color to show on your menu for buttons & the top navigation area. Try to match this to the main color of your logo. If you would like a color not shown in the color picker, please contact us.'
+                      "
+                      title="Menu Brand Color"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <swatches v-model="color"></swatches>
+                </b-form-group>
+                <b-form-group :state="true" v-if="!storeModules.hideBranding">
+                  <p>
+                    <span class="mr-1">Main Website URL</span>
+                    <img
+                      v-b-popover.hover="
+                        'Optionally link up your main website to your menu and checkout page. If your customer clicks your logo they will be redirected back to your main website.'
+                      "
+                      title="Main Website URL"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <b-form-input
+                    id="website"
+                    v-model="storeSettings.website"
+                    placeholder="Example: http://goprep.com"
+                  ></b-form-input>
+                </b-form-group>
+                <b-button type="submit" variant="primary mt-2">Save</b-button>
+              </b-form>
+            </b-tab>
+            <b-tab title="Coupons" active>
+              <p>
+                <span class="mr-1">Coupons</span>
+                <img
+                  v-b-popover.hover="
+                    'Add a coupon that your customers can use on your checkout page. Choose the type - either an overall percentage of the bag or a flat amount.'
+                  "
+                  title="Coupons"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+
+              <v-client-table
+                :columns="columns"
+                :data="tableData"
+                :options="{
+                  orderBy: {
+                    column: 'id',
+                    ascending: true
+                  },
+                  headings: {
+                    freeDelivery: 'Free Delivery',
+                    oneTime: 'One Time'
+                  },
+                  filterable: false
+                }"
+              >
+                <div slot="beforeTable" class="mb-2">
+                  <b-form @submit.prevent="saveCoupon">
+                    <b-form-group id="coupon">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <b-form-input
+                            id="coupon-code"
+                            v-model="coupon.code"
+                            required
+                            placeholder="Enter Coupon Code"
+                          ></b-form-input>
+                        </div>
+                        <div class="col-md-2">
+                          <b-form-radio-group v-model="coupon.type">
+                            <div class="row">
+                              <div class="col-md-6 pt-2">
+                                <b-form-radio name="coupon-type" value="flat"
+                                  >Flat</b-form-radio
+                                >
+                              </div>
+                              <div class="col-md-6 pt-2">
+                                <b-form-radio name="coupon-type" value="percent"
+                                  >Percent</b-form-radio
+                                >
+                              </div>
+                            </div>
+                          </b-form-radio-group>
+                        </div>
+                        <div class="col-md-2">
+                          <b-form-input
+                            id="coupon-code"
+                            v-model="coupon.amount"
+                            placeholder="Enter Amount"
+                          ></b-form-input>
+                        </div>
+                        <div class="col-md-2">
+                          <b-form-checkbox
+                            v-model="coupon.freeDelivery"
+                            value="1"
+                            unchecked-value="0"
+                            class="pt-2"
+                          >
+                            Free Delivery
+                          </b-form-checkbox>
+                        </div>
+                        <div class="col-md-2">
+                          <b-form-checkbox
+                            v-model="coupon.oneTime"
+                            value="1"
+                            unchecked-value="0"
+                            class="pt-2"
+                          >
+                            One Time
+                          </b-form-checkbox>
+                        </div>
+                        <div class="col-md-1">
+                          <b-button type="submit" variant="success"
+                            >Add</b-button
+                          >
+                        </div>
+                      </div>
+                    </b-form-group>
+                  </b-form>
+                </div>
+
+                <div slot="freeDelivery" slot-scope="props">
+                  <p v-if="props.row.freeDelivery" class="text-success">✓</p>
+                  <p v-if="!props.row.freeDelivery" class="red">X</p>
+                </div>
+
+                <div slot="oneTime" slot-scope="props">
+                  <p v-if="props.row.oneTime" class="text-success">✓</p>
+                  <p v-if="!props.row.oneTime" class="red">X</p>
+                </div>
+
+                <div
+                  slot="actions"
+                  slot-scope="props"
+                  v-if="props.row.id !== -1"
+                >
+                  <b-btn
+                    variant="danger"
+                    size="sm"
+                    @click="e => deleteCoupon(props.row.id)"
+                    >Delete</b-btn
+                  >
+                </div>
+              </v-client-table>
+            </b-tab>
+            <b-tab title="Notifications" active>
+              <b-form @submit.prevent="updateStoreSettings">
+                <b-form-group label="New Orders" :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.notifications.new_order"
+                    @change.native="updateStoreSettings"
+                  />
+                </b-form-group>
+
+                <b-form-group label="New Meal Plans" :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.notifications.new_subscription"
+                    @change.native="updateStoreSettings"
+                  />
+                </b-form-group>
+
+                <b-form-group label="Cancelled Meal Plans" :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.notifications.cancelled_subscription"
+                    @change.native="updateStoreSettings"
+                  />
+                </b-form-group>
+
+                <b-form-group label="Ready to Print" :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.notifications.ready_to_print"
+                    @change.native="updateStoreSettings"
+                  />
+                </b-form-group>
+              </b-form>
+            </b-tab>
+            <b-tab title="Other" active>
+              <p>https://{{ storeDetails.domain }}.goprep.com</p>
+              <b-form
+                @submit.prevent="updateStoreLogo"
+                v-if="!storeModules.hideBranding"
+              >
+                <b-form-group label="Logo" :state="true">
+                  <picture-input
+                    :ref="`storeImageInput`"
+                    :prefill="logoPrefill"
+                    @prefill="$refs[`storeImageInput`].onResize()"
+                    :alertOnError="false"
+                    :autoToggleAspectRatio="true"
+                    margin="0"
+                    size="10"
+                    button-class="btn"
+                    style="width: 180px; height: auto; margin: 0;"
+                    @change="val => updateLogo(val)"
+                  ></picture-input>
+                </b-form-group>
+                <div class="mt-3">
+                  <b-button type="submit" variant="primary">Save</b-button>
+                </div>
+              </b-form>
+              <div v-if="!storeSettings.stripe_id">
+                <b-form-group :state="true">
+                  <b-button variant="primary" :href="stripeConnectUrl"
+                    >Connect Bank Account</b-button
+                  >
+                </b-form-group>
+              </div>
+              <div v-else class="mt-2">
+                <b-form-group :state="true"
+                  >ID: {{ storeSettings.stripe_id }}</b-form-group
+                >
+                <a :href="payments_url" target="_blank">
+                  <b-button type="submit" variant="primary"
+                    >View Stripe Account</b-button
+                  >
+                </a>
+              </div>
+              <b-form @submit.prevent="updateStoreSettings">
+                <p class="mt-3 mb-0 pb-0">
+                  <span class="mr-1">Sales Tax %</span>
+                  <img
+                    v-b-popover.hover="
+                      'Our system figures out your sales tax using the state you signed up with. You can override the number in the field below.'
+                    "
+                    title="Sales Tax"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <b-form-group :state="true">
+                  <b-form-input
+                    label="Sales Tax"
+                    class="mt-3"
+                    type="text"
+                    v-model="salesTax"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+                <p class="mt-2">
+                  <span class="mr-1">Google Analytics Code</span>
+                  <img
+                    v-b-popover.hover="
+                      'Create a Google Analytics account and paste in your tracking code below. You\'ll then be able to see all kinds of traffic reports about who viewed your menu page. Please follow the exact format that is shown to you which looks like this: UA-00000000-00. If you need help setting up your Google Analytics account, please contact us and we\'ll be glad to set it up for you.'
+                    "
+                    title="Google Analytics"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <b-form-group :state="true" class="mt-2">
+                  <b-form-input
+                    type="text"
+                    v-model="storeSettings.gaCode"
+                    placeholder="UA-00000000-00"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+                <b-button type="submit" variant="primary">Save</b-button>
+              </b-form>
+              <b-form @submit.prevent="closeStore" v-if="canOpen">
+                <p class="mt-2">
+                  <span class="mr-1 mt-2">Open</span>
+                  <img
+                    v-b-popover.hover="
+                      'You can toggle this off to stop accepting new orders from customers for any reason. Please be sure to fill out the reason below to communicate to your customers.'
+                    "
+                    title="Open or Closed"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeSettings.open"
+                  @change.native="checkTOAforModal"
+                />
+
                 <b-form-input
-                  class="mt-3"
+                  v-if="!storeSettings.open"
                   type="text"
-                  v-model="storeSettings.gaCode"
-                  placeholder="UA-00000000-00"
+                  v-model="storeSettings.closedReason"
+                  placeholder="Please include the reason to give to customers as to why you are currently not accepting new orders."
                   required
                 ></b-form-input>
-              </b-form-group>
-              <b-button type="submit" variant="primary">Save</b-button>
-            </b-form>
-          </div>
-        </div>
-      </div>
+
+                <div class="mt-3">
+                  <b-button type="submit" variant="primary">Save</b-button>
+                </div>
+              </b-form>
+
+              <div v-else>
+                Please enter all settings fields to open your store.
+              </div>
+            </b-tab>
+          </b-tabs>
+        </b-col>
+      </b-row>
 
       <b-modal
         v-model="showTOAModal"
@@ -1010,46 +980,6 @@
           >Continue</b-btn
         >
       </b-modal>
-
-      <p>Open</p>
-      <div class="card">
-        <div class="card-body">
-          <b-form @submit.prevent="closeStore" v-if="canOpen">
-            <p>
-              <span class="mr-1">Open</span>
-              <img
-                v-b-popover.hover="
-                  'You can toggle this off to stop accepting new orders from customers for any reason. Please be sure to fill out the reason below to communicate to your customers.'
-                "
-                title="Open or Closed"
-                src="/images/store/popover.png"
-                class="popover-size"
-              />
-            </p>
-            <c-switch
-              color="success"
-              variant="pill"
-              size="lg"
-              v-model="storeSettings.open"
-              @change.native="checkTOAforModal"
-            />
-
-            <b-form-input
-              v-if="!storeSettings.open"
-              type="text"
-              v-model="storeSettings.closedReason"
-              placeholder="Please include the reason to give to customers as to why you are currently not accepting new orders."
-              required
-            ></b-form-input>
-
-            <div class="mt-3">
-              <b-button type="submit" variant="primary">Save</b-button>
-            </div>
-          </b-form>
-
-          <div v-else>Please enter all settings fields to open your store.</div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -1057,6 +987,13 @@
 <style lang="scss" scoped>
 .VueTables__search {
   display: none;
+}
+</style>
+
+<style>
+.nav-tabs .nav-item {
+  margin-bottom: -10px;
+  margin-right: 2px;
 }
 </style>
 

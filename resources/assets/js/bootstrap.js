@@ -1,8 +1,10 @@
-window._ = require('lodash');
-window.Popper = require('popper.js').default;
-window.Cookies = require('js-cookie');
+window._ = require("lodash");
+window.Popper = require("popper.js").default;
+window.Cookies = require("js-cookie");
+window.nl2br = require("locutus/php/strings/nl2br");
+window.sprintf = require("locutus/php/strings/sprintf");
 
-const moment = require('moment');
+const moment = require("moment");
 /*
 moment.defaultFormat = 'ddd, MMMM Do';
 moment.defaultFormatUtc = 'ddd, MMMM Do';
@@ -18,9 +20,9 @@ window.moment = moment;
  */
 
 try {
-  window.$ = window.jQuery = require('jquery');
+  window.$ = window.jQuery = require("jquery");
 
-  require('bootstrap');
+  require("bootstrap");
 } catch (e) {}
 
 /**
@@ -29,9 +31,9 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = require('axios');
+window.axios = require("axios");
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 //window.axios.defaults.baseURL = process.env.MIX_APP_URL;
 
 /**
@@ -43,12 +45,12 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 let token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+  window.axios.defaults.headers.common["X-CSRF-TOKEN"] = token.content;
 } else {
-    console.error('CSRF token not found');
+  console.error("CSRF token not found");
 }
 
-import auth from './lib/auth';
+import auth from "./lib/auth";
 auth.init();
 
 //const jwt = auth.getToken();

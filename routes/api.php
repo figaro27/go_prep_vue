@@ -22,6 +22,8 @@ foreach (
     as $domain
 ) {
     //Auth::routes();
+
+    // Auth routes
     Route::group(
         [
             'middleware' => ['api', 'store_slug'],
@@ -57,6 +59,12 @@ foreach (
                 if (!auth('api')->check()) {
                     return response('', 401);
                 }
+            });
+
+            Route::get('plans', function () {
+                return [
+                    'plans' => config('plans')
+                ];
             });
 
             Route::get('/', [

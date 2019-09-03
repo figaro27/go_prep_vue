@@ -138,6 +138,11 @@ class RegisterController extends Controller
                     //'accepted_toa' => 'in:1'
                 ]);
                 break;
+
+            case '3':
+                $v = Validator::make($request->all(), [
+                    'plan' => 'required'
+                ]);
         }
 
         return $v->validate();
@@ -283,6 +288,71 @@ class RegisterController extends Controller
                 );
             } catch (\Exception $e) {
                 // todo: send notification to admin
+            }
+
+            // Create plan
+            $plans = config('plans');
+            $planObj = collect($data['plan']);
+            $planId = $planObj->get('plan');
+            $planMethod = $planObj->get('plan_method');
+            $planPeriod = $planObj->get('plan_period');
+            $planToken = $planObj->get('stripe_token');
+            $payAsYouGo = $planId === 'pay-as-you-go';
+
+            try {
+                $plan = collect($plans[$planId][$planPeriod]);
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
+            }
+
+            $upfrontFee = $plan->get('price_upfront', null);
+
+            if (!$payAsYouGo) {
+                $storePlan = new StorePlan();
+                $storePlan->active = 1;
+                $storePlan->store_id = $store->id;
+                $storePlan->method = $planMethod;
+                $storePlan->amount = $plan->get('price');
+                $storePlan->period = $planPeriod;
+                $storePlan->day = date('d');
+            }
+
+            // A credit card was entered
+            if ($planToken) {
+                // Create customer
+                $customer = \Stripe\Customer::create([
+                    'description' => '',
+                    'source' => $planToken
+                ]);
+            }
+
+            // If using credit card billing, charge here
+            if (!$payAsYouGo && $planMethod === 'credit_card') {
+                $subscription = \Stripe\Subscription::create([
+                    'customer' => $customer,
+                    'items' => [
+                        [
+                            'plan' => $plan->get('stripe_id')
+                        ]
+                    ]
+                ]);
+
+                $storePlan->stripe_customer_id = $customer->id;
+                $storePlan->stripe_subscription_id = $subscription->id;
+            }
+
+            // Charge the up-front fee
+            if ($upfrontFee) {
+                $charge = \Stripe\Charge::create([
+                    'amount' => $upfrontFee,
+                    'currency' => 'usd',
+                    'customer' => $customer,
+                    'description' => 'GoPrep: One-time signup fee'
+                ]);
+            }
+
+            if (!$payAsYouGo) {
+                $storePlan->save();
             }
         }
 
