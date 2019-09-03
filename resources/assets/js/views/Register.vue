@@ -455,22 +455,69 @@
 
               <b-form-group horizontal>
                 <b-button
+                  @click="next()"
+                  :disabled="$v.form[0].$invalid"
+                  variant="primary"
+                  >Next</b-button
+                >
+              </b-form-group>
+            </div>
+
+            <div v-if="step === 3">
+              <h4>Payment Details</h4>
+
+              <b-form-group label="Billing method" horizontal>
+                <b-form-radio-group
+                  v-model="form[3].plan_method"
+                  :options="[
+                    { text: 'Credit Card', value: 'credit_card' },
+                    { text: 'Bank Transfer', value: 'connect' }
+                  ]"
+                ></b-form-radio-group>
+              </b-form-group>
+
+              <b-form-group label="Billing period" horizontal>
+                <b-form-radio-group
+                  v-model="form[3].plan_period"
+                  :options="[
+                    { text: 'Monthly', value: 'monthly' },
+                    { text: 'Annually', value: 'annually' }
+                  ]"
+                ></b-form-radio-group>
+              </b-form-group>
+
+              <b-form-group label="Select Plan" horizontal>
+                <b-form-radio-group
+                  v-model="form[3].plan"
+                  :options="planOptions"
+                  stacked
+                ></b-form-radio-group>
+              </b-form-group>
+
+              <div v-if="planRequiresCard" class="mb-2">
+                <card
+                  class="stripe-card"
+                  :stripe="stripeKey"
+                  :options="stripeOptions"
+                  :class="{ cardStatus }"
+                  @change="onChangeCard"
+                />
+              </div>
+              <div v-else></div>
+              <b-form-group horizontal>
+                <b-button
                   type="submit"
                   v-if="!manualOrder"
-                  :disabled="$v.form[2].$invalid"
+                  :disabled="$v.form[3].$invalid"
                   variant="primary"
                   >Submit</b-button
                 >
               </b-form-group>
-              <b-form-group horizontal>
-                <b-button
-                  type="submit"
-                  v-if="manualOrder"
-                  :disabled="$v.form[2].$invalid"
-                  variant="primary"
-                  >Add New Customer</b-button
-                >
-              </b-form-group>
+              <p>
+                To choose the "Pay as you go" plan and pay a 5% transaction fee
+                per order with no monthly cost, please contact us
+                <a href="https://www.goprep.com/get-started/">here.</a>
+              </p>
             </div>
           </b-form>
         </div>
@@ -482,8 +529,10 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { required, minLength, email, sameAs } from "vuelidate/lib/validators";
+import { createToken } from "vue-stripe-elements-plus";
 import validators from "../validators";
 import auth from "../lib/auth";
+import format from "../lib/format";
 import TermsOfService from "./TermsOfService";
 import TermsOfAgreement from "./TermsOfAgreement";
 import countries from "../data/countries.js";
@@ -507,6 +556,10 @@ export default {
     return {
       redirect: null,
       step: 0,
+      plans: {},
+      stripeKey: window.app.stripe_key,
+      stripeOptions: {},
+      cardStatus: null,
 
       form: {
         0: {
@@ -538,6 +591,12 @@ export default {
           country: "US",
           accepted_tos: 0
           //accepted_toa: 0
+        },
+        3: {
+          plan: null,
+          plan_method: "credit_card",
+          plan_period: "monthly",
+          stripe_token: null
         }
       },
       feedback: {
@@ -552,6 +611,45 @@ export default {
     },
     currencyOptions() {
       return currencies.selectOptions();
+    },
+    planOptions() {
+      return _.map(this.plans, (plan, planId) => {
+        const period = this.form[3].plan_period;
+        const planDetails = plan[period];
+        return {
+          text: sprintf(
+            "%s - %s %s %s",
+            plan.title,
+            format.money(planDetails.price / 100),
+            period === "monthly" ? "Per Month" : "Per Year",
+            planDetails.price_upfront
+              ? ` &amp; ${format.money(
+                  planDetails.price_upfront / 100
+                )} up front`
+              : ""
+          ),
+          value: planId
+        };
+      });
+    },
+    planSelected() {
+      if (!this.form[3].plan) {
+        return null;
+      }
+
+      const period = this.form[3].plan_period;
+      const planId = this.form[3].plan;
+
+      return this.plans[planId][period] || null;
+    },
+    planRequiresCard() {
+      let requires = this.form[3].plan_method === "credit_card";
+
+      if (this.planSelected && 0 < parseInt(this.planSelected.price_upfront)) {
+        requires = true;
+      }
+
+      return requires;
     }
   },
   validations: {
@@ -584,14 +682,26 @@ export default {
         country: validators.required,
         accepted_tos: validators.required
         //accepted_toa: validators.required
+      },
+      3: {
+        plan: validators.required,
+        plan_method: validators.required,
+        plan_period: validators.required,
+        stripe_token: validators.required(val => {
+          return this.planRequiresCard;
+        })
       }
     },
-    validationGroup: ["form[0]", "form[1]", "form[3]"]
+    validationGroup: ["form[0]", "form[1]", "form[2]", "form[3]"]
   },
   created() {
     if (!_.isEmpty(this.$route.query.redirect)) {
       this.redirect = this.$route.query.redirect;
     }
+
+    axios.get("/api/plans").then(resp => {
+      this.plans = resp.data.plans;
+    });
   },
   mounted() {},
   methods: {
@@ -659,8 +769,10 @@ export default {
         if (await this.validate(this.step)) {
           if (this.form[0].role === "customer") {
             this.step++;
-          } else {
+          } else if (this.step === 0) {
             this.step += 2;
+          } else {
+            this.step++;
           }
         } else if (this.form[1].accepted_tos === 0) {
           this.$toastr.e(
@@ -686,7 +798,7 @@ export default {
         user: this.form[0],
         user_details: this.form[1],
         store: this.form[2],
-        plan_id: this.plan_id
+        plan: this.form[3]
       };
 
       if (data.user.role === "store") {
@@ -729,6 +841,17 @@ export default {
     },
     changeCountry(country, formNumber) {
       this.form[formNumber].country = country;
+    },
+    async onChangeCard($event) {
+      this.cardStatus = $event.complete;
+      if ($event.complete) {
+        const result = await createToken();
+
+        if (result.token && result.token.id) {
+          this.form[3].stripe_token = result.token.id;
+        } else if (result.error) {
+        }
+      }
     }
   }
 };
