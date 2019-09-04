@@ -25,23 +25,7 @@
     <category-slider></category-slider>
 
     <div class="menu ml-auto mr-auto">
-      <div v-if="storeSettings.open === false">
-        <div class="row">
-          <div class="col-sm-12 mt-3">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="center-text">
-                  This company will not be taking new orders at this time.
-                </h5>
-                <p class="center-text mt-3">
-                  <strong>Reason:</strong>
-                  {{ storeSettings.closedReason }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <store-closed></store-closed>
 
       <div class="modal-basic">
         <b-modal
@@ -1079,6 +1063,7 @@ import { Carousel, Slide } from "vue-carousel";
 
 import CategorySlider from "../../components/Customer/Mobile/CategorySlider";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
+import StoreClosed from "../../components/Customer/StoreClosed";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -1094,7 +1079,8 @@ export default {
     MealComponentsModal,
     MealPackageComponentsModal,
     CategorySlider,
-    OutsideDeliveryArea
+    OutsideDeliveryArea,
+    StoreClosed
   },
   mixins: [MenuBag],
   props: {
