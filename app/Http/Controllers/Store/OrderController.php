@@ -75,6 +75,13 @@ class OrderController extends StoreController
     public function getOrdersWithDates(Request $request)
     {
         $paymentsPage = $request->get('payments');
+
+        if ($request->get('end') != null) {
+            $endDate = $request->get('end');
+        } else {
+            $endDate = $request->get('start');
+        }
+
         $date = '';
         if ($paymentsPage) {
             $date = 'created_at';
@@ -88,7 +95,7 @@ class OrderController extends StoreController
                 ->with(['user', 'pickup_location'])
                 ->where(['paid' => 1])
                 ->where($date, '>=', $request->get('start'))
-                ->where($date, '<=', $request->get('end'))
+                ->where($date, '<=', $endDate)
                 ->get()
             : [];
     }
