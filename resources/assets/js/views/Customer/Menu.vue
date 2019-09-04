@@ -1093,7 +1093,8 @@ export default {
     Slide,
     MealComponentsModal,
     MealPackageComponentsModal,
-    CategorySlider
+    CategorySlider,
+    OutsideDeliveryArea
   },
   mixins: [MenuBag],
   props: {
