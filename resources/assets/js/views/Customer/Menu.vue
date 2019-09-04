@@ -26,17 +26,9 @@
 
     <div class="menu ml-auto mr-auto">
       <store-closed></store-closed>
-
-      <div class="modal-basic">
-        <b-modal
-          :title="store.details.name"
-          size="lg"
-          v-model="showDescriptionModal"
-          v-if="showDescriptionModal"
-        >
-          <p v-html="description"></p>
-        </b-modal>
-      </div>
+      <store-description-modal
+        :showDescriptionModal="showDescriptionModal"
+      ></store-description-modal>
 
       <div class="modal-basic">
         <b-modal
@@ -1064,6 +1056,7 @@ import { Carousel, Slide } from "vue-carousel";
 import CategorySlider from "../../components/Customer/Mobile/CategorySlider";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import StoreClosed from "../../components/Customer/StoreClosed";
+import StoreDescriptionModal from "../../components/Customer/StoreDescriptionModal";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -1080,7 +1073,8 @@ export default {
     MealPackageComponentsModal,
     CategorySlider,
     OutsideDeliveryArea,
-    StoreClosed
+    StoreClosed,
+    StoreDescriptionModal
   },
   mixins: [MenuBag],
   props: {
@@ -1221,9 +1215,6 @@ export default {
     mobile() {
       if (window.innerWidth < 500) return true;
       else return false;
-    },
-    description() {
-      return this.store.details.description;
     },
     nutrition() {
       return nutrition;
