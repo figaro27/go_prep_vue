@@ -365,14 +365,17 @@ export default {
 
       let dates = this.delivery_dates[report];
 
-      if (dates.end === null) {
-        dates.end = dates.start;
+      let endDate = "";
+      if (dates.end != null) {
+        endDate = dates.end;
+      } else {
+        endDate = dates.start;
       }
 
       if (dates.start) {
         params.delivery_dates = {
           from: dates.start,
-          to: dates.end
+          to: endDate
         };
 
         const warning = this.checkDateRange({ ...dates });
