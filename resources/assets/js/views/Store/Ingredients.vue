@@ -274,6 +274,14 @@ export default {
           from: this.filters.delivery_dates.start,
           to: this.filters.delivery_dates.end
         };
+      } else if (
+        this.filters.delivery_dates.start &&
+        !this.filters.delivery_dates.end
+      ) {
+        params.delivery_dates = {
+          from: this.filters.delivery_dates.start,
+          to: this.filters.delivery_dates.start
+        };
       }
 
       axios
