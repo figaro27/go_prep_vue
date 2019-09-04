@@ -375,7 +375,7 @@ export default {
       if (dates.start) {
         params.delivery_dates = {
           from: dates.start,
-          to: endDate
+          to: dates.start
         };
 
         const warning = this.checkDateRange({ ...dates });
