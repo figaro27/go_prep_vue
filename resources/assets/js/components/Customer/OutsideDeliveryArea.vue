@@ -1,42 +1,21 @@
 <template>
   <div>
-    <h1>TEST</h1>
+    <div v-if="!willDeliver && loggedIn">
+      <b-alert variant="danger center-text" show
+        >You are outside of the delivery area.</b-alert
+      >
+    </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from "vuex";
+import { mapGetters } from "vuex";
 export default {
   computed: {
     ...mapGetters({
-      store: "viewedStore",
-      storeCustomers: "storeCustomers",
-      storeSetting: "viewedStoreSetting",
-      total: "bagQuantity",
-      allergies: "allergies",
-      bag: "bagItems",
-      hasMeal: "bagHasMeal",
       willDeliver: "viewedStoreWillDeliver",
-      _categories: "viewedStoreCategories",
-      storeLogo: "viewedStoreLogo",
-      isLoading: "isLoading",
-      totalBagPricePreFees: "totalBagPricePreFees",
-      totalBagPrice: "totalBagPrice",
-      loggedIn: "loggedIn",
-      minOption: "minimumOption",
-      minMeals: "minimumMeals",
-      minPrice: "minimumPrice",
-      getMeal: "viewedStoreMeal",
-      getMealPackage: "viewedStoreMealPackage"
+      loggedIn: "loggedIn"
     })
-  },
-  methods: {
-    ...mapActions([
-      "refreshSubscriptions",
-      "emptyBag",
-      "refreshUpcomingOrders"
-    ]),
-    ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"])
   }
 };
 </script>
