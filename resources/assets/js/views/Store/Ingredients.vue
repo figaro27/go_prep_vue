@@ -138,10 +138,15 @@ export default {
   watch: {
     "filters.delivery_dates": function(dates) {
       let params = {};
-      if (dates.start || dates.end) {
+      if (dates.start && dates.end) {
         params.delivery_dates = {
           from: moment.utc(dates.start).toISOString(),
           to: moment.utc(dates.end).toISOString()
+        };
+      } else if (dates.start && !dates.end) {
+        params.delivery_dates = {
+          from: moment.utc(dates.start).toISOString(),
+          to: moment.utc(dates.start).toISOString()
         };
       }
       this.refreshOrderIngredients(params);
