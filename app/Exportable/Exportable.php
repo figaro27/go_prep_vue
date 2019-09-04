@@ -146,6 +146,10 @@ trait Exportable
         if ($this->params && $this->params->has('delivery_dates')) {
             $dates = json_decode($this->params->get('delivery_dates'));
 
+            if ($dates->to == null) {
+                $dates->to = $dates->from;
+            }
+
             $dates = [
                 'from' => Carbon::parse($dates->from)->startOfDay(),
                 'to' => Carbon::parse($dates->to)->endOfDay()

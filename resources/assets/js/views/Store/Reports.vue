@@ -1,5 +1,15 @@
 <template>
   <div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <div class="alert alert-success center" role="alert">
+          <p class="center-text">
+            Please select a date range for each report. If you only want reports
+            for a single day please select the same day twice.
+          </p>
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="col-md-12">
         <h2 class="center-text mb-4">Production</h2>
@@ -364,18 +374,10 @@ export default {
       let params = {};
 
       let dates = this.delivery_dates[report];
-
-      let endDate = "";
-      if (dates.end != null) {
-        endDate = dates.end;
-      } else {
-        endDate = dates.start;
-      }
-
-      if (dates.start) {
+      if (dates.start && dates.end) {
         params.delivery_dates = {
           from: dates.start,
-          to: dates.start
+          to: dates.end
         };
 
         const warning = this.checkDateRange({ ...dates });
