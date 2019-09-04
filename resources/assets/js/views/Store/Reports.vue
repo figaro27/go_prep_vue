@@ -364,10 +364,16 @@ export default {
       let params = {};
 
       let dates = this.delivery_dates[report];
-      if (dates.start && dates.end) {
+      if (dates.start) {
         params.delivery_dates = {
           from: dates.start,
-          to: dates.end
+          if (dates.end != null){
+            to: dates.end
+          }
+          else {
+            to: dates.start
+          }
+
         };
 
         const warning = this.checkDateRange({ ...dates });
