@@ -49,9 +49,12 @@
                 :slickOptions="slickOptions"
                 :storeSettings="storeSettings"
                 :mealDescription="mealDescription"
+                :ingredients="ingredients"
               ></meal-modal>
 
-              <meal-package-modal></meal-package-modal>
+              <meal-package-modal
+                :mealPackageModal="mealPackageModal"
+              ></meal-package-modal>
 
               <div class="row">
                 <div class="col-sm-12">
@@ -80,253 +83,16 @@
                     v-if="!meals.length && !mealPackages.length"
                     position="absolute"
                   />
-                  <div
-                    v-for="(group, catIndex) in meals"
-                    :key="group.category"
-                    :id="slugify(group.category)"
-                    v-observe-visibility="
-                      (isVisible, entry) =>
-                        onCategoryVisible(isVisible, catIndex)
-                    "
-                    class="categories"
-                  >
-                    <h2 class="text-center mb-3 dbl-underline">
-                      {{ group.category }}
-                    </h2>
-                    <div class="row">
-                      <div
-                        class="item col-sm-6 col-lg-4 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3"
-                        v-for="(meal, i) in group.meals"
-                        :key="meal.id"
-                      >
-                        <div :class="card">
-                          <div :class="cardBody">
-                            <div class="item-wrap">
-                              <div class="title d-md-none">
-                                {{ meal.title }}
-                              </div>
+                  <meals-area
+                    :meals="meals"
+                    :card="card"
+                    :cardBody="cardBody"
+                    @onCategoryVisible="onCategoryVisible($event)"
+                  ></meals-area>
 
-                              <div class="image">
-                                <thumbnail
-                                  v-if="meal.image.url_medium"
-                                  :src="meal.image.url_medium"
-                                  class="menu-item-img"
-                                  width="100%"
-                                  @click="showMealModal(meal)"
-                                  style="background-color:#ffffff"
-                                ></thumbnail>
-
-                                <div class="price">
-                                  {{
-                                    format.money(
-                                      meal.price,
-                                      storeSettings.currency
-                                    )
-                                  }}
-                                </div>
-                              </div>
-
-                              <div class="meta">
-                                <div class="title d-none d-md-block">
-                                  {{ meal.title }}
-                                </div>
-                                <div
-                                  class="title"
-                                  v-if="meal.macros && storeSettings.showMacros"
-                                >
-                                  <div class="row">
-                                    <div class="col-12 col-md-3">
-                                      <div class="row">
-                                        <p class="small strong col-6 col-md-12">
-                                          Calories
-                                        </p>
-                                        <p class="small col-6 col-md-12">
-                                          {{ meal.macros.calories }}
-                                        </p>
-                                      </div>
-                                    </div>
-                                    <div class="col-12 col-md-3">
-                                      <div class="row">
-                                        <p class="small strong col-6 col-md-12">
-                                          Carbs
-                                        </p>
-                                        <p class="small col-6 col-md-12">
-                                          {{ meal.macros.carbs }}
-                                        </p>
-                                      </div>
-                                    </div>
-                                    <div class="col-12 col-md-3">
-                                      <div class="row">
-                                        <p class="small strong col-6 col-md-12">
-                                          Protein
-                                        </p>
-                                        <p class="small col-6 col-md-12">
-                                          {{ meal.macros.protein }}
-                                        </p>
-                                      </div>
-                                    </div>
-                                    <div class="col-12 col-md-3">
-                                      <div class="row">
-                                        <p class="small strong col-6 col-md-12">
-                                          Fat
-                                        </p>
-                                        <p class="small col-6 col-md-12">
-                                          {{ meal.macros.fat }}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <div class="description d-md-none">
-                                  {{ meal.description }}
-                                </div>
-
-                                <div class="actions">
-                                  <div
-                                    class="d-flex justify-content-between align-items-center mt-1"
-                                  >
-                                    <b-btn
-                                      @click="minusOne(meal)"
-                                      class="plus-minus gray"
-                                    >
-                                      <i>-</i>
-                                    </b-btn>
-                                    <b-form-input
-                                      type="text"
-                                      name
-                                      id
-                                      class="quantity"
-                                      :value="mealQuantity(meal)"
-                                      readonly
-                                    ></b-form-input>
-                                    <b-btn
-                                      v-if="meal.sizes.length === 0"
-                                      @click="addOne(meal)"
-                                      class="menu-bag-btn plus-minus"
-                                    >
-                                      <i>+</i>
-                                    </b-btn>
-                                    <b-dropdown
-                                      v-else
-                                      toggle-class="menu-bag-btn plus-minus"
-                                      :right="i > 0 && (i + 1) % 4 === 0"
-                                    >
-                                      <i slot="button-content">+</i>
-                                      <b-dropdown-item @click="addOne(meal)">
-                                        {{
-                                          meal.default_size_title || "Regular"
-                                        }}
-                                        -
-                                        {{
-                                          format.money(
-                                            meal.item_price,
-                                            storeSettings.currency
-                                          )
-                                        }}
-                                      </b-dropdown-item>
-                                      <b-dropdown-item
-                                        v-for="size in meal.sizes"
-                                        :key="size.id"
-                                        @click="addOne(meal, false, size)"
-                                      >
-                                        {{ size.title }} -
-                                        {{
-                                          format.money(
-                                            size.price,
-                                            storeSettings.currency
-                                          )
-                                        }}
-                                      </b-dropdown-item>
-                                    </b-dropdown>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    v-if="storeSettings.meal_packages && mealPackages.length"
-                    id="Packages"
-                  >
-                    <h2 class="text-center mb-3 dbl-underline">Packages</h2>
-
-                    <div class="row">
-                      <div
-                        class="col-sm-6 col-lg-4 col-xl-3"
-                        v-for="mealPkg in mealPackages"
-                        :key="mealPkg.id"
-                      >
-                        <thumbnail
-                          v-if="mealPkg.image.url_medium"
-                          :src="mealPkg.image.url_medium"
-                          class="menu-item-img"
-                          width="100%"
-                          @click="showMealPackageModal(mealPkg)"
-                          style="background-color:#ffffff"
-                        ></thumbnail>
-                        <div
-                          class="d-flex justify-content-between align-items-center mb-2 mt-1"
-                        >
-                          <b-btn
-                            @click="minusOne(mealPkg, true)"
-                            class="plus-minus gray"
-                          >
-                            <i>-</i>
-                          </b-btn>
-                          <b-form-input
-                            type="text"
-                            name
-                            id
-                            class="quantity"
-                            :value="quantity(mealPkg, true)"
-                            readonly
-                          ></b-form-input>
-                          <b-btn
-                            v-if="mealPkg.sizes.length === 0"
-                            @click="addOne(mealPkg, true)"
-                            class="plus-minus menu-bag-btn"
-                          >
-                            <i>+</i>
-                          </b-btn>
-                          <b-dropdown v-else toggle-class="menu-bag-btn">
-                            <span slot="button-content">+</span>
-                            <b-dropdown-item @click="addOne(mealPkg, true)">
-                              {{ mealPkg.default_size_title }} -
-                              {{
-                                format.money(
-                                  mealPkg.price,
-                                  storeSettings.currency
-                                )
-                              }}
-                            </b-dropdown-item>
-                            <b-dropdown-item
-                              v-for="size in mealPkg.sizes"
-                              :key="size.id"
-                              @click="addOne(mealPkg, true, size)"
-                            >
-                              {{ size.title }} -
-                              {{
-                                format.money(size.price, storeSettings.currency)
-                              }}
-                            </b-dropdown-item>
-                          </b-dropdown>
-                        </div>
-                        <p class="center-text strong featured">
-                          {{ mealPkg.title }}
-                        </p>
-                        <p class="center-text featured">
-                          {{
-                            format.money(mealPkg.price, storeSettings.currency)
-                          }}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <meal-packages-area
+                    :mealPackages="mealPackages"
+                  ></meal-packages-area>
                 </div>
                 <!-- BAG AREA -->
                 <div class="col-sm-5 col-md-3 bag-area">
@@ -590,6 +356,8 @@ import MealModal from "../../components/Customer/MealModal";
 import MealPackageModal from "../../components/Customer/MealPackageModal";
 import LogoArea from "../../components/Customer/LogoArea";
 import CategoryArea from "../../components/Customer/CategoryArea";
+import MealsArea from "../../components/Customer/MealsArea";
+import MealPackagesArea from "../../components/Customer/MealPackagesArea";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -612,7 +380,9 @@ export default {
     MealModal,
     MealPackageModal,
     LogoArea,
-    CategoryArea
+    CategoryArea,
+    MealsArea,
+    MealPackagesArea
   },
   mixins: [MenuBag],
   props: {
@@ -628,12 +398,8 @@ export default {
     adjustMealPlan: {
       default: false
     },
-    order: {
-      default: {}
-    },
-    subscription: {
-      default: {}
-    },
+    order: {},
+    subscription: {},
     subscriptionId: {
       default: null
     }
@@ -706,81 +472,6 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
     }),
-    storeId() {
-      return this.store.id;
-    },
-    canProgress() {
-      return (
-        (this.minOption === "meals" &&
-          this.total >= this.minimumMeals &&
-          !this.preview) ||
-        (this.minOption === "price" &&
-          this.totalBagPricePreFees >= this.minPrice &&
-          !this.preview)
-      );
-    },
-    card() {
-      if (this.mobile) {
-        return "card border-light mb-0 mt-0 mr-1";
-      } else return "";
-    },
-    cardBody() {
-      if (this.mobile) {
-        return "card-body border-light mb-0 mt-0 mr-1";
-      } else return "";
-    },
-    desktopCard() {
-      if (!this.mobile) {
-        return "card";
-      } else return "";
-    },
-    desktopCardBody() {
-      if (!this.mobile) {
-        return "card-body";
-      } else return "";
-    },
-    storeWebsite() {
-      if (!this.storeSettings.website) {
-        return null;
-      } else {
-        let website = this.storeSettings.website;
-        if (!website.includes("http")) {
-          website = "http://" + website;
-        }
-        return website;
-      }
-    },
-    mobile() {
-      if (window.innerWidth < 500) return true;
-      else return false;
-    },
-    nutrition() {
-      return nutrition;
-    },
-    storeSettings() {
-      return this.store.settings;
-    },
-    minimumOption() {
-      return this.minOption;
-    },
-    minimumMeals() {
-      return this.minMeals;
-    },
-    minimumPrice() {
-      return this.minPrice;
-    },
-    remainingMeals() {
-      return this.minMeals - this.total;
-    },
-    remainingPrice() {
-      return this.minPrice - this.totalBagPricePreFees;
-    },
-    singOrPlural() {
-      if (this.remainingMeals > 1) {
-        return "meals";
-      }
-      return "meal";
-    },
     meals() {
       let meals = this.store.meals;
       let filters = this.filters;
@@ -872,6 +563,81 @@ export default {
       // Sort
       return _.orderBy(grouped, "order");
     },
+    storeId() {
+      return this.store.id;
+    },
+    canProgress() {
+      return (
+        (this.minOption === "meals" &&
+          this.total >= this.minimumMeals &&
+          !this.preview) ||
+        (this.minOption === "price" &&
+          this.totalBagPricePreFees >= this.minPrice &&
+          !this.preview)
+      );
+    },
+    card() {
+      if (this.mobile) {
+        return "card border-light mb-0 mt-0 mr-1";
+      } else return "";
+    },
+    cardBody() {
+      if (this.mobile) {
+        return "card-body border-light mb-0 mt-0 mr-1";
+      } else return "";
+    },
+    desktopCard() {
+      if (!this.mobile) {
+        return "card";
+      } else return "";
+    },
+    desktopCardBody() {
+      if (!this.mobile) {
+        return "card-body";
+      } else return "";
+    },
+    storeWebsite() {
+      if (!this.storeSettings.website) {
+        return null;
+      } else {
+        let website = this.storeSettings.website;
+        if (!website.includes("http")) {
+          website = "http://" + website;
+        }
+        return website;
+      }
+    },
+    mobile() {
+      if (window.innerWidth < 500) return true;
+      else return false;
+    },
+    nutrition() {
+      return nutrition;
+    },
+    storeSettings() {
+      return this.store.settings;
+    },
+    minimumOption() {
+      return this.minOption;
+    },
+    minimumMeals() {
+      return this.minMeals;
+    },
+    minimumPrice() {
+      return this.minPrice;
+    },
+    remainingMeals() {
+      return this.minMeals - this.total;
+    },
+    remainingPrice() {
+      return this.minPrice - this.totalBagPricePreFees;
+    },
+    singOrPlural() {
+      if (this.remainingMeals > 1) {
+        return "meals";
+      }
+      return "meal";
+    },
     mealPackages() {
       return _.map(
         _.filter(this.store.packages, mealPackage => {
@@ -910,7 +676,6 @@ export default {
         this.$refs.carousel.handleNavigation("forward");
       }
     });
-    this.setPickupIfMealPlan();
   },
   beforeDestroy() {
     this.showActiveFilters();
@@ -989,50 +754,6 @@ export default {
       // Ensure modal is fully closed
       return new Promise(resolve => {
         this.$nextTick(resolve);
-      });
-    },
-    getNutritionFacts(ingredients, meal, ref = null) {
-      const nutrition = this.nutrition.getTotals(ingredients);
-      const ingredientList = this.nutrition.getIngredientList(ingredients);
-
-      if (!ref) {
-        ref = this.$refs.nutritionFacts;
-      }
-
-      $(ref).html("");
-
-      $(ref).nutritionLabel({
-        showServingUnitQuantity: false,
-        itemName: meal.title,
-        ingredientList: ingredientList,
-        showIngredients: this.showIngredients,
-
-        decimalPlacesForQuantityTextbox: 2,
-        valueServingUnitQuantity: 1,
-
-        allowFDARounding: true,
-        decimalPlacesForNutrition: 2,
-
-        showPolyFat: false,
-        showMonoFat: false,
-
-        valueCalories: nutrition.calories,
-        valueFatCalories: nutrition.fatCalories,
-        valueTotalFat: nutrition.totalFat,
-        valueSatFat: nutrition.satFat,
-        valueTransFat: nutrition.transFat,
-        valueCholesterol: nutrition.cholesterol,
-        valueSodium: nutrition.sodium,
-        valueTotalCarb: nutrition.totalCarb,
-        valueFibers: nutrition.fibers,
-        valueSugars: nutrition.sugars,
-        valueProteins: nutrition.proteins,
-        valueVitaminD: (nutrition.vitaminD / 20000) * 100,
-        valuePotassium_2018: (nutrition.potassium / 4700) * 100,
-        valueCalcium: (nutrition.calcium / 1300) * 100,
-        valueIron: (nutrition.iron / 18) * 100,
-        valueAddedSugars: nutrition.addedSugars,
-        showLegacyVersion: false
       });
     },
     filterByCategory(category) {

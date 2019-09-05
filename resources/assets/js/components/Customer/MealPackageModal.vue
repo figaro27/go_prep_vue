@@ -159,6 +159,8 @@
 
 <script>
 export default {
-  props: {}
+  props: {
+    mealPackageModal: false
+  }
 };
 </script>

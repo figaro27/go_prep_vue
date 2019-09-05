@@ -197,6 +197,8 @@
 
 <script>
 import MenuBag from "../../mixins/menuBag";
+import nutritionFacts from "nutrition-label-jquery-plugin";
+import nutrition from "../../data/nutrition";
 
 export default {
   props: {
@@ -204,7 +206,8 @@ export default {
     meal: {},
     slickOptions: {},
     storeSettings: {},
-    mealDescription: ""
+    mealDescription: "",
+    ingredients: ""
   },
   mixins: [MenuBag],
   methods: {
@@ -216,6 +219,50 @@ export default {
           src: item.url_original,
           thumb: item.url_thumb
         };
+      });
+    },
+    getNutritionFacts(ingredients, meal, ref = null) {
+      const nutrition = this.nutrition.getTotals(ingredients);
+      const ingredientList = this.nutrition.getIngredientList(ingredients);
+
+      if (!ref) {
+        ref = this.$refs.nutritionFacts;
+      }
+
+      $(ref).html("");
+
+      $(ref).nutritionLabel({
+        showServingUnitQuantity: false,
+        itemName: meal.title,
+        ingredientList: ingredientList,
+        showIngredients: this.showIngredients,
+
+        decimalPlacesForQuantityTextbox: 2,
+        valueServingUnitQuantity: 1,
+
+        allowFDARounding: true,
+        decimalPlacesForNutrition: 2,
+
+        showPolyFat: false,
+        showMonoFat: false,
+
+        valueCalories: nutrition.calories,
+        valueFatCalories: nutrition.fatCalories,
+        valueTotalFat: nutrition.totalFat,
+        valueSatFat: nutrition.satFat,
+        valueTransFat: nutrition.transFat,
+        valueCholesterol: nutrition.cholesterol,
+        valueSodium: nutrition.sodium,
+        valueTotalCarb: nutrition.totalCarb,
+        valueFibers: nutrition.fibers,
+        valueSugars: nutrition.sugars,
+        valueProteins: nutrition.proteins,
+        valueVitaminD: (nutrition.vitaminD / 20000) * 100,
+        valuePotassium_2018: (nutrition.potassium / 4700) * 100,
+        valueCalcium: (nutrition.calcium / 1300) * 100,
+        valueIron: (nutrition.iron / 18) * 100,
+        valueAddedSugars: nutrition.addedSugars,
+        showLegacyVersion: false
       });
     }
   }

@@ -39,8 +39,7 @@ export default {
     ...mapGetters({
       _categories: "viewedStoreCategories",
       store: "viewedStore",
-      storeSetting: "viewedStoreSetting",
-      storeSettings: "viewedStoreSettings"
+      storeSettings: "viewedStoreSetting"
     }),
     categories() {
       let sorting = {};
