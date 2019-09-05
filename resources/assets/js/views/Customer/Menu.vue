@@ -30,51 +30,13 @@
         :showDescriptionModal="showDescriptionModal"
       ></store-description-modal>
 
-      <div class="modal-basic">
-        <b-modal
-          size="lg"
-          v-model="viewFilterModal"
-          v-if="viewFilterModal"
-          hide-header
-        >
-          <div>
-            <h4 class="center-text mb-5 mt-5">Hide Meals That Contain</h4>
-          </div>
-          <div class="row mb-4">
-            <div
-              v-for="allergy in allergies"
-              :key="`allergy-${allergy.id}`"
-              class="filters col-6 col-sm-4 col-md-3 mb-3"
-            >
-              <b-button
-                :pressed="active[allergy.id]"
-                @click="filterByAllergy(allergy.id)"
-                >{{ allergy.title }}</b-button
-              >
-            </div>
-          </div>
-          <hr />
-          <div>
-            <h4 class="center-text mb-5">Show Meals With</h4>
-          </div>
-          <div class="row">
-            <div
-              v-for="tag in tags"
-              :key="`tag-${tag}`"
-              class="filters col-6 col-sm-4 col-md-3 mb-3"
-            >
-              <b-button :pressed="active[tag]" @click="filterByTag(tag)">
-                {{ tag }}
-              </b-button>
-            </div>
-          </div>
-          <b-button
-            @click="clearFilters"
-            class="center mt-4 brand-color white-text"
-            >Clear All</b-button
-          >
-        </b-modal>
-      </div>
+      <meal-filter-modal
+        :viewFilterModal="viewFilterModal"
+        :allergies="allergies"
+        :tags="tags"
+        @filterByTag="filterByTag($event)"
+        @filterByAllergy="filterByAllergy($event)"
+      ></meal-filter-modal>
 
       <div class="row">
         <div class="col-sm-12 mt-3">
@@ -1057,6 +1019,7 @@ import CategorySlider from "../../components/Customer/Mobile/CategorySlider";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import StoreClosed from "../../components/Customer/StoreClosed";
 import StoreDescriptionModal from "../../components/Customer/StoreDescriptionModal";
+import MealFilterModal from "../../components/Customer/MealFilterModal";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -1074,7 +1037,8 @@ export default {
     CategorySlider,
     OutsideDeliveryArea,
     StoreClosed,
-    StoreDescriptionModal
+    StoreDescriptionModal,
+    MealFilterModal
   },
   mixins: [MenuBag],
   props: {
