@@ -43,229 +43,13 @@
         <div class="col-sm-12 mt-3">
           <div :class="desktopCard">
             <div :class="desktopCardBody">
-              <b-modal
-                ref="mealModal"
-                size="lg"
-                :title="meal.title"
-                v-model="mealModal"
-                v-if="mealModal"
-              >
-                <div class="row mt-3">
-                  <div class="col-lg-6 modal-meal-image">
-                    <thumbnail
-                      v-if="meal.image.url"
-                      :src="meal.image.url"
-                      :aspect="false"
-                      width="100%"
-                      @click="$refs.lightbox.showImage(0)"
-                    ></thumbnail>
-                    <img v-else :src="meal.featured_image" />
-
-                    <LightBox
-                      ref="lightbox"
-                      :images="getMealGallery(meal)"
-                      :showLightBox="false"
-                    ></LightBox>
-
-                    <slick ref="mealGallery" :options="slickOptions">
-                      <div
-                        v-for="(image, i) in getMealGallery(meal)"
-                        :key="image.id"
-                      >
-                        <div style="image">
-                          <thumbnail
-                            v-if="image.url"
-                            :src="image.url"
-                            :aspect="true"
-                            :lazy="false"
-                            :spinner="false"
-                            :width="'70px'"
-                            @click="$refs.lightbox.showImage(i)"
-                          ></thumbnail>
-                        </div>
-                      </div>
-                    </slick>
-
-                    <div
-                      class="title"
-                      v-if="meal.macros && storeSettings.showMacros"
-                    >
-                      <div class="row">
-                        <div class="col-6 col-md-3">
-                          <div class="row">
-                            <p class="small strong col-6 col-md-12">Calories</p>
-                            <p class="small col-6 col-md-12">
-                              {{ meal.macros.calories }}
-                            </p>
-                          </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                          <div class="row">
-                            <p class="small strong col-6 col-md-12">Carbs</p>
-                            <p class="small col-6 col-md-12">
-                              {{ meal.macros.carbs }}
-                            </p>
-                          </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                          <div class="row">
-                            <p class="small strong col-6 col-md-12">Protein</p>
-                            <p class="small col-6 col-md-12">
-                              {{ meal.macros.protein }}
-                            </p>
-                          </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                          <div class="row">
-                            <p class="small strong col-6 col-md-12">Fat</p>
-                            <p class="small col-6 col-md-12">
-                              {{ meal.macros.fat }}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <p
-                      v-if="storeSettings.showNutrition"
-                      v-html="mealDescription"
-                    ></p>
-                    <div
-                      class="row mt-3 mb-5"
-                      v-if="storeSettings.showNutrition"
-                    >
-                      <div class="col-lg-6">
-                        <h5>Tags</h5>
-                        <li v-for="tag in meal.tags">{{ tag.tag }}</li>
-                      </div>
-                      <div class="col-lg-6">
-                        <h5>Contains</h5>
-                        <li v-for="allergy in meal.allergy_titles">
-                          {{ allergy }}
-                        </li>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6" v-if="storeSettings.showNutrition">
-                    <div
-                      id="nutritionFacts"
-                      ref="nutritionFacts"
-                      class="mt-2 mt-lg-0"
-                    ></div>
-
-                    <div class="row mt-2" v-if="storeSettings.showNutrition">
-                      <div class="col-lg-5 mt-3">
-                        <h5>
-                          {{ format.money(meal.price, storeSettings.currency) }}
-                        </h5>
-                      </div>
-                      <div class="col-lg-5">
-                        <b-btn
-                          v-if="meal.sizes.length === 0"
-                          @click="addOne(meal)"
-                          class="menu-bag-btn"
-                          >+ ADD</b-btn
-                        >
-                        <b-dropdown v-else toggle-class="menu-bag-btn">
-                          <span slot="button-content">+ ADD</span>
-                          <b-dropdown-item @click="addOne(meal)">
-                            {{ meal.default_size_title }} -
-                            {{
-                              format.money(
-                                meal.item_price,
-                                storeSettings.currency
-                              )
-                            }}
-                          </b-dropdown-item>
-                          <b-dropdown-item
-                            v-for="size in meal.sizes"
-                            :key="size.id"
-                            @click="addOne(meal, false, size)"
-                          >
-                            {{ size.title }} -
-                            {{
-                              format.money(size.price, storeSettings.currency)
-                            }}
-                          </b-dropdown-item>
-                        </b-dropdown>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6" v-if="!storeSettings.showNutrition">
-                    <p v-html="mealDescription"></p>
-                    <div class="row">
-                      <div class="col-lg-6">
-                        <h5>Tags</h5>
-                        <li v-for="tag in meal.tags">{{ tag.tag }}</li>
-                      </div>
-                      <div class="col-lg-6">
-                        <h5>Contains</h5>
-                        <li v-for="allergy in meal.allergy_titles">
-                          {{ allergy }}
-                        </li>
-                      </div>
-                    </div>
-                    <div
-                      class="row mt-3 mb-3"
-                      v-if="storeSettings.showIngredients"
-                    >
-                      <div class="col-lg-12">
-                        <h5>Ingredients</h5>
-                        {{ ingredients }}
-                      </div>
-                    </div>
-                    <div class="row mt-5" v-if="storeSettings.showNutrition">
-                      <div class="col-lg-8">
-                        <h5>
-                          {{ format.money(meal.price, storeSettings.currency) }}
-                        </h5>
-                      </div>
-                      <div class="col-lg-4">
-                        <b-btn @click="addOne(meal)" class="menu-bag-btn"
-                          >+ ADD</b-btn
-                        >
-                      </div>
-                    </div>
-                    <div class="row mt-5" v-if="!storeSettings.showNutrition">
-                      <div class="col-lg-6">
-                        <h5>
-                          {{ format.money(meal.price, storeSettings.currency) }}
-                        </h5>
-                      </div>
-                      <div class="col-lg-6">
-                        <b-btn
-                          v-if="meal.sizes.length === 0"
-                          @click="addOne(meal)"
-                          class="menu-bag-btn"
-                          >+ ADD</b-btn
-                        >
-                        <b-dropdown v-else toggle-class="menu-bag-btn">
-                          <span slot="button-content">+ ADD</span>
-                          <b-dropdown-item @click="addOne(meal)">
-                            {{ meal.default_size_title }} -
-                            {{
-                              format.money(
-                                meal.item_price,
-                                storeSettings.currency
-                              )
-                            }}
-                          </b-dropdown-item>
-                          <b-dropdown-item
-                            v-for="size in meal.sizes"
-                            :key="size.id"
-                            @click="addOne(meal, false, size)"
-                          >
-                            {{ size.title }} -
-                            {{
-                              format.money(size.price, storeSettings.currency)
-                            }}
-                          </b-dropdown-item>
-                        </b-dropdown>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </b-modal>
+              <meal-modal
+                :mealModal="mealModal"
+                :meal="meal"
+                :slickOptions="slickOptions"
+                :storeSettings="storeSettings"
+                :mealDescription="mealDescription"
+              ></meal-modal>
 
               <b-modal
                 ref="mealPackageModal"
@@ -1021,6 +805,7 @@ import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import StoreClosed from "../../components/Customer/StoreClosed";
 import StoreDescriptionModal from "../../components/Customer/StoreDescriptionModal";
 import MealFilterModal from "../../components/Customer/MealFilterModal";
+import MealModal from "../../components/Customer/MealModal";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -1039,7 +824,8 @@ export default {
     OutsideDeliveryArea,
     StoreClosed,
     StoreDescriptionModal,
-    MealFilterModal
+    MealFilterModal,
+    MealModal
   },
   mixins: [MenuBag],
   props: {
