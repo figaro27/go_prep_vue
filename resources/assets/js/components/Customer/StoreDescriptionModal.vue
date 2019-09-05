@@ -6,6 +6,7 @@
         size="lg"
         v-model="showDescriptionModal"
         v-if="showDescriptionModal"
+        @hide="$parent.showDescriptionModal = false"
       >
         <p v-html="store.details.description"></p>
       </b-modal>

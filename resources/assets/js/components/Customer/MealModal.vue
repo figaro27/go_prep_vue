@@ -196,6 +196,8 @@
 </template>
 
 <script>
+import MenuBag from "../../mixins/menuBag";
+
 export default {
   props: {
     mealModal: false,
@@ -204,6 +206,7 @@ export default {
     storeSettings: {},
     mealDescription: ""
   },
+  mixins: [MenuBag],
   methods: {
     getMealGallery(meal) {
       return meal.gallery.map((item, i) => {

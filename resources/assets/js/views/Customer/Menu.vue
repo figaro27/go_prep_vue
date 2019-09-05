@@ -51,200 +51,13 @@
                 :mealDescription="mealDescription"
               ></meal-modal>
 
-              <b-modal
-                ref="mealPackageModal"
-                size="lg"
-                :title="mealPackage.title"
-                v-model="mealPackageModal"
-                v-if="mealPackageModal"
-                @shown="$forceUpdate()"
-                :hide-footer="true"
-              >
-                <carousel
-                  ref="carousel"
-                  :perPage="1"
-                  @mounted="
-                    () => {
-                      loaded = true;
-                    }
-                  "
-                >
-                  <slide>
-                    <div v-if="loaded" class="row">
-                      <div class="col-lg-6 modal-meal-image">
-                        <thumbnail
-                          v-if="mealPackage.image.url"
-                          :src="mealPackage.image.url"
-                          :aspect="false"
-                          width="100%"
-                          :spinner="false"
-                          :lazy="false"
-                        ></thumbnail>
-                        <img v-else :src="mealPackage.featured_image" />
-                      </div>
-                      <div class="col-lg-6">
-                        <div class="modal-meal-package-description mt-2">
-                          <p>{{ mealPackage.description }}</p>
-                        </div>
-                        <div class="modal-meal-package-meals">
-                          <h5 class="mt-2">Meals</h5>
-
-                          <li v-for="meal in mealPackage.meals" :key="meal.id">
-                            {{ meal.title }} x {{ meal.quantity }}
-                          </li>
-
-                          <div class="modal-meal-package-price">
-                            <h5 class="mt-3 mb-3">
-                              {{
-                                format.money(
-                                  mealPackage.price,
-                                  storeSettings.currency
-                                )
-                              }}
-                            </h5>
-                          </div>
-                          <b-btn
-                            v-if="mealPackage.sizes.length === 0"
-                            @click="addOne(mealPackage, true)"
-                            class="menu-bag-btn"
-                            >+ ADD</b-btn
-                          >
-                          <b-dropdown v-else toggle-class="menu-bag-btn">
-                            <span slot="button-content">+ ADD</span>
-                            <b-dropdown-item @click="addOne(mealPackage, true)">
-                              {{ mealPackage.default_size_title }} -
-                              {{
-                                format.money(
-                                  mealPackage.price,
-                                  storeSettings.currency
-                                )
-                              }}
-                            </b-dropdown-item>
-                            <b-dropdown-item
-                              v-for="size in mealPackage.sizes"
-                              :key="size.id"
-                              @click="addOne(mealPackage, true, size)"
-                            >
-                              {{ size.title }} -
-                              {{
-                                format.money(size.price, storeSettings.currency)
-                              }}
-                            </b-dropdown-item>
-                          </b-dropdown>
-                        </div>
-                      </div>
-                    </div>
-                  </slide>
-
-                  <slide
-                    v-for="meal in mealPackage.meals"
-                    v-if="mealPackage.meal_carousel"
-                    :key="meal.id"
-                    :caption="meal.title"
-                  >
-                    <div class="row">
-                      <div class="col-lg-6 modal-meal-image">
-                        <h4 class="center-text">{{ meal.title }}</h4>
-                        <thumbnail
-                          v-if="meal.image.url"
-                          :src="meal.image.url"
-                          :aspect="false"
-                          width="100%"
-                          :lazy="false"
-                          :spinner="false"
-                        ></thumbnail>
-                        <img v-else :src="meal.featured_image" />
-                        <p
-                          v-if="storeSettings.showNutrition"
-                          v-html="mealDescription"
-                        ></p>
-                        <div
-                          class="row mt-3 mb-5"
-                          v-if="storeSettings.showNutrition"
-                        >
-                          <div class="col-lg-6">
-                            <h5>Tags</h5>
-                            <li v-for="tag in meal.tags">{{ tag.tag }}</li>
-                          </div>
-                          <div class="col-lg-6">
-                            <h5>Contains</h5>
-                            <li v-for="allergy in meal.allergy_titles">
-                              {{ allergy }}
-                            </li>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6" v-if="storeSettings.showNutrition">
-                        <div
-                          :id="`nutritionFacts${meal.id}`"
-                          :ref="`nutritionFacts${meal.id}`"
-                          class="mt-2 mt-lg-0"
-                        ></div>
-                        <b-btn
-                          @click="addOne(mealPackage)"
-                          class="menu-bag-btn width-80 mt-3"
-                          >+ ADD PACKAGE</b-btn
-                        >
-                      </div>
-                      <div class="col-lg-6" v-if="!storeSettings.showNutrition">
-                        <p v-html="mealDescription"></p>
-                        <div class="row">
-                          <div class="col-lg-6">
-                            <h5>Tags</h5>
-                            <li v-for="tag in meal.tags">{{ tag.tag }}</li>
-                          </div>
-                          <div class="col-lg-6">
-                            <h5>Contains</h5>
-                            <li v-for="allergy in meal.allergy_titles">
-                              {{ allergy }}
-                            </li>
-                          </div>
-                        </div>
-                        <div
-                          class="row mt-3 mb-3"
-                          v-if="storeSettings.showIngredients"
-                        >
-                          <div class="col-lg-12">
-                            <h5>Ingredients</h5>
-                            {{ ingredients }}
-                          </div>
-                        </div>
-                        <b-btn
-                          @click="addOne(mealPackage)"
-                          class="menu-bag-btn width-80 mt-3"
-                          >+ ADD PACKAGE</b-btn
-                        >
-                      </div>
-                    </div>
-                  </slide>
-                </carousel>
-              </b-modal>
+              <meal-package-modal></meal-package-modal>
 
               <div class="row">
                 <div class="col-sm-12">
                   <div class="row">
                     <div class="col-sm-12 store-logo-area" v-if="!mobile">
-                      <a :href="storeWebsite" v-if="storeWebsite != null">
-                        <img
-                          v-if="storeLogo"
-                          class="store-logo"
-                          :src="storeLogo.url_thumb"
-                          alt="Company Logo"
-                        />
-                      </a>
-                      <img
-                        v-if="storeLogo && storeWebsite === null"
-                        class="store-logo"
-                        :src="storeLogo.url_thumb"
-                        alt="Company Logo"
-                      />
-                    </div>
-                    <div class="col-sm-12" v-if="store.details.description">
-                      <b-btn
-                        @click="showDescription"
-                        class="brand-color white-text center mt-3"
-                        >About</b-btn
-                      >
+                      <logo-area></logo-area>
                     </div>
                     <div class="col-sm-2">
                       <b-form-input
@@ -806,6 +619,8 @@ import StoreClosed from "../../components/Customer/StoreClosed";
 import StoreDescriptionModal from "../../components/Customer/StoreDescriptionModal";
 import MealFilterModal from "../../components/Customer/MealFilterModal";
 import MealModal from "../../components/Customer/MealModal";
+import MealPackageModal from "../../components/Customer/MealPackageModal";
+import LogoArea from "../../components/Customer/LogoArea";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -825,7 +640,9 @@ export default {
     StoreClosed,
     StoreDescriptionModal,
     MealFilterModal,
-    MealModal
+    MealModal,
+    MealPackageModal,
+    LogoArea
   },
   mixins: [MenuBag],
   props: {
@@ -1336,9 +1153,6 @@ export default {
 
       this.active = _.mapValues(this.active, () => false);
       this.filteredView = false;
-    },
-    showDescription() {
-      this.showDescriptionModal = true;
     },
     getMealGallery(meal) {
       return meal.gallery.map((item, i) => {
