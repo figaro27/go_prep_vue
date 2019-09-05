@@ -36,6 +36,7 @@
         :tags="tags"
         @filterByTag="filterByTag($event)"
         @filterByAllergy="filterByAllergy($event)"
+        @clearFilters="clearFilters"
       ></meal-filter-modal>
 
       <div class="row">
@@ -1500,7 +1501,7 @@ export default {
         : Vue.delete(this.filters.categories, i);
     },
     filterByTag(tag) {
-      this.active[tag] = !this.active[tag];
+      Vue.set(this.active, tag, !this.active[tag]);
       this.filteredView = true;
 
       // Check if filter already exists

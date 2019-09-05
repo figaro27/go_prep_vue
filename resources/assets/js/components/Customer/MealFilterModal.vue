@@ -5,6 +5,7 @@
         size="lg"
         v-model="viewFilterModal"
         v-if="viewFilterModal"
+        @hide="$parent.viewFilterModal = false"
         hide-header
       >
         <div>
@@ -17,8 +18,8 @@
             class="filters col-6 col-sm-4 col-md-3 mb-3"
           >
             <b-button
-              :pressed="active[allergy.id]"
-              @click="filterByAllergy(allergy.id)"
+              :pressed="$parent.active[allergy.id]"
+              @click="$emit('filterByAllergy', allergy.id)"
               >{{ allergy.title }}</b-button
             >
           </div>
@@ -33,13 +34,16 @@
             :key="`tag-${tag}`"
             class="filters col-6 col-sm-4 col-md-3 mb-3"
           >
-            <b-button :pressed="active[tag]" @click="filterByTag(tag)">
+            <b-button
+              :pressed="$parent.active[tag]"
+              @click="$emit('filterByTag', tag)"
+            >
               {{ tag }}
             </b-button>
           </div>
         </div>
         <b-button
-          @click="clearFilters"
+          @click="$emit('clearFilters')"
           class="center mt-4 brand-color white-text"
           >Clear All</b-button
         >
@@ -49,61 +53,11 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 export default {
-  beforeDestroy() {
-    this.showActiveFilters();
-  },
   props: {
     viewFilterModal: false,
-    allergies: {}
-  },
-  data() {
-    return {
-      active: {}
-    };
-  },
-  computed: {
-    ...mapGetters({
-      store: "viewedStore"
-    }),
-    tags() {
-      let grouped = [];
-      this.store.meals.forEach(meal => {
-        meal.tags.forEach(tag => {
-          if (!_.includes(grouped, tag.tag)) {
-            grouped.push(tag.tag);
-          }
-        });
-      });
-      return grouped;
-    }
-  },
-  methods: {
-    filterByAllergy(id) {
-      this.$emit("filterByAllergy", id);
-    },
-    filterByTag(tag) {
-      this.active[tag] = !this.active[tag];
-      this.$emit("filterByTag", tag);
-    },
-    showActiveFilters() {
-      let tags = this.tags;
-      this.active = tags.reduce((acc, tag) => {
-        acc[tag] = false;
-        return acc;
-      }, {});
-
-      let allergies = this.allergies;
-      this.active = _.reduce(
-        allergies,
-        (acc, allergy) => {
-          acc[allergy] = false;
-          return acc;
-        },
-        {}
-      );
-    }
+    allergies: {},
+    tags: {}
   }
 };
 </script>
