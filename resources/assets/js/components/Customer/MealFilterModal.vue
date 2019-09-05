@@ -51,22 +51,8 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
-  mounted() {
-    let tags = this.tags;
-    this.active = tags.reduce((acc, tag) => {
-      acc[tag] = false;
-      return acc;
-    }, {});
-
-    let allergies = this.allergies;
-    this.active = _.reduce(
-      allergies,
-      (acc, allergy) => {
-        acc[allergy] = false;
-        return acc;
-      },
-      {}
-    );
+  beforeDestroy() {
+    this.showActiveFilters();
   },
   props: {
     viewFilterModal: false,
@@ -95,10 +81,28 @@ export default {
   },
   methods: {
     filterByAllergy(id) {
-      this.$emit(filterByAllergy, id);
+      this.$emit("filterByAllergy", id);
     },
     filterByTag(tag) {
-      this.$emit(filterByTag, tag);
+      this.active[tag] = !this.active[tag];
+      this.$emit("filterByTag", tag);
+    },
+    showActiveFilters() {
+      let tags = this.tags;
+      this.active = tags.reduce((acc, tag) => {
+        acc[tag] = false;
+        return acc;
+      }, {});
+
+      let allergies = this.allergies;
+      this.active = _.reduce(
+        allergies,
+        (acc, allergy) => {
+          acc[allergy] = false;
+          return acc;
+        },
+        {}
+      );
     }
   }
 };
