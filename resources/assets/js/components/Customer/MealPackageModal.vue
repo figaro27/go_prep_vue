@@ -3,7 +3,7 @@
     <b-modal
       ref="mealPackageModal"
       size="lg"
-      :title="mealPackage.title"
+      :title="$parent.mealPackage.title"
       v-model="mealPackageModal"
       v-if="mealPackageModal"
       @shown="$forceUpdate()"
@@ -14,12 +14,12 @@
         :perPage="1"
         @mounted="
           () => {
-            loaded = true;
+            hasLoaded = true;
           }
         "
       >
         <slide>
-          <div v-if="loaded" class="row">
+          <div v-if="hasLoaded" class="row">
             <div class="col-lg-6 modal-meal-image">
               <thumbnail
                 v-if="mealPackage.image.url"
@@ -158,9 +158,39 @@
 </template>
 
 <script>
+import MenuBag from "../../mixins/menuBag";
+import { mapGetters } from "vuex";
+import { Carousel, Slide } from "vue-carousel";
+
 export default {
+  components: {
+    Carousel,
+    Slide
+  },
   props: {
-    mealPackageModal: false
+    mealPackageModal: false,
+    mealPackage: null,
+    loaded: false,
+    mealDescription: ""
+  },
+  mixins: [MenuBag],
+  data() {
+    return {
+      hasLoaded: false
+    };
+  },
+  computed: {
+    ...mapGetters({
+      storeSettings: "viewedStoreSetting",
+      total: "bagQuantity",
+      bag: "bagItems",
+      hasMeal: "bagHasMeal",
+      minOption: "minimumOption",
+      minMeals: "minimumMeals",
+      minPrice: "minimumPrice",
+      getMeal: "viewedStoreMeal",
+      getMealPackage: "viewedStoreMealPackage"
+    })
   }
 };
 </script>

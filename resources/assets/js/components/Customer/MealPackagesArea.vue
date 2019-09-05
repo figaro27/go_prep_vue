@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div
-      v-if="storeSettings.meal_packages && mealPackages.length"
-      id="Packages"
-    >
+    <div v-if="mealPackages.length" id="Packages">
       <h2 class="text-center mb-3 dbl-underline">Packages</h2>
 
       <div class="row">
@@ -17,7 +14,7 @@
             :src="mealPkg.image.url_medium"
             class="menu-item-img"
             width="100%"
-            @click="showMealPackageModal(mealPkg)"
+            @click="$parent.showMealPackageModal(mealPkg)"
             style="background-color:#ffffff"
           ></thumbnail>
           <div

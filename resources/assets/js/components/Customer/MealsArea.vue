@@ -31,7 +31,7 @@
                     :src="meal.image.url_medium"
                     class="menu-item-img"
                     width="100%"
-                    @click="showMealModal(meal)"
+                    @click="$parent.showMealModal(meal)"
                     style="background-color:#ffffff"
                   ></thumbnail>
 

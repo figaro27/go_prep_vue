@@ -54,6 +54,9 @@
 
               <meal-package-modal
                 :mealPackageModal="mealPackageModal"
+                :mealPackage="mealPackage"
+                :loaded="loaded"
+                :mealDescription="mealDescription"
               ></meal-package-modal>
 
               <div class="row">
@@ -88,237 +91,21 @@
                     :card="card"
                     :cardBody="cardBody"
                     @onCategoryVisible="onCategoryVisible($event)"
+                    @showMealModal="showMealModal"
                   ></meals-area>
 
                   <meal-packages-area
                     :mealPackages="mealPackages"
                   ></meal-packages-area>
                 </div>
-                <!-- BAG AREA -->
                 <div class="col-sm-5 col-md-3 bag-area">
-                  <ul class="list-group">
-                    <li
-                      v-for="(item, mealId) in bag"
-                      :key="`bag-${mealId}`"
-                      class="bag-item"
-                    >
-                      <div
-                        v-if="item && item.quantity > 0"
-                        class="d-flex align-items-center"
-                      >
-                        <div class="bag-item-quantity mr-2">
-                          <div
-                            v-if="!item.meal_package"
-                            @click="
-                              addOne(
-                                item.meal,
-                                false,
-                                item.size,
-                                item.components,
-                                item.addons
-                              )
-                            "
-                            class="bag-plus-minus brand-color white-text"
-                          >
-                            <i>+</i>
-                          </div>
-                          <div
-                            v-if="item.meal_package"
-                            @click="
-                              addOne(
-                                item.meal,
-                                true,
-                                item.size,
-                                item.components,
-                                item.addons
-                              )
-                            "
-                            class="bag-plus-minus brand-color white-text"
-                          >
-                            <i>+</i>
-                          </div>
-                          <p class="bag-quantity">{{ item.quantity }}</p>
-                          <div
-                            @click="
-                              minusOne(
-                                item.meal,
-                                false,
-                                item.size,
-                                item.components,
-                                item.addons
-                              )
-                            "
-                            class="bag-plus-minus gray white-text"
-                          >
-                            <i>-</i>
-                          </div>
-                        </div>
-                        <div class="bag-item-image mr-2">
-                          <thumbnail
-                            :src="item.meal.image.url_thumb"
-                            :spinner="false"
-                            width="80px"
-                          ></thumbnail>
-                        </div>
-                        <div class="flex-grow-1 mr-2">
-                          <span v-if="item.meal_package">{{
-                            item.meal.title
-                          }}</span>
-                          <span v-else-if="item.size">
-                            {{ item.size.full_title }}
-                          </span>
-                          <span v-else>{{ item.meal.item_title }}</span>
-
-                          <ul
-                            v-if="item.components || item.addons"
-                            class="plain"
-                          >
-                            <li
-                              v-for="component in itemComponents(item)"
-                              class="plain"
-                            >
-                              {{ component }}
-                            </li>
-                            <li v-for="addon in itemAddons(item)" class="plus">
-                              {{ addon }}
-                            </li>
-                          </ul>
-                        </div>
-                        <div class="flex-grow-0">
-                          <img
-                            src="/images/customer/x.png"
-                            @click="
-                              clearMeal(
-                                item.meal,
-                                false,
-                                item.size,
-                                item.components,
-                                item.addons
-                              )
-                            "
-                            class="clear-meal"
-                          />
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-
-                  <p
-                    class="align-right"
-                    v-if="
-                      minOption === 'meals' &&
-                        total < minimumMeals &&
-                        !manualOrder
-                    "
+                  <bag-area
+                    :manualOrder="manualOrder"
+                    :adjustOrder="adjustOrder"
+                    :adjustMealPlan="adjustMealPlan"
+                    :subscriptionId="subscriptionId"
                   >
-                    Please add {{ remainingMeals }} {{ singOrPlural }} to
-                    continue.
-                  </p>
-
-                  <div
-                    v-if="
-                      minOption === 'meals' &&
-                        total >= minimumMeals &&
-                        !manualOrder &&
-                        !adjustOrder &&
-                        !adjustMealPlan
-                    "
-                    class="menu-btns-container"
-                  >
-                    <router-link
-                      to="/customer/bag"
-                      v-if="!subscriptionId && !manualOrder"
-                    >
-                      <b-btn class="menu-bag-btn">NEXT</b-btn>
-                    </router-link>
-                    <router-link
-                      :to="{
-                        name: 'customer-bag',
-                        params: { subscriptionId: subscriptionId }
-                      }"
-                      v-if="subscriptionId"
-                    >
-                      <b-btn class="menu-bag-btn">NEXT</b-btn>
-                    </router-link>
-                  </div>
-                  <div
-                    v-if="
-                      minOption === 'price' &&
-                        totalBagPricePreFees < minPrice &&
-                        !manualOrder &&
-                        !adjustOrder &&
-                        !adjustMealPlan
-                    "
-                    class="menu-btns-container"
-                  >
-                    <p class="align-right">
-                      Please add
-                      {{ format.money(remainingPrice, storeSettings.currency) }}
-                      more to continue.
-                    </p>
-                  </div>
-                  <div
-                    v-if="
-                      minOption === 'price' && totalBagPricePreFees >= minPrice
-                    "
-                  >
-                    <router-link
-                      to="/customer/bag"
-                      v-if="
-                        !subscriptionId &&
-                          !manualOrder &&
-                          !adjustOrder &&
-                          !adjustMealPlan
-                      "
-                    >
-                      <b-btn class="menu-bag-btn">NEXT</b-btn>
-                    </router-link>
-
-                    <router-link
-                      :to="{
-                        name: 'customer-bag',
-                        params: { subscriptionId: subscriptionId }
-                      }"
-                      v-if="subscriptionId"
-                    >
-                      <b-btn class="menu-bag-btn">NEXT</b-btn>
-                    </router-link>
-                  </div>
-                  <div v-if="adjustOrder">
-                    <p v-if="!order.pickup">Delivery Day</p>
-                    <p v-if="order.pickup">Pickup Day</p>
-                    <b-form-select
-                      v-if="adjustOrder"
-                      v-model="deliveryDay"
-                      :options="deliveryDaysOptions"
-                      class="w-100 mb-3"
-                    ></b-form-select>
-                    <b-btn class="menu-bag-btn" @click="adjust"
-                      >ADJUST ORDER</b-btn
-                    >
-                  </div>
-                  <div>
-                    <router-link
-                      to="/store/bag"
-                      v-if="!subscriptionId && manualOrder"
-                    >
-                      <b-btn class="menu-bag-btn">NEXT</b-btn>
-                    </router-link>
-                  </div>
-                  <div>
-                    <router-link
-                      :to="{
-                        name: 'store-bag',
-                        params: {
-                          subscriptionId: subscription.id,
-                          mealPlanAdjustment: true
-                        }
-                      }"
-                      v-if="adjustMealPlan"
-                    >
-                      <b-btn class="menu-bag-btn">NEXT</b-btn>
-                    </router-link>
-                  </div>
+                  </bag-area>
                 </div>
               </div>
             </div>
@@ -358,6 +145,7 @@ import LogoArea from "../../components/Customer/LogoArea";
 import CategoryArea from "../../components/Customer/CategoryArea";
 import MealsArea from "../../components/Customer/MealsArea";
 import MealPackagesArea from "../../components/Customer/MealPackagesArea";
+import BagArea from "../../components/Customer/BagArea";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -382,7 +170,8 @@ export default {
     LogoArea,
     CategoryArea,
     MealsArea,
-    MealPackagesArea
+    MealPackagesArea,
+    BagArea
   },
   mixins: [MenuBag],
   props: {
@@ -874,6 +663,50 @@ export default {
           this.$router.push({ path: "/store/orders" });
           this.refreshUpcomingOrders();
         });
+    },
+    getNutritionFacts(ingredients, meal, ref = null) {
+      const nutrition = this.nutrition.getTotals(ingredients);
+      const ingredientList = this.nutrition.getIngredientList(ingredients);
+
+      if (!ref) {
+        ref = this.$refs.nutritionFacts;
+      }
+
+      $(ref).html("");
+
+      $(ref).nutritionLabel({
+        showServingUnitQuantity: false,
+        itemName: meal.title,
+        ingredientList: ingredientList,
+        showIngredients: this.showIngredients,
+
+        decimalPlacesForQuantityTextbox: 2,
+        valueServingUnitQuantity: 1,
+
+        allowFDARounding: true,
+        decimalPlacesForNutrition: 2,
+
+        showPolyFat: false,
+        showMonoFat: false,
+
+        valueCalories: nutrition.calories,
+        valueFatCalories: nutrition.fatCalories,
+        valueTotalFat: nutrition.totalFat,
+        valueSatFat: nutrition.satFat,
+        valueTransFat: nutrition.transFat,
+        valueCholesterol: nutrition.cholesterol,
+        valueSodium: nutrition.sodium,
+        valueTotalCarb: nutrition.totalCarb,
+        valueFibers: nutrition.fibers,
+        valueSugars: nutrition.sugars,
+        valueProteins: nutrition.proteins,
+        valueVitaminD: (nutrition.vitaminD / 20000) * 100,
+        valuePotassium_2018: (nutrition.potassium / 4700) * 100,
+        valueCalcium: (nutrition.calcium / 1300) * 100,
+        valueIron: (nutrition.iron / 18) * 100,
+        valueAddedSugars: nutrition.addedSugars,
+        showLegacyVersion: false
+      });
     }
   }
 };
