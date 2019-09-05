@@ -67,41 +67,9 @@
                       />
                     </div>
                     <div class="col-sm-12 category-area">
-                      <div class="filter-area">
-                        <b-button
-                          @click="viewFilters"
-                          class="brand-color white-text"
-                        >
-                          <i class="fa fa-filter"></i>
-                          <span class="d-none d-sm-inline">&nbsp;Filters</span>
-                        </b-button>
-                        <b-button @click="clearFilters" class="gray white-text">
-                          <i class="fa fa-eraser"></i>
-                          <span class="d-none d-sm-inline"
-                            >&nbsp;Clear Filters</span
-                          >
-                        </b-button>
-                      </div>
-
-                      <ul class="d-none d-sm-block">
-                        <li
-                          v-for="category in categories"
-                          :key="category"
-                          @click.prevent="goToCategory(slugify(category))"
-                          class="d-inline ml-sm-4"
-                        >
-                          {{ category }}
-                        </li>
-                      </ul>
-
-                      <div>
-                        <b-btn
-                          class="gray white-text pull-right"
-                          @click="clearAll"
-                        >
-                          <i class="fa fa-eraser"></i>&nbsp;Clear Bag
-                        </b-btn>
-                      </div>
+                      <category-area
+                        @clearFilters="clearFilters"
+                      ></category-area>
                     </div>
                   </div>
                 </div>
@@ -621,6 +589,7 @@ import MealFilterModal from "../../components/Customer/MealFilterModal";
 import MealModal from "../../components/Customer/MealModal";
 import MealPackageModal from "../../components/Customer/MealPackageModal";
 import LogoArea from "../../components/Customer/LogoArea";
+import CategoryArea from "../../components/Customer/CategoryArea";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -642,7 +611,8 @@ export default {
     MealFilterModal,
     MealModal,
     MealPackageModal,
-    LogoArea
+    LogoArea,
+    CategoryArea
   },
   mixins: [MenuBag],
   props: {
@@ -913,32 +883,6 @@ export default {
         }
       );
     },
-    categories() {
-      let sorting = {};
-      this._categories.forEach(cat => {
-        sorting[cat.category] = cat.order.toString() + cat.category;
-      });
-
-      let grouped = [];
-      this.store.meals.forEach(meal => {
-        meal.category_ids.forEach(categoryId => {
-          let category = _.find(this._categories, { id: categoryId });
-          if (category && !_.includes(grouped, category.category)) {
-            grouped.push(category.category);
-          }
-        });
-      });
-
-      let categories = _.orderBy(grouped, cat => {
-        return cat in sorting ? sorting[cat] : 9999;
-      });
-
-      if (this.storeSettings.meal_packages && this.mealPackages.length) {
-        categories.push("Packages");
-      }
-
-      return categories;
-    },
     tags() {
       let grouped = [];
       this.store.meals.forEach(meal => {
@@ -1130,19 +1074,6 @@ export default {
       } else {
         Vue.delete(this.filters.allergies, i);
       }
-    },
-    goToCategory(category) {
-      if ($("#xs").is(":visible") || $("#sm").is(":visible")) {
-        const top = $(`#${category}`).offset().top;
-        $(document).scrollTop(top - 90);
-      } else {
-        $(".main-menu-area").scrollTop(0);
-        const top = $(`#${category}`).position().top;
-        $(".main-menu-area").scrollTop(top);
-      }
-    },
-    viewFilters() {
-      this.viewFilterModal = true;
     },
     clearFilters() {
       let allergies = this.filters.allergies;
