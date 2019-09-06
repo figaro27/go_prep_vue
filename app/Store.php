@@ -588,9 +588,9 @@ class Store extends Model
         $email = null;
 
         switch ($notif) {
-            case 'new_order':
-                $email = new NewOrder($data);
-                break;
+            // case 'new_order':
+            //     $email = new NewOrder($data);
+            //     break;
 
             case 'new_subscription':
                 $email = new NewSubscription($data);
