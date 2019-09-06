@@ -197,8 +197,12 @@
 
 <script>
 import MenuBag from "../../mixins/menuBag";
+import LightBox from "vue-image-lightbox";
 
 export default {
+  components: {
+    LightBox
+  },
   props: {
     mealModal: false,
     meal: {},
