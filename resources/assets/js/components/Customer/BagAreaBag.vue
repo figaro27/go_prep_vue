@@ -159,7 +159,7 @@
       "
     >
       <p class="strong">Delivery Instructions:</p>
-      <p v-html="deliveryInstructions"></p>
+      <p v-html="storeSettings.deliveryInstructions"></p>
     </li>
     <li
       class="transfer-instruction mt-2"
@@ -171,7 +171,9 @@
       "
     >
       <p class="strong">Pickup Instructions:</p>
-      <p v-html="pickupInstructions">{{ pickupInstructions }}</p>
+      <p v-html="storeSettings.pickupInstructions">
+        {{ storeSettings.pickupInstructions }}
+      </p>
     </li>
 
     <div v-if="storeSettings.open === false">
@@ -203,14 +205,14 @@ export default {
     manualOrder: false,
     adjustOrder: false,
     adjustMealPlan: false,
-    subscriptionId: null
+    subscriptionId: null,
+    pickup: 0
   },
   mixins: [MenuBag],
   computed: {
     ...mapGetters({
       store: "viewedStore",
       storeCustomers: "storeCustomers",
-      storeSettings: "viewedStoreSetting",
       total: "bagQuantity",
       allergies: "allergies",
       bag: "bagItems",
@@ -230,6 +232,18 @@ export default {
     }),
     remainingPrice() {
       return this.minPrice - this.totalBagPricePreFees;
+    },
+    transferType() {
+      return this.storeSettings.transferType.split(",");
+    },
+    transferTypeCheckDelivery() {
+      if (_.includes(this.transferType, "delivery")) return true;
+    },
+    transferTypeCheckPickup() {
+      if (_.includes(this.transferType, "pickup")) return true;
+    },
+    storeSettings() {
+      return this.store.settings;
     }
   }
 };
