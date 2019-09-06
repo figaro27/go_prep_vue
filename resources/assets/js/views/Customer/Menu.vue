@@ -175,23 +175,13 @@ export default {
   },
   mixins: [MenuBag],
   props: {
-    preview: {
-      default: false
-    },
-    manualOrder: {
-      default: false
-    },
-    adjustOrder: {
-      default: false
-    },
-    adjustMealPlan: {
-      default: false
-    },
+    preview: false,
+    manualOrder: false,
+    adjustOrder: false,
+    adjustMealPlan: false,
     order: {},
     subscription: {},
-    subscriptionId: {
-      default: null
-    }
+    subscriptionId: null
   },
   data() {
     return {
@@ -351,9 +341,6 @@ export default {
 
       // Sort
       return _.orderBy(grouped, "order");
-    },
-    storeId() {
-      return this.store.id;
     },
     canProgress() {
       return (
