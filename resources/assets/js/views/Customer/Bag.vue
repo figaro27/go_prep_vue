@@ -22,6 +22,16 @@
               :mobile="mobile"
               :pickup="pickup"
             ></checkout-area>
+            <checkout-area-bottom
+              :manualOrder="manualOrder"
+              :mobile="mobile"
+              :pickup="pickup"
+              :subscriptionId="subscriptionId"
+              :cashOrder="cashOrder"
+              :creditCardId="creditCardId"
+              :creditCard="creditCard"
+              :creditCardList="creditCardList"
+            ></checkout-area-bottom>
           </div>
         </div>
       </div>
@@ -140,6 +150,7 @@ import LogoArea from "../../components/Customer/LogoArea";
 import AboveBag from "../../components/Customer/AboveBag";
 import BagAreaBag from "../../components/Customer/BagAreaBag";
 import CheckoutArea from "../../components/Customer/CheckoutArea";
+import CheckoutAreaBottom from "../../components/Customer/CheckoutAreaBottom";
 
 export default {
   components: {
@@ -150,10 +161,12 @@ export default {
     LogoArea,
     AboveBag,
     BagAreaBag,
-    CheckoutArea
+    CheckoutArea,
+    CheckoutAreaBottom
   },
   props: {
-    manualOrder: false
+    manualOrder: false,
+    subscriptionId: null
   },
   mixins: [MenuBag],
   data() {

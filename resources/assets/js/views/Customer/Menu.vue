@@ -116,9 +116,6 @@
     </div>
   </div>
 </template>
-<style></style>
-<style lang="scss" scoped></style>
-
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
@@ -187,7 +184,6 @@ export default {
   data() {
     return {
       search: "",
-      deliveryDay: "",
       slickOptions: {
         slidesToShow: 4,
         infinite: false,
@@ -197,7 +193,6 @@ export default {
         nextArrow:
           '<a class="slick-next"><i class="fa fa-chevron-right"></i></a>'
       },
-      mealDescription: "",
       loaded: false,
       active: {},
       loading: false,
@@ -329,6 +324,17 @@ export default {
       // Sort
       return _.orderBy(grouped, "order");
     },
+    mealPackages() {
+      return _.map(
+        _.filter(this.store.packages, mealPackage => {
+          return mealPackage.active;
+        }) || [],
+        mealPackage => {
+          mealPackage.meal_package = true;
+          return mealPackage;
+        }
+      );
+    },
     canProgress() {
       return (
         (this.minOption === "meals" &&
@@ -380,15 +386,6 @@ export default {
     storeSettings() {
       return this.store.settings;
     },
-    minimumOption() {
-      return this.minOption;
-    },
-    minimumMeals() {
-      return this.minMeals;
-    },
-    minimumPrice() {
-      return this.minPrice;
-    },
     remainingMeals() {
       return this.minMeals - this.total;
     },
@@ -400,17 +397,6 @@ export default {
         return "meals";
       }
       return "meal";
-    },
-    mealPackages() {
-      return _.map(
-        _.filter(this.store.packages, mealPackage => {
-          return mealPackage.active;
-        }) || [],
-        mealPackage => {
-          mealPackage.meal_package = true;
-          return mealPackage;
-        }
-      );
     },
     tags() {
       let grouped = [];
@@ -624,19 +610,6 @@ export default {
           this.addOne(meal, false, item.meal_size_id, components, addons);
         }
       });
-    },
-    async adjust() {
-      axios
-        .post(`/api/me/orders/adjustOrder`, {
-          bag: this.bag,
-          orderId: this.order.id,
-          deliveryDate: this.deliveryDay
-        })
-        .then(resp => {
-          this.$toastr.s("Order Adjusted");
-          this.$router.push({ path: "/store/orders" });
-          this.refreshUpcomingOrders();
-        });
     },
     getNutritionFacts(ingredients, meal, ref = null) {
       const nutrition = this.nutrition.getTotals(ingredients);
