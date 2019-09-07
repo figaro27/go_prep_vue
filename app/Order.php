@@ -33,7 +33,11 @@ class Order extends Model
         'store_name',
         'cutoff_date',
         'cutoff_passed',
-        'pre_coupon'
+        'pre_coupon',
+        'order_day',
+        'goprep_fee',
+        'stripe_fee',
+        'grandTotal'
     ];
 
     public function user()
@@ -88,6 +92,27 @@ class Order extends Model
     public function card()
     {
         return $this->hasOne('App\Card');
+    }
+
+    public function getOrderDayAttribute()
+    {
+        return $this->created_at->format('m d');
+    }
+
+    public function getGoprepFeeAttribute()
+    {
+        return $this->afterDiscountBeforeFees *
+            ($this->store->settings->application_fee / 100);
+    }
+
+    public function getStripeFeeAttribute()
+    {
+        return $this->amount * 0.029 + 0.3;
+    }
+
+    public function getGrandTotalAttribute()
+    {
+        return $this->amount - $this->goprep_fee - $this->stripe_fee;
     }
 
     public function getPreCouponAttribute()
