@@ -97,6 +97,7 @@
             ref="nutritionFacts"
             class="mt-2 mt-lg-0"
           ></div>
+          <b-btn @click="turtles">Test</b-btn>
 
           <div class="row mt-2" v-if="storeSettings.showNutrition">
             <div class="col-lg-5 mt-3">
@@ -208,8 +209,7 @@ import { Carousel, Slide } from "vue-carousel";
 
 export default {
   components: {
-    LightBox,
-    nutritionFacts
+    LightBox
   },
   props: {
     mealModal: false,
@@ -217,9 +217,13 @@ export default {
     slickOptions: {},
     storeSettings: {},
     mealDescription: "",
-    ingredients: ""
+    ingredients: "",
+    nutritionalFacts: {}
   },
   mixins: [MenuBag],
+  updated() {
+    this.getNutritionFacts();
+  },
   methods: {
     getMealGallery(meal) {
       return meal.gallery.map((item, i) => {
@@ -230,6 +234,11 @@ export default {
           thumb: item.url_thumb
         };
       });
+    },
+    getNutritionFacts() {
+      let ref = this.$refs.nutritionFacts;
+      $(ref).html("");
+      $(ref).nutritionLabel(this.nutritionalFacts);
     }
   }
 };

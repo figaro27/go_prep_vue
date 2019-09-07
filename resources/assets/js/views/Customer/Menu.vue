@@ -50,6 +50,7 @@
                 :storeSettings="storeSettings"
                 :mealDescription="mealDescription"
                 :ingredients="ingredients"
+                :nutritionalFacts="nutritionalFacts"
               ></meal-modal>
 
               <meal-package-modal
@@ -212,21 +213,7 @@ export default {
       ingredients: "",
       mealModal: false,
       mealPackageModal: false,
-      calories: null,
-      totalfat: null,
-      satfat: null,
-      transfat: null,
-      cholesterol: null,
-      sodium: null,
-      totalcarb: null,
-      fibers: null,
-      sugars: null,
-      proteins: null,
-      vitamind: null,
-      potassium: null,
-      calcium: null,
-      iron: null,
-      addedsugars: null
+      nutritionalFacts: {}
     };
   },
   computed: {
@@ -654,28 +641,17 @@ export default {
     getNutritionFacts(ingredients, meal, ref = null) {
       const nutrition = this.nutrition.getTotals(ingredients);
       const ingredientList = this.nutrition.getIngredientList(ingredients);
-
-      if (!ref) {
-        ref = this.$refs.nutritionFacts;
-      }
-
-      $(ref).html("");
-
-      $(ref).nutritionLabel({
+      this.nutritionalFacts = {
         showServingUnitQuantity: false,
         itemName: meal.title,
         ingredientList: ingredientList,
         showIngredients: this.showIngredients,
-
         decimalPlacesForQuantityTextbox: 2,
         valueServingUnitQuantity: 1,
-
         allowFDARounding: true,
         decimalPlacesForNutrition: 2,
-
         showPolyFat: false,
         showMonoFat: false,
-
         valueCalories: nutrition.calories,
         valueFatCalories: nutrition.fatCalories,
         valueTotalFat: nutrition.totalFat,
@@ -693,7 +669,7 @@ export default {
         valueIron: (nutrition.iron / 18) * 100,
         valueAddedSugars: nutrition.addedSugars,
         showLegacyVersion: false
-      });
+      };
     }
   }
 };
