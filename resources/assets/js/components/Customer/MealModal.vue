@@ -198,10 +198,18 @@
 <script>
 import MenuBag from "../../mixins/menuBag";
 import LightBox from "vue-image-lightbox";
+import nutritionFacts from "nutrition-label-jquery-plugin";
+import keyboardJS from "keyboardjs";
+import units from "../../data/units";
+import nutrition from "../../data/nutrition";
+import format from "../../lib/format";
+import "vue-image-lightbox/src/components/style.css";
+import { Carousel, Slide } from "vue-carousel";
 
 export default {
   components: {
-    LightBox
+    LightBox,
+    nutritionFacts
   },
   props: {
     mealModal: false,
