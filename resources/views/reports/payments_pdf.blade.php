@@ -32,17 +32,24 @@
         <thead>
           <tr>
             <th>Payment Date</th>
+            @if ($params['dailySummary'])
+            <th>Orders</th>
+            @endif
             <th>Subtotal</th>
+            @if ($params['dailySummary'] == 0)
             <th>Coupon</th>
+            @endif
             <th>Coupon Reduction</th>
             <th>Meal Plan Discount</th>
-            <th>Processing Fee</th>
             <th>Delivery Fee</th>
+            <th>Processing Fee</th>
             <th>Sales Tax</th>
-            <th>PreFee Total</th>
+            <th>GoPrep Fee</th>
             <th>Stripe Fee</th>
             <th>Total</th>
+            @if ($params['dailySummary'] == 0)
             <th>Balance</th>
+            @endif
           </tr>
         </thead>
         <tbody>

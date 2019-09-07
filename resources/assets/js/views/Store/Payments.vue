@@ -38,6 +38,16 @@
                     class="popover-size mr-2"
                   />Fees
                 </p>
+
+                <b-form-checkbox
+                  class="mediumCheckbox ml-3"
+                  type="checkbox"
+                  v-model="filters.dailySummary"
+                  :value="1"
+                  :unchecked-value="0"
+                  ><span class="paragraph">Daily Summary</span></b-form-checkbox
+                >
+
                 <b-form-select
                   v-model="filters.couponCode"
                   :options="coupons"
@@ -118,43 +128,19 @@
             <!-- <div slot="total" slot-scope="props">
               <div>{{ formatMoney(props.row.amount, props.row.currency) }}</div>
             </div> -->
-            <div slot="goPrepFee" slot-scope="props">
+            <div slot="goprep_fee" slot-scope="props">
               <div>
-                {{
-                  formatMoney(
-                    props.row.afterDiscountBeforeFees * goPrepFee,
-                    props.row.currency
-                  )
-                }}
+                {{ formatMoney(props.row.goprep_fee, props.row.currency) }}
               </div>
             </div>
-            <div slot="stripeFee" slot-scope="props">
-              <div v-if="props.row.amount > 0">
-                {{
-                  formatMoney(
-                    props.row.amount * stripeFee + 0.3,
-                    props.row.currency
-                  )
-                }}
-              </div>
-              <div v-else>
-                $0.00
+            <div slot="stripe_fee" slot-scope="props">
+              <div>
+                {{ formatMoney(props.row.stripe_fee, props.row.currency) }}
               </div>
             </div>
             <div slot="grandTotal" slot-scope="props">
-              <div v-if="props.row.amount > 0">
-                {{
-                  formatMoney(
-                    props.row.amount -
-                      props.row.afterDiscountBeforeFees * goPrepFee -
-                      props.row.amount * stripeFee -
-                      0.3,
-                    props.row.currency
-                  )
-                }}
-              </div>
-              <div v-else>
-                $0.00
+              <div>
+                {{ formatMoney(props.row.grandTotal, props.row.currency) }}
               </div>
             </div>
             <div slot="deposit" slot-scope="props">
@@ -195,7 +181,8 @@ export default {
           start: null,
           end: null
         },
-        couponCode: null
+        couponCode: null,
+        dailySummary: 0
       },
       order: {},
       orderId: "",
@@ -203,6 +190,7 @@ export default {
       options: {
         headings: {
           created_at: "Payment Date",
+          totalOrders: "Orders",
           subtotal: "Subtotal",
           mealPlanDiscount: "Meal Plan Discount",
           couponCode: "Coupon",
@@ -211,8 +199,8 @@ export default {
           deliveryFee: "Delivery Fee",
           salesTax: "Sales Tax",
           // total: "PreFee Total",
-          goPrepFee: "GoPrep Fee",
-          stripeFee: "Stripe Fee",
+          goprep_fee: "GoPrep Fee",
+          stripe_fee: "Stripe Fee",
           grandTotal: "Total",
           deposit: "Balance Remaining"
         },
@@ -274,6 +262,62 @@ export default {
         );
       }
 
+      let grandTotalOrders = orders.length - 1;
+
+      if (this.filters.dailySummary) {
+        let ordersByDay = Object.values(_.groupBy(orders, "order_day"));
+
+        orders = [];
+
+        ordersByDay.forEach(orderByDay => {
+          let created_at = "";
+          let totalOrders = 0;
+          let sums = {
+            preFeePreDiscount: 0,
+            mealPlanDiscount: 0,
+            couponReduction: 0,
+            afterDiscountBeforeFees: 0,
+            processingFee: 0,
+            deliveryFee: 0,
+            salesTax: 0,
+            goprep_fee: 0,
+            stripe_fee: 0,
+            grandTotal: 0
+          };
+
+          orderByDay.forEach(order => {
+            created_at = order.created_at;
+            totalOrders += 1;
+            sums.preFeePreDiscount += order.preFeePreDiscount;
+            sums.mealPlanDiscount += order.mealPlanDiscount;
+            sums.couponReduction += order.couponReduction;
+            sums.afterDiscountBeforeFees += order.afterDiscountBeforeFees;
+            sums.processingFee += order.processingFee;
+            sums.deliveryFee += order.deliveryFee;
+            sums.salesTax += order.salesTax;
+            sums.goprep_fee += order.goprep_fee;
+            sums.stripe_fee += order.stripe_fee;
+            sums.grandTotal += order.grandTotal;
+          });
+          orders.push({
+            created_at: created_at,
+            totalOrders: totalOrders,
+            preFeePreDiscount: sums.preFeePreDiscount,
+            mealPlanDiscount: sums.mealPlanDiscount,
+            couponReduction: sums.couponReduction,
+            afterDiscountBeforeFees: sums.afterDiscountBeforeFees,
+            processingFee: sums.processingFee,
+            deliveryFee: sums.deliveryFee,
+            salesTax: sums.salesTax,
+            goprep_fee: sums.goprep_fee,
+            stripe_fee: sums.stripe_fee,
+            grandTotal: sums.grandTotal
+          });
+        });
+
+        orders.shift();
+      }
+
       let totalsRowCheck = 0;
       orders.forEach(order => {
         if (order.created_at === "TOTALS") {
@@ -282,6 +326,7 @@ export default {
       });
 
       if (!totalsRowCheck) {
+        let totalOrders = 0;
         let sums = {
           preFeePreDiscount: 0,
           mealPlanDiscount: 0,
@@ -290,7 +335,9 @@ export default {
           processingFee: 0,
           deliveryFee: 0,
           salesTax: 0,
-          amount: 0
+          goprep_fee: 0,
+          stripe_fee: 0,
+          grandTotal: 0
         };
 
         orders.forEach(order => {
@@ -301,11 +348,14 @@ export default {
           sums.processingFee += order.processingFee;
           sums.deliveryFee += order.deliveryFee;
           sums.salesTax += order.salesTax;
-          sums.amount += order.amount;
+          sums.goprep_fee += order.goprep_fee;
+          sums.stripe_fee += order.stripe_fee;
+          sums.grandTotal += order.grandTotal;
         });
 
         orders.unshift({
           created_at: "TOTALS",
+          totalOrders: grandTotalOrders,
           preFeePreDiscount: sums.preFeePreDiscount,
           mealPlanDiscount: sums.mealPlanDiscount,
           couponReduction: sums.couponReduction,
@@ -313,11 +363,13 @@ export default {
           processingFee: sums.processingFee,
           deliveryFee: sums.deliveryFee,
           salesTax: sums.salesTax,
-          amount: sums.amount,
-          stripeFee: sums.stripeFee,
+          goprep_fee: sums.goprep_fee,
+          stripe_fee: sums.stripe_fee,
+          grandTotal: sums.grandTotal,
           sumRow: 1
         });
       }
+
       return orders;
     },
     columns() {
@@ -326,8 +378,8 @@ export default {
         "subtotal",
         "salesTax",
         // "total",
-        "goPrepFee",
-        "stripeFee",
+        "goprep_fee",
+        "stripe_fee",
         "grandTotal"
       ];
 
@@ -376,6 +428,10 @@ export default {
           columns.splice(columns.length, 0, "deposit");
         }
       });
+
+      if (this.filters.dailySummary) {
+        columns.splice(1, 0, "totalOrders");
+      }
 
       return columns;
     },
@@ -426,6 +482,7 @@ export default {
       }
 
       params.couponCode = this.filters.couponCode;
+      params.dailySummary = this.filters.dailySummary;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {

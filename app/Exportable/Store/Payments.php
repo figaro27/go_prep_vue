@@ -5,6 +5,7 @@ namespace App\Exportable\Store;
 use App\Exportable\Exportable;
 use App\Store;
 use App\User;
+use Carbon\Carbon;
 
 class Payments
 {
@@ -22,66 +23,137 @@ class Payments
     {
         $params = $this->params;
         $couponCode = $this->params->get('couponCode');
+        $dailySummary = $this->params->get('dailySummary');
 
         $sums = ['TOTALS', 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        $payments = $this->store
-            ->getOrders(
-                null,
-                $this->getDeliveryDates(),
-                null,
-                null,
-                null,
-                true,
-                $couponCode
-            )
-            ->map(function ($payment) use (&$sums) {
+        if ($dailySummary != 1) {
+            $payments = $this->store
+                ->getOrders(
+                    null,
+                    $this->getDeliveryDates(),
+                    null,
+                    null,
+                    null,
+                    true,
+                    $couponCode
+                )
+                ->map(function ($payment) use (&$sums) {
+                    $goPrepFee = $this->store->settings->application_fee / 100;
+                    $stripeFee = 0.029;
+
+                    $sums[1] += $payment->preFeePreDiscount;
+                    $sums[3] += $payment->couponReduction;
+                    $sums[4] += $payment->mealPlanDiscount;
+                    $sums[5] += $payment->processingFee;
+                    $sums[6] += $payment->deliveryFee;
+                    $sums[7] += $payment->salesTax;
+                    $sums[8] += $payment->goprep_fee;
+                    $sums[9] += $payment->stripe_fee;
+                    $sums[10] += $payment->grandTotal;
+                    $sums[11] = 100 - $payment->deposit;
+
+                    $paymentsRows = [
+                        $payment->created_at->format('D, m/d/Y'),
+                        '$' . number_format($payment->preFeePreDiscount, 2),
+                        $payment->couponCode,
+                        '$' . number_format($payment->couponReduction, 2),
+                        '$' . number_format($payment->mealPlanDiscount, 2),
+                        '$' . number_format($payment->deliveryFee, 2),
+                        '$' . number_format($payment->processingFee, 2),
+                        '$' . number_format($payment->salesTax, 2),
+                        '$' . number_format($payment->goprep_fee, 2),
+                        '$' . number_format($payment->stripe_fee, 2),
+                        '$' . number_format($payment->grandTotal, 2),
+                        100 - $payment->deposit . '%'
+                    ];
+
+                    return $paymentsRows;
+                });
+        } else {
+            $ordersByDay = $this->store
+                ->getOrders(
+                    null,
+                    $this->getDeliveryDates(),
+                    null,
+                    null,
+                    null,
+                    true,
+                    $couponCode
+                )
+                ->groupBy('order_day');
+
+            $dailySums = [];
+
+            foreach ($ordersByDay as $orderByDay) {
                 $goPrepFee = $this->store->settings->application_fee / 100;
                 $stripeFee = 0.029;
 
-                $sums[1] += $payment->preFeePreDiscount;
-                $sums[3] += $payment->couponReduction;
-                $sums[4] += $payment->mealPlanDiscount;
-                $sums[5] += $payment->processingFee;
-                $sums[6] += $payment->deliveryFee;
-                $sums[7] += $payment->salesTax;
-                $sums[8] += $payment->afterDiscountBeforeFees * $goPrepFee;
-                $sums[9] += $payment->amount * $stripeFee + 0.3;
-                $sums[10] +=
-                    $payment->amount -
-                    $payment->afterDiscountBeforeFees * $goPrepFee -
-                    $payment->amount * $stripeFee -
-                    0.3;
-                $sums[11] = 100 - $payment->deposit;
+                $created_at = "";
+                $totalOrders = 0;
+                $preFeePreDiscount = 0;
+                $mealPlanDiscount = 0;
+                $couponReduction = 0;
+                $afterDiscountBeforeFees = 0;
+                $processingFee = 0;
+                $deliveryFee = 0;
+                $salesTax = 0;
+                $goPrepFeeAmount = 0;
+                $stripeFeeAmount = 0;
+                $grandTotal = 0;
 
-                $paymentsRows = [
-                    $payment->created_at->format('D, m/d/Y'),
-                    '$' . number_format($payment->preFeePreDiscount, 2),
-                    $payment->couponCode,
-                    '$' . number_format($payment->couponReduction, 2),
-                    '$' . number_format($payment->mealPlanDiscount, 2),
-                    '$' . number_format($payment->processingFee, 2),
-                    '$' . number_format($payment->deliveryFee, 2),
-                    '$' . number_format($payment->salesTax, 2),
-                    '$' .
-                        number_format(
-                            $payment->afterDiscountBeforeFees * $goPrepFee,
-                            2
-                        ),
-                    '$' . number_format($payment->amount * $stripeFee + 0.3, 2),
-                    '$' .
-                        number_format(
-                            $payment->amount -
-                                $payment->afterDiscountBeforeFees * $goPrepFee -
-                                $payment->amount * $stripeFee -
-                                0.3,
-                            2
-                        ),
-                    100 - $payment->deposit . '%'
-                ];
+                foreach ($orderByDay as $order) {
+                    $created_at = $order->order_day;
+                    $totalOrders += 1;
+                    $preFeePreDiscount += $order->preFeePreDiscount;
+                    $couponReduction += $order->couponReduction;
+                    $mealPlanDiscount += $order->mealPlanDiscount;
+                    $processingFee += $order->processingFee;
+                    $deliveryFee += $order->deliveryFee;
+                    $salesTax += $order->salesTax;
+                    $goPrepFeeAmount += $order->goprep_fee;
+                    $stripeFeeAmount += $order->stripe_fee;
+                    $grandTotal += $order->grandTotal;
+                    // $deposit = 100 - $order->deposit;
+                }
+                $orderDay = Carbon::createFromFormat(
+                    'm d',
+                    $created_at
+                )->format('D, M d, Y');
+                array_push($dailySums, [
+                    $orderDay,
+                    $totalOrders,
+                    '$' . number_format($preFeePreDiscount, 2),
+                    '$' . number_format($couponReduction, 2),
+                    '$' . number_format($mealPlanDiscount, 2),
+                    '$' . number_format($deliveryFee, 2),
+                    '$' . number_format($processingFee, 2),
+                    '$' . number_format($salesTax, 2),
+                    '$' . number_format($goPrepFeeAmount, 2),
+                    '$' . number_format($stripeFeeAmount, 2),
+                    '$' . number_format($grandTotal, 2)
+                ]);
 
-                return $paymentsRows;
-            });
+                $sumsByDaily[1] += $totalOrders;
+                $sumsByDaily[2] += $preFeePreDiscount;
+                $sumsByDaily[3] += $couponReduction;
+                $sumsByDaily[4] += $mealPlanDiscount;
+                $sumsByDaily[5] += $deliveryFee;
+                $sumsByDaily[6] += $processingFee;
+                $sumsByDaily[7] += $salesTax;
+                $sumsByDaily[8] += $goPrepFeeAmount;
+                $sumsByDaily[9] += $stripeFeeAmount;
+                $sumsByDaily[10] += $grandTotal;
+            }
+
+            foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10] as $i) {
+                $sumsByDaily[$i] = '$' . number_format($sumsByDaily[$i], 2);
+            }
+
+            array_unshift($dailySums, $sumsByDaily);
+            return $dailySums;
+        }
 
         // Format the sum row
         foreach ([1, 3, 4, 5, 6, 7, 8, 9, 10, 11] as $i) {
