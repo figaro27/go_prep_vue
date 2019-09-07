@@ -297,6 +297,7 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../mixins/menuBag";
 import SalesTax from "sales-tax";
 import CardPicker from "../../components/Billing/CardPicker";
+import { createToken } from "vue-stripe-elements-plus";
 
 export default {
   components: {
@@ -309,7 +310,8 @@ export default {
       stripeKey: window.app.stripe_key,
       loading: false,
       checkingOut: false,
-      card: null
+      card: null,
+      deposit: 100
     };
   },
   props: {
@@ -318,9 +320,26 @@ export default {
     cashOrder: false,
     mobile: false,
     pickup: 0,
-    creditCardId: null,
-    creditCard: {},
-    creditCardList: {}
+    creditCardId: null
+  },
+  mounted() {
+    this.creditCardId = this.card;
+    if (this.storeSettings.salesTax > 0) {
+      this.salesTax = this.storeSettings.salesTax / 100;
+    } else {
+      this.getSalesTax(this.store.details.state);
+    }
+
+    if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
+
+    this.selectedPickupLocation = this.pickupLocationOptions[0].value;
+
+    if (!this.deliveryDay && this.deliveryDaysOptions) {
+      this.deliveryDay = this.deliveryDaysOptions[0].value;
+    }
+  },
+  updated() {
+    this.creditCardId = this.card;
   },
   mixins: [MenuBag],
   computed: {
@@ -365,7 +384,7 @@ export default {
       if (_.includes(this.transferType, "pickup")) return true;
     },
     deliveryDaysOptions() {
-      return (this.storeSettings.next_orderable_delivery_dates, []).map(
+      return (this.storeSettings.next_orderable_delivery_dates[0], []).map(
         date => {
           return {
             value: date.date,
@@ -373,6 +392,13 @@ export default {
           };
         }
       );
+    }
+  },
+  watch: {
+    deliveryDaysOptions(val) {
+      if (!this.deliveryDay && val[0]) {
+        this.deliveryDay = val[0].value;
+      }
     }
   },
   methods: {

@@ -5,7 +5,6 @@
         class="stripe-card"
         :class="{ newCard }"
         :stripe="stripeKey"
-        :options="stripeOptions"
         @change="newCard = $event.complete"
       />
     </b-form-group>
@@ -112,8 +111,7 @@ export default {
     return {
       stripeKey: window.app.stripe_key,
       // stripeOptions,
-      newCard: null,
-      creditCards: []
+      newCard: null
     };
   },
   computed: {

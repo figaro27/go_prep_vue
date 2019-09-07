@@ -29,8 +29,6 @@
               :subscriptionId="subscriptionId"
               :cashOrder="cashOrder"
               :creditCardId="creditCardId"
-              :creditCard="creditCard"
-              :creditCardList="creditCardList"
             ></checkout-area-bottom>
           </div>
         </div>
@@ -143,7 +141,6 @@ import SalesTax from "sales-tax";
 import Register from "../Register";
 
 import MenuBag from "../../mixins/menuBag";
-import CardPicker from "../../components/Billing/CardPicker";
 import states from "../../data/states.js";
 
 import LogoArea from "../../components/Customer/LogoArea";
@@ -155,7 +152,6 @@ import CheckoutAreaBottom from "../../components/Customer/CheckoutAreaBottom";
 export default {
   components: {
     cSwitch,
-    CardPicker,
     SalesTax,
     Register,
     LogoArea,
