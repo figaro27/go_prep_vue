@@ -427,6 +427,50 @@
         </div>
       </li>
     </ul>
+    <li
+      class="transfer-instruction mt-2"
+      v-if="
+        transferTypeCheckDelivery &&
+          pickup === 0 &&
+          storeSettings.deliveryInstructions &&
+          !manualOrder
+      "
+    >
+      <p class="strong">Delivery Instructions:</p>
+      <p v-html="storeSettings.deliveryInstructions"></p>
+    </li>
+    <li
+      class="transfer-instruction mt-2"
+      v-if="
+        transferTypeCheckPickup &&
+          pickup === 1 &&
+          storeSettings.pickupInstructions &&
+          !manualOrder
+      "
+    >
+      <p class="strong">Pickup Instructions:</p>
+      <p v-html="storeSettings.pickupInstructions">
+        {{ storeSettings.pickupInstructions }}
+      </p>
+    </li>
+
+    <div v-if="storeSettings.open === false">
+      <div class="row">
+        <div class="col-sm-12 mt-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="center-text">
+                This company will not be taking new orders at this time.
+              </h5>
+              <p class="center-text mt-3">
+                <strong>Reason:</strong>
+                {{ storeSettings.closedReason }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
