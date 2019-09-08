@@ -762,9 +762,8 @@ export default {
       if (this.storeSettings.salesTax > 0)
         return (this.storeSettings.salesTax / 100) * this.afterFees;
       else
-        return (
-          (this.getSalesTax(this.store.details.state) / 100) * this.afterFees
-        );
+        return this.salesTax
+
     },
     stateNames() {
       return states.stateNames();
@@ -892,6 +891,8 @@ export default {
         });
     },
     mounted() {
+      SalesTax.getSalesTax("US", "NY").then(tax => { this.setSalesTax(tax.rate) })
+
       this.creditCardId = this.card;
 
       if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
@@ -902,6 +903,9 @@ export default {
         this.deliveryDay = this.deliveryDaysOptions[0].value;
       }
     },
+    setSalesTax(rate){
+      this.salesTax = rate;
+    }
     updated() {
       this.creditCardId = this.card;
     },

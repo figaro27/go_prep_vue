@@ -219,11 +219,6 @@ export default {
       if (window.innerWidth < 500) return true;
       else return false;
     },
-    tax() {
-      if (this.storeSettings.enableSalesTax)
-        return this.salesTax * this.afterFees;
-      else return 0;
-    },
     storeSettings() {
       return this.store.settings;
     }
