@@ -185,14 +185,6 @@ export default {
 
       return wat;
     },
-    getSalesTax(state) {
-      SalesTax.getSalesTax("US", state).then(tax => {
-        this.setSalesTax(tax.rate);
-      });
-    },
-    setSalesTax(rate) {
-      this.salesTax = rate;
-    },
     async updateSubscriptionMeals() {
       if (this.$route.params.mealPlanAdjustment) {
         axios

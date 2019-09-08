@@ -252,7 +252,6 @@ export default {
         ) {
           return false;
         }
-
         return true;
       });
 
@@ -266,7 +265,6 @@ export default {
               (has, tag) => {
                 if (!has) return false;
                 let x = _.includes(meal.tag_titles, tag);
-
                 return x;
               },
               true
@@ -281,7 +279,6 @@ export default {
               (has, allergyId) => {
                 if (has) return true;
                 let x = _.includes(filters.allergies, allergyId);
-
                 return x;
               },
               false
@@ -333,16 +330,6 @@ export default {
           mealPackage.meal_package = true;
           return mealPackage;
         }
-      );
-    },
-    canProgress() {
-      return (
-        (this.minOption === "meals" &&
-          this.total >= this.minimumMeals &&
-          !this.preview) ||
-        (this.minOption === "price" &&
-          this.totalBagPricePreFees >= this.minPrice &&
-          !this.preview)
       );
     },
     card() {
@@ -475,14 +462,6 @@ export default {
         this.$refs.mealGallery.reSlick();
       });
     },
-    hideMealModal() {
-      this.mealModal = false;
-
-      // Ensure modal is fully closed
-      return new Promise(resolve => {
-        this.$nextTick(resolve);
-      });
-    },
     showMealPackageModal(mealPackage) {
       this.mealPackage = { ...mealPackage };
       this.mealPackageModal = true;
@@ -495,14 +474,6 @@ export default {
             this.$refs[`nutritionFacts${meal.id}`]
           );
         });
-      });
-    },
-    hideMealPackageModal() {
-      this.mealPackageModal = false;
-
-      // Ensure modal is fully closed
-      return new Promise(resolve => {
-        this.$nextTick(resolve);
       });
     },
     filterByCategory(category) {

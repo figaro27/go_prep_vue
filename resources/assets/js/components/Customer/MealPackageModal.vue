@@ -7,6 +7,7 @@
       v-model="mealPackageModal"
       v-if="mealPackageModal"
       @shown="$forceUpdate()"
+      @hide="$parent.mealPackageModal = false"
       :hide-footer="true"
     >
       <carousel

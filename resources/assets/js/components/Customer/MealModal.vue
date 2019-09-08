@@ -6,6 +6,7 @@
       :title="meal.title"
       v-model="mealModal"
       v-if="mealModal"
+      @hide="$parent.mealModal = false"
     >
       <div class="row mt-3">
         <div class="col-lg-6 modal-meal-image">
