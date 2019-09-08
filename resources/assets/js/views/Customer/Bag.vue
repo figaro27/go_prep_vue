@@ -21,15 +21,10 @@
               :manualOrder="manualOrder"
               :mobile="mobile"
               :pickup="pickup"
-            ></checkout-area>
-            <checkout-area-bottom
-              :manualOrder="manualOrder"
-              :mobile="mobile"
-              :pickup="pickup"
               :subscriptionId="subscriptionId"
               :cashOrder="cashOrder"
               :creditCardId="creditCardId"
-            ></checkout-area-bottom>
+            ></checkout-area>
           </div>
         </div>
       </div>
@@ -137,7 +132,6 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
 import { createToken } from "vue-stripe-elements-plus";
-import SalesTax from "sales-tax";
 import Register from "../Register";
 
 import MenuBag from "../../mixins/menuBag";
@@ -147,18 +141,15 @@ import LogoArea from "../../components/Customer/LogoArea";
 import AboveBag from "../../components/Customer/AboveBag";
 import BagAreaBag from "../../components/Customer/BagAreaBag";
 import CheckoutArea from "../../components/Customer/CheckoutArea";
-import CheckoutAreaBottom from "../../components/Customer/CheckoutAreaBottom";
 
 export default {
   components: {
     cSwitch,
-    SalesTax,
     Register,
     LogoArea,
     AboveBag,
     BagAreaBag,
-    CheckoutArea,
-    CheckoutAreaBottom
+    CheckoutArea
   },
   props: {
     manualOrder: false,
@@ -182,10 +173,10 @@ export default {
       stripeKey: window.app.stripe_key,
       loading: false,
       checkingOut: false,
-      salesTax: 0,
       couponCode: "",
       couponClass: "checkout-item",
-      deliveryFee: 0
+      deliveryFee: 0,
+      amounts: {}
     };
   },
   watch: {

@@ -320,7 +320,8 @@ export default {
     cashOrder: false,
     mobile: false,
     pickup: 0,
-    creditCardId: null
+    creditCardId: null,
+    amounts: {}
   },
   mounted() {
     this.creditCardId = this.card;
@@ -384,21 +385,12 @@ export default {
       if (_.includes(this.transferType, "pickup")) return true;
     },
     deliveryDaysOptions() {
-      return (this.storeSettings.next_orderable_delivery_dates[0], []).map(
-        date => {
-          return {
-            value: date.date,
-            text: moment(date.date).format("dddd MMM Do")
-          };
-        }
-      );
-    }
-  },
-  watch: {
-    deliveryDaysOptions(val) {
-      if (!this.deliveryDay && val[0]) {
-        this.deliveryDay = val[0].value;
-      }
+      return [this.storeSettings.next_orderable_delivery_dates[0]].map(date => {
+        return {
+          value: date.date,
+          text: moment(date.date).format("dddd MMM Do")
+        };
+      });
     }
   },
   methods: {
