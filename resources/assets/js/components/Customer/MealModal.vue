@@ -97,7 +97,6 @@
             ref="nutritionFacts"
             class="mt-2 mt-lg-0"
           ></div>
-          <b-btn @click="turtles">Test</b-btn>
 
           <div class="row mt-2" v-if="storeSettings.showNutrition">
             <div class="col-lg-5 mt-3">
@@ -237,8 +236,11 @@ export default {
     },
     getNutritionFacts() {
       let ref = this.$refs.nutritionFacts;
-      $(ref).html("");
-      $(ref).nutritionLabel(this.nutritionalFacts);
+      this.$nextTick(() => {
+        this.$nextTick(() => {
+          $(ref).nutritionLabel(this.nutritionalFacts);
+        });
+      });
     }
   }
 };
