@@ -488,7 +488,6 @@ export default {
       stripeKey: window.app.stripe_key,
       loading: false,
       checkingOut: false,
-      card: null,
       deposit: 100
     };
   },
@@ -763,9 +762,6 @@ export default {
         return (this.storeSettings.salesTax / 100) * this.afterFees;
       else return this.salesTax;
     },
-    stateNames() {
-      return states.stateNames();
-    },
     subscriptionId() {
       return this.$route.params.subscriptionId;
     }
@@ -846,31 +842,6 @@ export default {
     },
     getCustomer() {
       return this.customer;
-    },
-    showAddCustomerModal() {
-      this.addCustomerModal = true;
-    },
-    addCustomer() {
-      let form = this.form;
-
-      if (!form.accepted_tos) {
-        this.$toastr.e(
-          "Please accept the terms of service.",
-          "Registration failed"
-        );
-        return;
-      }
-
-      axios
-        .post("/api/me/register", form)
-        .then(async response => {
-          this.addCustomerModal = false;
-          this.form = {};
-          await this.refreshStoreCustomers();
-        })
-        .catch(e => {
-          this.$toastr.e("Please try again.", "Registration failed");
-        });
     },
     changeState(state) {
       this.form.state = state.abbreviation;
