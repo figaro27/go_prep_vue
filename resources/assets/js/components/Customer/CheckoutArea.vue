@@ -479,12 +479,10 @@ import { createToken } from "vue-stripe-elements-plus";
 
 export default {
   components: {
-    SalesTax,
     CardPicker
   },
   data() {
     return {
-      salesTax: 0,
       stripeKey: window.app.stripe_key,
       loading: false,
       checkingOut: false,
@@ -495,7 +493,8 @@ export default {
     manualOrder: false,
     cashOrder: false,
     mobile: false,
-    pickup: 0
+    pickup: 0,
+    salesTax: 0
   },
   mixins: [MenuBag],
   computed: {
@@ -760,7 +759,7 @@ export default {
     tax() {
       if (this.storeSettings.salesTax > 0)
         return (this.storeSettings.salesTax / 100) * this.afterFees;
-      else return this.salesTax;
+      else return this.salesTax * this.afterFees;
     },
     subscriptionId() {
       return this.$route.params.subscriptionId;
@@ -860,10 +859,6 @@ export default {
         });
     },
     mounted() {
-      SalesTax.getSalesTax("US", "NY").then(tax => {
-        this.setSalesTax(tax.rate);
-      });
-
       this.creditCardId = this.card;
 
       if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
@@ -873,9 +868,6 @@ export default {
       if (!this.deliveryDay && this.deliveryDaysOptions) {
         this.deliveryDay = this.deliveryDaysOptions[0].value;
       }
-    },
-    setSalesTax(rate) {
-      this.salesTax = rate;
     },
     updated() {
       this.creditCardId = this.card;

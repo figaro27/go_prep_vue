@@ -24,12 +24,15 @@
               :subscriptionId="subscriptionId"
               :cashOrder="cashOrder"
               :creditCardId="creditCardId"
+              :salesTax="salesTax"
             ></checkout-area>
           </div>
         </div>
       </div>
     </div>
-    <add-customer-modal></add-customer-modal>
+    <add-customer-modal
+      :addCustomerModal="addCustomerModal"
+    ></add-customer-modal>
   </div>
 </template>
 
@@ -38,6 +41,7 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
 import { createToken } from "vue-stripe-elements-plus";
 import Register from "../Register";
+import SalesTax from "sales-tax";
 
 import MenuBag from "../../mixins/menuBag";
 import states from "../../data/states.js";
@@ -56,7 +60,8 @@ export default {
     AboveBag,
     BagAreaBag,
     CheckoutArea,
-    AddCustomerModal
+    AddCustomerModal,
+    SalesTax
   },
   props: {
     manualOrder: false,
@@ -67,7 +72,6 @@ export default {
     return {
       transferTime: "",
       cashOrder: false,
-      form: {},
       addCustomerModal: false,
       deposit: 100,
       creditCardList: [],
@@ -83,7 +87,8 @@ export default {
       couponCode: "",
       couponClass: "checkout-item",
       deliveryFee: 0,
-      amounts: {}
+      amounts: {},
+      salesTax: 0
     };
   },
   watch: {
@@ -132,11 +137,10 @@ export default {
   },
   mounted() {
     this.creditCardId = this.card;
-    if (this.storeSettings.salesTax > 0) {
-      this.salesTax = this.storeSettings.salesTax / 100;
-    } else {
-      this.getSalesTax(this.store.details.state);
-    }
+
+    SalesTax.getSalesTax("US", this.store.details.state).then(tax => {
+      this.setSalesTax(tax.rate);
+    });
 
     if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
 
@@ -148,6 +152,12 @@ export default {
   },
   updated() {
     this.creditCardId = this.card;
+  },
+  showAddCustomerModal() {
+    this.addCustomerModal = true;
+  },
+  setSalesTax(rate) {
+    this.salesTax = rate;
   }
 };
 </script>
