@@ -309,91 +309,41 @@
           order. In the event that cash is not paid, your credit card will be
           charged.
         </p>
-        <card-picker
-          :selectable="true"
-          v-model="card"
-          v-if="!manualOrder && !subscriptionId && !cashOrder"
-          class="mb-3"
-          ref="cardPicker"
-        ></card-picker>
-        <card-picker
-          :selectable="true"
-          v-model="card"
-          v-if="
-            !manualOrder &&
-              !subscriptionId &&
-              cashOrder &&
-              creditCardId === null
-          "
-          class="mb-3"
-          ref="cardPicker"
-        ></card-picker>
+
         <card-picker
           :selectable="true"
           :creditCards="creditCardList"
-          :manualOrder="true"
           v-model="cards"
-          v-if="manualOrder && !cashOrder && !subscriptionId"
           class="mb-3"
           ref="cardPicker"
         ></card-picker>
+
+        <b-form-group
+          v-if="manualOrder && storeModules.deposits"
+          horizontal
+          label="Deposit %"
+        >
+          <b-form-input
+            v-model="deposit"
+            type="text"
+            required
+            placeholder="Deposit %"
+          ></b-form-input>
+        </b-form-group>
+
         <b-btn
-          v-if="
-            creditCardId != null &&
-              minOption === 'meals' &&
-              total >= minMeals &&
-              storeSettings.open &&
-              !manualOrder &&
-              !subscriptionId
-          "
+          v-if="creditCardId != null && minimumMet"
           @click="checkout"
           class="menu-bag-btn"
           >CHECKOUT</b-btn
         >
-        <b-btn
-          v-if="
-            creditCardId != null &&
-              minOption === 'price' &&
-              totalBagPricePreFees >= minPrice &&
-              storeSettings.open &&
-              !manualOrder &&
-              !subscriptionId
-          "
-          @click="checkout"
-          class="menu-bag-btn"
-          >CHECKOUT</b-btn
-        >
+
         <div v-if="subscriptionId" class="d-none d-lg-block">
           <b-btn
             class="menu-bag-btn update-meals-btn"
             @click="updateSubscriptionMeals"
             >UPDATE MEALS</b-btn
           >
-        </div>
-        <div
-          v-if="
-            (manualOrder && cards.length > 0) || (cashOrder && customer != null)
-          "
-          class="row mt-4"
-        >
-          <div class="col-md-6" v-if="storeModules.deposits">
-            <b-form-group v-if="manualOrder" horizontal label="Deposit %">
-              <b-form-input
-                v-model="deposit"
-                type="text"
-                required
-                placeholder="Deposit %"
-              ></b-form-input>
-            </b-form-group>
-          </div>
-          <div class="col-md-6">
-            <b-btn
-              @click="checkout"
-              v-if="storeModules.manualOrders"
-              class="menu-bag-btn"
-              >CHECKOUT</b-btn
-            >
-          </div>
         </div>
       </div>
     </li>
@@ -427,24 +377,6 @@
       <p class="strong">{{ transferText }}</p>
       <p v-html="transferInstructions"></p>
     </li>
-
-    <div v-if="storeSettings.open === false">
-      <div class="row">
-        <div class="col-sm-12 mt-3">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="center-text">
-                This company will not be taking new orders at this time.
-              </h5>
-              <p class="center-text mt-3">
-                <strong>Reason:</strong>
-                {{ storeSettings.closedReason }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 

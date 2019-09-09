@@ -34,6 +34,7 @@
               :salesTax="salesTax"
               :customer="customer"
             ></checkout-area>
+            <store-closed></store-closed>
           </div>
         </div>
       </div>
