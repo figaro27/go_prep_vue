@@ -8,7 +8,7 @@
         <i class="fa fa-filter"></i>
         <span class="d-none d-sm-inline">&nbsp;Filters</span>
       </b-button>
-      <b-button @click="$emit('clearFilters')" class="gray white-text">
+      <b-button @click="$parent(clearFilters)" class="gray white-text">
         <i class="fa fa-eraser"></i>
         <span class="d-none d-sm-inline">&nbsp;Clear Filters</span>
       </b-button>

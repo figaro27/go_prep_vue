@@ -35,7 +35,6 @@
         :allergies="allergies"
         :tags="tags"
         @filterByTag="filterByTag($event)"
-        @filterByAllergy="filterByAllergy($event)"
         @clearFilters="clearFilters"
       ></meal-filter-modal>
 
@@ -74,9 +73,7 @@
                       />
                     </div>
                     <div class="col-sm-12 category-area">
-                      <category-area
-                        @clearFilters="clearFilters"
-                      ></category-area>
+                      <category-area></category-area>
                     </div>
                   </div>
                 </div>
@@ -214,8 +211,6 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
-      storeCustomers: "storeCustomers",
-      storeSetting: "viewedStoreSetting",
       total: "bagQuantity",
       allergies: "allergies",
       bag: "bagItems",

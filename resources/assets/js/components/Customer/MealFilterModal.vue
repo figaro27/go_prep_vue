@@ -19,7 +19,7 @@
           >
             <b-button
               :pressed="$parent.active[allergy.id]"
-              @click="$emit('filterByAllergy', allergy.id)"
+              @click="$parent.filterByAllergy(allergy.id)"
               >{{ allergy.title }}</b-button
             >
           </div>
