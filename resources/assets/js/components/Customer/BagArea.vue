@@ -48,6 +48,7 @@
             <thumbnail
               :src="item.meal.image.url_thumb"
               :spinner="false"
+              class="cart-item-img"
               width="80px"
             ></thumbnail>
           </div>
@@ -85,103 +86,6 @@
         </div>
       </li>
     </ul>
-
-    <p
-      class="align-right"
-      v-if="minOption === 'meals' && total < minimumMeals && !manualOrder"
-    >
-      Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
-    </p>
-
-    <div
-      v-if="
-        minOption === 'meals' &&
-          total >= minimumMeals &&
-          !manualOrder &&
-          !adjustOrder &&
-          !adjustMealPlan
-      "
-      class="menu-btns-container"
-    >
-      <router-link to="/customer/bag" v-if="!subscriptionId && !manualOrder">
-        <b-btn class="menu-bag-btn">NEXT</b-btn>
-      </router-link>
-      <router-link
-        :to="{
-          name: 'customer-bag',
-          params: { subscriptionId: subscriptionId }
-        }"
-        v-if="subscriptionId"
-      >
-        <b-btn class="menu-bag-btn">NEXT</b-btn>
-      </router-link>
-    </div>
-    <div
-      v-if="
-        minOption === 'price' &&
-          totalBagPricePreFees < minPrice &&
-          !manualOrder &&
-          !adjustOrder &&
-          !adjustMealPlan
-      "
-      class="menu-btns-container"
-    >
-      <p class="align-right">
-        Please add
-        {{ format.money(remainingPrice, storeSettings.currency) }}
-        more to continue.
-      </p>
-    </div>
-    <div v-if="minOption === 'price' && totalBagPricePreFees >= minPrice">
-      <router-link
-        to="/customer/bag"
-        v-if="
-          !subscriptionId && !manualOrder && !adjustOrder && !adjustMealPlan
-        "
-      >
-        <b-btn class="menu-bag-btn">NEXT</b-btn>
-      </router-link>
-
-      <router-link
-        :to="{
-          name: 'customer-bag',
-          params: { subscriptionId: subscriptionId }
-        }"
-        v-if="subscriptionId"
-      >
-        <b-btn class="menu-bag-btn">NEXT</b-btn>
-      </router-link>
-    </div>
-    <div v-if="adjustOrder">
-      <p v-if="!order.pickup">Delivery Day</p>
-      <p v-if="order.pickup">Pickup Day</p>
-      <b-form-select
-        v-if="adjustOrder"
-        v-model="deliveryDay"
-        :options="deliveryDaysOptions"
-        class="w-100 mb-3"
-      ></b-form-select>
-      <b-btn class="menu-bag-btn" @click="adjust">ADJUST ORDER</b-btn>
-    </div>
-    <div>
-      <router-link to="/store/bag" v-if="!subscriptionId && manualOrder">
-        <b-btn class="menu-bag-btn">NEXT</b-btn>
-      </router-link>
-    </div>
-    <div>
-      <router-link
-        :to="{
-          name: 'store-bag',
-          params: {
-            subscriptionId: subscription.id,
-            mealPlanAdjustment: true
-          }
-        }"
-        v-if="adjustMealPlan"
-      >
-        <b-btn class="menu-bag-btn">NEXT</b-btn>
-      </router-link>
-    </div>
   </div>
 </template>
 <script>
@@ -193,7 +97,8 @@ export default {
     manualOrder: false,
     adjustOrder: false,
     adjustMealPlan: false,
-    subscriptionId: null
+    subscriptionId: null,
+    pickup: 0
   },
   mixins: [MenuBag],
   computed: {
@@ -220,6 +125,21 @@ export default {
     }),
     remainingPrice() {
       return this.minPrice - this.totalBagPricePreFees;
+    },
+    remainingPrice() {
+      return this.minPrice - this.totalBagPricePreFees;
+    },
+    transferType() {
+      return this.storeSettings.transferType.split(",");
+    },
+    transferTypeCheckDelivery() {
+      if (_.includes(this.transferType, "delivery")) return true;
+    },
+    transferTypeCheckPickup() {
+      if (_.includes(this.transferType, "pickup")) return true;
+    },
+    storeSettings() {
+      return this.store.settings;
     }
   }
 };

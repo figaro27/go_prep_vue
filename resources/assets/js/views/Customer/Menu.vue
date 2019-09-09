@@ -56,7 +56,6 @@
                 :mealPackageModal="mealPackageModal"
                 :mealPackage="mealPackage"
                 :loaded="loaded"
-                :mealDescription="mealDescription"
               ></meal-package-modal>
 
               <div class="row">
@@ -104,6 +103,13 @@
                     :subscriptionId="subscriptionId"
                   >
                   </bag-area>
+                  <bag-actions
+                    :storeView="storeView"
+                    :manualOrder="manualOrder"
+                    :adjustOrder="adjustOrder"
+                    :adjustMealPlan="adjustMealPlan"
+                    :subscriptionId="subscriptionId"
+                  ></bag-actions>
                 </div>
               </div>
             </div>
@@ -141,6 +147,7 @@ import CategoryArea from "../../components/Customer/CategoryArea";
 import MealsArea from "../../components/Customer/MealsArea";
 import MealPackagesArea from "../../components/Customer/MealPackagesArea";
 import BagArea from "../../components/Customer/BagArea";
+import BagActions from "../../components/Customer/BagActions";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -166,10 +173,12 @@ export default {
     CategoryArea,
     MealsArea,
     MealPackagesArea,
-    BagArea
+    BagArea,
+    BagActions
   },
   mixins: [MenuBag],
   props: {
+    storeView: false,
     preview: false,
     manualOrder: false,
     adjustOrder: false,
@@ -203,6 +212,7 @@ export default {
       meal: null,
       mealPackage: null,
       ingredients: "",
+      mealDescription: "",
       mealModal: false,
       mealPackageModal: false,
       nutritionalFacts: {}

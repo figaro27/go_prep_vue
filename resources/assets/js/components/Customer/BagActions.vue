@@ -1,0 +1,123 @@
+<template>
+  <div>
+    <p class="mt-3" v-if="!minimumMet && !storeView">
+      {{ addMore }}
+    </p>
+
+    <router-link
+      to="/customer/bag"
+      v-if="minimumMet && !storeView && $route.name === 'customer-menu'"
+    >
+      <b-btn class="menu-bag-btn">NEXT</b-btn>
+    </router-link>
+
+    <router-link
+      v-if="storeView"
+      :to="{
+        name: 'store-bag',
+        params: {
+          storeView: storeView,
+          manualOrder: manualOrder,
+          subscriptionId: subscriptionId,
+          adjustOrder: false,
+          adjustMealPlan: false
+        }
+      }"
+    >
+      <b-btn class="menu-bag-btn">NEXT</b-btn>
+    </router-link>
+
+    <router-link to="/customer/menu">
+      <b-btn
+        v-if="$route.name === 'customer-bag' && !minimumMet"
+        class="menu-bag-btn mb-2"
+        >BACK</b-btn
+      >
+    </router-link>
+  </div>
+</template>
+<script>
+import { mapGetters, mapActions, mapMutations } from "vuex";
+import MenuBag from "../../mixins/menuBag";
+import format from "../../lib/format";
+
+export default {
+  props: {
+    storeView: false,
+    manualOrder: false,
+    adjustOrder: false,
+    adjustMealPlan: false,
+    subscriptionId: 0
+  },
+  mixins: [MenuBag],
+  computed: {
+    ...mapGetters({
+      creditCards: "cards",
+      store: "viewedStore",
+      storeModules: "viewedStoreModules",
+      storeModuleSettings: "viewedStoreModuleSettings",
+      storeCustomers: "storeCustomers",
+      total: "bagQuantity",
+      bag: "bagItems",
+      coupon: "bagCoupon",
+      deliveryPlan: "bagMealPlan",
+      mealPlan: "bagMealPlan",
+      hasMeal: "bagHasMeal",
+      totalBagPricePreFees: "totalBagPricePreFees",
+      totalBagPrice: "totalBagPrice",
+      willDeliver: "viewedStoreWillDeliver",
+      isLoading: "isLoading",
+      storeLogo: "viewedStoreLogo",
+      loggedIn: "loggedIn",
+      minOption: "minimumOption",
+      minMeals: "minimumMeals",
+      minPrice: "minimumPrice",
+      coupons: "viewedStoreCoupons",
+      pickupLocations: "viewedStorePickupLocations",
+      getMeal: "viewedStoreMeal",
+      getMealPackage: "viewedStoreMealPackage",
+      _orders: "orders",
+      loggedIn: "loggedIn"
+    }),
+    storeSettings() {
+      return this.store.settings;
+    },
+    remainingMeals() {
+      return this.minMeals - this.total;
+    },
+    remainingPrice() {
+      return this.minPrice - this.totalBagPricePreFees;
+    },
+    singOrPlural() {
+      if (this.remainingMeals > 1) {
+        return "meals";
+      }
+      return "meal";
+    },
+    minimumMet() {
+      if (
+        (this.minOption === "meals" && this.total >= this.minimumMeals) ||
+        (this.minOption === "price" &&
+          this.totalBagPricePreFees >= this.minPrice)
+      )
+        return true;
+      else return false;
+    },
+    addMore() {
+      if (this.minOption === "meals")
+        return (
+          "Please add " +
+          this.remainingMeals +
+          this.singOrPlural +
+          " to continue."
+        );
+      else if (this.minOption === "price")
+        return (
+          "Please add " +
+          format.money(this.remainingPrice, this.storeSettings.currency) +
+          " more to continue."
+        );
+    }
+  }
+};
+</script>

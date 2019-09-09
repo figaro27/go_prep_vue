@@ -13,7 +13,13 @@
         </div>
         <div class="row">
           <div class="col-md-5">
-            <bag-area-bag :pickup="pickup"></bag-area-bag>
+            <bag-area :pickup="pickup"></bag-area>
+            <bag-actions
+              :manualOrder="manualOrder"
+              :adjustOrder="adjustOrder"
+              :adjustMealPlan="adjustMealPlan"
+              :subscriptionId="subscriptionId"
+            ></bag-actions>
           </div>
 
           <div class="col-md-6 offset-md-1">
@@ -24,7 +30,9 @@
               :subscriptionId="subscriptionId"
               :cashOrder="cashOrder"
               :creditCardId="creditCardId"
+              :creditCardList="creditCardList"
               :salesTax="salesTax"
+              :customer="customer"
             ></checkout-area>
           </div>
         </div>
@@ -48,9 +56,10 @@ import states from "../../data/states.js";
 
 import LogoArea from "../../components/Customer/LogoArea";
 import AboveBag from "../../components/Customer/AboveBag";
-import BagAreaBag from "../../components/Customer/BagAreaBag";
+import BagArea from "../../components/Customer/BagArea";
 import CheckoutArea from "../../components/Customer/CheckoutArea";
 import AddCustomerModal from "../../components/Customer/AddCustomerModal";
+import BagActions from "../../components/Customer/BagActions";
 
 export default {
   components: {
@@ -58,14 +67,17 @@ export default {
     Register,
     LogoArea,
     AboveBag,
-    BagAreaBag,
+    BagArea,
     CheckoutArea,
     AddCustomerModal,
-    SalesTax
+    SalesTax,
+    BagActions
   },
   props: {
     manualOrder: false,
-    subscriptionId: null
+    subscriptionId: null,
+    adjustOrder: false,
+    adjustMealPlan: false
   },
   mixins: [MenuBag],
   data() {
@@ -152,9 +164,6 @@ export default {
   },
   updated() {
     this.creditCardId = this.card;
-  },
-  showAddCustomerModal() {
-    this.addCustomerModal = true;
   },
   setSalesTax(rate) {
     this.salesTax = rate;

@@ -288,7 +288,7 @@
           <b-btn
             variant="primary"
             v-if="storeModules.manualCustomers"
-            @click="showAddCustomerModal"
+            @click="$parent.addCustomerModal = true"
             >Add New Customer</b-btn
           >
         </div>
@@ -494,7 +494,10 @@ export default {
     cashOrder: false,
     mobile: false,
     pickup: 0,
-    salesTax: 0
+    salesTax: 0,
+    creditCardId: null,
+    creditCardList: null,
+    customer: null
   },
   mixins: [MenuBag],
   computed: {
