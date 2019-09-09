@@ -32,7 +32,7 @@
             </h3>
           </div>
         </div>
-        <div class="row" v-if="!manualOrder">
+        <div class="row">
           <div class="col-md-9">
             <strong
               ><p class="mr-1">
@@ -59,7 +59,7 @@
           </div>
         </div>
       </li>
-      <li class="checkout-item" v-if="!manualOrder">
+      <li class="checkout-item">
         <p>
           <strong>
             {{ total }} {{ singOrPluralTotal }}
@@ -221,6 +221,7 @@
             Pickup Day: {{ deliveryDaysOptions[0].text }}
           </h6>
         </div>
+
         <div v-if="storeModules.pickupLocations && pickup">
           <p>Pickup Location</p>
           <b-select
@@ -231,10 +232,7 @@
           ></b-select>
         </div>
 
-        <div
-          class="pt-2 pb-2"
-          v-if="storeModules.transferHours && pickup === 1"
-        >
+        <div class="pt-2 pb-2" v-if="storeModules.transferHours && pickup">
           <strong>Pickup Time</strong>
           <b-form-select
             class="ml-2"
@@ -424,32 +422,12 @@
         </div>
       </div>
     </li>
-    <li
-      class="transfer-instruction mt-2"
-      v-if="
-        transferTypeCheckDelivery &&
-          pickup === 0 &&
-          storeSettings.deliveryInstructions &&
-          !manualOrder
-      "
-    >
-      <p class="strong">Delivery Instructions:</p>
-      <p v-html="storeSettings.deliveryInstructions"></p>
+
+    <li class="transfer-instruction mt-2">
+      <p class="strong">{{ transferText }}</p>
+      <p v-html="transferInstructions"></p>
     </li>
-    <li
-      class="transfer-instruction mt-2"
-      v-if="
-        transferTypeCheckPickup &&
-          pickup === 1 &&
-          storeSettings.pickupInstructions &&
-          !manualOrder
-      "
-    >
-      <p class="strong">Pickup Instructions:</p>
-      <p v-html="storeSettings.pickupInstructions">
-        {{ storeSettings.pickupInstructions }}
-      </p>
-    </li>
+
     <div v-if="storeSettings.open === false">
       <div class="row">
         <div class="col-sm-12 mt-3">
@@ -570,6 +548,10 @@ export default {
     pickupInstructions() {
       return this.storeSettings.pickupInstructions.replace(/\n/g, "<br>");
     },
+    transferInstructions() {
+      if (this.pickup === 0) return this.deliveryInstructions;
+      else if (this.pickup === 1) return this.pickupInstructions;
+    },
     pickupLocationOptions() {
       return this.pickupLocations.map(loc => {
         return {
@@ -627,6 +609,10 @@ export default {
     },
     transferType() {
       return this.storeSettings.transferType.split(",");
+    },
+    transferText() {
+      if (this.pickup === 0) return "Delivery Instructions";
+      else if (this.pickup === 1) return "Pickup Instructions";
     },
     transferTypeCheckDelivery() {
       if (_.includes(this.transferType, "delivery")) return true;
@@ -766,6 +752,30 @@ export default {
     },
     subscriptionId() {
       return this.$route.params.subscriptionId;
+    },
+    minimumMet() {
+      if (
+        (this.minOption === "meals" && this.total >= this.minimumMeals) ||
+        (this.minOption === "price" &&
+          this.totalBagPricePreFees >= this.minPrice)
+      )
+        return true;
+      else return false;
+    },
+    addMore() {
+      if (this.minOption === "meals")
+        return (
+          "Please add " +
+          this.remainingMeals +
+          this.singOrPlural +
+          " to continue."
+        );
+      else if (this.minOption === "price")
+        return (
+          "Please add " +
+          format.money(this.remainingPrice, this.storeSettings.currency) +
+          " more to continue."
+        );
     }
   },
   methods: {
