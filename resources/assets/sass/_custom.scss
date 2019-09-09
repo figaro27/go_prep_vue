@@ -37,8 +37,11 @@ h6 {
 
 .navbar {
   -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
-  // background-color:#3082CF;
+  position: fixed !important;
+  top: 0 !important;
+  width: 100% !important;
   border-bottom: 0px;
+  z-index: 10000 !important;
 
   .nav-link h6,
   .nav-link div,
@@ -283,9 +286,9 @@ body.sidebar-minimized {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overflow-y: scroll;
+  z-index: 10;
 
   @include media-breakpoint-up(md) {
-    height: calc(100vh - 210px);
   }
 }
 
@@ -374,7 +377,9 @@ body.sidebar-minimized {
 
 .menu,
 .bag {
-  max-width: 1850px;
+  max-width: 60% !important;
+  width: 100% !important;
+  margin: 0px auto !important;
 }
 
 .bag-actions {
@@ -672,7 +677,7 @@ body.sidebar-minimized {
 .store-logo {
   //width: 140px !important;
   width: auto;
-  height: 100px !important;
+  height: 75px !important;
 }
 
 .nf-vitamin-column:first-child {
@@ -739,6 +744,7 @@ th {
 .header-fixed {
   .app-header {
     z-index: 10010;
+    max-width: 300px !important;
 
     .navbar {
     }
@@ -763,8 +769,7 @@ th {
       left: 0;
       right: 0;
       //background-color: #888888;
-      -webkit-box-shadow: 0px -1px 2px 0px #7cc039;
-      box-shadow: 0px -1px 2px 0px #7cc039;
+
       visibility: hidden;
       -webkit-transform: scaleX(0);
       transform: scaleX(0);
@@ -787,9 +792,9 @@ th {
       font-weight: 900;
     }
 
-    @include media-breakpoint-up(lg) {
-      color: #fff;
-    }
+    // @include media-breakpoint-up(lg) {
+    //   color: #fff;
+    // }
   }
 }
 
@@ -1022,6 +1027,7 @@ body.forgotresettoken {
   max-height: 75px !important;
   height: 75px !important;
   line-height: 75px !important;
+  z-index: 10;
 }
 
 .nav,
@@ -1053,4 +1059,8 @@ body.forgotresettoken {
 
 // #__BVID__86 {
 //   width: 170px !important;
+// }
+
+// .test {
+//   -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
 // }

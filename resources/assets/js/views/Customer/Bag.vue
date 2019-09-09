@@ -4,9 +4,7 @@
       <div class="card-body">
         <spinner v-if="loading" position="absolute"></spinner>
         <div class="row">
-          <div class="col-sm-12 store-logo-area" v-if="!mobile">
-            <logo-area></logo-area>
-          </div>
+          <div class="col-sm-12 store-logo-area" v-if="!mobile"></div>
           <div class="col-md-12 mb-2 bag-actions">
             <above-bag :manualOrder="manualOrder"></above-bag>
           </div>
@@ -55,7 +53,6 @@ import SalesTax from "sales-tax";
 import MenuBag from "../../mixins/menuBag";
 import states from "../../data/states.js";
 
-import LogoArea from "../../components/Customer/LogoArea";
 import AboveBag from "../../components/Customer/AboveBag";
 import BagArea from "../../components/Customer/BagArea";
 import CheckoutArea from "../../components/Customer/CheckoutArea";
@@ -66,7 +63,6 @@ export default {
   components: {
     cSwitch,
     Register,
-    LogoArea,
     AboveBag,
     BagArea,
     CheckoutArea,

@@ -24,7 +24,7 @@
 
     <category-slider></category-slider>
 
-    <div class="menu ml-auto mr-auto">
+    <div class="menu">
       <store-closed></store-closed>
       <store-description-modal
         :showDescriptionModal="showDescriptionModal"
@@ -38,64 +38,39 @@
         @clearFilters="clearFilters"
       ></meal-filter-modal>
 
+      <meal-modal
+        :mealModal="mealModal"
+        :meal="meal"
+        :slickOptions="slickOptions"
+        :storeSettings="storeSettings"
+        :mealDescription="mealDescription"
+        :ingredients="ingredients"
+        :nutritionalFacts="nutritionalFacts"
+      ></meal-modal>
+
+      <meal-package-modal
+        :mealPackageModal="mealPackageModal"
+        :mealPackage="mealPackage"
+        :loaded="loaded"
+      ></meal-package-modal>
+
       <div class="row">
-        <div class="col-sm-12 mt-3">
-          <div :class="desktopCard">
-            <div :class="desktopCardBody">
-              <meal-modal
-                :mealModal="mealModal"
-                :meal="meal"
-                :slickOptions="slickOptions"
-                :storeSettings="storeSettings"
-                :mealDescription="mealDescription"
-                :ingredients="ingredients"
-                :nutritionalFacts="nutritionalFacts"
-              ></meal-modal>
+        <div :class="`col-md-12 main-menu-area`">
+          <Spinner
+            v-if="!meals.length && !mealPackages.length"
+            position="absolute"
+          />
+          <meals-area
+            :meals="meals"
+            :card="card"
+            :cardBody="cardBody"
+            @onCategoryVisible="onCategoryVisible($event)"
+            @showMealModal="showMealModal"
+          ></meals-area>
 
-              <meal-package-modal
-                :mealPackageModal="mealPackageModal"
-                :mealPackage="mealPackage"
-                :loaded="loaded"
-              ></meal-package-modal>
-
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="row">
-                    <div class="col-sm-12 store-logo-area" v-if="!mobile">
-                      <logo-area></logo-area>
-                    </div>
-                    <div class="col-sm-2">
-                      <b-form-input
-                        type="text"
-                        v-model="search"
-                        placeholder="Search"
-                      />
-                    </div>
-                    <div class="col-sm-12 category-area">
-                      <category-area></category-area>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div :class="`col-md-9 main-menu-area`">
-                  <Spinner
-                    v-if="!meals.length && !mealPackages.length"
-                    position="absolute"
-                  />
-                  <meals-area
-                    :meals="meals"
-                    :card="card"
-                    :cardBody="cardBody"
-                    @onCategoryVisible="onCategoryVisible($event)"
-                    @showMealModal="showMealModal"
-                  ></meals-area>
-
-                  <meal-packages-area
-                    :mealPackages="mealPackages"
-                  ></meal-packages-area>
-                </div>
-                <div class="col-sm-5 col-md-3 bag-area">
+          <meal-packages-area :mealPackages="mealPackages"></meal-packages-area>
+        </div>
+        <<!-- div class="col-sm-5 col-md-3 bag-area">
                   <bag-area
                     :manualOrder="manualOrder"
                     :adjustOrder="adjustOrder"
@@ -110,11 +85,7 @@
                     :adjustMealPlan="adjustMealPlan"
                     :subscriptionId="subscriptionId"
                   ></bag-actions>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                </div> -->
       </div>
     </div>
   </div>
@@ -142,8 +113,6 @@ import StoreDescriptionModal from "../../components/Customer/StoreDescriptionMod
 import MealFilterModal from "../../components/Customer/MealFilterModal";
 import MealModal from "../../components/Customer/MealModal";
 import MealPackageModal from "../../components/Customer/MealPackageModal";
-import LogoArea from "../../components/Customer/LogoArea";
-import CategoryArea from "../../components/Customer/CategoryArea";
 import MealsArea from "../../components/Customer/MealsArea";
 import MealPackagesArea from "../../components/Customer/MealPackagesArea";
 import BagArea from "../../components/Customer/BagArea";
@@ -169,8 +138,6 @@ export default {
     MealFilterModal,
     MealModal,
     MealPackageModal,
-    LogoArea,
-    CategoryArea,
     MealsArea,
     MealPackagesArea,
     BagArea,
@@ -345,16 +312,6 @@ export default {
     cardBody() {
       if (this.mobile) {
         return "card-body border-light mb-0 mt-0 mr-1";
-      } else return "";
-    },
-    desktopCard() {
-      if (!this.mobile) {
-        return "card";
-      } else return "";
-    },
-    desktopCardBody() {
-      if (!this.mobile) {
-        return "card-body";
       } else return "";
     },
     storeWebsite() {

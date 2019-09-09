@@ -2,34 +2,28 @@
   <div class="app customer">
     <b-navbar toggleable="lg" class="app-header" fixed>
       <div class="navbar-brand">
+        <a :href="storeWebsite">
+          <img
+            v-if="storeLogo"
+            class="store-logo"
+            :src="storeLogo.url_thumb"
+            alt="Company Logo"
+          />
+        </a>
         <a :href="storeWebsite" v-if="storeWebsite != null">
           <img
             class="navbar-brand-full"
             :src="topLogo"
-            height="70"
+            height="75"
             v-if="mobile"
           />
           <img
             class="navbar-brand-minimized"
             :src="topLogo"
-            width="40"
-            height="40"
+            height="75"
             v-if="mobile"
           />
         </a>
-        <img
-          class="navbar-brand-full"
-          :src="topLogo"
-          height="70"
-          v-if="mobile && storeWebsite === null"
-        />
-        <img
-          class="navbar-brand-minimized"
-          :src="topLogo"
-          width="40"
-          height="40"
-          v-if="mobile && storeWebsite === null"
-        />
       </div>
       <b-navbar-toggle target="nav_collapse" class="mr-auto ml-2" />
       <b-btn
@@ -91,11 +85,8 @@
     <!-- <TheFooter>
     </TheFooter>-->
     <v-style>
-      .navbar, .navbar-brand, .navbar-brand-minimized { background:
-      {{ navBgColor }}; } .menu-bag-btn, .brand-color, .filters .active {
-      background: {{ bgColor }}; } .dbl-underline:after { border-bottom: 3px
-      double {{ bgColor }}; } .nav-item a:hover { background-color: #afafaf
-      !important; }
+      .menu-bag-btn, .brand-color, .filters .active { background: {{ bgColor }};
+      } .dbl-underline:after { border-bottom: 3px double {{ bgColor }}; }
     </v-style>
   </div>
 </template>
@@ -103,6 +94,13 @@
 <style lang="scss" scoped>
 main.main {
   position: relative;
+}
+.main {
+  background-color: #ffffff !important;
+}
+
+.container-fluid {
+  background-color: #ffffff !important;
 }
 </style>
 
