@@ -55,6 +55,9 @@
           <b-nav-item class="white-text"
             ><i class="fas fa-search customer-nav-icon"></i
           ></b-nav-item>
+          <b-nav-item class="white-text"
+            ><i class="fas fa-filter customer-nav-icon"></i
+          ></b-nav-item>
           <CustomerDropdown v-if="loggedIn" />
           <b-nav-item @click="showAuthModal = true" class="white-text"
             ><i class="fas fa-user customer-nav-icon"></i
