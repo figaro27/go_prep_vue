@@ -1,7 +1,9 @@
 <template>
   <div class="app customer">
+    <auth-modal :showAuthModal="showAuthModal"></auth-modal>
     <b-navbar toggleable="lg" class="app-header" fixed>
-      <div class="navbar-brand">
+      <!-- <div class="navbar-brand"></div> -->
+      <b-collapse is-nav id="nav_collapse" class="customer-nav">
         <a :href="storeWebsite">
           <img
             v-if="storeLogo"
@@ -24,17 +26,14 @@
             v-if="mobile"
           />
         </a>
-      </div>
-      <b-navbar-toggle target="nav_collapse" class="mr-auto ml-2" />
-      <b-btn
-        class="mr-2 d-lg-none"
-        variant="light"
-        v-if="'id' in viewedStore"
-        to="/customer/bag"
-        ><i class="fa fa-shopping-bag"></i
-      ></b-btn>
+        <b-btn
+          class="mr-2 d-lg-none"
+          variant="light"
+          v-if="'id' in viewedStore"
+          to="/customer/bag"
+          ><i class="fa fa-shopping-bag"></i
+        ></b-btn>
 
-      <b-collapse is-nav id="nav_collapse" class="customer-nav">
         <b-navbar-nav class="d-none d-block d-md-none">
           <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag"
             >Bag</b-nav-item
@@ -43,9 +42,6 @@
         <b-navbar-nav>
           <b-nav-item v-if="'id' in viewedStore" to="/customer/menu"
             >Menu</b-nav-item
-          >
-          <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag"
-            >Bag</b-nav-item
           >
           <b-nav-item v-if="loggedIn" to="/customer/orders">Orders</b-nav-item>
           <b-nav-item v-if="loggedIn" to="/customer/meal-plans"
@@ -56,19 +52,17 @@
           >
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
+          <b-nav-item class="white-text"
+            ><i class="fas fa-search customer-nav-icon"></i
+          ></b-nav-item>
           <CustomerDropdown v-if="loggedIn" />
-          <b-nav-item v-if="!loggedIn" to="/login" class="white-text"
-            >Log In</b-nav-item
-          >
-          <b-nav-item
-            v-if="!loggedIn"
-            class="px-3 mr-4 white-text"
-            to="/register"
-            >Register</b-nav-item
-          >
+          <b-nav-item @click="showAuthModal = true" class="white-text"
+            ><i class="fas fa-user customer-nav-icon"></i
+          ></b-nav-item>
+          <b-nav-item class="white-text"
+            ><i class="fas fa-shopping-bag customer-nav-icon"></i
+          ></b-nav-item>
         </b-navbar-nav>
-        <div class="navbar-brand"></div>
-        <!--<AsideToggler class="d-lg-none" mobile />-->
       </b-collapse>
     </b-navbar>
     <div class="app-body">
@@ -87,6 +81,8 @@
     <v-style>
       .menu-bag-btn, .brand-color, .filters .active { background: {{ bgColor }};
       } .dbl-underline:after { border-bottom: 3px double {{ bgColor }}; }
+      .customer-nav-icon:hover, .nav-item a:hover{color:
+      {{ bgColor }} !important}
     </v-style>
   </div>
 </template>
@@ -127,6 +123,7 @@ import DefaultHeaderDropdownAccnt from "./DefaultHeaderDropdownAccnt";
 import CustomerDropdown from "./CustomerDropdown";
 import DefaultHeaderDropdownMssgs from "./DefaultHeaderDropdownMssgs";
 import DefaultHeaderDropdownTasks from "./DefaultHeaderDropdownTasks";
+import AuthModal from "../Components/Customer/AuthModal";
 
 export default {
   name: "DefaultContainer",
@@ -149,12 +146,14 @@ export default {
     SidebarToggler,
     SidebarHeader,
     SidebarNav,
-    SidebarMinimizer
+    SidebarMinimizer,
+    AuthModal
   },
   data() {
     return {
       navBgColor: "",
-      bgColor: ""
+      bgColor: "",
+      showAuthModal: false
     };
   },
   computed: {
@@ -206,7 +205,7 @@ export default {
     }
 
     if (this.viewedStore.settings.color != "#3082cf") {
-      this.bgColor = this.viewedStore.settings.color + " !important";
+      this.bgColor = this.viewedStore.settings.color;
     } else {
       this.bgColor = "#F25727";
     }

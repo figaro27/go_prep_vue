@@ -50,9 +50,6 @@ h6 {
   }
   .navbar-nav:not(:last-child) a {
   }
-  .nav-item a:hover {
-    background-color: #a8a8a8 !important;
-  }
 }
 
 .navbar .navbar-toggler {
@@ -75,6 +72,12 @@ h6 {
   font-size: 14px;
   font-weight: 300;
   line-height: 25px;
+}
+
+.customer-nav {
+  max-width: 60% !important;
+  width: 100% !important;
+  margin: 0px auto !important;
 }
 
 .customer-nav .nav-item .nav-link,
@@ -741,6 +744,12 @@ th {
   }
 }
 
+.customer-nav-icon {
+  font-size: 26px !important;
+  margin-left: 15px !important;
+  color: #5f5f5f !important;
+}
+
 .header-fixed {
   .app-header {
     z-index: 10010;
@@ -799,18 +808,6 @@ th {
 }
 
 .navbar .nav-item.dropdown {
-  .nav-link {
-    @include media-breakpoint-down(md) {
-      &,
-      div {
-        color: #73818f;
-
-        &:hover {
-          color: #fff;
-        }
-      }
-    }
-  }
 }
 
 .dropdown-menu-right .dropdown-item {
