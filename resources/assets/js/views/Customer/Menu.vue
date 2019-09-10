@@ -12,6 +12,8 @@
       </div>
     </floating-action-button>
 
+    <auth-modal :showAuthModal="showAuthModal"></auth-modal>
+
     <meal-components-modal
       ref="componentModal"
       :key="total"
@@ -60,6 +62,12 @@
             v-if="!meals.length && !mealPackages.length"
             position="absolute"
           />
+          <b-form-textarea
+            v-model="search"
+            placeholder="Search"
+            class="meal-search"
+            v-if="showSearch"
+          ></b-form-textarea>
           <meals-area
             :meals="meals"
             :card="card"
@@ -117,6 +125,7 @@ import MealsArea from "../../components/Customer/MealsArea";
 import MealPackagesArea from "../../components/Customer/MealPackagesArea";
 import BagArea from "../../components/Customer/BagArea";
 import BagActions from "../../components/Customer/BagActions";
+import AuthModal from "../../components/Customer/AuthModal";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -141,7 +150,8 @@ export default {
     MealsArea,
     MealPackagesArea,
     BagArea,
-    BagActions
+    BagActions,
+    AuthModal
   },
   mixins: [MenuBag],
   props: {
@@ -157,6 +167,8 @@ export default {
   data() {
     return {
       search: "",
+      showSearch: false,
+      showAuthModal: false,
       slickOptions: {
         slidesToShow: 4,
         infinite: false,
@@ -361,6 +373,14 @@ export default {
     showIngredients() {
       return this.storeSettings.showIngredients;
     }
+  },
+  created() {
+    this.$eventBus.$on("showSearchBar", () => {
+      this.showSearch = !this.showSearch;
+    });
+    this.$eventBus.$on("showAuthModal", () => {
+      this.showAuthModal = true;
+    });
   },
   mounted() {
     keyboardJS.bind("left", () => {

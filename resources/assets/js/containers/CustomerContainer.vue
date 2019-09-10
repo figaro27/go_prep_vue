@@ -1,6 +1,5 @@
 <template>
   <div class="app customer">
-    <auth-modal :showAuthModal="showAuthModal"></auth-modal>
     <b-navbar toggleable="lg" class="app-header" fixed>
       <!-- <div class="navbar-brand"></div> -->
       <b-collapse is-nav id="nav_collapse" class="customer-nav">
@@ -53,13 +52,16 @@
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-item class="white-text"
-            ><i class="fas fa-search customer-nav-icon"></i
+            ><i
+              class="fas fa-search customer-nav-icon"
+              @click.prevent="showSearch()"
+            ></i
           ></b-nav-item>
           <b-nav-item class="white-text"
             ><i class="fas fa-filter customer-nav-icon"></i
           ></b-nav-item>
           <CustomerDropdown v-if="loggedIn" />
-          <b-nav-item @click="showAuthModal = true" class="white-text"
+          <b-nav-item @click.prevent="showAuthModal()" class="white-text"
             ><i class="fas fa-user customer-nav-icon"></i
           ></b-nav-item>
           <b-nav-item class="white-text"
@@ -126,7 +128,6 @@ import DefaultHeaderDropdownAccnt from "./DefaultHeaderDropdownAccnt";
 import CustomerDropdown from "./CustomerDropdown";
 import DefaultHeaderDropdownMssgs from "./DefaultHeaderDropdownMssgs";
 import DefaultHeaderDropdownTasks from "./DefaultHeaderDropdownTasks";
-import AuthModal from "../Components/Customer/AuthModal";
 
 export default {
   name: "DefaultContainer",
@@ -149,14 +150,12 @@ export default {
     SidebarToggler,
     SidebarHeader,
     SidebarNav,
-    SidebarMinimizer,
-    AuthModal
+    SidebarMinimizer
   },
   data() {
     return {
       navBgColor: "",
-      bgColor: "",
-      showAuthModal: false
+      bgColor: ""
     };
   },
   computed: {
@@ -232,6 +231,13 @@ export default {
     // }
   },
   created() {},
-  methods: {}
+  methods: {
+    showSearch() {
+      this.$eventBus.$emit("showSearchBar");
+    },
+    showAuthModal() {
+      this.$eventBus.$emit("showAuthModal");
+    }
+  }
 };
 </script>

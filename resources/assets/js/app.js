@@ -50,6 +50,8 @@ import "slick-carousel/slick/slick.css";
 import VueObserveVisibility from "vue-observe-visibility";
 import i18n from "./i18n";
 
+Vue.prototype.$eventBus = new Vue();
+
 Vue.use(VueObserveVisibility);
 Vue.component("slick", Slick);
 Vue.use(VueLazyLoad);
