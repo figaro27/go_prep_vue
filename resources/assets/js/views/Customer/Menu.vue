@@ -63,19 +63,12 @@
             position="absolute"
           />
           <div id="shopping-cart" :class="showBagClass"></div>
-          <b-form-textarea
-            v-model="search"
-            placeholder="Search"
-            class="meal-search"
-            v-if="showSearch"
-          ></b-form-textarea>
           <meals-area
             :meals="meals"
             :card="card"
             :cardBody="cardBody"
             @onCategoryVisible="onCategoryVisible($event)"
             @showMealModal="showMealModal"
-            :id="searchRoom"
           ></meals-area>
 
           <meal-packages-area :mealPackages="mealPackages"></meal-packages-area>
@@ -96,6 +89,9 @@
             :subscriptionId="subscriptionId"
             :preview="preview"
           ></bag-actions>
+        </div>
+        <div :class="showFilterClass">
+          <menu-filters> ></menu-filters>
         </div>
       </div>
     </div>
@@ -129,6 +125,7 @@ import MealPackagesArea from "../../components/Customer/MealPackagesArea";
 import BagArea from "../../components/Customer/BagArea";
 import BagActions from "../../components/Customer/BagActions";
 import AuthModal from "../../components/Customer/AuthModal";
+import MenuFilters from "../../components/Customer/MenuFilters";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -154,7 +151,8 @@ export default {
     MealPackagesArea,
     BagArea,
     BagActions,
-    AuthModal
+    AuthModal,
+    MenuFilters
   },
   mixins: [MenuBag],
   props: {
@@ -169,10 +167,9 @@ export default {
   },
   data() {
     return {
-      showBagClass: "shopping-cart hidden bag-area",
+      showBagClass: "shopping-cart hidden-right bag-area",
+      showFilterClass: "shopping-cart hidden-left bag-area",
       search: "",
-      showSearch: false,
-      searchRoom: "",
       showAuthModal: false,
       slickOptions: {
         slidesToShow: 4,
@@ -380,16 +377,14 @@ export default {
     }
   },
   created() {
-    this.$eventBus.$on("showSearchBar", () => {
-      this.showSearch = !this.showSearch;
-      if (this.searchRoom === "") this.searchRoom = "search-room";
-      else this.searchRoom = "";
-    });
     this.$eventBus.$on("showAuthModal", () => {
       this.showAuthModal = true;
     });
     this.$eventBus.$on("showRightBagArea", () => {
       this.showBag();
+    });
+    this.$eventBus.$on("showFilterArea", () => {
+      this.showFilterArea();
     });
   },
   mounted() {
@@ -467,18 +462,6 @@ export default {
           );
         });
       });
-    },
-    filterByCategory(category) {
-      this.filteredView = true;
-
-      // Check if filter already exists
-      const i = _.findIndex(this.filters.categories, cat => {
-        return cat === category;
-      });
-
-      i === -1
-        ? this.filters.categories.push(category)
-        : Vue.delete(this.filters.categories, i);
     },
     filterByTag(tag) {
       Vue.set(this.active, tag, !this.active[tag]);
@@ -608,10 +591,16 @@ export default {
       };
     },
     showBag() {
-      if (this.showBagClass === "shopping-cart hidden bag-area")
-        this.showBagClass = "shopping-cart show bag-area";
-      else if (this.showBagClass === "shopping-cart show bag-area")
-        this.showBagClass = "shopping-cart hidden bag-area";
+      if (this.showBagClass === "shopping-cart hidden-right bag-area")
+        this.showBagClass = "shopping-cart show-right bag-area";
+      else if (this.showBagClass === "shopping-cart show-right bag-area")
+        this.showBagClass = "shopping-cart hidden-right bag-area";
+    },
+    showFilterArea() {
+      if (this.showFilterClass === "shopping-cart hidden-left bag-area")
+        this.showFilterClass = "shopping-cart show-left bag-area";
+      else if (this.showFilterClass === "shopping-cart show-left bag-area")
+        this.showFilterClass = "shopping-cart hidden-left bag-area";
     }
   }
 };

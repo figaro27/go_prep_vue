@@ -53,12 +53,9 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-item class="white-text"
             ><i
-              class="fas fa-search customer-nav-icon"
-              @click.prevent="showSearch()"
+              class="fas fa-filter customer-nav-icon"
+              @click.prevent="showFilterArea()"
             ></i
-          ></b-nav-item>
-          <b-nav-item class="white-text"
-            ><i class="fas fa-filter customer-nav-icon"></i
           ></b-nav-item>
           <CustomerDropdown v-if="loggedIn" />
           <b-nav-item
@@ -228,11 +225,11 @@ export default {
   },
   created() {},
   methods: {
-    showSearch() {
-      this.$eventBus.$emit("showSearchBar");
-    },
     showBagArea() {
       this.$eventBus.$emit("showRightBagArea");
+    },
+    showFilterArea() {
+      this.$eventBus.$emit("showFilterArea");
     },
     showAuthModal() {
       this.$eventBus.$emit("showAuthModal");
