@@ -286,9 +286,10 @@ body.sidebar-minimized {
 .main-menu-area,
 .bag-area {
   position: relative;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overflow-y: scroll;
+  padding-top: 35px;
+  // overflow-y: auto;
+  // -webkit-overflow-scrolling: touch;
+  // overflow-y: scroll;
   z-index: 10;
 
   @include media-breakpoint-up(md) {
@@ -302,8 +303,6 @@ body.sidebar-minimized {
 }
 
 .bag-area {
-  padding-top: 75px;
-
   @include media-breakpoint-down(sm) {
     padding-top: 8px;
     padding-bottom: 8px;
@@ -375,7 +374,10 @@ body.sidebar-minimized {
 }
 
 .categories {
+  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
   padding-top: 20px;
+  padding-right: 40px !important;
+  padding-left: 40px !important;
 }
 
 .menu,
@@ -1063,8 +1065,45 @@ body.forgotresettoken {
 // }
 
 .meal-search {
-  margin-top: 50px !important;
+  position: fixed !important;
+  z-index: 1000 !important;
+  height: 100vh;
+  width: 60vw;
+  margin-top: 10px !important;
   -moz-box-shadow: 1px 1px 1px 1px #dbdbdb;
   -webkit-box-shadow: 1px 1px 1px 1px #dbdbdb;
   box-shadow: 1px 1px 1px 1px #dbdbdb;
+}
+
+#search-room {
+  margin-top: 40px !important;
+}
+
+.shopping-cart {
+  background-color: #fff;
+  height: 100vh;
+  width: 18vw;
+  position: fixed;
+  transition: all 0.2s;
+  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
+}
+
+.shopping-cart-meals {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.bag-bottom-area {
+  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
+  position: sticky;
+  -webkit-sticky: sticky;
+  bottom: 0;
+}
+
+.hidden {
+  right: -18vw;
+}
+
+.show {
+  right: 0vw;
 }

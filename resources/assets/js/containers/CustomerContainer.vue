@@ -61,10 +61,13 @@
             ><i class="fas fa-filter customer-nav-icon"></i
           ></b-nav-item>
           <CustomerDropdown v-if="loggedIn" />
-          <b-nav-item @click.prevent="showAuthModal()" class="white-text"
+          <b-nav-item
+            v-if="!loggedIn"
+            @click.prevent="showAuthModal()"
+            class="white-text"
             ><i class="fas fa-user customer-nav-icon"></i
           ></b-nav-item>
-          <b-nav-item class="white-text"
+          <b-nav-item class="white-text" @click.prevent="showBagArea()"
             ><i class="fas fa-shopping-bag customer-nav-icon"></i
           ></b-nav-item>
         </b-navbar-nav>
@@ -234,6 +237,9 @@ export default {
   methods: {
     showSearch() {
       this.$eventBus.$emit("showSearchBar");
+    },
+    showBagArea() {
+      this.$eventBus.$emit("showRightBagArea");
     },
     showAuthModal() {
       this.$eventBus.$emit("showAuthModal");

@@ -1,39 +1,43 @@
 <template>
   <div>
-    <p class="mt-3" v-if="!minimumMet && !storeView">
-      {{ addMore }}
-    </p>
+    <div class="bag-bottom-area">
+      <p class="mt-3" v-if="!minimumMet && !storeView">
+        {{ addMore }}
+      </p>
+      <p class="small pl-2 pt-2">Subtotal</p>
+      <h4 class="pl-2">{{ format.money(totalBagPricePreFees, currency) }}</h4>
 
-    <router-link
-      to="/customer/bag"
-      v-if="minimumMet && !storeView && $route.name === 'customer-menu'"
-    >
-      <b-btn class="menu-bag-btn">NEXT</b-btn>
-    </router-link>
-
-    <router-link
-      v-if="storeView"
-      :to="{
-        name: 'store-bag',
-        params: {
-          storeView: storeView,
-          manualOrder: manualOrder,
-          subscriptionId: subscriptionId,
-          adjustOrder: false,
-          adjustMealPlan: false
-        }
-      }"
-    >
-      <b-btn class="menu-bag-btn">NEXT</b-btn>
-    </router-link>
-
-    <router-link to="/customer/menu">
-      <b-btn
-        v-if="$route.name === 'customer-bag' && !minimumMet"
-        class="menu-bag-btn mb-2"
-        >BACK</b-btn
+      <router-link
+        to="/customer/bag"
+        v-if="minimumMet && !storeView && $route.name === 'customer-menu'"
       >
-    </router-link>
+        <b-btn class="menu-bag-btn">NEXT</b-btn>
+      </router-link>
+
+      <router-link
+        v-if="storeView"
+        :to="{
+          name: 'store-bag',
+          params: {
+            storeView: storeView,
+            manualOrder: manualOrder,
+            subscriptionId: subscriptionId,
+            adjustOrder: false,
+            adjustMealPlan: false
+          }
+        }"
+      >
+        <b-btn class="menu-bag-btn">NEXT</b-btn>
+      </router-link>
+
+      <router-link to="/customer/menu">
+        <b-btn
+          v-if="$route.name === 'customer-bag' && !minimumMet"
+          class="menu-bag-btn mb-2"
+          >BACK</b-btn
+        >
+      </router-link>
+    </div>
   </div>
 </template>
 <script>

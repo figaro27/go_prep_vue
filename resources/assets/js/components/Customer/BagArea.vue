@@ -1,91 +1,116 @@
 <template>
   <div>
-    <ul class="list-group">
-      <li v-for="(item, mealId) in bag" :key="`bag-${mealId}`" class="bag-item">
-        <div v-if="item && item.quantity > 0" class="d-flex align-items-center">
-          <div class="bag-item-quantity mr-2">
-            <div
-              v-if="!item.meal_package"
-              @click="
-                addOne(
-                  item.meal,
-                  false,
-                  item.size,
-                  item.components,
-                  item.addons
-                )
-              "
-              class="bag-plus-minus brand-color white-text"
-            >
-              <i>+</i>
+    <div class="bag-header">
+      <h3 class="white-text p-2 ml-3">
+        <i class="fa fa-angle-right mr-3" @click="$parent.showBag()"></i>My Bag
+        <span class="small">({{ total }} Meals)</span>
+      </h3>
+    </div>
+    <div class="shopping-cart-meals">
+      <ul class="list-group">
+        <li
+          v-for="(item, mealId) in bag"
+          :key="`bag-${mealId}`"
+          class="bag-item"
+        >
+          <div
+            v-if="item && item.quantity > 0"
+            class="d-flex align-items-center"
+          >
+            <div class="bag-item-quantity mr-2">
+              <div
+                v-if="!item.meal_package"
+                @click="
+                  addOne(
+                    item.meal,
+                    false,
+                    item.size,
+                    item.components,
+                    item.addons
+                  )
+                "
+                class="bag-plus-minus brand-color white-text"
+              >
+                <i>+</i>
+              </div>
+              <div
+                v-if="item.meal_package"
+                @click="
+                  addOne(
+                    item.meal,
+                    true,
+                    item.size,
+                    item.components,
+                    item.addons
+                  )
+                "
+                class="bag-plus-minus brand-color white-text"
+              >
+                <i>+</i>
+              </div>
+              <p class="bag-quantity">{{ item.quantity }}</p>
+              <div
+                @click="
+                  minusOne(
+                    item.meal,
+                    false,
+                    item.size,
+                    item.components,
+                    item.addons
+                  )
+                "
+                class="bag-plus-minus gray white-text"
+              >
+                <i>-</i>
+              </div>
             </div>
-            <div
-              v-if="item.meal_package"
-              @click="
-                addOne(item.meal, true, item.size, item.components, item.addons)
-              "
-              class="bag-plus-minus brand-color white-text"
-            >
-              <i>+</i>
+            <div class="bag-item-image mr-2">
+              <thumbnail
+                :src="item.meal.image.url_thumb"
+                :spinner="false"
+                class="cart-item-img"
+                width="80px"
+              ></thumbnail>
             </div>
-            <p class="bag-quantity">{{ item.quantity }}</p>
-            <div
-              @click="
-                minusOne(
-                  item.meal,
-                  false,
-                  item.size,
-                  item.components,
-                  item.addons
-                )
-              "
-              class="bag-plus-minus gray white-text"
-            >
-              <i>-</i>
-            </div>
-          </div>
-          <div class="bag-item-image mr-2">
-            <thumbnail
-              :src="item.meal.image.url_thumb"
-              :spinner="false"
-              class="cart-item-img"
-              width="80px"
-            ></thumbnail>
-          </div>
-          <div class="flex-grow-1 mr-2">
-            <span v-if="item.meal_package">{{ item.meal.title }}</span>
-            <span v-else-if="item.size">
-              {{ item.size.full_title }}
-            </span>
-            <span v-else>{{ item.meal.item_title }}</span>
+            <div class="flex-grow-1 mr-2">
+              <span v-if="item.meal_package">{{ item.meal.title }}</span>
+              <span v-else-if="item.size">
+                {{ item.size.full_title }}
+              </span>
+              <span v-else>{{ item.meal.item_title }}</span>
 
-            <ul v-if="item.components || item.addons" class="plain">
-              <li v-for="component in itemComponents(item)" class="plain">
-                {{ component }}
-              </li>
-              <li v-for="addon in itemAddons(item)" class="plus">
-                {{ addon }}
-              </li>
-            </ul>
+              <ul v-if="item.components || item.addons" class="plain">
+                <li v-for="component in itemComponents(item)" class="plain">
+                  {{ component }}
+                </li>
+                <li v-for="addon in itemAddons(item)" class="plus">
+                  {{ addon }}
+                </li>
+              </ul>
+            </div>
+            <div class="flex-grow-0">
+              <img
+                src="/images/customer/x.png"
+                @click="
+                  clearMeal(
+                    item.meal,
+                    false,
+                    item.size,
+                    item.components,
+                    item.addons
+                  )
+                "
+                class="clear-meal"
+              />
+            </div>
           </div>
-          <div class="flex-grow-0">
-            <img
-              src="/images/customer/x.png"
-              @click="
-                clearMeal(
-                  item.meal,
-                  false,
-                  item.size,
-                  item.components,
-                  item.addons
-                )
-              "
-              class="clear-meal"
-            />
-          </div>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
+    <v-style>
+      .bag-header{ height:50px !important; background-color:
+      {{ store.settings.color }}; margin-bottom: 15px }
+    </v-style>
   </div>
 </template>
 <script>

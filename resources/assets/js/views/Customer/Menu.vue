@@ -62,6 +62,7 @@
             v-if="!meals.length && !mealPackages.length"
             position="absolute"
           />
+          <div id="shopping-cart" :class="showBagClass"></div>
           <b-form-textarea
             v-model="search"
             placeholder="Search"
@@ -74,26 +75,27 @@
             :cardBody="cardBody"
             @onCategoryVisible="onCategoryVisible($event)"
             @showMealModal="showMealModal"
+            :id="searchRoom"
           ></meals-area>
 
           <meal-packages-area :mealPackages="mealPackages"></meal-packages-area>
         </div>
-        <<!-- div class="col-sm-5 col-md-3 bag-area">
-                  <bag-area
-                    :manualOrder="manualOrder"
-                    :adjustOrder="adjustOrder"
-                    :adjustMealPlan="adjustMealPlan"
-                    :subscriptionId="subscriptionId"
-                  >
-                  </bag-area>
-                  <bag-actions
-                    :storeView="storeView"
-                    :manualOrder="manualOrder"
-                    :adjustOrder="adjustOrder"
-                    :adjustMealPlan="adjustMealPlan"
-                    :subscriptionId="subscriptionId"
-                  ></bag-actions>
-                </div> -->
+        <div :class="showBagClass">
+          <bag-area
+            :manualOrder="manualOrder"
+            :adjustOrder="adjustOrder"
+            :adjustMealPlan="adjustMealPlan"
+            :subscriptionId="subscriptionId"
+          >
+          </bag-area>
+          <bag-actions
+            :storeView="storeView"
+            :manualOrder="manualOrder"
+            :adjustOrder="adjustOrder"
+            :adjustMealPlan="adjustMealPlan"
+            :subscriptionId="subscriptionId"
+          ></bag-actions>
+        </div>
       </div>
     </div>
   </div>
@@ -166,8 +168,10 @@ export default {
   },
   data() {
     return {
+      showBagClass: "shopping-cart hidden bag-area",
       search: "",
       showSearch: false,
+      searchRoom: "",
       showAuthModal: false,
       slickOptions: {
         slidesToShow: 4,
@@ -377,9 +381,14 @@ export default {
   created() {
     this.$eventBus.$on("showSearchBar", () => {
       this.showSearch = !this.showSearch;
+      if (this.searchRoom === "") this.searchRoom = "search-room";
+      else this.searchRoom = "";
     });
     this.$eventBus.$on("showAuthModal", () => {
       this.showAuthModal = true;
+    });
+    this.$eventBus.$on("showRightBagArea", () => {
+      this.showBag();
     });
   },
   mounted() {
@@ -596,6 +605,12 @@ export default {
         valueAddedSugars: nutrition.addedSugars,
         showLegacyVersion: false
       };
+    },
+    showBag() {
+      if (this.showBagClass === "shopping-cart hidden bag-area")
+        this.showBagClass = "shopping-cart show bag-area";
+      else if (this.showBagClass === "shopping-cart show bag-area")
+        this.showBagClass = "shopping-cart hidden bag-area";
     }
   }
 };
