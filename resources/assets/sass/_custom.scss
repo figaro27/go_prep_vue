@@ -378,6 +378,8 @@ body.sidebar-minimized {
   padding-top: 20px;
   padding-right: 40px !important;
   padding-left: 40px !important;
+  margin-right: 12px !important;
+  background-color: #ffffff !important;
 }
 
 .menu,
@@ -755,7 +757,6 @@ th {
 .header-fixed {
   .app-header {
     z-index: 10010;
-    max-width: 300px !important;
 
     .navbar {
     }
@@ -927,11 +928,11 @@ table {
 
 .main,
 .main .container-fluid {
-  background-color: #efefef !important;
+  background-color: #f8f8f8 !important;
 }
 
 .container-fluid {
-  background-color: #efefef !important;
+  background-color: #f8f8f8 !important;
 }
 
 body.login,
@@ -1082,7 +1083,7 @@ body.forgotresettoken {
 .shopping-cart {
   background-color: #fff;
   height: 100vh;
-  width: 18vw;
+  width: 20.5vw;
   position: fixed;
   transition: all 0.2s;
   -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
@@ -1094,14 +1095,14 @@ body.forgotresettoken {
 }
 
 .bag-bottom-area {
-  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
-  position: sticky;
-  -webkit-sticky: sticky;
-  bottom: 0;
+  // -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
+  // position: sticky;
+  // -webkit-sticky: sticky;
+  // bottom: 0;
 }
 
 .hidden {
-  right: -18vw;
+  right: -20.5vw;
 }
 
 .show {

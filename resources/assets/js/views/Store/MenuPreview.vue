@@ -2,6 +2,16 @@
   <customer-menu :preview="true" :storeView="true"></customer-menu>
 </template>
 
+<style>
+.hidden {
+  right: 0vw;
+}
+
+.categories {
+  margin-right: 100px !important;
+}
+</style>
+
 <script>
 import Spinner from "../../components/Spinner";
 import { mapGetters, mapActions, mapMutations } from "vuex";

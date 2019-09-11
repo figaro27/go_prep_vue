@@ -99,13 +99,6 @@
 main.main {
   position: relative;
 }
-.main {
-  background-color: #ffffff !important;
-}
-
-.container-fluid {
-  background-color: #ffffff !important;
-}
 </style>
 
 <script>

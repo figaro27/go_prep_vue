@@ -31,6 +31,7 @@
               :creditCardList="creditCardList"
               :salesTax="salesTax"
               :customer="customer"
+              :preview="preview"
             ></checkout-area>
             <store-closed></store-closed>
           </div>
@@ -74,7 +75,8 @@ export default {
     manualOrder: false,
     subscriptionId: null,
     adjustOrder: false,
-    adjustMealPlan: false
+    adjustMealPlan: false,
+    preview: false
   },
   mixins: [MenuBag],
   data() {

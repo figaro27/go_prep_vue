@@ -108,8 +108,8 @@
       </ul>
     </div>
     <v-style>
-      .bag-header{ height:50px !important; background-color:
-      {{ store.settings.color }}; margin-bottom: 15px }
+      .bag-header{ height:70px !important; background-color:
+      {{ store.settings.color }}; margin-bottom: 15px; padding-top: 10px }
     </v-style>
   </div>
 </template>

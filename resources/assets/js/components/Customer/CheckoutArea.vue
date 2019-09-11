@@ -270,7 +270,7 @@
         >
       </div>
       <div v-else>
-        <div v-if="manualOrder && !subscriptionId">
+        <div v-if="manualOrder">
           <b-form-group>
             <h4 class="mt-2 mb-3">Choose Customer</h4>
             <b-select
@@ -290,7 +290,7 @@
             >Add New Customer</b-btn
           >
         </div>
-        <h4 class="mt-2 mb-3" v-if="!subscriptionId">
+        <h4 class="mt-2 mb-3" v-if="!subscriptionId || $params.preview">
           Choose Payment Method
         </h4>
         <b-form-checkbox
@@ -400,6 +400,7 @@ export default {
     };
   },
   props: {
+    preview: false,
     manualOrder: false,
     cashOrder: false,
     mobile: false,

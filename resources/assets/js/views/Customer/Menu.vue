@@ -94,6 +94,7 @@
             :adjustOrder="adjustOrder"
             :adjustMealPlan="adjustMealPlan"
             :subscriptionId="subscriptionId"
+            :preview="preview"
           ></bag-actions>
         </div>
       </div>

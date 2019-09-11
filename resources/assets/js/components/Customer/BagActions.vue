@@ -1,11 +1,19 @@
 <template>
   <div>
     <div class="bag-bottom-area">
-      <p class="mt-3" v-if="!minimumMet && !storeView">
-        {{ addMore }}
-      </p>
-      <p class="small pl-2 pt-2">Subtotal</p>
-      <h4 class="pl-2">{{ format.money(totalBagPricePreFees, currency) }}</h4>
+      <div class="row">
+        <div class="col-md-8">
+          <p class="mt-4 ml-2" v-if="!minimumMet && !storeView">
+            {{ addMore }}
+          </p>
+        </div>
+        <div class="col-md-4">
+          <p class="small pl-2 pt-2">Subtotal</p>
+          <h4 class="pl-2">
+            {{ format.money(totalBagPricePreFees, currency) }}
+          </h4>
+        </div>
+      </div>
 
       <router-link
         to="/customer/bag"
@@ -22,12 +30,13 @@
             storeView: storeView,
             manualOrder: manualOrder,
             subscriptionId: subscriptionId,
-            adjustOrder: false,
-            adjustMealPlan: false
+            adjustOrder: adjustOrder,
+            adjustMealPlan: adjustMealPlan,
+            preview: preview
           }
         }"
       >
-        <b-btn class="menu-bag-btn">NEXT</b-btn>
+        <b-btn class="menu-bag-btn">NEXT1</b-btn>
       </router-link>
 
       <router-link to="/customer/menu">
@@ -47,6 +56,7 @@ import format from "../../lib/format";
 
 export default {
   props: {
+    preview: false,
     storeView: false,
     manualOrder: false,
     adjustOrder: false,

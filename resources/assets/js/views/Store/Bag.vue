@@ -1,5 +1,5 @@
 <template>
-  <customer-bag :manualOrder="true"></customer-bag>
+  <customer-bag :preview="preview"></customer-bag>
 </template>
 
 <script>
@@ -8,6 +8,9 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import CustomerBag from "../Customer/Bag";
 
 export default {
+  props: {
+    preview: false
+  },
   components: {
     Spinner,
     CustomerBag
