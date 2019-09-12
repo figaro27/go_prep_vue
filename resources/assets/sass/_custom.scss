@@ -2,6 +2,10 @@
 @import "~nutrition-label-jquery-plugin/dist/css/nutritionLabel-min.css";
 @import "~vue-toastr/src/vue-toastr.scss";
 
+body {
+  overflow-x: hidden;
+}
+
 p,
 td,
 li,
@@ -372,7 +376,10 @@ body.sidebar-minimized {
 }
 
 .categories {
-  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
+  // -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35), 0 -1px -4px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 3px 0px 0px white, 0 -3px 0px 0px white,
+    6px 0 6px -2px rgba(0, 0, 0, 0.15), -6px 0 6px -2px rgba(0, 0, 0, 0.15);
+
   padding-top: 20px;
   padding-right: 40px !important;
   padding-left: 40px !important;
@@ -1083,13 +1090,16 @@ body.forgotresettoken {
 .shopping-cart-meals {
   padding-left: 10px;
   padding-right: 10px;
+  padding-bottom: 175px !important;
 }
 
 .bag-bottom-area {
-  // -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
-  // position: sticky;
-  // -webkit-sticky: sticky;
-  // bottom: 0;
+  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15) !important;
+  background-color: #ffffff;
+  height: 140px !important;
+  width: 20.5vw;
+  position: fixed;
+  bottom: 0;
 }
 
 .hidden-right {
@@ -1116,7 +1126,7 @@ body.forgotresettoken {
   -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15) !important;
 }
 
-.bag-scroll {
+.area-scroll {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }

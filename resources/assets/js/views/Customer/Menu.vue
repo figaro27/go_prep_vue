@@ -58,7 +58,6 @@
             v-if="!meals.length && !mealPackages.length"
             position="absolute"
           />
-          <div :class="showBagClass"></div>
           <meals-area
             :meals="meals"
             :card="card"
@@ -77,14 +76,16 @@
             :subscriptionId="subscriptionId"
           >
           </bag-area>
-          <bag-actions
-            :storeView="storeView"
-            :manualOrder="manualOrder"
-            :adjustOrder="adjustOrder"
-            :adjustMealPlan="adjustMealPlan"
-            :subscriptionId="subscriptionId"
-            :preview="preview"
-          ></bag-actions>
+          <div class="bag-bottom-area">
+            <bag-actions
+              :storeView="storeView"
+              :manualOrder="manualOrder"
+              :adjustOrder="adjustOrder"
+              :adjustMealPlan="adjustMealPlan"
+              :subscriptionId="subscriptionId"
+              :preview="preview"
+            ></bag-actions>
+          </div>
         </div>
         <div :class="showFilterClass">
           <menu-filters> ></menu-filters>
@@ -595,12 +596,12 @@ export default {
       if (this.showBagClass.includes("hidden-right")) {
         this.showBagClass = "shopping-cart show-right bag-area";
         if (this.showBagScrollbar) {
-          this.showBagClass += " bag-scroll";
+          this.showBagClass += " area-scroll";
         }
       } else if (this.showBagClass.includes("show-right")) {
         this.showBagClass = "shopping-cart hidden-right bag-area";
         if (this.showBagScrollbar) {
-          this.showBagClass += " bag-scroll";
+          this.showBagClass += " area-scroll";
         }
       }
     },

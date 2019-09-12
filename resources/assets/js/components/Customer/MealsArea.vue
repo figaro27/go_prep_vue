@@ -115,7 +115,7 @@
                       ></b-form-input>
                       <b-btn
                         v-if="meal.sizes.length === 0"
-                        @click.stop="addOne(meal)"
+                        @click.stop="addMeal(meal)"
                         class="menu-bag-btn plus-minus"
                       >
                         <i>+</i>
@@ -126,7 +126,7 @@
                         :right="i > 0 && (i + 1) % 4 === 0"
                       >
                         <i slot="button-content">+</i>
-                        <b-dropdown-item @click="addOne(meal)">
+                        <b-dropdown-item @click="addMeal(meal)">
                           {{ meal.default_size_title || "Regular" }}
                           -
                           {{
@@ -139,7 +139,7 @@
                         <b-dropdown-item
                           v-for="size in meal.sizes"
                           :key="size.id"
-                          @click="addOne(meal, false, size)"
+                          @click="addMeal(meal, false, size)"
                         >
                           {{ size.title }} -
                           {{ format.money(size.price, storeSettings.currency) }}
@@ -179,6 +179,16 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
     })
+  },
+  methods: {
+    addMeal(meal) {
+      this.addOne(meal);
+      if (this.$parent.showBagScrollbar) {
+        this.$parent.showBagClass += " area-scroll";
+      } else if (this.$parent.showBagScrollbar) {
+        this.$parent.showBagClass -= " area-scroll";
+      }
+    }
   }
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="bag-bottom-area">
+    <div>
       <div class="row">
         <div class="col-md-8">
           <p class="mt-4 ml-2" v-if="!minimumMet && !storeView">

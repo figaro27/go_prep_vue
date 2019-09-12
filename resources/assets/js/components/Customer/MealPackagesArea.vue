@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div v-if="mealPackages.length" id="Packages">
-      <h2 class="text-center mb-3 dbl-underline">Packages</h2>
+    <div v-if="mealPackages.length" id="Packages" class="categories">
+      <h2 class="text-center mb-3 dbl-underline">Meal Plans</h2>
 
       <div class="row">
         <div
-          class="col-sm-6 col-lg-4 col-xl-3"
+          class="item col-sm-6 col-lg-4 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border"
           v-for="mealPkg in mealPackages"
           :key="mealPkg.id"
         >
