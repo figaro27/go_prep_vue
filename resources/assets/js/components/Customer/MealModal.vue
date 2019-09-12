@@ -4,8 +4,8 @@
       ref="mealModal"
       size="lg"
       :title="meal.title"
-      v-model="showMealModal"
-      v-if="showMealModal"
+      v-model="$parent.mealModal"
+      v-if="$parent.mealModal"
       @hide="$parent.mealModal = false"
     >
       <div class="row mt-3">
@@ -108,7 +108,7 @@
             <div class="col-lg-5">
               <b-btn
                 v-if="meal.sizes.length === 0"
-                @click="addOne(meal)"
+                @click="addMeal(meal)"
                 class="menu-bag-btn"
                 >+ ADD</b-btn
               >
@@ -243,6 +243,11 @@ export default {
       getMealPackage: "viewedStoreMealPackage"
     })
   },
+  mounted() {
+    // this.$nextTick(() => {
+    //   this.$refs.mealGallery.reSlick();
+    // });
+  },
   updated() {
     this.getNutritionFacts();
   },
@@ -264,6 +269,10 @@ export default {
           $(ref).nutritionLabel(this.nutritionalFacts);
         });
       });
+    },
+    addMeal(meal) {
+      this.addOne(meal);
+      this.$parent.mealModal = false;
     }
   }
 };

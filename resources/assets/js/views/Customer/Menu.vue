@@ -14,14 +14,10 @@
 
     <auth-modal :showAuthModal="showAuthModal"></auth-modal>
 
-    <meal-components-modal
-      ref="componentModal"
-      :key="total"
-    ></meal-components-modal>
+    <meal-components-modal ref="componentModal"></meal-components-modal>
 
     <meal-package-components-modal
       ref="packageComponentModal"
-      :key="total"
     ></meal-package-components-modal>
 
     <category-slider></category-slider>
@@ -451,7 +447,7 @@ export default {
 
       this.$nextTick(() => {
         this.getNutritionFacts(this.meal.ingredients, this.meal);
-        this.$refs.mealGallery.reSlick();
+        // this.$refs.mealGallery.reSlick();
       });
     },
     showMealPackageModal(mealPackage) {

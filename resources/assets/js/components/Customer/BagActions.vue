@@ -130,10 +130,7 @@ export default {
       else if (this.minOption === "price")
         return (
           "Please add " +
-          format.money(
-            this.remainingPrice,
-            this.storeSettings.this.storeSettings.currency
-          ) +
+          format.money(this.remainingPrice, this.storeSettings.currency) +
           " more to continue."
         );
     }
