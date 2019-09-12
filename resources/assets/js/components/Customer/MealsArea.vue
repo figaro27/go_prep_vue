@@ -18,7 +18,7 @@
           v-for="(meal, i) in group.meals"
           :key="meal.id"
         >
-          <div :class="card">
+          <div :class="card" @click="$parent.showMealModal(meal)">
             <div :class="cardBody">
               <div class="item-wrap">
                 <div class="title d-md-none">
@@ -99,7 +99,10 @@
                     <div
                       class="d-flex justify-content-between align-items-center mt-1"
                     >
-                      <b-btn @click="minusOne(meal)" class="plus-minus gray">
+                      <b-btn
+                        @click.stop="minusOne(meal)"
+                        class="plus-minus gray"
+                      >
                         <i>-</i>
                       </b-btn>
                       <b-form-input
@@ -112,7 +115,7 @@
                       ></b-form-input>
                       <b-btn
                         v-if="meal.sizes.length === 0"
-                        @click="addOne(meal)"
+                        @click.stop="addOne(meal)"
                         class="menu-bag-btn plus-minus"
                       >
                         <i>+</i>

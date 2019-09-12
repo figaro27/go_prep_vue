@@ -41,7 +41,7 @@
       ></meal-filter-modal>
 
       <meal-modal
-        :mealModal="mealModal"
+        :showMealModal="mealModal"
         :meal="meal"
         :slickOptions="slickOptions"
         :storeSettings="storeSettings"

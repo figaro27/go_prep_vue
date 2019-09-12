@@ -4,8 +4,8 @@
       ref="mealModal"
       size="lg"
       :title="meal.title"
-      v-model="mealModal"
-      v-if="mealModal"
+      v-model="showMealModal"
+      v-if="showMealModal"
       @hide="$parent.mealModal = false"
     >
       <div class="row mt-3">
@@ -197,6 +197,7 @@
 </template>
 
 <script>
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../mixins/menuBag";
 import LightBox from "vue-image-lightbox";
 import nutritionFacts from "nutrition-label-jquery-plugin";
@@ -212,7 +213,7 @@ export default {
     LightBox
   },
   props: {
-    mealModal: false,
+    showMealModal: false,
     meal: {},
     slickOptions: {},
     storeSettings: {},
@@ -221,6 +222,27 @@ export default {
     nutritionalFacts: {}
   },
   mixins: [MenuBag],
+  computed: {
+    ...mapGetters({
+      store: "viewedStore",
+      total: "bagQuantity",
+      allergies: "allergies",
+      bag: "bagItems",
+      hasMeal: "bagHasMeal",
+      willDeliver: "viewedStoreWillDeliver",
+      _categories: "viewedStoreCategories",
+      storeLogo: "viewedStoreLogo",
+      isLoading: "isLoading",
+      totalBagPricePreFees: "totalBagPricePreFees",
+      totalBagPrice: "totalBagPrice",
+      loggedIn: "loggedIn",
+      minOption: "minimumOption",
+      minMeals: "minimumMeals",
+      minPrice: "minimumPrice",
+      getMeal: "viewedStoreMeal",
+      getMealPackage: "viewedStoreMealPackage"
+    })
+  },
   updated() {
     this.getNutritionFacts();
   },
