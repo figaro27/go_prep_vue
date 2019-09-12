@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div v-if="$route.name === 'customer-menu'">
       <div class="row">
         <div class="col-md-8">
           <p class="mt-4 ml-2" v-if="!minimumMet && !storeView">

@@ -3,32 +3,32 @@
     <ul class="list-group">
       <li class="bag-item" v-if="storeSettings.allowMealPlans">
         <div class="row" v-if="!manualOrder">
-          <div class="col-md-8 pb-1">
+          <div class="col-md-12 pb-1">
             <h3>
-              <strong
-                >Weekly Meal Plan
-                <span v-if="storeSettings.applyMealPlanDiscount"
-                  >{{ storeSettings.mealPlanDiscount }}% Off</span
-                ></strong
-              >
               <img
                 v-if="!mobile"
                 v-b-popover.hover="
-                  'Choose a weekly meal plan instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals as well as pause or cancel the meal plan at any time. This will apply to the following week\'s renewal.'
+                  'Choose a weekly subscription instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals as well as pause or cancel the subscription at any time. This will apply to the following week\'s renewal.'
                 "
-                title="Weekly Meal Plan"
+                title="Weekly Subscription"
                 src="/images/store/popover.png"
                 class="popover-size ml-1"
               />
               <img
                 v-if="mobile"
                 v-b-popover.click.top="
-                  'Choose a weekly meal plan instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals as well as pause or cancel the meal plan at any time. This will apply to the following week\'s renewal.'
+                  'Choose a weekly subscription instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals as well as pause or cancel the subscription at any time. This will apply to the following week\'s renewal.'
                 "
-                title="Weekly Meal Plan"
+                title="Weekly Subscription"
                 src="/images/store/popover.png"
                 class="popover-size ml-1"
               />
+              <strong
+                >Subscribe & Save
+                <span v-if="storeSettings.applyMealPlanDiscount"
+                  >{{ storeSettings.mealPlanDiscount }}% Off</span
+                ></strong
+              >
             </h3>
           </div>
         </div>
@@ -37,7 +37,7 @@
             <strong
               ><p class="mr-1">
                 <span v-if="storeSettings.applyMealPlanDiscount">
-                  Create a meal plan and you'll save
+                  Subscribe weekly and you'll save
                   <span class="text-success standout">{{
                     format.money(mealPlanDiscount, storeSettings.currency)
                   }}</span>

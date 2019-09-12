@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div class="bag-header center-text pt-3">
+    <div
+      class="bag-header center-text pt-3"
+      v-if="$route.name === 'customer-menu'"
+    >
       <h3 class="d-inline ml-3 float-left">
         <i class="fa fa-angle-right white-text" @click="$parent.showBag()"></i>
       </h3>
