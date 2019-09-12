@@ -62,7 +62,7 @@
             v-if="!meals.length && !mealPackages.length"
             position="absolute"
           />
-          <div id="shopping-cart" :class="showBagClass"></div>
+          <div :class="showBagClass"></div>
           <meals-area
             :meals="meals"
             :card="card"
@@ -188,7 +188,8 @@ export default {
       filteredView: false,
       filters: {
         tags: [],
-        allergies: []
+        allergies: [],
+        categories: []
       },
       meal: null,
       mealPackage: null,
@@ -374,6 +375,10 @@ export default {
     },
     showIngredients() {
       return this.storeSettings.showIngredients;
+    },
+    showBagScrollbar() {
+      if (this.bag.length > 7) return true;
+      else return false;
     }
   },
   created() {
@@ -591,16 +596,35 @@ export default {
       };
     },
     showBag() {
-      if (this.showBagClass === "shopping-cart hidden-right bag-area")
+      if (this.showBagClass.includes("hidden-right")) {
         this.showBagClass = "shopping-cart show-right bag-area";
-      else if (this.showBagClass === "shopping-cart show-right bag-area")
+        if (this.showBagScrollbar) {
+          this.showBagClass += " bag-scroll";
+        }
+      } else if (this.showBagClass.includes("show-right")) {
         this.showBagClass = "shopping-cart hidden-right bag-area";
+        if (this.showBagScrollbar) {
+          this.showBagClass += " bag-scroll";
+        }
+      }
     },
     showFilterArea() {
       if (this.showFilterClass === "shopping-cart hidden-left bag-area")
         this.showFilterClass = "shopping-cart show-left bag-area";
       else if (this.showFilterClass === "shopping-cart show-left bag-area")
         this.showFilterClass = "shopping-cart hidden-left bag-area";
+    },
+    filterByCategory(category) {
+      this.filteredView = true;
+
+      // Check if filter already exists
+      const i = _.findIndex(this.filters.categories, cat => {
+        return cat === category;
+      });
+
+      i === -1
+        ? this.filters.categories.push(category)
+        : Vue.delete(this.filters.categories, i);
     }
   }
 };

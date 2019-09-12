@@ -36,7 +36,7 @@
           }
         }"
       >
-        <b-btn class="menu-bag-btn">NEXT1</b-btn>
+        <b-btn class="menu-bag-btn">NEXT</b-btn>
       </router-link>
 
       <router-link to="/customer/menu">

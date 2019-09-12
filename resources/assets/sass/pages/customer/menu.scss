@@ -28,8 +28,7 @@ body.customermenu {
   }
 
   .item {
-    padding-bottom: 5px;
-    margin-bottom: 5px;
+    padding-bottom: 20px;
     @include media-breakpoint-up(md) {
       margin-top: 15px;
       padding-top: 15px;

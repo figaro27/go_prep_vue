@@ -1,10 +1,13 @@
 <template>
   <div>
-    <div class="bag-header">
-      <h3 class="white-text p-2 ml-3">
-        <i class="fa fa-angle-right mr-3" @click="$parent.showBag()"></i>My Bag
-        <span class="small">({{ total }} Meals)</span>
+    <div class="bag-header center-text pt-3">
+      <h3 class="d-inline ml-3 float-left">
+        <i class="fa fa-angle-right white-text" @click="$parent.showBag()"></i>
       </h3>
+      <h3 class="white-text d-inline">
+        My Bag
+      </h3>
+      <p class="white-text d-inline">({{ total }} Meals)</p>
     </div>
     <div class="shopping-cart-meals">
       <ul class="list-group">

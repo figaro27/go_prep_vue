@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="filter-header">
-      <h3 class="white-text p-2 ml-3">
+      <h3 class="white-text p-2 ml-3 center-text">
         Filters
         <i
           class="fa fa-angle-left mr-3 float-right"
@@ -15,7 +15,7 @@
         placeholder="Search"
         class="meal-search"
       ></b-form-textarea>
-      <ul>
+      <!-- <ul>
         <li
           v-for="category in categories"
           :key="category"
@@ -24,15 +24,19 @@
         >
           {{ category }}
         </li>
-      </ul>
+      </ul> -->
 
       <div class="row">
+        <div class="col-md-12">
+          <h4 class="center-text mt-4">Allergies</h4>
+          <p class="center-text">Hide Meals That Contain:</p>
+        </div>
         <div class="col-md-6">
-          <p>Hide Meals That Contain</p>
           <div
-            v-for="allergy in allergies"
+            v-for="(allergy, index) in allergies"
+            v-if="index <= 4"
             :key="`allergy-${allergy.id}`"
-            class="filters small"
+            class="filters small ml-5"
           >
             <b-button
               :pressed="$parent.active[allergy.id]"
@@ -42,11 +46,48 @@
           </div>
         </div>
         <div class="col-md-6">
-          <p>Show Meals That Are</p>
-          <div v-for="tag in tags" :key="`tag-${tag}`" class="filters small">
+          <div
+            v-for="(allergy, index) in allergies"
+            v-if="index > 4"
+            :key="`allergy-${allergy.id}`"
+            class="filters small ml-1"
+          >
+            <b-button
+              :pressed="$parent.active[allergy.id]"
+              @click="$parent.filterByAllergy(allergy.id)"
+              >{{ allergy.title }}</b-button
+            >
+          </div>
+        </div>
+        <div class="col-md-12">
+          <h4 class="center-text mt-5">Nutrition</h4>
+          <p class="center-text">Show Meals That Are:</p>
+        </div>
+        <div class="col-md-6">
+          <div
+            v-for="(tag, index) in tags"
+            :key="`tag-${tag}`"
+            class="filters small ml-5"
+            v-if="index <= 3"
+          >
             <b-button
               :pressed="$parent.active[tag]"
-              @click="$emit('filterByTag', tag)"
+              @click="$parent.filterByTag(tag)"
+            >
+              {{ tag }}
+            </b-button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div
+            v-for="(tag, index) in tags"
+            :key="`tag-${tag}`"
+            class="filters small ml-1"
+            v-if="index > 3"
+          >
+            <b-button
+              :pressed="$parent.active[tag]"
+              @click="$parent.filterByTag(tag)"
             >
               {{ tag }}
             </b-button>
@@ -55,7 +96,7 @@
       </div>
 
       <b-button
-        @click="$emit('clearFilters')"
+        @click="$parent.clearFilters"
         class="center mt-4 brand-color white-text"
         >Clear All</b-button
       >
@@ -64,6 +105,8 @@
     <v-style>
       .filter-header{ height:70px !important; background-color:
       {{ store.settings.color }}; margin-bottom: 15px; padding-top: 10px }
+      .filters .active { color: #ffffff !important; border-color: #dedede
+      !important; background-color: {{ store.settings.color }} !important; }
     </v-style>
   </div>
 </template>

@@ -76,6 +76,8 @@ export default {
       });
       this.mealModal = false;
       this.mealPackageModal = false;
+
+      this.showBag();
     },
     minusOne(
       meal,
@@ -92,6 +94,9 @@ export default {
         components,
         addons
       });
+      if (this.bag.length > 7) {
+        this.showBagClass += " bag-scroll";
+      }
     },
     addBagItems(bag) {
       this.$store.commit("addBagItems", bag);
