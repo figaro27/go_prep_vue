@@ -199,7 +199,7 @@ export default {
             this.setBagMealPlan(false);
             this.setBagCoupon(null);
             this.$router.push({
-              path: "/store/meal-plans",
+              path: "/store/subscriptions",
               query: {
                 updated: true
               }
@@ -217,7 +217,7 @@ export default {
           this.setBagCoupon(null);
 
           this.$router.push({
-            path: "/customer/meal-plans",
+            path: "/customer/subscriptions",
             query: {
               updated: true
             }

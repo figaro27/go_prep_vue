@@ -15,8 +15,8 @@ import CustomerCheckout from "./views/Customer/Checkout.vue";
 import CustomerMenu from "./views/Customer/Menu.vue";
 import CustomerContact from "./views/Customer/Account/Contact.vue";
 import CustomerMyAccount from "./views/Customer/Account/MyAccount.vue";
-import CustomerMealPlans from "./views/Customer/MealPlans.vue";
-import CustomerMealPlanChange from "./views/Customer/MealPlan.vue";
+import CustomerSubscriptions from "./views/Customer/Subscriptions.vue";
+import CustomerSubscriptionChange from "./views/Customer/Subscriptions.vue";
 import CustomerOrders from "./views/Customer/Orders.vue";
 
 import StoreCustomers from "./views/Store/Customers.vue";
@@ -127,13 +127,13 @@ let routes = [
     name: "customer-myaccount"
   },
   {
-    path: "/customer/meal-plans",
-    component: CustomerMealPlans,
-    name: "customer-meal-plans"
+    path: "/customer/subscriptions",
+    component: CustomerSubscriptions,
+    name: "customer-subscriptions"
   },
   {
-    path: "/customer/meal-plans/:id",
-    component: CustomerMealPlanChange,
+    path: "/customer/subscriptions/:id",
+    component: CustomerSubscriptionChange,
     name: "customer-meal-plan-changes"
   },
   {

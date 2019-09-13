@@ -46,7 +46,7 @@
             >Checkout</b-nav-item
           >
           <b-nav-item v-if="loggedIn" to="/customer/orders">Orders</b-nav-item>
-          <b-nav-item v-if="loggedIn" to="/customer/meal-plans"
+          <b-nav-item v-if="loggedIn" to="/customer/subscriptions"
             >Subscriptions</b-nav-item
           >
         </b-navbar-nav>
@@ -209,7 +209,7 @@ export default {
     }
 
     // let page = this.name;
-    // // if (page != 'customer-home' && page != 'login' && page != 'register' && page != 'customer-orders' && page != 'customer-meal-plans')
+    // // if (page != 'customer-home' && page != 'login' && page != 'register' && page != 'customer-orders' && page != 'customer-subscriptions')
     // //   this.navBgColor = this.viewedStore.settings.color + ' !important';
     // if (page === "customer-menu" || page === "customer-bag") {
     //   this.navBgColor = this.viewedStore.settings.color + "!important";

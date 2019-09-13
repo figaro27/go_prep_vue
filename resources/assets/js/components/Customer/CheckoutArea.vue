@@ -103,7 +103,7 @@
       <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
         <div class="row">
           <div class="col-6 col-md-4">
-            <strong>Meal Plan Discount:</strong>
+            <strong>Subscription Discount:</strong>
           </div>
           <div class="col-6 col-md-3 offset-md-5 text-success">
             ({{ format.money(mealPlanDiscount, storeSettings.currency) }})
@@ -885,7 +885,7 @@ export default {
           if (this.$route.params.manualOrder && weeklyDelivery) {
             this.refreshStoreSubscriptions();
             this.$router.push({
-              path: "/store/meal-plans"
+              path: "/store/subscriptions"
             });
             return;
           } else if (this.$route.params.manualOrder && !weeklyDelivery) {
@@ -898,7 +898,7 @@ export default {
           if (weeklyDelivery) {
             await this.refreshSubscriptions();
             this.$router.push({
-              path: "/customer/meal-plans",
+              path: "/customer/subscriptions",
               query: { created: true, pickup: this.pickup }
             });
           } else {
