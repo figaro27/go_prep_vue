@@ -289,7 +289,6 @@ body.sidebar-minimized {
 
 .main-menu-area,
 .bag-area {
-  position: relative;
   padding-top: 35px;
   // overflow-y: scroll;
   z-index: 10;
@@ -375,25 +374,6 @@ body.sidebar-minimized {
   text-align: center;
 }
 
-.categories {
-  // -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35), 0 -1px -4px rgba(0, 0, 0, 0.35);
-  box-shadow: 0 3px 0px 0px white, 0 -3px 0px 0px white,
-    6px 0 6px -2px rgba(0, 0, 0, 0.15), -6px 0 6px -2px rgba(0, 0, 0, 0.15);
-
-  padding-top: 20px;
-  padding-right: 40px !important;
-  padding-left: 40px !important;
-  margin-right: 16px !important;
-  background-color: #ffffff !important;
-}
-
-.menu,
-.bag {
-  max-width: 60% !important;
-  width: 100% !important;
-  margin: 0px auto !important;
-}
-
 .bag-actions {
   @include media-breakpoint-down(sm) {
     .btn {
@@ -453,7 +433,7 @@ body.sidebar-minimized {
 }
 
 .store-logo-area {
-  height: 100px !important;
+  height: 40px !important;
   display: flex;
   justify-content: center;
 }
@@ -1129,4 +1109,35 @@ body.forgotresettoken {
 .area-scroll {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+.left-right-box-shadow {
+  box-shadow: 0 3px 0px 0px white, 0 -3px 0px 0px white,
+    6px 0 6px -2px rgba(0, 0, 0, 0.15), -6px 0 6px -2px rgba(0, 0, 0, 0.15);
+}
+
+.box-shadow {
+  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.top-fill {
+  margin-top: 36px !important;
+}
+
+.space-divider-20 {
+  height: 20px !important;
+}
+
+.space-divider-40 {
+  height: 40px !important;
+}
+
+.main-customer-container {
+  padding-top: 60px;
+  padding-right: 40px !important;
+  padding-left: 40px !important;
+  background-color: #ffffff !important;
+  max-width: 60vw !important;
+  width: 100% !important;
+  margin: 0px auto !important;
 }

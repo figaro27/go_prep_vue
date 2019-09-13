@@ -26,7 +26,7 @@
               <strong
                 >Subscribe & Save
                 <span v-if="storeSettings.applyMealPlanDiscount"
-                  >{{ storeSettings.mealPlanDiscount }}% Off</span
+                  >{{ storeSettings.mealPlanDiscount }}%</span
                 ></strong
               >
             </h3>

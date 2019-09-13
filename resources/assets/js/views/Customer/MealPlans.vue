@@ -1,111 +1,236 @@
 <template>
-  <div class="row">
-    <div class="col-md-12">
-      <b-alert
-        v-if="subscriptions && subscriptions[0]"
-        :show="!!$route.query.created || false"
-        variant="success"
-      >
-        <p class="center-text mt-3">
-          Thank you for your order.
-          <span v-if="!!$route.query.pickup"
-            >You can pick up your order on</span
-          >
-          <span v-else>Your meals will be delivered on</span>
-          {{
-            moment(subscriptions[0].next_delivery_date).format(
-              "dddd, MMM Do, Y"
-            ) || ""
-          }}
-        </p>
-      </b-alert>
-
-      <b-alert
-        v-if="subscriptions && subscriptions[0]"
-        :show="!!$route.query.updated || false"
-        variant="success"
-      >
-        <p class="center-text mt-3">
-          You have successfully updated your meal plan.
-        </p>
-      </b-alert>
-
-      <b-alert
-        :show="null !== subscriptions && 0 === subscriptions.length"
-        variant="warning"
-      >
-        <p class="center-text mt-3">You have no meal plans.</p>
-      </b-alert>
-
-      <div class="card">
-        <div class="card-body">
-          <Spinner v-if="isLoading" />
-          <div class="order-list" v-if="null !== subscriptions">
-            <div
-              v-for="subscription in subscriptions"
-              :key="subscription.id"
-              class="mb-4"
+  <div class="main-customer-container box-shadow top-fill">
+    <div class="row">
+      <div class="col-md-12">
+        <b-alert
+          v-if="subscriptions && subscriptions[0]"
+          :show="!!$route.query.created || false"
+          variant="success"
+        >
+          <p class="center-text mt-3">
+            Thank you for your order.
+            <span v-if="!!$route.query.pickup"
+              >You can pick up your order on</span
             >
-              <div v-b-toggle="'collapse' + subscription.id">
-                <b-list-group-item class="order-list-item">
-                  <div class="row">
-                    <div class="col-md-4">
-                      <h4>Meal Plan ID</h4>
-                      <p>{{ subscription.stripe_id }}</p>
-                      <h4>
-                        {{
-                          subscription.pickup ? "Pickup Day" : "Delivery Day"
-                        }}
-                      </h4>
-                      <p
-                        v-if="
-                          subscription.latest_order &&
-                            !subscription.latest_order.fulfilled
-                        "
+            <span v-else>Your meals will be delivered on</span>
+            {{
+              moment(subscriptions[0].next_delivery_date).format(
+                "dddd, MMM Do, Y"
+              ) || ""
+            }}
+          </p>
+        </b-alert>
+
+        <b-alert
+          v-if="subscriptions && subscriptions[0]"
+          :show="!!$route.query.updated || false"
+          variant="success"
+        >
+          <p class="center-text mt-3">
+            You have successfully updated your meal plan.
+          </p>
+        </b-alert>
+
+        <b-alert
+          :show="null !== subscriptions && 0 === subscriptions.length"
+          variant="warning"
+        >
+          <p class="center-text mt-3">You have no subscriptions.</p>
+        </b-alert>
+
+        <Spinner v-if="isLoading" />
+        <div class="order-list" v-if="null !== subscriptions">
+          <div
+            v-for="subscription in subscriptions"
+            :key="subscription.id"
+            class="mb-4"
+          >
+            <div v-b-toggle="'collapse' + subscription.id" class="mb-4">
+              <div class="order-list-item">
+                <div class="row">
+                  <div class="col-md-4">
+                    <h4>Meal Plan ID</h4>
+                    <p>{{ subscription.stripe_id }}</p>
+                    <h4>
+                      {{ subscription.pickup ? "Pickup Day" : "Delivery Day" }}
+                    </h4>
+                    <p
+                      v-if="
+                        subscription.latest_order &&
+                          !subscription.latest_order.fulfilled
+                      "
+                    >
+                      {{
+                        moment(subscription.next_order.delivery_date).format(
+                          "dddd, MMM Do"
+                        )
+                      }}
+                      <span v-if="subscription.transferTime">
+                        - {{ subscription.transferTime }}</span
                       >
-                        {{
-                          moment(subscription.next_order.delivery_date).format(
-                            "dddd, MMM Do"
-                          )
-                        }}
-                        <span v-if="subscription.transferTime">
-                          - {{ subscription.transferTime }}</span
+                    </p>
+                    <p v-else-if="subscription.latest_order">
+                      Delivered On:
+                      {{
+                        moment(
+                          subscription.latest_paid_order.delivery_date
+                        ).format("dddd, MMM Do")
+                      }}
+                    </p>
+                    <p v-if="subscription.pickup_location_id != null">
+                      {{ subscription.pickup_location.name }}<br />
+                      {{ subscription.pickup_location.address }},
+                      {{ subscription.pickup_location.city }},
+                      {{ subscription.pickup_location.state }}
+                      {{ subscription.pickup_location.zip }}
+                    </p>
+                  </div>
+                  <div class="col-md-4">
+                    <h4>Placed On</h4>
+                    <p>
+                      {{
+                        moment
+                          .utc(subscription.created_at)
+                          .local()
+                          .format("dddd, MMM Do, Y")
+                      }}
+                    </p>
+                    <h4>Company</h4>
+                    <p>{{ subscription.store_name }}</p>
+                  </div>
+                  <div class="col-md-4" v-if="subscription.status === 'active'">
+                    <h4>Amount</h4>
+                    <p>
+                      Subtotal:
+                      {{
+                        format.money(
+                          subscription.preFeePreDiscount,
+                          subscription.currency
+                        )
+                      }}
+                    </p>
+                    <p
+                      class="text-success"
+                      v-if="subscription.couponReduction > 0"
+                    >
+                      Coupon {{ subscription.couponCode }}: ({{
+                        format.money(
+                          subscription.couponReduction,
+                          subscription.currency
+                        )
+                      }})
+                    </p>
+                    <p
+                      v-if="subscription.mealPlanDiscount > 0"
+                      class="text-success"
+                    >
+                      Meal Plan Discount: ({{
+                        format.money(
+                          subscription.mealPlanDiscount,
+                          subscription.currency
+                        )
+                      }})
+                    </p>
+                    <p v-if="subscription.deliveryFee > 0">
+                      Delivery Fee:
+                      {{
+                        format.money(
+                          subscription.deliveryFee,
+                          subscription.currency
+                        )
+                      }}
+                    </p>
+                    <p v-if="subscription.processingFee > 0">
+                      Processing Fee:
+                      {{ format.money(subscription.processingFee) }}
+                    </p>
+                    <p v-if="subscription.salesTax > 0">
+                      Sales Tax:
+                      {{
+                        format.money(
+                          subscription.salesTax,
+                          subscription.currency
+                        )
+                      }}
+                    </p>
+                    <p class="strong">
+                      Total:
+                      {{
+                        format.money(subscription.amount, subscription.currency)
+                      }}
+                      per week.
+                    </p>
+                    <div v-if="subscription.latest_paid_order">
+                      <p>
+                        Any changes to this meal plan will be applied to the
+                        following order on
+                        <strong>
+                          {{
+                            moment(subscription.latest_paid_order.delivery_date)
+                              .add(7, "days")
+                              .format("dddd, MMM Do")
+                          }}.</strong
                         >
                       </p>
-                      <p v-else-if="subscription.latest_order">
-                        Delivered On:
-                        {{
-                          moment(
-                            subscription.latest_paid_order.delivery_date
-                          ).format("dddd, MMM Do")
-                        }}
-                      </p>
-                      <p v-if="subscription.pickup_location_id != null">
-                        {{ subscription.pickup_location.name }}<br />
-                        {{ subscription.pickup_location.address }},
-                        {{ subscription.pickup_location.city }},
-                        {{ subscription.pickup_location.state }}
-                        {{ subscription.pickup_location.zip }}
-                      </p>
+                      <b-btn
+                        variant="warning"
+                        @click.stop="() => pauseSubscription(subscription)"
+                        >Pause</b-btn
+                      >
+                      <b-btn
+                        variant="danger"
+                        @click.stop="() => cancelSubscription(subscription)"
+                        >Cancel</b-btn
+                      >
+                      <b-btn
+                        variant="success"
+                        @click.stop="() => editSubscription(subscription)"
+                        >Change Meals</b-btn
+                      >
                     </div>
-                    <div class="col-md-4">
-                      <h4>Placed On</h4>
-                      <p>
-                        {{
-                          moment
-                            .utc(subscription.created_at)
-                            .local()
-                            .format("dddd, MMM Do, Y")
-                        }}
-                      </p>
-                      <h4>Company</h4>
-                      <p>{{ subscription.store_name }}</p>
-                    </div>
-                    <div
-                      class="col-md-4"
-                      v-if="subscription.status === 'active'"
+                    <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
+                  </div>
+                  <div
+                    class="col-md-4"
+                    v-else-if="subscription.status === 'paused'"
+                  >
+                    <b-btn
+                      variant="warning"
+                      @click.stop="() => resumeSubscription(subscription)"
+                      >Resume</b-btn
                     >
-                      <h4>Amount</h4>
+                    <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
+                  </div>
+                  <div class="col-md-4" v-else>
+                    <h4>Cancelled On</h4>
+                    <p>
+                      {{
+                        moment
+                          .utc(subscription.cancelled_at)
+                          .local()
+                          .format("dddd, MMM Do, Y")
+                      }}
+                    </p>
+                    <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
+                  </div>
+                </div>
+
+                <b-collapse :id="'collapse' + subscription.id" class="mt-2">
+                  <b-table
+                    striped
+                    stacked="sm"
+                    :items="getMealTableData(subscription)"
+                    foot-clone
+                  >
+                    <template slot="image" slot-scope="row">
+                      <img :src="row.value" class="modalMeal" />
+                    </template>
+
+                    <template slot="meal" slot-scope="row">
+                      <div v-html="row.value"></div>
+                    </template>
+
+                    <template slot="FOOT_subtotal" slot-scope="row">
                       <p>
                         Subtotal:
                         {{
@@ -148,9 +273,14 @@
                       </p>
                       <p v-if="subscription.processingFee > 0">
                         Processing Fee:
-                        {{ format.money(subscription.processingFee) }}
+                        {{
+                          format.money(
+                            subscription.processingFee,
+                            subscription.currency
+                          )
+                        }}
                       </p>
-                      <p v-if="subscription.salesTax > 0">
+                      <p>
                         Sales Tax:
                         {{
                           format.money(
@@ -167,152 +297,12 @@
                             subscription.currency
                           )
                         }}
-                        per week.
                       </p>
-                      <div v-if="subscription.latest_paid_order">
-                        <p>
-                          Any changes to this meal plan will be applied to the
-                          following order on
-                          <strong>
-                            {{
-                              moment(
-                                subscription.latest_paid_order.delivery_date
-                              )
-                                .add(7, "days")
-                                .format("dddd, MMM Do")
-                            }}.</strong
-                          >
-                        </p>
-                        <b-btn
-                          variant="warning"
-                          @click.stop="() => pauseSubscription(subscription)"
-                          >Pause</b-btn
-                        >
-                        <b-btn
-                          variant="danger"
-                          @click.stop="() => cancelSubscription(subscription)"
-                          >Cancel</b-btn
-                        >
-                        <b-btn
-                          variant="success"
-                          @click.stop="() => editSubscription(subscription)"
-                          >Change Meals</b-btn
-                        >
-                      </div>
-                      <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
-                    </div>
-                    <div
-                      class="col-md-4"
-                      v-else-if="subscription.status === 'paused'"
-                    >
-                      <b-btn
-                        variant="warning"
-                        @click.stop="() => resumeSubscription(subscription)"
-                        >Resume</b-btn
-                      >
-                      <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
-                    </div>
-                    <div class="col-md-4" v-else>
-                      <h4>Cancelled On</h4>
-                      <p>
-                        {{
-                          moment
-                            .utc(subscription.cancelled_at)
-                            .local()
-                            .format("dddd, MMM Do, Y")
-                        }}
-                      </p>
-                      <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
-                    </div>
-                  </div>
-
-                  <b-collapse :id="'collapse' + subscription.id" class="mt-2">
-                    <b-table
-                      striped
-                      stacked="sm"
-                      :items="getMealTableData(subscription)"
-                      foot-clone
-                    >
-                      <template slot="image" slot-scope="row">
-                        <img :src="row.value" class="modalMeal" />
-                      </template>
-
-                      <template slot="meal" slot-scope="row">
-                        <div v-html="row.value"></div>
-                      </template>
-
-                      <template slot="FOOT_subtotal" slot-scope="row">
-                        <p>
-                          Subtotal:
-                          {{
-                            format.money(
-                              subscription.preFeePreDiscount,
-                              subscription.currency
-                            )
-                          }}
-                        </p>
-                        <p
-                          class="text-success"
-                          v-if="subscription.couponReduction > 0"
-                        >
-                          Coupon {{ subscription.couponCode }}: ({{
-                            format.money(
-                              subscription.couponReduction,
-                              subscription.currency
-                            )
-                          }})
-                        </p>
-                        <p
-                          v-if="subscription.mealPlanDiscount > 0"
-                          class="text-success"
-                        >
-                          Meal Plan Discount: ({{
-                            format.money(
-                              subscription.mealPlanDiscount,
-                              subscription.currency
-                            )
-                          }})
-                        </p>
-                        <p v-if="subscription.deliveryFee > 0">
-                          Delivery Fee:
-                          {{
-                            format.money(
-                              subscription.deliveryFee,
-                              subscription.currency
-                            )
-                          }}
-                        </p>
-                        <p v-if="subscription.processingFee > 0">
-                          Processing Fee:
-                          {{
-                            format.money(
-                              subscription.processingFee,
-                              subscription.currency
-                            )
-                          }}
-                        </p>
-                        <p>
-                          Sales Tax:
-                          {{
-                            format.money(
-                              subscription.salesTax,
-                              subscription.currency
-                            )
-                          }}
-                        </p>
-                        <p class="strong">
-                          Total:
-                          {{
-                            format.money(
-                              subscription.amount,
-                              subscription.currency
-                            )
-                          }}
-                        </p>
-                      </template>
-                    </b-table>
-                  </b-collapse>
-                </b-list-group-item>
+                    </template>
+                  </b-table>
+                </b-collapse>
+                <hr />
+                <div class="space-divider-20"></div>
               </div>
             </div>
           </div>

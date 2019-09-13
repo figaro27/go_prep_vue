@@ -36,7 +36,9 @@
             </div>
 
             <b-form-group horizontal>
-              <button type="submit" class="btn btn-primary">Login</button>
+              <button type="submit" class="btn btn-primary d-inline">
+                Login
+              </button>
 
               <!--
 		              <a
@@ -44,7 +46,7 @@
 		                href="#"
 		              >Forgot Your Password?</a>
 		              -->
-              <p @click="switchScreens('register')">
+              <p class="d-inline pl-2" @click="switchScreens('register')">
                 <a href="#">No Account?</a>
               </p>
             </b-form-group>

@@ -7,7 +7,7 @@
       v-observe-visibility="
         (isVisible, entry) => $parent.onCategoryVisible(isVisible, catIndex)
       "
-      class="categories"
+      class="main-customer-container left-right-box-shadow"
     >
       <h2 class="text-center mb-3 dbl-underline">
         {{ group.category }}

@@ -42,20 +42,20 @@
           <b-nav-item v-if="'id' in viewedStore" to="/customer/menu"
             >Menu</b-nav-item
           >
+          <b-nav-item v-if="'id' in viewedStore" to="/customer/bag"
+            >Checkout</b-nav-item
+          >
           <b-nav-item v-if="loggedIn" to="/customer/orders">Orders</b-nav-item>
           <b-nav-item v-if="loggedIn" to="/customer/meal-plans"
-            >Meal Plans</b-nav-item
-          >
-          <b-nav-item v-if="loggedIn" to="/customer/account/my-account"
-            >My Account</b-nav-item
+            >Subscriptions</b-nav-item
           >
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
-          <b-nav-item class="white-text"
-            ><i
-              class="fas fa-filter customer-nav-icon"
-              @click.prevent="showFilterArea()"
-            ></i
+          <b-nav-item
+            class="white-text"
+            @click.prevent="showFilterArea()"
+            v-if="$route.name === 'customer-menu'"
+            ><i class="fas fa-filter customer-nav-icon"></i
           ></b-nav-item>
           <CustomerDropdown v-if="loggedIn" />
           <b-nav-item
@@ -64,7 +64,10 @@
             class="white-text"
             ><i class="fas fa-user customer-nav-icon"></i
           ></b-nav-item>
-          <b-nav-item class="white-text" @click.prevent="showBagArea()"
+          <b-nav-item
+            class="white-text"
+            @click.prevent="showBagArea()"
+            v-if="$route.name === 'customer-menu'"
             ><i class="fas fa-shopping-bag customer-nav-icon"></i
           ></b-nav-item>
         </b-navbar-nav>

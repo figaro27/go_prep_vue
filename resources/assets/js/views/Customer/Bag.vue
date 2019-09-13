@@ -1,46 +1,40 @@
 <template>
-  <div class="bag">
-    <div class="card">
-      <div class="card-body">
-        <spinner v-if="loading" position="absolute"></spinner>
-        <div class="row">
-          <div class="col-sm-12 store-logo-area" v-if="!mobile"></div>
-          <div class="col-md-12 mb-2 bag-actions">
-            <above-bag :manualOrder="manualOrder"></above-bag>
-          </div>
+  <div class="main-customer-container box-shadow top-fill">
+    <div class="bag">
+      <auth-modal :showAuthModal="showAuthModal"></auth-modal>
+      <spinner v-if="loading" position="absolute"></spinner>
+      <div class="row">
+        <div class="col-md-5 mb-2 bag-actions">
+          <above-bag :manualOrder="manualOrder" class="mb-4"></above-bag>
+          <bag-area :pickup="pickup"></bag-area>
+          <bag-actions
+            :manualOrder="manualOrder"
+            :adjustOrder="adjustOrder"
+            :adjustMealPlan="adjustMealPlan"
+            :subscriptionId="subscriptionId"
+          ></bag-actions>
         </div>
-        <div class="row">
-          <div class="col-md-5">
-            <bag-area :pickup="pickup"></bag-area>
-            <bag-actions
-              :manualOrder="manualOrder"
-              :adjustOrder="adjustOrder"
-              :adjustMealPlan="adjustMealPlan"
-              :subscriptionId="subscriptionId"
-            ></bag-actions>
-          </div>
 
-          <div class="col-md-6 offset-md-1">
-            <checkout-area
-              :manualOrder="manualOrder"
-              :mobile="mobile"
-              :pickup="pickup"
-              :subscriptionId="subscriptionId"
-              :cashOrder="cashOrder"
-              :creditCardId="creditCardId"
-              :creditCardList="creditCardList"
-              :salesTax="salesTax"
-              :customer="customer"
-              :preview="preview"
-            ></checkout-area>
-            <store-closed></store-closed>
-          </div>
+        <div class="col-md-6 offset-md-1">
+          <checkout-area
+            :manualOrder="manualOrder"
+            :mobile="mobile"
+            :pickup="pickup"
+            :subscriptionId="subscriptionId"
+            :cashOrder="cashOrder"
+            :creditCardId="creditCardId"
+            :creditCardList="creditCardList"
+            :salesTax="salesTax"
+            :customer="customer"
+            :preview="preview"
+          ></checkout-area>
+          <store-closed></store-closed>
         </div>
       </div>
+      <add-customer-modal
+        :addCustomerModal="addCustomerModal"
+      ></add-customer-modal>
     </div>
-    <add-customer-modal
-      :addCustomerModal="addCustomerModal"
-    ></add-customer-modal>
   </div>
 </template>
 
@@ -59,6 +53,7 @@ import BagArea from "../../components/Customer/BagArea";
 import CheckoutArea from "../../components/Customer/CheckoutArea";
 import AddCustomerModal from "../../components/Customer/AddCustomerModal";
 import BagActions from "../../components/Customer/BagActions";
+import AuthModal from "../../components/Customer/AuthModal";
 
 export default {
   components: {
@@ -69,7 +64,8 @@ export default {
     CheckoutArea,
     AddCustomerModal,
     SalesTax,
-    BagActions
+    BagActions,
+    AuthModal
   },
   props: {
     manualOrder: false,
@@ -81,6 +77,7 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
+      showAuthModal: false,
       transferTime: "",
       cashOrder: false,
       addCustomerModal: false,
@@ -108,6 +105,11 @@ export default {
         this.deliveryDay = val[0].value;
       }
     }
+  },
+  created() {
+    this.$eventBus.$on("showAuthModal", () => {
+      this.showAuthModal = true;
+    });
   },
   computed: {
     ...mapGetters({
