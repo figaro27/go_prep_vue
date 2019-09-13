@@ -5,7 +5,12 @@
       <spinner v-if="loading" position="absolute"></spinner>
       <div class="row">
         <div class="col-md-5 mb-2 bag-actions">
-          <above-bag :manualOrder="manualOrder" class="mb-4"></above-bag>
+          <above-bag
+            :storeView="storeView"
+            :manualOrder="manualOrder"
+            class="mb-4"
+          >
+          </above-bag>
           <bag-area :pickup="pickup"></bag-area>
           <bag-actions
             :manualOrder="manualOrder"
@@ -68,6 +73,7 @@ export default {
     AuthModal
   },
   props: {
+    storeView: false,
     manualOrder: false,
     subscriptionId: null,
     adjustOrder: false,

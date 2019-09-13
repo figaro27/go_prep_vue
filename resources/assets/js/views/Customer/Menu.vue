@@ -53,7 +53,7 @@
       ></meal-package-modal>
 
       <div class="row">
-        <div :class="`col-md-12 main-menu-area`">
+        <div :class="`col-md-12 main-menu-area ${storeCSS}`">
           <Spinner
             v-if="!meals.length && !mealPackages.length"
             position="absolute"
@@ -194,7 +194,8 @@ export default {
       mealDescription: "",
       mealModal: false,
       mealPackageModal: false,
-      nutritionalFacts: {}
+      nutritionalFacts: {},
+      storeCSS: ""
     };
   },
   computed: {
@@ -390,6 +391,10 @@ export default {
     });
   },
   mounted() {
+    if (this.storeView) {
+      this.storeCSS = "store-menu-view";
+      this.showBagClass = "shopping-cart show-right bag-area area-scroll";
+    }
     keyboardJS.bind("left", () => {
       if (this.$refs.carousel) {
         console.log(this.$refs.carousel);

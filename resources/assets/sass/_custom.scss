@@ -289,7 +289,6 @@ body.sidebar-minimized {
 
 .main-menu-area,
 .bag-area {
-  padding-top: 35px;
   // overflow-y: scroll;
   z-index: 10;
 
@@ -668,8 +667,8 @@ body.sidebar-minimized {
 
 .store-logo {
   //width: 140px !important;
-  width: auto;
-  height: 75px !important;
+  // width: auto;
+  // height: 75px !important;
 }
 
 .nf-vitamin-column:first-child {
@@ -1065,6 +1064,7 @@ body.forgotresettoken {
   position: fixed;
   transition: all 0.2s;
   -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
+  padding-top: 35px !important;
 }
 
 .shopping-cart-meals {
@@ -1140,4 +1140,9 @@ body.forgotresettoken {
   max-width: 60vw !important;
   width: 100% !important;
   margin: 0px auto !important;
+}
+
+.store-menu-view {
+  position: relative !important;
+  right: 200px !important;
 }

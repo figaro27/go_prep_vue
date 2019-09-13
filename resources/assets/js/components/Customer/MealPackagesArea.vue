@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div v-if="mealPackages.length" id="Packages" class="categories">
+    <div
+      v-if="mealPackages.length"
+      id="Packages"
+      class="main-customer-container left-right-box-shadow"
+    >
       <h2 class="text-center mb-3 dbl-underline">Meal Plans</h2>
 
       <div class="row">

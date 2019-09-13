@@ -1,19 +1,6 @@
 <template>
   <div>
-    <b-button
-      size="lg"
-      class="brand-color white-text"
-      to="/customer/menu"
-      v-if="!manualOrder"
-    >
-      <span class="d-sm-inline">Change Meals</span>
-    </b-button>
-    <b-button
-      size="lg"
-      class="brand-color white-text"
-      to="/store/manual-order"
-      v-if="manualOrder"
-    >
+    <b-button size="lg" class="brand-color white-text" :to="changeMealsRouter">
       <span class="d-sm-inline">Change Meals</span>
     </b-button>
     <b-button size="lg" class="gray white-text" @click="clearAll">
@@ -25,9 +12,13 @@
 import MenuBag from "../../mixins/menuBag";
 
 export default {
-  props: {
-    manualOrder: false
-  },
-  mixins: [MenuBag]
+  mixins: [MenuBag],
+  computed: {
+    changeMealsRouter() {
+      if (!this.$route.params.storeView) return "/customer/menu";
+      else if (this.$route.params.preview) return "/store/menu/preview";
+      else if (this.$route.params.manualOrder) return "/store/manual-order";
+    }
+  }
 };
 </script>

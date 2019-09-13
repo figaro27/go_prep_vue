@@ -100,6 +100,8 @@
 </template>
 
 <script>
+import states from "../../data/states.js";
+
 export default {
   props: {
     addCustomerModal: false

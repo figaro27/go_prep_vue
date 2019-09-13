@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="$route.name === 'customer-menu'">
+    <div v-if="$route.name === 'customer-menu' || storeView">
       <div class="row">
         <div class="col-md-8">
           <p class="mt-4 ml-2" v-if="!minimumMet && !storeView">
@@ -23,7 +23,6 @@
       >
         <b-btn class="menu-bag-btn">NEXT</b-btn>
       </router-link>
-
       <router-link
         v-if="storeView"
         :to="{

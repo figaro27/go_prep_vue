@@ -270,7 +270,7 @@
         >
       </div>
       <div v-else>
-        <div v-if="manualOrder">
+        <div v-if="$route.params.manualOrder">
           <b-form-group>
             <h4 class="mt-2 mb-3">Choose Customer</h4>
             <b-select
@@ -494,7 +494,7 @@ export default {
       });
     },
     cards() {
-      if (this.manualOrder) {
+      if (this.$route.params.manualOrder) {
         return this.creditCardList;
       }
       if (this.creditCard != null) return [this.creditCard];
@@ -645,7 +645,7 @@ export default {
     },
     grandTotal() {
       let subtotal = this.afterFees;
-      let tax = 1;
+      let tax = this.tax;
 
       if (this.storeSettings.enableSalesTax) {
         tax = 1 + this.salesTax;
@@ -844,7 +844,7 @@ export default {
       }
 
       let endPoint = "";
-      if (this.manualOrder === true) {
+      if (this.$route.params.manualOrder) {
         endPoint = "/api/me/checkout";
       } else {
         endPoint = "/api/bag/checkout";
@@ -882,13 +882,13 @@ export default {
           this.setBagMealPlan(false);
           this.setBagCoupon(null);
 
-          if (this.manualOrder && weeklyDelivery) {
+          if (this.$route.params.manualOrder && weeklyDelivery) {
             this.refreshStoreSubscriptions();
             this.$router.push({
               path: "/store/meal-plans"
             });
             return;
-          } else if (this.manualOrder && !weeklyDelivery) {
+          } else if (this.$route.params.manualOrder && !weeklyDelivery) {
             this.refreshUpcomingOrders();
             this.$router.push({
               path: "/store/orders"
