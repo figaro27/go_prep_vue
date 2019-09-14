@@ -1,7 +1,12 @@
 <template>
   <div>
     <ul class="list-group">
-      <li class="bag-item" v-if="storeSettings.allowMealPlans">
+      <li
+        class="bag-item"
+        v-if="
+          storeSettings.allowMealPlans && $route.params.subscriptionId === null
+        "
+      >
         <div class="row" v-if="!manualOrder">
           <div class="col-md-12 pb-1">
             <h3>
@@ -47,7 +52,7 @@
                   color="success"
                   variant="pill"
                   size="lg"
-                  :checked="deliveryPlan"
+                  :checked="weeklySubscription"
                   class="pt-3"
                   @change="
                     val => {
@@ -100,7 +105,10 @@
           </div>
         </div>
       </li>
-      <li class="checkout-item" v-if="deliveryPlan && applyMealPlanDiscount">
+      <li
+        class="checkout-item"
+        v-if="weeklySubscription && applyMealPlanDiscount"
+      >
         <div class="row">
           <div class="col-6 col-md-4">
             <strong>Subscription Discount:</strong>
@@ -290,46 +298,48 @@
             >Add New Customer</b-btn
           >
         </div>
-        <h4 class="mt-2 mb-3" v-if="!subscriptionId || $route.params.preview">
-          Choose Payment Method
-        </h4>
-        <b-form-checkbox
-          v-if="storeModules.cashOrders && !subscriptionId"
-          v-model="cashOrder"
-          class="pb-2 mediumCheckbox"
-        >
-          Cash
-        </b-form-checkbox>
-        <p
-          v-if="
-            cashOrder && creditCardList.length === 0 && creditCardId === null
-          "
-        >
-          Please add a credit card on file in order to proceed with a cash
-          order. In the event that cash is not paid, your credit card will be
-          charged.
-        </p>
+        <div v-if="!hidePaymentArea">
+          <h4 class="mt-2 mb-3">
+            Choose Payment Method
+          </h4>
+          <b-form-checkbox
+            v-if="storeModules.cashOrders"
+            v-model="cashOrder"
+            class="pb-2 mediumCheckbox"
+          >
+            Cash
+          </b-form-checkbox>
+          <p
+            v-if="
+              cashOrder && creditCardList.length === 0 && creditCardId === null
+            "
+          >
+            Please add a credit card on file in order to proceed with a cash
+            order. In the event that cash is not paid, your credit card will be
+            charged.
+          </p>
 
-        <card-picker
-          :selectable="true"
-          :creditCards="creditCardList"
-          v-model="cards"
-          class="mb-3"
-          ref="cardPicker"
-        ></card-picker>
+          <card-picker
+            :selectable="true"
+            :creditCards="creditCardList"
+            v-model="cards"
+            class="mb-3"
+            ref="cardPicker"
+          ></card-picker>
 
-        <b-form-group
-          v-if="manualOrder && storeModules.deposits"
-          horizontal
-          label="Deposit %"
-        >
-          <b-form-input
-            v-model="deposit"
-            type="text"
-            required
-            placeholder="Deposit %"
-          ></b-form-input>
-        </b-form-group>
+          <b-form-group
+            v-if="manualOrder && storeModules.deposits"
+            horizontal
+            label="Deposit %"
+          >
+            <b-form-input
+              v-model="deposit"
+              type="text"
+              required
+              placeholder="Deposit %"
+            ></b-form-input>
+          </b-form-group>
+        </div>
 
         <b-btn
           v-if="creditCardId != null && minimumMet"
@@ -602,7 +612,7 @@ export default {
       return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
     },
     afterDiscount() {
-      if (this.applyMealPlanDiscount && this.deliveryPlan) {
+      if (this.applyMealPlanDiscount && this.weeklySubscription) {
         return this.afterCoupon - this.mealPlanDiscount;
       } else return this.afterCoupon;
     },
@@ -668,8 +678,12 @@ export default {
       }
       return "Meal";
     },
+    weeklySubscription() {
+      if (this.$route.params.subscriptionId != null) return true;
+      else return this.deliveryPlan;
+    },
     deliveryPlanText() {
-      if (this.deliveryPlan) return "Prepared Weekly";
+      if (this.weeklySubscription) return "Prepared Weekly";
       else return "Prepared Once";
     },
     tax() {
@@ -703,6 +717,11 @@ export default {
           format.money(this.remainingPrice, this.storeSettings.currency) +
           " more to continue."
         );
+    },
+    hidePaymentArea() {
+      let params = this.$route.params;
+      if (params.subscriptionId != null || params.preview != null) return true;
+      else return false;
     }
   },
   methods: {
@@ -854,7 +873,7 @@ export default {
           subtotal: this.subtotal,
           afterDiscount: this.afterDiscount,
           bag: this.bag,
-          plan: this.deliveryPlan,
+          plan: this.weeklySubscription,
           pickup: this.pickup,
           delivery_day: this.deliveryDay,
           card_id: cardId,
@@ -872,7 +891,7 @@ export default {
         })
         .then(async resp => {
           this.emptyBag();
-          let weeklyDelivery = this.deliveryPlan;
+          let weeklyDelivery = this.weeklySubscription;
           this.setBagMealPlan(false);
           this.setBagCoupon(null);
 

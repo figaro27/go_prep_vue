@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <div class="row" v-if="$route.name != 'customer-bag'">
+      <div class="row" v-if="!bagView">
         <div class="col-md-7">
           <p class="mt-4 ml-2" v-if="!minimumMet && !storeView">
             {{ addMore }}
@@ -22,7 +22,7 @@
           name: 'customer-bag',
           params: { subscriptionId: subscriptionId }
         }"
-        v-if="minimumMet && !storeView && $route.name != 'customer-bag'"
+        v-if="minimumMet && !storeView && !bagView"
       >
         <b-btn class="menu-bag-btn">NEXT</b-btn>
       </router-link>
@@ -135,6 +135,14 @@ export default {
           format.money(this.remainingPrice, this.storeSettings.currency) +
           " more to continue."
         );
+    },
+    bagView() {
+      if (
+        this.$route.name === "customer-bag" ||
+        this.$route.name === "store-bag"
+      )
+        return true;
+      else return false;
     }
   }
 };

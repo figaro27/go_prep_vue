@@ -80,17 +80,8 @@
                 @click.stop="() => resumeSubscription(props.row.id)"
                 >Resume</b-btn
               >
-              <router-link
-                :to="{
-                  name: 'store-adjust-meal-plan',
-                  params: { subscription: props.row }
-                }"
-              >
-                <b-btn
-                  class="btn view btn-success btn-sm"
-                  @click="editSubscription(props.row.id)"
-                  >Change Meals</b-btn
-                >
+              <router-link :to="`/store/adjust-meal-plan/${props.row.id}`">
+                <b-btn class="btn view btn-success btn-sm">Change Meals</b-btn>
               </router-link>
             </div>
 
@@ -541,21 +532,6 @@ export default {
         this.showCancelModal = false;
         this.$toastr.s("Subscription Cancelled");
       });
-    },
-    editSubscription(subscription) {
-      this.emptyBag();
-      this.setBagCoupon(null);
-      this.setBagMealPlan(true);
-
-      const items = _.map(subscription.meals, meal => {
-        return {
-          id: meal.id,
-          meal: meal,
-          quantity: meal.quantity,
-          added: moment().unix()
-        };
-      });
-      this.addBagItems(items);
     },
     pauseSubscription(id) {
       try {

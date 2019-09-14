@@ -225,7 +225,7 @@ let routes = [
     name: "store-adjust-order"
   },
   {
-    path: "/store/adjust-meal-plan",
+    path: "/store/adjust-meal-plan/:id",
     component: StoreAdjustMealPlan,
     name: "store-adjust-meal-plan"
   },

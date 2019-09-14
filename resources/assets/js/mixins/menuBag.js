@@ -186,7 +186,7 @@ export default {
       return wat;
     },
     async updateSubscriptionMeals() {
-      if (this.$route.params.mealPlanAdjustment) {
+      if (this.$route.params.adjustMealPlan) {
         axios
           .post("/api/me/subscriptions/updateMeals", {
             bag: this.bag,

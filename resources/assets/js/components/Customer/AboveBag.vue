@@ -15,7 +15,17 @@ export default {
   mixins: [MenuBag],
   computed: {
     changeMealsRouter() {
-      if (!this.$route.params.storeView) return "/customer/menu";
+      if (
+        this.$route.path === "/customer/bag" &&
+        this.$route.params.subscriptionId != null
+      )
+        return "/customer/subscriptions/" + this.$route.params.subscriptionId;
+      else if (
+        this.$route.path === "/store/bag" &&
+        this.$route.params.subscriptionId != null
+      )
+        return "/store/adjust-meal-plan/" + this.$route.params.subscriptionId;
+      else if (!this.$route.params.storeView) return "/customer/menu";
       else if (this.$route.params.preview) return "/store/menu/preview";
       else if (this.$route.params.manualOrder) return "/store/manual-order";
     }
