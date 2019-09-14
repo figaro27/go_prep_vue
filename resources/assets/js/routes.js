@@ -16,7 +16,7 @@ import CustomerMenu from "./views/Customer/Menu.vue";
 import CustomerContact from "./views/Customer/Account/Contact.vue";
 import CustomerMyAccount from "./views/Customer/Account/MyAccount.vue";
 import CustomerSubscriptions from "./views/Customer/Subscriptions.vue";
-import CustomerSubscriptionChange from "./views/Customer/Subscriptions.vue";
+import CustomerSubscriptionChange from "./views/Customer/Subscription.vue";
 import CustomerOrders from "./views/Customer/Orders.vue";
 
 import StoreCustomers from "./views/Store/Customers.vue";
