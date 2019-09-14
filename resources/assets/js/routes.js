@@ -134,7 +134,7 @@ let routes = [
   {
     path: "/customer/subscriptions/:id",
     component: CustomerSubscriptionChange,
-    name: "customer-meal-plan-changes"
+    name: "customer-subscription-changes"
   },
   {
     path: "/customer/orders",
