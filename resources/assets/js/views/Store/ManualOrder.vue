@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- <Spinner v-if="loading" /> -->
-    <customer-menu :manualOrder="true"></customer-menu>
+    <customer-menu :manualOrder="true" :storeView="true"></customer-menu>
   </div>
 </template>
 

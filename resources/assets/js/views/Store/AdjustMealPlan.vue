@@ -1,16 +1,16 @@
 <template>
-  <div>
-    <!-- <Spinner v-if="loading" /> -->
-    <customer-menu
-      :adjustMealPlan="true"
-      :subscription="subscription"
-    ></customer-menu>
-  </div>
+  <customer-menu
+    :subscription-id="$route.params.id"
+    :storeView="true"
+    :adjustMealPlan="true"
+  ></customer-menu>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+import format from "../../lib/format.js";
 import Spinner from "../../components/Spinner";
-import { mapGetters, mapActions, mapMutations } from "vuex";
+import MenuBag from "../../mixins/menuBag";
 import CustomerMenu from "../Customer/Menu";
 
 export default {
@@ -18,29 +18,60 @@ export default {
     Spinner,
     CustomerMenu
   },
+  mixins: [MenuBag],
   data() {
     return {
-      loading: true
+      isLoading: false
     };
   },
   computed: {
     ...mapGetters({
-      isLoading: "isLoading"
+      subscriptions: "subscriptions",
+      store: "store",
+      bag: "bag",
+      getMeal: "viewedStoreMeal"
     }),
-    subscription() {
-      return this.$route.params.subscription;
+    subscriptionId() {
+      return this.$route.params.id;
     }
   },
-  created() {
-    this.refreshViewedStore();
+  mounted() {
+    this.initBag();
   },
-  mounted() {},
   methods: {
-    ...mapActions({
-      refreshViewedStore: "refreshViewedStore"
-    }),
-    setLoadingToFalse() {
-      this.loading = false;
+    ...mapActions(["refreshSubscriptions"]),
+    async initBag() {
+      await this.refreshSubscriptions();
+      const subscription = _.find(this.subscriptions, {
+        id: parseInt(this.subscriptionId)
+      });
+
+      if (!subscription) {
+        return;
+      }
+      console.log(this.subscriptions, subscription);
+
+      this.clearAll();
+
+      _.forEach(subscription.items, item => {
+        const meal = this.getMeal(item.meal_id);
+        if (!meal) {
+          return;
+        }
+
+        let components = _.mapValues(
+          _.groupBy(item.components, "meal_component_id"),
+          choices => {
+            return _.map(choices, "meal_component_option_id");
+          }
+        );
+
+        let addons = _.map(item.addons, "meal_addon_id");
+
+        for (let i = 0; i < item.quantity; i++) {
+          this.addOne(meal, false, item.meal_size_id, components, addons);
+        }
+      });
     }
   }
 };

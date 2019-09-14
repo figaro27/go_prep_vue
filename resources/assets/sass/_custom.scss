@@ -2,6 +2,10 @@
 @import "~nutrition-label-jquery-plugin/dist/css/nutritionLabel-min.css";
 @import "~vue-toastr/src/vue-toastr.scss";
 
+body {
+  overflow-x: hidden;
+}
+
 p,
 td,
 li,
@@ -37,8 +41,11 @@ h6 {
 
 .navbar {
   -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
-  // background-color:#3082CF;
+  position: fixed !important;
+  top: 0 !important;
+  width: 100% !important;
   border-bottom: 0px;
+  z-index: 10000 !important;
 
   .nav-link h6,
   .nav-link div,
@@ -46,9 +53,6 @@ h6 {
     color: #ffffff;
   }
   .navbar-nav:not(:last-child) a {
-  }
-  .nav-item a:hover {
-    background-color: #a8a8a8 !important;
   }
 }
 
@@ -72,6 +76,12 @@ h6 {
   font-size: 14px;
   font-weight: 300;
   line-height: 25px;
+}
+
+.customer-nav {
+  max-width: 60% !important;
+  width: 100% !important;
+  margin: 0px auto !important;
 }
 
 .customer-nav .nav-item .nav-link,
@@ -279,13 +289,10 @@ body.sidebar-minimized {
 
 .main-menu-area,
 .bag-area {
-  position: relative;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overflow-y: scroll;
+  // overflow-y: scroll;
+  z-index: 10;
 
   @include media-breakpoint-up(md) {
-    height: calc(100vh - 210px);
   }
 }
 
@@ -296,8 +303,6 @@ body.sidebar-minimized {
 }
 
 .bag-area {
-  padding-top: 75px;
-
   @include media-breakpoint-down(sm) {
     padding-top: 8px;
     padding-bottom: 8px;
@@ -368,15 +373,6 @@ body.sidebar-minimized {
   text-align: center;
 }
 
-.categories {
-  padding-top: 20px;
-}
-
-.menu,
-.bag {
-  max-width: 1850px;
-}
-
 .bag-actions {
   @include media-breakpoint-down(sm) {
     .btn {
@@ -436,7 +432,7 @@ body.sidebar-minimized {
 }
 
 .store-logo-area {
-  height: 100px !important;
+  height: 40px !important;
   display: flex;
   justify-content: center;
 }
@@ -669,12 +665,6 @@ body.sidebar-minimized {
   font-style: normal !important;
 }
 
-.store-logo {
-  //width: 140px !important;
-  width: auto;
-  height: 100px !important;
-}
-
 .nf-vitamin-column:first-child {
   display: none !important;
 }
@@ -736,6 +726,12 @@ th {
   }
 }
 
+.customer-nav-icon {
+  font-size: 26px !important;
+  margin-left: 15px !important;
+  color: #5f5f5f !important;
+}
+
 .header-fixed {
   .app-header {
     z-index: 10010;
@@ -763,8 +759,7 @@ th {
       left: 0;
       right: 0;
       //background-color: #888888;
-      -webkit-box-shadow: 0px -1px 2px 0px #7cc039;
-      box-shadow: 0px -1px 2px 0px #7cc039;
+
       visibility: hidden;
       -webkit-transform: scaleX(0);
       transform: scaleX(0);
@@ -787,25 +782,13 @@ th {
       font-weight: 900;
     }
 
-    @include media-breakpoint-up(lg) {
-      color: #fff;
-    }
+    // @include media-breakpoint-up(lg) {
+    //   color: #fff;
+    // }
   }
 }
 
 .navbar .nav-item.dropdown {
-  .nav-link {
-    @include media-breakpoint-down(md) {
-      &,
-      div {
-        color: #73818f;
-
-        &:hover {
-          color: #fff;
-        }
-      }
-    }
-  }
 }
 
 .dropdown-menu-right .dropdown-item {
@@ -923,11 +906,11 @@ table {
 
 .main,
 .main .container-fluid {
-  background-color: #efefef !important;
+  background-color: #f8f8f8 !important;
 }
 
 .container-fluid {
-  background-color: #efefef !important;
+  background-color: #f8f8f8 !important;
 }
 
 body.login,
@@ -1022,6 +1005,7 @@ body.forgotresettoken {
   max-height: 75px !important;
   height: 75px !important;
   line-height: 75px !important;
+  z-index: 10;
 }
 
 .nav,
@@ -1057,4 +1041,131 @@ body.forgotresettoken {
 
 .paragraph {
   font-size: 13px !important;
+}
+// .test {
+//   -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
+// }
+
+.meal-search {
+  -moz-box-shadow: 1px 1px 1px 1px #dbdbdb;
+  -webkit-box-shadow: 1px 1px 1px 1px #dbdbdb;
+  box-shadow: 1px 1px 1px 1px #dbdbdb;
+  width: 90% !important;
+  margin: 0px auto;
+}
+
+.shopping-cart {
+  background-color: #fff;
+  height: 100vh;
+  width: 19.4vw;
+  position: fixed;
+  transition: all 0.2s;
+  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
+  padding-top: 35px !important;
+}
+
+.shopping-cart-meals {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 175px !important;
+}
+
+.bag-bottom-area {
+  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15) !important;
+  background-color: #ffffff;
+  height: 140px !important;
+  width: 20.5vw;
+  position: fixed;
+  bottom: 0;
+}
+
+.hidden-right {
+  right: -20.5vw;
+}
+
+.show-right {
+  right: 0vw;
+}
+
+.hidden-left {
+  left: -20.5vw;
+}
+
+.show-left {
+  left: 0vw;
+}
+
+.filters .btn-secondary {
+  margin-top: 4px !important;
+}
+
+.meal-border:hover {
+  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.area-scroll {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.left-right-box-shadow {
+  box-shadow: 0 3px 0px 0px white, 0 -3px 0px 0px white,
+    6px 0 6px -2px rgba(0, 0, 0, 0.15), -6px 0 6px -2px rgba(0, 0, 0, 0.15);
+}
+
+.box-shadow {
+  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.top-fill {
+  margin-top: 36px !important;
+}
+
+.space-divider-20 {
+  height: 20px !important;
+}
+
+.space-divider-40 {
+  height: 40px !important;
+}
+
+.main-customer-container {
+  padding-top: 60px;
+  padding-right: 40px !important;
+  padding-left: 40px !important;
+  background-color: #ffffff !important;
+  max-width: 60vw !important;
+  width: 100% !important;
+  margin: 0px auto !important;
+}
+
+.customer-menu-container {
+  position: relative !important;
+  right: 8px !important;
+}
+
+.store-menu-view {
+  position: relative !important;
+  right: 200px !important;
+}
+
+.bag-counter {
+  font-family: "open sans";
+  font-size: 11px;
+  color: #fff;
+  position: relative;
+  right: 14px;
+}
+
+.bag-counter-adjust {
+  position: relative;
+  right: 18px;
+}
+
+.modal-header .close {
+  display: none !important;
+}
+
+.store-logo {
+  height: 70px !important;
 }
