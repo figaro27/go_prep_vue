@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="d-none d-md-block">
     <div class="filter-header">
       <h3 class="white-text p-2 ml-3 center-text">
         Filters
