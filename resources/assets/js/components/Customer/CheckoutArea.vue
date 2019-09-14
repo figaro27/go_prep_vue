@@ -290,7 +290,7 @@
             >Add New Customer</b-btn
           >
         </div>
-        <h4 class="mt-2 mb-3" v-if="!subscriptionId || $params.preview">
+        <h4 class="mt-2 mb-3" v-if="!subscriptionId || $route.params.preview">
           Choose Payment Method
         </h4>
         <b-form-checkbox

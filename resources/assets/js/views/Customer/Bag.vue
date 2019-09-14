@@ -59,6 +59,7 @@ import CheckoutArea from "../../components/Customer/CheckoutArea";
 import AddCustomerModal from "../../components/Customer/AddCustomerModal";
 import BagActions from "../../components/Customer/BagActions";
 import AuthModal from "../../components/Customer/AuthModal";
+import StoreClosed from "../../components/Customer/StoreClosed";
 
 export default {
   components: {
@@ -70,7 +71,8 @@ export default {
     AddCustomerModal,
     SalesTax,
     BagActions,
-    AuthModal
+    AuthModal,
+    StoreClosed
   },
   props: {
     storeView: false,

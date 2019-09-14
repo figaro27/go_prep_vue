@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div v-if="$route.name === 'customer-menu' || storeView">
-      <div class="row">
+    <div>
+      <div class="row" v-if="$route.name != 'customer-bag'">
         <div class="col-md-7">
           <p class="mt-4 ml-2" v-if="!minimumMet && !storeView">
             {{ addMore }}
@@ -18,8 +18,11 @@
       </div>
 
       <router-link
-        to="/customer/bag"
-        v-if="minimumMet && !storeView && $route.name === 'customer-menu'"
+        :to="{
+          name: 'customer-bag',
+          params: { subscriptionId: subscriptionId }
+        }"
+        v-if="minimumMet && !storeView && $route.name != 'customer-bag'"
       >
         <b-btn class="menu-bag-btn">NEXT</b-btn>
       </router-link>

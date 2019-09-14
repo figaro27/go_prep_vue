@@ -54,7 +54,7 @@
           <b-nav-item
             class="white-text"
             @click.prevent="showFilterArea()"
-            v-if="$route.name === 'customer-menu'"
+            v-if="showBagAndFilters"
             ><i class="fas fa-filter customer-nav-icon"></i
           ></b-nav-item>
           <CustomerDropdown v-if="loggedIn" />
@@ -67,7 +67,7 @@
           <b-nav-item
             class="white-text"
             @click.prevent="showBagArea()"
-            v-if="$route.name === 'customer-menu'"
+            v-if="showBagAndFilters"
             ><i class="fas fa-shopping-bag customer-nav-icon"
               ><span :class="bagCounter">{{ total }}</span></i
             ></b-nav-item
@@ -187,6 +187,14 @@ export default {
     },
     showLogo() {
       return this.viewedStore.settings.showLogo;
+    },
+    showBagAndFilters() {
+      if (
+        this.$route.name === "customer-menu" ||
+        this.$route.name === "customer-subscription-changes"
+      )
+        return true;
+      else return false;
     },
     mobile() {
       if (window.innerWidth < 500) return true;

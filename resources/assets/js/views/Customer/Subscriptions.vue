@@ -182,11 +182,11 @@
                         @click.stop="() => cancelSubscription(subscription)"
                         >Cancel</b-btn
                       >
-                      <b-btn
-                        variant="success"
-                        @click.stop="() => editSubscription(subscription)"
-                        >Change Meals</b-btn
+                      <router-link
+                        :to="`/customer/subscriptions/${subscription.id}`"
                       >
+                        <b-btn variant="success">Change Meals</b-btn>
+                      </router-link>
                     </div>
                     <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
                   </div>
@@ -426,25 +426,6 @@ export default {
       }
 
       this.refreshSubscriptions();
-    },
-    editSubscription(subscription) {
-      this.emptyBag();
-      this.setBagCoupon(null);
-      this.setBagMealPlan(true);
-
-      const items = _.map(subscription.meals, meal => {
-        return {
-          id: meal.id,
-          meal: meal,
-          quantity: meal.quantity,
-          added: moment().unix()
-        };
-      });
-      this.addBagItems(items);
-
-      window.location = `${subscription.store.url}/customer/subscriptions/${
-        subscription.id
-      }`;
     }
   }
 };
