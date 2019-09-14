@@ -1060,7 +1060,7 @@ body.forgotresettoken {
 .shopping-cart {
   background-color: #fff;
   height: 100vh;
-  width: 20.5vw;
+  width: 19.4vw;
   position: fixed;
   transition: all 0.2s;
   -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
@@ -1142,7 +1142,25 @@ body.forgotresettoken {
   margin: 0px auto !important;
 }
 
+.customer-menu-container {
+  position: relative !important;
+  right: 8px !important;
+}
+
 .store-menu-view {
   position: relative !important;
   right: 200px !important;
+}
+
+.bag-counter {
+  font-family: "open sans";
+  font-size: 11px;
+  color: #fff;
+  position: relative;
+  right: 14px;
+}
+
+.bag-counter-adjust {
+  position: relative;
+  right: 18px;
 }

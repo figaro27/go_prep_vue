@@ -644,13 +644,7 @@ export default {
       return subtotal;
     },
     grandTotal() {
-      let subtotal = this.afterFees;
-      let tax = this.tax;
-
-      if (this.storeSettings.enableSalesTax) {
-        tax = 1 + this.salesTax;
-      }
-      return subtotal * tax;
+      return this.afterFees + this.tax;
     },
     hasCoupons() {
       if (this.coupons.length > 0) {

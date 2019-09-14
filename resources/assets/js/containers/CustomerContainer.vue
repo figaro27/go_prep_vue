@@ -35,8 +35,8 @@
 
         <b-navbar-nav class="d-none d-block d-md-none">
           <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag"
-            >Bag</b-nav-item
-          >
+            >Bag
+          </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav>
           <b-nav-item v-if="'id' in viewedStore" to="/customer/menu"
@@ -68,8 +68,10 @@
             class="white-text"
             @click.prevent="showBagArea()"
             v-if="$route.name === 'customer-menu'"
-            ><i class="fas fa-shopping-bag customer-nav-icon"></i
-          ></b-nav-item>
+            ><i class="fas fa-shopping-bag customer-nav-icon"
+              ><span :class="bagCounter">{{ total }}</span></i
+            ></b-nav-item
+          >
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -90,7 +92,7 @@
       .menu-bag-btn, .brand-color, .filters .active { background: {{ bgColor }};
       } .dbl-underline:after { border-bottom: 3px double {{ bgColor }}; }
       .customer-nav-icon:hover, .nav-item a:hover{color:
-      {{ bgColor }} !important}
+      {{ bgColor }} !important} }
     </v-style>
   </div>
 </template>
@@ -158,7 +160,8 @@ export default {
     ...mapGetters(["initialized", "viewedStore", "loggedIn", "isLoading"]),
     ...mapGetters({
       storeLogo: "viewedStoreLogo",
-      store: "viewedStore"
+      store: "viewedStore",
+      total: "bagQuantity"
     }),
     storeSettings() {
       return this.store.settings;
@@ -193,6 +196,10 @@ export default {
       if (this.mobile) {
         return this.storeLogo ? this.storeLogo.url_thumb : "";
       } else return "/images/logo.png";
+    },
+    bagCounter() {
+      if (this.total >= 10) return "bag-counter bag-counter-adjust";
+      else return "bag-counter";
     }
   },
   updated() {

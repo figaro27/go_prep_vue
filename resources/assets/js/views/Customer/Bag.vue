@@ -172,8 +172,10 @@ export default {
   updated() {
     this.creditCardId = this.card;
   },
-  setSalesTax(rate) {
-    this.salesTax = rate;
+  methods: {
+    setSalesTax(rate) {
+      this.salesTax = rate;
+    }
   }
 };
 </script>

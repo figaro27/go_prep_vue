@@ -7,7 +7,7 @@
       v-observe-visibility="
         (isVisible, entry) => $parent.onCategoryVisible(isVisible, catIndex)
       "
-      class="main-customer-container left-right-box-shadow"
+      class="main-customer-container customer-menu-container left-right-box-shadow"
     >
       <h2 class="text-center mb-3 dbl-underline">
         {{ group.category }}
@@ -156,7 +156,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import MenuBag from "../../mixins/menuBag";
 import { mapGetters } from "vuex";
