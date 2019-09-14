@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ul class="list-group">
+    <ul class="list-group" v-if="$parent.orderId === undefined">
       <li
         class="bag-item"
         v-if="
@@ -188,7 +188,11 @@
     </ul>
     <li
       class="checkout-item"
-      v-if="transferTypeCheckDelivery && transferTypeCheckPickup"
+      v-if="
+        transferTypeCheckDelivery &&
+          transferTypeCheckPickup &&
+          $parent.orderId === undefined
+      "
     >
       <b-form-group>
         <b-form-radio-group v-model="pickup" name="pickup">
@@ -202,7 +206,7 @@
       </b-form-group>
     </li>
 
-    <li>
+    <li v-if="$parent.orderId === undefined">
       <div>
         <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
           Delivery Day
@@ -390,7 +394,7 @@
       </div>
     </li>
 
-    <li class="transfer-instruction mt-2">
+    <li class="transfer-instruction mt-2" v-if="$parent.orderId === undefined">
       <p class="strong">{{ transferText }}</p>
       <p v-html="transferInstructions"></p>
     </li>
@@ -818,6 +822,11 @@ export default {
       this.form.state = state.abbreviation;
     },
     async adjust() {
+      if (!this.deliveryDay && this.deliveryDaysOptions) {
+        this.deliveryDay = this.deliveryDaysOptions[0].value;
+      } else if (!this.deliveryDaysOptions) {
+        return;
+      }
       axios
         .post(`/api/me/orders/adjustOrder`, {
           bag: this.bag,

@@ -27,6 +27,11 @@ export default {
         return "/store/adjust-meal-plan/" + this.$route.params.subscriptionId;
       else if (
         this.$route.path === "/store/bag" &&
+        this.$route.params.orderId != null
+      )
+        return "/store/adjust-order/" + this.$route.params.orderId;
+      else if (
+        this.$route.path === "/store/bag" &&
         this.$route.params.adjustOrder
       )
         return "/store/adjust-order/";
