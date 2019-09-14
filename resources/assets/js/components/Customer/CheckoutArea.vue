@@ -418,7 +418,8 @@ export default {
       stripeKey: window.app.stripe_key,
       loading: false,
       checkingOut: false,
-      deposit: 100
+      deposit: 100,
+      creditCardId: null
     };
   },
   props: {
@@ -428,7 +429,6 @@ export default {
     mobile: false,
     pickup: 0,
     salesTax: 0,
-    creditCardId: null,
     creditCardList: null,
     customer: null,
     orderId: null
