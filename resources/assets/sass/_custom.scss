@@ -665,12 +665,6 @@ body.sidebar-minimized {
   font-style: normal !important;
 }
 
-.store-logo {
-  //width: 140px !important;
-  // width: auto;
-  // height: 75px !important;
-}
-
 .nf-vitamin-column:first-child {
   display: none !important;
 }
@@ -1163,4 +1157,12 @@ body.forgotresettoken {
 .bag-counter-adjust {
   position: relative;
   right: 18px;
+}
+
+.modal-header .close {
+  display: none !important;
+}
+
+.store-logo {
+  height: 70px !important;
 }

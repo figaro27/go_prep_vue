@@ -2,12 +2,12 @@
   <div>
     <div v-if="$route.name === 'customer-menu' || storeView">
       <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-7">
           <p class="mt-4 ml-2" v-if="!minimumMet && !storeView">
             {{ addMore }}
           </p>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-5">
           <p class="small pl-2 pt-2">Subtotal</p>
           <h4 class="pl-2">
             {{

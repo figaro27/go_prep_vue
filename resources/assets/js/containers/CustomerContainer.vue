@@ -6,7 +6,7 @@
         <a :href="storeWebsite">
           <img
             v-if="storeLogo"
-            class="store-logo"
+            :class="logoStyle"
             :src="storeLogo.url_thumb"
             alt="Company Logo"
           />
@@ -200,6 +200,10 @@ export default {
     bagCounter() {
       if (this.total >= 10) return "bag-counter bag-counter-adjust";
       else return "bag-counter";
+    },
+    logoStyle() {
+      // if the logo is less than 70px in height then return '' - need package to get height of the image
+      return "store-logo";
     }
   },
   updated() {
