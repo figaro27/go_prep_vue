@@ -289,10 +289,6 @@
         </div>
       </b-modal>
     </div>
-    <v-style>
-      .input-date{ color: {{ dateColor }}
-      }
-    </v-style>
   </div>
 </template>
 

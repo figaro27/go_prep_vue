@@ -160,7 +160,8 @@ export default {
     adjustMealPlan: false,
     order: {},
     subscription: {},
-    subscriptionId: null
+    subscriptionId: null,
+    order: {}
   },
   data() {
     return {

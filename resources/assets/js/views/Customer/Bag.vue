@@ -80,7 +80,8 @@ export default {
     subscriptionId: null,
     adjustOrder: false,
     adjustMealPlan: false,
-    preview: false
+    preview: false,
+    order: {}
   },
   mixins: [MenuBag],
   data() {

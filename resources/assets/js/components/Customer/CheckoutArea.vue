@@ -348,6 +348,13 @@
           >CHECKOUT</b-btn
         >
 
+        <b-btn
+          v-if="$route.params.adjustOrder"
+          @click="adjust"
+          class="menu-bag-btn"
+          >ADJUST ORDER</b-btn
+        >
+
         <div v-if="subscriptionId" class="d-none d-lg-block">
           <b-btn
             class="menu-bag-btn update-meals-btn"
@@ -418,7 +425,8 @@ export default {
     salesTax: 0,
     creditCardId: null,
     creditCardList: null,
-    customer: null
+    customer: null,
+    order: {}
   },
   mixins: [MenuBag],
   computed: {
@@ -720,7 +728,12 @@ export default {
     },
     hidePaymentArea() {
       let params = this.$route.params;
-      if (params.subscriptionId != null || params.preview != null) return true;
+      if (
+        params.subscriptionId != null ||
+        params.preview != null ||
+        params.adjustOrder
+      )
+        return true;
       else return false;
     }
   },
