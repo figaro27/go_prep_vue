@@ -4,7 +4,8 @@
       <li
         class="bag-item"
         v-if="
-          storeSettings.allowMealPlans && $route.params.subscriptionId === null
+          storeSettings.allowMealPlans &&
+            $route.params.subscriptionId === undefined
         "
       >
         <div class="row" v-if="!manualOrder">
@@ -12,7 +13,7 @@
             <h3>
               <img
                 v-if="!mobile"
-                v-b-popover.hover="
+                v-b-popover.hover.bottom="
                   'Choose a weekly subscription instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals as well as pause or cancel the subscription at any time. This will apply to the following week\'s renewal.'
                 "
                 title="Weekly Subscription"

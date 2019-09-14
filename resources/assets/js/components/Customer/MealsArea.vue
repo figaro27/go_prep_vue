@@ -126,7 +126,7 @@
                         :right="i > 0 && (i + 1) % 4 === 0"
                       >
                         <i slot="button-content">+</i>
-                        <b-dropdown-item @click="addMeal(meal)">
+                        <b-dropdown-item @click.stop="addMeal(meal)">
                           {{ meal.default_size_title || "Regular" }}
                           -
                           {{
@@ -139,7 +139,7 @@
                         <b-dropdown-item
                           v-for="size in meal.sizes"
                           :key="size.id"
-                          @click="addMeal(meal, false, size)"
+                          @click.stop="addMeal(meal, false, size)"
                         >
                           {{ size.title }} -
                           {{ format.money(size.price, storeSettings.currency) }}
