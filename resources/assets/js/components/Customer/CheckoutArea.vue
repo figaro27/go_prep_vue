@@ -327,7 +327,7 @@
           <card-picker
             :selectable="true"
             :creditCards="creditCardList"
-            v-model="cards"
+            v-model="card"
             class="mb-3"
             ref="cardPicker"
           ></card-picker>
@@ -347,7 +347,7 @@
         </div>
 
         <b-btn
-          v-if="creditCardId != null && minimumMet"
+          v-if="card != null && minimumMet"
           @click="checkout"
           class="menu-bag-btn"
           >CHECKOUT</b-btn

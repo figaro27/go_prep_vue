@@ -186,12 +186,45 @@ export default {
       return wat;
     },
     async updateSubscriptionMeals() {
+      if (!this.deliveryDay && this.deliveryDaysOptions) {
+        this.deliveryDay = moment(this.deliveryDaysOptions[0].value);
+        this.deliveryDay = this.deliveryDay.day();
+      } else if (!this.deliveryDaysOptions) {
+        return;
+      }
+
+      this.deliveryFee = this.deliveryFeeAmount;
+      if (this.pickup === 0) {
+        this.selectedPickupLocation = null;
+      }
+
+      let deposit = this.deposit;
+      if (deposit.toString().includes("%")) {
+        deposit.replace("%", "");
+        deposit = parseInt(deposit);
+      }
+
       if (this.$route.params.adjustMealPlan) {
         axios
           .post("/api/me/subscriptions/updateMeals", {
+            subscriptionId: this.subscriptionId,
+            subtotal: this.subtotal,
+            afterDiscount: this.afterDiscount,
             bag: this.bag,
-            salesTaxRate: this.salesTax,
-            subscriptionId: this.subscriptionId
+            plan: this.weeklySubscription,
+            pickup: this.pickup,
+            delivery_day: this.deliveryDay,
+            store_id: this.store.id,
+            salesTax: this.tax,
+            coupon_id: this.couponApplied ? this.coupon.id : null,
+            couponReduction: this.couponReduction,
+            couponCode: this.couponApplied ? this.coupon.code : null,
+            deliveryFee: this.deliveryFee,
+            pickupLocation: this.selectedPickupLocation,
+            customer: this.customer,
+            deposit: deposit,
+            cashOrder: this.cashOrder,
+            transferTime: this.transferTime
           })
           .then(resp => {
             this.refreshStoreSubscriptions();
@@ -209,7 +242,26 @@ export default {
         try {
           const { data } = await axios.post(
             `/api/me/subscriptions/${this.subscriptionId}/meals`,
-            { bag: this.bag, salesTaxRate: this.salesTax }
+            {
+              subscriptionId: this.subscriptionId,
+              subtotal: this.subtotal,
+              afterDiscount: this.afterDiscount,
+              bag: this.bag,
+              plan: this.weeklySubscription,
+              pickup: this.pickup,
+              delivery_day: this.deliveryDay,
+              store_id: this.store.id,
+              salesTax: this.tax,
+              coupon_id: this.couponApplied ? this.coupon.id : null,
+              couponReduction: this.couponReduction,
+              couponCode: this.couponApplied ? this.coupon.code : null,
+              deliveryFee: this.deliveryFee,
+              pickupLocation: this.selectedPickupLocation,
+              customer: this.customer,
+              deposit: deposit,
+              cashOrder: this.cashOrder,
+              transferTime: this.transferTime
+            }
           );
           await this.refreshSubscriptions();
           this.emptyBag();
