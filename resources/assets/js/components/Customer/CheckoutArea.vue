@@ -426,7 +426,7 @@ export default {
     creditCardId: null,
     creditCardList: null,
     customer: null,
-    order: {}
+    orderId: null
   },
   mixins: [MenuBag],
   computed: {
@@ -821,7 +821,7 @@ export default {
       axios
         .post(`/api/me/orders/adjustOrder`, {
           bag: this.bag,
-          orderId: this.order.id,
+          orderId: this.$parent.orderId,
           deliveryDate: this.deliveryDay
         })
         .then(resp => {

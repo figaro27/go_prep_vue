@@ -17,6 +17,7 @@
             :adjustOrder="adjustOrder"
             :adjustMealPlan="adjustMealPlan"
             :subscriptionId="subscriptionId"
+            :orderId="orderId"
           ></bag-actions>
         </div>
 
@@ -26,6 +27,7 @@
             :mobile="mobile"
             :pickup="pickup"
             :subscriptionId="subscriptionId"
+            :orderId="orderId"
             :cashOrder="cashOrder"
             :creditCardId="creditCardId"
             :creditCardList="creditCardList"
@@ -81,7 +83,7 @@ export default {
     adjustOrder: false,
     adjustMealPlan: false,
     preview: false,
-    order: {}
+    orderId: null
   },
   mixins: [MenuBag],
   data() {

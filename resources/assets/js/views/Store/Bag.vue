@@ -1,5 +1,5 @@
 <template>
-  <customer-bag :preview="preview"></customer-bag>
+  <customer-bag :preview="preview" :orderId="orderId"></customer-bag>
 </template>
 
 <script>
@@ -21,7 +21,10 @@ export default {
   computed: {
     ...mapGetters({
       isLoading: "isLoading"
-    })
+    }),
+    orderId() {
+      return this.$route.params.orderId;
+    }
   },
   created() {
     this.setBagMealPlan(false);

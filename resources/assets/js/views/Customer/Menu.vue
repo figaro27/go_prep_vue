@@ -74,6 +74,7 @@
             :adjustOrder="adjustOrder"
             :adjustMealPlan="adjustMealPlan"
             :subscriptionId="subscriptionId"
+            :orderId="orderId"
           >
           </bag-area>
           <div class="bag-bottom-area">
@@ -84,6 +85,7 @@
               :adjustMealPlan="adjustMealPlan"
               :subscriptionId="subscriptionId"
               :preview="preview"
+              :orderId="orderId"
             ></bag-actions>
           </div>
         </div>
@@ -161,7 +163,7 @@ export default {
     order: {},
     subscription: {},
     subscriptionId: null,
-    order: {}
+    orderId: null
   },
   data() {
     return {

@@ -3,7 +3,7 @@
     <!-- <Spinner v-if="loading" /> -->
     <customer-menu
       :adjustOrder="true"
-      :order="order"
+      :orderId="orderId"
       :storeView="true"
     ></customer-menu>
   </div>
@@ -34,8 +34,8 @@ export default {
       bag: "bag",
       getMeal: "viewedStoreMeal"
     }),
-    order() {
-      return this.$route.params.order;
+    orderId() {
+      return this.$route.params.id;
     }
   },
   mounted() {
@@ -48,7 +48,7 @@ export default {
     async initBag() {
       await this.refreshUpcomingOrders();
       const order = _.find(this.upcomingOrders, {
-        id: parseInt(this.order.id)
+        id: parseInt(this.orderId)
       });
 
       if (!order) {

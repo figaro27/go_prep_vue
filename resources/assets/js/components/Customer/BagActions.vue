@@ -34,6 +34,7 @@
             storeView: storeView,
             manualOrder: manualOrder,
             subscriptionId: subscriptionId,
+            orderId: orderId,
             adjustOrder: adjustOrder,
             adjustMealPlan: adjustMealPlan,
             preview: preview
@@ -65,7 +66,8 @@ export default {
     manualOrder: false,
     adjustOrder: false,
     adjustMealPlan: false,
-    subscriptionId: 0
+    subscriptionId: 0,
+    orderId: null
   },
   mixins: [MenuBag],
   computed: {
