@@ -1,7 +1,7 @@
 <template>
   <div class="app customer">
     <b-navbar toggleable="lg" class="app-header" fixed>
-      <b-navbar-brand :href="storeWebsite" class="d-none d-sm-block d-md-none">
+      <b-navbar-brand :href="storeWebsite" class="">
         <img
           class="d-md-none d-flex"
           v-if="storeLogo"
