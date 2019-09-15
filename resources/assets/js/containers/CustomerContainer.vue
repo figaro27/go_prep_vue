@@ -18,7 +18,7 @@
         class="customer-nav"
         target="nav_collapse"
       >
-        <a :href="storeWebsite">
+        <a :href="storeWebsite" class="adjust-nav">
           <img
             v-if="storeLogo"
             :class="logoStyle"
@@ -27,7 +27,7 @@
           />
         </a>
 
-        <b-navbar-nav>
+        <b-navbar-nav class="adjust-nav">
           <b-nav-item v-if="'id' in viewedStore" to="/customer/menu"
             >Menu</b-nav-item
           >
@@ -38,17 +38,20 @@
           <b-nav-item v-if="loggedIn" to="/customer/subscriptions"
             >Subscriptions</b-nav-item
           >
-          <b-nav-item v-if="!loggedIn" to="/login" class="white-text"
+          <b-nav-item
+            v-if="!loggedIn"
+            to="/login"
+            class="white-text d-none d-sm-block d-md-none"
             >Log In</b-nav-item
           >
           <b-nav-item
             v-if="!loggedIn"
-            class="px-3 mr-4 white-text"
+            class="px-3 mr-4 white-text d-none d-sm-block d-md-none"
             to="/register"
             >Register</b-nav-item
           >
         </b-navbar-nav>
-        <b-navbar-nav class="ml-auto customer-header-right">
+        <b-navbar-nav class="ml-auto adjust-nav">
           <b-nav-item
             class="white-text d-none d-md-block"
             @click.prevent="showFilterArea()"
