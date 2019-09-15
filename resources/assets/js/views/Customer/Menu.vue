@@ -1,16 +1,6 @@
 <template>
   <div>
     <outside-delivery-area></outside-delivery-area>
-    <floating-action-button
-      class="d-md-none brand-color"
-      to="/customer/bag"
-      v-if="!subscriptionId || !adjustOrder"
-    >
-      <div class="d-flex flex-column h-100">
-        <i class="fa fa-shopping-bag text-white"></i>
-        <i v-if="total" class="text-white mt-1">{{ total }}</i>
-      </div>
-    </floating-action-button>
 
     <auth-modal :showAuthModal="showAuthModal"></auth-modal>
 
@@ -65,6 +55,18 @@
             @onCategoryVisible="onCategoryVisible($event)"
             @showMealModal="showMealModal"
           ></meals-area>
+
+          <floating-action-button
+            class="d-md-none"
+            :style="brandColor"
+            to="/customer/bag"
+            v-if="!subscriptionId || !adjustOrder"
+          >
+            <div class="d-flex flex-column h-100">
+              <i class="fa fa-shopping-bag text-white"></i>
+              <i v-if="total" class="text-white mt-1">{{ total }}</i>
+            </div>
+          </floating-action-button>
 
           <meal-packages-area :mealPackages="mealPackages"></meal-packages-area>
         </div>
@@ -380,6 +382,11 @@ export default {
     showBagScrollbar() {
       if (this.bag.length > 7) return true;
       else return false;
+    },
+    brandColor() {
+      let style = "background-color:";
+      style += this.store.settings.color;
+      return style;
     }
   },
   created() {
