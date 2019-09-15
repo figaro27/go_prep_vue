@@ -43,7 +43,7 @@
             <strong
               ><p class="mr-1">
                 <span v-if="storeSettings.applyMealPlanDiscount">
-                  Subscribe weekly and you'll save
+                  Subscribe & save
                   <span class="text-success standout">{{
                     format.money(mealPlanDiscount, storeSettings.currency)
                   }}</span>
