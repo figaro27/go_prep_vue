@@ -1,18 +1,23 @@
 <template>
   <div class="app customer">
     <b-navbar toggleable="lg" class="app-header" fixed>
-      <div class="mobile-header">
-        <a :href="storeWebsite">
-          <img
-            class="d-md-none"
-            v-if="storeLogo"
-            :src="storeLogo.url_thumb"
-            height="70"
-          />
-        </a>
-      </div>
+      <b-navbar-brand :href="storeWebsite" class="d-none d-sm-block d-md-none">
+        <img
+          class="d-md-none d-flex"
+          v-if="storeLogo"
+          :src="storeLogo.url_thumb"
+          height="70"
+        />
+      </b-navbar-brand>
+
+      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
       <!-- <div class="navbar-brand"></div> -->
-      <b-collapse is-nav id="nav_collapse" class="customer-nav">
+      <b-collapse
+        is-nav
+        id="nav_collapse"
+        class="customer-nav"
+        target="nav_collapse"
+      >
         <a :href="storeWebsite">
           <img
             v-if="storeLogo"
@@ -21,19 +26,7 @@
             alt="Company Logo"
           />
         </a>
-        <b-btn
-          class="mr-2 d-lg-none"
-          variant="light"
-          v-if="'id' in viewedStore"
-          to="/customer/bag"
-          ><i class="fa fa-shopping-bag"></i
-        ></b-btn>
 
-        <b-navbar-nav class="d-none d-block d-md-none">
-          <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag"
-            >Bag
-          </b-nav-item>
-        </b-navbar-nav>
         <b-navbar-nav>
           <b-nav-item v-if="'id' in viewedStore" to="/customer/menu"
             >Menu</b-nav-item
@@ -45,26 +38,35 @@
           <b-nav-item v-if="loggedIn" to="/customer/subscriptions"
             >Subscriptions</b-nav-item
           >
-        </b-navbar-nav>
-        <b-navbar-nav class="ml-auto">
+          <b-nav-item v-if="!loggedIn" to="/login" class="white-text"
+            >Log In</b-nav-item
+          >
           <b-nav-item
-            class="white-text"
+            v-if="!loggedIn"
+            class="px-3 mr-4 white-text"
+            to="/register"
+            >Register</b-nav-item
+          >
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-auto customer-header-right">
+          <b-nav-item
+            class="white-text d-none d-md-block"
             @click.prevent="showFilterArea()"
             v-if="showBagAndFilters"
             ><i class="fas fa-filter customer-nav-icon"></i
           ></b-nav-item>
-          <CustomerDropdown v-if="loggedIn" />
+          <CustomerDropdown v-if="loggedIn" class="d-none d-md-block" />
           <b-nav-item
             v-if="!loggedIn"
             @click.prevent="showAuthModal()"
-            class="white-text"
+            class="white-text d-none d-md-block"
             ><i class="fas fa-user customer-nav-icon"></i
           ></b-nav-item>
           <b-nav-item
             class="white-text"
             @click.prevent="showBagArea()"
             v-if="showBagAndFilters"
-            ><i class="fas fa-shopping-bag customer-nav-icon"
+            ><i class="fas fa-shopping-bag customer-nav-icon d-none d-md-block"
               ><span :class="bagCounter">{{ total }}</span></i
             ></b-nav-item
           >
@@ -207,7 +209,7 @@ export default {
     },
     logoStyle() {
       // if the logo is less than 70px in height then return '' - need package to get height of the image
-      return "store-logo";
+      return "store-logo d-none d-md-block";
     }
   },
   updated() {
@@ -243,6 +245,7 @@ export default {
   },
   created() {},
   methods: {
+    ...mapActions(["logout"]),
     showBagArea() {
       this.$eventBus.$emit("showRightBagArea");
     },
