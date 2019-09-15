@@ -39,14 +39,32 @@
             >Subscriptions</b-nav-item
           >
           <b-nav-item
+            v-if="loggedIn"
+            to="/account/my-account"
+            class="white-text d-sm-block d-md-none"
+            >My Account</b-nav-item
+          >
+          <b-nav-item
+            v-if="loggedIn"
+            to="/account/contact"
+            class="white-text d-sm-block d-md-none"
+            >Contact</b-nav-item
+          >
+          <b-nav-item
+            v-if="loggedIn"
+            @click="logout()"
+            class="white-text d-sm-block d-md-none"
+            >Log Out</b-nav-item
+          >
+          <b-nav-item
             v-if="!loggedIn"
             to="/login"
-            class="white-text d-none d-sm-block d-md-none"
+            class="white-text d-sm-block d-md-none"
             >Log In</b-nav-item
           >
           <b-nav-item
             v-if="!loggedIn"
-            class="px-3 mr-4 white-text d-none d-sm-block d-md-none"
+            class="px-3 mr-4 white-text d-sm-block d-md-none"
             to="/register"
             >Register</b-nav-item
           >
@@ -58,7 +76,7 @@
             v-if="showBagAndFilters"
             ><i class="fas fa-filter customer-nav-icon"></i
           ></b-nav-item>
-          <CustomerDropdown v-if="loggedIn" class="d-none d-md-block" />
+          <!-- <CustomerDropdown v-if="loggedIn" class="d-none d-md-block" /> -->
           <b-nav-item
             v-if="!loggedIn"
             @click.prevent="showAuthModal()"
