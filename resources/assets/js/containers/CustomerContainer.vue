@@ -12,7 +12,12 @@
         </a>
       </div>
       <!-- <div class="navbar-brand"></div> -->
-      <b-collapse is-nav id="nav_collapse" class="customer-nav">
+      <b-collapse
+        is-nav
+        id="nav_collapse"
+        class="customer-nav"
+        target="nav_collapse"
+      >
         <a :href="storeWebsite">
           <img
             v-if="storeLogo"
