@@ -207,73 +207,51 @@
       </b-form-group>
     </li>
 
-    <li v-if="$parent.orderId === undefined">
-      <div>
-        <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
-          Delivery Day
-        </p>
-        <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
-          Pickup Day
-        </p>
-        <b-form-group v-if="deliveryDaysOptions.length > 1" description>
-          <b-select
-            :options="deliveryDaysOptions"
-            v-model="deliveryDay"
-            @input="val => (deliveryDay = val)"
-            class="delivery-select"
-            required
-          >
-            <option slot="top" disabled>-- Select delivery day --</option>
-          </b-select>
-        </b-form-group>
-        <div v-else-if="deliveryDaysOptions.length === 1">
-          <h6 v-if="pickup === 0">
-            Delivery Day: {{ deliveryDaysOptions[0].text }}
-          </h6>
-          <h6 v-if="pickup === 1">
-            Pickup Day: {{ deliveryDaysOptions[0].text }}
-          </h6>
-        </div>
-
-        <div v-if="storeModules.pickupLocations && pickup">
-          <p>Pickup Location</p>
-          <b-select
-            v-model="selectedPickupLocation"
-            :options="pickupLocationOptions"
-            class="delivery-select mb-3"
-            required
-          ></b-select>
-        </div>
-
-        <div class="pt-2 pb-2" v-if="storeModules.transferHours && pickup">
-          <strong>Pickup Time</strong>
-          <b-form-select
-            class="ml-2"
-            v-model="transferTime"
-            :options="transferTimeOptions"
-          ></b-form-select>
-        </div>
-      </div>
-    </li>
-
-    <li
-      class="checkout-item"
-      v-if="minOption === 'meals' && total < minimumMeals && !manualOrder"
-    >
-      <p>Please add {{ remainingMeals }} {{ singOrPlural }} to continue.`</p>
-    </li>
-
-    <li
-      class="checkout-item"
-      v-if="
-        minOption === 'price' && totalBagPricePreFees < minPrice && !manualOrder
-      "
-    >
-      <p>
-        Please add
-        {{ format.money(remainingPrice, storeSettings.currency) }}
-        more to continue.
+    <li class="checkout-item" v-if="$parent.orderId === undefined">
+      <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
+        Delivery Day
       </p>
+      <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
+        Pickup Day
+      </p>
+      <b-form-group v-if="deliveryDaysOptions.length > 1" description>
+        <b-select
+          :options="deliveryDaysOptions"
+          v-model="deliveryDay"
+          @input="val => (deliveryDay = val)"
+          class="delivery-select"
+          required
+        >
+          <option slot="top" disabled>-- Select delivery day --</option>
+        </b-select>
+      </b-form-group>
+      <div v-if="deliveryDaysOptions.length === 1">
+        <h6 v-if="pickup === 0">
+          Delivery Day: {{ deliveryDaysOptions[0].text }}
+        </h6>
+        <h6 v-if="pickup === 1">
+          Pickup Day: {{ deliveryDaysOptions[0].text }}
+        </h6>
+      </div>
+
+      <div v-if="storeModules.pickupLocations && pickup">
+        <p>Pickup Location</p>
+        <b-select
+          v-model="selectedPickupLocation"
+          :options="pickupLocationOptions"
+          class="delivery-select mb-3"
+          required
+        ></b-select>
+      </div>
+
+      <div class="pt-2 pb-2" v-if="storeModules.transferHours && pickup">
+        <strong>Pickup Time</strong>
+        <b-form-select
+          class="ml-2"
+          v-model="transferTime"
+          :options="transferTimeOptions"
+        ></b-form-select>
+      </div>
     </li>
 
     <li v-else-if="loggedIn">
@@ -398,6 +376,24 @@
     <li class="transfer-instruction mt-2" v-if="$parent.orderId === undefined">
       <p class="strong">{{ transferText }}</p>
       <p v-html="transferInstructions"></p>
+    </li>
+
+    <li v-if="minOption === 'meals' && total < minimumMeals && !manualOrder">
+      <p class="strong">
+        Please add {{ remainingMeals }} {{ singOrPlural }} to continue.`
+      </p>
+    </li>
+
+    <li
+      v-if="
+        minOption === 'price' && totalBagPricePreFees < minPrice && !manualOrder
+      "
+    >
+      <p class="strong">
+        Please add
+        {{ format.money(remainingPrice, storeSettings.currency) }}
+        more to continue.
+      </p>
     </li>
   </div>
 </template>
