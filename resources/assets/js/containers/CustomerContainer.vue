@@ -1,6 +1,16 @@
 <template>
   <div class="app customer">
     <b-navbar toggleable="lg" class="app-header" fixed>
+      <div class="mobile-header">
+        <a :href="storeWebsite">
+          <img
+            class="d-md-none"
+            v-if="storeLogo"
+            :src="storeLogo.url_thumb"
+            height="70"
+          />
+        </a>
+      </div>
       <!-- <div class="navbar-brand"></div> -->
       <b-collapse is-nav id="nav_collapse" class="customer-nav">
         <a :href="storeWebsite">
@@ -9,20 +19,6 @@
             :class="logoStyle"
             :src="storeLogo.url_thumb"
             alt="Company Logo"
-          />
-        </a>
-        <a :href="storeWebsite" v-if="storeWebsite != null">
-          <img
-            class="navbar-brand-full"
-            :src="topLogo"
-            height="75"
-            v-if="mobile"
-          />
-          <img
-            class="navbar-brand-minimized"
-            :src="topLogo"
-            height="75"
-            v-if="mobile"
           />
         </a>
         <b-btn
