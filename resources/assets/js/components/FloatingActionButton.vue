@@ -50,7 +50,7 @@ export default {
   vertical-align: middle;
   user-select: none;
 
-  z-index: 4;
+  z-index: 1000000000000000;
 
   border-radius: 50%;
   min-width: 0;
