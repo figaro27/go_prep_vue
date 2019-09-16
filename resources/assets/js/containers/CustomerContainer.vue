@@ -78,6 +78,7 @@
           ></b-nav-item>
           <CustomerDropdown v-if="loggedIn" class="d-none d-md-block" />
           <b-nav-item
+            v-if="!loggedIn"
             @click.prevent="showAuthModal()"
             class="white-text d-none d-md-block"
             ><i class="fas fa-user customer-nav-icon"></i
