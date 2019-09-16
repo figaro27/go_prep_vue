@@ -5,10 +5,6 @@
       :key="total"
     ></meal-components-modal>
 
-    <meal-package-components-modal
-      ref="packageComponentModal"
-      :key="total"
-    ></meal-package-components-modal>
     <div
       v-for="(group, catIndex) in meals"
       :key="group.category"
@@ -173,14 +169,12 @@ import { mapGetters } from "vuex";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import StoreClosed from "../../components/Customer/StoreClosed";
 import MealComponentsModal from "../../components/Modals/MealComponentsModal";
-import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 
 export default {
   components: {
     OutsideDeliveryArea,
     StoreClosed,
-    MealComponentsModal,
-    MealPackageComponentsModal
+    MealComponentsModal
   },
   props: {
     meals: "",
