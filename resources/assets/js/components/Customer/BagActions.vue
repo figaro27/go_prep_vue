@@ -127,7 +127,8 @@ export default {
       if (this.minOption === "meals")
         return (
           "Please add " +
-          this.remainingMeals + " "
+          this.remainingMeals +
+          " " +
           this.singOrPlural +
           " to continue."
         );
