@@ -1,7 +1,5 @@
 <template>
   <div>
-    <outside-delivery-area></outside-delivery-area>
-
     <auth-modal :showAuthModal="showAuthModal"></auth-modal>
 
     <meal-components-modal ref="componentModal"></meal-components-modal>
@@ -13,7 +11,6 @@
     <category-slider></category-slider>
 
     <div class="menu">
-      <store-closed></store-closed>
       <store-description-modal
         :showDescriptionModal="showDescriptionModal"
       ></store-description-modal>

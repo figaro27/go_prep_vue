@@ -11,6 +11,7 @@
               @ok="updateCategories"
               @cancel="updateCategories"
               @hidden="updateCategories"
+              no-fade
             >
               <b-form-group :state="true">
                 <div class="categories">
@@ -231,6 +232,7 @@
         v-if="viewMealModal"
         :key="`view-meal-modal${meal.id}`"
         @ok.prevent="onViewMealModalOk"
+        no-fade
       >
         <b-row>
           <b-col>
@@ -531,6 +533,7 @@
       v-model="deleteMealPackageModal"
       v-if="deleteMealPackageModal"
       :hide-footer="true"
+      no-fade
     >
       <p class="center-text mb-3 mt-3">
         Are you sure you want to delete this meal package?
@@ -551,6 +554,7 @@
       v-model="deleteMealModalNonSubstitute"
       v-if="deleteMealModalNonSubstitute"
       :hide-footer="true"
+      no-fade
     >
       <p class="center-text mb-3 mt-3">
         Are you sure you want to delete this meal?
@@ -568,6 +572,7 @@
       v-model="deleteMealModal"
       v-if="deleteMealModal"
       :hide-footer="true"
+      no-fade
     >
       <center>
         <h5 class="mt-3">
@@ -647,6 +652,7 @@
       v-model="deactivateMealModal"
       v-if="deactivateMealModal"
       :hide-footer="true"
+      no-fade
     >
       <center>
         <h5 class="mt-3">

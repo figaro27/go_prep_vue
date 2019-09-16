@@ -142,7 +142,12 @@
     </div>
 
     <div class="modal-basic modal-wider">
-      <b-modal v-model="viewOrderModal" size="lg" title="Order Information">
+      <b-modal
+        v-model="viewOrderModal"
+        size="lg"
+        title="Order Information"
+        no-fade
+      >
         <div class="row light-background" v-if="order.adjusted">
           <div class="col-md-12">
             <p class="center-text red pt-3">

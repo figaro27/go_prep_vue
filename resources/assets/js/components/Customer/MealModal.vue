@@ -7,6 +7,7 @@
       v-model="$parent.mealModal"
       v-if="$parent.mealModal"
       @hide="$parent.mealModal = false"
+      no-fade
     >
       <div class="row mt-3">
         <div class="col-lg-6 modal-meal-image">

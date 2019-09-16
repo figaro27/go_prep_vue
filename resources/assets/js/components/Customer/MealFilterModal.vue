@@ -7,6 +7,7 @@
         v-if="viewFilterModal"
         @hide="$parent.viewFilterModal = false"
         hide-header
+        no-fade
       >
         <div>
           <h4 class="center-text mb-5 mt-5">Hide Meals That Contain</h4>

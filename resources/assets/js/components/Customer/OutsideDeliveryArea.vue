@@ -1,9 +1,7 @@
 <template>
   <div>
     <div v-if="!willDeliver && loggedIn">
-      <b-alert variant="danger center-text" show
-        >You are outside of the delivery area.</b-alert
-      >
+      <h3 class="center-text mb-4">You are outside of the delivery area.</h3>
     </div>
   </div>
 </template>

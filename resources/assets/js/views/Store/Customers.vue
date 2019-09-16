@@ -3,12 +3,15 @@
     <div class="row">
       <div class="col-md-12">
         <Spinner v-if="isLoading" />
+        <add-customer-modal v-model="addCustomerModal" v-if="addCustomerModal">
+        </add-customer-modal>
         <b-modal
           size="lg"
           title="Add New Customer"
           v-model="addCustomerModal"
           v-if="addCustomerModal"
           hide-footer
+          no-fade
         >
           <b-form @submit.prevent="addCustomer" class="mt-3">
             <b-form-group horizontal label="First Name">
@@ -160,6 +163,7 @@
         title="Customer Details"
         v-model="viewCustomerModal"
         v-if="viewCustomerModal"
+        no-fade
       >
         <div class="row light-background border-bottom mb-3">
           <div class="col-md-4 pt-4">
@@ -397,7 +401,7 @@ export default {
       storeModules: "storeModules"
     }),
     stateNames() {
-      return states.stateNames();
+      return states.selectOptions("US");
     },
     tableData() {
       return Object.values(this.customers);

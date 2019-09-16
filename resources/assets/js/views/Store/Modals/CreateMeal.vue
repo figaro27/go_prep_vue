@@ -6,6 +6,7 @@
       @ok.prevent="e => storeMeal(e)"
       @cancel.prevent="toggleModal()"
       @hidden="toggleModal"
+      no-fade
     >
       <b-row>
         <b-col>

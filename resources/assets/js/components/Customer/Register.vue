@@ -1,6 +1,6 @@
 <template>
   <div class="row auth-box">
-    <b-modal id="tos" size="xl" ref="tos">
+    <b-modal id="tos" size="xl" ref="tos" no-fade>
       <termsOfService></termsOfService>
     </b-modal>
     <b-modal id="toa" size="xl" ref="toa">
@@ -227,12 +227,18 @@
               :state="state(1, 'accepted_tos')"
             >
               I accept the
-              <span
+              <!-- <span
                 class="strong"
                 @click.stop.prevent="$refs.tos.show()"
                 @touch.stop.prevent="$refs.tos.show()"
                 >terms of service</span
+              > -->
+              <a
+                href="https://www.goprep.com/terms-of-service/"
+                target="_blank"
               >
+                terms of service.
+              </a>
             </b-form-checkbox>
           </b-form-group>
 

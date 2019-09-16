@@ -6,6 +6,7 @@
       v-model="addCustomerModal"
       v-if="addCustomerModal"
       hide-footer
+      no-fade
     >
       <b-form @submit.prevent="addCustomer" class="mt-3">
         <b-form-group horizontal label="First Name">
@@ -113,7 +114,7 @@ export default {
   },
   computed: {
     stateNames() {
-      return states.stateNames();
+      return states.selectOptions("US");
     }
   },
   methods: {
@@ -138,6 +139,24 @@ export default {
         .catch(e => {
           this.$toastr.e("Please try again.", "Registration failed");
         });
+    },
+    getStateNames(country = "US") {
+      return states.selectOptions(country);
+    },
+    state(step, key) {
+      if (
+        !_.isEmpty(this.form[step][key]) &&
+        this.$v.form[step][key] &&
+        this.$v.form[step][key].$dirty
+      ) {
+        if (
+          this.$v.form[step][key].$error ||
+          !_.isNull(this.invalidFeedback(step, key))
+        ) {
+          return false;
+        }
+        return true;
+      } else return null;
     }
   }
 };

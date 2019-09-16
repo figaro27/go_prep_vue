@@ -169,7 +169,7 @@
         </div>
       </li>
 
-      <li :class="couponClass" v-if="hasCoupons">
+      <li v-if="hasCoupons">
         <div class="row">
           <div class="col-xs-6 pl-3">
             <b-form-group id="coupon">
@@ -254,13 +254,13 @@
       </div>
     </li>
 
-    <li v-else-if="loggedIn">
+    <li v-if="loggedIn">
       <div v-if="!willDeliver && !manualOrder && pickup != 1">
         <b-alert v-if="!loading" variant="danger center-text" show
           >You are outside of the delivery area.</b-alert
         >
       </div>
-      <div v-else>
+      <div>
         <div v-if="$route.params.manualOrder">
           <b-form-group>
             <h4 class="mt-2 mb-3">Choose Customer</h4>
@@ -415,7 +415,8 @@ export default {
       loading: false,
       checkingOut: false,
       deposit: 100,
-      creditCardId: null
+      creditCardId: null,
+      couponCode: ""
     };
   },
   props: {

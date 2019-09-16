@@ -3,7 +3,7 @@
     <div
       v-if="mealPackages.length"
       id="Packages"
-      class="main-customer-container left-right-box-shadow"
+      class="main-customer-container customer-menu-container left-right-box-shadow"
     >
       <h2 class="text-center mb-3 dbl-underline">Meal Plans</h2>
 

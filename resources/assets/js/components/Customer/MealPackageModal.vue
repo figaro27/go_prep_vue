@@ -9,6 +9,7 @@
       @shown="$forceUpdate()"
       @hide="$parent.mealPackageModal = false"
       :hide-footer="true"
+      no-fade
     >
       <carousel
         ref="carousel"
@@ -52,13 +53,13 @@
                 </div>
                 <b-btn
                   v-if="mealPackage.sizes.length === 0"
-                  @click="addOne(mealPackage, true)"
+                  @click="addMealPackage(mealPackage, true)"
                   class="menu-bag-btn"
                   >+ ADD</b-btn
                 >
                 <b-dropdown v-else toggle-class="menu-bag-btn">
                   <span slot="button-content">+ ADD</span>
-                  <b-dropdown-item @click="addOne(mealPackage, true)">
+                  <b-dropdown-item @click="addMealPackage(mealPackage, true)">
                     {{ mealPackage.default_size_title }} -
                     {{
                       format.money(mealPackage.price, storeSettings.currency)
@@ -67,7 +68,7 @@
                   <b-dropdown-item
                     v-for="size in mealPackage.sizes"
                     :key="size.id"
-                    @click="addOne(mealPackage, true, size)"
+                    @click="addMealPackage(mealPackage, true, size)"
                   >
                     {{ size.title }} -
                     {{ format.money(size.price, storeSettings.currency) }}
@@ -120,7 +121,7 @@
                 class="mt-2 mt-lg-0"
               ></div>
               <b-btn
-                @click="addOne(mealPackage)"
+                @click="addMealPackage(mealPackage)"
                 class="menu-bag-btn width-80 mt-3"
                 >+ ADD PACKAGE</b-btn
               >
@@ -146,7 +147,7 @@
                 </div>
               </div>
               <b-btn
-                @click="addOne(mealPackage)"
+                @click="addMealPackage(mealPackage)"
                 class="menu-bag-btn width-80 mt-3"
                 >+ ADD PACKAGE</b-btn
               >
@@ -192,6 +193,12 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
     })
+  },
+  methods: {
+    addMealPackage(mealPackage, condition = false) {
+      this.addOne(mealPackage, condition);
+      this.$parent.mealPackageModal = false;
+    }
   }
 };
 </script>

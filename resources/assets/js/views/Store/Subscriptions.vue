@@ -8,6 +8,7 @@
             title="Cancel Subscription"
             size="md"
             :hide-footer="true"
+            no-fade
           >
             <p class="center-text mb-3 mt-3">
               Are you sure you want to cancel this subscription?
@@ -98,6 +99,7 @@
         v-model="viewSubscriptionModal"
         size="lg"
         title="Subscription Details"
+        no-fade
       >
         <div class="row mt-4">
           <div class="col-md-4">
