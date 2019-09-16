@@ -570,8 +570,10 @@ export default {
       return this.storeSettings.transferType.split(",");
     },
     transferText() {
-      if (this.pickup === 0) return "Delivery Instructions";
-      else if (this.pickup === 1) return "Pickup Instructions";
+      if (this.pickup === 0 && this.deliveryInstructions != null)
+        return "Delivery Instructions";
+      else if (this.pickup === 1 && this.pickupInstructions != null)
+        return "Pickup Instructions";
     },
     transferTypeCheckDelivery() {
       if (_.includes(this.transferType, "delivery")) return true;
