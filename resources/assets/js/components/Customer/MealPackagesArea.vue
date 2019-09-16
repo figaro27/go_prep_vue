@@ -102,9 +102,17 @@ export default {
     })
   },
   methods: {
-    addMealPackage(mealPackage, condition = false) {
-      this.addOne(mealPackage, condition);
+    addMealPackage(mealPackage, condition = false, size) {
+      this.addOne(mealPackage, condition, size);
       this.$parent.mealPackageModal = false;
+      if (this.$parent.showBagClass.includes("hidden-right")) {
+        this.$parent.showBagClass = "shopping-cart show-right bag-area";
+      }
+      if (this.$parent.showBagScrollbar) {
+        this.$parent.showBagClass += " area-scroll";
+      } else if (this.$parent.showBagScrollbar) {
+        this.$parent.showBagClass -= " area-scroll";
+      }
     }
   }
 };

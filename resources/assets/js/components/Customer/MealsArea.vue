@@ -196,8 +196,8 @@ export default {
     })
   },
   methods: {
-    addMeal(meal) {
-      this.addOne(meal);
+    addMeal(meal, mealPackage, size) {
+      this.addOne(meal, mealPackage, size);
       if (this.$parent.showBagClass.includes("hidden-right")) {
         this.$parent.showBagClass = "shopping-cart show-right bag-area";
       }
