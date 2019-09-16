@@ -169,7 +169,7 @@ class Payments
                 'Subtotal',
                 'Coupon',
                 'Coupon Reduction',
-                'Meal Plan Discount',
+                'Subscription Discount',
                 'Processing Fee',
                 'Delivery Fee',
                 'Sales Tax',

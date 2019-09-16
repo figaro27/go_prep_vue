@@ -30,6 +30,8 @@ class CancelledSubscription extends Mailable
      */
     public function build()
     {
-        return $this->view('email.store.cancelled-subscription')->with($this->data)->subject('Meal Plan Cancelled');
+        return $this->view('email.store.cancelled-subscription')
+            ->with($this->data)
+            ->subject('Subscription Cancelled');
     }
 }

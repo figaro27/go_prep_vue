@@ -64,7 +64,7 @@ class SubscriptionController extends StoreController
         if (!$sub) {
             return response()->json(
                 [
-                    'error' => 'Meal plan not found'
+                    'error' => 'Subscription not found'
                 ],
                 404
             );
@@ -75,7 +75,7 @@ class SubscriptionController extends StoreController
         } catch (\Exception $e) {
             return response()->json(
                 [
-                    'error' => 'Failed to cancel Meal Plan'
+                    'error' => 'Failed to cancel Subscription'
                 ],
                 500
             );
@@ -90,7 +90,7 @@ class SubscriptionController extends StoreController
         if (!$sub) {
             return response()->json(
                 [
-                    'error' => 'Meal plan not found'
+                    'error' => 'Subscription not found'
                 ],
                 404
             );
@@ -101,7 +101,7 @@ class SubscriptionController extends StoreController
         } catch (\Exception $e) {
             return response()->json(
                 [
-                    'error' => 'Failed to pause Meal Plan'
+                    'error' => 'Failed to pause Subscription'
                 ],
                 500
             );
@@ -126,7 +126,7 @@ class SubscriptionController extends StoreController
         if (!$sub) {
             return response()->json(
                 [
-                    'error' => 'Meal plan not found'
+                    'error' => 'Subscription not found'
                 ],
                 404
             );
@@ -137,7 +137,7 @@ class SubscriptionController extends StoreController
         } catch (\Exception $e) {
             return response()->json(
                 [
-                    'error' => 'Failed to resume Meal Plan'
+                    'error' => 'Failed to resume Subscription'
                 ],
                 500
             );
@@ -152,7 +152,7 @@ class SubscriptionController extends StoreController
         if (!$sub) {
             return response()->json(
                 [
-                    'error' => 'Meal plan not found'
+                    'error' => 'Subscription not found'
                 ],
                 404
             );
@@ -167,7 +167,7 @@ class SubscriptionController extends StoreController
         } catch (\Exception $e) {
             return response()->json(
                 [
-                    'error' => 'Meal plan not found at payment gateway'
+                    'error' => 'Subscription not found at payment gateway'
                 ],
                 404
             );

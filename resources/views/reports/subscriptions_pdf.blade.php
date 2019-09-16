@@ -7,19 +7,19 @@
 
 <body class="{{ $body_classes }}">
   <div id="print-area">
-    <h1>Meal Plans</h1>
+    <h1>Subscriptions</h1>
     <h2>{{ date("m/d/Y") }}</h2>
     <div class="unbreakable">
       <table border="1" width="100">
         <thead>
           <tr>
-            <th>Meal Plan #</th>
+            <th>Subscription #</th>
             <th>Name</th>
             <th>Address</th>
             <th>Zip</th>
             <th>Phone</th>
             <th>Total</th>
-            <th>Meal Plan Created</th>
+            <th>Subscription Created</th>
             <th>Delivery Day</th>
           </tr>
         </thead>

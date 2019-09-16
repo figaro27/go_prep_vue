@@ -10,7 +10,7 @@
       id="Packages"
       class="main-customer-container customer-menu-container left-right-box-shadow"
     >
-      <h2 class="text-center mb-3 dbl-underline">Meal Plans</h2>
+      <h2 class="text-center mb-3 dbl-underline">Subscription</h2>
 
       <div class="row">
         <div

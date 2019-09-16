@@ -529,7 +529,7 @@ class Subscription extends Model
         } catch (\Exception $e) {
             return response()->json(
                 [
-                    'error' => 'Meal plan not found at payment gateway'
+                    'error' => 'Subscription not found at payment gateway'
                 ],
                 404
             );

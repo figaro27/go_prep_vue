@@ -34,7 +34,7 @@ class MealPlan extends Mailable
         $storeEmail = $subscription->store->user->email;
         return $this->view('email.customer.meal-plan')
             ->with($this->data)
-            ->subject('New Meal Plan')
+            ->subject('New Subscription')
             ->replyTo($storeEmail);
     }
 }

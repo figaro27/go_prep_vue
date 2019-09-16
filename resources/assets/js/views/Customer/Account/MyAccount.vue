@@ -117,7 +117,7 @@
               @change.native="updateCustomer"
             />
           </b-form-group>
-          <b-form-group label="New Meal Plans" :state="true">
+          <b-form-group label="New Subscriptions" :state="true">
             <c-switch
               color="success"
               variant="pill"
@@ -126,7 +126,7 @@
               @change.native="updateCustomer"
             />
           </b-form-group>
-          <b-form-group label="Renewing Meal Plans" :state="true">
+          <b-form-group label="Renewing Subscriptions" :state="true">
             <c-switch
               color="success"
               variant="pill"
@@ -135,7 +135,7 @@
               @change.native="updateCustomer"
             />
           </b-form-group>
-          <b-form-group label="Meal Plan Paused" :state="true">
+          <b-form-group label="Subscription Paused" :state="true">
             <c-switch
               color="success"
               variant="pill"
@@ -144,7 +144,7 @@
               @change.native="updateCustomer"
             />
           </b-form-group>
-          <b-form-group label="Meal Plan Meal Substitution" :state="true">
+          <b-form-group label="Subscription Meal Substitution" :state="true">
             <c-switch
               color="success"
               variant="pill"

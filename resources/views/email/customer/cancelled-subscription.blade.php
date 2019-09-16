@@ -90,7 +90,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- title -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Meal Plan Cancelled</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Subscription Cancelled</td>
                       </tr>
                       <!-- end title -->
                       <tr>
@@ -122,7 +122,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
 
                       <!-- end address -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Meal Plan #{{ $subscription->stripe_id }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Subscription #{{ $subscription->stripe_id }}</td>
                       </tr>
                     </table>
                   </td>
@@ -145,7 +145,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
           <br>
           <tr>
             <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">
-              This meal plan has been cancelled either by you or by the company.
+              This subscription has been cancelled either by you or by the company.
             </td>
           </tr>
 
@@ -250,7 +250,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         Coupon ({{ $couponCode }})<br>
                         @endif
                         @if ($mealPlanDiscount > 0)
-                        Meal Plan Discount<br>
+                        Subscription Discount<br>
                         @endif
                         @if ($deliveryFee > 0)
                         Delivery Fee<br>

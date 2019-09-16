@@ -12,7 +12,7 @@
         <h4 class="mt-3">Order Details</h4>
             <p>Order #{{$order->order_number}}</p>
             @if ($order->subscription)
-            <p>Meal Plan #{{ $order->subscription->stripe_id }}</p>
+            <p>Subscription #{{ $order->subscription->stripe_id }}</p>
             @endif
             <p>Order Date: {{$order->created_at->format('D, m/d/Y')}}</p>
             @if ($order->pickup === 0)
