@@ -244,6 +244,7 @@ class RegisterController extends Controller
                 'view_delivery_days' => 1,
                 'delivery_days' => [],
                 'delivery_distance_zipcodes' => [],
+                'meal_packages' => 1,
                 'notifications' => array(
                     'new_order' => true,
                     'new_orders' => true,

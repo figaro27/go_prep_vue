@@ -209,7 +209,7 @@
 
     <li
       class="checkout-item unset-height"
-      v-if="$parent.orderId === undefined && deliveryDaysOptions.length > 1"
+      v-if="deliveryDaysOptions.length > 1"
     >
       <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
         Delivery Day
@@ -229,10 +229,7 @@
         </b-select>
       </b-form-group>
     </li>
-    <li
-      class="checkout-item"
-      v-if="$parent.orderId === undefined && deliveryDaysOptions.length === 1"
-    >
+    <li class="checkout-item" v-if="deliveryDaysOptions.length === 1">
       <div>
         <h6 v-if="pickup === 0">
           Delivery Day: {{ deliveryDaysOptions[0].text }}
@@ -244,7 +241,7 @@
     </li>
 
     <li
-      class="checkout-item"
+      class="checkout-item unset-height"
       v-if="
         $parent.orderId === undefined && storeModules.pickupLocations && pickup
       "
@@ -258,8 +255,15 @@
           required
         ></b-select>
       </div>
+    </li>
 
-      <div class="pt-2 pb-2" v-if="storeModules.transferHours && pickup">
+    <li
+      class="checkout-item"
+      v-if="
+        $parent.orderId === undefined && storeModules.transferHours && pickup
+      "
+    >
+      <div>
         <strong>Pickup Time</strong>
         <b-form-select
           class="ml-2"
@@ -356,7 +360,14 @@
           >
         </div>
 
-        <div v-if="!willDeliver && !manualOrder && pickup != 1">
+        <div
+          v-if="
+            !willDeliver &&
+              !manualOrder &&
+              pickup != 1 &&
+              $parent.orderId === undefined
+          "
+        >
           <b-alert v-if="!loading" variant="danger center-text" show
             >You are outside of the delivery area.</b-alert
           >
