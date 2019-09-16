@@ -2,12 +2,6 @@
   <div>
     <auth-modal :showAuthModal="showAuthModal"></auth-modal>
 
-    <meal-components-modal ref="componentModal"></meal-components-modal>
-
-    <meal-package-components-modal
-      ref="packageComponentModal"
-    ></meal-package-components-modal>
-
     <category-slider></category-slider>
 
     <div class="menu">
