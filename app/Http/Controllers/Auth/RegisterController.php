@@ -244,6 +244,7 @@ class RegisterController extends Controller
                 'view_delivery_days' => 1,
                 'delivery_days' => [],
                 'delivery_distance_zipcodes' => [],
+                'meal_packages' => 1,
                 'notifications' => array(
                     'new_order' => true,
                     'new_orders' => true,
@@ -257,6 +258,20 @@ class RegisterController extends Controller
 
             $storeSettings = $store->categories()->create([
                 'category' => 'Entrees'
+            ]);
+
+            $storeModules = $store->modules()->create([
+                'cashOrders' => 0,
+                'packageComponentRestrictions' => 0,
+                'transferHours' => 0,
+                'pickupLocations' => 0,
+                'hideBranding' => 0,
+                'manualOrders' => 0,
+                'manualCustomers' => 0,
+                'deposits' => 0,
+                'lineItems' => 0,
+                'productionGroups' => 0,
+                'specialInstructions' => 0
             ]);
 
             try {

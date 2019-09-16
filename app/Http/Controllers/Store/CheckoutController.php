@@ -63,7 +63,13 @@ class CheckoutController extends StoreController
         }
 
         if ($store->settings->applyProcessingFee) {
-            $processingFee += $store->settings->processingFee;
+            if ($store->settings->processingFeeType === 'flat') {
+                $processingFee += $store->settings->processingFee;
+            } elseif ($store->settings->processingFeeType === 'percent') {
+                $processingFee +=
+                    ($store->settings->processingFee / 100) * $subtotal;
+            }
+
             $total += $processingFee;
         }
 

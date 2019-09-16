@@ -186,13 +186,6 @@ export default {
       return wat;
     },
     async updateSubscriptionMeals() {
-      if (!this.deliveryDay && this.deliveryDaysOptions) {
-        this.deliveryDay = moment(this.deliveryDaysOptions[0].value);
-        this.deliveryDay = this.deliveryDay.day();
-      } else if (!this.deliveryDaysOptions) {
-        return;
-      }
-
       this.deliveryFee = this.deliveryFeeAmount;
       if (this.pickup === 0) {
         this.selectedPickupLocation = null;
@@ -213,7 +206,6 @@ export default {
             bag: this.bag,
             plan: this.weeklySubscription,
             pickup: this.pickup,
-            delivery_day: this.deliveryDay,
             store_id: this.store.id,
             salesTax: this.tax,
             coupon_id: this.couponApplied ? this.coupon.id : null,
@@ -249,7 +241,6 @@ export default {
               bag: this.bag,
               plan: this.weeklySubscription,
               pickup: this.pickup,
-              delivery_day: this.deliveryDay,
               store_id: this.store.id,
               salesTax: this.tax,
               coupon_id: this.couponApplied ? this.coupon.id : null,
