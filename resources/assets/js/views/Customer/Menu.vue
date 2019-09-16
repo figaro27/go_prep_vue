@@ -603,6 +603,7 @@ export default {
       };
     },
     showBag() {
+      if (this.storeView) return;
       if (this.showBagClass.includes("hidden-right")) {
         this.showBagClass = "shopping-cart show-right bag-area";
         if (this.showBagScrollbar) {

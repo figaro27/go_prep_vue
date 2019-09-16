@@ -325,7 +325,7 @@
         </div>
 
         <b-btn
-          v-if="card != null && minimumMet"
+          v-if="card != null && minimumMet && $route.params.adjustOrder != true"
           @click="checkout"
           class="menu-bag-btn"
           >CHECKOUT</b-btn

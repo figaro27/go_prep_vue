@@ -11,6 +11,10 @@
         My Bag
       </h3>
       <p class="white-text d-inline">({{ total }} Meals)</p>
+      <i
+        class="fas fa-trash white-text d-inline bag-icon float-right pt-2 pr-3"
+        @click="clearAll"
+      ></i>
     </div>
     <div class="shopping-cart-meals">
       <ul class="list-group">
