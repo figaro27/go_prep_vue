@@ -402,6 +402,10 @@ export default {
       this.storeCSS = "store-menu-view";
       this.showBagClass = "shopping-cart show-right bag-area area-scroll";
     }
+
+    if (this.bag.length > 0) {
+      this.showBag();
+    }
     keyboardJS.bind("left", () => {
       if (this.$refs.carousel) {
         console.log(this.$refs.carousel);
