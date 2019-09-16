@@ -115,14 +115,14 @@
               >
               <b-dropdown v-else toggle-class="menu-bag-btn">
                 <span slot="button-content">+ ADD</span>
-                <b-dropdown-item @click="addOne(meal)">
+                <b-dropdown-item @click="addMeal(meal)">
                   {{ meal.default_size_title }} -
                   {{ format.money(meal.item_price, storeSettings.currency) }}
                 </b-dropdown-item>
                 <b-dropdown-item
                   v-for="size in meal.sizes"
                   :key="size.id"
-                  @click="addOne(meal, false, size)"
+                  @click="addMeal(meal, false, size)"
                 >
                   {{ size.title }} -
                   {{ format.money(size.price, storeSettings.currency) }}
@@ -158,7 +158,7 @@
               </h5>
             </div>
             <div class="col-lg-4">
-              <b-btn @click="addOne(meal)" class="menu-bag-btn">+ ADD</b-btn>
+              <b-btn @click="addMeal(meal)" class="menu-bag-btn">+ ADD</b-btn>
             </div>
           </div>
           <div class="row mt-5" v-if="!storeSettings.showNutrition">
@@ -170,20 +170,20 @@
             <div class="col-lg-6">
               <b-btn
                 v-if="meal.sizes.length === 0"
-                @click="addOne(meal)"
+                @click="addMeal(meal)"
                 class="menu-bag-btn"
                 >+ ADD</b-btn
               >
               <b-dropdown v-else toggle-class="menu-bag-btn">
                 <span slot="button-content">+ ADD</span>
-                <b-dropdown-item @click="addOne(meal)">
+                <b-dropdown-item @click="addMeal(meal)">
                   {{ meal.default_size_title }} -
                   {{ format.money(meal.item_price, storeSettings.currency) }}
                 </b-dropdown-item>
                 <b-dropdown-item
                   v-for="size in meal.sizes"
                   :key="size.id"
-                  @click="addOne(meal, false, size)"
+                  @click="addMeal(meal, false, size)"
                 >
                   {{ size.title }} -
                   {{ format.money(size.price, storeSettings.currency) }}
