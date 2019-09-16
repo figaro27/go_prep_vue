@@ -37,21 +37,21 @@
             ></b-form-input>
             <b-btn
               v-if="mealPkg.sizes.length === 0"
-              @click="addOne(mealPkg, true)"
+              @click="addMealPackage(mealPkg, true)"
               class="plus-minus menu-bag-btn"
             >
               <i>+</i>
             </b-btn>
             <b-dropdown v-else toggle-class="menu-bag-btn">
               <span slot="button-content">+</span>
-              <b-dropdown-item @click="addOne(mealPkg, true)">
+              <b-dropdown-item @click="addMealPackage(mealPkg, true)">
                 {{ mealPkg.default_size_title }} -
                 {{ format.money(mealPkg.price, storeSettings.currency) }}
               </b-dropdown-item>
               <b-dropdown-item
                 v-for="size in mealPkg.sizes"
                 :key="size.id"
-                @click="addOne(mealPkg, true, size)"
+                @click="addMealPackage(mealPkg, true, size)"
               >
                 {{ size.title }} -
                 {{ format.money(size.price, storeSettings.currency) }}
@@ -90,6 +90,12 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
     })
+  },
+  methods: {
+    addMealPackage(mealPackage, condition = false) {
+      this.addOne(mealPackage, condition);
+      this.$parent.mealPackageModal = false;
+    }
   }
 };
 </script>
