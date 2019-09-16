@@ -271,9 +271,17 @@ export default {
         });
       });
     },
-    addMeal(meal) {
-      this.addOne(meal);
+    addMeal(meal, mealPackage, size) {
+      this.addOne(meal, mealPackage, size);
       this.$parent.mealModal = false;
+      if (this.$parent.showBagClass.includes("hidden-right")) {
+        this.$parent.showBagClass = "shopping-cart show-right bag-area";
+      }
+      if (this.$parent.showBagScrollbar) {
+        this.$parent.showBagClass += " area-scroll";
+      } else if (this.$parent.showBagScrollbar) {
+        this.$parent.showBagClass -= " area-scroll";
+      }
     }
   }
 };
