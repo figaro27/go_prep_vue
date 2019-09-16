@@ -209,7 +209,9 @@
 
     <li
       class="checkout-item unset-height"
-      v-if="deliveryDaysOptions.length > 1"
+      v-if="
+        deliveryDaysOptions.length > 1 && $route.params.subscriptionId === null
+      "
     >
       <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
         Delivery Day
@@ -229,7 +231,13 @@
         </b-select>
       </b-form-group>
     </li>
-    <li class="checkout-item" v-if="deliveryDaysOptions.length === 1">
+    <li
+      class="checkout-item"
+      v-if="
+        deliveryDaysOptions.length === 1 &&
+          $route.params.subscriptionId === null
+      "
+    >
       <div>
         <h6 v-if="pickup === 0">
           Delivery Day: {{ deliveryDaysOptions[0].text }}
@@ -243,7 +251,10 @@
     <li
       class="checkout-item unset-height"
       v-if="
-        $parent.orderId === undefined && storeModules.pickupLocations && pickup
+        $parent.orderId === undefined &&
+          storeModules.pickupLocations &&
+          pickup &&
+          $route.params.subscriptionId === null
       "
     >
       <div>
@@ -260,7 +271,10 @@
     <li
       class="checkout-item"
       v-if="
-        $parent.orderId === undefined && storeModules.transferHours && pickup
+        $parent.orderId === undefined &&
+          storeModules.transferHours &&
+          pickup &&
+          $route.params.subscriptionId === null
       "
     >
       <div>

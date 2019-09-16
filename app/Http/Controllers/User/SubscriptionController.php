@@ -187,7 +187,7 @@ class SubscriptionController extends UserController
         $bag = new Bag($request->get('bag'), $store);
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
-        $deliveryDay = $request->get('delivery_day');
+        $deliveryDay = $sub->delivery_day;
         $couponId = $request->get('coupon_id');
         $couponReduction = $request->get('couponReduction');
         $couponCode = $request->get('couponCode');
@@ -218,7 +218,13 @@ class SubscriptionController extends UserController
         }
 
         if ($store->settings->applyProcessingFee) {
-            $processingFee += $store->settings->processingFee;
+            if ($store->settings->processingFeeType === 'flat') {
+                $processingFee += $store->settings->processingFee;
+            } elseif ($store->settings->processingFeeType === 'percent') {
+                $processingFee +=
+                    ($store->settings->processingFee / 100) * $subtotal;
+            }
+
             $total += $processingFee;
         }
 
