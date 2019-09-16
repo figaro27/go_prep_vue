@@ -496,10 +496,16 @@ export default {
       }
     },
     deliveryInstructions() {
-      return this.storeSettings.deliveryInstructions.replace(/\n/g, "<br>");
+      if (this.storeSettings.pickupInstruction != null) {
+        return this.storeSettings.deliveryInstructions.replace(/\n/g, "<br>");
+      } else return;
+      this.storeSettings.deliveryInstructions;
     },
     pickupInstructions() {
-      return this.storeSettings.pickupInstructions.replace(/\n/g, "<br>");
+      if (this.storeSettings.pickupInstruction != null) {
+        return this.storeSettings.pickupInstructions.replace(/\n/g, "<br>");
+      } else return;
+      this.storeSettings.pickupInstructions;
     },
     transferInstructions() {
       if (this.pickup === 0) return this.deliveryInstructions;
