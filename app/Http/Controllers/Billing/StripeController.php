@@ -23,9 +23,9 @@ class StripeController extends Controller
             $subId = $obj->get('subscription', null);
             $amountPaid = $obj->get('amount_paid', null);
 
-            // Meal plan paused
+            // Subscription paused
             if (!$amountPaid) {
-                return 'Amount paid = 0. Meal plan paused. Skipping renewal';
+                return 'Amount paid = 0. Subscription paused. Skipping renewal';
             }
 
             $subscription = null;
@@ -45,9 +45,9 @@ class StripeController extends Controller
 
                 // Process renewal
                 $subscription->renew($obj, $event);
-                return 'Meal plan renewed';
+                return 'Subscription renewed';
             } else {
-                return 'Meal plan not found';
+                return 'Subscription not found';
             }
         } elseif ($type === 'invoice.payment_failed') {
             $subId = $obj->get('subscription', null);
@@ -62,14 +62,14 @@ class StripeController extends Controller
             }
 
             if (!$subscription) {
-                return 'Meal plan not found';
+                return 'Subscription not found';
             }
 
             $subscription->paymentFailed($obj, $event);
 
             // Set status to 'paused'
             //$subscription->pause(false);
-            //return 'Meal plan paused';
+            //return 'Subscription paused';
         } elseif ($type === 'customer.subscription.deleted') {
             $subId = $obj->get('subscription', null);
             $subscription = null;
@@ -83,7 +83,7 @@ class StripeController extends Controller
             }
 
             if (!$subscription) {
-                return 'Meal plan not found';
+                return 'Subscription not found';
             }
 
             $subscription->cancel(false);

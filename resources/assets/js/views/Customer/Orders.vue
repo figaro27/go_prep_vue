@@ -81,7 +81,7 @@
                       }})
                     </p>
                     <p v-if="order.mealPlanDiscount > 0" class="text-success">
-                      Meal Plan Discount: ({{
+                      Subscription Discount: ({{
                         format.money(order.mealPlanDiscount, order.currency)
                       }})
                     </p>
@@ -132,7 +132,7 @@
                         }})
                       </p>
                       <p v-if="order.mealPlanDiscount > 0" class="text-success">
-                        Meal Plan Discount: ({{
+                        Subscription Discount: ({{
                           format.money(order.mealPlanDiscount, order.currency)
                         }})
                       </p>

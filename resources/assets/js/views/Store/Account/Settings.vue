@@ -46,18 +46,18 @@
                   hide-footer
                 >
                   <h6 class="center-text mt-3">
-                    You potentially have active meal plans that are charged and
-                    turned into orders at this cutoff period.
+                    You potentially have active subscriptions that are charged
+                    and turned into orders at this cutoff period.
                   </h6>
                   <p class="center-text mt-3">
-                    If you change your cutoff time, those active meal plans
+                    If you change your cutoff time, those active subscriptions
                     won't be adjusted. They will still turn into orders at the
                     time of your old cutoff.
                   </p>
                   <p class="center-text mt-3">
                     If this is an issue, please either keep this cutoff period,
-                    or you can individually cancel meal plans on the Meal Plans
-                    page.
+                    or you can individually cancel subscriptions on the
+                    Subscriptions page.
                   </p>
                   <b-btn
                     class="center"
@@ -73,7 +73,7 @@
                   hide-footer
                 >
                   <h6 class="center-text mt-3">
-                    There are active meal plans associated with this delivery
+                    There are active subscriptions associated with this delivery
                     day. Please choose one of the three options below to
                     continue.
                   </h6>
@@ -81,7 +81,7 @@
                     <div class="col-sm-4">
                       <p class="center-text">
                         Cancel my action and keep this delivery day active for
-                        future meal plans & orders.
+                        future subscriptions & orders.
                       </p>
                     </div>
                     <div class="col-sm-4">
@@ -93,7 +93,7 @@
                     <div class="col-sm-4">
                       <p class="center-text">
                         Remove this delivery day for future orders, and cancel
-                        all my meal plans attached to this day.
+                        all my subscriptions attached to this day.
                       </p>
                     </div>
                   </div>
@@ -289,12 +289,12 @@
                 </b-form-group>
                 <b-form-group :state="true">
                   <p>
-                    <span class="mr-1">Weekly Meal Plan Discount</span>
+                    <span class="mr-1">Weekly Subscription Discount</span>
                     <img
                       v-b-popover.hover="
-                        'Give your customers an incentive to create a weekly meal plan with you by offering a discount percentage. Please keep in mind the customer can still cancel at any time after their first order.'
+                        'Give your customers an incentive to create a weekly subscription with you by offering a discount percentage. Please keep in mind the customer can still cancel at any time after their first order.'
                       "
-                      title="Weekly Meal Plan Discount"
+                      title="Weekly Subscription Discount"
                       src="/images/store/popover.png"
                       class="popover-size"
                     />
@@ -309,7 +309,7 @@
                     v-if="storeSettings.applyMealPlanDiscount"
                     id="meal-plan-discount"
                     v-model="storeSettings.mealPlanDiscount"
-                    placeholder="Weekly Meal Plan Discount %"
+                    placeholder="Weekly Subscription Discount %"
                     required
                   ></b-form-input>
                 </b-form-group>
@@ -582,12 +582,12 @@
               </b-form>
 
               <p>
-                <span class="mr-1">Allow Weekly Meal Plans</span>
+                <span class="mr-1">Allow Weekly Subscriptions</span>
                 <img
                   v-b-popover.hover="
-                    'Shows a section on your bag/checkout page that lets the customer opt in for a weekly meal plan for an optional discount. The customer will then be charged every week. They can pause, cancel, or change meals in their meal plans.'
+                    'Shows a section on your bag/checkout page that lets the customer opt in for a weekly subscription for an optional discount. The customer will then be charged every week. They can pause, cancel, or change meals in their subscriptions.'
                   "
-                  title="Allow Weekly Meal Plans"
+                  title="Allow Weekly Subscriptions"
                   src="/images/store/popover.png"
                   class="popover-size"
                 />
@@ -794,7 +794,7 @@
                   />
                 </b-form-group>
 
-                <b-form-group label="New Meal Plans" :state="true">
+                <b-form-group label="New Subscriptions" :state="true">
                   <c-switch
                     color="success"
                     variant="pill"
@@ -804,7 +804,7 @@
                   />
                 </b-form-group>
 
-                <b-form-group label="Cancelled Meal Plans" :state="true">
+                <b-form-group label="Cancelled Subscriptions" :state="true">
                   <c-switch
                     color="success"
                     variant="pill"
@@ -970,10 +970,10 @@
 
       <b-modal v-model="showMealPlansModal" title="Warning">
         <p>
-          You currently have at least one active meal plan with your customers.
-          If you temporarily close your store, all of your customer's meal plans
-          will be automatically paused and will not resume when you re-open.
-          These customers will be notified via email.
+          You currently have at least one active subscription with your
+          customers. If you temporarily close your store, all of your customer's
+          subscriptions will be automatically paused and will not resume when
+          you re-open. These customers will be notified via email.
         </p>
         <p class="center-text">Continue anyway?</p>
         <b-btn variant="danger" class="center" @click="pauseMealPlans"
@@ -1387,7 +1387,7 @@ export default {
 
       const deselected = diff[0];
 
-      // Deselected day has active meal plans
+      // Deselected day has active subscriptions
       if (_.includes(this.storeSettings.subscribed_delivery_days, deselected)) {
         // Add deselected day back for now
         this.$nextTick(() => {

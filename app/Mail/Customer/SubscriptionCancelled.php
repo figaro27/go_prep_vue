@@ -35,7 +35,7 @@ class SubscriptionCancelled extends Mailable
 
         return $this->view('email.customer.cancelled-subscription')
             ->with($this->data)
-            ->subject('Your Meal Plan Was Cancelled')
+            ->subject('Your Subscription Was Cancelled')
             ->replyTo($storeEmail);
     }
 }

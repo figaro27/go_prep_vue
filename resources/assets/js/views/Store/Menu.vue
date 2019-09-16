@@ -540,7 +540,7 @@
       </p>
       <p class="center-text mb-3 mt-3">
         Note: This does not delete the meals inside the meal package. You may
-        have active meal plans with those meals that will be unaffected.
+        have active subscriptions with those meals that will be unaffected.
       </p>
       <b-btn
         variant="danger"
@@ -576,10 +576,10 @@
     >
       <center>
         <h5 class="mt-3">
-          This meal is tied to one or more meal plans.
+          This meal is tied to one or more subscriptions.
           <img
             v-b-popover.hover="
-              'You currently have one or more meal plans with your customers that contain this meal. Please select a substitute and your customers will be informed via email. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of allergies, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'
+              'You currently have one or more subscriptions with your customers that contain this meal. Please select a substitute and your customers will be informed via email. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of allergies, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'
             "
             title="Replacement Meal"
             src="/images/store/popover.png"
@@ -656,10 +656,10 @@
     >
       <center>
         <h5 class="mt-3">
-          This meal is tied to one or more meal plans.
+          This meal is tied to one or more subscriptions.
           <img
             v-b-popover.hover="
-              'You currently have one or more meal plans with your customers that contain this meal. Please select a substitute and your customers will be informed via email. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of allergies, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'
+              'You currently have one or more subscriptions with your customers that contain this meal. Please select a substitute and your customers will be informed via email. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of allergies, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'
             "
             title="Replacement Meal"
             src="/images/store/popover.png"
@@ -895,7 +895,7 @@ export default {
           tags: "Tags",
           contains: "Contains",
           price: "Price",
-          subscription_count: "Meal Plans",
+          subscription_count: "Subscriptions",
           lifetime_orders: "Lifetime Orders",
           created_at: "Added",
           actions: "Actions"

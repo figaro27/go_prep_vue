@@ -38,7 +38,7 @@ class StoreSetting extends Model
     public $appends = [
         'next_delivery_dates',
         'next_orderable_delivery_dates',
-        'subscribed_delivery_days', // Delivery days with active meal plans
+        'subscribed_delivery_days', // Delivery days with active subscriptionss
         'stripe'
     ];
 

@@ -40,7 +40,7 @@
             <th>Coupon</th>
             @endif
             <th>Coupon Reduction</th>
-            <th>Meal Plan Discount</th>
+            <th>Subscription Discount</th>
             <th>Delivery Fee</th>
             <th>Processing Fee</th>
             <th>Sales Tax</th>

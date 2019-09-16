@@ -26,7 +26,7 @@
         variant="success"
       >
         <p class="center-text mt-3">
-          You have successfully updated your meal plan.
+          You have successfully updated your subscription.
         </p>
       </b-alert>
 
@@ -34,7 +34,7 @@
         :show="null !== subscriptions && 0 === subscriptions.length"
         variant="warning"
       >
-        <p class="center-text mt-3">You have no meal plans.</p>
+        <p class="center-text mt-3">You have no subscriptions.</p>
       </b-alert>
 
       <div class="card">
@@ -50,7 +50,7 @@
                 <b-list-group-item class="order-list-item">
                   <div class="row">
                     <div class="col-md-4">
-                      <h4>Meal Plan ID</h4>
+                      <h4>Subscription ID</h4>
                       <p>{{ subscription.stripe_id }}</p>
                       <h4>
                         {{
@@ -130,7 +130,7 @@
                         v-if="subscription.mealPlanDiscount > 0"
                         class="text-success"
                       >
-                        Meal Plan Discount: ({{
+                        Subscription Discount: ({{
                           format.money(
                             subscription.mealPlanDiscount,
                             subscription.currency
@@ -180,8 +180,8 @@
                               ).format("dddd, MMM Do")
                             }}.</strong
                           > -->
-                          Any changes to this meal plan will be applied to the
-                          following order on
+                          Any changes to this subscription will be applied to
+                          the following order on
                           <strong>
                             {{
                               moment(
@@ -306,7 +306,7 @@
                           v-if="subscription.mealPlanDiscount > 0"
                           class="text-success"
                         >
-                          Meal Plan Discount: ({{
+                          Subscription Discount: ({{
                             format.money(
                               subscription.mealPlanDiscount,
                               subscription.currency
@@ -440,11 +440,11 @@ export default {
         const resp = await axios.post(
           `/api/me/subscriptions/${subscription.id}/pause`
         );
-        this.$toastr.s("Meal Plan paused!");
+        this.$toastr.s("Subscription paused!");
       } catch (e) {
         this.$toastr.e(
           "Please get in touch with our support team.",
-          "Failed to pause Meal Plan"
+          "Failed to pause Subscription"
         );
       }
 
@@ -455,7 +455,7 @@ export default {
         const resp = await axios.post(
           `/api/me/subscriptions/${subscription.id}/resume`
         );
-        this.$toastr.s("Meal Plan resumed!");
+        this.$toastr.s("Subscription resumed!");
       } catch (e) {
         this.$toastr.e(e.response.data.error);
       }
@@ -467,11 +467,11 @@ export default {
         const resp = await axios.delete(
           `/api/me/subscriptions/${subscription.id}`
         );
-        this.$toastr.s("Meal Plan cancelled!");
+        this.$toastr.s("Subscription cancelled!");
       } catch (e) {
         this.$toastr.e(
           "Please get in touch with our support team.",
-          "Failed to cancel Meal Plan"
+          "Failed to cancel Subscription"
         );
       }
 

@@ -20,7 +20,9 @@ class Subscriptions
 
     public function exportData($type = null)
     {
-        $subscriptions = $this->store->subscriptions()->with(['user', 'orders', 'orders.meals'])
+        $subscriptions = $this->store
+            ->subscriptions()
+            ->with(['user', 'orders', 'orders.meals'])
             ->get()
             ->map(function ($sub) {
                 return [
@@ -29,14 +31,23 @@ class Subscriptions
                     $sub->user->details->address,
                     str_pad($sub->user->details->zip, 5, 0, STR_PAD_LEFT),
                     $sub->user->details->phone,
-                    '$'.$sub->amount,
+                    '$' . $sub->amount,
                     $sub->created_at->format('m/d/Y'),
-                    date('l', mktime(0, 0, 0, 0, $sub->delivery_day)),
+                    date('l', mktime(0, 0, 0, 0, $sub->delivery_day))
                 ];
             });
 
-        if($type !== 'pdf'){
-            $subscriptions->prepend(['Meal Plan #', 'Name', 'Address', 'Zip', 'Phone', 'Total Price', 'Meal Plan Created', 'Delivery Day' ]);
+        if ($type !== 'pdf') {
+            $subscriptions->prepend([
+                'Subscription #',
+                'Name',
+                'Address',
+                'Zip',
+                'Phone',
+                'Total Price',
+                'Subscription Created',
+                'Delivery Day'
+            ]);
         }
         return $subscriptions->toArray();
     }

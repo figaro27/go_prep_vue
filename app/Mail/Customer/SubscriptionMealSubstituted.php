@@ -35,7 +35,7 @@ class SubscriptionMealSubstituted extends Mailable
 
         return $this->view('email.customer.subscription-meal-substituted')
             ->with($this->data)
-            ->subject('A Meal in Your Meal Plan Was Substituted')
+            ->subject('A Meal in Your Subscription Was Substituted')
             ->replyTo($storeEmail);
     }
 }

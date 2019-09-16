@@ -90,7 +90,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- title -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Meal Plan Renewal</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Subscription Renewal</td>
                       </tr>
                       <!-- end title -->
                       <tr>
@@ -133,7 +133,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       @endif
                       <!-- end address -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Meal Plan #{{ $subscription->stripe_id }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Subscription #{{ $subscription->stripe_id }}</td>
                       </tr>
                     </table>
                   </td>
@@ -171,14 +171,14 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- content -->
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> You have a meal plan renewing from {{ $subscription->store->details->name }}. You have 24 hours left to update, pause, or cancel your meal plan before orders are locked in and your card is charged.
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> You have a subscription renewing from {{ $subscription->store->details->name }}. You have 24 hours left to update, pause, or cancel your subscription before orders are locked in and your card is charged.
                   </td>
                 </tr>
                 <tr>
                   <td height="15"></td>
                 </tr>
                 <tr>
-                	<td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">Click the button below if you would like to update your meal plan.</td>
+                	<td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">Click the button below if you would like to update your subscription.</td>
                 </tr>
                 <tr>
                   <td height="15"></td>
@@ -320,7 +320,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         Coupon ({{ $couponCode }})<br>
                         @endif
                         @if ($mealPlanDiscount > 0)
-                        Meal Plan Discount<br>
+                        Subscription Discount<br>
                         @endif
                         @if ($deliveryFee > 0)
                         Delivery Fee<br>

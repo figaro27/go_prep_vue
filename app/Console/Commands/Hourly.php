@@ -100,7 +100,7 @@ class Hourly extends Command
             ]);
             $count++;
         }
-        $this->info($count . ' `Meal Plan Renewing` notifications sent');
+        $this->info($count . ' `Subscription Renewing` notifications sent');
         $count = 0;
     }
 }

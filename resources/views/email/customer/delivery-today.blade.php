@@ -146,7 +146,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       @if ($order->subscription)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Meal Plan #{{ $order->subscription->stripe_id }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Subscription #{{ $order->subscription->stripe_id }}</td>
                       </tr>
                       @endif
                     </table>
@@ -327,7 +327,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         Coupon ({{ $couponCode }})<br>
                         @endif
                         @if ($mealPlanDiscount > 0)
-                        Meal Plan Discount<br>
+                        Subscription Discount<br>
                         @endif
                         @if ($deliveryFee > 0)
                         Delivery Fee<br>

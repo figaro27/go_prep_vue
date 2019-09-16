@@ -217,7 +217,7 @@
                   >
                   <br />
                   <span v-if="order.mealPlanDiscount > 0">
-                    Meal Plan Discount:
+                    Subscription Discount:
                     <span class="text-success"
                       >({{
                         format.money(order.mealPlanDiscount, order.currency)

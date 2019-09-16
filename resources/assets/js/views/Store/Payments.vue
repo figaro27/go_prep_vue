@@ -32,7 +32,7 @@
                     v-b-popover.hover="
                       'GoPrep takes ' +
                         goPrepFee * 100 +
-                        '% off the Subtotal of the order. The subtotal is the total amount of the meals minus any Meal Plan Discount or Coupon Reduction. This does not include Delivery Fees, Processing Fees, or Sales Tax (on purpose so you can recoup some of the amount paid to GoPrep). Stripe takes 2.9% of the Total amount plus .30 cents per transaction.'
+                        '% off the Subtotal of the order. The subtotal is the total amount of the meals minus any Subscription Discount or Coupon Reduction. This does not include Delivery Fees, Processing Fees, or Sales Tax (on purpose so you can recoup some of the amount paid to GoPrep). Stripe takes 2.9% of the Total amount plus .30 cents per transaction.'
                     "
                     src="/images/store/popover.png"
                     class="popover-size mr-2"
@@ -192,7 +192,7 @@ export default {
           created_at: "Payment Date",
           totalOrders: "Orders",
           subtotal: "Subtotal",
-          mealPlanDiscount: "Meal Plan Discount",
+          mealPlanDiscount: "Subscription Discount",
           couponCode: "Coupon",
           couponReduction: "Coupon Reduction",
           processingFee: "Processing Fee",

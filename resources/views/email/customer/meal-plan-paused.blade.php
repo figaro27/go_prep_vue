@@ -90,7 +90,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- title -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Meal Plan Paused</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Subscription Paused</td>
                       </tr>
                       <!-- end title -->
                       <tr>
@@ -144,7 +144,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       @endif
                       <!-- end address -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Meal Plan #{{ $subscription->stripe_id }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Subscription #{{ $subscription->stripe_id }}</td>
                       </tr>
                     </table>
                   </td>
@@ -182,7 +182,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- content -->
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your meal plan with {{ $subscription->store->details->name }} was automatically paused as {{ $subscription->store->details->name }} marked their store as closed with reason: {{ $subscription->store->settings->closedReason }}
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your subscription with {{ $subscription->store->details->name }} was automatically paused as {{ $subscription->store->details->name }} marked their store as closed with reason: {{ $subscription->store->settings->closedReason }}
                   </td>
                 </tr>
                 <tr>
@@ -312,7 +312,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         Coupon ({{ $couponCode }})<br>
                         @endif
                         @if ($mealPlanDiscount > 0)
-                        Meal Plan Discount<br>
+                        Subscription Discount<br>
                         @endif
                         @if ($deliveryFee > 0)
                         Delivery Fee<br>
