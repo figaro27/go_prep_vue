@@ -116,7 +116,7 @@ export default {
     },
     minimumMet() {
       if (
-        (this.minOption === "meals" && this.total >= this.minimumMeals) ||
+        (this.minOption === "meals" && this.total >= this.minMeals) ||
         (this.minOption === "price" &&
           this.totalBagPricePreFees >= this.minPrice)
       )
@@ -127,7 +127,7 @@ export default {
       if (this.minOption === "meals")
         return (
           "Please add " +
-          this.remainingMeals +
+          this.remainingMeals + " "
           this.singOrPlural +
           " to continue."
         );
