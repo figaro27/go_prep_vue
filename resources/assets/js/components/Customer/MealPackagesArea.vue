@@ -1,5 +1,10 @@
 <template>
   <div>
+    <meal-package-components-modal
+      ref="packageComponentModal"
+      :key="total"
+    ></meal-package-components-modal>
+
     <div
       v-if="mealPackages.length"
       id="Packages"
@@ -73,7 +78,12 @@
 <script>
 import MenuBag from "../../mixins/menuBag";
 import { mapGetters } from "vuex";
+import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
+
 export default {
+  components: {
+    MealPackageComponentsModal
+  },
   props: {
     mealPackages: ""
   },
