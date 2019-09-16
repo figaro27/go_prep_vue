@@ -207,7 +207,10 @@
       </b-form-group>
     </li>
 
-    <li class="checkout-item" v-if="$parent.orderId === undefined">
+    <li
+      class="checkout-item unset-height"
+      v-if="$parent.orderId === undefined && deliveryDaysOptions.length > 1"
+    >
       <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
         Delivery Day
       </p>
@@ -225,7 +228,12 @@
           <option slot="top" disabled>-- Select delivery day --</option>
         </b-select>
       </b-form-group>
-      <div v-if="deliveryDaysOptions.length === 1">
+    </li>
+    <li
+      class="checkout-item"
+      v-if="$parent.orderId === undefined && deliveryDaysOptions.length === 1"
+    >
+      <div>
         <h6 v-if="pickup === 0">
           Delivery Day: {{ deliveryDaysOptions[0].text }}
         </h6>
@@ -233,8 +241,15 @@
           Pickup Day: {{ deliveryDaysOptions[0].text }}
         </h6>
       </div>
+    </li>
 
-      <div v-if="storeModules.pickupLocations && pickup">
+    <li
+      class="checkout-item"
+      v-if="
+        $parent.orderId === undefined && storeModules.pickupLocations && pickup
+      "
+    >
+      <div>
         <p>Pickup Location</p>
         <b-select
           v-model="selectedPickupLocation"
@@ -255,11 +270,6 @@
     </li>
 
     <li v-if="loggedIn">
-      <div v-if="!willDeliver && !manualOrder && pickup != 1">
-        <b-alert v-if="!loading" variant="danger center-text" show
-          >You are outside of the delivery area.</b-alert
-        >
-      </div>
       <div>
         <div v-if="$route.params.manualOrder">
           <b-form-group>
@@ -343,6 +353,12 @@
             class="menu-bag-btn update-meals-btn"
             @click="updateSubscriptionMeals"
             >UPDATE MEALS</b-btn
+          >
+        </div>
+
+        <div v-if="!willDeliver && !manualOrder && pickup != 1">
+          <b-alert v-if="!loading" variant="danger center-text" show
+            >You are outside of the delivery area.</b-alert
           >
         </div>
       </div>
@@ -582,12 +598,15 @@ export default {
       if (_.includes(this.transferType, "pickup")) return true;
     },
     deliveryDaysOptions() {
-      return [this.storeSettings.next_orderable_delivery_dates[0]].map(date => {
-        return {
+      let options = [];
+      this.storeSettings.next_orderable_delivery_dates.forEach(date => {
+        options.push({
           value: date.date,
           text: moment(date.date).format("dddd MMM Do")
-        };
+        });
       });
+
+      return options;
     },
     minimumOption() {
       return this.minOption;
