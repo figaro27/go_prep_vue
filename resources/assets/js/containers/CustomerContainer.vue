@@ -1,80 +1,96 @@
 <template>
   <div class="app customer">
     <b-navbar toggleable="lg" class="app-header" fixed>
-      <div class="navbar-brand">
-        <a :href="storeWebsite" v-if="storeWebsite != null">
+      <b-navbar-brand :href="storeWebsite" class="">
+        <img
+          class="d-md-none d-flex"
+          v-if="storeLogo"
+          :src="storeLogo.url_thumb"
+          height="70"
+        />
+      </b-navbar-brand>
+
+      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+      <!-- <div class="navbar-brand"></div> -->
+      <b-collapse
+        is-nav
+        id="nav_collapse"
+        class="customer-nav"
+        target="nav_collapse"
+      >
+        <a :href="storeWebsite" class="adjust-nav">
           <img
-            class="navbar-brand-full"
-            :src="topLogo"
-            height="70"
-            v-if="mobile"
-          />
-          <img
-            class="navbar-brand-minimized"
-            :src="topLogo"
-            width="40"
-            height="40"
-            v-if="mobile"
+            v-if="storeLogo"
+            :class="logoStyle"
+            :src="storeLogo.url_thumb"
+            alt="Company Logo"
           />
         </a>
-        <img
-          class="navbar-brand-full"
-          :src="topLogo"
-          height="70"
-          v-if="mobile && storeWebsite === null"
-        />
-        <img
-          class="navbar-brand-minimized"
-          :src="topLogo"
-          width="40"
-          height="40"
-          v-if="mobile && storeWebsite === null"
-        />
-      </div>
-      <b-navbar-toggle target="nav_collapse" class="mr-auto ml-2" />
-      <b-btn
-        class="mr-2 d-lg-none"
-        variant="light"
-        v-if="'id' in viewedStore"
-        to="/customer/bag"
-        ><i class="fa fa-shopping-bag"></i
-      ></b-btn>
 
-      <b-collapse is-nav id="nav_collapse" class="customer-nav">
-        <b-navbar-nav class="d-none d-block d-md-none">
-          <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag"
-            >Bag</b-nav-item
-          >
-        </b-navbar-nav>
-        <b-navbar-nav>
+        <b-navbar-nav class="adjust-nav">
           <b-nav-item v-if="'id' in viewedStore" to="/customer/menu"
             >Menu</b-nav-item
           >
-          <b-nav-item v-if="'id' in viewedStore && loggedIn" to="/customer/bag"
-            >Bag</b-nav-item
+          <b-nav-item v-if="'id' in viewedStore" to="/customer/bag"
+            >Checkout</b-nav-item
           >
           <b-nav-item v-if="loggedIn" to="/customer/orders">Orders</b-nav-item>
-          <b-nav-item v-if="loggedIn" to="/customer/meal-plans"
-            >Meal Plans</b-nav-item
+          <b-nav-item v-if="loggedIn" to="/customer/subscriptions"
+            >Subscriptions</b-nav-item
           >
-          <b-nav-item v-if="loggedIn" to="/customer/account/my-account"
+          <b-nav-item
+            v-if="loggedIn"
+            to="/customer/account/my-account"
+            class="white-text d-sm-block d-md-none"
             >My Account</b-nav-item
           >
-        </b-navbar-nav>
-        <b-navbar-nav class="ml-auto">
-          <CustomerDropdown v-if="loggedIn" />
-          <b-nav-item v-if="!loggedIn" to="/login" class="white-text"
+          <b-nav-item
+            v-if="loggedIn"
+            to="/customer/account/contact"
+            class="white-text d-sm-block d-md-none"
+            >Contact</b-nav-item
+          >
+          <b-nav-item
+            v-if="loggedIn"
+            @click="logout()"
+            class="white-text d-sm-block d-md-none"
+            >Log Out</b-nav-item
+          >
+          <b-nav-item
+            v-if="!loggedIn"
+            to="/login"
+            class="white-text d-sm-block d-md-none"
             >Log In</b-nav-item
           >
           <b-nav-item
             v-if="!loggedIn"
-            class="px-3 mr-4 white-text"
+            class="px-3 mr-4 white-text d-sm-block d-md-none"
             to="/register"
             >Register</b-nav-item
           >
         </b-navbar-nav>
-        <div class="navbar-brand"></div>
-        <!--<AsideToggler class="d-lg-none" mobile />-->
+        <b-navbar-nav class="ml-auto adjust-nav">
+          <b-nav-item
+            class="white-text d-none d-md-block"
+            @click.prevent="showFilterArea()"
+            v-if="showBagAndFilters"
+            ><i class="fas fa-filter customer-nav-icon"></i
+          ></b-nav-item>
+          <CustomerDropdown v-if="loggedIn" class="d-none d-md-block" />
+          <b-nav-item
+            @click.prevent="showAuthModal()"
+            class="white-text d-none d-md-block"
+            ><i class="fas fa-user customer-nav-icon"></i
+          ></b-nav-item>
+          <b-nav-item
+            class="white-text"
+            @click.prevent="showBagArea()"
+            v-if="showBagAndFilters"
+            ><i class="fas fa-shopping-bag customer-nav-icon d-none d-md-block"
+              ><span :class="bagCounter">{{ total }}</span></i
+            ></b-nav-item
+          >
+        </b-navbar-nav>
       </b-collapse>
     </b-navbar>
     <div class="app-body">
@@ -91,11 +107,10 @@
     <!-- <TheFooter>
     </TheFooter>-->
     <v-style>
-      .navbar, .navbar-brand, .navbar-brand-minimized { background:
-      {{ navBgColor }}; } .menu-bag-btn, .brand-color, .filters .active {
-      background: {{ bgColor }}; } .dbl-underline:after { border-bottom: 3px
-      double {{ bgColor }}; } .nav-item a:hover { background-color: #afafaf
-      !important; }
+      .menu-bag-btn, .brand-color, .filters .active { background: {{ bgColor }};
+      } .dbl-underline:after { border-bottom: 3px double {{ bgColor }}; }
+      .customer-nav-icon:hover, .nav-item a:hover{color:
+      {{ bgColor }} !important} }
     </v-style>
   </div>
 </template>
@@ -163,7 +178,8 @@ export default {
     ...mapGetters(["initialized", "viewedStore", "loggedIn", "isLoading"]),
     ...mapGetters({
       storeLogo: "viewedStoreLogo",
-      store: "viewedStore"
+      store: "viewedStore",
+      total: "bagQuantity"
     }),
     storeSettings() {
       return this.store.settings;
@@ -190,6 +206,14 @@ export default {
     showLogo() {
       return this.viewedStore.settings.showLogo;
     },
+    showBagAndFilters() {
+      if (
+        this.$route.name === "customer-menu" ||
+        this.$route.name === "customer-subscription-changes"
+      )
+        return true;
+      else return false;
+    },
     mobile() {
       if (window.innerWidth < 500) return true;
       else return false;
@@ -198,6 +222,14 @@ export default {
       if (this.mobile) {
         return this.storeLogo ? this.storeLogo.url_thumb : "";
       } else return "/images/logo.png";
+    },
+    bagCounter() {
+      if (this.total >= 10) return "bag-counter bag-counter-adjust";
+      else return "bag-counter";
+    },
+    logoStyle() {
+      // if the logo is less than 70px in height then return '' - need package to get height of the image
+      return "store-logo d-none d-md-block";
     }
   },
   updated() {
@@ -208,13 +240,13 @@ export default {
     }
 
     if (this.viewedStore.settings.color != "#3082cf") {
-      this.bgColor = this.viewedStore.settings.color + " !important";
+      this.bgColor = this.viewedStore.settings.color;
     } else {
       this.bgColor = "#F25727";
     }
 
     // let page = this.name;
-    // // if (page != 'customer-home' && page != 'login' && page != 'register' && page != 'customer-orders' && page != 'customer-meal-plans')
+    // // if (page != 'customer-home' && page != 'login' && page != 'register' && page != 'customer-orders' && page != 'customer-subscriptions')
     // //   this.navBgColor = this.viewedStore.settings.color + ' !important';
     // if (page === "customer-menu" || page === "customer-bag") {
     //   this.navBgColor = this.viewedStore.settings.color + "!important";
@@ -232,6 +264,17 @@ export default {
     // }
   },
   created() {},
-  methods: {}
+  methods: {
+    ...mapActions(["logout"]),
+    showBagArea() {
+      this.$eventBus.$emit("showRightBagArea");
+    },
+    showFilterArea() {
+      this.$eventBus.$emit("showFilterArea");
+    },
+    showAuthModal() {
+      this.$eventBus.$emit("showAuthModal");
+    }
+  }
 };
 </script>

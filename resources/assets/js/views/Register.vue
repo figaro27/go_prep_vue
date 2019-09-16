@@ -1,9 +1,9 @@
 <template>
   <div class="row auth-box">
-    <b-modal id="tos" size="xl" ref="tos">
+    <b-modal id="tos" size="xl" ref="tos" no-fade>
       <termsOfService></termsOfService>
     </b-modal>
-    <b-modal id="toa" size="xl" ref="toa">
+    <b-modal id="toa" size="xl" ref="toa" no-fade>
       <termsOfAgreement></termsOfAgreement>
     </b-modal>
     <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">

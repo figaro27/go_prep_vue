@@ -4,6 +4,7 @@
     ref="modal"
     size="sm"
     @ok.prevent="e => ok(e)"
+    no-fade
   >
     <div v-if="meal">
       <b-row v-if="components.length" class="my-3">

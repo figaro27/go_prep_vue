@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     onClick(e) {
-      if(this.to) {
+      if (this.to) {
         this.$router.push(this.to);
       }
     }
@@ -50,7 +50,7 @@ export default {
   vertical-align: middle;
   user-select: none;
 
-  z-index: 4;
+  z-index: 1000000000000000;
 
   border-radius: 50%;
   min-width: 0;
@@ -58,10 +58,10 @@ export default {
   width: 56px;
   padding: 0;
 
-  background-color: rgb(32, 168, 216);
   border-color: rgb(32, 168, 216);
 
-  box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12);
+  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+    0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
 }
 
 .fab .inner {

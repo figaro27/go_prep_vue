@@ -28,13 +28,12 @@ body.customermenu {
   }
 
   .item {
-    padding-bottom: 5px;
-    margin-bottom: 5px;
+    padding-bottom: 20px;
     @include media-breakpoint-up(md) {
       margin-top: 15px;
       padding-top: 15px;
     }
-    border-bottom: 1px solid #f3ecec;
+    // border-bottom: 1px solid #f3ecec;
 
     .item-wrap {
       display: flex;

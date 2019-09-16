@@ -11,6 +11,8 @@ use App\MealSubscriptionComponent;
 use App\MealSubscriptionAddon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Store;
+use App\Customer;
 
 class SubscriptionController extends UserController
 {
@@ -150,7 +152,7 @@ class SubscriptionController extends UserController
      */
     public function updateMeals(Request $request, $id)
     {
-        $id = intval($id);
+        $id = intval($request->get('subscriptionId'));
         $sub = $this->user->subscriptions()->find($id);
 
         if (!$sub) {
@@ -177,19 +179,34 @@ class SubscriptionController extends UserController
             );
         }
 
+        $user = auth('api')->user();
+        $storeId = $request->get('store_id');
+        $store = Store::with(['settings', 'storeDetail'])->findOrFail($storeId);
+        $storeName = strtolower($store->storeDetail->name);
+
         $bag = new Bag($request->get('bag'), $store);
+        $weeklyPlan = $request->get('plan');
+        $pickup = $request->get('pickup');
+        $deliveryDay = $request->get('delivery_day');
+        $couponId = $request->get('coupon_id');
+        $couponReduction = $request->get('couponReduction');
+        $couponCode = $request->get('couponCode');
+        $deliveryFee = $request->get('deliveryFee');
+        $pickupLocation = $request->get('pickupLocation');
+        //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
         $total = $bag->getTotal();
+        $subtotal = $request->get('subtotal');
         $afterDiscountBeforeFees = $bag->getTotal();
         $preFeePreDiscount = $bag->getTotal();
+        $deposit = $request->get('deposit') / 100;
 
-        $deliveryFee = 0;
         $processingFee = 0;
         $mealPlanDiscount = 0;
-        $salesTaxRate = $request->get('salesTaxRate');
+        $salesTax = $request->get('salesTax');
 
-        if ($store->settings->applyMealPlanDiscount) {
+        if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             $discount = $store->settings->mealPlanDiscount / 100;
             $mealPlanDiscount = $total * $discount;
             $total -= $mealPlanDiscount;
@@ -197,17 +214,28 @@ class SubscriptionController extends UserController
         }
 
         if ($store->settings->applyDeliveryFee) {
-            $total += $store->settings->deliveryFee;
-            $deliveryFee += $store->settings->deliveryFee;
+            $total += $deliveryFee;
         }
 
         if ($store->settings->applyProcessingFee) {
-            $total += $store->settings->processingFee;
             $processingFee += $store->settings->processingFee;
+            $total += $processingFee;
         }
 
-        $salesTax = $total * $salesTaxRate;
+        if ($couponId != null) {
+            $total -= $couponReduction;
+        }
+
+        $customerId = $request->get('customer');
+        $customer = Customer::where('id', $customerId)->first();
+
         $total += $salesTax;
+
+        $cashOrder = $request->get('cashOrder');
+        if ($cashOrder) {
+            $cardId = null;
+            $card = null;
+        }
 
         // Delete existing stripe plan
         try {
@@ -289,13 +317,29 @@ class SubscriptionController extends UserController
         }
 
         // Update subscription pricing
+        // $sub->preFeePreDiscount = $preFeePreDiscount;
+        // $sub->mealPlanDiscount = $mealPlanDiscount;
+        // $sub->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+        // $sub->processingFee = $processingFee;
+        // $sub->deliveryFee = $deliveryFee;
+        // $sub->salesTax = $salesTax;
+        // $sub->amount = $total;
+        // $sub->save();
+
+        $sub->store_id = $store->id;
         $sub->preFeePreDiscount = $preFeePreDiscount;
         $sub->mealPlanDiscount = $mealPlanDiscount;
         $sub->afterDiscountBeforeFees = $afterDiscountBeforeFees;
-        $sub->processingFee = $processingFee;
         $sub->deliveryFee = $deliveryFee;
+        $sub->processingFee = $processingFee;
         $sub->salesTax = $salesTax;
         $sub->amount = $total;
+        $sub->pickup = $request->get('pickup', 0);
+        $sub->delivery_day = $deliveryDay;
+        $sub->coupon_id = $couponId;
+        $sub->couponReduction = $couponReduction;
+        $sub->couponCode = $couponCode;
+        $sub->pickup_location_id = $pickupLocation;
         $sub->save();
 
         // Update future orders IF cutoff hasn't passed yet
@@ -317,6 +361,8 @@ class SubscriptionController extends UserController
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
             $order->processingFee = $processingFee;
             $order->deliveryFee = $deliveryFee;
+            $order->couponReduction = $couponReduction;
+            $order->couponCode = $couponCode;
             $order->salesTax = $salesTax;
             $order->amount = $total;
             $order->save();

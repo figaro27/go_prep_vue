@@ -142,7 +142,12 @@
     </div>
 
     <div class="modal-basic modal-wider">
-      <b-modal v-model="viewOrderModal" size="lg" title="Order Information">
+      <b-modal
+        v-model="viewOrderModal"
+        size="lg"
+        title="Order Information"
+        no-fade
+      >
         <div class="row light-background" v-if="order.adjusted">
           <div class="col-md-12">
             <p class="center-text red pt-3">
@@ -154,9 +159,7 @@
           <div class="col-md-4 pt-1">
             <h4>Order ID</h4>
             <p>{{ order.order_number }}</p>
-            <router-link
-              :to="{ name: 'store-adjust-order', params: { order: order } }"
-            >
+            <router-link :to="`/store/adjust-order/${order.id}`">
               <b-btn class="btn btn-success mb-2">Adjust Order</b-btn>
             </router-link>
           </div>
@@ -289,10 +292,6 @@
         </div>
       </b-modal>
     </div>
-    <v-style>
-      .input-date{ color: {{ dateColor }}
-      }
-    </v-style>
   </div>
 </template>
 

@@ -12,8 +12,8 @@ export default {
     //   // class: 'nav-child'
     // },
     {
-      name: "Meal Plans",
-      url: "/store/meal-plans",
+      name: "Subscriptions",
+      url: "/store/subscriptions",
       icon: "fa fa-shopping-cart"
       // class: 'nav-child'
     },

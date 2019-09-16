@@ -5,12 +5,13 @@
         <div class="card-body">
           <b-modal
             v-model="showCancelModal"
-            title="Cancel Meal Plan"
+            title="Cancel Subscription"
             size="md"
             :hide-footer="true"
+            no-fade
           >
             <p class="center-text mb-3 mt-3">
-              Are you sure you want to cancel this meal plan?
+              Are you sure you want to cancel this subscription?
             </p>
             <b-btn variant="danger" class="center" @click="destroyMealPlan"
               >Cancel</b-btn
@@ -80,17 +81,8 @@
                 @click.stop="() => resumeSubscription(props.row.id)"
                 >Resume</b-btn
               >
-              <router-link
-                :to="{
-                  name: 'store-adjust-meal-plan',
-                  params: { subscription: props.row }
-                }"
-              >
-                <b-btn
-                  class="btn view btn-success btn-sm"
-                  @click="editSubscription(props.row.id)"
-                  >Change Meals</b-btn
-                >
+              <router-link :to="`/store/adjust-meal-plan/${props.row.id}`">
+                <b-btn class="btn view btn-success btn-sm">Change Meals</b-btn>
               </router-link>
             </div>
 
@@ -106,11 +98,12 @@
       <b-modal
         v-model="viewSubscriptionModal"
         size="lg"
-        title="Meal Plan Details"
+        title="Subscription Details"
+        no-fade
       >
         <div class="row mt-4">
           <div class="col-md-4">
-            <h4>Meal Plan ID</h4>
+            <h4>Subscription ID</h4>
             <p>{{ subscription.stripe_id }}</p>
           </div>
           <div class="col-md-4">
@@ -136,7 +129,7 @@
               }})
             </p>
             <p v-if="subscription.mealPlanDiscount > 0" class="text-success">
-              Meal Plan Discount: ({{
+              Subscription Discount: ({{
                 format.money(
                   subscription.mealPlanDiscount,
                   subscription.currency
@@ -315,13 +308,13 @@ export default {
       options: {
         headings: {
           // notes: "Notes",
-          stripe_id: "Meal Plan #",
+          stripe_id: "Subscription #",
           "user.user_detail.full_name": "Name",
           "user.user_detail.address": "Address",
           "user.user_detail.zip": "Zip Code",
           "user.user_detail.phone": "Phone",
           amount: "Total",
-          created_at: "Meal Plan Placed",
+          created_at: "Subscription Placed",
           delivery_day: "Delivery Day",
           charge_day: "Charge Day",
           // interval: "Interval",
@@ -359,7 +352,7 @@ export default {
   },
   mounted() {
     if (this.$route.query.updated) {
-      this.$toastr.s("Meal Plan Updated");
+      this.$toastr.s("Subscription Updated");
     }
   },
   computed: {
@@ -539,34 +532,19 @@ export default {
       axios.delete(`/api/me/subscriptions/${id}`).then(resp => {
         this.refreshTable();
         this.showCancelModal = false;
-        this.$toastr.s("Meal Plan Cancelled");
+        this.$toastr.s("Subscription Cancelled");
       });
-    },
-    editSubscription(subscription) {
-      this.emptyBag();
-      this.setBagCoupon(null);
-      this.setBagMealPlan(true);
-
-      const items = _.map(subscription.meals, meal => {
-        return {
-          id: meal.id,
-          meal: meal,
-          quantity: meal.quantity,
-          added: moment().unix()
-        };
-      });
-      this.addBagItems(items);
     },
     pauseSubscription(id) {
       try {
         axios.post("/api/me/subscriptions/pause", { id: id }).then(resp => {
           this.refreshSubscriptions();
-          this.$toastr.s("Meal Plan paused!");
+          this.$toastr.s("Subscription paused!");
         });
       } catch (e) {
         this.$toastr.e(
           "Please get in touch with our support team.",
-          "Failed to pause Meal Plan"
+          "Failed to pause Subscription"
         );
       }
     },
@@ -574,12 +552,12 @@ export default {
       try {
         axios.post("/api/me/subscriptions/resume", { id: id }).then(resp => {
           this.refreshSubscriptions();
-          this.$toastr.s("Meal Plan resumed!");
+          this.$toastr.s("Subscription resumed!");
         });
       } catch (e) {
         this.$toastr.e(
           "Please get in touch with our support team.",
-          "Failed to resume Meal Plan"
+          "Failed to resume Subscription"
         );
       }
     }

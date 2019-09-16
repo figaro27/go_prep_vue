@@ -1,11 +1,11 @@
 <template>
-  <customer-menu :preview="true"></customer-menu>
+  <customer-menu :preview="true" :storeView="true"></customer-menu>
 </template>
 
 <script>
 import Spinner from "../../components/Spinner";
 import { mapGetters, mapActions, mapMutations } from "vuex";
-import CustomerMenu from '../Customer/Menu';
+import CustomerMenu from "../Customer/Menu";
 
 export default {
   components: {
@@ -13,8 +13,7 @@ export default {
     CustomerMenu
   },
   data() {
-    return {
-    };
+    return {};
   },
   computed: {
     ...mapGetters({
@@ -24,11 +23,10 @@ export default {
   created() {
     this.refreshViewedStore();
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     ...mapActions({
-      refreshViewedStore: 'refreshViewedStore'
+      refreshViewedStore: "refreshViewedStore"
     })
   }
 };

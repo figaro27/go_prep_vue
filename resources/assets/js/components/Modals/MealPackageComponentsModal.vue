@@ -5,6 +5,7 @@
     size="lgx"
     @ok.prevent="e => ok(e)"
     class="meal-package-components-modal"
+    no-fade
   >
     <div v-if="mealPackage">
       <b-row v-if="components.length" class="my-3">
