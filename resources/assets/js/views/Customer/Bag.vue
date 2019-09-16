@@ -157,6 +157,9 @@ export default {
     },
     storeSettings() {
       return this.store.settings;
+    },
+    transferType() {
+      return this.store.settings.transferType;
     }
   },
   mounted() {
