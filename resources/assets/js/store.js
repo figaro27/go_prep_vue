@@ -1414,7 +1414,7 @@ const getters = {
     return _.sumBy(Object.values(state.bag.items), item => {
       if (item.meal.id === mealId) {
         return item.quantity;
-      }
+      } else return 0;
     });
   },
   totalBagPricePreFees(state, getters) {
