@@ -868,9 +868,6 @@ export default {
     getCustomer() {
       return this.customer;
     },
-    changeState(state) {
-      this.form.state = state.abbreviation;
-    },
     async adjust() {
       if (!this.deliveryDay && this.deliveryDaysOptions) {
         this.deliveryDay = this.deliveryDaysOptions[0].value;

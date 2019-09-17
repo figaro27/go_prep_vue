@@ -53,7 +53,7 @@ class RegisterController extends StoreController
             'phone' => $request->get('phone'),
             'address' => $request->get('address'),
             'city' => $request->get('city'),
-            'state' => $request->get('state'),
+            'state' => $request->get('state')['value'],
             'zip' => $request->get('zip'),
             'delivery' => $request->get('delivery'),
             'country' => 'USA',
