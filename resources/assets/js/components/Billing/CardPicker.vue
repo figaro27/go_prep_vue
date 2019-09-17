@@ -11,7 +11,7 @@
     <b-btn v-if="newCard" variant="primary" @click="createCard" class="mb-3"
       >Add Card</b-btn
     >
-    <div v-if="cards.length && !manualOrder">
+    <div v-if="cards.length && !$route.params.manualOrder">
       <b-list-group class="card-list">
         <b-list-group-item
           v-for="card in cards"
@@ -35,10 +35,10 @@
         </b-list-group-item>
       </b-list-group>
     </div>
-    <div v-if="manualOrder">
+    <div v-if="$route.params.manualOrder">
       <b-list-group class="card-list">
         <b-list-group-item
-          v-if="manualOrder"
+          v-if="$route.params.manualOrder"
           v-for="card in creditCards"
           :key="card.id"
           :active="value === card.id"
@@ -138,7 +138,7 @@ export default {
             customer: customer
           })
           .then(async resp => {
-            if (this.manualOrder) {
+            if (this.$route.params.manualOrder) {
               this.$parent.getCards();
             } else {
               await this.refreshCards();

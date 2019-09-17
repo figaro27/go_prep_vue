@@ -377,7 +377,7 @@
         <div
           v-if="
             !willDeliver &&
-              !manualOrder &&
+              $route.params.manualOrder === null &&
               pickup != 1 &&
               $parent.orderId === undefined
           "
