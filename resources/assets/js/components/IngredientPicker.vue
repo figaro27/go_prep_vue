@@ -345,6 +345,7 @@ export default {
       const massOptions = units["mass"].selectOptions();
       const volumeOptions = units["volume"].selectOptions();
       const allOptions = _.concat(massOptions, volumeOptions);
+      allOptions.push("Units");
       return allOptions;
     },
     canSave() {
