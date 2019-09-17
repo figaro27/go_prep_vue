@@ -116,7 +116,7 @@
               <b-dropdown v-else toggle-class="menu-bag-btn">
                 <span slot="button-content">+ ADD</span>
                 <b-dropdown-item @click="addMeal(meal)">
-                  {{ meal.default_size_title }} -
+                  {{ meal.default_size_title || "Regular" }} -
                   {{ format.money(meal.item_price, storeSettings.currency) }}
                 </b-dropdown-item>
                 <b-dropdown-item

@@ -391,6 +391,17 @@ class Subscription extends Model
             $latestOrder->delivery_date->addWeeks(1);
             $latestOrder->save();
         }
+
+        try {
+            $this->cancel();
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'error' => 'Failed to cancel Subscription'
+                ],
+                500
+            );
+        }
     }
 
     /**
