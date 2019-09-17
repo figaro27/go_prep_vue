@@ -377,7 +377,7 @@
         <div
           v-if="
             !willDeliver &&
-              !manualOrder &&
+              $route.params.manualOrder === null &&
               pickup != 1 &&
               $parent.orderId === undefined
           "
@@ -867,9 +867,6 @@ export default {
     },
     getCustomer() {
       return this.customer;
-    },
-    changeState(state) {
-      this.form.state = state.abbreviation;
     },
     async adjust() {
       if (!this.deliveryDay && this.deliveryDaysOptions) {

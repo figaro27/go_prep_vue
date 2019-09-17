@@ -59,9 +59,9 @@
         </b-form-group>
         <b-form-group horizontal label="State">
           <v-select
+            v-model="form.state"
             label="name"
             :options="stateNames"
-            :on-change="val => changeState(val)"
           ></v-select>
         </b-form-group>
         <b-form-group horizontal label="Zip">
@@ -102,6 +102,7 @@
 
 <script>
 import states from "../../data/states.js";
+import { mapActions } from "vuex";
 
 export default {
   props: {
@@ -118,6 +119,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["refreshStoreCustomers"]),
     addCustomer() {
       let form = this.form;
 
@@ -133,8 +135,10 @@ export default {
         .post("/api/me/register", form)
         .then(async response => {
           this.addCustomerModal = false;
+          this.$parent.addCustomerModal = false;
           this.form = {};
           await this.refreshStoreCustomers();
+          this.$toastr.s("Customer Added");
         })
         .catch(e => {
           this.$toastr.e("Please try again.", "Registration failed");
