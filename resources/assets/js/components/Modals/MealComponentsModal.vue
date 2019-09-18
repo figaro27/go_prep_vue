@@ -1,68 +1,61 @@
 <template>
-  <b-modal
-    title="Choose Options"
-    ref="modal"
-    size="sm"
-    @ok.prevent="e => ok(e)"
-    no-fade
-  >
-    <div v-if="meal">
-      <b-row v-if="components.length" class="my-3">
-        <b-col>
-          <div
-            v-for="(component, i) in components"
-            :key="meal.id + component.id"
-            class
-          >
-            <h6>{{ getComponentLabel(component) }}</h6>
-            <b-form-group :label="null">
-              <b-checkbox-group
-                v-model="choices[component.id]"
-                :options="getOptions(component)"
-                :min="component.minimum"
-                :max="component.maximum"
-                stacked
-              ></b-checkbox-group>
-
-              <div v-if="$v.choices[component.id].$dirty">
-                <div
-                  v-if="false === $v.choices[component.id].required"
-                  class="invalid-feedback d-block"
-                >
-                  This field is required
-                </div>
-                <div
-                  v-if="false === $v.choices[component.id].minimum"
-                  class="invalid-feedback d-block"
-                >
-                  Minimum {{ component.minimum }}
-                </div>
-                <div
-                  v-if="false === $v.choices[component.id].maximum"
-                  class="invalid-feedback d-block"
-                >
-                  Maximum {{ component.maximum }}
-                </div>
-              </div>
-            </b-form-group>
-          </div>
-        </b-col>
-      </b-row>
-
-      <b-row v-if="mealAddons.length" class="my-3">
-        <b-col>
-          <h6>Add-ons</h6>
-          <b-form-group label>
+  <div v-if="meal">
+    <b-row v-if="components.length && sizeCheck" class="my-3">
+      <b-col>
+        <div
+          v-for="(component, i) in components"
+          :key="meal.id + component.id"
+          class
+        >
+          <h6>{{ getComponentLabel(component) }}</h6>
+          <b-form-group :label="null">
             <b-checkbox-group
-              v-model="addons"
-              :options="getAddonOptions(mealAddons)"
+              v-model="choices[component.id]"
+              :options="getOptions(component)"
+              :min="component.minimum"
+              :max="component.maximum"
               stacked
+              @change="setChoices"
             ></b-checkbox-group>
+
+            <div v-if="$v.choices[component.id].$dirty">
+              <div
+                v-if="false === $v.choices[component.id].required"
+                class="invalid-feedback d-block"
+              >
+                This field is required
+              </div>
+              <div
+                v-if="false === $v.choices[component.id].minimum"
+                class="invalid-feedback d-block"
+              >
+                Minimum {{ component.minimum }}
+              </div>
+              <div
+                v-if="false === $v.choices[component.id].maximum"
+                class="invalid-feedback d-block"
+              >
+                Maximum {{ component.maximum }}
+              </div>
+            </div>
           </b-form-group>
-        </b-col>
-      </b-row>
-    </div>
-  </b-modal>
+        </div>
+      </b-col>
+    </b-row>
+
+    <b-row v-if="mealAddons.length" class="my-3">
+      <b-col>
+        <h6>Add-ons</h6>
+        <b-form-group label>
+          <b-checkbox-group
+            v-model="addons"
+            :options="getAddonOptions(mealAddons)"
+            stacked
+          ></b-checkbox-group>
+        </b-form-group>
+      </b-col>
+    </b-row>
+  </div>
 </template>
 
 <script>
@@ -72,11 +65,13 @@ import { required, minLength } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 
 export default {
+  props: {
+    meal: {},
+    sizeId: null
+  },
   mixins: [modal],
-  props: {},
   data() {
     return {
-      meal: null,
       mealPackage: false,
       size: null,
       choices: {},
@@ -85,16 +80,24 @@ export default {
   },
   computed: {
     ...mapGetters(["storeSettings"]),
-    sizeId() {
-      return _.isObject(this.size) ? this.size.id : null;
-    },
     sizeCriteria() {
       return !this.mealPackage
         ? { meal_size_id: this.sizeId }
         : { meal_package_size_id: this.sizeId };
     },
+    sizeCheck() {
+      let check = false;
+
+      this.components.forEach(component => {
+        component.options.forEach(option => {
+          if (option.meal_size_id === this.sizeId) check = true;
+        });
+      });
+      return check;
+    },
     components() {
       return _.filter(this.meal.components, component => {
+        return component.options;
         return _.find(component.options, this.sizeCriteria);
       });
     },
@@ -138,8 +141,6 @@ export default {
       this.choices = {};
       this.addons = [];
 
-      this.$refs.modal.show();
-
       this.$forceUpdate();
 
       this.$nextTick(() => {
@@ -147,14 +148,6 @@ export default {
       });
 
       return new Promise((resolve, reject) => {
-        this.$refs.modal.$on("cancel", () => {
-          resolve(null);
-          this.meal = null;
-          this.mealPackage = false;
-          this.size = null;
-          this.choices = {};
-          this.$v.$reset();
-        });
         this.$on("done", () => {
           this.$v.$touch();
 
@@ -227,6 +220,9 @@ export default {
       }
 
       return `${component.title} - ${qty}`;
+    },
+    setChoices() {
+      this.$parent.choices = this.choices;
     }
   }
 };

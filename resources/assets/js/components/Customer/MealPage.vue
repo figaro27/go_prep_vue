@@ -4,7 +4,11 @@
       class="main-customer-container customer-menu-container box-shadow"
       v-if="$parent.mealPageView"
     >
-      <b-btn @click="back">BACK</b-btn>
+      <div class="row">
+        <div class="col-md-2">
+          <b-btn @click="back" class="menu-bag-btn">BACK</b-btn>
+        </div>
+      </div>
       <div class="row mt-3">
         <div class="col-lg-6 modal-meal-image">
           <thumbnail
@@ -75,21 +79,20 @@
             </div>
           </div>
 
-          <b-form-checkbox-group
+          <b-form-radio-group
             buttons
             v-model="mealSize"
             :options="sizes"
             class="filters small"
             required
-          ></b-form-checkbox-group>
+          ></b-form-radio-group>
 
-          <b-form-checkbox-group
-            buttons
-            v-model="mealSize"
-            :options="sizes"
-            class="filters small"
-            required
-          ></b-form-checkbox-group>
+          <meal-components-modal
+            :meal="meal"
+            :sizeId="mealSize"
+            ref="componentModal"
+            :key="total"
+          ></meal-components-modal>
 
           <p v-if="storeSettings.showNutrition" v-html="mealDescription"></p>
           <div class="row mt-3 mb-5" v-if="storeSettings.showNutrition">
@@ -184,15 +187,18 @@ import nutrition from "../../data/nutrition";
 import format from "../../lib/format";
 import "vue-image-lightbox/src/components/style.css";
 import { Carousel, Slide } from "vue-carousel";
+import MealComponentsModal from "../../components/Modals/MealComponentsModal";
 
 export default {
   data() {
     return {
-      mealSize: -1
+      mealSize: -1,
+      choices: {}
     };
   },
   components: {
-    LightBox
+    LightBox,
+    MealComponentsModal
   },
   props: {
     showMealModal: false,
@@ -224,6 +230,9 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
     }),
+    viewedMeal() {
+      return this.meal;
+    },
     sizes() {
       let meal = this.meal;
       let sizes = meal.sizes;
@@ -266,7 +275,7 @@ export default {
       });
     },
     addMeal(meal, mealPackage) {
-      this.addOne(meal, mealPackage, this.mealSize);
+      this.addOne(meal, mealPackage, this.mealSize, this.choices);
       this.mealSize = null;
       this.back();
       if (this.$parent.showBagClass.includes("hidden")) this.$parent.showBag();
@@ -275,11 +284,6 @@ export default {
       this.$parent.showMealsArea = true;
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPageView = false;
-    },
-    test(id) {
-      if (this.mealSize.id === id) {
-        return true;
-      } else return false;
     }
   }
 };
