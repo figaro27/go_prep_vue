@@ -5,6 +5,11 @@
       :key="total"
     ></meal-components-modal>
 
+    <meal-package-components-modal
+      ref="packageComponentModal"
+      :key="total"
+    ></meal-package-components-modal>
+
     <div
       v-for="(group, catIndex) in meals"
       :key="group.category"
@@ -26,7 +31,7 @@
           v-for="(meal, i) in group.meals"
           :key="meal.id"
         >
-          <div :class="card" @click="showMeal(meal)">
+          <div :class="card" @click="$parent.showMealModal(meal)">
             <div :class="cardBody">
               <div class="item-wrap">
                 <div class="title d-md-none">
@@ -170,6 +175,7 @@ import { mapGetters } from "vuex";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import StoreClosed from "../../components/Customer/StoreClosed";
 import MealComponentsModal from "../../components/Modals/MealComponentsModal";
+import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 
 export default {
   components: {
