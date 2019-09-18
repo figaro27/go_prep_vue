@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="main-customer-container customer-menu-container left-right-box-shadow"
+      class="main-customer-container customer-menu-container box-shadow"
       v-if="$parent.mealPageView"
     >
       <b-btn @click="back">BACK</b-btn>
@@ -75,6 +75,22 @@
             </div>
           </div>
 
+          <b-form-checkbox-group
+            buttons
+            v-model="mealSize"
+            :options="sizes"
+            class="filters small"
+            required
+          ></b-form-checkbox-group>
+
+          <b-form-checkbox-group
+            buttons
+            v-model="mealSize"
+            :options="sizes"
+            class="filters small"
+            required
+          ></b-form-checkbox-group>
+
           <p v-if="storeSettings.showNutrition" v-html="mealDescription"></p>
           <div class="row mt-3 mb-5" v-if="storeSettings.showNutrition">
             <div class="col-lg-6">
@@ -103,27 +119,9 @@
               </h5>
             </div>
             <div class="col-lg-5">
-              <b-btn
-                v-if="meal.sizes.length === 0"
-                @click="addMeal(meal)"
-                class="menu-bag-btn"
+              <b-btn @click="addMeal(meal, null)" class="menu-bag-btn"
                 >+ ADD</b-btn
               >
-              <b-dropdown v-else toggle-class="menu-bag-btn">
-                <span slot="button-content">+ ADD</span>
-                <b-dropdown-item @click="addOne(meal)">
-                  {{ meal.default_size_title }} -
-                  {{ format.money(meal.item_price, storeSettings.currency) }}
-                </b-dropdown-item>
-                <b-dropdown-item
-                  v-for="size in meal.sizes"
-                  :key="size.id"
-                  @click="addOne(meal, false, size)"
-                >
-                  {{ size.title }} -
-                  {{ format.money(size.price, storeSettings.currency) }}
-                </b-dropdown-item>
-              </b-dropdown>
             </div>
           </div>
         </div>
@@ -154,7 +152,7 @@
               </h5>
             </div>
             <div class="col-lg-4">
-              <b-btn @click="addOne(meal)" class="menu-bag-btn">+ ADD</b-btn>
+              <b-btn @click="addMeal(meal)" class="menu-bag-btn">+ ADD</b-btn>
             </div>
           </div>
           <div class="row mt-5" v-if="!storeSettings.showNutrition">
@@ -164,27 +162,9 @@
               </h5>
             </div>
             <div class="col-lg-6">
-              <b-btn
-                v-if="meal.sizes.length === 0"
-                @click="addOne(meal)"
-                class="menu-bag-btn"
+              <b-btn @click="addMeal(meal, null)" class="menu-bag-btn"
                 >+ ADD</b-btn
               >
-              <b-dropdown v-else toggle-class="menu-bag-btn">
-                <span slot="button-content">+ ADD</span>
-                <b-dropdown-item @click="addOne(meal)">
-                  {{ meal.default_size_title }} -
-                  {{ format.money(meal.item_price, storeSettings.currency) }}
-                </b-dropdown-item>
-                <b-dropdown-item
-                  v-for="size in meal.sizes"
-                  :key="size.id"
-                  @click="addOne(meal, false, size)"
-                >
-                  {{ size.title }} -
-                  {{ format.money(size.price, storeSettings.currency) }}
-                </b-dropdown-item>
-              </b-dropdown>
             </div>
           </div>
         </div>
@@ -206,6 +186,11 @@ import "vue-image-lightbox/src/components/style.css";
 import { Carousel, Slide } from "vue-carousel";
 
 export default {
+  data() {
+    return {
+      mealSize: -1
+    };
+  },
   components: {
     LightBox
   },
@@ -238,12 +223,25 @@ export default {
       minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
-    })
-  },
-  mounted() {
-    // this.$nextTick(() => {
-    //   this.$refs.mealGallery.reSlick();
-    // });
+    }),
+    sizes() {
+      let meal = this.meal;
+      let sizes = meal.sizes;
+      sizes.unshift({
+        full_title: meal.title + " - " + meal.default_size_title || "Regular",
+        id: meal.id,
+        price: meal.item_price,
+        title: meal.default_size_title || "Regular"
+      });
+
+      return Object.values(sizes).map(size => {
+        return {
+          text: size.title,
+          price: size.price,
+          value: size.id
+        };
+      });
+    }
   },
   updated() {
     this.getNutritionFacts();
@@ -267,14 +265,21 @@ export default {
         });
       });
     },
-    addMeal(meal) {
-      this.addOne(meal);
-      this.$parent.mealModal = false;
+    addMeal(meal, mealPackage) {
+      this.addOne(meal, mealPackage, this.mealSize);
+      this.mealSize = null;
+      this.back();
+      if (this.$parent.showBagClass.includes("hidden")) this.$parent.showBag();
     },
     back() {
       this.$parent.showMealsArea = true;
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPageView = false;
+    },
+    test(id) {
+      if (this.mealSize.id === id) {
+        return true;
+      } else return false;
     }
   }
 };
