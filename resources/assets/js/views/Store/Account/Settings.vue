@@ -1152,6 +1152,9 @@ export default {
     });
   },
   mounted() {
+    if (this.storeSettings.enableSalesTax === 0) {
+      this.salesTax = 0;
+    }
     if (this.storeSettings.salesTax >= 0) {
       this.salesTax = this.storeSettings.salesTax;
     } else {
