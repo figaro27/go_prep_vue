@@ -13,6 +13,7 @@
         (isVisible, entry) => $parent.onCategoryVisible(isVisible, catIndex)
       "
       class="main-customer-container customer-menu-container left-right-box-shadow"
+      v-if="$parent.showMealsArea"
     >
       <store-closed></store-closed>
       <outside-delivery-area></outside-delivery-area>
@@ -25,7 +26,7 @@
           v-for="(meal, i) in group.meals"
           :key="meal.id"
         >
-          <div :class="card" @click="$parent.showMealModal(meal)">
+          <div :class="card" @click="showMeal(meal)">
             <div :class="cardBody">
               <div class="item-wrap">
                 <div class="title d-md-none">
@@ -174,7 +175,8 @@ export default {
   components: {
     OutsideDeliveryArea,
     StoreClosed,
-    MealComponentsModal
+    MealComponentsModal,
+    StoreClosed
   },
   props: {
     meals: "",
@@ -206,6 +208,11 @@ export default {
       } else if (this.$parent.showBagScrollbar) {
         this.$parent.showBagClass -= " area-scroll";
       }
+    },
+    showMeal(meal) {
+      this.$parent.showMealPage(meal);
+      this.$parent.showMealsArea = false;
+      this.$parent.showMealPackagesArea = false;
     }
   }
 };

@@ -47,6 +47,15 @@
             @showMealModal="showMealModal"
           ></meals-area>
 
+          <meal-page
+            :meal="meal"
+            :slickOptions="slickOptions"
+            :storeSettings="storeSettings"
+            :mealDescription="mealDescription"
+            :ingredients="ingredients"
+            :nutritionalFacts="nutritionalFacts"
+          ></meal-page>
+
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
@@ -118,6 +127,7 @@ import BagArea from "../../components/Customer/BagArea";
 import BagActions from "../../components/Customer/BagActions";
 import AuthModal from "../../components/Customer/AuthModal";
 import MenuFilters from "../../components/Customer/MenuFilters";
+import MealPage from "../../components/Customer/MealPage";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -144,7 +154,8 @@ export default {
     BagArea,
     BagActions,
     AuthModal,
-    MenuFilters
+    MenuFilters,
+    MealPage
   },
   mixins: [MenuBag],
   props: {
@@ -189,9 +200,12 @@ export default {
       ingredients: "",
       mealDescription: "",
       mealModal: false,
+      mealPageView: false,
       mealPackageModal: false,
       nutritionalFacts: {},
-      storeCSS: ""
+      storeCSS: "",
+      showMealsArea: true,
+      showMealPackagesArea: true
     };
   },
   computed: {
@@ -390,6 +404,9 @@ export default {
     this.$eventBus.$on("showFilterArea", () => {
       this.showFilterArea();
     });
+    this.$eventBus.$on("backToMenu", () => {
+      this.backToMenu();
+    });
   },
   mounted() {
     if (this.storeView) {
@@ -473,6 +490,18 @@ export default {
             this.$refs[`nutritionFacts${meal.id}`]
           );
         });
+      });
+    },
+    showMealPage(meal) {
+      this.mealPageView = true;
+      this.meal = meal;
+      this.mealDescription = meal.description
+        ? meal.description.replace(/\n/g, "<br>")
+        : "";
+
+      this.$nextTick(() => {
+        this.getNutritionFacts(this.meal.ingredients, this.meal);
+        // this.$refs.mealGallery.reSlick();
       });
     },
     filterByTag(tag) {
@@ -633,6 +662,11 @@ export default {
       i === -1
         ? this.filters.categories.push(category)
         : Vue.delete(this.filters.categories, i);
+    },
+    backToMenu() {
+      this.showMealsArea = true;
+      this.showMealPackagesArea = true;
+      this.mealPageView = false;
     }
   }
 };

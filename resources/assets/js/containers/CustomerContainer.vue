@@ -28,7 +28,10 @@
         </a>
 
         <b-navbar-nav class="adjust-nav">
-          <b-nav-item v-if="'id' in viewedStore" to="/customer/menu"
+          <b-nav-item
+            v-if="'id' in viewedStore"
+            to="/customer/menu"
+            @click.prevent="backToMenu()"
             >Menu</b-nav-item
           >
           <b-nav-item v-if="'id' in viewedStore" to="/customer/bag"
@@ -78,7 +81,6 @@
           ></b-nav-item>
           <CustomerDropdown v-if="loggedIn" class="d-none d-md-block" />
           <b-nav-item
-            v-if="!loggedIn"
             @click.prevent="showAuthModal()"
             class="white-text d-none d-md-block"
             ><i class="fas fa-user customer-nav-icon"></i
@@ -275,6 +277,9 @@ export default {
     },
     showAuthModal() {
       this.$eventBus.$emit("showAuthModal");
+    },
+    backToMenu() {
+      this.$eventBus.$emit("backToMenu");
     }
   }
 };

@@ -6,7 +6,7 @@
     ></meal-package-components-modal>
 
     <div
-      v-if="mealPackages.length"
+      v-if="mealPackages.length && $parent.showMealPackagesArea"
       id="Packages"
       class="main-customer-container customer-menu-container left-right-box-shadow"
     >

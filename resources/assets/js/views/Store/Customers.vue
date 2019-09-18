@@ -6,6 +6,105 @@
         <add-customer-modal :addCustomerModal="addCustomerModal">
         </add-customer-modal>
 
+        <add-customer-modal v-model="addCustomerModal" v-if="addCustomerModal">
+        </add-customer-modal>
+        <b-modal
+          size="lg"
+          title="Add New Customer"
+          v-model="addCustomerModal"
+          v-if="addCustomerModal"
+          hide-footer
+          no-fade
+        >
+          <b-form @submit.prevent="addCustomer" class="mt-3">
+            <b-form-group horizontal label="First Name">
+              <b-form-input
+                v-model="form.first_name"
+                type="text"
+                required
+                placeholder="First name"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group horizontal label="Last Name">
+              <b-form-input
+                v-model="form.last_name"
+                type="text"
+                required
+                placeholder="Last name"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group horizontal label="Email">
+              <b-form-input
+                v-model="form.email"
+                type="email"
+                required
+                placeholder="Enter email"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group horizontal label="Phone">
+              <b-form-input
+                v-model="form.phone"
+                type="text"
+                required
+                placeholder="Phone"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group horizontal label="Address">
+              <b-form-input
+                v-model="form.address"
+                type="text"
+                required
+                placeholder="Address"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group horizontal label="City">
+              <b-form-input
+                v-model="form.city"
+                type="text"
+                required
+                placeholder="City"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group horizontal label="State">
+              <v-select
+                label="name"
+                :options="stateNames"
+                :on-change="val => changeState(val)"
+              ></v-select>
+            </b-form-group>
+            <b-form-group horizontal label="Zip">
+              <b-form-input
+                v-model="form.zip"
+                type="text"
+                required
+                placeholder="Zip"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group horizontal label="Delivery">
+              <b-form-input
+                v-model="form.delivery"
+                type="text"
+                placeholder="Delivery Instructions"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-checkbox
+              id="accepted-tos"
+              name="accepted-tos"
+              v-model="form.accepted_tos"
+              :value="1"
+              :unchecked-value="0"
+            >
+              This customer gave me permission to create their account and
+              accepts the
+              <a href="https://www.goprep.com/terms-of-service/" target="_blank"
+                ><span class="strong">terms of service</span></a
+              >
+            </b-form-checkbox>
+            <b-button type="submit" variant="primary" class="float-right"
+              >Add</b-button
+            >
+          </b-form>
+        </b-modal>
         <div class="card">
           <div class="card-body">
             <v-client-table
