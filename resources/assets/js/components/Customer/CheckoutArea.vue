@@ -288,6 +288,11 @@
     </li>
 
     <li v-if="loggedIn">
+      <div v-if="!willDeliver && !manualOrder && pickup != 1">
+        <b-alert v-if="!loading" variant="danger center-text" show
+          >You are outside of the delivery area.</b-alert
+        >
+      </div>
       <div>
         <div v-if="$route.params.manualOrder">
           <b-form-group>

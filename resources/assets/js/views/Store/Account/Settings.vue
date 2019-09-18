@@ -1152,7 +1152,7 @@ export default {
     });
   },
   mounted() {
-    if (this.storeSettings.salesTax > 0) {
+    if (this.storeSettings.salesTax >= 0) {
       this.salesTax = this.storeSettings.salesTax;
     } else {
       this.getSalesTax(this.storeDetail.state);
