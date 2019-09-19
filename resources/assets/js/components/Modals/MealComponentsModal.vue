@@ -50,6 +50,7 @@
           <b-checkbox-group
             v-model="addons"
             :options="getAddonOptions(mealAddons)"
+            @input="setChoices"
             stacked
           ></b-checkbox-group>
         </b-form-group>
@@ -87,6 +88,8 @@ export default {
     },
     sizeCheck() {
       let check = false;
+
+      if (this.components.length === 1) return true;
 
       this.components.forEach(component => {
         component.options.forEach(option => {
@@ -143,9 +146,9 @@ export default {
 
       this.$forceUpdate();
 
-      this.$nextTick(() => {
-        this.$v.$reset();
-      });
+      // this.$nextTick(() => {
+      //   this.$v.$reset();
+      // });
 
       return new Promise((resolve, reject) => {
         this.$on("done", () => {
@@ -223,6 +226,7 @@ export default {
     },
     setChoices() {
       this.$parent.components = this.choices;
+      this.$parent.addons = this.addons;
     }
   }
 };

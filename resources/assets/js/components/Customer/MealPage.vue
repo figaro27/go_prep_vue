@@ -85,6 +85,8 @@
             :options="sizes"
             class="filters small"
             required
+            @change="sizeChanged = true"
+            v-show="sizes.length > 1"
           ></b-form-radio-group>
 
           <meal-components-modal
@@ -194,7 +196,10 @@ export default {
     return {
       defaultMealSize: {},
       mealSize: -1,
-      components: {}
+      components: {},
+      addons: [],
+      sizeChanged: false,
+      preventDuplicateSize: false
     };
   },
   components: {
@@ -237,13 +242,20 @@ export default {
     sizes() {
       let meal = this.meal;
       let sizes = meal.sizes;
-      let defaultMealSize = this.defaultMealSize;
-      sizes.unshift({
-        full_title: meal.title + " - " + meal.default_size_title || "Regular",
-        id: meal.id,
-        price: meal.item_price,
-        title: meal.default_size_title || "Regular"
+      let sizeCheck = false;
+      sizes.forEach(size => {
+        if (size.defaultAdded) sizeCheck = true;
       });
+
+      if (!sizeCheck) {
+        sizes.unshift({
+          full_title: meal.title + " - " + meal.default_size_title || "Regular",
+          id: meal.id,
+          price: meal.item_price,
+          title: meal.default_size_title || "Regular",
+          defaultAdded: true
+        });
+      }
 
       return Object.values(sizes).map(size => {
         return {
@@ -256,6 +268,9 @@ export default {
   },
   updated() {
     this.getNutritionFacts();
+    if (!this.sizeChanged) {
+      this.mealSize = this.sizes[0].value;
+    }
   },
   methods: {
     getMealGallery(meal) {
@@ -277,7 +292,13 @@ export default {
       });
     },
     addMeal(meal, mealPackage) {
-      this.addOne(meal, mealPackage, this.mealSize, this.components);
+      this.addOne(
+        meal,
+        mealPackage,
+        this.mealSize,
+        this.components,
+        this.addons
+      );
       this.mealSize = null;
       this.back();
       if (this.$parent.showBagClass.includes("hidden")) this.$parent.showBag();
@@ -286,6 +307,7 @@ export default {
       this.defaultMealSize = null;
     },
     back() {
+      this.sizeChanged = false;
       this.$parent.showMealsArea = true;
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPageView = false;
