@@ -126,9 +126,7 @@
               </h2>
             </div>
             <div class="col-md-9">
-              <b-btn @click="addMeal(meal, null)" class="menu-bag-btn"
-                >ADD</b-btn
-              >
+              <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
             </div>
           </div>
         </div>
@@ -259,22 +257,16 @@ export default {
         });
       });
     },
-    addMeal(meal, mealPackage) {
+    addMeal(meal) {
       if (this.invalidCheck && this.hasVariations) {
         this.invalid = true;
         return;
       }
 
       if (this.hasVariations) {
-        this.addOne(
-          meal,
-          mealPackage,
-          this.mealSize,
-          this.components,
-          this.addons
-        );
+        this.addOne(meal, null, this.mealSize, this.components, this.addons);
       } else {
-        this.addOne(meal, mealPackage, null);
+        this.addOne(meal);
       }
 
       this.mealSize = null;
