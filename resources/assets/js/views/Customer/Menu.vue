@@ -102,7 +102,7 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
 import Spinner from "../../components/Spinner";
-import MealComponentsModal from "../../components/Modals/MealComponentsModal";
+import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 import MenuBag from "../../mixins/menuBag";
 import units from "../../data/units";
@@ -140,7 +140,7 @@ export default {
     LightBox,
     Carousel,
     Slide,
-    MealComponentsModal,
+    MealVariationsArea,
     MealPackageComponentsModal,
     CategorySlider,
     OutsideDeliveryArea,

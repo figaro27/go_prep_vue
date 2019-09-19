@@ -18,7 +18,7 @@
               @change="setChoices"
             ></b-checkbox-group>
 
-            <div v-if="$v.choices[component.id].$dirty">
+            <div v-if="invalid">
               <div
                 v-if="false === $v.choices[component.id].required"
                 class="invalid-feedback d-block"
@@ -26,13 +26,13 @@
                 This field is required
               </div>
               <div
-                v-if="false === $v.choices[component.id].minimum"
+                v-if="$v.choices[component.id].minimum === false"
                 class="invalid-feedback d-block"
               >
                 Minimum {{ component.minimum }}
               </div>
               <div
-                v-if="false === $v.choices[component.id].maximum"
+                v-if="$v.choices[component.id].maximum === false"
                 class="invalid-feedback d-block"
               >
                 Maximum {{ component.maximum }}
@@ -68,7 +68,8 @@ import { mapGetters } from "vuex";
 export default {
   props: {
     meal: {},
-    sizeId: null
+    sizeId: null,
+    invalid: false
   },
   mixins: [modal],
   data() {
@@ -76,8 +77,12 @@ export default {
       mealPackage: false,
       size: null,
       choices: {},
-      addons: []
+      addons: [],
+      validated: false
     };
+  },
+  updated() {
+    this.$parent.invalidCheck = this.$v.$invalid;
   },
   computed: {
     ...mapGetters(["storeSettings"]),
@@ -225,6 +230,7 @@ export default {
       return `${component.title} - ${qty}`;
     },
     setChoices() {
+      this.$parent.invalidCheck = this.$v.$invalid;
       this.$parent.components = this.choices;
       this.$parent.addons = this.addons;
     }

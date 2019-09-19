@@ -1,9 +1,9 @@
 <template>
   <div>
-    <meal-components-modal
+    <meal-variations-area
       ref="componentModal"
       :key="total"
-    ></meal-components-modal>
+    ></meal-variations-area>
 
     <div
       v-for="(group, catIndex) in meals"
@@ -143,13 +143,13 @@ import MenuBag from "../../mixins/menuBag";
 import { mapGetters } from "vuex";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import StoreClosed from "../../components/Customer/StoreClosed";
-import MealComponentsModal from "../../components/Modals/MealComponentsModal";
+import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 
 export default {
   components: {
     OutsideDeliveryArea,
     StoreClosed,
-    MealComponentsModal,
+    MealVariationsArea,
     StoreClosed
   },
   props: {

@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div
-      class="main-customer-container customer-menu-container box-shadow"
-      v-if="$parent.mealPageView"
-    >
+    <div class="main-customer-container box-shadow" v-if="$parent.mealPageView">
       <div class="row">
         <div class="col-md-2">
           <b-btn @click="back" class="menu-bag-btn">BACK</b-btn>
@@ -89,12 +86,13 @@
             v-show="sizes.length > 1"
           ></b-form-radio-group>
 
-          <meal-components-modal
+          <meal-variations-area
             :meal="meal"
             :sizeId="mealSize"
+            :invalid="invalid"
             ref="componentModal"
             :key="total"
-          ></meal-components-modal>
+          ></meal-variations-area>
 
           <p v-if="storeSettings.showNutrition" v-html="mealDescription"></p>
           <div class="row mt-3 mb-5" v-if="storeSettings.showNutrition">
@@ -189,7 +187,7 @@ import nutrition from "../../data/nutrition";
 import format from "../../lib/format";
 import "vue-image-lightbox/src/components/style.css";
 import { Carousel, Slide } from "vue-carousel";
-import MealComponentsModal from "../../components/Modals/MealComponentsModal";
+import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 
 export default {
   data() {
@@ -199,12 +197,13 @@ export default {
       components: {},
       addons: [],
       sizeChanged: false,
-      preventDuplicateSize: false
+      invalidCheck: false,
+      invalid: false
     };
   },
   components: {
     LightBox,
-    MealComponentsModal
+    MealVariationsArea
   },
   props: {
     showMealModal: false,
@@ -264,6 +263,15 @@ export default {
           value: size.id
         };
       });
+    },
+    hasVariations() {
+      if (
+        this.meal.sizes.length > 0 ||
+        this.meal.components.length > 0 ||
+        this.meal.addons.length > 0
+      )
+        return true;
+      else return false;
     }
   },
   updated() {
@@ -292,6 +300,11 @@ export default {
       });
     },
     addMeal(meal, mealPackage) {
+      if (this.invalidCheck && this.hasVariations) {
+        this.invalid = true;
+        return;
+      }
+
       this.addOne(
         meal,
         mealPackage,
@@ -305,6 +318,7 @@ export default {
       this.mealSize = null;
       this.components = null;
       this.defaultMealSize = null;
+      this.invalid = false;
     },
     back() {
       this.sizeChanged = false;
