@@ -174,7 +174,7 @@ export default {
   methods: {
     addMeal(meal, mealPackage, size) {
       if (
-        meal.sizes.length > 0 ||
+        meal.sizes.length > 1 ||
         meal.components.length > 0 ||
         meal.addons.length > 0
       ) {

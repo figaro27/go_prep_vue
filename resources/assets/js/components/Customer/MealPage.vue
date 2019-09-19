@@ -266,7 +266,7 @@ export default {
     },
     hasVariations() {
       if (
-        this.meal.sizes.length > 0 ||
+        this.meal.sizes.length > 1 ||
         this.meal.components.length > 0 ||
         this.meal.addons.length > 0
       )
