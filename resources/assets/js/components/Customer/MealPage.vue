@@ -1,13 +1,8 @@
 <template>
   <div>
     <div class="main-customer-container box-shadow" v-if="$parent.mealPageView">
-      <div class="row">
-        <div class="col-md-2">
-          <b-btn @click="back" class="menu-bag-btn">BACK</b-btn>
-        </div>
-      </div>
-      <div class="row mt-3">
-        <div class="col-lg-6 modal-meal-image">
+      <div class="row meal-page">
+        <div class="col-md-6">
           <thumbnail
             v-if="meal.image.url"
             :src="meal.image.url"
@@ -38,8 +33,56 @@
               </div>
             </div>
           </slick>
+          <div class="row">
+            <div
+              class="col-md-8"
+              id="nutritionFacts"
+              ref="nutritionFacts"
+            ></div>
+            <div class="col-md-3" v-if="storeSettings.showIngredients">
+              <h5>Ingredients</h5>
+              <li v-for="ingredient in meal.ingredients">
+                {{ ingredient.food_name }}
+              </li>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-6">
+              <h5>Nutrition</h5>
+              <li v-for="tag in meal.tags">{{ tag.tag }}</li>
+            </div>
+            <div class="col-md-6">
+              <h5>Allergies</h5>
+              <li v-for="allergy in meal.allergy_titles">
+                {{ allergy }}
+              </li>
+            </div>
+          </div>
+          <p v-html="mealDescription" class="mt-3"></p>
 
-          <div class="title" v-if="meal.macros && storeSettings.showMacros">
+          <b-form-radio-group
+            buttons
+            v-model="mealSize"
+            :options="sizes"
+            class="filters small"
+            required
+            @change="sizeChanged = true"
+            v-show="sizes.length > 1"
+          ></b-form-radio-group>
+
+          <meal-variations-area
+            :meal="meal"
+            :sizeId="mealSize"
+            :invalid="invalid"
+            ref="componentModal"
+            :key="total"
+          ></meal-variations-area>
+          <div
+            class="title mt-3"
+            v-if="meal.macros && storeSettings.showMacros"
+          >
             <div class="row">
               <div class="col-6 col-md-3">
                 <div class="row">
@@ -76,97 +119,15 @@
             </div>
           </div>
 
-          <b-form-radio-group
-            buttons
-            v-model="mealSize"
-            :options="sizes"
-            class="filters small"
-            required
-            @change="sizeChanged = true"
-            v-show="sizes.length > 1"
-          ></b-form-radio-group>
-
-          <meal-variations-area
-            :meal="meal"
-            :sizeId="mealSize"
-            :invalid="invalid"
-            ref="componentModal"
-            :key="total"
-          ></meal-variations-area>
-
-          <p v-if="storeSettings.showNutrition" v-html="mealDescription"></p>
-          <div class="row mt-3 mb-5" v-if="storeSettings.showNutrition">
-            <div class="col-lg-6">
-              <h5>Tags</h5>
-              <li v-for="tag in meal.tags">{{ tag.tag }}</li>
-            </div>
-            <div class="col-lg-6">
-              <h5>Contains</h5>
-              <li v-for="allergy in meal.allergy_titles">
-                {{ allergy }}
-              </li>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6" v-if="storeSettings.showNutrition">
-          <div
-            id="nutritionFacts"
-            ref="nutritionFacts"
-            class="mt-2 mt-lg-0"
-          ></div>
-
-          <div class="row mt-2" v-if="storeSettings.showNutrition">
-            <div class="col-lg-5 mt-3">
-              <h5>
+          <div class="row mt-4">
+            <div class="col-md-3">
+              <h2 class="pt-2">
                 {{ format.money(meal.price, storeSettings.currency) }}
-              </h5>
+              </h2>
             </div>
-            <div class="col-lg-5">
+            <div class="col-md-9">
               <b-btn @click="addMeal(meal, null)" class="menu-bag-btn"
-                >+ ADD</b-btn
-              >
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6" v-if="!storeSettings.showNutrition">
-          <p v-html="mealDescription"></p>
-          <div class="row">
-            <div class="col-lg-6">
-              <h5>Tags</h5>
-              <li v-for="tag in meal.tags">{{ tag.tag }}</li>
-            </div>
-            <div class="col-lg-6">
-              <h5>Contains</h5>
-              <li v-for="allergy in meal.allergy_titles">
-                {{ allergy }}
-              </li>
-            </div>
-          </div>
-          <div class="row mt-3 mb-3" v-if="storeSettings.showIngredients">
-            <div class="col-lg-12">
-              <h5>Ingredients</h5>
-              {{ ingredients }}
-            </div>
-          </div>
-          <div class="row mt-5" v-if="storeSettings.showNutrition">
-            <div class="col-lg-8">
-              <h5>
-                {{ format.money(meal.price, storeSettings.currency) }}
-              </h5>
-            </div>
-            <div class="col-lg-4">
-              <b-btn @click="addMeal(meal)" class="menu-bag-btn">+ ADD</b-btn>
-            </div>
-          </div>
-          <div class="row mt-5" v-if="!storeSettings.showNutrition">
-            <div class="col-lg-6">
-              <h5>
-                {{ format.money(meal.price, storeSettings.currency) }}
-              </h5>
-            </div>
-            <div class="col-lg-6">
-              <b-btn @click="addMeal(meal, null)" class="menu-bag-btn"
-                >+ ADD</b-btn
+                >ADD</b-btn
               >
             </div>
           </div>
@@ -175,7 +136,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../mixins/menuBag";

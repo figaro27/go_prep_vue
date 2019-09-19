@@ -82,7 +82,9 @@ export default {
     };
   },
   updated() {
-    this.$parent.invalidCheck = this.$v.$invalid;
+    if (this.sizeCheck) {
+      this.$parent.invalidCheck = this.$v.$invalid;
+    }
   },
   computed: {
     ...mapGetters(["storeSettings"]),
@@ -150,10 +152,6 @@ export default {
       this.addons = [];
 
       this.$forceUpdate();
-
-      // this.$nextTick(() => {
-      //   this.$v.$reset();
-      // });
 
       return new Promise((resolve, reject) => {
         this.$on("done", () => {
@@ -230,7 +228,11 @@ export default {
       return `${component.title} - ${qty}`;
     },
     setChoices() {
-      this.$parent.invalidCheck = this.$v.$invalid;
+      if (this.sizeCheck) {
+        this.$parent.invalidCheck = this.$v.$invalid;
+      } else {
+        this.$parent.invalidCheck = false;
+      }
       this.$parent.components = this.choices;
       this.$parent.addons = this.addons;
     }
