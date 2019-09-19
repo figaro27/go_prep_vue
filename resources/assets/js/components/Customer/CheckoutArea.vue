@@ -757,7 +757,7 @@ export default {
       if (this.storeSettings.enableSalesTax === 0) {
         return 0;
       }
-      if (this.storeSettings.salesTax >= 0)
+      if (this.storeSettings.salesTax > 0)
         return (this.storeSettings.salesTax / 100) * this.afterFees;
       else return this.salesTax * this.afterFees;
     },
