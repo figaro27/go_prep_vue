@@ -122,7 +122,7 @@
                         readonly
                       ></b-form-input>
                       <b-btn
-                        @click.stop="addMeal(meal)"
+                        @click.stop="addMeal(meal, null)"
                         class="menu-bag-btn plus-minus"
                       >
                         <i>+</i>
@@ -181,7 +181,7 @@ export default {
         this.showMeal(meal);
         return;
       }
-      this.addOne(meal, mealPackage, size);
+      this.addOne(meal, mealPackage, null);
       if (this.$parent.showBagClass.includes("hidden-right")) {
         this.$parent.showBagClass = "shopping-cart show-right bag-area";
       }

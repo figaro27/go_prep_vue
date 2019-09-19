@@ -265,13 +265,18 @@ export default {
         return;
       }
 
-      this.addOne(
-        meal,
-        mealPackage,
-        this.mealSize,
-        this.components,
-        this.addons
-      );
+      if (this.hasVariations) {
+        this.addOne(
+          meal,
+          mealPackage,
+          this.mealSize,
+          this.components,
+          this.addons
+        );
+      } else {
+        this.addOne(meal, mealPackage, null);
+      }
+
       this.mealSize = null;
       this.back();
       if (this.$parent.showBagClass.includes("hidden")) this.$parent.showBag();
