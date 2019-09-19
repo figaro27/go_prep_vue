@@ -222,7 +222,7 @@ export default {
       return `${component.title} - ${qty}`;
     },
     setChoices() {
-      this.$parent.choices = this.choices;
+      this.$parent.components = this.choices;
     }
   }
 };

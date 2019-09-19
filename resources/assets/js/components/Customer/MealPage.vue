@@ -192,8 +192,9 @@ import MealComponentsModal from "../../components/Modals/MealComponentsModal";
 export default {
   data() {
     return {
+      defaultMealSize: {},
       mealSize: -1,
-      choices: {}
+      components: {}
     };
   },
   components: {
@@ -236,6 +237,7 @@ export default {
     sizes() {
       let meal = this.meal;
       let sizes = meal.sizes;
+      let defaultMealSize = this.defaultMealSize;
       sizes.unshift({
         full_title: meal.title + " - " + meal.default_size_title || "Regular",
         id: meal.id,
@@ -275,10 +277,13 @@ export default {
       });
     },
     addMeal(meal, mealPackage) {
-      this.addOne(meal, mealPackage, this.mealSize, this.choices);
+      this.addOne(meal, mealPackage, this.mealSize, this.components);
       this.mealSize = null;
       this.back();
       if (this.$parent.showBagClass.includes("hidden")) this.$parent.showBag();
+      this.mealSize = null;
+      this.components = null;
+      this.defaultMealSize = null;
     },
     back() {
       this.$parent.showMealsArea = true;

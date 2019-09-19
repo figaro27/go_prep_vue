@@ -122,37 +122,11 @@
                         readonly
                       ></b-form-input>
                       <b-btn
-                        v-if="meal.sizes.length === 0"
                         @click.stop="addMeal(meal)"
                         class="menu-bag-btn plus-minus"
                       >
                         <i>+</i>
                       </b-btn>
-                      <b-dropdown
-                        v-else
-                        toggle-class="menu-bag-btn plus-minus"
-                        :right="i > 0 && (i + 1) % 4 === 0"
-                      >
-                        <i slot="button-content">+</i>
-                        <b-dropdown-item @click.stop="addMeal(meal)">
-                          {{ meal.default_size_title || "Regular" }}
-                          -
-                          {{
-                            format.money(
-                              meal.item_price,
-                              storeSettings.currency
-                            )
-                          }}
-                        </b-dropdown-item>
-                        <b-dropdown-item
-                          v-for="size in meal.sizes"
-                          :key="size.id"
-                          @click.stop="addMeal(meal, false, size)"
-                        >
-                          {{ size.title }} -
-                          {{ format.money(size.price, storeSettings.currency) }}
-                        </b-dropdown-item>
-                      </b-dropdown>
                     </div>
                   </div>
                 </div>
@@ -199,6 +173,14 @@ export default {
   },
   methods: {
     addMeal(meal, mealPackage, size) {
+      if (
+        meal.sizes.length > 0 ||
+        meal.components.length > 0 ||
+        meal.addons.length > 0
+      ) {
+        this.showMeal(meal);
+        return;
+      }
       this.addOne(meal, mealPackage, size);
       if (this.$parent.showBagClass.includes("hidden-right")) {
         this.$parent.showBagClass = "shopping-cart show-right bag-area";
