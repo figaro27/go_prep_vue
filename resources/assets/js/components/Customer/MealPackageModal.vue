@@ -121,7 +121,7 @@
                 class="mt-2 mt-lg-0"
               ></div>
               <b-btn
-                @click="addMealPackage(mealPackage)"
+                @click="addMealPackage(mealPackage, true)"
                 class="menu-bag-btn width-80 mt-3"
                 >+ ADD PACKAGE</b-btn
               >
@@ -147,7 +147,7 @@
                 </div>
               </div>
               <b-btn
-                @click="addMealPackage(mealPackage)"
+                @click="addMealPackage(mealPackage, true)"
                 class="menu-bag-btn width-80 mt-3"
                 >+ ADD PACKAGE</b-btn
               >
