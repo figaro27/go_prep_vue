@@ -1644,10 +1644,10 @@ const getters = {
             });
           }
           title += "</ul>";
+        }
 
-          if (special_instructions) {
-            title += `<p class="small">${special_instructions}</p>`;
-          }
+        if (special_instructions) {
+          title += `<p class="small">${special_instructions}</p>`;
         }
 
         return title;

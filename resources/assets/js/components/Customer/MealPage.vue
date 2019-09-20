@@ -123,6 +123,7 @@
           </div>
 
           <b-form-textarea
+            v-if="storeModules.specialInstructions"
             class="mt-4"
             v-model="specialInstructions"
             placeholder="Special instructions"
@@ -203,7 +204,8 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal",
-      getMealPackage: "viewedStoreMealPackage"
+      getMealPackage: "viewedStoreMealPackage",
+      storeModules: "viewedStoreModules"
     }),
     viewedMeal() {
       return this.meal;

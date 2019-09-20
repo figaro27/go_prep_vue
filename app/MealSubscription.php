@@ -74,6 +74,10 @@ class MealSubscription extends Pivot
 
             $title .= ' - ' . $comp;
         }
+        if ($this->special_instructions != null) {
+            $title .= $this->special_instructions;
+        }
+
         return $title;
     }
 
@@ -104,6 +108,13 @@ class MealSubscription extends Pivot
                     $title .=
                         '<li class="plus">' . $addon->addon->title . '</li>';
                 }
+            }
+
+            if ($this->special_instructions != null) {
+                $title .=
+                    '<p style="font-size:10px">' .
+                    $this->special_instructions .
+                    '</p>';
             }
 
             $title .= '</ul>';

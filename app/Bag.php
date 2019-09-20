@@ -53,7 +53,8 @@ class Bag
                 'meal_package' => $item['meal_package'] ?? false,
                 'size' => $item['size'] ?? null,
                 'components' => $item['components'] ?? [],
-                'addons' => $item['addons'] ?? []
+                'addons' => $item['addons'] ?? [],
+                'special_instructions' => $item['special_instructions'] ?? []
             ])
         );
     }
