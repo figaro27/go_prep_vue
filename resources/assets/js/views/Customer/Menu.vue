@@ -9,6 +9,12 @@
         :showDescriptionModal="showDescriptionModal"
       ></store-description-modal>
 
+      <meal-components-modal ref="componentModal"></meal-components-modal>
+
+      <meal-package-components-modal
+        ref="packageComponentModal"
+      ></meal-package-components-modal>
+
       <meal-filter-modal
         :viewFilterModal="viewFilterModal"
         :allergies="allergies"
@@ -103,6 +109,7 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
 import Spinner from "../../components/Spinner";
 import MealVariationsArea from "../../components/Modals/MealVariationsArea";
+import MealComponentsModal from "../../components/Modals/MealComponentsModal";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 import MenuBag from "../../mixins/menuBag";
 import units from "../../data/units";
@@ -155,7 +162,8 @@ export default {
     BagActions,
     AuthModal,
     MenuFilters,
-    MealPage
+    MealPage,
+    MealComponentsModal
   },
   mixins: [MenuBag],
   props: {
