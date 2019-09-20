@@ -49,15 +49,18 @@
         </div>
         <div class="col-md-6">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <h5>Nutrition</h5>
               <li v-for="tag in meal.tags">{{ tag.tag }}</li>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <h5>Allergies</h5>
               <li v-for="allergy in meal.allergy_titles">
                 {{ allergy }}
               </li>
+            </div>
+            <div class="col-md-4">
+              <b-btn @click="back">BACK</b-btn>
             </div>
           </div>
           <p v-html="mealDescription" class="mt-3"></p>
@@ -120,12 +123,12 @@
           </div>
 
           <div class="row mt-4">
-            <div class="col-md-3">
-              <h2 class="pt-2">
+            <div class="col-md-2">
+              <h2 class="pt-3">
                 {{ format.money(meal.price, storeSettings.currency) }}
               </h2>
             </div>
-            <div class="col-md-9">
+            <div class="col-md-9 offset-1">
               <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
             </div>
           </div>
