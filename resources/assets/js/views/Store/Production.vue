@@ -18,8 +18,19 @@
                   ref="deliveryDates"
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
+
+                <b-form-radio-group
+                  v-if="storeModules.productionGroups"
+                  buttons
+                  v-model="productionGroupId"
+                  null
+                  class="storeFilters ml-2 mt-1"
+                  @change="val => {}"
+                  :options="productionGroupOptions"
+                ></b-form-radio-group>
               </div>
             </div>
+
             <div slot="featured_image" slot-scope="props">
               <thumbnail
                 v-if="props.row.image.url_thumb"
@@ -81,6 +92,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      productionGroupId: null,
       ordersByDate: [],
       filters: {
         delivery_dates: {
@@ -122,7 +134,9 @@ export default {
       // orders: "storeOrders",
       isLoading: "isLoading",
       nextDeliveryDates: "storeNextDeliveryDates",
-      storeSettings: "storeSettings"
+      storeSettings: "storeSettings",
+      storeModules: "storeModules",
+      storeProductionGroups: "storeProductionGroups"
     }),
     tableData() {
       let filters = { ...this.filters };
@@ -140,6 +154,7 @@ export default {
       orders.forEach(order => {
         _.forEach(order.items, item => {
           let meal = this.getMeal(item.meal_id);
+          if (meal.production_group_id !== this.productionGroupId) return null;
           let size = meal.getSize(item.meal_size_id);
           let title = meal.getTitle(
             true,
@@ -171,6 +186,15 @@ export default {
           total: quantity * price
         };
       });
+    },
+    productionGroupOptions() {
+      let prodGroups = this.storeProductionGroups;
+      let prodGroupOptions = [{ text: "All", value: null }];
+
+      prodGroups.forEach(prodGroup => {
+        prodGroupOptions.push({ text: prodGroup.title, value: prodGroup.id });
+      });
+      return prodGroupOptions;
     },
     storeMeals() {
       return this.meals;
@@ -220,6 +244,10 @@ export default {
       }
 
       let params = {};
+
+      if (this.productionGroupId !== null) {
+        params.productionGroupId = this.productionGroupId;
+      }
 
       if (
         this.filters.delivery_dates.start &&

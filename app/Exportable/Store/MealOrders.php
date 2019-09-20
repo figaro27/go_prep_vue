@@ -6,6 +6,7 @@ use App\Exportable\Exportable;
 use App\Store;
 use App\Meal;
 use App\MealSize;
+use App\ProductionGroup;
 
 class MealOrders
 {
@@ -26,9 +27,36 @@ class MealOrders
         $mealQuantities = [];
         $dates = $this->getDeliveryDates();
 
+        $params = $this->params;
+
+        $productionGroupId = $this->params->get('productionGroupId', null);
+        if ($productionGroupId != null) {
+            $productionGroupTitle = ProductionGroup::where(
+                'id',
+                $productionGroupId
+            )->first()->title;
+            $params->productionGroupTitle = $productionGroupTitle;
+        } else {
+            $params->productionGroupTitle = null;
+        }
+
         $orders = $this->store->getOrders(null, $dates, true);
         $orders->map(function ($order) use (&$mealQuantities) {
-            foreach ($order->meal_orders()->get() as $i => $mealOrder) {
+            $productionGroupId = $this->params->get('productionGroupId', null);
+            foreach (
+                $order
+                    ->meal_orders()
+                    ->with('meal')
+                    ->get()
+                as $i => $mealOrder
+            ) {
+                if (
+                    $productionGroupId &&
+                    $mealOrder->meal->production_group_id !==
+                        intval($productionGroupId)
+                ) {
+                    return null;
+                }
                 $title =
                     $this->type !== 'pdf'
                         ? $mealOrder->title

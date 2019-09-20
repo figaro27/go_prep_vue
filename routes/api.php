@@ -187,6 +187,10 @@ foreach (
                                 'PickupLocationController'
                             );
                             Route::resource(
+                                'productionGroups',
+                                'ProductionGroupController'
+                            );
+                            Route::resource(
                                 'settings',
                                 'StoreSettingController'
                             );

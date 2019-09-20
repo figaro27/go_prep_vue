@@ -80,6 +80,7 @@ class SpaController extends Controller
                         'storeDetail',
                         'coupons',
                         'pickupLocations',
+                        'productionGroups',
                         'modules',
                         'moduleSettings'
                     ])

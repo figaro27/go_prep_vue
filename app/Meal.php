@@ -36,7 +36,8 @@ class Meal extends Model implements HasMedia
         'instructions',
         'price',
         'default_size_title',
-        'created_at'
+        'created_at',
+        'production_group_id'
     ];
 
     protected $casts = [
@@ -565,7 +566,8 @@ class Meal extends Model implements HasMedia
             'default_size_title',
             'components',
             'addons',
-            'macros'
+            'macros',
+            'production_group_id'
         ]);
 
         $meal = new Meal();
@@ -893,7 +895,8 @@ class Meal extends Model implements HasMedia
             'default_size_title',
             'components',
             'addons',
-            'macros'
+            'macros',
+            'production_group_id'
         ]);
 
         if ($props->has('featured_image')) {
