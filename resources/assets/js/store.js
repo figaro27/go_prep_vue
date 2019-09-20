@@ -189,7 +189,8 @@ const mutations = {
       mealPackage = false,
       size = null,
       components = null,
-      addons = null
+      addons = null,
+      specialInstructions = null
     }
   ) {
     let mealId = meal;
@@ -211,7 +212,14 @@ const mutations = {
     }
 
     let guid = CryptoJS.MD5(
-      JSON.stringify({ meal: mealId, mealPackage, size, components, addons })
+      JSON.stringify({
+        meal: mealId,
+        mealPackage,
+        size,
+        components,
+        addons,
+        specialInstructions
+      })
     ).toString();
 
     if (!_.has(state.bag.items, guid)) {
@@ -222,7 +230,8 @@ const mutations = {
         added: moment().unix(),
         size,
         components,
-        addons
+        addons,
+        special_instructions: specialInstructions
       });
     }
 
@@ -244,7 +253,8 @@ const mutations = {
       mealPackage = false,
       size = null,
       components = null,
-      addons = null
+      addons = null,
+      specialInstructions = null
     }
   ) {
     let mealId = meal;
@@ -262,7 +272,14 @@ const mutations = {
     }
 
     let guid = CryptoJS.MD5(
-      JSON.stringify({ meal: mealId, mealPackage, size, components, addons })
+      JSON.stringify({
+        meal: mealId,
+        mealPackage,
+        size,
+        components,
+        addons,
+        specialInstructions
+      })
     ).toString();
 
     if (!_.has(state.bag.items, guid)) {
@@ -1159,7 +1176,8 @@ const getters = {
         html = false,
         size = null,
         components = null,
-        addons = null
+        addons = null,
+        specialInstructions = null
       ) => {
         let title = meal.title;
 
@@ -1191,6 +1209,10 @@ const getters = {
             });
           }
           title += "</ul>";
+
+          if (specialInstructions) {
+            title += `<p class="small">${specialInstructions}</p>`;
+          }
         }
 
         return title;
@@ -1373,7 +1395,8 @@ const getters = {
     mealPackage = false,
     size = null,
     components = null,
-    addons = null
+    addons = null,
+    specialInstructions = null
   ) => {
     if (!meal) {
       return 0;
@@ -1392,7 +1415,14 @@ const getters = {
     }
 
     let guid = CryptoJS.MD5(
-      JSON.stringify({ meal: mealId, mealPackage, size, components, addons })
+      JSON.stringify({
+        meal: mealId,
+        mealPackage,
+        size,
+        components,
+        addons,
+        specialInstructions
+      })
     ).toString();
 
     if (!_.has(state.bag.items, guid) || !_.isObject(state.bag.items[guid])) {
@@ -1582,7 +1612,8 @@ const getters = {
         html = false,
         size = null,
         components = null,
-        addons = null
+        addons = null,
+        specialInstructions = null
       ) => {
         let title = meal.title;
 
@@ -1614,6 +1645,10 @@ const getters = {
             });
           }
           title += "</ul>";
+
+          if (specialInstructions) {
+            title += `<p class="small">${specialInstructions}</p>`;
+          }
         }
 
         return title;

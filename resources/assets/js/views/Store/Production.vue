@@ -141,7 +141,13 @@ export default {
         _.forEach(order.items, item => {
           let meal = this.getMeal(item.meal_id);
           let size = meal.getSize(item.meal_size_id);
-          let title = meal.getTitle(true, size, item.components, item.addons);
+          let title = meal.getTitle(
+            true,
+            size,
+            item.components,
+            item.addons,
+            item.special_instructions
+          );
 
           if (!mealCounts[title]) {
             mealCounts[title] = 0;

@@ -172,6 +172,7 @@ class Order extends Model
                     'quantity' => $mealOrder->quantity,
                     'unit_price' => $mealOrder->unit_price,
                     'price' => $mealOrder->price,
+                    'specialInstructions' => $mealOrder->specialInstructions,
                     'components' => $mealOrder->components->map(function (
                         $component
                     ) {

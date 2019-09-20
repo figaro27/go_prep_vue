@@ -8,7 +8,8 @@ export default {
       mealPackage = false,
       size = null,
       components = null,
-      addons = null
+      addons = null,
+      specialInstructions = null
     ) {
       if (!mealPackage) {
         meal = this.getMeal(meal.id);
@@ -72,7 +73,8 @@ export default {
         mealPackage,
         size,
         components,
-        addons
+        addons,
+        specialInstructions
       });
       this.mealModal = false;
       this.mealPackageModal = false;
@@ -82,7 +84,8 @@ export default {
       mealPackage = false,
       size = null,
       components = null,
-      addons = null
+      addons = null,
+      specialInstructions = null
     ) {
       this.$store.commit("removeFromBag", {
         meal,
@@ -90,7 +93,8 @@ export default {
         mealPackage,
         size,
         components,
-        addons
+        addons,
+        specialInstructions
       });
     },
     addBagItems(bag) {
@@ -101,16 +105,25 @@ export default {
       mealPackage = false,
       size = null,
       components = null,
-      addons = null
+      addons = null,
+      specialInstructions = null
     ) {
-      let quantity = this.quantity(meal, mealPackage, size, components, addons);
+      let quantity = this.quantity(
+        meal,
+        mealPackage,
+        size,
+        components,
+        addons,
+        specialInstructions
+      );
       this.$store.commit("removeFromBag", {
         meal,
         quantity,
         mealPackage,
         size,
         components,
-        addons
+        addons,
+        specialInstructions
       });
     },
     clearAll() {

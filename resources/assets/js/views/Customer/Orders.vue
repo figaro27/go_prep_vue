@@ -209,7 +209,13 @@ export default {
         }
 
         const size = meal.getSize(item.meal_size_id);
-        const title = meal.getTitle(true, size, item.components, item.addons);
+        const title = meal.getTitle(
+          true,
+          size,
+          item.components,
+          item.addons,
+          item.special_instructions
+        );
 
         return {
           image: meal.image.url_thumb,
