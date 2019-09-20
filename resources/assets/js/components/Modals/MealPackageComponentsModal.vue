@@ -28,24 +28,6 @@
                 >
 
                 <div v-else class="my-2">
-                  <!-- 2019-08-01 DB: Now using images
-                  <b-checkbox-group
-                    class="meal-checkboxes"
-                    v-model="choices[component.id][option.id]"
-                    :options="
-                      getMealOptions(getOptionMeals(component.id, option.id))
-                    "
-                    :min="component.minimum"
-                    :max="component.maximum"
-                    stacked
-                    @input.native="e => console.log(e)"
-                    @change="
-                      choices =>
-                        onChangeOptionChoices(component, option, choices)
-                    "
-                  ></b-checkbox-group>
-                  -->
-
                   <b-row>
                     <div
                       class="item col-sm-6 col-lg-4 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3"
@@ -120,25 +102,6 @@
                 </div>
               </div>
 
-              <!--<b-radio-group
-                v-if="component.maximum === 1"
-                v-model="choices[component.id]"
-                :options="getOptions(component)"
-                :min="component.minimum"
-                :max="component.maximum"
-                stacked
-              ></b-radio-group>
-
-              <b-checkbox-group
-                v-else
-                v-model="choices[component.id]"
-                :options="getOptions(component)"
-                :min="component.minimum"
-                :max="component.maximum"
-                stacked
-              ></b-checkbox-group>
-              -->
-
               <div v-if="0 && $v.choices[component.id].$dirty">
                 <div
                   v-if="false === $v.choices[component.id].required"
@@ -167,13 +130,6 @@
       <b-row v-if="mealAddons.length" class="my-3">
         <b-col>
           <h6>Add-ons</h6>
-          <!--<b-form-group label>
-            <b-checkbox-group
-              v-model="addons"
-              :options="getAddonOptions(mealAddons)"
-              stacked
-            ></b-checkbox-group>
-          </b-form-group>-->
 
           <div v-for="addon in mealAddons" :key="addon.id">
             <b-checkbox @input="toggleAddon(addon.id)">

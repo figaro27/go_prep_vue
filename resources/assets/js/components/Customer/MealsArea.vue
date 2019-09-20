@@ -1,15 +1,5 @@
 <template>
   <div>
-    <meal-components-modal
-      ref="componentModal"
-      :key="total"
-    ></meal-components-modal>
-
-    <meal-package-components-modal
-      ref="packageComponentModal"
-      :key="total"
-    ></meal-package-components-modal>
-
     <div
       v-for="(group, catIndex) in meals"
       :key="group.category"
@@ -18,7 +8,6 @@
         (isVisible, entry) => $parent.onCategoryVisible(isVisible, catIndex)
       "
       class="main-customer-container customer-menu-container left-right-box-shadow"
-      v-if="$parent.showMealsArea"
     >
       <store-closed></store-closed>
       <outside-delivery-area></outside-delivery-area>
@@ -174,14 +163,10 @@ import MenuBag from "../../mixins/menuBag";
 import { mapGetters } from "vuex";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import StoreClosed from "../../components/Customer/StoreClosed";
-import MealComponentsModal from "../../components/Modals/MealComponentsModal";
-import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 
 export default {
   components: {
     OutsideDeliveryArea,
-    StoreClosed,
-    MealComponentsModal,
     StoreClosed
   },
   props: {
@@ -204,21 +189,13 @@ export default {
     })
   },
   methods: {
-    addMeal(meal, mealPackage, size) {
-      this.addOne(meal, mealPackage, size);
-      if (this.$parent.showBagClass.includes("hidden-right")) {
-        this.$parent.showBagClass = "shopping-cart show-right bag-area";
-      }
+    addMeal(meal) {
+      this.addOne(meal);
       if (this.$parent.showBagScrollbar) {
         this.$parent.showBagClass += " area-scroll";
       } else if (this.$parent.showBagScrollbar) {
         this.$parent.showBagClass -= " area-scroll";
       }
-    },
-    showMeal(meal) {
-      this.$parent.showMealPage(meal);
-      this.$parent.showMealsArea = false;
-      this.$parent.showMealPackagesArea = false;
     }
   }
 };
