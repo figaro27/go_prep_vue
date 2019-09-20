@@ -162,7 +162,10 @@ export default {
       orders.forEach(order => {
         _.forEach(order.items, item => {
           let meal = this.getMeal(item.meal_id);
-          if (meal.production_group_id !== this.productionGroupId) return null;
+          if (this.productionGroupId != null) {
+            if (meal.production_group_id !== this.productionGroupId)
+              return null;
+          }
           let size = meal.getSize(item.meal_size_id);
           let title = meal.getTitle(
             true,
