@@ -115,6 +115,9 @@ export default {
     },
     mealAddons() {
       return _.filter(this.meal.addons, addon => {
+        if (this.$parent.sizes.length === 1 && addon.meal_size_id === null) {
+          return addon;
+        }
         return addon.meal_size_id === this.sizeId;
       });
     }
@@ -188,7 +191,12 @@ export default {
       this.$emit("done");
     },
     getOptions(component) {
-      let options = _.filter(component.options, this.sizeCriteria);
+      let options = _.filter(component.options, option => {
+        if (this.$parent.sizes.length === 1 && option.meal_size_id === null) {
+          return option;
+        } else return option.meal_size_id == this.sizeId;
+      });
+
       return _.map(options, option => {
         let title = option.title;
         if (option.price && option.price > 0) {
@@ -204,6 +212,9 @@ export default {
     },
     getAddonOptions(addons) {
       addons = _.filter(addons, addon => {
+        if (this.$parent.sizes.length === 1 && addon.meal_size_id === null) {
+          return addon;
+        }
         return addon.meal_size_id == this.sizeId;
       });
       return _.map(addons, addon => {

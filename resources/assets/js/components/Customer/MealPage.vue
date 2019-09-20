@@ -277,11 +277,13 @@ export default {
       if (this.$parent.showBagClass.includes("hidden")) this.$parent.showBag();
       this.mealSize = null;
       this.components = null;
+      this.addons = [];
       this.defaultMealSize = null;
       this.invalid = false;
     },
     back() {
       this.sizeChanged = false;
+      this.addons = [];
       this.$parent.showMealsArea = true;
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPageView = false;
