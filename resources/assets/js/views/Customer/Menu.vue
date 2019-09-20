@@ -102,7 +102,7 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
 import Spinner from "../../components/Spinner";
-import MealComponentsModal from "../../components/Modals/MealComponentsModal";
+import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 import MenuBag from "../../mixins/menuBag";
 import units from "../../data/units";
@@ -140,7 +140,7 @@ export default {
     LightBox,
     Carousel,
     Slide,
-    MealComponentsModal,
+    MealVariationsArea,
     MealPackageComponentsModal,
     CategorySlider,
     OutsideDeliveryArea,
@@ -384,10 +384,10 @@ export default {
     showIngredients() {
       return this.storeSettings.showIngredients;
     },
-    showBagScrollbar() {
-      if (this.bag.length > 7) return true;
-      else return false;
-    },
+    // showBagScrollbar() {
+    //   if (this.bag.length > 7) return true;
+    //   else return false;
+    // },
     brandColor() {
       let style = "background-color:";
       style += this.store.settings.color;
