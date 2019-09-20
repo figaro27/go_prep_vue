@@ -9,6 +9,11 @@
       "
       class="main-customer-container customer-menu-container left-right-box-shadow"
     >
+      <meal-components-modal ref="componentModal"></meal-components-modal>
+      <meal-package-components-modal
+        ref="packageComponentModal"
+      ></meal-package-components-modal>
+
       <store-closed></store-closed>
       <outside-delivery-area></outside-delivery-area>
       <h2 class="text-center mb-3 dbl-underline">
@@ -163,11 +168,15 @@ import MenuBag from "../../mixins/menuBag";
 import { mapGetters } from "vuex";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import StoreClosed from "../../components/Customer/StoreClosed";
+import MealComponentsModal from "../../components/Modals/MealComponentsModal";
+import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 
 export default {
   components: {
     OutsideDeliveryArea,
-    StoreClosed
+    StoreClosed,
+    MealComponentsModal,
+    MealPackageComponentsModal
   },
   props: {
     meals: "",
