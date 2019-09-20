@@ -122,6 +122,14 @@
             </div>
           </div>
 
+          <b-form-textarea
+            class="mt-4"
+            v-model="specialInstructions"
+            placeholder="Special instructions"
+            rows="3"
+            max-rows="6"
+          ></b-form-textarea>
+
           <div class="row mt-4">
             <div class="col-md-2">
               <h2 class="pt-3">
@@ -159,7 +167,8 @@ export default {
       addons: [],
       sizeChanged: false,
       invalidCheck: false,
-      invalid: false
+      invalid: false,
+      specialInstructions: ""
     };
   },
   components: {
@@ -266,11 +275,25 @@ export default {
         return;
       }
 
-      if (this.hasVariations) {
-        this.addOne(meal, false, this.mealSize, this.components, this.addons);
-      } else {
-        this.addOne(meal);
+      // if (this.hasVariations) {
+      //   this.addOne(meal, false, this.mealSize, this.components, this.addons, this.specialInstructions);
+      // } else {
+      //   this.addOne(meal);
+      // }
+
+      let size = null;
+      if (this.sizes.length > 1) {
+        size = this.mealSize;
       }
+
+      this.addOne(
+        meal,
+        false,
+        size,
+        this.components,
+        this.addons,
+        this.specialInstructions
+      );
 
       this.mealSize = null;
       this.back();
@@ -279,6 +302,7 @@ export default {
       this.components = null;
       this.addons = [];
       this.defaultMealSize = null;
+      this.specialInstructions = null;
       this.invalid = false;
     },
     back() {

@@ -9,7 +9,7 @@ export default {
       size = null,
       components = null,
       addons = null,
-      specialInstructions = null
+      special_instructions = null
     ) {
       if (!mealPackage) {
         meal = this.getMeal(meal.id);
@@ -74,7 +74,7 @@ export default {
         size,
         components,
         addons,
-        specialInstructions
+        special_instructions
       });
       this.mealModal = false;
       this.mealPackageModal = false;
@@ -85,7 +85,7 @@ export default {
       size = null,
       components = null,
       addons = null,
-      specialInstructions = null
+      special_instructions = null
     ) {
       this.$store.commit("removeFromBag", {
         meal,
@@ -94,7 +94,7 @@ export default {
         size,
         components,
         addons,
-        specialInstructions
+        special_instructions
       });
     },
     addBagItems(bag) {
@@ -106,7 +106,7 @@ export default {
       size = null,
       components = null,
       addons = null,
-      specialInstructions = null
+      special_instructions = null
     ) {
       let quantity = this.quantity(
         meal,
@@ -114,7 +114,7 @@ export default {
         size,
         components,
         addons,
-        specialInstructions
+        special_instructions
       );
       this.$store.commit("removeFromBag", {
         meal,
@@ -123,7 +123,7 @@ export default {
         size,
         components,
         addons,
-        specialInstructions
+        special_instructions
       });
     },
     clearAll() {

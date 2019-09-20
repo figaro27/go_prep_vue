@@ -190,7 +190,7 @@ const mutations = {
       size = null,
       components = null,
       addons = null,
-      specialInstructions = null
+      special_instructions = null
     }
   ) {
     let mealId = meal;
@@ -218,7 +218,7 @@ const mutations = {
         size,
         components,
         addons,
-        specialInstructions
+        special_instructions
       })
     ).toString();
 
@@ -231,7 +231,7 @@ const mutations = {
         size,
         components,
         addons,
-        special_instructions: specialInstructions
+        special_instructions: special_instructions
       });
     }
 
@@ -254,7 +254,7 @@ const mutations = {
       size = null,
       components = null,
       addons = null,
-      specialInstructions = null
+      special_instructions = null
     }
   ) {
     let mealId = meal;
@@ -278,7 +278,7 @@ const mutations = {
         size,
         components,
         addons,
-        specialInstructions
+        special_instructions
       })
     ).toString();
 
@@ -1177,10 +1177,9 @@ const getters = {
         size = null,
         components = null,
         addons = null,
-        specialInstructions = null
+        special_instructions = null
       ) => {
         let title = meal.title;
-
         if (_.isObject(size)) {
           title = size.full_title;
         }
@@ -1209,10 +1208,10 @@ const getters = {
             });
           }
           title += "</ul>";
+        }
 
-          if (specialInstructions) {
-            title += `<p class="small">${specialInstructions}</p>`;
-          }
+        if (special_instructions) {
+          title += `<p class="small">${special_instructions}</p>`;
         }
 
         return title;
@@ -1396,7 +1395,7 @@ const getters = {
     size = null,
     components = null,
     addons = null,
-    specialInstructions = null
+    special_instructions = null
   ) => {
     if (!meal) {
       return 0;
@@ -1421,7 +1420,7 @@ const getters = {
         size,
         components,
         addons,
-        specialInstructions
+        special_instructions
       })
     ).toString();
 
@@ -1613,7 +1612,7 @@ const getters = {
         size = null,
         components = null,
         addons = null,
-        specialInstructions = null
+        special_instructions = null
       ) => {
         let title = meal.title;
 
@@ -1646,8 +1645,8 @@ const getters = {
           }
           title += "</ul>";
 
-          if (specialInstructions) {
-            title += `<p class="small">${specialInstructions}</p>`;
+          if (special_instructions) {
+            title += `<p class="small">${special_instructions}</p>`;
           }
         }
 

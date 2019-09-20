@@ -220,6 +220,7 @@ class Subscription extends Model
                     'quantity' => $mealSub->quantity,
                     'unit_price' => $mealSub->unit_price,
                     'price' => $mealSub->price,
+                    'special_instructions' => $mealSub->special_instructions,
                     'components' => $mealSub->components->map(function (
                         $component
                     ) {

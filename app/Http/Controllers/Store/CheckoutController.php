@@ -161,6 +161,8 @@ class CheckoutController extends StoreController
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
+                $mealOrder->special_instructions =
+                    $item['special_instructions'];
                 $mealOrder->save();
             }
 
@@ -313,6 +315,8 @@ class CheckoutController extends StoreController
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
+                $mealOrder->special_instructions =
+                    $item['special_instructions'];
                 $mealOrder->save();
             }
 
@@ -325,6 +329,7 @@ class CheckoutController extends StoreController
                 if (isset($item['size']) && $item['size']) {
                     $mealSub->meal_size_id = $item['size']['id'];
                 }
+                $mealSub->special_instructions = $item['special_instructions'];
                 $mealSub->save();
             }
 
