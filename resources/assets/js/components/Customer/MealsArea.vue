@@ -1,9 +1,9 @@
 <template>
   <div>
-    <meal-components-modal ref="componentModal"></meal-components-modal>
-    <meal-package-components-modal
-      ref="packageComponentModal"
-    ></meal-package-components-modal>
+    <meal-variations-area
+      ref="componentModal"
+      :key="total"
+    ></meal-variations-area>
     <div
       v-for="(group, catIndex) in meals"
       :key="group.category"
@@ -24,7 +24,7 @@
           v-for="(meal, i) in group.meals"
           :key="meal.id"
         >
-          <div :class="card" @click="$parent.showMealModal(meal)">
+          <div :class="card" @click="showMeal(meal)">
             <div :class="cardBody">
               <div class="item-wrap">
                 <div class="title d-md-none">
