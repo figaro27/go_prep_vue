@@ -198,7 +198,7 @@ export default {
   },
   methods: {
     addMeal(meal) {
-      this.addOne(meal);
+      this.addOne(meal, false, null, null, null, null);
       if (this.$parent.showBagScrollbar) {
         this.$parent.showBagClass += " area-scroll";
       } else if (this.$parent.showBagScrollbar) {

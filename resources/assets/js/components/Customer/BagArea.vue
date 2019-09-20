@@ -36,7 +36,8 @@
                     false,
                     item.size,
                     item.components,
-                    item.addons
+                    item.addons,
+                    item.special_instructions
                   )
                 "
                 class="bag-plus-minus brand-color white-text"
@@ -51,7 +52,8 @@
                     true,
                     item.size,
                     item.components,
-                    item.addons
+                    item.addons,
+                    item.special_instructions
                   )
                 "
                 class="bag-plus-minus brand-color white-text"
@@ -66,7 +68,8 @@
                     false,
                     item.size,
                     item.components,
-                    item.addons
+                    item.addons,
+                    item.special_instructions
                   )
                 "
                 class="bag-plus-minus gray white-text"
@@ -88,6 +91,7 @@
                 {{ item.size.full_title }}
               </span>
               <span v-else>{{ item.meal.item_title }}</span>
+              <p class="small">{{ item.special_instructions }}</p>
 
               <ul v-if="item.components || item.addons" class="plain">
                 <li v-for="component in itemComponents(item)" class="plain">
@@ -107,7 +111,8 @@
                     false,
                     item.size,
                     item.components,
-                    item.addons
+                    item.addons,
+                    item.special_instructions
                   )
                 "
                 class="clear-meal"
