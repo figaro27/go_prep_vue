@@ -84,6 +84,8 @@ export default {
   updated() {
     if (this.sizeCheck) {
       this.$parent.invalidCheck = this.$v.$invalid;
+    } else {
+      this.$parent.invalidCheck = false;
     }
   },
   computed: {
@@ -232,6 +234,7 @@ export default {
         this.$parent.invalidCheck = this.$v.$invalid;
       } else {
         this.$parent.invalidCheck = false;
+        this.$parent.invalid = false;
       }
       this.$parent.components = this.choices;
       this.$parent.addons = this.addons;
