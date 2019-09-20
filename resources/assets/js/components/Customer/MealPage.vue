@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="main-customer-container box-shadow" v-if="$parent.mealPageView">
+    <div
+      class="main-customer-container box-shadow"
+      style="height:100vh"
+      v-if="$parent.mealPageView"
+    >
       <div class="row meal-page">
         <div class="col-md-6">
           <thumbnail
@@ -35,16 +39,16 @@
           </slick>
           <div class="row">
             <div
-              class="col-md-8"
+              class="col-md-8 offset 2"
               id="nutritionFacts"
               ref="nutritionFacts"
             ></div>
-            <div class="col-md-3" v-if="storeSettings.showIngredients">
+            <!-- <div class="col-md-3" v-if="storeSettings.showIngredients">
               <h5>Ingredients</h5>
               <li v-for="ingredient in meal.ingredients">
                 {{ ingredient.food_name }}
               </li>
-            </div>
+            </div> -->
           </div>
         </div>
         <div class="col-md-6">
@@ -267,7 +271,7 @@ export default {
       }
 
       if (this.hasVariations) {
-        this.addOne(meal, null, this.mealSize, this.components, this.addons);
+        this.addOne(meal, false, this.mealSize, this.components, this.addons);
       } else {
         this.addOne(meal);
       }

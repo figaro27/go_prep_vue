@@ -384,10 +384,10 @@ export default {
     showIngredients() {
       return this.storeSettings.showIngredients;
     },
-    showBagScrollbar() {
-      if (this.bag.length > 7) return true;
-      else return false;
-    },
+    // showBagScrollbar() {
+    //   if (this.bag.length > 7) return true;
+    //   else return false;
+    // },
     brandColor() {
       let style = "background-color:";
       style += this.store.settings.color;
@@ -605,8 +605,7 @@ export default {
         showServingUnitQuantity: false,
         itemName: meal.title,
         ingredientList: ingredientList,
-        // showIngredients: this.showIngredients,
-        showIngredients: false,
+        showIngredients: this.showIngredients,
         decimalPlacesForQuantityTextbox: 2,
         valueServingUnitQuantity: 1,
         allowFDARounding: true,

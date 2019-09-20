@@ -1067,12 +1067,14 @@ body.forgotresettoken {
     padding-left: 10px;
     padding-right: 10px;
     padding-bottom: 175px !important;
+    overflow-y: auto !important;
+    max-height: 85vh !important;
   }
 
   .bag-bottom-area {
     -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15) !important;
     background-color: #ffffff;
-    height: 140px !important;
+    height: 15vh !important;
     width: 20.5vw;
     position: fixed;
     bottom: 0;
@@ -1174,7 +1176,7 @@ body.forgotresettoken {
   }
 
   .meal-page {
-    padding: 0px 100px;
+    margin: 0px 50px;
   }
 }
 
