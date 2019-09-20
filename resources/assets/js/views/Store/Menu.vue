@@ -340,17 +340,24 @@
                       </div>
                     </div>
                   </b-form-group>
-                  <h4 v-if="storeModules.productionGroups">Production Group</h4>
-                  <b-form-radio-group
-                    v-if="storeModules.productionGroups"
-                    buttons
-                    v-model="meal.production_group_id"
-                    class="storeFilters"
-                    @change="
-                      val => updateMeal(meal.id, { production_group_id: val })
+                  <div
+                    v-if="
+                      storeModules.productionGroups &&
+                        storeProductionGroups.length > 0
                     "
-                    :options="productionGroupOptions"
-                  ></b-form-radio-group>
+                  >
+                    <h4>Production Group</h4>
+                    <b-form-radio-group
+                      v-if="storeModules.productionGroups"
+                      buttons
+                      v-model="meal.production_group_id"
+                      class="storeFilters"
+                      @change="
+                        val => updateMeal(meal.id, { production_group_id: val })
+                      "
+                      :options="productionGroupOptions"
+                    ></b-form-radio-group>
+                  </div>
                   <h4 class="mt-4">
                     Categories
                     <img
