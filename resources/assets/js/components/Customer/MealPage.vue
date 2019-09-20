@@ -1,10 +1,6 @@
 <template>
   <div>
-    <div
-      class="main-customer-container box-shadow"
-      style="height:100vh"
-      v-if="$parent.mealPageView"
-    >
+    <div class="main-customer-container box-shadow" v-if="$parent.mealPageView">
       <div class="row meal-page">
         <div class="col-md-6">
           <thumbnail
