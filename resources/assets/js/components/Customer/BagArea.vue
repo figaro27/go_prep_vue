@@ -114,6 +114,13 @@
               />
             </div>
           </div>
+          <ul>
+            <li v-for="meal in item.meal.meals">
+              <span class="small">
+                {{ meal.item_quantity * item.quantity }} x {{ meal.item_title }}
+              </span>
+            </li>
+          </ul>
         </li>
       </ul>
     </div>

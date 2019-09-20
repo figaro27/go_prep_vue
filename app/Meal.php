@@ -786,6 +786,10 @@ class Meal extends Model implements HasMedia
                             $optionArr['meal_size_id'],
                             null
                         );
+
+                        if ($option->meal_size_id === null) {
+                            $option->meal_size_id = $meal->id;
+                        }
                         $option->save();
 
                         $option->syncIngredients($optionArr['ingredients']);
@@ -819,6 +823,10 @@ class Meal extends Model implements HasMedia
                         $addon['meal_size_id'],
                         null
                     );
+                    if ($mealAddon->meal_size_id === null) {
+                        $mealAddon->meal_size_id = $meal->id;
+                    }
+
                     $mealAddon->save();
 
                     $mealAddon->syncIngredients($addon['ingredients']);
@@ -1105,6 +1113,9 @@ class Meal extends Model implements HasMedia
                         $optionArr['meal_size_id'],
                         $optionArr['meal_size_id']
                     );
+                    if ($option->meal_size_id === null) {
+                        $option->meal_size_id = $meal->id;
+                    }
                     $option->save();
 
                     $option->syncIngredients($optionArr['ingredients']);
@@ -1150,6 +1161,10 @@ class Meal extends Model implements HasMedia
                     $addon['meal_size_id'],
                     $addon['meal_size_id']
                 );
+                if ($mealAddon->meal_size_id === null) {
+                    $mealAddon->meal_size_id = $meal->id;
+                }
+
                 $mealAddon->save();
 
                 $mealAddon->syncIngredients($addon['ingredients']);
