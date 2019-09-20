@@ -1,5 +1,9 @@
 <template>
   <div>
+    <meal-components-modal ref="componentModal"></meal-components-modal>
+    <meal-package-components-modal
+      ref="packageComponentModal"
+    ></meal-package-components-modal>
     <div
       v-for="(group, catIndex) in meals"
       :key="group.category"
@@ -9,11 +13,6 @@
       "
       class="main-customer-container customer-menu-container left-right-box-shadow"
     >
-      <meal-components-modal ref="componentModal"></meal-components-modal>
-      <meal-package-components-modal
-        ref="packageComponentModal"
-      ></meal-package-components-modal>
-
       <store-closed></store-closed>
       <outside-delivery-area></outside-delivery-area>
       <h2 class="text-center mb-3 dbl-underline">
