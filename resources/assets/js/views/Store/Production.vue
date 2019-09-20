@@ -51,6 +51,13 @@
             </div>
 
             <span slot="beforeLimit">
+              <b-form-checkbox
+                v-model="filters.group_by_date"
+                :value="true"
+                :unchecked-value="false"
+              >
+                Group By Day
+              </b-form-checkbox>
               <b-btn
                 variant="primary"
                 @click="exportData('meal_orders', 'pdf', true)"
@@ -98,7 +105,8 @@ export default {
         delivery_dates: {
           start: null,
           end: null
-        }
+        },
+        group_by_date: false
       },
       columns: ["featured_image", "title", "price", "quantity", "total"],
       options: {
@@ -243,7 +251,9 @@ export default {
         }
       }
 
-      let params = {};
+      let params = {
+        group_by_date: this.filters.group_by_date
+      };
 
       if (this.productionGroupId !== null) {
         params.productionGroupId = this.productionGroupId;
