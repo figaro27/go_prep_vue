@@ -1,10 +1,5 @@
 <template>
   <div>
-    <meal-variations-area
-      ref="componentModal"
-      :key="total"
-    ></meal-variations-area>
-
     <div
       v-for="(group, catIndex) in meals"
       :key="group.category"
@@ -122,11 +117,37 @@
                         readonly
                       ></b-form-input>
                       <b-btn
-                        @click.stop="addMeal(meal, null)"
+                        v-if="meal.sizes.length === 0"
+                        @click.stop="addMeal(meal)"
                         class="menu-bag-btn plus-minus"
                       >
                         <i>+</i>
                       </b-btn>
+                      <b-dropdown
+                        v-else
+                        toggle-class="menu-bag-btn plus-minus"
+                        :right="i > 0 && (i + 1) % 4 === 0"
+                      >
+                        <i slot="button-content">+</i>
+                        <b-dropdown-item @click.stop="addMeal(meal)">
+                          {{ meal.default_size_title || "Regular" }}
+                          -
+                          {{
+                            format.money(
+                              meal.item_price,
+                              storeSettings.currency
+                            )
+                          }}
+                        </b-dropdown-item>
+                        <b-dropdown-item
+                          v-for="size in meal.sizes"
+                          :key="size.id"
+                          @click.stop="addMeal(meal, false, size)"
+                        >
+                          {{ size.title }} -
+                          {{ format.money(size.price, storeSettings.currency) }}
+                        </b-dropdown-item>
+                      </b-dropdown>
                     </div>
                   </div>
                 </div>
@@ -143,13 +164,10 @@ import MenuBag from "../../mixins/menuBag";
 import { mapGetters } from "vuex";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import StoreClosed from "../../components/Customer/StoreClosed";
-import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 
 export default {
   components: {
     OutsideDeliveryArea,
-    StoreClosed,
-    MealVariationsArea,
     StoreClosed
   },
   props: {
@@ -172,19 +190,8 @@ export default {
     })
   },
   methods: {
-    addMeal(meal, mealPackage, size) {
-      if (
-        meal.sizes.length > 1 ||
-        meal.components.length > 0 ||
-        meal.addons.length > 0
-      ) {
-        this.showMeal(meal);
-        return;
-      }
+    addMeal(meal) {
       this.addOne(meal);
-      if (this.$parent.showBagClass.includes("hidden-right")) {
-        this.$parent.showBagClass = "shopping-cart show-right bag-area";
-      }
       if (this.$parent.showBagScrollbar) {
         this.$parent.showBagClass += " area-scroll";
       } else if (this.$parent.showBagScrollbar) {
