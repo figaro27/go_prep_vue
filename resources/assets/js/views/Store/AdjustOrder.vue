@@ -5,6 +5,7 @@
       :adjustOrder="true"
       :orderId="orderId"
       :storeView="true"
+      :deliveryDay="deliveryDay"
     ></customer-menu>
   </div>
 </template>
@@ -36,6 +37,14 @@ export default {
     }),
     orderId() {
       return this.$route.params.id;
+    },
+    deliveryDay() {
+      let orderId = parseInt(this.orderId);
+      let day = _.find(this.upcomingOrders, order => {
+        return (order.id = orderId);
+      });
+
+      return moment(day.delivery_date).format("YYYY-MM-DD 00:00:00");
     }
   },
   mounted() {

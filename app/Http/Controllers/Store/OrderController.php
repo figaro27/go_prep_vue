@@ -200,7 +200,9 @@ class OrderController extends StoreController
         }
 
         $order->delivery_date = $request->get('deliveryDate');
+        $order->transferTime = $request->get('transferTime');
         $order->adjusted = 1;
+        $order->pickup = $request->get('pickup');
         $order->save();
     }
 

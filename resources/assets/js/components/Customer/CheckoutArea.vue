@@ -189,11 +189,7 @@
     </ul>
     <li
       class="checkout-item"
-      v-if="
-        transferTypeCheckDelivery &&
-          transferTypeCheckPickup &&
-          $parent.orderId === undefined
-      "
+      v-if="transferTypeCheckDelivery && transferTypeCheckPickup"
     >
       <b-form-group>
         <b-form-radio-group v-model="pickup" name="pickup">
@@ -210,7 +206,8 @@
     <li
       class="checkout-item unset-height"
       v-if="
-        deliveryDaysOptions.length > 1 && $route.params.subscriptionId === null
+        deliveryDaysOptions.length > 1 &&
+          $route.params.subscriptionId === undefined
       "
     >
       <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
@@ -235,7 +232,7 @@
       class="checkout-item"
       v-if="
         deliveryDaysOptions.length === 1 &&
-          $route.params.subscriptionId === null
+          $route.params.subscriptionId === undefined
       "
     >
       <div>
@@ -254,7 +251,7 @@
         $parent.orderId === undefined &&
           storeModules.pickupLocations &&
           pickup &&
-          $route.params.subscriptionId === null
+          $route.params.subscriptionId === undefined
       "
     >
       <div>
@@ -271,8 +268,7 @@
     <li
       class="checkout-item"
       v-if="
-        $parent.orderId === undefined &&
-          storeModules.transferHours &&
+        storeModules.transferHours &&
           pickup &&
           $route.params.subscriptionId === undefined
       "
@@ -477,7 +473,8 @@ export default {
       deposit: 100,
       creditCardId: null,
       couponCode: "",
-      addCustomerModal: false
+      addCustomerModal: false,
+      deliveryDay: null
     };
   },
   props: {
@@ -894,16 +891,13 @@ export default {
       return this.customer;
     },
     async adjust() {
-      if (!this.deliveryDay && this.deliveryDaysOptions) {
-        this.deliveryDay = this.deliveryDaysOptions[0].value;
-      } else if (!this.deliveryDaysOptions) {
-        return;
-      }
       axios
         .post(`/api/me/orders/adjustOrder`, {
           bag: this.bag,
           orderId: this.$parent.orderId,
-          deliveryDate: this.deliveryDay
+          deliveryDate: this.deliveryDay,
+          pickup: this.pickup,
+          transferTime: this.transferTime
         })
         .then(resp => {
           this.$toastr.s("Order Adjusted");
@@ -925,21 +919,12 @@ export default {
     updated() {
       this.creditCardId = this.card;
 
-      alert("turtles");
-
       this.$eventBus.$on("chooseCustomer", () => {
         this.chooseCustomer();
       });
     },
     checkout() {
       if (this.checkingOut) {
-        return;
-      }
-
-      // Ensure delivery day is set
-      if (!this.deliveryDay && this.deliveryDaysOptions) {
-        this.deliveryDay = this.deliveryDaysOptions[0].value;
-      } else if (!this.deliveryDaysOptions) {
         return;
       }
 
