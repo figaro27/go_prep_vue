@@ -88,7 +88,19 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
+<<<<<<< HEAD
       showAuthModal: false,
+=======
+      //couponFreeDelivery: 0,
+      showLineItemModal: false,
+      lineItem: {
+        title: "",
+        price: null,
+        quantity: 1
+      },
+      selectedLineItem: {},
+      orderLineItems: [],
+>>>>>>> feature/line-items
       transferTime: "",
       cashOrder: false,
       addCustomerModal: false,
@@ -146,11 +158,61 @@ export default {
       minPrice: "minimumPrice",
       coupons: "viewedStoreCoupons",
       pickupLocations: "viewedStorePickupLocations",
+      lineItems: "viewedStoreLineItems",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       _orders: "orders",
       loggedIn: "loggedIn"
     }),
+<<<<<<< HEAD
+=======
+    lineItemOptions() {
+      let options = [];
+      this.lineItems.forEach(lineItem => {
+        options.push({
+          text: lineItem.title,
+          value: {
+            price: lineItem.price,
+            title: lineItem.title,
+            quantity: 1
+          }
+        });
+      });
+      return options;
+    },
+    couponFreeDelivery() {
+      return this.coupon ? this.coupon.freeDelivery : 0;
+    },
+    couponApplied() {
+      return !_.isNull(this.coupon);
+    },
+    customers() {
+      let customers = this.storeCustomers;
+      if (_.isEmpty(customers)) {
+        return [];
+      }
+
+      let grouped = {};
+      customers.forEach(customer => {
+        grouped[customer.id] = customer.name;
+      });
+      return grouped;
+    },
+    storeId() {
+      return this.store.id;
+    },
+    storeWebsite() {
+      if (!this.storeSettings.website) {
+        return null;
+      } else {
+        let website = this.storeSettings.website;
+        if (!website.includes("http")) {
+          website = "http://" + website;
+        }
+        return website;
+      }
+    },
+>>>>>>> feature/line-items
     mobile() {
       if (window.innerWidth < 500) return true;
       else return false;
@@ -159,7 +221,166 @@ export default {
       return this.store.settings;
     },
     transferType() {
+<<<<<<< HEAD
       return this.store.settings.transferType;
+=======
+      return this.storeSettings.transferType.split(",");
+    },
+    transferTypeCheckDelivery() {
+      if (_.includes(this.transferType, "delivery")) return true;
+    },
+    transferTypeCheckPickup() {
+      if (_.includes(this.transferType, "pickup")) return true;
+    },
+    minimumOption() {
+      return this.minOption;
+    },
+    minimumMeals() {
+      return this.minMeals;
+    },
+    minimumPrice() {
+      return this.minPrice;
+    },
+    remainingMeals() {
+      return this.minMeals - this.total;
+    },
+    remainingPrice() {
+      return this.minPrice - this.totalBagPricePreFees;
+    },
+    lineItemTotal() {
+      let totalLineItemsPrice = 0;
+      this.orderLineItems.forEach(orderLineItem => {
+        totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
+      });
+      return totalLineItemsPrice;
+    },
+    subtotal() {
+      let totalLineItemsPrice = 0;
+      this.orderLineItems.forEach(orderLineItem => {
+        totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
+      });
+      let subtotal = this.totalBagPricePreFees + totalLineItemsPrice;
+      return subtotal;
+    },
+    couponReduction() {
+      if (!this.couponApplied) {
+        return 0;
+      }
+      let coupon = this.coupon;
+      let subtotal = this.subtotal;
+      if (coupon.type === "flat") {
+        return coupon.amount;
+      } else if (coupon.type === "percent") {
+        return (coupon.amount / 100) * subtotal;
+      }
+    },
+    afterCoupon() {
+      if (this.couponApplied) {
+        let subtotal = this.subtotal - this.couponReduction;
+        return subtotal;
+      } else return this.subtotal;
+    },
+    mealPlanDiscount() {
+      return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
+    },
+    afterDiscount() {
+      if (this.applyMealPlanDiscount && this.deliveryPlan) {
+        return this.afterCoupon - this.mealPlanDiscount;
+      } else return this.afterCoupon;
+    },
+    deliveryFeeAmount() {
+      if (!this.pickup) {
+        if (!this.couponFreeDelivery) {
+          if (this.storeSettings.applyDeliveryFee) {
+            if (this.storeSettings.deliveryFeeType === "flat") {
+              return this.storeSettings.deliveryFee;
+            } else if (this.storeSettings.deliveryFeeType === "mileage") {
+              let mileageBase = parseFloat(this.storeSettings.mileageBase);
+              let mileagePerMile = parseFloat(
+                this.storeSettings.mileagePerMile
+              );
+              let distance = parseFloat(this.store.distance);
+              return mileageBase + mileagePerMile * distance;
+            }
+          } else return 0;
+        } else return 0;
+      } else return 0;
+    },
+    processingFeeAmount() {
+      if (this.storeSettings.processingFeeType === "flat") {
+        return this.storeSettings.processingFee;
+      } else if (this.storeSettings.processingFeeType === "percent") {
+        return (this.storeSettings.processingFee / 100) * this.subtotal;
+      }
+    },
+    afterFees() {
+      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+      let applyProcessingFee = this.storeSettings.applyProcessingFee;
+      let deliveryFee = this.deliveryFeeAmount;
+      let processingFee = this.processingFeeAmount;
+      let subtotal = this.afterDiscount;
+
+      if (applyDeliveryFee & (this.pickup === 0)) subtotal += deliveryFee;
+      if (applyProcessingFee) subtotal += processingFee;
+
+      return subtotal;
+    },
+    grandTotal() {
+      let subtotal = this.afterFees;
+      let tax = 1;
+
+      if (this.storeSettings.enableSalesTax) {
+        tax = 1 + this.salesTax;
+      }
+      return subtotal * tax;
+    },
+    hasCoupons() {
+      if (this.coupons.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    applyMealPlanDiscount() {
+      return this.storeSettings.applyMealPlanDiscount;
+    },
+    singOrPlural() {
+      if (this.remainingMeals > 1) {
+        return "meals";
+      }
+      return "meal";
+    },
+    singOrPluralTotal() {
+      if (this.total > 1) {
+        return "Meals";
+      }
+      return "Meal";
+    },
+    deliveryPlanText() {
+      if (this.deliveryPlan) return "Prepared Weekly";
+      else return "Prepared Once";
+    },
+    deliveryDaysOptions() {
+      return this.storeSetting("next_orderable_delivery_dates", []).map(
+        date => {
+          return {
+            value: date.date,
+            text: moment(date.date).format("dddd MMM Do")
+          };
+        }
+      );
+    },
+    tax() {
+      if (this.storeSettings.enableSalesTax)
+        return this.salesTax * this.afterFees;
+      else return 0;
+    },
+    stateNames() {
+      return states.stateNames();
+    },
+    subscriptionId() {
+      return this.$route.params.subscriptionId;
+>>>>>>> feature/line-items
     }
   },
   mounted() {
@@ -181,8 +402,243 @@ export default {
     this.creditCardId = this.card;
   },
   methods: {
+<<<<<<< HEAD
     setSalesTax(rate) {
       this.salesTax = rate;
+=======
+    ...mapActions([
+      "refreshSubscriptions",
+      "refreshStoreSubscriptions",
+      "refreshCustomerOrders",
+      "refreshOrders",
+      "refreshStoreSubscriptions",
+      "refreshUpcomingOrders",
+      "refreshStoreCustomers"
+    ]),
+    ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
+    preventNegative() {
+      if (this.total < 0) {
+        this.total += 1;
+      }
+    },
+    checkout() {
+      if (this.checkingOut) {
+        return;
+      }
+
+      // Ensure delivery day is set
+      if (!this.deliveryDay && this.deliveryDaysOptions) {
+        this.deliveryDay = this.deliveryDaysOptions[0].value;
+      } else if (!this.deliveryDaysOptions) {
+        return;
+      }
+
+      // this.loading = true;
+      this.checkingOut = true;
+
+      this.deliveryFee = this.deliveryFeeAmount;
+      if (this.pickup === 0) {
+        this.selectedPickupLocation = null;
+      }
+
+      let deposit = this.deposit;
+      if (deposit.toString().includes("%")) {
+        deposit.replace("%", "");
+        deposit = parseInt(deposit);
+      }
+
+      let endPoint = "";
+      if (this.manualOrder === true) {
+        endPoint = "/api/me/checkout";
+      } else {
+        endPoint = "/api/bag/checkout";
+      }
+
+      let cardId = this.card;
+
+      if (this.cashOrder === true) {
+        cardId = 0;
+      }
+      axios
+        .post(endPoint, {
+          subtotal: this.subtotal,
+          lineItemTotal: this.lineItemTotal,
+          afterDiscount: this.afterDiscount,
+          bag: this.bag,
+          plan: this.deliveryPlan,
+          pickup: this.pickup,
+          delivery_day: this.deliveryDay,
+          card_id: cardId,
+          store_id: this.store.id,
+          salesTax: this.tax,
+          coupon_id: this.couponApplied ? this.coupon.id : null,
+          couponReduction: this.couponReduction,
+          couponCode: this.couponApplied ? this.coupon.code : null,
+          deliveryFee: this.deliveryFee,
+          pickupLocation: this.selectedPickupLocation,
+          customer: this.customer,
+          deposit: deposit,
+          cashOrder: this.cashOrder,
+          transferTime: this.transferTime,
+          lineItemsOrder: this.orderLineItems
+        })
+        .then(async resp => {
+          this.emptyBag();
+          let weeklyDelivery = this.deliveryPlan;
+          this.setBagMealPlan(false);
+          this.setBagCoupon(null);
+
+          if (this.manualOrder && weeklyDelivery) {
+            this.refreshStoreSubscriptions();
+            this.$router.push({
+              path: "/store/meal-plans"
+            });
+            return;
+          } else if (this.manualOrder && !weeklyDelivery) {
+            this.refreshUpcomingOrders();
+            this.$router.push({
+              path: "/store/orders"
+            });
+            return;
+          }
+          if (weeklyDelivery) {
+            await this.refreshSubscriptions();
+            this.$router.push({
+              path: "/customer/meal-plans",
+              query: { created: true, pickup: this.pickup }
+            });
+          } else {
+            await this.refreshCustomerOrders();
+            this.$router.push({
+              path: "/customer/orders",
+              query: { created: true, pickup: this.pickup }
+            });
+          }
+        })
+        .catch(response => {
+          let error = _.first(Object.values(response.response.data.errors)) || [
+            "Please try again"
+          ];
+          error = error.join(" ");
+          this.$toastr.e(error, "Error");
+        })
+        .finally(() => {
+          this.loading = false;
+          this.checkingOut = false;
+        });
+    },
+    applyCoupon() {
+      this.coupons.forEach(coupon => {
+        if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
+          if (coupon.oneTime) {
+            let oneTimePass = this.oneTimeCouponCheck(coupon.id);
+            if (oneTimePass === "login") {
+              this.$toastr.e(
+                "This is a one-time coupon. Please log in or create an account to check if it has already been used."
+              );
+              return;
+            }
+            if (!oneTimePass) {
+              this.$toastr.e(
+                "This was a one-time coupon that has already been used.",
+                'Coupon Code: "' + this.couponCode + '"'
+              );
+              this.couponCode = "";
+              return;
+            }
+          }
+          this.coupon = coupon;
+          this.setBagCoupon(coupon);
+          this.couponCode = "";
+          this.$toastr.s("Coupon Applied.", "Success");
+        }
+      });
+    },
+    oneTimeCouponCheck(couponId) {
+      if (!this.loggedIn) {
+        return "login";
+      }
+      let couponCheck = true;
+      this._orders.forEach(order => {
+        if (couponId === order.coupon_id) {
+          couponCheck = false;
+        }
+      });
+      return couponCheck;
+    },
+    getCards() {
+      this.creditCardId = null;
+      this.creditCards = null;
+      this.$nextTick(() => {
+        axios
+          .post("/api/me/getCards", {
+            id: this.customer
+          })
+          .then(response => {
+            this.creditCardList = response.data;
+
+            if (response.data.length) {
+              this.creditCardId = response.data[0].id;
+              this.creditCard = response.data[0];
+              this.$cardPicker.setCard(response.data[0].id);
+            }
+          });
+      });
+    },
+    getCustomer() {
+      return this.customer;
+    },
+    showAddCustomerModal() {
+      this.addCustomerModal = true;
+    },
+    addCustomer() {
+      let form = this.form;
+
+      if (!form.accepted_tos) {
+        this.$toastr.e(
+          "Please accept the terms of service.",
+          "Registration failed"
+        );
+        return;
+      }
+
+      axios
+        .post("/api/me/register", form)
+        .then(async response => {
+          this.addCustomerModal = false;
+          this.form = {};
+          await this.refreshStoreCustomers();
+        })
+        .catch(e => {
+          this.$toastr.e("Please try again.", "Registration failed");
+        });
+    },
+    changeState(state) {
+      this.form.state = state.abbreviation;
+    },
+    addLineItem(existing) {
+      let orderLineItems = this.orderLineItems;
+      if (existing) {
+        if (orderLineItems.includes(this.selectedLineItem)) {
+          let index = _.findIndex(orderLineItems, orderLineItem => {
+            return orderLineItem.title === this.selectedLineItem.title;
+          });
+          orderLineItems[index].quantity += 1;
+        } else {
+          orderLineItems.push(this.selectedLineItem);
+        }
+      } else {
+        axios.post("/api/me/lineItems", this.lineItem);
+        orderLineItems.push(this.lineItem);
+      }
+
+      this.showLineItemModal = false;
+      this.lineItem = { title: "", price: null, quantity: 1 };
+      this.selectedLineItem = { title: "", price: null, quantity: 1 };
+    },
+    removeLineItem(index) {
+      this.orderLineItems.splice(index, 1);
+>>>>>>> feature/line-items
     }
   }
 };

@@ -230,6 +230,22 @@ u + .body .full { width:100% !important; width:100vw !important;}
             </td>
           </tr>
           <tr>
+            <td align="center">
+              <table width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
+                @foreach($order->lineItemsOrders as $lineItemOrder)
+
+                <tr>
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->title }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
+                    ${{ number_format($lineItemOrder->price, 2) }}</td>
+                  <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->quantity }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; font-weight: bold ">${{ number_format($lineItemOrder->quantity * $lineItemOrder->price, 2) }}</td>
+                </tr>
+              @endforeach
+              </table>
+            </td>
+          </tr>
+          <tr>
             <td height="5" style="border-bottom:1px solid #ecf0f1;"></td>
           </tr>
           <tr>

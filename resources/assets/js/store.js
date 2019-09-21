@@ -38,7 +38,8 @@ const state = {
       data: {}
     },
     coupons: [],
-    pickupLocations: []
+    pickupLocations: [],
+    lineItems: []
   },
   stores: {},
   tags: [],
@@ -113,6 +114,9 @@ const state = {
     },
     production_groups: {
       data: {}
+    },
+    lineItems: {
+      data: {}
     }
   },
   orders: {
@@ -174,6 +178,9 @@ const mutations = {
   },
   setViewedStorePickupLocations(state, { pickupLocations }) {
     state.viewed_store.pickupLocations = pickupLocations;
+  },
+  setViewedStoreLineItems(state, { lineItems }) {
+    state.viewed_store.lineItems = lineItems;
   },
   addBagItems(state, items) {
     state.bag.items = _.keyBy(items, "id");
@@ -345,12 +352,15 @@ const mutations = {
     state.store.pickupLocations.data = pickupLocations;
   },
 
-  storeProductionGroups(state, { productionGroups, expires }) {
+  storeProductionGroups(state, { productionGroups }) {
     state.store.production_groups.data = productionGroups;
-    state.store.production_groups.expires = expires;
   },
 
-  storeMeals(state, { meals, expires }) {
+  storeLineItems(state, { lineItems }) {
+    state.store.lineItems.data = lineItems;
+  },
+
+  storeMeals(state, { meals }) {
     state.store.meals.data = meals;
   },
 
@@ -491,6 +501,16 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.store.lineItems)) {
+        let lineItems = data.store.lineItems;
+
+        if (!_.isEmpty(lineItems)) {
+          commit("storeLineItems", { lineItems });
+        }
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.tags)) {
         let tags = data.tags;
 
@@ -573,6 +593,16 @@ const actions = {
       ) {
         let productionGroups = data.store.production_groups;
         commit("storeProductionGroups", { productionGroups });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.lineItems) &&
+        _.isObject(data.store.lineItems)
+      ) {
+        let lineItems = data.store.lineItems;
+        commit("storeLineItems", { lineItems });
       }
     } catch (e) {}
 
@@ -743,6 +773,16 @@ const actions = {
         }
       }
     } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.line_items)) {
+        let lineItems = data.store.line_items;
+
+        if (!_.isEmpty(lineItems)) {
+          commit("setViewedStoreLineItems", { lineItems });
+        }
+      }
+    } catch (e) {}
   },
 
   async refreshStores({ commit, state }, args = {}) {
@@ -828,6 +868,17 @@ const actions = {
       commit("storeProductionGroups", { productionGroups: data });
     } else {
       throw new Error("Failed to retrieve productionGroups");
+    }
+  },
+
+  async refreshStoreLineItems({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/lineItems");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      commit("storeLineItems", { lineItems: data });
+    } else {
+      throw new Error("Failed to retrieve lineItems");
     }
   },
 
@@ -1196,6 +1247,13 @@ const getters = {
   viewedStorePickupLocations(state, getters) {
     try {
       return state.viewed_store.pickupLocations;
+    } catch (e) {
+      return null;
+    }
+  },
+  viewedStoreLineItems(state, getters) {
+    try {
+      return state.viewed_store.lineItems;
     } catch (e) {
       return null;
     }
@@ -1631,6 +1689,13 @@ const getters = {
   storeProductionGroups: state => {
     try {
       return state.store.production_groups.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeLineItems: state => {
+    try {
+      return state.store.lineItems.data || {};
     } catch (e) {
       return {};
     }

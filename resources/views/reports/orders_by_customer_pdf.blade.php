@@ -60,6 +60,20 @@
               </tbody>
             </table>
           @endif
+            <div style="height:10px"></div>
+          @if(count($order['lineItemsOrders']) > 1)
+            <table border="1" width="100">
+              <tbody>
+                @foreach($order['lineItemsOrders'] as $i => $row)
+                  <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+                    @foreach($row as $value)
+                      <td width="50%">{!! $value !!}</td>
+                    @endforeach
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          @endif
 
       </div>
 

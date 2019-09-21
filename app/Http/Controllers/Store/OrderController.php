@@ -131,7 +131,13 @@ class OrderController extends StoreController
     {
         return $this->store
             ->orders()
-            ->with(['user', 'user.userDetail', 'meals', 'pickup_location'])
+            ->with([
+                'user',
+                'user.userDetail',
+                'meals',
+                'pickup_location',
+                'lineItemsOrders'
+            ])
             ->where('id', $id)
             ->first();
     }

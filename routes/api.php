@@ -186,6 +186,7 @@ foreach (
                                 'pickupLocations',
                                 'PickupLocationController'
                             );
+                            Route::resource('lineItems', 'LineItemController');
                             Route::resource(
                                 'productionGroups',
                                 'ProductionGroupController'

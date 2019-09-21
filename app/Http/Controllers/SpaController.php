@@ -81,6 +81,7 @@ class SpaController extends Controller
                         'coupons',
                         'pickupLocations',
                         'productionGroups',
+                        'lineItems',
                         'modules',
                         'moduleSettings'
                     ])
@@ -186,6 +187,7 @@ class SpaController extends Controller
                 'details',
                 'coupons',
                 'pickupLocations',
+                'lineItems',
                 'modules',
                 'moduleSettings'
             ])
