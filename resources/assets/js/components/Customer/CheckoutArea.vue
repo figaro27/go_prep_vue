@@ -915,11 +915,11 @@ export default {
       }
 
       // Ensure delivery day is set
-      // if (!this.deliveryDay && this.deliveryDaysOptions) {
-      //   this.deliveryDay = this.deliveryDaysOptions[0].value;
-      // } else if (!this.deliveryDaysOptions) {
-      //   return;
-      // }
+      if (!this.deliveryDay && this.deliveryDaysOptions) {
+        this.deliveryDay = this.deliveryDaysOptions[0].value;
+      } else if (!this.deliveryDaysOptions) {
+        return;
+      }
 
       this.checkingOut = true;
 
