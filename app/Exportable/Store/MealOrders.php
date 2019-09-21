@@ -37,8 +37,9 @@ class MealOrders
         $production = collect();
         $mealQuantities = [];
         $dates = $this->getDeliveryDates();
-
+        $groupByDate = 'true' === $this->params->get('group_by_date', false);
         $params = $this->params;
+        $allDates = [];
 
         $productionGroupId = $this->params->get('productionGroupId', null);
         if ($productionGroupId != null) {
@@ -52,7 +53,16 @@ class MealOrders
         }
 
         $orders = $this->store->getOrders(null, $dates, true);
-        $orders->map(function ($order) use (&$mealQuantities) {
+        $orders->map(function ($order) use (
+            &$mealQuantities,
+            $groupByDate,
+            &$allDates
+        ) {
+            $date = $order->delivery_date->toDateString();
+            if (!in_array($date, $allDates)) {
+                $allDates[] = $date;
+            }
+
             $productionGroupId = $this->params->get('productionGroupId', null);
             foreach (
                 $order
@@ -73,22 +83,56 @@ class MealOrders
                         ? $mealOrder->title
                         : $mealOrder->html_title;
 
-                if (!isset($mealQuantities[$title])) {
-                    $mealQuantities[$title] = 0;
-                }
+                if ($groupByDate) {
+                    if (!isset($mealQuantities[$title])) {
+                        $mealQuantities[$title] = [];
+                    }
+                    if (!isset($mealQuantities[$title][$date])) {
+                        $mealQuantities[$title][$date] = 0;
+                    }
+                    $mealQuantities[$title][$date] += $mealOrder->quantity;
+                } else {
+                    if (!isset($mealQuantities[$title])) {
+                        $mealQuantities[$title] = 0;
+                    }
 
-                $mealQuantities[$title] += $mealOrder->quantity;
+                    $mealQuantities[$title] += $mealOrder->quantity;
+                }
             }
         });
 
+        sort($allDates);
+        $this->allDates = array_map(function ($date) {
+            return Carbon::parse($date)->toFormattedDateString();
+        }, $allDates);
+
         ksort($mealQuantities);
 
-        foreach ($mealQuantities as $title => $quantity) {
-            $production->push([$title, $quantity]);
+        if (!$groupByDate) {
+            foreach ($mealQuantities as $title => $quantity) {
+                $production->push([$title, $quantity]);
+            }
+        } else {
+            foreach ($mealQuantities as $title => $mealDates) {
+                $row = [$title];
+                foreach ($allDates as $date) {
+                    if (isset($mealDates[$date])) {
+                        $row[] = $mealDates[$date];
+                    } else {
+                        $row[] = 0;
+                    }
+                }
+                $production->push($row);
+            }
         }
 
         if ($type !== 'pdf') {
-            $production->prepend(['Title', 'Active Orders']);
+            if (!$groupByDate) {
+                $production->prepend(['Title', 'Active Orders']);
+            } else {
+                $headings = array_merge(['Title'], $this->allDates);
+                $production->prepend($headings);
+            }
         }
 
         return $production->toArray();
