@@ -103,7 +103,7 @@ class MealOrders
 
         sort($allDates);
         $this->allDates = array_map(function ($date) {
-            return Carbon::parse($date)->toFormattedDateString();
+            return Carbon::parse($date)->format('D, m/d/y');
         }, $allDates);
 
         ksort($mealQuantities);
