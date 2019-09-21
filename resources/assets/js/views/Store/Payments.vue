@@ -145,7 +145,8 @@
             </div>
             <div slot="deposit" slot-scope="props">
               <div>
-                {{ formatMoney(100 - props.row.deposit, props.row.currency) }}
+                <!-- {{ formatMoney((100 - props.row.deposit)/100 * props.row.grandTotal, props.row.currency) }} -->
+                {{ props.row.deposit }}%
               </div>
             </div>
           </v-client-table>

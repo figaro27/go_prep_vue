@@ -274,7 +274,7 @@
         $parent.orderId === undefined &&
           storeModules.transferHours &&
           pickup &&
-          $route.params.subscriptionId === null
+          $route.params.subscriptionId === undefined
       "
     >
       <div>
@@ -310,7 +310,7 @@
           <b-btn
             variant="primary"
             v-if="storeModules.manualCustomers"
-            @click="$parent.addCustomerModal = true"
+            @click="addCustomerModal = true"
             >Add New Customer</b-btn
           >
         </div>
@@ -318,24 +318,30 @@
           <h4 class="mt-2 mb-3">
             Choose Payment Method
           </h4>
-          <b-form-checkbox
-            v-if="storeModules.cashOrders"
-            v-model="cashOrder"
-            class="pb-2 mediumCheckbox"
-          >
-            Cash
-          </b-form-checkbox>
-          <p
+
+          <div
             v-if="
-              cashOrder && creditCardList.length === 0 && creditCardId === null
+              storeModules.cashOrders &&
+                (storeModuleSettings.cashAllowedForCustomer ||
+                  $route.params.storeView)
             "
           >
-            Please add a credit card on file in order to proceed with a cash
-            order. In the event that cash is not paid, your credit card will be
-            charged.
-          </p>
+            <b-form-checkbox v-model="cashOrder" class="pb-2 mediumCheckbox">
+              Cash
+            </b-form-checkbox>
+            <!-- <p
+              v-if="
+                storeModuleSettings.cashAllowedForCustomer && cashOrder && creditCardList.length === 0 && creditCardId === null
+              "
+            >
+              Please add a credit card on file in order to proceed with a cash
+              order. In the event that cash is not paid, your credit card will be
+              charged.
+            </p> -->
+          </div>
 
           <card-picker
+            v-if="!cashOrder"
             :selectable="true"
             :creditCards="creditCardList"
             v-model="card"
@@ -344,7 +350,9 @@
           ></card-picker>
 
           <b-form-group
-            v-if="manualOrder && storeModules.deposits"
+            v-if="
+              $route.params.storeView && storeModules.deposits && !cashOrder
+            "
             horizontal
             label="Deposit %"
           >
@@ -441,6 +449,10 @@
         more to continue.
       </p>
     </li>
+
+    <add-customer-modal
+      :addCustomerModal="addCustomerModal"
+    ></add-customer-modal>
   </div>
 </template>
 
@@ -450,10 +462,12 @@ import MenuBag from "../../mixins/menuBag";
 import SalesTax from "sales-tax";
 import CardPicker from "../../components/Billing/CardPicker";
 import { createToken } from "vue-stripe-elements-plus";
+import AddCustomerModal from "../../components/Customer/AddCustomerModal";
 
 export default {
   components: {
-    CardPicker
+    CardPicker,
+    AddCustomerModal
   },
   data() {
     return {
@@ -462,7 +476,8 @@ export default {
       checkingOut: false,
       deposit: 100,
       creditCardId: null,
-      couponCode: ""
+      couponCode: "",
+      addCustomerModal: false
     };
   },
   props: {
@@ -525,6 +540,7 @@ export default {
       customers.forEach(customer => {
         grouped[customer.id] = customer.name;
       });
+
       return grouped;
     },
     storeId() {
@@ -805,6 +821,7 @@ export default {
       "refreshStoreSubscriptions",
       "refreshCustomerOrders",
       "refreshOrders",
+      "refreshOrdersToday",
       "refreshStoreSubscriptions",
       "refreshUpcomingOrders",
       "refreshStoreCustomers"
@@ -907,6 +924,12 @@ export default {
     },
     updated() {
       this.creditCardId = this.card;
+
+      alert("turtles");
+
+      this.$eventBus.$on("chooseCustomer", () => {
+        this.chooseCustomer();
+      });
     },
     checkout() {
       if (this.checkingOut) {
@@ -980,6 +1003,8 @@ export default {
             return;
           } else if (this.$route.params.manualOrder && !weeklyDelivery) {
             this.refreshUpcomingOrders();
+            this.refreshOrdersToday();
+            this.refreshOrders();
             this.$router.push({
               path: "/store/orders"
             });
@@ -1010,6 +1035,11 @@ export default {
           this.loading = false;
           this.checkingOut = false;
         });
+    },
+    setCustomer() {
+      this.customer = Object.keys(this.customers)[
+        Object.keys(this.customers).length - 1
+      ];
     }
   }
 };

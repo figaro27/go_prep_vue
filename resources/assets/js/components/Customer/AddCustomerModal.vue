@@ -139,6 +139,7 @@ export default {
           this.form = {};
           await this.refreshStoreCustomers();
           this.$toastr.s("Customer Added");
+          this.$parent.setCustomer();
         })
         .catch(e => {
           this.$toastr.e("Please try again.", "Registration failed");
