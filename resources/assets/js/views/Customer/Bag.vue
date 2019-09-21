@@ -25,7 +25,6 @@
           <checkout-area
             :manualOrder="manualOrder"
             :mobile="mobile"
-            :pickup="pickup"
             :subscriptionId="subscriptionId"
             :orderId="orderId"
             :cashOrder="cashOrder"
@@ -34,6 +33,9 @@
             :salesTax="salesTax"
             :customer="customer"
             :preview="preview"
+            :deliveryDay="deliveryDay"
+            :transferTime="transferTime"
+            :pickup="pickup"
           ></checkout-area>
           <store-closed></store-closed>
         </div>
@@ -352,6 +354,10 @@ export default {
     }
   },
   mounted() {
+    this.deliveryDay = this.$route.params.deliveryDay;
+    this.transferTime = this.$route.params.transferTime;
+    this.pickup = this.$route.params.pickup;
+
     this.creditCardId = this.card;
 
     SalesTax.getSalesTax("US", this.store.details.state).then(tax => {

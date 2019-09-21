@@ -473,8 +473,7 @@ export default {
       deposit: 100,
       creditCardId: null,
       couponCode: "",
-      addCustomerModal: false,
-      deliveryDay: null
+      addCustomerModal: false
     };
   },
   props: {
@@ -482,11 +481,13 @@ export default {
     manualOrder: false,
     cashOrder: false,
     mobile: false,
-    pickup: 0,
     salesTax: 0,
     creditCardList: null,
     customer: null,
-    orderId: null
+    orderId: null,
+    deliveryDay: null,
+    transferTime: null,
+    pickup: null
   },
   mixins: [MenuBag],
   computed: {
@@ -533,12 +534,17 @@ export default {
         return [];
       }
 
-      let grouped = {};
+      let grouped = [];
       customers.forEach(customer => {
-        grouped[customer.id] = customer.name;
+        grouped.push({
+          value: customer.id,
+          text: customer.name
+        });
       });
 
-      return grouped;
+      let sorted = grouped.sort((a, b) => a.text.localeCompare(b.text));
+
+      return sorted;
     },
     storeId() {
       return this.store.id;

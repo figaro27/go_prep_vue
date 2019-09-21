@@ -38,7 +38,9 @@
             adjustOrder: adjustOrder,
             adjustMealPlan: adjustMealPlan,
             preview: preview,
-            deliveryDay: deliveryDay
+            deliveryDay: deliveryDay,
+            transferTime: transferTime,
+            pickup: pickup
           }
         }"
       >
@@ -69,7 +71,9 @@ export default {
     adjustMealPlan: false,
     subscriptionId: 0,
     orderId: null,
-    deliveryDay: null
+    deliveryDay: null,
+    transferTime: null,
+    pickup: null
   },
   mixins: [MenuBag],
   computed: {

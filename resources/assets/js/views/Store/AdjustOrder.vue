@@ -6,6 +6,8 @@
       :orderId="orderId"
       :storeView="true"
       :deliveryDay="deliveryDay"
+      :transferTime="transferTime"
+      :pickup="pickup"
     ></customer-menu>
   </div>
 </template>
@@ -36,15 +38,22 @@ export default {
       getMeal: "viewedStoreMeal"
     }),
     orderId() {
-      return this.$route.params.id;
+      return this.$route.params.orderId;
+    },
+    order() {
+      let order = _.find(this.upcomingOrders, order => {
+        return order.id === this.orderId;
+      });
+      return order;
     },
     deliveryDay() {
-      let orderId = parseInt(this.orderId);
-      let day = _.find(this.upcomingOrders, order => {
-        return (order.id = orderId);
-      });
-
-      return moment(day.delivery_date).format("YYYY-MM-DD 00:00:00");
+      return moment(this.order.delivery_date).format("YYYY-MM-DD 00:00:00");
+    },
+    transferTime() {
+      return this.order.transferTime;
+    },
+    pickup() {
+      return this.order.pickup;
     }
   },
   mounted() {
@@ -55,19 +64,19 @@ export default {
       refreshUpcomingOrders: "refreshUpcomingOrders"
     }),
     async initBag() {
-      await this.refreshUpcomingOrders();
-      const order = _.find(this.upcomingOrders, {
-        id: parseInt(this.orderId)
-      });
+      // await this.refreshUpcomingOrders();
+      // const order = _.find(this.upcomingOrders, {
+      //   id: parseInt(this.orderId)
+      // });
 
-      if (!order) {
-        return;
-      }
-      console.log(this.orders, order);
+      // if (!order) {
+      //   return;
+      // }
+      // console.log(this.orders, order);
 
       this.clearAll();
 
-      _.forEach(order.items, item => {
+      _.forEach(this.order.items, item => {
         const meal = this.getMeal(item.meal_id);
         if (!meal) {
           return;

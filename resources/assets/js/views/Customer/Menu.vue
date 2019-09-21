@@ -95,6 +95,8 @@
               :preview="preview"
               :orderId="orderId"
               :deliveryDay="deliveryDay"
+              :transferTime="transferTime"
+              :pickup="pickup"
             ></bag-actions>
           </div>
         </div>
@@ -177,7 +179,9 @@ export default {
     subscription: {},
     subscriptionId: null,
     orderId: null,
-    deliveryDay: null
+    deliveryDay: null,
+    transferTime: null,
+    pickup: null
   },
   data() {
     return {
