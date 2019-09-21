@@ -4,6 +4,7 @@ namespace App\Exportable\Store;
 
 use App\Exportable\Exportable;
 use App\Store;
+use App\StoreModule;
 use App\User;
 use Illuminate\Support\Carbon;
 
@@ -24,6 +25,7 @@ class OrdersByCustomer
     {
         $dateRange = $this->getDeliveryDates();
         $params = $this->params;
+        $params['dailyOrderNumbers'] = $this->store->modules->dailyOrderNumbers;
 
         // if ($params->has('fulfilled')) {
         //     $fulfilled = $params->get('fulfilled');
@@ -70,6 +72,7 @@ class OrdersByCustomer
                             'pickup' => $order->pickup,
                             'pickup_location_id' => $order->pickup_location_id,
                             'pickup_location' => $order->pickup_location,
+                            'dailyOrderNumber' => $order->dailyOrderNumber,
                             'meal_quantities' => array_merge(
                                 [['Meal', 'Quantity']], // Heading
                                 $order

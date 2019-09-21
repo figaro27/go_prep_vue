@@ -103,6 +103,9 @@
             <div slot="pickup" slot-scope="props">
               {{ props.row.pickup ? "Pickup" : "Delivery" }}
             </div>
+            <div slot="dailyOrderNumber" slot-scope="props">
+              {{ props.row.dailyOrderNumber }}
+            </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-primary btn-sm"
@@ -157,6 +160,10 @@
         </div>
         <div class="row light-background border-bottom mb-3">
           <div class="col-md-4 pt-1">
+            <span v-if="storeModules.dailyOrderNumbers">
+              <h4>Order #</h4>
+              <p>{{ order.dailyOrderNumber }}</p>
+            </span>
             <h4>Order ID</h4>
             <p>{{ order.order_number }}</p>
             <router-link :to="`/store/adjust-order/${order.id}`">
@@ -345,6 +352,7 @@ export default {
       options: {
         headings: {
           notes: "Notes",
+          dailyOrderNumber: "Daily Order #",
           order_number: "Order #",
           "user.user_detail.full_name": "Name",
           "user.user_detail.address": "Address",
@@ -387,6 +395,11 @@ export default {
   },
   created() {
     this.refreshViewedStore();
+  },
+  mounted() {
+    if (this.storeModules.dailyOrderNumbers) {
+      this.columns.splice(1, 0, "dailyOrderNumber");
+    }
   },
   computed: {
     ...mapGetters({

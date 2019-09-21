@@ -4,6 +4,7 @@ namespace App\Exportable\Store;
 
 use App\Exportable\Exportable;
 use App\Store;
+use App\StoreModule;
 use Illuminate\Support\Facades\Storage;
 use mikehaertl\wkhtmlto\Pdf;
 use Illuminate\Support\Carbon;
@@ -25,6 +26,9 @@ class PackingSlips
 
     public function exportData($type = null)
     {
+        $params = $this->params;
+        $params['dailyOrderNumbers'] = $this->store->modules->dailyOrderNumbers;
+
         $orders = $this->store->orders()->where([
             'paid' => 1
             // 'fulfilled' => 0

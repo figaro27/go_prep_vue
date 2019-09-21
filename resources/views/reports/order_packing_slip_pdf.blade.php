@@ -10,7 +10,10 @@
     <div class="row">
       <div class="col-4 address">
         <h4 class="mt-3">Order Details</h4>
-            <p>Order #{{$order->order_number}}</p>
+            @if ($params['dailyOrderNumbers'])
+            <h2>Order #{{$order['dailyOrderNumber']}}</h2>
+            @endif
+            <p>Order ID - {{$order->order_number}}</p>
             @if ($order->subscription)
             <p>Subscription #{{ $order->subscription->stripe_id }}</p>
             @endif
