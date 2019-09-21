@@ -454,7 +454,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- end title -->
                 <tr>
-                  <td height="5"></td>
+                  <td height="15"></td>
                 </tr>
                 <!-- content -->
                 @foreach($order->items as $item)
@@ -464,6 +464,9 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <b>{!! $item->html_title !!}</b> - {{ $item->instructions }}
                       </td>
                     </tr>
+                    <tr>
+                  <td height="10"></td>
+                </tr>
                   @endif
                 @endforeach
                 
