@@ -487,7 +487,9 @@ export default {
     orderId: null,
     deliveryDay: null,
     transferTime: null,
-    pickup: null
+    pickup: {
+      default: 0
+    }
   },
   mixins: [MenuBag],
   computed: {
@@ -592,6 +594,10 @@ export default {
       else return this.creditCards;
     },
     card() {
+      if (this.$route.params.storeView) {
+        return 0;
+      }
+
       if (this.creditCardId != null) {
         return this.creditCardId;
       }

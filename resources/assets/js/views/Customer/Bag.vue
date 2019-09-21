@@ -132,6 +132,7 @@ export default {
       storeModules: "viewedStoreModules",
       storeModuleSettings: "viewedStoreModuleSettings",
       storeCustomers: "storeCustomers",
+      storeSettings: "viewedStoreSetting",
       total: "bagQuantity",
       bag: "bagItems",
       coupon: "bagCoupon",
@@ -332,7 +333,7 @@ export default {
       else return "Prepared Once";
     },
     deliveryDaysOptions() {
-      return this.storeSetting("next_orderable_delivery_dates", []).map(
+      return this.storeSettings("next_orderable_delivery_dates", []).map(
         date => {
           return {
             value: date.date,
