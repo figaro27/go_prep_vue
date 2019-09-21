@@ -210,7 +210,8 @@
     <li
       class="checkout-item unset-height"
       v-if="
-        deliveryDaysOptions.length > 1 && $route.params.subscriptionId === null
+        deliveryDaysOptions.length > 1 &&
+          $route.params.subscriptionId === undefined
       "
     >
       <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
@@ -235,7 +236,7 @@
       class="checkout-item"
       v-if="
         deliveryDaysOptions.length === 1 &&
-          $route.params.subscriptionId === null
+          $route.params.subscriptionId === undefined
       "
     >
       <div>
@@ -254,7 +255,7 @@
         $parent.orderId === undefined &&
           storeModules.pickupLocations &&
           pickup &&
-          $route.params.subscriptionId === null
+          $route.params.subscriptionId === undefined
       "
     >
       <div>
@@ -274,7 +275,7 @@
         $parent.orderId === undefined &&
           storeModules.transferHours &&
           pickup &&
-          $route.params.subscriptionId === null
+          $route.params.subscriptionId === undefined
       "
     >
       <div>
@@ -914,11 +915,11 @@ export default {
       }
 
       // Ensure delivery day is set
-      if (!this.deliveryDay && this.deliveryDaysOptions) {
-        this.deliveryDay = this.deliveryDaysOptions[0].value;
-      } else if (!this.deliveryDaysOptions) {
-        return;
-      }
+      // if (!this.deliveryDay && this.deliveryDaysOptions) {
+      //   this.deliveryDay = this.deliveryDaysOptions[0].value;
+      // } else if (!this.deliveryDaysOptions) {
+      //   return;
+      // }
 
       this.checkingOut = true;
 
