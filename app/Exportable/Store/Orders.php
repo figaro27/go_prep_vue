@@ -22,32 +22,48 @@ class Orders
     {
         $params = $this->params;
 
-        $orders = $this->store->getOrders(null, $this->getDeliveryDates())
-          ->filter(function($order) use ($params) {
-            if($params->has('has_notes') && $order->has_notes != $params->get('has_notes')) {
-              return false;
-            }
-            if($params->has('fulfilled') && $order->fulfilled != $params->get('fulfilled')) {
-              return false;
-            }
+        $orders = $this->store
+            ->getOrders(null, $this->getDeliveryDates())
+            ->filter(function ($order) use ($params) {
+                if (
+                    $params->has('has_notes') &&
+                    $order->has_notes != $params->get('has_notes')
+                ) {
+                    return false;
+                }
+                if (
+                    $params->has('fulfilled') &&
+                    $order->fulfilled != $params->get('fulfilled')
+                ) {
+                    return false;
+                }
 
-            return true;
-          })
-          ->map(function ($order) {
-          return [
-            $order->order_number,
-            $order->user->name,
-            $order->user->details->address,
-            $order->user->details->zip,
-            $order->user->details->phone,
-            '$'.number_format($order->amount, 2),
-            $order->created_at->format('D, m/d/Y'),
-            $order->delivery_date->format('D, m/d/Y'),
-          ];
-        });
+                return true;
+            })
+            ->map(function ($order) {
+                return [
+                    $order->order_number,
+                    $order->user->name,
+                    $order->user->details->address,
+                    $order->user->details->zip,
+                    $order->user->details->phone,
+                    '$' . number_format($order->amount, 2),
+                    $order->created_at->format('D, m/d/Y'),
+                    $order->delivery_date->format('D, m/d/Y')
+                ];
+            });
 
-        if($type !== 'pdf'){
-            $orders->prepend(['Order #', 'Name', 'Address', 'Zip', 'Phone', 'Total', 'Order Placed', 'Delivery Day' ]);
+        if ($type !== 'pdf') {
+            $orders->prepend([
+                'Order ID',
+                'Name',
+                'Address',
+                'Zip',
+                'Phone',
+                'Total',
+                'Order Placed',
+                'Delivery Day'
+            ]);
         }
 
         return $orders->toArray();

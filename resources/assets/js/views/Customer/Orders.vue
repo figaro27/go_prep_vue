@@ -33,6 +33,10 @@
                   <div class="col-md-4">
                     <h4>Order ID</h4>
                     <p>{{ order.order_number }}</p>
+                    <h4 v-if="storeModules.dailyOrderNumbers">Order #</h4>
+                    <p v-if="storeModules.dailyOrderNumbers">
+                      {{ order.dailyOrderNumber }}
+                    </p>
                     <h4>
                       {{ order.pickup ? "Pickup Day" : "Delivery Day" }}
                     </h4>
@@ -185,7 +189,8 @@ export default {
       _orders: "orders",
       initialized: "initialized",
       isLoading: "isLoading",
-      getStoreMeal: "viewedStoreMeal"
+      getStoreMeal: "viewedStoreMeal",
+      storeModules: "viewedStoreModules"
     }),
     orders() {
       if (_.isNull(this._orders)) {

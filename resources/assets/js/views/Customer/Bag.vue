@@ -88,19 +88,8 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
-<<<<<<< HEAD
       showAuthModal: false,
-=======
       //couponFreeDelivery: 0,
-      showLineItemModal: false,
-      lineItem: {
-        title: "",
-        price: null,
-        quantity: 1
-      },
-      selectedLineItem: {},
-      orderLineItems: [],
->>>>>>> feature/line-items
       transferTime: "",
       cashOrder: false,
       addCustomerModal: false,
@@ -164,22 +153,6 @@ export default {
       _orders: "orders",
       loggedIn: "loggedIn"
     }),
-<<<<<<< HEAD
-=======
-    lineItemOptions() {
-      let options = [];
-      this.lineItems.forEach(lineItem => {
-        options.push({
-          text: lineItem.title,
-          value: {
-            price: lineItem.price,
-            title: lineItem.title,
-            quantity: 1
-          }
-        });
-      });
-      return options;
-    },
     couponFreeDelivery() {
       return this.coupon ? this.coupon.freeDelivery : 0;
     },
@@ -212,7 +185,6 @@ export default {
         return website;
       }
     },
->>>>>>> feature/line-items
     mobile() {
       if (window.innerWidth < 500) return true;
       else return false;
@@ -221,9 +193,6 @@ export default {
       return this.store.settings;
     },
     transferType() {
-<<<<<<< HEAD
-      return this.store.settings.transferType;
-=======
       return this.storeSettings.transferType.split(",");
     },
     transferTypeCheckDelivery() {
@@ -380,7 +349,6 @@ export default {
     },
     subscriptionId() {
       return this.$route.params.subscriptionId;
->>>>>>> feature/line-items
     }
   },
   mounted() {
@@ -402,10 +370,9 @@ export default {
     this.creditCardId = this.card;
   },
   methods: {
-<<<<<<< HEAD
     setSalesTax(rate) {
       this.salesTax = rate;
-=======
+    },
     ...mapActions([
       "refreshSubscriptions",
       "refreshStoreSubscriptions",
@@ -638,7 +605,6 @@ export default {
     },
     removeLineItem(index) {
       this.orderLineItems.splice(index, 1);
->>>>>>> feature/line-items
     }
   }
 };
