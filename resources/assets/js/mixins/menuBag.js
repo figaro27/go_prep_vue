@@ -163,17 +163,32 @@ export default {
       return this.$store.getters.bagMealQuantity(meal);
     },
     itemComponents(item) {
-      const meal = !item.meal_package
+      const mealPackage = !!item.meal_package;
+      const meal = !mealPackage
         ? this.getMeal(item.meal.id)
         : this.getMealPackage(item.meal.id);
       let wat = _(item.components)
         .map((options, componentId) => {
           const component = meal.getComponent(componentId);
+          const optionIds = mealPackage ? Object.keys(options) : options;
 
-          const optionTitles = _(options)
+          const optionTitles = _(optionIds)
             .map(optionId => {
               const option = meal.getComponentOption(component, optionId);
-              return option ? option.title : null;
+              if (!option) {
+                return null;
+              }
+
+              if (!option.selectable) {
+                return option.title || null;
+              } else {
+                const title = option.title || component.title;
+                return (
+                  title +
+                  " - " +
+                  _.map(options[option.id], o => o.meal.title).join(", ")
+                );
+              }
             })
             .filter()
             .toArray()
