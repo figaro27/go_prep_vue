@@ -245,8 +245,15 @@ export default {
       getMealPackage: "viewedStoreMealPackage"
     }),
     AAAtest() {
-      let test = [];
+      let packages = [];
+
       this.bag.forEach(item => {
+        if (item.meal_package) packages.push(item);
+      });
+
+      let test = [];
+
+      packages.forEach(item => {
         let c = Object.values(item.components);
         c.forEach(component => {
           test.push(component);
