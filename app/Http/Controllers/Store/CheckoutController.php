@@ -183,19 +183,21 @@ class CheckoutController extends StoreController
             }
 
             $lineItemsOrder = $request->get('lineItemsOrder');
-            foreach ($lineItemsOrder as $lineItemOrder) {
-                $title = $lineItemOrder['title'];
-                $id = LineItem::where('title', $title)
-                    ->pluck('id')
-                    ->first();
-                $quantity = $lineItemOrder['quantity'];
+            if ($lineItemsOrder != null) {
+                foreach ($lineItemsOrder as $lineItemOrder) {
+                    $title = $lineItemOrder['title'];
+                    $id = LineItem::where('title', $title)
+                        ->pluck('id')
+                        ->first();
+                    $quantity = $lineItemOrder['quantity'];
 
-                $lineItemOrder = new LineItemOrder();
-                $lineItemOrder->store_id = $store->id;
-                $lineItemOrder->line_item_id = $id;
-                $lineItemOrder->order_id = $order->id;
-                $lineItemOrder->quantity = $quantity;
-                $lineItemOrder->save();
+                    $lineItemOrder = new LineItemOrder();
+                    $lineItemOrder->store_id = $store->id;
+                    $lineItemOrder->line_item_id = $id;
+                    $lineItemOrder->order_id = $order->id;
+                    $lineItemOrder->quantity = $quantity;
+                    $lineItemOrder->save();
+                }
             }
 
             // Send notification to store
