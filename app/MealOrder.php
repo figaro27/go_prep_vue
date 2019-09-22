@@ -55,7 +55,7 @@ class MealOrder extends Pivot
     {
         $title = $this->meal->title;
 
-        if ($this->meal_size_id) {
+        if ($this->meal_size_id && $this->meal_size) {
             $title = $this->meal_size->full_title;
         }
         if (count($this->components)) {
@@ -84,7 +84,7 @@ class MealOrder extends Pivot
     {
         $title = $this->meal->title;
 
-        if ($this->meal_size_id) {
+        if ($this->meal_size_id && $this->meal_size) {
             $title = $this->meal_size->full_title;
         }
 
