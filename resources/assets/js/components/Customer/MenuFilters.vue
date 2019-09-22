@@ -29,7 +29,7 @@
       <div class="row">
         <div class="col-md-12">
           <h4 class="center-text mt-4">Allergies</h4>
-          <p class="center-text">Hide Meals That Contain:</p>
+          <p class="center-text">Hide Items That Contain:</p>
         </div>
         <div class="col-md-6">
           <div
@@ -61,7 +61,7 @@
         </div>
         <div class="col-md-12">
           <h4 class="center-text mt-5">Nutrition</h4>
-          <p class="center-text">Show Meals That Are:</p>
+          <p class="center-text">Show Items That Are:</p>
         </div>
         <div class="col-md-6">
           <div
