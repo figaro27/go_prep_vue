@@ -453,12 +453,20 @@
                 </b-form-checkbox>
               </b-form-group>-->
 
-              <b-form-group horizontal>
+              <b-form-group horizontal v-if="!manualOrder">
                 <b-button
+                  v-if="!planless"
                   @click="next()"
-                  :disabled="$v.form[0].$invalid"
+                  :disabled="$v.form[2].$invalid"
                   variant="primary"
                   >Next</b-button
+                >
+                <b-button
+                  type="submit"
+                  v-else
+                  :disabled="$v.form[2].$invalid"
+                  variant="primary"
+                  >Submit</b-button
                 >
               </b-form-group>
             </div>
@@ -645,6 +653,10 @@ export default {
       }
 
       return requires;
+    },
+    planless() {
+      const url = new URL(window.location.href);
+      return null !== url.searchParams.get("planless") || false;
     }
   },
   validations: {
@@ -793,7 +805,8 @@ export default {
         user: this.form[0],
         user_details: this.form[1],
         store: this.form[2],
-        plan: this.form[3]
+        plan: this.form[3],
+        planless: this.planless
       };
 
       if (data.user.role === "store") {
