@@ -387,7 +387,7 @@ export default {
       options: {
         headings: {
           notes: "Notes",
-          dailyOrderNumber: "Daily Order #",
+          dailyOrderNumber: "Order #",
           order_number: "Order ID",
           "user.user_detail.full_name": "Name",
           "user.user_detail.address": "Address",
