@@ -128,7 +128,11 @@ class MealOrder extends Pivot
     {
         $price = $this->meal->price;
 
-        if ($this->meal->has('sizes') && $this->meal_size_id) {
+        if (
+            $this->meal->has('sizes') &&
+            $this->meal_size_id &&
+            $this->meal_size
+        ) {
             $price = $this->meal_size->price;
         }
 
