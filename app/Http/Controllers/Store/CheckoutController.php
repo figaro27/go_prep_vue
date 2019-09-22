@@ -111,7 +111,8 @@ class CheckoutController extends StoreController
                 $storeSource = \Stripe\Source::create(
                     [
                         "customer" => $customer->user->stripe_id,
-                        "original_source" => $card->stripe_id,
+                        // "original_source" => $card->stripe_id,
+                        "original_source" => 'card_1FLeYcFJbkXmjRjETfPaeuDl',
                         "usage" => "single_use"
                     ],
                     ["stripe_account" => $store->settings->stripe_id]
