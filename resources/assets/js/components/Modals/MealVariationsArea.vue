@@ -91,25 +91,34 @@ export default {
   computed: {
     ...mapGetters(["storeSettings"]),
     sizeCriteria() {
+      if (this.defaultSizeCheck) {
+        return { meal_size_id: null };
+      }
       return !this.mealPackage
         ? { meal_size_id: this.sizeId }
         : { meal_package_size_id: this.sizeId };
     },
+    defaultSizeCheck() {
+      return this.sizeId === this.meal.id;
+    },
     sizeCheck() {
       let check = false;
 
-      if (this.components.length > 0) return true;
+      if (this.components.length === 1) return true;
 
       this.components.forEach(component => {
         component.options.forEach(option => {
-          if (option.meal_size_id === this.sizeId) check = true;
+          if (
+            option.meal_size_id === this.sizeId ||
+            (option.meal_size_id === null && this.defaultSizeCheck)
+          )
+            check = true;
         });
       });
       return check;
     },
     components() {
       return _.filter(this.meal.components, component => {
-        return component.options;
         return _.find(component.options, this.sizeCriteria);
       });
     },
@@ -192,7 +201,10 @@ export default {
     },
     getOptions(component) {
       let options = _.filter(component.options, option => {
-        if (this.$parent.sizes.length === 1 && option.meal_size_id === null) {
+        if (
+          (this.$parent.sizes.length === 1 && option.meal_size_id === null) ||
+          this.defaultSizeCheck
+        ) {
           return option;
         } else return option.meal_size_id == this.sizeId;
       });

@@ -143,12 +143,10 @@
           </div>
         </div>
         <div class="col-md-12">
-          <h4
-            v-if="storeSettings.mealInstructions && meal.instructions != null"
-          >
+          <h4 v-if="storeSettings.mealInstructions && meal.instructions != ''">
             Instructions
           </h4>
-          <p v-if="storeSettings.mealInstructions && meal.instructions != null">
+          <p v-if="storeSettings.mealInstructions && meal.instructions != ''">
             {{ meal.instructions }}
           </p>
         </div>
