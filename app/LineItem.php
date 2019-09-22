@@ -10,4 +10,8 @@ class LineItem extends Model
     {
         return $this->belongsTo('App\Store');
     }
+
+    protected $casts = [
+        'price' => 'float'
+    ];
 }

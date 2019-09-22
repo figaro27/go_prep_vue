@@ -73,9 +73,9 @@
               class="border-top-0"
               v-if="storeModules.packageComponentRestrictions"
             >
-              Restrict Meals To
+              Restrict Items To
             </th>
-            <th class="border-top-0">Meals</th>
+            <th class="border-top-0">Items</th>
             <th class="border-top-0"></th>
           </thead>
 

@@ -154,7 +154,7 @@
         <div class="row light-background" v-if="order.adjusted">
           <div class="col-md-12">
             <p class="center-text red pt-3">
-              The meals and/or delivery date of this order was adjusted.
+              The items and/or delivery date of this order was adjusted.
             </p>
           </div>
         </div>
@@ -274,7 +274,7 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <h4>Meals</h4>
+            <h4>Items</h4>
             <hr />
             <ul class="meal-quantities">
               <li v-for="meal in getMealQuantities(order)" :key="meal.id">

@@ -489,7 +489,8 @@ export default {
     transferTime: null,
     pickup: {
       default: 0
-    }
+    },
+    orderLineItems: []
   },
   mixins: [MenuBag],
   computed: {
@@ -679,7 +680,13 @@ export default {
       return this.minPrice - this.totalBagPricePreFees;
     },
     subtotal() {
-      let subtotal = this.totalBagPricePreFees;
+      let totalLineItemsPrice = 0;
+      if (this.orderLineItems != null) {
+        this.orderLineItems.forEach(orderLineItem => {
+          totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
+        });
+      }
+      let subtotal = this.totalBagPricePreFees + totalLineItemsPrice;
       return subtotal;
     },
     couponReduction() {
@@ -984,7 +991,8 @@ export default {
           customer: this.customer,
           deposit: deposit,
           cashOrder: this.cashOrder,
-          transferTime: this.transferTime
+          transferTime: this.transferTime,
+          lineItemsOrder: this.orderLineItems
         })
         .then(async resp => {
           this.emptyBag();

@@ -11,7 +11,10 @@
             class="mb-4"
           >
           </above-bag>
-          <bag-area :pickup="pickup"></bag-area>
+          <bag-area
+            :pickup="pickup"
+            @updateLineItems="updateLineItems($event)"
+          ></bag-area>
           <bag-actions
             :manualOrder="manualOrder"
             :adjustOrder="adjustOrder"
@@ -36,6 +39,7 @@
             :deliveryDay="deliveryDay"
             :transferTime="transferTime"
             :pickup="pickup"
+            :orderLineItems="orderLineItems"
           ></checkout-area>
           <store-closed></store-closed>
         </div>
@@ -110,7 +114,8 @@ export default {
       couponClass: "checkout-item",
       deliveryFee: 0,
       amounts: {},
-      salesTax: 0
+      salesTax: 0,
+      orderLineItems: null
     };
   },
   watch: {
@@ -218,13 +223,6 @@ export default {
     },
     remainingPrice() {
       return this.minPrice - this.totalBagPricePreFees;
-    },
-    lineItemTotal() {
-      let totalLineItemsPrice = 0;
-      this.orderLineItems.forEach(orderLineItem => {
-        totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
-      });
-      return totalLineItemsPrice;
     },
     subtotal() {
       let totalLineItemsPrice = 0;
@@ -590,28 +588,8 @@ export default {
     changeState(state) {
       this.form.state = state.abbreviation;
     },
-    addLineItem(existing) {
-      let orderLineItems = this.orderLineItems;
-      if (existing) {
-        if (orderLineItems.includes(this.selectedLineItem)) {
-          let index = _.findIndex(orderLineItems, orderLineItem => {
-            return orderLineItem.title === this.selectedLineItem.title;
-          });
-          orderLineItems[index].quantity += 1;
-        } else {
-          orderLineItems.push(this.selectedLineItem);
-        }
-      } else {
-        axios.post("/api/me/lineItems", this.lineItem);
-        orderLineItems.push(this.lineItem);
-      }
-
-      this.showLineItemModal = false;
-      this.lineItem = { title: "", price: null, quantity: 1 };
-      this.selectedLineItem = { title: "", price: null, quantity: 1 };
-    },
-    removeLineItem(index) {
-      this.orderLineItems.splice(index, 1);
+    updateLineItems(orderLineItems) {
+      this.orderLineItems = orderLineItems;
     }
   }
 };

@@ -83,6 +83,7 @@
             :adjustMealPlan="adjustMealPlan"
             :subscriptionId="subscriptionId"
             :orderId="orderId"
+            :storeView="storeView"
           >
           </bag-area>
           <div class="bag-bottom-area">
@@ -242,6 +243,16 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
     }),
+    AAAtest() {
+      let test = [];
+      this.bag.forEach(item => {
+        let c = Object.values(item.components);
+        c.forEach(component => {
+          test.push(component);
+        });
+      });
+      return test;
+    },
     meals() {
       let meals = this.store.meals;
       let filters = this.filters;

@@ -32,7 +32,7 @@
                   ></b-form-checkbox-group>
                   <img
                     v-b-popover.hover="
-                      'These are the day(s) you plan on delivering your meals or allowing pickup to your customers and will show up as options on the checkout page for the customer. Please choose at least one day to allow orders on your menu.'
+                      'These are the day(s) you plan on delivering your order or allowing pickup to your customers and will show up as options on the checkout page for the customer. Please choose at least one day to allow orders on your menu.'
                     "
                     title="Delivery / Pickup Day(s)"
                     src="/images/store/popover.png"
@@ -228,7 +228,7 @@
                   ></b-select>
                   <img
                     v-b-popover.hover="
-                      'This is the amount of time you want to lock in orders before a specific delivery day. For example - you set the cut off period to 1 day, and it is currently Tuesday. If you have a Wednesday delivery day, your customer will not see Wednesday as a delivery day option. They will see the next available delivery day. This prevents you from getting new orders right before your delivery day and possibly already after you prepped your meals for that day.'
+                      'This is the amount of time you want to lock in orders before a specific delivery day. For example - you set the cut off period to 1 day, and it is currently Tuesday. If you have a Wednesday delivery day, your customer will not see Wednesday as a delivery day option. They will see the next available delivery day. This prevents you from getting new orders right before your delivery day and possibly already after you prepped your orders for that day.'
                     "
                     title="Cut Off Period"
                     src="/images/store/popover.png"
@@ -270,12 +270,12 @@
                   v-if="storeSettings.minimumOption === 'meals'"
                 >
                   <p>
-                    <span class="mr-1">Minimum Meals Requirement</span>
+                    <span class="mr-1">Minimum Items Requirement</span>
                     <img
                       v-b-popover.hover="
-                        'Here you can set a minimum number of meals required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'
+                        'Here you can set a minimum number of items required before a customer can place an order. Leave it at 0 if you have no minimum requirement.'
                       "
-                      title="Minimum Meals Requirement"
+                      title="Minimum Items Requirement"
                       src="/images/store/popover.png"
                       class="popover-size"
                     />
@@ -283,7 +283,7 @@
                   <b-form-input
                     type="text"
                     v-model="storeSettings.minimumMeals"
-                    placeholder="Minimum Number of Meals"
+                    placeholder="Minimum Number of Items"
                     required
                   ></b-form-input>
                 </b-form-group>

@@ -244,7 +244,7 @@
                     id="meal-title"
                     type="text"
                     v-model="meal.title"
-                    placeholder="Meal Name"
+                    placeholder="Item Name"
                     required
                     @change="val => updateMeal(meal.id, { title: val }, true)"
                   ></b-form-input>

@@ -116,9 +116,9 @@ export default {
     },
     singOrPlural() {
       if (this.remainingMeals > 1) {
-        return "meals";
+        return "items";
       }
-      return "meal";
+      return "item";
     },
     minimumMet() {
       if (
@@ -152,20 +152,6 @@ export default {
       )
         return true;
       else return false;
-    },
-    lineItemOptions() {
-      let options = [];
-      this.lineItems.forEach(lineItem => {
-        options.push({
-          text: lineItem.title,
-          value: {
-            price: lineItem.price,
-            title: lineItem.title,
-            quantity: 1
-          }
-        });
-      });
-      return options;
     }
   }
 };

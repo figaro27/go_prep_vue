@@ -59,12 +59,12 @@
     </div>
 
 
-    <h2>Meals</h2>
+    <h2>Items</h2>
     <table border="1">
       <thead>
         <tr>
           <th>Quantity</th>
-          <th>Meal Name</th>
+          <th>Item Name</th>
           <th>Price</th>
         </tr>
       </thead>
@@ -87,7 +87,7 @@
         <thead>
           <tr>
             <th>Quantity</th>
-            <th>Meal Name</th>
+            <th>Item Name</th>
             <th>Price</th>
           </tr>
         </thead>

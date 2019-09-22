@@ -229,7 +229,7 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <h4>Meals</h4>
+            <h4>Items</h4>
             <hr />
             <ul class="meal-quantities">
               <li

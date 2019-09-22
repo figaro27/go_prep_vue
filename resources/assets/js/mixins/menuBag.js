@@ -284,7 +284,7 @@ export default {
           } else {
             this.$toastr.e(
               "Please try again or contact our support team",
-              "Failed to update meals!"
+              "Failed to update items!"
             );
           }
           return;

@@ -34,7 +34,7 @@ class DeliveryToday extends Mailable
         $storeEmail = $order->store->user->email;
         return $this->view('email.customer.delivery-today')
             ->with($this->data)
-            ->subject('Your Meals Are Ready Today')
+            ->subject('Your Order is Ready Today')
             ->replyTo($storeEmail);
     }
 }

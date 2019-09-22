@@ -13,7 +13,7 @@
             <span v-if="!!$route.query.pickup"
               >You can pick up your order on</span
             >
-            <span v-else>Your meals will be delivered on</span>
+            <span v-else>Your order will be delivered on</span>
             {{
               moment(orders[0].delivery_date).format("dddd, MMM Do, Y") || ""
             }}

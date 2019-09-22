@@ -10,7 +10,7 @@
       <h3 class="white-text d-inline">
         My Bag
       </h3>
-      <p class="white-text d-inline">({{ total }} Meals)</p>
+      <p class="white-text d-inline">({{ total }} Items)</p>
       <i
         class="fas fa-trash white-text d-inline bag-icon float-right pt-2 pr-3"
         @click="clearAll"
@@ -129,8 +129,7 @@
         </li>
       </ul>
     </div>
-
-    <div v-if="$route.name === 'store-bag' && storeModules.lineItems">
+    <div v-if="$route.params.storeView && storeModules.lineItems">
       <ul class="list-group">
         <li
           v-for="(orderLineItem, index) in orderLineItems"
@@ -183,7 +182,7 @@
         size="md"
         variant="success"
         @click="showLineItemModal = true"
-        v-if="manualOrder"
+        v-if="$route.params.manualOrder"
       >
         <span class="d-sm-inline">Add Line Item</span>
       </b-button>
@@ -255,7 +254,8 @@ export default {
     adjustOrder: false,
     adjustMealPlan: false,
     subscriptionId: null,
-    pickup: 0
+    pickup: 0,
+    storeView: false
   },
   mixins: [MenuBag],
   computed: {
@@ -279,7 +279,8 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal",
-      getMealPackage: "viewedStoreMealPackage"
+      getMealPackage: "viewedStoreMealPackage",
+      lineItems: "viewedStoreLineItems"
     }),
     remainingPrice() {
       return this.minPrice - this.totalBagPricePreFees;
@@ -298,6 +299,27 @@ export default {
     },
     storeSettings() {
       return this.store.settings;
+    },
+    lineItemTotal() {
+      let totalLineItemsPrice = 0;
+      this.orderLineItems.forEach(orderLineItem => {
+        totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
+      });
+      return totalLineItemsPrice;
+    },
+    lineItemOptions() {
+      let options = [];
+      this.lineItems.forEach(lineItem => {
+        options.push({
+          text: lineItem.title,
+          value: {
+            price: lineItem.price,
+            title: lineItem.title,
+            quantity: 1
+          }
+        });
+      });
+      return options;
     }
   },
   methods: {
@@ -320,6 +342,8 @@ export default {
       this.showLineItemModal = false;
       this.lineItem = { title: "", price: null, quantity: 1 };
       this.selectedLineItem = { title: "", price: null, quantity: 1 };
+
+      this.$emit("updateLineItems", this.orderLineItems);
     },
     removeLineItem(index) {
       this.orderLineItems.splice(index, 1);

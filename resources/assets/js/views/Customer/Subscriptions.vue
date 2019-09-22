@@ -12,7 +12,7 @@
             <span v-if="!!$route.query.pickup"
               >You can pick up your order on</span
             >
-            <span v-else>Your meals will be delivered on</span>
+            <span v-else>Your order will be delivered on</span>
             {{
               moment(subscriptions[0].next_delivery_date).format(
                 "dddd, MMM Do, Y"
@@ -185,7 +185,7 @@
                       <router-link
                         :to="`/customer/subscriptions/${subscription.id}`"
                       >
-                        <b-btn variant="success">Change Meals</b-btn>
+                        <b-btn variant="success">Edit Subscription</b-btn>
                       </router-link>
                     </div>
                     <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />

@@ -10,6 +10,10 @@ class LineItemOrder extends Pivot
 
     protected $appends = ['title', 'price'];
 
+    protected $casts = [
+        'price' => 'float'
+    ];
+
     public function lineItem()
     {
         return $this->belongsTo('App\LineItem');

@@ -11,7 +11,7 @@
           <span v-if="!!$route.query.pickup"
             >You can pick up your order on</span
           >
-          <span v-else>Your meals will be delivered on</span>
+          <span v-else>Your order will be delivered on</span>
           {{
             moment(subscriptions[0].next_delivery_date).format(
               "dddd, MMM Do, Y"
@@ -205,7 +205,7 @@
                         <b-btn
                           variant="success"
                           @click.stop="() => editSubscription(subscription)"
-                          >Change Meals</b-btn
+                          >Change Subscription</b-btn
                         >
                       </div>
 
