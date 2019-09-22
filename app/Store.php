@@ -608,10 +608,10 @@ class Store extends Model
                 break;
         }
 
-        if ($email) {
-            Mail::to($this->user)->send($email);
-            return true;
-        }
+        // if ($email) {
+        //     Mail::to($this->user)->send($email);
+        //     return true;
+        // }
 
         return false;
     }
