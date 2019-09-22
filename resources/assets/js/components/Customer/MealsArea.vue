@@ -172,9 +172,9 @@ export default {
     })
   },
   methods: {
-    addMeal(meal, mealPackage, size) {
+    addMeal(meal, mealPackage) {
       if (
-        meal.sizes.length > 1 ||
+        meal.sizes.length > 0 ||
         meal.components.length > 0 ||
         meal.addons.length > 0
       ) {
