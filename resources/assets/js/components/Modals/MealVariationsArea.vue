@@ -98,7 +98,7 @@ export default {
     sizeCheck() {
       let check = false;
 
-      if (this.components.length === 1) return true;
+      if (this.components.length > 0) return true;
 
       this.components.forEach(component => {
         component.options.forEach(option => {

@@ -220,7 +220,8 @@ export default {
       nutritionalFacts: {},
       storeCSS: "",
       showMealsArea: true,
-      showMealPackagesArea: true
+      showMealPackagesArea: true,
+      mealSizePrice: null
     };
   },
   computed: {

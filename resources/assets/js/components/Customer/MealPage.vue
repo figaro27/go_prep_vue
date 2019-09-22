@@ -134,7 +134,7 @@
           <div class="row mt-4">
             <div class="col-md-2">
               <h2 class="pt-3">
-                {{ format.money(meal.price, storeSettings.currency) }}
+                {{ format.money(mealSizePrice, storeSettings.currency) }}
               </h2>
             </div>
             <div class="col-md-9 offset-1">
@@ -179,7 +179,8 @@ export default {
       sizeChanged: false,
       invalidCheck: false,
       invalid: false,
-      specialInstructions: null
+      specialInstructions: null,
+      mealSizePrice: null
     };
   },
   components: {
@@ -266,6 +267,7 @@ export default {
     if (!this.sizeChanged) {
       this.mealSize = this.sizes[0].value;
     }
+    this.getMealSizePrice();
   },
   methods: {
     getMealGallery(meal) {
@@ -303,7 +305,14 @@ export default {
         size = this.mealSize;
       }
 
-      this.addOne(meal, false, size, this.components, this.addons, null);
+      this.addOne(
+        meal,
+        false,
+        size,
+        this.components,
+        this.addons,
+        this.specialInstructions
+      );
 
       this.mealSize = null;
       this.back();
@@ -321,6 +330,13 @@ export default {
       this.$parent.showMealsArea = true;
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPageView = false;
+      this.mealSizePrice = null;
+    },
+    getMealSizePrice() {
+      let selectedMealSize = _.find(this.meal.sizes, size => {
+        return size.id === this.mealSize;
+      });
+      this.mealSizePrice = selectedMealSize.price;
     }
   }
 };
