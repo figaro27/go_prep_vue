@@ -2,7 +2,7 @@
   <div>
     <div :class="mealPageClass" v-if="$parent.mealPageView">
       <div class="row meal-page mt-5">
-        <div class="col-md-6">
+        <div class="col-md-4">
           <thumbnail
             v-if="meal.image.url"
             :src="meal.image.url"
@@ -47,7 +47,7 @@
             </div> -->
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-8">
           <div class="row">
             <div class="col-md-4">
               <h5>Nutrition</h5>
@@ -143,7 +143,13 @@
           </div>
         </div>
         <div class="col-md-12">
-          <h4 v-if="storeSettings.mealInstructions && meal.instructions != ''">
+          <h4
+            v-if="
+              storeSettings.mealInstructions &&
+                meal.instructions != '' &&
+                meal.instructions != null
+            "
+          >
             Instructions
           </h4>
           <p v-if="storeSettings.mealInstructions && meal.instructions != ''">
