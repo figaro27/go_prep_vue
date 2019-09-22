@@ -8,7 +8,8 @@ export default {
       mealPackage = false,
       size = null,
       components = null,
-      addons = null
+      addons = null,
+      special_instructions = null
     ) {
       if (!mealPackage) {
         meal = this.getMeal(meal.id);
@@ -72,7 +73,8 @@ export default {
         mealPackage,
         size,
         components,
-        addons
+        addons,
+        special_instructions
       });
       this.mealModal = false;
       this.mealPackageModal = false;
@@ -82,7 +84,8 @@ export default {
       mealPackage = false,
       size = null,
       components = null,
-      addons = null
+      addons = null,
+      special_instructions = null
     ) {
       this.$store.commit("removeFromBag", {
         meal,
@@ -90,7 +93,8 @@ export default {
         mealPackage,
         size,
         components,
-        addons
+        addons,
+        special_instructions
       });
     },
     addBagItems(bag) {
@@ -101,16 +105,25 @@ export default {
       mealPackage = false,
       size = null,
       components = null,
-      addons = null
+      addons = null,
+      special_instructions = null
     ) {
-      let quantity = this.quantity(meal, mealPackage, size, components, addons);
+      let quantity = this.quantity(
+        meal,
+        mealPackage,
+        size,
+        components,
+        addons,
+        special_instructions
+      );
       this.$store.commit("removeFromBag", {
         meal,
         quantity,
         mealPackage,
         size,
         components,
-        addons
+        addons,
+        special_instructions
       });
     },
     clearAll() {
@@ -271,7 +284,7 @@ export default {
           } else {
             this.$toastr.e(
               "Please try again or contact our support team",
-              "Failed to update meals!"
+              "Failed to update items!"
             );
           }
           return;

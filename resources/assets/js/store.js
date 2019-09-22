@@ -38,7 +38,8 @@ const state = {
       data: {}
     },
     coupons: [],
-    pickupLocations: []
+    pickupLocations: [],
+    lineItems: []
   },
   stores: {},
   tags: [],
@@ -110,6 +111,12 @@ const state = {
     },
     pickupLocations: {
       data: {}
+    },
+    production_groups: {
+      data: {}
+    },
+    lineItems: {
+      data: {}
     }
   },
   orders: {
@@ -172,6 +179,9 @@ const mutations = {
   setViewedStorePickupLocations(state, { pickupLocations }) {
     state.viewed_store.pickupLocations = pickupLocations;
   },
+  setViewedStoreLineItems(state, { lineItems }) {
+    state.viewed_store.lineItems = lineItems;
+  },
   addBagItems(state, items) {
     state.bag.items = _.keyBy(items, "id");
   },
@@ -189,7 +199,8 @@ const mutations = {
       mealPackage = false,
       size = null,
       components = null,
-      addons = null
+      addons = null,
+      special_instructions = null
     }
   ) {
     let mealId = meal;
@@ -211,7 +222,14 @@ const mutations = {
     }
 
     let guid = CryptoJS.MD5(
-      JSON.stringify({ meal: mealId, mealPackage, size, components, addons })
+      JSON.stringify({
+        meal: mealId,
+        mealPackage,
+        size,
+        components,
+        addons,
+        special_instructions
+      })
     ).toString();
 
     if (!_.has(state.bag.items, guid)) {
@@ -222,7 +240,8 @@ const mutations = {
         added: moment().unix(),
         size,
         components,
-        addons
+        addons,
+        special_instructions: special_instructions
       });
     }
 
@@ -244,7 +263,8 @@ const mutations = {
       mealPackage = false,
       size = null,
       components = null,
-      addons = null
+      addons = null,
+      special_instructions = null
     }
   ) {
     let mealId = meal;
@@ -262,7 +282,14 @@ const mutations = {
     }
 
     let guid = CryptoJS.MD5(
-      JSON.stringify({ meal: mealId, mealPackage, size, components, addons })
+      JSON.stringify({
+        meal: mealId,
+        mealPackage,
+        size,
+        components,
+        addons,
+        special_instructions
+      })
     ).toString();
 
     if (!_.has(state.bag.items, guid)) {
@@ -323,6 +350,14 @@ const mutations = {
 
   storePickupLocations(state, { pickupLocations }) {
     state.store.pickupLocations.data = pickupLocations;
+  },
+
+  storeProductionGroups(state, { productionGroups }) {
+    state.store.production_groups.data = productionGroups;
+  },
+
+  storeLineItems(state, { lineItems }) {
+    state.store.lineItems.data = lineItems;
   },
 
   storeMeals(state, { meals }) {
@@ -456,6 +491,26 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.store.production_groups)) {
+        let productionGroups = data.store.production_groups;
+
+        if (!_.isEmpty(productionGroups)) {
+          commit("storeProductionGroups", { productionGroups });
+        }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.lineItems)) {
+        let lineItems = data.store.lineItems;
+
+        if (!_.isEmpty(lineItems)) {
+          commit("storeLineItems", { lineItems });
+        }
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.tags)) {
         let tags = data.tags;
 
@@ -528,6 +583,26 @@ const actions = {
       ) {
         let pickupLocations = data.store.pickupLocations;
         commit("storePickupLocations", { pickupLocations });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.production_groups) &&
+        _.isObject(data.store.production_groups)
+      ) {
+        let productionGroups = data.store.production_groups;
+        commit("storeProductionGroups", { productionGroups });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.lineItems) &&
+        _.isObject(data.store.lineItems)
+      ) {
+        let lineItems = data.store.lineItems;
+        commit("storeLineItems", { lineItems });
       }
     } catch (e) {}
 
@@ -698,6 +773,16 @@ const actions = {
         }
       }
     } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.line_items)) {
+        let lineItems = data.store.line_items;
+
+        if (!_.isEmpty(lineItems)) {
+          commit("setViewedStoreLineItems", { lineItems });
+        }
+      }
+    } catch (e) {}
   },
 
   async refreshStores({ commit, state }, args = {}) {
@@ -772,6 +857,28 @@ const actions = {
       commit("storePickupLocations", { pickupLocations: data });
     } else {
       throw new Error("Failed to retrieve pickupLocations");
+    }
+  },
+
+  async refreshStoreProductionGroups({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/productionGroups");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      commit("storeProductionGroups", { productionGroups: data });
+    } else {
+      throw new Error("Failed to retrieve productionGroups");
+    }
+  },
+
+  async refreshStoreLineItems({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/lineItems");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      commit("storeLineItems", { lineItems: data });
+    } else {
+      throw new Error("Failed to retrieve lineItems");
     }
   },
 
@@ -1144,6 +1251,13 @@ const getters = {
       return null;
     }
   },
+  viewedStoreLineItems(state, getters) {
+    try {
+      return state.viewed_store.lineItems;
+    } catch (e) {
+      return null;
+    }
+  },
   viewedStoreMeal: state => id => {
     try {
       let meal = _.find(state.viewed_store.meals, ["id", parseInt(id)]) || null;
@@ -1159,10 +1273,10 @@ const getters = {
         html = false,
         size = null,
         components = null,
-        addons = null
+        addons = null,
+        special_instructions = null
       ) => {
         let title = meal.title;
-
         if (_.isObject(size)) {
           title = size.full_title;
         }
@@ -1191,6 +1305,10 @@ const getters = {
             });
           }
           title += "</ul>";
+        }
+
+        if (special_instructions) {
+          title += `<p class="small">${special_instructions}</p>`;
         }
 
         return title;
@@ -1373,7 +1491,8 @@ const getters = {
     mealPackage = false,
     size = null,
     components = null,
-    addons = null
+    addons = null,
+    special_instructions = null
   ) => {
     if (!meal) {
       return 0;
@@ -1392,7 +1511,14 @@ const getters = {
     }
 
     let guid = CryptoJS.MD5(
-      JSON.stringify({ meal: mealId, mealPackage, size, components, addons })
+      JSON.stringify({
+        meal: mealId,
+        mealPackage,
+        size,
+        components,
+        addons,
+        special_instructions
+      })
     ).toString();
 
     if (!_.has(state.bag.items, guid) || !_.isObject(state.bag.items[guid])) {
@@ -1560,6 +1686,20 @@ const getters = {
       return {};
     }
   },
+  storeProductionGroups: state => {
+    try {
+      return state.store.production_groups.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeLineItems: state => {
+    try {
+      return state.store.lineItems.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
   storeMeals: state => {
     try {
       return state.store.meals.data || {};
@@ -1582,7 +1722,8 @@ const getters = {
         html = false,
         size = null,
         components = null,
-        addons = null
+        addons = null,
+        special_instructions = null
       ) => {
         let title = meal.title;
 
@@ -1614,6 +1755,10 @@ const getters = {
             });
           }
           title += "</ul>";
+        }
+
+        if (special_instructions) {
+          title += `<p class="small">${special_instructions}</p>`;
         }
 
         return title;

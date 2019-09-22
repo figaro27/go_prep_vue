@@ -10,7 +10,7 @@
       <h3 class="white-text d-inline">
         My Bag
       </h3>
-      <p class="white-text d-inline">({{ total }} Meals)</p>
+      <p class="white-text d-inline">({{ total }} Items)</p>
       <i
         class="fas fa-trash white-text d-inline bag-icon float-right pt-2 pr-3"
         @click="clearAll"
@@ -36,7 +36,8 @@
                     false,
                     item.size,
                     item.components,
-                    item.addons
+                    item.addons,
+                    item.special_instructions
                   )
                 "
                 class="bag-plus-minus brand-color white-text"
@@ -51,7 +52,8 @@
                     true,
                     item.size,
                     item.components,
-                    item.addons
+                    item.addons,
+                    item.special_instructions
                   )
                 "
                 class="bag-plus-minus brand-color white-text"
@@ -66,7 +68,8 @@
                     false,
                     item.size,
                     item.components,
-                    item.addons
+                    item.addons,
+                    item.special_instructions
                   )
                 "
                 class="bag-plus-minus gray white-text"
@@ -88,6 +91,7 @@
                 {{ item.size.full_title }}
               </span>
               <span v-else>{{ item.meal.item_title }}</span>
+              <p class="small">{{ item.special_instructions }}</p>
 
               <ul v-if="item.components || item.addons" class="plain">
                 <li v-for="component in itemComponents(item)" class="plain">
@@ -107,7 +111,8 @@
                     false,
                     item.size,
                     item.components,
-                    item.addons
+                    item.addons,
+                    item.special_instructions
                   )
                 "
                 class="clear-meal"
@@ -124,6 +129,102 @@
         </li>
       </ul>
     </div>
+    <div v-if="$route.params.storeView && storeModules.lineItems">
+      <ul class="list-group">
+        <li
+          v-for="(orderLineItem, index) in orderLineItems"
+          class="bag-item"
+          v-if="orderLineItem.quantity > 0"
+        >
+          <div class="d-flex align-items-center">
+            <div class="bag-item-quantity mr-2">
+              <div
+                class="bag-plus-minus brand-color white-text"
+                @click="orderLineItem.quantity += 1"
+              >
+                <i>+</i>
+              </div>
+              <p class="bag-quantity">{{ orderLineItem.quantity }}</p>
+              <div
+                class="bag-plus-minus gray white-text"
+                @click="orderLineItem.quantity -= 1"
+              >
+                <i>-</i>
+              </div>
+            </div>
+            <div class="bag-item-image mr-2">
+              <span class="cart-item-img" width="80px"></span>
+            </div>
+            <div class="flex-grow-1">
+              <span>
+                <p>
+                  {{ orderLineItem.title }} -
+                  {{
+                    format.money(
+                      orderLineItem.price * orderLineItem.quantity,
+                      storeSettings.currency
+                    )
+                  }}
+                </p>
+              </span>
+            </div>
+            <div class="flex-grow-0">
+              <img
+                src="/images/customer/x.png"
+                @click="removeLineItem(index)"
+                class="clear-meal"
+              />
+            </div>
+          </div>
+        </li>
+      </ul>
+      <b-button
+        size="md"
+        variant="success"
+        @click="showLineItemModal = true"
+        v-if="$route.params.manualOrder"
+      >
+        <span class="d-sm-inline">Add Line Item</span>
+      </b-button>
+    </div>
+
+    <b-modal
+      size="lg"
+      title="Add New Line Item"
+      v-model="showLineItemModal"
+      v-if="showLineItemModal"
+      hide-footer
+    >
+      <h3 class="center-text mt-3">Add New</h3>
+      <b-input-group>
+        <b-form-input
+          v-model="lineItem.title"
+          placeholder="Title"
+          class="mr-3"
+        ></b-form-input>
+        <b-form-input
+          v-model="lineItem.price"
+          placeholder="Price"
+          class="mr-3"
+        ></b-form-input>
+        <b-btn variant="success" @click="addLineItem(0)">Add</b-btn>
+      </b-input-group>
+      <h3 class="center-text mt-5">Or Select From Existing</h3>
+      <b-input-group>
+        <b-form-select
+          v-model="selectedLineItem"
+          :options="lineItemOptions"
+          class="mr-3"
+        ></b-form-select>
+        <p class="pt-1 mr-3">
+          {{ format.money(selectedLineItem.price, storeSettings.currency) }}
+        </p>
+        <b-btn class="mb-5" variant="success" @click="addLineItem(1)"
+          >Add</b-btn
+        >
+      </b-input-group>
+    </b-modal>
+
     <v-style>
       .bag-header{ height:70px !important; background-color:
       {{ store.settings.color }}; margin-bottom: 15px; padding-top: 10px }
@@ -135,18 +236,33 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../mixins/menuBag";
 
 export default {
+  data() {
+    return {
+      orderLineItems: [],
+      showLineItemModal: false,
+      lineItem: {
+        title: "",
+        price: null,
+        quantity: 1
+      },
+      selectedLineItem: {},
+      orderLineItems: []
+    };
+  },
   props: {
     manualOrder: false,
     adjustOrder: false,
     adjustMealPlan: false,
     subscriptionId: null,
-    pickup: 0
+    pickup: 0,
+    storeView: false
   },
   mixins: [MenuBag],
   computed: {
     ...mapGetters({
       store: "viewedStore",
       storeCustomers: "storeCustomers",
+      storeModules: "viewedStoreModules",
       storeSettings: "viewedStoreSetting",
       total: "bagQuantity",
       allergies: "allergies",
@@ -163,7 +279,8 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal",
-      getMealPackage: "viewedStoreMealPackage"
+      getMealPackage: "viewedStoreMealPackage",
+      lineItems: "viewedStoreLineItems"
     }),
     remainingPrice() {
       return this.minPrice - this.totalBagPricePreFees;
@@ -182,6 +299,54 @@ export default {
     },
     storeSettings() {
       return this.store.settings;
+    },
+    lineItemTotal() {
+      let totalLineItemsPrice = 0;
+      this.orderLineItems.forEach(orderLineItem => {
+        totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
+      });
+      return totalLineItemsPrice;
+    },
+    lineItemOptions() {
+      let options = [];
+      this.lineItems.forEach(lineItem => {
+        options.push({
+          text: lineItem.title,
+          value: {
+            price: lineItem.price,
+            title: lineItem.title,
+            quantity: 1
+          }
+        });
+      });
+      return options;
+    }
+  },
+  methods: {
+    addLineItem(existing) {
+      let orderLineItems = this.orderLineItems;
+      if (existing) {
+        if (orderLineItems.includes(this.selectedLineItem)) {
+          let index = _.findIndex(orderLineItems, orderLineItem => {
+            return orderLineItem.title === this.selectedLineItem.title;
+          });
+          orderLineItems[index].quantity += 1;
+        } else {
+          orderLineItems.push(this.selectedLineItem);
+        }
+      } else {
+        axios.post("/api/me/lineItems", this.lineItem);
+        orderLineItems.push(this.lineItem);
+      }
+
+      this.showLineItemModal = false;
+      this.lineItem = { title: "", price: null, quantity: 1 };
+      this.selectedLineItem = { title: "", price: null, quantity: 1 };
+
+      this.$emit("updateLineItems", this.orderLineItems);
+    },
+    removeLineItem(index) {
+      this.orderLineItems.splice(index, 1);
     }
   }
 };

@@ -30,71 +30,51 @@
                 <div v-else class="my-2">
                   <b-row>
                     <div
-                      class="item col-sm-6 col-lg-4 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3"
+                      class="bag-item col-6 col-sm-4 col-lg-3 pb-4 mb-4"
                       v-for="meal in getMealOptions(
                         getOptionMeals(component.id, option.id),
                         false
                       )"
                       :key="meal.meal_id"
                     >
-                      <div class="item-wrap">
-                        <div class="title d-md-none">{{ meal.meal.title }}</div>
-
-                        <div class="image">
+                      <div
+                        v-if="meal && meal.quantity > 0"
+                        class="d-flex align-items-center"
+                      >
+                        <div class="bag-item-quantity mr-2">
+                          <div
+                            @click="addOptionChoice(component, option, meal)"
+                            class="bag-plus-minus brand-color white-text"
+                          >
+                            <i>+</i>
+                          </div>
+                          <p class="bag-quantity">
+                            {{
+                              getOptionChoiceQuantity(
+                                component.id,
+                                option.id,
+                                meal.meal_id
+                              )
+                            }}
+                          </p>
+                          <div
+                            @click="minusOptionChoice(component, option, meal)"
+                            class="bag-plus-minus gray white-text"
+                          >
+                            <i>-</i>
+                          </div>
+                        </div>
+                        <div class="bag-item-image mr-2">
                           <thumbnail
-                            v-if="meal.meal.image.url_medium"
-                            :src="meal.meal.image.url_medium"
-                            class="menu-item-img"
-                            width="100%"
-                            style="background-color:#ffffff"
+                            v-if="meal.meal.image.url_thumb"
+                            :src="meal.meal.image.url_thumb"
+                            :spinner="false"
+                            class="cart-item-img"
+                            width="80px"
                           ></thumbnail>
                         </div>
-
-                        <div class="meta">
-                          <div class="title d-none d-md-block">
-                            {{ meal.meal.title }}
-                            <span v-if="meal.quantity > 1">
-                              x {{ meal.quantity }}</span
-                            >
-                            <div v-if="meal.size">
-                              {{ meal.size.title }}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="actions">
-                          <div
-                            class="d-flex justify-content-between align-items-center mt-1"
-                          >
-                            <b-btn
-                              @click="
-                                minusOptionChoice(component, option, meal)
-                              "
-                              class="plus-minus gray"
-                            >
-                              <i>-</i>
-                            </b-btn>
-                            <b-form-input
-                              type="text"
-                              name
-                              id
-                              class="quantity"
-                              :value="
-                                getOptionChoiceQuantity(
-                                  component.id,
-                                  option.id,
-                                  meal.meal_id
-                                )
-                              "
-                              readonly
-                            ></b-form-input>
-                            <b-btn
-                              @click="addOptionChoice(component, option, meal)"
-                              class="menu-bag-btn plus-minus"
-                            >
-                              <i>+</i>
-                            </b-btn>
-                          </div>
+                        <div class="flex-grow-1 mr-2">
+                          <span>{{ meal.meal.title }}</span>
                         </div>
                       </div>
                     </div>
@@ -132,9 +112,9 @@
           <h6>Add-ons</h6>
 
           <div v-for="addon in mealAddons" :key="addon.id">
-            <b-checkbox @input="toggleAddon(addon.id)">
-              {{ addon.title }}
-            </b-checkbox>
+            <b-checkbox @input="toggleAddon(addon.id)">{{
+              addon.title
+            }}</b-checkbox>
 
             <div
               v-if="addon.selectable && addonSelected(addon.id)"

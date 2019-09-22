@@ -10,7 +10,7 @@
         no-fade
       >
         <div>
-          <h4 class="center-text mb-5 mt-5">Hide Meals That Contain</h4>
+          <h4 class="center-text mb-5 mt-5">Hide Items That Contain</h4>
         </div>
         <div class="row mb-4">
           <div
@@ -27,7 +27,7 @@
         </div>
         <hr />
         <div>
-          <h4 class="center-text mb-5">Show Meals With</h4>
+          <h4 class="center-text mb-5">Show Items With</h4>
         </div>
         <div class="row">
           <div

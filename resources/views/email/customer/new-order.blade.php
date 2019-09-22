@@ -143,8 +143,13 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       @endif
                       <!-- end address -->
+                      @if ($order->store->modules->dailyOrderNumbers)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Order #{{ $order->order_number }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Order #{{ $order->dailyOrderNumber }}</td>
+                      </tr>
+                      @endif
+                      <tr>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Order ID{{ $order->order_number }}</td>
                       </tr>
                       @if ($order->subscription)
                       <tr>
@@ -183,7 +188,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
             <td>
               <table class="table-inner" width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px; text-transform:uppercase;">Meal Name</td>
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px; text-transform:uppercase;">Item Name</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px; text-transform:uppercase;">Price</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px; text-transform:uppercase;">Quantity</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px; text-transform:uppercase;">Total</td>
@@ -221,6 +226,22 @@ u + .body .full { width:100% !important; width:100vw !important;}
 	              	<td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;  font-weight: bold;">${{ number_format($item->price, 2) }}</td>
               	</tr>
 				      @endforeach
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td align="center">
+              <table width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
+                @foreach($order->lineItemsOrders as $lineItemOrder)
+
+                <tr>
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->title }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
+                    ${{ number_format($lineItemOrder->price, 2) }}</td>
+                  <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->quantity }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; font-weight: bold ">${{ number_format($lineItemOrder->quantity * $lineItemOrder->price, 2) }}</td>
+                </tr>
+              @endforeach
               </table>
             </td>
           </tr>
@@ -454,7 +475,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- end title -->
                 <tr>
-                  <td height="5"></td>
+                  <td height="15"></td>
                 </tr>
                 <!-- content -->
                 @foreach($order->items as $item)
@@ -464,6 +485,9 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <b>{!! $item->html_title !!}</b> - {{ $item->instructions }}
                       </td>
                     </tr>
+                    <tr>
+                  <td height="10"></td>
+                </tr>
                   @endif
                 @endforeach
                 

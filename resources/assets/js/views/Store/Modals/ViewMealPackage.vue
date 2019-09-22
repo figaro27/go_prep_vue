@@ -18,7 +18,7 @@
                   id="meal-title"
                   type="text"
                   v-model="mealPackage.title"
-                  placeholder="Meal Name"
+                  placeholder="Item Name"
                   required
                 ></b-form-input>
               </b-form-group>

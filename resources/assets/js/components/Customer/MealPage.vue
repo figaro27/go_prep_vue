@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="main-customer-container box-shadow" v-if="$parent.mealPageView">
-      <div class="row meal-page">
+    <div :class="mealPageClass" v-if="$parent.mealPageView">
+      <div class="row meal-page mt-5">
         <div class="col-md-6">
           <thumbnail
             v-if="meal.image.url"
@@ -33,7 +33,7 @@
               </div>
             </div>
           </slick>
-          <div class="row">
+          <div class="row" v-if="storeSettings.showNutrition">
             <div
               class="col-md-8 offset 2"
               id="nutritionFacts"
@@ -122,16 +122,35 @@
             </div>
           </div>
 
+          <b-form-textarea
+            v-if="storeModules.specialInstructions"
+            class="mt-4"
+            v-model="specialInstructions"
+            placeholder="Special instructions"
+            rows="3"
+            max-rows="6"
+          ></b-form-textarea>
+
           <div class="row mt-4">
             <div class="col-md-2">
               <h2 class="pt-3">
-                {{ format.money(meal.price, storeSettings.currency) }}
+                {{ format.money(mealSizePrice, storeSettings.currency) }}
               </h2>
             </div>
             <div class="col-md-9 offset-1">
               <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
             </div>
           </div>
+        </div>
+        <div class="col-md-12">
+          <h4
+            v-if="storeSettings.mealInstructions && meal.instructions != null"
+          >
+            Instructions
+          </h4>
+          <p v-if="storeSettings.mealInstructions && meal.instructions != null">
+            {{ meal.instructions }}
+          </p>
         </div>
       </div>
     </div>
@@ -155,11 +174,13 @@ export default {
     return {
       defaultMealSize: {},
       mealSize: -1,
-      components: {},
-      addons: [],
+      components: null,
+      addons: null,
       sizeChanged: false,
       invalidCheck: false,
-      invalid: false
+      invalid: false,
+      specialInstructions: null,
+      mealSizePrice: null
     };
   },
   components: {
@@ -194,7 +215,8 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal",
-      getMealPackage: "viewedStoreMealPackage"
+      getMealPackage: "viewedStoreMealPackage",
+      storeModules: "viewedStoreModules"
     }),
     viewedMeal() {
       return this.meal;
@@ -233,6 +255,11 @@ export default {
       )
         return true;
       else return false;
+    },
+    mealPageClass() {
+      if (this.storeSettings.showNutrition) {
+        return "main-customer-container box-shadow";
+      } else return "main-customer-container box-shadow full-height";
     }
   },
   updated() {
@@ -240,6 +267,7 @@ export default {
     if (!this.sizeChanged) {
       this.mealSize = this.sizes[0].value;
     }
+    this.getMealSizePrice();
   },
   methods: {
     getMealGallery(meal) {
@@ -266,11 +294,25 @@ export default {
         return;
       }
 
-      if (this.hasVariations) {
-        this.addOne(meal, false, this.mealSize, this.components, this.addons);
-      } else {
-        this.addOne(meal);
+      // if (this.hasVariations) {
+      //   this.addOne(meal, false, this.mealSize, this.components, this.addons, this.specialInstructions);
+      // } else {
+      //   this.addOne(meal);
+      // }
+
+      let size = null;
+      if (this.sizes.length > 1) {
+        size = this.mealSize;
       }
+
+      this.addOne(
+        meal,
+        false,
+        size,
+        this.components,
+        this.addons,
+        this.specialInstructions
+      );
 
       this.mealSize = null;
       this.back();
@@ -279,6 +321,7 @@ export default {
       this.components = null;
       this.addons = [];
       this.defaultMealSize = null;
+      this.specialInstructions = null;
       this.invalid = false;
     },
     back() {
@@ -287,6 +330,13 @@ export default {
       this.$parent.showMealsArea = true;
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPageView = false;
+      this.mealSizePrice = null;
+    },
+    getMealSizePrice() {
+      let selectedMealSize = _.find(this.meal.sizes, size => {
+        return size.id === this.mealSize;
+      });
+      this.mealSizePrice = selectedMealSize.price;
     }
   }
 };

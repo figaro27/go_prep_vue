@@ -199,6 +199,10 @@
                 <div class="col-md-4">
                   <h4>Order ID</h4>
                   <p>{{ order.order_number }}</p>
+                  <h4 v-if="storeModules.dailyOrderNumbers">Order #</h4>
+                  <p v-if="storeModules.dailyOrderNumbers">
+                    {{ order.dailyOrderNumber }}
+                  </p>
                 </div>
                 <div class="col-md-4">
                   <h4>Placed On</h4>
@@ -462,7 +466,13 @@ export default {
         }
 
         const size = meal.getSize(item.meal_size_id);
-        const title = meal.getTitle(true, size, item.components, item.addons);
+        const title = meal.getTitle(
+          true,
+          size,
+          item.components,
+          item.addons,
+          item.special_instructions
+        );
 
         return {
           image: meal.image.url_thumb,

@@ -103,6 +103,9 @@
             <div slot="pickup" slot-scope="props">
               {{ props.row.pickup ? "Pickup" : "Delivery" }}
             </div>
+            <div slot="dailyOrderNumber" slot-scope="props">
+              {{ props.row.dailyOrderNumber }}
+            </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-primary btn-sm"
@@ -151,15 +154,22 @@
         <div class="row light-background" v-if="order.adjusted">
           <div class="col-md-12">
             <p class="center-text red pt-3">
-              The meals and/or delivery date of this order was adjusted.
+              The items and/or delivery date of this order was adjusted.
             </p>
           </div>
         </div>
         <div class="row light-background border-bottom mb-3">
           <div class="col-md-4 pt-1">
+            <span v-if="storeModules.dailyOrderNumbers">
+              <h4>Order #</h4>
+              <p>{{ order.dailyOrderNumber }}</p>
+            </span>
             <h4>Order ID</h4>
             <p>{{ order.order_number }}</p>
-            <router-link :to="`/store/adjust-order/${order.id}`">
+
+            <router-link
+              :to="{ name: 'store-adjust-order', params: { orderId: orderId } }"
+            >
               <b-btn class="btn btn-success mb-2">Adjust Order</b-btn>
             </router-link>
           </div>
@@ -264,7 +274,7 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <h4>Meals</h4>
+            <h4>Items</h4>
             <hr />
             <ul class="meal-quantities">
               <li v-for="meal in getMealQuantities(order)" :key="meal.id">
@@ -283,6 +293,38 @@
                     <p v-html="meal.title"></p>
                     <p class="strong">
                       {{ format.money(meal.subtotal, order.currency) }}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <h4>Line Items</h4>
+            <hr />
+            <ul class="meal-quantities">
+              <li
+                v-for="lineItemOrder in order.line_items_orders"
+                :key="order.line_items_orders.id"
+              >
+                <div class="row">
+                  <div class="col-md-3">
+                    <span class="order-quantity">{{
+                      lineItemOrder.quantity
+                    }}</span>
+                    <img src="/images/store/x-modal.png" class="mr-1 ml-1" />
+                  </div>
+                  <div class="col-md-9">
+                    <p class="mt-1">{{ lineItemOrder.title }}</p>
+                    <p class="strong">
+                      {{
+                        format.money(
+                          lineItemOrder.price * lineItemOrder.quantity,
+                          order.currency
+                        )
+                      }}
                     </p>
                   </div>
                 </div>
@@ -345,7 +387,8 @@ export default {
       options: {
         headings: {
           notes: "Notes",
-          order_number: "Order #",
+          dailyOrderNumber: "Order #",
+          order_number: "Order ID",
           "user.user_detail.full_name": "Name",
           "user.user_detail.address": "Address",
           "user.user_detail.zip": "Zip Code",
@@ -387,6 +430,11 @@ export default {
   },
   created() {
     this.refreshViewedStore();
+  },
+  mounted() {
+    if (this.storeModules.dailyOrderNumbers) {
+      this.columns.splice(1, 0, "dailyOrderNumber");
+    }
   },
   computed: {
     ...mapGetters({
@@ -468,7 +516,13 @@ export default {
         }
 
         const size = meal.getSize(item.meal_size_id);
-        const title = meal.getTitle(true, size, item.components, item.addons);
+        const title = meal.getTitle(
+          true,
+          size,
+          item.components,
+          item.addons,
+          item.special_instructions
+        );
 
         return {
           image: meal.image,

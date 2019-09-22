@@ -37,7 +37,10 @@
             orderId: orderId,
             adjustOrder: adjustOrder,
             adjustMealPlan: adjustMealPlan,
-            preview: preview
+            preview: preview,
+            deliveryDay: deliveryDay,
+            transferTime: transferTime,
+            pickup: pickup
           }
         }"
       >
@@ -67,7 +70,10 @@ export default {
     adjustOrder: false,
     adjustMealPlan: false,
     subscriptionId: 0,
-    orderId: null
+    orderId: null,
+    deliveryDay: null,
+    transferTime: null,
+    pickup: null
   },
   mixins: [MenuBag],
   computed: {
@@ -110,9 +116,9 @@ export default {
     },
     singOrPlural() {
       if (this.remainingMeals > 1) {
-        return "meals";
+        return "items";
       }
-      return "meal";
+      return "item";
     },
     minimumMet() {
       if (

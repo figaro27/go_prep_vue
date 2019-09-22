@@ -7,10 +7,15 @@
 
 <body class="{{ $body_classes }}">
   <div id="print-area">
+    @if ($params->productionGroupTitle != null)
+    <h1>Meal Production - {{ $params->productionGroupTitle }}</h1>
+    @else
     <h1>Meal Production</h1>
+    @endif
+
     @if ($delivery_dates)
       <h2>
-        Delivery Days: 
+        Delivery Days:
         {{ $delivery_dates['from']->format('D, m/d/Y') }} -
         {{ $delivery_dates['to']->format('D, m/d/Y') }}
       </h2>
@@ -22,7 +27,15 @@
         <thead>
           <tr>
             <th><h4>Meal</h4></th>
+            @if(!$params['group_by_date'] || $params['group_by_date'] === 'false')
             <th><h4>Orders</h4></th>
+            @else
+              @foreach($dates as $i => $date)
+                <th>
+                  <h4>{{ $date }}</h4>
+                </th>
+              @endforeach
+            @endif
             <!-- <th>Total Price</th> -->
           </tr>
         </thead>

@@ -10,7 +10,10 @@
     <div class="row">
       <div class="col-4 address">
         <h4 class="mt-3">Order Details</h4>
-            <p>Order #{{$order->order_number}}</p>
+            @if ($params['dailyOrderNumbers'])
+            <h2>Order #{{$order['dailyOrderNumber']}}</h2>
+            @endif
+            <p>Order ID - {{$order->order_number}}</p>
             @if ($order->subscription)
             <p>Subscription #{{ $order->subscription->stripe_id }}</p>
             @endif
@@ -56,12 +59,12 @@
     </div>
 
 
-    <h2>Meals</h2>
+    <h2>Items</h2>
     <table border="1">
       <thead>
         <tr>
           <th>Quantity</th>
-          <th>Meal Name</th>
+          <th>Item Name</th>
           <th>Price</th>
         </tr>
       </thead>
@@ -77,6 +80,30 @@
       </tbody>
     
     </table>
+
+    @if (count($order->lineItemsOrders))
+    <h2>Extras</h2>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Quantity</th>
+            <th>Item Name</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+      <tbody>
+          @foreach ($order->lineItemsOrders as $i => $lineItemOrder)
+          <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+              <td>{{$lineItemOrder->quantity}}</td>
+              <td>{!! $lineItemOrder->title !!}</td>
+              <td>${{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
+          </tr>
+          @endforeach
+      </tbody>
+      </table>
+    @endif
+
+
     <br>
     @if ($order->store->settings->notesForCustomer != null)
     <h2>Notes</h2>

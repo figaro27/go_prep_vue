@@ -83,6 +83,7 @@
             :adjustMealPlan="adjustMealPlan"
             :subscriptionId="subscriptionId"
             :orderId="orderId"
+            :storeView="storeView"
           >
           </bag-area>
           <div class="bag-bottom-area">
@@ -94,6 +95,9 @@
               :subscriptionId="subscriptionId"
               :preview="preview"
               :orderId="orderId"
+              :deliveryDay="deliveryDay"
+              :transferTime="transferTime"
+              :pickup="pickup"
             ></bag-actions>
           </div>
         </div>
@@ -175,7 +179,10 @@ export default {
     order: {},
     subscription: {},
     subscriptionId: null,
-    orderId: null
+    orderId: null,
+    deliveryDay: null,
+    transferTime: null,
+    pickup: null
   },
   data() {
     return {
@@ -213,7 +220,8 @@ export default {
       nutritionalFacts: {},
       storeCSS: "",
       showMealsArea: true,
-      showMealPackagesArea: true
+      showMealPackagesArea: true,
+      mealSizePrice: null
     };
   },
   computed: {
@@ -236,6 +244,16 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
     }),
+    AAAtest() {
+      let test = [];
+      this.bag.forEach(item => {
+        let c = Object.values(item.components);
+        c.forEach(component => {
+          test.push(component);
+        });
+      });
+      return test;
+    },
     meals() {
       let meals = this.store.meals;
       let filters = this.filters;

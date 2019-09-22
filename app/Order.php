@@ -79,6 +79,16 @@ class Order extends Model
         return $this->hasMany('App\OrderEvent');
     }
 
+    public function lineItems()
+    {
+        return $this->hasMany('App\LineItems');
+    }
+
+    public function lineItemsOrders()
+    {
+        return $this->hasMany('App\LineItemOrder');
+    }
+
     public function coupon()
     {
         return $this->hasOne('App\Coupon');
@@ -172,6 +182,7 @@ class Order extends Model
                     'quantity' => $mealOrder->quantity,
                     'unit_price' => $mealOrder->unit_price,
                     'price' => $mealOrder->price,
+                    'special_instructions' => $mealOrder->special_instructions,
                     'components' => $mealOrder->components->map(function (
                         $component
                     ) {

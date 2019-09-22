@@ -13,7 +13,7 @@
             <span v-if="!!$route.query.pickup"
               >You can pick up your order on</span
             >
-            <span v-else>Your meals will be delivered on</span>
+            <span v-else>Your order will be delivered on</span>
             {{
               moment(orders[0].delivery_date).format("dddd, MMM Do, Y") || ""
             }}
@@ -33,6 +33,10 @@
                   <div class="col-md-4">
                     <h4>Order ID</h4>
                     <p>{{ order.order_number }}</p>
+                    <h4 v-if="storeModules.dailyOrderNumbers">Order #</h4>
+                    <p v-if="storeModules.dailyOrderNumbers">
+                      {{ order.dailyOrderNumber }}
+                    </p>
                     <h4>
                       {{ order.pickup ? "Pickup Day" : "Delivery Day" }}
                     </h4>
@@ -185,7 +189,8 @@ export default {
       _orders: "orders",
       initialized: "initialized",
       isLoading: "isLoading",
-      getStoreMeal: "viewedStoreMeal"
+      getStoreMeal: "viewedStoreMeal",
+      storeModules: "viewedStoreModules"
     }),
     orders() {
       if (_.isNull(this._orders)) {
@@ -209,7 +214,13 @@ export default {
         }
 
         const size = meal.getSize(item.meal_size_id);
-        const title = meal.getTitle(true, size, item.components, item.addons);
+        const title = meal.getTitle(
+          true,
+          size,
+          item.components,
+          item.addons,
+          item.special_instructions
+        );
 
         return {
           image: meal.image.url_thumb,

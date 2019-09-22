@@ -18,7 +18,7 @@
                   id="meal-title"
                   type="text"
                   v-model="meal.title"
-                  placeholder="Meal Name"
+                  placeholder="Item Name"
                   required
                 ></b-form-input>
               </b-form-group>
@@ -106,7 +106,15 @@
                   </div>
                 </div>
               </b-form-group>
-              <h4>Categories</h4>
+              <h4 v-if="storeModules.productionGroups">Production Group</h4>
+              <b-form-radio-group
+                v-if="storeModules.productionGroups"
+                buttons
+                v-model="meal.production_group_id"
+                class="storeFilters"
+                :options="productionGroupOptions"
+              ></b-form-radio-group>
+              <h4 class="mt-4">Categories</h4>
               <b-form-checkbox-group
                 buttons
                 v-model="meal.category_ids"
@@ -356,7 +364,9 @@ export default {
       getCategoryTitle: "storeCategoryTitle",
       allergies: "allergies",
       isLoading: "isLoading",
-      storeCurrencySymbol: "storeCurrencySymbol"
+      storeCurrencySymbol: "storeCurrencySymbol",
+      storeModules: "storeModules",
+      storeProductionGroups: "storeProductionGroups"
     }),
     tagOptions() {
       return Object.values(this.tags).map(tag => {
@@ -381,6 +391,15 @@ export default {
           value: allergy.id
         };
       });
+    },
+    productionGroupOptions() {
+      let prodGroups = this.storeProductionGroups;
+      let prodGroupOptions = [];
+
+      prodGroups.forEach(prodGroup => {
+        prodGroupOptions.push({ text: prodGroup.title, value: prodGroup.id });
+      });
+      return prodGroupOptions;
     }
   },
   mounted() {

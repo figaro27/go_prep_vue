@@ -18,7 +18,7 @@
                   id="meal-title"
                   type="text"
                   v-model="mealPackage.title"
-                  placeholder="Meal Name"
+                  placeholder="Item Name"
                   required
                 ></b-form-input>
               </b-form-group>
@@ -43,10 +43,10 @@
               </b-form-group>
 
               <p>
-                <span class="mr-1">Display Included Meals in Packages</span>
-                <hint title="Display Included Meals in Packages">
+                <span class="mr-1">Display Included Items in Packages</span>
+                <hint title="Display Included Items in Packages">
                   Creates a slider in the meal package popup which allows users
-                  to view the meals which are included in that package.
+                  to view the items which are included in that package.
                 </hint>
               </p>
               <b-form-group :state="true">
@@ -59,7 +59,7 @@
               </b-form-group>
             </b-tab>
             <b-tab title="Meals">
-              <h4>Meals</h4>
+              <h4>Items</h4>
               <v-client-table
                 ref="packageMealsTable"
                 :columns="columns"

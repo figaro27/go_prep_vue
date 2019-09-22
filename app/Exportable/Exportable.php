@@ -41,6 +41,14 @@ trait Exportable
         }
     }
 
+    /**
+     * Manipulate vars that get passed to twig
+     */
+    public function filterVars($vars)
+    {
+        return $vars;
+    }
+
     public function handleCsv($data)
     {
         $filename = 'public/' . md5(time()) . '.csv';
@@ -101,12 +109,12 @@ trait Exportable
     {
         $filename = 'public/' . md5(time()) . '.pdf';
 
-        $vars = [
+        $vars = $this->filterVars([
             'data' => $data,
             'params' => $this->params,
             'delivery_dates' => $this->getDeliveryDates(),
             'body_classes' => implode(' ', [$this->orientation])
-        ];
+        ]);
 
         $html = view($this->exportPdfView(), $vars)->render();
 

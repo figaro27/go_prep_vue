@@ -74,6 +74,9 @@ class MealOrder extends Pivot
                 ->implode(', ');
             $title .= ' - ' . $comp;
         }
+        if ($this->special_instructions != null) {
+            $title .= $this->special_instructions;
+        }
         return $title;
     }
 
@@ -110,6 +113,14 @@ class MealOrder extends Pivot
 
             $title .= '</ul>';
         }
+
+        if ($this->special_instructions != null) {
+            $title .=
+                '<p style="font-size:10px">' .
+                $this->special_instructions .
+                '</p>';
+        }
+
         return $title;
     }
 

@@ -26,7 +26,10 @@
       
       @foreach($orderGroup['orders'] as $order)
       <div class="unbreakable">
-        <h5>Order #{{$order['order_number']}}</h5>
+        @if ($params['dailyOrderNumbers'])
+        <h2>Order #{{$order['dailyOrderNumber']}}</h2>
+        @endif
+        <h5>Order ID - {{$order['order_number']}}</h5>
         <h5>Customer: {{$orderGroup['user']->name }}</h5>
         <h5>Address: {{$order['address']}}, {{$order['city']}}, {{$order['state']}}, {{$order['zip']}}</h5>
         @if ($order['pickup'] === 0)
@@ -48,6 +51,20 @@
             <table border="1" width="100">
               <tbody>
                 @foreach($order['meal_quantities'] as $i => $row)
+                  <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+                    @foreach($row as $value)
+                      <td width="50%">{!! $value !!}</td>
+                    @endforeach
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          @endif
+            <div style="height:10px"></div>
+          @if(count($order['lineItemsOrders']) > 1)
+            <table border="1" width="100">
+              <tbody>
+                @foreach($order['lineItemsOrders'] as $i => $row)
                   <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
                     @foreach($row as $value)
                       <td width="50%">{!! $value !!}</td>

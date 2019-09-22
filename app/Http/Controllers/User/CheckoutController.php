@@ -20,6 +20,7 @@ use App\Coupon;
 use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
+use DB;
 
 class CheckoutController extends UserController
 {
@@ -59,6 +60,14 @@ class CheckoutController extends UserController
         $processingFee = 0;
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
+
+        $today = Carbon::now()->toDateString();
+        $count = DB::table('orders')
+            ->where('store_id', $storeId)
+            ->whereDate('created_at', $today)
+            ->get()
+            ->count();
+        $dailyOrderNumber = $count + 1;
 
         if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             $discount = $store->settings->mealPlanDiscount / 100;
@@ -158,6 +167,7 @@ class CheckoutController extends UserController
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->cashOrder = $cashOrder;
+            $order->dailyOrderNumber = $dailyOrderNumber;
             $order->save();
 
             $items = $bag->getItems();
@@ -170,6 +180,8 @@ class CheckoutController extends UserController
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
+                $mealOrder->special_instructions =
+                    $item['special_instructions'];
                 $mealOrder->save();
 
                 if (isset($item['components']) && $item['components']) {
@@ -336,6 +348,7 @@ class CheckoutController extends UserController
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
+            $order->dailyOrderNumber = $dailyOrderNumber;
             $order->save();
 
             foreach ($bag->getItems() as $item) {
@@ -347,6 +360,8 @@ class CheckoutController extends UserController
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
+                $mealOrder->special_instructions =
+                    $item['special_instructions'];
                 $mealOrder->save();
 
                 if (isset($item['components']) && $item['components']) {
@@ -380,6 +395,7 @@ class CheckoutController extends UserController
                 if (isset($item['size']) && $item['size']) {
                     $mealSub->meal_size_id = $item['size']['id'];
                 }
+                $mealSub->special_instructions = $item['special_instructions'];
                 $mealSub->save();
 
                 if (isset($item['components']) && $item['components']) {

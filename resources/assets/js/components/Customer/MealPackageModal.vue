@@ -38,7 +38,7 @@
                 <p>{{ mealPackage.description }}</p>
               </div>
               <div class="modal-meal-package-meals">
-                <h5 class="mt-2">Meals</h5>
+                <h5 class="mt-2">Items</h5>
 
                 <li v-for="meal in mealPackage.meals" :key="meal.id">
                   {{ meal.title }} x {{ meal.quantity }}

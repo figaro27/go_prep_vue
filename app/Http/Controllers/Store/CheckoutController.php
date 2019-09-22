@@ -15,10 +15,13 @@ use App\Subscription;
 use App\Coupon;
 use App\Card;
 use App\Customer;
+use App\LineItem;
+use App\LineItemOrder;
 use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use DB;
 
 class CheckoutController extends StoreController
 {
@@ -30,6 +33,7 @@ class CheckoutController extends StoreController
         $storeName = strtolower($store->storeDetail->name);
 
         $bag = new Bag($request->get('bag'), $store);
+        $bagTotal = $bag->getTotal() + $request->get('lineItemTotal');
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
         $deliveryDay = $request->get('delivery_day');
@@ -38,18 +42,27 @@ class CheckoutController extends StoreController
         $couponCode = $request->get('couponCode');
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
+        $transferTime = $request->get('transferTime');
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
-        $total = $bag->getTotal();
+        $total = $bagTotal;
         $subtotal = $request->get('subtotal');
-        $afterDiscountBeforeFees = $bag->getTotal();
-        $preFeePreDiscount = $bag->getTotal();
+        $afterDiscountBeforeFees = $bagTotal;
+        $preFeePreDiscount = $bagTotal;
         $deposit = $request->get('deposit') / 100;
 
         $processingFee = 0;
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
+
+        $today = Carbon::now()->toDateString();
+        $count = DB::table('orders')
+            ->where('store_id', $storeId)
+            ->whereDate('created_at', $today)
+            ->get()
+            ->count();
+        $dailyOrderNumber = $count + 1;
 
         if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             $discount = $store->settings->mealPlanDiscount / 100;
@@ -146,9 +159,11 @@ class CheckoutController extends StoreController
             $order->couponReduction = $couponReduction;
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
+            $order->transferTime = $transferTime;
             $order->deposit = $deposit * 100;
             $order->manual = 1;
             $order->cashOrder = $cashOrder;
+            $order->dailyOrderNumber = $dailyOrderNumber;
             $order->save();
 
             $items = $bag->getItems();
@@ -161,7 +176,25 @@ class CheckoutController extends StoreController
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
+                $mealOrder->special_instructions =
+                    $item['special_instructions'];
                 $mealOrder->save();
+            }
+
+            $lineItemsOrder = $request->get('lineItemsOrder');
+            foreach ($lineItemsOrder as $lineItemOrder) {
+                $title = $lineItemOrder['title'];
+                $id = LineItem::where('title', $title)
+                    ->pluck('id')
+                    ->first();
+                $quantity = $lineItemOrder['quantity'];
+
+                $lineItemOrder = new LineItemOrder();
+                $lineItemOrder->store_id = $store->id;
+                $lineItemOrder->line_item_id = $id;
+                $lineItemOrder->order_id = $order->id;
+                $lineItemOrder->quantity = $quantity;
+                $lineItemOrder->save();
             }
 
             // Send notification to store
@@ -277,6 +310,7 @@ class CheckoutController extends StoreController
             // In this case the 'next renewal time' is actually the first charge time
             $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
             $userSubscription->pickup_location_id = $pickupLocation;
+            $userSubscription->transferTime = $transferTime;
             $userSubscription->save();
 
             // Create initial order
@@ -302,6 +336,8 @@ class CheckoutController extends StoreController
             $order->couponReduction = $couponReduction;
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
+            $order->transferTime = $transferTime;
+            $order->dailyOrderNumber = $dailyOrderNumber;
             $order->save();
 
             foreach ($bag->getItems() as $item) {
@@ -313,6 +349,8 @@ class CheckoutController extends StoreController
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
+                $mealOrder->special_instructions =
+                    $item['special_instructions'];
                 $mealOrder->save();
             }
 
@@ -325,6 +363,7 @@ class CheckoutController extends StoreController
                 if (isset($item['size']) && $item['size']) {
                     $mealSub->meal_size_id = $item['size']['id'];
                 }
+                $mealSub->special_instructions = $item['special_instructions'];
                 $mealSub->save();
             }
 

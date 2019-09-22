@@ -18,8 +18,19 @@
                   ref="deliveryDates"
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
+
+                <b-form-radio-group
+                  v-if="storeModules.productionGroups"
+                  buttons
+                  v-model="productionGroupId"
+                  null
+                  class="storeFilters ml-2 mt-1"
+                  @change="val => {}"
+                  :options="productionGroupOptions"
+                ></b-form-radio-group>
               </div>
             </div>
+
             <div slot="featured_image" slot-scope="props">
               <thumbnail
                 v-if="props.row.image.url_thumb"
@@ -40,6 +51,13 @@
             </div>
 
             <span slot="beforeLimit">
+              <b-form-checkbox
+                v-model="filters.group_by_date"
+                :value="true"
+                :unchecked-value="false"
+              >
+                Group By Day
+              </b-form-checkbox>
               <b-btn
                 variant="primary"
                 @click="exportData('meal_orders', 'pdf', true)"
@@ -81,12 +99,14 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      productionGroupId: null,
       ordersByDate: [],
       filters: {
         delivery_dates: {
           start: null,
           end: null
-        }
+        },
+        group_by_date: false
       },
       columns: ["featured_image", "title", "price", "quantity", "total"],
       options: {
@@ -122,7 +142,9 @@ export default {
       // orders: "storeOrders",
       isLoading: "isLoading",
       nextDeliveryDates: "storeNextDeliveryDates",
-      storeSettings: "storeSettings"
+      storeSettings: "storeSettings",
+      storeModules: "storeModules",
+      storeProductionGroups: "storeProductionGroups"
     }),
     tableData() {
       let filters = { ...this.filters };
@@ -140,8 +162,18 @@ export default {
       orders.forEach(order => {
         _.forEach(order.items, item => {
           let meal = this.getMeal(item.meal_id);
+          if (this.productionGroupId != null) {
+            if (meal.production_group_id !== this.productionGroupId)
+              return null;
+          }
           let size = meal.getSize(item.meal_size_id);
-          let title = meal.getTitle(true, size, item.components, item.addons);
+          let title = meal.getTitle(
+            true,
+            size,
+            item.components,
+            item.addons,
+            item.special_instructions
+          );
 
           if (!mealCounts[title]) {
             mealCounts[title] = 0;
@@ -165,6 +197,15 @@ export default {
           total: quantity * price
         };
       });
+    },
+    productionGroupOptions() {
+      let prodGroups = this.storeProductionGroups;
+      let prodGroupOptions = [{ text: "All", value: null }];
+
+      prodGroups.forEach(prodGroup => {
+        prodGroupOptions.push({ text: prodGroup.title, value: prodGroup.id });
+      });
+      return prodGroupOptions;
     },
     storeMeals() {
       return this.meals;
@@ -213,7 +254,13 @@ export default {
         }
       }
 
-      let params = {};
+      let params = {
+        group_by_date: this.filters.group_by_date
+      };
+
+      if (this.productionGroupId !== null) {
+        params.productionGroupId = this.productionGroupId;
+      }
 
       if (
         this.filters.delivery_dates.start &&

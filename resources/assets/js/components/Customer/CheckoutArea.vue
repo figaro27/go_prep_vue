@@ -189,11 +189,7 @@
     </ul>
     <li
       class="checkout-item"
-      v-if="
-        transferTypeCheckDelivery &&
-          transferTypeCheckPickup &&
-          $parent.orderId === undefined
-      "
+      v-if="transferTypeCheckDelivery && transferTypeCheckPickup"
     >
       <b-form-group>
         <b-form-radio-group v-model="pickup" name="pickup">
@@ -272,8 +268,7 @@
     <li
       class="checkout-item"
       v-if="
-        $parent.orderId === undefined &&
-          storeModules.transferHours &&
+        storeModules.transferHours &&
           pickup &&
           $route.params.subscriptionId === undefined
       "
@@ -311,7 +306,7 @@
           <b-btn
             variant="primary"
             v-if="storeModules.manualCustomers"
-            @click="$parent.addCustomerModal = true"
+            @click="addCustomerModal = true"
             >Add New Customer</b-btn
           >
         </div>
@@ -319,24 +314,30 @@
           <h4 class="mt-2 mb-3">
             Choose Payment Method
           </h4>
-          <b-form-checkbox
-            v-if="storeModules.cashOrders"
-            v-model="cashOrder"
-            class="pb-2 mediumCheckbox"
-          >
-            Cash
-          </b-form-checkbox>
-          <p
+
+          <div
             v-if="
-              cashOrder && creditCardList.length === 0 && creditCardId === null
+              storeModules.cashOrders &&
+                (storeModuleSettings.cashAllowedForCustomer ||
+                  $route.params.storeView)
             "
           >
-            Please add a credit card on file in order to proceed with a cash
-            order. In the event that cash is not paid, your credit card will be
-            charged.
-          </p>
+            <b-form-checkbox v-model="cashOrder" class="pb-2 mediumCheckbox">
+              Cash
+            </b-form-checkbox>
+            <!-- <p
+              v-if="
+                storeModuleSettings.cashAllowedForCustomer && cashOrder && creditCardList.length === 0 && creditCardId === null
+              "
+            >
+              Please add a credit card on file in order to proceed with a cash
+              order. In the event that cash is not paid, your credit card will be
+              charged.
+            </p> -->
+          </div>
 
           <card-picker
+            v-if="!cashOrder"
             :selectable="true"
             :creditCards="creditCardList"
             v-model="card"
@@ -345,7 +346,9 @@
           ></card-picker>
 
           <b-form-group
-            v-if="manualOrder && storeModules.deposits"
+            v-if="
+              $route.params.storeView && storeModules.deposits && !cashOrder
+            "
             horizontal
             label="Deposit %"
           >
@@ -442,6 +445,10 @@
         more to continue.
       </p>
     </li>
+
+    <add-customer-modal
+      :addCustomerModal="addCustomerModal"
+    ></add-customer-modal>
   </div>
 </template>
 
@@ -451,10 +458,12 @@ import MenuBag from "../../mixins/menuBag";
 import SalesTax from "sales-tax";
 import CardPicker from "../../components/Billing/CardPicker";
 import { createToken } from "vue-stripe-elements-plus";
+import AddCustomerModal from "../../components/Customer/AddCustomerModal";
 
 export default {
   components: {
-    CardPicker
+    CardPicker,
+    AddCustomerModal
   },
   data() {
     return {
@@ -463,7 +472,8 @@ export default {
       checkingOut: false,
       deposit: 100,
       creditCardId: null,
-      couponCode: ""
+      couponCode: "",
+      addCustomerModal: false
     };
   },
   props: {
@@ -471,11 +481,16 @@ export default {
     manualOrder: false,
     cashOrder: false,
     mobile: false,
-    pickup: 0,
     salesTax: 0,
     creditCardList: null,
     customer: null,
-    orderId: null
+    orderId: null,
+    deliveryDay: null,
+    transferTime: null,
+    pickup: {
+      default: 0
+    },
+    orderLineItems: []
   },
   mixins: [MenuBag],
   computed: {
@@ -522,11 +537,17 @@ export default {
         return [];
       }
 
-      let grouped = {};
+      let grouped = [];
       customers.forEach(customer => {
-        grouped[customer.id] = customer.name;
+        grouped.push({
+          value: customer.id,
+          text: customer.name
+        });
       });
-      return grouped;
+
+      let sorted = grouped.sort((a, b) => a.text.localeCompare(b.text));
+
+      return sorted;
     },
     storeId() {
       return this.store.id;
@@ -574,6 +595,10 @@ export default {
       else return this.creditCards;
     },
     card() {
+      if (this.$route.params.storeView) {
+        return 0;
+      }
+
       if (this.creditCardId != null) {
         return this.creditCardId;
       }
@@ -655,7 +680,13 @@ export default {
       return this.minPrice - this.totalBagPricePreFees;
     },
     subtotal() {
-      let subtotal = this.totalBagPricePreFees;
+      let totalLineItemsPrice = 0;
+      if (this.orderLineItems != null) {
+        this.orderLineItems.forEach(orderLineItem => {
+          totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
+        });
+      }
+      let subtotal = this.totalBagPricePreFees + totalLineItemsPrice;
       return subtotal;
     },
     couponReduction() {
@@ -806,6 +837,7 @@ export default {
       "refreshStoreSubscriptions",
       "refreshCustomerOrders",
       "refreshOrders",
+      "refreshOrdersToday",
       "refreshStoreSubscriptions",
       "refreshUpcomingOrders",
       "refreshStoreCustomers"
@@ -878,16 +910,13 @@ export default {
       return this.customer;
     },
     async adjust() {
-      if (!this.deliveryDay && this.deliveryDaysOptions) {
-        this.deliveryDay = this.deliveryDaysOptions[0].value;
-      } else if (!this.deliveryDaysOptions) {
-        return;
-      }
       axios
         .post(`/api/me/orders/adjustOrder`, {
           bag: this.bag,
           orderId: this.$parent.orderId,
-          deliveryDate: this.deliveryDay
+          deliveryDate: this.deliveryDay,
+          pickup: this.pickup,
+          transferTime: this.transferTime
         })
         .then(resp => {
           this.$toastr.s("Order Adjusted");
@@ -901,23 +930,16 @@ export default {
       if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
 
       this.selectedPickupLocation = this.pickupLocationOptions[0].value;
-
-      if (!this.deliveryDay && this.deliveryDaysOptions) {
-        this.deliveryDay = this.deliveryDaysOptions[0].value;
-      }
     },
     updated() {
       this.creditCardId = this.card;
+
+      this.$eventBus.$on("chooseCustomer", () => {
+        this.chooseCustomer();
+      });
     },
     checkout() {
       if (this.checkingOut) {
-        return;
-      }
-
-      // Ensure delivery day is set
-      if (!this.deliveryDay && this.deliveryDaysOptions) {
-        this.deliveryDay = this.deliveryDaysOptions[0].value;
-      } else if (!this.deliveryDaysOptions) {
         return;
       }
 
@@ -926,6 +948,10 @@ export default {
       this.deliveryFee = this.deliveryFeeAmount;
       if (this.pickup === 0) {
         this.selectedPickupLocation = null;
+      }
+
+      if (!this.deliveryDay && this.deliveryDaysOptions) {
+        this.deliveryDay = this.deliveryDaysOptions[0].value;
       }
 
       let deposit = this.deposit;
@@ -965,7 +991,8 @@ export default {
           customer: this.customer,
           deposit: deposit,
           cashOrder: this.cashOrder,
-          transferTime: this.transferTime
+          transferTime: this.transferTime,
+          lineItemsOrder: this.orderLineItems
         })
         .then(async resp => {
           this.emptyBag();
@@ -981,6 +1008,8 @@ export default {
             return;
           } else if (this.$route.params.manualOrder && !weeklyDelivery) {
             this.refreshUpcomingOrders();
+            this.refreshOrdersToday();
+            this.refreshOrders();
             this.$router.push({
               path: "/store/orders"
             });
@@ -1011,6 +1040,11 @@ export default {
           this.loading = false;
           this.checkingOut = false;
         });
+    },
+    setCustomer() {
+      this.customer = Object.keys(this.customers)[
+        Object.keys(this.customers).length - 1
+      ];
     }
   }
 };

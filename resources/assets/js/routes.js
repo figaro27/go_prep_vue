@@ -220,7 +220,7 @@ let routes = [
     }
   },
   {
-    path: "/store/adjust-order/:id",
+    path: "/store/adjust-order",
     component: StoreAdjustOrder,
     name: "store-adjust-order"
   },

@@ -229,7 +229,7 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <h4>Meals</h4>
+            <h4>Items</h4>
             <hr />
             <ul class="meal-quantities">
               <li
@@ -463,7 +463,13 @@ export default {
         }
 
         const size = meal.getSize(item.meal_size_id);
-        const title = meal.getTitle(true, size, item.components, item.addons);
+        const title = meal.getTitle(
+          true,
+          size,
+          item.components,
+          item.addons,
+          item.special_instructions
+        );
 
         return {
           image: meal.image,

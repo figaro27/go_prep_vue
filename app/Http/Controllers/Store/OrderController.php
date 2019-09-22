@@ -131,7 +131,13 @@ class OrderController extends StoreController
     {
         return $this->store
             ->orders()
-            ->with(['user', 'user.userDetail', 'meals', 'pickup_location'])
+            ->with([
+                'user',
+                'user.userDetail',
+                'meals',
+                'pickup_location',
+                'lineItemsOrders'
+            ])
             ->where('id', $id)
             ->first();
     }
@@ -200,7 +206,9 @@ class OrderController extends StoreController
         }
 
         $order->delivery_date = $request->get('deliveryDate');
+        $order->transferTime = $request->get('transferTime');
         $order->adjusted = 1;
+        $order->pickup = $request->get('pickup');
         $order->save();
     }
 

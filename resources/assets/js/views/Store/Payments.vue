@@ -32,7 +32,7 @@
                     v-b-popover.hover="
                       'GoPrep takes ' +
                         goPrepFee * 100 +
-                        '% off the Subtotal of the order. The subtotal is the total amount of the meals minus any Subscription Discount or Coupon Reduction. This does not include Delivery Fees, Processing Fees, or Sales Tax (on purpose so you can recoup some of the amount paid to GoPrep). Stripe takes 2.9% of the Total amount plus .30 cents per transaction.'
+                        '% off the Subtotal of the order. The subtotal is the total amount of the items minus any Subscription Discount or Coupon Reduction. This does not include Delivery Fees, Processing Fees, or Sales Tax (on purpose so you can recoup some of the amount paid to GoPrep). Stripe takes 2.9% of the Total amount plus .30 cents per transaction.'
                     "
                     src="/images/store/popover.png"
                     class="popover-size mr-2"
@@ -145,7 +145,8 @@
             </div>
             <div slot="deposit" slot-scope="props">
               <div>
-                {{ formatMoney(100 - props.row.deposit, props.row.currency) }}
+                <!-- {{ formatMoney((100 - props.row.deposit)/100 * props.row.grandTotal, props.row.currency) }} -->
+                {{ props.row.deposit }}%
               </div>
             </div>
           </v-client-table>
