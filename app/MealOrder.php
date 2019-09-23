@@ -102,7 +102,7 @@ class MealOrder extends Pivot
             $this->meal->default_size_title != null
         ) {
             $title =
-                $this->meal->title . ' - ' . $this->meal_default_size_title;
+                $this->meal->title . ' - ' . $this->meal->default_size_title;
         }
 
         $hasComponents = count($this->components);
