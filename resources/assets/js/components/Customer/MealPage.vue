@@ -49,11 +49,11 @@
         </div>
         <div class="col-md-8">
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4" v-if="meal.tags.length > 0">
               <h5>Nutrition</h5>
               <li v-for="tag in meal.tags">{{ tag.tag }}</li>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4" v-if="meal.allergy_titles.length > 0">
               <h5>Allergies</h5>
               <li v-for="allergy in meal.allergy_titles">
                 {{ allergy }}
@@ -71,7 +71,7 @@
             :options="sizes"
             class="filters small"
             required
-            @change="sizeChanged = true"
+            @change="changeSize"
             v-show="sizes.length > 1"
           ></b-form-radio-group>
 
@@ -134,7 +134,7 @@
           <div class="row mt-4">
             <div class="col-md-2">
               <h2 class="pt-3">
-                {{ format.money(mealSizePrice, storeSettings.currency) }}
+                {{ format.money(mealVariationPrice, storeSettings.currency) }}
               </h2>
             </div>
             <div class="col-md-9 offset-1">
@@ -184,7 +184,9 @@ export default {
       invalidCheck: false,
       invalid: false,
       specialInstructions: null,
-      mealSizePrice: null
+      mealVariationPrice: null,
+      totalAddonPrice: null,
+      totalComponentPrice: null
     };
   },
   components: {
@@ -271,7 +273,9 @@ export default {
     if (!this.sizeChanged) {
       this.mealSize = this.sizes[0].value;
     }
-    this.getMealSizePrice();
+    this.getMealVariationPrice();
+    this.totalAddonPrice = 0;
+    this.totalComponentPrice = 0;
   },
   methods: {
     getMealGallery(meal) {
@@ -336,11 +340,19 @@ export default {
       this.$parent.mealPageView = false;
       this.mealSizePrice = null;
     },
-    getMealSizePrice() {
+    getMealVariationPrice() {
       let selectedMealSize = _.find(this.meal.sizes, size => {
         return size.id === this.mealSize;
       });
-      this.mealSizePrice = selectedMealSize.price;
+      this.mealVariationPrice =
+        selectedMealSize.price +
+        this.totalAddonPrice +
+        this.totalComponentPrice;
+    },
+    changeSize() {
+      this.sizeChanged = true;
+      this.addons = null;
+      this.components = null;
     }
   }
 };
