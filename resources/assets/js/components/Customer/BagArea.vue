@@ -92,14 +92,17 @@
               <span v-else>{{ item.meal.item_title }}</span>
               <p class="small">{{ item.special_instructions }}</p>
 
-              <!--<ul v-if="item.components || item.addons" class="plain">
+              <ul
+                v-if="!item.meal_package && (item.components || item.addons)"
+                class="plain"
+              >
                 <li v-for="component in itemComponents(item)" class="plain">
                   {{ component }}
                 </li>
                 <li v-for="addon in itemAddons(item)" class="plus">
                   {{ addon }}
                 </li>
-              </ul>-->
+              </ul>
             </div>
             <div class="flex-grow-0">
               <img
