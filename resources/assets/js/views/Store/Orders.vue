@@ -300,7 +300,10 @@
             </ul>
           </div>
         </div>
-        <div class="row">
+        <div
+          class="row"
+          v-if="viewOrderModal && order.line_items_orders.length"
+        >
           <div class="col-md-12">
             <h4>Extras</h4>
             <hr />
