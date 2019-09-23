@@ -126,6 +126,8 @@ export default {
       return _.filter(this.meal.addons, addon => {
         if (this.$parent.sizes.length === 1 && addon.meal_size_id === null) {
           return addon;
+        } else if (addon.meal_size_id === null && this.defaultSizeCheck) {
+          return addon;
         }
         return addon.meal_size_id === this.sizeId;
       });
@@ -225,6 +227,8 @@ export default {
     getAddonOptions(addons) {
       addons = _.filter(addons, addon => {
         if (this.$parent.sizes.length === 1 && addon.meal_size_id === null) {
+          return addon;
+        } else if (addon.meal_size_id === null && this.defaultSizeCheck) {
           return addon;
         }
         return addon.meal_size_id == this.sizeId;
