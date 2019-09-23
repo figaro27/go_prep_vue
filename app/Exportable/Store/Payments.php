@@ -34,7 +34,7 @@ class Payments
                     null,
                     $this->getDeliveryDates(),
                     null,
-                    null,
+                    true,
                     null,
                     true,
                     $couponCode
@@ -77,7 +77,7 @@ class Payments
                     null,
                     $this->getDeliveryDates(),
                     null,
-                    null,
+                    true,
                     null,
                     true,
                     $couponCode

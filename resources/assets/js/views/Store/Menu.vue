@@ -417,7 +417,7 @@
                 </b-form-group>
 
                 <h4 v-if="storeSettings.mealInstructions" class="mt-4">
-                  Special Meal Instructions
+                  Instructions
                   <img
                     v-b-popover.hover="
                       'Here you can include special heating instructions, preparation instructions, or expiration info to your customers for this particular meal. If this meal is ordered, these specific instructions will be shown on the customer\'s packing slips & email receipts.'

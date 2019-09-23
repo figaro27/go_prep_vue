@@ -184,13 +184,13 @@
         @click="showLineItemModal = true"
         v-if="$route.params.manualOrder"
       >
-        <span class="d-sm-inline">Add Line Item</span>
+        <span class="d-sm-inline">Add Extra</span>
       </b-button>
     </div>
 
     <b-modal
       size="lg"
-      title="Add New Line Item"
+      title="Add New Extra"
       v-model="showLineItemModal"
       v-if="showLineItemModal"
       hide-footer

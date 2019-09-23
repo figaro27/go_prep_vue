@@ -10,9 +10,6 @@
     <div class="row">
       <div class="col-4 address">
         <h4 class="mt-3">Order Details</h4>
-            @if ($params['dailyOrderNumbers'])
-            <h2>Order #{{$order['dailyOrderNumber']}}</h2>
-            @endif
             <p>Order ID - {{$order->order_number}}</p>
             @if ($order->subscription)
             <p>Subscription #{{ $order->subscription->stripe_id }}</p>
@@ -47,7 +44,9 @@
       <div class="col-4">
 
             <img src="{{$logo}}" style="zoom: 0.5; max-width: 50%; height: auto;" />
-
+            @if ($params['dailyOrderNumbers'])
+            <h2>Order #{{$order['dailyOrderNumber']}}</h2>
+            @endif
             @if ($order->pickup === 0)
             <h4>DELIVERY</h4>
             @endif
@@ -125,6 +124,7 @@
 
 
     @if ($mealInstructions)
+    <br>
       <h2>Special Meal Instructions</h2>
       @foreach ($order->items as $i => $item)
         @if ($item->instructions)
