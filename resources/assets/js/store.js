@@ -1355,7 +1355,8 @@ const getters = {
         html = false,
         size = null,
         components = null,
-        addons = null
+        addons = null,
+        special_instructions = null
       ) => {
         let title = meal.title;
 
@@ -1387,6 +1388,10 @@ const getters = {
             });
           }
           title += "</ul>";
+        }
+
+        if (special_instructions) {
+          title += `<p class="small">${special_instructions}</p>`;
         }
 
         return title;
