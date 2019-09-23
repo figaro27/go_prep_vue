@@ -1042,9 +1042,7 @@ export default {
         });
     },
     setCustomer() {
-      this.customer = Object.keys(this.customers)[
-        Object.keys(this.customers).length - 1
-      ];
+      this.customer = this.storeCustomers.slice(-1)[0].id;
     }
   }
 };
