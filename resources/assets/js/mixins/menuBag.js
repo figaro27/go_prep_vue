@@ -134,14 +134,16 @@ export default {
       mealPackage = false,
       size = null,
       components = null,
-      addons = null
+      addons = null,
+      special_instructions = null
     ) {
       let qty = this.$store.getters.bagItemQuantity(
         meal,
         mealPackage,
         size,
         components,
-        addons
+        addons,
+        special_instructions
       );
 
       // size === true gets quantity for all sizes
@@ -152,7 +154,8 @@ export default {
             mealPackage,
             sizeObj,
             components,
-            addons
+            addons,
+            special_instructions
           );
         });
       }
