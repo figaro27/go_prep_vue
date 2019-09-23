@@ -84,7 +84,10 @@
               ></thumbnail>
             </div>
             <div class="flex-grow-1 mr-2">
-              <span v-if="item.meal_package">{{ item.meal.title }}</span>
+              <span v-if="item.meal_package">
+                {{ item.meal.title }}
+                <span v-if="item.size"> - {{ item.size.title }} </span>
+              </span>
               <span v-else-if="item.size">{{ item.size.full_title }}</span>
               <span v-else>{{ item.meal.item_title }}</span>
               <p class="small">{{ item.special_instructions }}</p>
@@ -329,7 +332,7 @@ export default {
         return [];
       }
 
-      let mealQuantities = _.mapValues(item.meal.meals, mealItem => {
+      let mealQuantities = _.mapValues(_.keyBy(meal.meals, "id"), mealItem => {
         return mealItem.quantity;
       });
 
