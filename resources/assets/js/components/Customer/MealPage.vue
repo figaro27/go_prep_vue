@@ -342,6 +342,7 @@ export default {
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPageView = false;
       this.mealSizePrice = null;
+      this.invalidCheck = false;
     },
     getMealVariationPrice() {
       let selectedMealSize = _.find(this.meal.sizes, size => {
