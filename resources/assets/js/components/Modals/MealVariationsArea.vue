@@ -131,6 +131,23 @@ export default {
         }
         return addon.meal_size_id === this.sizeId;
       });
+    },
+    totalComponentPrice() {
+      let total = 0;
+      let selectedComponents = Object.values(this.choices);
+      let components = Object.values(this.components);
+
+      components.forEach(component => {});
+
+      return total;
+    },
+    totalAddonPrice() {
+      let total = 0;
+
+      this.mealAddons.forEach(addon => {
+        if (this.addons.includes(addon.id)) total += addon.price;
+      });
+      return total;
     }
   },
   validations() {
@@ -265,6 +282,9 @@ export default {
       }
       this.$parent.components = this.choices;
       this.$parent.addons = this.addons;
+      this.$parent.totalAddonPrice = this.totalAddonPrice;
+      this.$parent.totalComponentPrice = this.totalComponentPrice;
+      this.$parent.getMealVariationPrice();
     }
   }
 };
