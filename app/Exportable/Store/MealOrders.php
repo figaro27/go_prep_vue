@@ -74,7 +74,8 @@ class MealOrders
                 });
             }
 
-            foreach ($mealOrders->get() as $i => $mealOrder) {
+            $mealOrders = $mealOrders->get();
+            foreach ($mealOrders as $i => $mealOrder) {
                 if (
                     $productionGroupId &&
                     $mealOrder->meal->production_group_id !==
@@ -84,7 +85,7 @@ class MealOrders
                 }
                 $title =
                     $this->type !== 'pdf'
-                        ? $mealOrder->title
+                        ? $mealOrder->getTitle()
                         : $mealOrder->html_title;
 
                 if ($groupByDate) {
