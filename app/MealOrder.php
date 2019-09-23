@@ -57,14 +57,16 @@ class MealOrder extends Pivot
 
         if ($this->meal_size_id && $this->meal_size) {
             $title = $this->meal_size->full_title;
-        }
-
-        if (
-            $this->meal->default_size_title != 'Medium' ||
-            $this->meal->default_size_title != null
-        ) {
-            $title =
-                $this->meal->title . ' - ' . $this->meal->default_size_title;
+        } else {
+            if (
+                $this->meal->default_size_title != 'Medium' &&
+                $this->meal->default_size_title != null
+            ) {
+                $title =
+                    $this->meal->title .
+                    ' - ' .
+                    $this->meal->default_size_title;
+            }
         }
 
         if (count($this->components)) {
@@ -95,14 +97,16 @@ class MealOrder extends Pivot
 
         if ($this->meal_size_id && $this->meal_size) {
             $title = $this->meal_size->full_title;
-        }
-
-        if (
-            $this->meal->default_size_title != 'Medium' ||
-            $this->meal->default_size_title != null
-        ) {
-            $title =
-                $this->meal->title . ' - ' . $this->meal->default_size_title;
+        } else {
+            if (
+                $this->meal->default_size_title != 'Medium' &&
+                $this->meal->default_size_title != null
+            ) {
+                $title =
+                    $this->meal->title .
+                    ' - ' .
+                    $this->meal->default_size_title;
+            }
         }
 
         $hasComponents = count($this->components);
