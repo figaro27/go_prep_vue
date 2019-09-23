@@ -56,21 +56,25 @@ class MealOrders
         $orders->map(function ($order) use (
             &$mealQuantities,
             $groupByDate,
-            &$allDates
+            &$allDates,
+            $productionGroupId
         ) {
             $date = $order->delivery_date->toDateString();
             if (!in_array($date, $allDates)) {
                 $allDates[] = $date;
             }
 
-            $productionGroupId = $this->params->get('productionGroupId', null);
-            foreach (
-                $order
-                    ->meal_orders()
-                    ->with('meal')
-                    ->get()
-                as $i => $mealOrder
-            ) {
+            $mealOrders = $order->meal_orders()->with('meal');
+
+            if ($productionGroupId) {
+                $mealOrders = $mealOrders->whereHas('meal', function (
+                    $query
+                ) use ($productionGroupId) {
+                    $query->where('production_group_id', $productionGroupId);
+                });
+            }
+
+            foreach ($mealOrders->get() as $i => $mealOrder) {
                 if (
                     $productionGroupId &&
                     $mealOrder->meal->production_group_id !==
