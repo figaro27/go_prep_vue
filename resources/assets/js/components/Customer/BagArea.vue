@@ -388,13 +388,17 @@ export default {
         }
       });
 
-      const meals = _.map(mealQuantities, (quantity, mealId) => {
-        const meal = this.getMeal(mealId);
-        return {
-          meal,
-          quantity
-        };
-      });
+      const meals = _(mealQuantities)
+        .map((quantity, mealId) => {
+          const meal = this.getMeal(mealId);
+          if (!meal) return null;
+          return {
+            meal,
+            quantity
+          };
+        })
+        .filter()
+        .value();
 
       return meals;
     },
