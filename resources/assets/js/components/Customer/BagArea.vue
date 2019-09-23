@@ -7,9 +7,7 @@
       <h3 class="d-inline ml-3 float-left">
         <i class="fa fa-angle-right white-text" @click="$parent.showBag()"></i>
       </h3>
-      <h3 class="white-text d-inline">
-        My Bag
-      </h3>
+      <h3 class="white-text d-inline">My Bag</h3>
       <p class="white-text d-inline">({{ total }} Items)</p>
       <i
         class="fas fa-trash white-text d-inline bag-icon float-right pt-2 pr-3"
@@ -87,9 +85,7 @@
             </div>
             <div class="flex-grow-1 mr-2">
               <span v-if="item.meal_package">{{ item.meal.title }}</span>
-              <span v-else-if="item.size">
-                {{ item.size.full_title }}
-              </span>
+              <span v-else-if="item.size">{{ item.size.full_title }}</span>
               <span v-else>{{ item.meal.item_title }}</span>
               <p class="small">{{ item.special_instructions }}</p>
 
@@ -120,10 +116,10 @@
             </div>
           </div>
           <ul>
-            <li v-for="meal in item.meal.meals">
-              <span class="small">
-                {{ meal.item_quantity * item.quantity }} x {{ meal.item_title }}
-              </span>
+            <li v-for="(mealItem, i) in getItemMeals(item)" :key="i">
+              <span class="small"
+                >{{ mealItem.quantity }} x {{ mealItem.meal.item_title }}</span
+              >
             </li>
           </ul>
         </li>
@@ -323,6 +319,62 @@ export default {
     }
   },
   methods: {
+    getItemMeals(item) {
+      const mealPackage = !!item.meal_package;
+      const meal = !mealPackage
+        ? this.getMeal(item.meal.id)
+        : this.getMealPackage(item.meal.id);
+
+      if (!mealPackage) {
+        return [];
+      }
+
+      let mealQuantities = _.mapValues(item.meal.meals, mealItem => {
+        return mealItem.quantity;
+      });
+
+      // Add on component option selections
+      _(item.components).forEach((options, componentId) => {
+        const component = meal.getComponent(componentId);
+        const optionIds = mealPackage ? Object.keys(options) : options;
+
+        _.forEach(optionIds, optionId => {
+          const option = meal.getComponentOption(component, optionId);
+          if (!option) {
+            return null;
+          }
+
+          if (option.selectable) {
+            _.forEach(options[option.id], item => {
+              const mealId = item.meal.id;
+              if (!mealQuantities[mealId]) {
+                mealQuantities[mealId] = 0;
+              }
+
+              mealQuantities[mealId] += item.quantity;
+            });
+          } else {
+            _.forEach(option.meals, mealItem => {
+              const mealId = mealItem.meal_id;
+              if (!mealQuantities[mealId]) {
+                mealQuantities[mealId] = 0;
+              }
+              mealQuantities[mealId] += mealItem.quantity;
+            });
+          }
+        });
+      });
+
+      const meals = _.map(mealQuantities, (quantity, mealId) => {
+        const meal = this.getMeal(mealId);
+        return {
+          meal,
+          quantity
+        };
+      });
+
+      return meals;
+    },
     addLineItem(existing) {
       let orderLineItems = this.orderLineItems;
       if (existing) {

@@ -172,29 +172,29 @@ export default {
           const component = meal.getComponent(componentId);
           const optionIds = mealPackage ? Object.keys(options) : options;
 
-          const optionTitles = _(optionIds)
-            .map(optionId => {
-              const option = meal.getComponentOption(component, optionId);
-              if (!option) {
-                return null;
-              }
+          let optionTitles = [];
 
-              if (!option.selectable) {
-                return option.title || null;
-              } else {
-                const title = option.title || component.title;
-                return (
-                  title +
-                  " - " +
-                  _.map(options[option.id], o => o.meal.title).join(", ")
-                );
-              }
-            })
+          _.forEach(optionIds, optionId => {
+            const option = meal.getComponentOption(component, optionId);
+            if (!option) {
+              return null;
+            }
+
+            if (!option.selectable) {
+              optionTitles.push(option.title || null);
+            } else {
+              return null;
+
+              _.forEach(options[option.id], option => {
+                optionTitles.push(option.meal.title);
+              });
+            }
+          });
+
+          return _(optionTitles)
             .filter()
             .toArray()
             .value();
-
-          return optionTitles;
         })
         .flatten()
         .value();
