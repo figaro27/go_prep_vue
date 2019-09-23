@@ -298,7 +298,7 @@ export default {
         // Ensure maximum hasn't been exceeded
         const remaining = this.getRemainingMeals(component.id);
         if (remaining < 0) {
-          this.$toastr.w("You have selected the maximum number of options!");
+          this.$toastr.w("You have selected the maximum number of options.");
           const truncated = choices.slice(0, remaining);
           this.$set(this.choices[component.id], option.id, truncated);
         }
