@@ -42,11 +42,10 @@
         </p>
       </div>
       <div class="col-4">
-
-            <img src="{{$logo}}" style="zoom: 0.5; max-width: 50%; height: auto;" />
             @if ($params['dailyOrderNumbers'])
             <h2>Order #{{$order['dailyOrderNumber']}}</h2>
             @endif
+            <img src="{{$logo}}" style="zoom: 0.5; max-width: 50%; height: auto;" />
             @if ($order->pickup === 0)
             <h4>DELIVERY</h4>
             @endif
