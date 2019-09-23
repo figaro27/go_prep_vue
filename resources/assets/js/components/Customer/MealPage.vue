@@ -49,17 +49,20 @@
         </div>
         <div class="col-md-8">
           <div class="row">
-            <div class="col-md-4" v-if="meal.tags.length > 0">
+            <div class="col-md-4">
+              <h5>{{ meal.title }}</h5>
+            </div>
+            <div class="col-md-3" v-if="meal.tags.length > 0">
               <h5>Nutrition</h5>
               <li v-for="tag in meal.tags">{{ tag.tag }}</li>
             </div>
-            <div class="col-md-4" v-if="meal.allergy_titles.length > 0">
+            <div class="col-md-3" v-if="meal.allergy_titles.length > 0">
               <h5>Allergies</h5>
               <li v-for="allergy in meal.allergy_titles">
                 {{ allergy }}
               </li>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-2">
               <b-btn @click="back">BACK</b-btn>
             </div>
           </div>
