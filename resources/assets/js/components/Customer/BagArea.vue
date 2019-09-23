@@ -89,14 +89,14 @@
               <span v-else>{{ item.meal.item_title }}</span>
               <p class="small">{{ item.special_instructions }}</p>
 
-              <ul v-if="item.components || item.addons" class="plain">
+              <!--<ul v-if="item.components || item.addons" class="plain">
                 <li v-for="component in itemComponents(item)" class="plain">
                   {{ component }}
                 </li>
                 <li v-for="addon in itemAddons(item)" class="plus">
                   {{ addon }}
                 </li>
-              </ul>
+              </ul>-->
             </div>
             <div class="flex-grow-0">
               <img
@@ -365,13 +365,40 @@ export default {
         });
       });
 
-      const meals = _.map(mealQuantities, (quantity, mealId) => {
-        const meal = this.getMeal(mealId);
-        return {
-          meal,
-          quantity
-        };
+      _(item.addons).forEach((addonItems, addonId) => {
+        const addon = meal.getAddon(addonId);
+
+        if (addon.selectable) {
+          _.forEach(addonItems, item => {
+            const mealId = item.meal_id;
+            if (!mealQuantities[mealId]) {
+              mealQuantities[mealId] = 0;
+            }
+
+            mealQuantities[mealId] += item.quantity;
+          });
+        } else {
+          _.forEach(addonItems, mealItem => {
+            const mealId = mealItem.meal_id;
+            if (!mealQuantities[mealId]) {
+              mealQuantities[mealId] = 0;
+            }
+            mealQuantities[mealId] += mealItem.quantity;
+          });
+        }
       });
+
+      const meals = _(mealQuantities)
+        .map((quantity, mealId) => {
+          const meal = this.getMeal(mealId);
+          if (!meal) return null;
+          return {
+            meal,
+            quantity
+          };
+        })
+        .filter()
+        .value();
 
       return meals;
     },
