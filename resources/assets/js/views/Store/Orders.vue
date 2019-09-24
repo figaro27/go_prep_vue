@@ -161,7 +161,7 @@
         <div class="row light-background border-bottom mb-3">
           <div class="col-md-4 pt-1">
             <span v-if="storeModules.dailyOrderNumbers">
-              <h4>Order #</h4>
+              <h4>Daily Order #</h4>
               <p>{{ order.dailyOrderNumber }}</p>
             </span>
             <h4>Order ID</h4>
