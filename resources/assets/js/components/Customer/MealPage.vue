@@ -1,7 +1,7 @@
 <template>
   <div>
     <div :class="mealPageClass" v-if="$parent.mealPageView">
-      <div class="row meal-page mt-5">
+      <div class="row meal-page mt-5 mb-3">
         <div class="col-md-4">
           <thumbnail
             v-if="meal.image.url"
@@ -33,7 +33,7 @@
               </div>
             </div>
           </slick>
-          <div class="row" v-if="storeSettings.showNutrition">
+          <div class="row mb-3" v-if="storeSettings.showNutrition">
             <div
               class="col-md-8 offset 2"
               id="nutritionFacts"
@@ -135,12 +135,12 @@
           ></b-form-textarea>
 
           <div class="row mt-4">
-            <div class="col-md-2">
+            <div class="col-md-4">
               <h2 class="pt-3">
                 {{ format.money(mealVariationPrice, storeSettings.currency) }}
               </h2>
             </div>
-            <div class="col-md-9 offset-1">
+            <div class="col-md-8">
               <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
             </div>
           </div>
