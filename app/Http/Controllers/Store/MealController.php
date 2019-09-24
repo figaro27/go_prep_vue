@@ -154,7 +154,11 @@ class MealController extends StoreController
             );
         }
 
-        MealMealPackage::substituteMeal($mealId, $subId);
+        $mealMealPackages = MealMealPackage::where('meal_id', $mealId)->get();
+
+        foreach ($mealMealPackages as $mealMealPackage) {
+            $mealMealPackage->update(['meal_id' => $subId]);
+        }
 
         return Meal::deleteMeal($mealId, $subId, true);
     }
@@ -168,6 +172,7 @@ class MealController extends StoreController
     public function destroy(Request $request, $id)
     {
         $meal = $this->store->meals()->find($id);
+        $mealId = $meal->id;
 
         $subId = $request->get('substitute_id', null);
         if ($subId) {
@@ -192,7 +197,11 @@ class MealController extends StoreController
             );
         }
 
-        MealMealPackage::substituteMeal($meal->id, $subId);
+        $mealMealPackages = MealMealPackage::where('meal_id', $mealId)->get();
+
+        foreach ($mealMealPackages as $mealMealPackage) {
+            $mealMealPackage->update(['meal_id' => $subId]);
+        }
 
         return Meal::deleteMeal($id, $subId);
     }
