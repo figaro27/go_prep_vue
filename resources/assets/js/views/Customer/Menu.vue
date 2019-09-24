@@ -76,7 +76,7 @@
 
           <meal-packages-area :mealPackages="mealPackages"></meal-packages-area>
         </div>
-        <div :class="showBagClass">
+        <div :class="showBagClass" v-if="!mobile">
           <bag-area
             :manualOrder="manualOrder"
             :adjustOrder="adjustOrder"
