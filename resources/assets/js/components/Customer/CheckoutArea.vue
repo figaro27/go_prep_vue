@@ -595,10 +595,6 @@ export default {
       else return this.creditCards;
     },
     card() {
-      if (this.$route.params.storeView) {
-        return 0;
-      }
-
       if (this.creditCardId != null) {
         return this.creditCardId;
       }
