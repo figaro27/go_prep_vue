@@ -163,7 +163,7 @@
 
               <b-form-group
                 horizontal
-                label="Address"
+                label="Delivery Address"
                 :state="state(1, 'address')"
               >
                 <b-input
