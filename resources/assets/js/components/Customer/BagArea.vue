@@ -14,7 +14,7 @@
         @click="clearAll"
       ></i>
     </div>
-    <div class="shopping-cart-meals">
+    <div :class="shoppingCartClass">
       <ul class="list-group">
         <li
           v-for="(item, mealId) in bag"
@@ -322,6 +322,11 @@ export default {
         });
       });
       return options;
+    },
+    shoppingCartClass() {
+      if (this.$route.name === "customer-menu")
+        return "shopping-cart-meals area-scroll";
+      else return "shopping-cart-meals";
     }
   },
   methods: {
