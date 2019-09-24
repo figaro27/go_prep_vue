@@ -418,10 +418,10 @@ export default {
     showIngredients() {
       return this.storeSettings.showIngredients;
     },
-    // showBagScrollbar() {
-    //   if (this.bag.length > 7) return true;
-    //   else return false;
-    // },
+    menuPage() {
+      if (this.$route.name === "customer-menu") return true;
+      else return false;
+    },
     brandColor() {
       let style = "background-color:";
       style += this.store.settings.color;
@@ -445,7 +445,9 @@ export default {
   mounted() {
     if (this.storeView) {
       this.storeCSS = "store-menu-view";
-      this.showBagClass = "shopping-cart show-right bag-area area-scroll";
+      if (this.menuPage)
+        this.showBagClass = "shopping-cart show-right bag-area area-scroll";
+      else this.showBagClass = "shopping-cart show-right bag-area";
     }
 
     // if (this.bag.length > 0) {
@@ -669,12 +671,12 @@ export default {
       if (this.storeView) return;
       if (this.showBagClass.includes("hidden-right")) {
         this.showBagClass = "shopping-cart show-right bag-area";
-        if (this.showBagScrollbar) {
+        if (this.menuPage) {
           this.showBagClass += " area-scroll";
         }
       } else if (this.showBagClass.includes("show-right")) {
         this.showBagClass = "shopping-cart hidden-right bag-area";
-        if (this.showBagScrollbar) {
+        if (this.menuPage) {
           this.showBagClass += " area-scroll";
         }
       }
