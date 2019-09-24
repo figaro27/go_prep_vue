@@ -21,6 +21,7 @@ use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 use App\Media\Utils as MediaUtils;
+use App\MealMealPackage;
 
 class Meal extends Model implements HasMedia
 {
@@ -72,7 +73,8 @@ class Meal extends Model implements HasMedia
         // Relevant only when meal is connected to an order
         'item_title',
         'item_price',
-        'item_quantity'
+        'item_quantity',
+        'in_package'
     ];
 
     protected $hidden = [
@@ -156,6 +158,16 @@ class Meal extends Model implements HasMedia
         }
 
         return $price;
+    }
+
+    public function getInPackageAttribute()
+    {
+        $mealMealPackages = MealMealPackage::where('meal_id', $this->id)->get();
+        if (count($mealMealPackages) > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function getItemQuantityAttribute()

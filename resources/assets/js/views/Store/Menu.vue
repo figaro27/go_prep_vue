@@ -593,9 +593,9 @@
       no-fade
     >
       <center>
-        <h6 class="mt-3">
+        <h5 class="mt-5 mb-5">
           This meal is tied to one or more subscriptions or is found in one or
-          more meal package. Please select a meal to replace this meal in all
+          more meal packages. Please select a meal to replace this meal in all
           existing subscriptions & packages.
           <img
             v-b-popover.hover="
@@ -605,7 +605,7 @@
             src="/images/store/popover.png"
             class="popover-size"
           />
-        </h6>
+        </h5>
         <v-select
           label="title"
           :options="meals"
@@ -619,51 +619,58 @@
         >
           Delete & Replace
         </button>
-        <h5 class="mt-3">Recommended Replacements</h5>
-        <b-list-group>
-          <b-list-group-item
-            v-for="meal in mealSubstituteOptions(deletingMeal)"
-            :active="substitute_id === meal.id"
-            @click="
-              () => {
-                substitute_id = meal.id;
-              }
-            "
-            :key="meal.id"
-            class="mb-1"
-          >
-            <div class="d-flex align-items-center text-left">
-              <img
-                class="mr-2"
-                style="width:65px"
-                :src="meal.image.thumb_url"
-                v-if="meal.image.thumb_url"
-              />
-              <div class="flex-grow-1 mr-2">
-                <p>{{ meal.title }}</p>
-                <p class="strong">
-                  {{ format.money(meal.price, storeSettings.currency) }}
-                </p>
+        <div
+          class="col-xs-12"
+          style="height:300px;"
+          v-if="mealSubstituteOptions(deletingMeal).length === 0"
+        ></div>
+        <div v-if="mealSubstituteOptions(deletingMeal).length > 0">
+          <h5 class="mt-3">Recommended Replacements</h5>
+          <b-list-group>
+            <b-list-group-item
+              v-for="meal in mealSubstituteOptions(deletingMeal)"
+              :active="substitute_id === meal.id"
+              @click="
+                () => {
+                  substitute_id = meal.id;
+                }
+              "
+              :key="meal.id"
+              class="mb-1"
+            >
+              <div class="d-flex align-items-center text-left">
+                <img
+                  class="mr-2"
+                  style="width:65px"
+                  :src="meal.image.thumb_url"
+                  v-if="meal.image.thumb_url"
+                />
+                <div class="flex-grow-1 mr-2">
+                  <p>{{ meal.title }}</p>
+                  <p class="strong">
+                    {{ format.money(meal.price, storeSettings.currency) }}
+                  </p>
+                </div>
+                <b-btn variant="warning">Select</b-btn>
               </div>
-              <b-btn variant="warning">Select</b-btn>
-            </div>
-          </b-list-group-item>
-        </b-list-group>
+            </b-list-group-item>
+          </b-list-group>
 
-        <!-- <div v-if="mealSubstituteOptions(deletingMeal).length <= 0">
-          There are currently no substitute options for this meal. Please add a
-          similar meal that 1) doesn't contain the same allergies, and 2) is
-          within the same meal category.
-        </div> -->
+          <!-- <div v-if="mealSubstituteOptions(deletingMeal).length <= 0">
+            There are currently no substitute options for this meal. Please add a
+            similar meal that 1) doesn't contain the same allergies, and 2) is
+            within the same meal category.
+          </div> -->
 
-        <!--<b-select v-model="deleteMeal.subtitute_id" :options="mealSubstituteOptions(deleteMeal)"></b-select>-->
-        <button
-          v-if="substitute_id"
-          class="btn btn-danger btn-lg mt-3"
-          @click="destroyMeal(deletingMeal.id, substitute_id)"
-        >
-          Delete & Replace
-        </button>
+          <!--<b-select v-model="deleteMeal.subtitute_id" :options="mealSubstituteOptions(deleteMeal)"></b-select>-->
+          <button
+            v-if="substitute_id"
+            class="btn btn-danger btn-lg mt-3"
+            @click="destroyMeal(deletingMeal.id, substitute_id)"
+          >
+            Delete & Replace
+          </button>
+        </div>
       </center>
     </b-modal>
     <b-modal
@@ -676,7 +683,7 @@
       <center>
         <h5 class="mt-3">
           This meal is tied to one or more subscriptions or is found in one or
-          more meal package. Please select a meal to replace this meal in all
+          more meal packages. Please select a meal to replace this meal in all
           existing subscriptions & packages.
           <img
             v-b-popover.hover="
@@ -687,7 +694,7 @@
             class="popover-size"
           />
         </h5>
-        <h5 class="mb-3">Please select a replacement meal.</h5>
+        <h5 class="mb-5 mt-5">Please select a replacement meal.</h5>
 
         <v-select
           label="title"
@@ -708,56 +715,58 @@
         >
           Deactivate & Replace
         </button>
-        <h5 class="mt-3">Recommended Replacements</h5>
-        <b-list-group>
-          <b-list-group-item
-            v-for="meal in mealSubstituteOptions(deactivatingMeal)"
-            :active="substitute_id === meal.id"
-            @click="
-              () => {
-                substitute_id = meal.id;
-              }
-            "
-            :key="meal.id"
-            class="mb-1"
-          >
-            <div class="d-flex align-items-center text-left">
-              <img
-                class="mr-2"
-                style="width:65px"
-                :src="meal.image.thumb_url"
-                v-if="meal.image.thumb_url"
-              />
-              <div class="flex-grow-1 mr-2">
-                <p>{{ meal.title }}</p>
-                <p class="strong">
-                  {{ format.money(meal.price, storeSettings.currency) }}
-                </p>
+        <div v-if="mealSubstituteOptions(deactivatingMeal).length > 0">
+          <h5 class="mt-3">Recommended Replacements</h5>
+          <b-list-group>
+            <b-list-group-item
+              v-for="meal in mealSubstituteOptions(deactivatingMeal)"
+              :active="substitute_id === meal.id"
+              @click="
+                () => {
+                  substitute_id = meal.id;
+                }
+              "
+              :key="meal.id"
+              class="mb-1"
+            >
+              <div class="d-flex align-items-center text-left">
+                <img
+                  class="mr-2"
+                  style="width:65px"
+                  :src="meal.image.thumb_url"
+                  v-if="meal.image.thumb_url"
+                />
+                <div class="flex-grow-1 mr-2">
+                  <p>{{ meal.title }}</p>
+                  <p class="strong">
+                    {{ format.money(meal.price, storeSettings.currency) }}
+                  </p>
+                </div>
+                <b-btn variant="warning">Select</b-btn>
               </div>
-              <b-btn variant="warning">Select</b-btn>
-            </div>
-          </b-list-group-item>
-        </b-list-group>
+            </b-list-group-item>
+          </b-list-group>
 
-        <div v-if="mealSubstituteOptions(deactivatingMeal).length <= 0">
-          There are currently no substitute options for this meal. Please add a
-          similar meal that 1) doesn't contain the same allergies, and 2) is
-          within the same meal category.
+          <div v-if="mealSubstituteOptions(deactivatingMeal).length <= 0">
+            There are currently no substitute options for this meal. Please add
+            a similar meal that 1) doesn't contain the same allergies, and 2) is
+            within the same meal category.
+          </div>
+
+          <button
+            class="btn btn-warning btn-lg mt-3"
+            @click="deactivateMealModal = false"
+          >
+            Deactivate & Keep
+          </button>
+          <button
+            v-if="substitute_id"
+            class="btn btn-danger btn-lg mt-3"
+            @click="deactivateAndReplace(deactivatingMeal.id, substitute_id)"
+          >
+            Deactivate & Replace
+          </button>
         </div>
-
-        <button
-          class="btn btn-warning btn-lg mt-3"
-          @click="deactivateMealModal = false"
-        >
-          Deactivate & Keep
-        </button>
-        <button
-          v-if="substitute_id"
-          class="btn btn-danger btn-lg mt-3"
-          @click="deactivateAndReplace(deactivatingMeal.id, substitute_id)"
-        >
-          Deactivate & Replace
-        </button>
       </center>
     </b-modal>
   </div>
@@ -1204,7 +1213,10 @@ export default {
         return;
       }
 
-      if (!this.deactivatingMeal.active && this.deactivatingMeal.substitute) {
+      if (
+        (!this.deactivatingMeal.active && this.deactivatingMeal.substitute) ||
+        this.deactivatingMeal.in_package
+      ) {
         this.deactivateMealModal = true;
         return;
       }
@@ -1292,7 +1304,7 @@ export default {
         return;
       }
 
-      if (this.deletingMeal.substitute) {
+      if (this.deletingMeal.substitute || this.deletingMeal.in_package) {
         this.deleteMealModal = true;
       } else {
         this.deleteMealModalNonSubstitute = true;
