@@ -89,10 +89,9 @@ class Hourly extends Command
                 ->addMinutes(30)
                 ->toDateTimeString()
         ];
-        $subs = Subscription::whereBetween(
-            'next_renewal_at',
-            $dateRange
-        )->get();
+        $subs = Subscription::whereBetween('next_renewal_at', $dateRange)
+            ->where('status', 'active')
+            ->get();
 
         foreach ($subs as $sub) {
             $sub->user->sendNotification('subscription_renewing', [
