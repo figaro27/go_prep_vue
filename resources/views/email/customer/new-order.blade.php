@@ -143,7 +143,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       @endif
                       <!-- end address -->
-                      @if ($order->store->modules->dailyOrderNumbers)
+<!--                       @if ($order->store->modules->dailyOrderNumbers)
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Daily Order #{{ $order->dailyOrderNumber }}</td>
                       </tr>
@@ -155,7 +155,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Subscription #{{ $order->subscription->stripe_id }}</td>
                       </tr>
-                      @endif
+                      @endif -->
                     </table>
                   </td>
                 </tr>
