@@ -43,7 +43,7 @@
       </div>
       <div class="col-4">
             @if ($params['dailyOrderNumbers'])
-            <h3>Order #{{$order['dailyOrderNumber']}}</h3>
+            <h3>Daily Order #{{$order['dailyOrderNumber']}}</h3>
             @endif
             @if ($order->pickup === 0)
             <h4>DELIVERY</h4>

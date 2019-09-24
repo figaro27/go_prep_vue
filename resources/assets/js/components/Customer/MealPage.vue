@@ -338,6 +338,7 @@ export default {
     back() {
       this.sizeChanged = false;
       this.addons = [];
+      this.$parent.resetMeal = true;
       this.$parent.showMealsArea = true;
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPageView = false;

@@ -27,7 +27,7 @@
       @foreach($orderGroup['orders'] as $order)
       <div class="unbreakable">
         @if ($params['dailyOrderNumbers'])
-        <h2>Order #{{$order['dailyOrderNumber']}}</h2>
+        <h2>Daily Order #{{$order['dailyOrderNumber']}}</h2>
         @endif
         <h5>Order ID - {{$order['order_number']}}</h5>
         <h5>Customer: {{$orderGroup['user']->name }}</h5>

@@ -146,6 +146,11 @@ import StoreClosed from "../../components/Customer/StoreClosed";
 import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 
 export default {
+  data() {
+    return {
+      resetMeal: false
+    };
+  },
   components: {
     OutsideDeliveryArea,
     StoreClosed,
@@ -174,7 +179,7 @@ export default {
   methods: {
     addMeal(meal, mealPackage) {
       if (
-        meal.sizes.length > 0 ||
+        (meal.sizes.length > 0 && !this.$parent.resetMeal) ||
         meal.components.length > 0 ||
         meal.addons.length > 0
       ) {
