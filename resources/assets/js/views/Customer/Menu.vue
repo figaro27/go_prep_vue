@@ -186,6 +186,7 @@ export default {
   },
   data() {
     return {
+      resetMeal: false,
       showBagClass: "shopping-cart hidden-right bag-area",
       showFilterClass: "shopping-cart hidden-left bag-area",
       search: "",
