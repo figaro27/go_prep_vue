@@ -284,7 +284,7 @@ class Store extends Model
                 // A size was chosen. Use the multiplier
                 // 2019-07-24 DB - multipliers no longer used for meal sizes
                 //                 store now manually assigns ingredients
-                if ($mealOrder->meal_size_id) {
+                if ($mealOrder->meal_size_id && $mealOrder->meal_size) {
                     $multiplier = 1; //$mealOrder->meal_size->multiplier;
                     $mealIngredients = $mealOrder->meal_size->ingredients;
                 }
@@ -596,6 +596,26 @@ class Store extends Model
         $storeDetails = $this->details;
 
         $email = null;
+
+        if (isset($store->modules) && isset($store->modules->emailBranding)) {
+            $emailBranding = (int) $store->modules->emailBranding;
+
+            if ($emailBranding == 1) {
+                $logo = $storeDetails->getMedia('logo')->first();
+
+                if ($logo) {
+                    $path = $logo->getPath();
+
+                    if (file_exists($path)) {
+                        $logo_b64 = \App\Utils\Images::encodeB64($path);
+
+                        if ($logo_b64) {
+                            $data['logo_b64'] = $logo_b64;
+                        }
+                    }
+                }
+            }
+        }
 
         switch ($notif) {
             case 'new_order':
