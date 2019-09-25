@@ -386,10 +386,49 @@ class User extends Authenticatable implements JWTSubject
 
     public function sendNotification($notif, $data = [])
     {
-        $email = null;
+        $store = $email = null;
 
         if (!isset($data['user'])) {
             $data['user'] = $this;
+        }
+
+        if (isset($data['store']) && $data['store']) {
+            $store = $data['store'];
+        } elseif (isset($data['order']) && $data['order']) {
+            $order = $data['order'];
+            $store = $order->store;
+        } elseif (isset($data['subscription']) && $data['subscription']) {
+            $sub = $data['subscription'];
+            $store = $sub->store;
+        }
+
+        if ($store) {
+            $storeDetails = $store->details;
+
+            /* Check Email Branding */
+            if (
+                isset($store->modules) &&
+                isset($store->modules->emailBranding)
+            ) {
+                $emailBranding = (int) $store->modules->emailBranding;
+
+                if ($emailBranding == 1) {
+                    $logo = $storeDetails->getMedia('logo')->first();
+
+                    if ($logo) {
+                        $path = $logo->getPath();
+
+                        if (file_exists($path)) {
+                            $logo_b64 = \App\Utils\Images::encodeB64($path);
+
+                            if ($logo_b64) {
+                                $data['logo_b64'] = $logo_b64;
+                            }
+                        }
+                    }
+                }
+            }
+            /* Check Email Branding End */
         }
 
         switch ($notif) {

@@ -49,14 +49,18 @@ u + .body .full { width:100% !important; width:100vw !important;}
             <td align="center">
               <table width="200" class="table-full" align="left" border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td bgcolor="#3082CF" align="center">
+                  <td bgcolor={{ (isset($logo_b64) && $logo_b64 != "")?"transparent":"#3082CF" }} align="center">
                     <table width="80%" class="table-inner" border="0" align="center" cellpadding="0" cellspacing="0">
                       <tr>
                         <td height="50"></td>
                       </tr>
                       <!-- logo -->
                       <tr>
+                        @if (isset($logo_b64) && $logo_b64 != "")
+                        <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px; max-width: 124px;" src="{{$logo_b64}}" alt="GoPrep" title="GoPrep" /></td>
+                        @else
                         <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px;" src="https://goprep.com/logo.png" alt="GoPrep" title="GoPrep"/></td>
+                        @endif
                       </tr>
                       <!-- end logo -->
                       <tr>
@@ -68,10 +72,12 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <td height="5"></td>
                       </tr>
                       <!-- address -->
+                      @if (!isset($logo_b64) || $logo_b64 == "")
                       <tr>
                         <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#FFFFFF; line-height:26px;text-align: center;" align="center"> Meal Prep, Simplified.
                            </td>
                       </tr>
+                      @endif
                       <!-- end address -->
                       <tr>
                         <td height="100"></td>
