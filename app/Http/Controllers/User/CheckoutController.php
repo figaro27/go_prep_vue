@@ -180,8 +180,8 @@ class CheckoutController extends UserController
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
-                // $mealOrder->special_instructions =
-                //     $item['special_instructions'];
+                $mealOrder->special_instructions =
+                    $item['special_instructions'];
                 $mealOrder->save();
 
                 if (isset($item['components']) && $item['components']) {

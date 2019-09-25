@@ -46,7 +46,8 @@ class CheckoutController extends StoreController
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
-        $total = $bagTotal;
+        $total = $request->get('subtotal');
+
         $subtotal = $request->get('subtotal');
         $afterDiscountBeforeFees = $bagTotal;
         $preFeePreDiscount = $bagTotal;
@@ -178,8 +179,8 @@ class CheckoutController extends StoreController
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
-                // $mealOrder->special_instructions =
-                //     $item['special_instructions'];
+                $mealOrder->special_instructions =
+                    $item['special_instructions'];
                 $mealOrder->save();
 
                 if (isset($item['components']) && $item['components']) {
