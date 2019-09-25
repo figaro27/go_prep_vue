@@ -56,12 +56,14 @@ class Daily extends Command
         foreach ($orders as $order) {
             try {
                 // Send notification
-                $email = new DeliveryToday([
-                    'user' => $order->user,
-                    'customer' => $order->customer,
-                    'order' => $order,
-                    'settings' => $order->store->settings
-                ]);
+                if ($order->store->modules->hideDelivery === 0) {
+                    $email = new DeliveryToday([
+                        'user' => $order->user,
+                        'customer' => $order->customer,
+                        'order' => $order,
+                        'settings' => $order->store->settings
+                    ]);
+                }
                 Mail::to($order->user)->send($email);
             } catch (\Exception $e) {
                 // Should not be fatal

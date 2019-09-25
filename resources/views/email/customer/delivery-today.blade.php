@@ -142,7 +142,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       @endif
                       <!-- end address -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Order ID{{ $order->order_number }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Order ID {{ $order->order_number }}</td>
                       </tr>
                       @if ($order->subscription)
                       <tr>

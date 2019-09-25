@@ -10,13 +10,15 @@
         >
           <p class="center-text mt-3">
             Thank you for your order.
-            <span v-if="!!$route.query.pickup"
-              >You can pick up your order on</span
-            >
-            <span v-else>Your order will be delivered on</span>
-            {{
-              moment(orders[0].delivery_date).format("dddd, MMM Do, Y") || ""
-            }}
+            <span v-if="!storeModules.hideDelivery">
+              <span v-if="!!$route.query.pickup"
+                >You can pick up your order on</span
+              >
+              <span v-else>Your order will be delivered on</span>
+              {{
+                moment(orders[0].delivery_date).format("dddd, MMM Do, Y") || ""
+              }}
+            </span>
           </p>
         </b-alert>
         <b-alert
@@ -37,26 +39,28 @@
                     <p v-if="storeModules.dailyOrderNumbers">
                       {{ order.dailyOrderNumber }}
                     </p>
-                    <h4>
-                      {{ order.pickup ? "Pickup Day" : "Delivery Day" }}
-                    </h4>
-                    <p v-if="!order.fulfilled">
-                      {{ moment(order.delivery_date).format("dddd, MMM Do") }}
-                      <span v-if="order.transferTime">
-                        - {{ order.transferTime }}</span
-                      >
-                    </p>
-                    <p v-else>
-                      Delivered On:
-                      {{ moment(order.delivery_date).format("dddd, MMM Do") }}
-                    </p>
-                    <p v-if="order.pickup_location_id != null">
-                      {{ order.pickup_location.name }}<br />
-                      {{ order.pickup_location.address }},
-                      {{ order.pickup_location.city }},
-                      {{ order.pickup_location.state }}
-                      {{ order.pickup_location.zip }}
-                    </p>
+                    <span v-if="!storeModules.hideDelivery">
+                      <h4>
+                        {{ order.pickup ? "Pickup Day" : "Delivery Day" }}
+                      </h4>
+                      <p v-if="!order.fulfilled">
+                        {{ moment(order.delivery_date).format("dddd, MMM Do") }}
+                        <span v-if="order.transferTime">
+                          - {{ order.transferTime }}</span
+                        >
+                      </p>
+                      <p v-else>
+                        Delivered On:
+                        {{ moment(order.delivery_date).format("dddd, MMM Do") }}
+                      </p>
+                      <p v-if="order.pickup_location_id != null">
+                        {{ order.pickup_location.name }}<br />
+                        {{ order.pickup_location.address }},
+                        {{ order.pickup_location.city }},
+                        {{ order.pickup_location.state }}
+                        {{ order.pickup_location.zip }}
+                      </p>
+                    </span>
                   </div>
                   <div class="col-md-4">
                     <h4>Placed On</h4>
