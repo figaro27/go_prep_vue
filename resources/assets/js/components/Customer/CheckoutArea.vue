@@ -30,8 +30,19 @@
                 class="popover-size ml-1"
               />
               <strong
-                >Subscribe & Save
-                <span v-if="storeSettings.applyMealPlanDiscount"
+                >Subscribe
+                <span
+                  v-if="
+                    storeSettings.mealPlanDiscount > 0 &&
+                      storeSettings.mealPlanDiscount > 0
+                  "
+                  >& Save</span
+                >
+                <span
+                  v-if="
+                    storeSettings.applyMealPlanDiscount &&
+                      storeSettings.mealPlanDiscount > 0
+                  "
                   >{{ storeSettings.mealPlanDiscount }}%</span
                 ></strong
               >
@@ -42,7 +53,12 @@
           <div class="col-md-9">
             <strong
               ><p class="mr-1">
-                <span v-if="storeSettings.applyMealPlanDiscount">
+                <span
+                  v-if="
+                    storeSettings.applyMealPlanDiscount &&
+                      storeSettings.mealPlanDiscount > 0
+                  "
+                >
                   Subscribe & save
                   <span class="text-success standout">{{
                     format.money(mealPlanDiscount, storeSettings.currency)
