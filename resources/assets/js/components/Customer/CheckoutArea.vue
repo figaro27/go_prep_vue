@@ -585,7 +585,7 @@ export default {
       }
     },
     deliveryInstructions() {
-      if (this.storeSettings.pickupInstruction != null) {
+      if (this.storeSettings.deliveryInstructions != null) {
         return this.storeSettings.deliveryInstructions.replace(/\n/g, "<br>");
       } else return;
       this.storeSettings.deliveryInstructions;
