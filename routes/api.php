@@ -22,7 +22,7 @@ foreach (
     as $domain
 ) {
     //Auth::routes();
-
+    Route::get('test/mail', 'TestController@test_mail');
     // Auth routes
     Route::group(
         [

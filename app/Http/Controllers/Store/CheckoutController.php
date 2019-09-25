@@ -235,7 +235,7 @@ class CheckoutController extends StoreController
             }
 
             // Send notification
-            $email = new NewOrder([
+            /*$email = new NewOrder([
                 'order' => $order ?? null,
                 'pickup' => $pickup ?? null,
                 'card' => $card ?? null,
@@ -246,6 +246,17 @@ class CheckoutController extends StoreController
                 Mail::to($customer->user)
                     ->bcc('mike@goprep.com')
                     ->send($email);
+            } catch (\Exception $e) {
+            }*/
+
+            try {
+                $customer->user->sendNotification('new_order', [
+                    'order' => $order ?? null,
+                    'pickup' => $pickup ?? null,
+                    'card' => $card ?? null,
+                    'customer' => $customer ?? null,
+                    'subscription' => null
+                ]);
             } catch (\Exception $e) {
             }
         } else {
@@ -427,7 +438,7 @@ class CheckoutController extends StoreController
             }
 
             // Send notification
-            $email = new MealPlan([
+            /*$email = new MealPlan([
                 'order' => $order ?? null,
                 'pickup' => $pickup ?? null,
                 'card' => $card ?? null,
@@ -439,6 +450,17 @@ class CheckoutController extends StoreController
                 Mail::to($user)
                     ->bcc('mike@goprep.com')
                     ->send($email);
+            } catch (\Exception $e) {
+            }*/
+
+            try {
+                $user->sendNotification('meal_plan', [
+                    'order' => $order ?? null,
+                    'pickup' => $pickup ?? null,
+                    'card' => $card ?? null,
+                    'customer' => $customer ?? null,
+                    'subscription' => $userSubscription ?? null
+                ]);
             } catch (\Exception $e) {
             }
         }
