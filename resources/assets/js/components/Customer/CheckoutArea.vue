@@ -218,49 +218,49 @@
         </b-form-radio-group>
       </b-form-group>
     </li>
-
-    <li
-      class="checkout-item unset-height"
-      v-if="
-        deliveryDaysOptions.length > 1 &&
-          $route.params.subscriptionId === undefined
-      "
-    >
-      <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
-        Delivery Day
-      </p>
-      <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
-        Pickup Day
-      </p>
-      <b-form-group v-if="deliveryDaysOptions.length > 1" description>
-        <b-select
-          :options="deliveryDaysOptions"
-          v-model="deliveryDay"
-          @input="val => (deliveryDay = val)"
-          class="delivery-select"
-          required
-        >
-          <option slot="top" disabled>-- Select delivery day --</option>
-        </b-select>
-      </b-form-group>
-    </li>
-    <li
-      class="checkout-item"
-      v-if="
-        deliveryDaysOptions.length === 1 &&
-          $route.params.subscriptionId === undefined
-      "
-    >
-      <div>
-        <h6 v-if="pickup === 0">
-          Delivery Day: {{ deliveryDaysOptions[0].text }}
-        </h6>
-        <h6 v-if="pickup === 1">
-          Pickup Day: {{ deliveryDaysOptions[0].text }}
-        </h6>
-      </div>
-    </li>
-
+    <span v-if="!storeModules.hideDelivery">
+      <li
+        class="checkout-item unset-height"
+        v-if="
+          deliveryDaysOptions.length > 1 &&
+            $route.params.subscriptionId === undefined
+        "
+      >
+        <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
+          Delivery Day
+        </p>
+        <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
+          Pickup Day
+        </p>
+        <b-form-group v-if="deliveryDaysOptions.length > 1" description>
+          <b-select
+            :options="deliveryDaysOptions"
+            v-model="deliveryDay"
+            @input="val => (deliveryDay = val)"
+            class="delivery-select"
+            required
+          >
+            <option slot="top" disabled>-- Select delivery day --</option>
+          </b-select>
+        </b-form-group>
+      </li>
+      <li
+        class="checkout-item"
+        v-if="
+          deliveryDaysOptions.length === 1 &&
+            $route.params.subscriptionId === undefined
+        "
+      >
+        <div>
+          <h6 v-if="pickup === 0">
+            Delivery Day: {{ deliveryDaysOptions[0].text }}
+          </h6>
+          <h6 v-if="pickup === 1">
+            Pickup Day: {{ deliveryDaysOptions[0].text }}
+          </h6>
+        </div>
+      </li>
+    </span>
     <li
       class="checkout-item unset-height"
       v-if="
@@ -905,6 +905,7 @@ export default {
       return couponCheck;
     },
     getCards() {
+      window.localStorage.clear();
       this.creditCardId = null;
       this.creditCards = null;
       this.$nextTick(() => {

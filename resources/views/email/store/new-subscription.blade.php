@@ -125,6 +125,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           <br /> {{ $customer->city }}, {{ $customer->state }} {{ $customer->zip }}
                           </td>
                       </tr>
+                      @if ($subscription->store->modules->hideDelivery === 0)
                       @if ($subscription->latest_order->pickup === 0)
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> First Delivery Date - {{ $subscription->next_delivery_date->format('D, m/d/Y') }}
@@ -137,6 +138,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> First Pickup Date - {{ $subscription->next_delivery_date->format('D, m/d/Y') }}</td>
                       </tr>
+                      @endif
                       @endif
                       <!-- end address -->
                       <tr>

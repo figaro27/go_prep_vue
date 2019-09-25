@@ -9,15 +9,17 @@
         >
           <p class="center-text mt-3">
             Thank you for your order.
-            <span v-if="!!$route.query.pickup"
-              >You can pick up your order on</span
-            >
-            <span v-else>Your order will be delivered on</span>
-            {{
-              moment(subscriptions[0].next_delivery_date).format(
-                "dddd, MMM Do, Y"
-              ) || ""
-            }}
+            <span v-if="!storeModules.hideDelivery">
+              <span v-if="!!$route.query.pickup"
+                >You can pick up your order on</span
+              >
+              <span v-else>Your order will be delivered on</span>
+              {{
+                moment(subscriptions[0].next_delivery_date).format(
+                  "dddd, MMM Do, Y"
+                ) || ""
+              }}
+            </span>
           </p>
         </b-alert>
 
@@ -51,32 +53,36 @@
                   <div class="col-md-4">
                     <h4>Subscription ID</h4>
                     <p>{{ subscription.stripe_id }}</p>
-                    <h4>
-                      {{ subscription.pickup ? "Pickup Day" : "Delivery Day" }}
-                    </h4>
-                    <p
-                      v-if="
-                        subscription.latest_order &&
-                          !subscription.latest_order.fulfilled
-                      "
-                    >
-                      {{
-                        moment(subscription.next_order.delivery_date).format(
-                          "dddd, MMM Do"
-                        )
-                      }}
-                      <span v-if="subscription.transferTime">
-                        - {{ subscription.transferTime }}</span
+                    <span v-if="!storeModules.hideDelivery">
+                      <h4>
+                        {{
+                          subscription.pickup ? "Pickup Day" : "Delivery Day"
+                        }}
+                      </h4>
+                      <p
+                        v-if="
+                          subscription.latest_order &&
+                            !subscription.latest_order.fulfilled
+                        "
                       >
-                    </p>
-                    <p v-else-if="subscription.latest_order">
-                      Delivered On:
-                      {{
-                        moment(
-                          subscription.latest_paid_order.delivery_date
-                        ).format("dddd, MMM Do")
-                      }}
-                    </p>
+                        {{
+                          moment(subscription.next_order.delivery_date).format(
+                            "dddd, MMM Do"
+                          )
+                        }}
+                        <span v-if="subscription.transferTime">
+                          - {{ subscription.transferTime }}</span
+                        >
+                      </p>
+                      <p v-else-if="subscription.latest_order">
+                        Delivered On:
+                        {{
+                          moment(
+                            subscription.latest_paid_order.delivery_date
+                          ).format("dddd, MMM Do")
+                        }}
+                      </p>
+                    </span>
                     <p v-if="subscription.pickup_location_id != null">
                       {{ subscription.pickup_location.name }}<br />
                       {{ subscription.pickup_location.address }},
@@ -162,15 +168,23 @@
                     </p>
                     <div v-if="subscription.latest_paid_order">
                       <p>
-                        Any changes to this subscription will be applied to the
-                        following order on
-                        <strong>
-                          {{
-                            moment(subscription.latest_paid_order.delivery_date)
-                              .add(7, "days")
-                              .format("dddd, MMM Do")
-                          }}.</strong
-                        >
+                        <span v-if="!storeModules.hideDelivery">
+                          Any changes to this subscription will be applied to
+                          the following order on
+                          <strong>
+                            {{
+                              moment(
+                                subscription.latest_paid_order.delivery_date
+                              )
+                                .add(7, "days")
+                                .format("dddd, MMM Do")
+                            }}.</strong
+                          >
+                        </span>
+                        <span v-else>
+                          Any changes to this subscription will be applied to
+                          next week's order.
+                        </span>
                       </p>
                       <b-btn
                         variant="warning"
@@ -332,7 +346,8 @@ export default {
     ...mapGetters({
       storeSettings: "storeSettings",
       initialized: "initialized",
-      getStoreMeal: "viewedStoreMeal"
+      getStoreMeal: "viewedStoreMeal",
+      storeModules: "viewedStoreModules"
     })
   },
   mounted() {},
