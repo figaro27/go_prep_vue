@@ -6,6 +6,7 @@ use App\Http\Controllers\Store\StoreController;
 use App\Http\Requests\StoreMealRequest;
 use App\Http\Requests\UpdateMealRequest;
 use App\Meal;
+use App\MealPackage;
 use App\MealMealPackage;
 use Illuminate\Http\Request;
 
@@ -155,9 +156,32 @@ class MealController extends StoreController
         }
 
         $mealMealPackages = MealMealPackage::where('meal_id', $mealId)->get();
+        $subCheck = false;
 
         foreach ($mealMealPackages as $mealMealPackage) {
-            $mealMealPackage->update(['meal_id' => $subId]);
+            $mealPackageId = $mealMealPackage->meal_package_id;
+            $packageMeals = MealMealPackage::where(
+                'meal_package_id',
+                $mealPackageId
+            )->get();
+            $quantity = $mealMealPackage->quantity;
+
+            foreach ($packageMeals as $packageMeal) {
+                if ($packageMeal->meal_id === $subId) {
+                    $subQuantity = $packageMeal->quantity;
+                    $packageMeal->update([
+                        'quantity' => $quantity + $subQuantity
+                    ]);
+                    $mealMealPackage->delete();
+                    $subCheck = true;
+                }
+            }
+        }
+
+        if (!$subCheck) {
+            foreach ($mealMealPackages as $mealMealPackage) {
+                $mealMealPackage->update(['meal_id' => $subId]);
+            }
         }
 
         return Meal::deleteMeal($mealId, $subId, true);
@@ -173,34 +197,35 @@ class MealController extends StoreController
     {
         $meal = $this->store->meals()->find($id);
         $mealId = $meal->id;
-
-        $subId = $request->get('substitute_id', null);
-        if ($subId) {
-            $sub = $this->store->meals()->find($subId);
-        }
-
-        if (!$meal) {
-            return response()->json(
-                [
-                    'error' => 'Invalid meal ID'
-                ],
-                400
-            );
-        }
-
-        if ($meal->substitute && !$sub) {
-            return response()->json(
-                [
-                    'error' => 'Invalid substitute meal ID'
-                ],
-                400
-            );
-        }
+        $subId = intval($request->input('substitute_id'));
 
         $mealMealPackages = MealMealPackage::where('meal_id', $mealId)->get();
+        $subCheck = false;
 
         foreach ($mealMealPackages as $mealMealPackage) {
-            $mealMealPackage->update(['meal_id' => $subId]);
+            $mealPackageId = $mealMealPackage->meal_package_id;
+            $packageMeals = MealMealPackage::where(
+                'meal_package_id',
+                $mealPackageId
+            )->get();
+            $quantity = $mealMealPackage->quantity;
+
+            foreach ($packageMeals as $packageMeal) {
+                if ($packageMeal->meal_id === $subId) {
+                    $subQuantity = $packageMeal->quantity;
+                    $packageMeal->update([
+                        'quantity' => $quantity + $subQuantity
+                    ]);
+                    $mealMealPackage->delete();
+                    $subCheck = true;
+                }
+            }
+        }
+
+        if (!$subCheck) {
+            foreach ($mealMealPackages as $mealMealPackage) {
+                $mealMealPackage->update(['meal_id' => $subId]);
+            }
         }
 
         return Meal::deleteMeal($id, $subId);
