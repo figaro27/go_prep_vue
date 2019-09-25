@@ -284,7 +284,7 @@ class Store extends Model
                 // A size was chosen. Use the multiplier
                 // 2019-07-24 DB - multipliers no longer used for meal sizes
                 //                 store now manually assigns ingredients
-                if ($mealOrder->meal_size_id) {
+                if ($mealOrder->meal_size_id && $mealOrder->meal_size) {
                     $multiplier = 1; //$mealOrder->meal_size->multiplier;
                     $mealIngredients = $mealOrder->meal_size->ingredients;
                 }
