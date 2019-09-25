@@ -91,7 +91,9 @@ class Bag
                                     ? $meal['meal_size']['id']
                                     : null
                             ],
-                            'quantity' => $meal['quantity']
+                            'quantity' => $meal['quantity'],
+                            'special_instructions' =>
+                                $meal['special_instructions'] ?? null
                         ];
 
                         $mealItemId = $this->getItemId($mealItem);

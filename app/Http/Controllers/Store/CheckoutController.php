@@ -46,7 +46,8 @@ class CheckoutController extends StoreController
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
-        $total = $bagTotal;
+        $total = $request->get('subtotal');
+
         $subtotal = $request->get('subtotal');
         $afterDiscountBeforeFees = $bagTotal;
         $preFeePreDiscount = $bagTotal;
@@ -178,8 +179,8 @@ class CheckoutController extends StoreController
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
-                // $mealOrder->special_instructions =
-                //     $item['special_instructions'];
+                $mealOrder->special_instructions =
+                    $item['special_instructions'];
                 $mealOrder->save();
 
                 if (isset($item['components']) && $item['components']) {
@@ -234,7 +235,7 @@ class CheckoutController extends StoreController
             }
 
             // Send notification
-            $email = new NewOrder([
+            /*$email = new NewOrder([
                 'order' => $order ?? null,
                 'pickup' => $pickup ?? null,
                 'card' => $card ?? null,
@@ -245,6 +246,17 @@ class CheckoutController extends StoreController
                 Mail::to($customer->user)
                     ->bcc('mike@goprep.com')
                     ->send($email);
+            } catch (\Exception $e) {
+            }*/
+
+            try {
+                $customer->user->sendNotification('new_order', [
+                    'order' => $order ?? null,
+                    'pickup' => $pickup ?? null,
+                    'card' => $card ?? null,
+                    'customer' => $customer ?? null,
+                    'subscription' => null
+                ]);
             } catch (\Exception $e) {
             }
         } else {
@@ -426,7 +438,7 @@ class CheckoutController extends StoreController
             }
 
             // Send notification
-            $email = new MealPlan([
+            /*$email = new MealPlan([
                 'order' => $order ?? null,
                 'pickup' => $pickup ?? null,
                 'card' => $card ?? null,
@@ -438,6 +450,17 @@ class CheckoutController extends StoreController
                 Mail::to($user)
                     ->bcc('mike@goprep.com')
                     ->send($email);
+            } catch (\Exception $e) {
+            }*/
+
+            try {
+                $user->sendNotification('meal_plan', [
+                    'order' => $order ?? null,
+                    'pickup' => $pickup ?? null,
+                    'card' => $card ?? null,
+                    'customer' => $customer ?? null,
+                    'subscription' => $userSubscription ?? null
+                ]);
             } catch (\Exception $e) {
             }
         }

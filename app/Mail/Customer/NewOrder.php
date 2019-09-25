@@ -31,11 +31,19 @@ class NewOrder extends Mailable
     public function build()
     {
         $order = $this->data['order'];
+        $emailBranding = $order->store->modules->emailBranding;
         $storeEmail = $order->store->user->email;
+        $storeName = $order->store->details->name;
 
-        return $this->view('email.customer.new-order')
-            ->with($this->data)
-            ->subject('New Order')
-            ->replyTo($storeEmail);
+        if ($emailBranding) {
+            return $this->view('email.customer.new-order')
+                ->with($this->data)
+                ->subject('New Order')
+                ->from($storeEmail, $storeName);
+        } else {
+            return $this->view('email.customer.new-order')
+                ->with($this->data)
+                ->subject('New Order');
+        }
     }
 }

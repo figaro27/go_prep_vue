@@ -96,7 +96,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- title -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Subscription Cancelled</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:30px; color:#3b3b3b; line-height:26px;">Subscription Cancelled</td>
                       </tr>
                       <!-- end title -->
                       <tr>

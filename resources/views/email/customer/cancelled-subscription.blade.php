@@ -1,4 +1,4 @@
-f<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -49,14 +49,18 @@ u + .body .full { width:100% !important; width:100vw !important;}
             <td align="center">
               <table width="200" class="table-full" align="left" border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td bgcolor="#3082CF" align="center">
+                  <td bgcolor={{ (isset($logo_b64) && $logo_b64 != "")?"transparent":"#3082CF" }} align="center">
                     <table width="80%" class="table-inner" border="0" align="center" cellpadding="0" cellspacing="0">
                       <tr>
                         <td height="50"></td>
                       </tr>
                       <!-- logo -->
                       <tr>
+                        @if (isset($logo_b64) && $logo_b64 != "")
+                        <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px; max-width: 124px;" src="{{$logo_b64}}" alt="GoPrep" title="GoPrep" /></td>
+                        @else
                         <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px;" src="https://goprep.com/logo.png" alt="GoPrep" title="GoPrep" /></td>
+                        @endif
                       </tr>
                       <!-- end logo -->
                       <tr>
@@ -68,10 +72,12 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <td height="5"></td>
                       </tr>
                       <!-- address -->
+                      @if (!isset($logo_b64) || $logo_b64 == "")
                       <tr>
                         <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#FFFFFF; line-height:26px;text-align: center;" align="center"> Meal Prep, Simplified.
                            </td>
                       </tr>
+                      @endif
                       <!-- end address -->
                       <tr>
                         <td height="100"></td>
@@ -90,7 +96,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- title -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Subscription Cancelled</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:26px; color:#3b3b3b; line-height:30px;">Subscription Cancelled</td>
                       </tr>
                       <!-- end title -->
                       <tr>
