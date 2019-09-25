@@ -17,8 +17,6 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
-Route::get('test/mail', 'TestController@test_mail');
-
 foreach (
     [config('app.domain'), '{store_slug}.' . config('app.domain')]
     as $domain
