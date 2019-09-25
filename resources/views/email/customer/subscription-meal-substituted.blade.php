@@ -41,7 +41,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
 
 <body class="body">
   <!-- header -->
-  <table class="full" bgcolor="#f8f8f8" width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+  <table class="full" bgcolor="#ffffff" width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
     <tr>
       <td align="center">
         <table width="600" style="max-width: 600px" class="table-full" border="0" align="center" cellpadding="0" cellspacing="0">
