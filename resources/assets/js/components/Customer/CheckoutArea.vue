@@ -905,6 +905,7 @@ export default {
       return couponCheck;
     },
     getCards() {
+      window.localStorage.clear();
       this.creditCardId = null;
       this.creditCards = null;
       this.$nextTick(() => {

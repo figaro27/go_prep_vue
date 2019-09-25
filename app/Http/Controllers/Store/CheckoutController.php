@@ -112,7 +112,6 @@ class CheckoutController extends StoreController
                     [
                         "customer" => $customer->user->stripe_id,
                         "original_source" => $card->stripe_id,
-                        // "original_source" => 'card_1FLeYcFJbkXmjRjETfPaeuDl',
                         "usage" => "single_use"
                     ],
                     ["stripe_account" => $store->settings->stripe_id]
@@ -121,10 +120,12 @@ class CheckoutController extends StoreController
                 $charge = \Stripe\Charge::create(
                     [
                         "amount" => round($total * 100 * $deposit),
-                        "currency" => "usd",
+                        "currency" => $store->settings->currency,
                         "source" => $storeSource,
                         "application_fee" => round(
-                            $subtotal * $deposit * $application_fee
+                            $afterDiscountBeforeFees *
+                                $deposit *
+                                $application_fee
                         )
                     ],
                     ["stripe_account" => $store->settings->stripe_id]
@@ -180,6 +181,27 @@ class CheckoutController extends StoreController
                 // $mealOrder->special_instructions =
                 //     $item['special_instructions'];
                 $mealOrder->save();
+
+                if (isset($item['components']) && $item['components']) {
+                    foreach ($item['components'] as $componentId => $choices) {
+                        foreach ($choices as $optionId) {
+                            MealOrderComponent::create([
+                                'meal_order_id' => $mealOrder->id,
+                                'meal_component_id' => $componentId,
+                                'meal_component_option_id' => $optionId
+                            ]);
+                        }
+                    }
+                }
+
+                if (isset($item['addons']) && $item['addons']) {
+                    foreach ($item['addons'] as $addonId) {
+                        MealOrderAddon::create([
+                            'meal_order_id' => $mealOrder->id,
+                            'meal_addon_id' => $addonId
+                        ]);
+                    }
+                }
             }
 
             $lineItemsOrder = $request->get('lineItemsOrder');
@@ -253,7 +275,7 @@ class CheckoutController extends StoreController
                             $store->storeDetail->name .
                             ")"
                     ],
-                    "currency" => "usd"
+                    "currency" => $store->settings->currency
                 ],
                 ['stripe_account' => $store->settings->stripe_id]
             );
@@ -332,6 +354,7 @@ class CheckoutController extends StoreController
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
             $order->amount = $total;
+            $order->currency = $store->settings->currency;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = (new Carbon($deliveryDay))->toDateString();
@@ -355,6 +378,27 @@ class CheckoutController extends StoreController
                 // $mealOrder->special_instructions =
                 //     $item['special_instructions'];
                 $mealOrder->save();
+
+                if (isset($item['components']) && $item['components']) {
+                    foreach ($item['components'] as $componentId => $choices) {
+                        foreach ($choices as $optionId) {
+                            MealOrderComponent::create([
+                                'meal_order_id' => $mealOrder->id,
+                                'meal_component_id' => $componentId,
+                                'meal_component_option_id' => $optionId
+                            ]);
+                        }
+                    }
+                }
+
+                if (isset($item['addons']) && $item['addons']) {
+                    foreach ($item['addons'] as $addonId) {
+                        MealOrderAddon::create([
+                            'meal_order_id' => $mealOrder->id,
+                            'meal_addon_id' => $addonId
+                        ]);
+                    }
+                }
             }
 
             foreach ($bag->getItems() as $item) {
