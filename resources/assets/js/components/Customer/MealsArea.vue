@@ -179,7 +179,7 @@ export default {
   methods: {
     addMeal(meal, mealPackage) {
       if (
-        (meal.sizes.length > 0 && !this.$parent.resetMeal) ||
+        meal.sizes.length > 0 ||
         meal.components.length > 0 ||
         meal.addons.length > 0
       ) {
