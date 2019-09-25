@@ -617,13 +617,17 @@ class Store extends Model
             }
         }
 
+        $bcc = false;
+
         switch ($notif) {
             case 'new_order':
                 $email = new NewOrder($data);
+                $bcc = true;
                 break;
 
             case 'new_subscription':
                 $email = new NewSubscription($data);
+                $bcc = true;
                 break;
 
             case 'cancelled_subscription':
@@ -639,8 +643,15 @@ class Store extends Model
         }
 
         if ($email) {
-            Mail::to($this->user)->send($email);
-            return true;
+            if ($bcc === true) {
+                Mail::to($this->user)
+                    ->bcc('mike@goprep.com')
+                    ->send($email);
+                return true;
+            } else {
+                Mail::to($this->user)->send($email);
+                return true;
+            }
         }
 
         return false;
