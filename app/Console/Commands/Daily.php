@@ -56,13 +56,20 @@ class Daily extends Command
         foreach ($orders as $order) {
             try {
                 // Send notification
-                $email = new DeliveryToday([
+                /*$email = new DeliveryToday([
                     'user' => $order->user,
                     'customer' => $order->customer,
                     'order' => $order,
                     'settings' => $order->store->settings
                 ]);
-                Mail::to($order->user)->send($email);
+                Mail::to($order->user)->send($email);*/
+
+                $order->user->sendNotification('delivery_today', [
+                    'user' => $order->user,
+                    'customer' => $order->customer,
+                    'order' => $order,
+                    'settings' => $order->store->settings
+                ]);
             } catch (\Exception $e) {
                 // Should not be fatal
             }

@@ -157,11 +157,18 @@ class StoreSettingController extends StoreController
             if ($subscription->status === 'active') {
                 $customer = $subscription->customer;
                 $emailAddress = $customer->user->email;
-                $email = new MealPLanPaused([
+
+                /*$email = new MealPLanPaused([
                     'customer' => $customer,
                     'subscription' => $subscription
                 ]);
-                Mail::to($emailAddress)->send($email);
+                Mail::to($emailAddress)->send($email);*/
+
+                $customer->user->sendNotification('meal_plan_paused', [
+                    'customer' => $customer,
+                    'subscription' => $subscription
+                ]);
+
                 sleep(1);
             }
         }
@@ -213,11 +220,18 @@ class StoreSettingController extends StoreController
             if ($subscription->status === 'active') {
                 $customer = $subscription->customer;
                 $emailAddress = $customer->user->email;
-                $email = new SubscriptionCancelled([
+
+                /*$email = new SubscriptionCancelled([
                     'customer' => $customer,
                     'subscription' => $subscription
                 ]);
-                Mail::to($emailAddress)->send($email);
+                Mail::to($emailAddress)->send($email);*/
+
+                $customer->user->sendNotification('subscription_cancelled', [
+                    'customer' => $customer,
+                    'subscription' => $subscription
+                ]);
+
                 $subscription->status = 'cancelled';
                 $subscription->save();
                 sleep(1);
