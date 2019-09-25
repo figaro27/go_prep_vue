@@ -32,10 +32,18 @@ class SubscriptionRenewing extends Mailable
     {
         $subscription = $this->data['subscription'];
         $storeEmail = $subscription->store->user->email;
+        $storeName = $subscription->store->details->name;
+        $emailBranding = $subscription->store->modules->emailBranding;
 
-        return $this->view('email.customer.subscription-renewing')
-            ->with($this->data)
-            ->subject('Your Subscription is Renewing')
-            ->replyTo($storeEmail);
+        if ($emailBranding) {
+            return $this->view('email.customer.subscription-renewing')
+                ->with($this->data)
+                ->subject('Your Subscription is Renewing')
+                ->from($storeEmail, $storeName);
+        } else {
+            return $this->view('email.customer.subscription-renewing')
+                ->with($this->data)
+                ->subject('Your Subscription is Renewing');
+        }
     }
 }

@@ -32,10 +32,18 @@ class SubscriptionMealSubstituted extends Mailable
     {
         $subscription = $this->data['subscription'];
         $storeEmail = $subscription->store->user->email;
+        $storeName = $subscription->store->details->name;
+        $emailBranding = $subscription->store->modules->emailBranding;
 
-        return $this->view('email.customer.subscription-meal-substituted')
-            ->with($this->data)
-            ->subject('A Meal in Your Subscription Was Substituted')
-            ->replyTo($storeEmail);
+        if ($emailBranding) {
+            return $this->view('mail.customer.subscription-meal-substituted')
+                ->with($this->data)
+                ->subject('A Meal in Your Subscription Was Substituted')
+                ->from($storeEmail, $storeName);
+        } else {
+            return $this->view('mail.customer.subscription-meal-substituted')
+                ->with($this->data)
+                ->subject('A Meal in Your Subscription Was Substituted');
+        }
     }
 }

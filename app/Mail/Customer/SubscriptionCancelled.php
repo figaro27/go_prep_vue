@@ -32,10 +32,18 @@ class SubscriptionCancelled extends Mailable
     {
         $subscription = $this->data['subscription'];
         $storeEmail = $subscription->store->user->email;
+        $storeName = $subscription->store->details->name;
+        $emailBranding = $subscription->store->modules->emailBranding;
 
-        return $this->view('email.customer.cancelled-subscription')
-            ->with($this->data)
-            ->subject('Your Subscription Was Cancelled')
-            ->replyTo($storeEmail);
+        if ($emailBranding) {
+            return $this->view('email.customer.cancelled-subscription')
+                ->with($this->data)
+                ->subject('Your Subscription Was Cancelled')
+                ->from($storeEmail, $storeName);
+        } else {
+            return $this->view('email.customer.cancelled-subscription')
+                ->with($this->data)
+                ->subject('Your Subscription Was Cancelled');
+        }
     }
 }
