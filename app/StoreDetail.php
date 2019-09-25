@@ -75,7 +75,8 @@ class StoreDetail extends Model implements HasMedia
                 ),
                 'url_medium' => $this->store->getUrl(
                     MediaUtils::getMediaPath($logo, 'medium')
-                )
+                ),
+                'path' => MediaUtils::getMediaPath($logo, 'thumb')
             ];
         });
     }
@@ -83,6 +84,7 @@ class StoreDetail extends Model implements HasMedia
     public function updateLogo($imagePath)
     {
         $fullImagePath = \Storage::disk('public')->path($imagePath);
+
         $this->clearMediaCollection('logo');
         $this->addMedia($fullImagePath)->toMediaCollection('logo');
 

@@ -597,6 +597,26 @@ class Store extends Model
 
         $email = null;
 
+        if (isset($store->modules) && isset($store->modules->emailBranding)) {
+            $emailBranding = (int) $store->modules->emailBranding;
+
+            if ($emailBranding == 1) {
+                $logo = $storeDetails->getMedia('logo')->first();
+
+                if ($logo) {
+                    $path = $logo->getPath();
+
+                    if (file_exists($path)) {
+                        $logo_b64 = \App\Utils\Images::encodeB64($path);
+
+                        if ($logo_b64) {
+                            $data['logo_b64'] = $logo_b64;
+                        }
+                    }
+                }
+            }
+        }
+
         switch ($notif) {
             case 'new_order':
                 $email = new NewOrder($data);
