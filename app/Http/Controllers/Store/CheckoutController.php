@@ -276,46 +276,47 @@ class CheckoutController extends StoreController
             if ($diff >= 7) {
                 $billingAnchor->addWeeks(1);
             }
-
-            $plan = \Stripe\Plan::create(
-                [
-                    "amount" => round($total * 100),
-                    "interval" => "week",
-                    "product" => [
-                        "name" =>
-                            "Weekly subscription (" .
-                            $store->storeDetail->name .
-                            ")"
+            if (!$cashOrder) {
+                $plan = \Stripe\Plan::create(
+                    [
+                        "amount" => round($total * 100),
+                        "interval" => "week",
+                        "product" => [
+                            "name" =>
+                                "Weekly subscription (" .
+                                $store->storeDetail->name .
+                                ")"
+                        ],
+                        "currency" => $store->settings->currency
                     ],
-                    "currency" => $store->settings->currency
-                ],
-                ['stripe_account' => $store->settings->stripe_id]
-            );
+                    ['stripe_account' => $store->settings->stripe_id]
+                );
 
-            $token = \Stripe\Token::create(
-                [
-                    "customer" => $customer->user->stripe_id
-                ],
-                ['stripe_account' => $store->settings->stripe_id]
-            );
+                $token = \Stripe\Token::create(
+                    [
+                        "customer" => $customer->user->stripe_id
+                    ],
+                    ['stripe_account' => $store->settings->stripe_id]
+                );
 
-            $storeSource = $storeCustomer->sources->create(
-                [
-                    'source' => $token
-                ],
-                ['stripe_account' => $store->settings->stripe_id]
-            );
+                $storeSource = $storeCustomer->sources->create(
+                    [
+                        'source' => $token
+                    ],
+                    ['stripe_account' => $store->settings->stripe_id]
+                );
 
-            $subscription = $storeCustomer->subscriptions->create(
-                [
-                    'default_source' => $storeSource,
-                    'items' => [['plan' => $plan]],
-                    'application_fee_percent' => $application_fee,
-                    'trial_end' => $billingAnchor->getTimestamp()
-                    //'prorate' => false
-                ],
-                ['stripe_account' => $store->settings->stripe_id]
-            );
+                $subscription = $storeCustomer->subscriptions->create(
+                    [
+                        'default_source' => $storeSource,
+                        'items' => [['plan' => $plan]],
+                        'application_fee_percent' => $application_fee,
+                        'trial_end' => $billingAnchor->getTimestamp()
+                        //'prorate' => false
+                    ],
+                    ['stripe_account' => $store->settings->stripe_id]
+                );
+            }
 
             $userSubscription = new Subscription();
             $userSubscription->user_id = $customer->user->id;
@@ -324,8 +325,15 @@ class CheckoutController extends StoreController
             $userSubscription->store_id = $store->id;
             $userSubscription->name =
                 "Weekly subscription (" . $store->storeDetail->name . ")";
-            $userSubscription->stripe_id = substr($subscription->id, 4);
-            $userSubscription->stripe_plan = $plan->id;
+            if (!$cashOrder) {
+                $userSubscription->stripe_plan = $plan->id;
+                $userSubscription->stripe_id = substr($subscription->id, 4);
+            } else {
+                $userSubscription->stripe_id =
+                    'C -' .
+                    strtoupper(substr(uniqid(rand(10, 99), false), 0, 10));
+                $userSubscription->stripe_plan = 'cash';
+            }
             $userSubscription->quantity = 1;
             $userSubscription->preFeePreDiscount = $preFeePreDiscount;
             $userSubscription->mealPlanDiscount = $mealPlanDiscount;
@@ -422,7 +430,7 @@ class CheckoutController extends StoreController
                 if (isset($item['size']) && $item['size']) {
                     $mealSub->meal_size_id = $item['size']['id'];
                 }
-                // $mealSub->special_instructions = $item['special_instructions'];
+                $mealSub->special_instructions = $item['special_instructions'];
                 $mealSub->save();
             }
 
