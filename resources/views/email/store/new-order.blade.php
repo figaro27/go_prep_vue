@@ -343,7 +343,12 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           ${{ number_format($salesTax, 2) }}<br>
                           @endif
                           <br>
-                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($order->amount, 2) }}</span>
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($order->amount, 2) }}
+                          </span>
+                          @if ($order->cashOrder)
+                            <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:18px; color:#3b3b3b;  font-weight: bold;">(No Charge)
+                            </span>
+                          @endif
                         </td>
                       </tr>
                   </td>

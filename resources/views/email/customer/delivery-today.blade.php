@@ -405,9 +405,13 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 <!-- title -->
                <tr>
                   @if ($order->pickup === 0)
+                  @if ($order->store->settings->deliveryInstructions)
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Delivery Instructions</td>
+                  @endif
                   @else
+                  @if ($order->store->settings->pickupInstructions)
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Pickup Instructions</td>
+                  @endif
                   @endif
                 </tr>
                 <!-- end title -->
@@ -416,17 +420,21 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- content -->
                 @if ($order->pickup === 0)
-        <tr>
+                @if ($order->store->settings->deliveryInstructions)
+                <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
                     {!! nl2br($order->store->settings->deliveryInstructions) !!} 
                   </td>
                 </tr>
+                @endif
                 @else
+                @if ($order->store->settings->pickupInstructions)
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
                     {!! nl2br($order->store->settings->pickupInstructions !!} 
                   </td>
                 </tr>
+                @endif
                 @endif
                 
                 <!-- end content -->

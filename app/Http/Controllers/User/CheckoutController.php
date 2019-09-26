@@ -342,6 +342,7 @@ class CheckoutController extends UserController
             $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
             $userSubscription->pickup_location_id = $pickupLocation;
             $userSubscription->transferTime = $transferTime;
+            $userSubscription->cashOrder = $cashOrder;
             $userSubscription->save();
 
             // Create initial order
@@ -370,6 +371,7 @@ class CheckoutController extends UserController
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->dailyOrderNumber = $dailyOrderNumber;
+            $order->cashOrder = $cashOrder;
             $order->save();
 
             foreach ($bag->getItems() as $item) {

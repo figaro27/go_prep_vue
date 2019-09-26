@@ -390,27 +390,33 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td height="40"></td>
                 </tr>
                 <!-- title -->
+                @if ($subscription->store->settings->deliveryInstructions)
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Delivery Instructions</td>
                 </tr>
+                @endif
                 <!-- end title -->
                 <tr>
                   <td height="5"></td>
                 </tr>
                 <!-- content -->
                 @if ($subscription->pickup === 0)
-				<tr>
+                @if ($subscription->store->settings->deliveryInstructions)
+				        <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
                     {!! nl2br($subscription->store->settings->deliveryInstructions) !!} 
                   </td>
                 </tr>
+                @endif
                 @else
+                @if ($subscription->store->settings->pickupInstructions)
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">Pickup Instructions</td>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
                     {!! nl2br($subscription->store->settings->pickupInstructions) !!} 
                   </td>
                 </tr>
+                @endif
 				@endif
                 
                 <!-- end content -->
