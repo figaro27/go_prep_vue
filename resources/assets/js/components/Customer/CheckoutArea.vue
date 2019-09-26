@@ -362,9 +362,7 @@
           ></card-picker>
 
           <b-form-group
-            v-if="
-              $route.params.storeView && storeModules.deposits && !cashOrder
-            "
+            v-if="$route.params.storeView && storeModules.deposits"
             horizontal
             label="Deposit %"
           >

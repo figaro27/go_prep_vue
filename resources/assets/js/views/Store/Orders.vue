@@ -89,11 +89,11 @@
               </b-dropdown>
             </span>
 
-            <div slot="notes" class="text-nowrap" slot-scope="props">
+            <!-- <div slot="notes" class="text-nowrap" slot-scope="props">
               <p v-if="props.row.has_notes">
                 <img src="/images/store/note.png" />
               </p>
-            </div>
+            </div> -->
             <div slot="created_at" slot-scope="props">
               {{ moment(props.row.created_at).format("dddd, MMM Do") }}
             </div>
@@ -106,6 +106,32 @@
             <div slot="dailyOrderNumber" slot-scope="props">
               {{ props.row.dailyOrderNumber }}
             </div>
+            <div slot="balance" slot-scope="props">
+              <span v-if="props.row.deposit != 100"
+                >{{ 100 - props.row.deposit }}% -
+                {{
+                  format.money(
+                    ((100 - props.row.deposit) / 100) * props.row.amount,
+                    storeSettings.currency
+                  )
+                }}</span
+              >
+              <span v-else>Paid in Full</span>
+            </div>
+            <div slot="chargeType" slot-scope="props">
+              <span v-if="props.row.manual && props.row.cashOrder"
+                >Manual - No Charge</span
+              >
+              <span v-else-if="props.row.manual && !props.row.cashOrder"
+                >Manual - Charge</span
+              >
+              <span v-else-if="!props.row.manual && props.row.cashOrder"
+                >Customer - No Charge</span
+              >
+              <span v-else-if="!props.row.manual && !props.row.cashOrder"
+                >Customer - Charge</span
+              >
+            </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-primary btn-sm"
@@ -116,9 +142,14 @@
               <button
                 v-if="props.row.deposit != 100"
                 class="btn view btn-success btn-sm"
-                @click="chargeBalance(props.row.id)"
+                @click="chargeBalance(props.row.id, props.row.cashOrder)"
               >
-                Charge {{ 100 - props.row.deposit }}% Balance
+                <span v-if="!props.row.cashOrder"
+                  >Charge {{ 100 - props.row.deposit }}% Balance</span
+                >
+                <span v-else
+                  >Settle {{ 100 - props.row.deposit }}% Balance</span
+                >
               </button>
               <!-- <b-btn
                 v-if="!props.row.fulfilled"
@@ -255,7 +286,7 @@
             {{ user_detail.delivery }}
           </div>
         </div>
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-md-12">
             <h4>Notes</h4>
             <textarea
@@ -273,7 +304,7 @@
               Save
             </button>
           </div>
-        </div>
+        </div> -->
         <div class="row">
           <div class="col-md-12">
             <h4>Items</h4>
@@ -377,7 +408,7 @@ export default {
       user_detail: {},
       meals: {},
       columns: [
-        "notes",
+        // "notes",
         "order_number",
         "user.user_detail.full_name",
         "user.user_detail.address",
@@ -391,8 +422,8 @@ export default {
       ],
       options: {
         headings: {
-          notes: "Notes",
-          dailyOrderNumber: "Order #",
+          // notes: "Notes",
+          dailyOrderNumber: "Daily Order #",
           order_number: "Order ID",
           "user.user_detail.full_name": "Name",
           "user.user_detail.address": "Address",
@@ -402,6 +433,8 @@ export default {
           delivery_date: "Delivery Date",
           pickup: "Type",
           amount: "Total",
+          balance: "Balance",
+          chargeType: "Charge Type",
           actions: "Actions"
         },
         rowClassCallback: function(row) {
@@ -440,6 +473,9 @@ export default {
     if (this.storeModules.dailyOrderNumbers) {
       this.columns.splice(1, 0, "dailyOrderNumber");
     }
+    if (this.storeModules.manualOrders || this.storeModules.cashOrders) {
+      this.columns.splice(8, 0, "chargeType");
+    }
   },
   computed: {
     ...mapGetters({
@@ -451,17 +487,26 @@ export default {
       customers: "storeCustomers",
       nextDeliveryDates: "storeNextDeliveryDates",
       getMeal: "storeMeal",
-      storeModules: "storeModules"
+      storeModules: "storeModules",
+      storeSettings: "storeSettings"
     }),
     tableData() {
       let filters = { ...this.filters };
 
-      let orders = {};
+      let orders = [];
       if (this.filters.delivery_dates.start === null) {
         orders = this.upcomingOrders;
       } else {
         orders = this.ordersByDate;
       }
+
+      orders.forEach(order => {
+        if (order.deposit !== 100.0 && !this.columns.includes("balance")) {
+          this.columns.splice(8, 0, "balance");
+          return;
+        }
+      });
+
       return orders;
     }
   },
@@ -647,13 +692,18 @@ export default {
       this.filters.fulfilled = 0;
       this.refreshTable();
     },
-    chargeBalance(id) {
+    chargeBalance(id, cashOrder) {
       axios
         .post("/api/me/chargeBalance", {
-          id: id
+          id: id,
+          cashOrder: cashOrder
         })
         .then(response => {
-          this.$toastr.s("Balance successfully charged.");
+          if (response.data === 1) {
+            this.$toastr.s("Balance settled.");
+          } else {
+            this.$toastr.s("Balance successfully charged.");
+          }
           this.refreshUpcomingOrders();
         });
     }
