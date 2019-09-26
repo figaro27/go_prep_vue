@@ -1,11 +1,12 @@
 <template>
   <div>
-    <ul class="list-group" v-if="$parent.orderId === undefined">
+    <ul class="list-group">
       <li
         class="bag-item"
         v-if="
           storeSettings.allowMealPlans &&
-            $route.params.subscriptionId === undefined
+            $route.params.subscriptionId === undefined &&
+            $parent.orderId === undefined
         "
       >
         <div class="row" v-if="!manualOrder">
@@ -403,6 +404,13 @@
           class="menu-bag-btn"
           >ADJUST ORDER</b-btn
         >
+        <b-alert v-if="$route.params.adjustOrder" variant="warning" show>
+          <p class="center-text mt-3">
+            Any adjustment to price only changes the numbers in the system for
+            your records. It does not charge or refund the customer the
+            difference.
+          </p>
+        </b-alert>
 
         <div v-if="subscriptionId" class="d-none d-lg-block">
           <b-btn
@@ -940,13 +948,36 @@ export default {
       return this.customer;
     },
     async adjust() {
+      let deposit = this.deposit;
+      if (deposit.toString().includes("%")) {
+        deposit.replace("%", "");
+        deposit = parseInt(deposit);
+      }
+
       axios
         .post(`/api/me/orders/adjustOrder`, {
-          bag: this.bag,
           orderId: this.$parent.orderId,
           deliveryDate: this.deliveryDay,
           pickup: this.pickup,
-          transferTime: this.transferTime
+          transferTime: this.transferTime,
+          subtotal: this.subtotal,
+          afterDiscount: this.afterDiscount,
+          deliveryFee: this.deliveryFeeAmount,
+          processingFee: this.processingFeeAmount,
+          bag: this.bag,
+          plan: this.weeklySubscription,
+          store_id: this.store.id,
+          salesTax: this.tax,
+          coupon_id: this.couponApplied ? this.coupon.id : null,
+          couponReduction: this.couponReduction,
+          couponCode: this.couponApplied ? this.coupon.code : null,
+          deliveryFee: this.deliveryFee,
+          pickupLocation: this.selectedPickupLocation,
+          customer: this.customer,
+          deposit: deposit,
+          cashOrder: this.cashOrder,
+          lineItemsOrder: this.orderLineItems,
+          grandTotal: this.grandTotal
         })
         .then(resp => {
           this.$toastr.s("Order Adjusted");

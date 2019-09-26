@@ -170,6 +170,49 @@ class OrderController extends StoreController
         $order = Order::where('id', $request->get('orderId'))->first();
         $store = $order->store;
         $bag = new Bag($request->get('bag'), $store);
+        $couponId = $request->get('coupon_id');
+        $couponReduction = $request->get('couponReduction');
+        $couponCode = $request->get('couponCode');
+        $deliveryFee = $request->get('deliveryFee');
+        $pickupLocation = $request->get('pickupLocation');
+        $transferTime = $request->get('transferTime');
+        $bagTotal = $bag->getTotal() + $request->get('lineItemTotal');
+        $subtotal = $request->get('subtotal');
+        $afterDiscountBeforeFees = $bagTotal;
+        $preFeePreDiscount = $bagTotal;
+        $deposit = $request->get('deposit') / 100;
+        $processingFee = 0;
+        $mealPlanDiscount = 0;
+        $salesTax = $request->get('salesTax');
+        $deliveryFee = $request->get('deliveryFee');
+        $processingFee = $request->get('processingFee');
+        $cashOrder = $request->get('cashOrder');
+        $grandTotal = $request->get('grandTotal');
+
+        $order->delivery_date = $request->get('deliveryDate');
+        $order->transferTime = $request->get('transferTime');
+        $order->adjusted = 1;
+        $order->pickup = $request->get('pickup');
+        $order->preFeePreDiscount = $preFeePreDiscount;
+        $order->mealPlanDiscount = $mealPlanDiscount;
+        $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+        $order->deliveryFee = $deliveryFee;
+        $order->processingFee = $processingFee;
+        $order->salesTax = $salesTax;
+        $order->amount = $grandTotal;
+        $order->coupon_id = $couponId;
+        $order->couponReduction = $couponReduction;
+        $order->couponCode = $couponCode;
+        $order->coupon_id = $couponId;
+        $order->couponReduction = $couponReduction;
+        $order->couponCode = $couponCode;
+        $order->pickup_location_id = $pickupLocation;
+        $order->transferTime = $transferTime;
+        $order->deposit = $deposit * 100;
+        $order->manual = 1;
+        $order->cashOrder = $cashOrder;
+
+        $order->save();
 
         $order->meal_orders()->delete();
         foreach ($bag->getItems() as $item) {
@@ -204,12 +247,6 @@ class OrderController extends StoreController
                 }
             }
         }
-
-        $order->delivery_date = $request->get('deliveryDate');
-        $order->transferTime = $request->get('transferTime');
-        $order->adjusted = 1;
-        $order->pickup = $request->get('pickup');
-        $order->save();
     }
 
     /**
