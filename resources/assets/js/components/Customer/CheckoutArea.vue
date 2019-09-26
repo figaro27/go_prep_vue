@@ -205,7 +205,11 @@
     </ul>
     <li
       class="checkout-item"
-      v-if="transferTypeCheckDelivery && transferTypeCheckPickup"
+      v-if="
+        transferTypeCheckDelivery &&
+          transferTypeCheckPickup &&
+          (!storeModules.hideDeliveryOption || $route.params.storeView === true)
+      "
     >
       <b-form-group>
         <b-form-radio-group v-model="pickup" name="pickup">
@@ -226,7 +230,13 @@
             $route.params.subscriptionId === undefined
         "
       >
-        <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
+        <p
+          v-if="
+            pickup === 0 &&
+              deliveryDaysOptions.length > 1 &&
+              !storeModules.hideDeliveryOption
+          "
+        >
           Delivery Day
         </p>
         <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
