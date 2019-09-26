@@ -680,7 +680,11 @@ export default {
     },
     deliveryDaysOptions() {
       let options = [];
-      this.storeSettings.next_orderable_delivery_dates.forEach(date => {
+      let dates = this.storeSettings.next_orderable_delivery_dates;
+      if (this.storeModules.ignoreCutoff && this.$route.params.storeView)
+        dates = this.storeSettings.next_delivery_dates;
+
+      dates.forEach(date => {
         options.push({
           value: date.date,
           text: moment(date.date).format("dddd MMM Do")
