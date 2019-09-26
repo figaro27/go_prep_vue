@@ -167,9 +167,16 @@ class StoreSetting extends Model
                     }
                 }
 
-                // foreach ($dates as $date) {
-                //     $dates[] = $date->copy()->addWeek(1);
-                // }
+                $deliveryWeeks = $this->deliveryWeeks;
+                $upcomingWeeksDates = [];
+
+                foreach ($dates as $date) {
+                    for ($i = 1; $i <= $deliveryWeeks; $i++) {
+                        $upcomingWeeksDates[] = $date->copy()->addWeek($i);
+                    }
+                }
+
+                $dates = $dates + $upcomingWeeksDates;
 
                 usort($dates, function ($a, $b) {
                     return $a->getTimestamp() - $b->getTimestamp();
