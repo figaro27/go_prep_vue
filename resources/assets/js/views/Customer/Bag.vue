@@ -331,7 +331,7 @@ export default {
       else return "Prepared Once";
     },
     deliveryDaysOptions() {
-      return this.storeSettings("next_orderable_delivery_dates", []).map(
+      return (this.storeSettings.next_orderable_delivery_dates, []).map(
         date => {
           return {
             value: date.date,
@@ -355,7 +355,16 @@ export default {
   mounted() {
     this.deliveryDay = this.$route.params.deliveryDay;
     this.transferTime = this.$route.params.transferTime;
-    this.pickup = this.$route.params.pickup;
+    if (this.$route.params.pickup != undefined) {
+      this.pickup = this.$route.params.pickup;
+    } else if (
+      this.storeModules.hideDeliveryOption &&
+      !this.$route.params.storeView
+    ) {
+      this.pickup = 1;
+    } else {
+      this.pickup = 0;
+    }
 
     this.creditCardId = this.card;
 
@@ -365,9 +374,10 @@ export default {
 
     if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
 
-    this.selectedPickupLocation = this.pickupLocationOptions[0].value;
+    if (this.storeModules.pickupLocations)
+      this.selectedPickupLocation = this.pickupLocationOptions[0].value;
 
-    if (!this.deliveryDay && this.deliveryDaysOptions) {
+    if (!this.deliveryDay && this.deliveryDaysOptions.length > 0) {
       this.deliveryDay = this.deliveryDaysOptions[0].value;
     }
   },

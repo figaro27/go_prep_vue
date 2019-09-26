@@ -205,7 +205,11 @@
     </ul>
     <li
       class="checkout-item"
-      v-if="transferTypeCheckDelivery && transferTypeCheckPickup"
+      v-if="
+        transferTypeCheckDelivery &&
+          transferTypeCheckPickup &&
+          (!storeModules.hideDeliveryOption || $route.params.storeView === true)
+      "
     >
       <b-form-group>
         <b-form-radio-group v-model="pickup" name="pickup">
@@ -226,7 +230,13 @@
             $route.params.subscriptionId === undefined
         "
       >
-        <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
+        <p
+          v-if="
+            pickup === 0 &&
+              deliveryDaysOptions.length > 1 &&
+              !storeModules.hideDeliveryOption
+          "
+        >
           Delivery Day
         </p>
         <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
@@ -670,7 +680,11 @@ export default {
     },
     deliveryDaysOptions() {
       let options = [];
-      this.storeSettings.next_orderable_delivery_dates.forEach(date => {
+      let dates = this.storeSettings.next_orderable_delivery_dates;
+      if (this.storeModules.ignoreCutoff && this.$route.params.storeView)
+        dates = this.storeSettings.next_delivery_dates;
+
+      dates.forEach(date => {
         options.push({
           value: date.date,
           text: moment(date.date).format("dddd MMM Do")
