@@ -339,7 +339,7 @@
             "
           >
             <b-form-checkbox v-model="cashOrder" class="pb-2 mediumCheckbox">
-              Cash
+              No Charge
             </b-form-checkbox>
             <!-- <p
               v-if="

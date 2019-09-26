@@ -178,7 +178,7 @@
             <p>{{ moment(order.created_at).format("dddd, MMM Do") }}</p>
           </div>
           <div class="col-md-4 pt-1">
-            <h4 v-if="order.cashOrder">Cash Order</h4>
+            <h4 v-if="order.cashOrder">No Charge</h4>
             <p>
               Subtotal:
               {{ format.money(order.preFeePreDiscount, order.currency) }}
