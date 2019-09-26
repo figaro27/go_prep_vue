@@ -177,7 +177,7 @@
             </p>
           </div>
           <div class="col-md-4">
-            <span v-if="!storeModules.hideDelivery">
+            <span v-if="!storeModules.hideTransferOptions">
               <h4 v-if="!subscription.pickup">Delivery Day</h4>
               <h4 v-if="subscription.pickup">Pickup Day</h4>
               {{ moment(subscription.delivery_date).format("dddd, MMM Do") }}

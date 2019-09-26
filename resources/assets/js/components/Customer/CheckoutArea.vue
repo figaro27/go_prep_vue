@@ -218,7 +218,7 @@
         </b-form-radio-group>
       </b-form-group>
     </li>
-    <span v-if="!storeModules.hideDelivery">
+    <span v-if="!storeModules.hideTransferOptions">
       <li
         class="checkout-item unset-height"
         v-if="

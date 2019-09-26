@@ -131,7 +131,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           {{ $customer->city }}, {{ $customer->state }} {{ $customer->zip }}
                           </td>
                       </tr>
-                      @if ($order->store->modules->hideDelivery === 0)
+                      @if ($order->store->modules->hideTransferOptions === 0)
                       @if ($order->pickup === 0)
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format('D, m/d/Y') }}
