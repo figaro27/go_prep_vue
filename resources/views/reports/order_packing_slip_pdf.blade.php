@@ -29,7 +29,7 @@
               @endif
             </p>
             @endif
-            <p><strong>Total: ${{number_format($order->amount, 2)}}</strong></p>
+            <p><strong>Total: ${{number_format($order->amount, 2)}} @if ($order->cashOrder) (No Charge) @endif</strong></p>
       </div>
       <div class="col-4 address">
         <h4>Customer</h4>
