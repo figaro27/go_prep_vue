@@ -431,18 +431,22 @@ class User extends Authenticatable implements JWTSubject
             /* Check Email Branding End */
         }
 
+        $bcc = false;
+
         switch ($notif) {
             case 'delivery_today':
                 $email = new DeliveryToday($data);
                 break;
             case 'meal_plan':
                 $email = new MealPlan($data);
+                $bcc = true;
                 break;
             case 'meal_plan_paused':
                 $email = new MealPlanPaused($data);
                 break;
             case 'new_order':
                 $email = new NewOrder($data);
+                $bcc = true;
                 break;
             case 'subscription_renewing':
                 $email = new SubscriptionRenewing($data);
@@ -456,8 +460,15 @@ class User extends Authenticatable implements JWTSubject
         }
 
         if ($email) {
-            Mail::to($this)->send($email);
-            return true;
+            if ($bcc === true) {
+                Mail::to($this)
+                    ->bcc('mike@goprep.com')
+                    ->send($email);
+                return true;
+            } else {
+                Mail::to($this)->send($email);
+                return true;
+            }
         }
 
         return false;
