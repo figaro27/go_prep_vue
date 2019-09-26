@@ -617,8 +617,6 @@ class Store extends Model
             }
         }
 
-        $bcc = false;
-
         switch ($notif) {
             case 'new_order':
                 $email = new NewOrder($data);
@@ -643,15 +641,8 @@ class Store extends Model
         }
 
         if ($email) {
-            if ($bcc === true) {
-                Mail::to($this->user)
-                    ->bcc('mike@goprep.com')
-                    ->send($email);
-                return true;
-            } else {
-                Mail::to($this->user)->send($email);
-                return true;
-            }
+            Mail::to($this->user)->send($email);
+            return true;
         }
 
         return false;
