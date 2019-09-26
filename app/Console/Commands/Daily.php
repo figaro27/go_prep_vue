@@ -65,7 +65,7 @@ class Daily extends Command
                 ]);
                 Mail::to($order->user)->send($email);*/
 
-                if ($order->store->modules->hideDelivery === 0) {
+                if ($order->store->modules->hideTransferOptions === 0) {
                     $order->user->sendNotification('delivery_today', [
                         'user' => $order->user,
                         'customer' => $order->customer,

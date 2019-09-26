@@ -9,7 +9,7 @@
         >
           <p class="center-text mt-3">
             Thank you for your order.
-            <span v-if="!storeModules.hideDelivery">
+            <span v-if="!storeModules.hideTransferOptions">
               <span v-if="!!$route.query.pickup"
                 >You can pick up your order on</span
               >
@@ -53,7 +53,7 @@
                   <div class="col-md-4">
                     <h4>Subscription ID</h4>
                     <p>{{ subscription.stripe_id }}</p>
-                    <span v-if="!storeModules.hideDelivery">
+                    <span v-if="!storeModules.hideTransferOptions">
                       <h4>
                         {{
                           subscription.pickup ? "Pickup Day" : "Delivery Day"
@@ -168,7 +168,7 @@
                     </p>
                     <div v-if="subscription.latest_paid_order">
                       <p>
-                        <span v-if="!storeModules.hideDelivery">
+                        <span v-if="!storeModules.hideTransferOptions">
                           Any changes to this subscription will be applied to
                           the following order on
                           <strong>

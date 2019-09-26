@@ -477,6 +477,7 @@ class CheckoutController extends StoreController
     public function chargeBalance(Request $request)
     {
         $orderId = $request->get('id');
+        $cashOrder = $request->get('cashOrder');
         $order = Order::where('id', $orderId)->first();
         $subtotal = $order->preFeePreDiscount;
         $amount = $order->amount;
@@ -486,11 +487,13 @@ class CheckoutController extends StoreController
         $storeName = strtolower($this->store->storeDetail->name);
 
         $customer = Customer::where('id', $order->customer_id)->first();
-        $cardId = $order->card_id;
 
-        $card = Card::where('id', $cardId)->first();
+        if (!$cashOrder) {
+            $cardId = $order->card_id;
+            $card = Card::where('id', $cardId)->first();
+        }
 
-        if (strpos($storeName, 'livoti') === false) {
+        if (!$cashOrder) {
             $storeSource = \Stripe\Source::create(
                 [
                     "customer" => $customer->user->stripe_id,
@@ -515,5 +518,7 @@ class CheckoutController extends StoreController
 
         $order->deposit = 100;
         $order->save();
+
+        return $cashOrder;
     }
 }

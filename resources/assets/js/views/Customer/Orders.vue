@@ -10,7 +10,7 @@
         >
           <p class="center-text mt-3">
             Thank you for your order.
-            <span v-if="!storeModules.hideDelivery">
+            <span v-if="!storeModules.hideTransferOptions">
               <span v-if="!!$route.query.pickup"
                 >You can pick up your order on</span
               >
@@ -39,7 +39,7 @@
                     <p v-if="storeModules.dailyOrderNumbers">
                       {{ order.dailyOrderNumber }}
                     </p>
-                    <span v-if="!storeModules.hideDelivery">
+                    <span v-if="!storeModules.hideTransferOptions">
                       <h4>
                         {{ order.pickup ? "Pickup Day" : "Delivery Day" }}
                       </h4>
