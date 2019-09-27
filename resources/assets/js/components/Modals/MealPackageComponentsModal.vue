@@ -71,12 +71,14 @@
                             :spinner="false"
                             class="cart-item-img"
                             width="80px"
+                            v-b-popover.hover="`${meal.meal.description}`"
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
                           <span>{{ meal.meal.title }}</span>
                         </div>
                       </div>
+                      <!-- <span>{{ meal.meal.description }}</span> -->
                     </div>
                   </b-row>
                 </div>
