@@ -23,6 +23,7 @@ foreach (
 ) {
     //Auth::routes();
     Route::get('test/mail', 'TestController@test_mail');
+    Route::get('test/print', 'TestController@test_print');
     // Auth routes
     Route::group(
         [

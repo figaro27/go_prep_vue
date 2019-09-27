@@ -128,6 +128,7 @@ trait Exportable
             //'margin-left' => 0,
             //'margin-right' => 0,
             'disable-smart-shrinking'
+            //'binary' => '/usr/local/bin/wkhtmltopdf',
         ];
 
         if (config('pdf.xserver')) {
@@ -142,6 +143,11 @@ trait Exportable
         $pdf = new Pdf($pdfConfig);
         $pdf->addPage($html);
         $output = $pdf->toString();
+
+        /*if ($output === false) {
+            var_dump($pdf->getError());
+            exit();
+        }*/
 
         Storage::disk('local')->put($filename, $output);
         return Storage::url($filename);

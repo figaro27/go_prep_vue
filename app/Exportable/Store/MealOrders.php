@@ -53,6 +53,7 @@ class MealOrders
         }
 
         $orders = $this->store->getOrders(null, $dates, true);
+
         $orders->map(function ($order) use (
             &$mealQuantities,
             $groupByDate,
