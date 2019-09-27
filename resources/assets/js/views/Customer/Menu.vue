@@ -49,6 +49,7 @@
             :meals="meals"
             :card="card"
             :cardBody="cardBody"
+            :resetMeal="resetMeal"
             @onCategoryVisible="onCategoryVisible($event)"
             @showMealModal="showMealModal"
           ></meals-area>

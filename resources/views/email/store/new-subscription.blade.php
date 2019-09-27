@@ -308,6 +308,10 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           @endif
                           <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($subscription->amount, 2) }}</span>
+                          @if ($subscription->cashOrder)
+                            <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:18px; color:#3b3b3b;  font-weight: bold;">(No Charge)
+                            </span>
+                          @endif
                         </td>
                       </tr>
                   </td>

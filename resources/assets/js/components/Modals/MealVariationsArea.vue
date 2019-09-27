@@ -285,6 +285,10 @@ export default {
       this.$parent.totalAddonPrice = this.totalAddonPrice;
       this.$parent.totalComponentPrice = this.totalComponentPrice;
       this.$parent.getMealVariationPrice();
+    },
+    resetVariations() {
+      this.choices = {};
+      this.addons = [];
     }
   }
 };

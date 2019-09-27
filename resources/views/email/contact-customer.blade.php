@@ -4,6 +4,8 @@
 
 <p>Customer ID: {{ $customerID }}</p>
 
+<p>Last Viewed Store: {{ $lastViewedStore }}</p>
+
 <p>Subject: {{ $subject }}</p>
 
 <p>Message: {{ $body }}</p>

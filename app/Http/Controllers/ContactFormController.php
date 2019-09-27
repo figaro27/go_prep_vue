@@ -53,6 +53,8 @@ class ContactFormController extends Controller
 
         $email = auth('api')->user()->email;
         $id = auth('api')->user()->id;
+        $lastViewedStoreId = auth('api')->user()->last_viewed_store_id;
+        $lastViewedStore = StoreDetail::where('id', $lastViewedStoreId);
         $firstname = UserDetail::where('user_id', $id)
             ->pluck('firstname')
             ->first();
@@ -66,7 +68,8 @@ class ContactFormController extends Controller
             'customerID' => $id,
             'email' => $email,
             'subject' => $request->subject,
-            'body' => $request->message
+            'body' => $request->message,
+            'lastViewedStore' => $lastViewedStore
         );
 
         Mail::send('email.contact-customer', $data, function ($message) use (

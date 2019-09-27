@@ -308,6 +308,10 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           @endif
                           <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($subscription->amount, 2) }}</span>
+                          @if ($subscription->cashOrder)
+                            <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:18px; color:#3b3b3b;  font-weight: bold;">(No Charge)
+                            </span>
+                          @endif
                         </td>
                       </tr>
                   </td>
@@ -345,9 +349,13 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 <!-- title -->
                 <tr>
                   @if ($subscription->pickup === 0)
+                  @if ($subscription->store->settings->deliveryInstructions)
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Delivery Instructions</td>
                   @else
+                  @endif
+                  @if ($subscription->store->settings->pickupInstructions)
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Pickup Instructions</td>
+                  @endif
                   @endif
                 </tr>
                 <!-- end title -->
@@ -356,11 +364,13 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- content -->
                 @if ($subscription->pickup === 0)
-				<tr>
+                @if ($subscription->store->settings->deliveryInstructions)
+				        <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
                     {!! nl2br($subscription->store->settings->deliveryInstructions) !!}
                   </td>
                 </tr>
+                @endif
                 @else
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
@@ -392,6 +402,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td height="40"></td>
                 </tr>
                 <!-- title -->
+                @if ($subscription->store->settings->notesForCustomer)
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Notes from {{ $subscription->store->details->name }}</td>
                 </tr>
@@ -405,7 +416,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->store->settings->notesForCustomer }} </td>
                 </tr>
 				        @endif
-                
+                @endif
                 <!-- end content -->
                 <tr>
                   <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
