@@ -82,7 +82,7 @@
             :meal="meal"
             :sizeId="mealSize"
             :invalid="invalid"
-            ref="mealVariationsArea"
+            ref="componentModal"
             :key="total"
           ></meal-variations-area>
           <div
@@ -182,7 +182,7 @@ export default {
       defaultMealSize: {},
       mealSize: -1,
       components: null,
-      addons: null,
+      addons: [],
       sizeChanged: false,
       invalidCheck: false,
       invalid: false,
@@ -330,7 +330,7 @@ export default {
       if (this.$parent.showBagClass.includes("hidden")) this.$parent.showBag();
       this.mealSize = null;
       this.components = null;
-      this.addons = null;
+      this.addons = [];
       this.defaultMealSize = null;
       this.specialInstructions = null;
       this.invalid = false;
@@ -358,7 +358,7 @@ export default {
     },
     changeSize() {
       this.sizeChanged = true;
-      this.$refs.mealVariationsArea.resetVariations();
+      this.$refs.componentModal.resetVariations();
       this.addons = null;
       this.components = null;
     }
