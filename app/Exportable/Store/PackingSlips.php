@@ -29,36 +29,46 @@ class PackingSlips
         $params = $this->params;
         $params['dailyOrderNumbers'] = $this->store->modules->dailyOrderNumbers;
 
-        $orders = $this->store->orders()->where([
-            'paid' => 1
-            // 'fulfilled' => 0
-        ]);
+        if (isset($params['order_id']) && (int) $params['order_id'] != 0) {
+            $orders = $this->store
+                ->orders()
+                ->where([
+                    'paid' => 1,
+                    'id' => (int) $params['order_id']
+                ])
+                ->get();
+        } else {
+            $orders = $this->store->orders()->where([
+                'paid' => 1
+                // 'fulfilled' => 0
+            ]);
 
-        $dateRange = $this->getDeliveryDates();
-        if ($dateRange === []) {
-            $orders = $orders->where(
-                'delivery_date',
-                $this->store->getNextDeliveryDate()
-            );
-        }
-        if (isset($dateRange['from'])) {
-            $from = Carbon::parse($dateRange['from']);
-            $orders = $orders->where(
-                'delivery_date',
-                '>=',
-                $from->format('Y-m-d')
-            );
-        }
-        if (isset($dateRange['to'])) {
-            $to = Carbon::parse($dateRange['to']);
-            $orders = $orders->where(
-                'delivery_date',
-                '<=',
-                $to->format('Y-m-d')
-            );
-        }
+            $dateRange = $this->getDeliveryDates();
+            if ($dateRange === []) {
+                $orders = $orders->where(
+                    'delivery_date',
+                    $this->store->getNextDeliveryDate()
+                );
+            }
+            if (isset($dateRange['from'])) {
+                $from = Carbon::parse($dateRange['from']);
+                $orders = $orders->where(
+                    'delivery_date',
+                    '>=',
+                    $from->format('Y-m-d')
+                );
+            }
+            if (isset($dateRange['to'])) {
+                $to = Carbon::parse($dateRange['to']);
+                $orders = $orders->where(
+                    'delivery_date',
+                    '<=',
+                    $to->format('Y-m-d')
+                );
+            }
 
-        $orders = $orders->get();
+            $orders = $orders->get();
+        }
 
         return $orders;
     }
@@ -95,6 +105,7 @@ class PackingSlips
             //'margin-bottom' => 0,
             //'margin-left' => 0,
             //'margin-right' => 0,
+            //'binary' => '/usr/local/bin/wkhtmltopdf',
             'disable-smart-shrinking'
         ];
 

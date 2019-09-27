@@ -203,6 +203,14 @@
             >
               <b-btn class="btn btn-success mb-2">Adjust Order</b-btn>
             </router-link>
+            <div>
+              <b-btn
+                class="btn mb-2"
+                variant="primary"
+                @click="printPackingSlip(order.id)"
+                >Print Packing Slip</b-btn
+              >
+            </div>
           </div>
           <div class="col-md-4 pt-1">
             <h4>Placed On</h4>
@@ -342,8 +350,8 @@
             <hr />
             <ul class="meal-quantities">
               <li
-                v-for="lineItemOrder in order.line_items_orders"
-                :key="order.line_items_orders.id"
+                v-for="lineItemOrder in order.line_items_order"
+                v-bind:key="lineItemOrder.id"
               >
                 <div class="row">
                   <div class="col-md-3">
@@ -584,6 +592,30 @@ export default {
       });
 
       return _.filter(data);
+    },
+    printPackingSlip(order_id) {
+      axios
+        .get(`/api/me/print/packing_slips/pdf`, {
+          params: { order_id }
+        })
+        .then(response => {
+          if (!_.isEmpty(response.data.url)) {
+            let win = window.open(response.data.url);
+            win.addEventListener(
+              "load",
+              () => {
+                win.print();
+              },
+              false
+            );
+          }
+        })
+        .catch(err => {
+          this.$toastr.e("Failed to print report.");
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     async viewOrder(id) {
       const jobId = await this.addJob();

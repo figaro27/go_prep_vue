@@ -7,6 +7,7 @@ use App\Order;
 use App\User;
 use App\Store;
 use App\Exportable\Store\MealOrders;
+use App\Exportable\Store\PackingSlips;
 
 class TestController extends Controller
 {
@@ -46,12 +47,14 @@ class TestController extends Controller
         $data = [
             'group_by_date' => false,
             'delivery_dates' =>
-                '{"from":"2019-09-25T00:00:00.000Z","to":"2019-10-25T23:59:59.999Z"}'
+                '{"from":"2019-09-25T00:00:00.000Z","to":"2019-10-25T23:59:59.999Z"}',
+            'order_id' => 2
         ];
 
         $params = collect($data);
 
         $exportable = new MealOrders($store, $params);
+        //$exportable = new PackingSlips($store, $params);
         $url = $exportable->export($format);
 
         exit($url);
