@@ -203,10 +203,14 @@
             >
               <b-btn class="btn btn-success mb-2">Adjust Order</b-btn>
             </router-link>
-
-            <b-btn class="btn btn-info mb-2" @click="printPackingSlip(order.id)"
-              >Print a packing slip</b-btn
-            >
+            <div>
+              <b-btn
+                class="btn mb-2"
+                variant="primary"
+                @click="printPackingSlip(order.id)"
+                >Print Packing Slip</b-btn
+              >
+            </div>
           </div>
           <div class="col-md-4 pt-1">
             <h4>Placed On</h4>
