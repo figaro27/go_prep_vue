@@ -330,7 +330,7 @@ export default {
       if (this.$parent.showBagClass.includes("hidden")) this.$parent.showBag();
       this.mealSize = null;
       this.components = null;
-      this.addons = [];
+      this.addons = null;
       this.defaultMealSize = null;
       this.specialInstructions = null;
       this.invalid = false;
@@ -338,7 +338,9 @@ export default {
     back() {
       this.sizeChanged = false;
       this.addons = [];
-      this.$parent.resetMeal = true;
+      if (this.meal.sizes.length === 1) {
+        this.$parent.resetMeal = true;
+      }
       this.$parent.showMealsArea = true;
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPageView = false;
