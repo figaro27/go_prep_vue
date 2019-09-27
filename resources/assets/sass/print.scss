@@ -220,15 +220,33 @@ h2 {
   font-weight: bold;
   font-size: 20pt;
   font-family: "gotham", sans-serif;
-  margin-top: 6pt;
-  margin-bottom: 6pt;
   padding-top: 4pt;
   padding-bottom: 4pt;
-  border-top: 0.07cm solid #000000;
-  border-bottom: 0.07cm solid #000000;
   text-align: left;
   text-transform: uppercase;
   page-break-after: avoid;
+}
+.delivery-part {
+  margin-top: 6pt;
+  margin-bottom: 6pt;
+  border-top: 0.07cm solid #000000;
+  border-bottom: 0.07cm solid #000000;
+  page-break-after: avoid;
+  width: 100%;
+
+  h2 {
+    font-size: 10pt;
+    margin-right: 0 !important;
+    margin-left: auto !important;
+    display: inline-block !important;
+    float: right !important;
+
+    &:first-child {
+      margin-left: 0 !important;
+      margin-right: auto !important;
+      float: left !important;
+    }
+  }
 }
 h3 {
   font-weight: normal;

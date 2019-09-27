@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Order;
 use App\User;
 use App\Store;
+use App\Exportable\Store\MealOrders;
+
 class TestController extends Controller
 {
     public function test_mail()
@@ -32,5 +34,26 @@ class TestController extends Controller
             'customer' => $customer ?? null,
             'subscription' => null
         ]);
+    }
+
+    public function test_print()
+    {
+        $storeId = 1;
+        $store = Store::with(['settings', 'storeDetail'])->findOrFail($storeId);
+
+        $format = 'pdf';
+
+        $data = [
+            'group_by_date' => false,
+            'delivery_dates' =>
+                '{"from":"2019-09-25T00:00:00.000Z","to":"2019-10-25T23:59:59.999Z"}'
+        ];
+
+        $params = collect($data);
+
+        $exportable = new MealOrders($store, $params);
+        $url = $exportable->export($format);
+
+        exit($url);
     }
 }
