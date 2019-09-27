@@ -82,7 +82,7 @@
             :meal="meal"
             :sizeId="mealSize"
             :invalid="invalid"
-            ref="componentModal"
+            ref="mealVariationsArea"
             :key="total"
           ></meal-variations-area>
           <div
@@ -358,6 +358,7 @@ export default {
     },
     changeSize() {
       this.sizeChanged = true;
+      this.$refs.mealVariationsArea.resetVariations();
       this.addons = null;
       this.components = null;
     }
