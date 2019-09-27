@@ -13,15 +13,21 @@
     <h1>Meal Production</h1>
     @endif
 
-    @if ($delivery_dates)
-      <h2>
-        Delivery Days:
-        {{ $delivery_dates['from']->format('D, m/d/Y') }} -
-        {{ $delivery_dates['to']->format('D, m/d/Y') }}
-      </h2>
-    @else
-      <h2>All Delivery Dates</h2>
-    @endif
+    <div class="delivery-part">
+      @if ($delivery_dates)
+        <h2>
+          Delivery Days:
+          {{ $delivery_dates['from']->format('D, m/d/Y') }} -
+          {{ $delivery_dates['to']->format('D, m/d/Y') }}
+        </h2>
+      @else
+        <h2>All Delivery Dates</h2>
+      @endif
+
+      <h2>{{ date('m/d/Y h:i:a')}}</h2>
+      <div style="clear:both"></div>
+    </div>
+
     <div class="unbreakable">
       <table border="1" width="100">
         <thead>
