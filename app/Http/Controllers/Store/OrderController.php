@@ -209,7 +209,6 @@ class OrderController extends StoreController
         $order->pickup_location_id = $pickupLocation;
         $order->transferTime = $transferTime;
         $order->deposit = $deposit * 100;
-        $order->manual = 1;
         $order->cashOrder = $cashOrder;
 
         $order->save();
