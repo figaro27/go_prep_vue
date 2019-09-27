@@ -2,7 +2,7 @@
 
 <p>From {{ $firstname }} {{ $lastname }}</p>
 
-<p>Customer ID: {{ $customerID }}</p>
+<p>User ID: {{ $customerID }}</p>
 
 <p>Last Viewed Store: {{ $lastViewedStore }}</p>
 
