@@ -127,8 +127,8 @@ trait Exportable
             //'margin-bottom' => 0,
             //'margin-left' => 0,
             //'margin-right' => 0,
-            'disable-smart-shrinking'
             //'binary' => '/usr/local/bin/wkhtmltopdf',
+            'disable-smart-shrinking'
         ];
 
         if (config('pdf.xserver')) {
