@@ -144,10 +144,10 @@ trait Exportable
         $pdf->addPage($html);
         $output = $pdf->toString();
 
-        if ($output === false) {
+        /*if ($output === false) {
             var_dump($pdf->getError());
             exit();
-        }
+        }*/
 
         Storage::disk('local')->put($filename, $output);
         return Storage::url($filename);
