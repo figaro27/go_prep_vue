@@ -223,7 +223,11 @@
         </b-form-radio-group>
       </b-form-group>
     </li>
-    <span v-if="!storeModules.hideTransferOptions">
+    <span
+      v-if="
+        !storeModules.hideTransferOptions && $route.params.storeView !== true
+      "
+    >
       <li
         class="checkout-item unset-height"
         v-if="
@@ -271,6 +275,21 @@
           </h6>
         </div>
       </li>
+    </span>
+    <span v-if="$route.params.storeView === true">
+      <p v-if="pickup === 0">Delivery Day</p>
+      <p v-if="pickup === 1">Pickup Day</p>
+      <b-form-group description>
+        <b-select
+          :options="deliveryDaysOptionsStoreView"
+          v-model="deliveryDay"
+          @input="val => (deliveryDay = val)"
+          class="delivery-select"
+          required
+        >
+          <option slot="top" disabled>-- Select delivery day --</option>
+        </b-select>
+      </b-form-group>
     </span>
     <li
       class="checkout-item unset-height"
@@ -706,6 +725,23 @@ export default {
         });
       });
 
+      return options;
+    },
+    deliveryDaysOptionsStoreView() {
+      let options = [];
+      var today = new Date();
+
+      var year = today.getFullYear();
+      var month = today.getMonth();
+      var date = today.getDate();
+
+      for (var i = 0; i < 30; i++) {
+        var day = new Date(year, month, date + i);
+        options.push({
+          value: moment(day).format("YYYY-MM-DD 00:00:00"),
+          text: moment(day).format("dddd MMM Do")
+        });
+      }
       return options;
     },
     minimumOption() {
