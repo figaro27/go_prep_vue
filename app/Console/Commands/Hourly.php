@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Store;
 use App\Subscription;
+use App\Order;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 
@@ -101,5 +102,33 @@ class Hourly extends Command
         }
         $this->info($count . ' `Subscription Renewing` notifications sent');
         $count = 0;
+
+        // Delivery Today Emails
+
+        $orders = Order::where([
+            'delivery_date' => date('Y-m-d'),
+            'paid' => 1
+        ])->get();
+
+        // Adjust for timezone in Store Settings
+        $currentHour = date('H') - 4;
+
+        foreach ($orders as $order) {
+            try {
+                if (!$order->store->modules->hideTransferOptions) {
+                    if ($currentHour === 6) {
+                        if ($order->store->modules->hideTransferOptions === 0) {
+                            $order->user->sendNotification('delivery_today', [
+                                'user' => $order->user,
+                                'customer' => $order->customer,
+                                'order' => $order,
+                                'settings' => $order->store->settings
+                            ]);
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+            }
+        }
     }
 }
