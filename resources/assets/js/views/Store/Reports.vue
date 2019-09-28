@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row">
+    <div class="row mt-3">
       <div class="col-md-12">
         <h2 class="center-text mb-4">Production</h2>
       </div>
