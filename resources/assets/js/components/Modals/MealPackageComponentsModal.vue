@@ -24,26 +24,34 @@
                   v-if="!option.selectable"
                   @input="toggleOption(component.id, option.id)"
                   :checked="optionSelected(component.id, option.id)"
-                  >{{ option.text || "" }}</b-checkbox
                 >
+                  {{ option.text || "" }}
+                  <small v-if="option.price"
+                    >+{{
+                      format.money(option.price, storeSettings.currency)
+                    }}</small
+                  >
+                </b-checkbox>
 
                 <div v-else class="my-2">
                   <b-row>
                     <div
                       class="bag-item col-6 col-sm-4 col-lg-3 pb-4 mb-4"
-                      v-for="meal in getMealOptions(
+                      v-for="mealOption in getMealOptions(
                         getOptionMeals(component.id, option.id),
                         false
                       )"
-                      :key="meal.meal_id"
+                      :key="mealOption.meal_id"
                     >
                       <div
-                        v-if="meal && meal.quantity > 0"
+                        v-if="mealOption && mealOption.quantity > 0"
                         class="d-flex align-items-center"
                       >
                         <div class="bag-item-quantity mr-2">
                           <div
-                            @click="addOptionChoice(component, option, meal)"
+                            @click="
+                              addOptionChoice(component, option, mealOption)
+                            "
                             class="bag-plus-minus brand-color white-text"
                           >
                             <i>+</i>
@@ -53,12 +61,14 @@
                               getOptionChoiceQuantity(
                                 component.id,
                                 option.id,
-                                meal.meal_id
+                                mealOption.meal_id
                               )
                             }}
                           </p>
                           <div
-                            @click="minusOptionChoice(component, option, meal)"
+                            @click="
+                              minusOptionChoice(component, option, mealOption)
+                            "
                             class="bag-plus-minus gray white-text"
                           >
                             <i>-</i>
@@ -66,16 +76,19 @@
                         </div>
                         <div class="bag-item-image mr-2">
                           <thumbnail
-                            v-if="meal.meal.image.url_thumb"
-                            :src="meal.meal.image.url_thumb"
+                            v-if="mealOption.meal.image.url_thumb"
+                            :src="mealOption.meal.image.url_thumb"
                             :spinner="false"
                             class="cart-item-img"
                             width="80px"
-                            v-b-popover.hover="`${meal.meal.description}`"
+                            v-b-popover.hover="`${mealOption.meal.description}`"
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
-                          <span>{{ meal.meal.title }}</span>
+                          <span>
+                            {{ mealOption.title }}
+                            <small>+{{ format.money(mealOption.price) }}</small>
+                          </span>
                         </div>
                       </div>
                       <!-- <span>{{ meal.meal.description }}</span> -->
@@ -116,7 +129,7 @@
           <div v-for="addon in mealAddons" :key="addon.id">
             <b-checkbox @input="toggleAddon(addon.id)">
               {{ addon.title }}
-              <small v-if="addon.price > 0"
+              <small
                 >+{{ format.money(addon.price, storeSettings.currency) }}</small
               >
             </b-checkbox>
@@ -408,15 +421,12 @@ export default {
       let options = _.filter(component.options, this.sizeCriteria);
       return _.map(options, option => {
         let title = option.title;
-        if (option.price && option.price > 0) {
-          title +=
-            " - " + format.money(option.price, this.storeSettings.currency);
-        }
 
         return {
           id: option.id,
           selectable: option.selectable,
-          text: title
+          text: title,
+          price: option.price
         };
       });
     },
@@ -439,14 +449,13 @@ export default {
 
           const size = meal.getSize(mealOption.meal_size_id);
 
+          let title = size ? size.full_title : meal.full_title;
+
           if (checkboxes) {
-            let title = size ? size.full_title : meal.title;
-            if (mealOption.price > 0) {
-              title += ` <small>+${format.money(
-                mealOption.price,
-                this.storeSettings.currency
-              )}</small>`;
-            }
+            title += ` <small>+${format.money(
+              mealOption.price,
+              this.storeSettings.currency
+            )}</small>`;
 
             return {
               text: title,
@@ -456,7 +465,8 @@ export default {
             return {
               ...mealOption,
               meal,
-              size
+              size,
+              title
             };
           }
         })
