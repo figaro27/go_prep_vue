@@ -114,9 +114,12 @@
           <h6>Add-ons</h6>
 
           <div v-for="addon in mealAddons" :key="addon.id">
-            <b-checkbox @input="toggleAddon(addon.id)">{{
-              addon.title
-            }}</b-checkbox>
+            <b-checkbox @input="toggleAddon(addon.id)">
+              {{ addon.title }}
+              <small
+                >+{{ format.money(addon.price, storeSettings.currency) }}</small
+              >
+            </b-checkbox>
 
             <div
               v-if="addon.selectable && addonSelected(addon.id)"
@@ -437,8 +440,14 @@ export default {
           const size = meal.getSize(mealOption.meal_size_id);
 
           if (checkboxes) {
+            let title = size ? size.full_title : meal.title;
+            title += ` <small>+${format.money(
+              mealOption.price,
+              this.storeSettings.currency
+            )}</small>`;
+
             return {
-              text: size ? size.full_title : meal.title,
+              text: title,
               value: mealOption
             };
           } else {
