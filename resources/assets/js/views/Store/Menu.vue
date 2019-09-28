@@ -1002,7 +1002,9 @@ export default {
       const packages = Object.values(this.mealPackages).map(mealPackage => {
         return mealPackage;
       });
-      const meals = Object.values(this.meals);
+      const meals = Object.values(this.meals).filter(
+        meal => meal.deleted_at === null
+      );
       return _.concat(packages, meals);
     },
     tagOptions() {

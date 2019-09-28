@@ -24,6 +24,7 @@ class MealController extends StoreController
                 ->meals()
                 ->with(['orders', 'tags', 'ingredients', 'sizes'])
                 ->without(['allergies', 'categories', 'store'])
+                ->withTrashed()
                 ->get()
             : [];
     }
