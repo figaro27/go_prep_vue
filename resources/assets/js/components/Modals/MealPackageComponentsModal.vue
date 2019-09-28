@@ -26,7 +26,7 @@
                   :checked="optionSelected(component.id, option.id)"
                 >
                   {{ option.text || "" }}
-                  <small v-if="option.price"
+                  <small v-if="option.price && option.price > 0"
                     >+{{
                       format.money(option.price, storeSettings.currency)
                     }}</small
@@ -87,7 +87,9 @@
                         <div class="flex-grow-1 mr-2">
                           <span>
                             {{ mealOption.title }}
-                            <small>+{{ format.money(mealOption.price) }}</small>
+                            <small v-if="mealOption.price > 0"
+                              >+{{ format.money(mealOption.price) }}</small
+                            >
                           </span>
                         </div>
                       </div>
