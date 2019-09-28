@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-12">
         <b-alert
-          v-if="subscriptions && subscriptions[0]"
+          v-if="activeSubscriptions && activeSubscriptions[0]"
           :show="!!$route.query.created || false"
           variant="success"
         >
@@ -15,7 +15,7 @@
               >
               <span v-else>Your order will be delivered on</span>
               {{
-                moment(subscriptions[0].next_delivery_date).format(
+                moment(activeSubscriptions[0].next_delivery_date).format(
                   "dddd, MMM Do, Y"
                 ) || ""
               }}
@@ -24,7 +24,7 @@
         </b-alert>
 
         <b-alert
-          v-if="subscriptions && subscriptions[0]"
+          v-if="activeSubscriptions && activeSubscriptions[0]"
           :show="!!$route.query.updated || false"
           variant="success"
         >
@@ -34,16 +34,18 @@
         </b-alert>
 
         <b-alert
-          :show="null !== subscriptions && 0 === subscriptions.length"
+          :show="
+            null !== activeSubscriptions && 0 === activeSubscriptions.length
+          "
           variant="warning"
         >
-          <p class="center-text mt-3">You have no subscriptions.</p>
+          <p class="center-text mt-3">You have no activeSubscriptions.</p>
         </b-alert>
 
         <Spinner v-if="isLoading" />
-        <div class="order-list" v-if="null !== subscriptions">
+        <div class="order-list" v-if="null !== activeSubscriptions">
           <div
-            v-for="subscription in subscriptions"
+            v-for="subscription in activeSubscriptions"
             :key="subscription.id"
             class="mb-4"
           >
@@ -342,13 +344,19 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["subscriptions"]),
     ...mapGetters({
+      subscriptions: "subscriptions",
       storeSettings: "storeSettings",
       initialized: "initialized",
       getStoreMeal: "viewedStoreMeal",
       storeModules: "viewedStoreModules"
-    })
+    }),
+    activeSubscriptions() {
+      if (this.subscriptions)
+        return this.subscriptions.filter(
+          subscription => subscription.status != "cancelled"
+        );
+    }
   },
   mounted() {},
   methods: {
