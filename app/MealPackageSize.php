@@ -8,7 +8,7 @@ class MealPackageSize extends Model
 {
     public $fillable = [];
     public $casts = [];
-    public $appends = [];
+    public $appends = ['meals'];
     public $hidden = ['store'];
 
     public function store()
@@ -26,5 +26,14 @@ class MealPackageSize extends Model
         return $this->belongsToMany('App\Meal', 'meal_meal_package_size')
             ->using('App\MealMealPackageSize')
             ->withPivot(['quantity', 'meal_size_id']);
+    }
+
+    public function getMealsAttribute()
+    {
+        return $this->meals()
+            ->get()
+            ->map(function ($meal) {
+                return collect($meal)->only('id', 'meal_size_id', 'quantity');
+            });
     }
 }
