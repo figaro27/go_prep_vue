@@ -74,7 +74,8 @@ class Meal extends Model implements HasMedia
         'item_title',
         'item_price',
         'item_quantity',
-        'in_package'
+        'in_package',
+        'meal_size_id'
     ];
 
     protected $hidden = [
@@ -97,6 +98,19 @@ class Meal extends Model implements HasMedia
     {
         if ($this->pivot && $this->pivot->quantity) {
             return $this->pivot->quantity;
+        } else {
+            return null;
+        }
+    }
+
+    public function getMealSizeIdAttribute()
+    {
+        if (
+            $this->pivot &&
+            $this->pivot->meal_size_id &&
+            $this->pivot->meal_size
+        ) {
+            return $this->pivot->meal_size_id;
         } else {
             return null;
         }

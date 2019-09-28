@@ -336,25 +336,29 @@ export default {
   methods: {
     getItemMeals(item) {
       const mealPackage = !!item.meal_package;
-      const meal = !mealPackage
-        ? this.getMeal(item.meal.id)
-        : this.getMealPackage(item.meal.id);
 
       if (!mealPackage) {
         return [];
       }
 
-      let mealQuantities = _.mapValues(_.keyBy(meal.meals, "id"), mealItem => {
-        return mealItem.quantity;
-      });
+      const pkg = this.getMealPackage(item.meal.id);
+      const size = item.size ? pkg.getSize(item.size.id) : null;
+      const packageMeals = size ? size.meals : pkg.meals;
+
+      let mealQuantities = _.mapValues(
+        _.keyBy(packageMeals, "id"),
+        mealItem => {
+          return mealItem.quantity;
+        }
+      );
 
       // Add on component option selections
       _(item.components).forEach((options, componentId) => {
-        const component = meal.getComponent(componentId);
+        const component = pkg.getComponent(componentId);
         const optionIds = mealPackage ? Object.keys(options) : options;
 
         _.forEach(optionIds, optionId => {
-          const option = meal.getComponentOption(component, optionId);
+          const option = pkg.getComponentOption(component, optionId);
           if (!option) {
             return null;
           }
@@ -381,7 +385,7 @@ export default {
       });
 
       _(item.addons).forEach((addonItems, addonId) => {
-        const addon = meal.getAddon(addonId);
+        const addon = pkg.getAddon(addonId);
 
         if (addon.selectable) {
           _.forEach(addonItems, item => {
