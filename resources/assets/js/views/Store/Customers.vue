@@ -1,5 +1,5 @@
 <template>
-  <div class="store-customer-container">
+  <div class="store-customer-container mt-3">
     <div class="row">
       <div class="col-md-12">
         <Spinner v-if="isLoading" />
