@@ -116,7 +116,7 @@
           <div v-for="addon in mealAddons" :key="addon.id">
             <b-checkbox @input="toggleAddon(addon.id)">
               {{ addon.title }}
-              <small
+              <small v-if="addon.price > 0"
                 >+{{ format.money(addon.price, storeSettings.currency) }}</small
               >
             </b-checkbox>
@@ -441,10 +441,12 @@ export default {
 
           if (checkboxes) {
             let title = size ? size.full_title : meal.title;
-            title += ` <small>+${format.money(
-              mealOption.price,
-              this.storeSettings.currency
-            )}</small>`;
+            if (mealOption.price > 0) {
+              title += ` <small>+${format.money(
+                mealOption.price,
+                this.storeSettings.currency
+              )}</small>`;
+            }
 
             return {
               text: title,
