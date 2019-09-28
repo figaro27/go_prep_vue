@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="$parent.showMealsArea">
     <meal-variations-area
       ref="componentModal"
       :key="total"
@@ -13,7 +13,6 @@
         (isVisible, entry) => $parent.onCategoryVisible(isVisible, catIndex)
       "
       class="main-customer-container customer-menu-container left-right-box-shadow"
-      v-if="$parent.showMealsArea"
     >
       <store-closed></store-closed>
       <outside-delivery-area></outside-delivery-area>
@@ -23,7 +22,7 @@
       <div class="row">
         <div
           class="item col-sm-6 col-lg-4 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border"
-          v-for="(meal, i) in group.meals"
+          v-for="meal in group.meals"
           :key="meal.id"
         >
           <div :class="card" @click="showMeal(meal)">

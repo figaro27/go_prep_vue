@@ -54,11 +54,16 @@
             </div>
             <div class="col-md-3" v-if="meal.tags.length > 0">
               <h5>Nutrition</h5>
-              <li v-for="tag in meal.tags">{{ tag.tag }}</li>
+              <li v-bind:key="index" v-for="(tag, index) in meal.tags">
+                {{ tag.tag }}
+              </li>
             </div>
             <div class="col-md-3" v-if="meal.allergy_titles.length > 0">
               <h5>Allergies</h5>
-              <li v-for="allergy in meal.allergy_titles">
+              <li
+                v-bind:key="index"
+                v-for="(allergy, index) in meal.allergy_titles"
+              >
                 {{ allergy }}
               </li>
             </div>
