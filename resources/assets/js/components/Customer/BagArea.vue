@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="bag-header center-text pt-3"
+      class="bag-header center-text pt-3 mt-3"
       v-if="$route.name === 'customer-menu'"
     >
       <h3 class="d-inline ml-3 float-left">
