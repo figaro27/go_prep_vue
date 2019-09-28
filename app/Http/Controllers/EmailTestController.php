@@ -46,16 +46,31 @@ class EmailTestController extends Controller
 
     public function customerDeliveryToday()
     {
-        $customer = Customer::first();
-        $order = Order::orderBy('created_at', 'desc')->first();
-        $card = Card::first();
-        $settings = StoreSetting::first();
-        $email = new DeliveryToday([
-            'customer' => $customer,
-            'order' => $order,
-            'settings' => $order->store->settings
-        ]);
-        Mail::to('customer@goprep.com')->send($email);
+        $orders = Order::where([
+            'delivery_date' => date('Y-m-d'),
+            'paid' => 1
+        ])->get();
+
+        // Adjust for timezone in Store Settings
+        $currentHour = date('H') - 4;
+
+        foreach ($orders as $order) {
+            try {
+                if (!$order->store->modules->hideTransferOptions) {
+                    if ($currentHour === 6) {
+                        if ($order->store->modules->hideTransferOptions === 0) {
+                            $order->user->sendNotification('delivery_today', [
+                                'user' => $order->user,
+                                'customer' => $order->customer,
+                                'order' => $order,
+                                'settings' => $order->store->settings
+                            ]);
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+            }
+        }
     }
 
     public function customerMealPlan()
