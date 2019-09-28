@@ -496,6 +496,7 @@ class Meal extends Model implements HasMedia
     public static function getMeals()
     {
         return Meal::orderBy('created_at', 'desc')
+            ->withTrashed()
             ->get()
             ->map(function ($meal) {
                 return [
