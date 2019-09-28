@@ -51,6 +51,6 @@ class MealPackageAddon extends Model
     {
         return $this->belongsToMany('App\Meal', 'meal_meal_package_addon')
             ->using('App\MealMealPackageSize')
-            ->withPivot(['quantity', 'meal_size_id']);
+            ->withPivot(['quantity', 'meal_size_id', 'price']);
     }
 }
