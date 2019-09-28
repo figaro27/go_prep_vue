@@ -3,7 +3,7 @@
     <b-row v-if="components.length && sizeCheck" class="my-3">
       <b-col>
         <div
-          v-for="(component, i) in components"
+          v-for="component in components"
           :key="meal.id + component.id"
           class
         >
@@ -15,7 +15,7 @@
               :min="component.minimum"
               :max="component.maximum"
               stacked
-              @change="setChoices"
+              @input="setChoices"
             ></b-checkbox-group>
 
             <div v-if="invalid">
@@ -134,10 +134,25 @@ export default {
     },
     totalComponentPrice() {
       let total = 0;
-      let selectedComponents = Object.values(this.choices);
-      let components = Object.values(this.components);
 
-      components.forEach(component => {});
+      //let selectedComponents = Object.values(this.choices);
+      //let components = Object.values(this.components);
+
+      //components.forEach(component => {});
+
+      this.components.forEach(component => {
+        let options = component.options;
+        let componentId = component.id;
+
+        options.forEach(option => {
+          if (
+            this.choices[componentId] &&
+            this.choices[componentId].includes(option.id)
+          ) {
+            total += option.price;
+          }
+        });
+      });
 
       return total;
     },
@@ -283,7 +298,9 @@ export default {
       this.$parent.components = this.choices;
       this.$parent.addons = this.addons;
       this.$parent.totalAddonPrice = this.totalAddonPrice;
+
       this.$parent.totalComponentPrice = this.totalComponentPrice;
+
       this.$parent.getMealVariationPrice();
     },
     resetVariations() {
