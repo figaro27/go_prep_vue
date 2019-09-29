@@ -69,6 +69,7 @@ class Meal extends Model implements HasMedia
         'gallery',
         'quantity',
         'meal_size',
+        'full_title',
 
         // Relevant only when meal is connected to an order
         'item_title',
@@ -127,6 +128,15 @@ class Meal extends Model implements HasMedia
         } else {
             return null;
         }
+    }
+
+    public function getFullTitleAttribute()
+    {
+        $title = $this->title;
+        if ($this->default_size_title) {
+            $title .= ' - ' . $this->default_size_title;
+        }
+        return $title;
     }
 
     public function getItemTitleAttribute()

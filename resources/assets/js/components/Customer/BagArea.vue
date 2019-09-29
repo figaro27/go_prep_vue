@@ -127,9 +127,9 @@
           </div>
           <ul>
             <li v-for="(mealItem, i) in getItemMeals(item)" :key="i">
-              <span class="small"
-                >{{ mealItem.quantity }} x {{ mealItem.meal.item_title }}</span
-              >
+              <span class="small">
+                {{ mealItem.quantity }} x {{ mealItem.title }}
+              </span>
             </li>
           </ul>
         </li>
@@ -366,19 +366,25 @@ export default {
           if (option.selectable) {
             _.forEach(options[option.id], item => {
               const mealId = item.meal.id;
-              if (!mealQuantities[mealId]) {
-                mealQuantities[mealId] = 0;
+              const sizeId = item.meal_size_id;
+              const guid = JSON.stringify({ mealId, sizeId });
+
+              if (!mealQuantities[guid]) {
+                mealQuantities[guid] = 0;
               }
 
-              mealQuantities[mealId] += item.quantity;
+              mealQuantities[guid] += item.quantity;
             });
           } else {
             _.forEach(option.meals, mealItem => {
               const mealId = mealItem.meal_id;
-              if (!mealQuantities[mealId]) {
-                mealQuantities[mealId] = 0;
+              const sizeId = mealItem.meal_size_id;
+              const guid = JSON.stringify({ mealId, sizeId });
+
+              if (!mealQuantities[guid]) {
+                mealQuantities[guid] = 0;
               }
-              mealQuantities[mealId] += mealItem.quantity;
+              mealQuantities[guid] += mealItem.quantity;
             });
           }
         });
@@ -390,30 +396,43 @@ export default {
         if (addon.selectable) {
           _.forEach(addonItems, item => {
             const mealId = item.meal_id;
-            if (!mealQuantities[mealId]) {
-              mealQuantities[mealId] = 0;
+            const sizeId = item.meal_size_id;
+            const guid = JSON.stringify({ mealId, sizeId });
+
+            if (!mealQuantities[guid]) {
+              mealQuantities[guid] = 0;
             }
 
-            mealQuantities[mealId] += item.quantity;
+            mealQuantities[guid] += item.quantity;
           });
         } else {
           _.forEach(addonItems, mealItem => {
             const mealId = mealItem.meal_id;
-            if (!mealQuantities[mealId]) {
-              mealQuantities[mealId] = 0;
+            const sizeId = mealItem.meal_size_id;
+            const guid = JSON.stringify({ mealId, sizeId });
+
+            if (!mealQuantities[guid]) {
+              mealQuantities[guid] = 0;
             }
-            mealQuantities[mealId] += mealItem.quantity;
+            mealQuantities[guid] += mealItem.quantity;
           });
         }
       });
 
       const meals = _(mealQuantities)
-        .map((quantity, mealId) => {
+        .map((quantity, guid) => {
+          const { mealId, sizeId } = JSON.parse(guid);
           const meal = this.getMeal(mealId);
           if (!meal) return null;
+          const size = sizeId ? meal.getSize(sizeId) : null;
+
+          const title = size ? size.full_title : meal.full_title;
+
           return {
             meal,
-            quantity
+            size,
+            quantity,
+            title
           };
         })
         .filter()
