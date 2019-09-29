@@ -1578,7 +1578,7 @@ const getters = {
 
               _.forEach(choices, choice => {
                 if (choice.price) {
-                  price += meal.price;
+                  price += choice.price;
                 }
               });
             });
