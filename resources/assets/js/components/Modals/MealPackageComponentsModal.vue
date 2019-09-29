@@ -301,11 +301,18 @@ export default {
 
         if (
           opt.restrict_meals_option_id === option.id &&
-          this.optionSelected(component.id, opt.id)
+          this.optionSelected(
+            opt.restrict_meals_component_id || component.id,
+            opt.id
+          )
         ) {
           // Check this option doesn't contain any restricted meals
           let optChoices = _.filter(opt.meals, meal => {
-            return this.optionMealSelected(component.id, option.id, meal.id);
+            return this.optionMealSelected(
+              opt.restrict_meals_component_id || component.id,
+              option.id,
+              meal.id
+            );
           });
 
           this.$set(this.choices[component.id], opt.id, optChoices);
@@ -331,13 +338,13 @@ export default {
 
       if (option.restrict_meals_option_id) {
         const restrictOption = this.getComponentOption(
-          componentId,
+          option.restrict_meals_component_id,
           option.restrict_meals_option_id
         );
 
         let m = _.filter(option.meals, meal => {
           return this.optionMealSelected(
-            componentId,
+            option.restrict_meals_component_id,
             option.restrict_meals_option_id,
             meal.meal_id
           );
@@ -438,8 +445,20 @@ export default {
       return this.choices[id] ? this.choices[id] : [];
     },
     getComponentOption(componentId, optionId) {
-      const component = this.getComponent(componentId);
-      return _.find(component.options, { id: optionId });
+      if (componentId) {
+        const component = this.getComponent(componentId);
+        return _.find(component.options, { id: optionId });
+      } else {
+        let result = null;
+        this.mealPackage.components.forEach(component => {
+          const opt = _.find(component.options, { id: optionId });
+          if (opt) {
+            result = opt;
+          }
+        });
+        return result;
+      }
+      return null;
     },
     getMealOptions(mealOptions, checkboxes = true) {
       return _(mealOptions)
