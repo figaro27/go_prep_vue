@@ -157,6 +157,9 @@ export default {
     cardBody: "",
     resetMeal: false
   },
+  mounted: function() {
+    //console.log('meals', this.meals)
+  },
   mixins: [MenuBag],
   computed: {
     ...mapGetters({
