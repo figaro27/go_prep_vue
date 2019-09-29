@@ -1570,11 +1570,17 @@ const getters = {
             if (component.price) {
               price += component.price;
             }
-            _.forEach(choices, (meals, optionId) => {
+            _.forEach(choices, (choices, optionId) => {
               let option = _.find(component.options, {
                 id: parseInt(optionId)
               });
               price += option.price;
+
+              _.forEach(choices, choice => {
+                if (choice.price) {
+                  price += meal.price;
+                }
+              });
             });
           }
         });
