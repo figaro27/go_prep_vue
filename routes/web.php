@@ -12,7 +12,7 @@
  */
 
 // To Be Removed
-Route::get('/getDeliveryRoutes', 'DeliveryRouteController@getRoutes');
+//Route::get('/getDeliveryRoutes', 'DeliveryRouteController@getRoutes');
 
 Route::get(
     '/mail/cancelledSubscription',
