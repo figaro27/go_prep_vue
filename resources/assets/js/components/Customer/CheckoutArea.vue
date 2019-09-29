@@ -344,7 +344,7 @@
             !$route.params.storeView
         "
       >
-        <b-alert v-if="!loading" variant="danger center-text" show
+        <b-alert v-if="!loading" variant="warning center-text" show
           >You are outside of the delivery area.</b-alert
         >
       </div>
@@ -426,7 +426,9 @@
             card != null &&
               (minimumMet || $route.params.storeView) &&
               $route.params.adjustOrder != true &&
-              $route.params.subscriptionId === undefined
+              $route.params.subscriptionId === undefined &&
+              store.settings.open === true &&
+              (willDeliver || pickup === 1)
           "
           @click="checkout"
           class="menu-bag-btn mb-4"

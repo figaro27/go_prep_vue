@@ -1,7 +1,16 @@
 <template>
   <div>
-    <div v-if="!willDeliver && loggedIn">
-      <h3 class="center-text mb-4">You are outside of the delivery area.</h3>
+    <div
+      v-if="!willDeliver && loggedIn"
+      class="main-customer-container customer-menu-container left-right-box-shadow"
+    >
+      <div class="row">
+        <div class="col-sm-12">
+          <b-alert show variant="warning">
+            <h4 class="center-text">You are outside of the delivery area.</h4>
+          </b-alert>
+        </div>
+      </div>
     </div>
   </div>
 </template>
