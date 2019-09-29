@@ -13,9 +13,22 @@ import MenuBag from "../../mixins/menuBag";
 
 export default {
   mixins: [MenuBag],
+  props: {
+    checkoutData: null
+  },
   computed: {
     changeMealsRouter() {
-      if (
+      if (this.$route.params.forceValue && this.$route.params.manualOrder) {
+        return {
+          name: "store-manual-order",
+          params: {
+            storeView: true,
+            manualOrder: true,
+            forceValue: true,
+            checkoutData: this.checkoutData
+          }
+        };
+      } else if (
         this.$route.path === "/customer/bag" &&
         this.$route.params.subscriptionId != null
       )

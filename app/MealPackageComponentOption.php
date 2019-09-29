@@ -10,9 +10,16 @@ class MealPackageComponentOption extends Model
 {
     public $fillable = [];
     public $casts = [];
-    public $appends = [];
+    public $appends = ['restrict_meals_component_id'];
     public $with = [];
-    public $hidden = ['created_at', 'updated_at'];
+    public $hidden = ['created_at', 'updated_at', 'restrict_meals_option'];
+
+    public function getRestrictMealsComponentIdAttribute()
+    {
+        return $this->restrict_meals_option
+            ? $this->restrict_meals_option->meal_package_component_id
+            : null;
+    }
 
     /**
      * Get the instance as an array.
@@ -48,6 +55,11 @@ class MealPackageComponentOption extends Model
     public function size()
     {
         return $this->belongsTo('App\MealPackageSize');
+    }
+
+    public function restrict_meals_option()
+    {
+        return $this->belongsTo('App\MealPackageComponentOption');
     }
 
     public function component()

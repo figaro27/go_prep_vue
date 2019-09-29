@@ -1,5 +1,12 @@
 <template>
-  <customer-bag :preview="preview" :orderId="orderId"></customer-bag>
+  <customer-bag
+    :forceValue="forceValue"
+    :preview="preview"
+    :orderId="orderId"
+    :storeView="storeView"
+    :manualOrder="manualOrder"
+    :checkoutDataProp="checkoutData"
+  ></customer-bag>
 </template>
 
 <script>
@@ -15,15 +22,39 @@ export default {
     Spinner,
     CustomerBag
   },
-  data() {
-    return {};
-  },
+  /*data() {
+    return {
+      storeView: false,
+      manualOrder: false,
+      checkoutData: null
+    };
+  },*/
   computed: {
     ...mapGetters({
       isLoading: "isLoading"
     }),
+    forceValue() {
+      return this.$route.params.forceValue
+        ? this.$route.params.forceValue
+        : false;
+    },
     orderId() {
       return this.$route.params.orderId;
+    },
+    storeView() {
+      return this.$route.params.forceValue && this.$route.params.storeView
+        ? this.$route.params.storeView
+        : false;
+    },
+    manualOrder() {
+      return this.$route.params.forceValue && this.$route.params.manualOrder
+        ? this.$route.params.manualOrder
+        : false;
+    },
+    checkoutData() {
+      return this.$route.params.forceValue && this.$route.params.checkoutData
+        ? this.$route.params.checkoutData
+        : null;
     }
   },
   created() {

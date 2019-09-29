@@ -45,6 +45,8 @@
             v-if="!meals.length && !mealPackages.length"
             position="absolute"
           />
+          <store-closed></store-closed>
+          <outside-delivery-area></outside-delivery-area>
           <meals-area
             :meals="meals"
             :card="card"
@@ -91,6 +93,8 @@
             <bag-actions
               :storeView="storeView"
               :manualOrder="manualOrder"
+              :checkoutData="checkoutData"
+              :forceValue="forceValue"
               :adjustOrder="adjustOrder"
               :adjustMealPlan="adjustMealPlan"
               :subscriptionId="subscriptionId"
@@ -175,6 +179,8 @@ export default {
     storeView: false,
     preview: false,
     manualOrder: false,
+    forceValue: false,
+    checkoutData: null,
     adjustOrder: false,
     adjustMealPlan: false,
     order: {},

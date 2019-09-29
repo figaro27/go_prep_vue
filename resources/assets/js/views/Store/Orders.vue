@@ -38,15 +38,33 @@
                     v-if="filters.fulfilled"
                     >View Open Orders</b-btn
                   > -->
-                  <router-link
+
+                  <!--<router-link
                     to="/store/manual-order"
                     v-if="storeModules.manualOrders"
                   >
                     <b-btn class="btn btn-success filter-btn"
                       >Create Manual Order</b-btn
                     >
+                  </router-link>!-->
+
+                  <router-link
+                    v-if="storeModules.manualOrders"
+                    :to="{
+                      name: 'store-manual-order',
+                      params: {
+                        storeView: true,
+                        manualOrder: true,
+                        forceValue: true
+                      }
+                    }"
+                  >
+                    <b-btn class="btn btn-success filter-btn"
+                      >Create Manual Order</b-btn
+                    >
                   </router-link>
                 </div>
+
                 <delivery-date-picker
                   v-model="filters.delivery_dates"
                   @change="onChangeDateFilter"

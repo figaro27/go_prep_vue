@@ -346,7 +346,12 @@ export default {
       const packageMeals = size ? size.meals : pkg.meals;
 
       let mealQuantities = _.mapValues(
-        _.keyBy(packageMeals, "id"),
+        _.keyBy(packageMeals, pkgMeal => {
+          return JSON.stringify({
+            mealId: pkgMeal.id,
+            sizeId: pkgMeal.meal_size_id
+          });
+        }),
         mealItem => {
           return mealItem.quantity;
         }

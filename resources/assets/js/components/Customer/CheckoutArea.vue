@@ -74,6 +74,9 @@
                   class="pt-3"
                   @change="
                     val => {
+                      setWeeklySubscriptionValue(val);
+                      updateParentData();
+
                       setBagMealPlan(val);
                     }
                   "
@@ -216,11 +219,11 @@
       "
     >
       <b-form-group>
-        <b-form-radio-group v-model="pickup" name="pickup">
-          <b-form-radio :value="0" @click="pickup = 0">
+        <b-form-radio-group v-model="pickup" v-on:input="changePickupV">
+          <b-form-radio :value="0">
             <strong>Delivery</strong>
           </b-form-radio>
-          <b-form-radio :value="1" @click="pickup = 1">
+          <b-form-radio :value="1">
             <strong>Pickup</strong>
           </b-form-radio>
         </b-form-radio-group>
@@ -254,7 +257,7 @@
           <b-select
             :options="deliveryDaysOptions"
             v-model="deliveryDay"
-            @input="val => (deliveryDay = val)"
+            @input="changeDeliveryDay"
             class="delivery-select"
             required
           >
@@ -286,7 +289,7 @@
         <b-select
           :options="deliveryDaysOptionsStoreView"
           v-model="deliveryDay"
-          @input="val => (deliveryDay = val)"
+          @input="changeDeliveryDay"
           class="delivery-select"
           required
         >
@@ -341,7 +344,7 @@
             !$route.params.storeView
         "
       >
-        <b-alert v-if="!loading" variant="danger center-text" show
+        <b-alert v-if="!loading" variant="warning center-text" show
           >You are outside of the delivery area.</b-alert
         >
       </div>
@@ -354,6 +357,7 @@
               :options="customers"
               :reduce="customer => customer.value"
               v-model="customer"
+              :value="customer"
               @input="getCards"
             >
             </v-select>
@@ -422,10 +426,12 @@
             card != null &&
               (minimumMet || $route.params.storeView) &&
               $route.params.adjustOrder != true &&
-              $route.params.subscriptionId === undefined
+              $route.params.subscriptionId === undefined &&
+              store.settings.open === true &&
+              (willDeliver || pickup === 1)
           "
           @click="checkout"
-          class="menu-bag-btn"
+          class="menu-bag-btn mb-4"
           >CHECKOUT</b-btn
         >
 
@@ -549,12 +555,14 @@ export default {
       deposit: 100,
       creditCardId: null,
       couponCode: "",
-      addCustomerModal: false
+      addCustomerModal: false,
+      weeklySubscriptionValue: null
     };
   },
   props: {
     preview: false,
     manualOrder: false,
+    forceValue: false,
     cashOrder: false,
     mobile: false,
     salesTax: 0,
@@ -563,10 +571,16 @@ export default {
     orderId: null,
     deliveryDay: null,
     transferTime: null,
-    pickup: {
-      default: 0
-    },
-    orderLineItems: []
+    pickup: 0,
+    orderLineItems: [],
+    checkoutData: null
+  },
+  mounted: function() {
+    if (this.forceValue) {
+      if (this.customer) {
+        this.getCards();
+      }
+    }
   },
   mixins: [MenuBag],
   computed: {
@@ -871,8 +885,18 @@ export default {
       return "Meal";
     },
     weeklySubscription() {
-      if (this.$route.params.subscriptionId != null) return true;
-      else return this.deliveryPlan;
+      if (
+        this.checkoutData &&
+        this.checkoutData.hasOwnProperty("weeklySubscriptionValue")
+      ) {
+        return this.checkoutData.weeklySubscriptionValue;
+      }
+
+      if (this.$route.params.subscriptionId != null) {
+        return true;
+      } else {
+        return this.deliveryPlan;
+      }
     },
     deliveryPlanText() {
       if (this.weeklySubscription) return "Prepared Weekly";
@@ -983,7 +1007,26 @@ export default {
       });
       return couponCheck;
     },
+    changeDeliveryDay() {
+      this.updateParentData();
+    },
+    changePickupV() {
+      this.updateParentData();
+    },
+    setWeeklySubscriptionValue(v) {
+      this.weeklySubscriptionValue = v;
+    },
+    updateParentData() {
+      this.$emit("updateData", {
+        customer: this.customer,
+        weeklySubscriptionValue: this.weeklySubscriptionValue,
+        pickup: this.pickup,
+        deliveryDay: this.deliveryDay
+      });
+    },
     getCards() {
+      this.updateParentData();
+
       window.localStorage.clear();
       this.creditCardId = null;
       this.creditCards = null;
@@ -1059,6 +1102,14 @@ export default {
       });
     },
     checkout() {
+      if (this.grandTotal <= 0 && !this.cashOrder) {
+        this.$toastr.e(
+          "At least .50 cents is required to process an order.",
+          "Error"
+        );
+        return;
+      }
+
       if (this.checkingOut) {
         return;
       }

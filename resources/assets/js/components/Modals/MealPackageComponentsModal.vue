@@ -20,17 +20,36 @@
             <b-form-group :label="null">
               Remaining: {{ getRemainingMeals(component.id) }}
               <div v-for="option in getOptions(component)" :key="option.id">
+                <div v-if="$v.choices[component.id].$dirty">
+                  <div
+                    v-if="false === $v.choices[component.id].required"
+                    class="invalid-feedback d-block"
+                  >
+                    This field is required
+                  </div>
+                  <div
+                    v-if="false === $v.choices[component.id].minimum"
+                    class="invalid-feedback d-block"
+                  >
+                    Minimum {{ component.minimum }} selections
+                  </div>
+                  <div
+                    v-if="false === $v.choices[component.id].maximum"
+                    class="invalid-feedback d-block"
+                  >
+                    Maximum {{ component.maximum }} selections
+                  </div>
+                </div>
+
                 <b-checkbox
                   v-if="!option.selectable"
                   @input="toggleOption(component.id, option.id)"
                   :checked="optionSelected(component.id, option.id)"
                 >
                   {{ option.text || "" }}
-                  <small v-if="option.price && option.price > 0"
-                    >+{{
-                      format.money(option.price, storeSettings.currency)
-                    }}</small
-                  >
+                  <small v-if="option.price && option.price > 0">
+                    +{{ format.money(option.price, storeSettings.currency) }}
+                  </small>
                 </b-checkbox>
 
                 <div v-else class="my-2">
@@ -98,27 +117,6 @@
                   </b-row>
                 </div>
               </div>
-
-              <div v-if="0 && $v.choices[component.id].$dirty">
-                <div
-                  v-if="false === $v.choices[component.id].required"
-                  class="invalid-feedback d-block"
-                >
-                  This field is required
-                </div>
-                <div
-                  v-if="false === $v.choices[component.id].minimum"
-                  class="invalid-feedback d-block"
-                >
-                  Minimum {{ component.minimum }}
-                </div>
-                <div
-                  v-if="false === $v.choices[component.id].maximum"
-                  class="invalid-feedback d-block"
-                >
-                  Maximum {{ component.maximum }}
-                </div>
-              </div>
             </b-form-group>
           </div>
         </b-col>
@@ -131,7 +129,7 @@
           <div v-for="addon in mealAddons" :key="addon.id">
             <b-checkbox @input="toggleAddon(addon.id)">
               {{ addon.title }}
-              <small
+              <small v-if="addon.price > 0"
                 >+{{ format.money(addon.price, storeSettings.currency) }}</small
               >
             </b-checkbox>
@@ -303,11 +301,18 @@ export default {
 
         if (
           opt.restrict_meals_option_id === option.id &&
-          this.optionSelected(component.id, opt.id)
+          this.optionSelected(
+            opt.restrict_meals_component_id || component.id,
+            opt.id
+          )
         ) {
           // Check this option doesn't contain any restricted meals
           let optChoices = _.filter(opt.meals, meal => {
-            return this.optionMealSelected(component.id, option.id, meal.id);
+            return this.optionMealSelected(
+              opt.restrict_meals_component_id || component.id,
+              option.id,
+              meal.id
+            );
           });
 
           this.$set(this.choices[component.id], opt.id, optChoices);
@@ -333,13 +338,13 @@ export default {
 
       if (option.restrict_meals_option_id) {
         const restrictOption = this.getComponentOption(
-          componentId,
+          option.restrict_meals_component_id,
           option.restrict_meals_option_id
         );
 
         let m = _.filter(option.meals, meal => {
           return this.optionMealSelected(
-            componentId,
+            option.restrict_meals_component_id,
             option.restrict_meals_option_id,
             meal.meal_id
           );
@@ -394,6 +399,9 @@ export default {
 
           if (this.$v.$invalid) {
             this.$forceUpdate();
+            this.$toastr.e(
+              "Please select the minimum number of items required."
+            );
           } else {
             if (!_.isEmpty(this.choices) || !_.isEmpty(this.addons)) {
               resolve({
@@ -439,8 +447,20 @@ export default {
       return this.choices[id] ? this.choices[id] : [];
     },
     getComponentOption(componentId, optionId) {
-      const component = this.getComponent(componentId);
-      return _.find(component.options, { id: optionId });
+      if (componentId) {
+        const component = this.getComponent(componentId);
+        return _.find(component.options, { id: optionId });
+      } else {
+        let result = null;
+        this.mealPackage.components.forEach(component => {
+          const opt = _.find(component.options, { id: optionId });
+          if (opt) {
+            result = opt;
+          }
+        });
+        return result;
+      }
+      return null;
     },
     getMealOptions(mealOptions, checkboxes = true) {
       return _(mealOptions)
@@ -454,10 +474,12 @@ export default {
           let title = size ? size.full_title : meal.full_title;
 
           if (checkboxes) {
-            title += ` <small>+${format.money(
-              mealOption.price,
-              this.storeSettings.currency
-            )}</small>`;
+            if (mealOption.price > 0) {
+              title += ` <small>+${format.money(
+                mealOption.price,
+                this.storeSettings.currency
+              )}</small>`;
+            }
 
             return {
               text: title,
