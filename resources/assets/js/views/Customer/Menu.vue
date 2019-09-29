@@ -45,8 +45,10 @@
             v-if="!meals.length && !mealPackages.length"
             position="absolute"
           />
-          <store-closed></store-closed>
-          <outside-delivery-area></outside-delivery-area>
+          <store-closed v-if="!$route.params.storeView"></store-closed>
+          <outside-delivery-area
+            v-if="!$route.params.storeView"
+          ></outside-delivery-area>
           <meals-area
             :meals="meals"
             :card="card"
