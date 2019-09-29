@@ -962,6 +962,9 @@ export default {
       });
     },
     oneTimeCouponCheck(couponId) {
+      if (this.$route.params.storeView) {
+        return true;
+      }
       if (!this.loggedIn) {
         return "login";
       }
