@@ -20,17 +20,36 @@
             <b-form-group :label="null">
               Remaining: {{ getRemainingMeals(component.id) }}
               <div v-for="option in getOptions(component)" :key="option.id">
+                <div v-if="$v.choices[component.id].$dirty">
+                  <div
+                    v-if="false === $v.choices[component.id].required"
+                    class="invalid-feedback d-block"
+                  >
+                    This field is required
+                  </div>
+                  <div
+                    v-if="false === $v.choices[component.id].minimum"
+                    class="invalid-feedback d-block"
+                  >
+                    Minimum {{ component.minimum }} selections
+                  </div>
+                  <div
+                    v-if="false === $v.choices[component.id].maximum"
+                    class="invalid-feedback d-block"
+                  >
+                    Maximum {{ component.maximum }} selections
+                  </div>
+                </div>
+
                 <b-checkbox
                   v-if="!option.selectable"
                   @input="toggleOption(component.id, option.id)"
                   :checked="optionSelected(component.id, option.id)"
                 >
                   {{ option.text || "" }}
-                  <small v-if="option.price && option.price > 0"
-                    >+{{
-                      format.money(option.price, storeSettings.currency)
-                    }}</small
-                  >
+                  <small v-if="option.price && option.price > 0">
+                    +{{ format.money(option.price, storeSettings.currency) }}
+                  </small>
                 </b-checkbox>
 
                 <div v-else class="my-2">
@@ -96,27 +115,6 @@
                       <!-- <span>{{ meal.meal.description }}</span> -->
                     </div>
                   </b-row>
-                </div>
-              </div>
-
-              <div v-if="$v.choices[component.id].$dirty">
-                <div
-                  v-if="false === $v.choices[component.id].required"
-                  class="invalid-feedback d-block"
-                >
-                  This field is required
-                </div>
-                <div
-                  v-if="false === $v.choices[component.id].minimum"
-                  class="invalid-feedback d-block"
-                >
-                  Minimum {{ component.minimum }} selections
-                </div>
-                <div
-                  v-if="false === $v.choices[component.id].maximum"
-                  class="invalid-feedback d-block"
-                >
-                  Maximum {{ component.maximum }} selections
                 </div>
               </div>
             </b-form-group>
