@@ -14,8 +14,6 @@
       "
       class="main-customer-container customer-menu-container left-right-box-shadow"
     >
-      <store-closed></store-closed>
-      <outside-delivery-area></outside-delivery-area>
       <h2 class="text-center mb-3 dbl-underline">
         {{ group.category }}
       </h2>
@@ -141,15 +139,11 @@
 import MenuBag from "../../mixins/menuBag";
 import { mapGetters } from "vuex";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
-import StoreClosed from "../../components/Customer/StoreClosed";
 import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 
 export default {
   components: {
-    OutsideDeliveryArea,
-    StoreClosed,
-    MealVariationsArea,
-    StoreClosed
+    MealVariationsArea
   },
   props: {
     meals: "",

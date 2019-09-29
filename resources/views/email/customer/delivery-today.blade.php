@@ -181,7 +181,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 <!-- title -->
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase"> 
-                  	Hello {{ $customer->name }},
+                  	Hi {{ $order->user->userDetail->firstname }},
                   </td>
                 </tr>
                 <!-- end title -->
@@ -190,12 +190,12 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- content -->
                 @if ($order->pickup === 0)
-				<tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> You have a delivery scheduled for today from {{ $order->store_name }} </td>
+				        <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your delivery is coming today!</td>
                 </tr>
                 @else
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> You have a pickup scheduled for today from {{ $order->store_name }} </td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your pickup is scheduled for today!</td>
                 </tr>
                 @if ($order->pickup_location_id != null)
                   <tr>
@@ -208,7 +208,43 @@ u + .body .full { width:100% !important; width:100vw !important;}
                     </td>
                   </tr>
                 @endif
-				@endif
+				        @endif
+                <tr>
+                  <td height="15"></td><td bgcolor="#e1e6e7"></td>
+                </tr>
+                <tr>
+                  @if ($order->pickup === 0)
+                  @if ($order->store->settings->deliveryInstructions)
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Delivery Instructions</td>
+                  @endif
+                  @else
+                  @if ($order->store->settings->pickupInstructions)
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Pickup Instructions</td>
+                  @endif
+                  @endif
+                </tr>
+                <!-- end title -->
+                <tr>
+                  <td height="5"></td>
+                </tr>
+                <!-- content -->
+                @if ($order->pickup === 0)
+                @if ($order->store->settings->deliveryInstructions)
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                    {!! nl2br($order->store->settings->deliveryInstructions) !!} 
+                  </td>
+                </tr>
+                @endif
+                @else
+                @if ($order->store->settings->pickupInstructions)
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                    {!! nl2br($order->store->settings->pickupInstructions) !!} 
+                  </td>
+                </tr>
+                @endif
+                @endif
                 
                 <!-- end content -->
                 <tr>
@@ -370,12 +406,13 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($order->amount, 2) }}</span>
                         </td>
                       </tr>
+                      <tr>
+                        <td height="20"></td><td bgcolor="#e1e6e7"></td>
+                      </tr>
                   </td>
                       </tr>
                       
-                      <tr>
-                        <td height="15"></td><td bgcolor="#e1e6e7"></td>
-                      </tr>
+                      
                     </table>
                   </td>
                 </tr>
@@ -383,9 +420,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
 
             </td>
           </tr>
-          <tr>
-            <td height="15"></td>
-          </tr>
+        
         </table>
       </td>
     </tr>
@@ -403,39 +438,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td height="40"></td>
                 </tr>
                 <!-- title -->
-               <tr>
-                  @if ($order->pickup === 0)
-                  @if ($order->store->settings->deliveryInstructions)
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Delivery Instructions</td>
-                  @endif
-                  @else
-                  @if ($order->store->settings->pickupInstructions)
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Pickup Instructions</td>
-                  @endif
-                  @endif
-                </tr>
-                <!-- end title -->
-                <tr>
-                  <td height="5"></td>
-                </tr>
-                <!-- content -->
-                @if ($order->pickup === 0)
-                @if ($order->store->settings->deliveryInstructions)
-                <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
-                    {!! nl2br($order->store->settings->deliveryInstructions) !!} 
-                  </td>
-                </tr>
-                @endif
-                @else
-                @if ($order->store->settings->pickupInstructions)
-                <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
-                    {!! nl2br($order->store->settings->pickupInstructions !!} 
-                  </td>
-                </tr>
-                @endif
-                @endif
+               
                 
                 <!-- end content -->
                 <tr>

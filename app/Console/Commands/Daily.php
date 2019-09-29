@@ -45,38 +45,29 @@ class Daily extends Command
     {
         $this->storePlanRenewals();
 
+        // Moved to Hourly cron job so it can be sent at a certain time in the morning instead of midnight.
+
         // Orders
-        $orders = Order::where([
-            'delivery_date' => date('Y-m-d'),
-            'paid' => 1
-        ])->get();
+        // $orders = Order::where([
+        //     'delivery_date' => date('Y-m-d'),
+        //     'paid' => 1
+        // ])->get();
 
-        $this->info(count($orders) . ' orders for delivery today');
+        // $this->info(count($orders) . ' orders for delivery today');
 
-        foreach ($orders as $order) {
-            try {
-                // Send notification
-
-                /*$email = new DeliveryToday([
-                    'user' => $order->user,
-                    'customer' => $order->customer,
-                    'order' => $order,
-                    'settings' => $order->store->settings
-                ]);
-                Mail::to($order->user)->send($email);*/
-
-                if ($order->store->modules->hideTransferOptions === 0) {
-                    $order->user->sendNotification('delivery_today', [
-                        'user' => $order->user,
-                        'customer' => $order->customer,
-                        'order' => $order,
-                        'settings' => $order->store->settings
-                    ]);
-                }
-            } catch (\Exception $e) {
-                // Should not be fatal
-            }
-        }
+        // foreach ($orders as $order) {
+        //     try {
+        //         if ($order->store->modules->hideTransferOptions === 0) {
+        //             $order->user->sendNotification('delivery_today', [
+        //                 'user' => $order->user,
+        //                 'customer' => $order->customer,
+        //                 'order' => $order,
+        //                 'settings' => $order->store->settings
+        //             ]);
+        //         }
+        //     } catch (\Exception $e) {
+        //     }
+        // }
     }
 
     protected function storePlanRenewals()

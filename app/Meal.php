@@ -69,12 +69,14 @@ class Meal extends Model implements HasMedia
         'gallery',
         'quantity',
         'meal_size',
+        'full_title',
 
         // Relevant only when meal is connected to an order
         'item_title',
         'item_price',
         'item_quantity',
-        'in_package'
+        'in_package',
+        'meal_size_id'
     ];
 
     protected $hidden = [
@@ -102,6 +104,15 @@ class Meal extends Model implements HasMedia
         }
     }
 
+    public function getMealSizeIdAttribute()
+    {
+        if ($this->pivot && $this->pivot->meal_size_id) {
+            return $this->pivot->meal_size_id;
+        } else {
+            return null;
+        }
+    }
+
     public function getMealSizeAttribute()
     {
         if (
@@ -113,6 +124,15 @@ class Meal extends Model implements HasMedia
         } else {
             return null;
         }
+    }
+
+    public function getFullTitleAttribute()
+    {
+        $title = $this->title;
+        if ($this->default_size_title) {
+            $title .= ' - ' . $this->default_size_title;
+        }
+        return $title;
     }
 
     public function getItemTitleAttribute()

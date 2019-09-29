@@ -45,6 +45,8 @@
             v-if="!meals.length && !mealPackages.length"
             position="absolute"
           />
+          <store-closed></store-closed>
+          <outside-delivery-area></outside-delivery-area>
           <meals-area
             :meals="meals"
             :card="card"

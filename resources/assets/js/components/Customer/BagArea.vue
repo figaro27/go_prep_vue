@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="bag-header center-text pt-3"
+      class="bag-header center-text pt-3 mt-3"
       v-if="$route.name === 'customer-menu'"
     >
       <h3 class="d-inline ml-3 float-left">
@@ -127,9 +127,9 @@
           </div>
           <ul>
             <li v-for="(mealItem, i) in getItemMeals(item)" :key="i">
-              <span class="small"
-                >{{ mealItem.quantity }} x {{ mealItem.meal.item_title }}</span
-              >
+              <span class="small">
+                {{ mealItem.quantity }} x {{ mealItem.title }}
+              </span>
             </li>
           </ul>
         </li>
@@ -336,25 +336,34 @@ export default {
   methods: {
     getItemMeals(item) {
       const mealPackage = !!item.meal_package;
-      const meal = !mealPackage
-        ? this.getMeal(item.meal.id)
-        : this.getMealPackage(item.meal.id);
 
       if (!mealPackage) {
         return [];
       }
 
-      let mealQuantities = _.mapValues(_.keyBy(meal.meals, "id"), mealItem => {
-        return mealItem.quantity;
-      });
+      const pkg = this.getMealPackage(item.meal.id);
+      const size = item.size ? pkg.getSize(item.size.id) : null;
+      const packageMeals = size ? size.meals : pkg.meals;
+
+      let mealQuantities = _.mapValues(
+        _.keyBy(packageMeals, pkgMeal => {
+          return JSON.stringify({
+            mealId: pkgMeal.id,
+            sizeId: pkgMeal.meal_size_id
+          });
+        }),
+        mealItem => {
+          return mealItem.quantity;
+        }
+      );
 
       // Add on component option selections
       _(item.components).forEach((options, componentId) => {
-        const component = meal.getComponent(componentId);
+        const component = pkg.getComponent(componentId);
         const optionIds = mealPackage ? Object.keys(options) : options;
 
         _.forEach(optionIds, optionId => {
-          const option = meal.getComponentOption(component, optionId);
+          const option = pkg.getComponentOption(component, optionId);
           if (!option) {
             return null;
           }
@@ -362,54 +371,73 @@ export default {
           if (option.selectable) {
             _.forEach(options[option.id], item => {
               const mealId = item.meal.id;
-              if (!mealQuantities[mealId]) {
-                mealQuantities[mealId] = 0;
+              const sizeId = item.meal_size_id;
+              const guid = JSON.stringify({ mealId, sizeId });
+
+              if (!mealQuantities[guid]) {
+                mealQuantities[guid] = 0;
               }
 
-              mealQuantities[mealId] += item.quantity;
+              mealQuantities[guid] += item.quantity;
             });
           } else {
             _.forEach(option.meals, mealItem => {
               const mealId = mealItem.meal_id;
-              if (!mealQuantities[mealId]) {
-                mealQuantities[mealId] = 0;
+              const sizeId = mealItem.meal_size_id;
+              const guid = JSON.stringify({ mealId, sizeId });
+
+              if (!mealQuantities[guid]) {
+                mealQuantities[guid] = 0;
               }
-              mealQuantities[mealId] += mealItem.quantity;
+              mealQuantities[guid] += mealItem.quantity;
             });
           }
         });
       });
 
       _(item.addons).forEach((addonItems, addonId) => {
-        const addon = meal.getAddon(addonId);
+        const addon = pkg.getAddon(addonId);
 
         if (addon.selectable) {
           _.forEach(addonItems, item => {
             const mealId = item.meal_id;
-            if (!mealQuantities[mealId]) {
-              mealQuantities[mealId] = 0;
+            const sizeId = item.meal_size_id;
+            const guid = JSON.stringify({ mealId, sizeId });
+
+            if (!mealQuantities[guid]) {
+              mealQuantities[guid] = 0;
             }
 
-            mealQuantities[mealId] += item.quantity;
+            mealQuantities[guid] += item.quantity;
           });
         } else {
           _.forEach(addonItems, mealItem => {
             const mealId = mealItem.meal_id;
-            if (!mealQuantities[mealId]) {
-              mealQuantities[mealId] = 0;
+            const sizeId = mealItem.meal_size_id;
+            const guid = JSON.stringify({ mealId, sizeId });
+
+            if (!mealQuantities[guid]) {
+              mealQuantities[guid] = 0;
             }
-            mealQuantities[mealId] += mealItem.quantity;
+            mealQuantities[guid] += mealItem.quantity;
           });
         }
       });
 
       const meals = _(mealQuantities)
-        .map((quantity, mealId) => {
+        .map((quantity, guid) => {
+          const { mealId, sizeId } = JSON.parse(guid);
           const meal = this.getMeal(mealId);
           if (!meal) return null;
+          const size = sizeId ? meal.getSize(sizeId) : null;
+
+          const title = size ? size.full_title : meal.full_title;
+
           return {
             meal,
-            quantity
+            size,
+            quantity,
+            title
           };
         })
         .filter()

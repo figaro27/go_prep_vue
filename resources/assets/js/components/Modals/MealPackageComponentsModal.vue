@@ -20,30 +20,57 @@
             <b-form-group :label="null">
               Remaining: {{ getRemainingMeals(component.id) }}
               <div v-for="option in getOptions(component)" :key="option.id">
+                <div v-if="$v.choices[component.id].$dirty">
+                  <div
+                    v-if="false === $v.choices[component.id].required"
+                    class="invalid-feedback d-block"
+                  >
+                    This field is required
+                  </div>
+                  <div
+                    v-if="false === $v.choices[component.id].minimum"
+                    class="invalid-feedback d-block"
+                  >
+                    Minimum {{ component.minimum }} selections
+                  </div>
+                  <div
+                    v-if="false === $v.choices[component.id].maximum"
+                    class="invalid-feedback d-block"
+                  >
+                    Maximum {{ component.maximum }} selections
+                  </div>
+                </div>
+
                 <b-checkbox
                   v-if="!option.selectable"
                   @input="toggleOption(component.id, option.id)"
                   :checked="optionSelected(component.id, option.id)"
-                  >{{ option.text || "" }}</b-checkbox
                 >
+                  {{ option.text || "" }}
+                  <small v-if="option.price && option.price > 0">
+                    +{{ format.money(option.price, storeSettings.currency) }}
+                  </small>
+                </b-checkbox>
 
                 <div v-else class="my-2">
                   <b-row>
                     <div
                       class="bag-item col-6 col-sm-4 col-lg-3 pb-4 mb-4"
-                      v-for="meal in getMealOptions(
+                      v-for="mealOption in getMealOptions(
                         getOptionMeals(component.id, option.id),
                         false
                       )"
-                      :key="meal.meal_id"
+                      :key="mealOption.meal_id"
                     >
                       <div
-                        v-if="meal && meal.quantity > 0"
+                        v-if="mealOption && mealOption.quantity > 0"
                         class="d-flex align-items-center"
                       >
                         <div class="bag-item-quantity mr-2">
                           <div
-                            @click="addOptionChoice(component, option, meal)"
+                            @click="
+                              addOptionChoice(component, option, mealOption)
+                            "
                             class="bag-plus-minus brand-color white-text"
                           >
                             <i>+</i>
@@ -53,12 +80,14 @@
                               getOptionChoiceQuantity(
                                 component.id,
                                 option.id,
-                                meal.meal_id
+                                mealOption.meal_id
                               )
                             }}
                           </p>
                           <div
-                            @click="minusOptionChoice(component, option, meal)"
+                            @click="
+                              minusOptionChoice(component, option, mealOption)
+                            "
                             class="bag-plus-minus gray white-text"
                           >
                             <i>-</i>
@@ -66,40 +95,26 @@
                         </div>
                         <div class="bag-item-image mr-2">
                           <thumbnail
-                            v-if="meal.meal.image.url_thumb"
-                            :src="meal.meal.image.url_thumb"
+                            v-if="mealOption.meal.image.url_thumb"
+                            :src="mealOption.meal.image.url_thumb"
                             :spinner="false"
                             class="cart-item-img"
                             width="80px"
+                            v-b-popover.hover="`${mealOption.meal.description}`"
                           ></thumbnail>
                         </div>
                         <div class="flex-grow-1 mr-2">
-                          <span>{{ meal.meal.title }}</span>
+                          <span>
+                            {{ mealOption.title }}
+                            <small v-if="mealOption.price > 0"
+                              >+{{ format.money(mealOption.price) }}</small
+                            >
+                          </span>
                         </div>
                       </div>
+                      <!-- <span>{{ meal.meal.description }}</span> -->
                     </div>
                   </b-row>
-                </div>
-              </div>
-
-              <div v-if="0 && $v.choices[component.id].$dirty">
-                <div
-                  v-if="false === $v.choices[component.id].required"
-                  class="invalid-feedback d-block"
-                >
-                  This field is required
-                </div>
-                <div
-                  v-if="false === $v.choices[component.id].minimum"
-                  class="invalid-feedback d-block"
-                >
-                  Minimum {{ component.minimum }}
-                </div>
-                <div
-                  v-if="false === $v.choices[component.id].maximum"
-                  class="invalid-feedback d-block"
-                >
-                  Maximum {{ component.maximum }}
                 </div>
               </div>
             </b-form-group>
@@ -112,9 +127,12 @@
           <h6>Add-ons</h6>
 
           <div v-for="addon in mealAddons" :key="addon.id">
-            <b-checkbox @input="toggleAddon(addon.id)">{{
-              addon.title
-            }}</b-checkbox>
+            <b-checkbox @input="toggleAddon(addon.id)">
+              {{ addon.title }}
+              <small v-if="addon.price > 0"
+                >+{{ format.money(addon.price, storeSettings.currency) }}</small
+              >
+            </b-checkbox>
 
             <div
               v-if="addon.selectable && addonSelected(addon.id)"
@@ -283,11 +301,18 @@ export default {
 
         if (
           opt.restrict_meals_option_id === option.id &&
-          this.optionSelected(component.id, opt.id)
+          this.optionSelected(
+            opt.restrict_meals_component_id || component.id,
+            opt.id
+          )
         ) {
           // Check this option doesn't contain any restricted meals
           let optChoices = _.filter(opt.meals, meal => {
-            return this.optionMealSelected(component.id, option.id, meal.id);
+            return this.optionMealSelected(
+              opt.restrict_meals_component_id || component.id,
+              option.id,
+              meal.id
+            );
           });
 
           this.$set(this.choices[component.id], opt.id, optChoices);
@@ -313,13 +338,13 @@ export default {
 
       if (option.restrict_meals_option_id) {
         const restrictOption = this.getComponentOption(
-          componentId,
+          option.restrict_meals_component_id,
           option.restrict_meals_option_id
         );
 
         let m = _.filter(option.meals, meal => {
           return this.optionMealSelected(
-            componentId,
+            option.restrict_meals_component_id,
             option.restrict_meals_option_id,
             meal.meal_id
           );
@@ -374,6 +399,7 @@ export default {
 
           if (this.$v.$invalid) {
             this.$forceUpdate();
+            this.$toastr.e("One or more of your selections is invalid");
           } else {
             if (!_.isEmpty(this.choices) || !_.isEmpty(this.addons)) {
               resolve({
@@ -403,15 +429,12 @@ export default {
       let options = _.filter(component.options, this.sizeCriteria);
       return _.map(options, option => {
         let title = option.title;
-        if (option.price && option.price > 0) {
-          title +=
-            " - " + format.money(option.price, this.storeSettings.currency);
-        }
 
         return {
           id: option.id,
           selectable: option.selectable,
-          text: title
+          text: title,
+          price: option.price
         };
       });
     },
@@ -422,8 +445,20 @@ export default {
       return this.choices[id] ? this.choices[id] : [];
     },
     getComponentOption(componentId, optionId) {
-      const component = this.getComponent(componentId);
-      return _.find(component.options, { id: optionId });
+      if (componentId) {
+        const component = this.getComponent(componentId);
+        return _.find(component.options, { id: optionId });
+      } else {
+        let result = null;
+        this.mealPackage.components.forEach(component => {
+          const opt = _.find(component.options, { id: optionId });
+          if (opt) {
+            result = opt;
+          }
+        });
+        return result;
+      }
+      return null;
     },
     getMealOptions(mealOptions, checkboxes = true) {
       return _(mealOptions)
@@ -434,16 +469,26 @@ export default {
 
           const size = meal.getSize(mealOption.meal_size_id);
 
+          let title = size ? size.full_title : meal.full_title;
+
           if (checkboxes) {
+            if (mealOption.price > 0) {
+              title += ` <small>+${format.money(
+                mealOption.price,
+                this.storeSettings.currency
+              )}</small>`;
+            }
+
             return {
-              text: size ? size.full_title : meal.title,
+              text: title,
               value: mealOption
             };
           } else {
             return {
               ...mealOption,
               meal,
-              size
+              size,
+              title
             };
           }
         })

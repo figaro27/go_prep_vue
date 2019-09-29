@@ -106,6 +106,9 @@
       <li class="checkout-item" v-if="couponApplied">
         <div class="row">
           <div class="col-6 col-md-4">
+            <span class="d-inline mr-2" @click="removeCoupon">
+              <img class="couponX" src="/images/customer/x.png" />
+            </span>
             <span class="text-success">({{ coupon.code }})</span>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
@@ -226,7 +229,11 @@
         </b-form-radio-group>
       </b-form-group>
     </li>
-    <span v-if="!storeModules.hideTransferOptions">
+    <span
+      v-if="
+        !storeModules.hideTransferOptions && $route.params.storeView !== true
+      "
+    >
       <li
         class="checkout-item unset-height"
         v-if="
@@ -275,6 +282,21 @@
         </div>
       </li>
     </span>
+    <span v-if="$route.params.storeView === true">
+      <p v-if="pickup === 0">Delivery Day</p>
+      <p v-if="pickup === 1">Pickup Day</p>
+      <b-form-group description>
+        <b-select
+          :options="deliveryDaysOptionsStoreView"
+          v-model="deliveryDay"
+          @input="val => (deliveryDay = val)"
+          class="delivery-select"
+          required
+        >
+          <option slot="top" disabled>-- Select delivery day --</option>
+        </b-select>
+      </b-form-group>
+    </span>
     <li
       class="checkout-item unset-height"
       v-if="
@@ -322,7 +344,7 @@
             !$route.params.storeView
         "
       >
-        <b-alert v-if="!loading" variant="danger center-text" show
+        <b-alert v-if="!loading" variant="warning center-text" show
           >You are outside of the delivery area.</b-alert
         >
       </div>
@@ -330,15 +352,15 @@
         <div v-if="$route.params.manualOrder">
           <b-form-group>
             <h4 class="mt-2 mb-3">Choose Customer</h4>
-            <b-select
+            <v-select
+              label="text"
               :options="customers"
+              :reduce="customer => customer.value"
               v-model="customer"
-              class="bag-select"
-              @change="getCards"
-              required
+              :value="customer"
+              @input="getCards"
             >
-              <option slot="top" disabled>-- Select Customer --</option>
-            </b-select>
+            </v-select>
           </b-form-group>
           <b-btn
             variant="primary"
@@ -359,7 +381,10 @@
                   $route.params.storeView)
             "
           >
-            <b-form-checkbox v-model="cashOrder" class="pb-2 mediumCheckbox">
+            <b-form-checkbox
+              v-model="cashOrder"
+              class="pb-2 mediumCheckbox mt-1 mb-1"
+            >
               No Charge
             </b-form-checkbox>
             <!-- <p
@@ -399,12 +424,14 @@
         <b-btn
           v-if="
             card != null &&
-              minimumMet &&
+              (minimumMet || $route.params.storeView) &&
               $route.params.adjustOrder != true &&
-              $route.params.subscriptionId === undefined
+              $route.params.subscriptionId === undefined &&
+              store.settings.open === true &&
+              (willDeliver || pickup === 1)
           "
           @click="checkout"
-          class="menu-bag-btn"
+          class="menu-bag-btn mb-4"
           >CHECKOUT</b-btn
         >
 
@@ -470,12 +497,18 @@
       </div>
     </li>
 
-    <li class="transfer-instruction mt-2" v-if="$parent.orderId === undefined">
+    <li class="transfer-instruction mt-2" v-if="!$route.params.storeView">
       <p class="strong">{{ transferText }}</p>
       <p v-html="transferInstructions"></p>
     </li>
 
-    <li v-if="minOption === 'meals' && total < minimumMeals && !manualOrder">
+    <li
+      v-if="
+        minOption === 'meals' &&
+          total < minimumMeals &&
+          !$route.params.storeView
+      "
+    >
       <p class="strong">
         Please add {{ remainingMeals }} {{ singOrPlural }} to continue.`
       </p>
@@ -483,7 +516,9 @@
 
     <li
       v-if="
-        minOption === 'price' && totalBagPricePreFees < minPrice && !manualOrder
+        minOption === 'price' &&
+          totalBagPricePreFees < minPrice &&
+          !$route.params.storeView
       "
     >
       <p class="strong">
@@ -721,6 +756,23 @@ export default {
 
       return options;
     },
+    deliveryDaysOptionsStoreView() {
+      let options = [];
+      var today = new Date();
+
+      var year = today.getFullYear();
+      var month = today.getMonth();
+      var date = today.getDate();
+
+      for (var i = 0; i < 30; i++) {
+        var day = new Date(year, month, date + i);
+        options.push({
+          value: moment(day).format("YYYY-MM-DD 00:00:00"),
+          text: moment(day).format("dddd MMM Do")
+        });
+      }
+      return options;
+    },
     minimumOption() {
       return this.minOption;
     },
@@ -943,6 +995,9 @@ export default {
       });
     },
     oneTimeCouponCheck(couponId) {
+      if (this.$route.params.storeView) {
+        return true;
+      }
       if (!this.loggedIn) {
         return "login";
       }
@@ -1045,6 +1100,14 @@ export default {
       });
     },
     checkout() {
+      if (this.grandTotal <= 0 && !this.cashOrder) {
+        this.$toastr.e(
+          "At least .50 cents is required to process an order.",
+          "Error"
+        );
+        return;
+      }
+
       if (this.checkingOut) {
         return;
       }
@@ -1149,6 +1212,12 @@ export default {
     },
     setCustomer() {
       this.customer = this.storeCustomers.slice(-1)[0].id;
+    },
+    removeCoupon() {
+      this.coupon = {};
+      this.setBagCoupon(null);
+      this.couponCode = "";
+      this.$toastr.s("Coupon Removed.", "Success");
     }
   }
 };

@@ -1375,10 +1375,11 @@ const getters = {
       };
 
       meal.getComponent = componentId => {
-        return _.find(meal.components, { id: parseInt(componentId) });
+        return _.find(meal.components, { id: parseInt(componentId) }) || null;
       };
       meal.getComponentOption = (component, optionId) => {
-        return _.find(component.options, { id: parseInt(optionId) });
+        if (!component) return null;
+        return _.find(component.options, { id: parseInt(optionId) }) || null;
       };
 
       meal.getComponentTitle = componentId => {
@@ -1630,11 +1631,17 @@ const getters = {
             if (component.price) {
               price += component.price;
             }
-            _.forEach(choices, (meals, optionId) => {
+            _.forEach(choices, (choices, optionId) => {
               let option = _.find(component.options, {
                 id: parseInt(optionId)
               });
               price += option.price;
+
+              _.forEach(choices, choice => {
+                if (choice.price) {
+                  price += choice.price;
+                }
+              });
             });
           }
         });
@@ -1649,10 +1656,12 @@ const getters = {
           _.forEach(item.addons, (choices, addonId) => {
             let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
 
+            // Add base addon price * choices selected
             if (addon.price) {
-              price += addon.price;
+              price += addon.price * Math.max(1, choices.length);
             }
 
+            // Add addon choice prices
             _.forEach(choices, choice => {
               if (choice.price) {
                 price += choice.price;
