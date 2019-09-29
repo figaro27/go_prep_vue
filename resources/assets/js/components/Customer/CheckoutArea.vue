@@ -489,7 +489,7 @@
       </div>
     </li>
 
-    <li class="transfer-instruction mt-2" v-if="$parent.orderId === undefined">
+    <li class="transfer-instruction mt-2" v-if="!$route.params.storeView">
       <p class="strong">{{ transferText }}</p>
       <p v-html="transferInstructions"></p>
     </li>
