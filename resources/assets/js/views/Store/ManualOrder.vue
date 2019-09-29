@@ -3,6 +3,7 @@
     <!-- <Spinner v-if="loading" /> -->
     <customer-menu
       :pickup="pickup"
+      :deliveryDay="deliveryDay"
       :manualOrder="manualOrder"
       :storeView="storeView"
       :forceValue="forceValue"
@@ -34,19 +35,17 @@ export default {
       isLoading: "isLoading"
     }),
     storeView: function() {
-      return this.$route.params.storeView
-        ? this.$route.params.storeView
-        : false;
+      return this.$route.params.storeView ? this.$route.params.storeView : true;
     },
     manualOrder: function() {
       return this.$route.params.manualOrder
         ? this.$route.params.manualOrder
-        : false;
+        : true;
     },
     forceValue: function() {
       return this.$route.params.forceValue
         ? this.$route.params.forceValue
-        : false;
+        : true;
     },
     checkoutData: function() {
       return this.$route.params.checkoutData
@@ -59,6 +58,16 @@ export default {
         this.$route.params.checkoutData.hasOwnProperty("pickup")
       ) {
         return this.$route.params.checkoutData.pickup;
+      }
+
+      return null;
+    },
+    deliveryDay: function() {
+      if (
+        this.$route.params.checkoutData &&
+        this.$route.params.checkoutData.hasOwnProperty("deliveryDay")
+      ) {
+        return this.$route.params.checkoutData.deliveryDay;
       }
 
       return null;

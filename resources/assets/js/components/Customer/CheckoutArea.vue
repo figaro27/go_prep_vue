@@ -257,7 +257,7 @@
           <b-select
             :options="deliveryDaysOptions"
             v-model="deliveryDay"
-            @input="val => (deliveryDay = val)"
+            @input="changeDeliveryDay"
             class="delivery-select"
             required
           >
@@ -289,7 +289,7 @@
         <b-select
           :options="deliveryDaysOptionsStoreView"
           v-model="deliveryDay"
-          @input="val => (deliveryDay = val)"
+          @input="changeDeliveryDay"
           class="delivery-select"
           required
         >
@@ -580,8 +580,6 @@ export default {
       if (this.customer) {
         this.getCards();
       }
-
-      console.log("data", this.checkoutData);
     }
   },
   mixins: [MenuBag],
@@ -1009,6 +1007,9 @@ export default {
       });
       return couponCheck;
     },
+    changeDeliveryDay() {
+      this.updateParentData();
+    },
     changePickupV() {
       this.updateParentData();
     },
@@ -1019,7 +1020,8 @@ export default {
       this.$emit("updateData", {
         customer: this.customer,
         weeklySubscriptionValue: this.weeklySubscriptionValue,
-        pickup: this.pickup
+        pickup: this.pickup,
+        deliveryDay: this.deliveryDay
       });
     },
     getCards() {

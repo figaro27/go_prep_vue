@@ -51,7 +51,7 @@
                   <router-link
                     v-if="storeModules.manualOrders"
                     :to="{
-                      name: 'store-bag',
+                      name: 'store-manual-order',
                       params: {
                         storeView: true,
                         manualOrder: true,

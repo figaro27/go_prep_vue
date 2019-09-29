@@ -115,7 +115,7 @@ export default {
           : null,
       selectedPickupLocation: null,
       pickup: 0,
-      deliveryDay: undefined,
+      deliveryDay: null,
       stripeKey: window.app.stripe_key,
       loading: false,
       checkingOut: false,
@@ -397,6 +397,8 @@ export default {
   methods: {
     updateData(newData) {
       if (this.forceValue) {
+        console.log("updating", newData);
+
         this.checkoutData = newData;
         if (newData.hasOwnProperty("customer")) {
           this.customer = newData.customer;
@@ -404,6 +406,10 @@ export default {
 
         if (newData.hasOwnProperty("pickup")) {
           this.pickup = newData.pickup;
+        }
+
+        if (newData.hasOwnProperty("deliveryDay")) {
+          this.deliveryDay = newData.deliveryDay;
         }
       }
     },
