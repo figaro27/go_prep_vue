@@ -99,7 +99,7 @@
                 </div>
               </div>
 
-              <div v-if="0 && $v.choices[component.id].$dirty">
+              <div v-if="$v.choices[component.id].$dirty">
                 <div
                   v-if="false === $v.choices[component.id].required"
                   class="invalid-feedback d-block"
@@ -110,13 +110,13 @@
                   v-if="false === $v.choices[component.id].minimum"
                   class="invalid-feedback d-block"
                 >
-                  Minimum {{ component.minimum }}
+                  Minimum {{ component.minimum }} selections
                 </div>
                 <div
                   v-if="false === $v.choices[component.id].maximum"
                   class="invalid-feedback d-block"
                 >
-                  Maximum {{ component.maximum }}
+                  Maximum {{ component.maximum }} selections
                 </div>
               </div>
             </b-form-group>
@@ -394,6 +394,7 @@ export default {
 
           if (this.$v.$invalid) {
             this.$forceUpdate();
+            this.$toastr.e("One or more of your selections is invalid");
           } else {
             if (!_.isEmpty(this.choices) || !_.isEmpty(this.addons)) {
               resolve({
