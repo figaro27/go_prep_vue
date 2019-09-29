@@ -74,6 +74,9 @@
                   class="pt-3"
                   @change="
                     val => {
+                      setWeeklySubscriptionValue(val);
+                      updateParentData();
+
                       setBagMealPlan(val);
                     }
                   "
@@ -213,11 +216,11 @@
       "
     >
       <b-form-group>
-        <b-form-radio-group v-model="pickup" name="pickup">
-          <b-form-radio :value="0" @click="pickup = 0">
+        <b-form-radio-group v-model="pickup" v-on:input="changePickupV">
+          <b-form-radio :value="0">
             <strong>Delivery</strong>
           </b-form-radio>
-          <b-form-radio :value="1" @click="pickup = 1">
+          <b-form-radio :value="1">
             <strong>Pickup</strong>
           </b-form-radio>
         </b-form-radio-group>
@@ -517,12 +520,14 @@ export default {
       deposit: 100,
       creditCardId: null,
       couponCode: "",
-      addCustomerModal: false
+      addCustomerModal: false,
+      weeklySubscriptionValue: null
     };
   },
   props: {
     preview: false,
     manualOrder: false,
+    forceValue: false,
     cashOrder: false,
     mobile: false,
     salesTax: 0,
@@ -531,10 +536,18 @@ export default {
     orderId: null,
     deliveryDay: null,
     transferTime: null,
-    pickup: {
-      default: 0
-    },
-    orderLineItems: []
+    pickup: 0,
+    orderLineItems: [],
+    checkoutData: null
+  },
+  mounted: function() {
+    if (this.forceValue) {
+      if (this.customer) {
+        this.getCards();
+      }
+
+      console.log("data", this.checkoutData);
+    }
   },
   mixins: [MenuBag],
   computed: {
@@ -822,8 +835,18 @@ export default {
       return "Meal";
     },
     weeklySubscription() {
-      if (this.$route.params.subscriptionId != null) return true;
-      else return this.deliveryPlan;
+      if (
+        this.checkoutData &&
+        this.checkoutData.hasOwnProperty("weeklySubscriptionValue")
+      ) {
+        return this.checkoutData.weeklySubscriptionValue;
+      }
+
+      if (this.$route.params.subscriptionId != null) {
+        return true;
+      } else {
+        return this.deliveryPlan;
+      }
     },
     deliveryPlanText() {
       if (this.weeklySubscription) return "Prepared Weekly";
@@ -931,7 +954,22 @@ export default {
       });
       return couponCheck;
     },
+    changePickupV() {
+      this.updateParentData();
+    },
+    setWeeklySubscriptionValue(v) {
+      this.weeklySubscriptionValue = v;
+    },
+    updateParentData() {
+      this.$emit("updateData", {
+        customer: this.customer,
+        weeklySubscriptionValue: this.weeklySubscriptionValue,
+        pickup: this.pickup
+      });
+    },
     getCards() {
+      this.updateParentData();
+
       window.localStorage.clear();
       this.creditCardId = null;
       this.creditCards = null;

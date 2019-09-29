@@ -91,6 +91,8 @@
             <bag-actions
               :storeView="storeView"
               :manualOrder="manualOrder"
+              :checkoutData="checkoutData"
+              :forceValue="forceValue"
               :adjustOrder="adjustOrder"
               :adjustMealPlan="adjustMealPlan"
               :subscriptionId="subscriptionId"
@@ -175,6 +177,8 @@ export default {
     storeView: false,
     preview: false,
     manualOrder: false,
+    forceValue: false,
+    checkoutData: null,
     adjustOrder: false,
     adjustMealPlan: false,
     order: {},

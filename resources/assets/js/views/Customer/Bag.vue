@@ -8,6 +8,7 @@
           <above-bag
             :storeView="storeView"
             :manualOrder="manualOrder"
+            :checkoutData="checkoutData"
             class="mb-4"
           >
           </above-bag>
@@ -26,6 +27,7 @@
 
         <div class="col-md-6 offset-md-1">
           <checkout-area
+            :forceValue="forceValue"
             :manualOrder="manualOrder"
             :mobile="mobile"
             :subscriptionId="subscriptionId"
@@ -40,6 +42,8 @@
             :transferTime="transferTime"
             :pickup="pickup"
             :orderLineItems="orderLineItems"
+            :checkoutData="checkoutData"
+            @updateData="updateData"
           ></checkout-area>
           <store-closed></store-closed>
         </div>
@@ -85,11 +89,13 @@ export default {
   props: {
     storeView: false,
     manualOrder: false,
+    forceValue: false,
     subscriptionId: null,
     adjustOrder: false,
     adjustMealPlan: false,
     preview: false,
-    orderId: null
+    orderId: null,
+    checkoutDataProp: null
   },
   mixins: [MenuBag],
   data() {
@@ -103,7 +109,10 @@ export default {
       creditCardList: [],
       creditCard: {},
       creditCardId: null,
-      customer: null,
+      customer:
+        this.checkoutDataProp && this.checkoutDataProp.customer
+          ? this.checkoutDataProp.customer
+          : null,
       selectedPickupLocation: null,
       pickup: 0,
       deliveryDay: undefined,
@@ -115,7 +124,8 @@ export default {
       deliveryFee: 0,
       amounts: {},
       salesTax: 0,
-      orderLineItems: null
+      orderLineItems: null,
+      checkoutData: this.checkoutDataProp
     };
   },
   watch: {
@@ -385,6 +395,18 @@ export default {
     this.creditCardId = this.card;
   },
   methods: {
+    updateData(newData) {
+      if (this.forceValue) {
+        this.checkoutData = newData;
+        if (newData.hasOwnProperty("customer")) {
+          this.customer = newData.customer;
+        }
+
+        if (newData.hasOwnProperty("pickup")) {
+          this.pickup = newData.pickup;
+        }
+      }
+    },
     setSalesTax(rate) {
       this.salesTax = rate;
     },
