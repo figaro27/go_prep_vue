@@ -349,15 +349,14 @@
         <div v-if="$route.params.manualOrder">
           <b-form-group>
             <h4 class="mt-2 mb-3">Choose Customer</h4>
-            <b-select
+            <v-select
+              label="text"
               :options="customers"
+              :reduce="customer => customer.value"
               v-model="customer"
-              class="bag-select"
-              @change="getCards"
-              required
+              @input="getCards"
             >
-              <option slot="top" disabled>-- Select Customer --</option>
-            </b-select>
+            </v-select>
           </b-form-group>
           <b-btn
             variant="primary"
@@ -421,7 +420,7 @@
         <b-btn
           v-if="
             card != null &&
-              minimumMet &&
+              (minimumMet || $route.params.storeView) &&
               $route.params.adjustOrder != true &&
               $route.params.subscriptionId === undefined
           "
@@ -497,7 +496,13 @@
       <p v-html="transferInstructions"></p>
     </li>
 
-    <li v-if="minOption === 'meals' && total < minimumMeals && !manualOrder">
+    <li
+      v-if="
+        minOption === 'meals' &&
+          total < minimumMeals &&
+          !$route.params.storeView
+      "
+    >
       <p class="strong">
         Please add {{ remainingMeals }} {{ singOrPlural }} to continue.`
       </p>
@@ -505,7 +510,9 @@
 
     <li
       v-if="
-        minOption === 'price' && totalBagPricePreFees < minPrice && !manualOrder
+        minOption === 'price' &&
+          totalBagPricePreFees < minPrice &&
+          !$route.params.storeView
       "
     >
       <p class="strong">
