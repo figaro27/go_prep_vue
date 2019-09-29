@@ -332,6 +332,8 @@ export default {
         return true;
       }
 
+      return true;
+
       // cannot if
       // - the LAST unrestricted
 
@@ -350,6 +352,20 @@ export default {
       return unrestricted.length !== 1;
     },
     restrictMealsOptions(component, optionId) {
+      let allOptions = [];
+      _.forEach(this.meal_package.components, cmp => {
+        _.forEach(cmp.options, opt => {
+          if (opt.id !== optionId && !opt.restrict_meals_option_id) {
+            allOptions.push({
+              text: `${cmp.title} - ${opt.title}`,
+              value: opt.id
+            });
+          }
+        });
+      });
+
+      return allOptions;
+
       let options = _(component.options)
         .filter(opt => {
           return opt.id !== optionId && !opt.restrict_meals_option_id;

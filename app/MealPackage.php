@@ -499,7 +499,10 @@ class MealPackage extends Model implements HasMedia
                     // Get real restrict option ID
                     $restrictOptionId =
                         $optionArr['restrict_meals_option_id'] ?? null;
-                    if ($restrictOptionId) {
+                    if (
+                        $restrictOptionId &&
+                        isset($optionIdMap[$restrictOptionId])
+                    ) {
                         $restrictOptionId = $optionIdMap[$restrictOptionId];
                     }
 
