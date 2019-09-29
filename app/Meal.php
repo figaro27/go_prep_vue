@@ -106,11 +106,7 @@ class Meal extends Model implements HasMedia
 
     public function getMealSizeIdAttribute()
     {
-        if (
-            $this->pivot &&
-            $this->pivot->meal_size_id &&
-            $this->pivot->meal_size
-        ) {
+        if ($this->pivot && $this->pivot->meal_size_id) {
             return $this->pivot->meal_size_id;
         } else {
             return null;

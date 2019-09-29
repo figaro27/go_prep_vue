@@ -1601,6 +1601,7 @@ const getters = {
               price += addon.price * Math.max(1, choices.length);
             }
 
+            // Add addon choice prices
             _.forEach(choices, choice => {
               if (choice.price) {
                 price += choice.price;
