@@ -1315,10 +1315,11 @@ const getters = {
       };
 
       meal.getComponent = componentId => {
-        return _.find(meal.components, { id: parseInt(componentId) });
+        return _.find(meal.components, { id: parseInt(componentId) }) || null;
       };
       meal.getComponentOption = (component, optionId) => {
-        return _.find(component.options, { id: parseInt(optionId) });
+        if (!component) return null;
+        return _.find(component.options, { id: parseInt(optionId) }) || null;
       };
 
       meal.getComponentTitle = componentId => {
@@ -1595,8 +1596,9 @@ const getters = {
           _.forEach(item.addons, (choices, addonId) => {
             let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
 
+            // Add base addon price * choices selected
             if (addon.price) {
-              price += addon.price;
+              price += addon.price * Math.max(1, choices.length);
             }
 
             _.forEach(choices, choice => {
