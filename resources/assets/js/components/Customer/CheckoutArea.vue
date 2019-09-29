@@ -344,7 +344,10 @@
             !$route.params.storeView
         "
       >
-        <b-alert v-if="!loading" variant="warning center-text" show
+        <b-alert
+          v-if="!loading && !$route.params.storeView"
+          variant="warning center-text"
+          show
           >You are outside of the delivery area.</b-alert
         >
       </div>
@@ -1021,7 +1024,9 @@ export default {
         customer: this.customer,
         weeklySubscriptionValue: this.weeklySubscriptionValue,
         pickup: this.pickup,
-        deliveryDay: this.deliveryDay
+        transferTime: this.transferTime,
+        deliveryDay: this.deliveryDay,
+        cashOrder: this.cashOrder
       });
     },
     getCards() {
