@@ -669,7 +669,7 @@ const actions = {
 
   async initCustomer({ commit, state, dispatch }, data = {}) {
     if (data.store) {
-      await dispatch("refreshViewedStore");
+      await dispatch("refreshViewedCustomerStore", data);
     }
 
     dispatch("refreshStores");
@@ -682,7 +682,7 @@ const actions = {
     auth.deleteToken();
 
     if (data.store) {
-      await dispatch("refreshViewedStore");
+      await dispatch("refreshViewedCustomerStore", data);
     }
 
     dispatch("refreshStores");
@@ -720,6 +720,66 @@ const actions = {
 
   removeJob({ state }, id) {
     Vue.delete(state.jobs, id);
+  },
+
+  async refreshViewedCustomerStore({ commit, state }, data = {}) {
+    if (_.isObject(data.store) && !_.isEmpty(data.store)) {
+      commit("setViewedStore", data.store);
+    }
+
+    try {
+      if (data.store_distance) {
+        commit("setViewedStoreDistance", data.store_distance);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
+    try {
+      if (data.distance) {
+        commit("setViewedStoreDistance", data.distance);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
+    try {
+      if (_.isBoolean(data.will_deliver)) {
+        commit("setViewedStoreWillDeliver", data.will_deliver);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
+    try {
+      if (!_.isEmpty(data.coupons)) {
+        let coupons = data.coupons;
+
+        if (!_.isEmpty(coupons)) {
+          commit("setViewedStoreCoupons", { coupons });
+        }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.pickup_locations)) {
+        let pickupLocations = data.store.pickup_locations;
+
+        if (!_.isEmpty(pickupLocations)) {
+          commit("setViewedStorePickupLocations", { pickupLocations });
+        }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.line_items)) {
+        let lineItems = data.store.line_items;
+
+        if (!_.isEmpty(lineItems)) {
+          commit("setViewedStoreLineItems", { lineItems });
+        }
+      }
+    } catch (e) {}
   },
 
   async refreshViewedStore({ commit, state }) {
