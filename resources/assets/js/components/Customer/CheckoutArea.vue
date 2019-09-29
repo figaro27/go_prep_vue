@@ -427,7 +427,7 @@
               (minimumMet || $route.params.storeView) &&
               $route.params.adjustOrder != true &&
               $route.params.subscriptionId === undefined &&
-              store.settings.open === true &&
+              (store.settings.open === true || $route.params.storeView) &&
               (willDeliver || pickup === 1)
           "
           @click="checkout"
