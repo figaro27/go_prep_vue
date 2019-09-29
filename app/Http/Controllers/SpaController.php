@@ -57,7 +57,21 @@ class SpaController extends Controller
                         'categories',
                         'meals.categories',
                         'meals.allergies',
-                        'settings'
+                        'settings',
+                        'modules',
+                        'moduleSettings',
+                        'packages.meals',
+                        'packages.sizes',
+                        'packages.components',
+                        'packages.addons',
+                        'meals.sizes',
+                        'meals.components',
+                        'meals.addons',
+                        'meals.macros',
+                        'details',
+                        'coupons',
+                        'pickupLocations',
+                        'lineItems'
                     ])->find(STORE_ID)
                     : null;
 
@@ -105,13 +119,31 @@ class SpaController extends Controller
                         'meals.allergies',
                         'settings',
                         'modules',
-                        'moduleSettings'
+                        'moduleSettings',
+                        'packages.meals',
+                        'packages.sizes',
+                        'packages.components',
+                        'packages.addons',
+                        'meals.sizes',
+                        'meals.components',
+                        'meals.addons',
+                        'meals.macros',
+                        'details',
+                        'coupons',
+                        'pickupLocations',
+                        'lineItems'
                     ])->find(STORE_ID)
                     : $user->last_viewed_store;
 
                 if ($store) {
-                    if ($store->settings->delivery_distance_type === 'radius') {
+                    if ($user) {
                         $distance = $user->distanceFrom($store);
+                    } else {
+                        $distance = 1;
+                    }
+
+                    if ($store->settings->delivery_distance_type === 'radius') {
+                        ///$distance = $user->distanceFrom($store);
                         $willDeliver =
                             $distance <
                             $store->settings->delivery_distance_radius;
