@@ -378,7 +378,10 @@
                   $route.params.storeView)
             "
           >
-            <b-form-checkbox v-model="cashOrder" class="pb-2 mediumCheckbox">
+            <b-form-checkbox
+              v-model="cashOrder"
+              class="pb-2 mediumCheckbox mt-1 mb-1"
+            >
               No Charge
             </b-form-checkbox>
             <!-- <p
