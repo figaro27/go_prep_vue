@@ -399,7 +399,9 @@ export default {
 
           if (this.$v.$invalid) {
             this.$forceUpdate();
-            this.$toastr.e("One or more of your selections is invalid");
+            this.$toastr.e(
+              "Please select the minimum number of items required."
+            );
           } else {
             if (!_.isEmpty(this.choices) || !_.isEmpty(this.addons)) {
               resolve({
