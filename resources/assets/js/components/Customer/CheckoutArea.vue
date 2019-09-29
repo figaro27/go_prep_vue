@@ -103,6 +103,9 @@
       <li class="checkout-item" v-if="couponApplied">
         <div class="row">
           <div class="col-6 col-md-4">
+            <span class="d-inline mr-2" @click="removeCoupon">
+              <img class="couponX" src="/images/customer/x.png" />
+            </span>
             <span class="text-success">({{ coupon.code }})</span>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
@@ -1147,6 +1150,12 @@ export default {
     },
     setCustomer() {
       this.customer = this.storeCustomers.slice(-1)[0].id;
+    },
+    removeCoupon() {
+      this.coupon = {};
+      this.setBagCoupon(null);
+      this.couponCode = "";
+      this.$toastr.s("Coupon Removed.", "Success");
     }
   }
 };
