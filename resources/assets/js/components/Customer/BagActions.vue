@@ -26,6 +26,7 @@
       >
         <b-btn class="menu-bag-btn">NEXT</b-btn>
       </router-link>
+
       <router-link
         v-if="storeView"
         :to="{
@@ -40,7 +41,9 @@
             preview: preview,
             deliveryDay: deliveryDay,
             transferTime: transferTime,
-            pickup: pickup
+            pickup: pickup,
+            checkoutData: checkoutData,
+            forceValue: forceValue
           }
         }"
       >
@@ -73,7 +76,9 @@ export default {
     orderId: null,
     deliveryDay: null,
     transferTime: null,
-    pickup: null
+    pickup: null,
+    checkoutData: null,
+    forceValue: false
   },
   mixins: [MenuBag],
   computed: {
