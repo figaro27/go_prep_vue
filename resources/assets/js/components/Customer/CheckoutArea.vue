@@ -354,6 +354,7 @@
               :options="customers"
               :reduce="customer => customer.value"
               v-model="customer"
+              :value="customer"
               @input="getCards"
             >
             </v-select>
@@ -425,7 +426,7 @@
               $route.params.subscriptionId === undefined
           "
           @click="checkout"
-          class="menu-bag-btn"
+          class="menu-bag-btn mb-4"
           >CHECKOUT</b-btn
         >
 
@@ -1059,6 +1060,14 @@ export default {
       });
     },
     checkout() {
+      if (this.grandTotal <= 0 && !this.cashOrder) {
+        this.$toastr.e(
+          "At least .50 cents is required to process an order.",
+          "Error"
+        );
+        return;
+      }
+
       if (this.checkingOut) {
         return;
       }
