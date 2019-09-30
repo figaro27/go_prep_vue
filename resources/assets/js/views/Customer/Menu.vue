@@ -344,7 +344,8 @@ export default {
       // Find store-defined category sorting
       let sorting = {};
       this._categories.forEach(cat => {
-        sorting[cat.category] = cat.order.toString() + cat.category;
+        //sorting[cat.category] = cat.order.toString() + cat.category;
+        sorting[cat.category] = cat.order.toString();
       });
 
       // Structure
