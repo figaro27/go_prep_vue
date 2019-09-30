@@ -185,7 +185,7 @@
         </li>
       </ul>
       <b-button
-        size="md"
+        size="lg"
         variant="success"
         @click="showLineItemModal = true"
         v-if="$route.params.manualOrder && $route.name != 'store-manual-order'"
