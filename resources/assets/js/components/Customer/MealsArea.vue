@@ -178,7 +178,7 @@ export default {
         this.showMeal(meal);
         return;
       }
-      this.addOne(meal, false, null, null, null, null);
+      this.addOne(meal, false, null, null, [], null);
       if (this.$parent.showBagClass.includes("hidden-right")) {
         this.$parent.showBagClass = "shopping-cart show-right bag-area";
       }
