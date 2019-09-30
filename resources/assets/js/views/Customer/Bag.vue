@@ -45,7 +45,7 @@
             :checkoutData="checkoutData"
             @updateData="updateData"
           ></checkout-area>
-          <store-closed></store-closed>
+          <store-closed v-if="!$route.params.storeView"></store-closed>
         </div>
       </div>
       <add-customer-modal
