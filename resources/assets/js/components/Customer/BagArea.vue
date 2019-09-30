@@ -188,10 +188,7 @@
         size="md"
         variant="success"
         @click="showLineItemModal = true"
-        v-if="
-          $route.params.manualOrder &&
-            !$route.params.name === 'store-manual-order'
-        "
+        v-if="$route.params.manualOrder && $route.name != 'store-manual-order'"
       >
         <span class="d-sm-inline">Add Extra</span>
       </b-button>

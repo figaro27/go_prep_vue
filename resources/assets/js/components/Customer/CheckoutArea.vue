@@ -1224,7 +1224,6 @@ export default {
       this.coupon = {};
       this.setBagCoupon(null);
       this.couponCode = "";
-      this.$toastr.s("Coupon Removed.", "Success");
     }
   }
 };
