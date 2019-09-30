@@ -1160,7 +1160,9 @@ export default {
         ? this.weeklySubscriptionValue
         : 0;
 
-      this.cashOrder = 0;
+      if (this.cashOrder === null) {
+        this.cashOrder = 0;
+      }
 
       axios
         .post(endPoint, {
