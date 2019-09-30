@@ -830,7 +830,10 @@ export default {
         if (!this.couponFreeDelivery) {
           if (this.storeSettings.applyDeliveryFee) {
             if (this.storeSettings.deliveryFeeType === "flat") {
-              return this.storeSettings.deliveryFee;
+              // DBD Temp Workaround. Remove when adding the double delivery day feature.
+              let addedFee = this.DBD();
+              //
+              return this.storeSettings.deliveryFee + addedFee;
             } else if (this.storeSettings.deliveryFeeType === "mileage") {
               let mileageBase = parseFloat(this.storeSettings.mileageBase);
               let mileagePerMile = parseFloat(
@@ -1233,6 +1236,19 @@ export default {
       this.coupon = {};
       this.setBagCoupon(null);
       this.couponCode = "";
+    },
+
+    // Temporary work around for two delivery fees based on day of the week. Will remove when two delivery day feature is added.
+    DBD() {
+      if (this.store.id === 100) {
+        let cat = [];
+        this.bag.forEach(item => {
+          if (!cat.includes(item.meal.category_ids[0]))
+            cat.push(item.meal.category_ids[0]);
+        });
+        if (cat.length > 1) return 5;
+        else return 0;
+      } else return 0;
     }
   }
 };
