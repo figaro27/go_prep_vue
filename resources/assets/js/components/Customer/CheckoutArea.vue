@@ -1111,9 +1111,11 @@ export default {
       }
 
       if (this.checkingOut) {
+        console.log("blocked...");
         return;
       }
 
+      console.log("calling...");
       this.checkingOut = true;
 
       this.deliveryFee = this.deliveryFeeAmount;
