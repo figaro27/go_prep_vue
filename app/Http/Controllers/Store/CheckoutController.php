@@ -109,10 +109,8 @@ class CheckoutController extends StoreController
             $card = null;
         }
 
-        if (!$cashOrder) {
-            $storeCustomer = $customer->user->getStoreCustomer($store->id);
-            $customer = $customer->user->getStoreCustomer($store->id, false);
-        }
+        $storeCustomer = $customer->user->getStoreCustomer($store->id);
+        $customer = $customer->user->getStoreCustomer($store->id, false);
         if (!$weeklyPlan) {
             if (!$cashOrder) {
                 $storeSource = \Stripe\Source::create(
