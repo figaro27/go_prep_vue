@@ -388,7 +388,7 @@
               v-model="cashOrder"
               class="pb-2 mediumCheckbox mt-1 mb-1"
             >
-              No Charge
+              {{ storeModuleSettings.cashOrderWording }}
             </b-form-checkbox>
             <!-- <p
               v-if="

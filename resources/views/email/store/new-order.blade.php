@@ -346,7 +346,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($order->amount, 2) }}
                           </span>
                           @if ($order->cashOrder)
-                            <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:18px; color:#3b3b3b;  font-weight: bold;">(No Charge)
+                            <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:18px; color:#3b3b3b;  font-weight: bold;">({{$order->store->moduleSettings->cashOrderWording }})
                             </span>
                           @endif
                         </td>

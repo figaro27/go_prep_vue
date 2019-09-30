@@ -138,13 +138,13 @@
             </div>
             <div slot="chargeType" slot-scope="props">
               <span v-if="props.row.manual && props.row.cashOrder"
-                >Manual - No Charge</span
+                >Manual - {{ store.module_settings.cashOrderWording }}</span
               >
               <span v-else-if="props.row.manual && !props.row.cashOrder"
                 >Manual - Charge</span
               >
               <span v-else-if="!props.row.manual && props.row.cashOrder"
-                >Customer - No Charge</span
+                >Customer - {{ store.module_settings.cashOrderWording }}</span
               >
               <span v-else-if="!props.row.manual && !props.row.cashOrder"
                 >Customer - Charge</span
@@ -235,7 +235,9 @@
             <p>{{ moment(order.created_at).format("dddd, MMM Do") }}</p>
           </div>
           <div class="col-md-4 pt-1">
-            <h4 v-if="order.cashOrder">No Charge</h4>
+            <h4 v-if="order.cashOrder">
+              {{ store.module_settings.cashOrderWording }}
+            </h4>
             <p>
               Subtotal:
               {{ format.money(order.preFeePreDiscount, order.currency) }}
