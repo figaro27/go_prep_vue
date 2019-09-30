@@ -426,12 +426,12 @@
 
         <b-btn
           v-if="
-            card != null &&
+            (card != null || cashOrder) &&
               (minimumMet || $route.params.storeView) &&
               $route.params.adjustOrder != true &&
               $route.params.subscriptionId === undefined &&
               (store.settings.open === true || $route.params.storeView) &&
-              (willDeliver || pickup === 1)
+              (willDeliver || pickup === 1 || $route.params.storeView)
           "
           @click="checkout"
           class="menu-bag-btn mb-4"
@@ -1061,6 +1061,10 @@ export default {
         deposit = parseInt(deposit);
       }
 
+      let weeklySubscriptionValue = this.storeSettings.allowMealPlans
+        ? this.weeklySubscriptionValue
+        : 0;
+
       axios
         .post(`/api/me/orders/adjustOrder`, {
           orderId: this.$parent.orderId,
@@ -1072,7 +1076,7 @@ export default {
           deliveryFee: this.deliveryFeeAmount,
           processingFee: this.processingFeeAmount,
           bag: this.bag,
-          plan: this.weeklySubscription,
+          plan: weeklySubscriptionValue,
           store_id: this.store.id,
           salesTax: this.tax,
           coupon_id: this.couponApplied ? this.coupon.id : null,
@@ -1148,12 +1152,17 @@ export default {
       if (this.cashOrder === true) {
         cardId = 0;
       }
+
+      let weeklySubscriptionValue = this.storeSettings.allowMealPlans
+        ? this.weeklySubscriptionValue
+        : 0;
+
       axios
         .post(endPoint, {
           subtotal: this.subtotal,
           afterDiscount: this.afterDiscount,
           bag: this.bag,
-          plan: this.weeklySubscription,
+          plan: weeklySubscriptionValue,
           pickup: this.pickup,
           delivery_day: this.deliveryDay,
           card_id: cardId,
