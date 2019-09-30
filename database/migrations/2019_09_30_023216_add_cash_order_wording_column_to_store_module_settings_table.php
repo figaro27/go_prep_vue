@@ -14,7 +14,7 @@ class AddCashOrderWordingColumnToStoreModuleSettingsTable extends Migration
     public function up()
     {
         Schema::table('store_module_settings', function (Blueprint $table) {
-            $table->string('cashOrderWording')->default('No Charge');
+            $table->string('cashOrderWording')->default('Cash');
         });
     }
 
