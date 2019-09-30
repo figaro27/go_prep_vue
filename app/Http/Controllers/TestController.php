@@ -20,21 +20,21 @@ class TestController extends Controller
         $customer = $user->getStoreCustomer($store->id, false);
         $order = Order::find(1);
 
-        /*$store->sendNotification('new_order', [
-            'order' => $order ?? null,
-            'pickup' => 0,
-            'card' => null,
-            'customer' => $customer ?? null,
-            'subscription' => null
-        ]);*/
-
-        $user->sendNotification('new_order', [
+        $store->sendNotification('new_order', [
             'order' => $order ?? null,
             'pickup' => 0,
             'card' => null,
             'customer' => $customer ?? null,
             'subscription' => null
         ]);
+
+        /*$user->sendNotification('new_order', [
+            'order' => $order ?? null,
+            'pickup' => 0,
+            'card' => null,
+            'customer' => $customer ?? null,
+            'subscription' => null
+        ]);*/
     }
 
     public function test_print()

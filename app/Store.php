@@ -604,7 +604,7 @@ class Store extends Model
                 $logo = $storeDetails->getMedia('logo')->first();
 
                 if ($logo) {
-                    $path = $logo->getPath();
+                    $path = $logo->getPath('thumb');
 
                     if (file_exists($path)) {
                         $logo_b64 = \App\Utils\Images::encodeB64($path);
