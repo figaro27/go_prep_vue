@@ -11,6 +11,7 @@
               @ok="updateCategories"
               @cancel="updateCategories"
               @hidden="updateCategories"
+              @hide="editingCategory = false"
               no-fade
             >
               <b-form-group :state="true">
