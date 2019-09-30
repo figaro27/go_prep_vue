@@ -1160,6 +1160,8 @@ export default {
         ? this.weeklySubscriptionValue
         : 0;
 
+      this.cashOrder = 0;
+
       axios
         .post(endPoint, {
           subtotal: this.subtotal,
