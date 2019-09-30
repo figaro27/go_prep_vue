@@ -345,20 +345,68 @@ export default {
       let sorting = {};
       this._categories.forEach(cat => {
         //sorting[cat.category] = cat.order.toString() + cat.category;
-        sorting[cat.category] = cat.order.toString();
+        sorting[cat.category] = !isNaN(cat.order) ? parseInt(cat.order) : 9999;
       });
 
+      /* Sort Categories */
+      let sortedCategories = [];
+
+      for (let i = 0; i < this._categories.length; i++) {
+        let cat = this._categories[i];
+        let order = !isNaN(cat.order) ? parseInt(cat.order) : 9999;
+
+        sortedCategories.push({
+          name: cat.category,
+          order
+        });
+      }
+
+      if (sortedCategories.length > 1) {
+        for (let i = 0; i < sortedCategories.length - 1; i++) {
+          for (let j = i + 1; j < sortedCategories.length; j++) {
+            if (sortedCategories[i].order > sortedCategories[j].order) {
+              let temp = {
+                ...sortedCategories[i]
+              };
+              sortedCategories[i] = {
+                ...sortedCategories[j]
+              };
+              sortedCategories[j] = {
+                ...temp
+              };
+            }
+          }
+        }
+      }
+      /* Sort Categories End */
+
       // Structure
-      grouped = _.map(grouped, (meals, cat) => {
+      /*grouped = _.map(grouped, (meals, cat) => {
         return {
           category: cat,
           meals,
           order: sorting[cat] || 9999
         };
-      });
+      });*/
+
+      let finalData = [];
+      for (let i = 0; i < sortedCategories.length; i++) {
+        let name = sortedCategories[i].name;
+        let order = sortedCategories[i].order;
+
+        if (grouped[name] && grouped[name].length > 0) {
+          finalData.push({
+            category: name,
+            meals: grouped[name],
+            order
+          });
+        }
+      }
+
+      return finalData;
 
       // Sort
-      return _.orderBy(grouped, "order");
+      //return _.orderBy(grouped, "order");
     },
     mealPackages() {
       return _.map(
