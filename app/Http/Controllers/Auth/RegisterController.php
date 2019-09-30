@@ -260,19 +260,9 @@ class RegisterController extends Controller
                 'category' => 'Entrees'
             ]);
 
-            $storeModules = $store->modules()->create([
-                'cashOrders' => 0,
-                'packageComponentRestrictions' => 0,
-                'transferHours' => 0,
-                'pickupLocations' => 0,
-                'hideBranding' => 0,
-                'manualOrders' => 0,
-                'manualCustomers' => 0,
-                'deposits' => 0,
-                'lineItems' => 0,
-                'productionGroups' => 0,
-                'specialInstructions' => 0
-            ]);
+            $storeModules = $store->modules()->create();
+
+            $storeModuleSettings = $store->moduleSettings()->create();
 
             try {
                 $key = new \Cloudflare\API\Auth\APIKey(
