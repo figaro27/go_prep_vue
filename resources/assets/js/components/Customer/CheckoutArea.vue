@@ -307,18 +307,18 @@
         "
       >
         <div>
-          <h6 v-if="pickup === 0">
+          <strong v-if="pickup === 0">
             Delivery Day: {{ deliveryDaysOptions[0].text }}
-          </h6>
-          <h6 v-if="pickup === 1">
+          </strong>
+          <strong v-if="pickup === 1">
             Pickup Day: {{ deliveryDaysOptions[0].text }}
-          </h6>
+          </strong>
         </div>
       </li>
     </span>
     <span v-if="$route.params.storeView === true">
-      <p v-if="pickup === 0">Delivery Day</p>
-      <p v-if="pickup === 1">Pickup Day</p>
+      <strong v-if="pickup === 0">Delivery Day</strong>
+      <strong v-if="pickup === 1">Pickup Day</strong>
       <b-form-group description>
         <b-select
           :options="deliveryDaysOptionsStoreView"
