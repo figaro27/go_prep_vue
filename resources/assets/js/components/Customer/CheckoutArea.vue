@@ -1231,7 +1231,6 @@ export default {
         })
         .finally(() => {
           this.loading = false;
-          this.checkingOut = false;
         });
     },
     setCustomer() {
