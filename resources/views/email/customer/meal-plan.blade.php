@@ -351,12 +351,14 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   @if ($subscription->pickup === 0)
                   @if ($subscription->store->settings->deliveryInstructions)
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Delivery Instructions</td>
-                  @else
                   @endif
+                  @endif
+                  @if ($subscription->pickup === 1)
                   @if ($subscription->store->settings->pickupInstructions)
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Pickup Instructions</td>
                   @endif
                   @endif
+                  
                 </tr>
                 <!-- end title -->
                 <tr>

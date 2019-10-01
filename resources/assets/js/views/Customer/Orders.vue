@@ -46,7 +46,7 @@
                       <p v-if="!order.fulfilled">
                         {{ moment(order.delivery_date).format("dddd, MMM Do") }}
                         <span v-if="order.transferTime">
-                          - {{ order.transferTime }}</span
+                          {{ order.transferTime }}</span
                         >
                       </p>
                       <p v-else>

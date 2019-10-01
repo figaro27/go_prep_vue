@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div v-if="store.settings.open === false" :class="storeClosedClass">
+    <div
+      v-if="store.settings.open === false && !storeView"
+      :class="storeClosedClass"
+    >
       <div class="row mt-3">
         <div class="col-sm-12 mt-3">
           <b-alert show variant="danger">
@@ -20,6 +23,9 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
+  props: {
+    storeView: false
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore"

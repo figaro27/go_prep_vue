@@ -18,14 +18,14 @@
             @if ($order->pickup === 0)
             <p>Delivery Date: {{$order->delivery_date->format('D, m/d/Y')}} 
               @if ($order->transferTime)
-                - {{ $order->transferTime }}
+                {{ $order->transferTime }}
               @endif
             </p>
             @endif
             @if ($order->pickup === 1)
             <p>Pick Up Date: {{$order->delivery_date->format('D, m/d/Y')}}
               @if ($order->transferTime)
-                - {{ $order->transferTime }}
+                {{ $order->transferTime }}
               @endif
             </p>
             @endif
