@@ -182,7 +182,7 @@
               <h4 v-if="subscription.pickup">Pickup Day</h4>
               {{ moment(subscription.delivery_date).format("dddd, MMM Do") }}
               <span v-if="subscription.transferTime">
-                - {{ subscription.transferTime }}</span
+                {{ subscription.transferTime }}</span
               >
             </span>
             <p v-if="subscription.pickup_location_id != null">

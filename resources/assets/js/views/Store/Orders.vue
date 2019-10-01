@@ -287,7 +287,7 @@
               <h4 v-if="!order.pickup">Delivery Day</h4>
               <h4 v-if="order.pickup">Pickup Day</h4>
               {{ moment(order.delivery_date).format("dddd, MMM Do") }}
-              <span v-if="order.transferTime"> - {{ order.transferTime }}</span>
+              <span v-if="order.transferTime"> {{ order.transferTime }}</span>
             </span>
             <p v-if="order.pickup_location_id != null">
               {{ order.pickup_location.name }}<br />

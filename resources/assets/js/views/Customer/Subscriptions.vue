@@ -1,4 +1,4 @@
-<template>
+f<template>
   <div class="main-customer-container box-shadow top-fill">
     <div class="row">
       <div class="col-md-12">
@@ -73,7 +73,7 @@
                           )
                         }}
                         <span v-if="subscription.transferTime">
-                          - {{ subscription.transferTime }}</span
+                          {{ subscription.transferTime }}</span
                         >
                       </p>
                       <p v-else-if="subscription.latest_order">
