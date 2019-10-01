@@ -240,7 +240,7 @@ class Bag
                                                 'id' => $mealOption->meal_id
                                             ],
                                             'quantity' =>
-                                                $optionItem['quantity'],
+                                                $addonItem['quantity'],
                                             'price' => $mealOption->price,
                                             'meal_size_id' =>
                                                 $mealOption->meal_size_id
