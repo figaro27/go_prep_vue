@@ -1,10 +1,6 @@
-<h3>New Customer Contact Form Email</h3>
+{{ $lastViewedStore }}
 
-<p>From {{ $firstname }} {{ $lastname }}</p>
-
-<p>User ID: {{ $customerID }}</p>
-
-<p>Last Viewed Store: {{ $lastViewedStore }}</p>
+<p>From: {{ $firstname }} {{ $lastname }}</p>
 
 <p>Subject: {{ $subject }}</p>
 
