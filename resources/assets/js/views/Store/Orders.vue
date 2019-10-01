@@ -314,7 +314,7 @@
             {{ user_detail.delivery }}
           </div>
         </div>
-        <!-- <div class="row">
+        <div class="row" v-if="storeModules.orderNotes">
           <div class="col-md-12">
             <h4>Notes</h4>
             <textarea
@@ -332,7 +332,7 @@
               Save
             </button>
           </div>
-        </div> -->
+        </div>
         <div class="row">
           <div class="col-md-12">
             <h4>Items</h4>

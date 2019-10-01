@@ -73,6 +73,7 @@ class OrdersByCustomer
                             'pickup_location_id' => $order->pickup_location_id,
                             'pickup_location' => $order->pickup_location,
                             'dailyOrderNumber' => $order->dailyOrderNumber,
+                            'notes' => $order->notes,
                             'meal_quantities' => array_merge(
                                 [['Meal', 'Quantity']], // Heading
                                 $order
