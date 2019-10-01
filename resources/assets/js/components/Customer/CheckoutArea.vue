@@ -320,13 +320,31 @@
     <li
       class="checkout-item"
       v-if="
-        storeModules.transferHours &&
+        storeModules.pickupHours &&
           pickup &&
           $route.params.subscriptionId === undefined
       "
     >
       <div>
         <strong>Pickup Time</strong>
+        <b-form-select
+          class="ml-2"
+          v-model="transferTime"
+          :options="transferTimeOptions"
+        ></b-form-select>
+      </div>
+    </li>
+
+    <li
+      class="checkout-item"
+      v-if="
+        storeModules.deliveryHours &&
+          !pickup &&
+          $route.params.subscriptionId === undefined
+      "
+    >
+      <div>
+        <strong>Delivery Time</strong>
         <b-form-select
           class="ml-2"
           v-model="transferTime"
@@ -697,12 +715,22 @@ export default {
       else return this.creditCards[0].id;
     },
     transferTimeOptions() {
-      let startTime = parseInt(
-        this.storeModuleSettings.transferStartTime.substr(0, 2)
-      );
-      let endTime = parseInt(
-        this.storeModuleSettings.transferEndTime.substr(0, 2)
-      );
+      let startTime = null;
+      let endTime = null;
+      if (this.pickup === 1) {
+        startTime = parseInt(
+          this.storeModuleSettings.pickupStartTime.substr(0, 2)
+        );
+        endTime = parseInt(this.storeModuleSettings.pickupEndTime.substr(0, 2));
+      } else {
+        startTime = parseInt(
+          this.storeModuleSettings.deliveryStartTime.substr(0, 2)
+        );
+        endTime = parseInt(
+          this.storeModuleSettings.deliveryEndTime.substr(0, 2)
+        );
+      }
+
       let hourOptions = [];
 
       while (startTime <= endTime) {
@@ -710,19 +738,46 @@ export default {
         startTime++;
       }
 
+      let transferTimeRange = this.storeModuleSettings.transferTimeRange;
       let newHourOptions = [];
+
       hourOptions.forEach(option => {
         if (option < 12) {
           option = option.toString();
-          let newOption = option.concat(" ", "AM");
-          newHourOptions.push(newOption);
+          let period = " AM";
+          if (parseInt(option) === 11) {
+            period = " PM";
+          }
+          let hour = 1;
+          let newOption = option.concat(" AM");
+          if (transferTimeRange) {
+            newOption.concat(" - " + (parseInt(option) + hour) + period);
+            let finalOption = newOption.concat(
+              " - " + (parseInt(option) + hour) + period
+            );
+            newHourOptions.push(finalOption);
+          } else newHourOptions.push(newOption);
         } else {
           if (option > 12) {
             option = option - 12;
           }
+          let hour = 1;
+          let period = " PM";
+          if (parseInt(option) === 11) {
+            period = " AM";
+          }
+          if (parseInt(option) === 12) {
+            hour = -11;
+          }
           option = option.toString();
-          let newOption = option.concat(" ", "PM");
-          newHourOptions.push(newOption);
+          let newOption = option.concat(" PM");
+          if (transferTimeRange) {
+            newOption.concat(" - " + (parseInt(option) + hour) + period);
+            let finalOption = newOption.concat(
+              " - " + (parseInt(option) + hour) + period
+            );
+            newHourOptions.push(finalOption);
+          } else newHourOptions.push(newOption);
         }
       });
 
