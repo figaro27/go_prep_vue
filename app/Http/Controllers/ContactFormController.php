@@ -57,9 +57,6 @@ class ContactFormController extends Controller
         $store = Store::where('id', $lastViewedStoreId)->first();
         $lastViewedStore = $store->details->name;
         $storeEmail = $store->user->email;
-        // $lastViewedStore = StoreDetail::where('id', $lastViewedStoreId)
-        //     ->pluck('name')
-        //     ->first();
         $firstname = UserDetail::where('user_id', $id)
             ->pluck('firstname')
             ->first();
