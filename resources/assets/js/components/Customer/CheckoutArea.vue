@@ -431,6 +431,7 @@
               (willDeliver || pickup === 1)
           "
           @click="checkout"
+          :disabled="checkingOut"
           class="menu-bag-btn mb-4"
           >CHECKOUT</b-btn
         >
@@ -1111,11 +1112,9 @@ export default {
       }
 
       if (this.checkingOut) {
-        console.log("blocked...");
         return;
       }
 
-      console.log("calling...");
       this.checkingOut = true;
 
       this.deliveryFee = this.deliveryFeeAmount;
