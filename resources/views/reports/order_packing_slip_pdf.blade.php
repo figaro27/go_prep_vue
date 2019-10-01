@@ -42,14 +42,15 @@
         </p>
       </div>
       <div class="col-4">
-            @if ($params['dailyOrderNumbers'])
-            <h3>Daily Order #{{$order['dailyOrderNumber']}}</h3>
-            @endif
+            <h4>{{ $order->store->details->name }}</h4>
             @if ($order->pickup === 0)
             <h4>DELIVERY</h4>
             @endif
             @if ($order->pickup === 1)
             <h4>PICKUP</h4>
+            @endif
+            @if ($params['dailyOrderNumbers'])
+            <h4>Daily Order #{{$order['dailyOrderNumber']}}</h4>
             @endif
             <img src="{{$logo}}" style="zoom: 0.5; max-width: 50%; height: auto;" />
          <!-- <p>{{$order->store->details->domain}}.goprep.com</p> -->
