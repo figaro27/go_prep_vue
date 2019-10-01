@@ -23,14 +23,14 @@
         "
         >Add Meal Package Size</b-button
       >
-      <img
+      <!--       <img
         v-b-popover.hover="
           'Example: Medium, Large, Family Sized, etc. Please indicate the price for each size. For ingredient multiplier, please indicate the ratio of how many more ingredients are used for the new size. For example if the meal is twice as large, put 2. If you don\'t use ingredients, just put 1 in each field.'
         "
         title="Meal Packages"
         src="/images/store/popover.png"
         class="popover-size"
-      />
+      /> -->
       <v-client-table
         v-if="sizes.length > 0"
         :columns="columns"
