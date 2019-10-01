@@ -682,7 +682,7 @@ export default {
       this.storeSettings.deliveryInstructions;
     },
     pickupInstructions() {
-      if (this.storeSettings.pickupInstruction != null) {
+      if (this.storeSettings.pickupInstructions != null) {
         return this.storeSettings.pickupInstructions.replace(/\n/g, "<br>");
       } else return;
       this.storeSettings.pickupInstructions;
