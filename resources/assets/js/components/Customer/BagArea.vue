@@ -216,8 +216,17 @@
           placeholder="Price"
           class="mr-3"
         ></b-form-input>
-        <b-btn variant="success" @click="addLineItem(0)">Add</b-btn>
       </b-input-group>
+      <b-form-radio-group
+        v-if="storeModules.productionGroups"
+        buttons
+        v-model="lineItem.production_group_id"
+        null
+        class="storeFilters ml-2 mt-3"
+        @change="val => {}"
+        :options="productionGroupOptions"
+      ></b-form-radio-group>
+      <b-btn variant="success" @click="addLineItem(0)">Add</b-btn>
       <h3 class="center-text mt-5">Or Select From Existing</h3>
       <b-input-group>
         <b-form-select
@@ -251,7 +260,8 @@ export default {
       lineItem: {
         title: "",
         price: null,
-        quantity: 1
+        quantity: 1,
+        production_group_id: null
       },
       selectedLineItem: {},
       orderLineItems: []
@@ -288,8 +298,18 @@ export default {
       minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
-      lineItems: "viewedStoreLineItems"
+      lineItems: "viewedStoreLineItems",
+      storeProductionGroups: "storeProductionGroups"
     }),
+    productionGroupOptions() {
+      let prodGroups = this.storeProductionGroups;
+      let prodGroupOptions = [{ text: "All", value: null }];
+
+      prodGroups.forEach(prodGroup => {
+        prodGroupOptions.push({ text: prodGroup.title, value: prodGroup.id });
+      });
+      return prodGroupOptions;
+    },
     remainingPrice() {
       return this.minPrice - this.totalBagPricePreFees;
     },
