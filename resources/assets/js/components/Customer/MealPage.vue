@@ -131,7 +131,12 @@
           </div>
 
           <b-form-textarea
-            v-if="storeModules.specialInstructions"
+            v-if="
+              (storeModules.specialInstructions &&
+                !storeModuleSettings.specialInstructionsStoreOnly) ||
+                (storeModuleSettings.specialInstructionsStoreOnly &&
+                  $route.params.storeView)
+            "
             class="mt-4"
             v-model="specialInstructions"
             placeholder="Special instructions"
@@ -230,7 +235,8 @@ export default {
       minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
-      storeModules: "viewedStoreModules"
+      storeModules: "viewedStoreModules",
+      storeModuleSettings: "viewedStoreModuleSettings"
     }),
     viewedMeal() {
       return this.meal;

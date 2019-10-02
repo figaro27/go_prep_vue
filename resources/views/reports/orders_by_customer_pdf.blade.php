@@ -45,6 +45,10 @@
         </h5>
         @endif
 
+        @if ($order['notes'] != null)
+        <h5>Order Notes - {{ $order['notes'] }}</h5>
+        @endif
+
           @if(!count($order['meal_quantities']))
             None
           @else

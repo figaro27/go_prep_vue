@@ -107,11 +107,37 @@
               </b-dropdown>
             </span>
 
-            <!-- <div slot="notes" class="text-nowrap" slot-scope="props">
-              <p v-if="props.row.has_notes">
-                <img src="/images/store/note.png" />
+            <div slot="icons" class="text-nowrap" slot-scope="props">
+              <p>
+                <i
+                  v-if="props.row.manual"
+                  class="fas fa-hammer text-primary"
+                  v-b-popover.hover.top="
+                    'This is a manual order created by you for your customer.'
+                  "
+                ></i>
+                <i
+                  v-if="props.row.adjusted"
+                  class="fas fa-asterisk text-warning"
+                  v-b-popover.hover.top="'This order was adjusted.'"
+                ></i>
+                <i
+                  v-if="props.row.cashOrder"
+                  class="fas fa-money-bill text-success"
+                  v-b-popover.hover.top="
+                    'A credit card wasn\'t processed through GoPrep for this order.'
+                  "
+                ></i>
+                <i
+                  v-if="props.row.notes"
+                  class="fas fa-sticky-note text-muted"
+                  v-b-popover.hover.top="'This order has notes.'"
+                ></i>
+                <!-- <i v-if="props.row.voided" class="fas fa-window-close text-danger" v-b-popover.hover.top="
+                      'This order was voided.'
+                "></i> -->
               </p>
-            </div> -->
+            </div>
             <div slot="created_at" slot-scope="props">
               {{ moment(props.row.created_at).format("dddd, MMM Do") }}
             </div>
@@ -136,20 +162,20 @@
               >
               <span v-else>Paid in Full</span>
             </div>
-            <div slot="chargeType" slot-scope="props">
+            <!-- <div slot="chargeType" slot-scope="props">
               <span v-if="props.row.manual && props.row.cashOrder"
-                >Manual - No Charge</span
+                >Manual - {{ store.module_settings.cashOrderWording }}</span
               >
               <span v-else-if="props.row.manual && !props.row.cashOrder"
                 >Manual - Charge</span
               >
               <span v-else-if="!props.row.manual && props.row.cashOrder"
-                >Customer - No Charge</span
+                >Customer - {{ store.module_settings.cashOrderWording }}</span
               >
               <span v-else-if="!props.row.manual && !props.row.cashOrder"
                 >Customer - Charge</span
               >
-            </div>
+            </div> -->
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-primary btn-sm"
@@ -235,7 +261,9 @@
             <p>{{ moment(order.created_at).format("dddd, MMM Do") }}</p>
           </div>
           <div class="col-md-4 pt-1">
-            <h4 v-if="order.cashOrder">No Charge</h4>
+            <h4 v-if="order.cashOrder">
+              {{ store.module_settings.cashOrderWording }}
+            </h4>
             <p>
               Subtotal:
               {{ format.money(order.preFeePreDiscount, order.currency) }}
@@ -285,7 +313,7 @@
               <h4 v-if="!order.pickup">Delivery Day</h4>
               <h4 v-if="order.pickup">Pickup Day</h4>
               {{ moment(order.delivery_date).format("dddd, MMM Do") }}
-              <span v-if="order.transferTime"> - {{ order.transferTime }}</span>
+              <span v-if="order.transferTime"> {{ order.transferTime }}</span>
             </span>
             <p v-if="order.pickup_location_id != null">
               {{ order.pickup_location.name }}<br />
@@ -312,7 +340,7 @@
             {{ user_detail.delivery }}
           </div>
         </div>
-        <!-- <div class="row">
+        <div class="row" v-if="storeModules.orderNotes">
           <div class="col-md-12">
             <h4>Notes</h4>
             <textarea
@@ -330,7 +358,7 @@
               Save
             </button>
           </div>
-        </div> -->
+        </div>
         <div class="row">
           <div class="col-md-12">
             <h4>Items</h4>
@@ -434,7 +462,7 @@ export default {
       user_detail: {},
       meals: {},
       columns: [
-        // "notes",
+        "icons",
         "order_number",
         "user.user_detail.full_name",
         "user.user_detail.address",
@@ -448,7 +476,7 @@ export default {
       ],
       options: {
         headings: {
-          // notes: "Notes",
+          icons: "Status",
           dailyOrderNumber: "Daily Order #",
           order_number: "Order ID",
           "user.user_detail.full_name": "Name",
@@ -460,7 +488,7 @@ export default {
           pickup: "Type",
           amount: "Total",
           balance: "Balance",
-          chargeType: "Charge Type",
+          // chargeType: "Charge Type",
           actions: "Actions"
         },
         rowClassCallback: function(row) {
@@ -499,9 +527,9 @@ export default {
     if (this.storeModules.dailyOrderNumbers) {
       this.columns.splice(1, 0, "dailyOrderNumber");
     }
-    if (this.storeModules.manualOrders || this.storeModules.cashOrders) {
-      this.columns.splice(8, 0, "chargeType");
-    }
+    // if (this.storeModules.manualOrders || this.storeModules.cashOrders) {
+    //   this.columns.splice(8, 0, "chargeType");
+    // }
   },
   computed: {
     ...mapGetters({

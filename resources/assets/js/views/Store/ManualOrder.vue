@@ -3,11 +3,13 @@
     <!-- <Spinner v-if="loading" /> -->
     <customer-menu
       :pickup="pickup"
+      :transferTime="transferTime"
       :deliveryDay="deliveryDay"
       :manualOrder="manualOrder"
       :storeView="storeView"
       :forceValue="forceValue"
       :checkoutData="checkoutData"
+      :cashOrder="cashOrder"
     ></customer-menu>
     <!--<store-bag></store-bag>!-->
   </div>
@@ -62,12 +64,32 @@ export default {
 
       return null;
     },
+    transferTime: function() {
+      if (
+        this.$route.params.checkoutData &&
+        this.$route.params.checkoutData.hasOwnProperty("transferTime")
+      ) {
+        return this.$route.params.checkoutData.transferTime;
+      }
+
+      return null;
+    },
     deliveryDay: function() {
       if (
         this.$route.params.checkoutData &&
         this.$route.params.checkoutData.hasOwnProperty("deliveryDay")
       ) {
         return this.$route.params.checkoutData.deliveryDay;
+      }
+
+      return null;
+    },
+    cashOrder: function() {
+      if (
+        this.$route.params.checkoutData &&
+        this.$route.params.checkoutData.hasOwnProperty("cashOrder")
+      ) {
+        return this.$route.params.checkoutData.cashOrder;
       }
 
       return null;

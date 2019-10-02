@@ -18,18 +18,18 @@
             @if ($order->pickup === 0)
             <p>Delivery Date: {{$order->delivery_date->format('D, m/d/Y')}} 
               @if ($order->transferTime)
-                - {{ $order->transferTime }}
+                {{ $order->transferTime }}
               @endif
             </p>
             @endif
             @if ($order->pickup === 1)
             <p>Pick Up Date: {{$order->delivery_date->format('D, m/d/Y')}}
               @if ($order->transferTime)
-                - {{ $order->transferTime }}
+                {{ $order->transferTime }}
               @endif
             </p>
             @endif
-            <p><strong>Total: ${{number_format($order->amount, 2)}} @if ($order->cashOrder) (No Charge) @endif</strong></p>
+            <p><strong>Total: ${{number_format($order->amount, 2)}} @if ($order->cashOrder) ({{ $order->store->moduleSettings->cashOrderWording }}) @endif</strong></p>
       </div>
       <div class="col-4 address">
         <h4>Customer</h4>
@@ -42,14 +42,15 @@
         </p>
       </div>
       <div class="col-4">
-            @if ($params['dailyOrderNumbers'])
-            <h3>Daily Order #{{$order['dailyOrderNumber']}}</h3>
-            @endif
+            <h4>{{ $order->store->details->name }}</h4>
             @if ($order->pickup === 0)
-            <h4>DELIVERY</h4>
+            <h5>DELIVERY</h5>
             @endif
             @if ($order->pickup === 1)
-            <h4>PICKUP</h4>
+            <h5>PICKUP</h5>
+            @endif
+            @if ($params['dailyOrderNumbers'])
+            <h5>Daily Order #{{$order['dailyOrderNumber']}}</h5>
             @endif
             <img src="{{$logo}}" style="zoom: 0.5; max-width: 50%; height: auto;" />
          <!-- <p>{{$order->store->details->domain}}.goprep.com</p> -->

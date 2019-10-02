@@ -45,7 +45,7 @@
             :checkoutData="checkoutData"
             @updateData="updateData"
           ></checkout-area>
-          <store-closed></store-closed>
+          <store-closed v-if="!$route.params.storeView"></store-closed>
         </div>
       </div>
       <add-customer-modal
@@ -103,7 +103,7 @@ export default {
       showAuthModal: false,
       //couponFreeDelivery: 0,
       transferTime: "",
-      cashOrder: false,
+      cashOrder: null,
       addCustomerModal: false,
       deposit: 100,
       creditCardList: [],
@@ -115,6 +115,7 @@ export default {
           : null,
       selectedPickupLocation: null,
       pickup: 0,
+      transferTime: null,
       deliveryDay: null,
       stripeKey: window.app.stripe_key,
       loading: false,
@@ -408,8 +409,16 @@ export default {
           this.pickup = newData.pickup;
         }
 
+        if (newData.hasOwnProperty("transferTime")) {
+          this.transferTime = newData.transferTime;
+        }
+
         if (newData.hasOwnProperty("deliveryDay")) {
           this.deliveryDay = newData.deliveryDay;
+        }
+
+        if (newData.hasOwnProperty("cashOrder")) {
+          this.cashOrder = newData.cashOrder;
         }
       }
     },

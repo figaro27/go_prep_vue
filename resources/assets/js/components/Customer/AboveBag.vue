@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-button size="lg" class="brand-color white-text" :to="changeMealsRouter">
-      <span class="d-sm-inline">Change Items</span>
+      <span class="d-sm-inline">Add Items</span>
     </b-button>
     <b-button size="lg" class="gray white-text" @click="clearAll">
       <span class="d-sm-inline">Empty Bag</span>

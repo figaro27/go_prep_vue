@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      v-if="!willDeliver && loggedIn"
+      v-if="!willDeliver && loggedIn && !storeView"
       class="main-customer-container customer-menu-container left-right-box-shadow"
     >
       <div class="row">
@@ -18,6 +18,9 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
+  props: {
+    storeView: false
+  },
   computed: {
     ...mapGetters({
       willDeliver: "viewedStoreWillDeliver",

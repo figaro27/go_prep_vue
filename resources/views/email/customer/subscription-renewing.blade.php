@@ -96,7 +96,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- title -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Subscription Renewal</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:28px; color:#3b3b3b; line-height:26px;">Subscription Renewal</td>
                       </tr>
                       <!-- end title -->
                       <tr>
@@ -189,18 +189,18 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 	<td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">Click the button below if you would like to update your subscription.</td>
                 </tr>
                 <tr>
-                  <td height="15"></td>
+                  <td height="30"></td>
                 </tr>
+
                 <tr>
                 <td><a href="http://goprep.com/customer/subscriptions"><button bgcolor="#E04F00" align="center" style="font-family:'Open Sans'; font-size:16px; color:#ffffff;padding-left:25px;padding-right:25px;border-radius:5px;background-color:#F25727;width:100%;height:55px;border:none">Go</button></a></td>
                 </tr>
 
-
+                <tr>
+                  <td height="30"></td>
+                </tr>
                 
                 <!-- end content -->
-                <tr>
-                  <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
-                </tr>
               </table>
             </td>
           </tr>

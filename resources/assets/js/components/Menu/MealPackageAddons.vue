@@ -17,14 +17,14 @@
         <b-button variant="primary" @click="addAddon()"
           >Add Meal Addon</b-button
         >
-        <img
+        <!--         <img
           v-b-popover.hover="
             'Example: Extra meat. Extra veggies. Please indicate the price increase that will be added to the overall meal. If you use ingredients, the Adjust button lets you adjust how the particular addon affects the overall ingredients for the meal.'
           "
           title="Meal Addon"
           src="/images/store/popover.png"
           class="popover-size"
-        />
+        /> -->
       </div>
 
       <div

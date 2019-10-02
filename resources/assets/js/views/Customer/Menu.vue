@@ -45,9 +45,14 @@
             v-if="!meals.length && !mealPackages.length"
             position="absolute"
           />
-          <store-closed></store-closed>
-          <outside-delivery-area></outside-delivery-area>
-
+          <store-closed
+            v-if="!$route.params.storeView"
+            :storeView="storeView"
+          ></store-closed>
+          <outside-delivery-area
+            v-if="!$route.params.storeView"
+            :storeView="storeView"
+          ></outside-delivery-area>
           <meals-area
             :meals="meals"
             :card="card"
@@ -331,23 +336,6 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
     }),
-    AAAtest() {
-      let packages = [];
-
-      this.bag.forEach(item => {
-        if (item.meal_package) packages.push(item);
-      });
-
-      let test = [];
-
-      packages.forEach(item => {
-        let c = Object.values(item.components);
-        c.forEach(component => {
-          test.push(component);
-        });
-      });
-      return test;
-    },
     meals() {
       let meals = this.store.meals;
       let filters = this.filters;

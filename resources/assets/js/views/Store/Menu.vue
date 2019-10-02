@@ -7,10 +7,11 @@
             <b-modal
               v-model="showCategoriesModal"
               title="Menu Categories"
-              size="sm"
+              size="md"
               @ok="updateCategories"
               @cancel="updateCategories"
               @hidden="updateCategories"
+              @hide="editingCategory = false"
               no-fade
             >
               <b-form-group :state="true">
@@ -26,16 +27,39 @@
                       :key="`category-${category.id}`"
                       style="cursor: n-resize"
                     >
-                      <p>
+                      <h5>
                         {{ category.category }}
+                        <i
+                          v-if="category.id"
+                          @click="editCategory(category.id)"
+                          class="fa fa-edit text-warning"
+                        ></i>
                         <i
                           v-if="category.id"
                           @click="deleteCategory(category.id)"
                           class="fa fa-minus-circle text-danger"
                         ></i>
-                      </p>
+                      </h5>
                     </li>
                   </draggable>
+                </div>
+                <div class="row">
+                  <div class="col-md-10">
+                    <b-form-input
+                      v-if="editingCategory"
+                      v-model="newCategoryName"
+                      placeholder="Enter updated category name."
+                      class="d-inline"
+                    ></b-form-input>
+                  </div>
+                  <div class="col-md-2">
+                    <b-btn
+                      @click="updateCategory"
+                      variant="primary"
+                      v-if="editingCategory"
+                      >Save</b-btn
+                    >
+                  </div>
                 </div>
 
                 <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
@@ -850,6 +874,9 @@ export default {
         image: {},
         macros: {}
       },
+      editingCategory: false,
+      editingCategoryId: null,
+      newCategoryName: "",
       showCategoriesModal: false,
       new_category: "",
       createMealModal: false,
@@ -1503,6 +1530,24 @@ export default {
       axios.delete("/api/me/categories/" + id).then(response => {
         this.refreshCategories();
       });
+    },
+    editCategory(id) {
+      this.editingCategory = true;
+      this.editingCategoryId = id;
+    },
+    updateCategory() {
+      axios
+        .patch("/api/me/categories/" + this.editingCategoryId, {
+          name: this.newCategoryName
+        })
+        .then(resp => {
+          this.editingCategory = false;
+          this.showCategoriesModal = false;
+          // Not refreshing table. Reloading page for now.
+          // this.refreshTable();
+          this.$toastr.s("Category name updated.");
+          location.reload();
+        });
     }
   }
 };

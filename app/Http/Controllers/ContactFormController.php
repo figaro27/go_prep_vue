@@ -54,9 +54,9 @@ class ContactFormController extends Controller
         $email = auth('api')->user()->email;
         $id = auth('api')->user()->id;
         $lastViewedStoreId = auth('api')->user()->last_viewed_store_id;
-        $lastViewedStore = StoreDetail::where('id', $lastViewedStoreId)
-            ->pluck('name')
-            ->first();
+        $store = Store::where('id', $lastViewedStoreId)->first();
+        $lastViewedStore = $store->details->name;
+        $storeEmail = $store->user->email;
         $firstname = UserDetail::where('user_id', $id)
             ->pluck('firstname')
             ->first();
@@ -71,14 +71,18 @@ class ContactFormController extends Controller
             'email' => $email,
             'subject' => $request->subject,
             'body' => $request->message,
-            'lastViewedStore' => $lastViewedStore
+            'lastViewedStore' => $lastViewedStore,
+            'storeEmail' => $storeEmail
         );
 
         Mail::send('email.contact-customer', $data, function ($message) use (
             $data
         ) {
             $message->from($data['email']);
-            $message->to('support@goprep.com');
+            $message
+                ->to($data['storeEmail'])
+                ->bcc('mike@goprep.com')
+                ->subject('GoPrep - Contact Form Inquiry from Customer');
         });
     }
 }

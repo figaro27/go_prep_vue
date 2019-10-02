@@ -235,35 +235,70 @@
       "
     >
       <li
-        class="checkout-item unset-height"
+        class="checkout-item"
         v-if="
           deliveryDaysOptions.length > 1 &&
             $route.params.subscriptionId === undefined
         "
       >
-        <p
-          v-if="
-            pickup === 0 &&
-              deliveryDaysOptions.length > 1 &&
-              !storeModules.hideDeliveryOption
-          "
-        >
-          Delivery Day
-        </p>
-        <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
-          Pickup Day
-        </p>
-        <b-form-group v-if="deliveryDaysOptions.length > 1" description>
+        <div>
+          <strong
+            v-if="
+              pickup === 0 &&
+                deliveryDaysOptions.length > 1 &&
+                !storeModules.hideDeliveryOption
+            "
+          >
+            Delivery Day
+          </strong>
+          <strong v-if="pickup === 1 && deliveryDaysOptions.length > 1">
+            Pickup Day
+          </strong>
           <b-select
+            v-if="deliveryDaysOptions.length > 1"
             :options="deliveryDaysOptions"
             v-model="deliveryDay"
             @input="changeDeliveryDay"
-            class="delivery-select"
+            class="delivery-select ml-2"
             required
           >
             <option slot="top" disabled>-- Select delivery day --</option>
           </b-select>
-        </b-form-group>
+        </div>
+      </li>
+      <li
+        class="checkout-item"
+        v-if="
+          storeModules.pickupHours &&
+            pickup &&
+            $route.params.subscriptionId === undefined
+        "
+      >
+        <div>
+          <strong>Pickup Time</strong>
+          <b-form-select
+            class="delivery-select ml-2"
+            v-model="transferTime"
+            :options="transferTimeOptions"
+          ></b-form-select>
+        </div>
+      </li>
+      <li
+        class="checkout-item"
+        v-if="
+          storeModules.deliveryHours &&
+            !pickup &&
+            $route.params.subscriptionId === undefined
+        "
+      >
+        <div>
+          <strong>Delivery Time</strong>
+          <b-form-select
+            class="delivery-select ml-2"
+            v-model="transferTime"
+            :options="transferTimeOptions"
+          ></b-form-select>
+        </div>
       </li>
       <li
         class="checkout-item"
@@ -273,32 +308,21 @@
         "
       >
         <div>
-          <h6 v-if="pickup === 0">
+          <strong v-if="pickup === 0">
             Delivery Day: {{ deliveryDaysOptions[0].text }}
-          </h6>
-          <h6 v-if="pickup === 1">
+          </strong>
+          <strong v-if="pickup === 1">
             Pickup Day: {{ deliveryDaysOptions[0].text }}
-          </h6>
+          </strong>
         </div>
       </li>
     </span>
-    <span v-if="$route.params.storeView === true">
-      <p v-if="pickup === 0">Delivery Day</p>
-      <p v-if="pickup === 1">Pickup Day</p>
-      <b-form-group description>
-        <b-select
-          :options="deliveryDaysOptionsStoreView"
-          v-model="deliveryDay"
-          @input="changeDeliveryDay"
-          class="delivery-select"
-          required
-        >
-          <option slot="top" disabled>-- Select delivery day --</option>
-        </b-select>
-      </b-form-group>
-    </span>
+    <div v-if="$route.params.storeView === true">
+      <strong v-if="pickup === 0">Delivery Day</strong>
+      <strong v-if="pickup === 1">Pickup Day</strong>
+    </div>
     <li
-      class="checkout-item unset-height"
+      class="checkout-item"
       v-if="
         $parent.orderId === undefined &&
           storeModules.pickupLocations &&
@@ -307,31 +331,13 @@
       "
     >
       <div>
-        <p>Pickup Location</p>
+        <strong>Pickup Location</strong>
         <b-select
           v-model="selectedPickupLocation"
           :options="pickupLocationOptions"
-          class="delivery-select mb-3"
+          class="delivery-select mb-3 ml-2"
           required
         ></b-select>
-      </div>
-    </li>
-
-    <li
-      class="checkout-item"
-      v-if="
-        storeModules.transferHours &&
-          pickup &&
-          $route.params.subscriptionId === undefined
-      "
-    >
-      <div>
-        <strong>Pickup Time</strong>
-        <b-form-select
-          class="ml-2"
-          v-model="transferTime"
-          :options="transferTimeOptions"
-        ></b-form-select>
       </div>
     </li>
 
@@ -344,7 +350,10 @@
             !$route.params.storeView
         "
       >
-        <b-alert v-if="!loading" variant="warning center-text" show
+        <b-alert
+          v-if="!loading && !$route.params.storeView"
+          variant="warning center-text"
+          show
           >You are outside of the delivery area.</b-alert
         >
       </div>
@@ -385,7 +394,7 @@
               v-model="cashOrder"
               class="pb-2 mediumCheckbox mt-1 mb-1"
             >
-              No Charge
+              {{ storeModuleSettings.cashOrderWording }}
             </b-form-checkbox>
             <!-- <p
               v-if="
@@ -423,12 +432,12 @@
 
         <b-btn
           v-if="
-            card != null &&
+            (card != null || cashOrder) &&
               (minimumMet || $route.params.storeView) &&
               $route.params.adjustOrder != true &&
               $route.params.subscriptionId === undefined &&
-              store.settings.open === true &&
-              (willDeliver || pickup === 1)
+              (store.settings.open === true || $route.params.storeView) &&
+              (willDeliver || pickup === 1 || $route.params.storeView)
           "
           @click="checkout"
           :disabled="checkingOut"
@@ -661,7 +670,7 @@ export default {
       this.storeSettings.deliveryInstructions;
     },
     pickupInstructions() {
-      if (this.storeSettings.pickupInstruction != null) {
+      if (this.storeSettings.pickupInstructions != null) {
         return this.storeSettings.pickupInstructions.replace(/\n/g, "<br>");
       } else return;
       this.storeSettings.pickupInstructions;
@@ -694,12 +703,22 @@ export default {
       else return this.creditCards[0].id;
     },
     transferTimeOptions() {
-      let startTime = parseInt(
-        this.storeModuleSettings.transferStartTime.substr(0, 2)
-      );
-      let endTime = parseInt(
-        this.storeModuleSettings.transferEndTime.substr(0, 2)
-      );
+      let startTime = null;
+      let endTime = null;
+      if (this.pickup === 1) {
+        startTime = parseInt(
+          this.storeModuleSettings.pickupStartTime.substr(0, 2)
+        );
+        endTime = parseInt(this.storeModuleSettings.pickupEndTime.substr(0, 2));
+      } else {
+        startTime = parseInt(
+          this.storeModuleSettings.deliveryStartTime.substr(0, 2)
+        );
+        endTime = parseInt(
+          this.storeModuleSettings.deliveryEndTime.substr(0, 2)
+        );
+      }
+
       let hourOptions = [];
 
       while (startTime <= endTime) {
@@ -707,19 +726,46 @@ export default {
         startTime++;
       }
 
+      let transferTimeRange = this.storeModuleSettings.transferTimeRange;
       let newHourOptions = [];
+
       hourOptions.forEach(option => {
         if (option < 12) {
           option = option.toString();
-          let newOption = option.concat(" ", "AM");
-          newHourOptions.push(newOption);
+          let period = " AM";
+          if (parseInt(option) === 11) {
+            period = " PM";
+          }
+          let hour = 1;
+          let newOption = option.concat(" AM");
+          if (transferTimeRange) {
+            newOption.concat(" - " + (parseInt(option) + hour) + period);
+            let finalOption = newOption.concat(
+              " - " + (parseInt(option) + hour) + period
+            );
+            newHourOptions.push(finalOption);
+          } else newHourOptions.push(newOption);
         } else {
           if (option > 12) {
             option = option - 12;
           }
+          let hour = 1;
+          let period = " PM";
+          if (parseInt(option) === 11) {
+            period = " AM";
+          }
+          if (parseInt(option) === 12) {
+            hour = -11;
+          }
           option = option.toString();
-          let newOption = option.concat(" ", "PM");
-          newHourOptions.push(newOption);
+          let newOption = option.concat(" PM");
+          if (transferTimeRange) {
+            newOption.concat(" - " + (parseInt(option) + hour) + period);
+            let finalOption = newOption.concat(
+              " - " + (parseInt(option) + hour) + period
+            );
+            newHourOptions.push(finalOption);
+          } else newHourOptions.push(newOption);
         }
       });
 
@@ -828,7 +874,10 @@ export default {
         if (!this.couponFreeDelivery) {
           if (this.storeSettings.applyDeliveryFee) {
             if (this.storeSettings.deliveryFeeType === "flat") {
-              return this.storeSettings.deliveryFee;
+              // DBD Temp Workaround. Remove when adding the double delivery day feature.
+              let addedFee = this.DBD();
+              //
+              return this.storeSettings.deliveryFee + addedFee;
             } else if (this.storeSettings.deliveryFeeType === "mileage") {
               let mileageBase = parseFloat(this.storeSettings.mileageBase);
               let mileagePerMile = parseFloat(
@@ -1022,7 +1071,9 @@ export default {
         customer: this.customer,
         weeklySubscriptionValue: this.weeklySubscriptionValue,
         pickup: this.pickup,
-        deliveryDay: this.deliveryDay
+        transferTime: this.transferTime,
+        deliveryDay: this.deliveryDay,
+        cashOrder: this.cashOrder
       });
     },
     getCards() {
@@ -1057,6 +1108,10 @@ export default {
         deposit = parseInt(deposit);
       }
 
+      let weeklySubscriptionValue = this.storeSettings.allowMealPlans
+        ? this.weeklySubscriptionValue
+        : 0;
+
       axios
         .post(`/api/me/orders/adjustOrder`, {
           orderId: this.$parent.orderId,
@@ -1068,7 +1123,7 @@ export default {
           deliveryFee: this.deliveryFeeAmount,
           processingFee: this.processingFeeAmount,
           bag: this.bag,
-          plan: this.weeklySubscription,
+          plan: weeklySubscriptionValue,
           store_id: this.store.id,
           salesTax: this.tax,
           coupon_id: this.couponApplied ? this.coupon.id : null,
@@ -1144,12 +1199,21 @@ export default {
       if (this.cashOrder === true) {
         cardId = 0;
       }
+
+      let weeklySubscriptionValue = this.storeSettings.allowMealPlans
+        ? this.weeklySubscriptionValue
+        : 0;
+
+      if (this.cashOrder === null) {
+        this.cashOrder = 0;
+      }
+
       axios
         .post(endPoint, {
           subtotal: this.subtotal,
           afterDiscount: this.afterDiscount,
           bag: this.bag,
-          plan: this.weeklySubscription,
+          plan: weeklySubscriptionValue,
           pickup: this.pickup,
           delivery_day: this.deliveryDay,
           card_id: cardId,
@@ -1210,7 +1274,6 @@ export default {
         })
         .finally(() => {
           this.loading = false;
-          this.checkingOut = false;
         });
     },
     setCustomer() {
@@ -1220,7 +1283,19 @@ export default {
       this.coupon = {};
       this.setBagCoupon(null);
       this.couponCode = "";
-      this.$toastr.s("Coupon Removed.", "Success");
+    },
+
+    // Temporary work around for two delivery fees based on day of the week. Will remove when two delivery day feature is added.
+    DBD() {
+      if (this.store.id === 100) {
+        let cat = [];
+        this.bag.forEach(item => {
+          if (!cat.includes(item.meal.category_ids[0]))
+            cat.push(item.meal.category_ids[0]);
+        });
+        if (cat.length > 1) return 5;
+        else return 0;
+      } else return 0;
     }
   }
 };

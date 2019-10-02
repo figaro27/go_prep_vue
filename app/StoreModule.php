@@ -15,8 +15,7 @@ class StoreModule extends Model
     }
 
     protected $casts = [
-        'cashOrders' => 'boolean',
-        'transferHours' => 'boolean'
+        'cashOrders' => 'boolean'
     ];
 
     protected $fillable = ['cashOrders'];

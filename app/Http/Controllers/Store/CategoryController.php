@@ -16,8 +16,7 @@ class CategoryController extends StoreController
      */
     public function index()
     {
-        return $this->store->has('categories') ?
-        $this->store->categories : [];
+        return $this->store->has('categories') ? $this->store->categories : [];
     }
 
     /**
@@ -45,16 +44,16 @@ class CategoryController extends StoreController
             $newCat->order = $this->store->categories()->count() + 1;
             $newCat->save();
             return $newCat;
-        } else if ($request->has('categories')) {
+        } elseif ($request->has('categories')) {
             $cats = collect($request->get('categories'));
             $cats = $cats->sortBy('order');
 
-            foreach($cats->values() as $i => $cat) {
-              $c = $this->store->categories()->find($cat['id']);
-              if($c) {
-                $c->order = $i;
-                $c->save();
-              }
+            foreach ($cats->values() as $i => $cat) {
+                $c = $this->store->categories()->find($cat['id']);
+                if ($c) {
+                    $c->order = $i;
+                    $c->save();
+                }
             }
         }
     }
@@ -67,7 +66,6 @@ class CategoryController extends StoreController
      */
     public function show(Request $request, $id)
     {
-
     }
 
     /**
@@ -90,6 +88,12 @@ class CategoryController extends StoreController
      */
     public function update(Request $request, $id)
     {
+        $categoryId = $id;
+        $newName = $request->get('name');
+
+        $category = Category::where('id', $categoryId)->first();
+        $category->category = $newName;
+        $category->save();
     }
 
     /**
@@ -100,10 +104,10 @@ class CategoryController extends StoreController
      */
     public function destroy(Request $request, $id)
     {
-      $cat = $this->store->categories()->find($id);
+        $cat = $this->store->categories()->find($id);
 
-      if($cat) {
-        $cat->delete();
-      }
+        if ($cat) {
+            $cat->delete();
+        }
     }
 }
