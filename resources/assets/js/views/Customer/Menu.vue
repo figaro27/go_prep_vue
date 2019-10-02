@@ -47,6 +47,7 @@
           />
           <store-closed></store-closed>
           <outside-delivery-area></outside-delivery-area>
+
           <meals-area
             :meals="meals"
             :card="card"
@@ -79,6 +80,32 @@
 
           <meal-packages-area :mealPackages="mealPackages"></meal-packages-area>
         </div>
+
+        <div class="categoryNavArea" v-if="!mobile">
+          <div class="categoryNavArea_header">
+            <h3 class="white-text d-inline pr-2">Category</h3>
+            <p class="white-text d-inline mb-0 pb-0">
+              ({{ finalCategories.length }} items)
+            </p>
+          </div>
+
+          <div class="categoryNavArea_body">
+            <div class="categoryNavArea_body_inner">
+              <div
+                v-for="(cat, index) in finalCategories"
+                :key="cat.name"
+                :class="
+                  index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
+                "
+                :target="'categorySection_' + cat.id"
+              >
+                {{ cat.name }}
+              </div>
+            </div>
+            <!-- Inner Body End !-->
+          </div>
+        </div>
+
         <div :class="showBagClass" v-if="!mobile">
           <bag-area
             :manualOrder="manualOrder"
@@ -147,6 +174,57 @@ import MealPage from "../../components/Customer/MealPage";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
+});
+
+$(function() {
+  var byPassScroll = false;
+  $("body").on("click", ".categoryNavItem", function() {
+    if ($(this).hasClass("active")) {
+      return;
+    }
+
+    let target = $(this).attr("target");
+    if (!target) {
+      return;
+    }
+
+    byPassScroll = true;
+
+    $(".categoryNavItem").removeClass("active");
+    $(this).addClass("active");
+
+    $([document.documentElement, document.body]).animate(
+      {
+        scrollTop:
+          $(".categorySection[target='" + target + "']").offset().top - 59
+      },
+      700
+    );
+
+    setTimeout(() => {
+      byPassScroll = false;
+    }, 800);
+  });
+
+  $(window).on("scroll", function() {
+    buildCategoryScroll();
+  });
+
+  function buildCategoryScroll() {
+    if (byPassScroll) {
+      return;
+    }
+
+    let windowScroll = $(window).scrollTop();
+
+    $(".categorySection").each(function() {
+      if (windowScroll >= $(this).offset().top - 60) {
+        let target = $(this).attr("target");
+        $(".categoryNavItem").removeClass("active");
+        $('.categoryNavItem[target="' + target + '"]').addClass("active");
+      }
+    });
+  }
 });
 
 export default {
@@ -218,6 +296,7 @@ export default {
         allergies: [],
         categories: []
       },
+      finalCategories: [],
       meal: null,
       mealPackage: null,
       ingredients: "",
@@ -340,11 +419,11 @@ export default {
       });
 
       // Find store-defined category sorting
-      let sorting = {};
+      /*let sorting = {};
       this._categories.forEach(cat => {
         //sorting[cat.category] = cat.order.toString() + cat.category;
         sorting[cat.category] = !isNaN(cat.order) ? parseInt(cat.order) : 9999;
-      });
+      });*/
 
       /* Sort Categories */
       let sortedCategories = [];
@@ -355,7 +434,8 @@ export default {
 
         sortedCategories.push({
           name: cat.category,
-          order
+          order,
+          id: cat.id
         });
       }
 
@@ -388,19 +468,26 @@ export default {
       });*/
 
       let finalData = [];
+      let finalCategories = [];
+
       for (let i = 0; i < sortedCategories.length; i++) {
         let name = sortedCategories[i].name;
         let order = sortedCategories[i].order;
+        let category_id = sortedCategories[i].id;
 
         if (grouped[name] && grouped[name].length > 0) {
           finalData.push({
             category: name,
+            category_id,
             meals: grouped[name],
             order
           });
+
+          finalCategories.push(sortedCategories[i]);
         }
       }
 
+      this.finalCategories = finalCategories;
       return finalData;
 
       // Sort
