@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Coupon;
+use App\LineItemOrder;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -37,7 +38,8 @@ class Order extends Model
         'order_day',
         'goprep_fee',
         'stripe_fee',
-        'grandTotal'
+        'grandTotal',
+        'line_items_order'
     ];
 
     public function user()
@@ -82,6 +84,11 @@ class Order extends Model
     public function lineItems()
     {
         return $this->hasMany('App\LineItems');
+    }
+
+    public function lineItemsOrder()
+    {
+        return $this->hasMany('App\LineItemOrder');
     }
 
     public function lineItemsOrders()
@@ -147,6 +154,11 @@ class Order extends Model
         //     array_push($meals, Meal::where('id', $meal)->get());
         // }
         // return $meals;
+    }
+
+    public function getLineItemsOrderAttribute()
+    {
+        return LineItemOrder::where('order_id', $this->id)->get();
     }
 
     public function getStoreNameAttribute()

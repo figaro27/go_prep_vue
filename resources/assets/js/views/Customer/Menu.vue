@@ -135,6 +135,7 @@
               :deliveryDay="deliveryDay"
               :transferTime="transferTime"
               :pickup="pickup"
+              :order="order"
             ></bag-actions>
           </div>
         </div>
@@ -270,6 +271,7 @@ export default {
     subscription: {},
     subscriptionId: null,
     orderId: null,
+    order: null,
     deliveryDay: null,
     transferTime: null,
     pickup: null

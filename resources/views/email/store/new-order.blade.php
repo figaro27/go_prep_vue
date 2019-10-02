@@ -243,7 +243,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
           <tr>
             <td align="center">
               <table width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
-                @foreach($order->lineItemsOrders as $lineItemOrder)
+                @foreach($order->lineItemsOrder as $lineItemOrder)
 
                 <tr>
                   <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->title }}</td>

@@ -8,6 +8,7 @@
       :deliveryDay="deliveryDay"
       :transferTime="transferTime"
       :pickup="pickup"
+      :order="order"
     ></customer-menu>
   </div>
 </template>

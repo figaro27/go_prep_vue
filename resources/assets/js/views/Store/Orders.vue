@@ -388,8 +388,8 @@
           </div>
         </div>
         <div
-          class="row"
-          v-if="viewOrderModal && order.line_items_orders.length"
+          class="row mt-4"
+          v-if="viewOrderModal && order.line_items_order.length"
         >
           <div class="col-md-12">
             <h4>Extras</h4>

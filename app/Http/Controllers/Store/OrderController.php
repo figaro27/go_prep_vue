@@ -7,6 +7,8 @@ use App\Bag;
 use App\MealOrder;
 use App\MealOrderComponent;
 use App\MealOrderAddon;
+use App\LineItem;
+use App\LineItemOrder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Carbon;
@@ -136,7 +138,7 @@ class OrderController extends StoreController
                 'user.userDetail',
                 'meals',
                 'pickup_location',
-                'lineItemsOrders'
+                'lineItemsOrder'
             ])
             ->where('id', $id)
             ->first();
@@ -242,6 +244,33 @@ class OrderController extends StoreController
                         'meal_order_id' => $mealOrder->id,
                         'meal_addon_id' => $addonId
                     ]);
+                }
+            }
+        }
+
+        $lineItemsOrder = $request->get('lineItemsOrder');
+        if ($lineItemsOrder != null) {
+            foreach ($lineItemsOrder as $lineItemOrder) {
+                $title = $lineItemOrder['title'];
+                $id = LineItem::where('title', $title)
+                    ->pluck('id')
+                    ->first();
+                $quantity = $lineItemOrder['quantity'];
+                $existingLineItem = LineItemOrder::where([
+                    'line_item_id' => $id,
+                    'order_id' => $order->id
+                ])->first();
+
+                if ($existingLineItem) {
+                    $existingLineItem->quantity = $quantity;
+                    $existingLineItem->save();
+                } else {
+                    $lineItemOrder = new LineItemOrder();
+                    $lineItemOrder->store_id = $store->id;
+                    $lineItemOrder->line_item_id = $id;
+                    $lineItemOrder->order_id = $order->id;
+                    $lineItemOrder->quantity = $quantity;
+                    $lineItemOrder->save();
                 }
             }
         }

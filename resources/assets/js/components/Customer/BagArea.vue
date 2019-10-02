@@ -146,14 +146,14 @@
             <div class="bag-item-quantity mr-2">
               <div
                 class="bag-plus-minus brand-color white-text"
-                @click="orderLineItem.quantity += 1"
+                @click="updateLineItems(orderLineItem, 1)"
               >
                 <i>+</i>
               </div>
               <p class="bag-quantity">{{ orderLineItem.quantity }}</p>
               <div
                 class="bag-plus-minus gray white-text"
-                @click="orderLineItem.quantity -= 1"
+                @click="updateLineItems(orderLineItem, -1)"
               >
                 <i>-</i>
               </div>
@@ -188,7 +188,10 @@
         size="lg"
         variant="success"
         @click="showLineItemModal = true"
-        v-if="$route.params.manualOrder && $route.name != 'store-manual-order'"
+        v-if="
+          ($route.params.manualOrder && $route.name != 'store-manual-order') ||
+            ($route.params.adjustOrder && $route.name != 'store-adjust-order')
+        "
       >
         <span class="d-sm-inline">Add Extra</span>
       </b-button>
@@ -244,7 +247,6 @@ import MenuBag from "../../mixins/menuBag";
 export default {
   data() {
     return {
-      orderLineItems: [],
       showLineItemModal: false,
       lineItem: {
         title: "",
@@ -332,6 +334,13 @@ export default {
         return "shopping-cart-meals area-scroll";
       else return "shopping-cart-meals";
     }
+  },
+  mounted() {
+    let lineItemsOrder = this.$route.params.order.line_items_order;
+    lineItemsOrder.forEach(lineItemOrder => {
+      this.orderLineItems.push(lineItemOrder);
+    });
+    this.$emit("updateLineItems", this.orderLineItems);
   },
   methods: {
     getItemMeals(item) {
@@ -465,6 +474,10 @@ export default {
       this.lineItem = { title: "", price: null, quantity: 1 };
       this.selectedLineItem = { title: "", price: null, quantity: 1 };
 
+      this.$emit("updateLineItems", this.orderLineItems);
+    },
+    updateLineItems(orderLineItem, increment) {
+      orderLineItem.quantity += increment;
       this.$emit("updateLineItems", this.orderLineItems);
     },
     removeLineItem(index) {
