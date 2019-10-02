@@ -100,6 +100,14 @@ class StoresSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]);
+
+            DB::table('store_module_settings')->insert([
+                'store_id' => $i,
+                'manualOrders' => 1,
+                'manualCustomers' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]);
         }
     }
 }
