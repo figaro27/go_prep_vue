@@ -151,13 +151,12 @@
               {{ props.row.dailyOrderNumber }}
             </div>
             <div slot="balance" slot-scope="props">
-              <span v-if="props.row.deposit != 100"
-                >{{ 100 - props.row.deposit }}% -
+              <span v-if="props.row.balance != 0"
+                >{{
+                  ((props.row.balance / props.row.amount) * 100).toFixed(0)
+                }}% -
                 {{
-                  format.money(
-                    ((100 - props.row.deposit) / 100) * props.row.amount,
-                    storeSettings.currency
-                  )
+                  format.money(props.row.balance, storeSettings.currency)
                 }}</span
               >
               <span v-else>Paid in Full</span>
@@ -186,13 +185,31 @@
               <button
                 v-if="props.row.deposit != 100"
                 class="btn view btn-success btn-sm"
-                @click="chargeBalance(props.row.id, props.row.cashOrder)"
+                @click="
+                  chargeBalance(
+                    props.row.id,
+                    props.row.cashOrder,
+                    props.row.balance
+                  )
+                "
+                :disabled="checkingOut"
               >
                 <span v-if="!props.row.cashOrder"
-                  >Charge {{ 100 - props.row.deposit }}% Balance</span
+                  >Charge
+                  {{
+                    format.money(
+                      ((100 - props.row.deposit) * props.row.amount) / 100,
+                      storeSettings.currency
+                    )
+                  }}
+                  Balance</span
                 >
                 <span v-else
-                  >Settle {{ 100 - props.row.deposit }}% Balance</span
+                  >Settle
+                  {{
+                    format.money(props.row.balance, storeSettings.currency)
+                  }}
+                  Balance</span
                 >
               </button>
               <!-- <b-btn
@@ -442,6 +459,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      checkingOut: false,
       ordersByDate: {},
       email: "",
       deliveryDate: "All",
@@ -770,11 +788,17 @@ export default {
       this.filters.fulfilled = 0;
       this.refreshTable();
     },
-    chargeBalance(id, cashOrder) {
+    chargeBalance(id, cashOrder, balance) {
+      if (this.checkingOut) {
+        return;
+      }
+      this.checkingOut = true;
+
       axios
         .post("/api/me/chargeBalance", {
           id: id,
-          cashOrder: cashOrder
+          cashOrder: cashOrder,
+          balance: balance
         })
         .then(response => {
           if (response.data === 1) {
@@ -782,6 +806,7 @@ export default {
           } else {
             this.$toastr.s("Balance successfully charged.");
           }
+          this.checkingOut = false;
           this.refreshUpcomingOrders();
         });
     }

@@ -182,7 +182,6 @@ class OrderController extends StoreController
         $subtotal = $request->get('subtotal');
         $afterDiscountBeforeFees = $bagTotal;
         $preFeePreDiscount = $bagTotal;
-        $deposit = $request->get('deposit') / 100;
         $processingFee = 0;
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
@@ -190,6 +189,9 @@ class OrderController extends StoreController
         $processingFee = $request->get('processingFee');
         $cashOrder = $request->get('cashOrder');
         $grandTotal = $request->get('grandTotal');
+        $adjustedDifference = $request->get('grandTotal') - $order->amount;
+        $deposit =
+            (($order->deposit * $order->amount) / 100 / $grandTotal) * 100;
 
         $order->delivery_date = $request->get('deliveryDate');
         $order->transferTime = $request->get('transferTime');
@@ -202,6 +204,8 @@ class OrderController extends StoreController
         $order->processingFee = $processingFee;
         $order->salesTax = $salesTax;
         $order->amount = $grandTotal;
+        $order->deposit = $deposit;
+        $order->adjustedDifference = $adjustedDifference;
         $order->coupon_id = $couponId;
         $order->couponReduction = $couponReduction;
         $order->couponCode = $couponCode;
@@ -210,7 +214,6 @@ class OrderController extends StoreController
         $order->couponCode = $couponCode;
         $order->pickup_location_id = $pickupLocation;
         $order->transferTime = $transferTime;
-        $order->deposit = $deposit * 100;
 
         $order->save();
 

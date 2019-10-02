@@ -515,7 +515,8 @@ class CheckoutController extends StoreController
         $order = Order::where('id', $orderId)->first();
         $subtotal = $order->preFeePreDiscount;
         $amount = $order->amount;
-        $balance = (100 - $order->deposit) / 100;
+        $balance = $request->get('balance');
+        // $balance = (100 - $order->deposit) / 100;
         $store = $this->store;
         $application_fee = $store->settings->application_fee;
         $storeName = strtolower($this->store->storeDetail->name);
@@ -539,7 +540,7 @@ class CheckoutController extends StoreController
 
             $charge = \Stripe\Charge::create(
                 [
-                    "amount" => round(100 * ($amount * $balance)),
+                    "amount" => round(100 * $balance),
                     "currency" => "usd",
                     "source" => $storeSource,
                     "application_fee" => round(

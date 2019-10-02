@@ -23,7 +23,8 @@ class Order extends Model
         'amount' => 'float',
         'salesTax' => 'float',
         'mealPlanDiscount' => 'float',
-        'couponReduction' => 'float'
+        'couponReduction' => 'float',
+        'adjustedDifference' => 'float'
         //'created_at' => 'date:F d, Y'
     ];
 
@@ -39,7 +40,8 @@ class Order extends Model
         'goprep_fee',
         'stripe_fee',
         'grandTotal',
-        'line_items_order'
+        'line_items_order',
+        'balance'
     ];
 
     public function user()
@@ -109,6 +111,11 @@ class Order extends Model
     public function card()
     {
         return $this->hasOne('App\Card');
+    }
+
+    public function getBalanceAttribute()
+    {
+        return ($this->amount * (100 - $this->deposit)) / 100;
     }
 
     public function getOrderDayAttribute()
@@ -230,6 +237,7 @@ class Order extends Model
                 return $meal->pivot->quantity ? $meal->pivot->quantity : 0;
             });
     }
+
     public function getCutoffDateAttribute()
     {
         return $this->getCutoffDate()
