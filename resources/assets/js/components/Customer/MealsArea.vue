@@ -9,10 +9,11 @@
       v-for="(group, catIndex) in meals"
       :key="group.category"
       :id="slugify(group.category)"
+      :target="'categorySection_' + group.category_id"
       v-observe-visibility="
         (isVisible, entry) => $parent.onCategoryVisible(isVisible, catIndex)
       "
-      class="main-customer-container customer-menu-container left-right-box-shadow"
+      class="categorySection main-customer-container customer-menu-container left-right-box-shadow"
     >
       <h2 class="text-center mb-3 dbl-underline">
         {{ group.category }}
