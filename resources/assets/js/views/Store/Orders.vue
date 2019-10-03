@@ -206,9 +206,7 @@
                 >
                 <span v-else
                   >Settle
-                  {{
-                    format.money(props.row.balance, storeSettings.currency)
-                  }}
+                  {{ format.money(props.row.balance, storeSettings.currency) }}
                   Balance</span
                 >
               </button>
@@ -574,7 +572,7 @@ export default {
 
       orders.forEach(order => {
         if (order.deposit !== 100.0 && !this.columns.includes("balance")) {
-          this.columns.splice(8, 0, "balance");
+          this.columns.splice(9, 0, "balance");
           return;
         }
       });
