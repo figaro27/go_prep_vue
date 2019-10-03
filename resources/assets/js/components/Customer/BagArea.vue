@@ -80,6 +80,7 @@
             </div>
             <div class="bag-item-image mr-2">
               <thumbnail
+                v-if="item.meal.image != null"
                 :src="item.meal.image.url_thumb"
                 :spinner="false"
                 class="cart-item-img"

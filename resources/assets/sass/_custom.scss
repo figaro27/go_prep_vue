@@ -173,6 +173,11 @@ body.sidebar-minimized {
   border-radius: 12px !important;
 }
 
+.card-text-menu {
+  border-radius: 6px !important;
+  margin-bottom: 5px !important;
+}
+
 .alert {
   margin-top: 10px;
 }
@@ -330,7 +335,6 @@ body.sidebar-minimized {
 }
 
 .menu-item {
-  margin-bottom: 10px;
 }
 
 .menu-item-img {
@@ -371,6 +375,11 @@ body.sidebar-minimized {
   border-radius: 20px;
   opacity: 0.5;
   text-align: center;
+}
+
+.small-quantity {
+  width: 18px;
+  text-align: left;
 }
 
 .bag-actions {
@@ -514,8 +523,8 @@ body.sidebar-minimized {
 }
 
 .dbl-underline {
-  padding-bottom: 8px !important;
-  font-family: "Montserrat", sans-serif !important;
+  padding-bottom: 4px !important;
+  // font-family: "Montserrat", sans-serif !important;
   position: relative;
 
   &:after {
@@ -657,6 +666,11 @@ body.sidebar-minimized {
 
 .bag-plus-minus i {
   font-style: normal !important;
+}
+
+.small-buttons {
+  width: 20px !important;
+  height: 20px !important;
 }
 
 .nf-vitamin-column:first-child {
@@ -1140,6 +1154,14 @@ body.forgotresettoken {
     margin: 0px auto !important;
   }
 
+  .gray-background {
+    background-color: #fcfcfc !important;
+  }
+
+  .thumbnail-height {
+    height: 128px !important;
+  }
+
   .customer-menu-container {
     position: relative !important;
   }
@@ -1249,4 +1271,8 @@ body.forgotresettoken {
 .store-bag-header {
   position: relative !important;
   bottom: 52px !important;
+}
+
+.text-menu-image {
+  width: 100% !important;
 }

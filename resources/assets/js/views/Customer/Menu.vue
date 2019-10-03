@@ -583,6 +583,10 @@ export default {
     });
   },
   mounted() {
+    if (this.bag.length > 0) {
+      this.showBagClass = "shopping-cart show-right bag-area area-scroll";
+    } else
+      this.showBagClass = "shopping-cart hidden-right bag-area area-scroll";
     if (this.storeView) {
       this.storeCSS = "store-menu-view";
       if (this.$route.params.storeView)
@@ -591,9 +595,6 @@ export default {
       else this.showBagClass = "shopping-cart show-right bag-area";
     }
 
-    // if (this.bag.length > 0) {
-    this.showBag();
-    // }
     keyboardJS.bind("left", () => {
       if (this.$refs.carousel) {
         console.log(this.$refs.carousel);
