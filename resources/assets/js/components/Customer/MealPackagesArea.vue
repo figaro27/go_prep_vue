@@ -18,14 +18,24 @@
           v-for="mealPkg in mealPackages"
           :key="mealPkg.id"
         >
-          <thumbnail
+          <!-- <thumbnail
             v-if="mealPkg.image.url_medium"
             :src="mealPkg.image.url_medium"
             class="menu-item-img"
             width="100%"
             @click="$parent.showMealPackageModal(mealPkg)"
             style="background-color:#ffffff"
+          ></thumbnail> !-->
+
+          <thumbnail
+            v-if="mealPkg.image.url_medium"
+            :src="mealPkg.image.url_medium"
+            class="menu-item-img"
+            width="100%"
+            style="background-color:#ffffff"
+            @click="clickThumbnail(mealPkg)"
           ></thumbnail>
+
           <div
             class="d-flex justify-content-between align-items-center mb-2 mt-1"
           >
@@ -47,8 +57,14 @@
             >
               <i>+</i>
             </b-btn>
-            <b-dropdown v-else toggle-class="menu-bag-btn">
-              <span slot="button-content">+</span>
+            <b-dropdown
+              v-else
+              toggle-class="menu-bag-btn"
+              :ref="'dropdown_' + mealPkg.id"
+            >
+              <span slot="button-content" :id="'dropdown_' + mealPkg.id"
+                >+</span
+              >
               <b-dropdown-item @click="addMealPackage(mealPkg, true)">
                 {{ mealPkg.default_size_title }} -
                 {{ format.money(mealPkg.price, storeSettings.currency) }}
@@ -102,6 +118,14 @@ export default {
     })
   },
   methods: {
+    clickThumbnail(mealPackage) {
+      if (mealPackage.sizes.length === 0) {
+        this.addMealPackage(mealPackage, true);
+      } else {
+        //let bdropdown = this.$refs["dropdown_" + mealPackage.id]
+        $("#dropdown_" + mealPackage.id).click();
+      }
+    },
     addMealPackage(mealPackage, condition = false, size) {
       this.addOne(mealPackage, condition, size);
       this.$parent.mealPackageModal = false;
