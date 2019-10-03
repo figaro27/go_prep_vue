@@ -1144,10 +1144,10 @@ body.forgotresettoken {
     position: relative !important;
   }
 
-  .store-menu-view {
-    position: relative !important;
-    right: 200px !important;
-  }
+  // .store-menu-view {
+  //   position: relative !important;
+  //   right: 200px !important;
+  // }
 
   .bag-counter {
     font-family: "open sans";
@@ -1244,4 +1244,9 @@ body.forgotresettoken {
   .categoryNavArea {
     display: none;
   }
+}
+
+.store-bag-header {
+  position: relative !important;
+  bottom: 52px !important;
 }

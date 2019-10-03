@@ -585,9 +585,10 @@ export default {
   mounted() {
     if (this.storeView) {
       this.storeCSS = "store-menu-view";
-      // if (this.menuPage)
-      //   this.showBagClass = "shopping-cart show-right bag-area area-scroll";
-      // else this.showBagClass = "shopping-cart show-right bag-area";
+      if (this.$route.params.storeView)
+        this.showBagClass =
+          "d-inline shopping-cart show-right bag-area area-scroll";
+      else this.showBagClass = "shopping-cart show-right bag-area";
     }
 
     // if (this.bag.length > 0) {

@@ -1,8 +1,11 @@
 <template>
   <div>
     <div
-      class="bag-header center-text pt-3 mt-3"
-      v-if="$route.name === 'customer-menu'"
+      :class="bagClass"
+      v-if="
+        $route.name === 'customer-menu' ||
+          ($route.params.storeView && $route.name != 'store-bag')
+      "
     >
       <h3 class="d-inline ml-3 float-left">
         <i class="fa fa-angle-right white-text" @click="$parent.showBag()"></i>
@@ -353,6 +356,11 @@ export default {
       if (this.$route.name === "customer-menu")
         return "shopping-cart-meals area-scroll";
       else return "shopping-cart-meals";
+    },
+    bagClass() {
+      if (this.$route.params.storeView)
+        return "bag-header center-text pt-3 mt-3 store-bag-header";
+      else return "bag-header center-text pt-3 mt-3";
     }
   },
   mounted() {
