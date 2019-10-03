@@ -169,7 +169,7 @@
 
               <div slot="featured_image" slot-scope="props">
                 <thumbnail
-                  v-if="props.row.image.url_thumb"
+                  v-if="props.row.image != null && props.row.image.url_thumb"
                   :src="props.row.image.url_thumb"
                 ></thumbnail>
               </div>

@@ -34,7 +34,7 @@
 
                   <div class="image">
                     <thumbnail
-                      v-if="meal.image.url_medium"
+                      v-if="meal.image != null && meal.image.url_medium"
                       :src="meal.image.url_medium"
                       class="menu-item-img"
                       width="100%"

@@ -24,7 +24,7 @@
           <div v-if="hasLoaded" class="row">
             <div class="col-lg-6 modal-meal-image">
               <thumbnail
-                v-if="mealPackage.image.url"
+                v-if="mealPackage.image != null && mealPackage.image.url"
                 :src="mealPackage.image.url"
                 :aspect="false"
                 width="100%"
@@ -89,7 +89,7 @@
             <div class="col-lg-6 modal-meal-image">
               <h4 class="center-text">{{ meal.title }}</h4>
               <thumbnail
-                v-if="meal.image.url"
+                v-if="meal.image != null && meal.image.url"
                 :src="meal.image.url"
                 :aspect="false"
                 width="100%"
