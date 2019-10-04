@@ -440,6 +440,16 @@
           </b-form-group>
         </div>
 
+        <div
+          v-if="hasActiveSubscription"
+          class="alert alert-warning"
+          role="alert"
+        >
+          You already have an active subscription with this company. Are you
+          sure you want to create another subscription instead of adjusting the
+          original one?
+        </div>
+
         <b-btn
           v-if="
             // Condense all this logic / put in computed prop
@@ -632,7 +642,8 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       _orders: "orders",
-      loggedIn: "loggedIn"
+      loggedIn: "loggedIn",
+      subscriptions: "subscriptions"
     }),
     storeSettings() {
       return this.store.settings;
@@ -1008,6 +1019,20 @@ export default {
       )
         return true;
       else return false;
+    },
+    hasActiveSubscription() {
+      let hasActiveSub = false;
+      if (this.subscriptions) {
+        this.subscriptions.forEach(subscription => {
+          if (
+            subscription.store_id === this.store.id &&
+            subscription.status === "active" &&
+            this.weeklySubscription
+          )
+            hasActiveSub = true;
+        });
+      }
+      return hasActiveSub;
     }
   },
   methods: {
