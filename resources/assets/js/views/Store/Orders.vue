@@ -184,7 +184,7 @@
               </button>
               <button
                 v-if="props.row.deposit != 100"
-                class="btn view btn-success btn-sm"
+                class="btn btn-success btn-sm"
                 @click="
                   chargeBalance(
                     props.row.id,
