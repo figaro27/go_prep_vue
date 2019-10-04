@@ -317,10 +317,21 @@
         </div>
       </li>
     </span>
-    <div v-if="$route.params.storeView === true">
-      <strong v-if="pickup === 0">Delivery Day</strong>
-      <strong v-if="pickup === 1">Pickup Day</strong>
-    </div>
+    <li class="checkout-item" v-if="$route.params.storeView">
+      <div>
+        <strong v-if="pickup === 0">Delivery Day</strong>
+        <strong v-if="pickup === 1">Pickup Day</strong>
+        <b-select
+          :options="deliveryDaysOptionsStoreView"
+          v-model="deliveryDay"
+          @input="changeDeliveryDay"
+          class="delivery-select ml-2"
+          required
+        >
+          <option slot="top" disabled>-- Select delivery day --</option>
+        </b-select>
+      </div>
+    </li>
     <li
       class="checkout-item"
       v-if="
