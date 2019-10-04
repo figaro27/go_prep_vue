@@ -12,6 +12,7 @@ use App\MealSubscriptionComponent;
 use App\MealOrderAddon;
 use App\MealSubscriptionAddon;
 use App\MealSubscription;
+use App\MealMealAttachment;
 use App\Order;
 use App\Store;
 use App\StoreDetail;
@@ -204,6 +205,22 @@ class CheckoutController extends UserController
                             'meal_order_id' => $mealOrder->id,
                             'meal_addon_id' => $addonId
                         ]);
+                    }
+                }
+
+                $attachments = MealMealAttachment::where(
+                    'meal_id',
+                    $item['meal']['id']
+                )->get();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $mealOrder = new MealOrder();
+                        $mealOrder->order_id = $order->id;
+                        $mealOrder->store_id = $store->id;
+                        $mealOrder->meal_id = $attachment->attached_meal_id;
+                        $mealOrder->quantity =
+                            $attachment->quantity * $item['quantity'];
+                        $mealOrder->save();
                     }
                 }
             }
@@ -409,6 +426,22 @@ class CheckoutController extends UserController
                         ]);
                     }
                 }
+
+                $attachments = MealMealAttachment::where(
+                    'meal_id',
+                    $item['meal']['id']
+                )->get();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $mealOrder = new MealOrder();
+                        $mealOrder->order_id = $order->id;
+                        $mealOrder->store_id = $store->id;
+                        $mealOrder->meal_id = $attachment->attached_meal_id;
+                        $mealOrder->quantity =
+                            $attachment->quantity * $item['quantity'];
+                        $mealOrder->save();
+                    }
+                }
             }
 
             foreach ($bag->getItems() as $item) {
@@ -444,6 +477,22 @@ class CheckoutController extends UserController
                             'meal_subscription_id' => $mealSub->id,
                             'meal_addon_id' => $addonId
                         ]);
+                    }
+                }
+
+                $attachments = MealMealAttachment::where(
+                    'meal_id',
+                    $item['meal']['id']
+                )->get();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $mealSub = new MealSubscription();
+                        $mealSub->order_id = $order->id;
+                        $mealSub->store_id = $store->id;
+                        $mealSub->meal_id = $attachment->attached_meal_id;
+                        $mealSub->quantity =
+                            $attachment->quantity * $item['quantity'];
+                        $mealSub->save();
                     }
                 }
             }
