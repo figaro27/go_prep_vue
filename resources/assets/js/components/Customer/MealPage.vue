@@ -4,7 +4,7 @@
       <div class="row meal-page mt-5 mb-3">
         <div class="col-md-4">
           <thumbnail
-            v-if="meal.image.url"
+            v-if="meal.image != null && meal.image.url"
             :src="meal.image.url"
             :aspect="false"
             width="100%"

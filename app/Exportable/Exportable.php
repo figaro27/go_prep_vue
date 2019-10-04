@@ -172,7 +172,7 @@ trait Exportable
             $dates = [
                 'from' => Carbon::today()->startOfDay(),
                 'to' => Carbon::today()
-                    ->addDays(14)
+                    ->addDays(6)
                     ->startOfDay()
             ];
         }

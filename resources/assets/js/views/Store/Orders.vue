@@ -151,13 +151,12 @@
               {{ props.row.dailyOrderNumber }}
             </div>
             <div slot="balance" slot-scope="props">
-              <span v-if="props.row.deposit != 100"
-                >{{ 100 - props.row.deposit }}% -
+              <span v-if="props.row.balance != 0"
+                >{{
+                  ((props.row.balance / props.row.amount) * 100).toFixed(0)
+                }}% -
                 {{
-                  format.money(
-                    ((100 - props.row.deposit) / 100) * props.row.amount,
-                    storeSettings.currency
-                  )
+                  format.money(props.row.balance, storeSettings.currency)
                 }}</span
               >
               <span v-else>Paid in Full</span>
@@ -186,13 +185,29 @@
               <button
                 v-if="props.row.deposit != 100"
                 class="btn view btn-success btn-sm"
-                @click="chargeBalance(props.row.id, props.row.cashOrder)"
+                @click="
+                  chargeBalance(
+                    props.row.id,
+                    props.row.cashOrder,
+                    props.row.balance
+                  )
+                "
+                :disabled="checkingOut"
               >
                 <span v-if="!props.row.cashOrder"
-                  >Charge {{ 100 - props.row.deposit }}% Balance</span
+                  >Charge
+                  {{
+                    format.money(
+                      ((100 - props.row.deposit) * props.row.amount) / 100,
+                      storeSettings.currency
+                    )
+                  }}
+                  Balance</span
                 >
                 <span v-else
-                  >Settle {{ 100 - props.row.deposit }}% Balance</span
+                  >Settle
+                  {{ format.money(props.row.balance, storeSettings.currency) }}
+                  Balance</span
                 >
               </button>
               <!-- <b-btn
@@ -370,7 +385,7 @@
                     <span class="order-quantity">{{ meal.quantity }}</span>
                     <img src="/images/store/x-modal.png" class="mr-2 ml-2" />
                     <thumbnail
-                      v-if="meal.image.url_thumb"
+                      v-if="meal.image != null && meal.image.url_thumb"
                       :src="meal.image.url_thumb"
                       :spinner="false"
                       class="mr-0 pr-0"
@@ -388,8 +403,8 @@
           </div>
         </div>
         <div
-          class="row"
-          v-if="viewOrderModal && order.line_items_orders.length"
+          class="row mt-4"
+          v-if="viewOrderModal && order.line_items_order.length"
         >
           <div class="col-md-12">
             <h4>Extras</h4>
@@ -442,6 +457,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      checkingOut: false,
       ordersByDate: {},
       email: "",
       deliveryDate: "All",
@@ -556,7 +572,7 @@ export default {
 
       orders.forEach(order => {
         if (order.deposit !== 100.0 && !this.columns.includes("balance")) {
-          this.columns.splice(8, 0, "balance");
+          this.columns.splice(9, 0, "balance");
           return;
         }
       });
@@ -770,11 +786,17 @@ export default {
       this.filters.fulfilled = 0;
       this.refreshTable();
     },
-    chargeBalance(id, cashOrder) {
+    chargeBalance(id, cashOrder, balance) {
+      if (this.checkingOut) {
+        return;
+      }
+      this.checkingOut = true;
+
       axios
         .post("/api/me/chargeBalance", {
           id: id,
-          cashOrder: cashOrder
+          cashOrder: cashOrder,
+          balance: balance
         })
         .then(response => {
           if (response.data === 1) {
@@ -782,6 +804,7 @@ export default {
           } else {
             this.$toastr.s("Balance successfully charged.");
           }
+          this.checkingOut = false;
           this.refreshUpcomingOrders();
         });
     }

@@ -87,15 +87,17 @@
         </div>
 
         <div class="categoryNavArea" v-if="!mobile">
-          <div class="categoryNavArea_header">
+          <!-- <div class="categoryNavArea_header">
             <h3 class="white-text d-inline pr-2">Category</h3>
-            <p class="white-text d-inline mb-0 pb-0">
-              ({{ finalCategories.length }} items)
-            </p>
-          </div>
+          </div> -->
 
           <div class="categoryNavArea_body">
             <div class="categoryNavArea_body_inner">
+              <b-form-textarea
+                v-model="search"
+                placeholder="Search"
+                class="meal-search center-text mb-4"
+              ></b-form-textarea>
               <div
                 v-for="(cat, index) in finalCategories"
                 :key="cat.name"
@@ -135,6 +137,7 @@
               :deliveryDay="deliveryDay"
               :transferTime="transferTime"
               :pickup="pickup"
+              :order="order"
             ></bag-actions>
           </div>
         </div>
@@ -143,8 +146,10 @@
         </div>
       </div>
     </div>
+    <v-style> .categoryNavItem.active {color: {{ brandFontColor }} } </v-style>
   </div>
 </template>
+
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
@@ -270,6 +275,7 @@ export default {
     subscription: {},
     subscriptionId: null,
     orderId: null,
+    order: null,
     deliveryDay: null,
     transferTime: null,
     pickup: null
@@ -277,7 +283,7 @@ export default {
   data() {
     return {
       resetMeal: false,
-      showBagClass: "shopping-cart hidden-right bag-area",
+      showBagClass: "shopping-cart show-right bag-area d-none",
       showFilterClass: "shopping-cart hidden-left bag-area",
       search: "",
       showAuthModal: false,
@@ -557,6 +563,9 @@ export default {
       let style = "background-color:";
       style += this.store.settings.color;
       return style;
+    },
+    brandFontColor() {
+      return this.store.settings.color;
     }
   },
   created() {
@@ -574,16 +583,18 @@ export default {
     });
   },
   mounted() {
+    if (this.bag.length > 0) {
+      this.showBagClass = "shopping-cart show-right bag-area area-scroll";
+    } else
+      this.showBagClass = "shopping-cart hidden-right bag-area area-scroll";
     if (this.storeView) {
       this.storeCSS = "store-menu-view";
-      if (this.menuPage)
-        this.showBagClass = "shopping-cart show-right bag-area area-scroll";
+      if (this.$route.params.storeView)
+        this.showBagClass =
+          "d-inline shopping-cart show-right bag-area area-scroll";
       else this.showBagClass = "shopping-cart show-right bag-area";
     }
 
-    // if (this.bag.length > 0) {
-    this.showBag();
-    // }
     keyboardJS.bind("left", () => {
       if (this.$refs.carousel) {
         console.log(this.$refs.carousel);
@@ -801,7 +812,7 @@ export default {
     showBag() {
       if (this.storeView) return;
       if (this.showBagClass.includes("hidden-right")) {
-        this.showBagClass = "shopping-cart show-right bag-area";
+        this.showBagClass = "d-inline shopping-cart show-right bag-area";
         if (this.menuPage) {
           this.showBagClass += " area-scroll";
         }
@@ -813,10 +824,14 @@ export default {
       }
     },
     showFilterArea() {
-      if (this.showFilterClass === "shopping-cart hidden-left bag-area")
-        this.showFilterClass = "shopping-cart show-left bag-area";
-      else if (this.showFilterClass === "shopping-cart show-left bag-area")
-        this.showFilterClass = "shopping-cart hidden-left bag-area";
+      this.viewFilterModal = true;
+
+      // Hiding left pop out filter area now that categories are added in.
+
+      // if (this.showFilterClass === "shopping-cart hidden-left bag-area")
+      //   this.showFilterClass = "shopping-cart show-left bag-area";
+      // else if (this.showFilterClass === "shopping-cart show-left bag-area")
+      //   this.showFilterClass = "shopping-cart hidden-left bag-area";
     },
     filterByCategory(category) {
       this.filteredView = true;

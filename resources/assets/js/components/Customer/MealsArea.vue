@@ -13,119 +13,197 @@
       v-observe-visibility="
         (isVisible, entry) => $parent.onCategoryVisible(isVisible, catIndex)
       "
-      class="categorySection main-customer-container customer-menu-container left-right-box-shadow"
+      :class="container"
     >
-      <h2 class="text-center mb-3 dbl-underline">
-        {{ group.category }}
-      </h2>
-      <div class="row">
-        <div
-          class="item col-sm-6 col-lg-4 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
-          v-for="meal in group.meals"
-          :key="meal.id"
-        >
-          <div :class="card" @click="showMeal(meal)">
-            <div :class="cardBody">
-              <div class="item-wrap">
-                <div class="title d-md-none">
-                  {{ meal.title }}
-                </div>
-
-                <div class="image">
-                  <thumbnail
-                    v-if="meal.image.url_medium"
-                    :src="meal.image.url_medium"
-                    class="menu-item-img"
-                    width="100%"
-                    style="background-color:#ffffff"
-                  ></thumbnail>
-
-                  <div class="price">
-                    {{ format.money(meal.price, storeSettings.currency) }}
-                  </div>
-                </div>
-
-                <div class="meta">
-                  <div class="title d-none d-md-block">
+      <div v-if="storeSettings.menuStyle === 'image'">
+        <h2 class="text-center mb-3 dbl-underline">
+          {{ group.category }}
+        </h2>
+        <div class="row">
+          <div
+            class="item col-sm-6 col-lg-4 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
+            v-for="meal in group.meals"
+            :key="meal.id"
+          >
+            <div :class="card" @click="showMeal(meal)">
+              <div :class="cardBody">
+                <div class="item-wrap">
+                  <div class="title d-md-none">
                     {{ meal.title }}
                   </div>
-                  <div
-                    class="title"
-                    v-if="meal.macros && storeSettings.showMacros"
-                  >
-                    <div class="row">
-                      <div class="col-12 col-md-3">
-                        <div class="row">
-                          <p class="small strong col-6 col-md-12">
-                            Calories
-                          </p>
-                          <p class="small col-6 col-md-12">
-                            {{ meal.macros.calories }}
-                          </p>
-                        </div>
-                      </div>
-                      <div class="col-12 col-md-3">
-                        <div class="row">
-                          <p class="small strong col-6 col-md-12">
-                            Carbs
-                          </p>
-                          <p class="small col-6 col-md-12">
-                            {{ meal.macros.carbs }}
-                          </p>
-                        </div>
-                      </div>
-                      <div class="col-12 col-md-3">
-                        <div class="row">
-                          <p class="small strong col-6 col-md-12">
-                            Protein
-                          </p>
-                          <p class="small col-6 col-md-12">
-                            {{ meal.macros.protein }}
-                          </p>
-                        </div>
-                      </div>
-                      <div class="col-12 col-md-3">
-                        <div class="row">
-                          <p class="small strong col-6 col-md-12">
-                            Fat
-                          </p>
-                          <p class="small col-6 col-md-12">
-                            {{ meal.macros.fat }}
-                          </p>
-                        </div>
-                      </div>
+
+                  <div class="image">
+                    <thumbnail
+                      v-if="meal.image != null && meal.image.url_medium"
+                      :src="meal.image.url_medium"
+                      class="menu-item-img"
+                      width="100%"
+                      style="background-color:#ffffff"
+                    ></thumbnail>
+
+                    <div class="price">
+                      {{ format.money(meal.price, storeSettings.currency) }}
                     </div>
                   </div>
 
-                  <div class="description d-md-none">
-                    {{ meal.description }}
-                  </div>
-
-                  <div class="actions">
+                  <div class="meta">
+                    <div class="title d-none d-md-block">
+                      {{ meal.title }}
+                    </div>
                     <div
-                      class="d-flex justify-content-between align-items-center mt-1"
+                      class="title"
+                      v-if="meal.macros && storeSettings.showMacros"
                     >
-                      <b-btn
-                        @click.stop="minusOne(meal)"
-                        class="plus-minus gray"
-                      >
-                        <i>-</i>
-                      </b-btn>
-                      <b-form-input
-                        type="text"
-                        name
-                        id
-                        class="quantity"
-                        :value="mealQuantity(meal)"
-                        readonly
-                      ></b-form-input>
-                      <b-btn
-                        @click.stop="addMeal(meal, null)"
-                        class="menu-bag-btn plus-minus"
-                      >
-                        <i>+</i>
-                      </b-btn>
+                      <div class="row">
+                        <div class="col-12 col-md-3">
+                          <div class="row">
+                            <p class="small strong col-6 col-md-12">
+                              Calories
+                            </p>
+                            <p class="small col-6 col-md-12">
+                              {{ meal.macros.calories }}
+                            </p>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                          <div class="row">
+                            <p class="small strong col-6 col-md-12">
+                              Carbs
+                            </p>
+                            <p class="small col-6 col-md-12">
+                              {{ meal.macros.carbs }}
+                            </p>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                          <div class="row">
+                            <p class="small strong col-6 col-md-12">
+                              Protein
+                            </p>
+                            <p class="small col-6 col-md-12">
+                              {{ meal.macros.protein }}
+                            </p>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                          <div class="row">
+                            <p class="small strong col-6 col-md-12">
+                              Fat
+                            </p>
+                            <p class="small col-6 col-md-12">
+                              {{ meal.macros.fat }}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
+
+                    <div class="description d-md-none">
+                      {{ meal.description }}
+                    </div>
+
+                    <div class="actions">
+                      <div
+                        class="d-flex justify-content-between align-items-center mt-1"
+                      >
+                        <b-btn
+                          @click.stop="minusOne(meal)"
+                          class="plus-minus gray"
+                        >
+                          <i>-</i>
+                        </b-btn>
+                        <b-form-input
+                          type="text"
+                          name
+                          id
+                          class="quantity"
+                          :value="mealQuantity(meal)"
+                          readonly
+                        ></b-form-input>
+                        <b-btn
+                          @click.stop="addMeal(meal, null)"
+                          class="menu-bag-btn plus-minus"
+                        >
+                          <i>+</i>
+                        </b-btn>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="storeSettings.menuStyle === 'text'">
+        <h2 class="text-center mb-3 dbl-underline">
+          {{ group.category }}
+        </h2>
+        <div class="row">
+          <div
+            class="item item-text col-sm-6 col-lg-6 col-xl-6"
+            v-for="item in group.meals"
+            :key="item.id"
+          >
+            <div
+              class="card card-text-menu border-light p-3 thumbnail-height mr-1"
+              @click="showMeal(item)"
+            >
+              <div class="bag-item-quantity row">
+                <div class="col-md-1">
+                  <div
+                    @click.stop="addMeal(item, null)"
+                    class="bag-plus-minus small-buttons brand-color white-text"
+                  >
+                    <i>+</i>
+                  </div>
+                  <b-form-input
+                    type="text"
+                    name
+                    id
+                    class="quantity small-quantity"
+                    style="text-align:left"
+                    :value="mealQuantity(item)"
+                    readonly
+                  ></b-form-input>
+                  <div
+                    @click.stop="
+                      minusOne(
+                        item.meal,
+                        false,
+                        item.size,
+                        item.components,
+                        item.addons,
+                        item.special_instructions
+                      )
+                    "
+                    class="bag-plus-minus small-buttons gray white-text"
+                  >
+                    <i>-</i>
+                  </div>
+                </div>
+                <div v-if="item.image != null" class="col-md-8">
+                  <strong>{{ item.title }}</strong>
+                  <p class="mt-1">{{ item.description }}</p>
+                </div>
+                <div v-else class="col-md-11">
+                  <strong>{{ item.title }}</strong>
+                  <p class="mt-1">{{ item.description }}</p>
+                  <div class="price-no-bg">
+                    {{ format.money(item.price, storeSettings.currency) }}
+                  </div>
+                </div>
+
+                <div v-if="item.image != null" class="col-md-3">
+                  <thumbnail
+                    class="text-menu-image"
+                    v-if="item.image != null"
+                    :src="item.image.url_thumb"
+                    :spinner="false"
+                  ></thumbnail>
+                  <div class="price">
+                    {{ format.money(item.price, storeSettings.currency) }}
                   </div>
                 </div>
               </div>
@@ -158,7 +236,7 @@ export default {
   mixins: [MenuBag],
   computed: {
     ...mapGetters({
-      storeSettings: "viewedStoreSetting",
+      store: "viewedStore",
       total: "bagQuantity",
       bag: "bagItems",
       hasMeal: "bagHasMeal",
@@ -167,7 +245,17 @@ export default {
       minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
-    })
+    }),
+    storeSettings() {
+      return this.store.settings;
+    },
+    container() {
+      if (this.storeSettings.menuStyle === "image") {
+        return "categorySection main-customer-container customer-menu-container left-right-box-shadow";
+      } else {
+        return "categorySection main-customer-container customer-menu-container left-right-box-shadow gray-background";
+      }
+    }
   },
   methods: {
     addMeal(meal, mealPackage) {

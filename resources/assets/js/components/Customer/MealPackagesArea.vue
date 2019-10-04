@@ -18,8 +18,8 @@
           v-for="mealPkg in mealPackages"
           :key="mealPkg.id"
         >
-          <!-- <thumbnail
-            v-if="mealPkg.image.url_medium"
+          <!--<thumbnail
+            v-if="mealPkg.image != null && mealPkg.image.url_medium"
             :src="mealPkg.image.url_medium"
             class="menu-item-img"
             width="100%"
@@ -28,7 +28,7 @@
           ></thumbnail> !-->
 
           <thumbnail
-            v-if="mealPkg.image.url_medium"
+            v-if="mealPkg.image != null && mealPkg.image.url_medium"
             :src="mealPkg.image.url_medium"
             class="menu-item-img"
             width="100%"

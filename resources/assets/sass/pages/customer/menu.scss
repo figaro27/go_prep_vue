@@ -27,6 +27,11 @@ body.customermenu {
     }
   }
 
+  .item-text {
+    padding: 0px 5px 0px 0px !important;
+    margin: 0px !important;
+  }
+
   .item {
     padding-bottom: 20px;
     @include media-breakpoint-up(md) {
@@ -94,7 +99,7 @@ body.customermenu {
     .price {
       font-size: 16px;
       position: absolute;
-      top: 10px;
+      top: 5px;
       right: 10px;
       padding: 2px 5px;
       background: #fff;
@@ -102,6 +107,19 @@ body.customermenu {
       font-weight: bold;
       box-shadow: 0px 0px 2px 0px rgba(168, 168, 168, 0.6);
       z-index: 1;
+
+      @include media-breakpoint-up(md) {
+        font-size: 18px;
+      }
+    }
+
+    .price-no-bg {
+      font-size: 16px;
+      position: absolute;
+      top: -10px;
+      right: 10px;
+      padding: 2px 5px;
+      font-weight: bold;
 
       @include media-breakpoint-up(md) {
         font-size: 18px;

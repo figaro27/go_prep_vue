@@ -430,8 +430,11 @@ export default {
           item.special_instructions
         );
 
+        let image = null;
+        if (meal.image != null) image = meal.image.url_thumb;
+
         return {
-          image: meal.image.url_thumb,
+          image: image,
           meal: title,
           quantity: item.quantity,
           unit_price: format.money(item.unit_price, subscription.currency),
@@ -498,9 +501,7 @@ export default {
       });
       this.addBagItems(items);
 
-      window.location = `${subscription.store.url}/customer/meal-plans/${
-        subscription.id
-      }`;
+      window.location = `${subscription.store.url}/customer/meal-plans/${subscription.id}`;
     }
   }
 };

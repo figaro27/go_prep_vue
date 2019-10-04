@@ -95,7 +95,10 @@
                         </div>
                         <div class="bag-item-image mr-2">
                           <thumbnail
-                            v-if="mealOption.meal.image.url_thumb"
+                            v-if="
+                              mealOption.meal.image != null &&
+                                mealOption.meal.image.url_thumb
+                            "
                             :src="mealOption.meal.image.url_thumb"
                             :spinner="false"
                             class="cart-item-img"
