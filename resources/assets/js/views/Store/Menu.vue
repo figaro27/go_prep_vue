@@ -667,7 +667,7 @@
                   class="mr-2"
                   style="width:65px"
                   :src="meal.image.thumb_url"
-                  v-if="meal.image.thumb_url"
+                  v-if="meal.image != null && meal.image.thumb_url"
                 />
                 <div class="flex-grow-1 mr-2">
                   <p>{{ meal.title }}</p>
@@ -758,7 +758,7 @@
                   class="mr-2"
                   style="width:65px"
                   :src="meal.image.thumb_url"
-                  v-if="meal.image.thumb_url"
+                  v-if="meal.image != null && meal.image.thumb_url"
                 />
                 <div class="flex-grow-1 mr-2">
                   <p>{{ meal.title }}</p>
