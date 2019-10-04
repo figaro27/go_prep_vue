@@ -442,12 +442,14 @@
 
         <b-btn
           v-if="
+            // Condense all this logic / put in computed prop
             (card != null || cashOrder) &&
               (minimumMet || $route.params.storeView) &&
               $route.params.adjustOrder != true &&
               $route.params.subscriptionId === undefined &&
               (store.settings.open === true || $route.params.storeView) &&
-              (willDeliver || pickup === 1 || $route.params.storeView)
+              (willDeliver || pickup === 1 || $route.params.storeView) &&
+              (customer != null || !$route.params.storeView)
           "
           @click="checkout"
           :disabled="checkingOut"
