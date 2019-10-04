@@ -142,6 +142,16 @@
           </div>
         </div>
       </li>
+      <li class="checkout-item" v-if="storeSettings.enableSalesTax">
+        <div class="row">
+          <div class="col-6 col-md-4">
+            <strong>Sales Tax:</strong>
+          </div>
+          <div class="col-6 col-md-3 offset-md-5">
+            {{ format.money(tax, storeSettings.currency) }}
+          </div>
+        </div>
+      </li>
       <li
         class="checkout-item"
         v-if="
@@ -164,17 +174,6 @@
           </div>
           <div class="col-6 col-md-3 offset-md-5">
             {{ format.money(processingFeeAmount, storeSettings.currency) }}
-          </div>
-        </div>
-      </li>
-
-      <li class="checkout-item" v-if="storeSettings.enableSalesTax">
-        <div class="row">
-          <div class="col-6 col-md-4">
-            <strong>Sales Tax:</strong>
-          </div>
-          <div class="col-6 col-md-3 offset-md-5">
-            {{ format.money(tax, storeSettings.currency) }}
           </div>
         </div>
       </li>
@@ -968,8 +967,8 @@ export default {
         return 0;
       }
       if (this.storeSettings.salesTax > 0)
-        return (this.storeSettings.salesTax / 100) * this.afterFees;
-      else return this.salesTax * this.afterFees;
+        return (this.storeSettings.salesTax / 100) * this.afterDiscount;
+      else return this.salesTax * this.afterDiscount;
     },
     subscriptionId() {
       return this.$route.params.subscriptionId;
