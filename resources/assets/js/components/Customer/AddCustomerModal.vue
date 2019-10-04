@@ -5,6 +5,7 @@
       title="Add New Customer"
       v-model="addCustomerModal"
       v-if="addCustomerModal"
+      @hide="$parent.addCustomerModal = false"
       hide-footer
       no-fade
     >

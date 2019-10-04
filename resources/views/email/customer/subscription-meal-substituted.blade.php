@@ -52,7 +52,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td bgcolor={{ (isset($logo_b64) && $logo_b64 != "")?"transparent":"#3082CF" }} align="center">
                     <table width="80%" class="table-inner" border="0" align="center" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td height="50"></td>
+                        <td height="25"></td>
                       </tr>
                       <!-- logo -->
                       <tr>
@@ -127,6 +127,11 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->address }}
                           <br /> {{ $customer->city }}, {{ $customer->state }} {{ $customer->zip }}
                           </td>
+                      </tr>
+                      <tr>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                          {{ $customer->phone }}
+                        </td>
                       </tr>
                       <!-- end address -->
 
