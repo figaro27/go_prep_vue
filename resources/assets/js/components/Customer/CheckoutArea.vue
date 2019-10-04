@@ -1302,11 +1302,11 @@ export default {
             });
           }
         })
-        .catch(response => {
-          let error = _.first(Object.values(response.response.data.errors)) || [
-            "Please try again"
-          ];
-          error = error.join(" ");
+        .catch(async response => {
+          let error =
+            "Checkout failed. Reason: " +
+            response.response.data.message +
+            ". Please contact GoPrep";
           this.$toastr.e(error, "Error");
         })
         .finally(() => {
