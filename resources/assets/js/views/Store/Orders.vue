@@ -194,7 +194,7 @@
                 "
                 :disabled="checkingOut"
               >
-                <span v-if="!props.row.cashOrder"
+                <span v-if="!props.row.cashOrder && props.row.balance > 0"
                   >Charge
                   {{
                     format.money(

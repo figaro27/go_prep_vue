@@ -523,12 +523,12 @@ class CheckoutController extends StoreController
 
         $customer = Customer::where('id', $order->customer_id)->first();
 
-        if (!$cashOrder) {
+        if (!$cashOrder && $balance > 0) {
             $cardId = $order->card_id;
             $card = Card::where('id', $cardId)->first();
         }
 
-        if (!$cashOrder) {
+        if (!$cashOrder && $balance > 0) {
             $storeSource = \Stripe\Source::create(
                 [
                     "customer" => $customer->user->stripe_id,
@@ -554,6 +554,10 @@ class CheckoutController extends StoreController
         $order->deposit = 100;
         $order->save();
 
-        return $cashOrder;
+        if ($cashOrder || $balance <= 0) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }
