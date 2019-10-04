@@ -436,7 +436,7 @@ export default {
     },
     save() {
       this.$emit("save", this.ingredients);
-      this.$toastr.s("Ingredients saved!");
+      this.$toastr.s("Ingredients saved.");
     },
     searchInstant: function() {},
     processFoods(foods) {

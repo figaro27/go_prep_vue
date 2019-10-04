@@ -612,7 +612,7 @@ export default {
     },
     async fulfill(id) {
       await this.updateOrder({ id, data: { fulfilled: 1 } });
-      this.$toastr.s("Order fulfilled!");
+      this.$toastr.s("Order fulfilled.");
       this.$forceUpdate();
     },
     async unfulfill(id) {
@@ -623,7 +623,7 @@ export default {
       let data = { notes: this.deliveryNote };
       axios.patch(`/api/me/orders/${id}`, data).then(resp => {
         this.refreshTable();
-        this.$toastr.s("Order notes saved!");
+        this.$toastr.s("Order notes saved.");
       });
     },
     getMealQuantities(order) {

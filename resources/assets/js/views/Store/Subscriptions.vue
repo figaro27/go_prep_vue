@@ -548,7 +548,7 @@ export default {
       try {
         axios.post("/api/me/subscriptions/pause", { id: id }).then(resp => {
           this.refreshSubscriptions();
-          this.$toastr.s("Subscription paused!");
+          this.$toastr.s("Subscription paused.");
         });
       } catch (e) {
         this.$toastr.e(
@@ -561,7 +561,7 @@ export default {
       try {
         axios.post("/api/me/subscriptions/resume", { id: id }).then(resp => {
           this.refreshSubscriptions();
-          this.$toastr.s("Subscription resumed!");
+          this.$toastr.s("Subscription resumed.");
         });
       } catch (e) {
         this.$toastr.e(

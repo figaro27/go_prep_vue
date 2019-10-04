@@ -404,7 +404,7 @@ export default {
         return;
       }
 
-      this.$toastr.s("Package updated!");
+      this.$toastr.s("Package updated.");
       this.$emit("updated");
       this.$refs.modal.hide();
       this.$parent.modal = false;

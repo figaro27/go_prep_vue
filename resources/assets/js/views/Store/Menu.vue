@@ -1166,7 +1166,7 @@ export default {
         const meal = await this._updateMeal({ id, data: changes, updateLocal });
 
         if (toast) {
-          this.$toastr.s("Meal updated!");
+          this.$toastr.s("Meal updated.");
         }
 
         if (id === this.meal.id) {
