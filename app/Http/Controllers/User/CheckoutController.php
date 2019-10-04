@@ -487,7 +487,7 @@ class CheckoutController extends UserController
                 if ($attachments) {
                     foreach ($attachments as $attachment) {
                         $mealSub = new MealSubscription();
-                        $mealSub->order_id = $order->id;
+                        $mealSub->subscription_id = $userSubscription->id;
                         $mealSub->store_id = $store->id;
                         $mealSub->meal_id = $attachment->attached_meal_id;
                         $mealSub->quantity =
