@@ -40,7 +40,7 @@
       ></meal-package-modal>
 
       <div class="row">
-        <div :class="`col-md-12 main-menu-area ${storeCSS}`">
+        <div :class="`col-md-12 main-menu-area`">
           <Spinner
             v-if="!meals.length && !mealPackages.length"
             position="absolute"
@@ -316,7 +316,6 @@ export default {
       mealPageView: false,
       mealPackageModal: false,
       nutritionalFacts: {},
-      storeCSS: "",
       showMealsArea: true,
       showMealPackagesArea: true,
       mealSizePrice: null
@@ -588,10 +587,8 @@ export default {
     } else
       this.showBagClass = "shopping-cart hidden-right bag-area area-scroll";
     if (this.storeView) {
-      this.storeCSS = "store-menu-view";
       if (this.$route.params.storeView)
-        this.showBagClass =
-          "d-inline shopping-cart show-right bag-area area-scroll";
+        this.showBagClass = "shopping-cart show-right bag-area area-scroll";
       else this.showBagClass = "shopping-cart show-right bag-area";
     }
 
