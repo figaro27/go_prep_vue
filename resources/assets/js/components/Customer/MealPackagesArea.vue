@@ -3,6 +3,7 @@
     <meal-package-components-modal
       ref="packageComponentModal"
       :key="total"
+      :packageTitle="packageTitle"
     ></meal-package-components-modal>
 
     <div
@@ -81,6 +82,11 @@ import { mapGetters } from "vuex";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 
 export default {
+  data() {
+    return {
+      packageTitle: null
+    };
+  },
   components: {
     MealPackageComponentsModal
   },
@@ -103,6 +109,7 @@ export default {
   },
   methods: {
     addMealPackage(mealPackage, condition = false, size) {
+      this.packageTitle = mealPackage.title;
       this.addOne(mealPackage, condition, size);
       this.$parent.mealPackageModal = false;
       if (this.$parent.showBagClass.includes("hidden-right")) {

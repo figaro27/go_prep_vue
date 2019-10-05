@@ -158,15 +158,7 @@
                   >
                     <i>+</i>
                   </div>
-                  <b-form-input
-                    type="text"
-                    name
-                    id
-                    class="quantity small-quantity"
-                    style="text-align:left"
-                    :value="mealQuantity(item)"
-                    readonly
-                  ></b-form-input>
+                  <p class="bag-quantity pl-1">{{ mealQuantity(item) }}</p>
                   <div
                     @click.stop="
                       minusOne(
