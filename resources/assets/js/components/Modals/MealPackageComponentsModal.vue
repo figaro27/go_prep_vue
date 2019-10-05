@@ -245,9 +245,12 @@ export default {
   },
   computed: {
     ...mapGetters({
-      storeSettings: "storeSettings",
+      store: "viewedStore",
       getMeal: "viewedStoreMeal"
     }),
+    storeSettings() {
+      return this.store.settings;
+    },
     mealPackageTitle() {
       return this.packageTitle;
     },
