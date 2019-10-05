@@ -109,7 +109,7 @@ export default {
   },
   methods: {
     addMealPackage(mealPackage, condition = false, size) {
-      this.packageTitle = mealPackage.title;
+      this.packageTitle = mealPackage.title + " - " + size.title;
       this.addOne(mealPackage, condition, size);
       this.$parent.mealPackageModal = false;
       if (this.$parent.showBagClass.includes("hidden-right")) {
