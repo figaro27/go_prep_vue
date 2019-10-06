@@ -64,7 +64,7 @@
                 View
               </button>
               <button
-                class="btn view btn-danger btn-sm"
+                class="btn btn-danger btn-sm"
                 @click="deleteMealPlan(props.row.id)"
               >
                 Cancel
