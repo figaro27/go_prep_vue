@@ -470,10 +470,6 @@ class Subscription extends Model
                 );
             }
 
-            $storeCustomer = $this->user->getStoreCustomer($this->store->id);
-
-            //$storeCustomer->subscriptions->retrieve('', '');
-
             $subscription = \Stripe\Subscription::retrieve(
                 'sub_' . $this->stripe_id,
                 [

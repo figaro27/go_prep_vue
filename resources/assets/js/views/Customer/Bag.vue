@@ -45,6 +45,7 @@
             :orderLineItems="orderLineItems"
             :checkoutData="checkoutData"
             @updateData="updateData"
+            :gateway="storeSettings.payment_gateway"
             :order="order"
           ></checkout-area>
           <store-closed v-if="!$route.params.storeView"></store-closed>

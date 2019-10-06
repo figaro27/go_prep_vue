@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Billing\Authorize;
+use App\Billing\Constants;
 use App\Customer;
 use App\Mail\Customer\DeliveryToday;
 use App\Mail\Customer\MealPlan;
@@ -297,63 +299,82 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
-    public function hasStoreCustomer($storeId, $currency = 'USD')
-    {
+    public function hasStoreCustomer(
+        $storeId,
+        $currency = 'USD',
+        $gateway = Constants::GATEWAY_STRIPE
+    ) {
         $customer = Customer::where([
             'user_id' => $this->id,
             'store_id' => $storeId,
-            'currency' => $currency
+            'currency' => $currency,
+            'payment_gateway' => $gateway
         ])->first();
         return !is_null($customer);
     }
 
     public function getStoreCustomer(
         $storeId,
-        $stripe = true,
-        $currency = 'USD'
+        $currency = 'USD',
+        $gateway = Constants::GATEWAY_STRIPE
     ) {
         $store = Store::find($storeId);
         $customer = Customer::where([
             'user_id' => $this->id,
             'store_id' => $storeId,
-            'currency' => $currency
+            'currency' => $currency,
+            'payment_gateway' => $gateway
         ])->first();
 
-        if (!$stripe) {
-            return $customer;
+        return $customer;
+
+        if ($gateway === Constants::GATEWAY_STRIPE) {
+            $acct = $store->settings->stripe_account;
+            \Stripe\Stripe::setApiKey($acct['access_token']);
+            $stripeCustomer = \Stripe\Customer::retrieve($customer->stripe_id);
+            \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+            return $stripeCustomer;
+        } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
         }
 
-        $acct = $store->settings->stripe_account;
-        \Stripe\Stripe::setApiKey($acct['access_token']);
-        $stripeCustomer = \Stripe\Customer::retrieve($customer->stripe_id);
-        \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
-
-        return $stripeCustomer;
+        return null;
     }
 
-    public function createStoreCustomer($storeId, $currency = 'USD')
-    {
+    public function createStoreCustomer(
+        $storeId,
+        $currency = 'USD',
+        $gateway = Constants::GATEWAY_STRIPE
+    ) {
         $store = Store::find($storeId);
-
-        $acct = $store->settings->stripe_account;
-        \Stripe\Stripe::setApiKey($acct['access_token']);
-        $stripeCustomer = \Stripe\Customer::create([
-            'email' => $this->email,
-            'description' => $this->name
-        ]);
-        \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
 
         $customer = new Customer();
         $customer->user_id = $this->id;
         $customer->store_id = $storeId;
-        $customer->stripe_id = $stripeCustomer->id;
         $customer->currency = $currency;
+        $customer->payment_gateway = $gateway;
+
+        if ($gateway === Constants::GATEWAY_STRIPE) {
+            $acct = $store->settings->stripe_account;
+            \Stripe\Stripe::setApiKey($acct['access_token']);
+            $stripeCustomer = \Stripe\Customer::create([
+                'email' => $this->email,
+                'description' => $this->name
+            ]);
+            $gatewayCustomerId = $stripeCustomer->id;
+            \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+            $customer->stripe_id = $stripeCustomer->id;
+        } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
+            $authorize = new Authorize($store);
+            $gatewayCustomerId = $authorize->createCustomer($this);
+            $customer->stripe_id = $gatewayCustomerId;
+        }
+
         $customer->save();
 
-        return $stripeCustomer;
+        return $customer;
     }
 
-    public function createCustomer($token)
+    public function createCustomer($token, $gateway = Constants::GATEWAY_STRIPE)
     {
         $stripeCustomer = \Stripe\Customer::create([
             "source" => $token
@@ -365,9 +386,15 @@ class User extends Authenticatable implements JWTSubject
         return $stripeCustomer;
     }
 
-    public function hasCustomer()
+    public function hasCustomer($gateway = Constants::GATEWAY_STRIPE)
     {
-        return !!$this->stripe_id; // || $this->has('customers');
+        if ($gateway === Constants::GATEWAY_STRIPE) {
+            return !!$this->stripe_id;
+        } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
+            // can't share users between merchants
+        } else {
+            return false;
+        }
     }
 
     public function createCard($token)
