@@ -489,7 +489,7 @@ class Meal extends Model implements HasMedia
 
     public function attachments()
     {
-        return $this->hasMany('App\MealMealAttachment');
+        return $this->hasMany('App\MealAttachment');
     }
 
     public function tags()
