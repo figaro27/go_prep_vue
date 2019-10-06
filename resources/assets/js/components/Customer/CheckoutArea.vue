@@ -228,16 +228,28 @@
         </b-form-radio-group>
       </b-form-group>
     </li>
-    <span
-      v-if="
-        !storeModules.hideTransferOptions && $route.params.storeView !== true
-      "
-    >
+    <div v-if="!storeModules.hideTransferOptions || $route.params.storeView">
+      <li class="checkout-item" v-if="$route.params.storeView">
+        <div>
+          <strong v-if="pickup === 0">Delivery Day</strong>
+          <strong v-if="pickup === 1">Pickup Day</strong>
+          <b-select
+            :options="deliveryDaysOptionsStoreView"
+            v-model="deliveryDay"
+            @input="changeDeliveryDay"
+            class="delivery-select ml-2"
+            required
+          >
+            <option slot="top" disabled>-- Select delivery day --</option>
+          </b-select>
+        </div>
+      </li>
       <li
         class="checkout-item"
         v-if="
           deliveryDaysOptions.length > 1 &&
-            $route.params.subscriptionId === undefined
+            $route.params.subscriptionId === undefined &&
+            !$route.params.storeView
         "
       >
         <div>
@@ -263,6 +275,23 @@
           >
             <option slot="top" disabled>-- Select delivery day --</option>
           </b-select>
+        </div>
+      </li>
+      <li
+        class="checkout-item"
+        v-if="
+          deliveryDaysOptions.length === 1 &&
+            $route.params.subscriptionId === undefined &&
+            !$route.params.storeView
+        "
+      >
+        <div>
+          <strong v-if="pickup === 0">
+            Delivery Day: {{ deliveryDaysOptions[0].text }}
+          </strong>
+          <strong v-if="pickup === 1">
+            Pickup Day: {{ deliveryDaysOptions[0].text }}
+          </strong>
         </div>
       </li>
       <li
@@ -299,38 +328,8 @@
           ></b-form-select>
         </div>
       </li>
-      <li
-        class="checkout-item"
-        v-if="
-          deliveryDaysOptions.length === 1 &&
-            $route.params.subscriptionId === undefined
-        "
-      >
-        <div>
-          <strong v-if="pickup === 0">
-            Delivery Day: {{ deliveryDaysOptions[0].text }}
-          </strong>
-          <strong v-if="pickup === 1">
-            Pickup Day: {{ deliveryDaysOptions[0].text }}
-          </strong>
-        </div>
-      </li>
-    </span>
-    <li class="checkout-item" v-if="$route.params.storeView">
-      <div>
-        <strong v-if="pickup === 0">Delivery Day</strong>
-        <strong v-if="pickup === 1">Pickup Day</strong>
-        <b-select
-          :options="deliveryDaysOptionsStoreView"
-          v-model="deliveryDay"
-          @input="changeDeliveryDay"
-          class="delivery-select ml-2"
-          required
-        >
-          <option slot="top" disabled>-- Select delivery day --</option>
-        </b-select>
-      </div>
-    </li>
+    </div>
+
     <li
       class="checkout-item"
       v-if="
