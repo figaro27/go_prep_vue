@@ -12,7 +12,7 @@ use App\MealSubscriptionComponent;
 use App\MealOrderAddon;
 use App\MealSubscriptionAddon;
 use App\MealSubscription;
-use App\MealMealAttachment;
+use App\MealAttachment;
 use App\Order;
 use App\Store;
 use App\StoreDetail;
@@ -212,7 +212,7 @@ class CheckoutController extends StoreController
                     }
                 }
 
-                $attachments = MealMealAttachment::where(
+                $attachments = MealAttachment::where(
                     'meal_id',
                     $item['meal']['id']
                 )->get();
@@ -448,7 +448,7 @@ class CheckoutController extends StoreController
                     }
                 }
 
-                $attachments = MealMealAttachment::where(
+                $attachments = MealAttachment::where(
                     'meal_id',
                     $item['meal']['id']
                 )->get();
@@ -501,7 +501,7 @@ class CheckoutController extends StoreController
                     }
                 }
 
-                $attachments = MealMealAttachment::where(
+                $attachments = MealAttachment::where(
                     'meal_id',
                     $item['meal']['id']
                 )->get();
