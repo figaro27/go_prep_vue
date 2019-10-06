@@ -8,7 +8,11 @@
       "
     >
       <h3 class="d-inline ml-3 float-left">
-        <i class="fa fa-angle-right white-text" @click="$parent.showBag()"></i>
+        <i
+          v-if="!$route.params.storeView"
+          class="fa fa-angle-right white-text"
+          @click="$parent.showBag()"
+        ></i>
       </h3>
       <h3 class="white-text d-inline">My Bag</h3>
       <p class="white-text d-inline">({{ total }} Items)</p>
