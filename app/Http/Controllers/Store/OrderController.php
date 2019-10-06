@@ -9,6 +9,7 @@ use App\MealOrderComponent;
 use App\MealOrderAddon;
 use App\LineItem;
 use App\LineItemOrder;
+use App\MealAttachment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Carbon;
@@ -177,6 +178,7 @@ class OrderController extends StoreController
         $couponReduction = $request->get('couponReduction');
         $couponCode = $request->get('couponCode');
         $deliveryFee = $request->get('deliveryFee');
+        $deliveryDate = $request->get('deliveryDate');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
         $bagTotal = $bag->getTotal() + $request->get('lineItemTotal');
@@ -193,8 +195,8 @@ class OrderController extends StoreController
         $adjustedDifference = $request->get('grandTotal') - $order->amount;
         $deposit =
             (($order->deposit * $order->amount) / 100 / $grandTotal) * 100;
-
-        $order->delivery_date = $request->get('deliveryDate');
+        $originalDeliveryDate = $order->delivery_date;
+        $order->delivery_date = $deliveryDate;
         $order->transferTime = $request->get('transferTime');
         $order->adjusted = 1;
         $order->pickup = $request->get('pickup');
@@ -217,11 +219,13 @@ class OrderController extends StoreController
         $order->transferTime = $transferTime;
 
         $max = Order::where('store_id', $store->id)
-            ->whereDate('delivery_date', $request->get('deliveryDate'))
+            ->whereDate('delivery_date', $deliveryDate)
             ->max('dailyOrderNumber');
-
         $dailyOrderNumber = $max + 1;
-        $order->dailyOrderNumber = $dailyOrderNumber;
+
+        if ($originalDeliveryDate != $deliveryDate) {
+            $order->dailyOrderNumber = $dailyOrderNumber;
+        }
 
         $order->save();
 
