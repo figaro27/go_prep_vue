@@ -62,10 +62,9 @@ class CheckoutController extends UserController
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
 
-        $today = Carbon::now()->toDateString();
         $count = DB::table('orders')
             ->where('store_id', $storeId)
-            ->whereDate('created_at', $today)
+            ->whereDate('delivery_date', $deliveryDay)
             ->get()
             ->count();
         $dailyOrderNumber = $count + 1;
