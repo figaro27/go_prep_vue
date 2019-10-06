@@ -12,6 +12,7 @@ use App\LineItemOrder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Carbon;
+use DB;
 
 class OrderController extends StoreController
 {
@@ -215,11 +216,11 @@ class OrderController extends StoreController
         $order->pickup_location_id = $pickupLocation;
         $order->transferTime = $transferTime;
 
-        $count = Order::where('store_id', $this->store->id)
+        $max = Order::where('store_id', $store->id)
             ->whereDate('delivery_date', $request->get('deliveryDate'))
-            ->get()
-            ->count();
-        $dailyOrderNumber = $count + 1;
+            ->max('dailyOrderNumber');
+
+        $dailyOrderNumber = $max + 1;
         $order->dailyOrderNumber = $dailyOrderNumber;
 
         $order->save();

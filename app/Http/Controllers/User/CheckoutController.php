@@ -62,12 +62,15 @@ class CheckoutController extends UserController
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
 
-        $count = DB::table('orders')
-            ->where('store_id', $storeId)
+        $max = Order::where('store_id', $storeId)
             ->whereDate('delivery_date', $deliveryDay)
-            ->get()
-            ->count();
-        $dailyOrderNumber = $count + 1;
+            ->max('dailyOrderNumber');
+
+        if ($max) {
+            $dailyOrderNumber = $max + 1;
+        } else {
+            $dailyOrderNumber = 1;
+        }
 
         if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             $discount = $store->settings->mealPlanDiscount / 100;
