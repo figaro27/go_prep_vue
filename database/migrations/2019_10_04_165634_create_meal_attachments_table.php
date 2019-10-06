@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMealMealAttachmentsTable extends Migration
+class CreateMealAttachmentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateMealMealAttachmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('meal_meal_attachments', function (Blueprint $table) {
+        Schema::create('meal_attachments', function (Blueprint $table) {
             $table->softDeletes();
             $table->increments('id');
             $table
@@ -34,7 +34,7 @@ class CreateMealMealAttachmentsTable extends Migration
                 ->references('id')
                 ->on('meal_sizes')
                 ->nullable();
-            $table->unsignedInteger('quantity')->default(1);
+            $table->integer('quantity')->default(1);
             $table->timestamps();
         });
     }
@@ -46,6 +46,6 @@ class CreateMealMealAttachmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('meal_meal_attachments');
+        Schema::dropIfExists('meal_attachments');
     }
 }

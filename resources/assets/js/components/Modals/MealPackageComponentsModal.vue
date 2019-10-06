@@ -217,12 +217,6 @@
   </b-modal>
 </template>
 
-<style>
-.modal-content {
-  background-color: #fcfcfc !important;
-}
-</style>
-
 <script>
 import modal from "../../mixins/modal";
 import format from "../../lib/format";
