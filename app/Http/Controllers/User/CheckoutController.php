@@ -222,6 +222,7 @@ class CheckoutController extends UserController
                         $mealOrder->meal_id = $attachment->attached_meal_id;
                         $mealOrder->quantity =
                             $attachment->quantity * $item['quantity'];
+                        $mealOrder->attached = 1;
                         $mealOrder->save();
                     }
                 }

@@ -239,6 +239,7 @@ class OrderController extends StoreController
             if (isset($item['size']) && $item['size']) {
                 $mealOrder->meal_size_id = $item['size']['id'];
             }
+
             $mealOrder->save();
 
             if (isset($item['components']) && $item['components']) {
@@ -259,6 +260,22 @@ class OrderController extends StoreController
                         'meal_order_id' => $mealOrder->id,
                         'meal_addon_id' => $addonId
                     ]);
+                }
+            }
+
+            $attachments = MealAttachment::where(
+                'meal_id',
+                $item['meal']['id']
+            )->get();
+            if ($attachments) {
+                foreach ($attachments as $attachment) {
+                    $mealOrder = new MealOrder();
+                    $mealOrder->order_id = $order->id;
+                    $mealOrder->store_id = $store->id;
+                    $mealOrder->meal_id = $attachment->attached_meal_id;
+                    $mealOrder->quantity =
+                        $attachment->quantity * $item['quantity'];
+                    $mealOrder->save();
                 }
             }
         }
