@@ -215,6 +215,13 @@ class OrderController extends StoreController
         $order->pickup_location_id = $pickupLocation;
         $order->transferTime = $transferTime;
 
+        $count = Order::where('store_id', $this->store->id)
+            ->whereDate('delivery_date', $request->get('deliveryDate'))
+            ->get()
+            ->count();
+        $dailyOrderNumber = $count + 1;
+        $order->dailyOrderNumber = $dailyOrderNumber;
+
         $order->save();
 
         $order->meal_orders()->delete();
