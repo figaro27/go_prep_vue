@@ -127,13 +127,13 @@ export default {
       stripeKey: window.app.stripe_key,
       // stripeOptions,
       card: null,
-      newCard: null,
-      creditCards: []
+      newCard: null
     };
   },
   computed: {
     ...mapGetters({
-      cards: "cards"
+      cards: "cards",
+      storeSettings: "viewedStoreSettings"
     })
   },
   methods: {
@@ -238,8 +238,8 @@ export default {
       const authorize = window.app.authorize;
 
       const authData = {
-        clientKey: authorize.public_key,
-        apiLoginID: authorize.login_id
+        clientKey: this.storeSettings.authorize_public_key,
+        apiLoginID: this.storeSettings.authorize_login_id
       };
 
       const cardData = {

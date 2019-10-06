@@ -423,6 +423,7 @@
             v-model="card"
             class="mb-3"
             ref="cardPicker"
+            :gateway="gateway"
           ></card-picker>
 
           <b-form-group
@@ -607,7 +608,7 @@ export default {
     checkoutData: null,
     gateway: {
       type: String,
-      default: 'stripe'
+      default: "stripe"
     }
   },
   mounted: function() {

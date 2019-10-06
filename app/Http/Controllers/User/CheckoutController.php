@@ -328,250 +328,260 @@ class CheckoutController extends UserController
                     ['stripe_account' => $store->settings->stripe_id]
                 );
 
-            if ($gateway === Constants::GATEWAY_STRIPE) {
-                $plan = \Stripe\Plan::create(
-                    [
-                        "amount" => round($total * 100),
-                        "interval" => "week",
-                        "product" => [
-                            "name" =>
-                                "Weekly subscription (" .
-                                $store->storeDetail->name .
-                                ")"
+                if ($gateway === Constants::GATEWAY_STRIPE) {
+                    $plan = \Stripe\Plan::create(
+                        [
+                            "amount" => round($total * 100),
+                            "interval" => "week",
+                            "product" => [
+                                "name" =>
+                                    "Weekly subscription (" .
+                                    $store->storeDetail->name .
+                                    ")"
+                            ],
+                            "currency" => $storeSettings->currency
                         ],
-                        "currency" => $storeSettings->currency
-                    ],
-                    ['stripe_account' => $storeSettings->stripe_id]
-                );
+                        ['stripe_account' => $storeSettings->stripe_id]
+                    );
 
-                $token = \Stripe\Token::create(
-                    [
-                        "customer" => $this->user->stripe_id
-                    ],
-                    ['stripe_account' => $storeSettings->stripe_id]
-                );
+                    $token = \Stripe\Token::create(
+                        [
+                            "customer" => $this->user->stripe_id
+                        ],
+                        ['stripe_account' => $storeSettings->stripe_id]
+                    );
 
-                $storeSource = $storeCustomer->sources->create(
-                    [
-                        'source' => $token
-                    ],
-                    ['stripe_account' => $storeSettings->stripe_id]
-                );
+                    $storeSource = $storeCustomer->sources->create(
+                        [
+                            'source' => $token
+                        ],
+                        ['stripe_account' => $storeSettings->stripe_id]
+                    );
 
-                $subscription = $storeCustomer->subscriptions->create(
-                    [
-                        'default_source' => $storeSource,
-                        'items' => [['plan' => $plan]],
-                        'application_fee_percent' => $application_fee,
-                        'trial_end' => $billingAnchor->getTimestamp()
-                        //'prorate' => false
-                    ],
-                    ['stripe_account' => $storeSettings->stripe_id]
-                );
-            } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
-                $billing = Billing::init($gateway, $store);
+                    $subscription = $storeCustomer->subscriptions->create(
+                        [
+                            'default_source' => $storeSource,
+                            'items' => [['plan' => $plan]],
+                            'application_fee_percent' => $application_fee,
+                            'trial_end' => $billingAnchor->getTimestamp()
+                            //'prorate' => false
+                        ],
+                        ['stripe_account' => $storeSettings->stripe_id]
+                    );
+                } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
+                    $billing = Billing::init($gateway, $store);
 
-                $subscription = new \App\Billing\Subscription();
-                $subscription->amount = round($total * 100);
-                $subscription->customer = $customer;
-                $subscription->card = $card;
-                $subscription->startDate = $billingAnchor;
-                $subscription->period = Constants::PERIOD_WEEKLY;
+                    $subscription = new \App\Billing\Subscription();
+                    $subscription->amount = round($total * 100);
+                    $subscription->customer = $customer;
+                    $subscription->card = $card;
+                    $subscription->startDate = $billingAnchor;
+                    $subscription->period = Constants::PERIOD_WEEKLY;
 
-                $transactionId = $billing->subscribe($subscription);
-                $subscription->id = $transactionId;
-            }
-
-            $userSubscription = new Subscription();
-            $userSubscription->user_id = $user->id;
-            $userSubscription->customer_id = $customer->id;
-            $userSubscription->stripe_customer_id = $storeCustomer->id;
-            $userSubscription->store_id = $store->id;
-            $userSubscription->name =
-                "Weekly subscription (" . $store->storeDetail->name . ")";
-            if (!$cashOrder) {
-                $userSubscription->stripe_plan = $plan->id;
-                $userSubscription->stripe_id = substr($subscription->id, 4);
-            } else {
-                $userSubscription->stripe_id =
-                    'C -' .
-                    strtoupper(substr(uniqid(rand(10, 99), false), 0, 10));
-                $userSubscription->stripe_plan = 'cash';
-            }
-            $userSubscription->quantity = 1;
-            $userSubscription->preFeePreDiscount = $preFeePreDiscount;
-            $userSubscription->mealPlanDiscount = $mealPlanDiscount;
-            $userSubscription->afterDiscountBeforeFees = $afterDiscountBeforeFees;
-            $userSubscription->processingFee = $processingFee;
-            $userSubscription->deliveryFee = $deliveryFee;
-            $userSubscription->salesTax = $salesTax;
-            $userSubscription->amount = $total;
-            $userSubscription->currency = $storeSettings->currency;
-            $userSubscription->pickup = $request->get('pickup', 0);
-            $userSubscription->interval = 'week';
-            $userSubscription->delivery_day = date(
-                'N',
-                strtotime($deliveryDay)
-            );
-            $userSubscription->next_renewal_at = $cutoff->copy()->addDays(7);
-            $userSubscription->coupon_id = $couponId;
-            $userSubscription->couponReduction = $couponReduction;
-            $userSubscription->couponCode = $couponCode;
-            // In this case the 'next renewal time' is actually the first charge time
-            $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
-            $userSubscription->pickup_location_id = $pickupLocation;
-            $userSubscription->transferTime = $transferTime;
-            $userSubscription->cashOrder = $cashOrder;
-            $userSubscription->save();
-
-            // Create initial order
-            $order = new Order();
-            $order->user_id = $user->id;
-            $order->customer_id = $customer->id;
-            $order->store_id = $store->id;
-            $order->subscription_id = $userSubscription->id;
-            $order->order_number = strtoupper(
-                substr(uniqid(rand(10, 99), false), 0, 10)
-            );
-            $order->preFeePreDiscount = $preFeePreDiscount;
-            $order->mealPlanDiscount = $mealPlanDiscount;
-            $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
-            $order->deliveryFee = $deliveryFee;
-            $order->processingFee = $processingFee;
-            $order->salesTax = $salesTax;
-            $order->amount = $total;
-            $order->currency = $storeSettings->currency;
-            $order->fulfilled = false;
-            $order->pickup = $request->get('pickup', 0);
-            $order->delivery_date = (new Carbon($deliveryDay))->toDateString();
-            $order->coupon_id = $couponId;
-            $order->couponReduction = $couponReduction;
-            $order->couponCode = $couponCode;
-            $order->pickup_location_id = $pickupLocation;
-            $order->transferTime = $transferTime;
-            $order->dailyOrderNumber = $dailyOrderNumber;
-            $order->cashOrder = $cashOrder;
-            $order->save();
-
-            foreach ($bag->getItems() as $item) {
-                $mealOrder = new MealOrder();
-                $mealOrder->order_id = $order->id;
-                $mealOrder->store_id = $store->id;
-                $mealOrder->meal_id = $item['meal']['id'];
-                $mealOrder->quantity = $item['quantity'];
-                if (isset($item['size']) && $item['size']) {
-                    $mealOrder->meal_size_id = $item['size']['id'];
+                    $transactionId = $billing->subscribe($subscription);
+                    $subscription->id = $transactionId;
                 }
-                if (isset($item['special_instructions'])) {
-                    $mealOrder->special_instructions =
-                        $item['special_instructions'];
-                }
-                $mealOrder->save();
 
-                if (isset($item['components']) && $item['components']) {
-                    foreach ($item['components'] as $componentId => $choices) {
-                        foreach ($choices as $optionId) {
-                            MealOrderComponent::create([
+                $userSubscription = new Subscription();
+                $userSubscription->user_id = $user->id;
+                $userSubscription->customer_id = $customer->id;
+                $userSubscription->stripe_customer_id = $storeCustomer->id;
+                $userSubscription->store_id = $store->id;
+                $userSubscription->name =
+                    "Weekly subscription (" . $store->storeDetail->name . ")";
+                if (!$cashOrder) {
+                    $userSubscription->stripe_plan = $plan->id;
+                    $userSubscription->stripe_id = substr($subscription->id, 4);
+                } else {
+                    $userSubscription->stripe_id =
+                        'C -' .
+                        strtoupper(substr(uniqid(rand(10, 99), false), 0, 10));
+                    $userSubscription->stripe_plan = 'cash';
+                }
+                $userSubscription->quantity = 1;
+                $userSubscription->preFeePreDiscount = $preFeePreDiscount;
+                $userSubscription->mealPlanDiscount = $mealPlanDiscount;
+                $userSubscription->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+                $userSubscription->processingFee = $processingFee;
+                $userSubscription->deliveryFee = $deliveryFee;
+                $userSubscription->salesTax = $salesTax;
+                $userSubscription->amount = $total;
+                $userSubscription->currency = $storeSettings->currency;
+                $userSubscription->pickup = $request->get('pickup', 0);
+                $userSubscription->interval = 'week';
+                $userSubscription->delivery_day = date(
+                    'N',
+                    strtotime($deliveryDay)
+                );
+                $userSubscription->next_renewal_at = $cutoff
+                    ->copy()
+                    ->addDays(7);
+                $userSubscription->coupon_id = $couponId;
+                $userSubscription->couponReduction = $couponReduction;
+                $userSubscription->couponCode = $couponCode;
+                // In this case the 'next renewal time' is actually the first charge time
+                $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
+                $userSubscription->pickup_location_id = $pickupLocation;
+                $userSubscription->transferTime = $transferTime;
+                $userSubscription->cashOrder = $cashOrder;
+                $userSubscription->save();
+
+                // Create initial order
+                $order = new Order();
+                $order->user_id = $user->id;
+                $order->customer_id = $customer->id;
+                $order->store_id = $store->id;
+                $order->subscription_id = $userSubscription->id;
+                $order->order_number = strtoupper(
+                    substr(uniqid(rand(10, 99), false), 0, 10)
+                );
+                $order->preFeePreDiscount = $preFeePreDiscount;
+                $order->mealPlanDiscount = $mealPlanDiscount;
+                $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+                $order->deliveryFee = $deliveryFee;
+                $order->processingFee = $processingFee;
+                $order->salesTax = $salesTax;
+                $order->amount = $total;
+                $order->currency = $storeSettings->currency;
+                $order->fulfilled = false;
+                $order->pickup = $request->get('pickup', 0);
+                $order->delivery_date = (new Carbon(
+                    $deliveryDay
+                ))->toDateString();
+                $order->coupon_id = $couponId;
+                $order->couponReduction = $couponReduction;
+                $order->couponCode = $couponCode;
+                $order->pickup_location_id = $pickupLocation;
+                $order->transferTime = $transferTime;
+                $order->dailyOrderNumber = $dailyOrderNumber;
+                $order->cashOrder = $cashOrder;
+                $order->save();
+
+                foreach ($bag->getItems() as $item) {
+                    $mealOrder = new MealOrder();
+                    $mealOrder->order_id = $order->id;
+                    $mealOrder->store_id = $store->id;
+                    $mealOrder->meal_id = $item['meal']['id'];
+                    $mealOrder->quantity = $item['quantity'];
+                    if (isset($item['size']) && $item['size']) {
+                        $mealOrder->meal_size_id = $item['size']['id'];
+                    }
+                    if (isset($item['special_instructions'])) {
+                        $mealOrder->special_instructions =
+                            $item['special_instructions'];
+                    }
+                    $mealOrder->save();
+
+                    if (isset($item['components']) && $item['components']) {
+                        foreach (
+                            $item['components']
+                            as $componentId => $choices
+                        ) {
+                            foreach ($choices as $optionId) {
+                                MealOrderComponent::create([
+                                    'meal_order_id' => $mealOrder->id,
+                                    'meal_component_id' => $componentId,
+                                    'meal_component_option_id' => $optionId
+                                ]);
+                            }
+                        }
+                    }
+
+                    if (isset($item['addons']) && $item['addons']) {
+                        foreach ($item['addons'] as $addonId) {
+                            MealOrderAddon::create([
                                 'meal_order_id' => $mealOrder->id,
-                                'meal_component_id' => $componentId,
-                                'meal_component_option_id' => $optionId
+                                'meal_addon_id' => $addonId
                             ]);
+                        }
+                    }
+
+                    $attachments = MealAttachment::where(
+                        'meal_id',
+                        $item['meal']['id']
+                    )->get();
+                    if ($attachments) {
+                        foreach ($attachments as $attachment) {
+                            $mealOrder = new MealOrder();
+                            $mealOrder->order_id = $order->id;
+                            $mealOrder->store_id = $store->id;
+                            $mealOrder->meal_id = $attachment->attached_meal_id;
+                            $mealOrder->quantity =
+                                $attachment->quantity * $item['quantity'];
+                            $mealOrder->save();
                         }
                     }
                 }
 
-                if (isset($item['addons']) && $item['addons']) {
-                    foreach ($item['addons'] as $addonId) {
-                        MealOrderAddon::create([
-                            'meal_order_id' => $mealOrder->id,
-                            'meal_addon_id' => $addonId
-                        ]);
+                foreach ($bag->getItems() as $item) {
+                    $mealSub = new MealSubscription();
+                    $mealSub->subscription_id = $userSubscription->id;
+                    $mealSub->store_id = $store->id;
+                    $mealSub->meal_id = $item['meal']['id'];
+                    $mealSub->quantity = $item['quantity'];
+                    if (isset($item['size']) && $item['size']) {
+                        $mealSub->meal_size_id = $item['size']['id'];
                     }
-                }
-
-                $attachments = MealAttachment::where(
-                    'meal_id',
-                    $item['meal']['id']
-                )->get();
-                if ($attachments) {
-                    foreach ($attachments as $attachment) {
-                        $mealOrder = new MealOrder();
-                        $mealOrder->order_id = $order->id;
-                        $mealOrder->store_id = $store->id;
-                        $mealOrder->meal_id = $attachment->attached_meal_id;
-                        $mealOrder->quantity =
-                            $attachment->quantity * $item['quantity'];
-                        $mealOrder->save();
+                    if (isset($item['special_instructions'])) {
+                        $mealSub->special_instructions =
+                            $item['special_instructions'];
                     }
-                }
-            }
+                    $mealSub->save();
 
-            foreach ($bag->getItems() as $item) {
-                $mealSub = new MealSubscription();
-                $mealSub->subscription_id = $userSubscription->id;
-                $mealSub->store_id = $store->id;
-                $mealSub->meal_id = $item['meal']['id'];
-                $mealSub->quantity = $item['quantity'];
-                if (isset($item['size']) && $item['size']) {
-                    $mealSub->meal_size_id = $item['size']['id'];
-                }
-                if (isset($item['special_instructions'])) {
-                    $mealSub->special_instructions =
-                        $item['special_instructions'];
-                }
-                $mealSub->save();
+                    if (isset($item['components']) && $item['components']) {
+                        foreach (
+                            $item['components']
+                            as $componentId => $choices
+                        ) {
+                            foreach ($choices as $optionId) {
+                                MealSubscriptionComponent::create([
+                                    'meal_subscription_id' => $mealSub->id,
+                                    'meal_component_id' => $componentId,
+                                    'meal_component_option_id' => $optionId
+                                ]);
+                            }
+                        }
+                    }
 
-                if (isset($item['components']) && $item['components']) {
-                    foreach ($item['components'] as $componentId => $choices) {
-                        foreach ($choices as $optionId) {
-                            MealSubscriptionComponent::create([
+                    if (isset($item['addons']) && $item['addons']) {
+                        foreach ($item['addons'] as $addonId) {
+                            MealSubscriptionAddon::create([
                                 'meal_subscription_id' => $mealSub->id,
-                                'meal_component_id' => $componentId,
-                                'meal_component_option_id' => $optionId
+                                'meal_addon_id' => $addonId
                             ]);
+                        }
+                    }
+
+                    $attachments = MealAttachment::where(
+                        'meal_id',
+                        $item['meal']['id']
+                    )->get();
+                    if ($attachments) {
+                        foreach ($attachments as $attachment) {
+                            $mealSub = new MealSubscription();
+                            $mealSub->subscription_id = $userSubscription->id;
+                            $mealSub->store_id = $store->id;
+                            $mealSub->meal_id = $attachment->attached_meal_id;
+                            $mealSub->quantity =
+                                $attachment->quantity * $item['quantity'];
+                            $mealSub->save();
                         }
                     }
                 }
 
-                if (isset($item['addons']) && $item['addons']) {
-                    foreach ($item['addons'] as $addonId) {
-                        MealSubscriptionAddon::create([
-                            'meal_subscription_id' => $mealSub->id,
-                            'meal_addon_id' => $addonId
-                        ]);
-                    }
+                // Send notification to store
+                if ($storeSettings->notificationEnabled('new_subscription')) {
+                    $store->sendNotification('new_subscription', [
+                        'order' => $order ?? null,
+                        'pickup' => $pickup ?? null,
+                        'card' => $card ?? null,
+                        'customer' => $customer ?? null,
+                        'subscription' => $userSubscription ?? null
+                    ]);
                 }
 
-                $attachments = MealAttachment::where(
-                    'meal_id',
-                    $item['meal']['id']
-                )->get();
-                if ($attachments) {
-                    foreach ($attachments as $attachment) {
-                        $mealSub = new MealSubscription();
-                        $mealSub->subscription_id = $userSubscription->id;
-                        $mealSub->store_id = $store->id;
-                        $mealSub->meal_id = $attachment->attached_meal_id;
-                        $mealSub->quantity =
-                            $attachment->quantity * $item['quantity'];
-                        $mealSub->save();
-                    }
-                }
-            }
-
-            // Send notification to store
-            if ($storeSettings->notificationEnabled('new_subscription')) {
-                $store->sendNotification('new_subscription', [
-                    'order' => $order ?? null,
-                    'pickup' => $pickup ?? null,
-                    'card' => $card ?? null,
-                    'customer' => $customer ?? null,
-                    'subscription' => $userSubscription ?? null
-                ]);
-            }
-
-            // Send notification
-            /*$email = new MealPlan([
+                // Send notification
+                /*$email = new MealPlan([
                 'order' => $order ?? null,
                 'pickup' => $pickup ?? null,
                 'card' => $card ?? null,
@@ -586,22 +596,17 @@ class CheckoutController extends UserController
             } catch (\Exception $e) {
             }*/
 
-            try {
-                $user->sendNotification('meal_plan', [
-                    'order' => $order ?? null,
-                    'pickup' => $pickup ?? null,
-                    'card' => $card ?? null,
-                    'customer' => $customer ?? null,
-                    'subscription' => $userSubscription ?? null
-                ]);
-            } catch (\Exception $e) {
+                try {
+                    $user->sendNotification('meal_plan', [
+                        'order' => $order ?? null,
+                        'pickup' => $pickup ?? null,
+                        'card' => $card ?? null,
+                        'customer' => $customer ?? null,
+                        'subscription' => $userSubscription ?? null
+                    ]);
+                } catch (\Exception $e) {
+                }
             }
         }
-
-        /*
-    $subscription = $user->newSubscription('main', $plan->id)->create($stripeToken['id']);
-    $subscription->store_id = $this->store->id;
-    $subscription->amount = $total;
-    $subscription->interval = 'week';*/
     }
 }

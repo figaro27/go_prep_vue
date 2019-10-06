@@ -10,6 +10,7 @@ use App\Customer;
 use App\User;
 
 use net\authorize\api\contract\v1 as AnetApi;
+use net\authorize\api\contract\v1\ANetApiResponseType;
 use net\authorize\api\controller as AnetController;
 use net\authorize\api\contract\v1\MerchantAuthenticationType;
 
@@ -44,8 +45,13 @@ class Authorize implements IBilling
 
     public function setAuthContext(Store $store)
     {
-        $loginId = config('services.authorize.login_id');
-        $transactionKey = config('services.authorize.transaction_key');
+        $storeSettings = $store->settings;
+        $loginId = $storeSettings->authorize_login_id ?? null;
+        $transactionKey = $storeSettings->authorize_transaction_key ?? null;
+
+        if (!$loginId || !$transactionKey) {
+            throw new BillingException('Invalid Authorize.net credentials');
+        }
 
         $merchantAuthentication = new MerchantAuthenticationType();
         $merchantAuthentication->setName($loginId);
@@ -56,19 +62,22 @@ class Authorize implements IBilling
         return $merchantAuthentication;
     }
 
-    protected function validateResponse($response)
+    protected function validateResponse(ANetApiResponseType $response)
     {
         if (
             $response != null &&
             $response->getMessages()->getResultCode() == "Ok"
         ) {
             return $response;
+        } elseif (!$response) {
+            throw new BillingException("Invalid response from Authorize.net");
         } else {
             $errorMessages = $response->getMessages()->getMessage();
             $message = $errorMessages
-                ? $errorMessages[0]->text
+                ? $errorMessages[0]->getText()
                 : 'Authorize billing exception';
-            throw new BillingException($message);
+            $code = $errorMessages[0]->getCode();
+            throw new BillingException($message, $code);
         }
     }
 
