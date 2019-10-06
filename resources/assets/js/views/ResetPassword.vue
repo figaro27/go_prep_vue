@@ -57,7 +57,7 @@ export default {
       axios
         .post("/api/auth/reset", data)
         .then(async response => {
-          this.$toastr.s("Password reset!");
+          this.$toastr.s("Password reset.");
           this.$router.replace("/login");
         })
         .catch(error => {

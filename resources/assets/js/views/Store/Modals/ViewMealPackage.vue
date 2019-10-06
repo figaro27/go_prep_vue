@@ -89,7 +89,7 @@
 
                 <div slot="featured_image" slot-scope="props">
                   <thumbnail
-                    v-if="props.row.image.url_thumb"
+                    v-if="props.row.image != null && props.row.image.url_thumb"
                     :src="props.row.image.url_thumb"
                     width="64px"
                   ></thumbnail>
@@ -404,7 +404,7 @@ export default {
         return;
       }
 
-      this.$toastr.s("Package updated!");
+      this.$toastr.s("Package updated.");
       this.$emit("updated");
       this.$refs.modal.hide();
       this.$parent.modal = false;

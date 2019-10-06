@@ -3,6 +3,7 @@
     <meal-package-components-modal
       ref="packageComponentModal"
       :key="total"
+      :packageTitle="packageTitle"
     ></meal-package-components-modal>
 
     <div
@@ -19,7 +20,7 @@
           :key="mealPkg.id"
         >
           <thumbnail
-            v-if="mealPkg.image.url_medium"
+            v-if="mealPkg.image != null && mealPkg.image.url_medium"
             :src="mealPkg.image.url_medium"
             class="menu-item-img"
             width="100%"
@@ -81,6 +82,11 @@ import { mapGetters } from "vuex";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 
 export default {
+  data() {
+    return {
+      packageTitle: null
+    };
+  },
   components: {
     MealPackageComponentsModal
   },
@@ -103,6 +109,10 @@ export default {
   },
   methods: {
     addMealPackage(mealPackage, condition = false, size) {
+      if (size) this.packageTitle = mealPackage.title + " - " + size.title;
+      else
+        this.packageTitle =
+          mealPackage.title + " - " + mealPackage.default_size_title;
       this.addOne(mealPackage, condition, size);
       this.$parent.mealPackageModal = false;
       if (this.$parent.showBagClass.includes("hidden-right")) {

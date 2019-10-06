@@ -40,7 +40,7 @@
       ></meal-package-modal>
 
       <div class="row">
-        <div :class="`col-md-12 main-menu-area ${storeCSS}`">
+        <div :class="`col-md-12 main-menu-area`">
           <Spinner
             v-if="!meals.length && !mealPackages.length"
             position="absolute"
@@ -85,6 +85,34 @@
 
           <meal-packages-area :mealPackages="mealPackages"></meal-packages-area>
         </div>
+
+        <div class="categoryNavArea" v-if="!mobile">
+          <!-- <div class="categoryNavArea_header">
+            <h3 class="white-text d-inline pr-2">Category</h3>
+          </div> -->
+
+          <div class="categoryNavArea_body">
+            <div class="categoryNavArea_body_inner">
+              <b-form-textarea
+                v-model="search"
+                placeholder="Search"
+                class="meal-search center-text mb-4"
+              ></b-form-textarea>
+              <div
+                v-for="(cat, index) in finalCategories"
+                :key="cat.name"
+                :class="
+                  index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
+                "
+                :target="'categorySection_' + cat.id"
+              >
+                {{ cat.name }}
+              </div>
+            </div>
+            <!-- Inner Body End !-->
+          </div>
+        </div>
+
         <div :class="showBagClass" v-if="!mobile">
           <bag-area
             :manualOrder="manualOrder"
@@ -109,6 +137,7 @@
               :deliveryDay="deliveryDay"
               :transferTime="transferTime"
               :pickup="pickup"
+              :order="order"
             ></bag-actions>
           </div>
         </div>
@@ -117,8 +146,10 @@
         </div>
       </div>
     </div>
+    <v-style> .categoryNavItem.active {color: {{ brandFontColor }} } </v-style>
   </div>
 </template>
+
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import nutritionFacts from "nutrition-label-jquery-plugin";
@@ -153,6 +184,57 @@ import MealPage from "../../components/Customer/MealPage";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
+});
+
+$(function() {
+  var byPassScroll = false;
+  $("body").on("click", ".categoryNavItem", function() {
+    if ($(this).hasClass("active")) {
+      return;
+    }
+
+    let target = $(this).attr("target");
+    if (!target) {
+      return;
+    }
+
+    byPassScroll = true;
+
+    $(".categoryNavItem").removeClass("active");
+    $(this).addClass("active");
+
+    $([document.documentElement, document.body]).animate(
+      {
+        scrollTop:
+          $(".categorySection[target='" + target + "']").offset().top - 59
+      },
+      700
+    );
+
+    setTimeout(() => {
+      byPassScroll = false;
+    }, 800);
+  });
+
+  $(window).on("scroll", function() {
+    buildCategoryScroll();
+  });
+
+  function buildCategoryScroll() {
+    if (byPassScroll) {
+      return;
+    }
+
+    let windowScroll = $(window).scrollTop();
+
+    $(".categorySection").each(function() {
+      if (windowScroll >= $(this).offset().top - 60) {
+        let target = $(this).attr("target");
+        $(".categoryNavItem").removeClass("active");
+        $('.categoryNavItem[target="' + target + '"]').addClass("active");
+      }
+    });
+  }
 });
 
 export default {
@@ -193,6 +275,7 @@ export default {
     subscription: {},
     subscriptionId: null,
     orderId: null,
+    order: null,
     deliveryDay: null,
     transferTime: null,
     pickup: null
@@ -200,7 +283,7 @@ export default {
   data() {
     return {
       resetMeal: false,
-      showBagClass: "shopping-cart hidden-right bag-area",
+      showBagClass: "shopping-cart show-right bag-area d-none",
       showFilterClass: "shopping-cart hidden-left bag-area",
       search: "",
       showAuthModal: false,
@@ -224,6 +307,7 @@ export default {
         allergies: [],
         categories: []
       },
+      finalCategories: [],
       meal: null,
       mealPackage: null,
       ingredients: "",
@@ -232,7 +316,6 @@ export default {
       mealPageView: false,
       mealPackageModal: false,
       nutritionalFacts: {},
-      storeCSS: "",
       showMealsArea: true,
       showMealPackagesArea: true,
       mealSizePrice: null
@@ -329,11 +412,11 @@ export default {
       });
 
       // Find store-defined category sorting
-      let sorting = {};
+      /*let sorting = {};
       this._categories.forEach(cat => {
         //sorting[cat.category] = cat.order.toString() + cat.category;
         sorting[cat.category] = !isNaN(cat.order) ? parseInt(cat.order) : 9999;
-      });
+      });*/
 
       /* Sort Categories */
       let sortedCategories = [];
@@ -344,7 +427,8 @@ export default {
 
         sortedCategories.push({
           name: cat.category,
-          order
+          order,
+          id: cat.id
         });
       }
 
@@ -377,19 +461,26 @@ export default {
       });*/
 
       let finalData = [];
+      let finalCategories = [];
+
       for (let i = 0; i < sortedCategories.length; i++) {
         let name = sortedCategories[i].name;
         let order = sortedCategories[i].order;
+        let category_id = sortedCategories[i].id;
 
         if (grouped[name] && grouped[name].length > 0) {
           finalData.push({
             category: name,
+            category_id,
             meals: grouped[name],
             order
           });
+
+          finalCategories.push(sortedCategories[i]);
         }
       }
 
+      this.finalCategories = finalCategories;
       return finalData;
 
       // Sort
@@ -471,6 +562,9 @@ export default {
       let style = "background-color:";
       style += this.store.settings.color;
       return style;
+    },
+    brandFontColor() {
+      return this.store.settings.color;
     }
   },
   created() {
@@ -488,16 +582,16 @@ export default {
     });
   },
   mounted() {
+    if (this.bag.length > 0) {
+      this.showBagClass = "shopping-cart show-right bag-area area-scroll";
+    } else
+      this.showBagClass = "shopping-cart hidden-right bag-area area-scroll";
     if (this.storeView) {
-      this.storeCSS = "store-menu-view";
-      if (this.menuPage)
+      if (this.$route.params.storeView)
         this.showBagClass = "shopping-cart show-right bag-area area-scroll";
       else this.showBagClass = "shopping-cart show-right bag-area";
     }
 
-    // if (this.bag.length > 0) {
-    this.showBag();
-    // }
     keyboardJS.bind("left", () => {
       if (this.$refs.carousel) {
         console.log(this.$refs.carousel);
@@ -715,7 +809,7 @@ export default {
     showBag() {
       if (this.storeView) return;
       if (this.showBagClass.includes("hidden-right")) {
-        this.showBagClass = "shopping-cart show-right bag-area";
+        this.showBagClass = "d-inline shopping-cart show-right bag-area";
         if (this.menuPage) {
           this.showBagClass += " area-scroll";
         }
@@ -727,10 +821,14 @@ export default {
       }
     },
     showFilterArea() {
-      if (this.showFilterClass === "shopping-cart hidden-left bag-area")
-        this.showFilterClass = "shopping-cart show-left bag-area";
-      else if (this.showFilterClass === "shopping-cart show-left bag-area")
-        this.showFilterClass = "shopping-cart hidden-left bag-area";
+      this.viewFilterModal = true;
+
+      // Hiding left pop out filter area now that categories are added in.
+
+      // if (this.showFilterClass === "shopping-cart hidden-left bag-area")
+      //   this.showFilterClass = "shopping-cart show-left bag-area";
+      // else if (this.showFilterClass === "shopping-cart show-left bag-area")
+      //   this.showFilterClass = "shopping-cart hidden-left bag-area";
     },
     filterByCategory(category) {
       this.filteredView = true;

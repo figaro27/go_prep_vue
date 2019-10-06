@@ -12,6 +12,7 @@ use App\MealSubscriptionComponent;
 use App\MealOrderAddon;
 use App\MealSubscriptionAddon;
 use App\MealSubscription;
+use App\MealMealAttachment;
 use App\Order;
 use App\Store;
 use App\StoreDetail;
@@ -61,13 +62,15 @@ class CheckoutController extends StoreController
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
 
-        $today = Carbon::now()->toDateString();
-        $count = DB::table('orders')
-            ->where('store_id', $storeId)
-            ->whereDate('created_at', $today)
-            ->get()
-            ->count();
-        $dailyOrderNumber = $count + 1;
+        $max = Order::where('store_id', $storeId)
+            ->whereDate('delivery_date', $deliveryDay)
+            ->max('dailyOrderNumber');
+
+        if ($max) {
+            $dailyOrderNumber = $max + 1;
+        } else {
+            $dailyOrderNumber = 1;
+        }
 
         if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             $discount = $store->settings->mealPlanDiscount / 100;
@@ -173,8 +176,7 @@ class CheckoutController extends StoreController
             $order->dailyOrderNumber = $dailyOrderNumber;
             $order->save();
 
-            $items = $bag->getItems();
-            foreach ($items as $item) {
+            foreach ($bag->getItems() as $item) {
                 $mealOrder = new MealOrder();
                 $mealOrder->order_id = $order->id;
                 $mealOrder->store_id = $store->id;
@@ -207,6 +209,22 @@ class CheckoutController extends StoreController
                             'meal_order_id' => $mealOrder->id,
                             'meal_addon_id' => $addonId
                         ]);
+                    }
+                }
+
+                $attachments = MealMealAttachment::where(
+                    'meal_id',
+                    $item['meal']['id']
+                )->get();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $mealOrder = new MealOrder();
+                        $mealOrder->order_id = $order->id;
+                        $mealOrder->store_id = $store->id;
+                        $mealOrder->meal_id = $attachment->attached_meal_id;
+                        $mealOrder->quantity =
+                            $attachment->quantity * $item['quantity'];
+                        $mealOrder->save();
                     }
                 }
             }
@@ -429,6 +447,22 @@ class CheckoutController extends StoreController
                         ]);
                     }
                 }
+
+                $attachments = MealMealAttachment::where(
+                    'meal_id',
+                    $item['meal']['id']
+                )->get();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $mealOrder = new MealOrder();
+                        $mealOrder->order_id = $order->id;
+                        $mealOrder->store_id = $store->id;
+                        $mealOrder->meal_id = $attachment->attached_meal_id;
+                        $mealOrder->quantity =
+                            $attachment->quantity * $item['quantity'];
+                        $mealOrder->save();
+                    }
+                }
             }
 
             foreach ($bag->getItems() as $item) {
@@ -464,6 +498,22 @@ class CheckoutController extends StoreController
                             'meal_subscription_id' => $mealSub->id,
                             'meal_addon_id' => $addonId
                         ]);
+                    }
+                }
+
+                $attachments = MealMealAttachment::where(
+                    'meal_id',
+                    $item['meal']['id']
+                )->get();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $mealSub = new MealSubscription();
+                        $mealSub->subscription_id = $userSubscription->id;
+                        $mealSub->store_id = $store->id;
+                        $mealSub->meal_id = $attachment->attached_meal_id;
+                        $mealSub->quantity =
+                            $attachment->quantity * $item['quantity'];
+                        $mealSub->save();
                     }
                 }
             }
@@ -515,19 +565,20 @@ class CheckoutController extends StoreController
         $order = Order::where('id', $orderId)->first();
         $subtotal = $order->preFeePreDiscount;
         $amount = $order->amount;
-        $balance = (100 - $order->deposit) / 100;
+        $balance = $request->get('balance');
+        // $balance = (100 - $order->deposit) / 100;
         $store = $this->store;
         $application_fee = $store->settings->application_fee;
         $storeName = strtolower($this->store->storeDetail->name);
 
         $customer = Customer::where('id', $order->customer_id)->first();
 
-        if (!$cashOrder) {
+        if (!$cashOrder && $balance > 0) {
             $cardId = $order->card_id;
             $card = Card::where('id', $cardId)->first();
         }
 
-        if (!$cashOrder) {
+        if (!$cashOrder && $balance > 0) {
             $storeSource = \Stripe\Source::create(
                 [
                     "customer" => $customer->user->stripe_id,
@@ -539,7 +590,7 @@ class CheckoutController extends StoreController
 
             $charge = \Stripe\Charge::create(
                 [
-                    "amount" => round(100 * ($amount * $balance)),
+                    "amount" => round(100 * $balance),
                     "currency" => "usd",
                     "source" => $storeSource,
                     "application_fee" => round(
@@ -553,6 +604,10 @@ class CheckoutController extends StoreController
         $order->deposit = 100;
         $order->save();
 
-        return $cashOrder;
+        if ($cashOrder || $balance <= 0) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

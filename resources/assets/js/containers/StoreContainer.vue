@@ -1,24 +1,24 @@
 <template>
   <div :class="classes">
     <AppHeader fixed>
-      <SidebarToggler class="d-lg-none" display="md" mobile/>
-      <b-link class="navbar-brand" to="#">
+      <SidebarToggler class="d-lg-none" display="md" mobile />
+      <b-link class="navbar-brand" to="/store/orders">
         <img
           class="navbar-brand-full"
           src="/images/logo.png"
           width="90"
           height="40"
           alt="GoPrep Logo"
-        >
+        />
         <img
           class="navbar-brand-minimized"
           src="/images/logo.png"
           width="90"
           height="40"
           alt="GoPrep Logo"
-        >
+        />
       </b-link>
-      <SidebarToggler class="d-md-down-none" display="lg"/>
+      <SidebarToggler class="d-md-down-none" display="lg" />
       <b-navbar-nav class="ml-auto">
         <!-- <b-nav-item class="d-md-down-none">
           <DefaultHeaderDropdownNotif/>
@@ -32,21 +32,25 @@
         <b-nav-item class="d-md-down-none">
           <DefaultHeaderDropdown/>
         </b-nav-item>-->
-        <StoreDropdown/>
+        <StoreDropdown />
       </b-navbar-nav>
       <!-- <AsideToggler class="d-none d-lg-block" /> -->
       <!--<AsideToggler class="d-lg-none" mobile />-->
     </AppHeader>
     <div class="app-body">
       <AppSidebar fixed>
-        <SidebarHeader/>
-        <SidebarForm/>
+        <SidebarHeader />
+        <SidebarForm />
         <SidebarNav :navItems="navItems"></SidebarNav>
-        <SidebarFooter/>
-        <SidebarMinimizer/>
+        <SidebarFooter />
+        <SidebarMinimizer />
       </AppSidebar>
       <main class="main">
-        <page-spinner v-if="!initialized || isLoading" :faded="initialized" style="left: 200px"></page-spinner>
+        <page-spinner
+          v-if="!initialized || isLoading"
+          :faded="initialized"
+          style="left: 200px"
+        ></page-spinner>
         <!-- <Breadcrumb :list="list"/> -->
         <div class="container-fluid" v-if="initialized">
           <router-view></router-view>
@@ -54,21 +58,15 @@
       </main>
       <AppAside fixed>
         <!--aside-->
-        <DefaultAside/>
+        <DefaultAside />
       </AppAside>
     </div>
     <!-- <TheFooter>
       footer
     </TheFooter>-->
     <v-style>
-          .menu-bag-btn, .brand-color, .filters .active {
-            background: {{ bgColor }};
-          }
-
-        .dbl-underline:after {
-          border-bottom: 3px double {{ bgColor }};
-        }
-      
+      .menu-bag-btn, .brand-color, .filters .active { background: {{ bgColor }};
+      } .dbl-underline:after { border-bottom: 3px double {{ bgColor }}; }
     </v-style>
   </div>
 </template>
@@ -79,7 +77,7 @@ main.main {
 }
 
 .navbar {
-  background-color:#3082CF;
+  background-color: #3082cf;
 }
 </style>
 
@@ -134,13 +132,13 @@ export default {
   data() {
     return {
       payments_url: "#payments",
-      bgColor: ''
+      bgColor: ""
     };
   },
   computed: {
     ...mapGetters(["initialized", "isLoading", "storeSettings"]),
     classes() {
-      let classes = ['app'];
+      let classes = ["app"];
       classes.push(this.$route.name);
       return classes;
     },
@@ -150,14 +148,14 @@ export default {
           item.url = this.payments_url;
         }
 
-        if(!item.class) {
-          item.class = '';
+        if (!item.class) {
+          item.class = "";
         }
 
-        if(item.url === this.$route.path) {
-          item.class += ' active';
+        if (item.url === this.$route.path) {
+          item.class += " active";
         }
-        
+
         return item;
       });
     },
@@ -178,15 +176,15 @@ export default {
     });
   },
   updated() {
-      if (this.storeSettings.color === '#3082CF' || this.storeSettings.color === '#3082cf'){
-        this.bgColor = '#F25727 !important';
-      }
-      else
-        this.bgColor = this.storeSettings.color + ' !important';
+    if (
+      this.storeSettings.color === "#3082CF" ||
+      this.storeSettings.color === "#3082cf"
+    ) {
+      this.bgColor = "#F25727 !important";
+    } else this.bgColor = this.storeSettings.color + " !important";
   },
   methods: {
-    ...mapActions({
-    })
+    ...mapActions({})
   }
 };
 </script>

@@ -7,9 +7,12 @@ use App\Bag;
 use App\MealOrder;
 use App\MealOrderComponent;
 use App\MealOrderAddon;
+use App\LineItem;
+use App\LineItemOrder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Carbon;
+use DB;
 
 class OrderController extends StoreController
 {
@@ -136,7 +139,7 @@ class OrderController extends StoreController
                 'user.userDetail',
                 'meals',
                 'pickup_location',
-                'lineItemsOrders'
+                'lineItemsOrder'
             ])
             ->where('id', $id)
             ->first();
@@ -180,7 +183,6 @@ class OrderController extends StoreController
         $subtotal = $request->get('subtotal');
         $afterDiscountBeforeFees = $bagTotal;
         $preFeePreDiscount = $bagTotal;
-        $deposit = $request->get('deposit') / 100;
         $processingFee = 0;
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
@@ -188,6 +190,9 @@ class OrderController extends StoreController
         $processingFee = $request->get('processingFee');
         $cashOrder = $request->get('cashOrder');
         $grandTotal = $request->get('grandTotal');
+        $adjustedDifference = $request->get('grandTotal') - $order->amount;
+        $deposit =
+            (($order->deposit * $order->amount) / 100 / $grandTotal) * 100;
 
         $order->delivery_date = $request->get('deliveryDate');
         $order->transferTime = $request->get('transferTime');
@@ -200,6 +205,8 @@ class OrderController extends StoreController
         $order->processingFee = $processingFee;
         $order->salesTax = $salesTax;
         $order->amount = $grandTotal;
+        $order->deposit = $deposit;
+        $order->adjustedDifference = $adjustedDifference;
         $order->coupon_id = $couponId;
         $order->couponReduction = $couponReduction;
         $order->couponCode = $couponCode;
@@ -208,7 +215,13 @@ class OrderController extends StoreController
         $order->couponCode = $couponCode;
         $order->pickup_location_id = $pickupLocation;
         $order->transferTime = $transferTime;
-        $order->deposit = $deposit * 100;
+
+        $max = Order::where('store_id', $store->id)
+            ->whereDate('delivery_date', $request->get('deliveryDate'))
+            ->max('dailyOrderNumber');
+
+        $dailyOrderNumber = $max + 1;
+        $order->dailyOrderNumber = $dailyOrderNumber;
 
         $order->save();
 
@@ -242,6 +255,33 @@ class OrderController extends StoreController
                         'meal_order_id' => $mealOrder->id,
                         'meal_addon_id' => $addonId
                     ]);
+                }
+            }
+        }
+
+        $lineItemsOrder = $request->get('lineItemsOrder');
+        if ($lineItemsOrder != null) {
+            foreach ($lineItemsOrder as $lineItemOrder) {
+                $title = $lineItemOrder['title'];
+                $id = LineItem::where('title', $title)
+                    ->pluck('id')
+                    ->first();
+                $quantity = $lineItemOrder['quantity'];
+                $existingLineItem = LineItemOrder::where([
+                    'line_item_id' => $id,
+                    'order_id' => $order->id
+                ])->first();
+
+                if ($existingLineItem) {
+                    $existingLineItem->quantity = $quantity;
+                    $existingLineItem->save();
+                } else {
+                    $lineItemOrder = new LineItemOrder();
+                    $lineItemOrder->store_id = $store->id;
+                    $lineItemOrder->line_item_id = $id;
+                    $lineItemOrder->order_id = $order->id;
+                    $lineItemOrder->quantity = $quantity;
+                    $lineItemOrder->save();
                 }
             }
         }

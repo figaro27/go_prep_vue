@@ -39,7 +39,7 @@ f<template>
           "
           variant="warning"
         >
-          <p class="center-text mt-3">You have no activeSubscriptions.</p>
+          <p class="center-text mt-3">You have no active subscriptions.</p>
         </b-alert>
 
         <Spinner v-if="isLoading" />
@@ -403,8 +403,11 @@ export default {
           item.special_instructions
         );
 
+        let image = null;
+        if (meal.image != null) image = meal.image.url_thumb;
+
         return {
-          image: meal.image.url_thumb,
+          image: image,
           meal: title,
           quantity: item.quantity,
           unit_price: format.money(item.unit_price, subscription.currency),
@@ -419,7 +422,7 @@ export default {
         const resp = await axios.post(
           `/api/me/subscriptions/${subscription.id}/pause`
         );
-        this.$toastr.s("Subscription paused!");
+        this.$toastr.s("Subscription paused.");
       } catch (e) {
         this.$toastr.e(
           "Please get in touch with our support team.",
@@ -434,7 +437,7 @@ export default {
         const resp = await axios.post(
           `/api/me/subscriptions/${subscription.id}/resume`
         );
-        this.$toastr.s("Subscription resumed!");
+        this.$toastr.s("Subscription resumed.");
       } catch (e) {
         this.$toastr.e(e.response.data.error);
       }
@@ -446,7 +449,7 @@ export default {
         const resp = await axios.delete(
           `/api/me/subscriptions/${subscription.id}`
         );
-        this.$toastr.s("Subscription cancelled!");
+        this.$toastr.s("Subscription cancelled.");
       } catch (e) {
         this.$toastr.e(
           "Please get in touch with our support team.",

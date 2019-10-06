@@ -243,7 +243,7 @@
                     <span class="order-quantity">{{ meal.quantity }}</span>
                     <img src="/images/store/x-modal.png" class="mr-2 ml-2" />
                     <thumbnail
-                      v-if="meal.image.url_thumb"
+                      v-if="meal.image != null && meal.image.url_thumb"
                       :src="meal.image.url_thumb"
                       :spinner="false"
                       class="mr-0 pr-0"
@@ -548,7 +548,7 @@ export default {
       try {
         axios.post("/api/me/subscriptions/pause", { id: id }).then(resp => {
           this.refreshSubscriptions();
-          this.$toastr.s("Subscription paused!");
+          this.$toastr.s("Subscription paused.");
         });
       } catch (e) {
         this.$toastr.e(
@@ -561,7 +561,7 @@ export default {
       try {
         axios.post("/api/me/subscriptions/resume", { id: id }).then(resp => {
           this.refreshSubscriptions();
-          this.$toastr.s("Subscription resumed!");
+          this.$toastr.s("Subscription resumed.");
         });
       } catch (e) {
         this.$toastr.e(

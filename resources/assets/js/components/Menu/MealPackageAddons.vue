@@ -15,7 +15,7 @@
     <div v-else>
       <div class="mb-4">
         <b-button variant="primary" @click="addAddon()"
-          >Add Meal Addon</b-button
+          >Add Meal Package Addon</b-button
         >
         <!--         <img
           v-b-popover.hover="
@@ -32,15 +32,15 @@
         :key="addon.id"
         role="tablist"
       >
-        <div class="addon-header mb-2">
+        <!-- <div class="addon-header mb-2">
           <h5 class="d-inline-block">#{{ i + 1 }}. {{ addon.title }}</h5>
-        </div>
+        </div> -->
         <b-row>
           <b-col cols="6">
             <b-form-group label="Title">
               <b-input
                 v-model="addon.title"
-                placeholder="i.e. Extra Meat"
+                placeholder="i.e. Extra Entree"
               ></b-input>
             </b-form-group>
           </b-col>
@@ -83,12 +83,12 @@
             >
           </b-col>
         </b-row>
-        <hr v-if="i < meal_package.addons.length - 1" class="my-4" />
+        <hr v-if="i < meal_package.addons.length - 1" class="my-2" />
       </div>
 
       <div v-if="meal_package.addons.length" class="mt-4">
         <b-button variant="primary" @click="addAddon()"
-          >Add Meal Addon</b-button
+          >Add Meal Package Addon</b-button
         >
         <b-button variant="primary" @click="save()" class="pull-right"
           >Save</b-button

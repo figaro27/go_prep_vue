@@ -1,8 +1,8 @@
 <template>
   <b-modal
-    title="Choose Options"
+    :title="mealPackageTitle"
     ref="modal"
-    size="lgx"
+    size="xl"
     @ok.prevent="e => ok(e)"
     class="meal-package-components-modal"
     no-fade
@@ -15,10 +15,12 @@
             :key="mealPackage.id + component.id"
             class
           >
-            <h6>{{ getComponentLabel(component) }}</h6>
-
+            <h4 class="center-text mb-3">
+              {{ getComponentLabel(component) }} - Remaining:
+              {{ getRemainingMeals(component.id) }}
+            </h4>
             <b-form-group :label="null">
-              Remaining: {{ getRemainingMeals(component.id) }}
+              <!-- Remaining: {{ getRemainingMeals(component.id) }} -->
               <div v-for="option in getOptions(component)" :key="option.id">
                 <div v-if="$v.choices[component.id].$dirty">
                   <div
@@ -53,7 +55,7 @@
                 </b-checkbox>
 
                 <div v-else class="my-2">
-                  <b-row>
+                  <b-row v-if="storeSettings.menuStyle === 'image'">
                     <div
                       class="bag-item col-6 col-sm-4 col-lg-3 pb-4 mb-4"
                       v-for="mealOption in getMealOptions(
@@ -95,7 +97,10 @@
                         </div>
                         <div class="bag-item-image mr-2">
                           <thumbnail
-                            v-if="mealOption.meal.image.url_thumb"
+                            v-if="
+                              mealOption.meal.image != null &&
+                                mealOption.meal.image.url_thumb
+                            "
                             :src="mealOption.meal.image.url_thumb"
                             :spinner="false"
                             class="cart-item-img"
@@ -113,6 +118,64 @@
                         </div>
                       </div>
                       <!-- <span>{{ meal.meal.description }}</span> -->
+                    </div>
+                  </b-row>
+
+                  <b-row v-if="storeSettings.menuStyle === 'text'">
+                    <div
+                      class="bag-item col-4 col-sm-4 col-md-4 col-lg-4 pb-3"
+                      v-for="mealOption in getMealOptions(
+                        getOptionMeals(component.id, option.id),
+                        false
+                      )"
+                      :key="mealOption.meal_id"
+                    >
+                      <div class="card card-text-menu border-light p-3">
+                        <div
+                          v-if="mealOption && mealOption.quantity > 0"
+                          class="d-flex align-items-center"
+                        >
+                          <div class="bag-item-quantity mr-2">
+                            <div
+                              @click="
+                                addOptionChoice(component, option, mealOption)
+                              "
+                              class="bag-plus-minus brand-color white-text small-buttons"
+                            >
+                              <i>+</i>
+                            </div>
+                            <p class="bag-quantity">
+                              {{
+                                getOptionChoiceQuantity(
+                                  component.id,
+                                  option.id,
+                                  mealOption.meal_id
+                                )
+                              }}
+                            </p>
+                            <div
+                              @click="
+                                minusOptionChoice(component, option, mealOption)
+                              "
+                              class="bag-plus-minus gray white-text small-buttons"
+                            >
+                              <i>-</i>
+                            </div>
+                          </div>
+                          <div class="flex-grow-1 mr-2">
+                            <span class="strong">
+                              {{ mealOption.title }}
+                              <small v-if="mealOption.price > 0"
+                                >+{{ format.money(mealOption.price) }}</small
+                              >
+                            </span>
+                            <p class="small">
+                              {{ mealOption.meal.description }}
+                            </p>
+                          </div>
+                        </div>
+                        <!-- <span>{{ meal.meal.description }}</span> -->
+                      </div>
                     </div>
                   </b-row>
                 </div>
@@ -162,7 +225,9 @@ import { mapGetters } from "vuex";
 
 export default {
   mixins: [modal],
-  props: {},
+  props: {
+    packageTitle: { default: "Meal Package" }
+  },
   data() {
     return {
       mealPackage: null,
@@ -174,9 +239,15 @@ export default {
   },
   computed: {
     ...mapGetters({
-      storeSettings: "storeSettings",
+      store: "viewedStore",
       getMeal: "viewedStoreMeal"
     }),
+    storeSettings() {
+      return this.store.settings;
+    },
+    mealPackageTitle() {
+      return this.packageTitle;
+    },
     sizeId() {
       return _.isObject(this.size) ? this.size.id : null;
     },
@@ -521,7 +592,8 @@ export default {
         qty = `Choose up to ${component.maximum}`;
       }
 
-      return `${component.title} - ${qty}`;
+      // return `${component.title} - ${qty}`;
+      return `${component.title}`;
     },
     getRemainingMeals(componentId) {
       const component = this.getComponent(componentId);

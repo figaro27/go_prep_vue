@@ -15,7 +15,7 @@
     <div v-else>
       <div class="mb-4">
         <b-button variant="primary" @click="addComponent()"
-          >Add Meal Component</b-button
+          >Add Meal Package Component</b-button
         >
         <!--         <img
           v-b-popover.hover="
@@ -28,11 +28,11 @@
       </div>
 
       <div
-        v-for="(component, i) in meal_package.components"
+        v-for="(component, i) in mealPackageComponents"
         :key="component.id"
         role="tablist"
       >
-        <div class="component-header mb-2">
+        <!-- <div class="component-header mb-2">
           <h5 class="d-inline-block">#{{ i + 1 }}. {{ component.title }}</h5>
           <b-btn
             variant="danger"
@@ -40,33 +40,38 @@
             @click="deleteComponent(component.id)"
             >Delete</b-btn
           >
-        </div>
+        </div> -->
         <b-row>
           <b-col cols="6">
-            <b-form-group label="Title">
+            <b-form-group label="Component Title" class="font-weight-bold">
               <b-input
                 v-model="component.title"
-                placeholder="i.e. Choose Your Protein"
+                placeholder="i.e. Choose Your Entree"
               ></b-input>
             </b-form-group>
           </b-col>
           <b-col>
-            <b-form-group label="Minimum">
+            <b-form-group label="Minimum" class="font-weight-bold">
               <b-input v-model="component.minimum"></b-input>
             </b-form-group>
           </b-col>
           <b-col>
-            <b-form-group label="Maximum">
+            <b-form-group label="Maximum" class="font-weight-bold">
               <b-input v-model="component.maximum"></b-input>
             </b-form-group>
           </b-col>
+          <b-col class="d-flex align-items-center">
+            <b-btn
+              variant="danger"
+              class="pull-right mt-2"
+              @click="deleteComponent(component.id)"
+              >Delete</b-btn
+            >
+          </b-col>
         </b-row>
-
-        <div class="font-weight-bold">Component Options:</div>
-
         <table class="table">
           <thead>
-            <th class="border-top-0">Title</th>
+            <th class="border-top-0">Option Title</th>
             <th class="border-top-0">Price</th>
             <th class="border-top-0">Meal Package Size</th>
             <th
@@ -157,9 +162,9 @@
 
       <div v-if="meal_package.components.length" class="mt-4">
         <b-button variant="primary" @click="addComponent()"
-          >Add Meal Component</b-button
+          >Add Meal Package Component</b-button
         >
-        <b-button variant="primary" @click="save()" class="pull-right"
+        <b-button variant="primary" @click.prevent="save()" class="pull-right"
           >Save</b-button
         >
       </div>
@@ -217,6 +222,9 @@ export default {
           };
         })
       );
+    },
+    mealPackageComponents() {
+      return this.meal_package.components;
     }
   },
   watch: {

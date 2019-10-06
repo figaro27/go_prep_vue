@@ -226,8 +226,11 @@ export default {
           item.special_instructions
         );
 
+        let image = null;
+        if (meal.image != null) image = meal.image.url_thumb;
+
         return {
-          image: meal.image.url_thumb,
+          image: image,
           meal: title,
           quantity: item.quantity,
           unit_price: format.money(item.unit_price, order.currency),

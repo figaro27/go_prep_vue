@@ -2,10 +2,17 @@
   <div>
     <div
       class="bag-header center-text pt-3 mt-3"
-      v-if="$route.name === 'customer-menu'"
+      v-if="
+        $route.name === 'customer-menu' ||
+          (($route.params.storeView || storeView) && $route.name != 'store-bag')
+      "
     >
       <h3 class="d-inline ml-3 float-left">
-        <i class="fa fa-angle-right white-text" @click="$parent.showBag()"></i>
+        <i
+          v-if="!$route.params.storeView"
+          class="fa fa-angle-right white-text"
+          @click="$parent.showBag()"
+        ></i>
       </h3>
       <h3 class="white-text d-inline">My Bag</h3>
       <p class="white-text d-inline">({{ total }} Items)</p>
@@ -77,6 +84,7 @@
             </div>
             <div class="bag-item-image mr-2">
               <thumbnail
+                v-if="item.meal.image != null"
                 :src="item.meal.image.url_thumb"
                 :spinner="false"
                 class="cart-item-img"
@@ -146,14 +154,14 @@
             <div class="bag-item-quantity mr-2">
               <div
                 class="bag-plus-minus brand-color white-text"
-                @click="orderLineItem.quantity += 1"
+                @click="updateLineItems(orderLineItem, 1)"
               >
                 <i>+</i>
               </div>
               <p class="bag-quantity">{{ orderLineItem.quantity }}</p>
               <div
                 class="bag-plus-minus gray white-text"
-                @click="orderLineItem.quantity -= 1"
+                @click="updateLineItems(orderLineItem, -1)"
               >
                 <i>-</i>
               </div>
@@ -188,7 +196,10 @@
         size="lg"
         variant="success"
         @click="showLineItemModal = true"
-        v-if="$route.params.manualOrder && $route.name != 'store-manual-order'"
+        v-if="
+          ($route.params.manualOrder && $route.name != 'store-manual-order') ||
+            ($route.params.adjustOrder && $route.name != 'store-adjust-order')
+        "
       >
         <span class="d-sm-inline">Add Extra</span>
       </b-button>
@@ -213,8 +224,17 @@
           placeholder="Price"
           class="mr-3"
         ></b-form-input>
-        <b-btn variant="success" @click="addLineItem(0)">Add</b-btn>
       </b-input-group>
+      <b-form-radio-group
+        v-if="storeModules.productionGroups"
+        buttons
+        v-model="lineItem.production_group_id"
+        null
+        class="storeFilters ml-2 mt-3"
+        @change="val => {}"
+        :options="productionGroupOptions"
+      ></b-form-radio-group>
+      <b-btn variant="success" @click="addLineItem(0)">Add</b-btn>
       <h3 class="center-text mt-5">Or Select From Existing</h3>
       <b-input-group>
         <b-form-select
@@ -244,12 +264,12 @@ import MenuBag from "../../mixins/menuBag";
 export default {
   data() {
     return {
-      orderLineItems: [],
       showLineItemModal: false,
       lineItem: {
         title: "",
         price: null,
-        quantity: 1
+        quantity: 1,
+        production_group_id: null
       },
       selectedLineItem: {},
       orderLineItems: []
@@ -286,8 +306,18 @@ export default {
       minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
-      lineItems: "viewedStoreLineItems"
+      lineItems: "viewedStoreLineItems",
+      storeProductionGroups: "storeProductionGroups"
     }),
+    productionGroupOptions() {
+      let prodGroups = this.storeProductionGroups;
+      let prodGroupOptions = [{ text: "All", value: null }];
+
+      prodGroups.forEach(prodGroup => {
+        prodGroupOptions.push({ text: prodGroup.title, value: prodGroup.id });
+      });
+      return prodGroupOptions;
+    },
     remainingPrice() {
       return this.minPrice - this.totalBagPricePreFees;
     },
@@ -332,6 +362,13 @@ export default {
         return "shopping-cart-meals area-scroll";
       else return "shopping-cart-meals";
     }
+  },
+  mounted() {
+    let lineItemsOrder = this.$route.params.order.line_items_order;
+    lineItemsOrder.forEach(lineItemOrder => {
+      this.orderLineItems.push(lineItemOrder);
+    });
+    this.$emit("updateLineItems", this.orderLineItems);
   },
   methods: {
     getItemMeals(item) {
@@ -465,6 +502,10 @@ export default {
       this.lineItem = { title: "", price: null, quantity: 1 };
       this.selectedLineItem = { title: "", price: null, quantity: 1 };
 
+      this.$emit("updateLineItems", this.orderLineItems);
+    },
+    updateLineItems(orderLineItem, increment) {
+      orderLineItem.quantity += increment;
       this.$emit("updateLineItems", this.orderLineItems);
     },
     removeLineItem(index) {

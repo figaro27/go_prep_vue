@@ -37,12 +37,18 @@ class LineItemController extends StoreController
     public function store(Request $request)
     {
         $props = collect($request->all());
-        $props = $props->only(['order_id', 'title', 'price']);
+        $props = $props->only([
+            'order_id',
+            'title',
+            'price',
+            'production_group_id'
+        ]);
 
         $lineItem = new LineItem();
         $lineItem->store_id = $this->store->id;
         $lineItem->title = $props->get('title');
         $lineItem->price = $props->get('price');
+        $lineItem->production_group_id = $props->get('production_group_id');
         $lineItem->save();
     }
 

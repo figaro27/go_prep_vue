@@ -209,6 +209,10 @@ class Meal extends Model implements HasMedia
         $mediaItems = $this->getMedia('featured_image');
 
         if (!count($mediaItems)) {
+            if ($this->store->settings->menuStyle === 'text') {
+                return null;
+            }
+
             if ($this->store->storeDetail->logo) {
                 return [
                     'url' => $this->store->storeDetail->logo['url'],
@@ -483,6 +487,11 @@ class Meal extends Model implements HasMedia
         return $this->hasMany('App\MealAddon', 'meal_id', 'id');
     }
 
+    public function attachments()
+    {
+        return $this->hasMany('App\MealMealAttachment');
+    }
+
     public function tags()
     {
         return $this->belongsToMany('App\MealTag', 'meal_meal_tag');
@@ -579,7 +588,8 @@ class Meal extends Model implements HasMedia
             'sizes',
             'components',
             'addons',
-            'macros'
+            'macros',
+            'attachments'
         )
             ->where('id', $id)
             ->first();

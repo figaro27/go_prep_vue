@@ -96,12 +96,12 @@ class MealPackageController extends StoreController
             if ($key === 'meals') {
                 return collect($val)->map(function ($meal) {
                     $meal = collect($meal);
-                    $size = $meal->get('meal_size');
+                    $size = $meal->get('meal_size_id');
 
                     return [
                         'id' => $meal->get('id'),
                         'quantity' => $meal->get('quantity'),
-                        'meal_size_id' => $size ? $size['id'] : null
+                        'meal_size_id' => $size ? $size : null
                     ];
                 });
             }

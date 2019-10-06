@@ -12,6 +12,7 @@ use App\MealSubscriptionComponent;
 use App\MealOrderAddon;
 use App\MealSubscriptionAddon;
 use App\MealSubscription;
+use App\MealMealAttachment;
 use App\Order;
 use App\Store;
 use App\StoreDetail;
@@ -61,13 +62,15 @@ class CheckoutController extends UserController
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
 
-        $today = Carbon::now()->toDateString();
-        $count = DB::table('orders')
-            ->where('store_id', $storeId)
-            ->whereDate('created_at', $today)
-            ->get()
-            ->count();
-        $dailyOrderNumber = $count + 1;
+        $max = Order::where('store_id', $storeId)
+            ->whereDate('delivery_date', $deliveryDay)
+            ->max('dailyOrderNumber');
+
+        if ($max) {
+            $dailyOrderNumber = $max + 1;
+        } else {
+            $dailyOrderNumber = 1;
+        }
 
         if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             $discount = $store->settings->mealPlanDiscount / 100;
@@ -204,6 +207,22 @@ class CheckoutController extends UserController
                             'meal_order_id' => $mealOrder->id,
                             'meal_addon_id' => $addonId
                         ]);
+                    }
+                }
+
+                $attachments = MealMealAttachment::where(
+                    'meal_id',
+                    $item['meal']['id']
+                )->get();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $mealOrder = new MealOrder();
+                        $mealOrder->order_id = $order->id;
+                        $mealOrder->store_id = $store->id;
+                        $mealOrder->meal_id = $attachment->attached_meal_id;
+                        $mealOrder->quantity =
+                            $attachment->quantity * $item['quantity'];
+                        $mealOrder->save();
                     }
                 }
             }
@@ -409,6 +428,22 @@ class CheckoutController extends UserController
                         ]);
                     }
                 }
+
+                $attachments = MealMealAttachment::where(
+                    'meal_id',
+                    $item['meal']['id']
+                )->get();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $mealOrder = new MealOrder();
+                        $mealOrder->order_id = $order->id;
+                        $mealOrder->store_id = $store->id;
+                        $mealOrder->meal_id = $attachment->attached_meal_id;
+                        $mealOrder->quantity =
+                            $attachment->quantity * $item['quantity'];
+                        $mealOrder->save();
+                    }
+                }
             }
 
             foreach ($bag->getItems() as $item) {
@@ -444,6 +479,22 @@ class CheckoutController extends UserController
                             'meal_subscription_id' => $mealSub->id,
                             'meal_addon_id' => $addonId
                         ]);
+                    }
+                }
+
+                $attachments = MealMealAttachment::where(
+                    'meal_id',
+                    $item['meal']['id']
+                )->get();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $mealSub = new MealSubscription();
+                        $mealSub->subscription_id = $userSubscription->id;
+                        $mealSub->store_id = $store->id;
+                        $mealSub->meal_id = $attachment->attached_meal_id;
+                        $mealSub->quantity =
+                            $attachment->quantity * $item['quantity'];
+                        $mealSub->save();
                     }
                 }
             }

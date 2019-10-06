@@ -107,11 +107,37 @@
               </b-dropdown>
             </span>
 
-            <!-- <div slot="notes" class="text-nowrap" slot-scope="props">
-              <p v-if="props.row.has_notes">
-                <img src="/images/store/note.png" />
+            <div slot="icons" class="text-nowrap" slot-scope="props">
+              <p>
+                <i
+                  v-if="props.row.manual"
+                  class="fas fa-hammer text-primary"
+                  v-b-popover.hover.top="
+                    'This is a manual order created by you for your customer.'
+                  "
+                ></i>
+                <i
+                  v-if="props.row.adjusted"
+                  class="fas fa-asterisk text-warning"
+                  v-b-popover.hover.top="'This order was adjusted.'"
+                ></i>
+                <i
+                  v-if="props.row.cashOrder"
+                  class="fas fa-money-bill text-success"
+                  v-b-popover.hover.top="
+                    'A credit card wasn\'t processed through GoPrep for this order.'
+                  "
+                ></i>
+                <i
+                  v-if="props.row.notes"
+                  class="fas fa-sticky-note text-muted"
+                  v-b-popover.hover.top="'This order has notes.'"
+                ></i>
+                <!-- <i v-if="props.row.voided" class="fas fa-window-close text-danger" v-b-popover.hover.top="
+                      'This order was voided.'
+                "></i> -->
               </p>
-            </div> -->
+            </div>
             <div slot="created_at" slot-scope="props">
               {{ moment(props.row.created_at).format("dddd, MMM Do") }}
             </div>
@@ -125,18 +151,17 @@
               {{ props.row.dailyOrderNumber }}
             </div>
             <div slot="balance" slot-scope="props">
-              <span v-if="props.row.deposit != 100"
-                >{{ 100 - props.row.deposit }}% -
+              <span v-if="props.row.balance != 0"
+                >{{
+                  ((props.row.balance / props.row.amount) * 100).toFixed(0)
+                }}% -
                 {{
-                  format.money(
-                    ((100 - props.row.deposit) / 100) * props.row.amount,
-                    storeSettings.currency
-                  )
+                  format.money(props.row.balance, storeSettings.currency)
                 }}</span
               >
               <span v-else>Paid in Full</span>
             </div>
-            <div slot="chargeType" slot-scope="props">
+            <!-- <div slot="chargeType" slot-scope="props">
               <span v-if="props.row.manual && props.row.cashOrder"
                 >Manual - {{ store.module_settings.cashOrderWording }}</span
               >
@@ -149,7 +174,7 @@
               <span v-else-if="!props.row.manual && !props.row.cashOrder"
                 >Customer - Charge</span
               >
-            </div>
+            </div> -->
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-primary btn-sm"
@@ -159,14 +184,30 @@
               </button>
               <button
                 v-if="props.row.deposit != 100"
-                class="btn view btn-success btn-sm"
-                @click="chargeBalance(props.row.id, props.row.cashOrder)"
+                class="btn btn-success btn-sm"
+                @click="
+                  chargeBalance(
+                    props.row.id,
+                    props.row.cashOrder,
+                    props.row.balance
+                  )
+                "
+                :disabled="checkingOut"
               >
-                <span v-if="!props.row.cashOrder"
-                  >Charge {{ 100 - props.row.deposit }}% Balance</span
+                <span v-if="!props.row.cashOrder && props.row.balance > 0"
+                  >Charge
+                  {{
+                    format.money(
+                      ((100 - props.row.deposit) * props.row.amount) / 100,
+                      storeSettings.currency
+                    )
+                  }}
+                  Balance</span
                 >
                 <span v-else
-                  >Settle {{ 100 - props.row.deposit }}% Balance</span
+                  >Settle
+                  {{ format.money(props.row.balance, storeSettings.currency) }}
+                  Balance</span
                 >
               </button>
               <!-- <b-btn
@@ -344,7 +385,7 @@
                     <span class="order-quantity">{{ meal.quantity }}</span>
                     <img src="/images/store/x-modal.png" class="mr-2 ml-2" />
                     <thumbnail
-                      v-if="meal.image.url_thumb"
+                      v-if="meal.image != null && meal.image.url_thumb"
                       :src="meal.image.url_thumb"
                       :spinner="false"
                       class="mr-0 pr-0"
@@ -362,8 +403,8 @@
           </div>
         </div>
         <div
-          class="row"
-          v-if="viewOrderModal && order.line_items_orders.length"
+          class="row mt-4"
+          v-if="viewOrderModal && order.line_items_order.length"
         >
           <div class="col-md-12">
             <h4>Extras</h4>
@@ -416,6 +457,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      checkingOut: false,
       ordersByDate: {},
       email: "",
       deliveryDate: "All",
@@ -436,7 +478,7 @@ export default {
       user_detail: {},
       meals: {},
       columns: [
-        // "notes",
+        "icons",
         "order_number",
         "user.user_detail.full_name",
         "user.user_detail.address",
@@ -450,7 +492,7 @@ export default {
       ],
       options: {
         headings: {
-          // notes: "Notes",
+          icons: "Status",
           dailyOrderNumber: "Daily Order #",
           order_number: "Order ID",
           "user.user_detail.full_name": "Name",
@@ -462,7 +504,7 @@ export default {
           pickup: "Type",
           amount: "Total",
           balance: "Balance",
-          chargeType: "Charge Type",
+          // chargeType: "Charge Type",
           actions: "Actions"
         },
         rowClassCallback: function(row) {
@@ -501,9 +543,9 @@ export default {
     if (this.storeModules.dailyOrderNumbers) {
       this.columns.splice(1, 0, "dailyOrderNumber");
     }
-    if (this.storeModules.manualOrders || this.storeModules.cashOrders) {
-      this.columns.splice(8, 0, "chargeType");
-    }
+    // if (this.storeModules.manualOrders || this.storeModules.cashOrders) {
+    //   this.columns.splice(8, 0, "chargeType");
+    // }
   },
   computed: {
     ...mapGetters({
@@ -530,7 +572,7 @@ export default {
 
       orders.forEach(order => {
         if (order.deposit !== 100.0 && !this.columns.includes("balance")) {
-          this.columns.splice(8, 0, "balance");
+          this.columns.splice(9, 0, "balance");
           return;
         }
       });
@@ -570,7 +612,7 @@ export default {
     },
     async fulfill(id) {
       await this.updateOrder({ id, data: { fulfilled: 1 } });
-      this.$toastr.s("Order fulfilled!");
+      this.$toastr.s("Order fulfilled.");
       this.$forceUpdate();
     },
     async unfulfill(id) {
@@ -581,7 +623,7 @@ export default {
       let data = { notes: this.deliveryNote };
       axios.patch(`/api/me/orders/${id}`, data).then(resp => {
         this.refreshTable();
-        this.$toastr.s("Order notes saved!");
+        this.$toastr.s("Order notes saved.");
       });
     },
     getMealQuantities(order) {
@@ -744,11 +786,17 @@ export default {
       this.filters.fulfilled = 0;
       this.refreshTable();
     },
-    chargeBalance(id, cashOrder) {
+    chargeBalance(id, cashOrder, balance) {
+      if (this.checkingOut) {
+        return;
+      }
+      this.checkingOut = true;
+
       axios
         .post("/api/me/chargeBalance", {
           id: id,
-          cashOrder: cashOrder
+          cashOrder: cashOrder,
+          balance: balance
         })
         .then(response => {
           if (response.data === 1) {
@@ -756,6 +804,7 @@ export default {
           } else {
             this.$toastr.s("Balance successfully charged.");
           }
+          this.checkingOut = false;
           this.refreshUpcomingOrders();
         });
     }

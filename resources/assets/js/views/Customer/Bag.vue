@@ -14,6 +14,7 @@
           </above-bag>
           <bag-area
             :pickup="pickup"
+            :order="order"
             @updateLineItems="updateLineItems($event)"
           ></bag-area>
           <bag-actions
@@ -44,6 +45,7 @@
             :orderLineItems="orderLineItems"
             :checkoutData="checkoutData"
             @updateData="updateData"
+            :order="order"
           ></checkout-area>
           <store-closed v-if="!$route.params.storeView"></store-closed>
         </div>
@@ -172,6 +174,9 @@ export default {
       _orders: "orders",
       loggedIn: "loggedIn"
     }),
+    order() {
+      return this.$route.params.order;
+    },
     couponFreeDelivery() {
       return this.coupon ? this.coupon.freeDelivery : 0;
     },

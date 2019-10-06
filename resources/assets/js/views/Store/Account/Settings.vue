@@ -1360,7 +1360,7 @@ export default {
     toast(type) {
       switch (type) {
         case "s":
-          this.$toastr.s("message", "Success!");
+          this.$toastr.s("message", "Success");
           break;
 
         case "w":

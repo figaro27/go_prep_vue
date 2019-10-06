@@ -10,13 +10,14 @@
         no-fade
       >
         <div>
-          <h4 class="center-text mb-5 mt-5">Hide Items That Contain</h4>
+          <h4 class="center-text mt-4">Allergies</h4>
+          <p class="center-text">Hide Items That Contain:</p>
         </div>
         <div class="row mb-4">
           <div
             v-for="allergy in allergies"
             :key="`allergy-${allergy.id}`"
-            class="filters col-6 col-sm-4 col-md-3 mb-3"
+            class="filters"
           >
             <b-button
               :pressed="$parent.active[allergy.id]"
@@ -27,14 +28,11 @@
         </div>
         <hr />
         <div>
-          <h4 class="center-text mb-5">Show Items With</h4>
+          <h4 class="center-text mt-5">Nutrition</h4>
+          <p class="center-text">Show Items That Are:</p>
         </div>
         <div class="row">
-          <div
-            v-for="tag in tags"
-            :key="`tag-${tag}`"
-            class="filters col-6 col-sm-4 col-md-3 mb-3"
-          >
+          <div v-for="tag in tags" :key="`tag-${tag}`" class="filters">
             <b-button
               :pressed="$parent.active[tag]"
               @click="$emit('filterByTag', tag)"

@@ -6,37 +6,57 @@
       :data="tableData"
       :options="options"
     >
-      <div slot="beforeTable" class="mb-2">
-        <b-form-group label="Selection type" v-if="selectable_toggle">
+      <div slot="beforeTable" class="d-inline">
+        <b-form-checkbox
+          @change="addAll"
+          v-model="all"
+          class="largeCheckbox ml-3"
+          type="checkbox"
+        >
+          <span class="paragraph pb-1">Select All</span>
+        </b-form-checkbox>
+      </div>
+      <div slot="afterFilter" class="d-inline">
+        <b-form-group class="ml-3">
           <b-form-radio-group v-model="meals_selectable">
-            <b-form-radio :value="false" name="radio-options">
+            <b-form-radio
+              :value="false"
+              name="radio-options"
+              v-if="selectable_toggle"
+            >
               Preset
-              <hint title="Preset"
+              <hint title="Preset" class="ml-1"
                 >Choose this option to pre-select the meals that will be
                 included in this variation.</hint
               >
             </b-form-radio>
 
-            <b-form-radio :value="true" name="radio-options">
+            <b-form-radio
+              :value="true"
+              name="radio-options"
+              v-if="selectable_toggle"
+            >
               Selectable
-              <hint title="Selectable"
+              <hint title="Selectable" class="ml-1"
                 >Choose this option to let your customer choose which meals they
                 want to make up this variation.</hint
               >
             </b-form-radio>
+            <b-form-select
+              v-model="categoryFilter"
+              :options="categories"
+              class="width-130"
+              @change="selectAll = false"
+            ></b-form-select>
           </b-form-radio-group>
         </b-form-group>
-
-        <b-button
-          variant="primary"
-          :disabled="!canSave"
-          @click.prevent="save"
-          class="pull-right"
-          >Save Meals</b-button
-        >
       </div>
 
-      <span slot="beforeLimit" class="d-flex align-items-center">
+      <span slot="beforeLimit" class="d-flex align-items-start">
+        <div class="mr-2 pt-1">
+          Total Price:
+          {{ format.money(mealPriceTotal, storeSettings.currency) }}
+        </div>
         <div class="mr-2">
           <b-form-radio-group
             v-model="filter_deselected"
@@ -49,10 +69,13 @@
           >
           </b-form-radio-group>
         </div>
-        <div class="mr-2">
-          Total meal price:
-          {{ format.money(mealPriceTotal, storeSettings.currency) }}
-        </div>
+        <b-button
+          variant="primary"
+          :disabled="!canSave"
+          @click.prevent="save"
+          class="pull-right mr-2"
+          >Save Meals</b-button
+        >
       </span>
 
       <div slot="included" slot-scope="props">
@@ -68,7 +91,7 @@
 
       <div slot="featured_image" slot-scope="props">
         <thumbnail
-          v-if="props.row.image.url_thumb"
+          v-if="props.row.image != null && props.row.image.url_thumb"
           :src="props.row.image.url_thumb"
           width="64px"
         ></thumbnail>
@@ -100,7 +123,11 @@
       </div>
 
       <div slot="afterTable">
-        <b-button variant="primary" :disabled="!canSave" @click.prevent="save"
+        <b-button
+          class="pull-right"
+          variant="primary"
+          :disabled="!canSave"
+          @click.prevent="save"
           >Save Meals</b-button
         >
       </div>
@@ -136,6 +163,8 @@ export default {
   },
   data() {
     return {
+      all: false,
+      categoryFilter: -1,
       selected: [],
       meals_selectable: false,
       filter_deselected: false,
@@ -167,7 +196,8 @@ export default {
       findMeal: "storeMeal",
       isLoading: "isLoading",
       storeCurrencySymbol: "storeCurrencySymbol",
-      storeSettings: "storeSettings"
+      storeSettings: "storeSettings",
+      storeCategories: "storeCategories"
     }),
     columns() {
       let cols = ["included", "featured_image", "title"];
@@ -196,7 +226,44 @@ export default {
         meals = _.filter(meals, meal => meal.included);
       }
 
+      if (this.categoryFilter != -1) {
+        meals = _.filter(meals, meal => {
+          let check = false;
+          meal.category_ids.forEach(category => {
+            if (this.categoryFilter === category) check = true;
+          });
+          return check;
+        });
+      }
+
+      // Need to adjust this because if you switch categories this gets lost.
+      // if (this.selectAll){
+      //  meals.forEach(meal => {
+      //    meal.included = true;
+      //    meal.quantity = 1;
+      //    this.selected.push(meal);
+      //  })
+      // }
+      // else {
+      //  meals.forEach(meal => {
+      //    meal.included = false;
+      //    meal.quantity = 0;
+      //    this.selected.pop(meal);
+      //  })
+      // }
+
       return meals;
+    },
+    categories() {
+      let categories = _.map(this.storeCategories, category => {
+        return {
+          value: category.id,
+          text: category.category
+        };
+      });
+
+      categories.unshift({ value: -1, text: "All Categories" });
+      return categories;
     },
     mealPriceTotal() {
       let total = 0;
@@ -327,6 +394,39 @@ export default {
       } else {
         return this.selected[index].price || 0;
       }
+    },
+    addAll() {
+      this.$nextTick(() => {
+        if (this.all) {
+          this.meals.forEach(meal => {
+            meal.category_ids.forEach(category => {
+              if (
+                this.categoryFilter === category ||
+                this.categoryFilter === -1
+              ) {
+                meal.included = true;
+                meal.quantity = 1;
+                meal.price = 0;
+                this.selected.push(meal);
+              }
+            });
+          });
+        } else {
+          this.meals.forEach(meal => {
+            meal.category_ids.forEach(category => {
+              if (
+                this.categoryFilter === category ||
+                this.categoryFilter === -1
+              ) {
+                meal.included = true;
+                meal.quantity = 1;
+                meal.price = 0;
+                this.selected.pop(meal);
+              }
+            });
+          });
+        }
+      });
     }
   }
 };
