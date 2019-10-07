@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\User\Billing;
 
+use App\Billing\Authorize;
+use App\Billing\Constants;
 use App\Http\Controllers\User\UserController;
+use Http\Client\Exception\RequestException;
 use Illuminate\Http\Request;
 
 class CardController extends UserController
@@ -36,24 +39,57 @@ class CardController extends UserController
     public function store(Request $request)
     {
         $token = $request->get('token');
-        $card = $token['card'];
+        $gateway = $request->get('payment_gateway');
+        $card = $request->get('card');
 
-        if (!$this->user->hasCustomer()) {
-            $customer = $this->user->createCustomer($token['id']);
-        } else {
-            $customer = \Stripe\Customer::retrieve($this->user->stripe_id);
+        if ($gateway === Constants::GATEWAY_STRIPE) {
+            if (!$this->user->hasCustomer()) {
+                $customer = $this->user->createCustomer($token);
+            } else {
+                $customer = \Stripe\Customer::retrieve($this->user->stripe_id);
 
-            try {
-                $this->user->createCard($token['id']);
-            } catch (\Stripe\Error\Card $e) {
-                return response()->json([
-                    'error' => 'Your card was declined. Please verify the entered information and try again.',
-                ], 400);
+                try {
+                    $this->user->createCard($token);
+                } catch (\Stripe\Error\Card $e) {
+                    return response()->json(
+                        [
+                            'error' =>
+                                'Your card was declined. Please verify the entered information and try again.'
+                        ],
+                        400
+                    );
+                }
             }
-        }
 
-        $sources = $customer->sources->all()->getIterator();
-        $source = end($sources);
+            $sources = $customer->sources->all()->getIterator();
+            $source = end($sources);
+        } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
+            $authorize = new Authorize($this->store);
+
+            if (
+                !$this->user->hasStoreCustomer(
+                    $this->store->id,
+                    'USD',
+                    $gateway
+                )
+            ) {
+                $this->user->createStoreCustomer(
+                    $this->store->id,
+                    'USD',
+                    $gateway
+                );
+            }
+
+            $customer = $this->user->getStoreCustomer(
+                $this->store->id,
+                'USD',
+                $gateway
+            );
+
+            $source = $authorize->createCard($customer, $token);
+        } else {
+            return response()->json('Unrecognized gateway', 400);
+        }
 
         return $this->user->cards()->create([
             'stripe_id' => $source->id,
@@ -62,6 +98,7 @@ class CardController extends UserController
             'exp_year' => $card['exp_year'],
             'last4' => $card['last4'],
             'country' => $card['country'],
+            'payment_gateway' => $gateway
         ]);
     }
 
@@ -94,7 +131,6 @@ class CardController extends UserController
      */
     public function update(Request $request)
     {
-
     }
 
     /**

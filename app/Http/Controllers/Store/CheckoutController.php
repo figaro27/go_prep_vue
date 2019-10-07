@@ -22,6 +22,9 @@ use App\Card;
 use App\Customer;
 use App\LineItem;
 use App\LineItemOrder;
+use App\Billing\Constants;
+use App\Billing\Charge;
+use App\Billing\Authorize;
 use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -112,32 +115,38 @@ class CheckoutController extends StoreController
             $card = null;
         }
 
-        $storeCustomer = $customer->user->getStoreCustomer($store->id);
-        $customer = $customer->user->getStoreCustomer($store->id, false);
+        $customer = $customer->user->getStoreCustomer($store->id);
         if (!$weeklyPlan) {
             if (!$cashOrder) {
-                $storeSource = \Stripe\Source::create(
-                    [
-                        "customer" => $customer->user->stripe_id,
-                        "original_source" => $card->stripe_id,
-                        "usage" => "single_use"
-                    ],
-                    ["stripe_account" => $store->settings->stripe_id]
-                );
+                if ($card->payment_gateway === Constants::GATEWAY_STRIPE) {
+                    $storeSource = \Stripe\Source::create(
+                        [
+                            "customer" => $customer->user->stripe_id,
+                            "original_source" => $card->stripe_id,
+                            "usage" => "single_use"
+                        ],
+                        ["stripe_account" => $store->settings->stripe_id]
+                    );
 
-                $charge = \Stripe\Charge::create(
-                    [
-                        "amount" => round($total * 100 * $deposit),
-                        "currency" => $store->settings->currency,
-                        "source" => $storeSource,
-                        "application_fee" => round(
-                            $afterDiscountBeforeFees *
-                                $deposit *
-                                $application_fee
-                        )
-                    ],
-                    ["stripe_account" => $store->settings->stripe_id]
-                );
+                    $charge = \Stripe\Charge::create(
+                        [
+                            "amount" => round($total * 100 * $deposit),
+                            "currency" => "usd",
+                            "source" => $storeSource,
+                            "application_fee" => round(
+                                $afterDiscountBeforeFees * $deposit * $application_fee
+                            )
+                        ],
+                        ["stripe_account" => $store->settings->stripe_id]
+                    );
+                } elseif (
+                    $card->payment_gateway === Constants::GATEWAY_AUTHORIZE
+                ) {
+                    $billing = new Authorize($store);
+                    $charge = new Charge();
+
+                    $billing->charge($charge);
+                }
             }
 
             $order = new Order();
@@ -224,6 +233,7 @@ class CheckoutController extends StoreController
                         $mealOrder->meal_id = $attachment->attached_meal_id;
                         $mealOrder->quantity =
                             $attachment->quantity * $item['quantity'];
+                        $mealOrder->attached = 1;
                         $mealOrder->save();
                     }
                 }
