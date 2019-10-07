@@ -83,7 +83,7 @@
             </div>
           </floating-action-button>
 
-          <!--<meal-packages-area :mealPackages="mealPackages"></meal-packages-area>!-->
+          <!-- <meal-packages-area :mealPackages="mealPackages"></meal-packages-area> !-->
         </div>
 
         <div class="categoryNavArea" v-if="!mobile">

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="bag-header center-text pt-3 mt-3"
+      class="bag-header center-text pt-3"
       v-if="
         $route.name === 'customer-menu' ||
           (($route.params.storeView || storeView) && $route.name != 'store-bag')
