@@ -17,7 +17,7 @@
         @click="clearAll"
       ></i>
     </div>
-    <div :class="shoppingCartClass">
+    <div :class="shoppingCartClass" style="overflow-y: auto">
       <ul class="list-group">
         <li
           v-for="(item, mealId) in bag"

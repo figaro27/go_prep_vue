@@ -150,6 +150,12 @@ body.sidebar-minimized {
 }
 
 /*Main*/
+.header-fixed .app-header {
+  z-index: 20000 !important;
+}
+.header-fixed .app-body {
+  /*margin-top: 75px !important;*/
+}
 
 .app-body {
   -webkit-overflow-scrolling: touch;
