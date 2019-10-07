@@ -12,6 +12,7 @@ use App\MealSubscriptionComponent;
 use App\MealOrderAddon;
 use App\MealSubscriptionAddon;
 use App\MealSubscription;
+use App\MealAttachment;
 use App\Order;
 use App\Store;
 use App\StoreDetail;
@@ -21,6 +22,9 @@ use App\Card;
 use App\Customer;
 use App\LineItem;
 use App\LineItemOrder;
+use App\Billing\Constants;
+use App\Billing\Charge;
+use App\Billing\Authorize;
 use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -61,13 +65,15 @@ class CheckoutController extends StoreController
         $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
 
-        $today = Carbon::now()->toDateString();
-        $count = DB::table('orders')
-            ->where('store_id', $storeId)
-            ->whereDate('created_at', $today)
-            ->get()
-            ->count();
-        $dailyOrderNumber = $count + 1;
+        $max = Order::where('store_id', $storeId)
+            ->whereDate('delivery_date', $deliveryDay)
+            ->max('dailyOrderNumber');
+
+        if ($max) {
+            $dailyOrderNumber = $max + 1;
+        } else {
+            $dailyOrderNumber = 1;
+        }
 
         if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             $discount = $store->settings->mealPlanDiscount / 100;
@@ -109,32 +115,40 @@ class CheckoutController extends StoreController
             $card = null;
         }
 
-        $storeCustomer = $customer->user->getStoreCustomer($store->id);
-        $customer = $customer->user->getStoreCustomer($store->id, false);
+        $customer = $customer->user->getStoreCustomer($store->id);
         if (!$weeklyPlan) {
             if (!$cashOrder) {
-                $storeSource = \Stripe\Source::create(
-                    [
-                        "customer" => $customer->user->stripe_id,
-                        "original_source" => $card->stripe_id,
-                        "usage" => "single_use"
-                    ],
-                    ["stripe_account" => $store->settings->stripe_id]
-                );
+                if ($card->payment_gateway === Constants::GATEWAY_STRIPE) {
+                    $storeSource = \Stripe\Source::create(
+                        [
+                            "customer" => $customer->user->stripe_id,
+                            "original_source" => $card->stripe_id,
+                            "usage" => "single_use"
+                        ],
+                        ["stripe_account" => $store->settings->stripe_id]
+                    );
 
-                $charge = \Stripe\Charge::create(
-                    [
-                        "amount" => round($total * 100 * $deposit),
-                        "currency" => $store->settings->currency,
-                        "source" => $storeSource,
-                        "application_fee" => round(
-                            $afterDiscountBeforeFees *
-                                $deposit *
-                                $application_fee
-                        )
-                    ],
-                    ["stripe_account" => $store->settings->stripe_id]
-                );
+                    $charge = \Stripe\Charge::create(
+                        [
+                            "amount" => round($total * 100 * $deposit),
+                            "currency" => "usd",
+                            "source" => $storeSource,
+                            "application_fee" => round(
+                                $afterDiscountBeforeFees *
+                                    $deposit *
+                                    $application_fee
+                            )
+                        ],
+                        ["stripe_account" => $store->settings->stripe_id]
+                    );
+                } elseif (
+                    $card->payment_gateway === Constants::GATEWAY_AUTHORIZE
+                ) {
+                    $billing = new Authorize($store);
+                    $charge = new Charge();
+
+                    $billing->charge($charge);
+                }
             }
 
             $order = new Order();
@@ -173,8 +187,7 @@ class CheckoutController extends StoreController
             $order->dailyOrderNumber = $dailyOrderNumber;
             $order->save();
 
-            $items = $bag->getItems();
-            foreach ($items as $item) {
+            foreach ($bag->getItems() as $item) {
                 $mealOrder = new MealOrder();
                 $mealOrder->order_id = $order->id;
                 $mealOrder->store_id = $store->id;
@@ -207,6 +220,23 @@ class CheckoutController extends StoreController
                             'meal_order_id' => $mealOrder->id,
                             'meal_addon_id' => $addonId
                         ]);
+                    }
+                }
+
+                $attachments = MealAttachment::where(
+                    'meal_id',
+                    $item['meal']['id']
+                )->get();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $mealOrder = new MealOrder();
+                        $mealOrder->order_id = $order->id;
+                        $mealOrder->store_id = $store->id;
+                        $mealOrder->meal_id = $attachment->attached_meal_id;
+                        $mealOrder->quantity =
+                            $attachment->quantity * $item['quantity'];
+                        $mealOrder->attached = 1;
+                        $mealOrder->save();
                     }
                 }
             }
@@ -429,6 +459,22 @@ class CheckoutController extends StoreController
                         ]);
                     }
                 }
+
+                $attachments = MealAttachment::where(
+                    'meal_id',
+                    $item['meal']['id']
+                )->get();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $mealOrder = new MealOrder();
+                        $mealOrder->order_id = $order->id;
+                        $mealOrder->store_id = $store->id;
+                        $mealOrder->meal_id = $attachment->attached_meal_id;
+                        $mealOrder->quantity =
+                            $attachment->quantity * $item['quantity'];
+                        $mealOrder->save();
+                    }
+                }
             }
 
             foreach ($bag->getItems() as $item) {
@@ -464,6 +510,22 @@ class CheckoutController extends StoreController
                             'meal_subscription_id' => $mealSub->id,
                             'meal_addon_id' => $addonId
                         ]);
+                    }
+                }
+
+                $attachments = MealAttachment::where(
+                    'meal_id',
+                    $item['meal']['id']
+                )->get();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $mealSub = new MealSubscription();
+                        $mealSub->subscription_id = $userSubscription->id;
+                        $mealSub->store_id = $store->id;
+                        $mealSub->meal_id = $attachment->attached_meal_id;
+                        $mealSub->quantity =
+                            $attachment->quantity * $item['quantity'];
+                        $mealSub->save();
                     }
                 }
             }
@@ -523,12 +585,12 @@ class CheckoutController extends StoreController
 
         $customer = Customer::where('id', $order->customer_id)->first();
 
-        if (!$cashOrder) {
+        if (!$cashOrder && $balance > 0) {
             $cardId = $order->card_id;
             $card = Card::where('id', $cardId)->first();
         }
 
-        if (!$cashOrder) {
+        if (!$cashOrder && $balance > 0) {
             $storeSource = \Stripe\Source::create(
                 [
                     "customer" => $customer->user->stripe_id,
@@ -554,6 +616,10 @@ class CheckoutController extends StoreController
         $order->deposit = 100;
         $order->save();
 
-        return $cashOrder;
+        if ($cashOrder || $balance <= 0) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

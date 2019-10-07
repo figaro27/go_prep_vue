@@ -525,6 +525,7 @@
                         <i class="fa fa-trash"></i>
                       </b-btn>
                       <thumbnail
+                        v-if="image.url_thumb != null"
                         :src="image.url_thumb"
                         width="100%"
                       ></thumbnail>
@@ -551,7 +552,7 @@
           <b-col md="3" lg="2">
             <picture-input
               :ref="`featuredImageInput${meal.id}`"
-              :prefill="meal.image.url_thumb ? meal.image.url_thumb : false"
+              :prefill="getMealImage(meal)"
               @prefill="$refs[`featuredImageInput${meal.id}`].onResize()"
               :alertOnError="false"
               :autoToggleAspectRatio="true"
@@ -667,7 +668,7 @@
                   class="mr-2"
                   style="width:65px"
                   :src="meal.image.thumb_url"
-                  v-if="meal.image.thumb_url"
+                  v-if="meal.image != null && meal.image.thumb_url"
                 />
                 <div class="flex-grow-1 mr-2">
                   <p>{{ meal.title }}</p>
@@ -758,7 +759,7 @@
                   class="mr-2"
                   style="width:65px"
                   :src="meal.image.thumb_url"
-                  v-if="meal.image.thumb_url"
+                  v-if="meal.image != null && meal.image.thumb_url"
                 />
                 <div class="flex-grow-1 mr-2">
                   <p>{{ meal.title }}</p>
@@ -1166,7 +1167,7 @@ export default {
         const meal = await this._updateMeal({ id, data: changes, updateLocal });
 
         if (toast) {
-          this.$toastr.s("Meal updated!");
+          this.$toastr.s("Meal updated.");
         }
 
         if (id === this.meal.id) {
@@ -1549,6 +1550,10 @@ export default {
           this.$toastr.s("Category name updated.");
           location.reload();
         });
+    },
+    getMealImage(meal) {
+      if (meal.image === null) return null;
+      else return meal.image.url_thumb ? meal.image.url_thumb : false;
     }
   }
 };

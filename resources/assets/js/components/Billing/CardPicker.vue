@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-form-group label="Add New Card">
+    <b-form-group label="Add New Card" v-if="gateway === 'stripe'">
       <card
         class="stripe-card"
         :class="{ newCard }"
@@ -8,7 +8,16 @@
         @change="newCard = $event.complete"
       />
     </b-form-group>
-    <b-btn v-if="newCard" variant="primary" @click="createCard" class="mb-3"
+    <b-form-group label="Add New Card" inline v-else>
+      <inline-credit-card-field
+        @change="evt => onChangeNewCard(evt)"
+      ></inline-credit-card-field>
+    </b-form-group>
+    <b-btn
+      v-if="newCard"
+      variant="primary"
+      @click="onClickCreateCard()"
+      class="mb-3"
       >Add Card</b-btn
     >
     <div v-if="cards.length && !$route.params.manualOrder">
@@ -88,11 +97,14 @@
 </style>
 
 <script>
-// import { stripeKey, stripeOptions } from "../../config/stripe.json";
 import { createToken } from "vue-stripe-elements-plus";
+import InlineCreditCardField from "vue-credit-card-field/src/Components/InlineCreditCardField.vue";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
+  components: {
+    InlineCreditCardField
+  },
   props: {
     value: {
       default: null
@@ -105,64 +117,87 @@ export default {
     },
     manualOrder: {
       default: false
+    },
+    gateway: {
+      required: true
     }
   },
   data() {
     return {
       stripeKey: window.app.stripe_key,
       // stripeOptions,
+      card: null,
       newCard: null
     };
   },
   computed: {
     ...mapGetters({
-      cards: "cards"
+      cards: "cards",
+      storeSettings: "viewedStoreSettings"
     })
   },
   methods: {
     ...mapActions(["refreshCards"]),
-    createCard() {
-      let customer = this.$parent.getCustomer();
-      // this.$parent.loading = true;
-      createToken().then(data => {
-        console.log(data);
+    async onClickCreateCard() {
+      let token = null;
+      let card = null;
+
+      if (this.gateway === "stripe") {
+        const data = await createToken();
 
         if (!data.token) {
           this.$toastr.e("Failed to save payment method");
           throw new Error("Failed to save payment method", data);
         }
 
-        axios
-          .post("/api/me/cards", {
-            token: data.token,
-            customer: customer
-          })
-          .then(async resp => {
-            if (this.$route.params.manualOrder) {
-              this.$parent.getCards();
-            } else {
-              await this.refreshCards();
-            }
-            this.selectedCard = resp.id;
-            this.newCard = null;
-            this.$toastr.s("Payment method saved.");
-          })
-          .catch(resp => {
-            let error = "Failed to add card.";
+        token = data.token.id;
+        card = data.token.card;
+      } else if (this.gateway === "authorize") {
+        token = await this.createAuthorizeToken();
+        card = {
+          brand: this.newCard.brand || null,
+          exp_month: this.newCard.expMonth,
+          exp_year: this.newCard.expYear,
+          last4: this.newCard.number.substr(-4),
+          country: "US"
+        };
+      }
 
-            if (!_.isEmpty(resp.response.data.error)) {
-              error = resp.response.data.error;
-            }
+      if (token) {
+        this.createCard(token, card);
+      }
+    },
+    createCard(token, card) {
+      let customer = this.$parent.getCustomer();
+      axios
+        .post("/api/me/cards", {
+          token,
+          card,
+          customer: customer,
+          payment_gateway: this.gateway
+        })
+        .then(async resp => {
+          if (this.manualOrder) {
+            this.$parent.getCards();
+          } else {
+            await this.refreshCards();
+          }
+          this.selectedCard = resp.id;
+          this.newCard = null;
+          this.$toastr.s("Payment method saved.");
+        })
+        .catch(resp => {
+          let error = "Failed to add card.";
 
-            // let error = _.first(Object.values(resp.resp.data.errors));
-            // error = error.join(" ");
-            // this.$toastr.e(error, "Error");
-            this.$toastr.e(error, "Error");
-          })
-          .finally(() => {
-            this.$parent.loading = false;
-          });
-      });
+          if (!_.isEmpty(resp.response.data.error)) {
+            error = resp.response.data.error;
+          }
+
+          this.$toastr.e(error, "Error");
+        })
+        .finally(() => {
+          this.$parent.loading = false;
+        });
     },
     deleteCard(id) {
       axios.delete("/api/me/cards/" + id).then(async resp => {
@@ -191,6 +226,48 @@ export default {
     },
     setCard(id) {
       this.value = id;
+    },
+    onChangeNewCard(evt) {
+      if (!evt.invalid && evt.complete) {
+        this.newCard = evt.card;
+      } else {
+        this.newCard = null;
+      }
+    },
+    async createAuthorizeToken() {
+      const authorize = window.app.authorize;
+
+      const authData = {
+        clientKey: this.storeSettings.authorize_public_key,
+        apiLoginID: this.storeSettings.authorize_login_id
+      };
+
+      const cardData = {
+        cardNumber: this.newCard.number,
+        month: this.newCard.expMonth,
+        year: this.newCard.expYear,
+        cardCode: this.newCard.cvc
+      };
+
+      const data = {
+        authData,
+        cardData
+      };
+
+      const token = await (async () => {
+        return new Promise((resolve, reject) => {
+          Accept.dispatchData(data, resp => {
+            if (!resp.messages || resp.messages.resultCode !== "Ok") {
+              reject(resp);
+            }
+
+            const _token = resp.opaqueData.dataValue;
+            resolve(_token);
+          });
+        });
+      })();
+
+      return token;
     }
   }
 };

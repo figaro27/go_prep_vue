@@ -45,7 +45,6 @@ class MealPackageController extends StoreController
      */
     public function store(StoreMealPackageRequest $request)
     {
-        //return $request->get('meals');
         $props = collect(
             $request->only([
                 'active',

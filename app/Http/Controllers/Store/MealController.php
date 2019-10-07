@@ -22,7 +22,13 @@ class MealController extends StoreController
         return $this->store->has('meals')
             ? $this->store
                 ->meals()
-                ->with(['orders', 'tags', 'ingredients', 'sizes'])
+                ->with([
+                    'orders',
+                    'tags',
+                    'ingredients',
+                    'sizes',
+                    'attachments'
+                ])
                 ->without(['allergies', 'categories', 'store'])
                 ->get()
             : [];

@@ -142,6 +142,16 @@
           </div>
         </div>
       </li>
+      <li class="checkout-item" v-if="storeSettings.enableSalesTax">
+        <div class="row">
+          <div class="col-6 col-md-4">
+            <strong>Sales Tax:</strong>
+          </div>
+          <div class="col-6 col-md-3 offset-md-5">
+            {{ format.money(tax, storeSettings.currency) }}
+          </div>
+        </div>
+      </li>
       <li
         class="checkout-item"
         v-if="
@@ -164,17 +174,6 @@
           </div>
           <div class="col-6 col-md-3 offset-md-5">
             {{ format.money(processingFeeAmount, storeSettings.currency) }}
-          </div>
-        </div>
-      </li>
-
-      <li class="checkout-item" v-if="storeSettings.enableSalesTax">
-        <div class="row">
-          <div class="col-6 col-md-4">
-            <strong>Sales Tax:</strong>
-          </div>
-          <div class="col-6 col-md-3 offset-md-5">
-            {{ format.money(tax, storeSettings.currency) }}
           </div>
         </div>
       </li>
@@ -229,16 +228,28 @@
         </b-form-radio-group>
       </b-form-group>
     </li>
-    <span
-      v-if="
-        !storeModules.hideTransferOptions && $route.params.storeView !== true
-      "
-    >
+    <div v-if="!storeModules.hideTransferOptions || $route.params.storeView">
+      <li class="checkout-item" v-if="$route.params.storeView">
+        <div>
+          <strong v-if="pickup === 0">Delivery Day</strong>
+          <strong v-if="pickup === 1">Pickup Day</strong>
+          <b-select
+            :options="deliveryDaysOptionsStoreView"
+            v-model="deliveryDay"
+            @input="changeDeliveryDay"
+            class="delivery-select ml-2"
+            required
+          >
+            <option slot="top" disabled>-- Select delivery day --</option>
+          </b-select>
+        </div>
+      </li>
       <li
         class="checkout-item"
         v-if="
           deliveryDaysOptions.length > 1 &&
-            $route.params.subscriptionId === undefined
+            $route.params.subscriptionId === undefined &&
+            !$route.params.storeView
         "
       >
         <div>
@@ -264,6 +275,23 @@
           >
             <option slot="top" disabled>-- Select delivery day --</option>
           </b-select>
+        </div>
+      </li>
+      <li
+        class="checkout-item"
+        v-if="
+          deliveryDaysOptions.length === 1 &&
+            $route.params.subscriptionId === undefined &&
+            !$route.params.storeView
+        "
+      >
+        <div>
+          <strong v-if="pickup === 0">
+            Delivery Day: {{ deliveryDaysOptions[0].text }}
+          </strong>
+          <strong v-if="pickup === 1">
+            Pickup Day: {{ deliveryDaysOptions[0].text }}
+          </strong>
         </div>
       </li>
       <li
@@ -300,38 +328,8 @@
           ></b-form-select>
         </div>
       </li>
-      <li
-        class="checkout-item"
-        v-if="
-          deliveryDaysOptions.length === 1 &&
-            $route.params.subscriptionId === undefined
-        "
-      >
-        <div>
-          <strong v-if="pickup === 0">
-            Delivery Day: {{ deliveryDaysOptions[0].text }}
-          </strong>
-          <strong v-if="pickup === 1">
-            Pickup Day: {{ deliveryDaysOptions[0].text }}
-          </strong>
-        </div>
-      </li>
-    </span>
-    <li class="checkout-item" v-if="$route.params.storeView">
-      <div>
-        <strong v-if="pickup === 0">Delivery Day</strong>
-        <strong v-if="pickup === 1">Pickup Day</strong>
-        <b-select
-          :options="deliveryDaysOptionsStoreView"
-          v-model="deliveryDay"
-          @input="changeDeliveryDay"
-          class="delivery-select ml-2"
-          required
-        >
-          <option slot="top" disabled>-- Select delivery day --</option>
-        </b-select>
-      </div>
-    </li>
+    </div>
+
     <li
       class="checkout-item"
       v-if="
@@ -425,6 +423,7 @@
             v-model="card"
             class="mb-3"
             ref="cardPicker"
+            :gateway="gateway"
           ></card-picker>
 
           <b-form-group
@@ -441,14 +440,26 @@
           </b-form-group>
         </div>
 
+        <div
+          v-if="hasActiveSubscription"
+          class="alert alert-warning"
+          role="alert"
+        >
+          You already have an active subscription with this company. Are you
+          sure you want to create another subscription instead of adjusting the
+          original one?
+        </div>
+
         <b-btn
           v-if="
+            // Condense all this logic / put in computed prop
             (card != null || cashOrder) &&
               (minimumMet || $route.params.storeView) &&
               $route.params.adjustOrder != true &&
               $route.params.subscriptionId === undefined &&
               (store.settings.open === true || $route.params.storeView) &&
-              (willDeliver || pickup === 1 || $route.params.storeView)
+              (willDeliver || pickup === 1 || $route.params.storeView) &&
+              (customer != null || !$route.params.storeView)
           "
           @click="checkout"
           :disabled="checkingOut"
@@ -594,7 +605,11 @@ export default {
     transferTime: null,
     pickup: 0,
     orderLineItems: [],
-    checkoutData: null
+    checkoutData: null,
+    gateway: {
+      type: String,
+      default: "stripe"
+    }
   },
   mounted: function() {
     if (this.forceValue) {
@@ -631,7 +646,8 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       _orders: "orders",
-      loggedIn: "loggedIn"
+      loggedIn: "loggedIn",
+      subscriptions: "subscriptions"
     }),
     storeSettings() {
       return this.store.settings;
@@ -968,8 +984,8 @@ export default {
         return 0;
       }
       if (this.storeSettings.salesTax > 0)
-        return (this.storeSettings.salesTax / 100) * this.afterFees;
-      else return this.salesTax * this.afterFees;
+        return (this.storeSettings.salesTax / 100) * this.afterDiscount;
+      else return this.salesTax * this.afterDiscount;
     },
     subscriptionId() {
       return this.$route.params.subscriptionId;
@@ -1007,6 +1023,20 @@ export default {
       )
         return true;
       else return false;
+    },
+    hasActiveSubscription() {
+      let hasActiveSub = false;
+      if (this.subscriptions) {
+        this.subscriptions.forEach(subscription => {
+          if (
+            subscription.store_id === this.store.id &&
+            subscription.status === "active" &&
+            this.weeklySubscription
+          )
+            hasActiveSub = true;
+        });
+      }
+      return hasActiveSub;
     }
   },
   methods: {
@@ -1276,11 +1306,11 @@ export default {
             });
           }
         })
-        .catch(response => {
-          let error = _.first(Object.values(response.response.data.errors)) || [
-            "Please try again"
-          ];
-          error = error.join(" ");
+        .catch(async response => {
+          let error =
+            "Checkout failed. Reason: " +
+            response.response.data.message +
+            ". Please contact GoPrep";
           this.$toastr.e(error, "Error");
         })
         .finally(() => {

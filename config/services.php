@@ -43,5 +43,11 @@ return [
         'user' => env('CLOUDFLARE_USER'),
         'key' => env('CLOUDFLARE_KEY'),
         'zone' => env('CLOUDFLARE_ZONE', 'goprep.com')
+    ],
+
+    'authorize' => [
+        'login_id' => env('AUTHORIZE_LOGIN_ID'),
+        'transaction_key' => env('AUTHORIZE_TRANSACTION_KEY'),
+        'public_key' => env('AUTHORIZE_PUBLIC_KEY')
     ]
 ];

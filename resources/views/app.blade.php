@@ -19,7 +19,11 @@
       domain: "{{ config('app.domain') }}",
       url: "{{ config('app.url') }}",
       front_url: "{{ config('app.front_url') }}",
-      stripe_key: "{{ config('app.stripe_key') }}"
+      stripe_key: "{{ config('app.stripe_key') }}",
+      authorize: {
+        login_id: "{{ config('services.authorize.login_id') }}",
+        public_key: "{{ config('services.authorize.public_key') }}"
+      }
     }
     </script>
 
@@ -56,10 +60,24 @@
             </script>
         @endif
     @endif
-    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://js.stripe.com/v3/" async></script>
     <script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=default%2CIntersectionObserver%2CIntersectionObserverEntry"></script>
     <script src="{{ mix('/js/manifest.js') }}"></script>
     <script src="{{ mix('/js/vendor.js') }}"></script>
     <script src="{{ mix('/js/app.js') }}"></script>
+
+    @if(config('app.env') === 'production')
+    <script type="text/javascript"
+        src="https://js.authorize.net/v1/Accept.js"
+        charset="utf-8"
+        defer>
+    </script>
+    @else
+    <script type="text/javascript"
+        src="https://jstest.authorize.net/v1/Accept.js"
+        charset="utf-8"
+        defer>
+    </script>
+    @endif
     </body>
 </html>

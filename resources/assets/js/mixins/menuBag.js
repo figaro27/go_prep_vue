@@ -302,7 +302,7 @@ export default {
           } else {
             this.$toastr.e(
               "Please try again or contact our support team",
-              "Failed to update items!"
+              "Failed to update items."
             );
           }
           return;

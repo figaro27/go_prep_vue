@@ -64,25 +64,25 @@
                 View
               </button>
               <button
-                class="btn view btn-danger btn-sm"
+                class="btn btn-danger btn-sm"
                 @click="deleteMealPlan(props.row.id)"
               >
                 Cancel
               </button>
               <b-btn
                 v-if="props.row.status === 'active'"
-                class="btn view btn-warning btn-sm"
+                class="btn btn-warning btn-sm"
                 @click.stop="() => pauseSubscription(props.row.id)"
                 >Pause</b-btn
               >
               <b-btn
                 v-if="props.row.status === 'paused'"
-                class="btn view btn-warning btn-sm"
+                class="btn btn-warning btn-sm"
                 @click.stop="() => resumeSubscription(props.row.id)"
                 >Resume</b-btn
               >
               <router-link :to="`/store/adjust-meal-plan/${props.row.id}`">
-                <b-btn class="btn view btn-success btn-sm">Change Meals</b-btn>
+                <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
               </router-link>
             </div>
 
@@ -210,7 +210,7 @@
             <p>{{ user_detail.delivery }}</p>
           </div>
         </div>
-        <div class="row">
+        <div class="row" v-if="storeModules.orderNotes">
           <div class="col-md-12">
             <h4>Delivery Notes</h4>
             <textarea
@@ -548,7 +548,7 @@ export default {
       try {
         axios.post("/api/me/subscriptions/pause", { id: id }).then(resp => {
           this.refreshSubscriptions();
-          this.$toastr.s("Subscription paused!");
+          this.$toastr.s("Subscription paused.");
         });
       } catch (e) {
         this.$toastr.e(
@@ -561,7 +561,7 @@ export default {
       try {
         axios.post("/api/me/subscriptions/resume", { id: id }).then(resp => {
           this.refreshSubscriptions();
-          this.$toastr.s("Subscription resumed!");
+          this.$toastr.s("Subscription resumed.");
         });
       } catch (e) {
         this.$toastr.e(

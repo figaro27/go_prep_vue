@@ -18,6 +18,7 @@ class Card extends Model
         'exp_year',
         'last4',
         'country',
+        'payment_gateway'
     ];
 
     /**
@@ -25,12 +26,9 @@ class Card extends Model
      *
      * @var array
      */
-    protected $hidden = [
+    protected $hidden = [];
 
-    ];
-
-    protected $casts = [
-    ];
+    protected $casts = [];
 
     public function user()
     {

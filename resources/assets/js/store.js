@@ -1282,6 +1282,9 @@ const getters = {
       return defaultValue;
     }
   },
+  viewedStoreSettings(state, getters) {
+    return state.viewed_store.settings;
+  },
   viewedStoreWillDeliver(state, getters) {
     return state.viewed_store.will_deliver;
     // state.viewed_store.distance <=
@@ -1953,7 +1956,8 @@ const getters = {
 
 const plugins = [
   createPersistedState({
-    paths: ["bag", "cards"]
+    // paths: ["bag", "cards"]
+    paths: ["cards"]
   })
 ];
 

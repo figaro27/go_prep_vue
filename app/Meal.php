@@ -487,6 +487,11 @@ class Meal extends Model implements HasMedia
         return $this->hasMany('App\MealAddon', 'meal_id', 'id');
     }
 
+    public function attachments()
+    {
+        return $this->hasMany('App\MealAttachment');
+    }
+
     public function tags()
     {
         return $this->belongsToMany('App\MealTag', 'meal_meal_tag');
@@ -583,7 +588,8 @@ class Meal extends Model implements HasMedia
             'sizes',
             'components',
             'addons',
-            'macros'
+            'macros',
+            'attachments'
         )
             ->where('id', $id)
             ->first();
