@@ -432,6 +432,12 @@ class User extends Authenticatable implements JWTSubject
 
         if ($store) {
             $storeDetails = $store->details;
+            $settings = $store->settings;
+
+            if ($settings && $settings->timezone) {
+                $timezone = $settings->timezone;
+                date_default_timezone_set($timezone);
+            }
 
             /* Check Email Branding */
             if (
