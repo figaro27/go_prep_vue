@@ -64,7 +64,7 @@
                 "
               ></b-form-checkbox-group>
 
-              <p>
+              <p class="mt-4">
                 <span class="mr-1">Display Included Meals in Packages</span>
                 <hint title="Display Included Meals in Packages">
                   Creates a slider in the meal package popup which allows users

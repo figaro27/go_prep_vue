@@ -263,21 +263,23 @@ class OrderController extends StoreController
                 }
             }
 
-            $attachments = MealAttachment::where(
-                'meal_id',
-                $item['meal']['id']
-            )->get();
-            if ($attachments) {
-                foreach ($attachments as $attachment) {
-                    $mealOrder = new MealOrder();
-                    $mealOrder->order_id = $order->id;
-                    $mealOrder->store_id = $store->id;
-                    $mealOrder->meal_id = $attachment->attached_meal_id;
-                    $mealOrder->quantity =
-                        $attachment->quantity * $item['quantity'];
-                    $mealOrder->save();
-                }
-            }
+            // Ignore attachments on adjusting orders or it will cause duplication issues. Pending feedback.
+
+            // $attachments = MealAttachment::where(
+            //     'meal_id',
+            //     $item['meal']['id']
+            // )->get();
+            // if ($attachments) {
+            //     foreach ($attachments as $attachment) {
+            //         $mealOrder = new MealOrder();
+            //         $mealOrder->order_id = $order->id;
+            //         $mealOrder->store_id = $store->id;
+            //         $mealOrder->meal_id = $attachment->attached_meal_id;
+            //         $mealOrder->quantity =
+            //             $attachment->quantity * $item['quantity'];
+            //         $mealOrder->save();
+            //     }
+            // }
         }
 
         $lineItemsOrder = $request->get('lineItemsOrder');
