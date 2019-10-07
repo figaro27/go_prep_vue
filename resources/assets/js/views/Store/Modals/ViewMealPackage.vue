@@ -42,6 +42,28 @@
                 ></money>
               </b-form-group>
 
+              <h4 class="mt-4">
+                Categories
+                <img
+                  v-b-popover.hover="
+                    'Categories show up as different sections of your menu to your customers. You can have the same meal show up in multiple categories. Add, remove, or rearrange the order of categories in Settings.'
+                  "
+                  title="Categories"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </h4>
+              <b-form-checkbox-group
+                buttons
+                v-model="mealPackage.category_ids"
+                :options="categoryOptions"
+                class="storeFilters"
+                @change="
+                  val =>
+                    updateMealPackage(mealPackage.id, { category_ids: val })
+                "
+              ></b-form-checkbox-group>
+
               <p>
                 <span class="mr-1">Display Included Meals in Packages</span>
                 <hint title="Display Included Meals in Packages">
@@ -264,8 +286,17 @@ export default {
       findMeal: "storeMeal",
       isLoading: "isLoading",
       storeCurrencySymbol: "storeCurrencySymbol",
-      storeSettings: "storeSettings"
+      storeSettings: "storeSettings",
+      storeCategories: "storeCategories"
     }),
+    categoryOptions() {
+      return Object.values(this.storeCategories).map(cat => {
+        return {
+          text: cat.category,
+          value: cat.id
+        };
+      });
+    },
     tableData() {
       return this.meals.map(meal => {
         meal.included = this.hasMeal(meal.id);
@@ -287,6 +318,7 @@ export default {
   },
   created() {
     this.mealPackage = { ...this.meal_package };
+    console.log(this.meal_package);
   },
   mounted() {
     this.$refs.modal.show();

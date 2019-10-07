@@ -45,7 +45,7 @@ class MealPackageController extends StoreController
      */
     public function store(StoreMealPackageRequest $request)
     {
-        return $request->get('meals');
+        //return $request->get('meals');
         $props = collect(
             $request->only([
                 'active',
@@ -58,7 +58,8 @@ class MealPackageController extends StoreController
                 'default_size_title',
                 'components',
                 'addons',
-                'meal_carousel'
+                'meal_carousel',
+                'category_ids'
             ])
         );
         $props->put('store_id', $this->store->id);
@@ -88,7 +89,8 @@ class MealPackageController extends StoreController
                     'sizes.meals',
                     'components',
                     'addons',
-                    'addons.meals'
+                    'addons.meals',
+                    'categories'
                 ])
                 ->find($id)
         );
@@ -230,7 +232,8 @@ class MealPackageController extends StoreController
                 'default_size_title',
                 'components',
                 'addons',
-                'meal_carousel'
+                'meal_carousel',
+                'category_ids'
             ])
         );
 

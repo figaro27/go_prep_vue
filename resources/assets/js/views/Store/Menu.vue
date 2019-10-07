@@ -1290,6 +1290,7 @@ export default {
       axios
         .get(`/api/me/meals/${id}`)
         .then(response => {
+          console.log("here", response.data);
           this.meal = response.data;
           if (!response.data.macros) {
             this.meal.macros = {};
