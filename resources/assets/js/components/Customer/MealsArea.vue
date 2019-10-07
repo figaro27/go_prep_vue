@@ -297,9 +297,9 @@ export default {
   methods: {
     mealMixQuantity(meal) {
       if (meal.meal_package) {
-        this.quantity(meal, true);
+        return this.quantity(meal, true);
       } else {
-        this.mealQuantity(meal);
+        return this.mealQuantity(meal);
       }
     },
     minusMixOne(
