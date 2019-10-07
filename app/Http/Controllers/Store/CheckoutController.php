@@ -134,7 +134,9 @@ class CheckoutController extends StoreController
                             "currency" => "usd",
                             "source" => $storeSource,
                             "application_fee" => round(
-                                $afterDiscountBeforeFees * $deposit * $application_fee
+                                $afterDiscountBeforeFees *
+                                    $deposit *
+                                    $application_fee
                             )
                         ],
                         ["stripe_account" => $store->settings->stripe_id]

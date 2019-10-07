@@ -54,7 +54,7 @@
             :storeView="storeView"
           ></outside-delivery-area>
           <meals-area
-            :meals="meals"
+            :meals="mealsMix"
             :card="card"
             :cardBody="cardBody"
             :resetMeal="resetMeal"
@@ -83,7 +83,7 @@
             </div>
           </floating-action-button>
 
-          <meal-packages-area :mealPackages="mealPackages"></meal-packages-area>
+          <!--<meal-packages-area :mealPackages="mealPackages"></meal-packages-area>!-->
         </div>
 
         <div class="categoryNavArea" v-if="!mobile">
@@ -352,6 +352,151 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
     }),
+    mealsMix() {
+      let meals = this.store.meals;
+      let packages = this.store.packages;
+      let filters = this.filters;
+      let grouped = {};
+
+      if (!_.isArray(meals)) {
+        meals = [];
+      }
+      if (!_.isArray(packages)) {
+        packages = [];
+      }
+
+      const search = this.search.toLowerCase();
+
+      meals = _.filter(meals, meal => {
+        if (
+          !meal.active ||
+          (this.search && !meal.title.toLowerCase().includes(search))
+        ) {
+          return false;
+        }
+        return true;
+      });
+
+      packages = _.map(
+        _.filter(this.store.packages, mealPackage => {
+          return (
+            mealPackage.active &&
+            (!this.search || mealPackage.title.toLowerCase().includes(search))
+          );
+        }) || [],
+        mealPackage => {
+          mealPackage.meal_package = true;
+          return mealPackage;
+        }
+      );
+
+      if (this.filteredView) {
+        meals = _.filter(meals, meal => {
+          let skip = false;
+
+          if (!skip && filters.tags.length > 0) {
+            let hasAllTags = _.reduce(
+              filters.tags,
+              (has, tag) => {
+                if (!has) return false;
+                let x = _.includes(meal.tag_titles, tag);
+                return x;
+              },
+              true
+            );
+
+            skip = !hasAllTags;
+          }
+
+          if (!skip && filters.allergies.length > 0) {
+            let hasAllergy = _.reduce(
+              meal.allergy_ids,
+              (has, allergyId) => {
+                if (has) return true;
+                let x = _.includes(filters.allergies, allergyId);
+                return x;
+              },
+              false
+            );
+
+            skip = hasAllergy;
+          }
+          return !skip;
+        });
+      }
+
+      let total = meals.concat(packages);
+
+      total.forEach(meal => {
+        meal.category_ids.forEach(categoryId => {
+          let category = _.find(this._categories, { id: categoryId });
+          if (!category) {
+            return;
+          } else if (!_.has(grouped, category.category)) {
+            grouped[category.category] = [meal];
+          } else {
+            grouped[category.category].push(meal);
+          }
+        });
+      });
+
+      /* Sort Categories */
+      let sortedCategories = [];
+
+      for (let i = 0; i < this._categories.length; i++) {
+        let cat = this._categories[i];
+        let order = !isNaN(cat.order) ? parseInt(cat.order) : 9999;
+
+        sortedCategories.push({
+          name: cat.category,
+          order,
+          id: cat.id
+        });
+      }
+
+      if (sortedCategories.length > 1) {
+        for (let i = 0; i < sortedCategories.length - 1; i++) {
+          for (let j = i + 1; j < sortedCategories.length; j++) {
+            if (sortedCategories[i].order > sortedCategories[j].order) {
+              let temp = {
+                ...sortedCategories[i]
+              };
+              sortedCategories[i] = {
+                ...sortedCategories[j]
+              };
+              sortedCategories[j] = {
+                ...temp
+              };
+            }
+          }
+        }
+      }
+      /* Sort Categories End */
+
+      let finalData = [];
+      let finalCategories = [];
+
+      for (let i = 0; i < sortedCategories.length; i++) {
+        let name = sortedCategories[i].name;
+        let order = sortedCategories[i].order;
+        let category_id = sortedCategories[i].id;
+
+        if (grouped[name] && grouped[name].length > 0) {
+          finalData.push({
+            category: name,
+            category_id,
+            meals: grouped[name],
+            order
+          });
+
+          finalCategories.push(sortedCategories[i]);
+        }
+      }
+
+      this.finalCategories = finalCategories;
+      console.log("final data", finalData);
+      return finalData;
+    },
     meals() {
       let meals = this.store.meals;
       let filters = this.filters;

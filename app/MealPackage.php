@@ -21,8 +21,8 @@ class MealPackage extends Model implements HasMedia
         'default_size_title',
         'meal_carousel'
     ];
-    public $appends = ['image'];
-    public $hidden = ['store'];
+    public $appends = ['image', 'category_ids'];
+    public $hidden = ['store', 'categories'];
 
     protected $casts = [
         'price' => 'double',
@@ -47,6 +47,18 @@ class MealPackage extends Model implements HasMedia
     public function sizes()
     {
         return $this->hasMany('App\MealPackageSize', 'meal_package_id', 'id');
+    }
+
+    public function getCategoryIdsAttribute()
+    {
+        return $this->categories->pluck('id');
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany('App\Category')->using(
+            'App\MealPackageCategory'
+        );
     }
 
     public function components()
@@ -127,11 +139,12 @@ class MealPackage extends Model implements HasMedia
             'default_size_title',
             'components',
             'addons',
-            'meal_carousel'
+            'meal_carousel',
+            'category_ids'
         ]);
 
         $package = MealPackage::create(
-            $props->except('featured_image')->toArray()
+            $props->except(['featured_image', 'category_ids'])->toArray()
         );
 
         if ($props->has('featured_image')) {
@@ -145,6 +158,11 @@ class MealPackage extends Model implements HasMedia
             $package
                 ->addMedia($fullImagePath)
                 ->toMediaCollection('featured_image');
+        }
+
+        $categories = $props->get('category_ids');
+        if (is_array($categories)) {
+            $package->categories()->sync($categories);
         }
 
         // Associate meals
@@ -337,7 +355,8 @@ class MealPackage extends Model implements HasMedia
             'default_size_title',
             'components',
             'addons',
-            'meal_carousel'
+            'meal_carousel',
+            'category_ids'
         ]);
 
         if ($props->has('featured_image')) {
@@ -351,6 +370,11 @@ class MealPackage extends Model implements HasMedia
             $this->addMedia($fullImagePath)->toMediaCollection(
                 'featured_image'
             );
+        }
+
+        $categories = $props->get('category_ids');
+        if (is_array($categories)) {
+            $this->categories()->sync($categories);
         }
 
         // Associate meals

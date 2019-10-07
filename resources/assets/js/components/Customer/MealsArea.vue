@@ -25,7 +25,7 @@
             v-for="meal in group.meals"
             :key="meal.id"
           >
-            <div :class="card" @click="showMeal(meal)">
+            <div :class="card">
               <div :class="cardBody">
                 <div class="item-wrap">
                   <div class="title d-md-none">
@@ -39,6 +39,7 @@
                       class="menu-item-img"
                       width="100%"
                       style="background-color:#ffffff"
+                      @click="showMeal(meal)"
                     ></thumbnail>
 
                     <div class="price">
@@ -107,7 +108,7 @@
                         class="d-flex justify-content-between align-items-center mt-1"
                       >
                         <b-btn
-                          @click.stop="minusOne(meal)"
+                          @click.stop="minusMixOne(meal)"
                           class="plus-minus gray"
                         >
                           <i>-</i>
@@ -117,15 +118,53 @@
                           name
                           id
                           class="quantity"
-                          :value="mealQuantity(meal)"
+                          :value="mealMixQuantity(meal)"
                           readonly
                         ></b-form-input>
+
                         <b-btn
+                          v-if="!meal.meal_package"
                           @click.stop="addMeal(meal, null)"
                           class="menu-bag-btn plus-minus"
                         >
                           <i>+</i>
                         </b-btn>
+
+                        <b-btn
+                          v-if="meal.meal_package && meal.sizes.length === 0"
+                          @click="addMeal(meal, true)"
+                          class="plus-minus menu-bag-btn"
+                        >
+                          <i>+</i>
+                        </b-btn>
+
+                        <b-dropdown
+                          v-if="meal.meal_package && meal.sizes.length > 0"
+                          toggle-class="menu-bag-btn"
+                          :ref="'dropdown_' + meal.id"
+                        >
+                          <span
+                            slot="button-content"
+                            :id="'dropdown_' + meal.id"
+                            >+</span
+                          >
+                          <b-dropdown-item @click="addMeal(meal, true)">
+                            {{ meal.default_size_title }} -
+                            {{
+                              format.money(meal.price, storeSettings.currency)
+                            }}
+                          </b-dropdown-item>
+                          <b-dropdown-item
+                            v-for="size in meal.sizes"
+                            :key="size.id"
+                            @click="addMealPackage(meal, true, size)"
+                          >
+                            {{ size.title }} -
+                            {{
+                              format.money(size.price, storeSettings.currency)
+                            }}
+                          </b-dropdown-item>
+                        </b-dropdown>
                       </div>
                     </div>
                   </div>
@@ -158,10 +197,18 @@
                   >
                     <i>+</i>
                   </div>
-                  <p class="bag-quantity pl-1">{{ mealQuantity(item) }}</p>
+                  <b-form-input
+                    type="text"
+                    name
+                    id
+                    class="quantity small-quantity"
+                    style="text-align:left"
+                    :value="mealMixQuantity(item)"
+                    readonly
+                  ></b-form-input>
                   <div
                     @click.stop="
-                      minusOne(
+                      minusMixOne(
                         item.meal,
                         false,
                         item.size,
@@ -222,9 +269,7 @@ export default {
     cardBody: "",
     resetMeal: false
   },
-  mounted: function() {
-    //console.log('meals', this.meals)
-  },
+  mounted: function() {},
   mixins: [MenuBag],
   computed: {
     ...mapGetters({
@@ -250,16 +295,37 @@ export default {
     }
   },
   methods: {
-    addMeal(meal, mealPackage) {
-      if (
-        (meal.sizes.length > 0 && !this.resetMeal) ||
-        meal.components.length > 0 ||
-        meal.addons.length > 0
-      ) {
-        this.showMeal(meal);
-        return;
+    mealMixQuantity(meal) {
+      if (meal.meal_package) {
+        this.quantity(meal, true);
+      } else {
+        this.mealQuantity(meal);
       }
-      this.addOne(meal, false, null, null, [], null);
+    },
+    minusMixOne(
+      meal,
+      condition,
+      size,
+      components,
+      addons,
+      special_instructions
+    ) {
+      if (meal.meal_package) {
+        this.minusOne(meal, true);
+      } else {
+        this.minusOne(
+          meal,
+          condition,
+          size,
+          components,
+          addons,
+          special_instructions
+        );
+      }
+    },
+    addMealPackage(mealPackage, condition = false, size) {
+      this.addOne(mealPackage, condition, size);
+      this.$parent.mealPackageModal = false;
       if (this.$parent.showBagClass.includes("hidden-right")) {
         this.$parent.showBagClass = "shopping-cart show-right bag-area";
       }
@@ -269,10 +335,42 @@ export default {
         this.$parent.showBagClass -= " area-scroll";
       }
     },
+    addMeal(meal, mealPackage) {
+      if (meal.meal_package) {
+        this.addMealPackage(meal, true);
+      } else {
+        if (
+          (meal.sizes.length > 0 && !this.resetMeal) ||
+          meal.components.length > 0 ||
+          meal.addons.length > 0
+        ) {
+          this.showMeal(meal);
+          return;
+        }
+        this.addOne(meal, false, null, null, [], null);
+        if (this.$parent.showBagClass.includes("hidden-right")) {
+          this.$parent.showBagClass = "shopping-cart show-right bag-area";
+        }
+        if (this.$parent.showBagScrollbar) {
+          this.$parent.showBagClass += " area-scroll";
+        } else if (this.$parent.showBagScrollbar) {
+          this.$parent.showBagClass -= " area-scroll";
+        }
+      }
+    },
     showMeal(meal) {
-      this.$parent.showMealPage(meal);
-      this.$parent.showMealsArea = false;
-      this.$parent.showMealPackagesArea = false;
+      if (meal.meal_package) {
+        if (meal.sizes.length === 0) {
+          this.addMealPackage(meal, true);
+        } else {
+          //let bdropdown = this.$refs["dropdown_" + mealPackage.id]
+          $("#dropdown_" + meal.id).click();
+        }
+      } else {
+        this.$parent.showMealPage(meal);
+        this.$parent.showMealsArea = false;
+        this.$parent.showMealPackagesArea = false;
+      }
     }
   }
 };

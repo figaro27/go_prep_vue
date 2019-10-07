@@ -1,8 +1,8 @@
 <template>
   <div>
     <div :class="mealPageClass" v-if="$parent.mealPageView">
-      <div class="row meal-page mt-5 mb-3">
-        <div class="col-md-4" v-if="storeSettings.menuStyle === 'image'">
+      <div class="meal-page mt-5 mb-3 flexibleRow">
+        <div class="fixedArea" v-if="storeSettings.menuStyle === 'image'">
           <thumbnail
             v-if="meal.image != null && meal.image.url"
             :src="meal.image.url"
@@ -35,13 +35,14 @@
           </slick>
           <div class="row mb-3" v-if="storeSettings.showNutrition">
             <div
-              class="col-md-8 offset 2"
+              classD="col-md-8 offset 2"
+              class="col-md-12"
               id="nutritionFacts"
               ref="nutritionFacts"
             ></div>
           </div>
         </div>
-        <div :class="columns">
+        <div class="flexibleArea">
           <div class="row">
             <div class="col-md-4">
               <h5>{{ meal.title }}</h5>
@@ -71,7 +72,7 @@
             buttons
             v-model="mealSize"
             :options="sizes"
-            class="filters small"
+            class="filters small flexibleButtonGroup"
             required
             @change="changeSize"
             v-show="sizes.length > 1"

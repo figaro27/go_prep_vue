@@ -71,3 +71,38 @@ body {
   padding-top: 11px;
   padding-bottom: 11px;
 }
+
+.flexibleRow {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.fixedArea {
+  width: 300px;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+.flexibleArea {
+  flex: 1;
+}
+
+#nutritionFacts .nf {
+  width: 100% !important;
+}
+
+.flexibleButtonGroup.btn-group {
+  flex-wrap: wrap !important;
+}
+
+@media all and (max-width: 1023px) {
+  .fixedArea {
+    width: 100%;
+    padding-right: 0;
+  }
+
+  .flexibleArea {
+    width: 100%;
+    flex: auto;
+  }
+}

@@ -501,9 +501,7 @@ export default {
       });
       this.addBagItems(items);
 
-      window.location = `${subscription.store.url}/customer/meal-plans/${
-        subscription.id
-      }`;
+      window.location = `${subscription.store.url}/customer/meal-plans/${subscription.id}`;
     }
   }
 };
