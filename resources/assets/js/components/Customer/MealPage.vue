@@ -252,7 +252,7 @@ export default {
       if (!sizeCheck) {
         sizes.unshift({
           full_title: meal.title + " - " + meal.default_size_title || "Regular",
-          id: 0,
+          id: null,
           price: meal.item_price,
           title: meal.default_size_title || "Regular",
           defaultAdded: true

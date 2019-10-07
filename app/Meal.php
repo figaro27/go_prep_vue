@@ -146,9 +146,9 @@ class Meal extends Model implements HasMedia
                 $this->pivot->meal_size
             ) {
                 return $title . ' - ' . $this->meal_size->title;
-            } /*elseif ($this->default_size_title) {
-        return $title . ' - ' . $this->default_size_title;
-        }*/
+            } elseif ($this->default_size_title) {
+                return $title . ' - ' . $this->default_size_title;
+            }
         }
 
         return $title;
