@@ -111,12 +111,22 @@ class Hourly extends Command
         ])->get();
 
         // Adjust for timezone in Store Settings
-        $currentHour = date('H') - 4;
+        //$currentHour = date('H') - 4;
 
         foreach ($orders as $order) {
             try {
                 if (!$order->store->modules->hideTransferOptions) {
-                    if ($currentHour === 6) {
+                    /* Timezone */
+                    $settings = $order->store->settings;
+                    if ($settings && $settings->timezone) {
+                        $timezone = $settings->timezone;
+                        date_default_timezone_set($timezone);
+                    }
+                    /* Timezone Set */
+
+                    $currentHour = date('H');
+
+                    if ($currentHour === 10) {
                         if ($order->store->modules->hideTransferOptions === 0) {
                             $order->user->sendNotification('delivery_today', [
                                 'user' => $order->user,
