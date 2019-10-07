@@ -2,7 +2,7 @@
   <div>
     <div :class="mealPageClass" v-if="$parent.mealPageView">
       <div class="row meal-page mt-5 mb-3">
-        <div class="col-md-4">
+        <div class="col-md-4" v-if="storeSettings.menuStyle === 'image'">
           <thumbnail
             v-if="meal.image != null && meal.image.url"
             :src="meal.image.url"
@@ -39,15 +39,9 @@
               id="nutritionFacts"
               ref="nutritionFacts"
             ></div>
-            <!-- <div class="col-md-3" v-if="storeSettings.showIngredients">
-              <h5>Ingredients</h5>
-              <li v-for="ingredient in meal.ingredients">
-                {{ ingredient.food_name }}
-              </li>
-            </div> -->
           </div>
         </div>
-        <div class="col-md-8">
+        <div :class="columns">
           <div class="row">
             <div class="col-md-4">
               <h5>{{ meal.title }}</h5>
@@ -144,13 +138,23 @@
             max-rows="6"
           ></b-form-textarea>
 
-          <div class="row mt-4">
+          <div class="row mt-4" v-if="storeSettings.menuStyle === 'image'">
             <div class="col-md-4">
               <h2 class="pt-3">
                 {{ format.money(mealVariationPrice, storeSettings.currency) }}
               </h2>
             </div>
             <div class="col-md-8">
+              <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
+            </div>
+          </div>
+          <div class="row mt-4" v-if="storeSettings.menuStyle === 'text'">
+            <div class="col-md-2">
+              <h2 class="pt-3">
+                {{ format.money(mealVariationPrice, storeSettings.currency) }}
+              </h2>
+            </div>
+            <div class="col-md-4">
               <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
             </div>
           </div>
@@ -238,6 +242,10 @@ export default {
       storeModules: "viewedStoreModules",
       storeModuleSettings: "viewedStoreModuleSettings"
     }),
+    columns() {
+      if (this.storeSettings.menuStyle === "image") return "col-md-8";
+      else return "col-md-12";
+    },
     viewedMeal() {
       return this.meal;
     },
