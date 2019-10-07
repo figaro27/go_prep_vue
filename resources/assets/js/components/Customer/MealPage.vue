@@ -2,50 +2,38 @@
   <div>
     <div :class="mealPageClass" v-if="$parent.mealPageView">
       <div class="meal-page mt-5 mb-3 flexibleRow">
-        <div class="fixedArea" v-if="storeSettings.menuStyle === 'image'">
-          <thumbnail
-            v-if="meal.image != null && meal.image.url"
-            :src="meal.image.url"
-            :aspect="false"
-            width="100%"
-            @click="$refs.lightbox.showImage(0)"
-          ></thumbnail>
-          <img v-else :src="meal.featured_image" />
-
-          <LightBox
-            ref="lightbox"
-            :images="getMealGallery(meal)"
-            :showLightBox="false"
-          ></LightBox>
-
-          <slick ref="mealGallery" :options="slickOptions">
-            <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
-              <div style="image">
-                <thumbnail
-                  v-if="image.url"
-                  :src="image.url"
-                  :aspect="true"
-                  :lazy="false"
-                  :spinner="false"
-                  :width="'70px'"
-                  @click="$refs.lightbox.showImage(i)"
-                ></thumbnail>
-              </div>
-            </div>
-          </slick>
-          <div class="row mb-3" v-if="storeSettings.showNutrition">
-            <div
-              classD="col-md-8 offset 2"
-              class="col-md-12"
-              id="nutritionFacts"
-              ref="nutritionFacts"
-            ></div>
-          </div>
-        </div>
         <div class="flexibleArea">
           <div class="row">
             <div class="col-md-4">
               <h5>{{ meal.title }}</h5>
+              <thumbnail
+                v-if="meal.image != null && meal.image.url"
+                :src="meal.image.url"
+                :aspect="false"
+                width="100%"
+                @click="$refs.lightbox.showImage(0)"
+              ></thumbnail>
+              <LightBox
+                ref="lightbox"
+                :images="getMealGallery(meal)"
+                :showLightBox="false"
+              ></LightBox>
+
+              <slick ref="mealGallery" :options="slickOptions">
+                <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
+                  <div style="image">
+                    <thumbnail
+                      v-if="image.url"
+                      :src="image.url"
+                      :aspect="true"
+                      :lazy="false"
+                      :spinner="false"
+                      :width="'70px'"
+                      @click="$refs.lightbox.showImage(i)"
+                    ></thumbnail>
+                  </div>
+                </div>
+              </slick>
             </div>
             <div class="col-md-3" v-if="meal.tags.length > 0">
               <h5>Nutrition</h5>
@@ -140,39 +128,51 @@
           ></b-form-textarea>
 
           <div class="row mt-4" v-if="storeSettings.menuStyle === 'image'">
-            <div class="col-md-4">
+            <div class="col-md-1">
               <h2 class="pt-3">
                 {{ format.money(mealVariationPrice, storeSettings.currency) }}
               </h2>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-3">
               <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
             </div>
           </div>
           <div class="row mt-4" v-if="storeSettings.menuStyle === 'text'">
-            <div class="col-md-2">
+            <div class="col-md-1">
               <h2 class="pt-3">
                 {{ format.money(mealVariationPrice, storeSettings.currency) }}
               </h2>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
             </div>
           </div>
-        </div>
-        <div class="col-md-12">
-          <h4
-            v-if="
-              storeSettings.mealInstructions &&
-                meal.instructions != '' &&
-                meal.instructions != null
-            "
-          >
-            Instructions
-          </h4>
-          <p v-if="storeSettings.mealInstructions && meal.instructions != ''">
-            {{ meal.instructions }}
-          </p>
+
+          <div class="row">
+            <div class="col-md-12 mt-3">
+              <h4
+                v-if="
+                  storeSettings.mealInstructions &&
+                    meal.instructions != '' &&
+                    meal.instructions != null
+                "
+              >
+                Instructions
+              </h4>
+              <p
+                v-if="storeSettings.mealInstructions && meal.instructions != ''"
+              >
+                {{ meal.instructions }}
+              </p>
+            </div>
+          </div>
+          <div class="row mb-3 mt-3" v-if="storeSettings.showNutrition">
+            <div
+              class="col-md-3"
+              id="nutritionFacts"
+              ref="nutritionFacts"
+            ></div>
+          </div>
         </div>
       </div>
     </div>
@@ -243,10 +243,10 @@ export default {
       storeModules: "viewedStoreModules",
       storeModuleSettings: "viewedStoreModuleSettings"
     }),
-    columns() {
-      if (this.storeSettings.menuStyle === "image") return "col-md-8";
-      else return "col-md-12";
-    },
+    // columns() {
+    //   if (this.storeSettings.menuStyle === "image") return "col-md-8";
+    //   else return "col-md-12";
+    // },
     viewedMeal() {
       return this.meal;
     },
