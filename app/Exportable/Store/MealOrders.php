@@ -6,6 +6,7 @@ use App\Meal;
 use App\Store;
 use App\MealSize;
 use App\ProductionGroup;
+use App\LineItem;
 use App\Exportable\Exportable;
 use Illuminate\Support\Carbon;
 use mikehaertl\wkhtmlto\Pdf;
@@ -107,6 +108,7 @@ class MealOrders
     {
         $production = collect();
         $mealQuantities = [];
+        $lineItemQuantities = [];
         $dates = $this->getDeliveryDates();
         $groupByDate = 'true' === $this->params->get('group_by_date', false);
         $params = $this->params;
@@ -131,6 +133,7 @@ class MealOrders
 
         $orders->map(function ($order) use (
             &$mealQuantities,
+            &$lineItemQuantities,
             $groupByDate,
             &$allDates,
             $productionGroupId
@@ -141,6 +144,7 @@ class MealOrders
             }
 
             $mealOrders = $order->meal_orders()->with('meal');
+            $lineItemsOrders = $order->lineItemsOrders()->with('lineItem');
 
             if ($productionGroupId) {
                 $mealOrders = $mealOrders->whereHas('meal', function (
@@ -148,9 +152,51 @@ class MealOrders
                 ) use ($productionGroupId) {
                     $query->where('production_group_id', $productionGroupId);
                 });
+
+                $lineItemsOrders = $lineItemsOrders->whereHas(
+                    'lineItem',
+                    function ($query) use ($productionGroupId) {
+                        $query->where(
+                            'production_group_id',
+                            $productionGroupId
+                        );
+                    }
+                );
             }
 
             $mealOrders = $mealOrders->get();
+            $lineItemsOrders = $lineItemsOrders->get();
+
+            // Line Items
+            foreach ($lineItemsOrders as $i => $lineItemsOrder) {
+                if (
+                    $productionGroupId &&
+                    $lineItemsOrder->lineItem->production_group_id !==
+                        intval($productionGroupId)
+                ) {
+                    return null;
+                }
+
+                $title = $lineItemsOrder->getTitleAttribute();
+
+                if ($groupByDate) {
+                    if (!isset($lineItemQuantities[$title])) {
+                        $lineItemQuantities[$title] = [];
+                    }
+                    if (!isset($lineItemQuantities[$title][$date])) {
+                        $lineItemQuantities[$title][$date] = 0;
+                    }
+                    $lineItemQuantities[$title][$date] += 1;
+                } else {
+                    if (!isset($lineItemQuantities[$title])) {
+                        $lineItemQuantities[$title] = 0;
+                    }
+
+                    $lineItemQuantities[$title] += 1;
+                }
+            }
+
+            // Meals
             foreach ($mealOrders as $i => $mealOrder) {
                 if (
                     $productionGroupId &&
@@ -189,9 +235,14 @@ class MealOrders
         }, $allDates);
 
         ksort($mealQuantities);
+        ksort($lineItemQuantities);
 
         if (!$groupByDate) {
             foreach ($mealQuantities as $title => $quantity) {
+                $production->push([$title, $quantity]);
+            }
+
+            foreach ($lineItemQuantities as $title => $quantity) {
                 $production->push([$title, $quantity]);
             }
         } else {
@@ -200,6 +251,18 @@ class MealOrders
                 foreach ($allDates as $date) {
                     if (isset($mealDates[$date])) {
                         $row[] = $mealDates[$date];
+                    } else {
+                        $row[] = 0;
+                    }
+                }
+                $production->push($row);
+            }
+
+            foreach ($lineItemQuantities as $title => $lineItemDates) {
+                $row = [$title];
+                foreach ($allDates as $date) {
+                    if (isset($lineItemDates[$date])) {
+                        $row[] = $lineItemDates[$date];
                     } else {
                         $row[] = 0;
                     }

@@ -85,7 +85,7 @@ class Order extends Model
 
     public function lineItems()
     {
-        return $this->hasMany('App\LineItems');
+        return $this->hasMany('App\LineItem');
     }
 
     public function lineItemsOrder()
