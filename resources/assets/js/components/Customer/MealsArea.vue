@@ -202,7 +202,7 @@
                     name
                     id
                     class="quantity small-quantity"
-                    style="text-align:left"
+                    style="text-align: center; padding: 0;"
                     :value="mealMixQuantity(item)"
                     readonly
                   ></b-form-input>
