@@ -69,6 +69,8 @@ class OrdersByCustomer
                             'state' => $order->user->userDetail->state,
                             'zip' => $order->user->userDetail->zip,
                             'delivery' => $order->user->userDetail->delivery,
+                            'delivery_date' => $order->delivery_date,
+                            'transferTime' => $order->transferTime,
                             'pickup' => $order->pickup,
                             'pickup_location_id' => $order->pickup_location_id,
                             'pickup_location' => $order->pickup_location,
