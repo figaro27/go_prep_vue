@@ -192,6 +192,7 @@ import BagActions from "../../components/Customer/BagActions";
 import AuthModal from "../../components/Customer/AuthModal";
 import MenuFilters from "../../components/Customer/MenuFilters";
 import MealPage from "../../components/Customer/MealPage";
+import { sidebarCssClasses } from "../../shared/classes";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -742,7 +743,23 @@ export default {
       this.showBagClass = "shopping-cart show-right bag-area area-scroll";
     } else
       this.showBagClass = "shopping-cart hidden-right bag-area area-scroll";
+
     if (this.storeView) {
+      /* Sidebar Check */
+      let isOpen = false;
+
+      for (let i in sidebarCssClasses) {
+        if ($("body").hasClass(sidebarCssClasses[i])) {
+          isOpen = true;
+          break;
+        }
+      }
+
+      if (isOpen && $(".navbar-toggler").length > 0) {
+        $(".navbar-toggler").click();
+      }
+      /* Sidebar Check End */
+
       if (this.$route.params.storeView)
         this.showBagClass = "shopping-cart show-right bag-area area-scroll";
       else this.showBagClass = "shopping-cart show-right bag-area";
