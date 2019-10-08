@@ -374,7 +374,12 @@ export default {
     }
   },
   mounted() {
-    let lineItemsOrder = this.$route.params.order.line_items_order;
+    let lineItemsOrder = [];
+
+    if (this.$route.params && this.$route.params.line_items_order) {
+      lineItemsOrder = this.$route.params.order.line_items_order;
+    }
+
     lineItemsOrder.forEach(lineItemOrder => {
       this.orderLineItems.push(lineItemOrder);
     });
