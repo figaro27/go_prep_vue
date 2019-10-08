@@ -117,12 +117,15 @@
               </ul>
               <div
                 v-if="
-                  $route.params.storeView &&
-                    $route.name === 'store-bag' &&
-                    !item.meal_package
+                  ($route.params.storeView || storeView) && !item.meal_package
                 "
               >
-                <input type="checkbox" id="checkbox" @change="makeFree(item)" />
+                <input
+                  type="checkbox"
+                  id="checkbox"
+                  v-model="item.free"
+                  @change="makeFree(item)"
+                />
                 <label for="checkbox">Free</label>
               </div>
             </div>
@@ -527,7 +530,6 @@ export default {
       this.orderLineItems.splice(index, 1);
     },
     makeFree(item) {
-      item.free = 1;
       if (item.meal.price != 0) this.makeItemFree(item);
       else this.makeItemNonFree(item);
     }

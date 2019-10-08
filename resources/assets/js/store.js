@@ -200,7 +200,8 @@ const mutations = {
       size = null,
       components = null,
       addons = null,
-      special_instructions = null
+      special_instructions = null,
+      free = null
     }
   ) {
     let mealId = meal;
@@ -241,7 +242,8 @@ const mutations = {
         size,
         components,
         addons,
-        special_instructions: special_instructions
+        special_instructions: special_instructions,
+        free
       });
     }
 
