@@ -91,6 +91,7 @@ class MealOrders
                 $vars['category_header'] =
                     'Production Group: ' . $group['title'];
                 $vars['data'] = $data;
+                $vars = $this->filterVars($vars);
 
                 $html = view($this->exportPdfView(), $vars)->render();
 
