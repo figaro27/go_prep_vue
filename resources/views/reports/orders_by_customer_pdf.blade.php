@@ -27,13 +27,26 @@
       @foreach($orderGroup['orders'] as $order)
       <div class="unbreakable">
         @if ($params['dailyOrderNumbers'])
-        <h2>Daily Order #{{$order['dailyOrderNumber']}}</h2>
+        <h3>Daily Order #{{$order['dailyOrderNumber']}}</h3>
         @endif
+        <h4>
+          @if ($order['pickup'] === 0)
+            DELIVERY - {{ $order['delivery_date']->format('D, m/d/Y') }} 
+          @endif
+          @if ($order['pickup'] === 1)
+            PICKUP - {{ $order['delivery_date']->format('D, m/d/Y') }}
+          @endif
+          @if ($order['transferTime'])
+            {{ $order['transferTime'] }}
+          @endif
+        </h4>
         <h5>Order ID - {{$order['order_number']}}</h5>
         <h5>Customer: {{$orderGroup['user']->name }}</h5>
         <h5>Address: {{$order['address']}}, {{$order['city']}}, {{$order['state']}}, {{$order['zip']}}</h5>
         @if ($order['pickup'] === 0)
+        @if ($order['delivery'])
         <h5>Delivery Instructions: {{$order['delivery']}}</h5>
+        @endif
         @endif
         @if ($order['pickup_location_id'] != null)
         <h5>Pickup Location: 

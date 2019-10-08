@@ -235,10 +235,11 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 @foreach($order->items as $item)
 
                 <tr>
-                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
                     @if ($item->meal_package_title)
-                    - {{ $item->meal_package_title }}
+                     ({{ $item->meal_package_title }})
                     @endif
+                    {!! $item->html_title !!}
                   </td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
                     ${{ number_format($item->unit_price, 2) }}</td>
