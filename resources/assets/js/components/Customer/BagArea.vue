@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="bag-header center-text pt-3 mt-3"
+      class="bag-header center-text pt-3"
       v-if="
         $route.name === 'customer-menu' ||
           (($route.params.storeView || storeView) && $route.name != 'store-bag')
@@ -21,7 +21,7 @@
         @click="clearAll"
       ></i>
     </div>
-    <div :class="shoppingCartClass">
+    <div :class="shoppingCartClass" style="overflow-y: auto">
       <ul class="list-group">
         <li
           v-for="(item, mealId) in bag"
@@ -115,6 +115,16 @@
                   {{ addon }}
                 </li>
               </ul>
+              <div
+                v-if="
+                  $route.params.storeView &&
+                    $route.name === 'store-bag' &&
+                    !item.meal_package
+                "
+              >
+                <input type="checkbox" id="checkbox" @change="makeFree(item)" />
+                <label for="checkbox">Free</label>
+              </div>
             </div>
             <div class="flex-grow-0">
               <img
@@ -510,6 +520,11 @@ export default {
     },
     removeLineItem(index) {
       this.orderLineItems.splice(index, 1);
+    },
+    makeFree(item) {
+      item.free = 1;
+      if (item.meal.price != 0) this.makeItemFree(item);
+      else this.makeItemNonFree(item);
     }
   }
 };

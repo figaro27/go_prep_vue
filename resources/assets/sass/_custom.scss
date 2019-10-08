@@ -150,9 +150,16 @@ body.sidebar-minimized {
 }
 
 /*Main*/
+.header-fixed .app-header {
+  z-index: 20000 !important;
+}
+.header-fixed .app-body {
+  /*margin-top: 75px !important;*/
+}
 
 .app-body {
   -webkit-overflow-scrolling: touch;
+  margin-top: 70px !important;
 }
 
 .main {
@@ -1022,7 +1029,7 @@ body.forgotresettoken {
 
 .nav,
 .container-fluid {
-  padding-top: 20px !important;
+  //padding-top: 20px !important;
 }
 
 .update-meals-btn {
@@ -1063,7 +1070,7 @@ body.forgotresettoken {
     -moz-box-shadow: 1px 1px 1px 1px #dbdbdb;
     -webkit-box-shadow: 1px 1px 1px 1px #dbdbdb;
     box-shadow: 1px 1px 1px 1px #dbdbdb;
-    width: 90% !important;
+    width: 80% !important;
     margin: 0px auto;
   }
 
@@ -1074,7 +1081,9 @@ body.forgotresettoken {
     position: fixed;
     transition: all 0.2s;
     -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35) !important;
-    padding-top: 35px !important;
+    //padding-top: 35px !important;
+    top: 0;
+    padding-top: 70px !important;
   }
 
   .shopping-cart-meals {
@@ -1144,7 +1153,7 @@ body.forgotresettoken {
   }
 
   .main-customer-container {
-    padding-top: 75px;
+    padding-top: 45px;
     padding-bottom: 15px;
     padding-right: 40px !important;
     padding-left: 40px !important;

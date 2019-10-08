@@ -210,7 +210,7 @@
             <p>{{ user_detail.delivery }}</p>
           </div>
         </div>
-        <div class="row">
+        <div class="row" v-if="storeModules.orderNotes">
           <div class="col-md-12">
             <h4>Delivery Notes</h4>
             <textarea

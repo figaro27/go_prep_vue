@@ -85,7 +85,7 @@ class Order extends Model
 
     public function lineItems()
     {
-        return $this->hasMany('App\LineItems');
+        return $this->hasMany('App\LineItem');
     }
 
     public function lineItemsOrder()
@@ -202,6 +202,7 @@ class Order extends Model
                     'unit_price' => $mealOrder->unit_price,
                     'price' => $mealOrder->price,
                     'special_instructions' => $mealOrder->special_instructions,
+                    'meal_package_title' => $mealOrder->meal_package_title,
                     'components' => $mealOrder->components->map(function (
                         $component
                     ) {

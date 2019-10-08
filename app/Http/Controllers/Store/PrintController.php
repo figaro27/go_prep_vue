@@ -58,6 +58,23 @@ class PrintController extends StoreController
                 $exportable = new MealOrders($this->store, $params);
                 break;
 
+            case 'meal_orders_all':
+                $exportable = new MealOrders($this->store, $params);
+
+                try {
+                    $url = $exportable->exportAll($format);
+                    return [
+                        'url' => $url
+                    ];
+                } catch (\Exception $e) {
+                    return response()->json(
+                        [
+                            'error' => $e->getMessage()
+                        ],
+                        500
+                    );
+                }
+                break;
             case 'meals_ingredients':
                 $exportable = new MealsIngredients($this->store, $params);
                 break;

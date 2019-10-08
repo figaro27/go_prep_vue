@@ -42,7 +42,16 @@
                 ></money>
               </b-form-group>
 
-              <p>
+              <h4 class="mt-4">Categories</h4>
+              <b-form-checkbox-group
+                buttons
+                v-model="mealPackage.category_ids"
+                :options="categoryOptions"
+                class="storeFilters"
+                required
+              ></b-form-checkbox-group>
+
+              <p class="mt-4">
                 <span class="mr-1">Display Included Items in Packages</span>
                 <hint title="Display Included Items in Packages">
                   Creates a slider in the meal package popup which allows users
@@ -232,8 +241,17 @@ export default {
       meals: "storeMeals",
       findMeal: "storeMeal",
       isLoading: "isLoading",
-      storeCurrencySymbol: "storeCurrencySymbol"
+      storeCurrencySymbol: "storeCurrencySymbol",
+      storeCategories: "storeCategories"
     }),
+    categoryOptions() {
+      return Object.values(this.storeCategories).map(cat => {
+        return {
+          text: cat.category,
+          value: cat.id
+        };
+      });
+    },
     tableData() {
       return this.meals.map(meal => {
         meal.included = this.hasMeal(meal.id);

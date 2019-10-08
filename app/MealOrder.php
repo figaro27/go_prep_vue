@@ -168,6 +168,10 @@ class MealOrder extends Pivot
             }
         }
 
+        if ($this->free || $this->meal_package) {
+            $price = 0;
+        }
+
         return $price;
     }
 

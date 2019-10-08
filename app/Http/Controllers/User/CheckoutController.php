@@ -219,6 +219,12 @@ class CheckoutController extends UserController
                     $mealOrder->special_instructions =
                         $item['special_instructions'];
                 }
+                if (isset($item['free'])) {
+                    $mealOrder->free = $item['free'];
+                }
+                if ($item['meal_package']) {
+                    $mealOrder->meal_package = $item['meal_package'];
+                }
                 $mealOrder->save();
 
                 if (isset($item['components']) && $item['components']) {
@@ -470,6 +476,12 @@ class CheckoutController extends UserController
                     if (isset($item['special_instructions'])) {
                         $mealOrder->special_instructions =
                             $item['special_instructions'];
+                    }
+                    if (isset($item['free'])) {
+                        $mealOrder->free = $item['free'];
+                    }
+                    if ($item['meal_package']) {
+                        $mealOrder->meal_package = $item['meal_package'];
                     }
                     $mealOrder->save();
 

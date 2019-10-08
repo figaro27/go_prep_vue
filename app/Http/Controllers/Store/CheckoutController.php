@@ -134,7 +134,9 @@ class CheckoutController extends StoreController
                             "currency" => "usd",
                             "source" => $storeSource,
                             "application_fee" => round(
-                                $afterDiscountBeforeFees * $deposit * $application_fee
+                                $afterDiscountBeforeFees *
+                                    $deposit *
+                                    $application_fee
                             )
                         ],
                         ["stripe_account" => $store->settings->stripe_id]
@@ -197,6 +199,17 @@ class CheckoutController extends StoreController
                 if (isset($item['special_instructions'])) {
                     $mealOrder->special_instructions =
                         $item['special_instructions'];
+                }
+                if (isset($item['free'])) {
+                    $mealOrder->free = $item['free'];
+                }
+                if ($item['meal_package']) {
+                    $mealOrder->meal_package = $item['meal_package'];
+                }
+
+                if (isset($item['meal_package_title'])) {
+                    $mealOrder->meal_package_title =
+                        $item['meal_package_title'];
                 }
                 $mealOrder->save();
 
@@ -434,6 +447,12 @@ class CheckoutController extends StoreController
                 if (isset($item['special_instructions'])) {
                     $mealOrder->special_instructions =
                         $item['special_instructions'];
+                }
+                if (isset($item['free'])) {
+                    $mealOrder->free = $item['free'];
+                }
+                if ($item['meal_package']) {
+                    $mealOrder->meal_package = $item['meal_package'];
                 }
                 $mealOrder->save();
 

@@ -97,6 +97,12 @@ export default {
         special_instructions
       });
     },
+    makeItemFree(bag) {
+      this.$store.commit("makeItemFree", bag);
+    },
+    makeItemNonFree(bag) {
+      this.$store.commit("makeItemNonFree", bag);
+    },
     addBagItems(bag) {
       this.$store.commit("addBagItems", bag);
     },

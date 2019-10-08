@@ -82,10 +82,11 @@ class Bag
                             // }
 
                             $mealItem = [
+                                'meal_package_title' => $item['meal']['title'],
                                 'meal' => [
                                     'id' => $meal['id']
                                 ],
-                                'meal_package' => false,
+                                'meal_package' => true,
                                 'quantity' => $meal['quantity'],
                                 'price' => $meal['price'],
                                 'size' => [
@@ -114,10 +115,14 @@ class Bag
                             // }
 
                             $mealItem = [
+                                'meal_package_title' =>
+                                    $item['meal']['title'] .
+                                    ' - ' .
+                                    $item['size']['title'],
                                 'meal' => [
                                     'id' => $meal['id']
                                 ],
-                                'meal_package' => false,
+                                'meal_package' => true,
                                 'quantity' => $meal['quantity'],
                                 'price' => 0,
                                 'size' => [
@@ -209,7 +214,7 @@ class Bag
                                 foreach ($meals as $meal) {
                                     $mealItem = [
                                         'meal' => $meal['meal'],
-                                        'meal_package' => false,
+                                        'meal_package' => true,
                                         'quantity' => $meal['quantity'],
                                         'price' => $meal['price'],
                                         'size' => [
@@ -287,7 +292,7 @@ class Bag
                             foreach ($meals as $meal) {
                                 $mealItem = [
                                     'meal' => $meal['meal'],
-                                    'meal_package' => false,
+                                    'meal_package' => true,
                                     'quantity' => $meal['quantity'],
                                     'price' => $meal['price'],
                                     'size' => [

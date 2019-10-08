@@ -299,8 +299,75 @@ const mutations = {
     state.bag.items[guid].quantity -= quantity;
 
     if (state.bag.items[guid].quantity <= 0) {
+      state.bag.items[guid].meal.price = state.bag.items[guid].meal.item_price;
       Vue.delete(state.bag.items, guid);
     }
+  },
+  makeItemFree(
+    state,
+    {
+      meal,
+      quantity = 1,
+      mealPackage = false,
+      size = null,
+      components = null,
+      addons = null,
+      special_instructions = null
+    }
+  ) {
+    let mealId = meal;
+    if (!_.isNumber(mealId)) {
+      mealId = meal.id;
+    }
+
+    if (mealPackage || meal.meal_package) {
+      mealPackage = true;
+    }
+
+    let guid = CryptoJS.MD5(
+      JSON.stringify({
+        meal: mealId,
+        mealPackage,
+        size,
+        components,
+        addons,
+        special_instructions
+      })
+    ).toString();
+    state.bag.items[guid].meal.price = 0;
+  },
+  makeItemNonFree(
+    state,
+    {
+      meal,
+      quantity = 1,
+      mealPackage = false,
+      size = null,
+      components = null,
+      addons = null,
+      special_instructions = null
+    }
+  ) {
+    let mealId = meal;
+    if (!_.isNumber(mealId)) {
+      mealId = meal.id;
+    }
+
+    if (mealPackage || meal.meal_package) {
+      mealPackage = true;
+    }
+
+    let guid = CryptoJS.MD5(
+      JSON.stringify({
+        meal: mealId,
+        mealPackage,
+        size,
+        components,
+        addons,
+        special_instructions
+      })
+    ).toString();
+    state.bag.items[guid].meal.price = state.bag.items[guid].meal.item_price;
   },
   emptyBag(state) {
     state.bag.items = {};
@@ -1956,7 +2023,8 @@ const getters = {
 
 const plugins = [
   createPersistedState({
-    paths: ["bag", "cards"]
+    // paths: ["bag", "cards"]
+    paths: ["cards"]
   })
 ];
 

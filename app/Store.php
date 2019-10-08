@@ -597,6 +597,14 @@ class Store extends Model
 
         $email = null;
 
+        /* Timezone */
+        $settings = $store->settings;
+        if ($settings && $settings->timezone) {
+            $timezone = $settings->timezone;
+            date_default_timezone_set($timezone);
+        }
+        /* Timezone End */
+
         if (isset($store->modules) && isset($store->modules->emailBranding)) {
             $emailBranding = (int) $store->modules->emailBranding;
 
