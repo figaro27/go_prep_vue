@@ -59,10 +59,11 @@
                 Group By Day
               </b-form-checkbox>
               <b-btn
-                variant="primary"
+                variant="success"
+                v-if="storeModules.productionGroups"
                 @click="exportData('meal_orders_all', 'pdf', true)"
               >
-                <i class="fa fa-print"></i>&nbsp; Print All
+                <i class="fa fa-print"></i>&nbsp; Print All Groups
               </b-btn>
               <b-btn
                 variant="primary"

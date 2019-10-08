@@ -115,6 +115,16 @@
                   {{ addon }}
                 </li>
               </ul>
+              <div
+                v-if="
+                  $route.params.storeView &&
+                    $route.name === 'store-bag' &&
+                    !item.meal_package
+                "
+              >
+                <input type="checkbox" id="checkbox" @change="makeFree(item)" />
+                <label for="checkbox">Free</label>
+              </div>
             </div>
             <div class="flex-grow-0">
               <img
@@ -510,6 +520,11 @@ export default {
     },
     removeLineItem(index) {
       this.orderLineItems.splice(index, 1);
+    },
+    makeFree(item) {
+      item.free = 1;
+      if (item.meal.price != 0) this.makeItemFree(item);
+      else this.makeItemNonFree(item);
     }
   }
 };

@@ -197,7 +197,8 @@
                   >
                     <i>+</i>
                   </div>
-                  <b-form-input
+                  <p class="mt-3 ml-1">{{ mealMixQuantity(item) }}</p>
+                  <!-- <b-form-input
                     type="text"
                     name
                     id
@@ -205,7 +206,7 @@
                     style="text-align: center; padding: 0;"
                     :value="mealMixQuantity(item)"
                     readonly
-                  ></b-form-input>
+                  ></b-form-input> -->
                   <div
                     @click.stop="
                       minusMixOne(
