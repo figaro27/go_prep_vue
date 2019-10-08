@@ -8,6 +8,8 @@ use App\MealSize;
 use App\ProductionGroup;
 use App\Exportable\Exportable;
 use Illuminate\Support\Carbon;
+use mikehaertl\wkhtmlto\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class MealOrders
 {
@@ -32,7 +34,76 @@ class MealOrders
         return $vars;
     }
 
-    public function exportData($type = null)
+    public function exportAll($type = "pdf")
+    {
+        if (!in_array($type, ['pdf'])) {
+            return null;
+        }
+
+        $this->type = $type;
+
+        $groups = $this->store->productionGroups->toArray();
+
+        $filename = 'public/' . md5(time()) . '.pdf';
+
+        $vars = $this->filterVars([
+            'data' => null,
+            'params' => $this->params,
+            'delivery_dates' => $this->getDeliveryDates(),
+            'body_classes' => implode(' ', [$this->orientation]),
+            'category_header' => ''
+        ]);
+
+        $pdfConfig = [
+            'encoding' => 'utf-8',
+            'orientation' => $this->orientation,
+            'page-size' => 'Letter',
+            'no-outline',
+            //'margin-top' => 0,
+            //'margin-bottom' => 0,
+            //'margin-left' => 0,
+            //'margin-right' => 0,
+            //'binary' => '/usr/local/bin/wkhtmltopdf',
+            'disable-smart-shrinking'
+        ];
+
+        if (config('pdf.xserver')) {
+            $pdfConfig = array_merge($pdfConfig, [
+                'use-xserver',
+                'commandOptions' => array(
+                    'enableXvfb' => true
+                )
+            ]);
+        }
+
+        $pdf = new Pdf($pdfConfig);
+
+        if ($groups && count($groups) > 0) {
+            foreach ($groups as $group) {
+                $productionGroupId = (int) $group['id'];
+                $data = $this->exportData($type, $productionGroupId);
+
+                if (!$data || count($data) == 0) {
+                    continue;
+                }
+
+                $vars['category_header'] =
+                    'Production Group: ' . $group['title'];
+                $vars['data'] = $data;
+
+                $html = view($this->exportPdfView(), $vars)->render();
+
+                $pdf->addPage($html);
+            }
+        }
+
+        $output = $pdf->toString();
+
+        Storage::disk('local')->put($filename, $output);
+        return Storage::url($filename);
+    }
+
+    public function exportData($type = null, $default_productionGroupId = 0)
     {
         $production = collect();
         $mealQuantities = [];
@@ -42,6 +113,10 @@ class MealOrders
         $allDates = [];
 
         $productionGroupId = $this->params->get('productionGroupId', null);
+        if ($default_productionGroupId != 0) {
+            $productionGroupId = $default_productionGroupId;
+        }
+
         if ($productionGroupId != null) {
             $productionGroupTitle = ProductionGroup::where(
                 'id',
@@ -84,6 +159,7 @@ class MealOrders
                 ) {
                     return null;
                 }
+
                 $title =
                     $this->type !== 'pdf'
                         ? $mealOrder->getTitle()

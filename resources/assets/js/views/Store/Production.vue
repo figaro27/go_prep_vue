@@ -60,6 +60,12 @@
               </b-form-checkbox>
               <b-btn
                 variant="primary"
+                @click="exportData('meal_orders_all', 'pdf', true)"
+              >
+                <i class="fa fa-print"></i>&nbsp; Print All
+              </b-btn>
+              <b-btn
+                variant="primary"
                 @click="exportData('meal_orders', 'pdf', true)"
               >
                 <i class="fa fa-print"></i>&nbsp; Print
