@@ -89,6 +89,9 @@ class MealPackage extends Model implements HasMedia
         $mediaItems = $this->getMedia('featured_image');
 
         if (!count($mediaItems)) {
+            if ($this->store->settings->menuStyle === 'text') {
+                return null;
+            }
             $url = asset('images/defaultMeal.jpg');
 
             return [

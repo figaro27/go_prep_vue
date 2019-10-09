@@ -221,17 +221,16 @@
                     <i>+</i>
                   </div>
 
-                  <div
-                    v-if="meal.meal_package && meal.sizes.length === 0"
-                    @click="addMeal(meal, true)"
-                    class="bag-plus-minus small-buttons brand-color white-text"
-                  >
-                    <i>+</i>
-                  </div>
                   <b-dropdown
                     v-if="meal.meal_package && meal.sizes.length > 0"
+                    toggle-class="bag-plus-minus small-buttons brand-color white-text"
                     :ref="'dropdown_' + meal.id + '_' + group.category_id"
                   >
+                    <span
+                      slot="button-content"
+                      :id="'dropdown_' + meal.id + '_' + group.category_id"
+                      >+</span
+                    >
                     <b-dropdown-item
                       v-for="size in meal.sizes"
                       :key="size.id"
