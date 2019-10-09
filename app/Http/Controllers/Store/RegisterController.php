@@ -69,10 +69,7 @@ class RegisterController extends StoreController
             )
         ]);
 
-        $user = User::orderBy('created_at', 'desc')->first();
-        $userId = User::orderBy('created_at', 'desc')
-            ->pluck('id')
-            ->first();
+        $user = User::findOrFail($user->id);
         $store = $this->store;
         $storeId = $this->store->id;
 
