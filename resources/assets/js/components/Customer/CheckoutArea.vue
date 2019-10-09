@@ -4,7 +4,9 @@
       <li
         class="bag-item"
         v-if="
-          storeSettings.allowMealPlans &&
+          // Hiding until subscriptions are fixed.
+          1 === 2 &&
+            storeSettings.allowMealPlans &&
             $route.params.subscriptionId === undefined &&
             $parent.orderId === undefined
         "
