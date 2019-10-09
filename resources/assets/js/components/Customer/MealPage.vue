@@ -139,7 +139,7 @@
           </div>
           <div class="row mt-4" v-if="storeSettings.menuStyle === 'text'">
             <div class="col-md-1">
-              <h2 class="pt-3">
+              <h2 class="pt-3 mr-3">
                 {{ format.money(mealVariationPrice, storeSettings.currency) }}
               </h2>
             </div>
