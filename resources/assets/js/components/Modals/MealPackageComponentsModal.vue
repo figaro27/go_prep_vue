@@ -1,19 +1,26 @@
 <template>
   <b-modal
-    :title="mealPackageTitle"
     ref="modal"
     size="xl"
     @ok.prevent="e => ok(e)"
     class="meal-package-components-modal"
     no-fade
   >
+    <div slot="modal-header" class="row w-100">
+      <div class="col-md-3">
+        <b-input v-model="search" placeholder="Search"></b-input>
+      </div>
+      <div class="col-md-6 text-center">
+        <h5 class="modal-title">{{ mealPackageTitle }}</h5>
+      </div>
+    </div>
     <div v-if="mealPackage">
       <b-row v-if="components.length" class="my-3">
         <b-col>
           <div
             v-for="(component, i) in components"
             :key="mealPackage.id + component.id"
-            class
+            v-if="componentVisible(component)"
           >
             <h4 class="center-text mb-3">
               {{ getComponentLabel(component) }} - Remaining:
@@ -49,9 +56,11 @@
                   :checked="optionSelected(component.id, option.id)"
                 >
                   {{ option.text || "" }}
-                  <small v-if="option.price && option.price > 0">
-                    +{{ format.money(option.price, storeSettings.currency) }}
-                  </small>
+                  <small v-if="option.price && option.price > 0"
+                    >+{{
+                      format.money(option.price, storeSettings.currency)
+                    }}</small
+                  >
                 </b-checkbox>
 
                 <div v-else class="my-2">
@@ -234,7 +243,8 @@ export default {
       size: null,
       choices: {},
       meal_choices: {},
-      addons: {}
+      addons: {},
+      search: ""
     };
   },
   computed: {
@@ -398,6 +408,24 @@ export default {
           const truncated = choices.slice(0, remaining);
           this.$set(this.choices[component.id], option.id, truncated);
         }
+
+        if (component.minimum === 1 && component.maximum === 1) {
+          // Find options restricted
+          choices = this.choices[component.id][option.id];
+
+          this.components.forEach(comp => {
+            const opt = _.find(comp.options, {
+              restrict_meals_component_id: component.id,
+              restrict_meals_option_id: option.id
+            });
+            if (opt) {
+              this.addOptionChoice(comp, opt, choices[0]);
+            }
+          });
+
+          // Set their selection
+          restrictedOpts.forEach(opt => {});
+        }
       });
     },
     getOptionMeals(componentId, optionId) {
@@ -534,10 +562,22 @@ export default {
       return null;
     },
     getMealOptions(mealOptions, checkboxes = true) {
+      mealOptions = _.filter(mealOptions, mealOption => {
+        const meal = this.getMeal(mealOption.meal_id);
+        if (!meal) return false;
+
+        if (
+          this.search &&
+          !meal.title.toLowerCase().includes(this.search.toLowerCase())
+        ) {
+          return false;
+        }
+
+        return true;
+      });
       return _(mealOptions)
         .map(mealOption => {
           const meal = this.getMeal(mealOption.meal_id);
-
           if (!meal) return null;
 
           const size = meal.getSize(mealOption.meal_size_id);
@@ -619,6 +659,17 @@ export default {
         },
         0
       );
+    },
+    componentVisible(component) {
+      if (
+        component.minimum === 1 &&
+        component.maximum === 1 &&
+        component.options[0].restrict_meals_component_id
+      ) {
+        return false;
+      }
+
+      return true;
     }
   }
 };
