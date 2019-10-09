@@ -190,40 +190,76 @@
         <div class="row">
           <div
             class="item item-text col-sm-6 col-lg-6 col-xl-6"
-            v-for="item in group.meals"
-            :key="item.id"
+            v-for="meal in group.meals"
+            :key="meal.id"
           >
             <div
               class="card card-text-menu border-light p-3 thumbnail-height mr-1"
-              @click="showMeal(item, group)"
+              @click="showMeal(meal, group)"
             >
               <div class="bag-item-quantity row">
                 <div class="col-md-1">
-                  <div
+                  <!-- <div
                     @click.stop="addMeal(item, null)"
                     class="bag-plus-minus small-buttons brand-color white-text"
                   >
                     <i>+</i>
+                  </div> -->
+                  <div
+                    v-if="!meal.meal_package"
+                    @click.stop="addMeal(meal, null)"
+                    class="bag-plus-minus small-buttons brand-color white-text"
+                  >
+                    <i>+</i>
                   </div>
-                  <p class="mt-3 ml-1">{{ mealMixQuantity(item) }}</p>
+
+                  <div
+                    v-if="meal.meal_package && meal.sizes.length === 0"
+                    @click="addMeal(meal, true)"
+                    class="bag-plus-minus small-buttons brand-color white-text"
+                  >
+                    <i>+</i>
+                  </div>
+
+                  <div
+                    v-if="meal.meal_package && meal.sizes.length === 0"
+                    @click="addMeal(meal, true)"
+                    class="bag-plus-minus small-buttons brand-color white-text"
+                  >
+                    <i>+</i>
+                  </div>
+                  <b-dropdown
+                    v-if="meal.meal_package && meal.sizes.length > 0"
+                    :ref="'dropdown_' + meal.id + '_' + group.category_id"
+                  >
+                    <b-dropdown-item
+                      v-for="size in meal.sizes"
+                      :key="size.id"
+                      @click="addMealPackage(meal, true, size)"
+                    >
+                      {{ size.title }} -
+                      {{ format.money(size.price, storeSettings.currency) }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                  <p class="mt-3 ml-1">{{ mealMixQuantity(meal) }}</p>
                   <!-- <b-form-input
                     type="text"
                     name
                     id
                     class="quantity small-quantity"
                     style="text-align: center; padding: 0;"
-                    :value="mealMixQuantity(item)"
+                    :value="mealMixQuantity(meal)"
                     readonly
                   ></b-form-input> -->
                   <div
                     @click.stop="
                       minusMixOne(
-                        item.meal,
+                        meal.meal,
                         false,
-                        item.size,
-                        item.components,
-                        item.addons,
-                        item.special_instructions
+                        meal.size,
+                        meal.components,
+                        meal.addons,
+                        meal.special_instructions
                       )
                     "
                     class="bag-plus-minus small-buttons gray white-text"
@@ -231,27 +267,27 @@
                     <i>-</i>
                   </div>
                 </div>
-                <div v-if="item.image != null" class="col-md-8">
-                  <strong>{{ item.title }}</strong>
-                  <p class="mt-1">{{ item.description }}</p>
+                <div v-if="meal.image != null" class="col-md-8">
+                  <strong>{{ meal.title }}</strong>
+                  <p class="mt-1">{{ meal.description }}</p>
                 </div>
                 <div v-else class="col-md-11">
-                  <strong>{{ item.title }}</strong>
-                  <p class="mt-1">{{ item.description }}</p>
+                  <strong>{{ meal.title }}</strong>
+                  <p class="mt-1">{{ meal.description }}</p>
                   <div class="price-no-bg">
-                    {{ format.money(item.price, storeSettings.currency) }}
+                    {{ format.money(meal.price, storeSettings.currency) }}
                   </div>
                 </div>
 
-                <div v-if="item.image != null" class="col-md-3">
+                <div v-if="meal.image != null" class="col-md-3">
                   <thumbnail
                     class="text-menu-image"
-                    v-if="item.image != null"
-                    :src="item.image.url_thumb"
+                    v-if="meal.image != null"
+                    :src="meal.image.url_thumb"
                     :spinner="false"
                   ></thumbnail>
                   <div class="price">
-                    {{ format.money(item.price, storeSettings.currency) }}
+                    {{ format.money(meal.price, storeSettings.currency) }}
                   </div>
                 </div>
               </div>

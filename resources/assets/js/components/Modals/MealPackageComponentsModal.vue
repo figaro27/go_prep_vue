@@ -2,7 +2,7 @@
   <b-modal
     ref="modal"
     size="xl"
-    @ok.prevent="e => ok(e)"
+    @ok="e => ok(e)"
     class="meal-package-components-modal"
     no-fade
   >
