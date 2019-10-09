@@ -119,7 +119,7 @@ class CheckoutController extends UserController
                     $gateway
                 )
             ) {
-                $storeCustomer = $user->createStoreCustomer(
+                $user->createStoreCustomer(
                     $store->id,
                     $storeSettings->currency,
                     $gateway
@@ -130,6 +130,12 @@ class CheckoutController extends UserController
                 $store->id,
                 $storeSettings->currency,
                 $gateway
+            );
+            $storeCustomer = $user->getStoreCustomer(
+                $store->id,
+                $storeSettings->currency,
+                $gateway,
+                true
             );
         } else {
             $customer = $user->getStoreCustomer(
@@ -367,7 +373,7 @@ class CheckoutController extends UserController
                         ['stripe_account' => $storeSettings->stripe_id]
                     );
 
-                    $storeSource = $customer->sources->create(
+                    $storeSource = $storeCustomer->sources->create(
                         [
                             'source' => $token
                         ],

@@ -316,7 +316,8 @@ class User extends Authenticatable implements JWTSubject
     public function getStoreCustomer(
         $storeId,
         $currency = 'USD',
-        $gateway = Constants::GATEWAY_STRIPE
+        $gateway = Constants::GATEWAY_STRIPE,
+        $fromGateway = false
     ) {
         $store = Store::find($storeId);
         $customer = Customer::where([
@@ -326,9 +327,9 @@ class User extends Authenticatable implements JWTSubject
             'payment_gateway' => $gateway
         ])->first();
 
-        return $customer;
-
-        if ($gateway === Constants::GATEWAY_STRIPE) {
+        if (!$fromGateway) {
+            return $customer;
+        } elseif ($gateway === Constants::GATEWAY_STRIPE) {
             $acct = $store->settings->stripe_account;
             \Stripe\Stripe::setApiKey($acct['access_token']);
             $stripeCustomer = \Stripe\Customer::retrieve($customer->stripe_id);
