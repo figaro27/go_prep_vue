@@ -380,12 +380,12 @@
             >
             </v-select>
           </b-form-group>
-          <!-- <b-btn
+          <b-btn
             variant="primary"
             v-if="storeModules.manualCustomers"
             @click="addCustomerModal = true"
             >Add New Customer</b-btn
-          > -->
+          >
         </div>
         <div v-if="!hidePaymentArea">
           <h4 class="mt-2 mb-3">
