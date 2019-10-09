@@ -422,9 +422,6 @@ export default {
               this.addOptionChoice(comp, opt, choices[0]);
             }
           });
-
-          // Set their selection
-          restrictedOpts.forEach(opt => {});
         }
       });
     },
@@ -493,6 +490,7 @@ export default {
           this.choices = {};
           this.$v.$reset();
         });
+        this.$off("done");
         this.$on("done", () => {
           this.$v.$touch();
 
@@ -522,6 +520,9 @@ export default {
           }
         });
       });
+    },
+    hide() {
+      this.$refs.modal.hide();
     },
     ok() {
       this.$emit("done");
