@@ -114,14 +114,14 @@ class CheckoutController extends UserController
         if (
             !$user->hasStoreCustomer(
                 $store->id,
-                $storeSettings->currency,
-                $gateway
+                $storeSettings->currency
+                // $gateway
             )
         ) {
             $storeCustomer = $user->createStoreCustomer(
                 $store->id,
-                $storeSettings->currency,
-                $gateway
+                $storeSettings->currency
+                // $gateway
             );
         }
 
@@ -129,8 +129,8 @@ class CheckoutController extends UserController
 
         $customer = $user->getStoreCustomer(
             $store->id,
-            $storeSettings->currency,
-            $gateway
+            $storeSettings->currency
+            // $gateway
         );
 
         if (!$weeklyPlan) {
