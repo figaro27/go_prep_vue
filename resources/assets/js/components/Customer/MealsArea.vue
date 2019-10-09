@@ -4,7 +4,6 @@
 
     <meal-package-components-modal
       ref="packageComponentModal"
-      :key="packageTitle"
       :packageTitle="packageTitle"
     ></meal-package-components-modal>
 
