@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class MealOrder extends Pivot
 {
     protected $table = 'meal_orders';
+
+    protected $casts = [
+        'free' => 'boolean',
+        'meal_package' => 'boolean'
+    ];
+
     protected $appends = [
         'title',
         'html_title',

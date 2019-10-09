@@ -94,6 +94,8 @@ export default {
 
         let special_instructions = item.special_instructions;
 
+        let free = item.free;
+
         for (let i = 0; i < item.quantity; i++) {
           this.addOne(
             meal,
@@ -101,7 +103,8 @@ export default {
             item.meal_size_id,
             components,
             addons,
-            special_instructions
+            special_instructions,
+            free
           );
         }
       });

@@ -448,6 +448,7 @@ import format from "../../lib/format";
 import vSelect from "vue-select";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import checkDateRange from "../../mixins/deliveryDates";
+import { sidebarCssClasses } from "../../shared/classes";
 
 export default {
   components: {
@@ -543,6 +544,22 @@ export default {
     if (this.storeModules.dailyOrderNumbers) {
       this.columns.splice(1, 0, "dailyOrderNumber");
     }
+
+    /* Sidebar Check */
+    let isOpen = false;
+
+    for (let i in sidebarCssClasses) {
+      if ($("body").hasClass(sidebarCssClasses[i])) {
+        isOpen = true;
+        break;
+      }
+    }
+
+    if (!isOpen && $(".navbar-toggler").length > 0) {
+      $(".navbar-toggler").click();
+    }
+    /* Sidebar Check End */
+
     // if (this.storeModules.manualOrders || this.storeModules.cashOrders) {
     //   this.columns.splice(8, 0, "chargeType");
     // }

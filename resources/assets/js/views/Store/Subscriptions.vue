@@ -270,6 +270,7 @@ import Spinner from "../../components/Spinner";
 import format from "../../lib/format";
 import vSelect from "vue-select";
 import { mapGetters, mapActions, mapMutations } from "vuex";
+import { sidebarCssClasses } from "../../shared/classes";
 
 export default {
   components: {
@@ -356,6 +357,21 @@ export default {
     if (this.$route.query.updated) {
       this.$toastr.s("Subscription Updated");
     }
+
+    /* Sidebar Check */
+    let isOpen = false;
+
+    for (let i in sidebarCssClasses) {
+      if ($("body").hasClass(sidebarCssClasses[i])) {
+        isOpen = true;
+        break;
+      }
+    }
+
+    if (!isOpen && $(".navbar-toggler").length > 0) {
+      $(".navbar-toggler").click();
+    }
+    /* Sidebar Check End */
   },
   computed: {
     ...mapGetters({

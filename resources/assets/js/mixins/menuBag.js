@@ -9,7 +9,8 @@ export default {
       size = null,
       components = null,
       addons = null,
-      special_instructions = null
+      special_instructions = null,
+      free = false
     ) {
       if (!mealPackage) {
         meal = this.getMeal(meal.id);
@@ -67,6 +68,10 @@ export default {
         addons = { ...result.addons };
       }
 
+      if (free) {
+        meal.price = 0;
+      }
+
       this.$store.commit("addToBag", {
         meal,
         quantity: 1,
@@ -74,7 +79,8 @@ export default {
         size,
         components,
         addons,
-        special_instructions
+        special_instructions,
+        free
       });
       this.mealModal = false;
       this.mealPackageModal = false;
