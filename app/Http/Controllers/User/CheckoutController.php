@@ -111,27 +111,34 @@ class CheckoutController extends UserController
             $total -= $couponReduction;
         }
 
-        if (
-            !$user->hasStoreCustomer(
-                $store->id,
-                $storeSettings->currency,
-                $gateway
-            )
-        ) {
-            $storeCustomer = $user->createStoreCustomer(
+        if (!$cashOrder) {
+            if (
+                !$user->hasStoreCustomer(
+                    $store->id,
+                    $storeSettings->currency,
+                    $gateway
+                )
+            ) {
+                $storeCustomer = $user->createStoreCustomer(
+                    $store->id,
+                    $storeSettings->currency,
+                    $gateway
+                );
+            }
+
+            $customer = $user->getStoreCustomer(
                 $store->id,
                 $storeSettings->currency,
                 $gateway
             );
+        } else {
+            $customer = $user->getStoreCustomer(
+                $store->id,
+                $storeSettings->currency
+            );
         }
 
         $total += $salesTax;
-
-        $customer = $user->getStoreCustomer(
-            $store->id,
-            $storeSettings->currency,
-            $gateway
-        );
 
         if (!$weeklyPlan) {
             if (!$cashOrder) {
@@ -201,7 +208,9 @@ class CheckoutController extends UserController
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->cashOrder = $cashOrder;
-            $order->payment_gateway = $gateway;
+            if (!$cashOrder) {
+                $order->payment_gateway = $gateway;
+            }
             $order->dailyOrderNumber = $dailyOrderNumber;
             $order->save();
 
