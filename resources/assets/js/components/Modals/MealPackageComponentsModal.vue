@@ -661,10 +661,16 @@ export default {
       );
     },
     componentVisible(component) {
+      const { options } = component;
+      const restrictedTo = this.getComponent(
+        options[0].restrict_meals_component_id
+      );
       if (
         component.minimum === 1 &&
         component.maximum === 1 &&
-        component.options[0].restrict_meals_component_id
+        restrictedTo &&
+        restrictedTo.minimum === 1 &&
+        restrictedTo.maximum === 1
       ) {
         return false;
       }
