@@ -116,7 +116,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- company name -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $order->user->details->name }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $order->user->details->full_name }}</td>
                       </tr>
                       <!-- end company name -->
                       <tr>
