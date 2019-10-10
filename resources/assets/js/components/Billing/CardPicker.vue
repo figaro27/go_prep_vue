@@ -177,7 +177,7 @@ export default {
           payment_gateway: this.gateway
         })
         .then(async resp => {
-          if (this.manualOrder) {
+          if (this.manualOrder || this.$route.params.manualOrder) {
             this.$parent.getCards();
           } else {
             await this.refreshCards();
