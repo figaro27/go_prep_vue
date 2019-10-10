@@ -395,6 +395,7 @@
           <div
             v-if="
               storeModules.cashOrders &&
+              &&
                 (storeModuleSettings.cashAllowedForCustomer ||
                   $route.params.storeView)
             "
@@ -1164,8 +1165,7 @@ export default {
           deliveryFee: this.deliveryFeeAmount,
           processingFee: this.processingFeeAmount,
           bag: this.bag,
-          // plan: weeklySubscriptionValue,
-          plan: 0,
+          plan: weeklySubscriptionValue,
           store_id: this.store.id,
           salesTax: this.tax,
           coupon_id: this.couponApplied ? this.coupon.id : null,
@@ -1255,8 +1255,7 @@ export default {
           subtotal: this.subtotal,
           afterDiscount: this.afterDiscount,
           bag: this.bag,
-          // plan: weeklySubscriptionValue,
-          plan: 0,
+          plan: weeklySubscriptionValue,
           pickup: this.pickup,
           delivery_day: this.deliveryDay,
           card_id: cardId,
