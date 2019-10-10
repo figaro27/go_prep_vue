@@ -184,7 +184,9 @@ class CheckoutController extends UserController
 
             $order = new Order();
             $order->user_id = $user->id;
-            $order->customer_id = $customer->id;
+            if (!$cashOrder) {
+                $order->customer_id = $customer->id;
+            }
             $order->card_id = $cardId;
             $order->store_id = $store->id;
             $order->order_number = strtoupper(
