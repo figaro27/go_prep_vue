@@ -133,7 +133,7 @@
                 {{ format.money(mealVariationPrice, storeSettings.currency) }}
               </h2>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 offset-1">
               <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
             </div>
           </div>
