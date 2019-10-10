@@ -38,15 +38,21 @@ class CardController extends StoreController
     public function store(Request $request)
     {
         $token = $request->get('token');
-        $card = $token['card'];
+        // Authorize
+        // $card = $token['card'];
+        $card = $request->get('card');
         $customerId = $request->get('customer');
         $customer = Customer::where('id', $customerId)->first();
 
         if (!$customer->user->hasCustomer()) {
-            $customer->user->createCustomer($token['id']);
+            // Authorize
+            // $customer->user->createCustomer($token['id']);
+            $customer->user->createCustomer($token);
         } else {
             try {
-                $customer->user->createCard($token['id']);
+                // Authorize
+                // $customer->user->createCard($token['id']);
+                $customer->user->createCard($token);
             } catch (\Stripe\Error\Card $e) {
                 return response()->json(
                     [
