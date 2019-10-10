@@ -346,14 +346,14 @@ class CheckoutController extends StoreController
                     ['stripe_account' => $store->settings->stripe_id]
                 );
 
-                $storeSource = $storeCustomer->sources->create(
+                $storeSource = $customer->sources->create(
                     [
                         'source' => $token
                     ],
                     ['stripe_account' => $store->settings->stripe_id]
                 );
 
-                $subscription = $storeCustomer->subscriptions->create(
+                $subscription = $customer->subscriptions->create(
                     [
                         'default_source' => $storeSource,
                         'items' => [['plan' => $plan]],
