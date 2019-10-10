@@ -116,19 +116,19 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- company name -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $customer->name }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $subscription->user->detail->full_name }}</td>
                       </tr>
                       <!-- end company name -->
                       <!-- address -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->address }}
-                          <br /> {{ $customer->city }}, {{ $customer->state }} {{ $customer->zip }}
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->user->detail->address }}
+                          <br /> {{ $subscription->user->detail->city }}, {{ $subscription->user->detail->state }} {{ $subscription->user->detail->zip }}
                           </td>
                       </tr>
 
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
-                          {{ $customer->phone }}
+                          {{ $subscription->user->detail->phone }}
                         </td>
                       </tr>
 
