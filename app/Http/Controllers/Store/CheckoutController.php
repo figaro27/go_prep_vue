@@ -106,16 +106,50 @@ class CheckoutController extends StoreController
 
         $total += $salesTax;
 
-        $cardId = $request->get('card_id');
-        $card = Card::where('id', $cardId)->first();
-
         $cashOrder = $request->get('cashOrder');
         if ($cashOrder) {
             $cardId = null;
             $card = null;
+        } else {
+            $cardId = $request->get('card_id');
+            $card = $customer->user->cards()->findOrFail($cardId);
+            $gateway = $card->payment_gateway;
         }
 
-        $customer = $customer->user->getStoreCustomer($store->id);
+        $storeSettings = $this->store->settings;
+
+        if (!$cashOrder) {
+            if (
+                !$customer->user->hasStoreCustomer(
+                    $store->id,
+                    $storeSettings->currency,
+                    $gateway
+                )
+            ) {
+                $customer->user->createStoreCustomer(
+                    $store->id,
+                    $storeSettings->currency,
+                    $gateway
+                );
+            }
+            $customer = $customer->user->getStoreCustomer(
+                $store->id,
+                $storeSettings->currency,
+                $gateway
+            );
+            $storeCustomer = $customer->user->getStoreCustomer(
+                $store->id,
+                $storeSettings->currency,
+                $gateway,
+                true
+            );
+        } else {
+            $customer = $customer->user->getStoreCustomer(
+                $store->id,
+                $storeSettings->currency
+            );
+        }
+
         if (!$weeklyPlan) {
             if (!$cashOrder) {
                 if ($card->payment_gateway === Constants::GATEWAY_STRIPE) {
@@ -346,14 +380,14 @@ class CheckoutController extends StoreController
                     ['stripe_account' => $store->settings->stripe_id]
                 );
 
-                $storeSource = $customer->sources->create(
+                $storeSource = $storeCustomer->sources->create(
                     [
                         'source' => $token
                     ],
                     ['stripe_account' => $store->settings->stripe_id]
                 );
 
-                $subscription = $customer->subscriptions->create(
+                $subscription = $storeCustomer->subscriptions->create(
                     [
                         'default_source' => $storeSource,
                         'items' => [['plan' => $plan]],
@@ -368,7 +402,7 @@ class CheckoutController extends StoreController
             $userSubscription = new Subscription();
             $userSubscription->user_id = $customer->user->id;
             $userSubscription->customer_id = $customer->id;
-            $userSubscription->stripe_customer_id = $customer->id;
+            $userSubscription->stripe_customer_id = $storeCustomer->id;
             $userSubscription->store_id = $store->id;
             $userSubscription->name =
                 "Weekly subscription (" . $store->storeDetail->name . ")";
