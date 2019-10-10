@@ -116,18 +116,18 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- company name -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $customer->name }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $subscription->user->details->name }}</td>
                       </tr>
                       <!-- end company name -->
                       <!-- address -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->address }}
-                          <br /> {{ $customer->city }}, {{ $customer->state }} {{ $customer->zip }}
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->user->details->address }}
+                          <br /> {{ $subscription->user->details->city }}, {{ $subscription->user->details->state }} {{ $subscription->user->details->zip }}
                           </td>
                       </tr>
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
-                          {{ $customer->phone }}
+                          {{ $subscription->user->details->phone }}
                         </td>
                       </tr>
 
@@ -339,7 +339,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 <!-- content -->
                 @if ($subscription->pickup === 0)
 				<tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->delivery }} </td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->user->details->delivery }} </td>
                 </tr>
                 @else
                 <tr>
