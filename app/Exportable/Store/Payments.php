@@ -40,9 +40,6 @@ class Payments
                     $couponCode
                 )
                 ->map(function ($payment) use (&$sums) {
-                    $goPrepFee = $this->store->settings->application_fee / 100;
-                    $stripeFee = 0.029;
-
                     $sums[1] += $payment->preFeePreDiscount;
                     $sums[3] += $payment->couponReduction;
                     $sums[4] += $payment->mealPlanDiscount;
@@ -87,9 +84,6 @@ class Payments
             $dailySums = [];
 
             foreach ($ordersByDay as $orderByDay) {
-                $goPrepFee = $this->store->settings->application_fee / 100;
-                $stripeFee = 0.029;
-
                 $created_at = "";
                 $totalOrders = 0;
                 $preFeePreDiscount = 0;

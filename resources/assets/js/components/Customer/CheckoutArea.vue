@@ -520,8 +520,9 @@
         <div class="col-md-6">
           <router-link
             :to="{
-              path: '/register',
-              query: { redirect: '/customer/bag' }
+              name: 'register',
+              query: { redirect: '/customer/bag' },
+              params: { customerRegister: true }
             }"
           >
             <b-btn class="menu-bag-btn">REGISTER</b-btn>

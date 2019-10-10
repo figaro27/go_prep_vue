@@ -121,14 +121,14 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       <!-- end company name -->
                       <!-- address -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->user->detail->address }}
-                          <br /> {{ $subscription->user->detail->city }}, {{ $subscription->user->detail->state }} {{ $subscription->user->detail->zip }}
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->user->details->address }}
+                          <br /> {{ $subscription->user->details->city }}, {{ $subscription->user->details->state }} {{ $subscription->user->details->zip }}
                           </td>
                       </tr>
 
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
-                          {{ $subscription->user->detail->phone }}
+                          {{ $subscription->user->details->phone }}
                         </td>
                       </tr>
 

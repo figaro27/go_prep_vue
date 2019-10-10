@@ -11,7 +11,11 @@
         <div class="card-body p-lg-5">
           <b-form @submit.prevent="submit" autocomplete="off" ref="form">
             <div v-if="step === 0">
-              <b-form-group horizontal label="Account Type">
+              <b-form-group
+                horizontal
+                label="Account Type"
+                v-if="!$route.params.customerRegister"
+              >
                 <b-form-radio-group
                   horizontal
                   label="Account Type"
@@ -566,7 +570,7 @@ export default {
 
       form: {
         0: {
-          role: null,
+          role: "customer",
           email: null,
           password: null,
           password_confirmation: null,
