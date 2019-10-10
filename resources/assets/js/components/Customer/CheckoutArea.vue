@@ -395,7 +395,6 @@
           <div
             v-if="
               storeModules.cashOrders &&
-              &&
                 (storeModuleSettings.cashAllowedForCustomer ||
                   $route.params.storeView)
             "
