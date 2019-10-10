@@ -395,6 +395,7 @@
           <div
             v-if="
               storeModules.cashOrders &&
+                !weeklySubscriptionValue &&
                 (storeModuleSettings.cashAllowedForCustomer ||
                   $route.params.storeView)
             "
