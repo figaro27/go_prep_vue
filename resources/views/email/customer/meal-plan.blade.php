@@ -119,18 +119,18 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $subscription->store->details->name }}</td>
                       </tr>
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $customer->name }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $subscription->user->details->name }}</td>
                       </tr>
                       <!-- end company name -->
                       <!-- address -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $customer->address }}
-                          <br /> {{ $customer->city }}, {{ $customer->state }} {{ $customer->zip }}
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->user->details->address }}
+                          <br /> {{ $subscription->user->details->city }}, {{ $subscription->user->details->state }} {{ $subscription->user->details->zip }}
                           </td>
                       </tr>
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
-                          {{ $customer->phone }}
+                          {{ $subscription->user->details->phone }}
                         </td>
                       </tr>
                       @if ($subscription->store->modules->hideTransferOptions === 0)
