@@ -368,7 +368,7 @@ class CheckoutController extends StoreController
             $userSubscription = new Subscription();
             $userSubscription->user_id = $customer->user->id;
             $userSubscription->customer_id = $customer->id;
-            $userSubscription->stripe_customer_id = $storeCustomer->id;
+            $userSubscription->stripe_customer_id = $customer->id;
             $userSubscription->store_id = $store->id;
             $userSubscription->name =
                 "Weekly subscription (" . $store->storeDetail->name . ")";
