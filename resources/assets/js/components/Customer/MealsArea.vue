@@ -231,6 +231,10 @@
                       :id="'dropdown_' + meal.id + '_' + group.category_id"
                       >+</span
                     >
+                    <b-dropdown-item @click="addMeal(meal, true)">
+                      {{ meal.default_size_title }} -
+                      {{ format.money(meal.price, storeSettings.currency) }}
+                    </b-dropdown-item>
                     <b-dropdown-item
                       v-for="size in meal.sizes"
                       :key="size.id"
@@ -240,6 +244,7 @@
                       {{ format.money(size.price, storeSettings.currency) }}
                     </b-dropdown-item>
                   </b-dropdown>
+
                   <p class="mt-3 ml-1">{{ mealMixQuantity(meal) }}</p>
                   <!-- <b-form-input
                     type="text"
