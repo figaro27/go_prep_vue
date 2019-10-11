@@ -1424,7 +1424,7 @@ export default {
       //     return;
       //   }
       // }
-    }
+    },
 
     // Temporary work around for two delivery fees based on day of the week. Will remove when two delivery day feature is added.
     DBD() {
