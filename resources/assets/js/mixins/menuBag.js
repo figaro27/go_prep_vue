@@ -240,7 +240,7 @@ export default {
         deposit = parseInt(deposit);
       }
 
-      if (this.$route.params.adjustMealPlan) {
+      if (this.$route.params.adjustMealPlan || this.adjustMealPlan) {
         axios
           .post("/api/me/subscriptions/updateMeals", {
             subscriptionId: this.subscriptionId,
