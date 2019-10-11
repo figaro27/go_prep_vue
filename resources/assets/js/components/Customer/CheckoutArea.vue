@@ -444,7 +444,7 @@
         <div
           v-if="
             hasActiveSubscription &&
-              (!$route.params.adjustMealPlan || !adjustMealPlan)
+              (subscriptionId === null || subscriptionId === undefined)
           "
           class="alert alert-warning"
           role="alert"
@@ -1331,7 +1331,7 @@ export default {
       this.setBagCoupon(null);
       this.couponCode = "";
     },
-    updateSubscriptionMeals() {
+    async updateSubscriptionMeals() {
       this.deliveryFee = this.deliveryFeeAmount;
       if (this.pickup === 0) {
         this.selectedPickupLocation = null;
