@@ -333,6 +333,48 @@
     <li
       class="checkout-item"
       v-if="
+        deliveryDaysOptions.length > 1 &&
+          $route.params.subscriptionId === undefined
+      "
+    >
+      <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
+        Delivery Day
+      </p>
+      <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
+        Pickup Day
+      </p>
+      <b-form-group v-if="deliveryDaysOptions.length > 1" description>
+        <b-select
+          :options="deliveryDaysOptions"
+          v-model="deliveryDay"
+          @input="val => (deliveryDay = val)"
+          class="delivery-select"
+          required
+        >
+          <option slot="top" disabled>-- Select delivery day --</option>
+        </b-select>
+      </b-form-group>
+    </li>
+    <li
+      class="checkout-item"
+      v-if="
+        deliveryDaysOptions.length === 1 &&
+          $route.params.subscriptionId === undefined
+      "
+    >
+      <div>
+        <h6 v-if="pickup === 0">
+          Delivery Day: {{ deliveryDaysOptions[0].text }}
+        </h6>
+        <h6 v-if="pickup === 1">
+          Pickup Day: {{ deliveryDaysOptions[0].text }}
+        </h6>
+      </div>
+    </li>
+
+    <li
+      class="checkout-item unset-height"
+      v-if="
         $parent.orderId === undefined &&
           storeModules.pickupLocations &&
           pickup &&
@@ -350,6 +392,24 @@
       </div>
     </li>
 
+    <li
+      class="checkout-item"
+      v-if="
+        $parent.orderId === undefined &&
+          storeModules.transferHours &&
+          pickup &&
+          $route.params.subscriptionId === undefined
+      "
+    >
+      <div>
+        <strong>Pickup Time</strong>
+        <b-form-select
+          class="ml-2"
+          v-model="transferTime"
+          :options="transferTimeOptions"
+        ></b-form-select>
+      </div>
+    </li>
     <li v-if="loggedIn">
       <div
         v-if="
@@ -1212,10 +1272,15 @@ export default {
         );
         return;
       }
-
       if (this.checkingOut) {
         return;
       }
+      // Ensure delivery day is set
+      // if (!this.deliveryDay && this.deliveryDaysOptions) {
+      //   this.deliveryDay = this.deliveryDaysOptions[0].value;
+      // } else if (!this.deliveryDaysOptions) {
+      //   return;
+      // }
 
       this.checkingOut = true;
 
