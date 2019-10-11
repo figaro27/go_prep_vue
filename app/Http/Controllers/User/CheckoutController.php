@@ -339,21 +339,6 @@ class CheckoutController extends UserController
                 $billingAnchor->addWeeks(1);
             }
             if (!$cashOrder) {
-                $plan = \Stripe\Plan::create(
-                    [
-                        "amount" => round($total * 100),
-                        "interval" => "week",
-                        "product" => [
-                            "name" =>
-                                "Weekly subscription (" .
-                                $store->storeDetail->name .
-                                ")"
-                        ],
-                        "currency" => $store->settings->currency
-                    ],
-                    ['stripe_account' => $store->settings->stripe_id]
-                );
-
                 if ($gateway === Constants::GATEWAY_STRIPE) {
                     $plan = \Stripe\Plan::create(
                         [

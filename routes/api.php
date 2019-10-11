@@ -164,7 +164,7 @@ foreach (
                             //     'SubscriptionController@updateMeals'
                             // );
                             Route::post(
-                                'subscriptions/updateMeals',
+                                'subscriptions/{id}/meals',
                                 'SubscriptionController@updateMeals'
                             );
                             Route::post(
