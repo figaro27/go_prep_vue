@@ -330,7 +330,11 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         @if ($salesTax > 0)
                         Sales Tax<br>
                         @endif<br>
-                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span>
+                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span><br>
+                        @if ($order->deposit != 100)
+                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Paid</span><br>
+                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Balance</span>
+                        @endif
                       </td>
 
                     
@@ -353,11 +357,16 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           ${{ number_format($salesTax, 2) }}<br>
                           @endif
                           <br>
-                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($order->amount, 2) }}
-                          </span>
-                          @if ($order->cashOrder)
-                            <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:18px; color:#3b3b3b;  font-weight: bold;">({{$order->store->moduleSettings->cashOrderWording }})
-                            </span>
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold; ">${{ number_format($order->amount, 2) }}
+                            @if ($order->cashOrder)
+                              {{$order->store->moduleSettings->cashOrderWording }}
+                            @endif
+                          </span><br>
+                          @if ($order->deposit != 100)
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
+                            ${{number_format(($order->amount * $order->deposit)/100, 2)}}</span><br>
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
+                            ${{number_format(($order->amount - ($order->amount * $order->deposit)/100), 2)}}</span>
                           @endif
                         </td>
                       </tr>
