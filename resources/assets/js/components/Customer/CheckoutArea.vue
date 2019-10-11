@@ -1309,11 +1309,12 @@ export default {
           }
         })
         .catch(async response => {
-          let error =
-            "Checkout failed. Reason: " +
-            response.response.data.message +
-            ". Please contact GoPrep";
-          this.$toastr.e(error, "Error");
+          // let error =
+          //   "Checkout failed. Reason: " +
+          //   response.response.data.message +
+          //   ". Please contact GoPrep";
+          // this.$toastr.e(error, "Error");
+          this.$toastr.e("Please contact GoPrep", "Error");
         })
         .finally(() => {
           this.loading = false;
