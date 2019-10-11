@@ -1331,7 +1331,7 @@ export default {
       this.setBagCoupon(null);
       this.couponCode = "";
     },
-    async updateSubscriptionMeals() {
+    updateSubscriptionMeals() {
       this.deliveryFee = this.deliveryFeeAmount;
       if (this.pickup === 0) {
         this.selectedPickupLocation = null;
