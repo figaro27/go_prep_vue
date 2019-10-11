@@ -1343,40 +1343,40 @@ export default {
         deposit = parseInt(deposit);
       }
 
-      if (this.$route.params.adjustMealPlan || this.adjustMealPlan) {
-        axios
-          .post("/api/me/subscriptions/updateMeals", {
-            subscriptionId: this.subscriptionId,
-            subtotal: this.subtotal,
-            afterDiscount: this.afterDiscount,
-            bag: this.bag,
-            plan: this.weeklySubscription,
-            pickup: this.pickup,
-            store_id: this.store.id,
-            salesTax: this.tax,
-            coupon_id: this.couponApplied ? this.coupon.id : null,
-            couponReduction: this.couponReduction,
-            couponCode: this.couponApplied ? this.coupon.code : null,
-            deliveryFee: this.deliveryFee,
-            pickupLocation: this.selectedPickupLocation,
-            customer: this.customer,
-            deposit: deposit,
-            cashOrder: this.cashOrder,
-            transferTime: this.transferTime
-          })
-          .then(resp => {
-            this.refreshStoreSubscriptions();
-            this.emptyBag();
-            this.setBagMealPlan(false);
-            this.setBagCoupon(null);
-            this.$router.push({
-              path: "/store/subscriptions",
-              query: {
-                updated: true
-              }
-            });
+      // if (this.$route.params.adjustMealPlan || this.adjustMealPlan) {
+      axios
+        .post("/api/me/subscriptions/updateMeals", {
+          subscriptionId: this.subscriptionId,
+          subtotal: this.subtotal,
+          afterDiscount: this.afterDiscount,
+          bag: this.bag,
+          plan: this.weeklySubscription,
+          pickup: this.pickup,
+          store_id: this.store.id,
+          salesTax: this.tax,
+          coupon_id: this.couponApplied ? this.coupon.id : null,
+          couponReduction: this.couponReduction,
+          couponCode: this.couponApplied ? this.coupon.code : null,
+          deliveryFee: this.deliveryFee,
+          pickupLocation: this.selectedPickupLocation,
+          customer: this.customer,
+          deposit: deposit,
+          cashOrder: this.cashOrder,
+          transferTime: this.transferTime
+        })
+        .then(resp => {
+          this.refreshStoreSubscriptions();
+          this.emptyBag();
+          this.setBagMealPlan(false);
+          this.setBagCoupon(null);
+          this.$router.push({
+            path: "/store/subscriptions",
+            query: {
+              updated: true
+            }
           });
-      }
+        });
+      // }
       // else {
       //   try {
       //     const { data } = await axios.post(
