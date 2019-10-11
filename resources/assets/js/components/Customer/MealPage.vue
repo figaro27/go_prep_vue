@@ -261,7 +261,7 @@ export default {
       if (!sizeCheck) {
         sizes.unshift({
           full_title: meal.title + " - " + meal.default_size_title || "Regular",
-          id: meal.id,
+          id: null,
           price: meal.item_price,
           title: meal.default_size_title || "Regular",
           defaultAdded: true
@@ -335,6 +335,8 @@ export default {
       if (this.sizes.length > 1) {
         size = this.mealSize;
       }
+
+      meal.item_title = meal.full_title;
 
       this.addOne(
         meal,
