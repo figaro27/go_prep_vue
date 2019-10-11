@@ -333,48 +333,6 @@
     <li
       class="checkout-item"
       v-if="
-        deliveryDaysOptions.length > 1 &&
-          $route.params.subscriptionId === undefined
-      "
-    >
-      <p v-if="pickup === 0 && deliveryDaysOptions.length > 1">
-        Delivery Day
-      </p>
-      <p v-if="pickup === 1 && deliveryDaysOptions.length > 1">
-        Pickup Day
-      </p>
-      <b-form-group v-if="deliveryDaysOptions.length > 1" description>
-        <b-select
-          :options="deliveryDaysOptions"
-          v-model="deliveryDay"
-          @input="val => (deliveryDay = val)"
-          class="delivery-select"
-          required
-        >
-          <option slot="top" disabled>-- Select delivery day --</option>
-        </b-select>
-      </b-form-group>
-    </li>
-    <li
-      class="checkout-item"
-      v-if="
-        deliveryDaysOptions.length === 1 &&
-          $route.params.subscriptionId === undefined
-      "
-    >
-      <div>
-        <h6 v-if="pickup === 0">
-          Delivery Day: {{ deliveryDaysOptions[0].text }}
-        </h6>
-        <h6 v-if="pickup === 1">
-          Pickup Day: {{ deliveryDaysOptions[0].text }}
-        </h6>
-      </div>
-    </li>
-
-    <li
-      class="checkout-item unset-height"
-      v-if="
         $parent.orderId === undefined &&
           storeModules.pickupLocations &&
           pickup &&
@@ -392,24 +350,6 @@
       </div>
     </li>
 
-    <li
-      class="checkout-item"
-      v-if="
-        $parent.orderId === undefined &&
-          storeModules.transferHours &&
-          pickup &&
-          $route.params.subscriptionId === undefined
-      "
-    >
-      <div>
-        <strong>Pickup Time</strong>
-        <b-form-select
-          class="ml-2"
-          v-model="transferTime"
-          :options="transferTimeOptions"
-        ></b-form-select>
-      </div>
-    </li>
     <li v-if="loggedIn">
       <div
         v-if="
@@ -502,10 +442,7 @@
         </div>
 
         <div
-          v-if="
-            hasActiveSubscription &&
-              (subscriptionId === null || subscriptionId === undefined)
-          "
+          v-if="hasActiveSubscription"
           class="alert alert-warning"
           role="alert"
         >
@@ -657,7 +594,6 @@ export default {
     };
   },
   props: {
-    adjustMealPlan: false,
     preview: false,
     manualOrder: false,
     forceValue: false,
@@ -1272,15 +1208,10 @@ export default {
         );
         return;
       }
+
       if (this.checkingOut) {
         return;
       }
-      // Ensure delivery day is set
-      // if (!this.deliveryDay && this.deliveryDaysOptions) {
-      //   this.deliveryDay = this.deliveryDaysOptions[0].value;
-      // } else if (!this.deliveryDaysOptions) {
-      //   return;
-      // }
 
       this.checkingOut = true;
 
@@ -1395,100 +1326,6 @@ export default {
       this.coupon = {};
       this.setBagCoupon(null);
       this.couponCode = "";
-    },
-    async updateSubscriptionMeals() {
-      this.deliveryFee = this.deliveryFeeAmount;
-      if (this.pickup === 0) {
-        this.selectedPickupLocation = null;
-      }
-
-      let deposit = this.deposit;
-      if (deposit.toString().includes("%")) {
-        deposit.replace("%", "");
-        deposit = parseInt(deposit);
-      }
-
-      // if (this.$route.params.adjustMealPlan || this.adjustMealPlan) {
-      axios
-        .post("/api/me/subscriptions/updateMeals", {
-          subscriptionId: this.subscriptionId,
-          subtotal: this.subtotal,
-          afterDiscount: this.afterDiscount,
-          bag: this.bag,
-          plan: this.weeklySubscription,
-          pickup: this.pickup,
-          store_id: this.store.id,
-          salesTax: this.tax,
-          coupon_id: this.couponApplied ? this.coupon.id : null,
-          couponReduction: this.couponReduction,
-          couponCode: this.couponApplied ? this.coupon.code : null,
-          deliveryFee: this.deliveryFee,
-          pickupLocation: this.selectedPickupLocation,
-          customer: this.customer,
-          deposit: deposit,
-          cashOrder: this.cashOrder,
-          transferTime: this.transferTime
-        })
-        .then(resp => {
-          this.refreshStoreSubscriptions();
-          this.emptyBag();
-          this.setBagMealPlan(false);
-          this.setBagCoupon(null);
-          this.$router.push({
-            path: "/store/subscriptions",
-            query: {
-              updated: true
-            }
-          });
-        });
-      // }
-      // else {
-      //   try {
-      //     const { data } = await axios.post(
-      //       `/api/me/subscriptions/${this.subscriptionId}/meals`,
-      //       {
-      //         subscriptionId: this.subscriptionId,
-      //         subtotal: this.subtotal,
-      //         afterDiscount: this.afterDiscount,
-      //         bag: this.bag,
-      //         plan: this.weeklySubscription,
-      //         pickup: this.pickup,
-      //         store_id: this.store.id,
-      //         salesTax: this.tax,
-      //         coupon_id: this.couponApplied ? this.coupon.id : null,
-      //         couponReduction: this.couponReduction,
-      //         couponCode: this.couponApplied ? this.coupon.code : null,
-      //         deliveryFee: this.deliveryFee,
-      //         pickupLocation: this.selectedPickupLocation,
-      //         customer: this.customer,
-      //         deposit: deposit,
-      //         cashOrder: this.cashOrder,
-      //         transferTime: this.transferTime
-      //       }
-      //     );
-      //     await this.refreshSubscriptions();
-      //     this.emptyBag();
-      //     this.setBagMealPlan(false);
-      //     this.setBagCoupon(null);
-
-      //     this.$router.push({
-      //       path: "/customer/subscriptions",
-      //       query: {
-      //         updated: true
-      //       }
-      //     });
-      //   } catch (e) {
-      //     if (!_.isEmpty(e.response.data.error)) {
-      //       this.$toastr.e(e.response.data.error);
-      //     } else {
-      //       this.$toastr.e(
-      //         "Please try again or contact our support team",
-      //         "Failed to update items."
-      //       );
-      //     }
-      //     return;
-      //   }
-      // }
     },
 
     // Temporary work around for two delivery fees based on day of the week. Will remove when two delivery day feature is added.
