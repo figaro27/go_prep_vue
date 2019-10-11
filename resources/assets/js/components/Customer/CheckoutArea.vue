@@ -442,7 +442,7 @@
         </div>
 
         <div
-          v-if="hasActiveSubscription"
+          v-if="hasActiveSubscription && !$route.params.subscriptionId"
           class="alert alert-warning"
           role="alert"
         >

@@ -227,6 +227,64 @@ export default {
         .value();
 
       return wat;
+    },
+    async updateSubscriptionMeals() {
+      this.deliveryFee = this.deliveryFeeAmount;
+      if (this.pickup === 0) {
+        this.selectedPickupLocation = null;
+      }
+
+      let deposit = this.deposit;
+      if (deposit.toString().includes("%")) {
+        deposit.replace("%", "");
+        deposit = parseInt(deposit);
+      }
+
+      try {
+        const { data } = await axios.post(
+          `/api/me/subscriptions/${this.subscriptionId}/meals`,
+          {
+            subscriptionId: this.subscriptionId,
+            subtotal: this.subtotal,
+            afterDiscount: this.afterDiscount,
+            bag: this.bag,
+            plan: this.weeklySubscription,
+            pickup: this.pickup,
+            store_id: this.store.id,
+            salesTax: this.tax,
+            coupon_id: this.couponApplied ? this.coupon.id : null,
+            couponReduction: this.couponReduction,
+            couponCode: this.couponApplied ? this.coupon.code : null,
+            deliveryFee: this.deliveryFee,
+            pickupLocation: this.selectedPickupLocation,
+            customer: this.customer,
+            deposit: deposit,
+            cashOrder: this.cashOrder,
+            transferTime: this.transferTime
+          }
+        );
+        await this.refreshSubscriptions();
+        this.emptyBag();
+        this.setBagMealPlan(false);
+        this.setBagCoupon(null);
+
+        this.$router.push({
+          path: "/customer/subscriptions",
+          query: {
+            updated: true
+          }
+        });
+      } catch (e) {
+        if (!_.isEmpty(e.response.data.error)) {
+          this.$toastr.e(e.response.data.error);
+        } else {
+          this.$toastr.e(
+            "Please try again or contact our support team",
+            "Failed to update items."
+          );
+        }
+        return;
+      }
     }
   }
 };
