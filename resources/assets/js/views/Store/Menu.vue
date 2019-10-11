@@ -251,6 +251,7 @@
 
     <div class="modal-full modal-tabs">
       <b-modal
+        size="xl"
         title="View Meal"
         v-model="viewMealModal"
         v-if="viewMealModal"
