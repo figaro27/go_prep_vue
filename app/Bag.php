@@ -90,9 +90,9 @@ class Bag
                                 'quantity' => $meal['quantity'],
                                 'price' => $meal['price'],
                                 'size' => [
-                                    'id' => $meal['meal_size']
-                                        ? $meal['meal_size']['id']
-                                        : null
+                                    'id' => $meal['meal_size_id']
+                                    // ? $meal['meal_size']['id']
+                                    // : null
                                 ],
                                 'quantity' => $meal['quantity'],
                                 'special_instructions' =>
