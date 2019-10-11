@@ -93,11 +93,13 @@ class CustomerController extends StoreController
 
     public function getCards(Request $request)
     {
-        $customerId = $request->get('id');
+        /*$customerId = $request->get('id');
         $userId = $this->store->customers
             ->where('id', $customerId)
             ->pluck('user_id')
-            ->first();
+            ->first();*/
+
+        $userId = $request->get('id');
         $card = Card::where('user_id', $userId)->get();
 
         return $card;
