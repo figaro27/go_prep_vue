@@ -442,7 +442,10 @@
         </div>
 
         <div
-          v-if="hasActiveSubscription && (!$route.params.adjustMealPlan || adjustMealPlan"
+          v-if="
+            hasActiveSubscription &&
+              (!$route.params.adjustMealPlan || !adjustMealPlan)
+          "
           class="alert alert-warning"
           role="alert"
         >
