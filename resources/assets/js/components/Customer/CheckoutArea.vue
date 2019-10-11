@@ -442,7 +442,7 @@
         </div>
 
         <div
-          v-if="hasActiveSubscription && !$route.params.adjustMealPlan"
+          v-if="hasActiveSubscription && (!$route.params.adjustMealPlan || adjustMealPlan"
           class="alert alert-warning"
           role="alert"
         >
@@ -594,6 +594,7 @@ export default {
     };
   },
   props: {
+    adjustMealPlan: false,
     preview: false,
     manualOrder: false,
     forceValue: false,
