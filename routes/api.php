@@ -280,6 +280,12 @@ foreach (
                         ],
                         function ($router) {
                             //Route::resource('stores', 'User\\StoreController');
+
+                            Route::get(
+                                '/me/getCustomer',
+                                'UserController@getCustomer'
+                            );
+
                             Route::patch(
                                 '/me/detail',
                                 'UserDetailController@update'

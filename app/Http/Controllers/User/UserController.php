@@ -33,4 +33,9 @@ class UserController extends Controller
     {
         return $this->user;
     }
+
+    public function getCustomer()
+    {
+        return $this->user->customer;
+    }
 }
