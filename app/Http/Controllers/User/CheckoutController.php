@@ -52,6 +52,7 @@ class CheckoutController extends UserController
         if ($cashOrder) {
             $cardId = null;
             $card = null;
+            $gateway = Constants::GATEWAY_CASH;
         } else {
             $cardId = $request->get('card_id');
             $card = $this->user->cards()->findOrFail($cardId);
@@ -111,84 +112,76 @@ class CheckoutController extends UserController
             $total -= $couponReduction;
         }
 
-        if (!$cashOrder) {
-            if (
-                !$user->hasStoreCustomer(
-                    $store->id,
-                    $storeSettings->currency,
-                    $gateway
-                )
-            ) {
-                $user->createStoreCustomer(
-                    $store->id,
-                    $storeSettings->currency,
-                    $gateway
-                );
-            }
-
-            $customer = $user->getStoreCustomer(
+        if (
+            !$user->hasStoreCustomer(
+                $store->id,
+                $storeSettings->currency,
+                $gateway
+            )
+        ) {
+            $user->createStoreCustomer(
                 $store->id,
                 $storeSettings->currency,
                 $gateway
             );
+        }
+
+        $customer = $user->getStoreCustomer(
+            $store->id,
+            $storeSettings->currency,
+            $gateway
+        );
+
+        $storeCustomer = null;
+
+        if (!$cashOrder) {
             $storeCustomer = $user->getStoreCustomer(
                 $store->id,
                 $storeSettings->currency,
                 $gateway,
                 true
             );
-        } else {
-            $customer = $user->getStoreCustomer(
-                $store->id,
-                $storeSettings->currency
-            );
         }
 
         $total += $salesTax;
 
         if (!$weeklyPlan) {
-            if (!$cashOrder) {
-                if ($gateway === Constants::GATEWAY_STRIPE) {
-                    $storeSource = \Stripe\Source::create(
-                        [
-                            "customer" => $this->user->stripe_id,
-                            "original_source" => $card->stripe_id,
-                            "usage" => "single_use"
-                        ],
-                        ["stripe_account" => $storeSettings->stripe_id]
-                    );
+            if ($gateway === Constants::GATEWAY_STRIPE) {
+                $storeSource = \Stripe\Source::create(
+                    [
+                        "customer" => $this->user->stripe_id,
+                        "original_source" => $card->stripe_id,
+                        "usage" => "single_use"
+                    ],
+                    ["stripe_account" => $storeSettings->stripe_id]
+                );
 
-                    $charge = \Stripe\Charge::create(
-                        [
-                            "amount" => round($total * 100),
-                            "currency" => $storeSettings->currency,
-                            "source" => $storeSource,
-                            "application_fee" => round(
-                                $afterDiscountBeforeFees * $application_fee
-                            )
-                        ],
-                        ["stripe_account" => $storeSettings->stripe_id]
-                    );
-                } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
-                    $billing = Billing::init($gateway, $store);
+                $charge = \Stripe\Charge::create(
+                    [
+                        "amount" => round($total * 100),
+                        "currency" => $storeSettings->currency,
+                        "source" => $storeSource,
+                        "application_fee" => round(
+                            $afterDiscountBeforeFees * $application_fee
+                        )
+                    ],
+                    ["stripe_account" => $storeSettings->stripe_id]
+                );
+            } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
+                $billing = Billing::init($gateway, $store);
 
-                    $charge = new \App\Billing\Charge();
-                    $charge->amount = round($total * 100);
-                    $charge->customer = $customer;
-                    $charge->card = $card;
+                $charge = new \App\Billing\Charge();
+                $charge->amount = round($total * 100);
+                $charge->customer = $customer;
+                $charge->card = $card;
 
-                    $transactionId = $billing->charge($charge);
-                    $charge->id = $transactionId;
-                }
+                $transactionId = $billing->charge($charge);
+                $charge->id = $transactionId;
             }
 
             $order = new Order();
             $order->user_id = $user->id;
-            if (!$cashOrder) {
-                $order->customer_id = $customer->id;
-            } else {
-                $order->customer_id = 0;
-            }
+            $order->customer_id = $customer->id;
             $order->card_id = $cardId;
             $order->store_id = $store->id;
             $order->order_number = strtoupper(
@@ -218,9 +211,7 @@ class CheckoutController extends UserController
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->cashOrder = $cashOrder;
-            if (!$cashOrder) {
-                $order->payment_gateway = $gateway;
-            }
+            $order->payment_gateway = $gateway;
             $order->dailyOrderNumber = $dailyOrderNumber;
             $order->save();
 

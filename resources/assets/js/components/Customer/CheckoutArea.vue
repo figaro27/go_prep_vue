@@ -669,7 +669,7 @@ export default {
       let grouped = [];
       customers.forEach(customer => {
         grouped.push({
-          value: customer.id,
+          value: customer.user_id,
           text: customer.name
         });
       });

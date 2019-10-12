@@ -6,6 +6,7 @@ class Constants
 {
     const GATEWAY_STRIPE = 'stripe';
     const GATEWAY_AUTHORIZE = 'authorize';
+    const GATEWAY_CASH = 'cash';
 
     const PERIOD_WEEKLY = 'weekly';
     const PERIOD_MONTHLY = 'monthly';

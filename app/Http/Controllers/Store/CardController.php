@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Store;
 
+use App\Billing\Constants;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Http\Request;
 use App\Customer;
@@ -37,46 +38,59 @@ class CardController extends StoreController
      */
     public function store(Request $request)
     {
+        $userId = $request->get('customer');
+        $user = User::find($userId);
         $token = $request->get('token');
-        // Authorize
-        // $card = $token['card'];
+        $gateway = $request->get('payment_gateway');
         $card = $request->get('card');
-        $customerId = $request->get('customer');
-        $customer = Customer::where('id', $customerId)->first();
 
-        if (!$customer->user->hasCustomer()) {
-            // Authorize
-            // $customer->user->createCustomer($token['id']);
-            $customer->user->createCustomer($token);
-        } else {
-            try {
-                // Authorize
-                // $customer->user->createCard($token['id']);
-                $customer->user->createCard($token);
-            } catch (\Stripe\Error\Card $e) {
-                return response()->json(
-                    [
-                        'error' =>
-                            'Your card was declined. Please verify the entered information and try again.'
-                    ],
-                    400
-                );
+        if ($gateway === Constants::GATEWAY_STRIPE) {
+            if (!$user->hasCustomer()) {
+                $customer = $user->createCustomer($token);
+            } else {
+                $customer = \Stripe\Customer::retrieve($user->stripe_id);
+
+                try {
+                    $user->createCard($token);
+                } catch (\Stripe\Error\Card $e) {
+                    return response()->json(
+                        [
+                            'error' =>
+                                'Your card was declined. Please verify the entered information and try again.'
+                        ],
+                        400
+                    );
+                }
             }
+
+            $sources = $customer->sources->all()->getIterator();
+            $source = end($sources);
+        } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
+            $authorize = new Authorize($this->store);
+
+            if (!$user->hasStoreCustomer($this->store->id, 'USD', $gateway)) {
+                $user->createStoreCustomer($this->store->id, 'USD', $gateway);
+            }
+
+            $customer = $user->getStoreCustomer(
+                $this->store->id,
+                'USD',
+                $gateway
+            );
+
+            $source = $authorize->createCard($customer, $token);
+        } else {
+            return response()->json('Unrecognized gateway', 400);
         }
 
-        $customer = \Stripe\Customer::retrieve($customer->user->stripe_id);
-        $sources = $customer->sources->all()->getIterator();
-        $source = end($sources);
-
-        $customer = Customer::where('id', $customerId)->first();
-
-        return $customer->user->cards()->create([
+        return $user->cards()->create([
             'stripe_id' => $source->id,
             'brand' => $card['brand'],
             'exp_month' => $card['exp_month'],
             'exp_year' => $card['exp_year'],
             'last4' => $card['last4'],
-            'country' => $card['country']
+            'country' => $card['country'],
+            'payment_gateway' => $gateway
         ]);
     }
 
