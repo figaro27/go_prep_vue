@@ -151,6 +151,10 @@ foreach (
                                 'ordersUpdateViewed',
                                 'OrderController@updateViewed'
                             );
+                            Route::get(
+                                'getLatestOrder',
+                                'OrderController@getLatestOrder'
+                            );
                             Route::post(
                                 'orders/adjustOrder',
                                 'OrderController@adjustOrder'

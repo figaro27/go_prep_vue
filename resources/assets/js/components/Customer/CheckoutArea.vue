@@ -1290,7 +1290,10 @@ export default {
             this.refreshOrdersToday();
             this.refreshOrders();
             this.$router.push({
-              path: "/store/orders"
+              name: "store-orders",
+              params: {
+                autoPrintPackingSlip: this.storeModules.autoPrintPackingSlip
+              }
             });
             return;
           }

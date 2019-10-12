@@ -562,6 +562,11 @@ export default {
       this.columns.splice(1, 0, "dailyOrderNumber");
     }
 
+    if (this.$route.params.autoPrintPackingSlip) {
+      axios.get("/api/me/getLatestOrder").then(resp => {
+        this.printPackingSlip(resp.data.id);
+      });
+    }
     /* Sidebar Check */
     let isOpen = false;
 

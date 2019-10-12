@@ -104,6 +104,12 @@ class OrderController extends StoreController
             : [];
     }
 
+    public function getLatestOrder()
+    {
+        $orders = $this->store->has('orders') ? $this->store->orders() : [];
+        return $orders->orderBy('created_at', 'desc')->first();
+    }
+
     /**
      * Show the form for creating a new resource.
      *
