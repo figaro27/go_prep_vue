@@ -243,9 +243,9 @@
       >
         <div class="row light-background" v-if="order.adjusted">
           <div class="col-md-12">
-            <p class="center-text red pt-3">
-              The items and/or delivery date of this order was adjusted.
-            </p>
+            <b-alert show variant="warning" class="center-text"
+              >This order was adjusted.</b-alert
+            >
           </div>
         </div>
         <div class="row light-background border-bottom mb-3">
