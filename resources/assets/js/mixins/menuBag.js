@@ -269,7 +269,7 @@ export default {
         this.setBagCoupon(null);
 
         if (this.$route.params.storeView) {
-          this.refreshStoreSubscriptions();
+          this.$store.commit("refreshStoreSubscriptions");
           this.$router.push({
             path: "/store/subscriptions",
             query: {
