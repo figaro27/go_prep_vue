@@ -155,11 +155,17 @@ u + .body .full { width:100% !important; width:100vw !important;}
       <td align="center">
         <table align="center" width="600" style="max-width:600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
           <tr>
+            <td height="20"></td>
+          </tr>
+          <tr>
             <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">
               Your customer cancelled their subscription. This applies to the next order renewal. If this subscription was cancelled before their order fulfillment, then the customer is still expecting their order for the week as they have already paid for it. Please check the Orders page which only shows orders that have been paid.
             </td>
           </tr>
           <!-- header -->
+          <tr>
+            <td height="20"></td>
+          </tr>
           <tr>
             <td>
               <table class="table-inner" width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -187,7 +193,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
       <td align="center">
         <table width="600" style="max-width: 600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
           <tr>
-            <td height="35"></td>
+            <td height="15"></td>
           </tr>
 
           <tr>
@@ -207,9 +213,6 @@ u + .body .full { width:100% !important; width:100vw !important;}
             </td>
           </tr>
           <tr>
-            <td height="5" style="border-bottom:1px solid #ecf0f1;"></td>
-          </tr>
-          <tr>
             <td height="5"></td>
           </tr>
           <!-- detail -->
@@ -227,7 +230,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
       <td align="center">
         <table width="600" class="table-full" style="max-width: 600px;" align="center" border="0" cellpadding="0" cellspacing="0">
           <tr>
-            <td height="40" style="border-bottom:3px solid #3b3b3b;"></td>
+            <td height="10" style="border-bottom:3px solid #BCBCBC;"></td>
           </tr>
         </table>
         <table align="center" width="600" style="max-width: 600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
@@ -326,7 +329,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
             <td width="600" align="center">
               <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td height="40"></td>
+                  <td height="20"></td>
                 </tr>
                 <!-- title -->
                 <tr>

@@ -168,6 +168,9 @@ u + .body .full { width:100% !important; width:100vw !important;}
     <tr>
       <td align="center">
         <table align="center" width="600" style="max-width:600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td height="20"></td>
+          </tr>
           @if ($subscription->pickup_location_id != null)
           <tr>
             <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d;"> Pickup Location:
@@ -226,9 +229,6 @@ u + .body .full { width:100% !important; width:100vw !important;}
             </td>
           </tr>
           <tr>
-            <td height="5" style="border-bottom:1px solid #ecf0f1;"></td>
-          </tr>
-          <tr>
             <td height="5"></td>
           </tr>
           <!-- detail -->
@@ -246,7 +246,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
       <td align="center">
         <table width="600" class="table-full" style="max-width: 600px;" align="center" border="0" cellpadding="0" cellspacing="0">
           <tr>
-            <td height="40" style="border-bottom:3px solid #3b3b3b;"></td>
+            <td height="20" style="border-bottom:3px solid #bcbcbc;"></td>
           </tr>
         </table>
         <table align="center" width="600" style="max-width: 600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
@@ -349,7 +349,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
             <td width="600" align="center">
               <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td height="40"></td>
+                  <td height="20"></td>
                 </tr>
                 <!-- title -->
                 <tr>
