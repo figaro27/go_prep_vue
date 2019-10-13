@@ -23,10 +23,8 @@ table th {
 }
 
 table {
-  margin-top: 0px;
-  padding-top: 0px;
-  margin-bottom: 0px;
-  padding-bottom: 0px;
+  margin:0px;
+  padding:0px;
 }
 
 .center-text {
