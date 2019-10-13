@@ -86,7 +86,7 @@ $deposit = '$'.number_format($order->deposit, 2);
             @endif
       </div>
       <div class="col-4">
-        <img style="float:right" src="{{$logo}}" style="zoom: 0.5;"/>
+        <img style="float:right;zoom: 0.5" src="{{$logo}}"/>
       </div>
       </div>
       <br><br>
@@ -119,7 +119,7 @@ $deposit = '$'.number_format($order->deposit, 2);
         <tr>
           <table border="1">
             <tr>
-              <td style="width:81%;margin-right:0px;padding-right:0px">
+              <td style="width:81%;margin-right:0px;padding-right:0px;padding-top:5px">
                 @if ($order->store->settings->notesForCustomer != null)
                   <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
                 @endif
