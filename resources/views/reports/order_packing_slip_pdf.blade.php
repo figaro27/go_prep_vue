@@ -13,7 +13,7 @@ th {
   font-weight: bold;
 }
 table th td {
-  border: .5px solid #bebebe;
+  border-style:none;
 }
 
 table th {
@@ -110,8 +110,24 @@ $amount = '$'.number_format($order->amount, 2);
         </tr>
         @endforeach
         <tr>
-          <td style="width:80%">Test</td>
-          <td style="width:20%">Test</td>
+          <table>
+            <tr>
+              <td style="width:80%">
+                Notes
+              </td>
+              <td style="width:20%">
+                <table>
+                  <tr>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>5</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
         </tr>
       </tbody>
     
