@@ -3,6 +3,11 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="{{ asset('css/print.css') }}">
+<style>
+p {
+  font-size: 10px;
+}
+</style>
 </head>
 @php
 $subtotal = '$'.number_format($order->preFeePreDiscount, 2);
