@@ -4,22 +4,30 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="{{ asset('css/print.css') }}">
 <style>
+  body {
+  font-family: "open sans";
+}
 p, td {
   font-size: 14px;
 }
 th {
   font-size: 16px;
+  font-weight: bold;
 }
 table th td {
-  border: 1px solid #ddd;
+  border: 1px solid #bebebe;
 }
 
 table th {
-  padding-top: 6px;
-  padding-bottom: 6px;
+  padding-top: 2px;
+  padding-bottom: 2px;
   text-align: center;
-  background-color: #a2a2a2;
+  background-color: #bebebe;
   color: white;
+}
+
+.center-text {
+  text-align: center;
 }
 
 </style>
@@ -98,9 +106,9 @@ $amount = '$'.number_format($order->amount, 2);
       <tbody>
         @foreach ($order->items as $i => $item)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-            <td>{{$item->quantity}}</td>
+            <td class="center-text">{{$item->quantity}}</td>
             <td>{!! $item->html_title !!}</td>
-            <td>${{number_format($item->price, 2)}}</td>
+            <td class="center-text">${{number_format($item->price, 2)}}</td>
         </tr>
         @endforeach
       </tbody>
