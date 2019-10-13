@@ -13,7 +13,7 @@ th {
   font-weight: bold;
 }
 table th td {
-  border-style:none;
+  border: .5px solid #bebebe;
 }
 
 table th {
@@ -117,13 +117,11 @@ $amount = '$'.number_format($order->amount, 2);
               </td>
               <td style="width:20%">
                 <table>
-                  <tr>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                  </tr>
+                  <tr><td>1</td></tr>
+                  <tr><td>2</td></tr>
+                  <tr><td>3</td></tr>
+                  <tr><td>4</td></tr>
+                  <tr><td>5</td></tr>     
                 </table>
               </td>
             </tr>
