@@ -48,7 +48,7 @@ $deposit = '$'.number_format($order->deposit, 2);
   <div id="print-area">
     <div class="row">
       <div class="col-4 address">
-        <p>{{$order->user->name}}</p>
+        <p><b>{{$order->user->name}}</b></p>
           <p>{{$order->user->details->address}}</p>
           <p>{{$order->user->details->city}},
           {{$order->user->details->state}}
@@ -57,7 +57,7 @@ $deposit = '$'.number_format($order->deposit, 2);
       </div>
     <div class="col-4 address">
             @if ($order->pickup === 0)
-            <h5>DELIVERY</h5>
+            <p><b>DELIVERY</b></p>
             @endif
             @if ($order->pickup === 1)
             <h5>PICKUP</h5>
@@ -85,8 +85,8 @@ $deposit = '$'.number_format($order->deposit, 2);
             </p>
             @endif
       </div>
-      <div class="col-4">
-              <img src="{{$logo}}" />
+      <div class="col-4" style="float:right">
+        <img src="{{$logo}}" />
       </div>
       </div>
       <br><br>
@@ -128,9 +128,9 @@ $deposit = '$'.number_format($order->deposit, 2);
                 <table border="0" style="border:0px;border-style:none;border-collapse: collapse">
                   <tr><td style="border:none"><b>Subtotal</b></td><td style="border:none">{{ $subtotal }}</td></tr>
                   @if ($order->salesTax > 0)<tr><td style="border:none"><b>Tax</b></td><td style="border:none">{{ $salesTax }}</td></tr>@endif
-                  @if ($order->mealPlanDiscount > 0)<tr><td style="border:none"><b>Subscription Discount</b></td><td style="border:none">{{ $mealPlanDiscount }}</td></tr>@endif
-                  @if ($order->processingFee > 0)<tr><td style="border:none"><b>Processing Fee</b></td><td style="border:none">{{ $processingFee }}</td></tr>@endif
-                  @if ($order->deliveryFee > 0)<tr><td style="border:none"><b>Delivery Fee</b></td><td style="border:none">{{ $deliveryFee }}</td></tr>@endif
+                  @if ($order->mealPlanDiscount > 0)<tr><td style="border:none"><b>Discount</b></td><td style="border:none">{{ $mealPlanDiscount }}</td></tr>@endif
+                  @if ($order->processingFee > 0)<tr><td style="border:none"><b>Processing</b></td><td style="border:none">{{ $processingFee }}</td></tr>@endif
+                  @if ($order->deliveryFee > 0)<tr><td style="border:none"><b>Delivery</b></td><td style="border:none">{{ $deliveryFee }}</td></tr>@endif
                   @if ($order->couponReduction > 0)<tr><td style="border:none"><b>Coupon</b></td><td style="border:none">{{ $couponCode }} {{ $coupon }}</td></tr>@endif
                   <tr><td style="border:none"><b>Total</b></td><td style="border:none">{{ $amount }}</td></tr>
                   @if ($order->deposit != 100)<tr><td style="border:none"><b>Paid</b></td><td style="border:none">${{number_format(($order->amount * $order->deposit)/100, 2)}}</td></tr>@endif
