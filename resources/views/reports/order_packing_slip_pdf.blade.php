@@ -127,12 +127,12 @@ $deposit = '$'.number_format($order->deposit, 2);
         <tr>
           <table border="1">
             <tr>
-              <td style="width:82%">
+              <td style="width:83%;margin-right:0px;padding-right:0px">
                 @if ($order->store->settings->notesForCustomer != null)
                   <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
                 @endif
               </td>
-              <td style="width:18%">
+              <td style="width:17%;margin-left:0px;padding-left:0px">
                 <table border="0">
                   <tr><td>Subtotal</td><td>{{ $subtotal }}</td></tr>
                   @if ($salesTax > 0)<tr><td>Tax</td><td>{{ $salesTax }}</td></tr>@endif
