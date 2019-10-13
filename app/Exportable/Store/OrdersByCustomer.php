@@ -58,6 +58,9 @@ class OrdersByCustomer
             $mealOrders = MealOrder::where('store_id', $this->store->id)
                 ->get()
                 ->filter(function ($mealOrder) {
+                    if ($mealOrder->order->paid === 0) {
+                        return;
+                    }
                     $dateRange = $this->getDeliveryDates();
                     if (isset($dateRange['from'])) {
                         $from = Carbon::parse($dateRange['from']);
