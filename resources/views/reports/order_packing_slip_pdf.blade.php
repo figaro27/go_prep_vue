@@ -4,8 +4,11 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="{{ asset('css/print.css') }}">
 <style>
-p {
-  font-size: 10px;
+p, td {
+  font-size: 12px;
+}
+th {
+  font-size: 14px;
 }
 </style>
 </head>
