@@ -54,7 +54,6 @@ $deposit = '$'.number_format($order->deposit, 2);
           {{$order->user->details->state}}
           {{$order->user->details->zip}}</p>
           <p>{{$order->user->details->phone}}</p>
-        </p>
       </div>
             <div class="col-4">
               <img src="{{$logo}}" style="zoom: 0.5; max-width: 50%; height: auto;" />
@@ -150,8 +149,6 @@ $deposit = '$'.number_format($order->deposit, 2);
           <p><b>{!! $item->html_title !!}</b> - {{ $item->instructions }}</p>
         @endif
       @endforeach
-    @endif
-
   </div>
 </body>
 </html>
