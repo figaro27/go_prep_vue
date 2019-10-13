@@ -67,8 +67,6 @@ $amount = '$'.number_format($order->amount, 2);
       </div>
     </div>
 
-
-    <h2>Items</h2>
     <table border="1">
       <thead>
         <tr>

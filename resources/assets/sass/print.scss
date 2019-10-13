@@ -39,7 +39,7 @@ body {
 
 body {
   font-family: "gotham-narrow";
-  font-size: 9pt;
+  font-size: 11pt;
 
   &.portrait {
     //width:      8.5in;
@@ -69,7 +69,7 @@ body {
 }
 
 p {
-  margin-bottom: 2pt;
+  margin-bottom: 4pt;
   margin-top: 0pt;
 }
 
@@ -89,10 +89,10 @@ tfoot {
 }
 table {
   font-family: "gotham-narrow";
-  font-size: 12pt;
-  line-height: 1;
+  font-size: 14pt;
+  line-height: 1.5;
   margin-top: 2pt;
-  margin-bottom: 2pt;
+  margin-bottom: 5pt;
   border-collapse: collapse;
   width: 100% !important;
   margin-left: auto;
@@ -154,7 +154,7 @@ th {
 td {
   padding-left: 2mm;
   vertical-align: top;
-  text-align: center;
+  text-align: left;
   padding-right: 2mm;
   padding-top: 0.5mm;
   padding-bottom: 0.5mm;
@@ -325,5 +325,5 @@ h6 {
   width: 66.66665%;
 }
 p {
-  font-size: 12px;
+  font-size: 16px;
 }
