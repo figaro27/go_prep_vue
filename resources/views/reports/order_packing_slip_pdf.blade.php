@@ -48,7 +48,30 @@ $deposit = '$'.number_format($order->deposit, 2);
   <div id="print-area">
     <div class="row">
       <div class="col-4 address">
-        <h4 class="mt-3">Order Details</h4>
+        <p>{{$order->user->name}}</p>
+          <p>{{$order->user->details->address}}</p>
+          <p>{{$order->user->details->city}},
+          {{$order->user->details->state}}
+          {{$order->user->details->zip}}</p>
+          <p>{{$order->user->details->phone}}</p>
+        </p>
+      </div>
+            <div class="col-4">
+              <img src="{{$logo}}" style="zoom: 0.5; max-width: 50%; height: auto;" />
+            <h6>{{ $order->store->details->name }}</h6>
+            @if ($order->pickup === 0)
+            <h6>DELIVERY</h6>
+            @endif
+            @if ($order->pickup === 1)
+            <h6>PICKUP</h6>
+            @endif
+      </div>
+    </div>
+
+    <div class="col-4 address">
+            @if ($params['dailyOrderNumbers'])
+            <h5>Daily Order #{{$order['dailyOrderNumber']}}</h5>
+            @endif
             <p>Order ID - {{$order->order_number}}</p>
             @if ($order->subscription)
             <p>Subscription #{{ $order->subscription->stripe_id }}</p>
@@ -68,33 +91,7 @@ $deposit = '$'.number_format($order->deposit, 2);
               @endif
             </p>
             @endif
-            <p><strong>Total: ${{number_format($order->amount, 2)}} @if ($order->cashOrder) {{ $order->store->moduleSettings->cashOrderWording }} @endif</strong></p>
       </div>
-      <div class="col-4 address">
-        <h4>Customer</h4>
-        <p>{{$order->user->name}}</p>
-          <p>{{$order->user->details->address}}</p>
-          <p>{{$order->user->details->city}},
-          {{$order->user->details->state}}
-          {{$order->user->details->zip}}</p>
-          <p>{{$order->user->details->phone}}</p>
-        </p>
-      </div>
-      <div class="col-4">
-            <h4>{{ $order->store->details->name }}</h4>
-            @if ($order->pickup === 0)
-            <h5>DELIVERY</h5>
-            @endif
-            @if ($order->pickup === 1)
-            <h5>PICKUP</h5>
-            @endif
-            @if ($params['dailyOrderNumbers'])
-            <h5>Daily Order #{{$order['dailyOrderNumber']}}</h5>
-            @endif
-            <img src="{{$logo}}" style="zoom: 0.5; max-width: 50%; height: auto;" />
-         <!-- <p>{{$order->store->details->domain}}.goprep.com</p> -->
-      </div>
-    </div>
 
     <table border="1">
       <thead>
@@ -125,13 +122,13 @@ $deposit = '$'.number_format($order->deposit, 2);
         <tr>
           <table border="1">
             <tr>
-              <td style="width:82%;margin-right:0px;padding-right:0px">
+              <td style="width:80%;margin-right:0px;padding-right:0px">
                 @if ($order->store->settings->notesForCustomer != null)
                   <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
                 @endif
               </td>
-              <td style="width:18%;margin-left:0px;padding-left:0px">
-                <table border="0">
+              <td style="width:20%;margin-left:0px;padding-left:0px">
+                <table border="0" style="margin-right:0px;padding-right:0px">
                   <tr><td><b>Subtotal</b></td><td style="margin-right:0px;padding-right:0px">{{ $subtotal }}</td></tr>
                   @if ($salesTax > 0)<tr><td><b>Tax</b></td><td style="margin-right:0px;padding-right:0px">{{ $salesTax }}</td></tr>@endif
                   @if ($mealPlanDiscount > 0)<tr><td><b>Subscription Discount</b></td><td style="margin-right:0px;padding-right:0px">{{ $mealPlanDiscount }}</td></tr>@endif
@@ -149,22 +146,6 @@ $deposit = '$'.number_format($order->deposit, 2);
       </tbody>
     
     </table>
-
-
-    @php
-      $mealInstructions = 0
-    @endphp
-
-    @foreach ($order->items as $i => $item)
-          @if ($item->instructions)
-            @php
-              $mealInstructions = 1
-            @endphp
-          @endif
-      @endforeach
-
-
-    @if ($mealInstructions)
     <br>
       @foreach ($order->items as $i => $item)
         @if ($item->instructions)
