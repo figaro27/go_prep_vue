@@ -4,9 +4,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="{{ asset('css/print.css') }}">
 <style>
-  body {
-  font-family: "open sans";
-}
+
 p, td {
   font-size: 14px;
 }
@@ -15,14 +13,14 @@ th {
   font-weight: bold;
 }
 table th td {
-  border: 1px solid #bebebe;
+  border: .5px solid #bebebe;
 }
 
 table th {
   padding-top: 2px;
   padding-bottom: 2px;
   text-align: center;
-  background-color: #bebebe;
+  background-color: #b2b2b2;
   color: white;
 }
 
@@ -111,6 +109,10 @@ $amount = '$'.number_format($order->amount, 2);
             <td class="center-text">${{number_format($item->price, 2)}}</td>
         </tr>
         @endforeach
+        <tr>
+          <td style="width:80%">Test</td>
+          <td style="width:20%">Test</td>
+        </tr>
       </tbody>
     
     </table>
