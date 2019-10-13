@@ -60,7 +60,7 @@ $deposit = '$'.number_format($order->deposit, 2);
             <p><b>DELIVERY</b></p>
             @endif
             @if ($order->pickup === 1)
-            <h5>PICKUP</h5>
+            <p><b>PICKUP</b></p>
             @endif
             @if ($params['dailyOrderNumbers'])
             <p>Daily Order #{{$order['dailyOrderNumber']}}</p>
