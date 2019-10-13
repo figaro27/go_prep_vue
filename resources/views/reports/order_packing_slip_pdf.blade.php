@@ -128,9 +128,9 @@ $deposit = '$'.number_format($order->deposit, 2);
               <td style="width:19%;margin-left:0px;padding-left:0px">
                 <table border="0" style="margin-right:0px;padding-right:0px">
                   <tr><td><b>Subtotal</b></td><td style="margin-right:0px;padding-right:0px">{{ $subtotal }}</td></tr>
-                  @if ($salesTax > 0)<tr><td><b>Tax</b></td><td style="margin-right:0px;padding-right:0px">{{ $salesTax }}</td></tr>@endif
+                  <tr><td><b>Tax</b></td><td style="margin-right:0px;padding-right:0px">{{ $salesTax }}</td></tr>
                   @if ($mealPlanDiscount > 0)<tr><td><b>Subscription Discount</b></td><td style="margin-right:0px;padding-right:0px">{{ $mealPlanDiscount }}</td></tr>@endif
-                  @if ($deliveryFee > 0)<tr><td><b>Processing Fee</b></td><td style="margin-right:0px;padding-right:0px">{{ $processingFee }}</td></tr>@endif
+                  @if ($processingFee > 0)<tr><td><b>Processing Fee</b></td><td style="margin-right:0px;padding-right:0px">{{ $processingFee }}</td></tr>@endif
                   @if ($deliveryFee > 0)<tr><td><b>Delivery Fee</b></td><td style="margin-right:0px;padding-right:0px">{{ $deliveryFee }}</td></tr>@endif
                   @if ($coupon > 0)<tr><td><b>Coupon</b></td><td style="margin-right:0px;padding-right:0px">{{ $couponCode }} {{ $coupon }}</td></tr>@endif
                   <tr><td><b>Total</b></td><td style="margin-right:0px;padding-right:0px">{{ $amount }}</td></tr>
