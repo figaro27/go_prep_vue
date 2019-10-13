@@ -5,11 +5,23 @@
   <link rel="stylesheet" href="{{ asset('css/print.css') }}">
 <style>
 p, td {
-  font-size: 12px;
-}
-th {
   font-size: 14px;
 }
+th {
+  font-size: 16px;
+}
+table th td {
+  border: 1px solid #ddd;
+}
+
+table th {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  text-align: center;
+  background-color: #a2a2a2;
+  color: white;
+}
+
 </style>
 </head>
 @php
