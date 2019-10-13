@@ -1873,6 +1873,10 @@ const getters = {
       ) => {
         let title = meal.title;
 
+        if (meal.default_size_title != null) {
+          title = title + " - " + meal.default_size_title;
+        }
+
         if (_.isObject(size)) {
           title = size.full_title;
         }
