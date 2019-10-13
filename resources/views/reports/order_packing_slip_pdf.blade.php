@@ -134,7 +134,7 @@ $deposit = '$'.number_format($order->deposit, 2);
                   @if ($order->couponReduction > 0)<tr><td style="border:none"><b>Coupon</b></td><td style="border:none">{{ $couponCode }} {{ $coupon }}</td></tr>@endif
                   <tr><td style="border:none"><b>Total</b></td><td style="border:none">{{ $amount }}</td></tr>
                   @if ($order->deposit != 100)<tr><td style="border:none"><b>Paid</b></td><td style="border:none">${{number_format(($order->amount * $order->deposit)/100, 2)}}</td></tr>@endif
-                  @if ($order->deposit != 100)<tr><td style="border:none"><b>Balance</b></td><td style="margin-right:0px;padding-right:0px">${{number_format(($order->amount - ($order->amount * $order->deposit)/100), 2)}}</td></tr>@endif
+                  @if ($order->deposit != 100)<tr><td style="border:none"><b>Balance</b></td><td style="border:none">${{number_format(($order->amount - ($order->amount * $order->deposit)/100), 2)}}</td></tr>@endif
                 </table>
               </td>
             </tr>
