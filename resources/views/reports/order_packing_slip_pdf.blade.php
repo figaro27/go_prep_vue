@@ -19,7 +19,6 @@ $amount = '$'.number_format($order->amount, 2);
     <div class="row">
       <div class="col-4 address">
         <h4 class="mt-3">Order Details</h4>
-        Subtotal: {{$subtotal}}
             <p>Order ID - {{$order->order_number}}</p>
             @if ($order->subscription)
             <p>Subscription #{{ $order->subscription->stripe_id }}</p>
@@ -39,7 +38,7 @@ $amount = '$'.number_format($order->amount, 2);
               @endif
             </p>
             @endif
-            <p><strong>Total: ${{number_format($order->amount, 2)}} @if ($order->cashOrder) ({{ $order->store->moduleSettings->cashOrderWording }}) @endif</strong></p>
+            <p><strong>Total: ${{number_format($order->amount, 2)}} @if ($order->cashOrder) {{ $order->store->moduleSettings->cashOrderWording }} @endif</strong></p>
       </div>
       <div class="col-4 address">
         <h4>Customer</h4>
@@ -140,7 +139,6 @@ $amount = '$'.number_format($order->amount, 2);
 
     @if ($mealInstructions)
     <br>
-      <h2>Special Meal Instructions</h2>
       @foreach ($order->items as $i => $item)
         @if ($item->instructions)
           <p><b>{!! $item->html_title !!}</b> - {{ $item->instructions }}</p>
