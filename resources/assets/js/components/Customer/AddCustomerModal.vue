@@ -63,6 +63,7 @@
             v-model="form.state"
             label="name"
             :options="stateNames"
+            @keypress.enter.native.prevent=""
           ></v-select>
         </b-form-group>
         <b-form-group horizontal label="Zip">

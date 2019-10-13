@@ -638,6 +638,9 @@ export default {
           this.$toastr.e("Please try again.", "Registration failed");
         });
     },
+    setCustomer() {
+      this.customer = this.storeCustomers.slice(-1)[0].id;
+    },
     changeState(state) {
       this.form.state = state.abbreviation;
     },

@@ -1348,6 +1348,7 @@ export default {
     },
     setCustomer() {
       this.customer = this.storeCustomers.slice(-1)[0].id;
+      this.$forceUpdate();
     },
     removeCoupon() {
       this.coupon = {};
