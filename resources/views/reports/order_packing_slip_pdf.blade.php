@@ -22,6 +22,11 @@ table th {
   color: white;
 }
 
+table {
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+}
+
 .center-text {
   text-align: center;
 }
@@ -120,13 +125,12 @@ $deposit = '$'.number_format($order->deposit, 2);
         <tr>
           <table border="1">
             <tr>
-              <td style="width:83%">
+              <td style="width:80%">
                 @if ($order->store->settings->notesForCustomer != null)
                   <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
                 @endif
               </td>
-              <td style="width:17%">
-                <table border="none">
+              <td style="width:20%">
                   <tr><td class="center-text">Subtotal - {{ $subtotal }}</td></tr>
                   @if ($salesTax > 0)<tr><td class="center-text">Tax - {{ $salesTax }}</td></tr>@endif
                   @if ($mealPlanDiscount > 0)<tr><td class="center-text">Subscription Discount - {{ $mealPlanDiscount }}</td></tr>@endif
@@ -136,7 +140,6 @@ $deposit = '$'.number_format($order->deposit, 2);
                   <tr><td class="center-text">Total - {{ $amount }}</td></tr>
                   @if ($deposit != 100)<tr><td class="center-text">Paid - ${{number_format(($order->amount * $order->deposit)/100, 2)}}</td></tr>@endif
                   @if ($deposit != 100)<tr><td class="center-text">Balance - ${{number_format(($order->amount - ($order->amount * $order->deposit)/100), 2)}}</td></tr>@endif
-                </table>
               </td>
             </tr>
           </table>
