@@ -12,8 +12,8 @@ th {
   font-size: 16px;
   font-weight: bold;
 }
-table th td {
-  border: .5px solid #bebebe;
+table {
+  border: 1px solid #bebebe;
 }
 
 table th {
@@ -39,6 +39,7 @@ $salesTax = '$'.number_format($order->salesTax, 2);
 $coupon = '$'.number_format($order->couponReduction, 2);
 $couponCode = $order->couponCode;
 $amount = '$'.number_format($order->amount, 2);
+$deposit = '$'.number_format($order->deposit, 2);
 @endphp
 <body class="{{ $body_classes }}">
   <div id="print-area">
@@ -110,18 +111,24 @@ $amount = '$'.number_format($order->amount, 2);
         </tr>
         @endforeach
         <tr>
-          <table>
+          <table border="1">
             <tr>
               <td style="width:80%">
-                Notes
+                @if ($order->store->settings->notesForCustomer != null)
+                  <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
+                @endif
               </td>
               <td style="width:20%">
                 <table>
-                  <tr><td>1</td></tr>
-                  <tr><td>2</td></tr>
-                  <tr><td>3</td></tr>
-                  <tr><td>4</td></tr>
-                  <tr><td>5</td></tr>     
+                  <tr><td class="center-text">Subtotal - {{ $subtotal }}</td></tr>
+                  @if ($salesTax > 0)<tr><td class="center-text">Tax - {{ $salesTax }}</td></tr>@endif
+                  @if ($mealPlanDiscount > 0)<tr><td class="center-text">Subscription Discount - {{ $mealPlanDiscount }}</td></tr>@endif
+                  @if ($deliveryFee > 0)<tr><td class="center-text">Processing Fee - {{ $processingFee }}</td></tr>@endif
+                  @if ($deliveryFee > 0)<tr><td class="center-text">Delivery Fee - {{ $deliveryFee }}</td></tr>@endif
+                  @if ($coupon > 0)<tr><td class="center-text">Coupon - {{ $couponCode }} {{ $coupon }}</td></tr>@endif
+                  <tr><td class="center-text">Total - {{ $amount }}</td></tr>
+                  @if ($deposit != 100)<tr><td class="center-text">Paid - ${{number_format(($order->amount * $order->deposit)/100, 2)}}</td></tr>@endif
+                  @if ($deposit != 100)<tr><td class="center-text">Balance - ${{number_format(($order->amount - ($order->amount * $order->deposit)/100), 2)}}</td></tr>@endif
                 </table>
               </td>
             </tr>
@@ -131,18 +138,10 @@ $amount = '$'.number_format($order->amount, 2);
     
     </table>
 
-{{ $subtotal }}
-{{ $mealPlanDiscount }}
-{{ $deliveryFee }}
-{{ $processingFee }}
-{{ $salesTax }}
-{{ $coupon }}
-{{ $couponCode }}
-{{ $amount }}
 
     @if (count($order->lineItemsOrders))
     <h2>Extras</h2>
-      <table border="1">
+      <table>
         <thead>
           <tr>
             <th>Quantity</th>
@@ -162,10 +161,6 @@ $amount = '$'.number_format($order->amount, 2);
       </table>
     @endif
 
-
-    @if ($order->store->settings->notesForCustomer != null)
-    <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
-    @endif
 
 
     @php
