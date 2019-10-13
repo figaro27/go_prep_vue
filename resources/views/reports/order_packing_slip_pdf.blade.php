@@ -4,12 +4,22 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="{{ asset('css/print.css') }}">
 </head>
-
+@php
+$subtotal = '$'.number_format($order->preFeePreDiscount, 2);
+$mealPlanDiscount = '$'.number_format($order->mealPlanDiscount, 2);
+$deliveryFee = '$'.number_format($order->deliveryFee, 2);
+$processingFee = '$'.number_format($order->processingFee, 2);
+$salesTax = '$'.number_format($order->salesTax, 2);
+$coupon = '$'.number_format($order->couponReduction, 2);
+$couponCode = $order->couponCode;
+$amount = '$'.number_format($order->amount, 2);
+@endphp
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <div class="row">
       <div class="col-4 address">
         <h4 class="mt-3">Order Details</h4>
+        Subtotal: {{$subtotal}}
             <p>Order ID - {{$order->order_number}}</p>
             @if ($order->subscription)
             <p>Subscription #{{ $order->subscription->stripe_id }}</p>
@@ -80,6 +90,15 @@
     
     </table>
 
+{{ $subtotal }}
+{{ $mealPlanDiscount }}
+{{ $deliveryFee }}
+{{ $processingFee }}
+{{ $salesTax }}
+{{ $coupon }}
+{{ $couponCode }}
+{{ $amount }}
+
     @if (count($order->lineItemsOrders))
     <h2>Extras</h2>
       <table border="1">
@@ -103,9 +122,7 @@
     @endif
 
 
-    <br>
     @if ($order->store->settings->notesForCustomer != null)
-    <h2>Notes</h2>
     <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
     @endif
 
