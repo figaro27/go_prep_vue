@@ -12,13 +12,11 @@ th {
   font-size: 16px;
   font-weight: bold;
 }
-table {
+table, th, td {
   border: 1px solid #bebebe;
 }
 
 table th {
-  padding-top: 2px;
-  padding-bottom: 2px;
   text-align: center;
   background-color: #b2b2b2;
   color: white;
@@ -110,16 +108,25 @@ $deposit = '$'.number_format($order->deposit, 2);
             <td class="center-text">${{number_format($item->price, 2)}}</td>
         </tr>
         @endforeach
+        @if (count($order->lineItemsOrders))
+        @foreach ($order->lineItemsOrders as $i => $lineItemOrder)
+          <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+              <td>{{$lineItemOrder->quantity}}</td>
+              <td>{!! $lineItemOrder->title !!}</td>
+              <td>${{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
+          </tr>
+          @endforeach
+          @endif
         <tr>
           <table border="1">
             <tr>
-              <td style="width:80%">
+              <td style="width:83%">
                 @if ($order->store->settings->notesForCustomer != null)
                   <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
                 @endif
               </td>
-              <td style="width:20%">
-                <table>
+              <td style="width:17%">
+                <table border="none">
                   <tr><td class="center-text">Subtotal - {{ $subtotal }}</td></tr>
                   @if ($salesTax > 0)<tr><td class="center-text">Tax - {{ $salesTax }}</td></tr>@endif
                   @if ($mealPlanDiscount > 0)<tr><td class="center-text">Subscription Discount - {{ $mealPlanDiscount }}</td></tr>@endif
@@ -137,30 +144,6 @@ $deposit = '$'.number_format($order->deposit, 2);
       </tbody>
     
     </table>
-
-
-    @if (count($order->lineItemsOrders))
-    <h2>Extras</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Quantity</th>
-            <th>Item Name</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-      <tbody>
-          @foreach ($order->lineItemsOrders as $i => $lineItemOrder)
-          <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-              <td>{{$lineItemOrder->quantity}}</td>
-              <td>{!! $lineItemOrder->title !!}</td>
-              <td>${{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
-          </tr>
-          @endforeach
-      </tbody>
-      </table>
-    @endif
-
 
 
     @php
