@@ -268,12 +268,22 @@ export default {
         this.setBagMealPlan(false);
         this.setBagCoupon(null);
 
-        this.$router.push({
-          path: "/customer/subscriptions",
-          query: {
-            updated: true
-          }
-        });
+        if (this.$route.params.storeView) {
+          this.$store.commit("refreshStoreSubscriptions");
+          this.$router.push({
+            path: "/store/subscriptions",
+            query: {
+              updated: true
+            }
+          });
+        } else {
+          this.$router.push({
+            path: "/customer/subscriptions",
+            query: {
+              updated: true
+            }
+          });
+        }
       } catch (e) {
         if (!_.isEmpty(e.response.data.error)) {
           this.$toastr.e(e.response.data.error);

@@ -6,6 +6,7 @@ use App\Exportable\Exportable;
 use App\Store;
 use App\StoreModule;
 use App\User;
+use App\MealOrder;
 use Illuminate\Support\Carbon;
 
 class OrdersByCustomer
@@ -53,66 +54,142 @@ class OrdersByCustomer
             );
         }
 
-        $customerOrders = $orders
-            ->with(['meal_orders', 'lineItemsOrders'])
-            ->get()
-            ->groupBy('user_id')
-            ->map(function ($orders, $userId) {
+        if ($type = 'csv' || ($type = 'xls')) {
+            $mealOrders = MealOrder::where('store_id', $this->store->id)
+                ->get()
+                ->filter(function ($mealOrder) {
+                    $dateRange = $this->getDeliveryDates();
+                    if (isset($dateRange['from'])) {
+                        $from = Carbon::parse($dateRange['from']);
+                    }
+                    if (isset($dateRange['to'])) {
+                        $to = Carbon::parse($dateRange['to']);
+                    }
+                    return $mealOrder->order->delivery_date >=
+                        $from->format('Y-m-d') &&
+                        $mealOrder->order->delivery_date <=
+                            $to->format('Y-m-d');
+                });
+
+            $customerMealOrders = $mealOrders->map(function ($mealOrder) {
                 return [
-                    'user' => User::find($userId),
-                    'orders' => $orders->map(function ($order) {
-                        return [
-                            'id' => $order->id,
-                            'order_number' => $order->order_number,
-                            'address' => $order->user->userDetail->address,
-                            'city' => $order->user->userDetail->city,
-                            'state' => $order->user->userDetail->state,
-                            'zip' => $order->user->userDetail->zip,
-                            'delivery' => $order->user->userDetail->delivery,
-                            'delivery_date' => $order->delivery_date,
-                            'transferTime' => $order->transferTime,
-                            'pickup' => $order->pickup,
-                            'pickup_location_id' => $order->pickup_location_id,
-                            'pickup_location' => $order->pickup_location,
-                            'dailyOrderNumber' => $order->dailyOrderNumber,
-                            'notes' => $order->notes,
-                            'meal_quantities' => array_merge(
-                                [['Meal', 'Quantity']], // Heading
-                                $order
-                                    ->meal_orders()
-                                    ->get()
-                                    ->map(function ($mealOrder) {
-                                        return [
-                                            'title' =>
-                                                $this->type !== 'pdf'
-                                                    ? $mealOrder->title
-                                                    : $mealOrder->html_title,
-                                            'quantity' =>
-                                                $mealOrder->quantity ?? 1
-                                        ];
-                                    })
-                                    ->toArray()
-                            ),
-                            'lineItemsOrders' => array_merge(
-                                [['Extras', 'Quantity']], // Heading
-                                $order
-                                    ->lineItemsOrders()
-                                    ->get()
-                                    ->map(function ($lineItemOrder) {
-                                        return [
-                                            'title' => $lineItemOrder->title,
-                                            'quantity' =>
-                                                $lineItemOrder->quantity
-                                        ];
-                                    })
-                                    ->toArray()
-                            )
-                        ];
-                    })
+                    'order_ID' => $mealOrder->order->order_number,
+                    'order_placed' => $mealOrder->order->created_at->format(
+                        'Y-m-d'
+                    ),
+                    'delivery_date' => $mealOrder->order->delivery_date->format(
+                        'Y-m-d'
+                    ),
+                    'customer' =>
+                        $mealOrder->order->user->details->firstname .
+                        ' ' .
+                        $mealOrder->order->user->details->lastname,
+                    'address' => $mealOrder->order->user->details->address,
+                    'city' => $mealOrder->order->user->details->city,
+                    'state' => $mealOrder->order->user->details->state,
+                    'zip' => $mealOrder->order->user->details->zip,
+                    'delivery_instructions' =>
+                        $mealOrder->order->user->details->delivery,
+                    'meal_id' => $mealOrder->meal->title,
+                    'meal_size' => $mealOrder->meal_size
+                        ? $mealOrder->meal_size->title
+                        : null,
+                    // 'meal_components' => $mealOrder->components ? $mealOrder->components : null,
+                    // 'meal_addons' => $mealOrder->addons ? $mealOrder->addons : null,
+                    'quantity' => $mealOrder->quantity,
+                    'price' =>
+                        '$' .
+                        number_format(
+                            $mealOrder->quantity * $mealOrder->meal->price,
+                            2
+                        )
                 ];
             });
 
-        return $customerOrders->values();
+            $customerMealOrders->prepend([
+                'Order ID',
+                'Order Placed',
+                'Delivery Date',
+                'Customer',
+                'Address',
+                'City',
+                'State',
+                'Zip',
+                'Delivery Instructions',
+                'Meal',
+                'Size',
+                // 'Components',
+                // 'Addons',
+                'Quantity',
+                'Price'
+            ]);
+
+            return $customerMealOrders;
+        } elseif ($type = 'pdf') {
+            $customerOrders = $orders
+                ->with(['meal_orders', 'lineItemsOrders'])
+                ->get()
+                ->groupBy('user_id')
+                ->map(function ($orders, $userId) {
+                    return [
+                        'user' => User::find($userId),
+                        'orders' => $orders->map(function ($order) {
+                            return [
+                                'id' => $order->id,
+                                'order_number' => $order->order_number,
+                                'address' => $order->user->userDetail->address,
+                                'city' => $order->user->userDetail->city,
+                                'state' => $order->user->userDetail->state,
+                                'zip' => $order->user->userDetail->zip,
+                                'delivery' =>
+                                    $order->user->userDetail->delivery,
+                                'delivery_date' => $order->delivery_date,
+                                'transferTime' => $order->transferTime,
+                                'pickup' => $order->pickup,
+                                'pickup_location_id' =>
+                                    $order->pickup_location_id,
+                                'pickup_location' => $order->pickup_location,
+                                'dailyOrderNumber' => $order->dailyOrderNumber,
+                                'notes' => $order->notes,
+                                'meal_quantities' => array_merge(
+                                    [['Meal', 'Quantity']], // Heading
+                                    $order
+                                        ->meal_orders()
+                                        ->get()
+                                        ->map(function ($mealOrder) {
+                                            return [
+                                                'title' =>
+                                                    $this->type !== 'pdf'
+                                                        ? $mealOrder->title
+                                                        : $mealOrder->html_title,
+                                                'quantity' =>
+                                                    $mealOrder->quantity ?? 1
+                                            ];
+                                        })
+                                        ->toArray()
+                                ),
+                                'lineItemsOrders' => array_merge(
+                                    [['Extras', 'Quantity']], // Heading
+                                    $order
+                                        ->lineItemsOrders()
+                                        ->get()
+                                        ->map(function ($lineItemOrder) {
+                                            return [
+                                                'title' =>
+                                                    $lineItemOrder->title,
+                                                'quantity' =>
+                                                    $lineItemOrder->quantity
+                                            ];
+                                        })
+                                        ->toArray()
+                                )
+                            ];
+                        })
+                    ];
+                });
+
+            return $customerOrders->values();
+        }
     }
 
     public function exportPdfView()

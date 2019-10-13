@@ -163,7 +163,25 @@
             <strong>Delivery Fee:</strong>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
-            {{ format.money(deliveryFeeAmount, storeSettings.currency) }}
+            <span v-if="editingDeliveryFee">
+              <b-form-input
+                v-model="customDeliveryFee"
+                class="d-inline width-70"
+              ></b-form-input
+              ><img
+                class="couponX d-inline ml-1"
+                src="/images/customer/x.png"
+                @click="editingDeliveryFee = false"
+              />
+            </span>
+            <span v-else>{{
+              format.money(deliveryFeeAmount, storeSettings.currency)
+            }}</span>
+            <i
+              v-if="$route.params.storeView && !editingDeliveryFee"
+              @click="editDeliveryFee"
+              class="fa fa-edit text-warning"
+            ></i>
           </div>
         </div>
       </li>
@@ -583,6 +601,8 @@ export default {
   },
   data() {
     return {
+      customDeliveryFee: 0,
+      editingDeliveryFee: false,
       stripeKey: window.app.stripe_key,
       loading: false,
       checkingOut: false,
@@ -669,7 +689,7 @@ export default {
       let grouped = [];
       customers.forEach(customer => {
         grouped.push({
-          value: customer.id,
+          value: customer.user_id,
           text: customer.name
         });
       });
@@ -899,6 +919,9 @@ export default {
       } else return this.afterCoupon;
     },
     deliveryFeeAmount() {
+      if (this.editingDeliveryFee) {
+        return parseFloat(this.customDeliveryFee);
+      }
       if (!this.pickup) {
         if (!this.couponFreeDelivery) {
           if (this.storeSettings.applyDeliveryFee) {
@@ -1290,7 +1313,10 @@ export default {
             this.refreshOrdersToday();
             this.refreshOrders();
             this.$router.push({
-              path: "/store/orders"
+              name: "store-orders",
+              params: {
+                autoPrintPackingSlip: this.storeModules.autoPrintPackingSlip
+              }
             });
             return;
           }
@@ -1309,11 +1335,12 @@ export default {
           }
         })
         .catch(async response => {
-          let error =
-            "Checkout failed. Reason: " +
-            response.response.data.message +
-            ". Please contact GoPrep";
-          this.$toastr.e(error, "Error");
+          // let error =
+          //   "Checkout failed. Reason: " +
+          //   response.response.data.message +
+          //   ". Please contact GoPrep";
+          // this.$toastr.e(error, "Error");
+          this.$toastr.e("Please contact GoPrep", "Error");
         })
         .finally(() => {
           this.loading = false;
@@ -1327,7 +1354,9 @@ export default {
       this.setBagCoupon(null);
       this.couponCode = "";
     },
-
+    editDeliveryFee() {
+      this.editingDeliveryFee = true;
+    },
     // Temporary work around for two delivery fees based on day of the week. Will remove when two delivery day feature is added.
     DBD() {
       if (this.store.id === 100) {

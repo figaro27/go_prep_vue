@@ -198,6 +198,9 @@ u + .body .full { width:100% !important; width:100vw !important;}
           @endif
           <!-- header -->
           <tr>
+            <td height="15"></td>
+          </tr>
+          <tr>
             <td>
               <table class="table-inner" width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
@@ -224,21 +227,21 @@ u + .body .full { width:100% !important; width:100vw !important;}
       <td align="center">
         <table width="600" style="max-width: 600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
           <tr>
-            <td height="35"></td>
+            <td height="15"></td>
           </tr>
           <tr>
             <td align="center">
               <table width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
-              	@foreach($order->items as $item)
+                @foreach($order->items as $item)
 
-              	<tr>
-	              	<td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
-	              	<td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
-	              		${{ number_format($item->unit_price, 2) }}</td>
-	              	<td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
-	              	<td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;  font-weight: bold;">${{ number_format($item->price, 2) }}</td>
-              	</tr>
-				      @endforeach
+                <tr>
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
+                    ${{ number_format($item->unit_price, 2) }}</td>
+                  <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;  font-weight: bold;">${{ number_format($item->price, 2) }}</td>
+                </tr>
+              @endforeach
               </table>
             </td>
           </tr>
@@ -258,12 +261,6 @@ u + .body .full { width:100% !important; width:100vw !important;}
               </table>
             </td>
           </tr>
-          <tr>
-            <td height="5" style="border-bottom:1px solid #ecf0f1;"></td>
-          </tr>
-          <tr>
-            <td height="5"></td>
-          </tr>
           <!-- detail -->
           <tr>
           </tr>
@@ -279,7 +276,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
       <td align="center">
         <table width="600" class="table-full" style="max-width: 600px;" align="center" border="0" cellpadding="0" cellspacing="0">
           <tr>
-            <td height="40" style="border-bottom:3px solid #3b3b3b;"></td>
+            <td height="10" style="border-bottom:3px solid #BCBCBC;"></td>
           </tr>
         </table>
         <table align="center" width="600" style="max-width: 600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
@@ -322,7 +319,11 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         @if ($salesTax > 0)
                         Sales Tax<br>
                         @endif<br>
-                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span>
+                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold;">Total</span><br>
+                        @if ($order->deposit != 100)
+                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Paid</span><br>
+                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Balance</span>
+                        @endif
                       </td>
 
                     
@@ -345,10 +346,17 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           ${{ number_format($salesTax, 2) }}<br>
                           @endif
                           <br>
-                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($order->amount, 2) }}</span>
-                          @if ($order->cashOrder)
-                            <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:18px; color:#3b3b3b;  font-weight: bold;">({{$order->store->moduleSettings->cashOrderWording }})
-                            </span>
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold; ">${{ number_format($order->amount, 2) }}
+                            @if ($order->cashOrder)
+                              {{$order->store->moduleSettings->cashOrderWording }}
+                            @endif
+                          </span><br>
+                          
+                          @if ($order->deposit != 100)
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
+                            ${{number_format(($order->amount * $order->deposit)/100, 2)}}</span><br>
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
+                            ${{number_format(($order->amount - ($order->amount * $order->deposit)/100), 2)}}</span>
                           @endif
                         </td>
                       </tr>
@@ -365,9 +373,6 @@ u + .body .full { width:100% !important; width:100vw !important;}
 
             </td>
           </tr>
-          <tr>
-            <td height="15"></td>
-          </tr>
         </table>
       </td>
     </tr>
@@ -382,7 +387,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
             <td width="600" align="center">
               <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td height="40"></td>
+                  <td height="20"></td>
                 </tr>
                 <!-- title -->
                 <tr>
@@ -403,7 +408,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 <!-- content -->
                 @if ($order->pickup === 0)
                 @if ($order->store->settings->deliveryInstructions)
-				        <tr>
+                <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
                     {!! nl2br($order->store->settings->deliveryInstructions) !!}
                   </td>
@@ -417,7 +422,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   </td>
                 </tr>
                 @endif
-				        @endif
+                @endif
                 
                 <!-- end content -->
                 <tr>
@@ -439,12 +444,12 @@ u + .body .full { width:100% !important; width:100vw !important;}
             <td width="600" align="center">
               <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td height="40"></td>
+                  <td height="20"></td>
                 </tr>
                 <!-- title -->
                 @if ($order->store->settings->notesForCustomer)
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Notes from {{ $order->store->details->full_name }}</td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Notes from {{ $order->store->details->name }}</td>
                 </tr>
                 <!-- end title -->
                 <tr>
@@ -452,12 +457,12 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- content -->
                 @if ($order->store->settings->notesForCustomer != null)
-				        <tr>
+                <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
                     {!! nl2br($order->store->settings->notesForCustomer) !!} 
                   </td>
                 </tr>
-				        @endif
+                @endif
                 @endif
                 
                 <!-- end content -->
@@ -494,7 +499,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
             <td width="600" align="center">
               <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td height="40"></td>
+                  <td height="20"></td>
                 </tr>
                 <!-- title -->
                 <tr>

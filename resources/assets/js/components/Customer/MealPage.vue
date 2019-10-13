@@ -336,6 +336,8 @@ export default {
         size = this.mealSize;
       }
 
+      meal.item_title = meal.full_title;
+
       this.addOne(
         meal,
         false,

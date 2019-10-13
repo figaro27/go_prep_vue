@@ -132,19 +132,17 @@ export default {
         return;
       }
 
-      axios
-        .post("/api/me/register", form)
-        .then(async response => {
-          this.addCustomerModal = false;
-          this.$parent.addCustomerModal = false;
-          this.form = {};
-          await this.refreshStoreCustomers();
-          this.$toastr.s("Customer Added");
-          this.$parent.setCustomer();
-        })
-        .catch(e => {
-          this.$toastr.e("Please try again.", "Registration failed");
-        });
+      axios.post("/api/me/register", form).then(async response => {
+        this.addCustomerModal = false;
+        this.$parent.addCustomerModal = false;
+        this.form = {};
+        await this.refreshStoreCustomers();
+        this.$toastr.s("Customer Added");
+        this.$parent.setCustomer();
+      });
+      // .catch(e => {
+      //   this.$toastr.e("Please try again.", "Registration failed");
+      // });
     },
     getStateNames(country = "US") {
       return states.selectOptions(country);
