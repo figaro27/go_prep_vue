@@ -86,7 +86,7 @@ $deposit = '$'.number_format($order->deposit, 2);
             @endif
       </div>
       <div class="col-4" style="float:right">
-        <img src="{{$logo}}" />
+        <img src="{{$logo}}" style="zoom: 0.5;"/>
       </div>
       </div>
       <br><br>
