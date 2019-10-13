@@ -919,10 +919,10 @@ export default {
       } else return this.afterCoupon;
     },
     deliveryFeeAmount() {
-      if (this.editingDeliveryFee) {
-        return parseFloat(this.customDeliveryFee);
-      }
       if (!this.pickup) {
+        if (this.editingDeliveryFee) {
+          return parseFloat(this.customDeliveryFee);
+        }
         if (!this.couponFreeDelivery) {
           if (this.storeSettings.applyDeliveryFee) {
             if (this.storeSettings.deliveryFeeType === "flat") {
