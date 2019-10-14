@@ -191,8 +191,8 @@ class OrderController extends StoreController
         $subtotal = $request->get('subtotal');
         $afterDiscountBeforeFees = $bagTotal;
         $preFeePreDiscount = $bagTotal;
-        $processingFee = 0;
-        $mealPlanDiscount = 0;
+        $processingFee = $request->get('processingFee');
+        $mealPlanDiscount = $request->get('mealPlanDiscount');
         $salesTax = $request->get('salesTax');
         $deliveryFee = $request->get('deliveryFee');
         $processingFee = $request->get('processingFee');

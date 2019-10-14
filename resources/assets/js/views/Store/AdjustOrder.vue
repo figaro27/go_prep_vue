@@ -9,6 +9,7 @@
       :transferTime="transferTime"
       :pickup="pickup"
       :order="order"
+      :inSub="inSub"
     ></customer-menu>
   </div>
 </template>
@@ -46,6 +47,9 @@ export default {
         return order.id === this.orderId;
       });
       return order;
+    },
+    inSub() {
+      return this.order.subscription_id ? 1 : 0;
     },
     deliveryDay() {
       return moment(this.order.delivery_date).format("YYYY-MM-DD 00:00:00");

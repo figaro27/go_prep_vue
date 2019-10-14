@@ -131,7 +131,7 @@
       </li>
       <li
         class="checkout-item"
-        v-if="weeklySubscription && applyMealPlanDiscount"
+        v-if="(weeklySubscription && applyMealPlanDiscount) || inSub"
       >
         <div class="row">
           <div class="col-6 col-md-4">
@@ -719,6 +719,9 @@ export default {
       subscriptions: "subscriptions",
       user: "user"
     }),
+    inSub() {
+      return this.$route.params.inSub;
+    },
     storeOwner() {
       let flag = false;
       if (this.user && this.user.storeOwner) {
@@ -973,7 +976,10 @@ export default {
       return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
     },
     afterDiscount() {
-      if (this.applyMealPlanDiscount && this.weeklySubscription) {
+      if (
+        (this.applyMealPlanDiscount && this.weeklySubscription) ||
+        this.inSub
+      ) {
         return this.afterCoupon - this.mealPlanDiscount;
       } else return this.afterCoupon;
     },
@@ -1244,6 +1250,7 @@ export default {
           pickup: this.pickup,
           transferTime: this.transferTime,
           subtotal: this.subtotal,
+          mealPlanDiscount: this.mealPlanDiscount,
           afterDiscount: this.afterDiscount,
           deliveryFee: this.deliveryFeeAmount,
           processingFee: this.processingFeeAmount,
@@ -1254,7 +1261,6 @@ export default {
           coupon_id: this.couponApplied ? this.coupon.id : null,
           couponReduction: this.couponReduction,
           couponCode: this.couponApplied ? this.coupon.code : null,
-          deliveryFee: this.deliveryFee,
           pickupLocation: this.selectedPickupLocation,
           customer: this.customer,
           deposit: deposit,
@@ -1336,6 +1342,7 @@ export default {
       axios
         .post(endPoint, {
           subtotal: this.subtotal,
+          mealPlanDiscount: this.mealPlanDiscount,
           afterDiscount: this.afterDiscount,
           bag: this.bag,
           plan: weeklySubscriptionValue,
@@ -1348,12 +1355,14 @@ export default {
           couponReduction: this.couponReduction,
           couponCode: this.couponApplied ? this.coupon.code : null,
           deliveryFee: this.deliveryFee,
+          processingFee: this.processingFeeAmount,
           pickupLocation: this.selectedPickupLocation,
           customer: this.customer,
           deposit: deposit,
           cashOrder: this.cashOrder,
           transferTime: this.transferTime,
-          lineItemsOrder: this.orderLineItems
+          lineItemsOrder: this.orderLineItems,
+          grandTotal: this.grandTotal
         })
         .then(async resp => {
           this.emptyBag();

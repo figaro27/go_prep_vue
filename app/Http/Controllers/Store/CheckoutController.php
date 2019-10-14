@@ -62,8 +62,8 @@ class CheckoutController extends StoreController
         $preFeePreDiscount = $bagTotal;
         $deposit = $request->get('deposit') / 100;
 
-        $processingFee = 0;
-        $mealPlanDiscount = 0;
+        $processingFee = $request->get('processingFee');
+        $mealPlanDiscount = $request->get('mealPlanDiscount');
         $salesTax = $request->get('salesTax');
 
         $max = Order::where('store_id', $storeId)
@@ -76,31 +76,31 @@ class CheckoutController extends StoreController
             $dailyOrderNumber = 1;
         }
 
-        if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
-            $discount = $store->settings->mealPlanDiscount / 100;
-            $mealPlanDiscount = $total * $discount;
-            $total -= $mealPlanDiscount;
-            $afterDiscountBeforeFees = $total;
-        }
+        // if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
+        //     $discount = $store->settings->mealPlanDiscount / 100;
+        //     $mealPlanDiscount = $total * $discount;
+        //     $total -= $mealPlanDiscount;
+        //     $afterDiscountBeforeFees = $total;
+        // }
 
-        if ($store->settings->applyDeliveryFee) {
-            $total += $deliveryFee;
-        }
+        // if ($store->settings->applyDeliveryFee) {
+        //     $total += $deliveryFee;
+        // }
 
-        if ($store->settings->applyProcessingFee) {
-            if ($store->settings->processingFeeType === 'flat') {
-                $processingFee += $store->settings->processingFee;
-            } elseif ($store->settings->processingFeeType === 'percent') {
-                $processingFee +=
-                    ($store->settings->processingFee / 100) * $subtotal;
-            }
+        // if ($store->settings->applyProcessingFee) {
+        //     if ($store->settings->processingFeeType === 'flat') {
+        //         $processingFee += $store->settings->processingFee;
+        //     } elseif ($store->settings->processingFeeType === 'percent') {
+        //         $processingFee +=
+        //             ($store->settings->processingFee / 100) * $subtotal;
+        //     }
 
-            $total += $processingFee;
-        }
+        //     $total += $processingFee;
+        // }
 
-        if ($couponId != null) {
-            $total -= $couponReduction;
-        }
+        // if ($couponId != null) {
+        //     $total -= $couponReduction;
+        // }
 
         $customerId = $request->get('customer');
         $userId = Customer::where('id', $customerId)
@@ -108,7 +108,8 @@ class CheckoutController extends StoreController
             ->first();
         $customerUser = User::where('id', $userId)->first();
 
-        $total += $salesTax;
+        // $total += $salesTax;
+        $total = $request->get('grandTotal');
 
         $cashOrder = $request->get('cashOrder');
         if ($cashOrder) {

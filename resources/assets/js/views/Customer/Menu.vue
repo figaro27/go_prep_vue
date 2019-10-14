@@ -149,6 +149,7 @@
               :transferTime="transferTime"
               :pickup="pickup"
               :order="order"
+              :inSub="inSub"
             ></bag-actions>
           </div>
         </div>
@@ -290,7 +291,8 @@ export default {
     order: null,
     deliveryDay: null,
     transferTime: null,
-    pickup: null
+    pickup: null,
+    inSub: null
   },
   data() {
     return {

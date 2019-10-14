@@ -44,7 +44,8 @@
             transferTime: transferTime,
             pickup: pickup,
             checkoutData: checkoutData,
-            forceValue: forceValue
+            forceValue: forceValue,
+            inSub: inSub
           }
         }"
       >
@@ -80,7 +81,8 @@ export default {
     transferTime: null,
     pickup: null,
     checkoutData: null,
-    forceValue: false
+    forceValue: false,
+    inSub: null
   },
   mixins: [MenuBag],
   computed: {
