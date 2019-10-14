@@ -226,7 +226,7 @@ class MealOrder extends Pivot
         }
         if ($this->meal->has('addons') && $this->addons) {
             foreach ($this->addons as $addon) {
-                $price += $addon->price;
+                $price += $addon->addon->price;
             }
         }
 
