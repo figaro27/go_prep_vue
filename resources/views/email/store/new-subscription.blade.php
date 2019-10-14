@@ -52,36 +52,29 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td bgcolor={{ (isset($logo_b64) && $logo_b64 != "")?"transparent":"#3082CF" }} align="center">
                     <table width="80%" class="table-inner" border="0" align="center" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td height="25"></td>
+                        <td height="80"></td>
                       </tr>
                       <!-- logo -->
                       <tr>
                         @if (isset($logo_b64) && $logo_b64 != "")
-                        <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px; max-width: 124px;" src="{{$logo_b64}}" alt="GoPrep" title="GoPrep" /></td>
+                        <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px;" src="{{$logo_b64}}" alt="GoPrep" title="GoPrep" /></td>
                         @else
                         <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px;" src="https://goprep.com/logo.png" alt="GoPrep" title="GoPrep" /></td>
                         @endif
                       </tr>
                       <!-- end logo -->
-                      <tr>
-                        <td height="40"></td>
-                      </tr>
-                      <!-- company name -->
-                      <!-- end company name -->
-                      <tr>
-                        <td height="5"></td>
-                      </tr>
+
                       <!-- address -->
                       @if (!isset($logo_b64) || $logo_b64 == "")
                       <tr>
                         <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#FFFFFF; line-height:26px;text-align: center;" align="center"> Meal Prep, Simplified.
                            </td>
                       </tr>
+                      <tr>
+                        <td height="120"></td>
+                      </tr>
                       @endif
                       <!-- end address -->
-                      <tr>
-                        <td height="100"></td>
-                      </tr>
                     </table>
                   </td>
                 </tr>
@@ -92,7 +85,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td align="center">
                     <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td height="50"></td>
+                        <td height="25"></td>
                       </tr>
                       <!-- title -->
                       <tr>
