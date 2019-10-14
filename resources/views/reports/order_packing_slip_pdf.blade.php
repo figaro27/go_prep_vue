@@ -88,7 +88,7 @@ $deposit = '$'.number_format($order->deposit, 2);
       </div>
       <div class="col-4" style="float:right">
         <p><b>{{ $order->store->details->name }}</b></p>
-        <img style="text-align:center;zoom: 0.5;padding-right:50px" src="{{$logo}}"/>
+        <img style="zoom: 0.5;padding-right:50px" src="{{$logo}}"/>
       </div>
       </div>
       <br><br>
@@ -122,12 +122,12 @@ $deposit = '$'.number_format($order->deposit, 2);
     </table>
           <table border="1">
             <tr>
-              <td style="width:65%;margin-right:0px;padding-right:0px;padding-top:10px">
+              <td style="width:67%;margin-right:0px;padding-right:0px;padding-top:10px">
                 @if ($order->store->settings->notesForCustomer != null)
                   <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
                 @endif
               </td>
-              <td style="width:35%;margin-left:0px;padding-left:0px">
+              <td style="width:33%;margin-left:0px;padding-left:0px">
                 <table border="0" style="border:0px;border-style:none;border-collapse: collapse">
                   <tr><td style="border:none"><b>Subtotal</b></td><td style="border:none">{{ $subtotal }}</td></tr>
                   @if ($order->salesTax > 0)<tr><td style="border:none"><b>Tax</b></td><td style="border:none">{{ $salesTax }}</td></tr>@endif
