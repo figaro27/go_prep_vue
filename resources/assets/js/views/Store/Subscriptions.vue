@@ -136,6 +136,10 @@
                 )
               }})
             </p>
+            <p v-if="subscription.salesTax > 0">
+              Sales Tax:
+              {{ format.money(subscription.salesTax, subscription.currency) }}
+            </p>
             <p v-if="subscription.deliveryFee > 0">
               Delivery Fee:
               {{
@@ -148,10 +152,7 @@
                 format.money(subscription.processingFee, subscription.currency)
               }}
             </p>
-            <p v-if="subscription.salesTax > 0">
-              Sales Tax:
-              {{ format.money(subscription.salesTax, subscription.currency) }}
-            </p>
+
             <p class="strong">
               Total:
               {{ format.money(subscription.amount, subscription.currency) }}

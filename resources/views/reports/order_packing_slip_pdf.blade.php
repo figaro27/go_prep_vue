@@ -132,8 +132,8 @@ $deposit = '$'.number_format($order->deposit, 2);
               <td style="width:35%;margin-left:0px;padding-left:0px">
                 <table border="0" style="border:0px;border-style:none;border-collapse: collapse">
                   <tr><td style="border:none"><b>Subtotal</b></td><td style="border:none">{{ $subtotal }}</td></tr>
-                  @if ($order->salesTax > 0)<tr><td style="border:none"><b>Tax</b></td><td style="border:none">{{ $salesTax }}</td></tr>@endif
                   @if ($order->mealPlanDiscount > 0)<tr><td style="border:none"><b>Subscription Discount</b></td><td style="border:none">{{ $mealPlanDiscount }}</td></tr>@endif
+                  @if ($order->salesTax > 0)<tr><td style="border:none"><b>Tax</b></td><td style="border:none">{{ $salesTax }}</td></tr>@endif
                   @if ($order->processingFee > 0)<tr><td style="border:none"><b>Processing Fee</b></td><td style="border:none">{{ $processingFee }}</td></tr>@endif
                   @if ($order->deliveryFee > 0)<tr><td style="border:none"><b>Delivery Fee</b></td><td style="border:none">{{ $deliveryFee }}</td></tr>@endif
                   @if ($order->couponReduction > 0)<tr><td style="border:none"><b>Coupon</b></td><td style="border:none">({{ $couponCode }}) {{ $coupon }}</td></tr>@endif

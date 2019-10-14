@@ -136,6 +136,11 @@
                     >
                     <br />
                   </span>
+                  <span v-if="order.salesTax > 0"
+                    >Sales Tax:
+                    {{ format.money(order.salesTax, order.currency) }}</span
+                  >
+                  <br />
                   <span v-if="order.deliveryFee > 0">
                     Delivery Fee:
                     {{ format.money(order.deliveryFee, order.currency) }}
@@ -146,11 +151,7 @@
                     {{ format.money(order.processingFee, order.currency) }}
                     <br />
                   </span>
-                  <span v-if="order.salesTax > 0"
-                    >Sales Tax:
-                    {{ format.money(order.salesTax, order.currency) }}</span
-                  >
-                  <br />
+
                   <span>
                     <strong>
                       <span v-if="order.couponReduction === null"

@@ -93,6 +93,10 @@
                         format.money(order.mealPlanDiscount, order.currency)
                       }})
                     </p>
+                    <p v-if="order.salesTax > 0">
+                      Sales Tax:
+                      {{ format.money(order.salesTax, order.currency) }}
+                    </p>
                     <p v-if="order.deliveryFee > 0">
                       Delivery Fee:
                       {{ format.money(order.deliveryFee, order.currency) }}
@@ -101,10 +105,7 @@
                       Processing Fee:
                       {{ format.money(order.processingFee, order.currency) }}
                     </p>
-                    <p v-if="order.salesTax > 0">
-                      Sales Tax:
-                      {{ format.money(order.salesTax, order.currency) }}
-                    </p>
+
                     <p class="strong">
                       Total: {{ format.money(order.amount, order.currency) }}
                     </p>
