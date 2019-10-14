@@ -973,7 +973,8 @@ export default {
       } else return this.subtotal;
     },
     mealPlanDiscount() {
-      return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
+      if (this.weeklySubscriptionValue || this.inSub)
+        return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
     },
     afterDiscount() {
       if (
