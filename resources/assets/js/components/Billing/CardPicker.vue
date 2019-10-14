@@ -182,7 +182,7 @@ export default {
           } else {
             await this.refreshCards();
           }
-          this.selectedCard = resp.id;
+          this.selectCard(resp.data.id);
           this.newCard = null;
           this.$toastr.s("Payment method saved.");
         })
