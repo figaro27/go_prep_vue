@@ -610,7 +610,8 @@ export default {
       creditCardId: null,
       couponCode: "",
       addCustomerModal: false,
-      weeklySubscriptionValue: null
+      weeklySubscriptionValue: null,
+      customer: null
     };
   },
   props: {
@@ -621,7 +622,6 @@ export default {
     mobile: false,
     salesTax: 0,
     creditCardList: null,
-    customer: null,
     orderId: null,
     deliveryDay: null,
     transferTime: null,

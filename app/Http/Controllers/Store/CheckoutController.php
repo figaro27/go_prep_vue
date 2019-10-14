@@ -102,7 +102,10 @@ class CheckoutController extends StoreController
             $total -= $couponReduction;
         }
 
-        $userId = $request->get('customer');
+        $customerId = $request->get('customer');
+        $userId = Customer::where('id', $customerId)
+            ->pluck('user_id')
+            ->first();
         $customerUser = User::where('id', $userId)->first();
 
         $total += $salesTax;
@@ -114,7 +117,7 @@ class CheckoutController extends StoreController
             $gateway = Constants::GATEWAY_CASH;
         } else {
             $cardId = $request->get('card_id');
-            $card = $customerUser->cards()->findOrFail($cardId);
+            $card = Card::where('id', $cardId)->first();
             $gateway = $card->payment_gateway;
         }
 

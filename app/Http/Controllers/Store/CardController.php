@@ -38,8 +38,11 @@ class CardController extends StoreController
      */
     public function store(Request $request)
     {
-        $userId = $request->get('customer');
-        $user = User::find($userId);
+        $customerId = $request->get('customer');
+        $userId = Customer::where('id', $customerId)
+            ->first()
+            ->pluck('user_id');
+        $user = User::where('id', $userId)->first();
         $token = $request->get('token');
         $gateway = $request->get('payment_gateway');
         $card = $request->get('card');
