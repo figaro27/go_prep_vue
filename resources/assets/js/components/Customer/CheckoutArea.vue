@@ -62,7 +62,7 @@
                 >
                   Subscribe & save
                   <span class="text-success standout">{{
-                    format.money(mealPlanDiscount, storeSettings.currency)
+                    format.money(subscribeAndSaveAmount, storeSettings.currency)
                   }}</span>
                   on each order.
                 </span>
@@ -658,11 +658,11 @@ export default {
       creditCardId: null,
       couponCode: "",
       addCustomerModal: false,
-      weeklySubscriptionValue: null,
-      customer: null
+      weeklySubscriptionValue: null
     };
   },
   props: {
+    customer: null,
     preview: false,
     manualOrder: false,
     forceValue: false,
@@ -975,6 +975,9 @@ export default {
     mealPlanDiscount() {
       if (this.weeklySubscriptionValue || this.inSub)
         return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
+    },
+    subscribeAndSaveAmount() {
+      return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
     },
     afterDiscount() {
       if (
