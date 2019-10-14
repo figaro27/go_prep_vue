@@ -90,7 +90,7 @@ class Bag
                                 'quantity' => $meal['quantity'],
                                 'price' => $meal['price'],
                                 'size' => [
-                                    'id' => $meal['meal_size_id']
+                                    'id' => $meal['meal_size_id'] ?? null
                                     // ? $meal['meal_size']['id']
                                     // : null
                                 ],
