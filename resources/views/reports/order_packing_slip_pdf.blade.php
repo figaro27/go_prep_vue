@@ -5,6 +5,10 @@
   <link rel="stylesheet" href="{{ asset('css/print.css') }}">
 <style>
 
+p, td, h1, h2, h3, h4, h5, h6{
+  font-family:'roboto';
+}
+
 p, td {
   font-size: 14px;
 }
@@ -47,15 +51,8 @@ $deposit = '$'.number_format($order->deposit, 2);
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <div class="row">
-      <div class="col-4 address">
-        <p><b>{{$order->user->name}}</b></p>
-          <p>{{$order->user->details->address}}</p>
-          <p>{{$order->user->details->city}},
-          {{$order->user->details->state}}
-          {{$order->user->details->zip}}</p>
-          <p>{{$order->user->details->phone}}</p>
-      </div>
-    <div class="col-4 address" style="float:right">
+      
+    <div class="col-4 address">
             @if ($order->pickup === 0)
             <p><b>DELIVERY</b></p>
             @endif
@@ -84,6 +81,14 @@ $deposit = '$'.number_format($order->deposit, 2);
               @endif
             </p>
             @endif
+      </div>
+      <div class="col-4 address">
+        <p><b>{{$order->user->name}}</b></p>
+          <p>{{$order->user->details->address}}</p>
+          <p>{{$order->user->details->city}},
+          {{$order->user->details->state}}
+          {{$order->user->details->zip}}</p>
+          <p>{{$order->user->details->phone}}</p>
       </div>
       <div class="col-4" style="float:right">
         <p><b>{{ $order->store->details->name }}</b></p>
@@ -121,12 +126,12 @@ $deposit = '$'.number_format($order->deposit, 2);
     </table>
           <table border="1">
             <tr>
-              <td style="width:70%;margin-right:0px;padding-right:0px;padding-top:10px">
+              <td style="width:65%;margin-right:0px;padding-right:0px;padding-top:10px">
                 @if ($order->store->settings->notesForCustomer != null)
                   <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
                 @endif
               </td>
-              <td style="width:30%;margin-left:0px;padding-left:0px">
+              <td style="width:35%;margin-left:0px;padding-left:0px">
                 <table border="0" style="border:0px;border-style:none;border-collapse: collapse">
                   <tr><td style="border:none"><b>Subtotal</b></td><td style="border:none">{{ $subtotal }}</td></tr>
                   @if ($order->salesTax > 0)<tr><td style="border:none"><b>Tax</b></td><td style="border:none">{{ $salesTax }}</td></tr>@endif
