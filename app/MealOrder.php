@@ -78,7 +78,15 @@ class MealOrder extends Pivot
         if (count($this->components)) {
             $comp = $this->components
                 ->map(function ($component) {
-                    return $component->option->title;
+                    if (
+                        isset($component->option) &&
+                        $component->option != null &&
+                        isset($component->option->title)
+                    ) {
+                        return $component->option->title;
+                    } else {
+                        return "";
+                    }
                 })
                 ->implode(', ');
             $title .= ' - ' . $comp;
@@ -86,7 +94,15 @@ class MealOrder extends Pivot
         if (count($this->addons)) {
             $comp = $this->addons
                 ->map(function ($addon) {
-                    return $addon->addon->title;
+                    if (
+                        isset($addon->addon) &&
+                        $addon->addon != null &&
+                        isset($addon->addon->title)
+                    ) {
+                        return $addon->addon->title;
+                    } else {
+                        return "";
+                    }
                 })
                 ->implode(', ');
             $title .= ' - ' . $comp;

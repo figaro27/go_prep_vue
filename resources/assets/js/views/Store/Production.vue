@@ -169,24 +169,26 @@ export default {
       orders.forEach(order => {
         _.forEach(order.items, item => {
           let meal = this.getMeal(item.meal_id);
-          if (this.productionGroupId != null) {
-            if (meal.production_group_id !== this.productionGroupId)
-              return null;
-          }
-          let size = meal.getSize(item.meal_size_id);
-          let title = meal.getTitle(
-            true,
-            size,
-            item.components,
-            item.addons,
-            item.special_instructions
-          );
+          if (meal) {
+            if (this.productionGroupId != null) {
+              if (meal.production_group_id !== this.productionGroupId)
+                return null;
+            }
+            let size = meal.getSize(item.meal_size_id);
+            let title = meal.getTitle(
+              true,
+              size,
+              item.components,
+              item.addons,
+              item.special_instructions
+            );
 
-          if (!mealCounts[title]) {
-            mealCounts[title] = 0;
-            mealIds[title] = item.meal_id;
+            if (!mealCounts[title]) {
+              mealCounts[title] = 0;
+              mealIds[title] = item.meal_id;
+            }
+            mealCounts[title] += item.quantity;
           }
-          mealCounts[title] += item.quantity;
         });
       });
 

@@ -26,7 +26,11 @@ class MealSize extends Model
 
     public function getFullTitleAttribute()
     {
-        return $this->meal->title . ' - ' . $this->title;
+        if (isset($this->meal) && $this->meal != null) {
+            return $this->meal->title . ' - ' . $this->title;
+        } else {
+            return "";
+        }
     }
 
     public function syncIngredients($rawIngredients)
