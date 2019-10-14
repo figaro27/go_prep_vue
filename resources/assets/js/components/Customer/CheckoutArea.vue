@@ -490,7 +490,11 @@
           show
           variant="warning"
           class="center-text pt-2"
-          v-if="($route.params.storeView || storeOwner) && customer === null"
+          v-if="
+            ($route.params.storeView || storeOwner) &&
+              customer === null &&
+              $route.params.manualOrder
+          "
           >Please choose a customer.</b-alert
         >
         <b-alert
