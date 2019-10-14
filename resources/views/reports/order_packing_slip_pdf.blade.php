@@ -55,7 +55,10 @@ $deposit = '$'.number_format($order->deposit, 2);
           {{$order->user->details->zip}}</p>
           <p>{{$order->user->details->phone}}</p>
       </div>
-    <div class="col-4 address">
+      <div class="col-4">
+        <img style="text-align:center;zoom: 0.5;padding-right:50px" src="{{$logo}}"/>
+      </div>
+    <div class="col-4 address" style="float:right">
             @if ($order->pickup === 0)
             <p><b>DELIVERY</b></p>
             @endif
@@ -85,9 +88,7 @@ $deposit = '$'.number_format($order->deposit, 2);
             </p>
             @endif
       </div>
-      <div class="col-4">
-        <img style="float:right;zoom: 0.5;padding-right:50px" src="{{$logo}}"/>
-      </div>
+      
       </div>
       <br><br>
     <table border="1">
@@ -116,7 +117,9 @@ $deposit = '$'.number_format($order->deposit, 2);
           </tr>
           @endforeach
           @endif
-        <tr>
+          </tbody>
+    </table>
+    <br>
           <table border="1">
             <tr>
               <td style="width:81%;margin-right:0px;padding-right:0px;padding-top:10px">
@@ -139,14 +142,12 @@ $deposit = '$'.number_format($order->deposit, 2);
               </td>
             </tr>
           </table>
-        </tr>
-      </tbody>
-    
-    </table>
+
+      
     <br>
       @foreach ($order->items as $i => $item)
         @if ($item->instructions)
-          <p><b>{!! $item->html_title !!}</b> - {{ $item->instructions }}</p>
+          <p><b>{!! $item->title !!}</b> - {{ $item->instructions }}</p>
         @endif
       @endforeach
   </div>
