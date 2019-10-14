@@ -160,9 +160,6 @@ u + .body .full { width:100% !important; width:100vw !important;}
     <tr>
       <td align="center">
         <table align="center" width="600" style="max-width:600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
-          <tr>
-            <td height="20" style="border-bottom:3px solid #bcbcbc;"></td>
-          </tr>
               @if ($subscription->pickup_location_id != null)
               <tr>
                 <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d;"> Pickup Location:
@@ -173,11 +170,11 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 {{ $subscription->pickup_location->zip }}
                 </td>
               </tr>
-              @endif
-          <!-- header -->
-          <tr>
+                        <tr>
             <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
           </tr>
+              @endif
+          <!-- header -->
           <tr>
             <td>
               <table class="table-inner" width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -276,15 +273,16 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         @if ($mealPlanDiscount > 0)
                         Subscription Discount<br>
                         @endif
+                        @if ($salesTax > 0)
+                        Sales Tax<br>
+                        @endif
                         @if ($deliveryFee > 0)
                         Delivery Fee<br>
                         @endif
                         @if ($processingFee > 0)
                         Processing Fee<br>
                         @endif
-                        @if ($salesTax > 0)
-                        Sales Tax<br>
-                        @endif<br>
+                        <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span>
                       </td>
 
@@ -298,15 +296,16 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           @if ($mealPlanDiscount > 0)
                           (${{ number_format($mealPlanDiscount, 2) }})<br>
                           @endif
+                          @if ($salesTax > 0)
+                          ${{ number_format($salesTax, 2) }}<br>
+                          @endif
                           @if ($deliveryFee > 0)
                           ${{ number_format($deliveryFee, 2) }}<br>
                           @endif
                           @if ($processingFee > 0)
                           ${{ number_format($processingFee, 2) }}<br>
                           @endif
-                          @if ($salesTax > 0)
-                          ${{ number_format($salesTax, 2) }}<br>
-                          @endif
+                          
                           <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">${{ number_format($subscription->amount, 2) }}</span>
                           @if ($subscription->cashOrder)

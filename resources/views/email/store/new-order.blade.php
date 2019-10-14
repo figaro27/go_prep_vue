@@ -310,15 +310,16 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         @if ($mealPlanDiscount > 0)
                         Subscription Discount<br>
                         @endif
+                        @if ($salesTax > 0)
+                        Sales Tax<br>
+                        @endif
                         @if ($deliveryFee > 0)
                         Delivery Fee<br>
                         @endif
                         @if ($processingFee > 0)
                         Processing Fee<br>
                         @endif
-                        @if ($salesTax > 0)
-                        Sales Tax<br>
-                        @endif<br>
+                        <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span><br>
                         @if ($deposit < 100)
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Paid</span><br>
@@ -336,15 +337,16 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           @if ($mealPlanDiscount > 0)
                           (${{ number_format($mealPlanDiscount, 2) }})<br>
                           @endif
+                          @if ($salesTax > 0)
+                          ${{ number_format($salesTax, 2) }}<br>
+                          @endif
                           @if ($deliveryFee > 0)
                           ${{ number_format($deliveryFee, 2) }}<br>
                           @endif
                           @if ($processingFee > 0)
                           ${{ number_format($processingFee, 2) }}<br>
                           @endif
-                          @if ($salesTax > 0)
-                          ${{ number_format($salesTax, 2) }}<br>
-                          @endif
+                          
                           <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold; ">${{ number_format($order->amount, 2) }}
                             @if ($order->cashOrder)
