@@ -6,7 +6,7 @@
       <div class="row">
         <div class="col-md-5 mb-2 bag-actions">
           <above-bag
-            :storeView="storeView"
+            :storeView="storeView || storeOwner"
             :manualOrder="manualOrder"
             :checkoutData="checkoutData"
             class="mb-4"
@@ -48,7 +48,9 @@
             :gateway="storeSettings.payment_gateway"
             :order="order"
           ></checkout-area>
-          <store-closed v-if="!$route.params.storeView"></store-closed>
+          <store-closed
+            v-if="!$route.params.storeView && !storeOwner"
+          ></store-closed>
         </div>
       </div>
       <add-customer-modal
@@ -173,8 +175,16 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       _orders: "orders",
-      loggedIn: "loggedIn"
+      user: "user"
     }),
+    storeOwner() {
+      let flag = false;
+      if (this.user && this.user.storeOwner) {
+        flag = true;
+      }
+
+      return flag;
+    },
     order() {
       return this.$route.params.order;
     },
@@ -376,7 +386,7 @@ export default {
       this.pickup = this.$route.params.pickup;
     } else if (
       this.storeModules.hideDeliveryOption &&
-      !this.$route.params.storeView
+      (!this.$route.params.storeView && !this.storeOwner)
     ) {
       this.pickup = 1;
     } else {

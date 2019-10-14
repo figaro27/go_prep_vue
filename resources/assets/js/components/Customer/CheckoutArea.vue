@@ -178,7 +178,9 @@
               format.money(deliveryFeeAmount, storeSettings.currency)
             }}</span>
             <i
-              v-if="$route.params.storeView && !editingDeliveryFee"
+              v-if="
+                ($route.params.storeView || storeOwner) && !editingDeliveryFee
+              "
               @click="editDeliveryFee"
               class="fa fa-edit text-warning"
             ></i>
@@ -232,7 +234,9 @@
       v-if="
         transferTypeCheckDelivery &&
           transferTypeCheckPickup &&
-          (!storeModules.hideDeliveryOption || $route.params.storeView === true)
+          (!storeModules.hideDeliveryOption ||
+            $route.params.storeView === true ||
+            storeOwner)
       "
     >
       <b-form-group>
@@ -246,8 +250,14 @@
         </b-form-radio-group>
       </b-form-group>
     </li>
-    <div v-if="!storeModules.hideTransferOptions || $route.params.storeView">
-      <li class="checkout-item" v-if="$route.params.storeView">
+    <div
+      v-if="
+        !storeModules.hideTransferOptions ||
+          $route.params.storeView ||
+          storeOwner
+      "
+    >
+      <li class="checkout-item" v-if="$route.params.storeView || storeOwner">
         <div>
           <strong v-if="pickup === 0">Delivery Day</strong>
           <strong v-if="pickup === 1">Pickup Day</strong>
@@ -267,7 +277,7 @@
         v-if="
           deliveryDaysOptions.length > 1 &&
             $route.params.subscriptionId === undefined &&
-            !$route.params.storeView
+            (!$route.params.storeView && !storeOwner)
         "
       >
         <div>
@@ -300,7 +310,7 @@
         v-if="
           deliveryDaysOptions.length === 1 &&
             $route.params.subscriptionId === undefined &&
-            !$route.params.storeView
+            (!$route.params.storeView && !storeOwner)
         "
       >
         <div>
@@ -374,11 +384,11 @@
           !willDeliver &&
             !manualOrder &&
             pickup != 1 &&
-            !$route.params.storeView
+            (!$route.params.storeView && !storeOwner)
         "
       >
         <b-alert
-          v-if="!loading && !$route.params.storeView"
+          v-if="!loading && (!$route.params.storeView && !storeOwner)"
           variant="warning center-text"
           show
           >You are outside of the delivery area.</b-alert
@@ -408,8 +418,8 @@
         <div
           v-if="
             !hidePaymentArea &&
-              (($route.params.storeView && customer != null) ||
-                !$route.params.storeView)
+              ((($route.params.storeView || storeOwner) && customer != null) ||
+                (!$route.params.storeView && !storeOwner))
           "
         >
           <h4 class="mt-2 mb-3">
@@ -421,7 +431,7 @@
               storeModules.cashOrders &&
                 !weeklySubscriptionValue &&
                 (storeModuleSettings.cashAllowedForCustomer ||
-                  $route.params.storeView)
+                  ($route.params.storeView || storeOwner))
             "
           >
             <b-form-checkbox
@@ -452,7 +462,9 @@
           ></card-picker>
 
           <b-form-group
-            v-if="$route.params.storeView && storeModules.deposits"
+            v-if="
+              ($route.params.storeView || storeOwner) && storeModules.deposits
+            "
             horizontal
             label="Deposit %"
           >
@@ -478,7 +490,7 @@
           show
           variant="warning"
           class="center-text pt-2"
-          v-if="$route.params.storeView && customer === null"
+          v-if="($route.params.storeView || storeOwner) && customer === null"
           >Please choose a customer.</b-alert
         >
         <b-alert
@@ -486,7 +498,7 @@
           variant="warning"
           class="center-text pt-2"
           v-if="
-            $route.params.storeView &&
+            ($route.params.storeView || storeOwner) &&
               card === null &&
               cashOrder === null &&
               customer != null
@@ -497,12 +509,15 @@
           v-if="
             // Condense all this logic / put in computed prop
             (card != null || cashOrder) &&
-              (minimumMet || $route.params.storeView) &&
+              (minimumMet || ($route.params.storeView || storeOwner)) &&
               $route.params.adjustOrder != true &&
               $route.params.subscriptionId === undefined &&
-              (store.settings.open === true || $route.params.storeView) &&
-              (willDeliver || pickup === 1 || $route.params.storeView) &&
-              (customer != null || !$route.params.storeView)
+              (store.settings.open === true ||
+                ($route.params.storeView || storeOwner)) &&
+              (willDeliver ||
+                pickup === 1 ||
+                ($route.params.storeView || storeOwner)) &&
+              (customer != null || (!$route.params.storeView && !storeOwner))
           "
           @click="checkout"
           :disabled="checkingOut"
@@ -573,7 +588,10 @@
       </div>
     </li>
 
-    <li class="transfer-instruction mt-2" v-if="!$route.params.storeView">
+    <li
+      class="transfer-instruction mt-2"
+      v-if="!$route.params.storeView && !storeOwner"
+    >
       <p class="strong">{{ transferText }}</p>
       <p v-html="transferInstructions"></p>
     </li>
@@ -582,7 +600,8 @@
       v-if="
         minOption === 'meals' &&
           total < minimumMeals &&
-          !$route.params.storeView
+          !$route.params.storeView &&
+          !storeOwner
       "
     >
       <p class="strong">
@@ -594,7 +613,8 @@
       v-if="
         minOption === 'price' &&
           totalBagPricePreFees < minPrice &&
-          !$route.params.storeView
+          !$route.params.storeView &&
+          !storeOwner
       "
     >
       <p class="strong">
@@ -692,9 +712,17 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       _orders: "orders",
-      loggedIn: "loggedIn",
-      subscriptions: "subscriptions"
+      subscriptions: "subscriptions",
+      user: "user"
     }),
+    storeOwner() {
+      let flag = false;
+      if (this.user && this.user.storeOwner) {
+        flag = true;
+      }
+
+      return flag;
+    },
     storeSettings() {
       return this.store.settings;
     },
@@ -862,7 +890,10 @@ export default {
     deliveryDaysOptions() {
       let options = [];
       let dates = this.storeSettings.next_orderable_delivery_dates;
-      if (this.storeModules.ignoreCutoff && this.$route.params.storeView)
+      if (
+        this.storeModules.ignoreCutoff &&
+        (this.$route.params.storeView || this.storeOwner)
+      )
         dates = this.storeSettings.next_delivery_dates;
 
       dates.forEach(date => {
@@ -1133,7 +1164,7 @@ export default {
       });
     },
     oneTimeCouponCheck(couponId) {
-      if (this.$route.params.storeView) {
+      if (this.$route.params.storeView || this.storeOwner) {
         return true;
       }
       if (!this.loggedIn) {

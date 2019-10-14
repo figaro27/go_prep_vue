@@ -101,6 +101,8 @@ class SpaController extends Controller
                     ])
                     ->first();
 
+                $user->storeOwner = true;
+
                 return [
                     'context' => $context,
                     'user' => $user,
