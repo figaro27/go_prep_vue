@@ -315,6 +315,7 @@ class Subscription extends Model
             $mealOrder->order_id = $newOrder->id;
             $mealOrder->store_id = $this->store->id;
             $mealOrder->meal_id = $mealSub->meal_id;
+            $mealOrder->meal_size_id = $mealSub->meal_size_id;
             $mealOrder->quantity = $mealSub->quantity;
             $mealOrder->save();
 
