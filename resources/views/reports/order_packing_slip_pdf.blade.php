@@ -5,10 +5,6 @@
   <link rel="stylesheet" href="{{ asset('css/print.css') }}">
 <style>
 
-p, td, h1, h2, h3, h4, h5, h6{
-  font-family:'roboto';
-}
-
 p, td {
   font-size: 14px;
 }
@@ -52,7 +48,15 @@ $deposit = '$'.number_format($order->deposit, 2);
   <div id="print-area">
     <div class="row">
       
-    <div class="col-4 address">
+      <div class="col-4 address">
+        <p><b>{{$order->user->name}}</b></p>
+          <p>{{$order->user->details->address}}</p>
+          <p>{{$order->user->details->city}},
+          {{$order->user->details->state}}
+          {{$order->user->details->zip}}</p>
+          <p>{{$order->user->details->phone}}</p>
+      </div>
+      <div class="col-4 address">
             @if ($order->pickup === 0)
             <p><b>DELIVERY</b></p>
             @endif
@@ -81,14 +85,6 @@ $deposit = '$'.number_format($order->deposit, 2);
               @endif
             </p>
             @endif
-      </div>
-      <div class="col-4 address">
-        <p><b>{{$order->user->name}}</b></p>
-          <p>{{$order->user->details->address}}</p>
-          <p>{{$order->user->details->city}},
-          {{$order->user->details->state}}
-          {{$order->user->details->zip}}</p>
-          <p>{{$order->user->details->phone}}</p>
       </div>
       <div class="col-4" style="float:right">
         <p><b>{{ $order->store->details->name }}</b></p>
