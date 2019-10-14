@@ -104,7 +104,7 @@
 
 <script>
 import states from "../../data/states.js";
-import { mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   props: {
@@ -115,7 +115,18 @@ export default {
       form: {}
     };
   },
+  mounted() {
+    let stateAbr = this.store.details.state;
+    let state = this.stateNames.filter(stateName => {
+      return stateName.value.toLowerCase() === stateAbr.toLowerCase();
+    });
+
+    this.form.state = state[0];
+  },
   computed: {
+    ...mapGetters({
+      store: "viewedStore"
+    }),
     stateNames() {
       return states.selectOptions("US");
     }

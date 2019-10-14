@@ -387,7 +387,7 @@
       <div>
         <div v-if="$route.params.manualOrder">
           <b-form-group>
-            <h4 class="mt-2 mb-3">Choose Customer</h4>
+            <h4 class="mt-2 mb-3">Customer</h4>
             <v-select
               label="text"
               :options="customers"
@@ -405,9 +405,15 @@
             >Add New Customer</b-btn
           >
         </div>
-        <div v-if="!hidePaymentArea">
+        <div
+          v-if="
+            !hidePaymentArea &&
+              (($route.params.storeView && customer != null) ||
+                !$route.params.storeView)
+          "
+        >
           <h4 class="mt-2 mb-3">
-            Choose Payment Method
+            Payment Method
           </h4>
 
           <div
@@ -468,7 +474,25 @@
           sure you want to create another subscription instead of adjusting the
           original one?
         </div>
-
+        <b-alert
+          show
+          variant="warning"
+          class="center-text pt-2"
+          v-if="$route.params.storeView && customer === null"
+          >Please choose a customer.</b-alert
+        >
+        <b-alert
+          show
+          variant="warning"
+          class="center-text pt-2"
+          v-if="
+            $route.params.storeView &&
+              card === null &&
+              cashOrder === null &&
+              customer != null
+          "
+          >Please choose a payment method.</b-alert
+        >
         <b-btn
           v-if="
             // Condense all this logic / put in computed prop
