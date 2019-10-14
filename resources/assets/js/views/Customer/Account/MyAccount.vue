@@ -156,7 +156,7 @@
         </b-form>
 
         <p class="strong mt-4">Payment Methods</p>
-        <card-picker :selectable="false"></card-picker>
+        <card-picker :selectable="false" :gateway="gateway"></card-picker>
       </div>
     </div>
   </div>
@@ -189,8 +189,12 @@ export default {
     ...mapGetters({
       cards: "cards",
       user: "user",
-      userDetail: "userDetail"
-    })
+      userDetail: "userDetail",
+      storeSettings: "viewedStoreSettings"
+    }),
+    gateway() {
+      return this.storeSettings.payment_gateway;
+    }
   },
   mounted() {},
   methods: {
@@ -227,6 +231,11 @@ export default {
         let reducedZip = this.userDetail.zip.toString();
         this.userDetail.zip = parseInt(reducedZip.substring(0, 5));
       }
+    },
+    getCustomer() {
+      axios.get("/api/me/getCustomer").then(resp => {
+        return resp.data.id;
+      });
     }
   }
 };

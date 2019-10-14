@@ -163,7 +163,25 @@
             <strong>Delivery Fee:</strong>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
-            {{ format.money(deliveryFeeAmount, storeSettings.currency) }}
+            <span v-if="editingDeliveryFee">
+              <b-form-input
+                v-model="customDeliveryFee"
+                class="d-inline width-70"
+              ></b-form-input
+              ><img
+                class="couponX d-inline ml-1"
+                src="/images/customer/x.png"
+                @click="editingDeliveryFee = false"
+              />
+            </span>
+            <span v-else>{{
+              format.money(deliveryFeeAmount, storeSettings.currency)
+            }}</span>
+            <i
+              v-if="$route.params.storeView && !editingDeliveryFee"
+              @click="editDeliveryFee"
+              class="fa fa-edit text-warning"
+            ></i>
           </div>
         </div>
       </li>
@@ -369,7 +387,7 @@
       <div>
         <div v-if="$route.params.manualOrder">
           <b-form-group>
-            <h4 class="mt-2 mb-3">Choose Customer</h4>
+            <h4 class="mt-2 mb-3">Customer</h4>
             <v-select
               label="text"
               :options="customers"
@@ -387,14 +405,21 @@
             >Add New Customer</b-btn
           >
         </div>
-        <div v-if="!hidePaymentArea">
+        <div
+          v-if="
+            !hidePaymentArea &&
+              (($route.params.storeView && customer != null) ||
+                !$route.params.storeView)
+          "
+        >
           <h4 class="mt-2 mb-3">
-            Choose Payment Method
+            Payment Method
           </h4>
 
           <div
             v-if="
               storeModules.cashOrders &&
+                !weeklySubscriptionValue &&
                 (storeModuleSettings.cashAllowedForCustomer ||
                   $route.params.storeView)
             "
@@ -441,7 +466,7 @@
         </div>
 
         <div
-          v-if="hasActiveSubscription"
+          v-if="hasActiveSubscription && !$route.params.subscriptionId"
           class="alert alert-warning"
           role="alert"
         >
@@ -449,7 +474,25 @@
           sure you want to create another subscription instead of adjusting the
           original one?
         </div>
-
+        <b-alert
+          show
+          variant="warning"
+          class="center-text pt-2"
+          v-if="$route.params.storeView && customer === null"
+          >Please choose a customer.</b-alert
+        >
+        <b-alert
+          show
+          variant="warning"
+          class="center-text pt-2"
+          v-if="
+            $route.params.storeView &&
+              card === null &&
+              cashOrder === null &&
+              customer != null
+          "
+          >Please choose a payment method.</b-alert
+        >
         <b-btn
           v-if="
             // Condense all this logic / put in computed prop
@@ -519,8 +562,9 @@
         <div class="col-md-6">
           <router-link
             :to="{
-              path: '/register',
-              query: { redirect: '/customer/bag' }
+              name: 'register',
+              query: { redirect: '/customer/bag' },
+              params: { customerRegister: true }
             }"
           >
             <b-btn class="menu-bag-btn">REGISTER</b-btn>
@@ -581,6 +625,8 @@ export default {
   },
   data() {
     return {
+      customDeliveryFee: 0,
+      editingDeliveryFee: false,
       stripeKey: window.app.stripe_key,
       loading: false,
       checkingOut: false,
@@ -588,7 +634,8 @@ export default {
       creditCardId: null,
       couponCode: "",
       addCustomerModal: false,
-      weeklySubscriptionValue: null
+      weeklySubscriptionValue: null,
+      customer: null
     };
   },
   props: {
@@ -599,7 +646,6 @@ export default {
     mobile: false,
     salesTax: 0,
     creditCardList: null,
-    customer: null,
     orderId: null,
     deliveryDay: null,
     transferTime: null,
@@ -898,6 +944,9 @@ export default {
     },
     deliveryFeeAmount() {
       if (!this.pickup) {
+        if (this.editingDeliveryFee) {
+          return parseFloat(this.customDeliveryFee);
+        }
         if (!this.couponFreeDelivery) {
           if (this.storeSettings.applyDeliveryFee) {
             if (this.storeSettings.deliveryFeeType === "flat") {
@@ -1288,7 +1337,10 @@ export default {
             this.refreshOrdersToday();
             this.refreshOrders();
             this.$router.push({
-              path: "/store/orders"
+              name: "store-orders",
+              params: {
+                autoPrintPackingSlip: this.storeModules.autoPrintPackingSlip
+              }
             });
             return;
           }
@@ -1307,11 +1359,12 @@ export default {
           }
         })
         .catch(async response => {
-          let error =
-            "Checkout failed. Reason: " +
-            response.response.data.message +
-            ". Please contact GoPrep";
-          this.$toastr.e(error, "Error");
+          // let error =
+          //   "Checkout failed. Reason: " +
+          //   response.response.data.message +
+          //   ". Please contact GoPrep";
+          // this.$toastr.e(error, "Error");
+          this.$toastr.e("Please contact GoPrep", "Error");
         })
         .finally(() => {
           this.loading = false;
@@ -1319,13 +1372,16 @@ export default {
     },
     setCustomer() {
       this.customer = this.storeCustomers.slice(-1)[0].id;
+      this.$forceUpdate();
     },
     removeCoupon() {
       this.coupon = {};
       this.setBagCoupon(null);
       this.couponCode = "";
     },
-
+    editDeliveryFee() {
+      this.editingDeliveryFee = true;
+    },
     // Temporary work around for two delivery fees based on day of the week. Will remove when two delivery day feature is added.
     DBD() {
       if (this.store.id === 100) {

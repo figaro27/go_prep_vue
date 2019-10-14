@@ -9,7 +9,8 @@ export default {
       size = null,
       components = null,
       addons = null,
-      special_instructions = null
+      special_instructions = null,
+      free = false
     ) {
       if (!mealPackage) {
         meal = this.getMeal(meal.id);
@@ -67,6 +68,10 @@ export default {
         addons = { ...result.addons };
       }
 
+      if (free) {
+        meal.price = 0;
+      }
+
       this.$store.commit("addToBag", {
         meal,
         quantity: 1,
@@ -74,7 +79,8 @@ export default {
         size,
         components,
         addons,
-        special_instructions
+        special_instructions,
+        free
       });
       this.mealModal = false;
       this.mealPackageModal = false;
@@ -234,9 +240,10 @@ export default {
         deposit = parseInt(deposit);
       }
 
-      if (this.$route.params.adjustMealPlan) {
-        axios
-          .post("/api/me/subscriptions/updateMeals", {
+      try {
+        const { data } = await axios.post(
+          `/api/me/subscriptions/${this.subscriptionId}/meals`,
+          {
             subscriptionId: this.subscriptionId,
             subtotal: this.subtotal,
             afterDiscount: this.afterDiscount,
@@ -254,65 +261,39 @@ export default {
             deposit: deposit,
             cashOrder: this.cashOrder,
             transferTime: this.transferTime
-          })
-          .then(resp => {
-            this.refreshStoreSubscriptions();
-            this.emptyBag();
-            this.setBagMealPlan(false);
-            this.setBagCoupon(null);
-            this.$router.push({
-              path: "/store/subscriptions",
-              query: {
-                updated: true
-              }
-            });
-          });
-      } else {
-        try {
-          const { data } = await axios.post(
-            `/api/me/subscriptions/${this.subscriptionId}/meals`,
-            {
-              subscriptionId: this.subscriptionId,
-              subtotal: this.subtotal,
-              afterDiscount: this.afterDiscount,
-              bag: this.bag,
-              plan: this.weeklySubscription,
-              pickup: this.pickup,
-              store_id: this.store.id,
-              salesTax: this.tax,
-              coupon_id: this.couponApplied ? this.coupon.id : null,
-              couponReduction: this.couponReduction,
-              couponCode: this.couponApplied ? this.coupon.code : null,
-              deliveryFee: this.deliveryFee,
-              pickupLocation: this.selectedPickupLocation,
-              customer: this.customer,
-              deposit: deposit,
-              cashOrder: this.cashOrder,
-              transferTime: this.transferTime
-            }
-          );
-          await this.refreshSubscriptions();
-          this.emptyBag();
-          this.setBagMealPlan(false);
-          this.setBagCoupon(null);
+          }
+        );
+        await this.refreshSubscriptions();
+        this.emptyBag();
+        this.setBagMealPlan(false);
+        this.setBagCoupon(null);
 
+        if (this.$route.params.storeView) {
+          this.$store.commit("refreshStoreSubscriptions");
+          this.$router.push({
+            path: "/store/subscriptions",
+            query: {
+              updated: true
+            }
+          });
+        } else {
           this.$router.push({
             path: "/customer/subscriptions",
             query: {
               updated: true
             }
           });
-        } catch (e) {
-          if (!_.isEmpty(e.response.data.error)) {
-            this.$toastr.e(e.response.data.error);
-          } else {
-            this.$toastr.e(
-              "Please try again or contact our support team",
-              "Failed to update items."
-            );
-          }
-          return;
         }
+      } catch (e) {
+        if (!_.isEmpty(e.response.data.error)) {
+          this.$toastr.e(e.response.data.error);
+        } else {
+          this.$toastr.e(
+            "Please try again or contact our support team",
+            "Failed to update items."
+          );
+        }
+        return;
       }
     }
   }

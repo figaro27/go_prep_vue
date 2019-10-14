@@ -125,13 +125,21 @@ class Order extends Model
 
     public function getGoprepFeeAttribute()
     {
-        return $this->afterDiscountBeforeFees *
-            ($this->store->settings->application_fee / 100);
+        if (!$this->cashOrder) {
+            return $this->afterDiscountBeforeFees *
+                ($this->store->settings->application_fee / 100);
+        } else {
+            return 0;
+        }
     }
 
     public function getStripeFeeAttribute()
     {
-        return $this->amount * 0.029 + 0.3;
+        if (!$this->cashOrder) {
+            return $this->amount * 0.029 + 0.3;
+        } else {
+            return 0;
+        }
     }
 
     public function getGrandTotalAttribute()
@@ -201,6 +209,7 @@ class Order extends Model
                     'quantity' => $mealOrder->quantity,
                     'unit_price' => $mealOrder->unit_price,
                     'price' => $mealOrder->price,
+                    'free' => $mealOrder->free,
                     'special_instructions' => $mealOrder->special_instructions,
                     'meal_package_title' => $mealOrder->meal_package_title,
                     'components' => $mealOrder->components->map(function (

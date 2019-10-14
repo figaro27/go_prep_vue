@@ -1,6 +1,7 @@
 <template>
   <div class="modal-full modal-tabs">
     <b-modal
+      size="xl"
       title="Add Meal"
       ref="createMealModal"
       @ok.prevent="e => storeMeal(e)"

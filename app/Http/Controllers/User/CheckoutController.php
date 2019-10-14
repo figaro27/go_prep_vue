@@ -52,6 +52,7 @@ class CheckoutController extends UserController
         if ($cashOrder) {
             $cardId = null;
             $card = null;
+            $gateway = Constants::GATEWAY_CASH;
         } else {
             $cardId = $request->get('card_id');
             $card = $this->user->cards()->findOrFail($cardId);
@@ -118,14 +119,12 @@ class CheckoutController extends UserController
                 $gateway
             )
         ) {
-            $storeCustomer = $user->createStoreCustomer(
+            $user->createStoreCustomer(
                 $store->id,
                 $storeSettings->currency,
                 $gateway
             );
         }
-
-        $total += $salesTax;
 
         $customer = $user->getStoreCustomer(
             $store->id,
@@ -133,40 +132,51 @@ class CheckoutController extends UserController
             $gateway
         );
 
+        $storeCustomer = null;
+
+        if (!$cashOrder) {
+            $storeCustomer = $user->getStoreCustomer(
+                $store->id,
+                $storeSettings->currency,
+                $gateway,
+                true
+            );
+        }
+
+        $total += $salesTax;
+
         if (!$weeklyPlan) {
-            if (!$cashOrder) {
-                if ($gateway === Constants::GATEWAY_STRIPE) {
-                    $storeSource = \Stripe\Source::create(
-                        [
-                            "customer" => $this->user->stripe_id,
-                            "original_source" => $card->stripe_id,
-                            "usage" => "single_use"
-                        ],
-                        ["stripe_account" => $storeSettings->stripe_id]
-                    );
+            if ($gateway === Constants::GATEWAY_STRIPE) {
+                $storeSource = \Stripe\Source::create(
+                    [
+                        "customer" => $this->user->stripe_id,
+                        "original_source" => $card->stripe_id,
+                        "usage" => "single_use"
+                    ],
+                    ["stripe_account" => $storeSettings->stripe_id]
+                );
 
-                    $charge = \Stripe\Charge::create(
-                        [
-                            "amount" => round($total * 100),
-                            "currency" => $storeSettings->currency,
-                            "source" => $storeSource,
-                            "application_fee" => round(
-                                $afterDiscountBeforeFees * $application_fee
-                            )
-                        ],
-                        ["stripe_account" => $storeSettings->stripe_id]
-                    );
-                } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
-                    $billing = Billing::init($gateway, $store);
+                $charge = \Stripe\Charge::create(
+                    [
+                        "amount" => round($total * 100),
+                        "currency" => $storeSettings->currency,
+                        "source" => $storeSource,
+                        "application_fee" => round(
+                            $afterDiscountBeforeFees * $application_fee
+                        )
+                    ],
+                    ["stripe_account" => $storeSettings->stripe_id]
+                );
+            } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
+                $billing = Billing::init($gateway, $store);
 
-                    $charge = new \App\Billing\Charge();
-                    $charge->amount = round($total * 100);
-                    $charge->customer = $customer;
-                    $charge->card = $card;
+                $charge = new \App\Billing\Charge();
+                $charge->amount = round($total * 100);
+                $charge->customer = $customer;
+                $charge->card = $card;
 
-                    $transactionId = $billing->charge($charge);
-                    $charge->id = $transactionId;
-                }
+                $transactionId = $billing->charge($charge);
+                $charge->id = $transactionId;
             }
 
             $order = new Order();
@@ -320,21 +330,6 @@ class CheckoutController extends UserController
                 $billingAnchor->addWeeks(1);
             }
             if (!$cashOrder) {
-                $plan = \Stripe\Plan::create(
-                    [
-                        "amount" => round($total * 100),
-                        "interval" => "week",
-                        "product" => [
-                            "name" =>
-                                "Weekly subscription (" .
-                                $store->storeDetail->name .
-                                ")"
-                        ],
-                        "currency" => $store->settings->currency
-                    ],
-                    ['stripe_account' => $store->settings->stripe_id]
-                );
-
                 if ($gateway === Constants::GATEWAY_STRIPE) {
                     $plan = \Stripe\Plan::create(
                         [

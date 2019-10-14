@@ -200,7 +200,8 @@ const mutations = {
       size = null,
       components = null,
       addons = null,
-      special_instructions = null
+      special_instructions = null,
+      free = null
     }
   ) {
     let mealId = meal;
@@ -241,7 +242,8 @@ const mutations = {
         size,
         components,
         addons,
-        special_instructions: special_instructions
+        special_instructions: special_instructions,
+        free
       });
     }
 
@@ -1870,6 +1872,10 @@ const getters = {
         special_instructions = null
       ) => {
         let title = meal.title;
+
+        if (meal.default_size_title != null) {
+          title = title + " - " + meal.default_size_title;
+        }
 
         if (_.isObject(size)) {
           title = size.full_title;

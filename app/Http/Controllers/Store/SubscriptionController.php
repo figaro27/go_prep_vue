@@ -244,6 +244,13 @@ class SubscriptionController extends StoreController
             ]);
             $plan->delete();
         } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'error' =>
+                        'Failed to update subscription. Please get in touch'
+                ],
+                500
+            );
         }
 
         // Create stripe plan with new pricing

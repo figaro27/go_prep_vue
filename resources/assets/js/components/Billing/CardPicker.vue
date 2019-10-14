@@ -177,12 +177,12 @@ export default {
           payment_gateway: this.gateway
         })
         .then(async resp => {
-          if (this.manualOrder) {
+          if (this.manualOrder || this.$route.params.manualOrder) {
             this.$parent.getCards();
           } else {
             await this.refreshCards();
           }
-          this.selectedCard = resp.id;
+          this.selectCard(resp.data.id);
           this.newCard = null;
           this.$toastr.s("Payment method saved.");
         })

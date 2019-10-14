@@ -1,6 +1,7 @@
 <template>
   <div class="modal-full modal-tabs">
     <b-modal
+      size="xl"
       title="Edit Package"
       ref="modal"
       @ok.prevent="e => updateMealPackage(e)"

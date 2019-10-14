@@ -125,14 +125,36 @@
             <p class="mt-4 center-text">
               Shows how to bag up your meals for each customer.
             </p>
+
             <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-6">
                 <button
                   @click="print('orders_by_customer', 'pdf')"
-                  class="btn btn-primary btn-md center mt-2 center"
+                  class="btn btn-primary btn-md center mt-2 pull-right"
                 >
                   Print
                 </button>
+              </div>
+              <div class="col-md-6">
+                <b-dropdown
+                  variant="warning"
+                  class="center mt-2"
+                  right
+                  text="Export as"
+                >
+                  <b-dropdown-item
+                    @click="exportData('orders_by_customer', 'csv')"
+                    >CSV</b-dropdown-item
+                  >
+                  <b-dropdown-item
+                    @click="exportData('orders_by_customer', 'xls')"
+                    >XLS</b-dropdown-item
+                  >
+                  <b-dropdown-item
+                    @click="exportData('orders_by_customer', 'pdf')"
+                    >PDF</b-dropdown-item
+                  >
+                </b-dropdown>
               </div>
             </div>
           </div>

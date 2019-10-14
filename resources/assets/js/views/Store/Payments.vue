@@ -379,8 +379,7 @@ export default {
         "subtotal",
         "salesTax",
         // "total",
-        "goprep_fee",
-        "stripe_fee",
+
         "grandTotal"
       ];
 
@@ -406,6 +405,12 @@ export default {
         if (!columns.includes("deposit") && order.deposit < 100) {
           columns.splice(columns.length, 0, "deposit");
         }
+        if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
+          columns.splice(columns.length - 1, 0, "goprep_fee");
+        }
+        if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
+          columns.splice(columns.length - 1, 0, "stripe_fee");
+        }
       });
 
       this.ordersByDate.forEach(order => {
@@ -427,6 +432,12 @@ export default {
         }
         if (!columns.includes("deposit") && order.deposit < 100) {
           columns.splice(columns.length, 0, "deposit");
+        }
+        if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
+          columns.splice(columns.length - 1, 0, "goprep_fee");
+        }
+        if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
+          columns.splice(columns.length - 1, 0, "stripe_fee");
         }
       });
 

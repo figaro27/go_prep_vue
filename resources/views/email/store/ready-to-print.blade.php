@@ -161,20 +161,14 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- content -->
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Orders are locked in and your reports are ready to be viewed for the next delivery date: {{ date('D, m/d/Y', strtotime($store->next_delivery_date)) }}
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Orders are locked in and your reports are ready to be viewed for the next delivery date: <br><b>{{ date('D, m/d/Y', strtotime($store->next_delivery_date)) }}.</b> Click the button below to view your reports.
                   </td>
                 </tr>
                 <tr>
-                  <td height="15"></td>
+                  <td height="25"></td>
                 </tr>
                 <tr>
-                	<td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">Click the button below to view your reports.</td>
-                </tr>
-                <tr>
-                  <td height="15"></td>
-                </tr>
-                <tr>
-                <td><a href="http://{{ $storeDetails->domain }}.goprep.com/store/reports"><button bgcolor="#E04F00" align="center" style="font-family:'Open Sans'; font-size:16px; color:#ffffff;padding-left:25px;padding-right:25px;border-radius:5px;background-color:#F25727;width:100%;height:55px;border:none">Go</button></a></td>
+                <td><a href="http://{{ $storeDetails->domain }}.goprep.com/store/reports"><button bgcolor="#E04F00" align="center" style="font-family:'Open Sans'; font-size:16px; color:#ffffff;padding-left:25px;padding-right:25px;border-radius:5px;background-color:#F25727;width:100%;height:55px;border:none">View Reports</button></a></td>
                 </tr>
 
 

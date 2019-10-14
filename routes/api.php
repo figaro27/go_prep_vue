@@ -151,6 +151,10 @@ foreach (
                                 'ordersUpdateViewed',
                                 'OrderController@updateViewed'
                             );
+                            Route::get(
+                                'getLatestOrder',
+                                'OrderController@getLatestOrder'
+                            );
                             Route::post(
                                 'orders/adjustOrder',
                                 'OrderController@adjustOrder'
@@ -164,7 +168,7 @@ foreach (
                             //     'SubscriptionController@updateMeals'
                             // );
                             Route::post(
-                                'subscriptions/updateMeals',
+                                'subscriptions/{id}/meals',
                                 'SubscriptionController@updateMeals'
                             );
                             Route::post(
@@ -276,6 +280,12 @@ foreach (
                         ],
                         function ($router) {
                             //Route::resource('stores', 'User\\StoreController');
+
+                            Route::get(
+                                '/me/getCustomer',
+                                'UserController@getCustomer'
+                            );
+
                             Route::patch(
                                 '/me/detail',
                                 'UserDetailController@update'

@@ -243,9 +243,9 @@
       >
         <div class="row light-background" v-if="order.adjusted">
           <div class="col-md-12">
-            <p class="center-text red pt-3">
-              The items and/or delivery date of this order was adjusted.
-            </p>
+            <b-alert show variant="warning" class="center-text"
+              >This order was adjusted.</b-alert
+            >
           </div>
         </div>
         <div class="row light-background border-bottom mb-3">
@@ -380,12 +380,14 @@
             <hr />
             <ul class="meal-quantities">
               <li v-for="meal in getMealQuantities(order)" :key="meal.id">
-                <div class="row">
+                <div
+                  class="row"
+                  v-if="meal.image != null && meal.image.url_thumb"
+                >
                   <div class="col-md-5 pr-0">
                     <span class="order-quantity">{{ meal.quantity }}</span>
                     <img src="/images/store/x-modal.png" class="mr-2 ml-2" />
                     <thumbnail
-                      v-if="meal.image != null && meal.image.url_thumb"
                       :src="meal.image.url_thumb"
                       :spinner="false"
                       class="mr-0 pr-0"
@@ -395,6 +397,21 @@
                     <p v-html="meal.title"></p>
                     <p class="strong">
                       {{ format.money(meal.subtotal, order.currency) }}
+                    </p>
+                  </div>
+                </div>
+                <div class="row" v-else>
+                  <div class="col-md-12 pr-0 d-inline">
+                    <span class="order-quantity d-inline">{{
+                      meal.quantity
+                    }}</span>
+                    <img
+                      src="/images/store/x-modal.png"
+                      class="mr-2 ml-2 d-inline"
+                    />
+                    <p v-html="meal.title" class="d-inline"></p>
+                    <p class="strong d-inline">
+                      - {{ format.money(meal.subtotal, order.currency) }}
                     </p>
                   </div>
                 </div>
@@ -545,6 +562,11 @@ export default {
       this.columns.splice(1, 0, "dailyOrderNumber");
     }
 
+    if (this.$route.params.autoPrintPackingSlip) {
+      axios.get("/api/me/getLatestOrder").then(resp => {
+        this.printPackingSlip(resp.data.id);
+      });
+    }
     /* Sidebar Check */
     let isOpen = false;
 

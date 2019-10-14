@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class MealOrder extends Pivot
 {
     protected $table = 'meal_orders';
+
+    protected $casts = [
+        'free' => 'boolean',
+        'meal_package' => 'boolean'
+    ];
+
     protected $appends = [
         'title',
         'html_title',
@@ -52,6 +58,46 @@ class MealOrder extends Pivot
     }
 
     public function getTitleAttribute()
+    {
+        $title = $this->meal->title;
+
+        if ($this->meal_size_id && $this->meal_size) {
+            $title = $this->meal_size->full_title;
+        } else {
+            if (
+                $this->meal->default_size_title != 'Medium' &&
+                $this->meal->default_size_title != null
+            ) {
+                $title =
+                    $this->meal->title .
+                    ' - ' .
+                    $this->meal->default_size_title;
+            }
+        }
+
+        if (count($this->components)) {
+            $comp = $this->components
+                ->map(function ($component) {
+                    return $component->option->title;
+                })
+                ->implode(', ');
+            $title .= ' - ' . $comp;
+        }
+        if (count($this->addons)) {
+            $comp = $this->addons
+                ->map(function ($addon) {
+                    return $addon->addon->title;
+                })
+                ->implode(', ');
+            $title .= ' - ' . $comp;
+        }
+        if ($this->special_instructions != null) {
+            $title .= $this->special_instructions;
+        }
+        return $title;
+    }
+
+    public function getTitle()
     {
         $title = $this->meal->title;
 
