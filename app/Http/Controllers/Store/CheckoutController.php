@@ -639,7 +639,7 @@ class CheckoutController extends StoreController
         $application_fee = $store->settings->application_fee;
         $storeName = strtolower($this->store->storeDetail->name);
 
-        $customer = Customer::where('id', $order->customer_id)->first();
+        $customerUser = User::where('id', $order->user_id)->first();
 
         if (!$cashOrder && $balance > 0) {
             $cardId = $order->card_id;
