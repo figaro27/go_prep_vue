@@ -64,7 +64,8 @@ f<template>
                       <p
                         v-if="
                           subscription.latest_order &&
-                            !subscription.latest_order.fulfilled
+                            !subscription.latest_order.fulfilled &&
+                            subscription.next_order
                         "
                       >
                         {{

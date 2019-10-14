@@ -2023,8 +2023,8 @@ const getters = {
 
 const plugins = [
   createPersistedState({
-    // paths: ["bag", "cards"]
-    paths: ["cards"]
+    paths: ["bag", "cards"]
+    // paths: ["cards"]
   })
 ];
 

@@ -108,10 +108,18 @@
                 v-if="!item.meal_package && (item.components || item.addons)"
                 class="plain"
               >
-                <li v-for="component in itemComponents(item)" class="plain">
+                <li
+                  v-for="(component, index) in itemComponents(item)"
+                  v-bind:key="'itemComponent' + index"
+                  class="plain"
+                >
                   {{ component }}
                 </li>
-                <li v-for="addon in itemAddons(item)" class="plus">
+                <li
+                  v-for="(addon, index) in itemAddons(item)"
+                  v-bind:key="'itemAddon' + index"
+                  class="plus"
+                >
                   {{ addon }}
                 </li>
               </ul>
@@ -157,6 +165,7 @@
       <ul class="list-group">
         <li
           v-for="(orderLineItem, index) in orderLineItems"
+          v-bind:key="'orderLineItem' + index"
           class="bag-item"
           v-if="orderLineItem.quantity > 0"
         >
