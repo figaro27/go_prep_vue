@@ -45,7 +45,6 @@ export default {
       if (!subscription) {
         return;
       }
-      console.log(this.subscriptions, subscription);
 
       this.clearAll();
 

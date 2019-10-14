@@ -29,12 +29,18 @@
 
         <b-navbar-nav class="adjust-nav">
           <b-nav-item
-            v-if="'id' in viewedStore"
+            v-if="
+              'id' in viewedStore && name != 'customer-subscription-changes'
+            "
             to="/customer/menu"
             @click.prevent="backToMenu()"
             >Menu</b-nav-item
           >
-          <b-nav-item v-if="'id' in viewedStore" to="/customer/bag"
+          <b-nav-item
+            v-if="
+              'id' in viewedStore && name != 'customer-subscription-changes'
+            "
+            to="/customer/bag"
             >Checkout</b-nav-item
           >
           <b-nav-item v-if="loggedIn" to="/customer/orders">Orders</b-nav-item>
@@ -236,6 +242,7 @@ export default {
       return "store-logo d-none d-md-block";
     }
   },
+  mounted() {},
   updated() {
     if (this.mobile) {
       this.navBgColor === "#ffffff !important";
@@ -267,7 +274,6 @@ export default {
     //   this.bgColor = this.viewedStore.settings.color + " !important";
     // }
   },
-  created() {},
   methods: {
     ...mapActions(["logout"]),
     showBagArea() {
