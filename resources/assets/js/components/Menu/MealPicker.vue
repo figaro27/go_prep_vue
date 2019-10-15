@@ -7,14 +7,14 @@
       :options="options"
     >
       <div slot="beforeTable" class="d-inline">
-        <b-form-checkbox
+        <!-- <b-form-checkbox
           @change="addAll"
           v-model="all"
           class="largeCheckbox ml-3"
           type="checkbox"
         >
           <span class="paragraph pb-1">Select All</span>
-        </b-form-checkbox>
+        </b-form-checkbox> -->
       </div>
       <div slot="afterFilter" class="d-inline">
         <b-form-group class="ml-3">
@@ -53,6 +53,36 @@
       </div>
 
       <span slot="beforeLimit" class="d-flex align-items-start">
+        <b-form-checkbox
+          @change="addAll"
+          v-model="all"
+          class="largeCheckbox ml-3"
+          type="checkbox"
+        >
+          <span class="paragraph pb-1">Select All</span>
+        </b-form-checkbox>
+
+        <div v-if="store.id === 108 || store.id === 109 || store.id === 110">
+          <b-form-checkbox v-model="secondSize" type="checkbox" class="mr-2"
+            >2nd Size</b-form-checkbox
+          >
+
+          <b-form-input
+            v-model="allQuantity"
+            placeholder="Quantity"
+            class="width-100 mr-2"
+          ></b-form-input>
+
+          <b-form-input
+            v-model="addedPrice"
+            placeholder="Price"
+            class="width-100 mr-2"
+          ></b-form-input>
+          <b-btn @click="addSizeQuantityPrice()" variant="primary">
+            Set
+          </b-btn>
+        </div>
+
         <div class="mr-2 pt-1">
           Total Price:
           {{ format.money(mealPriceTotal, storeSettings.currency) }}
@@ -164,6 +194,11 @@ export default {
   data() {
     return {
       all: false,
+      // Temp for Danny
+      secondSize: false,
+      allQuantity: null,
+      addedPrice: null,
+      //
       categoryFilter: -1,
       selected: [],
       meals_selectable: false,
@@ -192,6 +227,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      store: "viewedStore",
       meals: "storeMeals",
       findMeal: "storeMeal",
       isLoading: "isLoading",
@@ -427,7 +463,29 @@ export default {
           });
         }
       });
+    },
+
+    // Temp for Danny
+    addSizeQuantityPrice() {
+      this.$nextTick(() => {
+        this.choose2ndSize = !this.choose2ndSize;
+        this.meals.forEach(meal => {
+          if (this.secondSize) {
+            meal.meal_size_id = meal.sizes.length > 0 ? meal.sizes[0].id : null;
+          }
+          if (this.allQuantity != null) {
+            meal.quantity = this.allQuantity;
+          }
+          if (this.addedPrice != null) {
+            meal.price = this.addedPrice;
+          }
+          if (meal.included) {
+            this.selected.push(meal);
+          }
+        });
+      });
     }
+    //
   }
 };
 </script>
