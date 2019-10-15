@@ -61,7 +61,7 @@
             class="mr-2"
             type="checkbox"
           >
-            <span class="paragraph pb-1">Select All</span>
+            Select All
           </b-form-checkbox>
           <b-form-checkbox v-model="secondSize" type="checkbox" class="mr-2"
             >2nd Size</b-form-checkbox
