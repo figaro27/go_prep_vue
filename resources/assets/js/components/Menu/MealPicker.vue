@@ -53,16 +53,16 @@
       </div>
 
       <span slot="beforeLimit" class="d-flex align-items-start">
-        <b-form-checkbox
-          @change="addAll"
-          v-model="all"
-          class="largeCheckbox ml-3"
-          type="checkbox"
-        >
-          <span class="paragraph pb-1">Select All</span>
-        </b-form-checkbox>
-
+        <!-- Helpers for Danny -->
         <div v-if="store.id === 108 || store.id === 109 || store.id === 110">
+          <b-form-checkbox
+            @change="addAll"
+            v-model="all"
+            class="mr-2"
+            type="checkbox"
+          >
+            <span class="paragraph pb-1">Select All</span>
+          </b-form-checkbox>
           <b-form-checkbox v-model="secondSize" type="checkbox" class="mr-2"
             >2nd Size</b-form-checkbox
           >
@@ -82,6 +82,7 @@
             Set
           </b-btn>
         </div>
+        <!-- Helpers for Danny -->
 
         <div class="mr-2 pt-1">
           Total Price:
