@@ -54,7 +54,7 @@ class OrdersByCustomer
             );
         }
 
-        if ($type = 'csv' || ($type = 'xls')) {
+        if ($type === 'csv' || $type === 'xls') {
             $mealOrders = MealOrder::where('store_id', $this->store->id)
                 ->get()
                 ->filter(function ($mealOrder) {
