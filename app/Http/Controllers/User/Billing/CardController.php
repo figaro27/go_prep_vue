@@ -61,8 +61,13 @@ class CardController extends UserController
                 }
             }
 
-            $sources = $customer->sources->all()->getIterator();
-            $source = end($sources);
+            $sources = $customer->sources->all();
+            $source = null;
+            foreach ($sources as $s) {
+                if ($s['id'] === $card['id']) {
+                    $source = $s;
+                }
+            }
         } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
             $authorize = new Authorize($this->store);
 
