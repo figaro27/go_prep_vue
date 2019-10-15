@@ -78,7 +78,7 @@
             placeholder="Price"
             class="width-100 mr-2"
           ></b-form-input>
-          <b-btn @click="addSizeQuantityPrice()" variant="primary">
+          <b-btn @click="addSizeQuantityPrice()" variant="primary" class="mr-3">
             Set
           </b-btn>
         </div>
