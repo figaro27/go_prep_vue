@@ -163,6 +163,10 @@ export default {
         orders = this.ordersByDate;
       }
 
+      orders = orders.filter(order => {
+        return order.voided === 0;
+      });
+
       let mealCounts = {};
       let mealIds = {};
 

@@ -34,12 +34,14 @@ class PackingSlips
                 ->orders()
                 ->where([
                     'paid' => 1,
+                    'voided' => 0,
                     'id' => (int) $params['order_id']
                 ])
                 ->get();
         } else {
             $orders = $this->store->orders()->where([
-                'paid' => 1
+                'paid' => 1,
+                'voided' => 0
                 // 'fulfilled' => 0
             ]);
 

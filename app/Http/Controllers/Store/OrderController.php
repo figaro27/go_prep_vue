@@ -348,4 +348,18 @@ class OrderController extends StoreController
         $order->save();
         return 'Refunded $' . $request->get('refundAmount');
     }
+
+    public function voidOrder(Request $request)
+    {
+        $order = Order::where('id', $request->get('orderId'))->first();
+        if ($order->voided === 0) {
+            $order->voided = 1;
+            $order->save();
+            return 'Order voided.';
+        } else {
+            $order->voided = 0;
+            $order->save();
+            return 'Order unvoided.';
+        }
+    }
 }

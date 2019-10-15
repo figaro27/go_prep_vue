@@ -24,6 +24,7 @@ class DeliveryRoutes
     {
         $dates = $this->getDeliveryDates();
         $orders = $this->store->getOrders(null, $dates, true, true, true);
+        $orders = $orders->where('voided', 0);
 
         $googleApiKey = 'AIzaSyArp-lohyOEQXF6a69wyFXruthJd9jNY4U';
         // $hereApp_id = "V2tJJFOIa2LjoSw4xNuX";

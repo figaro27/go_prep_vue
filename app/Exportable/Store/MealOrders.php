@@ -131,6 +131,7 @@ class MealOrders
         }
 
         $orders = $this->store->getOrders(null, $dates, true);
+        $orders = $orders->where('voided', 0);
 
         $orders->map(function ($order) use (
             &$mealQuantities,

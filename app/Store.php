@@ -239,7 +239,7 @@ class Store extends Model
 
         $orders = $this->orders()
             ->with(['meals', 'meals.ingredients', 'meal_orders'])
-            ->where('paid', 1);
+            ->where(['paid' => 1, 'voided' => 0]);
 
         if ($dateRange === []) {
             //$orders = $orders->where('delivery_date', $this->getNextDeliveryDate());

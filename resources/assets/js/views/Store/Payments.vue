@@ -149,6 +149,11 @@
                 {{ props.row.deposit }}%
               </div>
             </div>
+            <div slot="refundedAmount" slot-scope="props">
+              <div>
+                {{ formatMoney(props.row.refundedAmount, props.row.currency) }}
+              </div>
+            </div>
           </v-client-table>
         </div>
       </div>
@@ -203,7 +208,8 @@ export default {
           goprep_fee: "GoPrep Fee",
           stripe_fee: "Stripe Fee",
           grandTotal: "Total",
-          deposit: "Balance Remaining"
+          deposit: "Balance Remaining",
+          refundedAmount: "Refunded"
         },
         customSorting: {
           created_at: function(ascending) {
@@ -338,7 +344,8 @@ export default {
           salesTax: 0,
           goprep_fee: 0,
           stripe_fee: 0,
-          grandTotal: 0
+          grandTotal: 0,
+          refundedAmount: 0
         };
 
         orders.forEach(order => {
@@ -352,6 +359,7 @@ export default {
           sums.goprep_fee += order.goprep_fee;
           sums.stripe_fee += order.stripe_fee;
           sums.grandTotal += order.grandTotal;
+          sums.refundedAmount += order.refundedAmount;
         });
 
         orders.unshift({
@@ -367,6 +375,7 @@ export default {
           goprep_fee: sums.goprep_fee,
           stripe_fee: sums.stripe_fee,
           grandTotal: sums.grandTotal,
+          refundedAmount: sums.refundedAmount,
           sumRow: 1
         });
       }
@@ -411,6 +420,9 @@ export default {
         if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
           columns.splice(columns.length - 1, 0, "stripe_fee");
         }
+        if (!columns.includes("refundedAmount") && order.refundedAmount > 0) {
+          columns.splice(columns.length, 0, "refundedAmount");
+        }
       });
 
       this.ordersByDate.forEach(order => {
@@ -438,6 +450,9 @@ export default {
         }
         if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
           columns.splice(columns.length - 1, 0, "stripe_fee");
+        }
+        if (!columns.includes("refundedAmount") && order.refundedAmount > 0) {
+          columns.splice(columns.length - 1, 0, "refundedAmount");
         }
       });
 

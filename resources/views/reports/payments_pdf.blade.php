@@ -50,6 +50,7 @@
             @if ($params['dailySummary'] == 0)
             <th>Balance</th>
             @endif
+            <th>Refunded</th>
           </tr>
         </thead>
         <tbody>

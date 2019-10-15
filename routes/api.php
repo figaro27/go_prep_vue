@@ -163,6 +163,10 @@ foreach (
                                 'refundOrder',
                                 'OrderController@refundOrder'
                             );
+                            Route::post(
+                                'voidOrder',
+                                'OrderController@voidOrder'
+                            );
                             Route::resource(
                                 'subscriptions',
                                 'SubscriptionController'

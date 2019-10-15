@@ -34,7 +34,7 @@ class OrdersByCustomer
         //     $fulfilled = 0;
         // }
 
-        $orders = $this->store->orders()->where(['paid' => 1]);
+        $orders = $this->store->orders()->where(['paid' => 1, 'voided' => 0]);
         // ->where(['fulfilled' => $fulfilled, 'paid' => 1]);
 
         if (isset($dateRange['from'])) {
@@ -58,7 +58,10 @@ class OrdersByCustomer
             $mealOrders = MealOrder::where('store_id', $this->store->id)
                 ->get()
                 ->filter(function ($mealOrder) {
-                    if ($mealOrder->order->paid === 0) {
+                    if (
+                        $mealOrder->order->paid === 0 ||
+                        $mealOrder->order->voided === 1
+                    ) {
                         return;
                     }
                     $dateRange = $this->getDeliveryDates();

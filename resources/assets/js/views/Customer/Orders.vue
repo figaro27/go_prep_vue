@@ -109,7 +109,7 @@
                     <p class="strong">
                       Total: {{ format.money(order.amount, order.currency) }}
                     </p>
-                    <p class="text-warning">
+                    <p class="text-warning" v-if="order.refundedAmount">
                       Refunded:
                       {{ format.money(order.refundedAmount, order.currency) }}
                     </p>

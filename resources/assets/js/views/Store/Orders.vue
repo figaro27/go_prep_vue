@@ -146,9 +146,13 @@
                   class="fas fa-undo-alt purple"
                   v-b-popover.hover.top="'This order was refunded partially.'"
                 ></i>
-                <!-- <i v-if="props.row.voided" class="fas fa-window-close text-danger" v-b-popover.hover.top="
-                      'This order was voided.'
-                "></i> -->
+                <i
+                  v-if="props.row.voided"
+                  class="fas fa-ban text-danger"
+                  v-b-popover.hover.top="
+                    'This order was voided and taken out of your reports.'
+                  "
+                ></i>
               </p>
             </div>
             <div slot="created_at" slot-scope="props">
@@ -269,12 +273,6 @@
             </span>
             <h4>Order ID</h4>
             <p>{{ order.order_number }}</p>
-
-            <router-link
-              :to="{ name: 'store-adjust-order', params: { orderId: orderId } }"
-            >
-              <b-btn class="btn btn-success mb-2">Adjust</b-btn>
-            </router-link>
             <div>
               <b-btn
                 class="btn mb-2"
@@ -282,6 +280,16 @@
                 @click="printPackingSlip(order.id)"
                 >Print Packing Slip</b-btn
               >
+            </div>
+            <div>
+              <router-link
+                :to="{
+                  name: 'store-adjust-order',
+                  params: { orderId: orderId }
+                }"
+              >
+                <b-btn class="btn btn-success mb-2">Adjust</b-btn>
+              </router-link>
             </div>
             <div class="d-inline">
               <b-btn
@@ -296,6 +304,24 @@
                 placeholder="$0.00"
                 class="d-inline width-100"
               ></b-form-input>
+            </div>
+            <div>
+              <b-btn
+                v-if="order.voided === 0"
+                class="btn mb-2"
+                variant="danger"
+                @click="voidOrder"
+                >Void</b-btn
+              >
+            </div>
+            <div>
+              <b-btn
+                v-if="order.voided === 1"
+                class="btn mb-2"
+                variant="danger"
+                @click="voidOrder"
+                >Unvoid</b-btn
+              >
             </div>
           </div>
           <div class="col-md-4 pt-1">
@@ -770,6 +796,8 @@ export default {
           this.meals = response.data.meals;
           this.viewOrderModal = true;
           this.email = response.data.user.email;
+          this.refundAmount =
+            response.data.amount - response.data.refundedAmount;
 
           this.$nextTick(function() {
             window.dispatchEvent(new window.Event("resize"));
@@ -891,12 +919,22 @@ export default {
       axios
         .post("/api/me/refundOrder", {
           orderId: this.orderId,
-          refundAmount:
-            this.refundAmount > 0 ? this.refundAmount : this.order.amount
+          refundAmount: this.refundAmount
         })
         .then(response => {
           this.viewOrderModal = false;
           this.refundAmount = 0;
+          this.refreshUpcomingOrders();
+          this.$toastr.s(response.data);
+        });
+    },
+    voidOrder() {
+      axios
+        .post("/api/me/voidOrder", {
+          orderId: this.orderId
+        })
+        .then(response => {
+          this.viewOrderModal = false;
           this.refreshUpcomingOrders();
           this.$toastr.s(response.data);
         });
