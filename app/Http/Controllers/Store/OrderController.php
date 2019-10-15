@@ -331,4 +331,21 @@ class OrderController extends StoreController
     {
         Order::where('viewed', 0)->update(['viewed' => 1]);
     }
+
+    public function refundOrder(Request $request)
+    {
+        $order = Order::where('id', $request->get('orderId'))->first();
+        $refundAmount = $request->get('refundAmount') * 100;
+        $amount = $refundAmount ? $refundAmount : $order->amount * 100;
+        $refund = \Stripe\Refund::create(
+            [
+                'charge' => $order->stripe_id,
+                'amount' => $amount
+            ],
+            ["stripe_account" => $this->store->settings->stripe_id]
+        );
+        $order->refundedAmount += $request->get('refundAmount');
+        $order->save();
+        return 'Refunded $' . $request->get('refundAmount');
+    }
 }

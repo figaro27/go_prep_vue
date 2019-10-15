@@ -133,6 +133,19 @@
                   class="fas fa-sticky-note text-muted"
                   v-b-popover.hover.top="'This order has notes.'"
                 ></i>
+                <i
+                  v-if="props.row.refundedAmount === props.row.amount"
+                  class="fas fa-undo-alt purple"
+                  v-b-popover.hover.top="'This order was refunded fully.'"
+                ></i>
+                <i
+                  v-if="
+                    props.row.refundedAmount &&
+                      props.row.refundedAmount < props.row.amount
+                  "
+                  class="fas fa-undo-alt purple"
+                  v-b-popover.hover.top="'This order was refunded partially.'"
+                ></i>
                 <!-- <i v-if="props.row.voided" class="fas fa-window-close text-danger" v-b-popover.hover.top="
                       'This order was voided.'
                 "></i> -->
@@ -260,7 +273,7 @@
             <router-link
               :to="{ name: 'store-adjust-order', params: { orderId: orderId } }"
             >
-              <b-btn class="btn btn-success mb-2">Adjust Order</b-btn>
+              <b-btn class="btn btn-success mb-2">Adjust</b-btn>
             </router-link>
             <div>
               <b-btn
@@ -269,6 +282,20 @@
                 @click="printPackingSlip(order.id)"
                 >Print Packing Slip</b-btn
               >
+            </div>
+            <div class="d-inline">
+              <b-btn
+                :disabled="fullyRefunded"
+                class="btn mb-2 d-inline mr-1"
+                variant="warning"
+                @click="refund"
+                >Refund</b-btn
+              >
+              <b-form-input
+                v-model="refundAmount"
+                placeholder="$0.00"
+                class="d-inline width-100"
+              ></b-form-input>
             </div>
           </div>
           <div class="col-md-4 pt-1">
@@ -307,6 +334,9 @@
 
             <p class="strong">
               Total: {{ format.money(order.amount, order.currency) }}
+            </p>
+            <p class="text-warning" v-if="order.refundedAmount">
+              Refunded: {{ format.money(order.refundedAmount, order.currency) }}
             </p>
           </div>
         </div>
@@ -618,6 +648,14 @@ export default {
       });
 
       return orders;
+    },
+    fullyRefunded() {
+      if (
+        this.order.refundedAmount === this.order.amount ||
+        this.order.cashOrder
+      )
+        return true;
+      else return false;
     }
   },
   beforeDestroy() {
@@ -629,6 +667,7 @@ export default {
       refreshOrders: "refreshOrders",
       refreshOrdersWithFulfilled: "refreshOrdersWithFulfilled",
       refreshUpcomingOrders: "refreshUpcomingOrders",
+      refreshOrdersToday: "refreshOrdersToday",
       updateOrder: "updateOrder",
       addJob: "addJob",
       removeJob: "removeJob",
@@ -846,6 +885,20 @@ export default {
           }
           this.checkingOut = false;
           this.refreshUpcomingOrders();
+        });
+    },
+    refund() {
+      axios
+        .post("/api/me/refundOrder", {
+          orderId: this.orderId,
+          refundAmount:
+            this.refundAmount > 0 ? this.refundAmount : this.order.amount
+        })
+        .then(response => {
+          this.viewOrderModal = false;
+          this.refundAmount = 0;
+          this.refreshUpcomingOrders();
+          this.$toastr.s(response.data);
         });
     }
   }

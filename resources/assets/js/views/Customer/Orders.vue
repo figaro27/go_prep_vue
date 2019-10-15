@@ -109,6 +109,10 @@
                     <p class="strong">
                       Total: {{ format.money(order.amount, order.currency) }}
                     </p>
+                    <p class="text-warning">
+                      Refunded:
+                      {{ format.money(order.refundedAmount, order.currency) }}
+                    </p>
                     <img src="/images/collapse-arrow.png" class="mt-2 pt-3" />
                   </div>
                 </div>

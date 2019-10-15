@@ -159,6 +159,10 @@ foreach (
                                 'orders/adjustOrder',
                                 'OrderController@adjustOrder'
                             );
+                            Route::post(
+                                'refundOrder',
+                                'OrderController@refundOrder'
+                            );
                             Route::resource(
                                 'subscriptions',
                                 'SubscriptionController'

@@ -21,6 +21,7 @@ class Order extends Model
         'processingFee' => 'float',
         'deliveryFee' => 'float',
         'amount' => 'float',
+        'refundedAmount' => 'float',
         'salesTax' => 'float',
         'mealPlanDiscount' => 'float',
         'couponReduction' => 'float',
