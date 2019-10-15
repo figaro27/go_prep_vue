@@ -19,7 +19,6 @@ class CardController extends StoreController
     public function index()
     {
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -66,8 +65,15 @@ class CardController extends StoreController
                 }
             }
 
-            $sources = $customer->sources->all()->getIterator();
-            $source = end($sources);
+            $sources = $customer->sources->all();
+
+            $source = null;
+
+            foreach ($sources as $s) {
+                if ($s['id'] === $card['id']) {
+                    $source = $s;
+                }
+            }
         } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
             $authorize = new Authorize($this->store);
 

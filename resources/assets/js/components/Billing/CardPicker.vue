@@ -201,6 +201,9 @@ export default {
     },
     deleteCard(id) {
       axios.delete("/api/me/cards/" + id).then(async resp => {
+        if (this.manualOrder || this.$route.params.manualOrder) {
+          this.$parent.getCards();
+        }
         await this.refreshCards();
         this.$parent.card = null;
         if (this.value === id) {
