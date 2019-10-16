@@ -932,9 +932,19 @@ class Meal extends Model implements HasMedia
         $meal->save();
     }
 
-    public static function updateMeal($id, $props)
+    public static function updateMeal($id, $props, $source = '')
     {
         $meal = Meal::findOrFail($id);
+
+        if ($source == 'menu') {
+            $store = $meal->store;
+
+            if ($store) {
+                $store->setTimezone();
+                $store->menu_update_time = date('Y-m-d H:i:s');
+                $store->save();
+            }
+        }
 
         $props = collect($props)->only([
             'active',

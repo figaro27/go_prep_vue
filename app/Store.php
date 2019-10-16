@@ -590,6 +590,17 @@ class Store extends Model
         return $this->settings->notificationEnabled($notif);
     }
 
+    public function setTimezone()
+    {
+        $store = $this;
+
+        $settings = $store->settings;
+        if ($settings && $settings->timezone) {
+            $timezone = $settings->timezone;
+            date_default_timezone_set($timezone);
+        }
+    }
+
     public function sendNotification($notif, $data = [])
     {
         $store = $this;
