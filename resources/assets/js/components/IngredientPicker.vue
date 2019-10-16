@@ -486,7 +486,7 @@ export default {
       return (
         units.convert(macroNutrient, ingredient.quantity_unit, baseUnit, true) *
         ingredient.quantity
-      ).toFixed(2);
+      ).toFixed(1);
     },
     processFoods(foods) {
       return _.map(foods, ingredient => {
