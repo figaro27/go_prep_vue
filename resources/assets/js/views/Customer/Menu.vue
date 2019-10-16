@@ -816,18 +816,15 @@ export default {
         this.total += 1;
       }
     },
-    showMealModal(meal) {
-      this.meal = meal;
-      this.mealModal = true;
-      this.mealDescription = meal.description
-        ? meal.description.replace(/\n/g, "<br>")
-        : "";
-
-      this.$nextTick(() => {
-        this.getNutritionFacts(this.meal.ingredients, this.meal);
-        // this.$refs.mealGallery.reSlick();
-      });
-    },
+    // showMealModal(meal) {
+    //   this.meal = meal;
+    //   this.mealModal = true;
+    //   this.mealDescription = meal.description
+    //     ? meal.description.replace(/\n/g, "<br>")
+    //     : "";
+    //     this.getNutritionFacts(this.meal.ingredients, this.meal);
+    //     // this.$refs.mealGallery.reSlick();
+    // },
     showMealPackageModal(mealPackage) {
       this.mealPackage = { ...mealPackage };
       this.mealPackageModal = true;
@@ -849,8 +846,11 @@ export default {
         ? meal.description.replace(/\n/g, "<br>")
         : "";
 
+      let sortedIngredients = this.meal.ingredients.sort((a, b) => {
+        return b.pivot.quantity_base - a.pivot.quantity_base;
+      });
       this.$nextTick(() => {
-        this.getNutritionFacts(this.meal.ingredients, this.meal);
+        this.getNutritionFacts(sortedIngredients, this.meal);
         // this.$refs.mealGallery.reSlick();
       });
     },

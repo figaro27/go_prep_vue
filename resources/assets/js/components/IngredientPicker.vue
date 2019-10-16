@@ -366,6 +366,9 @@ export default {
   },
   created() {
     this.ingredients = _.isArray(this.value) ? this.value : [];
+    this.ingredients = this.ingredients.sort((a, b) => {
+      return b.pivot.quantity_base - a.pivot.quantity_base;
+    });
   },
   mounted() {
     this.refreshIngredients();
