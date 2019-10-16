@@ -172,17 +172,19 @@
 
     <div class="d-flex">
       <table class="table w-100 ingredients-table">
-        <thead>
-          <th>Name</th>
-          <th>Weight</th>
-          <th>Units</th>
-          <th style="width: 30px"></th>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(ingredient, i) in ingredients"
-            :key="ingredient.food_name"
-          >
+        <table>
+          <thead>
+            <th>Name</th>
+            <th>Weight</th>
+            <th>Units</th>
+            <th style="width: 10px"></th>
+          </thead>
+        </table>
+        <table
+          v-for="(ingredient, i) in ingredients"
+          :key="ingredient.food_name"
+        >
+          <tr>
             <td>
               <img
                 :src="ingredient.image_thumb"
@@ -225,25 +227,38 @@
             </td>
           </tr>
           <tr>
-            <td colspan="10" class="text-right">
-              <b-row>
-                <b-col v-if="options.saveButton" class="text-left">
-                  <b-button
-                    variant="primary"
-                    :disabled="!canSave"
-                    @click.prevent="save"
-                    >Save</b-button
-                  >
-                </b-col>
-                <!-- <b-col class="text-right">
+            <td>Calories</td>
+            <td>Protein</td>
+            <td>Carbs</td>
+            <td>Fat</td>
+          </tr>
+          <tr>
+            <td>{{ processSingleIngredient(ingredient, "calories") }}</td>
+            <td>{{ processSingleIngredient(ingredient, "proteins") }}</td>
+            <td>{{ processSingleIngredient(ingredient, "totalcarb") }}</td>
+            <td>{{ processSingleIngredient(ingredient, "totalfat") }}</td>
+          </tr>
+        </table>
+
+        <tr>
+          <td colspan="10" class="text-right">
+            <b-row>
+              <b-col v-if="options.saveButton" class="text-left">
+                <b-button
+                  variant="primary"
+                  :disabled="!canSave"
+                  @click.prevent="save"
+                  >Save</b-button
+                >
+              </b-col>
+              <!-- <b-col class="text-right">
                   <a href="#" @click.prevent="onClickAddIngredient">
                     <i class="fas fa-plus-circle"></i>
                   </a>
                 </b-col>-->
-              </b-row>
-            </td>
-          </tr>
-        </tbody>
+            </b-row>
+          </td>
+        </tr>
       </table>
 
       <div class="ml-5" ref="nutritionFacts"></div>
@@ -442,6 +457,37 @@ export default {
       this.$toastr.s("Ingredients saved.");
     },
     searchInstant: function() {},
+    processSingleIngredient(ingredient, macro) {
+      let macroNutrient = null;
+      switch (macro) {
+        case "calories":
+          macroNutrient = ingredient.calories;
+          break;
+        case "proteins":
+          macroNutrient = ingredient.proteins;
+          break;
+        case "totalcarb":
+          macroNutrient = ingredient.totalcarb;
+          break;
+        case "totalfat":
+          macroNutrient = ingredient.totalfat;
+          break;
+      }
+      let baseUnit = "ml";
+      if (
+        ingredient.quantity_unit === "mg" ||
+        ingredient.quantity_unit === "g" ||
+        ingredient.quantity_unit === "oz" ||
+        ingredient.quantity_unit === "lb" ||
+        ingredient.quantity_unit === "kg"
+      ) {
+        baseUnit = "g";
+      }
+      return (
+        units.convert(macroNutrient, ingredient.quantity_unit, baseUnit, true) *
+        ingredient.quantity
+      ).toFixed(2);
+    },
     processFoods(foods) {
       return _.map(foods, ingredient => {
         // Get properly named unit
@@ -572,8 +618,8 @@ export default {
         decimalPlacesForQuantityTextbox: 2,
         valueServingUnitQuantity: 1,
 
-        allowFDARounding: true,
-        decimalPlacesForNutrition: 2,
+        allowFDARounding: false,
+        decimalPlacesForNutrition: 0,
 
         showPolyFat: false,
         showMonoFat: false,
