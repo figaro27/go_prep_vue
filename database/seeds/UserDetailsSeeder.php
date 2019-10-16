@@ -13,7 +13,7 @@ class UserDetailsSeeder extends Seeder
     {
         $faker = Faker\Factory::create();
 
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 31; $i++) {
             DB::table('user_details')->insert([
                 'user_id' => $i,
                 'firstname' => 'Mike',
@@ -30,7 +30,7 @@ class UserDetailsSeeder extends Seeder
             ]);
         }
 
-        for ($i = 31; $i <= 50; $i++) {
+        for ($i = 32; $i <= 50; $i++) {
             DB::table('user_details')->insert([
                 'user_id' => $i,
                 'firstname' => $faker->firstname,
