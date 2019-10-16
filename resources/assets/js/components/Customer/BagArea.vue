@@ -388,6 +388,8 @@ export default {
     }
   },
   mounted() {
+    console.log("bags", this.bag);
+
     let lineItemsOrder = [];
 
     if (this.$route.params && this.$route.params.line_items_order) {

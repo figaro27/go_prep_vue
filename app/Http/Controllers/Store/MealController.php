@@ -121,7 +121,8 @@ class MealController extends StoreController
                 'addons',
                 'macros',
                 'production_group_id'
-            ])
+            ]),
+            'menu'
         );
     }
 

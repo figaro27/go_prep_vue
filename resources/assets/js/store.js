@@ -1592,6 +1592,25 @@ const getters = {
     return bag;
   },
   bagItems(state) {
+    let menu_update_time = 0;
+
+    if (state.viewed_store && state.viewed_store.menu_update_time) {
+      menu_update_time = moment(state.viewed_store.menu_update_time).unix();
+    }
+
+    /* Check */
+    if (menu_update_time != 0) {
+      for (let key in state.bag.items) {
+        let object = state.bag.items[key];
+
+        if (object.added < menu_update_time) {
+          Vue.delete(state.bag.items, key);
+          delete state.bag.items[key];
+        }
+      }
+    }
+    /* Check End */
+
     let items = _.filter(state.bag.items);
     items = _.sortBy(items, "added");
     return items;
