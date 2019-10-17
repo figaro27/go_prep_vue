@@ -168,7 +168,7 @@
               {{ props.row.dailyOrderNumber }}
             </div>
             <div slot="balance" slot-scope="props">
-              <span v-if="props.row.balance > 0 && props.row.balance !== null"
+              <span v-if="props.row.balance !== 0 && props.row.balance !== null"
                 ><!-- {{
                   ((props.row.balance / props.row.amount) * 100).toFixed(0)
                 }}% - -->
@@ -402,18 +402,18 @@
             <p class="strong">
               Total: {{ format.money(order.amount, order.currency) }}
             </p>
-            <p v-if="order.balance">
+            <p v-if="order.balance > 0">
               Original Total:
               {{ format.money(order.originalAmount, order.currency) }}
             </p>
-            <p v-if="order.balance">
+            <p v-if="order.balance > 0">
               Paid:
               {{ format.money(order.amount - order.balance, order.currency) }}
             </p>
             <p v-if="order.refundedAmount">
               Refunded: {{ format.money(order.refundedAmount, order.currency) }}
             </p>
-            <p v-if="order.balance">
+            <p v-if="order.balance > 0">
               Balance: {{ format.money(order.balance, order.currency) }}
             </p>
           </div>
@@ -847,10 +847,11 @@ export default {
           this.meals = response.data.meals;
           this.viewOrderModal = true;
           this.email = response.data.user.email;
-          this.refundAmount =
-            response.data.originalAmount - response.data.refundedAmount;
+          this.refundAmount = (
+            response.data.originalAmount - response.data.refundedAmount
+          ).toFixed(2);
           this.chargeAmount =
-            response.data.balance > 0 ? response.data.balance : 0;
+            response.data.balance > 0 ? response.data.balance.toFixed(2) : 0;
 
           this.$nextTick(function() {
             window.dispatchEvent(new window.Event("resize"));
