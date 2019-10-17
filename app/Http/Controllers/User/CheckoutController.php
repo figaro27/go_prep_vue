@@ -214,6 +214,7 @@ class CheckoutController extends UserController
             $order->cashOrder = $cashOrder;
             $order->payment_gateway = $gateway;
             $order->dailyOrderNumber = $dailyOrderNumber;
+            $order->originalAmount = $total * $deposit;
             $order->save();
 
             $items = $bag->getItems();
@@ -457,6 +458,7 @@ class CheckoutController extends UserController
                 $order->pickup_location_id = $pickupLocation;
                 $order->transferTime = $transferTime;
                 $order->dailyOrderNumber = $dailyOrderNumber;
+                $order->originalAmount = $total * $deposit;
                 $order->cashOrder = $cashOrder;
                 $order->save();
 

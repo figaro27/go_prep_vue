@@ -220,10 +220,12 @@ class CheckoutController extends StoreController
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->deposit = $deposit * 100;
+            $order->balance = $total - $deposit * $total;
             $order->manual = 1;
             $order->cashOrder = $cashOrder;
             $order->payment_gateway = $gateway;
             $order->dailyOrderNumber = $dailyOrderNumber;
+            $order->originalAmount = $total * $deposit;
             $order->save();
 
             foreach ($bag->getItems() as $item) {
@@ -472,6 +474,7 @@ class CheckoutController extends StoreController
             $order->transferTime = $transferTime;
             $order->dailyOrderNumber = $dailyOrderNumber;
             $order->cashOrder = $cashOrder;
+            $order->originalAmount = $total * $deposit;
             $order->save();
 
             foreach ($bag->getItems() as $item) {
@@ -623,59 +626,6 @@ class CheckoutController extends StoreController
                 ]);
             } catch (\Exception $e) {
             }
-        }
-    }
-
-    public function chargeBalance(Request $request)
-    {
-        $orderId = $request->get('id');
-        $cashOrder = $request->get('cashOrder');
-        $order = Order::where('id', $orderId)->first();
-        $subtotal = $order->preFeePreDiscount;
-        $amount = $order->amount;
-        $balance = $request->get('balance');
-        // $balance = (100 - $order->deposit) / 100;
-        $store = $this->store;
-        $application_fee = $store->settings->application_fee;
-        $storeName = strtolower($this->store->storeDetail->name);
-
-        $customerUser = User::where('id', $order->user_id)->first();
-
-        if (!$cashOrder && $balance > 0) {
-            $cardId = $order->card_id;
-            $card = Card::where('id', $cardId)->first();
-        }
-
-        if (!$cashOrder && $balance > 0) {
-            $storeSource = \Stripe\Source::create(
-                [
-                    "customer" => $customerUser->stripe_id,
-                    "original_source" => $card->stripe_id,
-                    "usage" => "single_use"
-                ],
-                ["stripe_account" => $store->settings->stripe_id]
-            );
-
-            $charge = \Stripe\Charge::create(
-                [
-                    "amount" => round(100 * $balance),
-                    "currency" => "usd",
-                    "source" => $storeSource,
-                    "application_fee" => round(
-                        $subtotal * $balance * $application_fee
-                    )
-                ],
-                ["stripe_account" => $store->settings->stripe_id]
-            );
-        }
-
-        $order->deposit = 100;
-        $order->save();
-
-        if ($cashOrder || $balance <= 0) {
-            return 1;
-        } else {
-            return 0;
         }
     }
 }

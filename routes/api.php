@@ -269,10 +269,7 @@ foreach (
                                 'checkout',
                                 'CheckoutController@checkout'
                             );
-                            Route::post(
-                                'chargeBalance',
-                                'CheckoutController@chargeBalance'
-                            );
+                            Route::post('charge', 'OrderController@charge');
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {

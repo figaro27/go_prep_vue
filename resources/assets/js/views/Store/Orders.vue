@@ -134,14 +134,14 @@
                   v-b-popover.hover.top="'This order has notes.'"
                 ></i>
                 <i
-                  v-if="props.row.refundedAmount === props.row.amount"
+                  v-if="props.row.refundedAmount === props.row.originalAmount"
                   class="fas fa-undo-alt purple"
                   v-b-popover.hover.top="'This order was refunded fully.'"
                 ></i>
                 <i
                   v-if="
                     props.row.refundedAmount &&
-                      props.row.refundedAmount < props.row.amount
+                      props.row.refundedAmount < props.row.originalAmount
                   "
                   class="fas fa-undo-alt purple"
                   v-b-popover.hover.top="'This order was refunded partially.'"
@@ -168,30 +168,16 @@
               {{ props.row.dailyOrderNumber }}
             </div>
             <div slot="balance" slot-scope="props">
-              <span v-if="props.row.balance != 0"
-                >{{
+              <span v-if="props.row.balance > 0 && props.row.balance !== null"
+                ><!-- {{
                   ((props.row.balance / props.row.amount) * 100).toFixed(0)
-                }}% -
+                }}% - -->
                 {{
                   format.money(props.row.balance, storeSettings.currency)
                 }}</span
               >
               <span v-else>Paid in Full</span>
             </div>
-            <!-- <div slot="chargeType" slot-scope="props">
-              <span v-if="props.row.manual && props.row.cashOrder"
-                >Manual - {{ store.module_settings.cashOrderWording }}</span
-              >
-              <span v-else-if="props.row.manual && !props.row.cashOrder"
-                >Manual - Charge</span
-              >
-              <span v-else-if="!props.row.manual && props.row.cashOrder"
-                >Customer - {{ store.module_settings.cashOrderWording }}</span
-              >
-              <span v-else-if="!props.row.manual && !props.row.cashOrder"
-                >Customer - Charge</span
-              >
-            </div> -->
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-primary btn-sm"
@@ -199,48 +185,6 @@
               >
                 View Order
               </button>
-              <button
-                v-if="props.row.deposit != 100"
-                class="btn btn-success btn-sm"
-                @click="
-                  chargeBalance(
-                    props.row.id,
-                    props.row.cashOrder,
-                    props.row.balance
-                  )
-                "
-                :disabled="checkingOut"
-              >
-                <span v-if="!props.row.cashOrder && props.row.balance > 0"
-                  >Charge
-                  {{
-                    format.money(
-                      ((100 - props.row.deposit) * props.row.amount) / 100,
-                      storeSettings.currency
-                    )
-                  }}
-                  Balance</span
-                >
-                <span v-else
-                  >Settle
-                  {{ format.money(props.row.balance, storeSettings.currency) }}
-                  Balance</span
-                >
-              </button>
-              <!-- <b-btn
-                v-if="!props.row.fulfilled"
-                class="btn btn-primary btn-sm"
-                @click="fulfill(props.row.id)"
-                variant="primary"
-                >Mark As Complete</b-btn
-              >
-              <b-btn
-                v-else
-                class="btn btn-primary btn-sm"
-                @click="unfulfill(props.row.id)"
-                variant="danger"
-                >Unmark As Complete</b-btn
-              > -->
             </div>
 
             <div slot="amount" slot-scope="props">
@@ -258,11 +202,56 @@
         title="Order Information"
         no-fade
       >
-        <div class="row light-background" v-if="order.adjusted">
-          <div class="col-md-12">
-            <b-alert show variant="warning" class="center-text"
-              >This order was adjusted.</b-alert
-            >
+        <div class="row">
+          <div class="col-md-12 light-background">
+            <div class="text-nowrap">
+              <p>
+                <i
+                  v-if="order.manual"
+                  class="fas fa-hammer text-primary"
+                  v-b-popover.hover.top="
+                    'This is a manual order created by you for your customer.'
+                  "
+                ></i>
+                <i
+                  v-if="order.adjusted"
+                  class="fas fa-asterisk text-warning"
+                  v-b-popover.hover.top="'This order was adjusted.'"
+                ></i>
+                <i
+                  v-if="order.cashOrder"
+                  class="fas fa-money-bill text-success"
+                  v-b-popover.hover.top="
+                    'A credit card wasn\'t processed through GoPrep for this order.'
+                  "
+                ></i>
+                <i
+                  v-if="order.notes"
+                  class="fas fa-sticky-note text-muted"
+                  v-b-popover.hover.top="'This order has notes.'"
+                ></i>
+                <i
+                  v-if="order.refundedAmount === order.originalAmount"
+                  class="fas fa-undo-alt purple"
+                  v-b-popover.hover.top="'This order was refunded fully.'"
+                ></i>
+                <i
+                  v-if="
+                    order.refundedAmount &&
+                      order.refundedAmount < order.originalAmount
+                  "
+                  class="fas fa-undo-alt purple"
+                  v-b-popover.hover.top="'This order was refunded partially.'"
+                ></i>
+                <i
+                  v-if="order.voided"
+                  class="fas fa-ban text-danger"
+                  v-b-popover.hover.top="
+                    'This order was voided and taken out of your reports.'
+                  "
+                ></i>
+              </p>
+            </div>
           </div>
         </div>
         <div class="row light-background border-bottom mb-3">
@@ -281,21 +270,47 @@
                 >Print Packing Slip</b-btn
               >
             </div>
-            <div>
-              <router-link
-                :to="{
-                  name: 'store-adjust-order',
-                  params: { orderId: orderId }
-                }"
+            <div class="d-inline" v-if="!order.cashOrder">
+              <b-btn
+                class="btn mb-2 d-inline mr-1"
+                variant="success"
+                @click="charge"
+                >Charge</b-btn
               >
-                <b-btn class="btn btn-success mb-2">Adjust</b-btn>
-              </router-link>
+              <b-form-input
+                v-model="chargeAmount"
+                placeholder="$0.00"
+                class="d-inline width-100"
+              ></b-form-input>
+              <img
+                v-b-popover.hover="
+                  'Charges allow you to charge your customer directly for any balance on the order. As of right now, you can\'t refund additional charges, only the Original Total.'
+                "
+                title="Charges"
+                src="/images/store/popover.png"
+                class="popover-size d-inline"
+              />
             </div>
-            <div class="d-inline">
+            <div class="d-inline" v-if="order.cashOrder && order.balance > 0">
+              <b-btn
+                class="btn mb-2 d-inline mr-1"
+                variant="success"
+                @click="charge"
+                >Settle Balance</b-btn
+              >
+              <img
+                v-b-popover.hover="
+                  'This button is only shown on cash orders. This simply settles the balance on the order to $0 for your records without charging the customer.'
+                "
+                title="Settle Balance"
+                src="/images/store/popover.png"
+                class="popover-size d-inline"
+              />
+            </div>
+            <div class="d-inline" v-if="!order.cashOrder">
               <b-btn
                 :disabled="fullyRefunded"
-                class="btn mb-2 d-inline mr-1"
-                variant="warning"
+                class="btn mb-2 d-inline mr-1 purpleBG"
                 @click="refund"
                 >Refund</b-btn
               >
@@ -304,8 +319,26 @@
                 placeholder="$0.00"
                 class="d-inline width-100"
               ></b-form-input>
+              <img
+                v-b-popover.hover="
+                  'Refund your customer partially or fully. As of right now, you can only refund up to the Original Total, not any additional charges. Refunds take 5-10 days to show on your customer\'s statements.'
+                "
+                title="Refunds"
+                src="/images/store/popover.png"
+                class="popover-size d-inline"
+              />
             </div>
             <div>
+              <router-link
+                :to="{
+                  name: 'store-adjust-order',
+                  params: { orderId: orderId }
+                }"
+              >
+                <b-btn class="btn btn-warning mb-2">Adjust</b-btn>
+              </router-link>
+            </div>
+            <div class="d-inline">
               <b-btn
                 v-if="order.voided === 0"
                 class="btn mb-2"
@@ -313,6 +346,14 @@
                 @click="voidOrder"
                 >Void</b-btn
               >
+              <img
+                v-b-popover.hover="
+                  'Voiding an order removes the order information & meals from all of your reporting.'
+                "
+                title="Voids"
+                src="/images/store/popover.png"
+                class="popover-size d-inline"
+              />
             </div>
             <div>
               <b-btn
@@ -361,8 +402,19 @@
             <p class="strong">
               Total: {{ format.money(order.amount, order.currency) }}
             </p>
-            <p class="text-warning" v-if="order.refundedAmount">
+            <p v-if="order.balance">
+              Original Total:
+              {{ format.money(order.originalAmount, order.currency) }}
+            </p>
+            <p v-if="order.balance">
+              Paid:
+              {{ format.money(order.amount - order.balance, order.currency) }}
+            </p>
+            <p v-if="order.refundedAmount">
               Refunded: {{ format.money(order.refundedAmount, order.currency) }}
+            </p>
+            <p v-if="order.balance">
+              Balance: {{ format.money(order.balance, order.currency) }}
             </p>
           </div>
         </div>
@@ -532,6 +584,8 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      chargeAmount: 0,
+      refundAmount: 0,
       checkingOut: false,
       ordersByDate: {},
       email: "",
@@ -667,7 +721,7 @@ export default {
       }
 
       orders.forEach(order => {
-        if (order.deposit !== 100.0 && !this.columns.includes("balance")) {
+        if (order.balance && !this.columns.includes("balance")) {
           this.columns.splice(9, 0, "balance");
           return;
         }
@@ -676,10 +730,7 @@ export default {
       return orders;
     },
     fullyRefunded() {
-      if (
-        this.order.refundedAmount === this.order.amount ||
-        this.order.cashOrder
-      )
+      if (this.order.originalAmount - this.order.refundedAmount <= 0)
         return true;
       else return false;
     }
@@ -797,7 +848,9 @@ export default {
           this.viewOrderModal = true;
           this.email = response.data.user.email;
           this.refundAmount =
-            response.data.amount - response.data.refundedAmount;
+            response.data.originalAmount - response.data.refundedAmount;
+          this.chargeAmount =
+            response.data.balance > 0 ? response.data.balance : 0;
 
           this.$nextTick(function() {
             window.dispatchEvent(new window.Event("resize"));
@@ -893,26 +946,17 @@ export default {
       this.filters.fulfilled = 0;
       this.refreshTable();
     },
-    chargeBalance(id, cashOrder, balance) {
-      if (this.checkingOut) {
-        return;
-      }
-      this.checkingOut = true;
-
+    charge() {
       axios
-        .post("/api/me/chargeBalance", {
-          id: id,
-          cashOrder: cashOrder,
-          balance: balance
+        .post("/api/me/charge", {
+          orderId: this.orderId,
+          chargeAmount: this.chargeAmount
         })
         .then(response => {
-          if (response.data === 1) {
-            this.$toastr.s("Balance settled.");
-          } else {
-            this.$toastr.s("Balance successfully charged.");
-          }
-          this.checkingOut = false;
+          this.viewOrderModal = false;
+          this.chargeAmount = 0;
           this.refreshUpcomingOrders();
+          this.$toastr.s(response.data);
         });
     },
     refund() {
@@ -926,6 +970,12 @@ export default {
           this.refundAmount = 0;
           this.refreshUpcomingOrders();
           this.$toastr.s(response.data);
+        })
+        .catch(e => {
+          this.$toastr.e(
+            "You can only refund the original total, not any additional charges. Please contact GoPrep for more help.",
+            "Error"
+          );
         });
     },
     voidOrder() {

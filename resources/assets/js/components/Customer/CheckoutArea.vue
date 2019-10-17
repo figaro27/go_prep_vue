@@ -535,13 +535,6 @@
           class="menu-bag-btn"
           >ADJUST ORDER</b-btn
         >
-        <b-alert v-if="$route.params.adjustOrder" variant="warning" show>
-          <p class="center-text mt-3">
-            Any adjustment to price only changes the numbers in the system for
-            your records. It does not charge or refund the customer the
-            difference.
-          </p>
-        </b-alert>
 
         <div v-if="subscriptionId" class="d-none d-lg-block">
           <b-btn
@@ -1012,10 +1005,12 @@ export default {
       } else return 0;
     },
     processingFeeAmount() {
-      if (this.storeSettings.processingFeeType === "flat") {
-        return this.storeSettings.processingFee;
-      } else if (this.storeSettings.processingFeeType === "percent") {
-        return (this.storeSettings.processingFee / 100) * this.subtotal;
+      if (this.storeSettings.applyProcessingFee) {
+        if (this.storeSettings.processingFeeType === "flat") {
+          return this.storeSettings.processingFee;
+        } else if (this.storeSettings.processingFeeType === "percent") {
+          return (this.storeSettings.processingFee / 100) * this.subtotal;
+        }
       }
     },
     afterFees() {

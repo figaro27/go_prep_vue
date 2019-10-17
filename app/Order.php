@@ -22,6 +22,7 @@ class Order extends Model
         'deliveryFee' => 'float',
         'amount' => 'float',
         'refundedAmount' => 'float',
+        'originalAmount' => 'float',
         'salesTax' => 'float',
         'mealPlanDiscount' => 'float',
         'couponReduction' => 'float',
@@ -41,8 +42,8 @@ class Order extends Model
         'goprep_fee',
         'stripe_fee',
         'grandTotal',
-        'line_items_order',
-        'balance'
+        'line_items_order'
+        // 'balance'
     ];
 
     public function user()
@@ -114,10 +115,11 @@ class Order extends Model
         return $this->hasOne('App\Card');
     }
 
-    public function getBalanceAttribute()
-    {
-        return ($this->amount * (100 - $this->deposit)) / 100;
-    }
+    // public function getBalanceAttribute()
+    // {
+    //     $amount = $this->amount * (100 - $this->deposit) / 100;
+    //     return ($amount + ($amount - $this->adjustedDifference)) * -1;
+    // }
 
     public function getOrderDayAttribute()
     {

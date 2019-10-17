@@ -10,6 +10,8 @@ use App\MealOrderAddon;
 use App\LineItem;
 use App\LineItemOrder;
 use App\MealAttachment;
+use App\User;
+use App\Card;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Carbon;
@@ -199,8 +201,9 @@ class OrderController extends StoreController
         $cashOrder = $request->get('cashOrder');
         $grandTotal = $request->get('grandTotal');
         $adjustedDifference = $request->get('grandTotal') - $order->amount;
-        $deposit =
-            (($order->deposit * $order->amount) / 100 / $grandTotal) * 100;
+        $balance = $request->get('grandTotal') - $order->amount;
+        // $deposit =
+        //     (($order->deposit * $order->amount) / 100 / $grandTotal) * 100;
         $originalDeliveryDate = $order->delivery_date;
         $order->delivery_date = $deliveryDate;
         $order->transferTime = $request->get('transferTime');
@@ -213,8 +216,9 @@ class OrderController extends StoreController
         $order->processingFee = $processingFee;
         $order->salesTax = $salesTax;
         $order->amount = $grandTotal;
-        $order->deposit = $deposit;
-        $order->adjustedDifference = $adjustedDifference;
+        // $order->deposit = $deposit;
+        $order->adjustedDifference += $adjustedDifference;
+        $order->balance += $balance;
         $order->coupon_id = $couponId;
         $order->couponReduction = $couponReduction;
         $order->couponCode = $couponCode;
@@ -330,6 +334,57 @@ class OrderController extends StoreController
     public function updateViewed()
     {
         Order::where('viewed', 0)->update(['viewed' => 1]);
+    }
+
+    public function charge(Request $request)
+    {
+        $orderId = $request->get('orderId');
+        $chargeAmount = $request->get('chargeAmount');
+        $order = Order::where('id', $orderId)->first();
+        $cashOrder = $order->cashOrder;
+        $store = $this->store;
+        $application_fee = $store->settings->application_fee;
+
+        $customerUser = User::where('id', $order->user_id)->first();
+
+        if (!$cashOrder) {
+            $cardId = $order->card_id;
+            $card = Card::where('id', $cardId)->first();
+        }
+
+        if (!$cashOrder) {
+            $storeSource = \Stripe\Source::create(
+                [
+                    "customer" => $customerUser->stripe_id,
+                    "original_source" => $card->stripe_id,
+                    "usage" => "single_use"
+                ],
+                ["stripe_account" => $store->settings->stripe_id]
+            );
+
+            $charge = \Stripe\Charge::create(
+                [
+                    "amount" => round(100 * $chargeAmount),
+                    "currency" => "usd",
+                    "source" => $storeSource,
+                    "application_fee" => round($chargeAmount * $application_fee)
+                ],
+                ["stripe_account" => $store->settings->stripe_id]
+            );
+        }
+        // $order->adjustedDifference -= $chargeAmount;
+
+        // if ($order->balance < 0){
+        //     $order->balance = 0;
+        // }
+        $order->balance -= $chargeAmount;
+        $order->save();
+
+        if ($cashOrder) {
+            return 'Balance has been settled to 0.';
+        } else {
+            return 'Charged $' . $chargeAmount;
+        }
     }
 
     public function refundOrder(Request $request)
