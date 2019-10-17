@@ -168,7 +168,11 @@
               {{ props.row.dailyOrderNumber }}
             </div>
             <div slot="balance" slot-scope="props">
-              <span v-if="props.row.balance !== 0 && props.row.balance !== null"
+              <span
+                v-if="
+                  (props.row.balance > 0 || props.row.balance < 0) &&
+                    props.row.balance !== null
+                "
                 ><!-- {{
                   ((props.row.balance / props.row.amount) * 100).toFixed(0)
                 }}% - -->
@@ -402,18 +406,18 @@
             <p class="strong">
               Total: {{ format.money(order.amount, order.currency) }}
             </p>
-            <p v-if="order.balance !== 0">
+            <p v-if="order.balance > 0 || order.balance < 0">
               Original Total:
               {{ format.money(order.originalAmount, order.currency) }}
             </p>
-            <p v-if="order.balance !== 0">
+            <p v-if="order.balance > 0 || order.balance < 0">
               Paid:
               {{ format.money(order.amount - order.balance, order.currency) }}
             </p>
             <p v-if="order.refundedAmount">
               Refunded: {{ format.money(order.refundedAmount, order.currency) }}
             </p>
-            <p v-if="order.balance !== 0">
+            <p v-if="order.balance > 0 || order.balance < 0">
               Balance: {{ format.money(order.balance, order.currency) }}
             </p>
           </div>
