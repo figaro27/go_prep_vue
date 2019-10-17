@@ -312,9 +312,11 @@ export default {
       });
     },
     getNutritionFacts() {
-      $(ref).nutritionLabel(null);
-      let ref = this.$refs.nutritionFacts;
-      $(ref).nutritionLabel(this.nutritionalFacts);
+      if (!this.sizeChanged) {
+        $(ref).nutritionLabel(null);
+        let ref = this.$refs.nutritionFacts;
+        $(ref).nutritionLabel(this.nutritionalFacts);
+      }
     },
     addMeal(meal) {
       if (this.invalidCheck && this.hasVariations) {
