@@ -1,5 +1,26 @@
 <template>
   <div>
+    <div class="row mb-3">
+      <div class="col-md-3">
+        Servings Per Container
+        <b-form-input
+          v-model="meal.servingsPerMeal"
+          placeholder="1"
+        ></b-form-input>
+      </div>
+      <div class="col-md-3">
+        Serving Size Unit
+        <b-form-input
+          v-model="meal.servingSizeUnit"
+          placeholder="Keto Bomb"
+        ></b-form-input>
+      </div>
+      <div class="col-md-3">
+        <b-btn variant="primary" class="mt-4" @click="saveMealServings"
+          >Save</b-btn
+        >
+      </div>
+    </div>
     <img src="/images/nutritionix.png" class="nutritionix mb-3" />
     <b-form class="mb-2" @submit.prevent="searchRecipe">
       <b-tabs class="mb-2">
@@ -308,6 +329,7 @@ import format from "../lib/format";
 
 export default {
   props: {
+    mealSizeId: null,
     value: {},
     options: {
       default: {
@@ -607,41 +629,59 @@ export default {
     getNutritionFacts(ingredients) {
       const nutrition = this.nutrition.getTotals(ingredients);
       const ingredientList = this.nutrition.getIngredientList(ingredients);
+      const servingsPerMeal = this.meal.servingsPerMeal;
+      const servingSizeUnit = this.meal.servingSizeUnit;
 
       $(this.$refs.nutritionFacts).html("");
 
       $(this.$refs.nutritionFacts).nutritionLabel({
-        showServingUnitQuantity: false,
+        showItemName: false,
+        showServingUnitQuantity: true,
+        valueServingPerContainer: servingsPerMeal,
+        valueServingUnitQuantity: 1,
+        valueServingSizeUnit: servingSizeUnit,
+        showServingsPerContainer: true,
+
         itemName: this.meal.title,
         ingredientList: ingredientList,
-
+        showIngredients: this.showIngredients,
         decimalPlacesForQuantityTextbox: 2,
-        valueServingUnitQuantity: 1,
-
         allowFDARounding: false,
         decimalPlacesForNutrition: 0,
-
         showPolyFat: false,
         showMonoFat: false,
-
-        valueCalories: nutrition.calories,
-        valueFatCalories: nutrition.fatCalories,
-        valueTotalFat: nutrition.totalFat,
-        valueSatFat: nutrition.satFat,
-        valueTransFat: nutrition.transFat,
-        valueCholesterol: nutrition.cholesterol,
-        valueSodium: nutrition.sodium,
-        valueTotalCarb: nutrition.totalCarb,
-        valueFibers: nutrition.fibers,
-        valueSugars: nutrition.sugars,
-        valueProteins: nutrition.proteins,
-        valueVitaminD: (nutrition.vitaminD / 20000) * 100,
-        valuePotassium_2018: (nutrition.potassium / 4700) * 100,
-        valueCalcium: (nutrition.calcium / 1300) * 100,
-        valueIron: (nutrition.iron / 18) * 100,
-        valueAddedSugars: nutrition.addedSugars,
+        valueCalories: nutrition.calories / servingsPerMeal,
+        valueFatCalories: nutrition.fatCalories / servingsPerMeal,
+        valueTotalFat: nutrition.totalFat / servingsPerMeal,
+        valueSatFat: nutrition.satFat / servingsPerMeal,
+        valueTransFat: nutrition.transFat / servingsPerMeal,
+        valueCholesterol: nutrition.cholesterol / servingsPerMeal,
+        valueSodium: nutrition.sodium / servingsPerMeal,
+        valueTotalCarb: nutrition.totalCarb / servingsPerMeal,
+        valueFibers: nutrition.fibers / servingsPerMeal,
+        valueSugars: nutrition.sugars / servingsPerMeal,
+        valueProteins: nutrition.proteins / servingsPerMeal,
+        valueVitaminD: ((nutrition.vitaminD / 20000) * 100) / servingsPerMeal,
+        valuePotassium_2018:
+          ((nutrition.potassium / 4700) * 100) / servingsPerMeal,
+        valueCalcium: ((nutrition.calcium / 1300) * 100) / servingsPerMeal,
+        valueIron: ((nutrition.iron / 18) * 100) / servingsPerMeal,
+        valueAddedSugars: nutrition.addedSugars / servingsPerMeal,
         showLegacyVersion: false
       });
+    },
+    saveMealServings() {
+      axios
+        .post("/api/me/saveMealServings", {
+          id: this.meal.id,
+          meal_size_id: this.mealSizeId,
+          servingsPerMeal: this.meal.servingsPerMeal,
+          servingSizeUnit: this.meal.servingSizeUnit
+        })
+        .then(resp => {
+          this.$toastr.s("Meal serving info saved.");
+          this.getNutritionFacts(this.ingredients);
+        });
     }
   }
 };

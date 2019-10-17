@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateMealRequest;
 use App\Meal;
 use App\MealPackage;
 use App\MealMealPackage;
+use App\MealSize;
 use Illuminate\Http\Request;
 
 class MealController extends StoreController
@@ -242,5 +243,22 @@ class MealController extends StoreController
     {
         $meal = $this->store->meals()->find($request->id);
         $meal->delete();
+    }
+
+    public function saveMealServings(Request $request)
+    {
+        $mealSizeId = $request->get('meal_size_id');
+        if ($mealSizeId) {
+            $meal = MealSize::where('id', $request->get('id'))->first();
+        } else {
+            $meal = Meal::where('id', $request->get('id'))->first();
+        }
+        $meal->servingsPerMeal = $request->get('servingsPerMeal');
+        if ($request->get('servingSizeUnit') === null) {
+            $meal->servingSizeUnit = '';
+        } else {
+            $meal->servingSizeUnit = $request->get('servingSizeUnit');
+        }
+        $meal->save();
     }
 }

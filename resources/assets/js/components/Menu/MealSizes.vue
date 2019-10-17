@@ -9,6 +9,7 @@
         :options="{ saveButton: true }"
         :meal="ingredient_picker_size"
         @save="val => onChangeIngredients(val)"
+        :mealSizeId="ingredient_picker_size.id"
       ></ingredient-picker>
     </div>
     <div v-else>
