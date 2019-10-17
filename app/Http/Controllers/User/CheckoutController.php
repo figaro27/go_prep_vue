@@ -47,6 +47,7 @@ class CheckoutController extends UserController
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
         //$stripeToken = $request->get('token');
+        $deposit = 1;
 
         $cashOrder = $request->get('cashOrder');
         if ($cashOrder) {
