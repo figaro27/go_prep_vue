@@ -236,6 +236,12 @@ class MealPackageController extends StoreController
             ])
         );
 
+        if ($this->store) {
+            $this->store->setTimezone();
+            $this->store->menu_update_time = date('Y-m-d H:i:s');
+            $this->store->save();
+        }
+
         return $package->_update($props);
     }
 
@@ -258,11 +264,23 @@ class MealPackageController extends StoreController
     {
         $package = $this->store->packages()->find($id);
         $package->delete();
+
+        if ($this->store) {
+            $this->store->setTimezone();
+            $this->store->menu_update_time = date('Y-m-d H:i:s');
+            $this->store->save();
+        }
     }
 
     public function destroyPackageNonSubtitute(Request $request)
     {
         $package = $this->store->packages()->find($request->id);
         $package->delete();
+
+        if ($this->store) {
+            $this->store->setTimezone();
+            $this->store->menu_update_time = date('Y-m-d H:i:s');
+            $this->store->save();
+        }
     }
 }
