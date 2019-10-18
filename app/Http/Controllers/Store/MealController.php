@@ -192,6 +192,12 @@ class MealController extends StoreController
             }
         }
 
+        if ($this->store) {
+            $this->store->setTimezone();
+            $this->store->menu_update_time = date('Y-m-d H:i:s');
+            $this->store->save();
+        }
+
         return Meal::deleteMeal($mealId, $subId, true);
     }
 
@@ -236,11 +242,23 @@ class MealController extends StoreController
             }
         }
 
+        if ($this->store) {
+            $this->store->setTimezone();
+            $this->store->menu_update_time = date('Y-m-d H:i:s');
+            $this->store->save();
+        }
+
         return Meal::deleteMeal($id, $subId);
     }
 
     public function destroyMealNonSubtitute(Request $request)
     {
+        if ($this->store) {
+            $this->store->setTimezone();
+            $this->store->menu_update_time = date('Y-m-d H:i:s');
+            $this->store->save();
+        }
+
         $meal = $this->store->meals()->find($request->id);
         $meal->delete();
     }
