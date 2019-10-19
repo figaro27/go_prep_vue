@@ -8,8 +8,10 @@
             .ingredients
         "
         :options="{ saveButton: true }"
-        :meal="meal"
+        :meal="ingredient_picker_size"
+        :mealSizeId="ingredient_picker_size.id"
         @save="val => onChangeIngredients(val)"
+        :componentAddonPage="true"
       ></ingredient-picker>
     </div>
 
@@ -97,7 +99,9 @@
                 ></b-select>
               </td>
               <td>
-                <b-btn variant="primary" @click="changeOptionIngredients(i, x)"
+                <b-btn
+                  variant="primary"
+                  @click="changeOptionIngredients(i, x, option.meal_size_id)"
                   >Adjust</b-btn
                 >
               </td>
@@ -172,7 +176,9 @@ export default {
   data() {
     return {
       ingredientComponentId: null,
-      ingredientOptionId: null
+      ingredientOptionId: null,
+      ingredient_picker_id: null,
+      ingredient_picker_size: null
     };
   },
   computed: {
@@ -251,9 +257,20 @@ export default {
 
       this.$emit("change", this.meal.components);
     },
-    changeOptionIngredients(componentId, optionId) {
+    changeOptionIngredients(componentId, optionId, sizeId) {
       this.ingredientComponentId = componentId;
       this.ingredientOptionId = optionId;
+      if (sizeId != null) {
+        this.ingredient_picker_id = sizeId;
+        this.ingredient_picker_size = _.find(this.meal.sizes, { id: sizeId });
+
+        if (!this.ingredient_picker_size.ingredients.length) {
+          this.ingredient_picker_size.ingredients = [...this.meal.ingredients];
+        }
+      } else {
+        this.ingredient_picker_id = null;
+        this.ingredient_picker_size = this.meal;
+      }
     },
     onChangeIngredients(ingredients) {
       try {

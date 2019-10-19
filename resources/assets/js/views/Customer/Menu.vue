@@ -688,10 +688,9 @@ export default {
       let sortedIngredients = this.meal.ingredients.sort((a, b) => {
         return b.pivot.quantity_base - a.pivot.quantity_base;
       });
-      this.$nextTick(() => {
-        this.getNutritionFacts(sortedIngredients, this.meal);
-        // this.$refs.mealGallery.reSlick();
-      });
+
+      this.getNutritionFacts(sortedIngredients, this.meal);
+      // this.$refs.mealGallery.reSlick();
     },
     filterByTag(tag) {
       Vue.set(this.active, tag, !this.active[tag]);
@@ -787,11 +786,19 @@ export default {
         }
       });
     },
-    getNutritionFacts(ingredients, meal, ref = null) {
+    getNutritionFacts(ingredients, meal, ref = null, servingDetails) {
       const nutrition = this.nutrition.getTotals(ingredients);
       const ingredientList = this.nutrition.getIngredientList(ingredients);
-      const servingsPerMeal = this.meal.servingsPerMeal;
-      const servingSizeUnit = this.meal.servingSizeUnit;
+      let servingsPerMeal = null;
+      let servingSizeUnit = null;
+      if (servingDetails) {
+        servingsPerMeal = servingDetails.servingsPerMeal;
+        servingSizeUnit = servingDetails.servingSizeUnit;
+      } else {
+        servingsPerMeal = this.meal.servingsPerMeal;
+        servingSizeUnit = this.meal.servingSizeUnit;
+      }
+
       this.nutritionalFacts = {
         showItemName: false,
         showServingUnitQuantity: true,
