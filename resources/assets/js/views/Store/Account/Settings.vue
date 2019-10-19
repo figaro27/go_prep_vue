@@ -867,26 +867,45 @@
                 </a>
               </div>
               <b-form @submit.prevent="updateStoreSettings">
-                <p class="mt-3 mb-0 pb-0">
-                  <span class="mr-1">Sales Tax %</span>
+                <p class="mt-3">
+                  <span class="mr-1">Sales Tax</span>
                   <img
                     v-b-popover.hover="
-                      'Our system figures out your sales tax using the state you signed up with. You can override the number in the field below.'
+                      'Here you can turn sales tax on or off for your customers.'
                     "
-                    title="Sales Tax"
+                    title="Enable Sales Tax"
                     src="/images/store/popover.png"
                     class="popover-size"
                   />
                 </p>
-                <b-form-group :state="true">
-                  <b-form-input
-                    label="Sales Tax"
-                    class="mt-3"
-                    type="text"
-                    v-model="salesTax"
-                    required
-                  ></b-form-input>
-                </b-form-group>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeSettings.enableSalesTax"
+                />
+                <div v-if="storeSettings.enableSalesTax">
+                  <p class="mt-3 mb-0 pb-0">
+                    <span class="mr-1">Sales Tax %</span>
+                    <img
+                      v-b-popover.hover="
+                        'Our system figures out your sales tax using the state you signed up with. You can override the number in the field below.'
+                      "
+                      title="Sales Tax"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <b-form-group :state="true">
+                    <b-form-input
+                      label="Sales Tax"
+                      class="mt-3"
+                      type="text"
+                      v-model="salesTax"
+                      required
+                    ></b-form-input>
+                  </b-form-group>
+                </div>
                 <p class="mt-2">
                   <span class="mr-1">Google Analytics Code</span>
                   <img
