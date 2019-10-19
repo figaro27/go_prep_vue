@@ -129,12 +129,45 @@
                         ></b-form-input>
 
                         <b-btn
-                          v-if="!meal.meal_package"
+                          v-if="!meal.meal_package && meal.sizes.length === 0"
                           @click.stop="addMeal(meal, null)"
                           class="menu-bag-btn plus-minus"
                         >
                           <i>+</i>
                         </b-btn>
+
+                        <b-dropdown
+                          v-if="!meal.meal_package && meal.sizes.length > 0"
+                          toggle-class="menu-bag-btn"
+                          :ref="'dropdown_' + meal.id + '_' + group.category_id"
+                        >
+                          <span
+                            slot="button-content"
+                            :id="
+                              'dropdown_' + meal.id + '_' + group.category_id
+                            "
+                            >+</span
+                          >
+                          <b-dropdown-item
+                            @click="addMeal(meal, true)"
+                            v-if="!meal.meal_page_visited"
+                          >
+                            {{ meal.default_size_title || "Regular" }} -
+                            {{
+                              format.money(meal.price, storeSettings.currency)
+                            }}
+                          </b-dropdown-item>
+                          <b-dropdown-item
+                            v-for="size in meal.sizes"
+                            :key="size.id"
+                            @click="addMeal(meal, true, size)"
+                          >
+                            {{ size.title }} -
+                            {{
+                              format.money(size.price, storeSettings.currency)
+                            }}
+                          </b-dropdown-item>
+                        </b-dropdown>
 
                         <b-btn
                           v-if="meal.meal_package && meal.sizes.length === 0"
@@ -156,8 +189,8 @@
                             "
                             >+</span
                           >
-                          <b-dropdown-item @click="addMeal(meal, true)">
-                            {{ meal.default_size_title }} -
+                          <b-dropdown-item @click="addMeal(meal, true, size)">
+                            {{ meal.default_size_title || "Regular" }} -
                             {{
                               format.money(meal.price, storeSettings.currency)
                             }}
@@ -195,7 +228,7 @@
           >
             <div
               class="card card-text-menu border-light p-3 thumbnail-height mr-1"
-              @click="showMeal(meal, group)"
+              @click.stop="showMeal(meal, group)"
             >
               <div class="bag-item-quantity row">
                 <div class="col-md-1">
@@ -205,34 +238,62 @@
                   >
                     <i>+</i>
                   </div> -->
-                  <div
-                    v-if="!meal.meal_package"
+
+                  <b-btn
+                    v-if="!meal.meal_package && meal.sizes.length === 0"
                     @click.stop="addMeal(meal, null)"
-                    class="bag-plus-minus small-buttons brand-color white-text"
+                    class="menu-bag-btn small-buttons plus-minus"
                   >
                     <i>+</i>
-                  </div>
+                  </b-btn>
+
+                  <b-dropdown
+                    v-if="!meal.meal_package && meal.sizes.length > 0"
+                    toggle-class="menu-bag-btn small-buttons plus-minus"
+                    :ref="'dropdown_' + meal.id + '_' + group.category_id"
+                  >
+                    <i
+                      slot="button-content"
+                      :id="'dropdown_' + meal.id + '_' + group.category_id"
+                      >+</i
+                    >
+                    <b-dropdown-item
+                      @click="addMeal(meal, true)"
+                      v-if="!meal.meal_page_visited"
+                    >
+                      {{ meal.default_size_title || "Regular" }} -
+                      {{ format.money(meal.price, storeSettings.currency) }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                      v-for="size in meal.sizes"
+                      :key="size.id"
+                      @click.stop="addMeal(meal, true, size)"
+                    >
+                      {{ size.title }} -
+                      {{ format.money(size.price, storeSettings.currency) }}
+                    </b-dropdown-item>
+                  </b-dropdown>
 
                   <div
                     v-if="meal.meal_package && meal.sizes.length === 0"
                     @click="addMeal(meal, true)"
-                    class="bag-plus-minus small-buttons brand-color white-text"
+                    class="menu-bag-btn small-buttons plus-minus"
                   >
                     <i>+</i>
                   </div>
 
                   <b-dropdown
                     v-if="meal.meal_package && meal.sizes.length > 0"
-                    toggle-class="bag-plus-minus small-buttons brand-color white-text"
+                    toggle-class="menu-bag-btn small-buttons plus-minus"
                     :ref="'dropdown_' + meal.id + '_' + group.category_id"
                   >
-                    <span
+                    <i
                       slot="button-content"
                       :id="'dropdown_' + meal.id + '_' + group.category_id"
-                      >+</span
+                      >+</i
                     >
                     <b-dropdown-item @click="addMeal(meal, true)">
-                      {{ meal.default_size_title }} -
+                      {{ meal.default_size_title || "Regular" }} -
                       {{ format.money(meal.price, storeSettings.currency) }}
                     </b-dropdown-item>
                     <b-dropdown-item
@@ -396,19 +457,33 @@ export default {
         this.$parent.showBagClass -= " area-scroll";
       }
     },
-    addMeal(meal, mealPackage) {
+    addMeal(meal, mealPackage, size) {
       if (meal.meal_package) {
         this.addMealPackage(meal, true);
       } else {
         if (
+          meal.sizes.length > 0 &&
+          meal.components.length === 0 &&
+          meal.addons.length === 0
+        ) {
+          if (size === undefined) {
+            size === null;
+          }
+          this.addOne(meal, false, size, null, [], null);
+        } else if (
           (meal.sizes.length > 0 && !this.resetMeal) ||
           meal.components.length > 0 ||
           meal.addons.length > 0
         ) {
           this.showMeal(meal);
           return;
+        } else if (
+          meal.sizes.length === 0 &&
+          meal.components.length === 0 &&
+          meal.addons.length === 0
+        ) {
+          this.addOne(meal, false, size, null, [], null);
         }
-        this.addOne(meal, false, null, null, [], null);
         if (this.$parent.showBagClass.includes("hidden-right")) {
           this.$parent.showBagClass = "shopping-cart show-right bag-area";
         }

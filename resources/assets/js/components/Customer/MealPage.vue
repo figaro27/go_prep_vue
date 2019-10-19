@@ -319,6 +319,14 @@ export default {
       }
     },
     addMeal(meal) {
+      let viewedMeal = {};
+      this.$parent.meals.forEach(category => {
+        category.meals.forEach(menuMeal => {
+          if (meal.id === menuMeal.id) viewedMeal = menuMeal;
+        });
+      });
+      viewedMeal.meal_page_visited = true;
+
       if (this.invalidCheck && this.hasVariations) {
         this.invalid = true;
         return;
@@ -357,6 +365,14 @@ export default {
       this.invalid = false;
     },
     back() {
+      let viewedMeal = {};
+      this.$parent.meals.forEach(category => {
+        category.meals.forEach(menuMeal => {
+          if (this.meal.id === menuMeal.id) viewedMeal = menuMeal;
+        });
+      });
+
+      viewedMeal.meal_page_visited = true;
       this.sizeChanged = false;
       this.addons = [];
       if (this.meal.sizes.length === 1) {
@@ -380,7 +396,7 @@ export default {
     changeSize() {
       this.sizeChanged = true;
       this.$refs.componentModal.resetVariations();
-      this.addons = null;
+      this.addons = [];
       this.components = null;
     }
   }
