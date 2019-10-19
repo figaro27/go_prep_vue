@@ -62,7 +62,7 @@
             :options="sizes"
             class="filters small flexibleButtonGroup"
             required
-            @change="changeSize"
+            @input="changeSize"
             v-show="sizes.length > 1"
           ></b-form-radio-group>
 
@@ -204,7 +204,9 @@ export default {
       specialInstructions: null,
       mealVariationPrice: null,
       totalAddonPrice: null,
-      totalComponentPrice: null
+      totalComponentPrice: null,
+      selectedComponentOptions: [],
+      selectedAddons: []
     };
   },
   components: {
@@ -312,11 +314,11 @@ export default {
       });
     },
     getNutritionFacts() {
-      if (!this.sizeChanged) {
-        $(ref).nutritionLabel(null);
-        let ref = this.$refs.nutritionFacts;
-        $(ref).nutritionLabel(this.nutritionalFacts);
-      }
+      // if (!this.sizeChanged) {
+      $(ref).nutritionLabel(null);
+      let ref = this.$refs.nutritionFacts;
+      $(ref).nutritionLabel(this.nutritionalFacts);
+      // }
     },
     addMeal(meal) {
       if (this.invalidCheck && this.hasVariations) {
@@ -377,11 +379,73 @@ export default {
         this.totalAddonPrice +
         this.totalComponentPrice;
     },
-    changeSize() {
+    changeSize(mealSizeId) {
+      // this.$refs.componentModal.resetVariations();
+      this.components = [];
+      this.addons = [];
+      this.selectedComponentOptions = [];
+      this.selectedAddons = [];
       this.sizeChanged = true;
-      this.$refs.componentModal.resetVariations();
-      this.addons = null;
-      this.components = null;
+      this.refreshNutritionFacts();
+    },
+    getSizeIngredients() {
+      let size = _.filter(this.meal.sizes, size => {
+        return size.id === this.mealSize;
+      });
+      return {
+        ingredients: size[0].ingredients,
+        servingsPerMeal: size[0].servingsPerMeal,
+        servingSizeUnit: size[0].servingSizeUnit
+      };
+    },
+    getComponentIngredients() {
+      this.meal.components.forEach(component => {
+        component.options.forEach(option => {
+          if (this.components[1] != null)
+            if (this.components[1].includes(option.id))
+              if (
+                !this.selectedComponentOptions.includes(option.ingredients[0])
+              )
+                this.selectedComponentOptions.push(option.ingredients[0]);
+              else this.selectedComponentOptions.pop(option.ingredients[0]);
+        });
+      });
+      this.refreshNutritionFacts();
+    },
+    getAddonIngredients() {
+      this.meal.addons.forEach(addon => {
+        if (this.addons != null)
+          if (this.addons.includes(addon.id))
+            if (!this.selectedAddons.includes(addon.ingredients[0]))
+              this.selectedAddons.push(addon.ingredients[0]);
+            else this.selectedAddons.pop(addon.ingredients[0]);
+      });
+      this.refreshNutritionFacts();
+    },
+    refreshNutritionFacts() {
+      let sizeIngredients = this.meal.ingredients;
+      let servingDetails = {
+        servingsPerMeal: this.meal.servingsPerMeal,
+        servingSizeUnit: this.meal.servingSizeUnit
+      };
+      if (this.mealSize != null) {
+        sizeIngredients = this.getSizeIngredients().ingredients;
+        servingDetails = this.getSizeIngredients();
+      }
+      let componentsIngredients = sizeIngredients.concat(
+        this.selectedComponentOptions
+      );
+      let allIngredients = componentsIngredients.concat(this.selectedAddons);
+
+      this.$parent.getNutritionFacts(
+        allIngredients,
+        this.meal,
+        null,
+        servingDetails
+      );
+      this.$nextTick(() => {
+        this.getNutritionFacts();
+      });
     }
   }
 };

@@ -1,22 +1,34 @@
 <template>
   <div>
-    <div class="row mb-3">
-      <div class="col-md-3">
-        Servings Per Container
+    <div class="row mb-3 mt-2">
+      <div class="col-md-4">
+        <strong>Servings Per Container</strong>
         <b-form-input
           v-model="meal.servingsPerMeal"
           placeholder="1"
+          v-if="!componentAddonPage"
         ></b-form-input>
+        <span v-if="componentAddonPage" class="strong"
+          >: {{ meal.servingsPerMeal }}</span
+        >
       </div>
-      <div class="col-md-3">
-        Serving Size Unit
+      <div class="col-md-4">
+        <strong>Serving Size Unit</strong>
         <b-form-input
           v-model="meal.servingSizeUnit"
           placeholder="Keto Bomb"
+          v-if="!componentAddonPage"
         ></b-form-input>
+        <span v-if="componentAddonPage" class="strong"
+          >: {{ meal.servingSizeUnit }}</span
+        >
       </div>
-      <div class="col-md-3">
-        <b-btn variant="primary" class="mt-4" @click="saveMealServings"
+      <div class="col-md-4">
+        <b-btn
+          variant="primary"
+          class="mt-4"
+          @click="saveMealServings"
+          v-if="!componentAddonPage"
           >Save</b-btn
         >
       </div>
@@ -329,6 +341,7 @@ import format from "../lib/format";
 
 export default {
   props: {
+    componentAddonPage: false,
     mealSizeId: null,
     value: {},
     options: {
