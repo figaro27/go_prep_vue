@@ -151,6 +151,7 @@ export default {
         await this.refreshStoreCustomers();
         this.$toastr.s("Customer Added");
         this.$parent.setCustomer();
+        if ($route.params.manualOrder) this.$parent.getCards();
       });
       // .catch(e => {
       //   this.$toastr.e("Please try again.", "Registration failed");

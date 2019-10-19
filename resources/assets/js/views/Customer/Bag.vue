@@ -436,6 +436,10 @@ export default {
         if (newData.hasOwnProperty("cashOrder")) {
           this.cashOrder = newData.cashOrder;
         }
+
+        if (newData.hasOwnProperty("creditCardList")) {
+          this.creditCardList = newData.creditCardList;
+        }
       }
     },
     setSalesTax(rate) {

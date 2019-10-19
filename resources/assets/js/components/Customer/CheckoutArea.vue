@@ -1203,7 +1203,8 @@ export default {
         pickup: this.pickup,
         transferTime: this.transferTime,
         deliveryDay: this.deliveryDay,
-        cashOrder: this.cashOrder
+        cashOrder: this.cashOrder,
+        creditCardList: this.creditCardList
       });
     },
     getCards() {
