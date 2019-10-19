@@ -166,6 +166,7 @@
                 v-model="meal.ingredients"
                 :options="{ saveButton: true }"
                 :meal="meal"
+                @save="onViewMealModalOk"
               ></ingredient-picker>
             </b-tab>
 
@@ -414,6 +415,29 @@ export default {
       refreshMeals: "refreshMeals",
       _updateMeal: "updateMeal"
     }),
+    async onViewMealModalOk(e) {
+      const data = {
+        validate_all: true,
+        title: this.meal.title,
+        description: this.meal.description,
+        instructions: this.meal.instructions,
+        price: this.meal.price,
+        category_ids: this.meal.category_ids,
+        ingredients: this.meal.ingredients,
+        sizes: this.meal.sizes,
+        default_size_title: this.meal.default_size_title,
+        components: this.meal.components,
+        addons: this.meal.addons,
+        macros: this.meal.macros
+      };
+      const updated = await this.updateMeal(this.meal.id, data, true);
+
+      if (updated) {
+        this.viewMealModal = false;
+      } else {
+        e.preventDefault();
+      }
+    },
     forceResize() {
       window.dispatchEvent(new window.Event("resize"));
     },

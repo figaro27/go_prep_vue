@@ -469,7 +469,7 @@
                   v-model="meal.ingredients"
                   :options="{ saveButton: true }"
                   :meal="meal"
-                  @save="val => onChangeIngredients(meal.id, val)"
+                  @save="onViewMealModalOk"
                 ></ingredient-picker>
               </b-tab>
 
