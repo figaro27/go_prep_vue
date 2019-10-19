@@ -69,7 +69,9 @@
               >
                 Cancel
               </button>
-              <b-btn
+              <!--Removing pause functionality for the time being -->
+
+              <!-- <b-btn
                 v-if="props.row.status === 'active'"
                 class="btn btn-warning btn-sm"
                 @click.stop="() => pauseSubscription(props.row.id)"
@@ -80,7 +82,7 @@
                 class="btn btn-warning btn-sm"
                 @click.stop="() => resumeSubscription(props.row.id)"
                 >Resume</b-btn
-              >
+              > -->
               <router-link :to="`/store/adjust-meal-plan/${props.row.id}`">
                 <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
               </router-link>

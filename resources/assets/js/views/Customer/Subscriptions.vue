@@ -190,11 +190,25 @@ f<template>
                           next week's order.
                         </span>
                       </p>
-                      <b-btn
+                      <!--Removing pause functionality for the time being -->
+                      <!-- <b-btn
                         variant="warning"
                         @click.stop="() => pauseSubscription(subscription)"
                         >Pause</b-btn
-                      >
+                      > 
+                      <div
+                    class="col-md-4"
+                    v-else-if="subscription.status === 'paused'"
+                  >
+                    <b-btn
+                      variant="warning"
+                      @click.stop="() => resumeSubscription(subscription)"
+                      >Resume</b-btn
+                    >
+                    <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
+                  </div>
+
+                    -->
                       <b-btn
                         variant="danger"
                         @click.stop="() => cancelSubscription(subscription)"
@@ -206,17 +220,6 @@ f<template>
                         <b-btn variant="success">Edit Subscription</b-btn>
                       </router-link>
                     </div>
-                    <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
-                  </div>
-                  <div
-                    class="col-md-4"
-                    v-else-if="subscription.status === 'paused'"
-                  >
-                    <b-btn
-                      variant="warning"
-                      @click.stop="() => resumeSubscription(subscription)"
-                      >Resume</b-btn
-                    >
                     <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
                   </div>
                   <div class="col-md-4" v-else>
