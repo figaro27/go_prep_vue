@@ -613,6 +613,12 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      store: "viewedStore"
+    }),
+    stateNames() {
+      return states.selectOptions("US");
+    },
     countryNames() {
       return countries.selectOptions();
     },
@@ -714,7 +720,16 @@ export default {
       this.plans = resp.data.plans;
     });
   },
-  mounted() {},
+  mounted() {
+    if (this.store.details) {
+      let stateAbr = this.store.details.state;
+      let state = this.stateNames.filter(stateName => {
+        return stateName.value.toLowerCase() === stateAbr.toLowerCase();
+      });
+
+      this.form[1].state = state[0].value;
+    }
+  },
   methods: {
     ...mapActions(["init", "setToken"]),
     getStateNames(country = "US") {
