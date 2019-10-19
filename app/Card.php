@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Card extends Model
 {
@@ -11,6 +12,11 @@ class Card extends Model
      *
      * @var array
      */
+
+    use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
+
     protected $fillable = [
         'stripe_id',
         'brand',
