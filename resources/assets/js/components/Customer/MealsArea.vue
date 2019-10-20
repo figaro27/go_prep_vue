@@ -129,7 +129,10 @@
                         ></b-form-input>
 
                         <b-btn
-                          v-if="!meal.meal_package && meal.sizes.length === 0"
+                          v-if="
+                            !meal.meal_package &&
+                              (!meal.sizes || meal.sizes.length === 0)
+                          "
                           @click.stop="addMeal(meal, null)"
                           class="menu-bag-btn plus-minus"
                         >
@@ -137,7 +140,11 @@
                         </b-btn>
 
                         <b-dropdown
-                          v-if="!meal.meal_package && meal.sizes.length > 0"
+                          v-if="
+                            !meal.meal_package &&
+                              meal.sizes &&
+                              meal.sizes.length > 0
+                          "
                           toggle-class="menu-bag-btn"
                           :ref="'dropdown_' + meal.id + '_' + group.category_id"
                         >
@@ -172,8 +179,7 @@
                         <b-btn
                           v-if="
                             meal.meal_package &&
-                              meal.sizes &&
-                              meal.sizes.length === 0
+                              (!meal.sizes || meal.sizes.length === 0)
                           "
                           @click="addMeal(meal, true)"
                           class="plus-minus menu-bag-btn"
@@ -248,7 +254,10 @@
                   </div> -->
 
                   <b-btn
-                    v-if="!meal.meal_package && meal.sizes.length === 0"
+                    v-if="
+                      !meal.meal_package &&
+                        (!meal.sizes || meal.sizes.length === 0)
+                    "
                     @click.stop="addMeal(meal, null)"
                     class="menu-bag-btn small-buttons plus-minus"
                   >
@@ -256,7 +265,9 @@
                   </b-btn>
 
                   <b-dropdown
-                    v-if="!meal.meal_package && meal.sizes.length > 0"
+                    v-if="
+                      !meal.meal_package && meal.sizes && meal.sizes.length > 0
+                    "
                     toggle-class="menu-bag-btn small-buttons plus-minus"
                     :ref="'dropdown_' + meal.id + '_' + group.category_id"
                   >
@@ -284,7 +295,8 @@
 
                   <div
                     v-if="
-                      meal.meal_package && meal.sizes && meal.sizes.length === 0
+                      meal.meal_package &&
+                        (!meal.sizes || meal.sizes.length === 0)
                     "
                     @click="addMeal(meal, true)"
                     class="menu-bag-btn small-buttons plus-minus"
