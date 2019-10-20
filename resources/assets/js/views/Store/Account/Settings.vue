@@ -662,6 +662,41 @@
                     placeholder="Example: http://goprep.com"
                   ></b-form-input>
                 </b-form-group>
+                <p>Menu Style</p>
+                <b-form-radio-group
+                  buttons
+                  v-model="storeSettings.menuStyle"
+                  class="storeFilters"
+                  @change="updateStoreSettings"
+                  :options="[
+                    { value: 'image', text: 'Image Based' },
+                    { value: 'text', text: 'Text Based' }
+                  ]"
+                ></b-form-radio-group>
+                <img
+                  v-b-popover.hover="
+                    'Choose image based if you have images of your meals and want to showcase your meals visually. Choose text based if you don\'t have many images and want to emphasize descriptions more. Text based still shows images of your meals but in a much smaller size.'
+                  "
+                  title="Menu Style"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+                <br /><br />
+                <router-link
+                  v-if="!storeURLcheck"
+                  :to="'/store/menu/preview'"
+                  class="btn btn-warning btn-md"
+                  tag="button"
+                  >Preview Menu</router-link
+                >
+                <a
+                  :href="storeURL"
+                  v-if="storeURLcheck"
+                  class="btn btn-warning btn-md"
+                  tag="button"
+                  >Preview Menu</a
+                >
+                <br /><br />
                 <b-button type="submit" variant="primary mt-2">Save</b-button>
               </b-form>
             </b-tab>
