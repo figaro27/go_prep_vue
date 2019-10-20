@@ -23,7 +23,7 @@
           :class="pickerClasses"
           i18n="EN"
           :righttoleft="rtl ? 'true' : 'false'"
-          :compact="true"
+          :compact="'false'"
         ></date-range-picker>
         <!--<v-select
           multiple

@@ -59,7 +59,7 @@
                 v-model="mealPackage.category_ids"
                 :options="categoryOptions"
                 class="storeFilters"
-                @change="
+                @input="
                   val =>
                     updateMealPackage(mealPackage.id, { category_ids: val })
                 "
@@ -314,7 +314,6 @@ export default {
   },
   created() {
     this.mealPackage = { ...this.meal_package };
-    console.log(this.meal_package);
   },
   mounted() {
     this.$refs.modal.show();
