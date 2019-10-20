@@ -55,19 +55,9 @@ class SpaController extends Controller
                         'packages',
                         'units',
                         'categories',
-                        'meals.categories',
-                        'meals.allergies',
                         'settings',
                         'modules',
                         'moduleSettings',
-                        'packages.meals',
-                        'packages.sizes',
-                        'packages.components',
-                        'packages.addons',
-                        'meals.sizes',
-                        'meals.components',
-                        'meals.addons',
-                        'meals.macros',
                         'details',
                         'coupons',
                         'pickupLocations',
@@ -111,25 +101,16 @@ class SpaController extends Controller
                     'tags' => MealTag::all()
                 ];
             } elseif ($context === 'customer') {
+                /* New Optimized Workflow */
                 $store = defined('STORE_ID')
                     ? Store::with([
                         'meals',
                         'packages',
                         'units',
                         'categories',
-                        'meals.categories',
-                        'meals.allergies',
                         'settings',
                         'modules',
                         'moduleSettings',
-                        'packages.meals',
-                        'packages.sizes',
-                        'packages.components',
-                        'packages.addons',
-                        'meals.sizes',
-                        'meals.components',
-                        'meals.addons',
-                        'meals.macros',
                         'details',
                         'coupons',
                         'pickupLocations',
@@ -176,6 +157,7 @@ class SpaController extends Controller
                         'tags' => MealTag::all()
                     ];
                 }
+                /* New Optimized Workflow End */
             }
         } else {
             $user = auth()->user();
@@ -195,6 +177,37 @@ class SpaController extends Controller
 
             //return redirect('/login');
         }
+    }
+
+    public function refresh()
+    {
+        $user = auth('api')->user();
+
+        $last_viewed_store = null;
+        if ($user && isset($user->last_viewed_store)) {
+            $last_viewed_store = $user->last_viewed_store;
+        }
+
+        $store = defined('STORE_ID')
+            ? Store::with([
+                'meals',
+                'packages',
+                'meals.categories',
+                'meals.allergies',
+                'packages.meals',
+                'packages.sizes',
+                'packages.components',
+                'packages.addons',
+                'meals.sizes',
+                'meals.components',
+                'meals.addons',
+                'meals.macros'
+            ])->find(STORE_ID)
+            : $last_viewed_store;
+
+        return [
+            'store' => $store
+        ];
     }
 
     public function getViewedStore()

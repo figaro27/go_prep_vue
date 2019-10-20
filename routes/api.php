@@ -73,6 +73,11 @@ foreach (
                 'uses' => 'SpaController@index'
             ]);
 
+            Route::get('/refresh', [
+                'middleware' => ['view.api'],
+                'uses' => 'SpaController@refresh'
+            ]);
+
             Route::group(['middleware' => ['auth:api']], function ($router) {
                 $user = auth('api')->user();
 

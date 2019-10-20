@@ -53,13 +53,24 @@
             v-if="!$route.params.storeView"
             :storeView="storeView"
           ></outside-delivery-area>
-          <meals-area
+          <!--<meals-area
             :meals="mealsMix"
             :card="card"
             :cardBody="cardBody"
             :resetMeal="resetMeal"
             @onCategoryVisible="onCategoryVisible($event)"
             @showMealModal="showMealModal"
+          ></meals-area>!-->
+
+          <meals-area
+            :meals="mealsMix"
+            :card="card"
+            :cardBody="cardBody"
+            :resetMeal="resetMeal"
+            :filters="filters"
+            :search="search"
+            :filteredView="filteredView"
+            @onCategoryVisible="onCategoryVisible($event)"
           ></meals-area>
 
           <meal-page
@@ -338,24 +349,19 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
+      context: "context",
       total: "bagQuantity",
       allergies: "allergies",
       bag: "bagItems",
-      hasMeal: "bagHasMeal",
-      willDeliver: "viewedStoreWillDeliver",
       _categories: "viewedStoreCategories",
-      storeLogo: "viewedStoreLogo",
-      isLoading: "isLoading",
-      totalBagPricePreFees: "totalBagPricePreFees",
-      totalBagPrice: "totalBagPrice",
-      loggedIn: "loggedIn",
-      minOption: "minimumOption",
-      minMeals: "minimumMeals",
-      minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
     }),
     mealsMix() {
+      if (this.context == "customer" || this.context == "guest") {
+        return [];
+      }
+
       let meals = this.store.meals;
       let packages = this.store.packages;
       let filters = this.filters;
@@ -497,7 +503,6 @@ export default {
       }
 
       this.finalCategories = finalCategories;
-      console.log("final data", finalData);
       return finalData;
     },
     meals() {
@@ -686,18 +691,6 @@ export default {
     },
     storeSettings() {
       return this.store.settings;
-    },
-    remainingMeals() {
-      return this.minMeals - this.total;
-    },
-    remainingPrice() {
-      return this.minPrice - this.totalBagPricePreFees;
-    },
-    singOrPlural() {
-      if (this.remainingMeals > 1) {
-        return "meals";
-      }
-      return "meal";
     },
     tags() {
       let grouped = [];
