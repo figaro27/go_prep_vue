@@ -161,6 +161,7 @@
                           "
                           toggle-class="menu-bag-btn"
                           :ref="'dropdown_' + meal.id + '_' + group.category_id"
+                          right
                         >
                           <span
                             slot="button-content"
@@ -209,6 +210,7 @@
                           "
                           toggle-class="menu-bag-btn"
                           :ref="'dropdown_' + meal.id + '_' + group.category_id"
+                          right
                         >
                           <span
                             slot="button-content"
