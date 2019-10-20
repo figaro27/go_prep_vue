@@ -33,7 +33,11 @@ class CheckoutController extends UserController
     {
         $user = auth('api')->user();
         $storeId = $request->get('store_id');
-        $store = Store::with(['settings', 'storeDetail'])->findOrFail($storeId);
+        $store = Store::with([
+            'settings',
+            'modules',
+            'storeDetail'
+        ])->findOrFail($storeId);
         $storeSettings = $store->settings;
 
         $bag = new Bag($request->get('bag'), $store);
@@ -181,6 +185,12 @@ class CheckoutController extends UserController
                 $charge->id = $transactionId;
             }
 
+            $balance = null;
+
+            if ($cashOrder && !$store->modules->cashOrderNoBalance) {
+                $balance = $total;
+            }
+
             $order = new Order();
             $order->user_id = $user->id;
             $order->customer_id = $customer->id;
@@ -196,6 +206,7 @@ class CheckoutController extends UserController
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
             $order->amount = $total;
+            $order->balance = $balance;
             $order->currency = $storeSettings->currency;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);

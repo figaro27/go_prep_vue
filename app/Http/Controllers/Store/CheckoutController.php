@@ -38,7 +38,11 @@ class CheckoutController extends StoreController
     {
         $user = auth('api')->user();
         $storeId = $request->get('store_id');
-        $store = Store::with(['settings', 'storeDetail'])->findOrFail($storeId);
+        $store = Store::with([
+            'settings',
+            'modules',
+            'storeDetail'
+        ])->findOrFail($storeId);
         $storeName = strtolower($store->storeDetail->name);
 
         $bag = new Bag($request->get('bag'), $store);
@@ -189,6 +193,16 @@ class CheckoutController extends StoreController
                 $charge->id = $transactionId;
             }
 
+            $balance = null;
+
+            if ($cashOrder && !$store->modules->cashOrderNoBalance) {
+                $balance = $total;
+            }
+
+            if ($deposit < 1) {
+                $balance = $total - $deposit * $total;
+            }
+
             $order = new Order();
             $order->user_id = $customerUser->id;
             $order->customer_id = $customer->id;
@@ -220,7 +234,7 @@ class CheckoutController extends StoreController
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->deposit = $deposit * 100;
-            $order->balance = $total - $deposit * $total;
+            $order->balance = $balance;
             $order->manual = 1;
             $order->cashOrder = $cashOrder;
             $order->payment_gateway = $gateway;

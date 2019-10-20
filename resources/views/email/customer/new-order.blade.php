@@ -294,6 +294,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         $coupon = $order->couponReduction;
                         $couponCode = $order->couponCode;
                         $deposit = $order->deposit;
+                        $balance = $order->balance;
                         @endphp
 
                         Subtotal: <br>
@@ -315,7 +316,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         
                         <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold;">Total</span><br>
-                        @if ($deposit && $deposit < 100)
+                        @if ($balance > 0)
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Paid</span><br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Balance</span>
                         @endif
@@ -348,11 +349,11 @@ u + .body .full { width:100% !important; width:100vw !important;}
                             @endif
                           </span><br>
                           
-                          @if ($deposit && $deposit < 100)
+                          @if ($balance > 0)
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
-                            ${{number_format(($order->amount * $order->deposit)/100, 2)}}</span><br>
+                            ${{number_format($order->amount - $order->balance, 2)}}</span><br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
-                            ${{number_format(($order->amount - ($order->amount * $order->deposit)/100), 2)}}</span>
+                            ${{number_format($order->balance, 2)}}</span>
                           @endif
                         </td>
                       </tr>
