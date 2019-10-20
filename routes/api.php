@@ -99,6 +99,10 @@ foreach (
                             'namespace' => 'Store'
                         ],
                         function ($router) {
+                            Route::get(
+                                'viewedUpdates',
+                                'StoreController@viewedUpdates'
+                            );
                             Route::patch('user', 'UserController@update');
                             Route::get('user', 'UserController@show');
 

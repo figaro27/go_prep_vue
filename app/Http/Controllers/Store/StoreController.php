@@ -39,4 +39,11 @@ class StoreController extends Controller
             return $next($request);
         });
     }
+
+    public function viewedUpdates()
+    {
+        $store = $this->store;
+        $store->viewedUpdates = 1;
+        $store->save();
+    }
 }

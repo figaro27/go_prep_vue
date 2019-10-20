@@ -53,6 +53,21 @@
         ></page-spinner>
         <!-- <Breadcrumb :list="list"/> -->
         <div class="container-fluid" v-if="initialized">
+          <b-alert
+            show
+            variant="info"
+            class="mt-3 mb-2 ml-2 center-text"
+            v-if="!$route.params.viewedUpdates"
+            >New updates have been added.
+            <router-link
+              :to="{
+                name: 'store-updates',
+                params: { viewedUpdates: true }
+              }"
+            >
+              <b-btn variant="warning pl-2" @click="viewedUpdates">View</b-btn>
+            </router-link>
+          </b-alert>
           <router-view></router-view>
         </div>
       </main>
