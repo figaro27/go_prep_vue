@@ -9,7 +9,7 @@
 
     <div
       v-for="(group, catIndex) in mealsMenu"
-      :key="'category_' + group.category"
+      :key="'category_' + group.category + '_' + catIndex"
       :id="slugify(group.category)"
       :target="'categorySection_' + group.category_id"
       v-observe-visibility="
@@ -24,11 +24,16 @@
         <div class="row">
           <div
             class="item col-sm-6 col-lg-4 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
-            v-for="meal in group.meals"
+            v-for="(meal, index) in group.meals"
             :key="
               meal.meal_package
-                ? 'meal_package_' + meal.id + '_' + group.category_id
-                : 'meal_' + meal.id + '_' + group.category_id
+                ? 'meal_package_' +
+                  meal.id +
+                  '_' +
+                  group.category_id +
+                  '_' +
+                  index
+                : 'meal_' + meal.id + '_' + group.category_id + '_' + index
             "
           >
             <div :class="card">
@@ -165,8 +170,8 @@
                             }}
                           </b-dropdown-item>
                           <b-dropdown-item
-                            v-for="size in meal.sizes"
-                            :key="size.id"
+                            v-for="(size, index) in meal.sizes"
+                            :key="'size_' + size.id + '_' + index"
                             @click="addMeal(meal, true, size)"
                           >
                             {{ size.title }} -
@@ -210,8 +215,8 @@
                             }}
                           </b-dropdown-item>
                           <b-dropdown-item
-                            v-for="size in meal.sizes"
-                            :key="size.id"
+                            v-for="(size, index) in meal.sizes"
+                            :key="'size_' + size.id + '_' + index"
                             @click="addMealPackage(meal, true, size)"
                           >
                             {{ size.title }} -
@@ -237,15 +242,20 @@
         <div class="row">
           <div
             class="item item-text col-sm-6 col-lg-6 col-xl-6"
-            v-for="meal in group.meals"
-            :key="meal.id"
+            v-for="(meal, index) in group.meals"
+            :key="'meal_' + meal.id + '_' + index"
           >
             <div
-              class="card card-text-menu border-light p-3 thumbnail-height mr-1"
+              class="card card-text-menu border-light p-3 mr-1"
               @click.stop="showMeal(meal, group)"
             >
-              <div class="bag-item-quantity row">
-                <div class="col-md-1">
+              <!--<div class="bag-item-quantity row">!-->
+              <div
+                class="bag-item-quantity"
+                style="display: flex; flex-wrap: wrap; height: 128px !important;"
+              >
+                <!--<div class="col-md-1">!-->
+                <div class="button-area" style="position: relative;">
                   <!-- <div
                     @click.stop="addMeal(item, null)"
                     class="bag-plus-minus small-buttons brand-color white-text"
@@ -284,8 +294,8 @@
                       {{ format.money(meal.price, storeSettings.currency) }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                      v-for="size in meal.sizes"
-                      :key="size.id"
+                      v-for="(size, index) in meal.sizes"
+                      :key="'size_' + size.id + '_' + index"
                       @click.stop="addMeal(meal, true, size)"
                     >
                       {{ size.title }} -
@@ -293,22 +303,22 @@
                     </b-dropdown-item>
                   </b-dropdown>
 
-                  <div
+                  <b-btn
                     v-if="
                       meal.meal_package &&
                         (!meal.sizes || meal.sizes.length === 0)
                     "
-                    @click="addMeal(meal, true)"
+                    @click.stop="addMeal(meal, true)"
                     class="menu-bag-btn small-buttons plus-minus"
                   >
                     <i>+</i>
-                  </div>
+                  </b-btn>
 
                   <b-dropdown
                     v-if="
                       meal.meal_package && meal.sizes && meal.sizes.length > 0
                     "
-                    toggle-class="bag-plus-minus small-buttons brand-color white-text"
+                    toggle-class="menu-bag-btn small-buttons plus-minus"
                     :ref="'dropdown_' + meal.id + '_' + group.category_id"
                   >
                     <i
@@ -321,8 +331,8 @@
                       {{ format.money(meal.price, storeSettings.currency) }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                      v-for="size in meal.sizes"
-                      :key="size.id"
+                      v-for="(size, index) in meal.sizes"
+                      :key="'size_' + size.id + '_' + index"
                       @click="addMealPackage(meal, true, size)"
                     >
                       {{ size.title }} -
@@ -356,26 +366,48 @@
                     <i>-</i>
                   </div>
                 </div>
-                <div v-if="meal.image != null" class="col-md-8">
+
+                <!--<div v-if="meal.image != null" class="col-md-8">!-->
+                <div
+                  v-if="meal.image != null"
+                  class="content-area"
+                  style="position: relative;"
+                >
                   <strong>{{ meal.title }}</strong>
-                  <p class="mt-1">{{ meal.description }}</p>
+                  <div class="mt-1 content-text">
+                    <p>{{ meal.description }}</p>
+                  </div>
                 </div>
-                <div v-else class="col-md-11">
+                <div v-else class="content-area" style="position: relative;">
+                  <!--<div v-else class="col-md-11">!-->
                   <strong>{{ meal.title }}</strong>
-                  <p class="mt-1">{{ meal.description }}</p>
-                  <div class="price-no-bg">
+                  <div class="mt-1 content-text">
+                    <p>{{ meal.description }}</p>
+                  </div>
+                  <div
+                    class="price-no-bg"
+                    style="top: 0 !important; right: 0 !important;"
+                  >
                     {{ format.money(meal.price, storeSettings.currency) }}
                   </div>
                 </div>
 
-                <div v-if="meal.image != null" class="col-md-3">
+                <!--<div v-if="meal.image != null" class="col-md-3">!-->
+                <div
+                  v-if="meal.image != null"
+                  class="image-area"
+                  style="position: relative; width: 128px;"
+                >
                   <thumbnail
                     class="text-menu-image"
                     v-if="meal.image != null"
                     :src="meal.image.url_thumb"
                     :spinner="false"
                   ></thumbnail>
-                  <div class="price">
+                  <div
+                    class="price"
+                    style="top: 5px !important; right: 5px !important;"
+                  >
                     {{ format.money(meal.price, storeSettings.currency) }}
                   </div>
                 </div>
