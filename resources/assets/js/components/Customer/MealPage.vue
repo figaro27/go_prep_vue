@@ -168,7 +168,9 @@
           </div>
         </div>
         <div class="row mb-3 mt-3" v-if="storeSettings.showNutrition">
-          <div id="nutritionFacts" ref="nutritionFacts"></div>
+          <div class="col-md-3">
+            <div id="nutritionFacts" ref="nutritionFacts"></div>
+          </div>
         </div>
       </div>
     </div>
