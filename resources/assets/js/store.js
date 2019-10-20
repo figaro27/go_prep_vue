@@ -741,10 +741,10 @@ const actions = {
       await dispatch("refreshViewedCustomerStore", data);
     }
 
-    dispatch("refreshStores");
-    dispatch("refreshCards");
-    dispatch("refreshCustomerOrders");
-    dispatch("refreshSubscriptions");
+    //dispatch("refreshStores");
+    //dispatch("refreshCards");
+    //dispatch("refreshCustomerOrders");
+    //dispatch("refreshSubscriptions");
   },
 
   async initGuest({ commit, state, dispatch }, data = {}) {
@@ -754,7 +754,7 @@ const actions = {
       await dispatch("refreshViewedCustomerStore", data);
     }
 
-    dispatch("refreshStores");
+    //dispatch("refreshStores");
   },
 
   async logout({ commit, state }) {
@@ -1043,6 +1043,21 @@ const actions = {
       state.cards = data;
     } else {
       throw new Error("Failed to retrieve cards");
+    }
+  },
+
+  async refreshStoreMeals({ commit, state }, args = {}) {
+    const res = await axios.get("/api/refresh");
+    const { data } = await res;
+
+    if (data && data.store) {
+      state.viewed_store = {
+        ...state.viewed_store,
+        meals: data.store.meals,
+        packages: data.store.packages
+      };
+    } else {
+      throw new Error("Failed to refresh");
     }
   },
 
@@ -1337,6 +1352,9 @@ const getters = {
   },
   stores(state) {
     return state.stores;
+  },
+  context(state) {
+    return state.context;
   },
   store: (state, getters) => id => {
     return _.find(state.stores, ["id", id]);

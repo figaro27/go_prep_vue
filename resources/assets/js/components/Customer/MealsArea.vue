@@ -8,7 +8,7 @@
     ></meal-package-components-modal>
 
     <div
-      v-for="(group, catIndex) in meals"
+      v-for="(group, catIndex) in mealsMenu"
       :key="'category_' + group.category"
       :id="slugify(group.category)"
       :target="'categorySection_' + group.category_id"
@@ -170,7 +170,11 @@
                         </b-dropdown>
 
                         <b-btn
-                          v-if="meal.meal_package && meal.sizes.length === 0"
+                          v-if="
+                            meal.meal_package &&
+                              meal.sizes &&
+                              meal.sizes.length === 0
+                          "
                           @click="addMeal(meal, true)"
                           class="plus-minus menu-bag-btn"
                         >
@@ -178,7 +182,11 @@
                         </b-btn>
 
                         <b-dropdown
-                          v-if="meal.meal_package && meal.sizes.length > 0"
+                          v-if="
+                            meal.meal_package &&
+                              meal.sizes &&
+                              meal.sizes.length > 0
+                          "
                           toggle-class="menu-bag-btn"
                           :ref="'dropdown_' + meal.id + '_' + group.category_id"
                         >
@@ -275,7 +283,9 @@
                   </b-dropdown>
 
                   <div
-                    v-if="meal.meal_package && meal.sizes.length === 0"
+                    v-if="
+                      meal.meal_package && meal.sizes && meal.sizes.length === 0
+                    "
                     @click="addMeal(meal, true)"
                     class="menu-bag-btn small-buttons plus-minus"
                   >
@@ -283,8 +293,10 @@
                   </div>
 
                   <b-dropdown
-                    v-if="meal.meal_package && meal.sizes.length > 0"
-                    toggle-class="menu-bag-btn small-buttons plus-minus"
+                    v-if="
+                      meal.meal_package && meal.sizes && meal.sizes.length > 0
+                    "
+                    toggle-class="bag-plus-minus small-buttons brand-color white-text"
                     :ref="'dropdown_' + meal.id + '_' + group.category_id"
                   >
                     <i
@@ -369,6 +381,7 @@ import { mapGetters } from "vuex";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
+import store from "../../store";
 
 export default {
   data() {
@@ -384,21 +397,30 @@ export default {
     meals: "",
     card: "",
     cardBody: "",
-    resetMeal: false
+    resetMeal: false,
+    filters: null,
+    search: "",
+    filteredView: false
   },
-  mounted: function() {},
+  mounted: function() {
+    if (this.context == "customer" || this.context == "guest") {
+      store.dispatch("refreshStoreMeals");
+    }
+  },
   mixins: [MenuBag],
   computed: {
     ...mapGetters({
       store: "viewedStore",
-      total: "bagQuantity",
-      bag: "bagItems",
-      hasMeal: "bagHasMeal",
-      minOption: "minimumOption",
-      minMeals: "minimumMeals",
-      minPrice: "minimumPrice",
+      context: "context",
+      //total: "bagQuantity",
+      //bag: "bagItems",
+      //hasMeal: "bagHasMeal",
+      //minOption: "minimumOption",
+      //minMeals: "minimumMeals",
+      //minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal",
-      getMealPackage: "viewedStoreMealPackage"
+      getMealPackage: "viewedStoreMealPackage",
+      _categories: "viewedStoreCategories"
     }),
     storeSettings() {
       return this.store.settings;
@@ -408,6 +430,159 @@ export default {
         return "categorySection main-customer-container customer-menu-container left-right-box-shadow";
       } else {
         return "categorySection main-customer-container customer-menu-container left-right-box-shadow gray-background";
+      }
+    },
+    mealsMenu() {
+      if (this.context == "customer" || this.context == "guest") {
+        let meals = this.store.meals;
+        let packages = this.store.packages;
+        let filters = this.filters;
+        let grouped = {};
+
+        if (!_.isArray(meals)) {
+          meals = [];
+        }
+        if (!_.isArray(packages)) {
+          packages = [];
+        }
+
+        const search = this.search.toLowerCase();
+
+        meals = _.filter(meals, meal => {
+          if (
+            !meal.active ||
+            (this.search && !meal.title.toLowerCase().includes(search))
+          ) {
+            return false;
+          }
+          return true;
+        });
+
+        packages = _.map(
+          _.filter(this.store.packages, mealPackage => {
+            return (
+              mealPackage.active &&
+              (!this.search || mealPackage.title.toLowerCase().includes(search))
+            );
+          }) || [],
+          mealPackage => {
+            mealPackage.meal_package = true;
+            return mealPackage;
+          }
+        );
+
+        if (this.filteredView) {
+          meals = _.filter(meals, meal => {
+            let skip = false;
+
+            if (!skip && filters && filters.tags && filters.tags.length > 0) {
+              let hasAllTags = _.reduce(
+                filters.tags,
+                (has, tag) => {
+                  if (!has) return false;
+                  let x = _.includes(meal.tag_titles, tag);
+                  return x;
+                },
+                true
+              );
+
+              skip = !hasAllTags;
+            }
+
+            if (
+              !skip &&
+              filters &&
+              filters.allergies &&
+              filters.allergies.length > 0
+            ) {
+              let hasAllergy = _.reduce(
+                meal.allergy_ids,
+                (has, allergyId) => {
+                  if (has) return true;
+                  let x = _.includes(filters.allergies, allergyId);
+                  return x;
+                },
+                false
+              );
+
+              skip = hasAllergy;
+            }
+            return !skip;
+          });
+        }
+
+        let total = meals.concat(packages);
+
+        total.forEach(meal => {
+          meal.category_ids.forEach(categoryId => {
+            let category = _.find(this._categories, { id: categoryId });
+            if (!category) {
+              return;
+            } else if (!_.has(grouped, category.category)) {
+              grouped[category.category] = [meal];
+            } else {
+              grouped[category.category].push(meal);
+            }
+          });
+        });
+
+        /* Sort Categories */
+        let sortedCategories = [];
+
+        for (let i = 0; i < this._categories.length; i++) {
+          let cat = this._categories[i];
+          let order = !isNaN(cat.order) ? parseInt(cat.order) : 9999;
+
+          sortedCategories.push({
+            name: cat.category,
+            order,
+            id: cat.id
+          });
+        }
+
+        if (sortedCategories.length > 1) {
+          for (let i = 0; i < sortedCategories.length - 1; i++) {
+            for (let j = i + 1; j < sortedCategories.length; j++) {
+              if (sortedCategories[i].order > sortedCategories[j].order) {
+                let temp = {
+                  ...sortedCategories[i]
+                };
+                sortedCategories[i] = {
+                  ...sortedCategories[j]
+                };
+                sortedCategories[j] = {
+                  ...temp
+                };
+              }
+            }
+          }
+        }
+        /* Sort Categories End */
+
+        let finalData = [];
+        let finalCategories = [];
+
+        for (let i = 0; i < sortedCategories.length; i++) {
+          let name = sortedCategories[i].name;
+          let order = sortedCategories[i].order;
+          let category_id = sortedCategories[i].id;
+
+          if (grouped[name] && grouped[name].length > 0) {
+            finalData.push({
+              category: name,
+              category_id,
+              meals: grouped[name],
+              order
+            });
+
+            finalCategories.push(sortedCategories[i]);
+          }
+        }
+
+        this.finalCategories = finalCategories;
+        return finalData;
+      } else {
+        return this.meals;
       }
     }
   },
@@ -462,28 +637,30 @@ export default {
         this.addMealPackage(meal, true);
       } else {
         if (
+          meal.sizes &&
           meal.sizes.length > 0 &&
-          meal.components.length === 0 &&
-          meal.addons.length === 0
+          (!meal.components || meal.components.length === 0) &&
+          (!meal.addons || meal.addons.length === 0)
         ) {
           if (size === undefined) {
             size === null;
           }
           this.addOne(meal, false, size, null, [], null);
         } else if (
-          (meal.sizes.length > 0 && !this.resetMeal) ||
-          meal.components.length > 0 ||
-          meal.addons.length > 0
+          (meal.sizes && meal.sizes.length > 0 && !this.resetMeal) ||
+          (meal.components && meal.components.length > 0) ||
+          (meal.addons && meal.addons.length > 0)
         ) {
           this.showMeal(meal);
           return;
         } else if (
-          meal.sizes.length === 0 &&
-          meal.components.length === 0 &&
-          meal.addons.length === 0
+          (!meal.sizes || meal.sizes.length === 0) &&
+          (!meal.components || meal.components.length === 0) &&
+          (!meal.addons || meal.addons.length === 0)
         ) {
           this.addOne(meal, false, size, null, [], null);
         }
+
         if (this.$parent.showBagClass.includes("hidden-right")) {
           this.$parent.showBagClass = "shopping-cart show-right bag-area";
         }
@@ -496,7 +673,7 @@ export default {
     },
     showMeal(meal, group) {
       if (meal.meal_package) {
-        if (meal.sizes.length === 0) {
+        if (!meal.sizes || meal.sizes.length === 0) {
           this.addMealPackage(meal, true);
         } else {
           $("#dropdown_" + meal.id + "_" + group.category_id).click();
