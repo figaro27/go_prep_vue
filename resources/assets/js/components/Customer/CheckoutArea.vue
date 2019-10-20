@@ -482,9 +482,8 @@
           class="alert alert-warning"
           role="alert"
         >
-          You already have an active subscription with this company. Are you
-          sure you want to create another subscription instead of adjusting the
-          original one?
+          You have an active weekly subscription with this company and may have
+          already been charged for an order this week.
         </div>
         <b-alert
           show
@@ -1119,8 +1118,7 @@ export default {
         this.subscriptions.forEach(subscription => {
           if (
             subscription.store_id === this.store.id &&
-            subscription.status === "active" &&
-            this.weeklySubscription
+            subscription.status === "active"
           )
             hasActiveSub = true;
         });
