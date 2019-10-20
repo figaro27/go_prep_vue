@@ -16,7 +16,7 @@
       ></meal-package-components-modal>
 
       <meal-filter-modal
-        :viewFilterModal="viewFilterModal"
+        :viewFilterModal="viewFilterModalParent"
         :allergies="allergies"
         :tags="tags"
         @filterByTag="filterByTag($event)"
@@ -230,7 +230,7 @@ $(function() {
     $([document.documentElement, document.body]).animate(
       {
         scrollTop:
-          $(".categorySection[target='" + target + "']").offset().top - 59
+          $(".categorySection[target='" + target + "']").offset().top - 89
       },
       700
     );
@@ -252,7 +252,7 @@ $(function() {
     let windowScroll = $(window).scrollTop();
 
     $(".categorySection").each(function() {
-      if (windowScroll >= $(this).offset().top - 60) {
+      if (windowScroll >= $(this).offset().top - 90) {
         let target = $(this).attr("target");
         $(".categoryNavItem").removeClass("active");
         $('.categoryNavItem[target="' + target + '"]').addClass("active");
@@ -324,7 +324,7 @@ export default {
       loaded: false,
       active: {},
       loading: false,
-      viewFilterModal: false,
+      viewFilterModalParent: false,
       showDescriptionModal: false,
       filteredView: false,
       filters: {
@@ -735,9 +735,8 @@ export default {
   },
   mounted() {
     if (this.bag.length > 0) {
-      this.showBagClass = "shopping-cart show-right bag-area area-scroll";
-    } else
-      this.showBagClass = "shopping-cart hidden-right bag-area area-scroll";
+      this.showBagClass = "shopping-cart show-right bag-area";
+    } else this.showBagClass = "shopping-cart hidden-right bag-area";
 
     if (this.storeView) {
       /* Sidebar Check */
@@ -756,7 +755,7 @@ export default {
       /* Sidebar Check End */
 
       if (this.$route.params.storeView)
-        this.showBagClass = "shopping-cart show-right bag-area area-scroll";
+        this.showBagClass = "shopping-cart show-right bag-area";
       else this.showBagClass = "shopping-cart show-right bag-area";
     }
 
@@ -987,17 +986,17 @@ export default {
       if (this.showBagClass.includes("hidden-right")) {
         this.showBagClass = "d-inline shopping-cart show-right bag-area";
         if (this.menuPage) {
-          this.showBagClass += " area-scroll";
+          //this.showBagClass += " area-scroll";
         }
       } else if (this.showBagClass.includes("show-right")) {
         this.showBagClass = "shopping-cart hidden-right bag-area";
         if (this.menuPage) {
-          this.showBagClass += " area-scroll";
+          //this.showBagClass += " area-scroll";
         }
       }
     },
     showFilterArea() {
-      this.viewFilterModal = true;
+      this.viewFilterModalParent = true;
 
       // Hiding left pop out filter area now that categories are added in.
 

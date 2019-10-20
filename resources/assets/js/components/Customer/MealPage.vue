@@ -1,178 +1,174 @@
 <template>
-  <div>
-    <div :class="mealPageClass" v-if="$parent.mealPageView">
-      <div class="meal-page mt-5 mb-3 flexibleRow">
-        <div class="flexibleArea">
-          <div class="row">
-            <div class="col-md-4">
-              <h5>{{ meal.title }}</h5>
-              <thumbnail
-                v-if="meal.image != null && meal.image.url"
-                :src="meal.image.url"
-                :aspect="false"
-                width="100%"
-                @click="$refs.lightbox.showImage(0)"
-              ></thumbnail>
-              <LightBox
-                ref="lightbox"
-                :images="getMealGallery(meal)"
-                :showLightBox="false"
-              ></LightBox>
+  <div
+    :class="mealPageClass"
+    v-if="$parent.mealPageView"
+    style="min-height: 100%;"
+  >
+    <div class="meal-page mt-5 mb-3 flexibleRow">
+      <div class="flexibleArea">
+        <div class="row">
+          <div class="col-md-4">
+            <h5>{{ meal.title }}</h5>
+            <thumbnail
+              v-if="meal.image != null && meal.image.url"
+              :src="meal.image.url"
+              :aspect="false"
+              width="100%"
+              @click="$refs.lightbox.showImage(0)"
+            ></thumbnail>
+            <LightBox
+              ref="lightbox"
+              :images="getMealGallery(meal)"
+              :showLightBox="false"
+            ></LightBox>
 
-              <slick ref="mealGallery" :options="slickOptions">
-                <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
-                  <div style="image">
-                    <thumbnail
-                      v-if="image.url"
-                      :src="image.url"
-                      :aspect="true"
-                      :lazy="false"
-                      :spinner="false"
-                      :width="'70px'"
-                      @click="$refs.lightbox.showImage(i)"
-                    ></thumbnail>
-                  </div>
+            <slick ref="mealGallery" :options="slickOptions">
+              <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
+                <div style="image">
+                  <thumbnail
+                    v-if="image.url"
+                    :src="image.url"
+                    :aspect="true"
+                    :lazy="false"
+                    :spinner="false"
+                    :width="'70px'"
+                    @click="$refs.lightbox.showImage(i)"
+                  ></thumbnail>
                 </div>
-              </slick>
-            </div>
-            <div class="col-md-3" v-if="meal.tags.length > 0">
-              <h5>Nutrition</h5>
-              <li v-bind:key="index" v-for="(tag, index) in meal.tags">
-                {{ tag.tag }}
-              </li>
-            </div>
-            <div class="col-md-3" v-if="meal.allergy_titles.length > 0">
-              <h5>Allergies</h5>
-              <li
-                v-bind:key="index"
-                v-for="(allergy, index) in meal.allergy_titles"
-              >
-                {{ allergy }}
-              </li>
-            </div>
-            <div class="col-md-2">
-              <b-btn @click="back">BACK</b-btn>
-            </div>
+              </div>
+            </slick>
           </div>
-          <p v-html="mealDescription" class="mt-3"></p>
-
-          <b-form-radio-group
-            buttons
-            v-model="mealSize"
-            :options="sizes"
-            class="filters small flexibleButtonGroup"
-            required
-            @change="changeSize"
-            v-show="sizes.length > 1"
-          ></b-form-radio-group>
-
-          <meal-variations-area
-            :meal="meal"
-            :sizeId="mealSize"
-            :invalid="invalid"
-            ref="componentModal"
-            :key="total"
-          ></meal-variations-area>
+          <div class="col-md-3" v-if="meal.tags && meal.tags.length > 0">
+            <h5>Nutrition</h5>
+            <li v-bind:key="index" v-for="(tag, index) in meal.tags">
+              {{ tag.tag }}
+            </li>
+          </div>
           <div
-            class="title mt-3"
-            v-if="meal.macros && storeSettings.showMacros"
+            class="col-md-3"
+            v-if="meal.allergy_titles && meal.allergy_titles.length > 0"
           >
-            <div class="row">
-              <div class="col-6 col-md-3">
-                <div class="row">
-                  <p class="small strong col-6 col-md-12">Calories</p>
-                  <p class="small col-6 col-md-12">
-                    {{ meal.macros.calories }}
-                  </p>
-                </div>
-              </div>
-              <div class="col-6 col-md-3">
-                <div class="row">
-                  <p class="small strong col-6 col-md-12">Carbs</p>
-                  <p class="small col-6 col-md-12">
-                    {{ meal.macros.carbs }}
-                  </p>
-                </div>
-              </div>
-              <div class="col-6 col-md-3">
-                <div class="row">
-                  <p class="small strong col-6 col-md-12">Protein</p>
-                  <p class="small col-6 col-md-12">
-                    {{ meal.macros.protein }}
-                  </p>
-                </div>
-              </div>
-              <div class="col-6 col-md-3">
-                <div class="row">
-                  <p class="small strong col-6 col-md-12">Fat</p>
-                  <p class="small col-6 col-md-12">
-                    {{ meal.macros.fat }}
-                  </p>
-                </div>
-              </div>
-            </div>
+            <h5>Allergies</h5>
+            <li
+              v-bind:key="index"
+              v-for="(allergy, index) in meal.allergy_titles"
+            >
+              {{ allergy }}
+            </li>
           </div>
-
-          <b-form-textarea
-            v-if="
-              (storeModules.specialInstructions &&
-                !storeModuleSettings.specialInstructionsStoreOnly) ||
-                (storeModuleSettings.specialInstructionsStoreOnly &&
-                  $route.params.storeView)
-            "
-            class="mt-4"
-            v-model="specialInstructions"
-            placeholder="Special instructions"
-            rows="3"
-            max-rows="6"
-          ></b-form-textarea>
-
-          <div class="row mt-4" v-if="storeSettings.menuStyle === 'image'">
-            <div class="col-md-1">
-              <h2 class="pt-3">
-                {{ format.money(mealVariationPrice, storeSettings.currency) }}
-              </h2>
-            </div>
-            <div class="col-md-3 offset-1">
-              <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
-            </div>
+          <div class="col-md-2">
+            <b-btn @click="back">BACK</b-btn>
           </div>
-          <div class="row mt-4" v-if="storeSettings.menuStyle === 'text'">
-            <div class="col-md-1">
-              <h2 class="pt-3">
-                {{ format.money(mealVariationPrice, storeSettings.currency) }}
-              </h2>
-            </div>
-            <div class="col-md-3 offset-1">
-              <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
-            </div>
-          </div>
+        </div>
+        <p v-html="mealDescription" class="mt-3"></p>
 
+        <b-form-radio-group
+          buttons
+          v-model="mealSize"
+          :options="sizes"
+          class="filters small flexibleButtonGroup"
+          required
+          @change="changeSize"
+          v-show="sizes && sizes.length > 1"
+        ></b-form-radio-group>
+
+        <meal-variations-area
+          :meal="meal"
+          :sizeId="mealSize"
+          :invalid="invalid"
+          ref="componentModal"
+          :key="total"
+        ></meal-variations-area>
+        <div class="title mt-3" v-if="meal.macros && storeSettings.showMacros">
           <div class="row">
-            <div class="col-md-12 mt-3">
-              <h4
-                v-if="
-                  storeSettings.mealInstructions &&
-                    meal.instructions != '' &&
-                    meal.instructions != null
-                "
-              >
-                Instructions
-              </h4>
-              <p
-                v-if="storeSettings.mealInstructions && meal.instructions != ''"
-              >
-                {{ meal.instructions }}
-              </p>
+            <div class="col-6 col-md-3">
+              <div class="row">
+                <p class="small strong col-6 col-md-12">Calories</p>
+                <p class="small col-6 col-md-12">
+                  {{ meal.macros.calories }}
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="row">
+                <p class="small strong col-6 col-md-12">Carbs</p>
+                <p class="small col-6 col-md-12">
+                  {{ meal.macros.carbs }}
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="row">
+                <p class="small strong col-6 col-md-12">Protein</p>
+                <p class="small col-6 col-md-12">
+                  {{ meal.macros.protein }}
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="row">
+                <p class="small strong col-6 col-md-12">Fat</p>
+                <p class="small col-6 col-md-12">
+                  {{ meal.macros.fat }}
+                </p>
+              </div>
             </div>
           </div>
-          <div class="row mb-3 mt-3" v-if="storeSettings.showNutrition">
-            <div
-              class="col-md-3"
-              id="nutritionFacts"
-              ref="nutritionFacts"
-            ></div>
+        </div>
+
+        <b-form-textarea
+          v-if="
+            (storeModules.specialInstructions &&
+              !storeModuleSettings.specialInstructionsStoreOnly) ||
+              (storeModuleSettings.specialInstructionsStoreOnly &&
+                $route.params.storeView)
+          "
+          class="mt-4"
+          v-model="specialInstructions"
+          placeholder="Special instructions"
+          rows="3"
+          max-rows="6"
+        ></b-form-textarea>
+
+        <div class="row mt-4" v-if="storeSettings.menuStyle === 'image'">
+          <div class="col-md-1">
+            <h2 class="pt-3">
+              {{ format.money(mealVariationPrice, storeSettings.currency) }}
+            </h2>
           </div>
+          <div class="col-md-3 offset-1">
+            <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
+          </div>
+        </div>
+        <div class="row mt-4" v-if="storeSettings.menuStyle === 'text'">
+          <div class="col-md-1">
+            <h2 class="pt-3">
+              {{ format.money(mealVariationPrice, storeSettings.currency) }}
+            </h2>
+          </div>
+          <div class="col-md-3 offset-1">
+            <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 mt-3">
+            <h4
+              v-if="
+                storeSettings.mealInstructions &&
+                  meal.instructions != '' &&
+                  meal.instructions != null
+              "
+            >
+              Instructions
+            </h4>
+            <p v-if="storeSettings.mealInstructions && meal.instructions != ''">
+              {{ meal.instructions }}
+            </p>
+          </div>
+        </div>
+        <div class="row mb-3 mt-3" v-if="storeSettings.showNutrition">
+          <div id="nutritionFacts" ref="nutritionFacts"></div>
         </div>
       </div>
     </div>
@@ -254,11 +250,14 @@ export default {
       let meal = this.meal;
       let sizes = meal.sizes;
       let sizeCheck = false;
-      sizes.forEach(size => {
-        if (size.defaultAdded) sizeCheck = true;
-      });
 
-      if (!sizeCheck) {
+      if (sizes) {
+        sizes.forEach(size => {
+          if (size.defaultAdded) sizeCheck = true;
+        });
+      }
+
+      if (!sizeCheck && sizes) {
         sizes.unshift({
           full_title: meal.title + " - " + meal.default_size_title || "Regular",
           id: null,
@@ -268,19 +267,23 @@ export default {
         });
       }
 
-      return Object.values(sizes).map(size => {
-        return {
-          text: size.title,
-          price: size.price,
-          value: size.id
-        };
-      });
+      if (sizes) {
+        return Object.values(sizes).map(size => {
+          return {
+            text: size.title,
+            price: size.price,
+            value: size.id
+          };
+        });
+      } else {
+        return [];
+      }
     },
     hasVariations() {
       if (
-        this.meal.sizes.length > 1 ||
-        this.meal.components.length > 0 ||
-        this.meal.addons.length > 0
+        (this.meal.sizes && this.meal.sizes.length > 1) ||
+        (this.meal.components && this.meal.components.length > 0) ||
+        (this.meal.addons && this.meal.addons.length > 0)
       )
         return true;
       else return false;
@@ -293,7 +296,7 @@ export default {
   },
   updated() {
     this.getNutritionFacts();
-    if (!this.sizeChanged) {
+    if (!this.sizeChanged && this.sizes && this.sizes.length > 0) {
       this.mealSize = this.sizes[0].value;
     }
     this.getMealVariationPrice();
@@ -320,11 +323,17 @@ export default {
     },
     addMeal(meal) {
       let viewedMeal = {};
-      this.$parent.meals.forEach(category => {
-        category.meals.forEach(menuMeal => {
-          if (meal.id === menuMeal.id) viewedMeal = menuMeal;
+
+      if (this.$parent.meals) {
+        this.$parent.meals.forEach(category => {
+          if (category.meals) {
+            category.meals.forEach(menuMeal => {
+              if (meal.id === menuMeal.id) viewedMeal = menuMeal;
+            });
+          }
         });
-      });
+      }
+
       viewedMeal.meal_page_visited = true;
 
       if (this.invalidCheck && this.hasVariations) {
@@ -339,7 +348,7 @@ export default {
       // }
 
       let size = null;
-      if (this.sizes.length > 1) {
+      if (this.sizes && this.sizes.length > 1) {
         size = this.mealSize;
       }
 
@@ -366,16 +375,21 @@ export default {
     },
     back() {
       let viewedMeal = {};
-      this.$parent.meals.forEach(category => {
-        category.meals.forEach(menuMeal => {
-          if (this.meal.id === menuMeal.id) viewedMeal = menuMeal;
+
+      if (this.$parent.meals) {
+        this.$parent.meals.forEach(category => {
+          if (category.meals) {
+            category.meals.forEach(menuMeal => {
+              if (this.meal.id === menuMeal.id) viewedMeal = menuMeal;
+            });
+          }
         });
-      });
+      }
 
       viewedMeal.meal_page_visited = true;
       this.sizeChanged = false;
       this.addons = [];
-      if (this.meal.sizes.length === 1) {
+      if (this.meal.sizes && this.meal.sizes.length === 1) {
         this.$parent.resetMeal = true;
       }
       this.$parent.showMealsArea = true;
@@ -385,13 +399,20 @@ export default {
       this.invalidCheck = false;
     },
     getMealVariationPrice() {
-      let selectedMealSize = _.find(this.meal.sizes, size => {
-        return size.id === this.mealSize;
-      });
-      this.mealVariationPrice =
-        selectedMealSize.price +
-        this.totalAddonPrice +
-        this.totalComponentPrice;
+      let selectedMealSize = null;
+
+      if (this.meal.sizes) {
+        selectedMealSize = _.find(this.meal.sizes, size => {
+          return size.id === this.mealSize;
+        });
+      }
+
+      if (selectedMealSize) {
+        this.mealVariationPrice =
+          selectedMealSize.price +
+          this.totalAddonPrice +
+          this.totalComponentPrice;
+      }
     },
     changeSize() {
       this.sizeChanged = true;

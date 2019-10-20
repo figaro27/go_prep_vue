@@ -1,5 +1,13 @@
 <template>
-  <div v-if="$parent.showMealsArea">
+  <div
+    v-if="$parent.showMealsArea"
+    style="min-height: 100%;"
+    v-bind:class="
+      storeSettings.menuStyle === 'image'
+        ? 'left-right-box-shadow main-customer-container'
+        : 'left-right-box-shadow main-customer-container gray-background'
+    "
+  >
     <meal-variations-area ref="componentModal"></meal-variations-area>
 
     <meal-package-components-modal
@@ -16,6 +24,7 @@
         (isVisible, entry) => $parent.onCategoryVisible(isVisible, catIndex)
       "
       :class="container"
+      style="margin-bottom: 20px;"
     >
       <div v-if="storeSettings.menuStyle === 'image'">
         <h2 class="text-center mb-3 dbl-underline">
@@ -241,7 +250,7 @@
         </h2>
         <div class="row">
           <div
-            class="item item-text col-sm-6 col-lg-6 col-xl-6"
+            class="item item-text col-sm-6 col-md-12 col-lg-6 col-xl-6"
             v-for="(meal, index) in group.meals"
             :key="'meal_' + meal.id + '_' + index"
           >
@@ -252,7 +261,7 @@
               <!--<div class="bag-item-quantity row">!-->
               <div
                 class="bag-item-quantity"
-                style="display: flex; flex-wrap: wrap; height: 128px !important;"
+                style="display: flex; min-height: 128px !important;"
               >
                 <!--<div class="col-md-1">!-->
                 <div class="button-area" style="position: relative;">
@@ -373,27 +382,42 @@
                   class="content-area"
                   style="position: relative;"
                 >
-                  <strong>{{ meal.title }}</strong>
-                  <div class="mt-1 content-text">
-                    <p>{{ meal.description }}</p>
+                  <div class="image-area" style="position: relative;">
+                    <thumbnail
+                      class="text-menu-image"
+                      v-if="meal.image != null"
+                      :src="meal.image.url_thumb"
+                      :spinner="false"
+                    ></thumbnail>
+                    <div
+                      class="price"
+                      style="top: 5px !important; right: 5px !important;"
+                    >
+                      {{ format.money(meal.price, storeSettings.currency) }}
+                    </div>
+                  </div>
+
+                  <div class="content-text-wrap">
+                    <strong>{{ meal.title }}</strong>
+                    <div class="mt-1 content-text">{{ meal.description }}</div>
                   </div>
                 </div>
                 <div v-else class="content-area" style="position: relative;">
-                  <!--<div v-else class="col-md-11">!-->
-                  <strong>{{ meal.title }}</strong>
-                  <div class="mt-1 content-text">
-                    <p>{{ meal.description }}</p>
-                  </div>
-                  <div
-                    class="price-no-bg"
-                    style="top: 0 !important; right: 0 !important;"
-                  >
-                    {{ format.money(meal.price, storeSettings.currency) }}
+                  <div class="content-text-wrap">
+                    <!--<div v-else class="col-md-11">!-->
+                    <strong>{{ meal.title }}</strong>
+                    <div class="mt-1 content-text">{{ meal.description }}</div>
+                    <div
+                      class="price-no-bg"
+                      style="top: 0 !important; right: 0 !important;"
+                    >
+                      {{ format.money(meal.price, storeSettings.currency) }}
+                    </div>
                   </div>
                 </div>
 
                 <!--<div v-if="meal.image != null" class="col-md-3">!-->
-                <div
+                <!--<div
                   v-if="meal.image != null"
                   class="image-area"
                   style="position: relative; width: 128px;"
@@ -410,7 +434,7 @@
                   >
                     {{ format.money(meal.price, storeSettings.currency) }}
                   </div>
-                </div>
+                </div>!-->
               </div>
             </div>
           </div>
@@ -471,9 +495,9 @@ export default {
     },
     container() {
       if (this.storeSettings.menuStyle === "image") {
-        return "categorySection main-customer-container customer-menu-container left-right-box-shadow";
+        return "categorySection customer-menu-container";
       } else {
-        return "categorySection main-customer-container customer-menu-container left-right-box-shadow gray-background";
+        return "categorySection customer-menu-container";
       }
     },
     mealsMenu() {
