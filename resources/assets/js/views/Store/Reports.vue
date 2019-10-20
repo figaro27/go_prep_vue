@@ -377,6 +377,8 @@ export default {
         // }
       }
 
+      params.dailySummary = 0;
+
       axios
         .get(`/api/me/print/${report}/${format}`, {
           params
@@ -426,6 +428,8 @@ export default {
           }
         }
       }
+
+      params.dailySummary = 0;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
