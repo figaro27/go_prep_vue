@@ -38,36 +38,40 @@ class RegisterController extends StoreController
      */
     public function store(Request $request)
     {
-        $user = User::create([
-            'user_role_id' => 1,
-            'email' => $request->get('email'),
-            'password' => Hash::make('secret'),
-            'timezone' => 'America/New_York',
-            'remember_token' => Hash::make(str_random(10)),
-            'accepted_tos' => 1
-        ]);
+        $user = User::where('email', $request->get('email'))->first();
 
-        $userDetails = $user->details()->create([
-            'firstname' => $request->get('first_name'),
-            'lastname' => $request->get('last_name'),
-            'phone' => $request->get('phone'),
-            'address' => $request->get('address'),
-            'city' => $request->get('city'),
-            'state' => $request->get('state')['value'],
-            'zip' => $request->get('zip'),
-            'delivery' => $request->get('delivery'),
-            'country' => 'USA',
-            'created_at' => now(),
-            'updated_at' => now(),
-            'notifications' => array(
-                'delivery_today' => true,
-                'meal_plan' => true,
-                'meal_plan_paused' => true,
-                'new_order' => true,
-                'subscription_meal_substituted' => true,
-                'subscription_renewing' => true
-            )
-        ]);
+        if (!$user) {
+            $user = User::create([
+                'user_role_id' => 1,
+                'email' => $request->get('email'),
+                'password' => Hash::make('secret'),
+                'timezone' => 'America/New_York',
+                'remember_token' => Hash::make(str_random(10)),
+                'accepted_tos' => 1
+            ]);
+
+            $userDetails = $user->details()->create([
+                'firstname' => $request->get('first_name'),
+                'lastname' => $request->get('last_name'),
+                'phone' => $request->get('phone'),
+                'address' => $request->get('address'),
+                'city' => $request->get('city'),
+                'state' => $request->get('state')['value'],
+                'zip' => $request->get('zip'),
+                'delivery' => $request->get('delivery'),
+                'country' => 'USA',
+                'created_at' => now(),
+                'updated_at' => now(),
+                'notifications' => array(
+                    'delivery_today' => true,
+                    'meal_plan' => true,
+                    'meal_plan_paused' => true,
+                    'new_order' => true,
+                    'subscription_meal_substituted' => true,
+                    'subscription_renewing' => true
+                )
+            ]);
+        }
 
         $user = User::findOrFail($user->id);
         $store = $this->store;
