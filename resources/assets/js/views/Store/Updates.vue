@@ -110,6 +110,31 @@
                 </p>
               </li>
               <li>
+                <p class="strong">Add Customer</p>
+                <p>
+                  -You can now check if your customers have already registered
+                  an account and add them to your customer list. We've added a
+                  field at the top of the Add Customer popup that let's you
+                  check. If they have an account, you'll be prompted to press a
+                  button to add them as a customer. We've also added an option
+                  to check a box that generates a random email for the new user
+                  if you happen to not have their email.
+                  <a
+                    href="https://gyazo.com/e31d60bf3cdd35999a0ee01371a9790a"
+                    target="_blank"
+                    >View Image</a
+                  >
+                </p>
+                <p>
+                  -In the near future, you'll be able to edit your customer
+                  information including email addresses. If you add a customer,
+                  and that customer registers a separate account with a
+                  different email and places an order, you'll also be able to
+                  merge the two accounts together into one customer to prevent
+                  any duplicates.
+                </p>
+              </li>
+              <li>
                 <p class="strong">Various Improvements / Bug Fixes</p>
                 <p>
                   -Some issues involving manual orders especially with adding
