@@ -39,6 +39,8 @@ class RegisterController extends StoreController
     public function store(Request $request)
     {
         $user = User::where('email', $request->get('email'))->first();
+        $store = $this->store;
+        $storeId = $this->store->id;
 
         if (!$user) {
             $user = User::create([
@@ -47,7 +49,8 @@ class RegisterController extends StoreController
                 'password' => Hash::make(str_random(10)),
                 'timezone' => 'America/New_York',
                 'remember_token' => Hash::make(str_random(10)),
-                'accepted_tos' => 1
+                'accepted_tos' => 1,
+                'added_by_store_id' => $storeId
             ]);
 
             $userDetails = $user->details()->create([
@@ -74,8 +77,6 @@ class RegisterController extends StoreController
         }
 
         $user = User::findOrFail($user->id);
-        $store = $this->store;
-        $storeId = $this->store->id;
         $user->createStoreCustomer($storeId);
 
         /*

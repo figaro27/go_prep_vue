@@ -36,7 +36,8 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'user_role_id',
         'accepted_tos',
-        'stripe_id'
+        'stripe_id',
+        'added_by_store_id'
     ];
 
     /**
