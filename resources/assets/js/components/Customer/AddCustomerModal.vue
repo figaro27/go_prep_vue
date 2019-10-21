@@ -59,7 +59,9 @@
           ></b-form-input>
         </b-form-group>
         <b-form-group horizontal label="Email">
+          <b-form-checkbox v-model="noEmail">Don't Have</b-form-checkbox>
           <b-form-input
+            v-if="!noEmail"
             v-model="form.email"
             type="email"
             required
@@ -144,6 +146,7 @@ export default {
   },
   data() {
     return {
+      noEmail: false,
       existingEmail: "",
       showExistingCustomerAlert: false,
       form: {

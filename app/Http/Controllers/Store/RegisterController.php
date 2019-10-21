@@ -41,11 +41,16 @@ class RegisterController extends StoreController
         $user = User::where('email', $request->get('email'))->first();
         $store = $this->store;
         $storeId = $this->store->id;
+        $email = $request->get('email')
+            ? $request->get('email')
+            : 'noemail-' .
+                substr(uniqid(rand(10, 99), false), 0, 6) .
+                '@goprep.com';
 
         if (!$user) {
             $user = User::create([
                 'user_role_id' => 1,
-                'email' => $request->get('email'),
+                'email' => $email,
                 'password' => Hash::make(str_random(10)),
                 'timezone' => 'America/New_York',
                 'remember_token' => Hash::make(str_random(10)),
