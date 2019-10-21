@@ -436,7 +436,7 @@ export default {
 
           if (option.selectable) {
             _.forEach(options[option.id], item => {
-              const mealId = item.meal.id;
+              const mealId = item.meal_id;
               const sizeId = item.meal_size_id;
               const guid = JSON.stringify({ mealId, sizeId });
 
