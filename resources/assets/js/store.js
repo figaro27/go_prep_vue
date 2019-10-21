@@ -2,11 +2,9 @@ import Vue from "vue";
 import Vuex from "vuex";
 import moment from "moment";
 import createPersistedState from "vuex-persistedstate";
-import router from "./routes";
 import auth from "./lib/auth";
 import uuid from "uuid";
 import CryptoJS from "crypto-js";
-import numeral from "numeral";
 import getSymbolFromCurrency from "currency-symbol-map";
 
 const Cookies = require("js-cookie");
@@ -477,7 +475,21 @@ const actions = {
     state.isLoading = true;
     state.initialized = false;
 
-    const res = await axios.get("/api");
+    const resContext = await axios.get("/api/context");
+    let dataContext =
+      resContext.data && resContext.data.context
+        ? resContext.data.context
+        : "guest";
+
+    let apiEndpoint = "/api";
+    if (dataContext == "store") {
+      // Store
+    } else {
+      // Customer, Guest
+      apiEndpoint = "/api/optimized";
+    }
+
+    const res = await axios.get(apiEndpoint);
     const { data } = await res;
 
     try {
@@ -742,9 +754,9 @@ const actions = {
     }
 
     //dispatch("refreshStores");
-    //dispatch("refreshCards");
-    //dispatch("refreshCustomerOrders");
-    //dispatch("refreshSubscriptions");
+    dispatch("refreshCards");
+    dispatch("refreshCustomerOrders");
+    dispatch("refreshSubscriptions");
   },
 
   async initGuest({ commit, state, dispatch }, data = {}) {
@@ -1357,6 +1369,8 @@ const getters = {
     return state.context;
   },
   store: (state, getters) => id => {
+    console.log("getter", id);
+
     return _.find(state.stores, ["id", id]);
   },
   viewedStore(state, getters) {

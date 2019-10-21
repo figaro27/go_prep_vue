@@ -73,6 +73,16 @@ foreach (
                 'uses' => 'SpaController@index'
             ]);
 
+            Route::get('/context', [
+                'middleware' => ['view.api'],
+                'uses' => 'SpaController@context'
+            ]);
+
+            Route::get('/optimized', [
+                'middleware' => ['view.api'],
+                'uses' => 'SpaController@optimized'
+            ]);
+
             Route::get('/refresh', [
                 'middleware' => ['view.api'],
                 'uses' => 'SpaController@refresh'

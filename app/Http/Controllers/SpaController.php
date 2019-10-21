@@ -61,7 +61,17 @@ class SpaController extends Controller
                         'details',
                         'coupons',
                         'pickupLocations',
-                        'lineItems'
+                        'lineItems',
+                        'meals.categories',
+                        'meals.allergies',
+                        'packages.meals',
+                        'packages.sizes',
+                        'packages.components',
+                        'packages.addons',
+                        'meals.sizes',
+                        'meals.components',
+                        'meals.addons',
+                        'meals.macros'
                     ])->find(STORE_ID)
                     : null;
 
@@ -101,7 +111,6 @@ class SpaController extends Controller
                     'tags' => MealTag::all()
                 ];
             } elseif ($context === 'customer') {
-                /* New Optimized Workflow */
                 $store = defined('STORE_ID')
                     ? Store::with([
                         'meals',
@@ -114,7 +123,17 @@ class SpaController extends Controller
                         'details',
                         'coupons',
                         'pickupLocations',
-                        'lineItems'
+                        'lineItems',
+                        'meals.categories',
+                        'meals.allergies',
+                        'packages.meals',
+                        'packages.sizes',
+                        'packages.components',
+                        'packages.addons',
+                        'meals.sizes',
+                        'meals.components',
+                        'meals.addons',
+                        'meals.macros'
                     ])->find(STORE_ID)
                     : $user->last_viewed_store;
 
@@ -157,7 +176,6 @@ class SpaController extends Controller
                         'tags' => MealTag::all()
                     ];
                 }
-                /* New Optimized Workflow End */
             }
         } else {
             $user = auth()->user();
@@ -179,7 +197,103 @@ class SpaController extends Controller
         }
     }
 
-    public function refresh()
+    public function optimized(Request $request)
+    {
+        $user = auth('api')->user();
+
+        $store = null;
+        $willDeliver = false;
+
+        $last_viewed_store = null;
+        if ($user && isset($user->last_viewed_store)) {
+            $last_viewed_store = $user->last_viewed_store;
+        }
+
+        /* Context */
+        $context = 'guest';
+        if ($user) {
+            if ($user->hasRole('store') && $user->has('store')) {
+                $context = 'store';
+            } else {
+                $context = 'customer';
+            }
+        } else {
+            $context = 'guest';
+        }
+        /* Context End */
+
+        $store = defined('STORE_ID')
+            ? Store::with([
+                'units',
+                'categories',
+                'settings',
+                'modules',
+                'moduleSettings',
+                'details',
+                'coupons',
+                'pickupLocations',
+                'lineItems'
+            ])->find(STORE_ID)
+            : $last_viewed_store;
+
+        if ($store && $user) {
+            $distance = $user->distanceFrom($store);
+
+            if ($store->settings->delivery_distance_type === 'radius') {
+                ///$distance = $user->distanceFrom($store);
+                $willDeliver =
+                    $distance < $store->settings->delivery_distance_radius;
+            } else {
+                $willDeliver = $store->deliversToZip($user->userDetail->zip);
+            }
+
+            $user->last_viewed_store_id = $store->id;
+            $user->save();
+
+            return [
+                'context' => $context,
+                'user' => $user,
+                'store' => $store,
+                'store_distance' => $distance ?? null,
+                'will_deliver' => $willDeliver,
+                'allergies' => Allergy::all(),
+                'tags' => MealTag::all()
+            ];
+        } else {
+            return [
+                'context' => $context,
+                'user' => $user,
+                'store' => $store,
+                'allergies' => Allergy::all(),
+                'tags' => MealTag::all()
+            ];
+        }
+    }
+
+    public function context(Request $request)
+    {
+        $user = auth('api')->user();
+        $context = 'guest';
+
+        if ($user) {
+            // Store user
+            if ($user->hasRole('store') && $user->has('store')) {
+                $context = 'store';
+            } else {
+                $context = 'customer';
+            }
+        }
+        // Not logged in
+        else {
+            $context = 'guest';
+        }
+
+        return [
+            'context' => $context
+        ];
+    }
+
+    public function refresh(Request $request)
     {
         $user = auth('api')->user();
 

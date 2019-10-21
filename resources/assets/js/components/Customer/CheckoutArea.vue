@@ -666,7 +666,7 @@ export default {
     deliveryDay: null,
     transferTime: null,
     pickup: 0,
-    orderLineItems: [],
+    orderLineItems: null,
     checkoutData: null,
     gateway: {
       type: String,
@@ -938,7 +938,7 @@ export default {
     },
     subtotal() {
       let totalLineItemsPrice = 0;
-      if (this.orderLineItems != null) {
+      if (this.orderLineItems != null && this.orderLineItems.length > 0) {
         this.orderLineItems.forEach(orderLineItem => {
           totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
         });

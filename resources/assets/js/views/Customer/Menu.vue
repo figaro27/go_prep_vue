@@ -41,10 +41,11 @@
 
       <div class="row">
         <div :class="`col-md-12 main-menu-area`">
-          <Spinner
+          <!--<Spinner
             v-if="!meals.length && !mealPackages.length"
             position="absolute"
-          />
+          />!-->
+
           <store-closed
             v-if="!$route.params.storeView"
             :storeView="storeView"
@@ -355,7 +356,8 @@ export default {
       bag: "bagItems",
       _categories: "viewedStoreCategories",
       getMeal: "viewedStoreMeal",
-      getMealPackage: "viewedStoreMealPackage"
+      getMealPackage: "viewedStoreMealPackage",
+      allTags: "tags"
     }),
     mealsMix() {
       if (this.context == "customer" || this.context == "guest") {
@@ -505,162 +507,6 @@ export default {
       this.finalCategories = finalCategories;
       return finalData;
     },
-    meals() {
-      let meals = this.store.meals;
-      let filters = this.filters;
-      let grouped = {};
-
-      if (!_.isArray(meals)) {
-        return [];
-      }
-
-      const search = this.search.toLowerCase();
-
-      // Meal filtering logic
-      meals = _.filter(meals, meal => {
-        if (
-          !meal.active ||
-          (this.search && !meal.title.toLowerCase().includes(search))
-        ) {
-          return false;
-        }
-        return true;
-      });
-
-      if (this.filteredView) {
-        meals = _.filter(meals, meal => {
-          let skip = false;
-
-          if (!skip && filters.tags.length > 0) {
-            let hasAllTags = _.reduce(
-              filters.tags,
-              (has, tag) => {
-                if (!has) return false;
-                let x = _.includes(meal.tag_titles, tag);
-                return x;
-              },
-              true
-            );
-
-            skip = !hasAllTags;
-          }
-
-          if (!skip && filters.allergies.length > 0) {
-            let hasAllergy = _.reduce(
-              meal.allergy_ids,
-              (has, allergyId) => {
-                if (has) return true;
-                let x = _.includes(filters.allergies, allergyId);
-                return x;
-              },
-              false
-            );
-
-            skip = hasAllergy;
-          }
-          return !skip;
-        });
-      }
-
-      meals.forEach(meal => {
-        meal.category_ids.forEach(categoryId => {
-          let category = _.find(this._categories, { id: categoryId });
-          if (!category) {
-            return;
-          } else if (!_.has(grouped, category.category)) {
-            grouped[category.category] = [meal];
-          } else {
-            grouped[category.category].push(meal);
-          }
-        });
-      });
-
-      // Find store-defined category sorting
-      /*let sorting = {};
-      this._categories.forEach(cat => {
-        //sorting[cat.category] = cat.order.toString() + cat.category;
-        sorting[cat.category] = !isNaN(cat.order) ? parseInt(cat.order) : 9999;
-      });*/
-
-      /* Sort Categories */
-      let sortedCategories = [];
-
-      for (let i = 0; i < this._categories.length; i++) {
-        let cat = this._categories[i];
-        let order = !isNaN(cat.order) ? parseInt(cat.order) : 9999;
-
-        sortedCategories.push({
-          name: cat.category,
-          order,
-          id: cat.id
-        });
-      }
-
-      if (sortedCategories.length > 1) {
-        for (let i = 0; i < sortedCategories.length - 1; i++) {
-          for (let j = i + 1; j < sortedCategories.length; j++) {
-            if (sortedCategories[i].order > sortedCategories[j].order) {
-              let temp = {
-                ...sortedCategories[i]
-              };
-              sortedCategories[i] = {
-                ...sortedCategories[j]
-              };
-              sortedCategories[j] = {
-                ...temp
-              };
-            }
-          }
-        }
-      }
-      /* Sort Categories End */
-
-      // Structure
-      /*grouped = _.map(grouped, (meals, cat) => {
-        return {
-          category: cat,
-          meals,
-          order: sorting[cat] || 9999
-        };
-      });*/
-
-      let finalData = [];
-      let finalCategories = [];
-
-      for (let i = 0; i < sortedCategories.length; i++) {
-        let name = sortedCategories[i].name;
-        let order = sortedCategories[i].order;
-        let category_id = sortedCategories[i].id;
-
-        if (grouped[name] && grouped[name].length > 0) {
-          finalData.push({
-            category: name,
-            category_id,
-            meals: grouped[name],
-            order
-          });
-
-          finalCategories.push(sortedCategories[i]);
-        }
-      }
-
-      this.finalCategories = finalCategories;
-      return finalData;
-
-      // Sort
-      //return _.orderBy(grouped, "order");
-    },
-    mealPackages() {
-      return _.map(
-        _.filter(this.store.packages, mealPackage => {
-          return mealPackage.active;
-        }) || [],
-        mealPackage => {
-          mealPackage.meal_package = true;
-          return mealPackage;
-        }
-      );
-    },
     card() {
       if (this.mobile) {
         return "card border-light mb-0 mt-0 mr-1";
@@ -694,13 +540,14 @@ export default {
     },
     tags() {
       let grouped = [];
-      this.store.meals.forEach(meal => {
-        meal.tags.forEach(tag => {
+      if (this.allTags && this.allTags.length > 0) {
+        this.allTags.forEach(tag => {
           if (!_.includes(grouped, tag.tag)) {
             grouped.push(tag.tag);
           }
         });
-      });
+      }
+
       return grouped;
     },
     showIngredients() {
