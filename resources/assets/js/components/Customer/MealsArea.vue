@@ -159,7 +159,7 @@
                               meal.sizes &&
                               meal.sizes.length > 0
                           "
-                          toggle-class="menu-bag-btn"
+                          toggle-class="menu-bag-btn plus-minus"
                           :ref="'dropdown_' + meal.id + '_' + group.category_id"
                           right
                         >
