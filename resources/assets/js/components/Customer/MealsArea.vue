@@ -161,14 +161,13 @@
                           "
                           toggle-class="menu-bag-btn plus-minus"
                           :ref="'dropdown_' + meal.id + '_' + group.category_id"
-                          right
                         >
-                          <span
+                          <i
                             slot="button-content"
                             :id="
                               'dropdown_' + meal.id + '_' + group.category_id
                             "
-                            >+</span
+                            >+</i
                           >
                           <b-dropdown-item
                             @click="addMeal(meal, true)"
@@ -182,7 +181,7 @@
                           <b-dropdown-item
                             v-for="(size, index) in meal.sizes"
                             :key="'size_' + size.id + '_' + index"
-                            @click="addMeal(meal, true, size)"
+                            @click.stop="addMeal(meal, true, size)"
                           >
                             {{ size.title }} -
                             {{
