@@ -324,20 +324,6 @@ export default {
       }
     },
     addMeal(meal) {
-      let viewedMeal = {};
-
-      if (this.$parent.meals) {
-        this.$parent.meals.forEach(category => {
-          if (category.meals) {
-            category.meals.forEach(menuMeal => {
-              if (meal.id === menuMeal.id) viewedMeal = menuMeal;
-            });
-          }
-        });
-      }
-
-      viewedMeal.meal_page_visited = true;
-
       if (this.invalidCheck && this.hasVariations) {
         this.invalid = true;
         return;

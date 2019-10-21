@@ -786,6 +786,7 @@ export default {
       }
     },
     showMeal(meal, group) {
+      meal.meal_page_visited = true;
       if (meal.meal_package) {
         if (!meal.sizes || meal.sizes.length === 0) {
           this.addMealPackage(meal, true);
