@@ -112,7 +112,9 @@ export default {
   },
   data() {
     return {
-      form: {}
+      form: {
+        state: null
+      }
     };
   },
   mounted() {
