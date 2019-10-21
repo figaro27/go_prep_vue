@@ -667,7 +667,7 @@
                   buttons
                   v-model="storeSettings.menuStyle"
                   class="storeFilters"
-                  @change.native="updateStoreSettings"
+                  @input.native="updateStoreSettings"
                   :options="[
                     { value: 'image', text: 'Image Based' },
                     { value: 'text', text: 'Text Based' }
