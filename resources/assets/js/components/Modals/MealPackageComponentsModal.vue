@@ -56,11 +56,9 @@
                   :checked="optionSelected(component.id, option.id)"
                 >
                   {{ option.text || "" }}
-                  <small v-if="option.price && option.price > 0"
-                    >+{{
-                      format.money(option.price, storeSettings.currency)
-                    }}</small
-                  >
+                  <small v-if="option.price && option.price > 0">
+                    +{{ format.money(option.price, storeSettings.currency) }}
+                  </small>
                 </b-checkbox>
 
                 <div v-else class="my-2">
@@ -409,20 +407,32 @@ export default {
           this.$set(this.choices[component.id], option.id, truncated);
         }
 
-        if (component.minimum === 1 && component.maximum === 1) {
+        choices = this.choices[component.id][option.id];
+        this.components.forEach(comp => {
           // Find options restricted
-          choices = this.choices[component.id][option.id];
+          const opt = _.find(comp.options, {
+            restrict_meals_component_id: component.id,
+            restrict_meals_option_id: option.id
+          });
+          if (!opt) {
+            return;
+          }
 
-          this.components.forEach(comp => {
-            const opt = _.find(comp.options, {
-              restrict_meals_component_id: component.id,
-              restrict_meals_option_id: option.id
-            });
-            if (opt) {
-              this.addOptionChoice(comp, opt, choices[0]);
+          if (component.minimum === 1 && component.maximum === 1) {
+            // find correct size
+            let choice = _.find(opt.meals, { meal_id: choices[0].meal_id });
+            this.addOptionChoice(comp, opt, choice || choices[0]);
+          }
+
+          // Deselected meal in parent. Remove from restricted
+          let oChoices = this.choices[comp.id][opt.id] || [];
+          oChoices.forEach(oChoice => {
+            const sel = _.find(choices, { meal_id: oChoice.meal_id });
+            if (!sel) {
+              this.minusOptionChoice(comp, opt, oChoice);
             }
           });
-        }
+        });
       });
     },
     getOptionMeals(componentId, optionId) {
