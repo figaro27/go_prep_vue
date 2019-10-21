@@ -408,8 +408,8 @@ export default {
       }
 
       const pkg = this.getMealPackage(item.meal.id);
-      const size = item.size ? pkg.getSize(item.size.id) : null;
-      const packageMeals = size ? size.meals : pkg.meals;
+      const size = pkg && item.size ? pkg.getSize(item.size.id) : null;
+      const packageMeals = size ? size.meals : pkg ? pkg.meals : null;
 
       let mealQuantities = _.mapValues(
         _.keyBy(packageMeals, pkgMeal => {
@@ -495,7 +495,7 @@ export default {
           const { mealId, sizeId } = JSON.parse(guid);
           const meal = this.getMeal(mealId);
           if (!meal) return null;
-          const size = sizeId ? meal.getSize(sizeId) : null;
+          const size = meal && sizeId ? meal.getSize(sizeId) : null;
 
           const title = size ? size.full_title : meal.full_title;
 
