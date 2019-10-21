@@ -136,11 +136,16 @@
                   notice that their card is going to get charged and they can
                   cancel or update their meals if they wish. You can also
                   optionally turn off subscriptions in Settings.
+                  <a
+                    href="https://gyazo.com/3789d0ec338192090ac22f6c2cc86107"
+                    target="_blank"
+                    >View Image</a
+                  >
                 </p>
                 <p>
                   -Pausing and resuming subscriptions has been removed for the
-                  time being until further notice as we experience some timing
-                  issues.
+                  time being until further notice as we have experienced some
+                  timing issues.
                 </p>
                 <p>
                   -Fixed a bug involving ingredients not saving for meal
@@ -163,14 +168,14 @@
                 <p>
                   -We are now forming a weekly flow to collect any feedback,
                   bugs, and improvements and push it live once a week usually
-                  Saturday or Sunday as these are slow days for everyone. We'll
-                  continue using this area to inform you about weekly or monthly
-                  updates. As with any application still in development with new
-                  features being added, there may be an occasional bug you are
-                  or your customers experience. We extensively test everything
-                  before we make it live, but sometimes we don't catch
-                  everything. If you happen to find any bug or anything out of
-                  place, please email me at
+                  Saturday or Sunday as these are slow order days for most
+                  companies. We'll continue using this area to inform you about
+                  weekly or monthly updates. As with any application still in
+                  development with new features being added, there may be an
+                  occasional bug you or your customers experience. We
+                  extensively test everything before we make it live, but
+                  sometimes we don't catch everything. If you happen to find any
+                  bug or anything out of place, please email me at
                   <a href="mailto:mike@goprep.com">mike@goprep.com</a> and I'll
                   fix it as fast as possible depending on the urgency. Many new
                   features and improvements are coming in the following weeks
