@@ -693,7 +693,7 @@ export default {
           }
         }
 
-        this.finalCategories = finalCategories;
+        this.$parent.finalCategories = finalCategories;
         return finalData;
       } else {
         return this.meals;
