@@ -44,7 +44,7 @@ class RegisterController extends StoreController
             $user = User::create([
                 'user_role_id' => 1,
                 'email' => $request->get('email'),
-                'password' => Hash::make('secret'),
+                'password' => Hash::make(str_random(10)),
                 'timezone' => 'America/New_York',
                 'remember_token' => Hash::make(str_random(10)),
                 'accepted_tos' => 1
