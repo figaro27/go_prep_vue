@@ -76,7 +76,6 @@ class RegisterController extends StoreController
         $user = User::findOrFail($user->id);
         $store = $this->store;
         $storeId = $this->store->id;
-
         $user->createStoreCustomer($storeId);
 
         /*
@@ -96,6 +95,35 @@ class RegisterController extends StoreController
         $customer->currency = $store->settings->currency;
         $customer->save();
         */
+    }
+
+    public function checkExistingCustomer(Request $request)
+    {
+        $email = $request->get('email');
+        $user = User::where('email', $email)->first();
+        $store = $this->store;
+        $storeId = $this->store->id;
+        $existingCustomers = Customer::where('store_id', $storeId)->get();
+
+        if ($user) {
+            foreach ($existingCustomers as $existingCustomer) {
+                if ($existingCustomer['user_id'] === $user->id) {
+                    return 'existsCustomer';
+                }
+            }
+            return 'existsNoCustomer';
+        }
+        return 'noCustomer';
+    }
+
+    public function addExistingCustomer(Request $request)
+    {
+        $email = $request->get('email');
+        $user = User::where('email', $email)->first();
+        $user = User::findOrFail($user->id);
+        $store = $this->store;
+        $storeId = $this->store->id;
+        $user->createStoreCustomer($storeId);
     }
 
     /**

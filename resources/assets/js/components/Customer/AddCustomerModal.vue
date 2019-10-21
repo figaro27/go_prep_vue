@@ -5,11 +5,43 @@
       title="Add New Customer"
       v-model="addCustomerModal"
       v-if="addCustomerModal"
-      @hide="$parent.addCustomerModal = false"
+      @hide="hideModal"
       hide-footer
       no-fade
     >
-      <b-form @submit.prevent="addCustomer" class="mt-3">
+      <b-alert show variant="secondary">
+        <b-row>
+          <b-col sm="3">
+            <label for="customerCheck" class="pt-1"
+              >Check if user exists:</label
+            >
+          </b-col>
+          <b-col sm="7">
+            <b-form-input
+              id="customerCheck"
+              type="email"
+              v-model="existingEmail"
+              placeholder="Email Address"
+            ></b-form-input>
+          </b-col>
+
+          <b-col sm="2">
+            <b-btn class="ml-2" variant="primary" @click="checkExistingCustomer"
+              >Check</b-btn
+            >
+          </b-col>
+        </b-row>
+      </b-alert>
+
+      <b-alert show variant="secondary" v-if="showExistingCustomerAlert"
+        >A user with this email exists. Would you like to add them to your
+        customers list?
+        <b-btn class="ml-2" variant="success" @click="addExistingCustomer"
+          >Add Customer</b-btn
+        >
+      </b-alert>
+
+      <b-form @submit.prevent="addCustomer" class="mt-1">
         <b-form-group horizontal label="First Name">
           <b-form-input
             v-model="form.first_name"
@@ -112,8 +144,12 @@ export default {
   },
   data() {
     return {
+      existingEmail: "",
+      showExistingCustomerAlert: false,
       form: {
-        state: null
+        state: null,
+        email: null,
+        delivery: "Please call my phone when outside"
       }
     };
   },
@@ -159,6 +195,33 @@ export default {
       //   this.$toastr.e("Please try again.", "Registration failed");
       // });
     },
+    checkExistingCustomer() {
+      axios
+        .post("/api/me/checkExistingCustomer", { email: this.existingEmail })
+        .then(response => {
+          if (response.data === "existsCustomer")
+            this.$toastr.w("This user is already on your customers list.");
+          if (response.data === "existsNoCustomer")
+            this.showExistingCustomerAlert = true;
+          if (response.data === "noCustomer") {
+            this.$toastr.w(
+              "An account has not been registered with this email yet. Please add them below."
+            );
+            this.form.email = this.existingEmail;
+          }
+        });
+    },
+    addExistingCustomer() {
+      axios
+        .post("/api/me/addExistingCustomer", { email: this.existingEmail })
+        .then(response => {
+          this.$toastr.s("Customer added.");
+          (this.existingEmail = ""), (this.showExistingCustomerAlert = false);
+          this.$parent.addCustomerModal = false;
+          this.$parent.setCustomer();
+          if ($route.params.manualOrder) this.$parent.getCards();
+        });
+    },
     getStateNames(country = "US") {
       return states.selectOptions(country);
     },
@@ -176,6 +239,12 @@ export default {
         }
         return true;
       } else return null;
+    },
+    hideModal() {
+      this.$parent.addCustomerModal = false;
+      (this.existingEmail = ""), (this.showExistingCustomerAlert = false);
+      this.$parent.addCustomerModal = false;
+      this.form.email = null;
     }
   }
 };

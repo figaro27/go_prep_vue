@@ -117,6 +117,14 @@ foreach (
                             Route::get('user', 'UserController@show');
 
                             Route::resource('register', 'RegisterController');
+                            Route::post(
+                                'checkExistingCustomer',
+                                'RegisterController@checkExistingCustomer'
+                            );
+                            Route::post(
+                                'addExistingCustomer',
+                                'RegisterController@addExistingCustomer'
+                            );
 
                             Route::get(
                                 'orders/ingredients/export/{type}',
