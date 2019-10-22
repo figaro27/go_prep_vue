@@ -40,7 +40,7 @@
       ></meal-package-modal>
 
       <div class="row">
-        <div :class="`col-md-12 main-menu-area`">
+        <div :class="`col-md-12 main-menu-area menu-page`">
           <Spinner
             v-if="
               (!meals || meals.length == 0) &&
@@ -86,7 +86,7 @@
             :nutritionalFacts="nutritionalFacts"
           ></meal-page>
 
-          <meal-package-page></meal-package-page>
+          <!--<meal-package-page></meal-package-page>!-->
 
           <floating-action-button
             class="d-md-none"

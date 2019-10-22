@@ -32,7 +32,7 @@
         </h2>
         <div class="row">
           <div
-            class="item col-sm-6 col-lg-4 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
+            class="item col-sm-6 col-md-6 col-lg-6 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
             v-for="(meal, index) in group.meals"
             :key="
               meal.meal_package
@@ -251,7 +251,7 @@
         </h2>
         <div class="row">
           <div
-            class="item item-text col-sm-6 col-md-12 col-lg-6 col-xl-6"
+            class="item item-text col-sm-6 col-md-6 col-lg-12 col-xl-6"
             v-for="(meal, index) in group.meals"
             :key="'meal_' + meal.id + '_' + index"
             style="margin-bottom: 10px !important;"

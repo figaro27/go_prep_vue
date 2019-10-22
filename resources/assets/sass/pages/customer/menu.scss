@@ -30,6 +30,12 @@ body.customermenu {
   .item-text {
     padding: 0px 5px 0px 0px !important;
     margin: 0px !important;
+
+    @media all and (min-width: 768px) and (max-width: 849px) {
+      flex: 0 0 100% !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
   }
 
   .item {
