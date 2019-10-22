@@ -76,10 +76,10 @@
                 <p>
                   -You can now refund your customer and charge your customer
                   directly through the platform. These are all found on the View
-                  Order modal (popup) which will eventually be moved to their
+                  Order modal (popup). which will eventually be moved to their
                   own pages for more surface area.
                   <a
-                    href="https://gyazo.com/df68662aa3a21ee8fa03f412dc3a9792"
+                    href="https://gyazo.com/4233cb740447ed22384a076d408f79c2"
                     target="_blank"
                     >View Image</a
                   >
