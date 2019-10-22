@@ -600,7 +600,7 @@ export default {
       chargeAmount: 0,
       refundAmount: 0,
       applyToBalanceRefund: false,
-      applyToBalanceCharge: false,
+      applyToBalanceCharge: true,
       checkingOut: false,
       ordersByDate: {},
       email: "",
@@ -978,7 +978,7 @@ export default {
           this.chargeAmount = 0;
           this.refreshUpcomingOrders();
           this.$toastr.s(response.data);
-          this.applyToBalanceCharge = false;
+          this.applyToBalanceCharge = true;
           this.applyToBalanceRefund = false;
         });
     },
@@ -1001,7 +1001,7 @@ export default {
             this.refundAmount = 0;
             this.refreshUpcomingOrders();
             this.$toastr.s(response.data);
-            this.applyToBalanceCharge = false;
+            this.applyToBalanceCharge = true;
             this.applyToBalanceRefund = false;
           }
         });
@@ -1013,7 +1013,7 @@ export default {
           this.$toastr.s("Balance has been settled to 0");
           this.viewOrderModal = false;
           this.refreshUpcomingOrders();
-          this.applyToBalanceCharge = false;
+          this.applyToBalanceCharge = true;
           this.applyToBalanceRefund = false;
         });
     },
