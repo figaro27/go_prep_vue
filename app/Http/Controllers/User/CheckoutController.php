@@ -14,6 +14,7 @@ use App\MealSubscriptionAddon;
 use App\MealSubscription;
 use App\MealAttachment;
 use App\Order;
+use App\OrderTransaction;
 use App\Store;
 use App\StoreDetail;
 use App\Subscription;
@@ -228,6 +229,22 @@ class CheckoutController extends UserController
             $order->dailyOrderNumber = $dailyOrderNumber;
             $order->originalAmount = $total * $deposit;
             $order->save();
+
+            $order_transaction = new OrderTransaction();
+            $order_transaction->order_id = $order->id;
+            $order_transaction->store_id = $store->id;
+            $order_transaction->user_id = $user->id;
+            $order_transaction->customer_id = $customer->id;
+            $order_transaction->type = 'order';
+            if (!$cashOrder) {
+                $order_transaction->stripe_id = $charge->id;
+                $order_transaction->card_id = $cardId;
+            } else {
+                $order_transaction->stripe_id = null;
+                $order_transaction->card_id = null;
+            }
+            $order_transaction->amount = $total * $deposit;
+            $order_transaction->save();
 
             $items = $bag->getItems();
             foreach ($items as $item) {
@@ -473,6 +490,22 @@ class CheckoutController extends UserController
                 $order->originalAmount = $total * $deposit;
                 $order->cashOrder = $cashOrder;
                 $order->save();
+
+                $order_transaction = new OrderTransaction();
+                $order_transaction->order_id = $order->id;
+                $order_transaction->store_id = $store->id;
+                $order_transaction->user_id = $user->id;
+                $order_transaction->customer_id = $customer->id;
+                $order_transaction->type = 'order';
+                if (!$cashOrder) {
+                    $order_transaction->stripe_id = $charge->id;
+                    $order_transaction->card_id = $cardId;
+                } else {
+                    $order_transaction->stripe_id = null;
+                    $order_transaction->card_id = null;
+                }
+                $order_transaction->amount = $total * $deposit;
+                $order_transaction->save();
 
                 foreach ($bag->getItems() as $item) {
                     $mealOrder = new MealOrder();

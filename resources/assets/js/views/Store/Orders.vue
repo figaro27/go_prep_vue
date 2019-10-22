@@ -266,15 +266,10 @@
             </span>
             <h4>Order ID</h4>
             <p>{{ order.order_number }}</p>
-            <div>
-              <b-btn
-                class="btn mb-2"
-                variant="primary"
-                @click="printPackingSlip(order.id)"
-                >Print Packing Slip</b-btn
-              >
-            </div>
             <div class="d-inline" v-if="!order.cashOrder">
+              <b-form-checkbox v-model="applyToBalanceCharge"
+                >Apply Charge to Balance</b-form-checkbox
+              >
               <b-btn
                 class="btn mb-2 d-inline mr-1"
                 variant="success"
@@ -295,23 +290,10 @@
                 class="popover-size d-inline"
               />
             </div>
-            <div class="d-inline" v-if="order.cashOrder && order.balance > 0">
-              <b-btn
-                class="btn mb-2 d-inline mr-1"
-                variant="success"
-                @click="charge"
-                >Settle Balance</b-btn
-              >
-              <img
-                v-b-popover.hover="
-                  'This button is only shown on cash orders. This simply settles the balance on the order to $0 for your records without charging the customer.'
-                "
-                title="Settle Balance"
-                src="/images/store/popover.png"
-                class="popover-size d-inline"
-              />
-            </div>
             <div class="d-inline" v-if="!order.cashOrder">
+              <b-form-checkbox v-model="applyToBalanceRefund"
+                >Apply Refund to Balance</b-form-checkbox
+              >
               <b-btn
                 :disabled="fullyRefunded"
                 class="btn mb-2 d-inline mr-1 purpleBG"
@@ -368,6 +350,14 @@
                 >Unvoid</b-btn
               >
             </div>
+            <div>
+              <b-btn
+                class="btn mb-2"
+                variant="primary"
+                @click="printPackingSlip(order.id)"
+                >Print Packing Slip</b-btn
+              >
+            </div>
           </div>
           <div class="col-md-4 pt-1">
             <h4>Placed On</h4>
@@ -406,20 +396,39 @@
             <p class="strong">
               Total: {{ format.money(order.amount, order.currency) }}
             </p>
-            <p v-if="order.balance > 0 || order.balance < 0">
+            <p v-if="order.balance !== null">
               Original Total:
               {{ format.money(order.originalAmount, order.currency) }}
             </p>
-            <p v-if="order.balance > 0 || order.balance < 0">
-              Paid:
-              {{ format.money(order.amount - order.balance, order.currency) }}
+            <p v-if="order.chargedAmount">
+              Additional Charges:
+              {{ format.money(order.chargedAmount, order.currency) }}
             </p>
             <p v-if="order.refundedAmount">
               Refunded: {{ format.money(order.refundedAmount, order.currency) }}
             </p>
-            <p v-if="order.balance > 0 || order.balance < 0">
+            <p v-if="order.balance !== null">
               Balance: {{ format.money(order.balance, order.currency) }}
             </p>
+            <div
+              class="d-inline"
+              v-if="order.balance !== null && order.balance != 0"
+            >
+              <b-btn
+                class="btn mb-2 d-inline mr-1"
+                variant="success"
+                @click="settle"
+                >Settle Balance</b-btn
+              >
+              <img
+                v-b-popover.hover="
+                  'This settles the balance on the order to $0 for your records without charging or refunding your customer.'
+                "
+                title="Settle Balance"
+                src="/images/store/popover.png"
+                class="popover-size d-inline"
+              />
+            </div>
           </div>
         </div>
 
@@ -590,6 +599,8 @@ export default {
     return {
       chargeAmount: 0,
       refundAmount: 0,
+      applyToBalanceRefund: false,
+      applyToBalanceCharge: false,
       checkingOut: false,
       ordersByDate: {},
       email: "",
@@ -851,11 +862,15 @@ export default {
           this.meals = response.data.meals;
           this.viewOrderModal = true;
           this.email = response.data.user.email;
-          this.refundAmount = (
-            response.data.originalAmount - response.data.refundedAmount
-          ).toFixed(2);
+          this.originalAmount = response.data.originalAmount;
+          this.chargedAmount = response.data.chargedAmount
+            ? response.data.chargedAmount
+            : 0;
           this.chargeAmount =
-            response.data.balance > 0 ? response.data.balance.toFixed(2) : 0;
+            response.data.balance <= 0 ? null : response.data.balance;
+          this.refundAmount =
+            response.data.balance < 0 ? response.data.balance * -1 : null;
+          this.balance = response.data.balance;
 
           this.$nextTick(function() {
             window.dispatchEvent(new window.Event("resize"));
@@ -955,32 +970,51 @@ export default {
       axios
         .post("/api/me/charge", {
           orderId: this.orderId,
-          chargeAmount: this.chargeAmount
+          chargeAmount: this.chargeAmount,
+          applyToBalance: this.applyToBalanceCharge
         })
         .then(response => {
           this.viewOrderModal = false;
           this.chargeAmount = 0;
           this.refreshUpcomingOrders();
           this.$toastr.s(response.data);
+          this.applyToBalanceCharge = false;
+          this.applyToBalanceRefund = false;
         });
     },
     refund() {
       axios
         .post("/api/me/refundOrder", {
           orderId: this.orderId,
-          refundAmount: this.refundAmount
+          refundAmount: this.refundAmount,
+          applyToBalance: this.applyToBalanceRefund
         })
         .then(response => {
+          if (response.data === 1) {
+            this.$toastr.e(
+              "The refund amount is greater than the original amount plus additional charges which is $" +
+                (this.originalAmount + this.chargedAmount),
+              "Error"
+            );
+          } else {
+            this.viewOrderModal = false;
+            this.refundAmount = 0;
+            this.refreshUpcomingOrders();
+            this.$toastr.s(response.data);
+            this.applyToBalanceCharge = false;
+            this.applyToBalanceRefund = false;
+          }
+        });
+    },
+    settle() {
+      axios
+        .post("/api/me/settleBalance", { orderId: this.orderId })
+        .then(response => {
+          this.$toastr.s("Balance has been settled to 0");
           this.viewOrderModal = false;
-          this.refundAmount = 0;
           this.refreshUpcomingOrders();
-          this.$toastr.s(response.data);
-        })
-        .catch(e => {
-          this.$toastr.e(
-            "You can only refund the original total, not any additional charges. Please contact GoPrep for more help.",
-            "Error"
-          );
+          this.applyToBalanceCharge = false;
+          this.applyToBalanceRefund = false;
         });
     },
     voidOrder() {

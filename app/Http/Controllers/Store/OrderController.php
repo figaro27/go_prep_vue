@@ -11,7 +11,9 @@ use App\LineItem;
 use App\LineItemOrder;
 use App\MealAttachment;
 use App\User;
+use App\Customer;
 use App\Card;
+use App\OrderTransaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Carbon;
@@ -344,8 +346,10 @@ class OrderController extends StoreController
         $cashOrder = $order->cashOrder;
         $store = $this->store;
         $application_fee = $store->settings->application_fee;
+        $applyToBalance = $request->get('applyToBalance');
 
-        $customerUser = User::where('id', $order->user_id)->first();
+        $user = User::where('id', $order->user_id)->first();
+        $customer = Customer::where('id', $order->customer_id)->first();
 
         if (!$cashOrder) {
             $cardId = $order->card_id;
@@ -355,7 +359,7 @@ class OrderController extends StoreController
         if (!$cashOrder) {
             $storeSource = \Stripe\Source::create(
                 [
-                    "customer" => $customerUser->stripe_id,
+                    "customer" => $user->stripe_id,
                     "original_source" => $card->stripe_id,
                     "usage" => "single_use"
                 ],
@@ -372,36 +376,127 @@ class OrderController extends StoreController
                 ["stripe_account" => $store->settings->stripe_id]
             );
         }
-        // $order->adjustedDifference -= $chargeAmount;
+        $order->chargedAmount += $chargeAmount;
 
-        // if ($order->balance < 0){
-        //     $order->balance = 0;
-        // }
-        $order->balance -= $chargeAmount;
+        if ($applyToBalance) {
+            $order->balance -= $chargeAmount;
+        }
         $order->save();
 
-        if ($cashOrder) {
-            return 'Balance has been settled to 0.';
+        $order_transaction = new OrderTransaction();
+        $order_transaction->order_id = $order->id;
+        $order_transaction->store_id = $store->id;
+        $order_transaction->user_id = $user->id;
+        $order_transaction->customer_id = $customer->id;
+        $order_transaction->type = 'charge';
+        if (!$cashOrder) {
+            $order_transaction->stripe_id = $charge->id;
+            $order_transaction->card_id = $cardId;
         } else {
-            return 'Charged $' . $chargeAmount;
+            $order_transaction->stripe_id = null;
+            $order_transaction->card_id = null;
         }
+        $order_transaction->amount = $chargeAmount;
+        $order_transaction->applyToBalance = $applyToBalance;
+        $order_transaction->save();
+
+        return 'Charged $' . $chargeAmount;
     }
 
     public function refundOrder(Request $request)
     {
         $order = Order::where('id', $request->get('orderId'))->first();
-        $refundAmount = $request->get('refundAmount') * 100;
-        $amount = $refundAmount ? $refundAmount : $order->amount * 100;
+        $store = $this->store;
+        $user = User::where('id', $order->user_id)->first();
+        $customer = Customer::where('id', $order->customer_id)->first();
+        $applyToBalance = $request->get('applyToBalance');
+
+        $originalAmount = $order->originalAmount;
+        $chargedAmount = $order->chargedAmount;
+        $totalCharged = $originalAmount + $chargedAmount;
+        $refundAmount = $request->get('refundAmount');
+        if ($refundAmount === null) {
+            $refundAmount = $totalCharged;
+        }
+        if ($refundAmount > $totalCharged) {
+            return 1;
+        }
+
+        $difference = 0;
+
+        if ($refundAmount > $originalAmount) {
+            $difference = $refundAmount - $originalAmount;
+            $refundAmount = $originalAmount;
+        }
+
+        $card = Card::where('id', $order->card_id)->first();
         $refund = \Stripe\Refund::create(
             [
                 'charge' => $order->stripe_id,
-                'amount' => $amount
+                'amount' => $refundAmount * 100
             ],
             ["stripe_account" => $this->store->settings->stripe_id]
         );
+
+        $order_transaction = new OrderTransaction();
+        $order_transaction->order_id = $order->id;
+        $order_transaction->store_id = $store->id;
+        $order_transaction->user_id = $user->id;
+        $order_transaction->customer_id = $customer->id;
+        $order_transaction->type = 'refund';
+        $order_transaction->stripe_id = $refund->id;
+        $order_transaction->card_id = $card->id;
+        $order_transaction->amount = $refundAmount;
+        $order_transaction->applyToBalance = $applyToBalance;
+        $order_transaction->save();
+
+        if ($difference > 0) {
+            $charges = OrderTransaction::where([
+                'order_id' => $order->id,
+                'type' => 'charge'
+            ])->get();
+            foreach ($charges as $charge) {
+                if ($difference <= $charge->amount) {
+                    $card = Card::where('id', $charge->card_id)->first();
+                    $refund = \Stripe\Refund::create(
+                        [
+                            'charge' => $charge->stripe_id,
+                            'amount' => $difference * 100
+                        ],
+                        ["stripe_account" => $this->store->settings->stripe_id]
+                    );
+
+                    $order_transaction = new OrderTransaction();
+                    $order_transaction->order_id = $order->id;
+                    $order_transaction->store_id = $store->id;
+                    $order_transaction->user_id = $user->id;
+                    $order_transaction->customer_id = $customer->id;
+                    $order_transaction->type = 'refund';
+                    $order_transaction->stripe_id = $refund->id;
+                    $order_transaction->card_id = $card->id;
+                    $order_transaction->amount = $difference;
+                    $order_transaction->applyToBalance = $applyToBalance;
+                    $order_transaction->save();
+
+                    $difference += $charge->amount;
+                }
+            }
+        }
+
+        if ($applyToBalance) {
+            $order->balance += $request->get('refundAmount');
+        }
         $order->refundedAmount += $request->get('refundAmount');
         $order->save();
+
         return 'Refunded $' . $request->get('refundAmount');
+    }
+
+    public function settleBalance(Request $request)
+    {
+        $order = Order::where('id', $request->get('orderId'))->first();
+        $order->balance = 0;
+        $order->save();
     }
 
     public function voidOrder(Request $request)

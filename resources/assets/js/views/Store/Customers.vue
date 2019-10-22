@@ -174,20 +174,19 @@
                         >Total:
                         {{ format.money(order.amount, order.currency) }}</strong
                       >
-                      <p v-if="order.balance">
-                        Paid:
-                        {{
-                          format.money(
-                            order.amount - order.balance,
-                            order.currency
-                          )
-                        }}
+                      <p v-if="order.balance !== null">
+                        Original Total:
+                        {{ format.money(order.originalAmount, order.currency) }}
+                      </p>
+                      <p v-if="order.chargedAmount">
+                        Additional Charges:
+                        {{ format.money(order.chargedAmount, order.currency) }}
                       </p>
                       <p v-if="order.refundedAmount">
                         Refunded:
                         {{ format.money(order.refundedAmount, order.currency) }}
                       </p>
-                      <p v-if="order.balance">
+                      <p v-if="order.balance !== null">
                         Balance:
                         {{ format.money(order.balance, order.currency) }}
                       </p>

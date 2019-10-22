@@ -59,6 +59,7 @@ class OrdersSeeder extends Seeder
                     'deliveryFee' => rand(1, 6),
                     'salesTax' => rand(5, 10),
                     'amount' => rand(100, 200),
+                    'originalAmount' => rand(100, 200),
                     'delivery_date' => $sunday[rand(0, 4)],
                     'created_at' => $faker->dateTimeBetween(
                         $startDate = '-6 days',

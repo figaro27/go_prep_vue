@@ -57,9 +57,7 @@
             show
             variant="info"
             class="mt-3 mb-2 ml-2 center-text"
-            v-if="
-              !$route.params.viewedUpdates && $route.name !== 'store-updates'
-            "
+            v-if="$route.name === 'store-orders'"
             >New updates have been added.
             <router-link
               :to="{

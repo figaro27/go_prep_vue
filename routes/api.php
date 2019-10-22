@@ -301,6 +301,11 @@ foreach (
                                 'CheckoutController@checkout'
                             );
                             Route::post('charge', 'OrderController@charge');
+
+                            Route::post(
+                                'settleBalance',
+                                'OrderController@settleBalance'
+                            );
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {
