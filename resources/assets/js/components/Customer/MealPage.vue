@@ -45,8 +45,6 @@
             </li>
           </div>
 
-          <p v-html="mealDescription" class="mt-3"></p>
-
           <div
             class="col-md-3"
             v-if="meal.allergy_titles && meal.allergy_titles.length > 0"
