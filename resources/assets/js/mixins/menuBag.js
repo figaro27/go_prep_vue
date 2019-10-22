@@ -1,4 +1,5 @@
 import SalesTax from "sales-tax";
+import store from "../store";
 
 export default {
   computed: {},
@@ -14,8 +15,25 @@ export default {
     ) {
       if (!mealPackage) {
         meal = this.getMeal(meal.id);
+        /* Refresh Meal */
+        if (!meal.refreshed) {
+          const newMeal = await store.dispatch("refreshStoreMeal", meal);
+
+          meal = this.getMeal(meal.id);
+        }
+        /* Refresh Meal End */
       } else {
         meal = this.getMealPackage(meal.id);
+        /* Refresh Package */
+        if (!meal.refreshed) {
+          const newPackage = await store.dispatch(
+            "refreshStoreMealPackage",
+            meal
+          );
+
+          meal = this.getMealPackage(meal.id);
+        }
+        /* Refresh Package End */
       }
 
       if (!meal) {

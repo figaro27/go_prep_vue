@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 use App\Allergy;
 use App\MealTag;
 use App\Store;
+use App\Meal;
+use App\OptimizedMeal;
+use App\OptimizedMealPackage;
+use App\MealPackage;
 use Illuminate\Http\Request;
 
 class SpaController extends Controller
@@ -296,14 +300,10 @@ class SpaController extends Controller
     public function refresh(Request $request)
     {
         $user = auth('api')->user();
+        $store = null;
 
-        $last_viewed_store = null;
-        if ($user && isset($user->last_viewed_store)) {
-            $last_viewed_store = $user->last_viewed_store;
-        }
-
-        $store = defined('STORE_ID')
-            ? Store::with([
+        if (defined('STORE_ID')) {
+            /*$store = Store::with([
                 'meals',
                 'packages',
                 'meals.categories',
@@ -316,11 +316,88 @@ class SpaController extends Controller
                 'meals.components',
                 'meals.addons',
                 'meals.macros'
-            ])->find(STORE_ID)
-            : $last_viewed_store;
+            ])->find(STORE_ID);*/
+
+            $store = Store::find(STORE_ID);
+            if ($store) {
+                $store_id = (int) $store->id;
+
+                $meals = OptimizedMeal::select(
+                    'id',
+                    'active',
+                    'store_id',
+                    'title',
+                    'description',
+                    'price',
+                    'created_at',
+                    'default_size_title'
+                )
+                    ->with(['sizes', 'macros', 'tags'])
+                    ->where('store_id', $store_id)
+                    ->orderBy('title')
+                    ->get();
+
+                $packages = OptimizedMealPackage::select(
+                    'id',
+                    'store_id',
+                    'active',
+                    'created_at',
+                    'title',
+                    'default_size_title',
+                    'description',
+                    'price'
+                )
+                    ->with(['sizes'])
+                    ->where('store_id', $store_id)
+                    ->orderBy('title')
+                    ->get();
+
+                $store->meals = $meals;
+                $store->packages = $packages;
+            }
+
+            return [
+                'store' => $store
+            ];
+        } else {
+            $store = null;
+            if ($user && isset($user->last_viewed_store)) {
+                $store = $user->last_viewed_store;
+            }
+        }
 
         return [
             'store' => $store
+        ];
+    }
+
+    public function refreshMeal($meal_id)
+    {
+        $meal = Meal::with([
+            'categories',
+            'allergies',
+            'sizes',
+            'components',
+            'addons',
+            'macros'
+        ])->find($meal_id);
+
+        return [
+            'meal' => $meal
+        ];
+    }
+
+    public function refreshMealPackage($meal_package_id)
+    {
+        $package = MealPackage::with([
+            'meals',
+            'sizes',
+            'components',
+            'addons'
+        ])->find($meal_package_id);
+
+        return [
+            'package' => $package
         ];
     }
 

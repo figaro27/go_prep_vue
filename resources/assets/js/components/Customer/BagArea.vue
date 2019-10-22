@@ -172,9 +172,11 @@
           v-for="(orderLineItem, index) in orderLineItems"
           v-bind:key="'orderLineItem' + index"
           class="bag-item"
-          v-if="orderLineItem.quantity > 0"
         >
-          <div class="d-flex align-items-center">
+          <div
+            v-if="orderLineItem.quantity > 0"
+            class="d-flex align-items-center"
+          >
             <div class="bag-item-quantity mr-2">
               <div
                 class="bag-plus-minus brand-color white-text"
@@ -284,6 +286,7 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../mixins/menuBag";
+import store from "../../store";
 
 export default {
   data() {
@@ -311,6 +314,7 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
+      context: "context",
       storeCustomers: "storeCustomers",
       storeModules: "viewedStoreModules",
       storeSettings: "viewedStoreSetting",
@@ -388,6 +392,10 @@ export default {
     }
   },
   mounted() {
+    if (this.context == "customer" || this.context == "guest") {
+      store.dispatch("refreshStoreMeals");
+    }
+
     let lineItemsOrder = [];
 
     if (this.$route.params && this.$route.params.line_items_order) {
@@ -400,12 +408,27 @@ export default {
     this.$emit("updateLineItems", this.orderLineItems);
   },
   methods: {
-    getItemMeals(item) {
+    async getItemMeals(item) {
       const mealPackage = !!item.meal_package;
 
       if (!mealPackage) {
         return [];
       }
+
+      /* Refresh Package */
+      if (!item.refreshed) {
+        const newPackage = await store.dispatch(
+          "refreshStoreMealPackage",
+          item
+        );
+
+        if (newPackage) {
+          item = newPackage;
+        } else {
+          return false;
+        }
+      }
+      /* Refresh Package End */
 
       const pkg = this.getMealPackage(item.meal.id);
       const size = pkg && item.size ? pkg.getSize(item.size.id) : null;

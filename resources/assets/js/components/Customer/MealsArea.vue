@@ -218,7 +218,7 @@
                             "
                             >+</span
                           >
-                          <b-dropdown-item @click="addMeal(meal, true, size)">
+                          <b-dropdown-item @click="addMeal(meal, true)">
                             {{ meal.default_size_title || "Regular" }} -
                             {{
                               format.money(meal.price, storeSettings.currency)
@@ -693,6 +693,7 @@ export default {
         }
 
         this.$parent.finalCategories = finalCategories;
+
         return finalData;
       } else {
         return this.meals;
@@ -728,7 +729,22 @@ export default {
         );
       }
     },
-    addMealPackage(mealPackage, condition = false, size) {
+    async addMealPackage(mealPackage, condition = false, size) {
+      /* Refresh Package */
+      if (!mealPackage.refreshed) {
+        const newPackage = await store.dispatch(
+          "refreshStoreMealPackage",
+          mealPackage
+        );
+
+        if (newPackage) {
+          mealPackage = newPackage;
+        } else {
+          return false;
+        }
+      }
+      /* Refresh Package End */
+
       if (size) this.packageTitle = mealPackage.title + " - " + size.title;
       else
         this.packageTitle =
@@ -745,10 +761,22 @@ export default {
         this.$parent.showBagClass -= " area-scroll";
       }
     },
-    addMeal(meal, mealPackage, size) {
+    async addMeal(meal, mealPackage, size) {
       if (meal.meal_package) {
         this.addMealPackage(meal, true);
       } else {
+        /* Refresh Meal */
+        if (!meal.refreshed) {
+          const newMeal = await store.dispatch("refreshStoreMeal", meal);
+
+          if (newMeal) {
+            meal = newMeal;
+          } else {
+            return false;
+          }
+        }
+        /* Refresh Meal End */
+
         if (
           meal.sizes &&
           meal.sizes.length > 0 &&
@@ -758,6 +786,7 @@ export default {
           if (size === undefined) {
             size === null;
           }
+
           this.addOne(meal, false, size, null, [], null);
         } else if (
           (meal.sizes && meal.sizes.length > 0 && !this.resetMeal) ||

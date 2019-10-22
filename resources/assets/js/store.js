@@ -1058,6 +1058,62 @@ const actions = {
     }
   },
 
+  async refreshStoreMealPackage({ commit, state }, oldMealPackage = {}) {
+    let index = _.findIndex(state.viewed_store.packages, [
+      "id",
+      parseInt(oldMealPackage.id)
+    ]);
+
+    if (isNaN(index) || index < 0) {
+      //throw new Error("Failed to refresh meal");
+      return null;
+    } else {
+      const res = await axios.get(
+        "/api/refresh/meal_package/" + oldMealPackage.id
+      );
+      const { data } = await res;
+
+      if (data.package) {
+        let meal_package = data.package;
+        meal_package.refreshed = true;
+
+        state.viewed_store.packages.splice(index, 1, meal_package);
+
+        return meal_package;
+      } else {
+        //throw new Error("Failed to refresh meal");
+        return null;
+      }
+    }
+  },
+
+  async refreshStoreMeal({ commit, state }, oldMeal = {}) {
+    let mealIndex = _.findIndex(state.viewed_store.meals, [
+      "id",
+      parseInt(oldMeal.id)
+    ]);
+
+    if (isNaN(mealIndex) || mealIndex < 0) {
+      //throw new Error("Failed to refresh meal");
+      return null;
+    } else {
+      const res = await axios.get("/api/refresh/meal/" + oldMeal.id);
+      const { data } = await res;
+
+      if (data.meal) {
+        let meal = data.meal;
+        meal.refreshed = true;
+
+        state.viewed_store.meals.splice(mealIndex, 1, meal);
+
+        return meal;
+      } else {
+        //throw new Error("Failed to refresh meal");
+        return null;
+      }
+    }
+  },
+
   async refreshStoreMeals({ commit, state }, args = {}) {
     const res = await axios.get("/api/refresh");
     const { data } = await res;

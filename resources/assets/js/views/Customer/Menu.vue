@@ -41,10 +41,13 @@
 
       <div class="row">
         <div :class="`col-md-12 main-menu-area`">
-          <!--<Spinner
-            v-if="!meals.length && !mealPackages.length"
+          <Spinner
+            v-if="
+              (!meals || meals.length == 0) &&
+                (!mealPackages || mealPackages.length == 0)
+            "
             position="absolute"
-          />!-->
+          />
 
           <store-closed
             v-if="!$route.params.storeView"
@@ -82,6 +85,8 @@
             :ingredients="ingredients"
             :nutritionalFacts="nutritionalFacts"
           ></meal-page>
+
+          <meal-package-page></meal-package-page>
 
           <floating-action-button
             class="d-md-none"
@@ -205,7 +210,9 @@ import BagActions from "../../components/Customer/BagActions";
 import AuthModal from "../../components/Customer/AuthModal";
 import MenuFilters from "../../components/Customer/MenuFilters";
 import MealPage from "../../components/Customer/MealPage";
+import MealPackagePage from "../../components/Customer/MealPackagePage";
 import { sidebarCssClasses } from "../../shared/classes";
+import store from "../../store";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -285,6 +292,7 @@ export default {
     AuthModal,
     MenuFilters,
     MealPage,
+    MealPackagePage,
     MealComponentsModal
   },
   mixins: [MenuBag],
@@ -359,6 +367,12 @@ export default {
       getMealPackage: "viewedStoreMealPackage",
       allTags: "tags"
     }),
+    meals() {
+      return this.store.meals;
+    },
+    mealPackages() {
+      return this.store.packages;
+    },
     mealsMix() {
       if (this.context == "customer" || this.context == "guest") {
         return [];
@@ -678,7 +692,19 @@ export default {
         });
       });
     },
-    showMealPage(meal) {
+    async showMealPage(meal) {
+      /* Refresh Meal */
+      if (!meal.refreshed) {
+        const newMeal = await store.dispatch("refreshStoreMeal", meal);
+
+        if (newMeal) {
+          meal = newMeal;
+        } else {
+          return false;
+        }
+      }
+      /* Refresh Meal End */
+
       this.mealPageView = true;
       this.meal = meal;
       this.mealDescription = meal.description

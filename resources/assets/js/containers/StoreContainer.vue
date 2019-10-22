@@ -65,9 +65,8 @@
                 params: { viewedUpdates: true }
               }"
             >
-              <b-btn variant="warning ml-3" @click="viewedUpdates"
-                >View Updates</b-btn
-              >
+              <!--<b-btn variant="warning ml-3" @click="viewedUpdates"!-->
+              <b-btn variant="warning ml-3">View Updates</b-btn>
             </router-link>
           </b-alert>
           <router-view></router-view>
