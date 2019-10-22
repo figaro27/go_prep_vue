@@ -392,9 +392,9 @@ export default {
     }
   },
   mounted() {
-    if (this.context == "customer" || this.context == "guest") {
+    /*if (this.context == "customer" || this.context == "guest") {
       store.dispatch("refreshStoreMeals");
-    }
+    }*/
 
     let lineItemsOrder = [];
 

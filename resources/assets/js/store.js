@@ -1115,6 +1115,10 @@ const actions = {
   },
 
   async refreshStoreMeals({ commit, state }, args = {}) {
+    if (state.refreshed == true) {
+      return;
+    }
+
     const res = await axios.get("/api/refresh");
     const { data } = await res;
 
@@ -1122,7 +1126,8 @@ const actions = {
       state.viewed_store = {
         ...state.viewed_store,
         meals: data.store.meals,
-        packages: data.store.packages
+        packages: data.store.packages,
+        refreshed: true
       };
     } else {
       throw new Error("Failed to refresh");

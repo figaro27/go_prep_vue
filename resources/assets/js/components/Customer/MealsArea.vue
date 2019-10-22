@@ -254,10 +254,12 @@
             class="item item-text col-sm-6 col-md-12 col-lg-6 col-xl-6"
             v-for="(meal, index) in group.meals"
             :key="'meal_' + meal.id + '_' + index"
+            style="margin-bottom: 10px !important;"
           >
             <div
               class="card card-text-menu border-light p-3 mr-1"
               @click.stop="showMeal(meal, group)"
+              style="height: 100%;"
             >
               <!--<div class="bag-item-quantity row">!-->
               <div

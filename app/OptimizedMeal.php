@@ -71,7 +71,12 @@ class OptimizedMeal extends Model implements HasMedia
 
     public function getImageAttribute()
     {
-        $mediaItems = $this->getMedia('featured_image');
+        //$mediaItems = $this->getMedia('featured_image');
+        $mediaItems = Media::where([
+            'collection_name' => 'featured_image',
+            'model_type' => 'App\Meal',
+            'model_id' => $this->id
+        ])->get();
 
         if (!count($mediaItems)) {
             if ($this->store->settings->menuStyle === 'text') {
@@ -108,6 +113,41 @@ class OptimizedMeal extends Model implements HasMedia
                 MediaUtils::getMediaPath($media, 'medium')
             )
         ];
+    }
+
+    public function getGalleryAttribute()
+    {
+        $mediaItems = $this->getMedia('gallery');
+
+        if (!count($mediaItems)) {
+            return [];
+        }
+
+        return collect($mediaItems)->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'url' => $this->store->getUrl($item->getUrl('full')),
+                'url_original' => $this->store->getUrl($item->getUrl()),
+                'url_thumb' => $this->store->getUrl($item->getUrl('thumb')),
+                'url_medium' => $this->store->getUrl($item->getUrl('medium'))
+            ];
+        });
+    }
+
+    public function registerMediaConversions(Media $media = null)
+    {
+        $this->addMediaConversion('full')
+            ->width(1024)
+            ->height(1024)
+            ->performOnCollections('featured_image', 'gallery');
+
+        $this->addMediaConversion('thumb')
+            ->fit(Manipulations::FIT_CROP, 180, 180)
+            ->performOnCollections('featured_image', 'gallery');
+
+        $this->addMediaConversion('medium')
+            ->fit(Manipulations::FIT_CROP, 360, 360)
+            ->performOnCollections('featured_image', 'gallery');
     }
 
     public function store()

@@ -77,6 +77,7 @@ import AddCustomerModal from "../../components/Customer/AddCustomerModal";
 import BagActions from "../../components/Customer/BagActions";
 import AuthModal from "../../components/Customer/AuthModal";
 import StoreClosed from "../../components/Customer/StoreClosed";
+import store from "../../store";
 
 export default {
   components: {
@@ -149,6 +150,7 @@ export default {
   computed: {
     ...mapGetters({
       creditCards: "cards",
+      context: "context",
       store: "viewedStore",
       storeModules: "viewedStoreModules",
       storeModuleSettings: "viewedStoreModuleSettings",
@@ -380,6 +382,10 @@ export default {
     }
   },
   mounted() {
+    if (this.context == "customer" || this.context == "guest") {
+      store.dispatch("refreshStoreMeals");
+    }
+
     this.deliveryDay = this.$route.params.deliveryDay;
     this.transferTime = this.$route.params.transferTime;
     if (this.$route.params.pickup != undefined) {

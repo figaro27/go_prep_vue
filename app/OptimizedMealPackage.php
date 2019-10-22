@@ -83,7 +83,12 @@ class OptimizedMealPackage extends Model implements HasMedia
 
     public function getImageAttribute()
     {
-        $mediaItems = $this->getMedia('featured_image');
+        //$mediaItems = $this->getMedia('featured_image');
+        $mediaItems = Media::where([
+            'collection_name' => 'featured_image',
+            'model_type' => 'App\MealPackage',
+            'model_id' => $this->id
+        ])->get();
 
         if (!count($mediaItems)) {
             if ($this->store->settings->menuStyle === 'text') {
