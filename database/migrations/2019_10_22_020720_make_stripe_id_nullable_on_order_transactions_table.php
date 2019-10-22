@@ -13,7 +13,7 @@ class MakeStripeIdNullableOnOrderTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
+        Schema::table('order_transactions', function (Blueprint $table) {
             $table
                 ->string('stripe_id')
                 ->nullable()
