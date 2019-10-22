@@ -333,6 +333,7 @@
                 >Void</b-btn
               >
               <img
+                v-if="order.voided === 0"
                 v-b-popover.hover="
                   'Voiding an order removes the order information & meals from all of your reporting.'
                 "
