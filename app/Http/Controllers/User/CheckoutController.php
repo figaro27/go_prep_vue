@@ -498,7 +498,7 @@ class CheckoutController extends UserController
                 $order_transaction->customer_id = $customer->id;
                 $order_transaction->type = 'order';
                 if (!$cashOrder) {
-                    $order_transaction->stripe_id = $charge->id;
+                    $order_transaction->stripe_id = $plan->id;
                     $order_transaction->card_id = $cardId;
                 } else {
                     $order_transaction->stripe_id = null;
