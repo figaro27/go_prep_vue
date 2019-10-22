@@ -74,6 +74,7 @@ export default {
   mixins: [modal],
   data() {
     return {
+      test: {},
       mealPackage: false,
       size: null,
       choices: {},
@@ -145,10 +146,7 @@ export default {
         let componentId = component.id;
 
         options.forEach(option => {
-          if (
-            this.choices[componentId] &&
-            this.choices[componentId].includes(option.id)
-          ) {
+          if (this.choices[componentId].includes(option.id)) {
             total += option.price;
           }
         });
@@ -302,6 +300,11 @@ export default {
       this.$parent.totalComponentPrice = this.totalComponentPrice;
 
       this.$parent.getMealVariationPrice();
+      this.$parent.selectedComponentOptions = [];
+      this.$parent.selectedAddons = [];
+      this.$parent.getComponentIngredients();
+      this.$parent.getAddonIngredients();
+      this.$parent.refreshNutritionFacts();
     },
     resetVariations() {
       this.choices = {};
