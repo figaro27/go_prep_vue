@@ -204,7 +204,7 @@ export default {
 
   mounted() {
     axios.get("/api/me/viewedUpdates").then(resp => {
-      router.push("store-my-account");
+      //this.$router.push("store-my-account");
     });
   },
   methods: {}
