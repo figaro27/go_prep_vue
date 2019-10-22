@@ -163,6 +163,7 @@
 
             <b-tab title="Ingredients">
               <ingredient-picker
+                ref="ingredientPicker"
                 v-model="meal.ingredients"
                 :options="{ saveButton: true }"
                 :meal="meal"

@@ -44,8 +44,10 @@
                 </p>
                 <p>
                   -Nutrition facts now change on your menu if your customer
-                  selects different meal variations and these variations have
-                  different ingredients or amounts.
+                  selects different meal size variations and these variations
+                  have different ingredients or amounts. We are finalizing doing
+                  the same for the other two types of meal variations
+                  (components & addons).
                 </p>
                 <p>
                   -Macros are now shown underneath each individual ingredient
@@ -61,9 +63,16 @@
                   listed in descending order of weight to show the most
                   prominent ingredients first.
                 </p>
+                <p>
+                  -We are aware of the bug in which nutrition facts don't show
+                  when adding ingredients to a new meal and will work it out
+                  this week. Your ingredients are still saving and you can view
+                  the nutrition facts once you save the new meal and open it
+                  back up.
+                </p>
               </li>
               <li>
-                <p class="strong">Refunds / Charges / Voids</p>
+                <p class="strong">Refunds / Charges / Settles / Voids</p>
                 <p>
                   -You can now refund your customer and charge your customer
                   directly through the platform. These are all found on the View
@@ -77,6 +86,24 @@
                   You can only refund up to the original amount paid plus any
                   additional charges. The order amount breakdown will indicate
                   any amount refunded or charged to both you and your customer.
+                </p>
+                <p>
+                  -If you adjust an order which adjusts the order amount, the
+                  difference will be applied to the balance on the order. You
+                  can then charge or refund the difference by clicking the
+                  "Apply to Balance" checkboxes above charges and refunds. We
+                  made this an option because sometimes you may not always want
+                  these transactions adjusting the balance (e.g. a customer
+                  complains and you just want to refund them $10 without seeing
+                  a negative $10 balance after.)
+                </p>
+                <p>
+                  -In the case of wanting to change the balance to $0 and mark
+                  it as paid in full for any reason, you can click the Settle
+                  Balance button. This doesn't perform any kind of transaction
+                  like a charge or refund. It just marks the balance as $0. You
+                  can also use this button to indicate that you've been paid on
+                  cash on delivery orders.
                 </p>
                 <p>
                   -We've also added the ability to Void your orders. This still
