@@ -412,9 +412,11 @@ export default {
       this.selectedAddons = [];
       this.sizeChanged = true;
       this.$refs.componentModal.resetVariations();
-      this.addons = [];
       this.components = null;
-      this.refreshNutritionFacts();
+
+      this.$nextTick(() => {
+        this.refreshNutritionFacts();
+      });
     },
     getSizeIngredients() {
       let size = _.filter(this.meal.sizes, size => {
