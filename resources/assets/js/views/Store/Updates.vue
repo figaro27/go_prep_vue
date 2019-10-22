@@ -78,7 +78,7 @@
                   directly through the platform. These are all found on the View
                   Order modal (popup). We'll eventually move all of the order
                   information to their own pages instead of popups to have more
-                  surface area and make everything less cluttered together.
+                  surface area for everything.
                   <a
                     href="https://gyazo.com/4233cb740447ed22384a076d408f79c2"
                     target="_blank"
