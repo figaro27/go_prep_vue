@@ -219,16 +219,23 @@
                   week.
                 </p>
                 <p>
-                  -We are now forming a weekly flow to collect any feedback,
-                  bugs, and improvements and push it live once a week usually
-                  Saturday or Sunday as these are slow order days for most
-                  companies. We'll continue using this area to inform you about
-                  weekly or monthly updates. As with any application still in
-                  development with new features being added, there may be an
-                  occasional bug you or your customers experience. We
-                  extensively test everything before we make it live, but
-                  sometimes we don't catch everything. If you happen to find any
-                  bug or anything out of place, please email me at
+                  -We plan to continue to collect feedback, bug reports,
+                  suggestions, and feature requests from our appreciated
+                  customers over time. We are working around the clock to
+                  improve this system every day and make it better for you and
+                  your customers. Over the past few weeks, we've also worked out
+                  many other minor kinks that weren't mentioned above.
+                  Development is done locally (on our computers) and we plan on
+                  making our changes live once or twice per month on average.
+                  We'll try to always push our changes on a Saturday or Sunday
+                  as these are slow order days for most companies. We'll
+                  continue using this area to inform you about bi-weekly or
+                  monthly updates. As with any application still in development
+                  with new features being added, there may be an occasional bug
+                  you or your customers experience. We extensively test
+                  everything before we make it live, but sometimes we don't
+                  catch everything. If you happen to find any bug or anything
+                  out of place, please email me at
                   <a href="mailto:mike@goprep.com">mike@goprep.com</a> and I'll
                   fix it as fast as possible depending on the urgency. Many new
                   features and improvements are coming in the following weeks
