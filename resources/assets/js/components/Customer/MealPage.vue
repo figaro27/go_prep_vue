@@ -78,7 +78,7 @@
           :options="sizes"
           class="filters small flexibleButtonGroup"
           required
-          @change="changeSize"
+          @input="changeSize"
           v-show="sizes && sizes.length > 1"
         ></b-form-radio-group>
 
