@@ -1412,8 +1412,8 @@ export default {
           this.loading = false;
         });
     },
-    setCustomer() {
-      this.customer = this.storeCustomers[0].id;
+    setCustomer(id) {
+      this.customer = id;
       this.$forceUpdate();
     },
     removeCoupon() {

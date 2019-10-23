@@ -84,6 +84,10 @@ class RegisterController extends StoreController
         $user = User::findOrFail($user->id);
         $user->createStoreCustomer($storeId);
 
+        return Customer::where('user_id', $user->id)
+            ->pluck('id')
+            ->first();
+
         /*
 
         $acct = $store->settings->stripe_account;

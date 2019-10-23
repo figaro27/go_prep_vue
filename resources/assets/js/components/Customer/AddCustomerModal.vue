@@ -191,7 +191,7 @@ export default {
         this.form = {};
         await this.refreshStoreCustomersNoOrders();
         this.$toastr.s("Customer Added");
-        this.$parent.setCustomer();
+        this.$parent.setCustomer(response.data);
         if ($route.params.manualOrder) this.$parent.getCards();
       });
       // .catch(e => {
