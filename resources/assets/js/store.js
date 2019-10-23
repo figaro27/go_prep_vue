@@ -1146,6 +1146,18 @@ const actions = {
     }
   },
 
+  async refreshStoreCustomersNoOrders({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/customersNoOrders");
+    const { data } = await res;
+    const customers = data;
+
+    if (_.isArray(customers)) {
+      commit("storeCustomers", { customers });
+    } else {
+      throw new Error("Failed to retrieve customers");
+    }
+  },
+
   async refreshCategories({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/categories");
     const { data } = await res;

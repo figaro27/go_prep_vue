@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use App\Coupon;
+use App\OrderTransaction;
 
 class Subscription extends Model
 {
@@ -265,7 +266,8 @@ class Subscription extends Model
         // Ensure we haven't already processed this payment
         if (
             $this->orders()
-                ->where('stripe_id', $stripeInvoice->get('id'))
+                // ->where('stripe_id', $stripeInvoice->get('id'))
+                ->where('stripe_id', $stripeInvoice->get('charge'))
                 ->count()
         ) {
             return;
@@ -279,13 +281,32 @@ class Subscription extends Model
 
         $latestOrder->paid = 1;
         $latestOrder->paid_at = new Carbon();
-        $latestOrder->stripe_id = $stripeInvoice->get('id', null);
+        $latestOrder->stripe_id = $stripeInvoice->get('charge', null);
+        // $latestOrder->stripe_id = $stripeInvoice->get('id', null);
         $latestOrder->save();
 
         $latestOrder->events()->create([
             'type' => 'payment_succeeded',
             'stripe_event' => $stripeEvent
         ]);
+
+        $order_transaction = new OrderTransaction();
+        $order_transaction->order_id = $latestOrder->id;
+        $order_transaction->store_id = $latestOrder->store_id;
+        $order_transaction->user_id = $latestOrder->user_id;
+        $order_transaction->customer_id = $latestOrder->customer_id;
+        $order_transaction->type = 'order';
+        if (!$cashOrder) {
+            $order_transaction->stripe_id = $latestOrder->stripe_id;
+            $order_transaction->card_id = $latestOrder->card_id
+                ? $latestOrder->card_id
+                : null;
+        } else {
+            $order_transaction->stripe_id = null;
+            $order_transaction->card_id = null;
+        }
+        $order_transaction->amount = $latestOrder->amount;
+        $order_transaction->save();
 
         // Create new order for next delivery
         $newOrder = new Order();

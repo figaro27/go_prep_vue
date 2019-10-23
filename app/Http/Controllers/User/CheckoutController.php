@@ -463,6 +463,7 @@ class CheckoutController extends UserController
                 $order = new Order();
                 $order->user_id = $user->id;
                 $order->customer_id = $customer->id;
+                $order->card_id = $cardId;
                 $order->store_id = $store->id;
                 $order->subscription_id = $userSubscription->id;
                 $order->order_number = strtoupper(
@@ -490,22 +491,6 @@ class CheckoutController extends UserController
                 $order->originalAmount = $total * $deposit;
                 $order->cashOrder = $cashOrder;
                 $order->save();
-
-                $order_transaction = new OrderTransaction();
-                $order_transaction->order_id = $order->id;
-                $order_transaction->store_id = $store->id;
-                $order_transaction->user_id = $user->id;
-                $order_transaction->customer_id = $customer->id;
-                $order_transaction->type = 'order';
-                if (!$cashOrder) {
-                    $order_transaction->stripe_id = $plan->id;
-                    $order_transaction->card_id = $cardId;
-                } else {
-                    $order_transaction->stripe_id = null;
-                    $order_transaction->card_id = null;
-                }
-                $order_transaction->amount = $total * $deposit;
-                $order_transaction->save();
 
                 foreach ($bag->getItems() as $item) {
                     $mealOrder = new MealOrder();
