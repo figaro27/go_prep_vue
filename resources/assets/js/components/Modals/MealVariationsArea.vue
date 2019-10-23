@@ -146,7 +146,7 @@ export default {
         let componentId = component.id;
 
         options.forEach(option => {
-          if (this.choices[componentId].includes(option.id)) {
+          if ((this.choices[componentId] || []).includes(option.id)) {
             total += option.price;
           }
         });
