@@ -641,7 +641,6 @@ export default {
   },
   data() {
     return {
-      customer: null,
       customDeliveryFee: 0,
       editingDeliveryFee: false,
       stripeKey: window.app.stripe_key,
@@ -655,7 +654,7 @@ export default {
     };
   },
   props: {
-    // customer: null,
+    customer: null,
     preview: false,
     manualOrder: false,
     forceValue: false,
