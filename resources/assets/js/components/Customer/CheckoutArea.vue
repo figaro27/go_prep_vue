@@ -1414,6 +1414,7 @@ export default {
     },
     setCustomer(id) {
       this.customer = id;
+      this.$forceUpdate();
     },
     removeCoupon() {
       this.coupon = {};
