@@ -1413,7 +1413,7 @@ export default {
         });
     },
     setCustomer() {
-      this.customer = this.storeCustomers.slice(-1)[0].id;
+      this.customer = this.storeCustomers[0].id;
       this.$forceUpdate();
     },
     removeCoupon() {
