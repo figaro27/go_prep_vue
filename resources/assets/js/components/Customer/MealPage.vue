@@ -261,7 +261,7 @@ export default {
         });
       }
 
-      if (!sizeCheck && sizes) {
+      if (!sizeCheck && sizes.length > 0) {
         sizes.unshift({
           full_title: meal.title + " - " + meal.default_size_title || "Regular",
           id: null,
@@ -342,6 +342,10 @@ export default {
         size = this.mealSize;
       }
 
+      if (this.components && this.components.length === 0) {
+        this.components = null;
+      }
+
       meal.item_title = meal.full_title;
 
       this.addOne(
@@ -391,10 +395,12 @@ export default {
     getMealVariationPrice() {
       let selectedMealSize = null;
 
-      if (this.meal.sizes) {
+      if (this.meal.sizes.length > 0) {
         selectedMealSize = _.find(this.meal.sizes, size => {
           return size.id === this.mealSize;
         });
+      } else {
+        selectedMealSize = this.meal;
       }
 
       if (selectedMealSize) {
