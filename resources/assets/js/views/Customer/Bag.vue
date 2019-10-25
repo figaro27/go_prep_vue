@@ -47,6 +47,7 @@
             @updateData="updateData"
             :gateway="storeSettings.payment_gateway"
             :order="order"
+            :adjustMealPlan="adjustMealPlan"
           ></checkout-area>
           <store-closed
             v-if="!$route.params.storeView && !storeOwner"
@@ -101,7 +102,8 @@ export default {
     adjustMealPlan: false,
     preview: false,
     orderId: null,
-    checkoutDataProp: null
+    checkoutDataProp: null,
+    adjustMealPlan: null
   },
   mixins: [MenuBag],
   data() {

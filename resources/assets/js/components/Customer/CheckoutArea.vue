@@ -671,7 +671,8 @@ export default {
     gateway: {
       type: String,
       default: "stripe"
-    }
+    },
+    adjustMealPlan: null
   },
   mounted: function() {
     if (this.forceValue) {
@@ -965,7 +966,7 @@ export default {
       } else return this.subtotal;
     },
     mealPlanDiscount() {
-      if (this.weeklySubscriptionValue || this.inSub)
+      if (this.weeklySubscriptionValue || this.inSub || this.adjustMealPlan)
         return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
     },
     subscribeAndSaveAmount() {
