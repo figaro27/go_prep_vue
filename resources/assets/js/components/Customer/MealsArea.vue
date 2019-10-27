@@ -365,7 +365,7 @@
                   <div
                     @click.stop="
                       minusMixOne(
-                        meal.meal,
+                        meal,
                         false,
                         meal.size,
                         meal.components,
@@ -767,9 +767,9 @@ export default {
       if (meal.meal_package) {
         this.addMealPackage(meal, true);
       } else {
-        /* Refresh Meal */
-        if (!meal.refreshed) {
-          const newMeal = await store.dispatch("refreshStoreMeal", meal);
+        /* Refresh Meal for Bag */
+        if (!meal.refreshed_bag) {
+          const newMeal = await store.dispatch("refreshStoreMealBag", meal);
 
           if (newMeal) {
             meal = newMeal;
@@ -777,31 +777,20 @@ export default {
             return false;
           }
         }
-        /* Refresh Meal End */
+        /* Refresh Meal for Bag End */
 
         if (
-          meal.sizes &&
-          meal.sizes.length > 0 &&
-          (!meal.components || meal.components.length === 0) &&
-          (!meal.addons || meal.addons.length === 0)
-        ) {
-          if (size === undefined) {
-            size === null;
-          }
-
-          this.addOne(meal, false, size, null, [], null);
-        } else if (
           (meal.sizes && meal.sizes.length > 0 && !this.resetMeal) ||
           (meal.components && meal.components.length > 0) ||
           (meal.addons && meal.addons.length > 0)
         ) {
           this.showMeal(meal);
           return;
-        } else if (
-          (!meal.sizes || meal.sizes.length === 0) &&
-          (!meal.components || meal.components.length === 0) &&
-          (!meal.addons || meal.addons.length === 0)
-        ) {
+        } else {
+          if (size === undefined) {
+            size = null;
+          }
+
           this.addOne(meal, false, size, null, [], null);
         }
 

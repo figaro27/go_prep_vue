@@ -15,21 +15,19 @@ export default {
     ) {
       if (!mealPackage) {
         meal = this.getMeal(meal.id);
-        /* Refresh Meal */
-        if (!meal.refreshed) {
-          const newMeal = await store.dispatch("refreshStoreMeal", meal);
+
+        /* Refresh Meal for Bag */
+        if (!meal.refreshed_bag) {
+          await store.dispatch("refreshStoreMealBag", meal);
 
           meal = this.getMeal(meal.id);
         }
-        /* Refresh Meal End */
+        /* Refresh Meal for Bag End */
       } else {
         meal = this.getMealPackage(meal.id);
         /* Refresh Package */
         if (!meal.refreshed) {
-          const newPackage = await store.dispatch(
-            "refreshStoreMealPackage",
-            meal
-          );
+          await store.dispatch("refreshStoreMealPackage", meal);
 
           meal = this.getMealPackage(meal.id);
         }

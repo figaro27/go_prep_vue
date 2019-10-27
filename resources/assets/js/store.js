@@ -1087,28 +1087,60 @@ const actions = {
     }
   },
 
-  async refreshStoreMeal({ commit, state }, oldMeal = {}) {
+  async refreshStoreMealBag({ state }, oldMeal = {}) {
     let mealIndex = _.findIndex(state.viewed_store.meals, [
       "id",
       parseInt(oldMeal.id)
     ]);
 
     if (isNaN(mealIndex) || mealIndex < 0) {
-      //throw new Error("Failed to refresh meal");
       return null;
     } else {
+      if (oldMeal.refreshed || oldMeal.refreshed_bag) {
+        return oldMeal;
+      }
+
+      const res = await axios.get("/api/refresh_bag/meal/" + oldMeal.id);
+      const { data } = await res;
+
+      if (data.meal) {
+        let meal = data.meal;
+        meal.refreshed_bag = true;
+
+        state.viewed_store.meals.splice(mealIndex, 1, meal);
+
+        return meal;
+      } else {
+        return null;
+      }
+    }
+  },
+
+  async refreshStoreMeal({ state }, oldMeal = {}) {
+    let mealIndex = _.findIndex(state.viewed_store.meals, [
+      "id",
+      parseInt(oldMeal.id)
+    ]);
+
+    if (isNaN(mealIndex) || mealIndex < 0) {
+      return null;
+    } else {
+      if (oldMeal.refreshed) {
+        return oldMeal;
+      }
+
       const res = await axios.get("/api/refresh/meal/" + oldMeal.id);
       const { data } = await res;
 
       if (data.meal) {
         let meal = data.meal;
         meal.refreshed = true;
+        meal.refreshed_bag = true;
 
         state.viewed_store.meals.splice(mealIndex, 1, meal);
 
         return meal;
       } else {
-        //throw new Error("Failed to refresh meal");
         return null;
       }
     }

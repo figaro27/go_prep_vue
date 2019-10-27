@@ -115,39 +115,14 @@ class OptimizedMeal extends Model implements HasMedia
         ];
     }
 
-    public function getGalleryAttribute()
+    public function components()
     {
-        $mediaItems = $this->getMedia('gallery');
-
-        if (!count($mediaItems)) {
-            return [];
-        }
-
-        return collect($mediaItems)->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'url' => $this->store->getUrl($item->getUrl('full')),
-                'url_original' => $this->store->getUrl($item->getUrl()),
-                'url_thumb' => $this->store->getUrl($item->getUrl('thumb')),
-                'url_medium' => $this->store->getUrl($item->getUrl('medium'))
-            ];
-        });
+        return $this->hasMany('App\MealComponent', 'meal_id', 'id');
     }
 
-    public function registerMediaConversions(Media $media = null)
+    public function addons()
     {
-        $this->addMediaConversion('full')
-            ->width(1024)
-            ->height(1024)
-            ->performOnCollections('featured_image', 'gallery');
-
-        $this->addMediaConversion('thumb')
-            ->fit(Manipulations::FIT_CROP, 180, 180)
-            ->performOnCollections('featured_image', 'gallery');
-
-        $this->addMediaConversion('medium')
-            ->fit(Manipulations::FIT_CROP, 360, 360)
-            ->performOnCollections('featured_image', 'gallery');
+        return $this->hasMany('App\MealAddon', 'meal_id', 'id');
     }
 
     public function store()
