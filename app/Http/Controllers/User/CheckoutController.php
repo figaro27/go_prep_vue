@@ -19,6 +19,7 @@ use App\Store;
 use App\StoreDetail;
 use App\Subscription;
 use App\Coupon;
+use App\MealPackageOrder;
 use App\Billing\Billing;
 use App\Billing\Constants;
 use App\Billing\Charge;
@@ -266,6 +267,32 @@ class CheckoutController extends UserController
                 if ($item['meal_package']) {
                     $mealOrder->meal_package = $item['meal_package'];
                 }
+
+                if (isset($item['meal_package_title'])) {
+                    $mealOrder->meal_package_title =
+                        $item['meal_package_title'];
+                }
+
+                if ($item['meal_package'] === true) {
+                    if (
+                        MealPackageOrder::where(
+                            'order_id',
+                            $order->id
+                        )->count() === 0
+                    ) {
+                        $mealPackageOrder = new MealPackageOrder();
+                        $mealPackageOrder->store_id = $store->id;
+                        $mealPackageOrder->order_id = $order->id;
+                        $mealPackageOrder->meal_package_id =
+                            $item['meal_package_id'];
+                        $mealPackageOrder->meal_package_size_id =
+                            $item['meal_package_size_id'];
+                        $mealPackageOrder->quantity = $item['quantity'];
+                        $mealPackageOrder->save();
+                    }
+                    $mealOrder->meal_package_order_id = $mealPackageOrder->id;
+                }
+
                 $mealOrder->save();
 
                 if (isset($item['components']) && $item['components']) {
@@ -511,6 +538,32 @@ class CheckoutController extends UserController
                     if ($item['meal_package']) {
                         $mealOrder->meal_package = $item['meal_package'];
                     }
+                    if (isset($item['meal_package_title'])) {
+                        $mealOrder->meal_package_title =
+                            $item['meal_package_title'];
+                    }
+
+                    if ($item['meal_package'] === true) {
+                        if (
+                            MealPackageOrder::where(
+                                'order_id',
+                                $order->id
+                            )->count() === 0
+                        ) {
+                            $mealPackageOrder = new MealPackageOrder();
+                            $mealPackageOrder->store_id = $store->id;
+                            $mealPackageOrder->order_id = $order->id;
+                            $mealPackageOrder->meal_package_id =
+                                $item['meal_package_id'];
+                            $mealPackageOrder->meal_package_size_id =
+                                $item['meal_package_size_id'];
+                            $mealPackageOrder->quantity = $item['quantity'];
+                            $mealPackageOrder->save();
+                        }
+                        $mealOrder->meal_package_order_id =
+                            $mealPackageOrder->id;
+                    }
+
                     $mealOrder->save();
 
                     if (isset($item['components']) && $item['components']) {

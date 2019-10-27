@@ -49,6 +49,11 @@ class MealPackage extends Model implements HasMedia
         return $this->hasMany('App\MealPackageSize', 'meal_package_id', 'id');
     }
 
+    public function meal_package_orders()
+    {
+        return $this->belongsTo('App\MealPackageOrder');
+    }
+
     public function getCategoryIdsAttribute()
     {
         return $this->categories->pluck('id');
