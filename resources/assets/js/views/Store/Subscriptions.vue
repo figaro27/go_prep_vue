@@ -358,6 +358,7 @@ export default {
   },
   mounted() {
     if (this.$route.query.updated) {
+      this.refreshSubscriptions();
       this.$toastr.s("Subscription Updated");
     }
 

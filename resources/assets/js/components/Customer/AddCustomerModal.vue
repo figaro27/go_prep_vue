@@ -173,7 +173,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["refreshStoreCustomers"]),
+    ...mapActions(["refreshStoreCustomersNoOrders"]),
     addCustomer() {
       let form = this.form;
 
@@ -189,10 +189,10 @@ export default {
         this.addCustomerModal = false;
         this.$parent.addCustomerModal = false;
         this.form = {};
-        await this.refreshStoreCustomers();
+        await this.refreshStoreCustomersNoOrders();
         this.$toastr.s("Customer Added");
-        this.$parent.setCustomer();
-        if ($route.params.manualOrder) this.$parent.getCards();
+        this.$parent.setCustomer(response.data);
+        if (this.$route.params.manualOrder) this.$parent.getCards();
       });
       // .catch(e => {
       //   this.$toastr.e("Please try again.", "Registration failed");

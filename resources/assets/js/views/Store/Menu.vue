@@ -860,7 +860,7 @@ export default {
     return {
       _,
       filter: {
-        status: "all"
+        status: "active"
       },
       meal: {
         title: "",

@@ -45,7 +45,8 @@
             pickup: pickup,
             checkoutData: checkoutData,
             forceValue: forceValue,
-            inSub: inSub
+            inSub: inSub,
+            weeklySubscriptionValue: weeklySubscriptionValue
           }
         }"
       >
@@ -82,7 +83,8 @@ export default {
     pickup: null,
     checkoutData: null,
     forceValue: false,
-    inSub: null
+    inSub: null,
+    weeklySubscriptionValue: null
   },
   mixins: [MenuBag],
   computed: {

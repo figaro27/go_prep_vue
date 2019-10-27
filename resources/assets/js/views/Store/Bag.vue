@@ -6,6 +6,7 @@
     :storeView="storeView"
     :manualOrder="manualOrder"
     :checkoutDataProp="checkoutData"
+    :adjustMealPlan="weeklySubscriptionValue"
   ></customer-bag>
 </template>
 
@@ -55,6 +56,9 @@ export default {
       return this.$route.params.forceValue && this.$route.params.checkoutData
         ? this.$route.params.checkoutData
         : null;
+    },
+    weeklySubscriptionValue() {
+      return this.$route.params.weeklySubscriptionValue;
     }
   },
   created() {

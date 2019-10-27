@@ -23,6 +23,19 @@ class CustomerController extends StoreController
             ->get();
     }
 
+    public function customersNoOrders()
+    {
+        $customers = $this->store->customers;
+        $customers->makeHidden([
+            'first_order',
+            'last_order',
+            'total_payments',
+            'total_paid',
+            'paid_orders'
+        ]);
+        return $customers;
+    }
+
     /**
      * Show the form for creating a new resource.
      *

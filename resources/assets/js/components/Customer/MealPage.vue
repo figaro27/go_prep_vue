@@ -44,7 +44,6 @@
               {{ tag.tag }}
             </li>
           </div>
-
           <div
             class="col-md-3"
             v-if="meal.allergy_titles && meal.allergy_titles.length > 0"
@@ -262,7 +261,7 @@ export default {
         });
       }
 
-      if (!sizeCheck && sizes) {
+      if (!sizeCheck && sizes.length > 0) {
         sizes.unshift({
           full_title: meal.title + " - " + meal.default_size_title || "Regular",
           id: null,
@@ -343,6 +342,10 @@ export default {
         size = this.mealSize;
       }
 
+      if (this.components && this.components.length === 0) {
+        this.components = null;
+      }
+
       meal.item_title = meal.full_title;
 
       this.addOne(
@@ -392,10 +395,12 @@ export default {
     getMealVariationPrice() {
       let selectedMealSize = null;
 
-      if (this.meal.sizes) {
+      if (this.meal.sizes.length > 0) {
         selectedMealSize = _.find(this.meal.sizes, size => {
           return size.id === this.mealSize;
         });
+      } else {
+        selectedMealSize = this.meal;
       }
 
       if (selectedMealSize) {
@@ -413,9 +418,11 @@ export default {
       this.selectedAddons = [];
       this.sizeChanged = true;
       this.$refs.componentModal.resetVariations();
-      this.addons = [];
       this.components = null;
-      this.refreshNutritionFacts();
+
+      this.$nextTick(() => {
+        this.refreshNutritionFacts();
+      });
     },
     getSizeIngredients() {
       let size = _.filter(this.meal.sizes, size => {

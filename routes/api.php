@@ -234,6 +234,10 @@ foreach (
                                 'SubscriptionController@resume'
                             );
                             Route::resource('customers', 'CustomerController');
+                            Route::get(
+                                'customersNoOrders',
+                                'CustomerController@customersNoOrders'
+                            );
                             Route::post(
                                 'getCards',
                                 'CustomerController@getCards'

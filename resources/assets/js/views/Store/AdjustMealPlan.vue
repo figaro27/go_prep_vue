@@ -3,6 +3,7 @@
     :subscription-id="$route.params.id"
     :storeView="true"
     :adjustMealPlan="true"
+    :weeklySubscriptionValue="1"
   ></customer-menu>
 </template>
 
