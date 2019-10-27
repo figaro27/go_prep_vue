@@ -8,8 +8,6 @@
         : 'left-right-box-shadow main-customer-container gray-background'
     "
   >
-    <meal-variations-area ref="componentModal"></meal-variations-area>
-
     <meal-package-components-modal
       ref="packageComponentModal"
       :packageTitle="packageTitle"
@@ -169,10 +167,7 @@
                             "
                             >+</i
                           >
-                          <b-dropdown-item
-                            @click="addMeal(meal, true)"
-                            v-if="!meal.meal_page_visited"
-                          >
+                          <b-dropdown-item @click="addMeal(meal, true)">
                             {{ meal.default_size_title || "Regular" }} -
                             {{
                               format.money(meal.price, storeSettings.currency)
@@ -298,10 +293,7 @@
                       :id="'dropdown_' + meal.id + '_' + group.category_id"
                       >+</i
                     >
-                    <b-dropdown-item
-                      @click="addMeal(meal, true)"
-                      v-if="!meal.meal_page_visited"
-                    >
+                    <b-dropdown-item @click="addMeal(meal, true)">
                       {{ meal.default_size_title || "Regular" }} -
                       {{ format.money(meal.price, storeSettings.currency) }}
                     </b-dropdown-item>
@@ -363,16 +355,7 @@
                     readonly
                   ></b-form-input> -->
                   <div
-                    @click.stop="
-                      minusMixOne(
-                        meal,
-                        false,
-                        meal.size,
-                        meal.components,
-                        meal.addons,
-                        meal.special_instructions
-                      )
-                    "
+                    @click.stop="minusMixOne(meal)"
                     class="bag-plus-minus small-buttons gray white-text"
                   >
                     <i>-</i>
@@ -512,7 +495,6 @@ export default {
     meals: "",
     card: "",
     cardBody: "",
-    resetMeal: false,
     filters: null,
     search: "",
     filteredView: false
@@ -710,7 +692,7 @@ export default {
         return this.mealQuantity(meal);
       }
     },
-    minusMixOne(
+    async minusMixOne(
       meal,
       condition,
       size,
@@ -721,21 +703,34 @@ export default {
       if (meal.meal_package) {
         this.minusOne(meal, true);
       } else {
-        this.minusOne(
-          meal,
-          condition,
-          size,
-          components,
-          addons,
-          special_instructions
-        );
+        /* Refresh Meal for Bag */
+        if (!meal.refreshed_bag) {
+          const newMeal = await store.dispatch("refreshStoreMealBag", meal);
+
+          if (newMeal) {
+            meal = newMeal;
+          } else {
+            return false;
+          }
+        }
+        /* Refresh Meal for Bag End */
+
+        if (
+          (meal.sizes && meal.sizes.length > 0) ||
+          (meal.components && meal.components.length > 0) ||
+          (meal.addons && meal.addons.length > 0)
+        ) {
+          this.$toastr.e("Please remove the meal from the bag.");
+        } else {
+          this.minusOne(meal, false, null, null, [], null);
+        }
       }
     },
     async addMealPackage(mealPackage, condition = false, size) {
-      /* Refresh Package */
-      if (!mealPackage.refreshed) {
+      /* Refresh Package for Bag */
+      if (!mealPackage.refreshed_bag) {
         const newPackage = await store.dispatch(
-          "refreshStoreMealPackage",
+          "refreshStoreMealPackageBag",
           mealPackage
         );
 
@@ -745,14 +740,21 @@ export default {
           return false;
         }
       }
-      /* Refresh Package End */
+      /* Refresh Package for Bag End */
 
-      if (size) this.packageTitle = mealPackage.title + " - " + size.title;
-      else
+      if (size === undefined) {
+        size = null;
+      }
+
+      if (size) {
+        this.packageTitle = mealPackage.title + " - " + size.title;
+      } else {
         this.packageTitle =
           mealPackage.title + " - " + mealPackage.default_size_title;
+      }
 
-      this.addOne(mealPackage, condition, size);
+      this.addOne(mealPackage, true, size);
+
       this.$parent.mealPackageModal = false;
       if (this.$parent.showBagClass.includes("hidden-right")) {
         this.$parent.showBagClass = "shopping-cart show-right bag-area";
@@ -780,7 +782,7 @@ export default {
         /* Refresh Meal for Bag End */
 
         if (
-          (meal.sizes && meal.sizes.length > 0 && !this.resetMeal) ||
+          (meal.sizes && meal.sizes.length > 0) ||
           (meal.components && meal.components.length > 0) ||
           (meal.addons && meal.addons.length > 0)
         ) {
@@ -805,7 +807,6 @@ export default {
       }
     },
     showMeal(meal, group) {
-      meal.meal_page_visited = true;
       if (meal.meal_package) {
         if (!meal.sizes || meal.sizes.length === 0) {
           this.addMealPackage(meal, true);

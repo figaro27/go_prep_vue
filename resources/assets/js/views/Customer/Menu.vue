@@ -11,9 +11,9 @@
 
       <meal-components-modal ref="componentModal"></meal-components-modal>
 
-      <meal-package-components-modal
+      <!--<meal-package-components-modal
         ref="packageComponentModal"
-      ></meal-package-components-modal>
+      ></meal-package-components-modal>!-->
 
       <meal-filter-modal
         :viewFilterModal="viewFilterModalParent"
@@ -61,7 +61,6 @@
             :meals="mealsMix"
             :card="card"
             :cardBody="cardBody"
-            :resetMeal="resetMeal"
             @onCategoryVisible="onCategoryVisible($event)"
             @showMealModal="showMealModal"
           ></meals-area>!-->
@@ -70,7 +69,6 @@
             :meals="mealsMix"
             :card="card"
             :cardBody="cardBody"
-            :resetMeal="resetMeal"
             :filters="filters"
             :search="search"
             :filteredView="filteredView"
@@ -318,7 +316,6 @@ export default {
   },
   data() {
     return {
-      resetMeal: false,
       showBagClass: "shopping-cart show-right bag-area d-none",
       showFilterClass: "shopping-cart hidden-left bag-area",
       search: "",

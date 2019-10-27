@@ -82,6 +82,13 @@ export default {
       validated: false
     };
   },
+  mounted() {
+    if (this.sizeCheck) {
+      this.$parent.invalidCheck = this.$v.$invalid;
+    } else {
+      this.$parent.invalidCheck = false;
+    }
+  },
   updated() {
     if (this.sizeCheck) {
       this.$parent.invalidCheck = this.$v.$invalid;
@@ -92,15 +99,9 @@ export default {
   computed: {
     ...mapGetters(["storeSettings"]),
     sizeCriteria() {
-      if (this.defaultSizeCheck) {
-        return { meal_size_id: null };
-      }
       return !this.mealPackage
         ? { meal_size_id: this.sizeId }
         : { meal_package_size_id: this.sizeId };
-    },
-    defaultSizeCheck() {
-      return this.sizeId === this.meal.id;
     },
     sizeCheck() {
       let check = false;
@@ -109,13 +110,10 @@ export default {
 
       this.components.forEach(component => {
         component.options.forEach(option => {
-          if (
-            option.meal_size_id === this.sizeId ||
-            (option.meal_size_id === null && this.defaultSizeCheck)
-          )
-            check = true;
+          if (option.meal_size_id === this.sizeId) check = true;
         });
       });
+
       return check;
     },
     components() {
@@ -125,21 +123,11 @@ export default {
     },
     mealAddons() {
       return _.filter(this.meal.addons, addon => {
-        if (this.$parent.sizes.length === 1 && addon.meal_size_id === null) {
-          return addon;
-        } else if (addon.meal_size_id === null && this.defaultSizeCheck) {
-          return addon;
-        }
         return addon.meal_size_id === this.sizeId;
       });
     },
     totalComponentPrice() {
       let total = 0;
-
-      //let selectedComponents = Object.values(this.choices);
-      //let components = Object.values(this.components);
-
-      //components.forEach(component => {});
 
       this.components.forEach(component => {
         let options = component.options;
@@ -160,6 +148,7 @@ export default {
       this.mealAddons.forEach(addon => {
         if (this.addons.includes(addon.id)) total += addon.price;
       });
+
       return total;
     }
   },
@@ -190,55 +179,9 @@ export default {
     };
   },
   methods: {
-    show(meal, mealPackage = false, size = null) {
-      this.meal = meal;
-      this.mealPackage = mealPackage;
-      this.size = size;
-      this.choices = {};
-      this.addons = [];
-
-      this.$forceUpdate();
-
-      return new Promise((resolve, reject) => {
-        this.$on("done", () => {
-          this.$v.$touch();
-
-          if (this.$v.$invalid) {
-            this.$forceUpdate();
-          } else {
-            if (!_.isEmpty(this.choices) || !_.isEmpty(this.addons)) {
-              resolve({
-                components: { ...this.choices },
-                addons: [...this.addons]
-              });
-            } else {
-              resolve({
-                components: {},
-                addons: []
-              });
-            }
-
-            this.hide();
-            this.meal = null;
-            this.mealPackage = false;
-            this.size = null;
-            this.choices = {};
-            this.$v.$reset();
-          }
-        });
-      });
-    },
-    ok() {
-      this.$emit("done");
-    },
     getOptions(component) {
       let options = _.filter(component.options, option => {
-        if (
-          (this.$parent.sizes.length === 1 && option.meal_size_id === null) ||
-          this.defaultSizeCheck
-        ) {
-          return option;
-        } else return option.meal_size_id == this.sizeId;
+        return option.meal_size_id == this.sizeId;
       });
 
       return _.map(options, option => {
@@ -256,13 +199,9 @@ export default {
     },
     getAddonOptions(addons) {
       addons = _.filter(addons, addon => {
-        if (this.$parent.sizes.length === 1 && addon.meal_size_id === null) {
-          return addon;
-        } else if (addon.meal_size_id === null && this.defaultSizeCheck) {
-          return addon;
-        }
         return addon.meal_size_id == this.sizeId;
       });
+
       return _.map(addons, addon => {
         let title = addon.title;
         if (addon.price && addon.price > 0) {
@@ -293,6 +232,7 @@ export default {
         this.$parent.invalidCheck = false;
         this.$parent.invalid = false;
       }
+
       this.$parent.components = this.choices;
       this.$parent.addons = this.addons;
       this.$parent.totalAddonPrice = this.totalAddonPrice;

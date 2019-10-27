@@ -409,8 +409,31 @@ class SpaController extends Controller
         ];
     }
 
+    public function refreshMealPackageBag($meal_package_id)
+    {
+        // Refresh for Bag
+        $package = OptimizedMealPackage::select(
+            'id',
+            'store_id',
+            'title',
+            'default_size_title',
+            'description',
+            'price',
+            'created_at',
+            'updated_at',
+            'active'
+        )
+            ->with(['sizes', 'components', 'addons'])
+            ->find($meal_package_id);
+
+        return [
+            'package' => $package
+        ];
+    }
+
     public function refreshMealPackage($meal_package_id)
     {
+        // Full Refresh
         $package = MealPackage::with([
             'meals',
             'sizes',

@@ -1,9 +1,5 @@
 <template>
-  <div
-    :class="mealPageClass"
-    v-if="$parent.mealPageView"
-    style="min-height: 100%;"
-  >
+  <div :class="mealPageClass" v-if="showPage" style="min-height: 100%;">
     <div class="meal-page mt-5 mb-3 flexibleRow">
       <div class="flexibleArea">
         <div class="row">
@@ -44,6 +40,7 @@
               {{ tag.tag }}
             </li>
           </div>
+
           <div
             class="col-md-3"
             v-if="meal.allergy_titles && meal.allergy_titles.length > 0"
@@ -79,6 +76,7 @@
           ref="componentModal"
           :key="total"
         ></meal-variations-area>
+
         <div class="title mt-3" v-if="meal.macros && storeSettings.showMacros">
           <div class="row">
             <div class="col-6 col-md-3">
@@ -193,7 +191,8 @@ export default {
   data() {
     return {
       defaultMealSize: {},
-      mealSize: -1,
+      mealSizes: null,
+      mealSize: null,
       components: null,
       addons: [],
       sizeChanged: false,
@@ -247,32 +246,40 @@ export default {
     //   if (this.storeSettings.menuStyle === "image") return "col-md-8";
     //   else return "col-md-12";
     // },
+    showPage() {
+      if (this.meal) {
+        let mealSizes = null;
+        let meal = this.meal;
+        let sizes = meal.sizes;
+
+        if (sizes) {
+          mealSizes = [];
+
+          mealSizes.push({
+            full_title:
+              meal.title + " - " + meal.default_size_title || "Regular",
+            id: null,
+            price: meal.item_price,
+            title: meal.default_size_title || "Regular",
+            defaultAdded: true
+          });
+
+          for (let i in sizes) {
+            mealSizes.push(sizes[i]);
+          }
+        }
+
+        this.mealSizes = mealSizes;
+      }
+
+      return this.$parent.mealPageView;
+    },
     viewedMeal() {
       return this.meal;
     },
     sizes() {
-      let meal = this.meal;
-      let sizes = meal.sizes;
-      let sizeCheck = false;
-
-      if (sizes) {
-        sizes.forEach(size => {
-          if (size.defaultAdded) sizeCheck = true;
-        });
-      }
-
-      if (!sizeCheck && sizes.length > 0) {
-        sizes.unshift({
-          full_title: meal.title + " - " + meal.default_size_title || "Regular",
-          id: null,
-          price: meal.item_price,
-          title: meal.default_size_title || "Regular",
-          defaultAdded: true
-        });
-      }
-
-      if (sizes) {
-        return Object.values(sizes).map(size => {
+      if (this.mealSizes) {
+        return Object.values(this.mealSizes).map(size => {
           return {
             text: size.title,
             price: size.price,
@@ -285,7 +292,7 @@ export default {
     },
     hasVariations() {
       if (
-        (this.meal.sizes && this.meal.sizes.length > 1) ||
+        (this.mealSizes && this.mealSizes.length > 1) ||
         (this.meal.components && this.meal.components.length > 0) ||
         (this.meal.addons && this.meal.addons.length > 0)
       )
@@ -331,22 +338,7 @@ export default {
         return;
       }
 
-      // if (this.hasVariations) {
-      //   this.addOne(meal, false, this.mealSize, this.components, this.addons, this.specialInstructions);
-      // } else {
-      //   this.addOne(meal);
-      // }
-
-      let size = null;
-      if (this.sizes && this.sizes.length > 1) {
-        size = this.mealSize;
-      }
-
-      if (this.components && this.components.length === 0) {
-        this.components = null;
-      }
-
-      meal.item_title = meal.full_title;
+      let size = this.mealSize;
 
       this.addOne(
         meal,
@@ -380,12 +372,8 @@ export default {
         });
       }
 
-      viewedMeal.meal_page_visited = true;
       this.sizeChanged = false;
       this.addons = [];
-      if (this.meal.sizes && this.meal.sizes.length === 1) {
-        this.$parent.resetMeal = true;
-      }
       this.$parent.showMealsArea = true;
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPageView = false;
@@ -395,12 +383,10 @@ export default {
     getMealVariationPrice() {
       let selectedMealSize = null;
 
-      if (this.meal.sizes.length > 0) {
-        selectedMealSize = _.find(this.meal.sizes, size => {
+      if (this.mealSizes) {
+        selectedMealSize = _.find(this.mealSizes, size => {
           return size.id === this.mealSize;
         });
-      } else {
-        selectedMealSize = this.meal;
       }
 
       if (selectedMealSize) {
@@ -411,21 +397,18 @@ export default {
       }
     },
     changeSize(mealSizeId) {
-      // this.$refs.componentModal.resetVariations();
       this.components = [];
       this.addons = [];
       this.selectedComponentOptions = [];
       this.selectedAddons = [];
       this.sizeChanged = true;
       this.$refs.componentModal.resetVariations();
+      this.addons = [];
       this.components = null;
-
-      this.$nextTick(() => {
-        this.refreshNutritionFacts();
-      });
+      this.refreshNutritionFacts();
     },
     getSizeIngredients() {
-      let size = _.filter(this.meal.sizes, size => {
+      let size = _.filter(this.mealSizes, size => {
         return size.id === this.mealSize;
       });
       return {
@@ -450,12 +433,18 @@ export default {
     },
     getAddonIngredients() {
       this.meal.addons.forEach(addon => {
-        if (this.addons != null)
-          if (this.addons.includes(addon.id))
-            if (!this.selectedAddons.includes(addon.ingredients[0]))
-              this.selectedAddons.push(addon.ingredients[0]);
-            else this.selectedAddons.pop(addon.ingredients[0]);
+        if (
+          this.addons != null &&
+          this.addons.includes(addon.id) &&
+          addon.ingredients &&
+          addon.ingredients.length > 0
+        ) {
+          if (!this.selectedAddons.includes(addon.ingredients[0])) {
+            this.selectedAddons.push(addon.ingredients[0]);
+          }
+        }
       });
+
       this.refreshNutritionFacts();
     },
     refreshNutritionFacts() {

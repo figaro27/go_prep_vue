@@ -392,10 +392,6 @@ export default {
     }
   },
   mounted() {
-    /*if (this.context == "customer" || this.context == "guest") {
-      store.dispatch("refreshStoreMeals");
-    }*/
-
     let lineItemsOrder = [];
 
     if (this.$route.params && this.$route.params.line_items_order) {

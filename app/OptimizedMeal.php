@@ -52,7 +52,14 @@ class OptimizedMeal extends Model implements HasMedia
         'substitute' => 'boolean'
     ];
 
-    protected $appends = ['image', 'category_ids', 'tag_titles', 'allergy_ids'];
+    protected $appends = [
+        'image',
+        'category_ids',
+        'tag_titles',
+        'allergy_ids',
+        'full_title',
+        'item_title'
+    ];
 
     protected $hidden = [
         'allergies',
@@ -193,5 +200,33 @@ class OptimizedMeal extends Model implements HasMedia
     public function getAllergyIdsAttribute()
     {
         return $this->allergies->pluck('id');
+    }
+
+    public function getFullTitleAttribute()
+    {
+        $title = $this->title;
+        if ($this->default_size_title) {
+            $title .= ' - ' . $this->default_size_title;
+        }
+        return $title;
+    }
+
+    public function getItemTitleAttribute()
+    {
+        $title = $this->title;
+
+        if ($this->has('sizes')) {
+            if (
+                $this->pivot &&
+                $this->pivot->meal_size_id &&
+                $this->pivot->meal_size
+            ) {
+                return $title . ' - ' . $this->meal_size->title;
+            } elseif ($this->default_size_title) {
+                return $title . ' - ' . $this->default_size_title;
+            }
+        }
+
+        return $title;
     }
 }

@@ -103,6 +103,11 @@ foreach (
                 'uses' => 'SpaController@refreshMealPackage'
             ]);
 
+            Route::get('/refresh_bag/meal_package/{meal_package_id}', [
+                'middleware' => ['view.api'],
+                'uses' => 'SpaController@refreshMealPackageBag'
+            ]);
+
             Route::group(['middleware' => ['auth:api']], function ($router) {
                 $user = auth('api')->user();
 

@@ -76,6 +76,15 @@ class OptimizedMealPackage extends Model implements HasMedia
         return $data;
     }
 
+    public function components()
+    {
+        return $this->hasMany(
+            'App\MealPackageComponent',
+            'meal_package_id',
+            'id'
+        );
+    }
+
     public function addons()
     {
         return $this->hasMany('App\MealPackageAddon', 'meal_package_id', 'id');

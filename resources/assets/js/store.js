@@ -1058,16 +1058,50 @@ const actions = {
     }
   },
 
-  async refreshStoreMealPackage({ commit, state }, oldMealPackage = {}) {
+  async refreshStoreMealPackageBag({ state }, oldMealPackage = {}) {
     let index = _.findIndex(state.viewed_store.packages, [
       "id",
       parseInt(oldMealPackage.id)
     ]);
 
     if (isNaN(index) || index < 0) {
-      //throw new Error("Failed to refresh meal");
       return null;
     } else {
+      if (oldMealPackage.refreshed_bag || oldMealPackage.refreshed) {
+        return oldMealPackage;
+      }
+
+      const res = await axios.get(
+        "/api/refresh_bag/meal_package/" + oldMealPackage.id
+      );
+      const { data } = await res;
+
+      if (data.package) {
+        let meal_package = data.package;
+        meal_package.refreshed_bag = true;
+
+        state.viewed_store.packages.splice(index, 1, meal_package);
+
+        return meal_package;
+      } else {
+        return null;
+      }
+    }
+  },
+
+  async refreshStoreMealPackage({ state }, oldMealPackage = {}) {
+    let index = _.findIndex(state.viewed_store.packages, [
+      "id",
+      parseInt(oldMealPackage.id)
+    ]);
+
+    if (isNaN(index) || index < 0) {
+      return null;
+    } else {
+      if (oldMealPackage.refreshed) {
+        return oldMealPackage;
+      }
+
       const res = await axios.get(
         "/api/refresh/meal_package/" + oldMealPackage.id
       );
@@ -1076,12 +1110,12 @@ const actions = {
       if (data.package) {
         let meal_package = data.package;
         meal_package.refreshed = true;
+        meal_package.refreshed_bag = true;
 
         state.viewed_store.packages.splice(index, 1, meal_package);
 
         return meal_package;
       } else {
-        //throw new Error("Failed to refresh meal");
         return null;
       }
     }
@@ -1527,9 +1561,15 @@ const getters = {
       return null;
     }
   },
-  viewedStoreMeal: state => id => {
+  viewedStoreMeal: state => (id, defaultMeal = null) => {
     try {
-      let meal = _.find(state.viewed_store.meals, ["id", parseInt(id)]) || null;
+      let meal = null;
+      if (defaultMeal != null) {
+        meal = defaultMeal;
+      } else {
+        meal = _.find(state.viewed_store.meals, ["id", parseInt(id)]) || null;
+      }
+
       if (!meal) {
         return null;
       }
@@ -1609,10 +1649,16 @@ const getters = {
       return null;
     }
   },
-  viewedStoreMealPackage: state => id => {
+  viewedStoreMealPackage: state => (id, defaultMeal = null) => {
     try {
-      let meal =
-        _.find(state.viewed_store.packages, ["id", parseInt(id)]) || null;
+      let meal = null;
+      if (defaultMeal != null) {
+        meal = defaultMeal;
+      } else {
+        meal =
+          _.find(state.viewed_store.packages, ["id", parseInt(id)]) || null;
+      }
+
       if (!meal) {
         return null;
       }

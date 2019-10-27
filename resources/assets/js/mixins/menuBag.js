@@ -25,13 +25,13 @@ export default {
         /* Refresh Meal for Bag End */
       } else {
         meal = this.getMealPackage(meal.id);
-        /* Refresh Package */
-        if (!meal.refreshed) {
-          await store.dispatch("refreshStoreMealPackage", meal);
+        /* Refresh Package for Bag */
+        if (!meal.refreshed_bag) {
+          await store.dispatch("refreshStoreMealPackageBag", meal);
 
           meal = this.getMealPackage(meal.id);
         }
-        /* Refresh Package End */
+        /* Refresh Package for Bag End */
       }
 
       if (!meal) {
@@ -195,18 +195,22 @@ export default {
     },
     itemComponents(item) {
       const mealPackage = !!item.meal_package;
+
       const meal = !mealPackage
-        ? this.getMeal(item.meal.id)
-        : this.getMealPackage(item.meal.id);
+        ? this.getMeal(item.meal.id, item.meal)
+        : this.getMealPackage(item.meal.id, item.meal);
+
       let wat = _(item.components)
         .map((options, componentId) => {
-          const component = meal.getComponent(componentId);
+          const component = meal ? meal.getComponent(componentId) : null;
           const optionIds = mealPackage ? Object.keys(options) : options;
 
           let optionTitles = [];
 
           _.forEach(optionIds, optionId => {
-            const option = meal.getComponentOption(component, optionId);
+            const option = meal
+              ? meal.getComponentOption(component, optionId)
+              : null;
             if (!option) {
               return null;
             }
@@ -233,10 +237,10 @@ export default {
       return wat;
     },
     itemAddons(item) {
-      const meal = this.getMeal(item.meal.id);
+      const meal = this.getMeal(item.meal.id, item.meal);
       let wat = _(item.addons)
         .map(addonId => {
-          const addon = meal.getAddon(addonId);
+          const addon = meal ? meal.getAddon(addonId) : null;
           return addon ? addon.title : null;
         })
         .filter()
