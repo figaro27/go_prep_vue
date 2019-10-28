@@ -84,7 +84,7 @@ class Bag
                             $mealItem = [
                                 'meal_package_title' => $item['meal']['title'],
                                 'meal_package_id' => $item['meal']['id'],
-                                'meal_package_size_id' => $item['size'],
+                                'meal_package_size_id' => $item['size']['id'],
                                 'meal' => [
                                     'id' => $meal['id']
                                 ],
@@ -122,10 +122,13 @@ class Bag
                                     $item['meal']['title'] .
                                     ' - ' .
                                     $item['size']['title'],
+                                'meal_package_id' => $item['meal']['id'],
+                                'meal_package_size_id' => $item['size']['id'],
                                 'meal' => [
                                     'id' => $meal['id']
                                 ],
                                 'meal_package' => true,
+                                'package_quantity' => $item['quantity'],
                                 'quantity' => $meal['quantity'],
                                 'price' => 0,
                                 'size' => [

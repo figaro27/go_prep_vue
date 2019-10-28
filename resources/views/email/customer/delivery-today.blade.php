@@ -300,21 +300,84 @@ u + .body .full { width:100% !important; width:100vw !important;}
           <tr>
             <td align="center">
               <table width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
-                @foreach($order->items as $item)
 
+                @foreach($order->meal_package_items as $mealPackageItem)
+
+                <tr>
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;font-weight: bold; ">{{ $mealPackageItem->meal_package->title }} 
+                    @if ($mealPackageItem->meal_package_size)
+                    - {{ $mealPackageItem->meal_package_size->title }}
+                    @endif
+                  </td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;font-weight: bold; ">
+                    ${{ number_format($mealPackageItem->meal_package->price, 2) }}
+                  </td>
+                  <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;font-weight: bold; ">
+                    {{ $mealPackageItem->quantity }}
+                  </td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;  font-weight: bold;">
+                    ${{ number_format($mealPackageItem->meal_package->price * $mealPackageItem->quantity, 2) }}
+                  </td>
+                </tr>
+
+
+                @foreach($order->items as $item)
+                @if ($item->meal_package_order_id === $mealPackageItem->id)
                 <tr>
                   <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
-                    ${{ number_format($item->unit_price, 2) }}</td>
+                    @if ($item->meal_package_title === null)
+                    ${{ number_format($item->unit_price, 2) }}
+                    @else
+                    In Package
+                    @endif
+                    </td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
-                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;  font-weight: bold;">${{ number_format($item->price, 2) }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;">
+                    @if ($item->meal_package_title === null)
+                    ${{ number_format($item->price, 2) }}
+                    @else
+                    In Package
+                    @endif
+                  </td>
                 </tr>
+                @endif
+                @endforeach
+
+              @endforeach
+                
+                @foreach($order->items as $item)
+                @if ($item->meal_package_order_id === null)
+                <tr>
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
+                    ${{ number_format($item->unit_price, 2) }}
+                    </td>
+                  <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;">
+                    ${{ number_format($item->price, 2) }}
+                  </td>
+                </tr>
+                @endif
               @endforeach
               </table>
             </td>
           </tr>
           <tr>
-            <td height="5"></td>
+            <td align="center">
+              <table width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
+                @foreach($order->lineItemsOrder as $lineItemOrder)
+
+                <tr>
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->title }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
+                    ${{ number_format($lineItemOrder->price, 2) }}</td>
+                  <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->quantity }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; font-weight: bold ">${{ number_format($lineItemOrder->quantity * $lineItemOrder->price, 2) }}</td>
+                </tr>
+              @endforeach
+              </table>
+            </td>
           </tr>
           <!-- detail -->
           <tr>

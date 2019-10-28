@@ -203,7 +203,7 @@ class Order extends Model
     public function getMealPackageItemsAttribute()
     {
         return $this->meal_package_orders()
-            ->with(['meal_package'])
+            ->with(['meal_package', 'meal_package_size'])
             ->get();
     }
 

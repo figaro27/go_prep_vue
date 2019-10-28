@@ -289,6 +289,8 @@ class CheckoutController extends StoreController
                     if (
                         MealPackageOrder::where([
                             'meal_package_id' => $item['meal_package_id'],
+                            'meal_package_size_id' =>
+                                $item['meal_package_size_id'],
                             'order_id' => $order->id
                         ])
                             ->get()
@@ -310,6 +312,8 @@ class CheckoutController extends StoreController
                         $mealOrder->meal_package_order_id = MealPackageOrder::where(
                             [
                                 'meal_package_id' => $item['meal_package_id'],
+                                'meal_package_size_id' =>
+                                    $item['meal_package_size_id'],
                                 'order_id' => $order->id
                             ]
                         )
@@ -570,10 +574,14 @@ class CheckoutController extends StoreController
 
                 if ($item['meal_package'] === true) {
                     if (
-                        MealPackageOrder::where(
-                            'meal_package_id',
-                            $item['meal_package_id']
-                        )->count() === 0
+                        MealPackageOrder::where([
+                            'meal_package_id' => $item['meal_package_id'],
+                            'meal_package_size_id' =>
+                                $item['meal_package_size_id'],
+                            'order_id' => $order->id
+                        ])
+                            ->get()
+                            ->count() === 0
                     ) {
                         $mealPackageOrder = new MealPackageOrder();
                         $mealPackageOrder->store_id = $store->id;
@@ -582,10 +590,23 @@ class CheckoutController extends StoreController
                             $item['meal_package_id'];
                         $mealPackageOrder->meal_package_size_id =
                             $item['meal_package_size_id'];
-                        $mealPackageOrder->quantity = $item['quantity'];
+                        $mealPackageOrder->quantity = $item['package_quantity'];
                         $mealPackageOrder->save();
+
+                        $mealOrder->meal_package_order_id =
+                            $mealPackageOrder->id;
+                    } else {
+                        $mealOrder->meal_package_order_id = MealPackageOrder::where(
+                            [
+                                'meal_package_id' => $item['meal_package_id'],
+                                'meal_package_size_id' =>
+                                    $item['meal_package_size_id'],
+                                'order_id' => $order->id
+                            ]
+                        )
+                            ->pluck('id')
+                            ->first();
                     }
-                    $mealOrder->meal_package_order_id = $mealPackageOrder->id;
                 }
 
                 $mealOrder->save();
