@@ -528,6 +528,7 @@ export default {
         .filter()
         .value();
 
+      console.log("meals", meals);
       return meals;
     },
     addLineItem(existing) {
