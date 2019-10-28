@@ -404,29 +404,14 @@ export default {
     this.$emit("updateLineItems", this.orderLineItems);
   },
   methods: {
-    async getItemMeals(item) {
+    getItemMeals(item) {
       const mealPackage = !!item.meal_package;
 
-      if (!mealPackage) {
+      if (!mealPackage || !item.meal) {
         return [];
       }
 
-      /* Refresh Package */
-      if (!item.refreshed) {
-        const newPackage = await store.dispatch(
-          "refreshStoreMealPackage",
-          item
-        );
-
-        if (newPackage) {
-          item = newPackage;
-        } else {
-          return false;
-        }
-      }
-      /* Refresh Package End */
-
-      const pkg = this.getMealPackage(item.meal.id);
+      const pkg = this.getMealPackage(item.meal.id, item.meal);
       const size = pkg && item.size ? pkg.getSize(item.size.id) : null;
       const packageMeals = size ? size.meals : pkg ? pkg.meals : null;
 
@@ -528,7 +513,6 @@ export default {
         .filter()
         .value();
 
-      console.log("meals", meals);
       return meals;
     },
     addLineItem(existing) {

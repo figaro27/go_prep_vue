@@ -38,9 +38,19 @@ class OptimizedMealPackage extends Model implements HasMedia
 
     public function meals()
     {
-        return $this->belongsToMany('App\\Meal')
+        return $this->belongsToMany(
+            'App\\Meal',
+            'meal_meal_package',
+            'meal_id',
+            'id'
+        )
             ->withPivot(['meal_size_id', 'quantity'])
-            ->using('App\\MealMealPackage');
+            ->using(
+                'App\\MealMealPackage',
+                'meal_packages',
+                'id',
+                'meal_package_id'
+            );
     }
 
     public function store()

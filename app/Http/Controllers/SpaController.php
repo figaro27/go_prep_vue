@@ -423,7 +423,7 @@ class SpaController extends Controller
             'updated_at',
             'active'
         )
-            ->with(['sizes', 'components', 'addons'])
+            ->with(['sizes', 'components', 'addons', 'meals'])
             ->find($meal_package_id);
 
         return [
