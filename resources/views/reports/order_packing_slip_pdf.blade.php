@@ -106,13 +106,43 @@ $balance = $order->balance;
       </thead>
 
       <tbody>
-        @foreach ($order->items as $i => $item)
-        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-            <td class="center-text">{{$item->quantity}}</td>
-            <td>{!! $item->html_title !!}</td>
-            <td class="center-text">${{number_format($item->price, 2)}}</td>
-        </tr>
-        @endforeach
+
+        @foreach($order->meal_package_items as $i => $mealPackageItem)
+              <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+                  <td class="center-text">{{$mealPackageItem->quantity}}</td>
+                  <td>{{ $mealPackageItem->meal_package->title }}</td>
+                  <td class="center-text">${{number_format($mealPackageItem->meal_package->price * $mealPackageItem->quantity, 2)}}</td>
+              </tr>
+
+
+
+                @foreach($order->items as $i => $item)
+                @if ($item->meal_package_order_id === $mealPackageItem->id)
+                <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+                  <td class="center-text">{{$item->quantity}}</td>
+                  <td>{!! $item->html_title !!}</td>
+                  <td class="center-text">@if ($item->meal_package_title === null)
+                    ${{ number_format($item->unit_price, 2) }}
+                    @else
+                    In Package
+                    @endif</td>
+              </tr>
+
+                @endif
+                @endforeach
+
+              @endforeach
+               @foreach($order->items as $i => $item)
+                @if ($item->meal_package_order_id === null)
+                <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+                  <td class="center-text">{{$item->quantity}}</td>
+                  <td>{!! $item->html_title !!}</td>
+                  <td class="center-text">${{ number_format($item->price, 2) }}</td>
+              </tr>
+
+                @endif
+              @endforeach
+
         @if (count($order->lineItemsOrders))
         @foreach ($order->lineItemsOrders as $i => $lineItemOrder)
           <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
