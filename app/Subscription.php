@@ -23,7 +23,8 @@ class Subscription extends Model
         'meal_ids',
         'meal_quantities',
         'pre_coupon',
-        'items'
+        'items',
+        'meal_package_items'
     ];
 
     protected $casts = [
@@ -204,6 +205,13 @@ class Subscription extends Model
     public function getStoreNameAttribute()
     {
         return $this->store->storeDetail->name;
+    }
+
+    public function getMealPackageItemsAttribute()
+    {
+        return $this->meal_package_subscriptions()
+            ->with(['meal_package', 'meal_package_size'])
+            ->get();
     }
 
     public function getItemsAttribute()

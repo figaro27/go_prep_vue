@@ -687,7 +687,7 @@ class CheckoutController extends StoreController
                         $mealPackageSubscription->save();
 
                         $mealSub->meal_package_subscription_id =
-                            $userSubscription->id;
+                            $mealPackageSubscription->id;
                     } else {
                         $mealSub->meal_package_subscription_id = MealPackageSubscription::where(
                             [
