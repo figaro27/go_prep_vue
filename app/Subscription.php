@@ -65,6 +65,11 @@ class Subscription extends Model
         return $this->hasMany('App\MealSubscription');
     }
 
+    public function meal_package_subscriptions()
+    {
+        return $this->hasMany('App\MealPackageSubscription');
+    }
+
     public function orders()
     {
         return $this->hasMany('App\Order');
@@ -222,6 +227,8 @@ class Subscription extends Model
                     'unit_price' => $mealSub->unit_price,
                     'price' => $mealSub->price,
                     'special_instructions' => $mealSub->special_instructions,
+                    'meal_package_subscription_id' =>
+                        $mealSub->meal_package_subscription_id,
                     'components' => $mealSub->components->map(function (
                         $component
                     ) {
