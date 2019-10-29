@@ -23,7 +23,8 @@ class Subscription extends Model
         'meal_ids',
         'meal_quantities',
         'pre_coupon',
-        'items'
+        'items',
+        'meal_package_items'
     ];
 
     protected $casts = [
@@ -63,6 +64,11 @@ class Subscription extends Model
     public function meal_subscriptions()
     {
         return $this->hasMany('App\MealSubscription');
+    }
+
+    public function meal_package_subscriptions()
+    {
+        return $this->hasMany('App\MealPackageSubscription');
     }
 
     public function orders()
@@ -201,6 +207,13 @@ class Subscription extends Model
         return $this->store->storeDetail->name;
     }
 
+    public function getMealPackageItemsAttribute()
+    {
+        return $this->meal_package_subscriptions()
+            ->with(['meal_package', 'meal_package_size'])
+            ->get();
+    }
+
     public function getItemsAttribute()
     {
         return $this->meal_subscriptions()
@@ -222,6 +235,8 @@ class Subscription extends Model
                     'unit_price' => $mealSub->unit_price,
                     'price' => $mealSub->price,
                     'special_instructions' => $mealSub->special_instructions,
+                    'meal_package_subscription_id' =>
+                        $mealSub->meal_package_subscription_id,
                     'components' => $mealSub->components->map(function (
                         $component
                     ) {

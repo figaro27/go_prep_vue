@@ -36,6 +36,7 @@ class Order extends Model
         'has_notes',
         'meal_ids',
         'items',
+        'meal_package_items',
         'store_name',
         'cutoff_date',
         'cutoff_passed',
@@ -66,6 +67,11 @@ class Order extends Model
     public function meal_orders()
     {
         return $this->hasMany('App\MealOrder');
+    }
+
+    public function meal_package_orders()
+    {
+        return $this->hasMany('App\MealPackageOrder');
     }
 
     public function meals()
@@ -193,6 +199,14 @@ class Order extends Model
             ->pluck('id')
             ->unique();
     }
+
+    public function getMealPackageItemsAttribute()
+    {
+        return $this->meal_package_orders()
+            ->with(['meal_package', 'meal_package_size'])
+            ->get();
+    }
+
     public function getItemsAttribute()
     {
         return $this->meal_orders()
@@ -216,6 +230,8 @@ class Order extends Model
                     'price' => $mealOrder->price,
                     'free' => $mealOrder->free,
                     'special_instructions' => $mealOrder->special_instructions,
+                    'meal_package_order_id' =>
+                        $mealOrder->meal_package_order_id,
                     'meal_package_title' => $mealOrder->meal_package_title,
                     'components' => $mealOrder->components->map(function (
                         $component

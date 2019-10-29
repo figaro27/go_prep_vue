@@ -202,7 +202,7 @@
     <div class="modal-basic modal-wider">
       <b-modal
         v-model="viewOrderModal"
-        size="lg"
+        size="xl"
         title="Order Information"
         no-fade
       >
@@ -501,45 +501,51 @@
           <div class="col-md-12">
             <h4>Items</h4>
             <hr />
-            <ul class="meal-quantities">
-              <li v-for="meal in getMealQuantities(order)" :key="meal.id">
-                <div
-                  class="row"
-                  v-if="meal.image != null && meal.image.url_thumb"
-                >
-                  <div class="col-md-5 pr-0">
-                    <span class="order-quantity">{{ meal.quantity }}</span>
-                    <img src="/images/store/x-modal.png" class="mr-2 ml-2" />
-                    <thumbnail
-                      :src="meal.image.url_thumb"
-                      :spinner="false"
-                      class="mr-0 pr-0"
-                    ></thumbnail>
-                  </div>
-                  <div class="col-md-7 pt-3 nopadding pl-0 ml-0">
-                    <p v-html="meal.title"></p>
-                    <p class="strong">
-                      {{ format.money(meal.subtotal, order.currency) }}
-                    </p>
-                  </div>
-                </div>
-                <div class="row" v-else>
-                  <div class="col-md-12 pr-0 d-inline">
-                    <span class="order-quantity d-inline">{{
-                      meal.quantity
-                    }}</span>
-                    <img
-                      src="/images/store/x-modal.png"
-                      class="mr-2 ml-2 d-inline"
-                    />
-                    <p v-html="meal.title" class="d-inline"></p>
-                    <p class="strong d-inline">
-                      - {{ format.money(meal.subtotal, order.currency) }}
-                    </p>
-                  </div>
-                </div>
-              </li>
-            </ul>
+            <b-table
+              striped
+              stacked="sm"
+              :items="getMealTableData(order)"
+              foot-clone
+            >
+              <template slot="meal" slot-scope="row">
+                <div v-html="row.value"></div>
+              </template>
+
+              <template slot="FOOT_subtotal" slot-scope="row">
+                <p>
+                  Subtotal:
+                  {{ format.money(order.preFeePreDiscount, order.currency) }}
+                </p>
+                <p class="text-success" v-if="order.couponReduction > 0">
+                  Coupon {{ order.couponCode }}: ({{
+                    format.money(order.couponReduction, order.currency)
+                  }})
+                </p>
+                <p v-if="order.mealPlanDiscount > 0" class="text-success">
+                  Subscription Discount: ({{
+                    format.money(order.mealPlanDiscount, order.currency)
+                  }})
+                </p>
+                <p v-if="order.deliveryFee > 0">
+                  Delivery Fee:
+                  {{ format.money(order.deliveryFee, order.currency) }}
+                </p>
+                <p v-if="order.processingFee > 0">
+                  Processing Fee:
+                  {{ format.money(order.processingFee, order.currency) }}
+                </p>
+                <p>
+                  Sales Tax:
+                  {{ format.money(order.salesTax, order.currency) }}
+                </p>
+                <p class="strong">
+                  Total:
+                  {{ format.money(order.amount, order.currency) }}
+                </p>
+              </template>
+
+              <template slot="table-caption"></template>
+            </b-table>
           </div>
         </div>
         <div
@@ -724,7 +730,8 @@ export default {
       nextDeliveryDates: "storeNextDeliveryDates",
       getMeal: "storeMeal",
       storeModules: "storeModules",
-      storeSettings: "storeSettings"
+      storeSettings: "storeSettings",
+      getStoreMeal: "viewedStoreMeal"
     }),
     tableData() {
       let filters = { ...this.filters };
@@ -1046,6 +1053,76 @@ export default {
           this.refreshUpcomingOrders();
           this.$toastr.s(response.data);
         });
+    },
+    getMealTableData(order) {
+      if (!this.initialized || !order.items) return [];
+
+      let data = [];
+
+      order.meal_package_items.forEach(meal_package_item => {
+        data.push({
+          meal: meal_package_item.meal_package.title,
+          quantity: meal_package_item.quantity,
+          unit_price: format.money(
+            meal_package_item.meal_package.price,
+            order.currency
+          ),
+          subtotal: format.money(
+            meal_package_item.meal_package.price * meal_package_item.quantity,
+            order.currency
+          )
+        });
+
+        order.items.forEach(item => {
+          if (item.meal_package_order_id === meal_package_item.id) {
+            const meal = this.getStoreMeal(item.meal_id);
+            if (!meal) {
+              return null;
+            }
+            const size = meal.getSize(item.meal_size_id);
+            const title = meal.getTitle(
+              true,
+              size,
+              item.components,
+              item.addons,
+              item.special_instructions
+            );
+
+            data.push({
+              meal: title,
+              quantity: item.quantity,
+              unit_price: "In Package",
+              subtotal: "In Package"
+            });
+          }
+        });
+      });
+
+      order.items.forEach(item => {
+        if (item.meal_package_order_id === null) {
+          const meal = this.getStoreMeal(item.meal_id);
+          if (!meal) {
+            return null;
+          }
+          const size = meal.getSize(item.meal_size_id);
+          const title = meal.getTitle(
+            true,
+            size,
+            item.components,
+            item.addons,
+            item.special_instructions
+          );
+
+          data.push({
+            meal: title,
+            quantity: item.quantity,
+            unit_price: format.money(item.unit_price, order.currency),
+            subtotal: format.money(item.price, order.currency)
+          });
+        }
+      });
+
+      return _.filter(data);
     }
   }
 };

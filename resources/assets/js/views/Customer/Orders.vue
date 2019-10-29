@@ -225,33 +225,71 @@ export default {
   methods: {
     ...mapActions(["refreshCustomerOrders"]),
     getMealTableData(order) {
-      if (!this.initialized) return [];
+      if (!this.initialized || !order.items) return [];
 
-      let data = order.items.map(item => {
-        const meal = this.getStoreMeal(item.meal_id);
-        if (!meal) {
-          return null;
+      let data = [];
+
+      order.meal_package_items.forEach(meal_package_item => {
+        data.push({
+          meal: meal_package_item.meal_package.title,
+          quantity: meal_package_item.quantity,
+          unit_price: format.money(
+            meal_package_item.meal_package.price,
+            order.currency
+          ),
+          subtotal: format.money(
+            meal_package_item.meal_package.price * meal_package_item.quantity,
+            order.currency
+          )
+        });
+
+        order.items.forEach(item => {
+          if (item.meal_package_order_id === meal_package_item.id) {
+            const meal = this.getStoreMeal(item.meal_id);
+            if (!meal) {
+              return null;
+            }
+            const size = meal.getSize(item.meal_size_id);
+            const title = meal.getTitle(
+              true,
+              size,
+              item.components,
+              item.addons,
+              item.special_instructions
+            );
+
+            data.push({
+              meal: title,
+              quantity: item.quantity,
+              unit_price: "In Package",
+              subtotal: "In Package"
+            });
+          }
+        });
+      });
+
+      order.items.forEach(item => {
+        if (item.meal_package_order_id === null) {
+          const meal = this.getStoreMeal(item.meal_id);
+          if (!meal) {
+            return null;
+          }
+          const size = meal.getSize(item.meal_size_id);
+          const title = meal.getTitle(
+            true,
+            size,
+            item.components,
+            item.addons,
+            item.special_instructions
+          );
+
+          data.push({
+            meal: title,
+            quantity: item.quantity,
+            unit_price: format.money(item.unit_price, order.currency),
+            subtotal: format.money(item.price, order.currency)
+          });
         }
-
-        const size = meal.getSize(item.meal_size_id);
-        const title = meal.getTitle(
-          true,
-          size,
-          item.components,
-          item.addons,
-          item.special_instructions
-        );
-
-        let image = null;
-        if (meal.image != null) image = meal.image.url_thumb;
-
-        return {
-          image: image,
-          meal: title,
-          quantity: item.quantity,
-          unit_price: format.money(item.unit_price, order.currency),
-          subtotal: format.money(item.price, order.currency)
-        };
       });
 
       return _.filter(data);
