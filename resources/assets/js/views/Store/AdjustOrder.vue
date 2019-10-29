@@ -62,6 +62,9 @@ export default {
     }
   },
   mounted() {
+    if (this.orderId === undefined) {
+      this.$router.push({ path: "/store/orders" });
+    }
     this.initBag();
   },
   methods: {

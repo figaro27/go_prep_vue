@@ -64,7 +64,15 @@ export default {
   created() {
     this.setBagMealPlan(false);
   },
-  mounted() {},
+  mounted() {
+    if (
+      this.$route.path === "/store/bag" &&
+      !this.storeView &&
+      !this.$route.params.storeView
+    ) {
+      this.$router.push({ path: "/store/orders" });
+    }
+  },
   methods: {
     ...mapActions({
       refreshViewedStore: "refreshViewedStore"
