@@ -8,6 +8,7 @@ use App\Meal;
 use App\OptimizedMeal;
 use App\OptimizedMealPackage;
 use App\MealPackage;
+use App\Category;
 use Illuminate\Http\Request;
 
 class SpaController extends Controller
@@ -294,6 +295,221 @@ class SpaController extends Controller
 
         return [
             'context' => $context
+        ];
+    }
+
+    public function refresh_lazy(Request $request)
+    {
+        // Speed Optimization
+        $store_id = $offset_meal = $offset_package = 0;
+        $limit = 30;
+
+        $category_id = 0;
+        $category_ids_str = ""; // Full Category Ids
+
+        $bypass_meal = 0;
+
+        $data = $request->all();
+        extract($data);
+
+        $offset_meal = (int) $offset_meal;
+        $offset_package = (int) $offset_package;
+        $category_id = (int) $category_id;
+        $category_ids =
+            trim($category_ids_str) == ""
+                ? []
+                : explode(",", trim($category_ids_str));
+
+        $category_data = null;
+
+        if (defined('STORE_ID')) {
+            $store_id = (int) STORE_ID;
+        } else {
+            if ($user && isset($user->last_viewed_store)) {
+                $store_id = (int) $user->last_viewed_store->id;
+            }
+        }
+
+        $items = $meals = $packages = []; // Both of meals and packages
+        $end = 0;
+
+        if ($store_id != 0) {
+            /* Building Categories */
+            if ($category_id == 0 || count($category_ids) == 0) {
+                $categories = Category::select(
+                    'store_id',
+                    'id',
+                    'category',
+                    'order'
+                )
+                    ->where('store_id', $store_id)
+                    ->orderBy('order')
+                    ->get();
+
+                if ($categories && count($categories) > 0) {
+                    foreach ($categories as $category) {
+                        $temp_id = (int) $category->id;
+
+                        $temp_meal = Meal::whereHas('categories', function (
+                            $query
+                        ) use ($temp_id) {
+                            $query->where('categories.id', $temp_id);
+                        })
+                            ->where('store_id', $store_id)
+                            ->first();
+
+                        $temp_package = MealPackage::whereHas(
+                            'categories',
+                            function ($query) use ($temp_id) {
+                                $query->where('categories.id', $temp_id);
+                            }
+                        )
+                            ->where('store_id', $store_id)
+                            ->first();
+
+                        if ($temp_meal || $temp_package) {
+                            // Meal or Package exists
+                            $category_ids[] = $temp_id;
+
+                            if (!$category_data) {
+                                $category_data = [];
+                            }
+
+                            $category_data[] = $category;
+                        }
+                    }
+
+                    if (count($category_ids) > 0) {
+                        $category_id = (int) $category_ids[0];
+                        $category_ids_str = implode(',', $category_ids);
+                    }
+                }
+            }
+            /* Building Categories End */
+
+            if ($category_id != 0 && count($category_ids) > 0) {
+                if ($bypass_meal == 0) {
+                    $meals = Meal::with([
+                        'allergies',
+                        'sizes',
+                        'tags',
+                        'components',
+                        'addons',
+                        'macros'
+                    ])
+                        ->whereHas('categories', function ($query) use (
+                            $category_id
+                        ) {
+                            $query->where('categories.id', $category_id);
+                        })
+                        ->where('store_id', $store_id)
+                        ->orderBy('title')
+                        ->offset($offset_meal)
+                        ->limit($limit)
+                        ->get()
+                        ->toArray();
+                }
+
+                $new_limit = $limit;
+                if ($meals && count($meals) > 0) {
+                    $new_limit = $limit - count($meals);
+                }
+
+                if ($new_limit > 0) {
+                    $packages = MealPackage::with([
+                        'meals',
+                        'sizes',
+                        'components',
+                        'addons'
+                    ])
+                        ->whereHas('categories', function ($query) use (
+                            $category_id
+                        ) {
+                            $query->where('categories.id', $category_id);
+                        })
+                        ->where('store_id', $store_id)
+                        ->orderBy('title')
+                        ->offset($offset_package)
+                        ->limit($new_limit)
+                        ->get()
+                        ->toArray();
+
+                    if (count($packages) > 0) {
+                        foreach ($packages as &$package) {
+                            $package['meal_package'] = true;
+                        }
+                    }
+                }
+
+                /* Set Return Value */
+                $next = false;
+                if (count($meals) == 0 && count($packages) == 0) {
+                    // Next
+                    $items = [];
+                    $next = true;
+                } elseif (count($meals) > 0 && count($packages) > 0) {
+                    $items = array_merge($meals, $packages);
+
+                    if (count($items) >= $limit) {
+                        $offset_meal = 0;
+                        $offset_package = $limit - count($meals);
+                        $bypass_meal = 1;
+                    } else {
+                        // Next
+                        $next = true;
+                    }
+                } elseif (count($packages) > 0) {
+                    $items = $packages;
+
+                    if (count($items) >= $limit) {
+                        $offset_meal = 0;
+                        $offset_package += $limit;
+                        $bypass_meal = 1;
+                    } else {
+                        // Next
+                        $next = true;
+                    }
+                } elseif (count($meals) > 0) {
+                    $items = $meals;
+
+                    if (count($items) >= $limit) {
+                        $offset_meal += $limit;
+                        $offset_package = 0;
+                        $bypass_meal = 0;
+                    } else {
+                        // Next
+                        $next = true;
+                    }
+                }
+
+                if ($next) {
+                    $offset_meal = $offset_package = 0;
+                    $bypass_meal = 0;
+
+                    $key = (int) array_search($category_id, $category_ids);
+                    if ($key == count($category_ids) - 1) {
+                        // Last
+                        $category_id = 0;
+                        $end = 1;
+                    } else {
+                        $category_id = $category_ids[$key + 1];
+                    }
+                }
+                /* Set Return Value End */
+            } // Checking Category ID and Category IDs End
+        }
+
+        return [
+            'items' => $items,
+            'meals' => $meals,
+            'packages' => $packages,
+            'category_data' => $category_data,
+            'offset_meal' => $offset_meal,
+            'offset_package' => $offset_package,
+            'category_id' => $category_id,
+            'bypass_meal' => $bypass_meal,
+            'category_ids_str' => $category_ids_str,
+            'end' => $end
         ];
     }
 

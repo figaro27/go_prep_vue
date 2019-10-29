@@ -14,24 +14,9 @@ export default {
       free = false
     ) {
       if (!mealPackage) {
-        meal = this.getMeal(meal.id);
-
-        /* Refresh Meal for Bag */
-        if (!meal.refreshed_bag) {
-          await store.dispatch("refreshStoreMealBag", meal);
-
-          meal = this.getMeal(meal.id);
-        }
-        /* Refresh Meal for Bag End */
+        meal = this.getMeal(meal.id, meal);
       } else {
-        meal = this.getMealPackage(meal.id);
-        /* Refresh Package for Bag */
-        if (!meal.refreshed_bag) {
-          await store.dispatch("refreshStoreMealPackageBag", meal);
-
-          meal = this.getMealPackage(meal.id);
-        }
-        /* Refresh Package for Bag End */
+        meal = this.getMealPackage(meal.id, meal);
       }
 
       if (!meal) {

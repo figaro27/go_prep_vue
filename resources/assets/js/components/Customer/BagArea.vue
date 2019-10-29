@@ -423,7 +423,7 @@ export default {
           });
         }),
         mealItem => {
-          return mealItem.quantity;
+          return { quantity: mealItem.quantity, meal: mealItem };
         }
       );
 
@@ -444,11 +444,9 @@ export default {
               const sizeId = item.meal_size_id;
               const guid = JSON.stringify({ mealId, sizeId });
 
-              if (!mealQuantities[guid]) {
-                mealQuantities[guid] = 0;
+              if (mealQuantities[guid]) {
+                mealQuantities[guid].quantity += item.quantity;
               }
-
-              mealQuantities[guid] += item.quantity;
             });
           } else {
             _.forEach(option.meals, mealItem => {
@@ -456,10 +454,9 @@ export default {
               const sizeId = mealItem.meal_size_id;
               const guid = JSON.stringify({ mealId, sizeId });
 
-              if (!mealQuantities[guid]) {
-                mealQuantities[guid] = 0;
+              if (mealQuantities[guid]) {
+                mealQuantities[guid].quantity += mealItem.quantity;
               }
-              mealQuantities[guid] += mealItem.quantity;
             });
           }
         });
@@ -474,11 +471,9 @@ export default {
             const sizeId = item.meal_size_id;
             const guid = JSON.stringify({ mealId, sizeId });
 
-            if (!mealQuantities[guid]) {
-              mealQuantities[guid] = 0;
+            if (mealQuantities[guid]) {
+              mealQuantities[guid].quantity += item.quantity;
             }
-
-            mealQuantities[guid] += item.quantity;
           });
         } else {
           _.forEach(addonItems, mealItem => {
@@ -486,18 +481,24 @@ export default {
             const sizeId = mealItem.meal_size_id;
             const guid = JSON.stringify({ mealId, sizeId });
 
-            if (!mealQuantities[guid]) {
-              mealQuantities[guid] = 0;
+            if (mealQuantities[guid]) {
+              mealQuantities[guid] += mealItem.quantity;
             }
-            mealQuantities[guid] += mealItem.quantity;
           });
         }
       });
 
       const meals = _(mealQuantities)
-        .map((quantity, guid) => {
+        .map((item, guid) => {
+          if (
+            !item.hasOwnProperty("quantity") ||
+            !item.hasOwnProperty("meal")
+          ) {
+            return null;
+          }
+
           const { mealId, sizeId } = JSON.parse(guid);
-          const meal = this.getMeal(mealId);
+          const meal = this.getMeal(mealId, item.meal);
           if (!meal) return null;
           const size = meal && sizeId ? meal.getSize(sizeId) : null;
 
@@ -506,7 +507,7 @@ export default {
           return {
             meal,
             size,
-            quantity,
+            quantity: item.quantity,
             title
           };
         })

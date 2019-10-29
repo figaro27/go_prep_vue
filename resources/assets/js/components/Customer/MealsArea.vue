@@ -14,7 +14,7 @@
     ></meal-package-components-modal>
 
     <div
-      v-for="(group, catIndex) in mealsMenu"
+      v-for="(group, catIndex) in meals"
       :key="'category_' + group.category + '_' + catIndex"
       :id="slugify(group.category)"
       :target="'categorySection_' + group.category_id"
@@ -23,6 +23,7 @@
       "
       :class="container"
       style="margin-bottom: 20px;"
+      v-if="group.meals.length > 0"
     >
       <div v-if="storeSettings.menuStyle === 'image'">
         <h2 class="text-center mb-3 dbl-underline">
@@ -500,15 +501,16 @@ export default {
     filteredView: false
   },
   mounted: function() {
-    if (this.context == "customer" || this.context == "guest") {
-      store.dispatch("refreshStoreMeals");
-    }
+    /*if ((this.context == "customer" || this.context == "guest")) {
+      store.dispatch("refreshStoreMeals")
+    }*/
   },
   mixins: [MenuBag],
   computed: {
     ...mapGetters({
       store: "viewedStore",
       context: "context",
+      isLazy: "isLazy",
       //total: "bagQuantity",
       //bag: "bagItems",
       //hasMeal: "bagHasMeal",
@@ -527,160 +529,6 @@ export default {
         return "categorySection customer-menu-container";
       } else {
         return "categorySection customer-menu-container";
-      }
-    },
-    mealsMenu() {
-      if (this.context == "customer" || this.context == "guest") {
-        let meals = this.store.meals;
-        let packages = this.store.packages;
-        let filters = this.filters;
-        let grouped = {};
-
-        if (!_.isArray(meals)) {
-          meals = [];
-        }
-        if (!_.isArray(packages)) {
-          packages = [];
-        }
-
-        const search = this.search.toLowerCase();
-
-        meals = _.filter(meals, meal => {
-          if (
-            !meal.active ||
-            (this.search && !meal.title.toLowerCase().includes(search))
-          ) {
-            return false;
-          }
-          return true;
-        });
-
-        packages = _.map(
-          _.filter(this.store.packages, mealPackage => {
-            return (
-              mealPackage.active &&
-              (!this.search || mealPackage.title.toLowerCase().includes(search))
-            );
-          }) || [],
-          mealPackage => {
-            mealPackage.meal_package = true;
-            return mealPackage;
-          }
-        );
-
-        if (this.filteredView) {
-          meals = _.filter(meals, meal => {
-            let skip = false;
-
-            if (!skip && filters && filters.tags && filters.tags.length > 0) {
-              let hasAllTags = _.reduce(
-                filters.tags,
-                (has, tag) => {
-                  if (!has) return false;
-                  let x = _.includes(meal.tag_titles, tag);
-                  return x;
-                },
-                true
-              );
-
-              skip = !hasAllTags;
-            }
-
-            if (
-              !skip &&
-              filters &&
-              filters.allergies &&
-              filters.allergies.length > 0
-            ) {
-              let hasAllergy = _.reduce(
-                meal.allergy_ids,
-                (has, allergyId) => {
-                  if (has) return true;
-                  let x = _.includes(filters.allergies, allergyId);
-                  return x;
-                },
-                false
-              );
-
-              skip = hasAllergy;
-            }
-            return !skip;
-          });
-        }
-
-        let total = meals.concat(packages);
-
-        total.forEach(meal => {
-          meal.category_ids.forEach(categoryId => {
-            let category = _.find(this._categories, { id: categoryId });
-            if (!category) {
-              return;
-            } else if (!_.has(grouped, category.category)) {
-              grouped[category.category] = [meal];
-            } else {
-              grouped[category.category].push(meal);
-            }
-          });
-        });
-
-        /* Sort Categories */
-        let sortedCategories = [];
-
-        for (let i = 0; i < this._categories.length; i++) {
-          let cat = this._categories[i];
-          let order = !isNaN(cat.order) ? parseInt(cat.order) : 9999;
-
-          sortedCategories.push({
-            name: cat.category,
-            order,
-            id: cat.id
-          });
-        }
-
-        if (sortedCategories.length > 1) {
-          for (let i = 0; i < sortedCategories.length - 1; i++) {
-            for (let j = i + 1; j < sortedCategories.length; j++) {
-              if (sortedCategories[i].order > sortedCategories[j].order) {
-                let temp = {
-                  ...sortedCategories[i]
-                };
-                sortedCategories[i] = {
-                  ...sortedCategories[j]
-                };
-                sortedCategories[j] = {
-                  ...temp
-                };
-              }
-            }
-          }
-        }
-        /* Sort Categories End */
-
-        let finalData = [];
-        let finalCategories = [];
-
-        for (let i = 0; i < sortedCategories.length; i++) {
-          let name = sortedCategories[i].name;
-          let order = sortedCategories[i].order;
-          let category_id = sortedCategories[i].id;
-
-          if (grouped[name] && grouped[name].length > 0) {
-            finalData.push({
-              category: name,
-              category_id,
-              meals: grouped[name],
-              order
-            });
-
-            finalCategories.push(sortedCategories[i]);
-          }
-        }
-
-        this.$parent.finalCategories = finalCategories;
-
-        return finalData;
-      } else {
-        return this.meals;
       }
     }
   },
@@ -704,7 +552,7 @@ export default {
         this.minusOne(meal, true);
       } else {
         /* Refresh Meal for Bag */
-        if (!meal.refreshed_bag) {
+        /*if (!meal.refreshed_bag) {
           const newMeal = await store.dispatch("refreshStoreMealBag", meal);
 
           if (newMeal) {
@@ -712,7 +560,7 @@ export default {
           } else {
             return false;
           }
-        }
+        }*/
         /* Refresh Meal for Bag End */
 
         if (
@@ -728,7 +576,7 @@ export default {
     },
     async addMealPackage(mealPackage, condition = false, size) {
       /* Refresh Package for Bag */
-      if (!mealPackage.refreshed_bag) {
+      /*if (!mealPackage.refreshed_bag) {
         const newPackage = await store.dispatch(
           "refreshStoreMealPackageBag",
           mealPackage
@@ -739,7 +587,7 @@ export default {
         } else {
           return false;
         }
-      }
+      }*/
       /* Refresh Package for Bag End */
 
       if (size === undefined) {
@@ -770,7 +618,7 @@ export default {
         this.addMealPackage(meal, true);
       } else {
         /* Refresh Meal for Bag */
-        if (!meal.refreshed_bag) {
+        /*if (!meal.refreshed_bag) {
           const newMeal = await store.dispatch("refreshStoreMealBag", meal);
 
           if (newMeal) {
@@ -778,7 +626,7 @@ export default {
           } else {
             return false;
           }
-        }
+        }*/
         /* Refresh Meal for Bag End */
 
         if (
