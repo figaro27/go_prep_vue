@@ -16,10 +16,14 @@ const ttl = 60; // 60 seconds
 // root state object. each Vuex instance is just a single state tree.
 const state = {
   context: null,
+  isLazy: false,
   jobs: {},
   viewed_store: {
     distance: 0,
     meals: [],
+    packages: [],
+    items: [],
+    finalCategories: [],
     will_deliver: true,
     settings: {
       applyDeliveryFee: 0,
@@ -468,6 +472,142 @@ const mutations = {
   }
 };
 
+const callLazy = (
+  offset_meal,
+  offset_package,
+  category_id,
+  category_ids_str,
+  bypass_meal
+) => {
+  return new Promise((resolve, reject) => {
+    const url =
+      "/api/refresh_lazy?offset_meal=" +
+      offset_meal +
+      "&offset_package=" +
+      offset_package +
+      "&category_id=" +
+      category_id +
+      "&category_ids_str=" +
+      category_ids_str +
+      "&bypass_meal=" +
+      bypass_meal;
+    axios
+      .get(url)
+      .then(res => {
+        if (res.data) {
+          resolve(res.data);
+        } else {
+          reject("");
+        }
+      })
+      .catch(error => {
+        reject("");
+      });
+  });
+};
+
+const triggerLazy = (
+  state,
+  offset_meal,
+  offset_package,
+  category_id,
+  category_ids_str,
+  bypass_meal
+) => {
+  callLazy(
+    offset_meal,
+    offset_package,
+    category_id,
+    category_ids_str,
+    bypass_meal
+  )
+    .then(data => {
+      if (data.items && data.items.length > 0) {
+        let items = state.viewed_store.items;
+        let meals = state.viewed_store.meals;
+        let packages = state.viewed_store.packages;
+        let finalCategories = state.viewed_store.finalCategories;
+
+        if (data.meals && data.meals.length > 0) {
+          if (meals.length > 0) {
+            for (let i in data.meals) {
+              let meal = data.meals[i];
+
+              let found = _.find(meals, ["id", parseInt(meal.id)]) || null;
+              if (!found) {
+                meals.push(meal);
+              }
+            }
+          } else {
+            meals = data.meals;
+          }
+        }
+
+        if (data.packages && data.packages.length > 0) {
+          if (packages.length > 0) {
+            for (let i in data.packages) {
+              let pack = data.packages[i];
+
+              let found = _.find(packages, ["id", parseInt(pack.id)]) || null;
+              if (!found) {
+                packages.push(pack);
+              }
+            }
+          } else {
+            packages = data.packages;
+          }
+        }
+
+        if (data.category_data && data.category_data.length > 0) {
+          finalCategories = data.category_data;
+          items = [];
+
+          for (let i in finalCategories) {
+            items.push({
+              category: finalCategories[i].category,
+              category_id: finalCategories[i].id,
+              meals: [],
+              order: finalCategories[i].order
+            });
+          }
+
+          category_id = finalCategories[0].id;
+        }
+
+        for (let i in items) {
+          if (items[i].category_id == category_id) {
+            items[i].meals = items[i].meals.concat(data.items);
+
+            break;
+          }
+        }
+
+        state.viewed_store = {
+          ...state.viewed_store,
+          items,
+          finalCategories,
+          meals,
+          packages
+        };
+      }
+
+      if (data.end == 0) {
+        triggerLazy(
+          state,
+          data.offset_meal,
+          data.offset_package,
+          data.category_id,
+          data.category_ids_str,
+          data.bypass_meal
+        );
+      } else {
+        // Finished
+      }
+    })
+    .catch(error => {
+      // Finished
+    });
+};
 // actions are functions that cause side effects and can involve asynchronous
 // operations.
 const actions = {
@@ -1180,6 +1320,11 @@ const actions = {
     }
   },
 
+  async refreshLazy({ state }, args = {}) {
+    state.isLazy = true;
+    triggerLazy(state, 0, 0, 0, "", 0);
+  },
+
   async refreshStoreMeals({ commit, state }, args = {}) {
     if (state.refreshed == true) {
       return;
@@ -1507,9 +1652,10 @@ const getters = {
   context(state) {
     return state.context;
   },
+  isLazy(state) {
+    return state.isLazy;
+  },
   store: (state, getters) => id => {
-    console.log("getter", id);
-
     return _.find(state.stores, ["id", id]);
   },
   viewedStore(state, getters) {

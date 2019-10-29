@@ -88,6 +88,11 @@ foreach (
                 'uses' => 'SpaController@refresh'
             ]);
 
+            Route::get('/refresh_lazy', [
+                'middleware' => ['view.api'],
+                'uses' => 'SpaController@refresh_lazy'
+            ]);
+
             Route::get('/refresh/meal/{meal_id}', [
                 'middleware' => ['view.api'],
                 'uses' => 'SpaController@refreshMeal'

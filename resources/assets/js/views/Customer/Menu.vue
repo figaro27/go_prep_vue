@@ -41,13 +41,7 @@
 
       <div class="row">
         <div :class="`col-md-12 main-menu-area menu-page`">
-          <Spinner
-            v-if="
-              (!meals || meals.length == 0) &&
-                (!mealPackages || mealPackages.length == 0)
-            "
-            position="absolute"
-          />
+          <Spinner v-if="showSpinner" position="absolute" />
 
           <store-closed
             v-if="!$route.params.storeView"
@@ -126,13 +120,13 @@
               </div>
               <div
                 v-for="(cat, index) in finalCategories"
-                :key="cat.name"
+                :key="cat.category"
                 :class="
                   index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                 "
                 :target="'categorySection_' + cat.id"
               >
-                {{ cat.name }}
+                {{ cat.category }}
               </div>
             </div>
             <!-- Inner Body End !-->
@@ -226,6 +220,10 @@ $(function() {
 
     let target = $(this).attr("target");
     if (!target) {
+      return;
+    }
+
+    if ($(".categorySection[target='" + target + "']").length == 0) {
       return;
     }
 
@@ -358,6 +356,7 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       context: "context",
+      isLazy: "isLazy",
       total: "bagQuantity",
       allergies: "allergies",
       bag: "bagItems",
@@ -366,20 +365,96 @@ export default {
       getMealPackage: "viewedStoreMealPackage",
       allTags: "tags"
     }),
+    showSpinner() {
+      if (this.context == "customer" || this.context == "guest") {
+        return this.store.items.length == 0;
+      } else {
+        return (
+          (!meals || meals.length == 0) &&
+          (!mealPackages || mealPackages.length == 0)
+        );
+      }
+    },
     meals() {
       return this.store.meals;
     },
     mealPackages() {
       return this.store.packages;
     },
+
     mealsMix() {
+      const search = this.search.toLowerCase();
+      let filters = this.filters;
+
       if (this.context == "customer" || this.context == "guest") {
-        return [];
+        this.finalCategories = this.store.finalCategories;
+
+        let items = [...this.store.items, {}];
+
+        items = items.map(item => {
+          let object = { ...item };
+
+          object.meals = _.filter(object.meals, meal => {
+            if (
+              !meal.active ||
+              (this.search && !meal.title.toLowerCase().includes(search))
+            ) {
+              return false;
+            }
+
+            return true;
+          });
+
+          return object;
+        });
+
+        if (this.filteredView) {
+          items = items.map(item => {
+            let object = { ...item };
+
+            object.meals = _.filter(object.meals, meal => {
+              let skip = false;
+
+              if (!skip && filters.tags.length > 0) {
+                let hasAllTags = _.reduce(
+                  filters.tags,
+                  (has, tag) => {
+                    if (!has) return false;
+                    let x = _.includes(meal.tag_titles, tag);
+                    return x;
+                  },
+                  true
+                );
+
+                skip = !hasAllTags;
+              }
+
+              if (!skip && filters.allergies.length > 0) {
+                let hasAllergy = _.reduce(
+                  meal.allergy_ids,
+                  (has, allergyId) => {
+                    if (has) return true;
+                    let x = _.includes(filters.allergies, allergyId);
+                    return x;
+                  },
+                  false
+                );
+
+                skip = hasAllergy;
+              }
+
+              return !skip;
+            });
+
+            return object;
+          });
+        }
+
+        return items;
       }
 
       let meals = this.store.meals;
       let packages = this.store.packages;
-      let filters = this.filters;
       let grouped = {};
 
       if (!_.isArray(meals)) {
@@ -388,8 +463,6 @@ export default {
       if (!_.isArray(packages)) {
         packages = [];
       }
-
-      const search = this.search.toLowerCase();
 
       meals = _.filter(meals, meal => {
         if (
@@ -472,7 +545,7 @@ export default {
         let order = !isNaN(cat.order) ? parseInt(cat.order) : 9999;
 
         sortedCategories.push({
-          name: cat.category,
+          category: cat.category,
           order,
           id: cat.id
         });
@@ -501,7 +574,7 @@ export default {
       let finalCategories = [];
 
       for (let i = 0; i < sortedCategories.length; i++) {
-        let name = sortedCategories[i].name;
+        let name = sortedCategories[i].category;
         let order = sortedCategories[i].order;
         let category_id = sortedCategories[i].id;
 
@@ -594,6 +667,14 @@ export default {
     });
   },
   mounted() {
+    if (
+      (this.context == "customer" || this.context == "guest") &&
+      !this.isLazy
+    ) {
+      //store.dispatch("refreshStoreMeals")
+      store.dispatch("refreshLazy");
+    }
+
     if (this.bag.length > 0) {
       this.showBagClass = "shopping-cart show-right bag-area";
     } else this.showBagClass = "shopping-cart hidden-right bag-area";
@@ -693,7 +774,7 @@ export default {
     },
     async showMealPage(meal) {
       /* Refresh Meal */
-      if (!meal.refreshed) {
+      /*if (!meal.refreshed) {
         const newMeal = await store.dispatch("refreshStoreMeal", meal);
 
         if (newMeal) {
@@ -701,7 +782,7 @@ export default {
         } else {
           return false;
         }
-      }
+      }*/
       /* Refresh Meal End */
 
       this.mealPageView = true;

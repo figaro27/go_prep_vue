@@ -384,10 +384,6 @@ export default {
     }
   },
   mounted() {
-    if (this.context == "customer" || this.context == "guest") {
-      store.dispatch("refreshStoreMeals");
-    }
-
     this.deliveryDay = this.$route.params.deliveryDay;
     this.transferTime = this.$route.params.transferTime;
     if (this.$route.params.pickup != undefined) {
