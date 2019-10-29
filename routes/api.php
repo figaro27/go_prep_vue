@@ -139,6 +139,10 @@ foreach (
                                 'StoreController@viewedUpdates'
                             );
                             Route::patch('user', 'UserController@update');
+                            Route::post(
+                                'updateCustomerEmail',
+                                'CustomerController@updateEmail'
+                            );
                             Route::get('user', 'UserController@show');
 
                             Route::resource('register', 'RegisterController');

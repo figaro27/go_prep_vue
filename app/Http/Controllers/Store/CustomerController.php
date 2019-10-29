@@ -95,6 +95,16 @@ class CustomerController extends StoreController
     {
     }
 
+    public function updateEmail(Request $request)
+    {
+        $customerId = $request->get('id');
+        $customer = Customer::where('id', $customerId)->first();
+        $user = User::where('id', $customer->user_id)->first();
+        $newEmail = $request->get('email');
+        $user->email = $newEmail;
+        $user->save();
+    }
+
     /**
      * Remove the specified resource from storage.
      *

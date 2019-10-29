@@ -80,8 +80,31 @@
             <h4>Phone</h4>
             <p>{{ customer.phone }}</p>
 
-            <h4>Email</h4>
-            <p>{{ customer.email }}</p>
+            <h4>
+              Email
+              <i
+                v-if="!editingEmail"
+                @click="editEmail"
+                class="fa fa-edit text-warning"
+              ></i>
+            </h4>
+            <span v-if="editingEmail">
+              <b-form-input
+                v-model="editableEmail"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+              <img
+                class="couponX d-inline ml-1"
+                src="/images/customer/x.png"
+                @click="editingEmail = false"
+              />
+              <b-btn variant="primary" size="sm" @click="updateEmail"
+                >Save</b-btn
+              >
+            </span>
+            <span v-else>
+              <p>{{ customer.email }}</p>
+            </span>
           </div>
           <div class="col-md-4 pt-4">
             <h4>Address</h4>
@@ -274,6 +297,8 @@ export default {
   },
   data() {
     return {
+      editingEmail: false,
+      editableEmail: "",
       form: {},
       addCustomerModal: false,
       viewCustomerModal: false,
@@ -502,6 +527,22 @@ export default {
       });
 
       return _.filter(data);
+    },
+    editEmail() {
+      this.editingEmail = true;
+    },
+    updateEmail() {
+      axios
+        .post("/api/me/updateCustomerEmail", {
+          id: this.userId,
+          email: this.editableEmail
+        })
+        .then(resp => {
+          this.viewCustomerModal = false;
+          this.editableEmail = "";
+          this.$toastr.s("Email updated.");
+          this.editingEmail = false;
+        });
     }
   }
 };

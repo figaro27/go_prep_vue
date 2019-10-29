@@ -6,7 +6,7 @@ use App\Http\Controllers\Store\StoreController;
 use App\Order;
 use Illuminate\Http\Request;
 
-class UserController  extends StoreController
+class UserController extends StoreController
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,6 @@ class UserController  extends StoreController
      */
     public function index()
     {
-
     }
 
     /**
@@ -74,7 +73,7 @@ class UserController  extends StoreController
         $validatedData = $request->validate([
             'email' => 'required|email',
             'password' => 'sometimes|min:6',
-            'password2' => 'same:password',
+            'password2' => 'same:password'
         ]);
 
         $user = auth('api')->user();
@@ -83,12 +82,9 @@ class UserController  extends StoreController
             $user->email = $request->get('email');
             $user->password = bcrypt($request->get('password'));
             $user->save();
-        }
-        else {
+        } else {
             return 'error';
         }
-
-
     }
 
     /**
