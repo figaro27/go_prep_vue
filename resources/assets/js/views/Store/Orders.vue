@@ -321,7 +321,7 @@
                   params: { orderId: orderId }
                 }"
               >
-                <b-btn class="btn btn-warning mb-2">Adjust</b-btn>
+                <b-btn class="btn btn-warning mb-2 mt-1">Adjust</b-btn>
               </router-link>
             </div>
             <div class="d-inline">
