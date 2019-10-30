@@ -168,7 +168,7 @@
                             "
                             >+</i
                           >
-                          <b-dropdown-item @click="addMeal(meal, true)">
+                          <b-dropdown-item @click="addMeal(meal, false)">
                             {{ meal.default_size_title || "Regular" }} -
                             {{
                               format.money(meal.price, storeSettings.currency)
@@ -177,7 +177,7 @@
                           <b-dropdown-item
                             v-for="(size, index) in meal.sizes"
                             :key="'size_' + size.id + '_' + index"
-                            @click.stop="addMeal(meal, true, size)"
+                            @click.stop="addMeal(meal, false, size)"
                           >
                             {{ size.title }} -
                             {{
@@ -191,7 +191,7 @@
                             meal.meal_package &&
                               (!meal.sizes || meal.sizes.length === 0)
                           "
-                          @click="addMeal(meal, true)"
+                          @click="addMeal(meal, false)"
                           class="plus-minus menu-bag-btn"
                         >
                           <i>+</i>
@@ -294,14 +294,14 @@
                       :id="'dropdown_' + meal.id + '_' + group.category_id"
                       >+</i
                     >
-                    <b-dropdown-item @click="addMeal(meal, true)">
+                    <b-dropdown-item @click="addMeal(meal, false)">
                       {{ meal.default_size_title || "Regular" }} -
                       {{ format.money(meal.price, storeSettings.currency) }}
                     </b-dropdown-item>
                     <b-dropdown-item
                       v-for="(size, index) in meal.sizes"
                       :key="'size_' + size.id + '_' + index"
-                      @click.stop="addMeal(meal, true, size)"
+                      @click.stop="addMeal(meal, false, size)"
                     >
                       {{ size.title }} -
                       {{ format.money(size.price, storeSettings.currency) }}
@@ -313,7 +313,7 @@
                       meal.meal_package &&
                         (!meal.sizes || meal.sizes.length === 0)
                     "
-                    @click.stop="addMeal(meal, true)"
+                    @click.stop="addMeal(meal, false)"
                     class="menu-bag-btn small-buttons plus-minus"
                   >
                     <i>+</i>
@@ -630,9 +630,10 @@ export default {
         /* Refresh Meal for Bag End */
 
         if (
-          (meal.sizes && meal.sizes.length > 0) ||
-          (meal.components && meal.components.length > 0) ||
-          (meal.addons && meal.addons.length > 0)
+          meal.sizes &&
+          meal.sizes.length > 0 &&
+          ((meal.components && meal.components.length > 0) ||
+            (meal.addons && meal.addons.length > 0))
         ) {
           this.showMeal(meal);
           return;
