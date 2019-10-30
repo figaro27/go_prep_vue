@@ -51,6 +51,8 @@ class Bag
             json_encode([
                 'meal' => $item['meal']['id'],
                 'meal_package' => $item['meal_package'] ?? false,
+                'meal_package_id' => $item['meal_package_id'] ?? null, // contained in package
+                'meal_package_size_id' => $item['meal_package_size_id'] ?? null,
                 'size' => $item['size'] ?? null,
                 'components' => $item['components'] ?? [],
                 'addons' => $item['addons'] ?? [],
