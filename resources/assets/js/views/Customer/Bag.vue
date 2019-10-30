@@ -384,6 +384,13 @@ export default {
     }
   },
   mounted() {
+    if (
+      this.$route.params.storeView &&
+      this.storeModules.cashOrders &&
+      this.storeModules.cashOrderAutoSelect
+    ) {
+      this.cashOrder = true;
+    }
     this.deliveryDay = this.$route.params.deliveryDay;
     this.transferTime = this.$route.params.transferTime;
     if (this.$route.params.pickup != undefined) {
