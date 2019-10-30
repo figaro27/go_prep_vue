@@ -129,22 +129,22 @@
         ></b-form-textarea>
 
         <div class="row mt-4" v-if="storeSettings.menuStyle === 'image'">
-          <div class="col-md-1">
+          <div class="col-md-2">
             <h2 class="pt-3">
               {{ format.money(mealVariationPrice, storeSettings.currency) }}
             </h2>
           </div>
-          <div class="col-md-3 offset-1">
+          <div class="col-md-3">
             <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
           </div>
         </div>
         <div class="row mt-4" v-if="storeSettings.menuStyle === 'text'">
-          <div class="col-md-1">
+          <div class="col-md-2">
             <h2 class="pt-3">
               {{ format.money(mealVariationPrice, storeSettings.currency) }}
             </h2>
           </div>
-          <div class="col-md-3 offset-1">
+          <div class="col-md-3">
             <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
           </div>
         </div>

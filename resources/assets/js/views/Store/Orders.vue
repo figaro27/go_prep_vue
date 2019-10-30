@@ -259,7 +259,7 @@
           </div>
         </div>
         <div class="row light-background border-bottom mb-3">
-          <div class="col-md-4 pt-1">
+          <div class="col-md-5 pt-1">
             <span v-if="storeModules.dailyOrderNumbers">
               <h4>Daily Order #</h4>
               <p>{{ order.dailyOrderNumber }}</p>
@@ -360,7 +360,7 @@
               >
             </div>
           </div>
-          <div class="col-md-4 pt-1">
+          <div class="col-md-3 pt-1">
             <h4>Placed On</h4>
             <p>{{ moment(order.created_at).format("dddd, MMM Do") }}</p>
           </div>

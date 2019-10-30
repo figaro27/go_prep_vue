@@ -265,7 +265,7 @@
             :options="deliveryDaysOptionsStoreView"
             v-model="deliveryDay"
             @input="changeDeliveryDay"
-            class="delivery-select ml-2"
+            class="delivery-select ml-2 width-130"
             required
           >
             <option slot="top" disabled>-- Select delivery day --</option>
@@ -298,7 +298,7 @@
             :options="deliveryDaysOptions"
             v-model="deliveryDay"
             @input="changeDeliveryDay"
-            class="delivery-select ml-2"
+            class="delivery-select ml-2 width-130"
             required
           >
             <option slot="top" disabled>-- Select delivery day --</option>

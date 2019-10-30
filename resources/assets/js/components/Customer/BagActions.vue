@@ -24,7 +24,7 @@
         }"
         v-if="minimumMet && !storeView && !bagView"
       >
-        <b-btn class="menu-bag-btn">NEXT</b-btn>
+        <b-btn class="menu-bag-btn pb-1">NEXT</b-btn>
       </router-link>
 
       <router-link
