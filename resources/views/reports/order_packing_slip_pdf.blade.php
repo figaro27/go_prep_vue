@@ -2,7 +2,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" href="{{ asset('css/print.css') }}">
+  <link rel="stylesheet" href="{{ asset(mix('/css/print.css')) }}">
 <style>
 
 p, td {
@@ -49,7 +49,7 @@ $balance = $order->balance;
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <div class="row">
-      
+
       <div class="col-4 address">
         <p><b>{{$order->user->name}}</b></p>
           <p>{{$order->user->details->address}}</p>
@@ -74,7 +74,7 @@ $balance = $order->balance;
             @endif
             <p>Order Date: {{$order->created_at->format('D, m/d/Y')}}</p>
             @if ($order->pickup === 0)
-            <p>Delivery Date: {{$order->delivery_date->format('D, m/d/Y')}} 
+            <p>Delivery Date: {{$order->delivery_date->format('D, m/d/Y')}}
               @if ($order->transferTime)
                 {{ $order->transferTime }}
               @endif
@@ -177,7 +177,7 @@ $balance = $order->balance;
             </tr>
           </table>
 
-      
+
     <br>
       @foreach ($order->items as $i => $item)
         @if ($item->instructions)

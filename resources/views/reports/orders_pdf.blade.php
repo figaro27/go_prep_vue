@@ -2,7 +2,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" href="{{ asset('css/print.css') }}">
+  <link rel="stylesheet" href="{{ asset(mix('/css/print.css')) }}">
 </head>
 
 <body class="{{ $body_classes }}">
@@ -10,7 +10,7 @@
     <h1>Orders</h1>
     @if ($delivery_dates)
       <h2>
-        Delivery Days: 
+        Delivery Days:
         {{ $delivery_dates['from']->format('D, m/d/Y') }} -
         {{ $delivery_dates['to']->format('D, m/d/Y') }}
       </h2>
@@ -41,7 +41,7 @@
           </tr>
           @endforeach
         </tbody>
-      
+
       </table>
     </div>
   </div>
