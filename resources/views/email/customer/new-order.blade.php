@@ -510,12 +510,13 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   </td>
                 </tr>
                 @endif
-                @endif
-                
                 <!-- end content -->
                 <tr>
                   <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
                 </tr>
+                @endif
+                
+                
               </table>
             </td>
           </tr>
