@@ -41,9 +41,17 @@ export default {
       else if (
         this.$route.path === "/store/bag" &&
         this.$route.params.orderId != null
-      )
-        return "/store/adjust-order/" + this.$route.params.orderId;
-      else if (
+      ) {
+        return {
+          name: "store-adjust-order",
+          params: {
+            storeView: true,
+            orderId: this.$route.params.orderId,
+            forceValue: true,
+            checkoutData: this.checkoutData
+          }
+        };
+      } else if (
         this.$route.path === "/store/bag" &&
         this.$route.params.adjustOrder
       )
