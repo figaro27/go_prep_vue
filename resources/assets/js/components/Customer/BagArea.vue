@@ -239,42 +239,60 @@
       hide-footer
     >
       <h3 class="center-text mt-3">Add New</h3>
-      <b-input-group>
-        <b-form-input
-          v-model="lineItem.title"
-          placeholder="Title"
-          class="mr-3"
-        ></b-form-input>
-        <b-form-input
-          v-model="lineItem.price"
-          placeholder="Price"
-          class="mr-3"
-        ></b-form-input>
-      </b-input-group>
+      <div class="row">
+        <b-input-group>
+          <div class="col-md-7">
+            <b-form-input
+              v-model="lineItem.title"
+              placeholder="Title"
+              class="mr-3"
+            ></b-form-input>
+          </div>
+          <div class="col-md-3">
+            <b-form-input
+              v-model="lineItem.price"
+              placeholder="Price"
+              class="mr-3"
+            ></b-form-input>
+          </div>
+          <div class="col-md-2">
+            <b-btn variant="success" @click="addLineItem(0)">Add</b-btn>
+          </div>
+        </b-input-group>
+      </div>
+
       <b-form-radio-group
         v-if="storeModules.productionGroups"
         buttons
         v-model="lineItem.production_group_id"
         null
-        class="storeFilters ml-2 mt-3"
+        class="storeFilters ml-2 mt-3 mb-5"
         @change="val => {}"
         :options="productionGroupOptions"
       ></b-form-radio-group>
-      <b-btn variant="success" @click="addLineItem(0)">Add</b-btn>
+
+      <hr />
+
       <h3 class="center-text mt-5">Or Select From Existing</h3>
-      <b-input-group>
-        <b-form-select
-          v-model="selectedLineItem"
-          :options="lineItemOptions"
-          class="mr-3"
-        ></b-form-select>
-        <p class="pt-1 mr-3">
-          {{ format.money(selectedLineItem.price, storeSettings.currency) }}
-        </p>
-        <b-btn class="mb-5" variant="success" @click="addLineItem(1)"
-          >Add</b-btn
-        >
-      </b-input-group>
+      <div class="row mt-5">
+        <div class="col-md-7">
+          <b-form-select
+            v-model="selectedLineItem"
+            :options="lineItemOptions"
+            class="mr-3 w-100"
+          ></b-form-select>
+        </div>
+        <div class="col-md-3">
+          <p class="pt-1 mr-3 center-text">
+            {{ format.money(selectedLineItem.price, storeSettings.currency) }}
+          </p>
+        </div>
+        <div class="col-md-2">
+          <b-btn class="mb-5" variant="success" @click="addLineItem(1)"
+            >Add</b-btn
+          >
+        </div>
+      </div>
     </b-modal>
 
     <v-style>
