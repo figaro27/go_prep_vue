@@ -370,8 +370,8 @@ export default {
         return this.store.items.length == 0;
       } else {
         return (
-          (!meals || meals.length == 0) &&
-          (!mealPackages || mealPackages.length == 0)
+          (!this.meals || this.meals.length == 0) &&
+          (!this.mealPackages || this.mealPackages.length == 0)
         );
       }
     },
