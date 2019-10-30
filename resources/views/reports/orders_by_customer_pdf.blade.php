@@ -2,7 +2,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" href="{{ asset('css/print.css') }}">
+  <link rel="stylesheet" href="{{ asset(mix('/css/print.css')) }}">
 
 </head>
 
@@ -11,7 +11,7 @@
     <h1>Orders Summary</h1>
     @if ($delivery_dates)
       <h2>
-        Delivery Days: 
+        Delivery Days:
         {{ $delivery_dates['from']->format('D, m/d/Y') }} -
         {{ $delivery_dates['to']->format('D, m/d/Y') }}
       </h2>
@@ -23,7 +23,7 @@
       @if($x > 0)
         <div style="height:30px"></div>
       @endif
-      
+
       @foreach($orderGroup['orders'] as $order)
       <div class="unbreakable">
         @if ($params['dailyOrderNumbers'])
@@ -31,7 +31,7 @@
         @endif
         <h4>
           @if ($order['pickup'] === 0)
-            DELIVERY - {{ $order['delivery_date']->format('D, m/d/Y') }} 
+            DELIVERY - {{ $order['delivery_date']->format('D, m/d/Y') }}
           @endif
           @if ($order['pickup'] === 1)
             PICKUP - {{ $order['delivery_date']->format('D, m/d/Y') }}
@@ -49,7 +49,7 @@
         @endif
         @endif
         @if ($order['pickup_location_id'] != null)
-        <h5>Pickup Location: 
+        <h5>Pickup Location:
           {{ $order['pickup_location']->name }}<br>
           {{ $order['pickup_location']->address }},
           {{ $order['pickup_location']->city }},
