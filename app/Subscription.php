@@ -314,15 +314,21 @@ class Subscription extends Model
         $order_transaction->user_id = $latestOrder->user_id;
         $order_transaction->customer_id = $latestOrder->customer_id;
         $order_transaction->type = 'order';
-        if (!$cashOrder) {
-            $order_transaction->stripe_id = $latestOrder->stripe_id;
-            $order_transaction->card_id = $latestOrder->card_id
-                ? $latestOrder->card_id
-                : null;
-        } else {
-            $order_transaction->stripe_id = null;
-            $order_transaction->card_id = null;
-        }
+        // if (!$cashOrder) {
+        //     $order_transaction->stripe_id = $latestOrder->stripe_id;
+        //     $order_transaction->card_id = $latestOrder->card_id
+        //         ? $latestOrder->card_id
+        //         : null;
+        // } else {
+        //     $order_transaction->stripe_id = null;
+        //     $order_transaction->card_id = null;
+        // }
+        $order_transaction->stripe_id = $latestOrder->stripe_id
+            ? $latestOrder->stripe_id
+            : null;
+        $order_transaction->card_id = $latestOrder->card_id
+            ? $latestOrder->card_id
+            : null;
         $order_transaction->amount = $latestOrder->amount;
         $order_transaction->save();
 
