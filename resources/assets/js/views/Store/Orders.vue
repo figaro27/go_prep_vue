@@ -534,7 +534,7 @@
                   Processing Fee:
                   {{ format.money(order.processingFee, order.currency) }}
                 </p>
-                <p>
+                <p v-if="order.salesTax > 0">
                   Sales Tax:
                   {{ format.money(order.salesTax, order.currency) }}
                 </p>
