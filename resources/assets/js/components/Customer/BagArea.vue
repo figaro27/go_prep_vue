@@ -446,6 +446,11 @@ export default {
 
               if (mealQuantities[guid]) {
                 mealQuantities[guid].quantity += item.quantity;
+              } else if (item.meal) {
+                mealQuantities[guid] = {
+                  quantity: item.quantity,
+                  meal: item.meal
+                };
               }
             });
           } else {
@@ -456,6 +461,11 @@ export default {
 
               if (mealQuantities[guid]) {
                 mealQuantities[guid].quantity += mealItem.quantity;
+              } else if (item.meal) {
+                mealQuantities[guid] = {
+                  quantity: item.quantity,
+                  meal: item.meal
+                };
               }
             });
           }
@@ -473,6 +483,11 @@ export default {
 
             if (mealQuantities[guid]) {
               mealQuantities[guid].quantity += item.quantity;
+            } else if (item.meal) {
+              mealQuantities[guid] = {
+                quantity: item.quantity,
+                meal: item.meal
+              };
             }
           });
         } else {
@@ -483,6 +498,11 @@ export default {
 
             if (mealQuantities[guid]) {
               mealQuantities[guid] += mealItem.quantity;
+            } else if (item.meal) {
+              mealQuantities[guid] = {
+                quantity: item.quantity,
+                meal: item.meal
+              };
             }
           });
         }
