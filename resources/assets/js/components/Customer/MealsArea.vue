@@ -598,10 +598,10 @@ export default {
         showDetail = true;
       }
 
-      /*if (showDetail) {
-        this.showMealPackage(mealPackage, size)
-        return false
-      }*/
+      if (showDetail) {
+        //this.showMealPackage(mealPackage, size)
+        //return false
+      }
       /* Show Detail Page or not end */
 
       this.addOne(mealPackage, true, size);
