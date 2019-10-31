@@ -14,6 +14,7 @@
         <h5 class="modal-title">{{ mealPackageTitle }}</h5>
       </div>
     </div>
+
     <div v-if="mealPackage">
       <b-row v-if="components.length" class="my-3">
         <b-col>
@@ -511,6 +512,16 @@ export default {
             );
           } else {
             if (!_.isEmpty(this.choices) || !_.isEmpty(this.addons)) {
+              if (this.addons) {
+                this.addons = this.addons.map(addon => {
+                  return addon.map(item => {
+                    item.meal = this.getMeal(item.meal_id);
+
+                    return item;
+                  });
+                });
+              }
+
               resolve({
                 components: { ...this.choices },
                 addons: { ...this.addons }
@@ -586,6 +597,7 @@ export default {
 
         return true;
       });
+
       return _(mealOptions)
         .map(mealOption => {
           const meal = this.getMeal(mealOption.meal_id);

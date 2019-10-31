@@ -78,7 +78,11 @@
             :nutritionalFacts="nutritionalFacts"
           ></meal-page>
 
-          <!--<meal-package-page></meal-package-page>!-->
+          <meal-package-page
+            :mealPackage="mealPackage"
+            :mealPackageSize="mealPackageSize"
+            :storeSettings="storeSettings"
+          ></meal-package-page>
 
           <floating-action-button
             class="d-md-none"
@@ -341,10 +345,12 @@ export default {
       finalCategories: [],
       meal: null,
       mealPackage: null,
+      mealPackageSize: null,
       ingredients: "",
       mealDescription: "",
       mealModal: false,
       mealPageView: false,
+      mealPackagePageView: false,
       mealPackageModal: false,
       nutritionalFacts: {},
       showMealsArea: true,
@@ -749,15 +755,6 @@ export default {
         this.total += 1;
       }
     },
-    // showMealModal(meal) {
-    //   this.meal = meal;
-    //   this.mealModal = true;
-    //   this.mealDescription = meal.description
-    //     ? meal.description.replace(/\n/g, "<br>")
-    //     : "";
-    //     this.getNutritionFacts(this.meal.ingredients, this.meal);
-    //     // this.$refs.mealGallery.reSlick();
-    // },
     showMealPackageModal(mealPackage) {
       this.mealPackage = { ...mealPackage };
       this.mealPackageModal = true;
@@ -772,19 +769,12 @@ export default {
         });
       });
     },
+    async showMealPackagePage(meal, size) {
+      this.mealPackagePageView = true;
+      this.mealPackage = meal;
+      this.mealPackageSize = size;
+    },
     async showMealPage(meal) {
-      /* Refresh Meal */
-      /*if (!meal.refreshed) {
-        const newMeal = await store.dispatch("refreshStoreMeal", meal);
-
-        if (newMeal) {
-          meal = newMeal;
-        } else {
-          return false;
-        }
-      }*/
-      /* Refresh Meal End */
-
       this.mealPageView = true;
       this.meal = meal;
       this.mealDescription = meal.description
@@ -981,6 +971,7 @@ export default {
       this.showMealsArea = true;
       this.showMealPackagesArea = true;
       this.mealPageView = false;
+      this.mealPackagePageView = false;
     }
   }
 };
