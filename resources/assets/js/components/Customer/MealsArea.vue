@@ -599,8 +599,8 @@ export default {
       }
 
       if (showDetail) {
-        this.showMealPackage(mealPackage, size);
-        return false;
+        //this.showMealPackage(mealPackage, size);
+        //return false;
       }
       /* Show Detail Page or not end */
 
