@@ -234,7 +234,12 @@ u + .body .full { width:100% !important; width:100vw !important;}
                     @endif
                   </td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;font-weight: bold; ">
+                    @if ($mealPackageItem->meal_package_size)
+                    ${{ number_format($mealPackageItem->meal_package_size->price, 2) }}
+                    @endif
+                    @if ($mealPackageItem->meal_package_size === null)
                     ${{ number_format($mealPackageItem->meal_package->price, 2) }}
+                    @endif
                   </td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;font-weight: bold; ">
                     {{ $mealPackageItem->quantity }}
