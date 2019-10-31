@@ -630,6 +630,17 @@ export default {
         /* Refresh Meal for Bag End */
 
         if (
+          meal.sizes & (meal.sizes.length > 0) &&
+          meal.components &&
+          meal.components.length === 0 &&
+          meal.addons &&
+          meal.addons.length === 0
+        ) {
+          this.addOne(meal, false, null, null, [], null);
+          return;
+        }
+
+        if (
           meal.sizes &&
           meal.sizes.length > 0 &&
           ((meal.components && meal.components.length > 0) ||
