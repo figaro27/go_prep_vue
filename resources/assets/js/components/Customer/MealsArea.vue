@@ -551,18 +551,6 @@ export default {
       if (meal.meal_package) {
         this.minusOne(meal, true);
       } else {
-        /* Refresh Meal for Bag */
-        /*if (!meal.refreshed_bag) {
-          const newMeal = await store.dispatch("refreshStoreMealBag", meal);
-
-          if (newMeal) {
-            meal = newMeal;
-          } else {
-            return false;
-          }
-        }*/
-        /* Refresh Meal for Bag End */
-
         if (
           (meal.sizes && meal.sizes.length > 0) ||
           (meal.components && meal.components.length > 0) ||
@@ -575,21 +563,6 @@ export default {
       }
     },
     async addMealPackage(mealPackage, condition = false, size) {
-      /* Refresh Package for Bag */
-      /*if (!mealPackage.refreshed_bag) {
-        const newPackage = await store.dispatch(
-          "refreshStoreMealPackageBag",
-          mealPackage
-        );
-
-        if (newPackage) {
-          mealPackage = newPackage;
-        } else {
-          return false;
-        }
-      }*/
-      /* Refresh Package for Bag End */
-
       if (size === undefined) {
         size = null;
       }
@@ -600,6 +573,36 @@ export default {
         this.packageTitle =
           mealPackage.title + " - " + mealPackage.default_size_title;
       }
+
+      /* Show Detail Page or not */
+      let showDetail = false;
+      let sizeId = size ? size.id : null;
+      let sizeCriteria = { meal_package_size_id: sizeId };
+
+      if (
+        mealPackage.components &&
+        mealPackage.components.length &&
+        _.maxBy(mealPackage.components, "minimum") &&
+        _.find(mealPackage.components, component => {
+          return _.find(component.options, sizeCriteria);
+        })
+      ) {
+        showDetail = true;
+      }
+
+      if (
+        mealPackage.addons &&
+        mealPackage.addons.length &&
+        _.find(mealPackage.addons, sizeCriteria)
+      ) {
+        showDetail = true;
+      }
+
+      /*if (showDetail) {
+        this.showMealPackage(mealPackage, size)
+        return false
+      }*/
+      /* Show Detail Page or not end */
 
       this.addOne(mealPackage, true, size);
 
@@ -617,18 +620,6 @@ export default {
       if (meal.meal_package) {
         this.addMealPackage(meal, true);
       } else {
-        /* Refresh Meal for Bag */
-        /*if (!meal.refreshed_bag) {
-          const newMeal = await store.dispatch("refreshStoreMealBag", meal);
-
-          if (newMeal) {
-            meal = newMeal;
-          } else {
-            return false;
-          }
-        }*/
-        /* Refresh Meal for Bag End */
-
         if (
           (meal.sizes && meal.sizes.length > 0) ||
           (meal.components && meal.components.length > 0) ||
@@ -653,6 +644,11 @@ export default {
           this.$parent.showBagClass -= " area-scroll";
         }
       }
+    },
+    showMealPackage(mealPackage, size) {
+      this.$parent.showMealPackagePage(mealPackage, size);
+      this.$parent.showMealsArea = false;
+      this.$parent.showMealPackagesArea = false;
     },
     showMeal(meal, group) {
       if (meal.meal_package) {
