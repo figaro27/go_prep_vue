@@ -242,10 +242,13 @@ class Subscription extends Model
                     ) {
                         return (object) [
                             'meal_component_id' => $component->component->id,
-                            'meal_component_option_id' =>
-                                $component->option->id,
+                            'meal_component_option_id' => $component->option
+                                ? $component->option->id
+                                : null,
                             'component' => $component->component->title,
-                            'option' => $component->option->title
+                            'option' => $component->option
+                                ? $component->option->title
+                                : null
                         ];
                     }),
                     'addons' => $mealSub->addons->map(function ($addon) {
@@ -383,10 +386,10 @@ class Subscription extends Model
         // Send new order notification to store at the cutoff once the order is paid
         if ($this->store->settings->notificationEnabled('new_order')) {
             $this->store->sendNotification('new_order', [
-                'order' => $newOrder ?? null,
-                'pickup' => $newOrder->pickup ?? null,
+                'order' => $latestOrder ?? null,
+                'pickup' => $latestOrder->pickup ?? null,
                 'card' => null,
-                'customer' => $newOrder->customer ?? null,
+                'customer' => $latestOrder->customer ?? null,
                 'subscription' => $this ?? null
             ]);
         }
@@ -394,10 +397,10 @@ class Subscription extends Model
         // Send new order notification to customer at the cutoff once the order is paid
         if ($this->user->details->notificationEnabled('new_order')) {
             $this->user->sendNotification('new_order', [
-                'order' => $newOrder ?? null,
-                'pickup' => $newOrder->pickup ?? null,
+                'order' => $latestOrder ?? null,
+                'pickup' => $latestOrder->pickup ?? null,
                 'card' => null,
-                'customer' => $newOrder->customer ?? null,
+                'customer' => $latestOrder->customer ?? null,
                 'subscription' => $this ?? null
             ]);
         }

@@ -63,13 +63,6 @@
                   listed in descending order of weight to show the most
                   prominent ingredients first.
                 </p>
-                <p>
-                  -We are aware of the bug in which nutrition facts don't show
-                  when adding ingredients to a new meal and will work it out
-                  this week. Your ingredients are still saving and you can view
-                  the nutrition facts once you save the new meal and open it
-                  back up.
-                </p>
               </li>
               <li>
                 <p class="strong">Refunds / Charges / Settles / Voids</p>

@@ -609,7 +609,7 @@ export default {
       applyToBalanceRefund: false,
       applyToBalanceCharge: false,
       checkingOut: false,
-      ordersByDate: {},
+      ordersByDate: [],
       email: "",
       deliveryDate: "All",
       filter: false,

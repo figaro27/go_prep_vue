@@ -238,10 +238,13 @@ class Order extends Model
                     ) {
                         return (object) [
                             'meal_component_id' => $component->component->id,
-                            'meal_component_option_id' =>
-                                $component->option->id,
+                            'meal_component_option_id' => $component->option
+                                ? $component->option->id
+                                : null,
                             'component' => $component->component->title,
-                            'option' => $component->option->title
+                            'option' => $component->option
+                                ? $component->option->title
+                                : null
                         ];
                     }),
                     'addons' => $mealOrder->addons->map(function ($addon) {

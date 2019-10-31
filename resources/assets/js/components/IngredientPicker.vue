@@ -642,8 +642,12 @@ export default {
     getNutritionFacts(ingredients) {
       const nutrition = this.nutrition.getTotals(ingredients);
       const ingredientList = this.nutrition.getIngredientList(ingredients);
-      const servingsPerMeal = this.meal.servingsPerMeal;
-      const servingSizeUnit = this.meal.servingSizeUnit;
+      const servingsPerMeal = this.meal.servingsPerMeal
+        ? this.meal.servingsPerMeal
+        : 1;
+      const servingSizeUnit = this.meal.servingSizeUnit
+        ? this.meal.servingSizeUnit
+        : "";
 
       $(this.$refs.nutritionFacts).html("");
 
@@ -655,7 +659,7 @@ export default {
         valueServingSizeUnit: servingSizeUnit,
         showServingsPerContainer: true,
 
-        itemName: this.meal.title,
+        itemName: this.meal.title ? this.meal.title : "",
         ingredientList: ingredientList,
         showIngredients: this.showIngredients,
         decimalPlacesForQuantityTextbox: 2,

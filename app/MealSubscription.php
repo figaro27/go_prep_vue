@@ -62,7 +62,9 @@ class MealSubscription extends Pivot
         if (count($this->components) || count($this->addons)) {
             $comp = $this->components
                 ->map(function ($component) {
-                    return $component->option->title;
+                    return $component->option
+                        ? $component->option->title
+                        : null;
                 })
                 ->implode(', ');
 
@@ -97,10 +99,16 @@ class MealSubscription extends Pivot
 
             if ($hasComponents) {
                 foreach ($this->components as $component) {
-                    $title .=
-                        '<li class="plain">' .
-                        $component->option->title .
-                        '</li>';
+                    if (
+                        isset($component->option) &&
+                        $component->option != null &&
+                        isset($component->option->title)
+                    ) {
+                        $title .=
+                            '<li class="plain">' .
+                            $component->option->title .
+                            '</li>';
+                    }
                 }
             }
             if ($hasAddons) {
@@ -136,7 +144,13 @@ class MealSubscription extends Pivot
 
         if ($this->meal->has('components') && $this->components) {
             foreach ($this->components as $component) {
-                $price += $component->option->price;
+                if (
+                    isset($component->option) &&
+                    $component->option != null &&
+                    isset($component->option->price)
+                ) {
+                    $price += $component->option->price;
+                }
             }
         }
         if ($this->meal->has('addons') && $this->addons) {

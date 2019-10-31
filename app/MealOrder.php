@@ -132,12 +132,18 @@ class MealOrder extends Pivot
         }
 
         if (count($this->components)) {
-            $comp = $this->components
-                ->map(function ($component) {
-                    return $component->option->title;
-                })
-                ->implode(', ');
-            $title .= ' - ' . $comp;
+            if (
+                isset($component->option) &&
+                $component->option != null &&
+                isset($component->option->price)
+            ) {
+                $comp = $this->components
+                    ->map(function ($component) {
+                        return $component->option->title;
+                    })
+                    ->implode(', ');
+                $title .= ' - ' . $comp;
+            }
         }
         if (count($this->addons)) {
             $comp = $this->addons
@@ -179,10 +185,16 @@ class MealOrder extends Pivot
 
             if ($hasComponents) {
                 foreach ($this->components as $component) {
-                    $title .=
-                        '<li class="plain" style="font-size:14px">' .
-                        $component->option->title .
-                        '</li>';
+                    if (
+                        isset($component->option) &&
+                        $component->option != null &&
+                        isset($component->option->title)
+                    ) {
+                        $title .=
+                            '<li class="plain" style="font-size:14px">' .
+                            $component->option->title .
+                            '</li>';
+                    }
                 }
             }
             if ($hasAddons) {
@@ -221,7 +233,13 @@ class MealOrder extends Pivot
 
         if ($this->meal->has('components') && $this->components) {
             foreach ($this->components as $component) {
-                $price += $component->option->price;
+                if (
+                    isset($component->option) &&
+                    $component->option != null &&
+                    isset($component->option->price)
+                ) {
+                    $price += $component->option->price;
+                }
             }
         }
         if ($this->meal->has('addons') && $this->addons) {
