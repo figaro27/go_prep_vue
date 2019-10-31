@@ -419,6 +419,7 @@ class SpaController extends Controller
                     $packages = MealPackage::with([
                         'meals',
                         'sizes',
+                        'sizes.meals',
                         'components',
                         'addons'
                     ])
