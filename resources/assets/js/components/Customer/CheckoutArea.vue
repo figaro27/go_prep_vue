@@ -1069,7 +1069,10 @@ export default {
       else return "Prepared Once";
     },
     tax() {
-      if (this.storeSettings.enableSalesTax === 0) {
+      if (
+        this.storeSettings.enableSalesTax === 0 ||
+        this.storeSettings.enableSalesTax === false
+      ) {
         return 0;
       }
       if (this.storeSettings.salesTax > 0)
