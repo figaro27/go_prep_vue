@@ -494,32 +494,32 @@ export default {
         const addon = pkg.getAddon(addonId);
 
         if (addon.selectable) {
-          _.forEach(addonItems, item => {
-            const mealId = item.meal_id;
-            const sizeId = item.meal_size_id;
+          _.forEach(addonItems, addonItem => {
+            const mealId = addonItem.meal_id;
+            const sizeId = addonItem.meal_size_id;
             const guid = JSON.stringify({ mealId, sizeId });
 
             if (mealQuantities[guid]) {
-              mealQuantities[guid].quantity += item.quantity;
-            } else if (item.meal) {
+              mealQuantities[guid].quantity += addonItem.quantity;
+            } else if (addonItem.meal) {
               mealQuantities[guid] = {
-                quantity: item.quantity,
-                meal: item.meal
+                quantity: addonItem.quantity,
+                meal: addonItem.meal
               };
             }
           });
         } else {
-          _.forEach(addonItems, mealItem => {
-            const mealId = mealItem.meal_id;
-            const sizeId = mealItem.meal_size_id;
+          _.forEach(addonItems, addonItem => {
+            const mealId = addonItem.meal_id;
+            const sizeId = addonItem.meal_size_id;
             const guid = JSON.stringify({ mealId, sizeId });
 
             if (mealQuantities[guid]) {
-              mealQuantities[guid] += mealItem.quantity;
-            } else if (item.meal) {
+              mealQuantities[guid] += addonItem.quantity;
+            } else if (addonItem.meal) {
               mealQuantities[guid] = {
-                quantity: item.quantity,
-                meal: item.meal
+                quantity: addonItem.quantity,
+                meal: addonItem.meal
               };
             }
           });

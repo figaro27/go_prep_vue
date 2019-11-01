@@ -155,6 +155,10 @@ class PackingSlips
 
         Log::info('Output: ' . $output);
 
+        if ($pdf->getError()) {
+            Log::error('Error: ' . $pdf->getError());
+        }
+
         Storage::disk('local')->put($filename, $output);
 
         Log::info('Saved to ' . $filename);
