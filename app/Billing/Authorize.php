@@ -35,10 +35,12 @@ class Authorize implements IBilling
             $this->setAuthContext($store);
         }
 
-        $this->setSandbox(env('APP_ENV') !== 'production');
+        if (env('APP_ENV') !== 'production') {
+            $this->setSandbox();
+        }
     }
 
-    public function setSandbox($sandbox)
+    public function setSandbox()
     {
         $this->sandbox = true;
         $this->environment =
