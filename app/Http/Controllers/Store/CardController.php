@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Customer;
 use App\User;
 use App\Card;
+use App\Billing\Authorize;
 
 class CardController extends StoreController
 {
