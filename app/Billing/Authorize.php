@@ -18,7 +18,7 @@ class Authorize implements IBilling
 {
     public static $id = 'authorize';
     protected $sandbox = false;
-    protected $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
+    protected $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
 
     const TEST_CARD_NUMBER = '4242424242424242';
     const TEST_CARD_EXPIRATION = '2032-10';
@@ -41,6 +41,8 @@ class Authorize implements IBilling
     public function setSandbox($sandbox)
     {
         $this->sandbox = true;
+        $this->environment =
+            \net\authorize\api\constants\ANetEnvironment::SANDBOX;
     }
 
     public function setAuthContext(Store $store)
