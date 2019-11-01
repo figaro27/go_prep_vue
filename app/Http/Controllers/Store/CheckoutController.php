@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Store;
 
 use App\Bag;
+use App\Billing\Billing;
 use App\User;
 use App\Http\Controllers\Store\StoreController;
 use App\Mail\Customer\MealPlan;
