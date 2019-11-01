@@ -90,6 +90,8 @@ class Authorize implements IBilling
      */
     public function createCard(Customer $customer, string $token)
     {
+        $user = $customer->user;
+
         $opaque = new AnetApi\OpaqueDataType();
         $opaque->setDataDescriptor('COMMON.ACCEPT.INAPP.PAYMENT');
         $opaque->setDataValue($token);
@@ -97,11 +99,23 @@ class Authorize implements IBilling
         $paymentCreditCard = new AnetAPI\PaymentType();
         $paymentCreditCard->setOpaqueData($opaque);
 
+        // Create the Bill To info for new payment type
+        $billto = new AnetAPI\CustomerAddressType();
+        $billto->setFirstName($user->details->firstname);
+        $billto->setLastName($user->details->firstname);
+        $billto->setAddress($user->details->address);
+        $billto->setCity($user->details->city);
+        $billto->setState($user->details->state);
+        $billto->setZip($user->details->zip);
+        $billto->setCountry($user->details->country);
+        $billto->setPhoneNumber($user->details->phone);
+
         // Create a new Customer Payment Profile object
         $paymentprofile = new AnetAPI\CustomerPaymentProfileType();
         $paymentprofile->setCustomerType('individual');
         $paymentprofile->setPayment($paymentCreditCard);
         $paymentprofile->setDefaultPaymentProfile(true);
+        $paymentprofile->setBillTo($billto);
 
         $paymentprofiles = [$paymentprofile];
 
@@ -141,6 +155,7 @@ class Authorize implements IBilling
         $customerProfile->setDescription('');
         $customerProfile->setMerchantCustomerId("M_" . time());
         $customerProfile->setEmail($user->email);
+
         //$customerProfile->setpaymentProfiles($paymentProfiles);
         //$customerProfile->setShipToList($shippingProfiles);
 
