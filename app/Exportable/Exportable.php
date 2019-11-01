@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use mikehaertl\wkhtmlto\Pdf;
 use \XLSXWriter;
+use Illuminate\Support\Facades\Log;
 
 trait Exportable
 {
@@ -142,7 +143,12 @@ trait Exportable
 
         $pdf = new Pdf($pdfConfig);
         $pdf->addPage($html);
+
         $output = $pdf->toString();
+
+        if ($pdf->getError()) {
+            Log::error('PDF Error: ' . $pdf->getError());
+        }
 
         /*if ($output === false) {
             var_dump($pdf->getError());
