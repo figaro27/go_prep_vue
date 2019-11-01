@@ -254,7 +254,7 @@
           >
             <div
               class="card card-text-menu border-light p-3 mr-1"
-              @click.stop="showMeal(meal, group)"
+              @click="showMeal(meal, group)"
               style="height: 100%;"
             >
               <!--<div class="bag-item-quantity row">!-->
@@ -294,7 +294,7 @@
                       :id="'dropdown_' + meal.id + '_' + group.category_id"
                       >+</i
                     >
-                    <b-dropdown-item @click="addMeal(meal, false)">
+                    <b-dropdown-item @click.stop="addMeal(meal, false)">
                       {{ meal.default_size_title || "Regular" }} -
                       {{ format.money(meal.price, storeSettings.currency) }}
                     </b-dropdown-item>
