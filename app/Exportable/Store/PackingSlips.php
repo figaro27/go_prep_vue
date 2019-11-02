@@ -108,7 +108,8 @@ class PackingSlips
             //'margin-left' => 0,
             //'margin-right' => 0,
             //'binary' => '/usr/local/bin/wkhtmltopdf',
-            'disable-smart-shrinking'
+            'disable-smart-shrinking',
+            'no-pdf-compression'
         ];
 
         if (config('pdf.xserver')) {

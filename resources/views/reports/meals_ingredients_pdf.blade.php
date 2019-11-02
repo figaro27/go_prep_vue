@@ -1,3 +1,4 @@
+<!doctype html>
 <html>
 
 <head>
@@ -13,10 +14,18 @@
       <table border="1" width="100">
         <thead>
           <tr>
-            <th><h4>Meal</h4></th>
-            <th><h4>Ingredient</h4></th>
-            <th><h4>Quantity</h4></th>
-            <th><h4>Unit</h4></th>
+            <th>
+              <h4>Meal</h4>
+            </th>
+            <th>
+              <h4>Ingredient</h4>
+            </th>
+            <th>
+              <h4>Quantity</h4>
+            </th>
+            <th>
+              <h4>Unit</h4>
+            </th>
 
           </tr>
         </thead>
@@ -25,9 +34,9 @@
           @foreach ($data as $i => $row)
           <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
             @foreach($row as $value)
-              <td>
-                {{ $value }}
-              </td>
+            <td>
+              {{ $value }}
+            </td>
             @endforeach
           </tr>
           @endforeach
