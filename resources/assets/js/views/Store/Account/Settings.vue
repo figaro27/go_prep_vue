@@ -1186,7 +1186,10 @@ export default {
         this.storeSettings.cutoff_days + this.storeSettings.cutoff_hours > 0 &&
         this.storeSettings.delivery_days.length > 0 &&
         this.storeSettings.delivery_distance_radius > 0 &&
-        !_.isEmpty(this.storeSettings.stripe_id)
+        ((this.storeSettings.payment_gateway === "stripe" &&
+          !_.isEmpty(this.storeSettings.stripe_id)) ||
+          (this.storeSettings.payment_gateway === "authorize" &&
+            !_.isEmpty(this.storeSettings.authorize_login_id)))
       );
     },
     logoPrefill() {
