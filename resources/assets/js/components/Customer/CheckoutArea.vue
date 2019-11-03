@@ -327,7 +327,8 @@
         v-if="
           storeModules.pickupHours &&
             pickup &&
-            $route.params.subscriptionId === undefined
+            $route.params.subscriptionId === undefined &&
+            deliveryDay !== undefined
         "
       >
         <div>
@@ -344,7 +345,8 @@
         v-if="
           storeModules.deliveryHours &&
             !pickup &&
-            $route.params.subscriptionId === undefined
+            $route.params.subscriptionId === undefined &&
+            deliveryDay !== undefined
         "
       >
         <div>
@@ -822,8 +824,25 @@ export default {
 
       let hourOptions = [];
 
+      let omittedTransferTimes = this.storeModuleSettings.omittedTransferTimes;
+      let selectedDeliveryDay = moment(this.deliveryDay).format("YYYY-MM-DD");
+      let omit = [];
+
+      omittedTransferTimes.forEach(dateTime => {
+        let date = Object.keys(dateTime)[0];
+        let time = Object.values(dateTime)[0];
+
+        if (date === selectedDeliveryDay) {
+          let hour = parseInt(time.substr(0, 1));
+          if (hour < 12) hour += 12;
+          omit.push(hour);
+        }
+      });
+
       while (startTime <= endTime) {
-        hourOptions.push(startTime);
+        if (!omit.includes(startTime)) {
+          hourOptions.push(startTime);
+        }
         startTime++;
       }
 
