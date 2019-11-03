@@ -3,7 +3,7 @@
     <!-- Content Begin !-->
     <div slot="modal-header" class="row w-100">
       <div class="col-md-12 text-center">
-        <h5 class="modal-title">{{ packageTitle }}</h5>
+        <h5 class="modal-title dbl-underline mb-4">{{ packageTitle }}</h5>
       </div>
     </div>
 
@@ -19,10 +19,10 @@
               class="categorySection"
               :target="'categorySection_' + component.id"
             >
-              <h4 class="center-text mb-3">
+              <h3 class="center-text mb-3">
                 {{ getComponentLabel(component) }} - Remaining:
                 {{ getRemainingMeals(component.id) }}
-              </h4>
+              </h3>
 
               <b-form-group :label="null">
                 <div v-for="option in getOptions(component)" :key="option.id">
@@ -305,7 +305,7 @@
         :target="'categorySection_addons'"
       >
         <b-col>
-          <h6>Add-ons</h6>
+          <h3 class="center-text mb-3">Add-ons</h3>
 
           <div v-for="addon in mealAddons" :key="addon.id">
             <b-checkbox @input="toggleAddon(addon.id)">

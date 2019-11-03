@@ -1104,7 +1104,9 @@ export default {
       this.updateMeal(id, { instructions }, true);
     }, 300);
   },
-  mounted() {},
+  mounted() {
+    this.onChangeStatusFilter(this.filter.status);
+  },
   methods: {
     ...mapActions({
       refreshMeals: "refreshMeals",
