@@ -688,6 +688,7 @@ export default {
       }
     },
     showMealPackage(mealPackage, size) {
+      $([document.documentElement, document.body]).scrollTop(0);
       this.$parent.showMealPackagePage(mealPackage, size);
       this.$parent.showMealsArea = false;
       this.$parent.showMealPackagesArea = false;
