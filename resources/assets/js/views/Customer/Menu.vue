@@ -5,6 +5,8 @@
     <category-slider></category-slider>
 
     <div class="menu">
+      <delivery-date-modal v-if="!bagDeliveryDate"></delivery-date-modal>
+
       <store-description-modal
         :showDescriptionModal="showDescriptionModal"
       ></store-description-modal>
@@ -183,6 +185,7 @@ import Spinner from "../../components/Spinner";
 import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 import MealComponentsModal from "../../components/Modals/MealComponentsModal";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
+import DeliveryDateModal from "./Modals/DeliveryDateModal";
 import MenuBag from "../../mixins/menuBag";
 import units from "../../data/units";
 import nutrition from "../../data/nutrition";
@@ -294,7 +297,8 @@ export default {
     MenuFilters,
     MealPage,
     MealPackagePage,
-    MealComponentsModal
+    MealComponentsModal,
+    DeliveryDateModal
   },
   mixins: [MenuBag],
   props: {
@@ -355,7 +359,8 @@ export default {
       nutritionalFacts: {},
       showMealsArea: true,
       showMealPackagesArea: true,
-      mealSizePrice: null
+      mealSizePrice: null,
+      deliveryDate: null
     };
   },
   computed: {
@@ -369,7 +374,8 @@ export default {
       _categories: "viewedStoreCategories",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
-      allTags: "tags"
+      allTags: "tags",
+      bagDeliveryDate: "bagDeliveryDate"
     }),
     showSpinner() {
       if (this.context == "customer" || this.context == "guest") {

@@ -262,8 +262,8 @@
           <strong v-if="pickup === 0">Delivery Day</strong>
           <strong v-if="pickup === 1">Pickup Day</strong>
           <b-select
-            :options="deliveryDaysOptionsStoreView"
-            v-model="deliveryDay"
+            :options="deliveryDateOptionsStoreView"
+            :value="bagDeliveryDate"
             @input="changeDeliveryDay"
             class="delivery-select ml-2 width-130"
             required
@@ -275,7 +275,7 @@
       <li
         class="checkout-item"
         v-if="
-          deliveryDaysOptions.length > 1 &&
+          deliveryDateOptions.length > 1 &&
             $route.params.subscriptionId === undefined &&
             (!$route.params.storeView && !storeOwner)
         "
@@ -284,21 +284,21 @@
           <strong
             v-if="
               pickup === 0 &&
-                deliveryDaysOptions.length > 1 &&
+                deliveryDateOptions.length > 1 &&
                 !storeModules.hideDeliveryOption
             "
           >
             Delivery Day
           </strong>
-          <strong v-if="pickup === 1 && deliveryDaysOptions.length > 1">
+          <strong v-if="pickup === 1 && deliveryDateOptions.length > 1">
             Pickup Day
           </strong>
           <b-select
-            v-if="deliveryDaysOptions.length > 1"
-            :options="deliveryDaysOptions"
-            v-model="deliveryDay"
+            v-if="deliveryDateOptions.length > 1"
+            :options="deliveryDateOptions"
+            :value="bagDeliveryDate"
             @input="changeDeliveryDay"
-            class="delivery-select ml-2 width-130"
+            class="delivery-select ml-2 width-140"
             required
           >
             <option slot="top" disabled>-- Select delivery day --</option>
@@ -308,17 +308,17 @@
       <li
         class="checkout-item"
         v-if="
-          deliveryDaysOptions.length === 1 &&
+          deliveryDateOptions.length === 1 &&
             $route.params.subscriptionId === undefined &&
             (!$route.params.storeView && !storeOwner)
         "
       >
         <div>
           <strong v-if="pickup === 0">
-            Delivery Day: {{ deliveryDaysOptions[0].text }}
+            Delivery Day: {{ deliveryDateOptions[0].text }}
           </strong>
           <strong v-if="pickup === 1">
-            Pickup Day: {{ deliveryDaysOptions[0].text }}
+            Pickup Day: {{ deliveryDateOptions[0].text }}
           </strong>
         </div>
       </li>
@@ -691,6 +691,7 @@ export default {
       storeCustomers: "storeCustomers",
       total: "bagQuantity",
       bag: "bagItems",
+      bagDeliveryDate: "bagDeliveryDate",
       coupon: "bagCoupon",
       deliveryPlan: "bagMealPlan",
       mealPlan: "bagMealPlan",
@@ -887,7 +888,7 @@ export default {
     transferTypeCheckPickup() {
       if (_.includes(this.transferType, "pickup")) return true;
     },
-    deliveryDaysOptions() {
+    deliveryDateOptions() {
       let options = [];
       let dates = this.storeSettings.next_orderable_delivery_dates;
       if (
@@ -905,7 +906,7 @@ export default {
 
       return options;
     },
-    deliveryDaysOptionsStoreView() {
+    deliveryDateOptionsStoreView() {
       let options = [];
       var today = new Date();
 
@@ -1130,6 +1131,7 @@ export default {
       return hasActiveSub;
     }
   },
+  created() {},
   methods: {
     ...mapActions([
       "refreshSubscriptions",
@@ -1141,7 +1143,12 @@ export default {
       "refreshUpcomingOrders",
       "refreshStoreCustomers"
     ]),
-    ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
+    ...mapMutations([
+      "emptyBag",
+      "setBagMealPlan",
+      "setBagCoupon",
+      "setBagDeliveryDate"
+    ]),
     preventNegative() {
       if (this.total < 0) {
         this.total += 1;
@@ -1189,7 +1196,8 @@ export default {
       });
       return couponCheck;
     },
-    changeDeliveryDay() {
+    changeDeliveryDay(val) {
+      this.setBagDeliveryDate(val);
       this.updateParentData();
     },
     changePickupV() {
@@ -1310,8 +1318,8 @@ export default {
         this.selectedPickupLocation = null;
       }
 
-      if (!this.deliveryDay && this.deliveryDaysOptions) {
-        this.deliveryDay = this.deliveryDaysOptions[0].value;
+      if (!this.deliveryDay && this.deliveryDateOptions) {
+        this.deliveryDay = this.deliveryDateOptions[0].value;
       }
 
       let deposit = this.deposit;

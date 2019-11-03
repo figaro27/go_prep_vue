@@ -65,7 +65,7 @@
     "simple-line-icons": "^2.4.1",
     "style-loader": "^0.23.1",
     "text-mask-addons": "^3.7.2",
-    "v-calendar": "^0.9.7",
+    "v-calendar": "^1.0.0-beta.22",
     "vue": "^2.5.22",
     "vue-chartjs": "^3.3.2",
     "vue-codemirror": "^4.0.6",

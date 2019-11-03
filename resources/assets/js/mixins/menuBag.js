@@ -2,7 +2,18 @@ import SalesTax from "sales-tax";
 import store from "../store";
 
 export default {
-  computed: {},
+  computed: {
+    deliveryDateOptions() {
+      return (this.storeSettings.next_orderable_delivery_dates, []).map(
+        date => {
+          return {
+            value: date.date,
+            text: moment(date.date).format("dddd MMM Do")
+          };
+        }
+      );
+    }
+  },
   methods: {
     async addOne(
       meal,

@@ -48,7 +48,8 @@ const state = {
   bag: {
     items: {},
     coupon: null,
-    meal_plan: false
+    meal_plan: false,
+    delivery_date: null
   },
 
   allergies: {},
@@ -306,6 +307,9 @@ const mutations = {
       state.bag.items[guid].meal.price = state.bag.items[guid].meal.item_price;
       Vue.delete(state.bag.items, guid);
     }
+  },
+  setBagDeliveryDate(state, date) {
+    this.state.bag.delivery_date = date;
   },
   makeItemFree(
     state,
@@ -2028,6 +2032,9 @@ const getters = {
         return item.quantity;
       } else return 0;
     });
+  },
+  bagDeliveryDate(state, getters) {
+    return state.bag.delivery_date;
   },
   totalBagPricePreFees(state, getters) {
     let items = _.compact(_.toArray(state.bag.items));

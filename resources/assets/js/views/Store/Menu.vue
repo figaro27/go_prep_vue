@@ -4,76 +4,14 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-body">
-            <b-modal
-              v-model="showCategoriesModal"
-              title="Menu Categories"
-              size="md"
-              @ok="updateCategories"
-              @cancel="updateCategories"
-              @hidden="updateCategories"
-              @hide="editingCategory = false"
-              no-fade
-            >
-              <b-form-group :state="true">
-                <div class="categories">
-                  <draggable
-                    v-model="categories"
-                    @change="onChangeCategories"
-                    element="ol"
-                    class="plain"
-                  >
-                    <li
-                      v-for="category in categories"
-                      :key="`category-${category.id}`"
-                      style="cursor: n-resize"
-                    >
-                      <h5>
-                        {{ category.category }}
-                        <i
-                          v-if="category.id"
-                          @click="editCategory(category.id)"
-                          class="fa fa-edit text-warning"
-                        ></i>
-                        <i
-                          v-if="category.id"
-                          @click="deleteCategory(category.id)"
-                          class="fa fa-minus-circle text-danger"
-                        ></i>
-                      </h5>
-                    </li>
-                  </draggable>
-                </div>
-                <div class="row">
-                  <div class="col-md-10">
-                    <b-form-input
-                      v-if="editingCategory"
-                      v-model="newCategoryName"
-                      placeholder="Enter updated category name."
-                      class="d-inline"
-                    ></b-form-input>
-                  </div>
-                  <div class="col-md-2">
-                    <b-btn
-                      @click="updateCategory"
-                      variant="primary"
-                      v-if="editingCategory"
-                      >Save</b-btn
-                    >
-                  </div>
-                </div>
+            <menu-categories-modal
+              v-if="showCategoriesModal"
+              @hidden="
+                showCategoriesModal = false;
+                refreshTable();
+              "
+            ></menu-categories-modal>
 
-                <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
-                  <b-input
-                    v-model="new_category"
-                    type="text"
-                    placeholder="New Category..."
-                  ></b-input>
-                  <b-button type="submit" variant="primary ml-2"
-                    >Create</b-button
-                  >
-                </b-form>
-              </b-form-group>
-            </b-modal>
             <Spinner v-if="isLoading" />
 
             <v-client-table
@@ -828,6 +766,7 @@ import MealAddons from "../../components/Menu/MealAddons";
 import CreateMealModal from "./Modals/CreateMeal";
 import CreatePackageModal from "./Modals/CreateMealPackage";
 import ViewPackageModal from "./Modals/ViewMealPackage";
+import MenuCategoriesModal from "./Modals/MenuCategories";
 import moment from "moment";
 import tags from "bootstrap-tagsinput";
 import { Event } from "vue-tables-2";
@@ -848,6 +787,7 @@ export default {
     CreateMealModal,
     CreatePackageModal,
     ViewPackageModal,
+    MenuCategoriesModal,
     MealSizes,
     MealComponents,
     MealAddons,
@@ -880,7 +820,6 @@ export default {
       editingCategoryId: null,
       newCategoryName: "",
       showCategoriesModal: false,
-      new_category: "",
       createMealModal: false,
       createPackageModal: false,
       viewMealModal: false,
@@ -1503,55 +1442,7 @@ export default {
           this.loading = false;
         });
     },
-    onAddCategory() {
-      axios
-        .post("/api/me/categories", { category: this.new_category })
-        .then(response => {
-          this.refreshCategories();
-          this.new_category = "";
-        });
-    },
-    onChangeCategories(e) {
-      if (_.isObject(e.moved)) {
-        let newCats = _.toArray({ ...this.categories });
-        newCats[e.moved.oldIndex] = this.categories[e.moved.newIndex];
-        newCats[e.moved.newIndex] = this.categories[e.moved.oldIndex];
 
-        newCats = _.map(newCats, (cat, i) => {
-          cat.order = i;
-          return cat;
-        });
-
-        axios
-          .post("/api/me/categories", { categories: newCats })
-          .then(response => {
-            this.refreshCategories();
-          });
-      }
-    },
-    deleteCategory(id) {
-      axios.delete("/api/me/categories/" + id).then(response => {
-        this.refreshCategories();
-      });
-    },
-    editCategory(id) {
-      this.editingCategory = true;
-      this.editingCategoryId = id;
-    },
-    updateCategory() {
-      axios
-        .patch("/api/me/categories/" + this.editingCategoryId, {
-          name: this.newCategoryName
-        })
-        .then(resp => {
-          this.editingCategory = false;
-          this.showCategoriesModal = false;
-          // Not refreshing table. Reloading page for now.
-          // this.refreshTable();
-          this.$toastr.s("Category name updated.");
-          location.reload();
-        });
-    },
     getMealImage(meal) {
       if (meal.image === null) return null;
       else return meal.image.url_thumb ? meal.image.url_thumb : false;

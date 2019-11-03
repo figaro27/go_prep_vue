@@ -70,7 +70,7 @@ export default {
         (this.totalBagPrice * (100 - this.mealPlanDiscountPercent)) / 100
       ).toFixed(2);
     },
-    deliveryDaysOptions() {
+    deliveryDateOptions() {
       return this.storeSetting("next_delivery_dates", []).map(date => {
         return {
           value: date.date,
