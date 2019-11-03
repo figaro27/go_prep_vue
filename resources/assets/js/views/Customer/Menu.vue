@@ -41,7 +41,7 @@
 
       <div class="row">
         <div :class="`col-md-12 main-menu-area menu-page`">
-          <Spinner v-if="showSpinner" position="absolute" />
+          <Spinner v-if="showSpinner || forceShow" position="absolute" />
 
           <store-closed
             v-if="!$route.params.storeView"
@@ -372,7 +372,8 @@ export default {
       nutritionalFacts: {},
       showMealsArea: true,
       showMealPackagesArea: true,
-      mealSizePrice: null
+      mealSizePrice: null,
+      forceShow: false
     };
   },
   computed: {
