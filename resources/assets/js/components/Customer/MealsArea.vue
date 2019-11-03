@@ -599,6 +599,7 @@ export default {
           "refreshStoreMealPackage",
           mealPackage
         );
+        this.$parent.forceShow = false;
       } else {
         mealPackage = this.getMealPackage(mealPackage.id);
       }
