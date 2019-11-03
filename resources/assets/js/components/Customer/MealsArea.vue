@@ -399,10 +399,7 @@
                     <strong style="word-break: break-all;">{{
                       meal.title
                     }}</strong>
-                    <div
-                      class="mt-1 content-text"
-                      style="word-break: break-all;"
-                    >
+                    <div class="mt-1 content-text">
                       {{ meal.description }}
                     </div>
                     <div
