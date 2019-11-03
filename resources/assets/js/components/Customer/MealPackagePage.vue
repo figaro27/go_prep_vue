@@ -599,8 +599,8 @@ export default {
         if (!meal) return false;
 
         if (
-          this.search &&
-          !meal.title.toLowerCase().includes(this.search.toLowerCase())
+          this.$parent.search &&
+          !meal.title.toLowerCase().includes(this.$parent.search.toLowerCase())
         ) {
           return false;
         }

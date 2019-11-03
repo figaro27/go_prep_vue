@@ -417,11 +417,11 @@ class SpaController extends Controller
 
                 if ($new_limit > 0) {
                     $packages = MealPackage::with([
-                        'meals',
-                        'sizes',
-                        'sizes.meals',
-                        'components',
-                        'addons'
+                        //'meals',
+                        'sizes'
+                        //'sizes.meals',
+                        //'components',
+                        //'addons'
                     ])
                         ->whereHas('categories', function ($query) use (
                             $category_id
@@ -654,6 +654,7 @@ class SpaController extends Controller
         $package = MealPackage::with([
             'meals',
             'sizes',
+            'sizes.meals',
             'components',
             'addons'
         ])->find($meal_package_id);

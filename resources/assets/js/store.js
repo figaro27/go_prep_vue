@@ -22,6 +22,7 @@ const state = {
     distance: 0,
     meals: [],
     packages: [],
+    refreshed_package_ids: [],
     items: [],
     finalCategories: [],
     will_deliver: true,
@@ -1238,7 +1239,13 @@ const actions = {
     if (isNaN(index) || index < 0) {
       return null;
     } else {
-      if (oldMealPackage.refreshed) {
+      /*if (oldMealPackage.refreshed) {
+        return oldMealPackage;
+      }*/
+
+      if (
+        state.viewed_store.refreshed_package_ids.includes(oldMealPackage.id)
+      ) {
         return oldMealPackage;
       }
 
@@ -1249,10 +1256,11 @@ const actions = {
 
       if (data.package) {
         let meal_package = data.package;
-        meal_package.refreshed = true;
-        meal_package.refreshed_bag = true;
+        //meal_package.refreshed = true;
+        //meal_package.refreshed_bag = true;
 
         state.viewed_store.packages.splice(index, 1, meal_package);
+        state.viewed_store.refreshed_package_ids.push(meal_package.id);
 
         return meal_package;
       } else {

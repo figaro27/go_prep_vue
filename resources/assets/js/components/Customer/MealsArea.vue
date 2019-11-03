@@ -592,6 +592,17 @@ export default {
         }
       }
 
+      /* Refresh Meal Package */
+      if (!this.store.refreshed_package_ids.includes(mealPackage.id)) {
+        mealPackage = await store.dispatch(
+          "refreshStoreMealPackage",
+          mealPackage
+        );
+      } else {
+        mealPackage = this.getMealPackage(mealPackage.id);
+      }
+      /* Refresh Meal Package End */
+
       /* Show Detail Page or not */
       let showDetail = false;
       let sizeId = size ? size.id : null;
