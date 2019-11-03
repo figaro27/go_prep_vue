@@ -60,30 +60,27 @@ class OptimizedMealPackage extends Model implements HasMedia
 
     public function sizes()
     {
-        return $this->hasMany('App\MealPackageSize', 'meal_package_id', 'id');
+        return $this->hasMany(
+            'App\OptimizedMealPackageSize',
+            'meal_package_id',
+            'id'
+        );
+    }
+
+    public function categories()
+    {
+        //return $this->belongsToMany('App\Category')->using('App\MealPackageCategory');
+        return $this->belongsToMany(
+            'App\Category',
+            'category_meal_package',
+            'meal_package_id',
+            'category_id'
+        );
     }
 
     public function getCategoryIdsAttribute()
     {
-        $meal_package_id = $this->id;
-        $categories = DB::select(
-            DB::raw(
-                "select category_id from category_meal_package where meal_package_id=$meal_package_id"
-            )
-        );
-
-        $data = [];
-        if ($categories) {
-            foreach ($categories as $category) {
-                $category_id = $category->category_id;
-
-                if (!in_array($category_id, $data)) {
-                    $data[] = $category_id;
-                }
-            }
-        }
-
-        return $data;
+        return $this->categories->pluck('id');
     }
 
     public function components()

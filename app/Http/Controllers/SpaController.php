@@ -358,7 +358,7 @@ class SpaController extends Controller
                             ->where('store_id', $store_id)
                             ->first();
 
-                        $temp_package = MealPackage::whereHas(
+                        $temp_package = OptimizedMealPackage::whereHas(
                             'categories',
                             function ($query) use ($temp_id) {
                                 $query->where('categories.id', $temp_id);
@@ -416,13 +416,7 @@ class SpaController extends Controller
                 }
 
                 if ($new_limit > 0) {
-                    $packages = MealPackage::with([
-                        //'meals',
-                        'sizes'
-                        //'sizes.meals',
-                        //'components',
-                        //'addons'
-                    ])
+                    $packages = OptimizedMealPackage::with(['sizes'])
                         ->whereHas('categories', function ($query) use (
                             $category_id
                         ) {

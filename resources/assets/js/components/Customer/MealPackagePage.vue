@@ -456,6 +456,7 @@ export default {
       this.$parent.showMealsArea = true;
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPackagePageView = false;
+      this.$parent.finalCategoriesSub = [];
     },
     done() {
       this.$v.$touch();
