@@ -122,15 +122,31 @@
                   ></b-form-textarea>
                 </div>
               </div>
-              <div
-                v-for="(cat, index) in finalCategories"
-                :key="cat.category"
-                :class="
-                  index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
-                "
-                :target="'categorySection_' + cat.id"
-              >
-                {{ cat.category }}
+
+              <div v-if="finalCategoriesSub && finalCategoriesSub.length > 0">
+                <div
+                  v-for="(cat, index) in finalCategoriesSub"
+                  :key="'com_' + cat.id"
+                  :class="
+                    index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
+                  "
+                  :target="'categorySection_' + cat.id"
+                >
+                  {{ cat.title }}
+                </div>
+              </div>
+
+              <div v-else>
+                <div
+                  v-for="(cat, index) in finalCategories"
+                  :key="cat.category"
+                  :class="
+                    index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
+                  "
+                  :target="'categorySection_' + cat.id"
+                >
+                  {{ cat.category }}
+                </div>
               </div>
             </div>
             <!-- Inner Body End !-->
@@ -343,6 +359,7 @@ export default {
         categories: []
       },
       finalCategories: [],
+      finalCategoriesSub: [],
       meal: null,
       mealPackage: null,
       mealPackageSize: null,
@@ -972,6 +989,7 @@ export default {
       this.showMealPackagesArea = true;
       this.mealPageView = false;
       this.mealPackagePageView = false;
+      this.finalCategoriesSub = [];
     }
   }
 };

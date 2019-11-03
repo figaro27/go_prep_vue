@@ -385,15 +385,29 @@
                   </div>
 
                   <div class="content-text-wrap">
-                    <strong>{{ meal.title }}</strong>
-                    <div class="mt-1 content-text">{{ meal.description }}</div>
+                    <strong style="word-break: break-all;">{{
+                      meal.title
+                    }}</strong>
+                    <div
+                      class="mt-1 content-text"
+                      style="word-break: break-all;"
+                    >
+                      {{ meal.description }}
+                    </div>
                   </div>
                 </div>
                 <div v-else class="content-area" style="position: relative;">
                   <div class="content-text-wrap">
                     <!--<div v-else class="col-md-11">!-->
-                    <strong>{{ meal.title }}</strong>
-                    <div class="mt-1 content-text">{{ meal.description }}</div>
+                    <strong style="word-break: break-all;">{{
+                      meal.title
+                    }}</strong>
+                    <div
+                      class="mt-1 content-text"
+                      style="word-break: break-all;"
+                    >
+                      {{ meal.description }}
+                    </div>
                     <div
                       class="price-no-bg"
                       style="top: 0 !important; right: 0 !important;"
@@ -570,8 +584,12 @@ export default {
       if (size) {
         this.packageTitle = mealPackage.title + " - " + size.title;
       } else {
-        this.packageTitle =
-          mealPackage.title + " - " + mealPackage.default_size_title;
+        if (mealPackage.default_size_title) {
+          this.packageTitle =
+            mealPackage.title + " - " + mealPackage.default_size_title;
+        } else {
+          this.packageTitle = mealPackage.title;
+        }
       }
 
       /* Show Detail Page or not */
@@ -599,8 +617,8 @@ export default {
       }
 
       if (showDetail) {
-        //this.showMealPackage(mealPackage, size);
-        //return false;
+        this.showMealPackage(mealPackage, size);
+        return false;
       }
       /* Show Detail Page or not end */
 
