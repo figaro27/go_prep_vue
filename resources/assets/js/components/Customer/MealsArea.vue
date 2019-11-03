@@ -594,10 +594,12 @@ export default {
 
       /* Refresh Meal Package */
       if (!this.store.refreshed_package_ids.includes(mealPackage.id)) {
+        this.$parent.forceShow = true;
         mealPackage = await store.dispatch(
           "refreshStoreMealPackage",
           mealPackage
         );
+        this.$parent.forceShow = false;
       } else {
         mealPackage = this.getMealPackage(mealPackage.id);
       }
