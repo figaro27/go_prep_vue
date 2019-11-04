@@ -67,56 +67,27 @@ $balance = $order->balance;
     </center>
     </div>
 
-    <div class="company-info brand-color">
-          <table>
-            <tr>
-              <td>
-                <table cellpadding="0" cellspacing="0" border="0">
-                  <tr>
-                    <td class="icon">
-                      <div class="icon-mail text-11"></div>
-                    </td>
-                    <td>
-                      <div class="text-11">{{ $order->store->details->address }}</div>
-                      <div class="text-11">{{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
+    <table class="no-border" style="border-style:none">
+      <thead>
+        <tr>
+          <th>
+            <div class="text-11">{{ $order->store->details->address }}</div>
+            <div class="text-11">{{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</div>
+          </th>
+          <th>
+            <div class="text-11">
+            @if ($order->store->settings->website) {{ $order->store->settings->website }} 
+            @else www{{$order->store->settings->domain}}.goprep.com
+            @endif
+            </div>
+            <div class="text-11">{{ $order->store->user->email }}</div>
+          </th>
+          <th><div class="text-11">{{ $order->store->user->details->phone }}</div></th>
+        </tr>
+      </thead>
+    </table>
 
-              <td class="second">
-                <table cellpadding="0" cellspacing="0" border="0">
-                  <tr>
-                    <td class="icon">
-                      <div class="icon-globe text-11"></div>
-                    </td>
-                    <td>
-                      <div class="text-11">
-                        @if ($order->store->settings->website) {{ $order->store->settings->website }} 
-                        @else www{{$order->store->settings->domain}}.goprep.com
-                        @endif
-                      </div>
-                      <div class="text-11">{{ $order->store->user->email }}</div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-
-              <td>
-                <table cellpadding="0" cellspacing="0" border="0">
-                  <tr>
-                    <td class="icon">
-                      <div class="icon-phone text-11"></div>
-                    </td>
-                    <td>
-                      <div class="text-11">{{ $order->store->user->details->phone }}</div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-        </div>
+    
 
     <div class="row">
       <div class="col-4 address">
