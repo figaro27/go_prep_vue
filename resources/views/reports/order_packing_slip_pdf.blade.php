@@ -68,7 +68,7 @@ $balance = $order->balance;
     </center>
     </div>
 
-    <div class="company-info">
+    <div class="company-info brand-color">
           <table>
             <tr>
               <td>
@@ -164,13 +164,13 @@ $balance = $order->balance;
 
     <br><br>
     <table class="no-border">
-
+      <thead>
         <tr>
-          <th>Quantity</th>
-          <th>Item Name</th>
-          <th>Price</th>
+          <th style="text-align:left">Quantity</th>
+          <th style="text-align:left">Item Name</th>
+          <th style="text-align:left">Price</th>
         </tr>
-
+      </thead>
 
       <tbody>
 
