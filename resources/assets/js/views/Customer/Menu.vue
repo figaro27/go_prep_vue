@@ -107,14 +107,14 @@
           <div class="categoryNavArea_body">
             <div class="categoryNavArea_body_inner">
               <div class="row">
-                <div class="col-md-1">
+                <div class="col-md-2">
                   <img
                     src="/images/customer/x.png"
                     @click="search = ''"
                     class="clear-meal"
                   />
                 </div>
-                <div class="col-md-11">
+                <div class="col-md-10">
                   <b-form-textarea
                     v-model="search"
                     placeholder="Search"
