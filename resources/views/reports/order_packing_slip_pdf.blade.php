@@ -36,6 +36,10 @@
       text-align: center;
     }
 
+    .brand-color {
+      background: #{{ $order->store->settings->color }};
+    }
+
   </style>
 </head>
 @php
@@ -56,11 +60,11 @@ $balance = $order->balance;
   <div id="print-area">
     <div class="row">
       <div class="col-md-4">
-        <center>
-        <div class="center-text" style="padding-top:40px">
+
+        <div style="padding-top:40px">
           <h5 class="center-text">ORDER DATE: {{$order->created_at->format('D, m/d/Y')}}</h5>
         </div>
-      </center>
+
       </div>
       <div class="col-md-4">
         <center>
@@ -71,11 +75,11 @@ $balance = $order->balance;
       </center>
       </div>
       <div class="col-md-4">
-        <center>
-        <div class="center-text" style="padding-top:40px">
+
+        <div style="padding-top:40px">
           ORDER #: {{$order->order_number}}
         </div>
-      </center>
+
       </div>
     </div>
     </div>
