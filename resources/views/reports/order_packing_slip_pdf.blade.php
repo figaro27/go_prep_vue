@@ -57,7 +57,7 @@ $balance = $order->balance;
       <div class="col-md-12">
         <center>
         <div class="center-text">
-          <h4 class="center-text bold-text" style="text-transform: uppercase"><b>{{ $order->store->details->name }}</b></h4>
+          <h3 class="center-text bold-text" style="text-transform: uppercase"><b>{{ $order->store->details->name }}</b></h3>
           <img style="zoom: 1" src="{{$logo}}" />
         </div>
       </center>
@@ -105,6 +105,54 @@ $balance = $order->balance;
       </div>
     </div>
     </div>
+
+    <div class="company-info">
+          <table class="company-table" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td>
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td class="icon">
+                      <div class="icon-mail"></div>
+                    </td>
+                    <td class="info large">
+                      <div>{{ $order->store->details->address }}</div>
+                      <div>{{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+
+              <td class="second">
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td class="icon">
+                      <div class="icon-globe"></div>
+                    </td>
+                    <td class="info large">
+                      <div>{{ $order->store->user->email }}</div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+
+              <td>
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td class="icon">
+                      <div class="icon-phone"></div>
+                    </td>
+                    <td class="info small">
+                      <div>{{ $order->store->user->details->phone }}</div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+
     <br><br>
     <table border="1">
       <thead>
