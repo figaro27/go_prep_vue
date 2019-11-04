@@ -111,7 +111,7 @@
                   <img
                     src="/images/customer/x.png"
                     @click="search = ''"
-                    class="clear-meal ml-2"
+                    class="clear-meal"
                   />
                 </div>
                 <div class="col-md-11">
