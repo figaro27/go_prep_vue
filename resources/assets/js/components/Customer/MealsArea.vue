@@ -168,13 +168,17 @@
                             "
                             >+</i
                           >
-                          <b-dropdown-item @click="addMeal(meal, false)">
+                          <b-dropdown-item
+                            @click="addMeal(meal, false)"
+                            class="variation-dropdown"
+                          >
                             {{ meal.default_size_title || "Regular" }} -
                             {{
                               format.money(meal.price, storeSettings.currency)
                             }}
                           </b-dropdown-item>
                           <b-dropdown-item
+                            class="variation-dropdown"
                             v-for="(size, index) in meal.sizes"
                             :key="'size_' + size.id + '_' + index"
                             @click.stop="addMeal(meal, false, size)"
@@ -214,13 +218,17 @@
                             "
                             >+</span
                           >
-                          <b-dropdown-item @click="addMeal(meal, true)">
+                          <b-dropdown-item
+                            @click="addMeal(meal, true)"
+                            class="variation-dropdown"
+                          >
                             {{ meal.default_size_title || "Regular" }} -
                             {{
                               format.money(meal.price, storeSettings.currency)
                             }}
                           </b-dropdown-item>
                           <b-dropdown-item
+                            class="variation-dropdown"
                             v-for="(size, index) in meal.sizes"
                             :key="'size_' + size.id + '_' + index"
                             @click="addMealPackage(meal, true, size)"
@@ -294,11 +302,15 @@
                       :id="'dropdown_' + meal.id + '_' + group.category_id"
                       >+</i
                     >
-                    <b-dropdown-item @click.stop="addMeal(meal, false)">
+                    <b-dropdown-item
+                      @click.stop="addMeal(meal, false)"
+                      class="variation-dropdown"
+                    >
                       {{ meal.default_size_title || "Regular" }} -
                       {{ format.money(meal.price, storeSettings.currency) }}
                     </b-dropdown-item>
                     <b-dropdown-item
+                      class="variation-dropdown"
                       v-for="(size, index) in meal.sizes"
                       :key="'size_' + size.id + '_' + index"
                       @click.stop="addMeal(meal, false, size)"
@@ -331,11 +343,15 @@
                       :id="'dropdown_' + meal.id + '_' + group.category_id"
                       >+</i
                     >
-                    <b-dropdown-item @click="addMeal(meal, true)">
+                    <b-dropdown-item
+                      @click="addMeal(meal, true)"
+                      class="variation-dropdown"
+                    >
                       {{ meal.default_size_title || "Regular" }} -
                       {{ format.money(meal.price, storeSettings.currency) }}
                     </b-dropdown-item>
                     <b-dropdown-item
+                      class="variation-dropdown"
                       v-for="(size, index) in meal.sizes"
                       :key="'size_' + size.id + '_' + index"
                       @click="addMealPackage(meal, true, size)"
