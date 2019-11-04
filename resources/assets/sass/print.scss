@@ -1,5 +1,16 @@
 @import "fonts";
 
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Open Sans Regular"), local("OpenSans-Regular"),
+    url(https://fonts.gstatic.com/s/opensans/v17/mem8YaGs126MiZpBA-UFWJ0bbck.woff2)
+      format("woff2");
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F,
+    U+FE2E-FE2F;
+}
+
 ul {
   margin: 0;
   padding: 0 !important;
@@ -38,7 +49,7 @@ body {
 }
 
 body {
-  font-family: "OpenSans-Regular";
+  font-family: "Open Sans";
   font-size: 11pt;
 
   &.portrait {
@@ -88,7 +99,7 @@ tfoot {
   page-break-inside: avoid !important;
 }
 table {
-  font-family: "OpenSans-Regular";
+  font-family: "Open Sans";
   font-size: 14pt;
   line-height: 1.5;
   margin-top: 2pt;
