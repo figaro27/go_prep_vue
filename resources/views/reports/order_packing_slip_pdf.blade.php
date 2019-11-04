@@ -58,67 +58,18 @@ $balance = $order->balance;
 
 <body class="{{ $body_classes }}">
   <div id="print-area">
-    
-  </div>
 
   <div class="row">
     <center>
       <div class="col-12 center-text">
-          <h3 class="center-text bold-text" style="text-transform: uppercase">{{ $order->store->details->name }}</h3>
+          <h4 class="center-text bold-text" style="text-transform: uppercase">{{ $order->store->details->name }}</h4>
           <img style="zoom: 1" src="{{$logo}}" />
       </div>
     </center>
     </div>
 
     <div class="company-info">
-          <table>
-            <tr>
-              <td>
-                <table cellpadding="0" cellspacing="0" border="0">
-                  <tr>
-                    <td class="icon">
-                      <div class="icon-mail text-11"></div>
-                    </td>
-                    <td>
-                      <div class="text-11">{{ $order->store->details->address }}</div>
-                      <div class="text-11">{{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-
-              <td class="second">
-                <table cellpadding="0" cellspacing="0" border="0">
-                  <tr>
-                    <td class="icon">
-                      <div class="icon-globe text-11"></div>
-                    </td>
-                    <td>
-                      <div class="text-11">
-                        @if ($order->store->settings->website) {{ $order->store->settings->website }} 
-                        @else www{{$order->store->settings->domain}}.goprep.com
-                        @endif
-                      </div>
-                      <div class="text-11">{{ $order->store->user->email }}</div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-
-              <td>
-                <table cellpadding="0" cellspacing="0" border="0">
-                  <tr>
-                    <td class="icon">
-                      <div class="icon-phone text-11"></div>
-                    </td>
-                    <td>
-                      <div class="text-11">{{ $order->store->user->details->phone }}</div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
+          ???????????
         </div>
 
     <div class="row">
@@ -281,6 +232,7 @@ $balance = $order->balance;
     @endif
     @endforeach
   </div>
+</div>
 </body>
 
 </html>
