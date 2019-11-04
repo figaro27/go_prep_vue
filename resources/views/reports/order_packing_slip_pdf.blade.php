@@ -68,7 +68,7 @@ $balance = $order->balance;
     </center>
     </div>
 
-    <div class="">
+    <div class="company-info">
           <table>
             <tr>
               <td>
@@ -166,9 +166,9 @@ $balance = $order->balance;
     <table class="no-border" style="border-style:none">
       <thead>
         <tr>
-          <th style="float:left">Quantity</th>
-          <th style="float:left">Item Name</th>
-          <th style="float:left">Price</th>
+          <th>Quantity</th>
+          <th>Item Name</th>
+          <th>Price</th>
         </tr>
       </thead>
 
@@ -176,9 +176,9 @@ $balance = $order->balance;
 
         @foreach($order->meal_package_items as $i => $mealPackageItem)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-          <td style="float:left">{{$mealPackageItem->quantity}}</td>
-          <td style="float:left">{{ $mealPackageItem->meal_package->title }}</td>
-          <td style="float:left">${{number_format($mealPackageItem->meal_package->price * $mealPackageItem->quantity, 2)}}</td>
+          <td>{{$mealPackageItem->quantity}}</td>
+          <td>{{ $mealPackageItem->meal_package->title }}</td>
+          <td>${{number_format($mealPackageItem->meal_package->price * $mealPackageItem->quantity, 2)}}</td>
         </tr>
 
 
@@ -186,9 +186,9 @@ $balance = $order->balance;
         @foreach($order->items as $i => $item)
         @if ($item->meal_package_order_id === $mealPackageItem->id)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-          <td style="float:left">{{$item->quantity}}</td>
-          <td style="float:left">{!! $item->html_title !!}</td>
-          <td style="float:left">@if ($item->meal_package_title === null)
+          <td>{{$item->quantity}}</td>
+          <td>{!! $item->html_title !!}</td>
+          <td>@if ($item->meal_package_title === null)
             ${{ number_format($item->unit_price, 2) }}
             @else
             In Package
