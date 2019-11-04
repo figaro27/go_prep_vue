@@ -142,18 +142,13 @@ $balance = $order->balance;
     <table class="no-border table-heading" style="border-style:none">
       <thead>
         <tr>
-          <th>
-            <div class="row">
-              <div class="col-4">
-            Quantity
-          </div>
-            <div class="col-4">
-            Item Name
-          </div>
-            <div class="col-4">
-            Price
-          </div>
-            </div>
+          <th style="width:100%">
+            <span style="width:33%">Quantity</span>
+
+            <span style="width:33%">Item Name</span>
+
+            <span style="width:33%">Price</span>
+
           </th>
         </tr>
       </thead>
