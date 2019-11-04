@@ -68,8 +68,55 @@ $balance = $order->balance;
     </center>
     </div>
 
-    <div class="company-info">
-          ???????????
+    <div class="">
+          <table>
+            <tr>
+              <td>
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td class="icon">
+                      <div class="icon-mail text-11"></div>
+                    </td>
+                    <td>
+                      <div class="text-11">{{ $order->store->details->address }}</div>
+                      <div class="text-11">{{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+
+              <td class="second">
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td class="icon">
+                      <div class="icon-globe text-11"></div>
+                    </td>
+                    <td>
+                      <div class="text-11">
+                        @if ($order->store->settings->website) {{ $order->store->settings->website }} 
+                        @else www{{$order->store->settings->domain}}.goprep.com
+                        @endif
+                      </div>
+                      <div class="text-11">{{ $order->store->user->email }}</div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+
+              <td>
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td class="icon">
+                      <div class="icon-phone text-11"></div>
+                    </td>
+                    <td>
+                      <div class="text-11">{{ $order->store->user->details->phone }}</div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
         </div>
 
     <div class="row">
@@ -119,9 +166,9 @@ $balance = $order->balance;
     <table class="no-border" style="border-style:none">
       <thead>
         <tr>
-          <th>Quantity</th>
-          <th>Item Name</th>
-          <th>Price</th>
+          <th style="float:left">Quantity</th>
+          <th style="float:left">Item Name</th>
+          <th style="float:left">Price</th>
         </tr>
       </thead>
 
@@ -129,9 +176,9 @@ $balance = $order->balance;
 
         @foreach($order->meal_package_items as $i => $mealPackageItem)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-          <td>{{$mealPackageItem->quantity}}</td>
-          <td>{{ $mealPackageItem->meal_package->title }}</td>
-          <td>${{number_format($mealPackageItem->meal_package->price * $mealPackageItem->quantity, 2)}}</td>
+          <td style="float:left">{{$mealPackageItem->quantity}}</td>
+          <td style="float:left">{{ $mealPackageItem->meal_package->title }}</td>
+          <td style="float:left">${{number_format($mealPackageItem->meal_package->price * $mealPackageItem->quantity, 2)}}</td>
         </tr>
 
 
@@ -139,9 +186,9 @@ $balance = $order->balance;
         @foreach($order->items as $i => $item)
         @if ($item->meal_package_order_id === $mealPackageItem->id)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-          <td>{{$item->quantity}}</td>
-          <td>{!! $item->html_title !!}</td>
-          <td>@if ($item->meal_package_title === null)
+          <td style="float:left">{{$item->quantity}}</td>
+          <td style="float:left">{!! $item->html_title !!}</td>
+          <td style="float:left">@if ($item->meal_package_title === null)
             ${{ number_format($item->unit_price, 2) }}
             @else
             In Package
@@ -155,9 +202,9 @@ $balance = $order->balance;
         @foreach($order->items as $i => $item)
         @if ($item->meal_package_order_id === null)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-          <td class="center-text">{{$item->quantity}}</td>
+          <td>{{$item->quantity}}</td>
           <td>{!! $item->html_title !!}</td>
-          <td class="center-text">${{ number_format($item->price, 2) }}</td>
+          <td>${{ number_format($item->price, 2) }}</td>
         </tr>
 
         @endif
