@@ -160,7 +160,7 @@ $balance = $order->balance;
 
 
     <br><br>
-    <table border="1">
+    <table border="0">
       <thead>
         <tr>
           <th>Quantity</th>
@@ -218,7 +218,7 @@ $balance = $order->balance;
         @endif
       </tbody>
     </table>
-    <table border="1">
+    <table border="0">
       <tr>
         <td style="width:65%;margin-right:0px;padding-right:0px;padding-top:10px">
           @if ($order->store->settings->notesForCustomer != null)
