@@ -67,7 +67,7 @@ $balance = $order->balance;
     </center>
     </div>
 
-    <table class="no-border" style="border-style:none">
+    <table class="no-border table-heading" style="border-style:none">
       <thead>
         <tr>
           <th>
@@ -139,7 +139,7 @@ $balance = $order->balance;
 
 
     <br>
-    <table class="no-border" style="border-style:none">
+    <table class="no-border table-heading" style="border-style:none">
       <thead>
         <tr>
           <th>Quantity</th>
