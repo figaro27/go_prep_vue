@@ -153,6 +153,7 @@
                         </b-btn>
 
                         <b-dropdown
+                          right
                           v-if="
                             !meal.meal_package &&
                               meal.sizes &&
