@@ -369,11 +369,20 @@ p {
 }
 
 .no-border th {
-  padding: 18px;
+  padding: 16px;
 }
 
 .no-border td {
-  padding: 13px;
+  padding: 12px;
+}
+
+th {
+  -webkit-border-radius: 10px 10px 10px 10px;
+  -moz-border-radius: 10px 10px 10px 10px;
+  border-radius: 10px 10px 10px 10px;
+  -webkit-box-shadow: 3px 5px 10px grey;
+  -moz-box-shadow: 3px 5px 10px grey;
+  box-shadow: 3px 5px 10px grey;
 }
 
 // Imported from template
