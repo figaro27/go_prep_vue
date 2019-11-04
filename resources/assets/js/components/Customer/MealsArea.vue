@@ -712,6 +712,7 @@ export default {
           $("#dropdown_" + meal.id + "_" + group.category_id).click();
         }
       } else {
+        $([document.documentElement, document.body]).scrollTop(0);
         this.$parent.showMealPage(meal);
         this.$parent.showMealsArea = false;
         this.$parent.showMealPackagesArea = false;
