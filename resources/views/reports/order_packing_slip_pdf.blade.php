@@ -17,9 +17,9 @@
 
     table,
     th,
-    td {
+    /*td {
       border: 1px solid #bebebe;
-    }
+    }*/
 
     table th {
       text-align: center;
