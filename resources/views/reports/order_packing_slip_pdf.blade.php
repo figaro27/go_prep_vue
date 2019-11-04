@@ -24,7 +24,7 @@
     table th {
       text-align: center;
       color: white;
-      background-color: #{{ $order->store->settings->color }};
+      background: #C0382B;
     }
 
     table {
@@ -60,7 +60,7 @@ $balance = $order->balance;
   <div id="print-area">
     <div class="row">
       <div class="col-md-4">
-          <h5 class="bold-text" style="padding-top:40px">ORDER DATE {{$order->created_at->format('D, m/d/Y')}}</h5>
+          <h6 class="bold-text" style="position:relative;top:30px">ORDER DATE {{$order->created_at->format('D, m/d/Y')}}</h6>
       </div>
       <div class="col-md-4 center-text">
           <h4 class="center-text bold-text" style="text-transform: uppercase"><b>{{ $order->store->details->name }}</b></h4>
@@ -68,7 +68,7 @@ $balance = $order->balance;
       </center>
       </div>
       <div class="col-md-4">
-          <h5 class="bold-text" style="padding-top:40px">ORDER #{{$order->order_number}}</h5>
+          <h6 class="bold-text" style="position:relative;top:30px">ORDER #{{$order->order_number}}</h6>
       </div>
     </div>
     </div>
