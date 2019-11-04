@@ -63,7 +63,13 @@ $balance = $order->balance;
           {{$order->user->details->zip}}</p>
         <p>{{$order->user->details->phone}}</p>
       </div>
-      <div class="col-4 address">
+      <div class="col-4">
+        <div>
+          <p><b>{{ $order->store->details->name }}</b></p>
+          <img style="zoom: 0.5;padding-right:50px" src="{{$logo}}" />
+        </div>
+      </div>
+      <div class="col-4 address" style="float:right">
         @if ($order->pickup === 0)
         <p><b>DELIVERY</b></p>
         @endif
@@ -92,12 +98,6 @@ $balance = $order->balance;
           @endif
         </p>
         @endif
-      </div>
-      <div class="col-4">
-        <div style="float:right">
-          <p><b>{{ $order->store->details->name }}</b></p>
-          <img style="zoom: 0.5;padding-right:50px" src="{{$logo}}" />
-        </div>
       </div>
     </div>
     <br><br>
