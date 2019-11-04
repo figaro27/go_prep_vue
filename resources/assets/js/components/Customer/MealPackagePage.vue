@@ -38,14 +38,18 @@
                       v-if="false === $v.choices[component.id].minimum"
                       class="invalid-feedback d-block"
                     >
-                      Minimum {{ component.minimum }} selections
+                      <h5>
+                        Please Choose A Minimum of {{ component.minimum }}
+                      </h5>
                     </div>
 
                     <div
                       v-if="false === $v.choices[component.id].maximum"
                       class="invalid-feedback d-block"
                     >
-                      Maximum {{ component.maximum }} selections
+                      <h5>
+                        Please Choose A Maximum of {{ component.maximum }}
+                      </h5>
                     </div>
                   </div>
 
@@ -334,10 +338,16 @@
     </div>
 
     <div class="modal-footer">
-      <button @click="back" type="button" class="btn btn-secondary">
+      <button @click="back" type="button" class="btn btn-secondary btn-lg">
         Back
       </button>
-      <button @click="done" type="button" class="btn btn-primary">Add</button>
+      <button
+        @click="done"
+        type="button"
+        class="btn btn-lg brand-color white-text"
+      >
+        Add
+      </button>
     </div>
     <!-- Content End !-->
   </div>
