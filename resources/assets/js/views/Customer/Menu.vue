@@ -131,6 +131,7 @@
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
                   :target="'categorySection_' + cat.id"
+                  @click="search = ''"
                 >
                   {{ cat.title }}
                 </div>
@@ -144,6 +145,7 @@
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
                   :target="'categorySection_' + cat.id"
+                  @click="search = ''"
                 >
                   {{ cat.category }}
                 </div>
