@@ -17,9 +17,9 @@
 
     table,
     th,
-    /*td {
-      border: 1px solid #bebebe;
-    }*/
+    td {
+      border: 0px solid #bebebe;
+    }
 
     table th {
       text-align: center;
@@ -56,8 +56,8 @@ $balance = $order->balance;
     <div class="row">
       <div class="col-md-12">
         <center>
-        <div>
-          <h4 style="text-transform: uppercase"><b>{{ $order->store->details->name }}</b></h4>
+        <div class="center-text">
+          <h4 class="center-text" style="text-transform: uppercase"><b>{{ $order->store->details->name }}</b></h4>
           <img style="zoom: 1" src="{{$logo}}" />
         </div>
       </center>
