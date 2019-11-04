@@ -35,6 +35,7 @@
     .center-text {
       text-align: center;
     }
+
   </style>
 </head>
 @php
@@ -54,11 +55,25 @@ $balance = $order->balance;
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-4">
+        <center>
+        <div class="center-text" style="padding-top:40px">
+          <h5 class="center-text">ORDER DATE: {{$order->created_at->format('D, m/d/Y')}}</h5>
+        </div>
+      </center>
+      </div>
+      <div class="col-md-4">
         <center>
         <div class="center-text">
           <h4 class="center-text bold-text" style="text-transform: uppercase"><b>{{ $order->store->details->name }}</b></h4>
           <img style="zoom: 1" src="{{$logo}}" />
+        </div>
+      </center>
+      </div>
+      <div class="col-md-4">
+        <center>
+        <div class="center-text" style="padding-top:40px">
+          ORDER #: {{$order->order_number}}
         </div>
       </center>
       </div>
