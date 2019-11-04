@@ -57,7 +57,7 @@ $balance = $order->balance;
       <div class="col-md-12">
         <center>
         <div class="center-text">
-          <h4 class="center-text" style="text-transform: uppercase"><b>{{ $order->store->details->name }}</b></h4>
+          <h4 class="center-text bold-text" style="text-transform: uppercase"><b>{{ $order->store->details->name }}</b></h4>
           <img style="zoom: 1" src="{{$logo}}" />
         </div>
       </center>
