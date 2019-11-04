@@ -83,12 +83,17 @@ $balance = $order->balance;
               </td>
 
               <td class="second">
-                <table>
+                <table cellpadding="0" cellspacing="0" border="0">
                   <tr>
                     <td class="icon">
                       <div class="icon-globe text-10"></div>
                     </td>
                     <td>
+                      <div class="text-10">
+                        @if ($order->store->settings->website) {{ $order->store->settings->website }} 
+                        @else www.{{$order->store->settings->domain}}.goprep.com
+                        @endif
+                      </div>
                       <div class="text-10">{{ $order->store->user->email }}</div>
                     </td>
                   </tr>
@@ -96,7 +101,7 @@ $balance = $order->balance;
               </td>
 
               <td>
-                <table>
+                <table cellpadding="0" cellspacing="0" border="0">
                   <tr>
                     <td class="icon">
                       <div class="icon-phone text-10"></div>
