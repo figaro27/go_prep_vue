@@ -66,43 +66,43 @@ $balance = $order->balance;
     </div>
 
     <div class="company-info">
-          <table class="company-table" cellpadding="0" cellspacing="0" border="0">
+          <table class="company-table">
             <tr>
               <td>
                 <table cellpadding="0" cellspacing="0" border="0">
                   <tr>
                     <td class="icon">
-                      <div class="icon-mail"></div>
+                      <div class="icon-mail text-10"></div>
                     </td>
-                    <td class="info large">
-                      <div>{{ $order->store->details->address }}</div>
-                      <div>{{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</div>
+                    <td>
+                      <div class="text-10">{{ $order->store->details->address }}</div>
+                      <div class="text-10">{{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</div>
                     </td>
                   </tr>
                 </table>
               </td>
 
               <td class="second">
-                <table cellpadding="0" cellspacing="0" border="0">
+                <table>
                   <tr>
                     <td class="icon">
-                      <div class="icon-globe"></div>
+                      <div class="icon-globe text-10"></div>
                     </td>
-                    <td class="info large">
-                      <div>{{ $order->store->user->email }}</div>
+                    <td>
+                      <div class="text-10">{{ $order->store->user->email }}</div>
                     </td>
                   </tr>
                 </table>
               </td>
 
               <td>
-                <table cellpadding="0" cellspacing="0" border="0">
+                <table>
                   <tr>
                     <td class="icon">
-                      <div class="icon-phone"></div>
+                      <div class="icon-phone text-10"></div>
                     </td>
-                    <td class="info small">
-                      <div>{{ $order->store->user->details->phone }}</div>
+                    <td>
+                      <div class="text-10">{{ $order->store->user->details->phone }}</div>
                     </td>
                   </tr>
                 </table>
