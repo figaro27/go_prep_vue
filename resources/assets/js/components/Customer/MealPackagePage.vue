@@ -506,6 +506,12 @@ export default {
           this.$parent.showBag();
       }
     },
+    optionMealSelected(componentId, optionId, mealId) {
+      return this.optionSelected(componentId, optionId)
+        ? _.find(this.choices[componentId][optionId], { meal_id: mealId }) !==
+            undefined
+        : false;
+    },
     toggleOption(componentId, optionId) {
       const option = this.getComponentOption(componentId, optionId);
       let meals = option.selectable ? [] : option.meals;
