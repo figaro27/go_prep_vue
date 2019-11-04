@@ -368,6 +368,14 @@ p {
   border-style: none;
 }
 
+.no-border th {
+  padding: 30px;
+}
+
+.no-border td {
+  padding: 20px;
+}
+
 // Imported from template
 
 .company-info {

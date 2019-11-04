@@ -63,14 +63,13 @@ $balance = $order->balance;
 
   <div class="row">
       <div class="col-md-4">
-          <h6 class="bold-text" style="position:relative;top:30px">{{$order->created_at->format('m/d/Y')}}</h6>
-      </div>
-      <div class="col-md-4 center-text">
-          <h4 class="center-text bold-text" style="text-transform: uppercase"><b>{{ $order->store->details->name }}</b></h4>
-          <img style="zoom: 1" src="{{$logo}}" />
+          1
       </div>
       <div class="col-md-4">
-          <h6 class="bold-text" style="position:relative;top:30px">{{$order->order_number}}</h6>
+          2
+      </div>
+      <div class="col-md-4">
+          3
       </div>
     </div>
 
