@@ -22,7 +22,6 @@
     }
 
     table th {
-      text-align: center;
       color: white;
       background: #C0382B;
     }
@@ -37,7 +36,7 @@
     }
 
     .brand-color {
-      background: #{{ $order->store->settings->color }};
+      background: #C0382B;
     }
 
   </style>
@@ -163,12 +162,12 @@ $balance = $order->balance;
 
 
     <br><br>
-    <table class="no-border">
+    <table class="no-border" style="border-style:none">
       <thead>
         <tr>
-          <th style="text-align:left">Quantity</th>
-          <th style="text-align:left">Item Name</th>
-          <th style="text-align:left">Price</th>
+          <th>Quantity</th>
+          <th>Item Name</th>
+          <th>Price</th>
         </tr>
       </thead>
 
