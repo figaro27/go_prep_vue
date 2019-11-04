@@ -358,11 +358,16 @@ p {
   font-family: "gotham-bold";
 }
 
+.no-border {
+  border: none;
+  border: 0px;
+  border-style: none;
+}
+
 // Imported from template
 
 .company-info {
   margin: 15px 0;
-  background: #c0382b;
   color: white;
   padding: 5px 40px;
 }

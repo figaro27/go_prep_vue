@@ -60,20 +60,19 @@ $balance = $order->balance;
   <div id="print-area">
     <div class="row">
       <div class="col-md-4">
-          <h6 class="bold-text" style="position:relative;top:30px">ORDER DATE {{$order->created_at->format('m/d/Y')}}</h6>
-      </div>
-      <div class="col-md-4 center-text">
-          <h4 class="center-text bold-text" style="text-transform: uppercase"><b>{{ $order->store->details->name }}</b></h4>
-          <img style="zoom: 1" src="{{$logo}}" />
+          1
       </div>
       <div class="col-md-4">
-          <h6 class="bold-text" style="position:relative;top:30px">ORDER #{{$order->order_number}}</h6>
+          2
+      </div>
+      <div class="col-md-4">
+          3
       </div>
     </div>
   </div>
 
     <div class="company-info">
-          <table class="company-table">
+          <table>
             <tr>
               <td>
                 <table cellpadding="0" cellspacing="0" border="0">
@@ -167,7 +166,7 @@ $balance = $order->balance;
 
 
     <br><br>
-    <table class="company-table">
+    <table class="no-border">
       <thead>
         <tr>
           <th>Quantity</th>
@@ -225,7 +224,7 @@ $balance = $order->balance;
         @endif
       </tbody>
     </table>
-    <table class="company-table">
+    <table class="no-border">
       <tr>
         <td style="width:65%;margin-right:0px;padding-right:0px;padding-top:10px">
           @if ($order->store->settings->notesForCustomer != null)
