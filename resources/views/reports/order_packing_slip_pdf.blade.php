@@ -63,47 +63,6 @@ $balance = $order->balance;
       </center>
       </div>
     </div>
-    <div class="row">
-      <div class="col-4 address">
-        <p><b>{{$order->user->name}}</b></p>
-        <p>{{$order->user->details->address}}</p>
-        <p>{{$order->user->details->city}},
-          {{$order->user->details->state}}
-          {{$order->user->details->zip}}</p>
-        <p>{{$order->user->details->phone}}</p>
-      </div>
-
-      <div class="col-4 address" style="float:right">
-        @if ($order->pickup === 0)
-        <p><b>DELIVERY</b></p>
-        @endif
-        @if ($order->pickup === 1)
-        <p><b>PICKUP</b></p>
-        @endif
-        @if ($params['dailyOrderNumbers'])
-        <p>Daily Order #{{$order['dailyOrderNumber']}}</p>
-        @endif
-        <p>Order ID - {{$order->order_number}}</p>
-        @if ($order->subscription)
-        <p>Subscription #{{ $order->subscription->stripe_id }}</p>
-        @endif
-        <p>Order Date: {{$order->created_at->format('D, m/d/Y')}}</p>
-        @if ($order->pickup === 0)
-        <p>Delivery Date: {{$order->delivery_date->format('D, m/d/Y')}}
-          @if ($order->transferTime)
-          {{ $order->transferTime }}
-          @endif
-        </p>
-        @endif
-        @if ($order->pickup === 1)
-        <p>Pick Up Date: {{$order->delivery_date->format('D, m/d/Y')}}
-          @if ($order->transferTime)
-          {{ $order->transferTime }}
-          @endif
-        </p>
-        @endif
-      </div>
-    </div>
     </div>
 
     <div class="company-info">
@@ -151,6 +110,48 @@ $balance = $order->balance;
             </tr>
           </table>
         </div>
+
+    <div class="row">
+      <div class="col-4 address">
+        <p><b>{{$order->user->name}}</b></p>
+        <p>{{$order->user->details->address}}</p>
+        <p>{{$order->user->details->city}},
+          {{$order->user->details->state}}
+          {{$order->user->details->zip}}</p>
+        <p>{{$order->user->details->phone}}</p>
+      </div>
+
+      <div class="col-4 address" style="float:right">
+        @if ($order->pickup === 0)
+        <p><b>DELIVERY</b></p>
+        @endif
+        @if ($order->pickup === 1)
+        <p><b>PICKUP</b></p>
+        @endif
+        @if ($params['dailyOrderNumbers'])
+        <p>Daily Order #{{$order['dailyOrderNumber']}}</p>
+        @endif
+        <p>Order ID - {{$order->order_number}}</p>
+        @if ($order->subscription)
+        <p>Subscription #{{ $order->subscription->stripe_id }}</p>
+        @endif
+        <p>Order Date: {{$order->created_at->format('D, m/d/Y')}}</p>
+        @if ($order->pickup === 0)
+        <p>Delivery Date: {{$order->delivery_date->format('D, m/d/Y')}}
+          @if ($order->transferTime)
+          {{ $order->transferTime }}
+          @endif
+        </p>
+        @endif
+        @if ($order->pickup === 1)
+        <p>Pick Up Date: {{$order->delivery_date->format('D, m/d/Y')}}
+          @if ($order->transferTime)
+          {{ $order->transferTime }}
+          @endif
+        </p>
+        @endif
+      </div>
+    </div>
 
 
     <br><br>
