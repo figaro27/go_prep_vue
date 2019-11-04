@@ -71,28 +71,24 @@ $balance = $order->balance;
       <thead>
         <tr>
           <th>
-            <td>
             <div class="text-11">
               <span class="icon icon-mail"></span>
               {{ $order->store->details->address }}<br>
               {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}
             </div>
-           </td>
-            <td>
+          </th>
+          <th>
             <div class="text-11">
               <span class="icon icon-globe"></span>
             @if ($order->store->settings->website) {{ $order->store->settings->website }} 
             @else www{{$order->store->settings->domain}}.goprep.com<br>
             @endif
             {{ $order->store->user->email }}
-              </div>
-            </td>
-            <td>
-          <div class="text-11">
+          </th>
+          <th><div class="text-11">
             <span class="icon icon-phone"></span>
             {{ $order->store->user->details->phone }}
           </div>
-            </td>
         </th>
         </tr>
       </thead>
@@ -146,9 +142,10 @@ $balance = $order->balance;
     <table class="no-border table-heading" style="border-style:none">
       <thead>
         <tr>
-          <th>Quantity</th>
-          <th>Item Name</th>
-          <th>Price</th>
+          <th>
+            <td>Quantity</td>
+          <td>Item Name</td>
+          <td>Price</td></th>
         </tr>
       </thead>
 
