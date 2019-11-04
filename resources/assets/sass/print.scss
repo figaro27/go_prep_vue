@@ -376,13 +376,13 @@ p {
   padding: 12px;
 }
 
-th {
+thead {
   -webkit-border-radius: 10px 10px 10px 10px;
   -moz-border-radius: 10px 10px 10px 10px;
   border-radius: 10px 10px 10px 10px;
-  -webkit-box-shadow: 3px 5px 10px grey;
-  -moz-box-shadow: 3px 5px 10px grey;
-  box-shadow: 3px 5px 10px grey;
+  -webkit-box-shadow: 2px 4px 8px grey;
+  -moz-box-shadow: 2px 4px 8px grey;
+  box-shadow: 2px 4px 8px grey;
 }
 
 // Imported from template
@@ -447,4 +447,12 @@ th {
 .company-table {
   border: none;
   color: #ffffff;
+}
+
+.icon {
+  background-image: url("../img/icons.svg");
+  background-repeat: no-repeat;
+  background-size: 100px auto;
+  width: 28px;
+  height: 20px;
 }
