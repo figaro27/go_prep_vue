@@ -163,14 +163,14 @@ $balance = $order->balance;
 
 
     <br><br>
-    <table class="no-border" style="border-style:none">
-      <thead>
+    <table class="no-border">
+
         <tr>
           <th>Quantity</th>
           <th>Item Name</th>
           <th>Price</th>
         </tr>
-      </thead>
+
 
       <tbody>
 
