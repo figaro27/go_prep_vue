@@ -62,16 +62,12 @@ $balance = $order->balance;
   </div>
 
   <div class="row">
-      <div class="col-4">
-          <h6 class="bold-text" style="position:relative;top:30px">ORDER DATE {{$order->created_at->format('m/d/Y')}}</h6>
-      </div>
-      <div class="col-4 center-text">
-          <h4 class="center-text bold-text" style="text-transform: uppercase"><b>{{ $order->store->details->name }}</b></h4>
+    <center>
+      <div class="col-12 center-text">
+          <h3 class="center-text bold-text" style="text-transform: uppercase">{{ $order->store->details->name }}</h3>
           <img style="zoom: 1" src="{{$logo}}" />
       </div>
-      <div class="col-4">
-          <h6 class="bold-text" style="position:relative;top:30px">ORDER #{{$order->order_number}}</h6>
-      </div>
+    </center>
     </div>
 
     <div class="company-info">
@@ -182,9 +178,9 @@ $balance = $order->balance;
 
         @foreach($order->meal_package_items as $i => $mealPackageItem)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-          <td class="center-text">{{$mealPackageItem->quantity}}</td>
+          <td>{{$mealPackageItem->quantity}}</td>
           <td>{{ $mealPackageItem->meal_package->title }}</td>
-          <td class="center-text">${{number_format($mealPackageItem->meal_package->price * $mealPackageItem->quantity, 2)}}</td>
+          <td>${{number_format($mealPackageItem->meal_package->price * $mealPackageItem->quantity, 2)}}</td>
         </tr>
 
 
@@ -192,9 +188,9 @@ $balance = $order->balance;
         @foreach($order->items as $i => $item)
         @if ($item->meal_package_order_id === $mealPackageItem->id)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-          <td class="center-text">{{$item->quantity}}</td>
+          <td>{{$item->quantity}}</td>
           <td>{!! $item->html_title !!}</td>
-          <td class="center-text">@if ($item->meal_package_title === null)
+          <td>@if ($item->meal_package_title === null)
             ${{ number_format($item->unit_price, 2) }}
             @else
             In Package
