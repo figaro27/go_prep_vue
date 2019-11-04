@@ -1,5 +1,4 @@
 @import "fonts";
-@import url("https://fonts.googleapis.com/css?family=Open+Sans");
 
 ul {
   margin: 0;
@@ -39,7 +38,7 @@ body {
 }
 
 body {
-  font-family: "'Open Sans'";
+  font-family: "OpenSans-Regular";
   font-size: 11pt;
 
   &.portrait {
@@ -89,7 +88,7 @@ tfoot {
   page-break-inside: avoid !important;
 }
 table {
-  font-family: "'Open Sans'";
+  font-family: "OpenSans-Regular";
   font-size: 14pt;
   line-height: 1.5;
   margin-top: 2pt;
@@ -344,5 +343,3 @@ p {
 .text-8 {
   font-size: 8px;
 }
-
-// Test
