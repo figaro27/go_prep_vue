@@ -2099,7 +2099,7 @@ const getters = {
         }
       } // End IF
 
-      item.price = parseFloat(parseFloat(price).toFixed(2));
+      item.price = 1;
     });
 
     return items;
