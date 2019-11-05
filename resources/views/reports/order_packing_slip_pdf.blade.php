@@ -49,6 +49,11 @@ $brandColor = $order->store->settings->color;
       text-align: center;
     }
 
+    .brandColor {
+      background: <?= $brandColor ?>;;
+      background-color: <?= $brandColor ?>;;
+    }
+
   </style>
 </head>
 
@@ -59,7 +64,7 @@ $brandColor = $order->store->settings->color;
   <div class="row">
     <center>
       <div class="col-12 center-text">
-          <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e">{{ $order->store->details->name }}</h4>
+          <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4>
           <img style="zoom: 1" src="{{$logo}}" />
       </div>
     </center>
