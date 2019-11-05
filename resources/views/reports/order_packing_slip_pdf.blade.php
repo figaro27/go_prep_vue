@@ -72,21 +72,21 @@ $balance = $order->balance;
         <tr>
           <th class="full-left-border-radius drop-shadow no-border">
             <div class="text-11">
-              <span class="company-info company-table icon"></span>
+              <span class="company-info company-table"></span>
               {{ $order->store->details->address }}<br>
               {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}
             </div>
           </th>
           <th class="drop-shadow no-border">
             <div class="text-11">
-              <span class="company-info company-table icon"></span>
+              <span class="company-info company-table"></span>
             @if ($order->store->settings->website) {{ $order->store->settings->website }} 
             @else www{{$order->store->settings->domain}}.goprep.com<br>
             @endif
             {{ $order->store->user->email }}
           </th>
           <th class="full-right-border-radius drop-shadow no-border"><div class="text-11">
-            <span class="company-info company-table icon"></span>
+            <span class="company-info company-table"></span>
             {{ $order->store->user->details->phone }}
           </div>
         </th>
@@ -95,18 +95,24 @@ $balance = $order->balance;
     </table>
     <br>
 
-    <div class="row">
-      <div class="col-4 address">
-        <p><b>{{$order->user->name}}</b></p>
+
+
+    <table class="no-border table-heading" style="border-style:none">
+      <thead>
+        <tr>
+          <th class="no-border">
+            <div class="text-11">
+              <p><b>{{$order->user->name}}</b></p>
         <p>{{$order->user->details->address}}</p>
         <p>{{$order->user->details->city}},
           {{$order->user->details->state}}
           {{$order->user->details->zip}}</p>
         <p>{{$order->user->details->phone}}</p>
-      </div>
-
-      <div class="col-4 address">
-        <p><b>Delivery Info</b></p>
+            </div>
+          </th>
+          <th class="no-border">
+            <div class="text-11">
+              <p><b>Delivery Info</b></p>
         @if ($order->pickup === 0)
         <p>Type: Delivery</p>
         @endif
@@ -114,14 +120,14 @@ $balance = $order->balance;
         <p>Type: Pickup</p>
         @endif
         @if ($order->pickup === 0)
-        <p>Delivery Date: {{$order->delivery_date->format('D, m/d/Y')}}
+        <p>Delivery Date: {{$order->delivery_date->format('m/d/Y')}}
           @if ($order->transferTime)
           {{ $order->transferTime }}
           @endif
         </p>
         @endif
         @if ($order->pickup === 1)
-        <p>Pick Up Date: {{$order->delivery_date->format('D, m/d/Y')}}
+        <p>Pick Up Date: {{$order->delivery_date->format('m/d/Y')}}
           @if ($order->transferTime)
           {{ $order->transferTime }}
           @endif
@@ -135,10 +141,11 @@ $balance = $order->balance;
         <p>Pickup Time: {{ $order->transferTime }}</p>
         @endif
         @endif
-      </div>
-
-      <div class="col-4 address">
-        <p><b>Order Info</b></p>
+            </div>
+          </th>
+          <th class="no-border">
+            <div class="text-11">
+              <p><b>Order Info</b></p>
         @if ($params['dailyOrderNumbers'])
         <p>Daily Order #{{$order['dailyOrderNumber']}}</p>
         @endif
@@ -147,9 +154,12 @@ $balance = $order->balance;
         <p>Subscription #{{ $order->subscription->stripe_id }}</p>
         @endif
         <p>Order Date: {{$order->created_at->format('D, m/d/Y')}}</p>
-        
-      </div>
-    </div>
+            </div>
+          </th>
+        </tr>
+      </thead>
+    </table>
+
 
 
     <br>
@@ -209,6 +219,7 @@ $balance = $order->balance;
         @endif
       </tbody>
     </table>
+    <hr>
     <table class="no-border" style="border-style:none">
       <tr>
         <td style="width:70%;padding-top:10px">
