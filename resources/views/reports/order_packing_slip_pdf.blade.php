@@ -70,23 +70,23 @@ $balance = $order->balance;
     <table class="no-border table-heading" style="border-style:none">
       <thead>
         <tr>
-          <th class="full-left-border-radius drop-shadow">
+          <th class="full-left-border-radius drop-shadow no-border">
             <div class="text-11">
-              <span class="icon icon-mail"></span>
+              <span class="company-info company-table icon icon-mail"></span>
               {{ $order->store->details->address }}<br>
               {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}
             </div>
           </th>
-          <th class="drop-shadow">
+          <th class="drop-shadow no-border">
             <div class="text-11">
-              <span class="icon icon-globe"></span>
+              <span class="company-info company-table icon icon-globe"></span>
             @if ($order->store->settings->website) {{ $order->store->settings->website }} 
             @else www{{$order->store->settings->domain}}.goprep.com<br>
             @endif
             {{ $order->store->user->email }}
           </th>
-          <th class="full-right-border-radius drop-shadow"><div class="text-11">
-            <span class="icon icon-phone"></span>
+          <th class="full-right-border-radius drop-shadow no-border"><div class="text-11">
+            <span class="company-info company-table icon icon-phone"></span>
             {{ $order->store->user->details->phone }}
           </div>
         </th>
@@ -141,9 +141,9 @@ $balance = $order->balance;
     <br>
     <table class="no-border table-heading" style="border-style:none">
       <thead>
-          <th class="top-left-border-radius drop-shadow">Quantity</th>
-          <th class="drop-shadow">Item Name</th>
-          <th class="top-right-border-radius drop-shadow">Price</th>
+          <th class="top-left-border-radius drop-shadow no-border">Quantity</th>
+          <th class="drop-shadow no-border">Item Name</th>
+          <th class="top-right-border-radius drop-shadow no-border">Price</th>
       </thead>
 
       <tbody>
