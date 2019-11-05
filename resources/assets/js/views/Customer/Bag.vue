@@ -49,6 +49,7 @@
             :order="order"
             :adjustMealPlan="adjustMealPlan"
           ></checkout-area>
+
           <store-closed
             v-if="!$route.params.storeView && !storeOwner"
           ></store-closed>

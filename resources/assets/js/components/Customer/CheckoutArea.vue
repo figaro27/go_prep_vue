@@ -1405,11 +1405,7 @@ export default {
           }
         })
         .catch(async response => {
-          // let error =
-          //   "Checkout failed. Reason: " +
-          //   response.response.data.message +
-          //   ". Please contact GoPrep";
-          // this.$toastr.e(error, "Error");
+          this.checkingOut = false;
           this.$toastr.e("Please contact GoPrep", "Error");
         })
         .finally(() => {

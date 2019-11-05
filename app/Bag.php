@@ -114,42 +114,49 @@ class Bag
                             }
                         }
                     } else {
-                        foreach ($item['size']['meals'] as $meal) {
-                            // if (!$meals[$meal['id']]->active) {
-                            //     //continue;
-                            // }
+                        if (
+                            isset($item) &&
+                            isset($item['size']) &&
+                            isset($item['size']['meals'])
+                        ) {
+                            foreach ($item['size']['meals'] as $meal) {
+                                // if (!$meals[$meal['id']]->active) {
+                                //     //continue;
+                                // }
 
-                            $mealItem = [
-                                'meal_package_title' =>
-                                    $item['meal']['title'] .
-                                    ' - ' .
-                                    $item['size']['title'],
-                                'meal_package_id' => $item['meal']['id'],
-                                'meal_package_size_id' => $item['size']['id'],
-                                'meal' => [
-                                    'id' => $meal['id']
-                                ],
-                                'meal_package' => true,
-                                'package_quantity' => $item['quantity'],
-                                'quantity' => $meal['quantity'],
-                                'price' => 0,
-                                'size' => [
-                                    'id' => $meal['meal_size_id']
-                                        ? $meal['meal_size_id']
-                                        : null
-                                ],
-                                'quantity' => $meal['quantity'],
-                                'special_instructions' =>
-                                    $meal['special_instructions'] ?? null
-                            ];
+                                $mealItem = [
+                                    'meal_package_title' =>
+                                        $item['meal']['title'] .
+                                        ' - ' .
+                                        $item['size']['title'],
+                                    'meal_package_id' => $item['meal']['id'],
+                                    'meal_package_size_id' =>
+                                        $item['size']['id'],
+                                    'meal' => [
+                                        'id' => $meal['id']
+                                    ],
+                                    'meal_package' => true,
+                                    'package_quantity' => $item['quantity'],
+                                    'quantity' => $meal['quantity'],
+                                    'price' => 0,
+                                    'size' => [
+                                        'id' => $meal['meal_size_id']
+                                            ? $meal['meal_size_id']
+                                            : null
+                                    ],
+                                    'quantity' => $meal['quantity'],
+                                    'special_instructions' =>
+                                        $meal['special_instructions'] ?? null
+                                ];
 
-                            $mealItemId = $this->getItemId($mealItem);
+                                $mealItemId = $this->getItemId($mealItem);
 
-                            if (!isset($items[$mealItemId])) {
-                                $items[$mealItemId] = $mealItem;
-                            } else {
-                                $items[$mealItemId]['quantity'] +=
-                                    $mealItem['quantity'];
+                                if (!isset($items[$mealItemId])) {
+                                    $items[$mealItemId] = $mealItem;
+                                } else {
+                                    $items[$mealItemId]['quantity'] +=
+                                        $mealItem['quantity'];
+                                }
                             }
                         }
                     }
