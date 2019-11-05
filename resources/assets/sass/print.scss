@@ -369,41 +369,41 @@ p {
 }
 
 .no-border th {
-  padding: 16px;
+  padding: 14px;
 }
 
 .no-border td {
-  padding: 12px;
+  padding: 10px;
 }
 
 .drop-shadow {
-  -webkit-box-shadow: 1px 2px 8px grey;
-  -moz-box-shadow: 1px 2px 8px grey;
-  box-shadow: 1px 2px 8px grey;
+  -webkit-box-shadow: 1px 2px 6px grey;
+  -moz-box-shadow: 1px 2px 6px grey;
+  box-shadow: 1px 2px 6px grey;
 }
 
 .top-left-border-radius {
-  -webkit-border-radius: 8px 0px 0px 0px;
-  -moz-border-radius: 8px 0px 0px 0px;
-  border-radius: 8px 0px 0px 0px;
+  -webkit-border-radius: 6px 0px 0px 0px;
+  -moz-border-radius: 6px 0px 0px 0px;
+  border-radius: 6px 0px 0px 0px;
 }
 
 .top-right-border-radius {
-  -webkit-border-radius: 0px 8px 0px 0px;
-  -moz-border-radius: 0px 8px 0px 0px;
-  border-radius: 0px 8px 0px 0px;
+  -webkit-border-radius: 0px 6px 0px 0px;
+  -moz-border-radius: 0px 6px 0px 0px;
+  border-radius: 0px 6px 0px 0px;
 }
 
 .full-left-border-radius {
-  -webkit-border-radius: 8px 0px 0px 8px;
-  -moz-border-radius: 8px 0px 0px 8px;
-  border-radius: 8px 0px 0px 8px;
+  -webkit-border-radius: 6px 0px 0px 6px;
+  -moz-border-radius: 6px 0px 0px 6px;
+  border-radius: 6px 0px 0px 6px;
 }
 
 .full-right-border-radius {
-  -webkit-border-radius: 0px 8px 8px 0px;
-  -moz-border-radius: 0px 8px 8px 0px;
-  border-radius: 0px 8px 8px 0px;
+  -webkit-border-radius: 0px 6px 6px 0px;
+  -moz-border-radius: 0px 6px 6px 0px;
+  border-radius: 0px 6px 6px 0px;
 }
 
 // Imported from template

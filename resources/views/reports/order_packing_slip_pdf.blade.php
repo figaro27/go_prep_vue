@@ -61,7 +61,7 @@ $balance = $order->balance;
   <div class="row">
     <center>
       <div class="col-12 center-text">
-          <h4 class="center-text bold-text" style="text-transform: uppercase;color: #2f2f2f">{{ $order->store->details->name }}</h4>
+          <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3a3a3a">{{ $order->store->details->name }}</h4>
           <img style="zoom: 1" src="{{$logo}}" />
       </div>
     </center>
@@ -72,21 +72,21 @@ $balance = $order->balance;
         <tr>
           <th class="full-left-border-radius drop-shadow no-border">
             <div class="text-11">
-              <span class="company-info company-table icon icon-mail"></span>
+              <span class="company-info company-table icon-mail"></span>
               {{ $order->store->details->address }}<br>
               {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}
             </div>
           </th>
           <th class="drop-shadow no-border">
             <div class="text-11">
-              <span class="company-info company-table icon icon-globe"></span>
+              <span class="company-info company-table icon-globe"></span>
             @if ($order->store->settings->website) {{ $order->store->settings->website }} 
             @else www{{$order->store->settings->domain}}.goprep.com<br>
             @endif
             {{ $order->store->user->email }}
           </th>
           <th class="full-right-border-radius drop-shadow no-border"><div class="text-11">
-            <span class="company-info company-table icon icon-phone"></span>
+            <span class="company-info company-table icon-phone"></span>
             {{ $order->store->user->details->phone }}
           </div>
         </th>
@@ -152,7 +152,7 @@ $balance = $order->balance;
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td>{{$mealPackageItem->quantity}}</td>
           <td>{{ $mealPackageItem->meal_package->title }}</td>
-          <td>${{number_format($mealPackageItem->meal_package->price * $mealPackageItem->quantity, 2)}}</td>
+          <td style="text-align:right">${{number_format($mealPackageItem->meal_package->price * $mealPackageItem->quantity, 2)}}</td>
         </tr>
 
 
@@ -162,7 +162,7 @@ $balance = $order->balance;
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td>{{$item->quantity}}</td>
           <td>{!! $item->html_title !!}</td>
-          <td>@if ($item->meal_package_title === null)
+          <td style="text-align:right">@if ($item->meal_package_title === null)
             ${{ number_format($item->unit_price, 2) }}
             @else
             In Package
@@ -178,7 +178,7 @@ $balance = $order->balance;
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td>{{$item->quantity}}</td>
           <td>{!! $item->html_title !!}</td>
-          <td>${{ number_format($item->price, 2) }}</td>
+          <td style="text-align:right">${{ number_format($item->price, 2) }}</td>
         </tr>
 
         @endif
@@ -189,7 +189,7 @@ $balance = $order->balance;
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td>{{$lineItemOrder->quantity}}</td>
           <td>{!! $lineItemOrder->title !!}</td>
-          <td>${{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
+          <td style="text-align:right">${{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
         </tr>
         @endforeach
         @endif
@@ -206,39 +206,39 @@ $balance = $order->balance;
           <table border="0" style="border:0px;border-style:none;border-collapse: collapse">
             <tr>
               <td style="border:none"><b>Subtotal</b></td>
-              <td style="border:none">{{ $subtotal }}</td>
+              <td style="border:none;text-align:right">{{ $subtotal }}</td>
             </tr>
             @if ($order->mealPlanDiscount > 0)<tr>
               <td style="border:none"><b>Subscription Discount</b></td>
-              <td style="border:none">{{ $mealPlanDiscount }}</td>
+              <td style="border:none;text-align:right">{{ $mealPlanDiscount }}</td>
             </tr>@endif
             @if ($order->salesTax > 0)<tr>
               <td style="border:none"><b>Tax</b></td>
-              <td style="border:none">{{ $salesTax }}</td>
+              <td style="border:none;text-align:right">{{ $salesTax }}</td>
             </tr>@endif
             @if ($order->processingFee > 0)<tr>
               <td style="border:none"><b>Processing Fee</b></td>
-              <td style="border:none">{{ $processingFee }}</td>
+              <td style="border:none;text-align:right">{{ $processingFee }}</td>
             </tr>@endif
             @if ($order->deliveryFee > 0)<tr>
               <td style="border:none"><b>Delivery Fee</b></td>
-              <td style="border:none">{{ $deliveryFee }}</td>
+              <td style="border:none;text-align:right">{{ $deliveryFee }}</td>
             </tr>@endif
             @if ($order->couponReduction > 0)<tr>
               <td style="border:none"><b>Coupon</b></td>
-              <td style="border:none">({{ $couponCode }}) {{ $coupon }}</td>
+              <td style="border:none;text-align:right">({{ $couponCode }}) {{ $coupon }}</td>
             </tr>@endif
             <tr>
               <td style="border:none"><b>Total</b></td>
-              <td style="border:none">{{ $amount }}</td>
+              <td style="border:none;text-align:right">{{ $amount }}</td>
             </tr>
             @if ($order->balance > 0)<tr>
               <td style="border:none"><b>Paid</b></td>
-              <td style="border:none">${{number_format($order->amount - $order->balance, 2)}}</td>
+              <td style="border:none;text-align:right">${{number_format($order->amount - $order->balance, 2)}}</td>
             </tr>@endif
             @if ($order->balance > 0)<tr>
               <td style="border:none"><b>Balance</b></td>
-              <td style="border:none">${{number_format($order->balance, 2)}}</td>
+              <td style="border:none;text-align:right">${{number_format($order->balance, 2)}}</td>
             </tr>@endif
           </table>
         </td>
