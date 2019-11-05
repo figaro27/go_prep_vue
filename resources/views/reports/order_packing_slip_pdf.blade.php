@@ -130,10 +130,10 @@ $balance = $order->balance;
         @if ($order->transferTime)
         @if ($order->pickup === 0)
         <p>Delivery Time: {{ $order->transferTime }}</p>
-        @end
+        @endif
         @if ($order->pickup === 0)
         <p>Pickup Time: {{ $order->transferTime }}</p>
-        @end
+        @endif
         @endif
       </div>
 
