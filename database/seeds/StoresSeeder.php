@@ -79,9 +79,14 @@ class StoresSeeder extends Seeder
                     'Please pick up your food at 555 Bay Ridge Ave between 4 PM and 6 PM.',
                 'notesForCustomer' =>
                     'Please heat up each hot meal in the microwave for 2 minutes. Do not eat any salads or meals containing dairy after 4 days. Thank you for your order!',
+                'payment_gateway' => $i === 15 ? 'authorize' : 'stripe',
                 'stripe_id' => 'acct_1DytLMHoLjZBBJiv',
                 'stripe_account' =>
                     '{"access_token":"sk_test_keZlgc38s70oGly6mjmYufLg","livemode":false,"refresh_token":"rt_ERmvvKxytr1o6Abs7dAAAgITMDlccJAX4qcOlPuadA8epbsX","token_type":"bearer","stripe_publishable_key":"pk_test_4AphKydmoFc290wUOgLPJRnY","stripe_user_id":"acct_1DytLMHoLjZBBJiv","scope":"express"}',
+                'authorize_login_id' => '9Ry29Snq',
+                'authorize_transaction_key' => '7c7sbHw5cTQ47G72',
+                'authorize_public_key' =>
+                    '9c72emX8A69eCeSeVvsfks4jX5FDxWYXAB6cWP93SjjYqesyBZ8jJ4jM8Br22gL2',
                 'notifications' => json_encode([
                     'new_order' => true,
                     'new_subscription' => true,
