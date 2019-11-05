@@ -406,11 +406,16 @@ p {
   border-radius: 0px 6px 6px 0px;
 }
 
-.bottom-border-radius,
-tfoot {
-  -webkit-border-radius: 0px 0px 6px 6px;
-  -moz-border-radius: 0px 0px 6px 6px;
-  border-radius: 0px 0px 6px 6px;
+.bottom-left-border-radius {
+  -webkit-border-radius: 0px 0px 0px 6px;
+  -moz-border-radius: 0px 0px 0px 6px;
+  border-radius: 0px 0px 0px 6px;
+}
+
+.bottom-right-border-radius {
+  -webkit-border-radius: 0px 0px 6px 0px;
+  -moz-border-radius: 0px 0px 6px 0px;
+  border-radius: 0px 0px 6px 0px;
 }
 
 .align-right {
