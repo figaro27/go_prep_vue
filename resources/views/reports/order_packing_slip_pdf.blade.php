@@ -85,7 +85,7 @@ $brandColor = $order->store->settings->color;
             </div>
           </th>
           <th class="drop-shadow no-border">
-            <div class="text-11 align-center" style="position:relative;right:20px">
+            <div class="text-11 align-center" style="position:relative;right:25px">
               <span class="icon-globe"></span>
             @if ($order->store->settings->website) {{ $order->store->settings->website }} 
             @else www{{$order->store->settings->domain}}.goprep.com<br>
@@ -93,7 +93,7 @@ $brandColor = $order->store->settings->color;
             {{ $order->store->user->email }}
           </th>
           <th class="full-right-border-radius drop-shadow no-border">
-            <div class="text-11 align-center" style="position:relative;right:10px">
+            <div class="text-11 align-center" style="position:relative;right:18px">
             <span class="phone-icon"></span>
             {{ $order->store->user->details->phone }}
           </div>
@@ -114,7 +114,7 @@ $brandColor = $order->store->settings->color;
         <p>{{$order->user->details->phone}}</p>
       </div>
 
-      <div class="col-4 align-center">
+      <div class="col-4 align-center" style="position:relative;left:5px">
         <p><b>Order Info</b></p>
         @if ($order->dailyOrderNumber)
         <p>Daily Order #{{$order->dailyOrderNumber}}</p>
@@ -160,7 +160,7 @@ $brandColor = $order->store->settings->color;
     <table class="no-border table-heading" style="border-style:none;">
       <thead>
           <th class="top-left-border-radius drop-shadow no-border" style="text-align:center">Quantity</th>
-          <th class="drop-shadow no-border">Item Name</th>
+          <th class="drop-shadow no-border">Item</th>
           <th class="top-right-border-radius drop-shadow no-border" style="text-align:center">Price</th>
       </thead>
 
