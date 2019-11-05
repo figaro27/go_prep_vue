@@ -406,7 +406,8 @@ p {
   border-radius: 0px 6px 6px 0px;
 }
 
-.bottom-border-radius {
+.bottom-border-radius,
+tfoot {
   -webkit-border-radius: 0px 0px 6px 6px;
   -moz-border-radius: 0px 0px 6px 6px;
   border-radius: 0px 0px 6px 6px;
