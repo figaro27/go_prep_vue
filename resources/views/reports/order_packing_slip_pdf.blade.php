@@ -246,6 +246,7 @@ $brandColor = $order->store->settings->color;
             @if ($order->balance > 0)<tr>
             <td style="border:none"><b>Total</b></td>
               <td style="border:none;text-align:right;position:relative;right:20px">{{ $amount }}</td>
+            </tr><tr>
             <td style="border:none"><b>Paid</b></td>
               <td style="border:none;text-align:right;position:relative;right:20px">${{number_format($order->amount - $order->balance, 2)}}</td>
             </tr>
