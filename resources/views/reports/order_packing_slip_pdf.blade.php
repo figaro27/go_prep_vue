@@ -12,7 +12,7 @@ $amount = '$'.number_format($order->amount, 2);
 $deposit = '$'.number_format($order->deposit, 2);
 $cashOrder = $order->cashOrder;
 $balance = $order->balance;
-$brandColor = '#'.$order->store->settings->color;
+$brandColor = '#000000';
 @endphp
 
 <head>
@@ -37,7 +37,7 @@ $brandColor = '#'.$order->store->settings->color;
 
     table th {
       color: white;
-      background-color: @php echo $brandColor; @endphp !important;
+      background: <?= $brandColor ?>;;
     }
 
     table {
