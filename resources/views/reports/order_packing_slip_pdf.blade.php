@@ -35,6 +35,10 @@ $brandColor = $order->store->settings->color;
       border: 0px solid #bebebe;
     }
 
+    table {
+      border-bottom: 3px solid <?= $brandColor ?>;
+    }
+
     table th {
       color: white;
       background: <?= $brandColor ?>;;
