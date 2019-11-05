@@ -23,7 +23,7 @@
       "
       :class="container"
       style="margin-bottom: 20px;"
-      v-if="group.meals.length > 0"
+      v-if="group.meals.length > 0 && isCategoryVisible(group)"
     >
       <div v-if="storeSettings.menuStyle === 'image'">
         <h2 class="text-center mb-3 dbl-underline">

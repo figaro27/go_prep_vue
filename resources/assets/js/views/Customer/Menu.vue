@@ -5,7 +5,9 @@
     <category-slider></category-slider>
 
     <div class="menu">
-      <delivery-date-modal v-if="!bagDeliveryDate"></delivery-date-modal>
+      <delivery-date-modal
+        v-if="!bagDeliveryDate && deliveryDateRequired"
+      ></delivery-date-modal>
 
       <store-description-modal
         :showDescriptionModal="showDescriptionModal"
@@ -126,6 +128,7 @@
               </div>
               <div
                 v-for="(cat, index) in finalCategories"
+                v-if="isCategoryVisible(cat)"
                 :key="cat.category"
                 :class="
                   index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
@@ -377,6 +380,9 @@ export default {
       allTags: "tags",
       bagDeliveryDate: "bagDeliveryDate"
     }),
+    deliveryDateRequired() {
+      return this.hasDeliveryDateRestrictionToday;
+    },
     showSpinner() {
       if (this.context == "customer" || this.context == "guest") {
         return this.store.items.length == 0;
