@@ -426,31 +426,31 @@ p {
 }
 .company-info table.company-table {
   width: 100%;
-  max-width: 820px;
+  // max-width: 820px;
   table-layout: auto;
 }
 .company-info table.company-table tr td {
-  vertical-align: middle;
+  // vertical-align: middle;
 }
 .company-info table.company-table tr td table {
-  table-layout: auto;
+  // table-layout: auto;
 }
 .company-info table.company-table tr td.second {
-  padding: 0 20px;
+  // padding: 0 20px;
 }
 .company-info table.company-table tr td:last-child table {
-  float: right;
+  // float: right;
 }
 .company-info table.company-table tr td .info.large div {
-  max-width: 235px;
+  // max-width: 235px;
 }
 .company-info table.company-table tr td .info.small div {
-  max-width: 125px;
+  // max-width: 125px;
 }
 .company-info table.company-table tr td.icon {
-  width: 28px;
-  max-width: 28px;
-  padding-right: 10px;
+  // width: 28px;
+  // max-width: 28px;
+  // padding-right: 10px;
 }
 .company-info table.company-table tr td.icon > div {
   background-image: url("../img/icons.svg");
@@ -460,13 +460,13 @@ p {
   height: 20px;
 }
 .company-info table.company-table tr td.icon .icon-mail {
-  background-position: 0 0;
+  // background-position: 0 0;
 }
 .company-info table.company-table tr td.icon .icon-globe {
-  background-position: -35px 0;
+  // background-position: -35px 0;
 }
 .company-info table.company-table tr td.icon .icon-phone {
-  background-position: -70px 0;
+  // background-position: -70px 0;
 }
 
 .company-info,

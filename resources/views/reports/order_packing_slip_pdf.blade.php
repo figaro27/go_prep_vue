@@ -157,7 +157,7 @@ $brandColor = $order->store->settings->color;
 
 
     <br>
-    <table class="no-border table-heading" style="border-style:none">
+    <table class="no-border table-heading" style="border-style:none;border-bottom: 3px solid <?= $brandColor ?>">
       <thead>
           <th class="top-left-border-radius drop-shadow no-border" style="text-align:center">Quantity</th>
           <th class="drop-shadow no-border">Item Name</th>
