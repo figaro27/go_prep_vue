@@ -91,6 +91,7 @@ class Bag
                                     'id' => $meal['id']
                                 ],
                                 'meal_package' => true,
+                                'package_price' => $item['price'],
                                 'package_quantity' => $item['quantity'],
                                 'quantity' => $meal['quantity'],
                                 'price' => $meal['price'],
@@ -136,6 +137,7 @@ class Bag
                                         'id' => $meal['id']
                                     ],
                                     'meal_package' => true,
+                                    'package_price' => $item['price'],
                                     'package_quantity' => $item['quantity'],
                                     'quantity' => $meal['quantity'],
                                     'price' => 0,
@@ -238,6 +240,7 @@ class Bag
                                             $item['meal']['id'],
                                         'meal_package_size_id' =>
                                             $item['size']['id'],
+                                        'package_price' => $item['price'],
                                         'package_quantity' => $item['quantity'],
                                         'quantity' => $meal['quantity'],
                                         'price' => $meal['price'],
@@ -324,6 +327,7 @@ class Bag
                                     'meal_package_id' => $item['meal']['id'],
                                     'meal_package_size_id' =>
                                         $item['size']['id'],
+                                    'package_price' => $item['price'],
                                     'package_quantity' => $item['quantity'],
                                     'quantity' => $meal['quantity'],
                                     'price' => $meal['price'],

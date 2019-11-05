@@ -167,7 +167,7 @@ $brandColor = $order->store->settings->color;
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td>{{$mealPackageItem->quantity}}</td>
           <td>{{ $mealPackageItem->meal_package->title }}</td>
-          <td style="text-align:center">${{number_format($mealPackageItem->meal_package->price * $mealPackageItem->quantity, 2)}}</td>
+          <td style="text-align:center">${{number_format($mealPackageItem->price * $mealPackageItem->quantity, 2)}}</td>
         </tr>
 
 

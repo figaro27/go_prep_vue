@@ -295,6 +295,7 @@ class CheckoutController extends UserController
                         $mealPackageOrder->meal_package_size_id =
                             $item['meal_package_size_id'];
                         $mealPackageOrder->quantity = $item['package_quantity'];
+                        $mealPackageOrder->price = $item['package_price'];
                         $mealPackageOrder->save();
 
                         $mealOrder->meal_package_order_id =
@@ -585,6 +586,7 @@ class CheckoutController extends UserController
                                 $item['meal_package_size_id'];
                             $mealPackageOrder->quantity =
                                 $item['package_quantity'];
+                            $mealPackageOrder->price = $item['package_price'];
                             $mealPackageOrder->save();
 
                             $mealOrder->meal_package_order_id =
@@ -681,6 +683,8 @@ class CheckoutController extends UserController
                                 $item['meal_package_size_id'];
                             $mealPackageSubscription->quantity =
                                 $item['package_quantity'];
+                            $mealPackageSubscription->price =
+                                $item['package_price'];
                             $mealPackageSubscription->save();
 
                             $mealSub->meal_package_subscription_id =
