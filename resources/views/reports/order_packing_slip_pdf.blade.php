@@ -210,7 +210,7 @@ $brandColor = $order->store->settings->color;
         @endif
       </tbody>
     </table>
-    <table class="no-border" style="border-style:none">
+    <table class="no-border drop-shadow" style="border-style:none">
       <tr>
         <td style="width:70%;padding-top:10px">
           @if ($order->store->settings->notesForCustomer != null)
@@ -264,7 +264,7 @@ $brandColor = $order->store->settings->color;
         @if ($order->balance <= 0)
         <tr>
           <th class="bottom-left-border-radius" style="border:none;font-size:18px;position:relative;left:30px"><b>Total Paid</b></th>
-          <th class="bottom-right-border-radius" style="border:none;font-size:18px">{{ $amount }}</th>
+          <th class="bottom-right-border-radius" style="border:none;font-size:18px;text-align:right">{{ $amount }}</th>
         </tr>
         @endif
       </tfoot>
