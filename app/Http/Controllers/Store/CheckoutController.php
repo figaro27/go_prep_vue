@@ -133,20 +133,20 @@ class CheckoutController extends StoreController
         $storeSettings = $this->store->settings;
 
         if (
-            !$user->hasStoreCustomer(
+            !$customerUser->hasStoreCustomer(
                 $store->id,
                 $storeSettings->currency,
                 $gateway
             )
         ) {
-            $user->createStoreCustomer(
+            $customerUser->createStoreCustomer(
                 $store->id,
                 $storeSettings->currency,
                 $gateway
             );
         }
 
-        $customer = $user->getStoreCustomer(
+        $customer = $customerUser->getStoreCustomer(
             $store->id,
             $storeSettings->currency,
             $gateway
@@ -155,7 +155,7 @@ class CheckoutController extends StoreController
         $storeCustomer = null;
 
         if (!$cashOrder) {
-            $storeCustomer = $user->getStoreCustomer(
+            $storeCustomer = $customerUser->getStoreCustomer(
                 $store->id,
                 $storeSettings->currency,
                 $gateway,
