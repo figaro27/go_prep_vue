@@ -114,7 +114,7 @@ $balance = $order->balance;
         @if ($order->subscription)
         <p>Subscription #{{ $order->subscription->stripe_id }}</p>
         @endif
-        <p>Order Date: {{$order->created_at->format('D, m/d/Y')}}</p>
+        <p>Order Date: {{$order->created_at->format('m/d/Y')}}</p>
         
       </div>
 
