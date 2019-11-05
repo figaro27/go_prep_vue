@@ -23,7 +23,7 @@
 
     table th {
       color: white;
-      background: #{!! $order->store->settings->color !!};
+      background: #{! $order->store->settings->color !};
     }
 
     table {
@@ -36,7 +36,7 @@
     }
 
     .brand-color {
-      background: #{!! $order->store->settings->color !!};
+      background: #{! $order->store->settings->color !};
     }
 
   </style>
@@ -125,7 +125,7 @@ $balance = $order->balance;
         @if ($order->pickup === 0)
         <p>Delivery Time: {{ $order->transferTime }}</p>
         @endif
-        @if ($order->pickup === 0)
+        @if ($order->pickup === 1)
         <p>Pickup Time: {{ $order->transferTime }}</p>
         @endif
         @endif
@@ -133,7 +133,7 @@ $balance = $order->balance;
 
       <div class="col-4 address">
         <p><b>Order Info</b></p>
-        @if ($params['dailyOrderNumbers'])
+        @if ($order->dailyOrderNumber)
         <p>Daily Order #{{$order->dailyOrderNumber}}</p>
         @endif
         <p>Order ID: {{$order->order_number}}</p>
