@@ -525,11 +525,7 @@ export default {
     search: "",
     filteredView: false
   },
-  mounted: function() {
-    /*if ((this.context == "customer" || this.context == "guest")) {
-      store.dispatch("refreshStoreMeals")
-    }*/
-  },
+  mounted: function() {},
   mixins: [MenuBag],
   computed: {
     ...mapGetters({
@@ -620,6 +616,10 @@ export default {
       let showDetail = false;
       let sizeId = size ? size.id : null;
       let sizeCriteria = { meal_package_size_id: sizeId };
+
+      if (mealPackage.sizes && mealPackage.sizes.length && sizeId) {
+        size = _.find(mealPackage.sizes, { id: sizeId });
+      }
 
       if (
         mealPackage.components &&
