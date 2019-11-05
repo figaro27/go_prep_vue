@@ -61,7 +61,7 @@ $balance = $order->balance;
   <div class="row">
     <center>
       <div class="col-12 center-text">
-          <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3a3a3a">{{ $order->store->details->name }}</h4>
+          <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e">{{ $order->store->details->name }}</h4>
           <img style="zoom: 1" src="{{$logo}}" />
       </div>
     </center>
@@ -72,21 +72,21 @@ $balance = $order->balance;
         <tr>
           <th class="full-left-border-radius drop-shadow no-border">
             <div class="text-11">
-              <span class="company-info company-table icon-mail"></span>
+              <span class="company-info company-table icon icon-mail"></span>
               {{ $order->store->details->address }}<br>
               {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}
             </div>
           </th>
           <th class="drop-shadow no-border">
             <div class="text-11">
-              <span class="company-info company-table icon-globe"></span>
+              <span class="company-info company-table icon icon-globe"></span>
             @if ($order->store->settings->website) {{ $order->store->settings->website }} 
             @else www{{$order->store->settings->domain}}.goprep.com<br>
             @endif
             {{ $order->store->user->email }}
           </th>
           <th class="full-right-border-radius drop-shadow no-border"><div class="text-11">
-            <span class="company-info company-table icon-phone"></span>
+            <span class="company-info company-table icon icon-phone"></span>
             {{ $order->store->user->details->phone }}
           </div>
         </th>
@@ -143,7 +143,7 @@ $balance = $order->balance;
       <thead>
           <th class="top-left-border-radius drop-shadow no-border">Quantity</th>
           <th class="drop-shadow no-border">Item Name</th>
-          <th class="top-right-border-radius drop-shadow no-border">Price</th>
+          <th class="top-right-border-radius drop-shadow no-border" style="text-align:right">Price</th>
       </thead>
 
       <tbody>
@@ -206,39 +206,39 @@ $balance = $order->balance;
           <table border="0" style="border:0px;border-style:none;border-collapse: collapse">
             <tr>
               <td style="border:none"><b>Subtotal</b></td>
-              <td style="border:none;text-align:right">{{ $subtotal }}</td>
+              <td style="border:none;text-align:right;padding-right:10px">{{ $subtotal }}</td>
             </tr>
             @if ($order->mealPlanDiscount > 0)<tr>
               <td style="border:none"><b>Subscription Discount</b></td>
-              <td style="border:none;text-align:right">{{ $mealPlanDiscount }}</td>
+              <td style="border:none;text-align:right;padding-right:10px">{{ $mealPlanDiscount }}</td>
             </tr>@endif
             @if ($order->salesTax > 0)<tr>
               <td style="border:none"><b>Tax</b></td>
-              <td style="border:none;text-align:right">{{ $salesTax }}</td>
+              <td style="border:none;text-align:right;padding-right:10px">{{ $salesTax }}</td>
             </tr>@endif
             @if ($order->processingFee > 0)<tr>
               <td style="border:none"><b>Processing Fee</b></td>
-              <td style="border:none;text-align:right">{{ $processingFee }}</td>
+              <td style="border:none;text-align:right;padding-right:10px">{{ $processingFee }}</td>
             </tr>@endif
             @if ($order->deliveryFee > 0)<tr>
               <td style="border:none"><b>Delivery Fee</b></td>
-              <td style="border:none;text-align:right">{{ $deliveryFee }}</td>
+              <td style="border:none;text-align:right;padding-right:10px">{{ $deliveryFee }}</td>
             </tr>@endif
             @if ($order->couponReduction > 0)<tr>
               <td style="border:none"><b>Coupon</b></td>
-              <td style="border:none;text-align:right">({{ $couponCode }}) {{ $coupon }}</td>
+              <td style="border:none;text-align:right;padding-right:10px">({{ $couponCode }}) {{ $coupon }}</td>
             </tr>@endif
             <tr>
               <td style="border:none"><b>Total</b></td>
-              <td style="border:none;text-align:right">{{ $amount }}</td>
+              <td style="border:none;text-align:right;padding-right:10px">{{ $amount }}</td>
             </tr>
             @if ($order->balance > 0)<tr>
               <td style="border:none"><b>Paid</b></td>
-              <td style="border:none;text-align:right">${{number_format($order->amount - $order->balance, 2)}}</td>
+              <td style="border:none;text-align:right;padding-right:10px">${{number_format($order->amount - $order->balance, 2)}}</td>
             </tr>@endif
             @if ($order->balance > 0)<tr>
               <td style="border:none"><b>Balance</b></td>
-              <td style="border:none;text-align:right">${{number_format($order->balance, 2)}}</td>
+              <td style="border:none;text-align:right;padding-right:10px">${{number_format($order->balance, 2)}}</td>
             </tr>@endif
           </table>
         </td>
