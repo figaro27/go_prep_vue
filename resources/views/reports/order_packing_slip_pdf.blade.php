@@ -243,26 +243,29 @@ $brandColor = $order->store->settings->color;
               <td style="border:none"><b>Coupon</b></td>
               <td style="border:none;text-align:right;position:relative;right:20px">({{ $couponCode }}) {{ $coupon }}</td>
             </tr>@endif
-            <tr>
-              <td style="border:none"><b>Total</b></td>
+            @if ($order->balance > 0)<tr>
+            <td style="border:none"><b>Total</b></td>
               <td style="border:none;text-align:right;position:relative;right:20px">{{ $amount }}</td>
-            </tr>
-            @if ($order->balance > 0)<tr>
-              <td style="border:none"><b>Paid</b></td>
+            <td style="border:none"><b>Paid</b></td>
               <td style="border:none;text-align:right;position:relative;right:20px">${{number_format($order->amount - $order->balance, 2)}}</td>
-            </tr>@endif
-            @if ($order->balance > 0)<tr>
-              <td style="border:none"><b>Balance</b></td>
-              <td style="border:none;text-align:right;position:relative;right:20px">${{number_format($order->balance, 2)}}</td>
-            </tr>@endif
+            </tr>
+            @endif
           </table>
         </td>
       </tr>
-      <tfoot>
+      <tfoot class="bottom-border-radius drop-shadow no-border">
+        @if ($order->balance > 0)
         <tr>
-          <td style="border:none"><b>Balance</b></td>
+          <td style="border:none"><b>Amount Due</b></td>
           <td style="border:none;text-align:right;position:relative;right:20px">${{number_format($order->balance, 2)}}</td>
         </tr>
+        @endif
+        @if ($order->balance <= 0)
+        <tr>
+          <td style="border:none"><b>Total Paid</b></td>
+          <td style="border:none;text-align:right;position:relative;right:20px">{{ $amount }}</td>
+        </tr>
+        @endif
       </tfoot>
     </table>
 
