@@ -432,6 +432,7 @@ export default {
 
       const pkg = this.getMealPackage(item.meal.id, item.meal);
       const size = pkg && item.size ? pkg.getSize(item.size.id) : null;
+
       const packageMeals = size ? size.meals : pkg ? pkg.meals : null;
 
       let mealQuantities = _.mapValues(
