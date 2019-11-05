@@ -66,35 +66,33 @@ $balance = $order->balance;
       </div>
     </center>
     </div>
-<div class="company-info">
-    <table class="no-border table-heading company-table" style="border-style:none">
+
+    <table class="no-border table-heading" style="border-style:none">
       <thead>
         <tr>
           <th class="full-left-border-radius drop-shadow no-border">
-            <div class="text-11 icon">
-              <span class="icon-mail"></span>
+            <div class="text-11">
+              <span class="company-info company-table icon"></span>
               {{ $order->store->details->address }}<br>
               {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}
             </div>
           </th>
           <th class="drop-shadow no-border">
-            <div class="text-11 icon">
-              <span class="icon-globe"></span>
+            <div class="text-11">
+              <span class="company-info company-table icon"></span>
             @if ($order->store->settings->website) {{ $order->store->settings->website }} 
             @else www{{$order->store->settings->domain}}.goprep.com<br>
             @endif
             {{ $order->store->user->email }}
           </th>
-          <th class="full-right-border-radius drop-shadow no-border">
-            <div class="text-11 icon">
-            <span class="icon-phone"></span>
+          <th class="full-right-border-radius drop-shadow no-border"><div class="text-11">
+            <span class="company-info company-table icon"></span>
             {{ $order->store->user->details->phone }}
           </div>
         </th>
         </tr>
       </thead>
     </table>
-  </div>
     <br>
 
     <div class="row">
