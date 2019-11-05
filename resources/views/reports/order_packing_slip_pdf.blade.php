@@ -78,14 +78,14 @@ $brandColor = $order->store->settings->color;
       <thead>
         <tr>
           <th class="full-left-border-radius drop-shadow no-border">
-            <div class="text-11">
+            <div class="text-11 align-center">
               <span class="icon-mail"></span>
               {{ $order->store->details->address }}<br>
               {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}
             </div>
           </th>
           <th class="drop-shadow no-border">
-            <div class="text-11">
+            <div class="text-11 align-center">
               <span class="icon-globe"></span>
             @if ($order->store->settings->website) {{ $order->store->settings->website }} 
             @else www{{$order->store->settings->domain}}.goprep.com<br>
@@ -93,7 +93,7 @@ $brandColor = $order->store->settings->color;
             {{ $order->store->user->email }}
           </th>
           <th class="full-right-border-radius drop-shadow no-border">
-            <div class="text-11">
+            <div class="text-11 align-center">
             <span class="phone-icon"></span>
             {{ $order->store->user->details->phone }}
           </div>
@@ -157,7 +157,7 @@ $brandColor = $order->store->settings->color;
 
 
     <br>
-    <table class="no-border table-heading" style="border-style:none;border-bottom: 3px solid <?= $brandColor ?>">
+    <table class="no-border table-heading" style="border-style:none;">
       <thead>
           <th class="top-left-border-radius drop-shadow no-border" style="text-align:center">Quantity</th>
           <th class="drop-shadow no-border">Item Name</th>
