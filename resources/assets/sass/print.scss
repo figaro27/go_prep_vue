@@ -369,11 +369,11 @@ p {
 }
 
 .no-border th {
-  padding: 11px;
+  padding: 10px;
 }
 
 .no-border td {
-  padding: 7px;
+  padding: 6px;
 }
 
 .drop-shadow {
@@ -404,6 +404,10 @@ p {
   -webkit-border-radius: 0px 6px 6px 0px;
   -moz-border-radius: 0px 6px 6px 0px;
   border-radius: 0px 6px 6px 0px;
+}
+
+.align-right {
+  text-align: right;
 }
 
 // Imported from template

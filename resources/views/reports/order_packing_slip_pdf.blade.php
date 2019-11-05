@@ -64,7 +64,7 @@ $brandColor = $order->store->settings->color;
   <div class="row">
     <center>
       <div class="col-12 center-text">
-          <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4>
+          <!-- <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4> -->
           <img style="zoom: 1" src="{{$logo}}" />
       </div>
     </center>
@@ -73,7 +73,7 @@ $brandColor = $order->store->settings->color;
     <table class="no-border table-heading" style="border-style:none">
       <thead>
         <tr>
-          <th class="full-left-border-radius drop-shadow no-border" style="background: {{{$brandColor}}}">
+          <th class="full-left-border-radius drop-shadow no-border">
             <div class="text-11">
               <span class="company-info company-table"></span>
               {{ $order->store->details->address }}<br>
@@ -121,7 +121,7 @@ $brandColor = $order->store->settings->color;
         
       </div>
 
-      <div class="col-4">
+      <div class="col-4 align-right">
         <p><b>Delivery Info</b></p>
         @if ($order->pickup === 0)
         <p>Type: Delivery</p>
