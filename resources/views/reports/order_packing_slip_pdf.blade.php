@@ -259,7 +259,7 @@ $brandColor = $order->store->settings->color;
         <tr>
           <th class="bottom-left-border-radius bold-text" style="border:none;font-size:18px">
           Amount Due</th>
-          <th class="bottom-right-border-radius bold-text" style="border:none;font-size:18px">${{number_format($order->balance, 2)}}</th>
+          <th class="bottom-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:15px">${{number_format($order->balance, 2)}}</th>
         </tr>
         @endif
         @if ($order->balance <= 0)
