@@ -94,7 +94,7 @@ $brandColor = $order->store->settings->color;
           </th>
           <th class="full-right-border-radius drop-shadow no-border">
             <div class="text-11 align-center" style="position:relative;right:18px;top:8px">
-            <img src="../phone-icon.png"/>
+            <img src="..phone-icon.png"/>
             {{ $order->store->user->details->phone }}
           </div>
         </th>
