@@ -1,5 +1,19 @@
 <!doctype html>
 <html>
+@php
+$subtotal = '$'.number_format($order->preFeePreDiscount, 2);
+$mealPlanDiscount = '$'.number_format($order->mealPlanDiscount, 2);
+$deliveryFee = '$'.number_format($order->deliveryFee, 2);
+$processingFee = '$'.number_format($order->processingFee, 2);
+$salesTax = '$'.number_format($order->salesTax, 2);
+$coupon = '$'.number_format($order->couponReduction, 2);
+$couponCode = $order->couponCode;
+$amount = '$'.number_format($order->amount, 2);
+$deposit = '$'.number_format($order->deposit, 2);
+$cashOrder = $order->cashOrder;
+$balance = $order->balance;
+$brandColor = '#'.$order->store->settings->color;
+@endphp
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -23,7 +37,7 @@
 
     table th {
       color: white;
-      background: #C0382B;
+      background: <?php echo $brandColor; ?>;
     }
 
     table {
@@ -35,25 +49,9 @@
       text-align: center;
     }
 
-    .brand-color {
-      background: #C0382B;
-    }
-
   </style>
 </head>
-@php
-$subtotal = '$'.number_format($order->preFeePreDiscount, 2);
-$mealPlanDiscount = '$'.number_format($order->mealPlanDiscount, 2);
-$deliveryFee = '$'.number_format($order->deliveryFee, 2);
-$processingFee = '$'.number_format($order->processingFee, 2);
-$salesTax = '$'.number_format($order->salesTax, 2);
-$coupon = '$'.number_format($order->couponReduction, 2);
-$couponCode = $order->couponCode;
-$amount = '$'.number_format($order->amount, 2);
-$deposit = '$'.number_format($order->deposit, 2);
-$cashOrder = $order->cashOrder;
-$balance = $order->balance;
-@endphp
+
 
 <body class="{{ $body_classes }}">
   <div id="print-area">
@@ -70,7 +68,7 @@ $balance = $order->balance;
     <table class="no-border table-heading" style="border-style:none">
       <thead>
         <tr>
-          <th class="full-left-border-radius drop-shadow no-border">
+          <th class="full-left-border-radius drop-shadow no-border" style="background: {{{$brandColor}}}">
             <div class="text-11">
               <span class="company-info company-table"></span>
               {{ $order->store->details->address }}<br>
