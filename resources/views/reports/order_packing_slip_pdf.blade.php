@@ -85,7 +85,7 @@ $brandColor = $order->store->settings->color;
             </div>
           </th>
           <th class="drop-shadow no-border">
-            <div class="text-11 align-center" style="position:relative;right:25px">
+            <div class="text-11 align-center" style="position:relative;right:27px">
               <span class="icon-globe"></span>
             @if ($order->store->settings->website) {{ $order->store->settings->website }} 
             @else www{{$order->store->settings->domain}}.goprep.com<br>
@@ -114,7 +114,7 @@ $brandColor = $order->store->settings->color;
         <p>{{$order->user->details->phone}}</p>
       </div>
 
-      <div class="col-4 align-center" style="position:relative;left:5px">
+      <div class="col-4 align-center" style="position:relative;left:7px">
         <p><b>Order Info</b></p>
         @if ($order->dailyOrderNumber)
         <p>Daily Order #{{$order->dailyOrderNumber}}</p>
