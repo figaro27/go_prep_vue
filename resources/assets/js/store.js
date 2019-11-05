@@ -2040,7 +2040,66 @@ const getters = {
   bagMealPrice(state, getters) {
     let items = _.compact(_.toArray(state.bag.items));
     items.forEach(item => {
-      item.price = 1;
+      let price = item.size ? item.size.price : item.meal.price;
+      if (item.components) {
+        _.forEach(item.components, (choices, componentId) => {
+          let component = _.find(item.meal.components, {
+            id: parseInt(componentId)
+          });
+
+          if (!item.meal_package) {
+            _.forEach(choices, optionId => {
+              let option = _.find(component.options, {
+                id: parseInt(optionId)
+              });
+              price += option.price;
+            });
+          } else {
+            if (component.price) {
+              price += component.price;
+            }
+            _.forEach(choices, (choices, optionId) => {
+              let option = _.find(component.options, {
+                id: parseInt(optionId)
+              });
+              price += option.price;
+
+              _.forEach(choices, choice => {
+                if (choice.price) {
+                  price += choice.price;
+                }
+              });
+            });
+          }
+        });
+      } // End If
+
+      if (item.addons) {
+        if (!item.meal_package) {
+          _.forEach(item.addons, addonId => {
+            let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
+            price += addon.price;
+          });
+        } else {
+          _.forEach(item.addons, (choices, addonId) => {
+            let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
+
+            // Add base addon price * choices selected
+            if (addon.price) {
+              price += addon.price * Math.max(1, choices.length);
+            }
+
+            // Add addon choice prices
+            _.forEach(choices, choice => {
+              if (choice.price) {
+                price += choice.price;
+              }
+            });
+          });
+        }
+      } // End IF
+
+      item.price = parseFloat(parseFloat(price).toFixed(2));
     });
 
     return items;
