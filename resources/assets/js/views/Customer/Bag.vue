@@ -426,8 +426,6 @@ export default {
   methods: {
     updateData(newData) {
       if (this.forceValue) {
-        console.log("updating", newData);
-
         this.checkoutData = newData;
         if (newData.hasOwnProperty("customer")) {
           this.customer = newData.customer;
@@ -664,8 +662,12 @@ export default {
           this.$toastr.e("Please try again.", "Registration failed");
         });
     },
-    setCustomer() {
-      this.customer = this.storeCustomers.slice(-1)[0].id;
+    setCustomer(id) {
+      if (id) {
+        this.customer = id;
+      } else {
+        this.customer = this.storeCustomers.slice(-1)[0].id;
+      }
     },
     changeState(state) {
       this.form.state = state.abbreviation;

@@ -402,7 +402,7 @@
               label="text"
               :options="customers"
               :reduce="customer => customer.value"
-              v-model="customer"
+              v-model="customerModel"
               :value="customer"
               @input="getCards"
             >
@@ -418,7 +418,8 @@
         <div
           v-if="
             !hidePaymentArea &&
-              ((($route.params.storeView || storeOwner) && customer != null) ||
+              ((($route.params.storeView || storeOwner) &&
+                customerModel != null) ||
                 (!$route.params.storeView && !storeOwner))
           "
         >
@@ -491,7 +492,7 @@
           class="center-text pt-2"
           v-if="
             ($route.params.storeView || storeOwner) &&
-              customer === null &&
+              customerModel === null &&
               $route.params.manualOrder
           "
           >Please choose a customer.</b-alert
@@ -504,7 +505,7 @@
             ($route.params.storeView || storeOwner) &&
               card === null &&
               cashOrder === null &&
-              customer != null
+              customerModel != null
           "
           >Please choose a payment method.</b-alert
         >
@@ -520,7 +521,8 @@
               (willDeliver ||
                 pickup === 1 ||
                 ($route.params.storeView || storeOwner)) &&
-              (customer != null || (!$route.params.storeView && !storeOwner))
+              (customerModel != null ||
+                (!$route.params.storeView && !storeOwner))
           "
           @click="checkout"
           :disabled="checkingOut"
@@ -650,7 +652,8 @@ export default {
       creditCardId: null,
       couponCode: "",
       addCustomerModal: false,
-      weeklySubscriptionValue: null
+      weeklySubscriptionValue: null,
+      customerModel: null
     };
   },
   props: {
@@ -674,7 +677,17 @@ export default {
     },
     adjustMealPlan: null
   },
+  watch: {
+    customer: function(val) {
+      this.customerModel = val;
+      if (this.$route.params.manualOrder) {
+        this.getCards();
+      }
+    }
+  },
   mounted: function() {
+    this.customerModel = this.customer;
+
     if (this.forceValue) {
       if (this.customer) {
         this.getCards();
@@ -1200,7 +1213,7 @@ export default {
     },
     updateParentData() {
       this.$emit("updateData", {
-        customer: this.customer,
+        customer: this.customerModel,
         weeklySubscriptionValue: this.weeklySubscriptionValue,
         pickup: this.pickup,
         transferTime: this.transferTime,
@@ -1214,14 +1227,14 @@ export default {
 
       window.localStorage.clear();
       this.creditCardId = null;
-      this.creditCards = null;
+      //this.creditCards = null;
       this.$nextTick(() => {
         axios
           .post("/api/me/getCards", {
-            id: this.customer
+            id: this.customerModel
           })
           .then(response => {
-            this.creditCardList = response.data;
+            this.$parent.creditCardList = response.data;
 
             if (response.data.length) {
               this.creditCardId = response.data[0].id;
@@ -1232,7 +1245,7 @@ export default {
       });
     },
     getCustomer() {
-      return this.customer;
+      return this.customerModel;
     },
     async adjust() {
       let deposit = this.deposit;
@@ -1264,7 +1277,7 @@ export default {
           couponReduction: this.couponReduction,
           couponCode: this.couponApplied ? this.coupon.code : null,
           pickupLocation: this.selectedPickupLocation,
-          customer: this.customer,
+          customer: this.customerModel,
           deposit: deposit,
           cashOrder: this.cashOrder,
           lineItemsOrder: this.orderLineItems,
@@ -1359,7 +1372,7 @@ export default {
           deliveryFee: this.deliveryFee,
           processingFee: this.processingFeeAmount,
           pickupLocation: this.selectedPickupLocation,
-          customer: this.customer,
+          customer: this.customerModel,
           deposit: deposit,
           cashOrder: this.cashOrder,
           transferTime: this.transferTime,
@@ -1413,8 +1426,9 @@ export default {
         });
     },
     setCustomer(id) {
-      this.customer = id;
-      this.$forceUpdate();
+      //this.customer = id;
+      //this.$forceUpdate();
+      this.$parent.setCustomer(id);
     },
     removeCoupon() {
       this.coupon = {};
