@@ -37,7 +37,7 @@ $brandColor = '#'.$order->store->settings->color;
 
     table th {
       color: white;
-      background: @php echo $brandColor; @endphp !important;
+      background-color: @php echo $brandColor; @endphp !important;
     }
 
     table {
