@@ -79,22 +79,22 @@ $brandColor = $order->store->settings->color;
         <tr>
           <th class="full-left-border-radius drop-shadow no-border">
             <div class="text-11 align-center">
-              <span class="icon-mail"></span>
+              <span class="icon icon-mail"></span>
               {{ $order->store->details->address }}<br>
               {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}
             </div>
           </th>
           <th class="drop-shadow no-border">
             <div class="text-11 align-center" style="position:relative;right:27px">
-              <span class="icon-globe"></span>
+              <span class="icon icon-globe"></span>
             @if ($order->store->settings->website) {{ $order->store->settings->website }} 
             @else www{{$order->store->settings->domain}}.goprep.com<br>
             @endif
             {{ $order->store->user->email }}
           </th>
           <th class="full-right-border-radius drop-shadow no-border">
-            <div class="text-11 align-center" style="position:relative;right:18px">
-            <span class="phone-icon"></span>
+            <div class="text-11 align-center" style="position:relative;right:18px;top:8px">
+            <span class="icon icon-phone"></span>
             {{ $order->store->user->details->phone }}
           </div>
         </th>
