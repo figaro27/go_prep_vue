@@ -113,7 +113,7 @@ $brandColor = $order->store->settings->color;
 
       <div class="col-4 align-center" style="position:relative;left:7px">
         <p><b>Order Info</b></p>
-        @if ($order->dailyOrderNumber)
+        @if ($order->store->modules->dailyOrderNumbers && $order->dailyOrderNumber)
         <p>Daily Order #{{$order->dailyOrderNumber}}</p>
         @endif
         <p>Order ID: {{$order->order_number}}</p>
