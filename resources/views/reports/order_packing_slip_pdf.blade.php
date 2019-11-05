@@ -73,33 +73,35 @@ $brandColor = $order->store->settings->color;
       </div>
     </center>
     </div>
-
-    <table class="no-border table-heading" style="border-style:none">
+    <div class="company-info">
+    <table class="no-border table-heading company-table" style="border-style:none">
       <thead>
         <tr>
           <th class="full-left-border-radius drop-shadow no-border">
-            <div class="text-11">
-              <span class="company-info company-table"></span>
+            <div class="text-11 icon">
+              <span class="icon-mail"></span>
               {{ $order->store->details->address }}<br>
               {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}
             </div>
           </th>
           <th class="drop-shadow no-border">
-            <div class="text-11">
-              <span class="company-info company-table"></span>
+            <div class="text-11 icon">
+              <span class="icon-globe"></span>
             @if ($order->store->settings->website) {{ $order->store->settings->website }} 
             @else www{{$order->store->settings->domain}}.goprep.com<br>
             @endif
             {{ $order->store->user->email }}
           </th>
-          <th class="full-right-border-radius drop-shadow no-border"><div class="text-11">
-            <span class="company-info company-table"></span>
+          <th class="full-right-border-radius drop-shadow no-border">
+            <div class="text-11 icon">
+            <span class="icon-phone"></span>
             {{ $order->store->user->details->phone }}
           </div>
         </th>
         </tr>
       </thead>
     </table>
+    </div>
     <br>
 
     <div class="row">
@@ -112,7 +114,7 @@ $brandColor = $order->store->settings->color;
         <p>{{$order->user->details->phone}}</p>
       </div>
 
-      <div class="col-4 align-right">
+      <div class="col-4 align-center">
         <p><b>Order Info</b></p>
         @if ($order->dailyOrderNumber)
         <p>Daily Order #{{$order->dailyOrderNumber}}</p>
@@ -125,7 +127,7 @@ $brandColor = $order->store->settings->color;
         
       </div>
 
-      <div class="col-4">
+      <div class="col-4 align-center">
         <p><b>Delivery Info</b></p>
         @if ($order->pickup === 0)
         <p>Type: Delivery</p>
