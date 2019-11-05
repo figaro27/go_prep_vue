@@ -105,21 +105,14 @@ $balance = $order->balance;
         <p>{{$order->user->details->phone}}</p>
       </div>
 
-      <div class="col-4 address" style="float:right">
+      <div class="col-4 address">
+        <p><b>Delivery Info</b></p>
         @if ($order->pickup === 0)
-        <p><b>DELIVERY</b></p>
+        <p>Type: Delivery</p>
         @endif
         @if ($order->pickup === 1)
-        <p><b>PICKUP</b></p>
+        <p>Type: Pickup</p>
         @endif
-        @if ($params['dailyOrderNumbers'])
-        <p>Daily Order #{{$order['dailyOrderNumber']}}</p>
-        @endif
-        <p>Order ID - {{$order->order_number}}</p>
-        @if ($order->subscription)
-        <p>Subscription #{{ $order->subscription->stripe_id }}</p>
-        @endif
-        <p>Order Date: {{$order->created_at->format('D, m/d/Y')}}</p>
         @if ($order->pickup === 0)
         <p>Delivery Date: {{$order->delivery_date->format('D, m/d/Y')}}
           @if ($order->transferTime)
@@ -134,6 +127,27 @@ $balance = $order->balance;
           @endif
         </p>
         @endif
+        @if ($order->transferTime)
+        @if ($order->pickup === 0)
+        <p>Delivery Time: {{ $order->transferTime }}</p>
+        @end
+        @if ($order->pickup === 0)
+        <p>Pickup Time: {{ $order->transferTime }}</p>
+        @end
+        @endif
+      </div>
+
+      <div class="col-4 address">
+        <p><b>Order Info</b></p>
+        @if ($params['dailyOrderNumbers'])
+        <p>Daily Order #{{$order['dailyOrderNumber']}}</p>
+        @endif
+        <p>Order ID: {{$order->order_number}}</p>
+        @if ($order->subscription)
+        <p>Subscription #{{ $order->subscription->stripe_id }}</p>
+        @endif
+        <p>Order Date: {{$order->created_at->format('D, m/d/Y')}}</p>
+        
       </div>
     </div>
 
@@ -141,9 +155,9 @@ $balance = $order->balance;
     <br>
     <table class="no-border table-heading" style="border-style:none">
       <thead>
-          <th class="top-left-border-radius drop-shadow no-border">Quantity</th>
+          <th class="top-left-border-radius drop-shadow no-border" style="text-align:center">Quantity</th>
           <th class="drop-shadow no-border">Item Name</th>
-          <th class="top-right-border-radius drop-shadow no-border" style="text-align:right">Price</th>
+          <th class="top-right-border-radius drop-shadow no-border" style="text-align:center">Price</th>
       </thead>
 
       <tbody>
@@ -152,7 +166,7 @@ $balance = $order->balance;
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td>{{$mealPackageItem->quantity}}</td>
           <td>{{ $mealPackageItem->meal_package->title }}</td>
-          <td style="text-align:right">${{number_format($mealPackageItem->meal_package->price * $mealPackageItem->quantity, 2)}}</td>
+          <td style="text-align:center">${{number_format($mealPackageItem->meal_package->price * $mealPackageItem->quantity, 2)}}</td>
         </tr>
 
 
@@ -162,7 +176,7 @@ $balance = $order->balance;
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td>{{$item->quantity}}</td>
           <td>{!! $item->html_title !!}</td>
-          <td style="text-align:right">@if ($item->meal_package_title === null)
+          <td style="text-align:center">@if ($item->meal_package_title === null)
             ${{ number_format($item->unit_price, 2) }}
             @else
             In Package
@@ -176,9 +190,9 @@ $balance = $order->balance;
         @foreach($order->items as $i => $item)
         @if ($item->meal_package_order_id === null)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-          <td>{{$item->quantity}}</td>
+          <td style="text-align:center">{{$item->quantity}}</td>
           <td>{!! $item->html_title !!}</td>
-          <td style="text-align:right">${{ number_format($item->price, 2) }}</td>
+          <td style="text-align:center">${{ number_format($item->price, 2) }}</td>
         </tr>
 
         @endif
@@ -187,9 +201,9 @@ $balance = $order->balance;
         @if (count($order->lineItemsOrders))
         @foreach ($order->lineItemsOrders as $i => $lineItemOrder)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-          <td>{{$lineItemOrder->quantity}}</td>
+          <td style="text-align:center">{{$lineItemOrder->quantity}}</td>
           <td>{!! $lineItemOrder->title !!}</td>
-          <td style="text-align:right">${{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
+          <td style="text-align:center">${{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
         </tr>
         @endforeach
         @endif
@@ -197,7 +211,7 @@ $balance = $order->balance;
     </table>
     <table class="no-border" style="border-style:none">
       <tr>
-        <td style="width:70%;margin-right:0px;padding-right:10px;padding-top:10px">
+        <td style="width:70%;padding-top:10px">
           @if ($order->store->settings->notesForCustomer != null)
           <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
           @endif
@@ -213,7 +227,7 @@ $balance = $order->balance;
               <td style="border:none;text-align:right;position:relative;right:20px">{{ $mealPlanDiscount }}</td>
             </tr>@endif
             @if ($order->salesTax > 0)<tr>
-              <td style="border:none"><b>Tax</b></td>
+              <td style="border:none"><b>Sales Tax</b></td>
               <td style="border:none;text-align:right;position:relative;right:20px">{{ $salesTax }}</td>
             </tr>@endif
             @if ($order->processingFee > 0)<tr>
