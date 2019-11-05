@@ -894,7 +894,7 @@ const actions = {
       await dispatch("refreshViewedCustomerStore", data);
     }
 
-    dispatch("refreshStores");
+    //dispatch("refreshStores");
     dispatch("refreshCards");
     dispatch("refreshCustomerOrders");
     dispatch("refreshSubscriptions");
