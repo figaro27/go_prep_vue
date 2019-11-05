@@ -99,7 +99,7 @@ $brandColor = $order->store->settings->color;
     <br>
 
     <div class="row">
-      <div class="col-4">
+      <div class="col-4 align-center">
         <p><b>{{$order->user->name}}</b></p>
         <p>{{$order->user->details->address}}</p>
         <p>{{$order->user->details->city}},
@@ -108,7 +108,7 @@ $brandColor = $order->store->settings->color;
         <p>{{$order->user->details->phone}}</p>
       </div>
 
-      <div class="col-4">
+      <div class="col-4 align-right">
         <p><b>Order Info</b></p>
         @if ($order->dailyOrderNumber)
         <p>Daily Order #{{$order->dailyOrderNumber}}</p>
@@ -121,7 +121,7 @@ $brandColor = $order->store->settings->color;
         
       </div>
 
-      <div class="col-4 align-right">
+      <div class="col-4">
         <p><b>Delivery Info</b></p>
         @if ($order->pickup === 0)
         <p>Type: Delivery</p>

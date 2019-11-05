@@ -377,9 +377,9 @@ p {
 }
 
 .drop-shadow {
-  -webkit-box-shadow: 1px 2px 6px grey;
-  -moz-box-shadow: 1px 2px 6px grey;
-  box-shadow: 1px 2px 6px grey;
+  -webkit-box-shadow: 1px 1px 4px grey;
+  -moz-box-shadow: 1px 1px 4px grey;
+  box-shadow: 1px 1px 4px grey;
 }
 
 .top-left-border-radius {
@@ -408,6 +408,10 @@ p {
 
 .align-right {
   text-align: right;
+}
+
+.align-center {
+  text-align: center;
 }
 
 // Imported from template
