@@ -134,7 +134,7 @@ $balance = $order->balance;
       <div class="col-4 address">
         <p><b>Order Info</b></p>
         @if ($params['dailyOrderNumbers'])
-        <p>Daily Order #{{$order->dailyOrderNumber'}}</p>
+        <p>Daily Order #{{$order->dailyOrderNumber}}</p>
         @endif
         <p>Order ID: {{$order->order_number}}</p>
         @if ($order->subscription)
