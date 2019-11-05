@@ -256,14 +256,14 @@ $brandColor = $order->store->settings->color;
       <tfoot>
         @if ($order->balance > 0)
         <tr>
-          <td style="border:none;font-size:20px"><b>Amount Due</b></td>
-          <td class="bottom-border-radius drop-shadow no-border" style="border:none;text-align:right;position:relative;right:20px;font-size:20px">${{number_format($order->balance, 2)}}</td>
+          <td style="border:none;font-size:18px"><b>Amount Due</b></td>
+          <td class="drop-shadow no-border" style="border:none;text-align:right;position:relative;right:20px;font-size:18px">${{number_format($order->balance, 2)}}</td>
         </tr>
         @endif
         @if ($order->balance <= 0)
         <tr>
-          <td style="border:none;font-size:20px"><b>Total Paid</b></td>
-          <td class="bottom-border-radius drop-shadow no-border" style="border:none;text-align:right;position:relative;right:20px;font-size:20px">{{ $amount }}</td>
+          <td style="border:none;font-size:18px"><b>Total Paid</b></td>
+          <td class="drop-shadow no-border" style="border:none;text-align:right;position:relative;right:20px;font-size:18px">{{ $amount }}</td>
         </tr>
         @endif
       </tfoot>
