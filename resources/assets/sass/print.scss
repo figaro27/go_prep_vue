@@ -376,13 +376,34 @@ p {
   padding: 12px;
 }
 
-.test {
-  -webkit-border-radius: 10px 10px 0px 0px;
-  -moz-border-radius: 10px 10px 0px 0px;
-  border-radius: 10px 10px 0px 0px;
+.drop-shadow {
   -webkit-box-shadow: 2px 4px 10px grey;
   -moz-box-shadow: 2px 4px 10px grey;
   box-shadow: 2px 4px 10px grey;
+}
+
+.top-left-border-radius {
+  -webkit-border-radius: 10px 0px 0px 0px;
+  -moz-border-radius: 10px 0px 0px 0px;
+  border-radius: 10px 0px 0px 0px;
+}
+
+.top-right-border-radius {
+  -webkit-border-radius: 0px 10px 0px 0px;
+  -moz-border-radius: 0px 10px 0px 0px;
+  border-radius: 0px 10px 0px 0px;
+}
+
+.full-left-border-radius {
+  -webkit-border-radius: 10px 0px 0px 10px;
+  -moz-border-radius: 10px 0px 0px 10px;
+  border-radius: 10px 0px 0px 10px;
+}
+
+.full-right-border-radius {
+  -webkit-border-radius: 0px 10px 0px 10px;
+  -moz-border-radius: 0px 10px 0px 10px;
+  border-radius: 0px 10px 0px 10px;
 }
 
 // Imported from template

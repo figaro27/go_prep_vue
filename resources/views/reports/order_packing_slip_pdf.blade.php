@@ -61,7 +61,7 @@ $balance = $order->balance;
   <div class="row">
     <center>
       <div class="col-12 center-text">
-          <h4 class="center-text bold-text" style="text-transform: uppercase">{{ $order->store->details->name }}</h4>
+          <h4 class="center-text bold-text" style="text-transform: uppercase;color: #2f2f2f">{{ $order->store->details->name }}</h4>
           <img style="zoom: 1" src="{{$logo}}" />
       </div>
     </center>
@@ -70,14 +70,14 @@ $balance = $order->balance;
     <table class="no-border table-heading" style="border-style:none">
       <thead>
         <tr>
-          <th class="test">
+          <th class="full-left-border-radius drop-shadow">
             <div class="text-11">
               <span class="icon icon-mail"></span>
               {{ $order->store->details->address }}<br>
               {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}
             </div>
           </th>
-          <th class="test">
+          <th class="drop-shadow">
             <div class="text-11">
               <span class="icon icon-globe"></span>
             @if ($order->store->settings->website) {{ $order->store->settings->website }} 
@@ -85,7 +85,7 @@ $balance = $order->balance;
             @endif
             {{ $order->store->user->email }}
           </th>
-          <th class="test"><div class="text-11">
+          <th class="full-right-border-radius drop-shadow"><div class="text-11">
             <span class="icon icon-phone"></span>
             {{ $order->store->user->details->phone }}
           </div>
@@ -141,16 +141,9 @@ $balance = $order->balance;
     <br>
     <table class="no-border table-heading" style="border-style:none">
       <thead>
-        <tr>
-          <th style="width:100%">
-            <span style="width:33%">Quantity</span>
-
-            <span style="width:33%">Item Name</span>
-
-            <span style="width:33%">Price</span>
-
-          </th>
-        </tr>
+          <th class="top-left-border-radius drop-shadow">Quantity</th>
+          <th class="drop-shadow">Item Name</th>
+          <th class="top-right-border-radius drop-shadow">Price</th>
       </thead>
 
       <tbody>
