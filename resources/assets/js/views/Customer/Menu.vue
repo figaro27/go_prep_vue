@@ -41,7 +41,7 @@
 
       <div class="row">
         <div :class="`col-md-12 main-menu-area menu-page`">
-          <Spinner v-if="showSpinner || forceShow" position="absolute" />
+          <Spinner v-if="showSpinner || forceShow" position="fixed" />
 
           <store-closed
             v-if="!$route.params.storeView"
