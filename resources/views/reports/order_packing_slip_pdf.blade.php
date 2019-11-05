@@ -77,7 +77,7 @@ $brandColor = $order->store->settings->color;
     <table class="no-border table-heading" style="border-style:none">
       <thead>
         <tr>
-          <th class="full-left-border-radius drop-shadow no-border">
+          <th class=" drop-shadow no-border">
             <div class="text-11 align-center">
               <span class="icon icon-mail"></span>
               {{ $order->store->details->address }}<br>
@@ -92,9 +92,9 @@ $brandColor = $order->store->settings->color;
             @endif
             {{ $order->store->user->email }}
           </th>
-          <th class="full-right-border-radius drop-shadow no-border">
+          <th class="drop-shadow no-border">
             <div class="text-11 align-center" style="position:relative;right:18px;top:8px">
-            <img src="./phone-icon.png"/>
+            <img src="phone-icon.png"/>
             {{ $order->store->user->details->phone }}
           </div>
         </th>
@@ -159,9 +159,9 @@ $brandColor = $order->store->settings->color;
     <br>
     <table class="no-border table-heading" style="border-style:none;">
       <thead>
-          <th class="top-left-border-radius drop-shadow no-border" style="text-align:center">Quantity</th>
+          <th class="drop-shadow no-border" style="text-align:center">Quantity</th>
           <th class="drop-shadow no-border">Item</th>
-          <th class="top-right-border-radius drop-shadow no-border" style="text-align:center">Price</th>
+          <th class="drop-shadow no-border" style="text-align:center">Price</th>
       </thead>
 
       <tbody>
