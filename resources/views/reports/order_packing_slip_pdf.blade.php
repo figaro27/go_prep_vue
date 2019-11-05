@@ -23,7 +23,7 @@
 
     table th {
       color: white;
-      background: #{! $order->store->settings->color !};
+      background: #C0382B;
     }
 
     table {
@@ -36,7 +36,7 @@
     }
 
     .brand-color {
-      background: #{! $order->store->settings->color !};
+      background: #C0382B;
     }
 
   </style>
@@ -96,7 +96,7 @@ $balance = $order->balance;
     <br>
 
     <div class="row">
-      <div class="col-4 address">
+      <div class="col-4">
         <p><b>{{$order->user->name}}</b></p>
         <p>{{$order->user->details->address}}</p>
         <p>{{$order->user->details->city}},
@@ -105,7 +105,20 @@ $balance = $order->balance;
         <p>{{$order->user->details->phone}}</p>
       </div>
 
-      <div class="col-4 address">
+      <div class="col-4">
+        <p><b>Order Info</b></p>
+        @if ($order->dailyOrderNumber)
+        <p>Daily Order #{{$order->dailyOrderNumber}}</p>
+        @endif
+        <p>Order ID: {{$order->order_number}}</p>
+        @if ($order->subscription)
+        <p>Subscription #{{ $order->subscription->stripe_id }}</p>
+        @endif
+        <p>Order Date: {{$order->created_at->format('D, m/d/Y')}}</p>
+        
+      </div>
+
+      <div class="col-4">
         <p><b>Delivery Info</b></p>
         @if ($order->pickup === 0)
         <p>Type: Delivery</p>
@@ -131,18 +144,6 @@ $balance = $order->balance;
         @endif
       </div>
 
-      <div class="col-4 address">
-        <p><b>Order Info</b></p>
-        @if ($order->dailyOrderNumber)
-        <p>Daily Order #{{$order->dailyOrderNumber}}</p>
-        @endif
-        <p>Order ID: {{$order->order_number}}</p>
-        @if ($order->subscription)
-        <p>Subscription #{{ $order->subscription->stripe_id }}</p>
-        @endif
-        <p>Order Date: {{$order->created_at->format('D, m/d/Y')}}</p>
-        
-      </div>
     </div>
 
 
