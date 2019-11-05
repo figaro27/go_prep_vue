@@ -39,7 +39,7 @@ $brandColor = $order->store->settings->color;
       border-bottom: 3px solid <?= $brandColor ?>;
     }
 
-    table th {
+    table th, table tfoot {
       color: white;
       background: <?= $brandColor ?>;;
     }
@@ -79,14 +79,12 @@ $brandColor = $order->store->settings->color;
         <tr>
           <th class="full-left-border-radius drop-shadow no-border">
             <div class="text-11 align-center">
-              <span class="icon icon-mail"></span>
               {{ $order->store->details->address }}<br>
               {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}
             </div>
           </th>
           <th class="drop-shadow no-border">
             <div class="text-11 align-center" style="position:relative;right:27px">
-              <span class="icon icon-globe"></span>
             @if ($order->store->settings->website) {{ $order->store->settings->website }} 
             @else www{{$order->store->settings->domain}}.goprep.com<br>
             @endif
@@ -94,7 +92,6 @@ $brandColor = $order->store->settings->color;
           </th>
           <th class="full-right-border-radius drop-shadow no-border">
             <div class="text-11 align-center" style="position:relative;right:18px;top:8px">
-            <img src="/phone-icon.png"/>
             {{ $order->store->user->details->phone }}
           </div>
         </th>
@@ -261,6 +258,12 @@ $brandColor = $order->store->settings->color;
           </table>
         </td>
       </tr>
+      <tfoot>
+        <tr>
+          <td style="border:none"><b>Balance</b></td>
+          <td style="border:none;text-align:right;position:relative;right:20px">${{number_format($order->balance, 2)}}</td>
+        </tr>
+      </tfoot>
     </table>
 
 
