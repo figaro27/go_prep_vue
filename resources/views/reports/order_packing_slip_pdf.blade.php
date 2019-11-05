@@ -12,7 +12,7 @@ $amount = '$'.number_format($order->amount, 2);
 $deposit = '$'.number_format($order->deposit, 2);
 $cashOrder = $order->cashOrder;
 $balance = $order->balance;
-$brandColor = '#000000';
+$brandColor = $order->store->settings->color;
 @endphp
 
 <head>
