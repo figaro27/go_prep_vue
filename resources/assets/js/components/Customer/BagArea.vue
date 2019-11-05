@@ -339,6 +339,7 @@ export default {
       total: "bagQuantity",
       allergies: "allergies",
       bag: "bagItems",
+      //bagMealPrice: "bagMealPrice",
       hasMeal: "bagHasMeal",
       willDeliver: "viewedStoreWillDeliver",
       _categories: "viewedStoreCategories",
