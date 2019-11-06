@@ -190,9 +190,9 @@ class CheckoutController extends UserController
 
             $balance = null;
 
-            $showBalance = $request->get('showBalance');
+            $noBalance = $request->get('noBalance');
 
-            if ($cashOrder && $showBalance) {
+            if ($cashOrder && !$noBalance) {
                 $balance = $total;
             }
 
