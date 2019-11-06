@@ -1990,6 +1990,9 @@ const getters = {
   bagMealPlan(state) {
     return state.bag.meal_plan;
   },
+  bagDeliveryDate(state) {
+    return state.bag.delivery_date;
+  },
   bagHasMeal: state => meal => {
     if (!_.isNumber(meal)) {
       meal = meal.id;
