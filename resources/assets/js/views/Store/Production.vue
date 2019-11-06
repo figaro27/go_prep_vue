@@ -97,6 +97,7 @@ import { Event } from "vue-tables-2";
 import vSelect from "vue-select";
 import Spinner from "../../components/Spinner";
 import checkDateRange from "../../mixins/deliveryDates";
+import store from "../../store";
 
 export default {
   components: {
@@ -151,7 +152,8 @@ export default {
       nextDeliveryDates: "storeNextDeliveryDates",
       storeSettings: "storeSettings",
       storeModules: "storeModules",
-      storeProductionGroups: "storeProductionGroups"
+      storeProductionGroups: "storeProductionGroups",
+      isLazy: "isLazy"
     }),
     tableData() {
       let filters = { ...this.filters };
@@ -247,6 +249,10 @@ export default {
     }
   },
   mounted() {
+    if (!this.isLazy) {
+      store.dispatch("refreshLazy", { includeStore: true });
+    }
+
     let vue_select = document.createElement("script");
     vue_select.setAttribute("src", "https://unpkg.com/vue-select@latest");
     document.head.appendChild(vue_select);

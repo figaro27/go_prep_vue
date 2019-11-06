@@ -288,6 +288,7 @@ import format from "../../lib/format";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import states from "../../data/states.js";
 import AddCustomerModal from "../../components/Customer/AddCustomerModal";
+import store from "../../store";
 
 export default {
   components: {
@@ -377,7 +378,8 @@ export default {
       _storeOrdersByCustomer: "storeOrdersByCustomer",
       storeModules: "storeModules",
       initialized: "initialized",
-      getStoreMeal: "viewedStoreMeal"
+      getStoreMeal: "viewedStoreMeal",
+      isLazy: "isLazy"
     }),
     stateNames() {
       return states.selectOptions("US");
@@ -390,7 +392,11 @@ export default {
     }
   },
   created() {},
-  mounted() {},
+  mounted() {
+    if (!this.isLazy) {
+      store.dispatch("refreshLazy", { includeStore: true });
+    }
+  },
   methods: {
     ...mapActions({
       refreshStoreCustomers: "refreshStoreCustomers"

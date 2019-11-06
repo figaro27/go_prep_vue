@@ -778,6 +778,7 @@ import fs from "../../lib/fs.js";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
+import store from "../../store";
 
 export default {
   components: {
@@ -947,7 +948,8 @@ export default {
       isLoading: "isLoading",
       storeCurrencySymbol: "storeCurrencySymbol",
       storeModules: "storeModules",
-      storeProductionGroups: "storeProductionGroups"
+      storeProductionGroups: "storeProductionGroups",
+      isLazy: "isLazy"
     }),
     storeURLcheck() {
       let URL = window.location.href;
@@ -1045,6 +1047,10 @@ export default {
   },
   mounted() {
     this.onChangeStatusFilter(this.filter.status);
+
+    if (!this.isLazy) {
+      store.dispatch("refreshLazy", { includeStore: true });
+    }
   },
   methods: {
     ...mapActions({
