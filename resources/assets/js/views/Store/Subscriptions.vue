@@ -274,6 +274,7 @@ import format from "../../lib/format";
 import vSelect from "vue-select";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { sidebarCssClasses } from "../../shared/classes";
+import store from "../../store";
 
 export default {
   components: {
@@ -357,6 +358,10 @@ export default {
     };
   },
   mounted() {
+    if (!this.isLazy) {
+      store.dispatch("refreshLazy", { includeStore: true });
+    }
+
     if (this.$route.query.updated) {
       this.refreshSubscriptions();
       this.$toastr.s("Subscription Updated");
@@ -385,7 +390,8 @@ export default {
       isLoading: "isLoading",
       initialized: "initialized",
       getMeal: "storeMeal",
-      storeModules: "storeModules"
+      storeModules: "storeModules",
+      isLazy: "isLazy"
     }),
     tableData() {
       let filters = {};

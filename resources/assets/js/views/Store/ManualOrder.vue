@@ -96,7 +96,11 @@ export default {
     }
   },
   created() {},
-  mounted() {},
+  mounted() {
+    if (!this.isLazy) {
+      store.dispatch("refreshLazy");
+    }
+  },
   methods: {
     ...mapActions({}),
     setLoadingToFalse() {
