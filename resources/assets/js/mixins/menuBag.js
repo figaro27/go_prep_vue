@@ -18,8 +18,9 @@ export default {
     },
     hasDeliveryDateRestrictionToday() {
       const today = moment();
+      const cats = this._categories;
 
-      for (let cat of this._categories) {
+      for (let cat of cats) {
         if (
           cat.date_range &&
           today.isBetween(cat.date_range_from, cat.date_range_to)

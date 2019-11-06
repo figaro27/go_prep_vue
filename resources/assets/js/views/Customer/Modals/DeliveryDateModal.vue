@@ -1,7 +1,7 @@
 <template>
   <b-modal
     v-model="visible"
-    title="Please select your required delivery date to continue"
+    title=""
     size="md"
     @ok="$emit('ok')"
     @cancel="$emit('cancel')"
@@ -12,10 +12,11 @@
     no-close-on-esc
     hide-footer
   >
+    <h4>Please select your required delivery date to continue</h4>
     <b-form class="mt-2 text-center" @submit.prevent="changeDeliveryDate">
       <b-form-group :state="true">
         <b-select
-          v-if="deliveryDateOptions.length > 1"
+          v-if="deliveryDateOptions.length >= 1"
           :options="deliveryDateOptions"
           :value="date"
           class="delivery-select ml-2 width-140"

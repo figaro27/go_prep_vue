@@ -340,7 +340,11 @@ class SpaController extends Controller
                     'store_id',
                     'id',
                     'category',
-                    'order'
+                    'order',
+                    'date_range',
+                    'date_range_exclusive',
+                    'date_range_from',
+                    'date_range_to'
                 )
                     ->where('store_id', $store_id)
                     ->orderBy('order')

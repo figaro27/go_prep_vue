@@ -194,7 +194,7 @@ class Authorize implements IBilling
     public function charge(Charge $charge)
     {
         $customer = $charge->customer;
-        $amount = $charge->amount;
+        $amount = $charge->amount / 100;
         $card = $charge->card;
         $refId = $charge->refId ?? 'ref' . time();
 

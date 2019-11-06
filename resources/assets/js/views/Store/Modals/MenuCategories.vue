@@ -162,7 +162,7 @@ export default {
       this.editing = {
         ...cat,
         range: {
-          start: new Date(date_range_from),
+          start: new Date(date_range_from || new Date()),
           end: new Date(date_range_to)
         }
       };

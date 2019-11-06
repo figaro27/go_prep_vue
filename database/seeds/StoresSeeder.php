@@ -97,6 +97,7 @@ class StoresSeeder extends Seeder
                 'store_id' => $i,
                 'manualOrders' => 1,
                 'manualCustomers' => 1,
+                'category_restrictions' => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]);

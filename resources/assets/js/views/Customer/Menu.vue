@@ -565,7 +565,8 @@ export default {
         sortedCategories.push({
           category: cat.category,
           order,
-          id: cat.id
+          id: cat.id,
+          cat
         });
       }
 
