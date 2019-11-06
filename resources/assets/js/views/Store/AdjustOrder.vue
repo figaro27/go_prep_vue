@@ -37,7 +37,8 @@ export default {
       upcomingOrders: "storeUpcomingOrders",
       store: "store",
       bag: "bag",
-      getMeal: "viewedStoreMeal"
+      getMeal: "viewedStoreMeal",
+      getMealPackage: "viewedStoreMealPackage"
     }),
     orderId() {
       return this.$route.params.orderId;
@@ -83,6 +84,20 @@ export default {
       // console.log(this.orders, order);
 
       this.clearAll();
+
+      /*console.log('order', this.order)
+      
+      if (this.order.meal_package_items) {
+        _.forEach(this.order.meal_package_items, item => {
+            let meal_package_id = item.meal_package_id
+            let meal_package = this.getMealPackage(meal_package_id)
+            
+            if (meal_package) {
+                console.log('meal_package', meal_package)
+                let size = item.meal_package_size
+            }
+        })
+      }*/
 
       _.forEach(this.order.items, item => {
         const meal = this.getMeal(item.meal_id);
