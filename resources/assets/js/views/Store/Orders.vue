@@ -1077,7 +1077,7 @@ export default {
               " - " +
               meal_package_item.meal_package_size.title,
             quantity: meal_package_item.quantity,
-            unit_price: format.money(meal_package_item.mprice, order.currency),
+            unit_price: format.money(meal_package_item.price, order.currency),
             subtotal: format.money(
               meal_package_item.price * meal_package_item.quantity,
               order.currency
