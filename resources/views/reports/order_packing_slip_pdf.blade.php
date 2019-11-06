@@ -213,12 +213,12 @@ $brandColor = $order->store->settings->color;
     </table>
     <table class="no-border" style="border-style:none">
       <tr>
-        <td style="width:70%;padding-top:10px">
+        <td style="width:67%;padding-top:10px">
           @if ($order->store->settings->notesForCustomer != null)
           <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
           @endif
         </td>
-        <td style="width:30%;margin-left:0px;padding-left:0px">
+        <td style="width:33%;margin-left:0px;padding-left:0px">
           <table border="0" style="border:0px;border-style:none;">
             <tr>
               <td style="border:none"><b>Subtotal</b></td>
