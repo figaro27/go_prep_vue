@@ -73,6 +73,7 @@ $brandColor = $order->store->settings->color;
       </div>
     </center>
     </div>
+    <br>
 
     <table class="no-border table-heading" style="border-style:none">
       <thead>
