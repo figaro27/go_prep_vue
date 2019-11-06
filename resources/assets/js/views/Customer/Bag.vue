@@ -382,7 +382,7 @@ export default {
     ) {
       this.cashOrder = true;
     }
-    this.deliveryDay = this.$route.params.deliveryDay;
+    // this.deliveryDay = this.$route.params.deliveryDay;
     this.transferTime = this.$route.params.transferTime;
     if (this.$route.params.pickup != undefined) {
       this.pickup = this.$route.params.pickup;
@@ -406,9 +406,9 @@ export default {
     if (this.storeModules.pickupLocations)
       this.selectedPickupLocation = this.pickupLocationOptions[0].value;
 
-    if (!this.deliveryDay && this.deliveryDateOptions.length > 0) {
-      this.deliveryDay = this.deliveryDateOptions[0].value;
-    }
+    // if (!this.deliveryDay && this.deliveryDateOptions.length > 0) {
+    //   this.deliveryDay = this.deliveryDateOptions[0].value;
+    // }
   },
   updated() {
     this.creditCardId = this.card;

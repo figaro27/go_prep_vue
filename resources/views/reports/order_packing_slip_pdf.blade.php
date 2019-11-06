@@ -213,12 +213,12 @@ $brandColor = $order->store->settings->color;
     </table>
     <table class="no-border" style="border-style:none">
       <tr>
-        <td style="width:70%;padding-top:10px">
+        <td style="width:67%;padding-top:10px">
           @if ($order->store->settings->notesForCustomer != null)
           <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
           @endif
         </td>
-        <td style="width:30%;margin-left:0px;padding-left:0px">
+        <td style="width:33%;margin-left:0px;padding-left:0px">
           <table border="0" style="border:0px;border-style:none;">
             <tr>
               <td style="border:none"><b>Subtotal</b></td>
@@ -255,18 +255,18 @@ $brandColor = $order->store->settings->color;
           </table>
         </td>
       </tr>
-      <tfoot class="drop-shadow">
+      <tfoot>
         @if ($order->balance > 0)
         <tr>
-          <th class="bottom-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">
+          <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">
           Amount Due</th>
-          <th class="bottom-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">${{number_format($order->balance, 2)}}</th>
+          <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">${{number_format($order->balance, 2)}}</th>
         </tr>
         @endif
         @if ($order->balance <= 0)
         <tr>
-          <th class="bottom-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px"><b>Total Paid</b></th>
-          <th class="bottom-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{ $amount }}</th>
+          <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px"><b>Total Paid</b></th>
+          <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{ $amount }}</th>
         </tr>
         @endif
       </tfoot>

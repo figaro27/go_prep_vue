@@ -1276,6 +1276,10 @@ export default {
       return this.customerModel;
     },
     async adjust() {
+      if (this.bagDeliveryDate === null) {
+        this.$toastr.w("Please select a delivery/pickup date.");
+        return;
+      }
       let deposit = this.deposit;
       if (deposit.toString().includes("%")) {
         deposit.replace("%", "");
@@ -1289,7 +1293,7 @@ export default {
       axios
         .post(`/api/me/orders/adjustOrder`, {
           orderId: this.$parent.orderId,
-          deliveryDate: this.deliveryDay,
+          deliveryDate: this.bagDeliveryDate,
           pickup: this.pickup,
           transferTime: this.transferTime,
           subtotal: this.subtotal,
@@ -1332,6 +1336,10 @@ export default {
       });
     },
     checkout() {
+      if (this.bagDeliveryDate === null) {
+        this.$toastr.w("Please select a delivery/pickup date.");
+        return;
+      }
       if (this.grandTotal <= 0 && !this.cashOrder) {
         this.$toastr.e(
           "At least .50 cents is required to process an order.",
@@ -1351,9 +1359,9 @@ export default {
         this.selectedPickupLocation = null;
       }
 
-      if (!this.deliveryDay && this.deliveryDateOptions) {
-        this.deliveryDay = this.deliveryDateOptions[0].value;
-      }
+      // if (!this.deliveryDay && this.deliveryDateOptions) {
+      //   this.deliveryDay = this.deliveryDateOptions[0].value;
+      // }
 
       let deposit = this.deposit;
       if (deposit.toString().includes("%")) {
@@ -1390,7 +1398,7 @@ export default {
           bag: this.bagMealPrice,
           plan: weeklySubscriptionValue,
           pickup: this.pickup,
-          delivery_day: this.deliveryDay,
+          delivery_day: this.bagDeliveryDate,
           card_id: cardId,
           store_id: this.store.id,
           salesTax: this.tax,
