@@ -18,6 +18,11 @@ class Category extends Model
 
     public $appends = [];
 
+    protected $casts = [
+        'date_range' => 'boolean',
+        'date_range_exclusive' => 'boolean'
+    ];
+
     public function store()
     {
         return $this->belongsTo('App\Store');
@@ -27,6 +32,4 @@ class Category extends Model
     {
         return $this->belongsToMany('App\Meal')->using('App\MealCategory');
     }
-
-    protected $casts = [];
 }

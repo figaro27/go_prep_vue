@@ -1,8 +1,37 @@
 import SalesTax from "sales-tax";
 import store from "../store";
+import { mapGetters } from "vuex";
 
 export default {
-  computed: {},
+  computed: {
+    ...mapGetters({
+      storeSetting: "viewedStoreSetting"
+    }),
+    deliveryDateOptions() {
+      return this.storeSetting("next_delivery_dates", []).map(date => {
+        return {
+          value: date.date,
+          text: moment(date.date).format("dddd MMM Do"),
+          moment: moment(date.date)
+        };
+      });
+    },
+    hasDeliveryDateRestrictionToday() {
+      const today = moment();
+      const cats = this._categories;
+
+      for (let cat of cats) {
+        if (
+          cat.date_range &&
+          today.isBetween(cat.date_range_from, cat.date_range_to)
+        ) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+  },
   methods: {
     async addOne(
       meal,
@@ -300,6 +329,36 @@ export default {
         }
         return;
       }
+    },
+
+    isCategoryVisible(category) {
+      const id = _.isNumber(category)
+        ? category
+        : category.category_id || category.id;
+      const today = moment();
+
+      if (this.hasDeliveryDateRestrictionToday) {
+        // Other cat restricts
+        for (let cat of this._categories) {
+          if (
+            cat.date_range &&
+            cat.date_range_exclusive &&
+            today.isBetween(cat.date_range_from, cat.date_range_to)
+          ) {
+            return cat.id === id;
+          }
+        }
+      }
+
+      if (
+        category &&
+        category.date_range &&
+        !today.isBetween(category.date_range_from, category.date_range_to)
+      ) {
+        return false;
+      }
+
+      return true;
     }
   }
 };

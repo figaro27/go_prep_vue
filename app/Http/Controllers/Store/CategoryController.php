@@ -6,6 +6,7 @@ use App\Http\Controllers\Store\StoreController;
 use App\Meal;
 use App\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class CategoryController extends StoreController
 {
@@ -88,11 +89,29 @@ class CategoryController extends StoreController
      */
     public function update(Request $request, $id)
     {
-        $categoryId = $id;
-        $newName = $request->get('name');
+        $store = $this->store;
 
-        $category = Category::where('id', $categoryId)->first();
-        $category->category = $newName;
+        $category = $store->categories()->findOrFail($id);
+        $category->category = $request->get('category');
+
+        $dateRangeFrom = $request->get('date_range_from', null);
+        $dateRangeTo = $request->get('date_range_to', null);
+
+        if ($dateRangeFrom && $dateRangeTo) {
+            $dateRangeFrom = new Carbon($dateRangeFrom);
+            $dateRangeTo = new Carbon($dateRangeTo);
+        }
+
+        if ($store->modules->category_restrictions) {
+            $category->date_range = $request->get('date_range', false);
+            $category->date_range_from = $dateRangeFrom;
+            $category->date_range_to = $dateRangeTo;
+            $category->date_range_exclusive = $request->get(
+                'date_range_exclusive',
+                false
+            );
+        }
+
         $category->save();
     }
 

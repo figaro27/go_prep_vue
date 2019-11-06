@@ -5,6 +5,10 @@
     <category-slider></category-slider>
 
     <div class="menu">
+      <delivery-date-modal
+        v-if="!bagDeliveryDate && deliveryDateRequired"
+      ></delivery-date-modal>
+
       <store-description-modal
         :showDescriptionModal="showDescriptionModal"
       ></store-description-modal>
@@ -126,6 +130,7 @@
               <div v-if="finalCategoriesSub && finalCategoriesSub.length > 0">
                 <div
                   v-for="(cat, index) in finalCategoriesSub"
+                  v-if="isCategoryVisible(cat)"
                   :key="'com_' + cat.id"
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
@@ -201,6 +206,7 @@ import Spinner from "../../components/Spinner";
 import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 import MealComponentsModal from "../../components/Modals/MealComponentsModal";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
+import DeliveryDateModal from "./Modals/DeliveryDateModal";
 import MenuBag from "../../mixins/menuBag";
 import units from "../../data/units";
 import nutrition from "../../data/nutrition";
@@ -312,7 +318,8 @@ export default {
     MenuFilters,
     MealPage,
     MealPackagePage,
-    MealComponentsModal
+    MealComponentsModal,
+    DeliveryDateModal
   },
   mixins: [MenuBag],
   props: {
@@ -375,7 +382,8 @@ export default {
       showMealsArea: true,
       showMealPackagesArea: true,
       mealSizePrice: null,
-      forceShow: false
+      forceShow: false,
+      deliveryDate: null
     };
   },
   computed: {
@@ -389,8 +397,12 @@ export default {
       _categories: "viewedStoreCategories",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
-      allTags: "tags"
+      allTags: "tags",
+      bagDeliveryDate: "bagDeliveryDate"
     }),
+    deliveryDateRequired() {
+      return this.hasDeliveryDateRestrictionToday;
+    },
     showSpinner() {
       if (this.context == "customer" || this.context == "guest") {
         return this.store.items.length == 0;
@@ -573,7 +585,8 @@ export default {
         sortedCategories.push({
           category: cat.category,
           order,
-          id: cat.id
+          id: cat.id,
+          cat
         });
       }
 

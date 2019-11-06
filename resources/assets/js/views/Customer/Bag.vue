@@ -139,7 +139,7 @@ export default {
     };
   },
   watch: {
-    deliveryDaysOptions(val) {
+    deliveryDateOptions(val) {
       if (!this.deliveryDay && val[0]) {
         this.deliveryDay = val[0].value;
       }
@@ -362,16 +362,6 @@ export default {
       if (this.deliveryPlan) return "Prepared Weekly";
       else return "Prepared Once";
     },
-    deliveryDaysOptions() {
-      return (this.storeSettings.next_orderable_delivery_dates, []).map(
-        date => {
-          return {
-            value: date.date,
-            text: moment(date.date).format("dddd MMM Do")
-          };
-        }
-      );
-    },
     tax() {
       if (this.storeSettings.enableSalesTax)
         return this.salesTax * this.afterFees;
@@ -416,8 +406,8 @@ export default {
     if (this.storeModules.pickupLocations)
       this.selectedPickupLocation = this.pickupLocationOptions[0].value;
 
-    if (!this.deliveryDay && this.deliveryDaysOptions.length > 0) {
-      this.deliveryDay = this.deliveryDaysOptions[0].value;
+    if (!this.deliveryDay && this.deliveryDateOptions.length > 0) {
+      this.deliveryDay = this.deliveryDateOptions[0].value;
     }
   },
   updated() {
@@ -476,9 +466,9 @@ export default {
       }
 
       // Ensure delivery day is set
-      if (!this.deliveryDay && this.deliveryDaysOptions) {
-        this.deliveryDay = this.deliveryDaysOptions[0].value;
-      } else if (!this.deliveryDaysOptions) {
+      if (!this.deliveryDay && this.deliveryDateOptions) {
+        this.deliveryDay = this.deliveryDateOptions[0].value;
+      } else if (!this.deliveryDateOptions) {
         return;
       }
 

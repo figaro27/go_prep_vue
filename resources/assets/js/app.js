@@ -122,6 +122,9 @@ Vue.component("hint", Hint);
 import { Switch } from "@coreui/vue";
 Vue.component("c-switch", Switch);
 
+import VCalendar from "v-calendar";
+Vue.use(VCalendar, {});
+
 /*
 moment.defaultFormat = 'ddd, MMMM Do';
 moment.defaultFormatUtc = 'ddd, MMMM Do';
