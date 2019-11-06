@@ -145,6 +145,7 @@
               <div v-else>
                 <div
                   v-for="(cat, index) in finalCategories"
+                  v-if="isCategoryVisible(cat)"
                   :key="cat.category"
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'

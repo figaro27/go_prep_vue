@@ -30,6 +30,25 @@ export default {
       }
 
       return false;
+    },
+    hasExclusiveDeliveryDateRestrictionToday() {
+      return this.exclusiveDateRestrictedCategory !== null;
+    },
+    exclusiveDateRestrictedCategory() {
+      const today = moment();
+      const cats = this._categories;
+
+      for (let cat of cats) {
+        if (
+          cat.date_range &&
+          cat.date_range_exclusive &&
+          today.isBetween(cat.date_range_from, cat.date_range_to)
+        ) {
+          return cat;
+        }
+      }
+
+      return null;
     }
   },
   methods: {
@@ -337,17 +356,10 @@ export default {
         : category.category_id || category.id;
       const today = moment();
 
-      if (this.hasDeliveryDateRestrictionToday) {
-        // Other cat restricts
-        for (let cat of this._categories) {
-          if (
-            cat.date_range &&
-            cat.date_range_exclusive &&
-            today.isBetween(cat.date_range_from, cat.date_range_to)
-          ) {
-            return cat.id === id;
-          }
-        }
+      if (this.hasExclusiveDeliveryDateRestrictionToday) {
+        const categories = { ...this._categories };
+        const exclusiveCat = this.exclusiveDateRestrictedCategory;
+        return id === exclusiveCat.id;
       }
 
       if (
