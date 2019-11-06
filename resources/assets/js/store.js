@@ -517,7 +517,8 @@ const triggerLazy = (
   offset_package,
   category_id,
   category_ids_str,
-  bypass_meal
+  bypass_meal,
+  includeStore
 ) => {
   callLazy(
     offset_meal,
@@ -533,7 +534,28 @@ const triggerLazy = (
         let packages = state.viewed_store.packages;
         let finalCategories = state.viewed_store.finalCategories;
 
+        let store_meals = state.store.meals.data;
+        let store_packages = state.store.meal_packages.data;
+
         if (data.meals && data.meals.length > 0) {
+          /* Include Store */
+          if (includeStore) {
+            if (store_meals.length > 0) {
+              for (let i in data.meals) {
+                let meal = data.meals[i];
+
+                let found =
+                  _.find(store_meals, ["id", parseInt(meal.id)]) || null;
+                if (!found) {
+                  store_meals.push(meal);
+                }
+              }
+            } else {
+              store_meals = data.meals;
+            }
+          }
+          /* Include Store End */
+
           if (meals.length > 0) {
             for (let i in data.meals) {
               let meal = data.meals[i];
@@ -549,6 +571,24 @@ const triggerLazy = (
         }
 
         if (data.packages && data.packages.length > 0) {
+          /* Include Store */
+          if (includeStore) {
+            if (store_packages.length > 0) {
+              for (let i in data.packages) {
+                let pack = data.packages[i];
+
+                let found =
+                  _.find(store_packages, ["id", parseInt(pack.id)]) || null;
+                if (!found) {
+                  store_packages.push(pack);
+                }
+              }
+            } else {
+              store_packages = data.packages;
+            }
+          }
+          /* Include Store End */
+
           if (packages.length > 0) {
             for (let i in data.packages) {
               let pack = data.packages[i];
@@ -607,6 +647,18 @@ const triggerLazy = (
           meals,
           packages
         };
+
+        if (includeStore) {
+          state.store = {
+            ...state.store,
+            meals: {
+              data: store_meals
+            },
+            meal_packages: {
+              data: store_packages
+            }
+          };
+        }
       }
 
       if (data.end == 0) {
@@ -616,7 +668,8 @@ const triggerLazy = (
           data.offset_package,
           data.category_id,
           data.category_ids_str,
-          data.bypass_meal
+          data.bypass_meal,
+          includeStore
         );
       } else {
         // Finished
@@ -1356,7 +1409,9 @@ const actions = {
 
   async refreshLazy({ state }, args = {}) {
     state.isLazy = true;
-    triggerLazy(state, 0, 0, 0, "", 0);
+    let includeStore = args && args.includeStore ? true : false;
+
+    triggerLazy(state, 0, 0, 0, "", 0, includeStore);
   },
 
   async refreshStoreMeals({ commit, state }, args = {}) {

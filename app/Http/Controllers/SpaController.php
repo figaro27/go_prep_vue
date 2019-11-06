@@ -332,6 +332,8 @@ class SpaController extends Controller
     public function refresh_lazy(Request $request)
     {
         // Speed Optimization
+        $user = auth('api')->user();
+
         $store_id = $offset_meal = $offset_package = 0;
         $limit = 30;
 
@@ -353,11 +355,15 @@ class SpaController extends Controller
 
         $category_data = null;
 
-        if (defined('STORE_ID')) {
-            $store_id = (int) STORE_ID;
+        if ($user && $user->hasRole('store') && $user->has('store')) {
+            $store_id = $user->store->id;
         } else {
-            if ($user && isset($user->last_viewed_store)) {
-                $store_id = (int) $user->last_viewed_store->id;
+            if (defined('STORE_ID')) {
+                $store_id = (int) STORE_ID;
+            } else {
+                if ($user && isset($user->last_viewed_store)) {
+                    $store_id = (int) $user->last_viewed_store->id;
+                }
             }
         }
 

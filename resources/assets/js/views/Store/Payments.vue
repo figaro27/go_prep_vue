@@ -167,6 +167,7 @@ import format from "../../lib/format";
 import vSelect from "vue-select";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import checkDateRange from "../../mixins/deliveryDates";
+import store from "../../store";
 
 export default {
   components: {
@@ -238,6 +239,10 @@ export default {
     });
   },
   mounted() {
+    if (!this.isLazy) {
+      store.dispatch("refreshLazy", { includeStore: true });
+    }
+
     this.getApplicationFee();
   },
   computed: {
@@ -250,7 +255,8 @@ export default {
       initialized: "initialized",
       customers: "storeCustomers",
       nextDeliveryDates: "storeNextDeliveryDates",
-      getMeal: "storeMeal"
+      getMeal: "storeMeal",
+      isLazy: "isLazy"
     }),
     tableData() {
       let filters = { ...this.filters };
