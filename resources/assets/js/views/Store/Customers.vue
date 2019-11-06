@@ -468,12 +468,9 @@ export default {
           data.push({
             meal: meal_package_item.meal_package.title,
             quantity: meal_package_item.quantity,
-            unit_price: format.money(
-              meal_package_item.meal_package.price,
-              order.currency
-            ),
+            unit_price: format.money(meal_package_item.price, order.currency),
             subtotal: format.money(
-              meal_package_item.meal_package.price * meal_package_item.quantity,
+              meal_package_item.price * meal_package_item.quantity,
               order.currency
             )
           });
@@ -484,13 +481,9 @@ export default {
               " - " +
               meal_package_item.meal_package_size.title,
             quantity: meal_package_item.quantity,
-            unit_price: format.money(
-              meal_package_item.meal_package_size.price,
-              order.currency
-            ),
+            unit_price: format.money(meal_package_item.price, order.currency),
             subtotal: format.money(
-              meal_package_item.meal_package_size.price *
-                meal_package_item.quantity,
+              meal_package_item.price * meal_package_item.quantity,
               order.currency
             )
           });
