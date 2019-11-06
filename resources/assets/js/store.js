@@ -633,19 +633,14 @@ const actions = {
     state.isLoading = true;
     state.initialized = false;
 
-    const resContext = await axios.get("/api/context");
+    /*const resContext = await axios.get("/api/context");
     let dataContext =
       resContext.data && resContext.data.context
         ? resContext.data.context
-        : "guest";
+        : "guest";*/
 
-    let apiEndpoint = "/api";
-    if (dataContext == "store") {
-      // Store
-    } else {
-      // Customer, Guest
-      apiEndpoint = "/api/optimized";
-    }
+    //let apiEndpoint = "/api";
+    let apiEndpoint = "/api/optimized";
 
     const res = await axios.get(apiEndpoint);
     const { data } = await res;
@@ -686,6 +681,44 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.store.settings) && _.isObject(data.store.settings)) {
+        let settings = data.store.settings;
+        commit("storeSettings", { settings });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.module_settings) &&
+        _.isObject(data.store.module_settings)
+      ) {
+        let moduleSettings = data.store.module_settings;
+        commit("storeModuleSettings", { moduleSettings });
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.ordersToday) && _.isObject(data.ordersToday)) {
+        let orders = data.ordersToday;
+        commit("storeOrdersToday", { orders });
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.modules) && _.isObject(data.store.modules)) {
+        let modules = data.store.modules;
+        commit("storeModules", { modules });
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.subscriptions) && _.isObject(data.subscriptions)) {
+        let subscriptions = data.subscriptions;
+        commit("storeSubscriptions", { subscriptions });
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.units)) {
         let units = {};
 
@@ -710,12 +743,36 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.upcomingOrders) && _.isObject(data.upcomingOrders)) {
+        let orders = data.upcomingOrders;
+        commit("storeUpcomingOrders", { orders });
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.coupons)) {
         let coupons = data.store.coupons;
 
         if (!_.isEmpty(coupons)) {
           commit("storeCoupons", { coupons });
         }
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.customers) &&
+        _.isObject(data.store.customers)
+      ) {
+        let customers = data.store.customers;
+        commit("storeCustomers", { customers });
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.meals) && _.isObject(data.store.meals)) {
+        let meals = data.store.meals;
+        commit("storeMeals", { meals });
       }
     } catch (e) {}
 
@@ -746,6 +803,13 @@ const actions = {
         if (!_.isEmpty(lineItems)) {
           commit("storeLineItems", { lineItems });
         }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.orders) && _.isObject(data.orders)) {
+        let orders = data.orders;
+        commit("storeOrders", { orders });
       }
     } catch (e) {}
 
@@ -784,122 +848,25 @@ const actions = {
   },
 
   async initStore({ commit, state, dispatch }, data = {}) {
-    try {
-      if (!_.isEmpty(data.store.settings) && _.isObject(data.store.settings)) {
-        let settings = data.store.settings;
-        commit("storeSettings", { settings });
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.store.modules) && _.isObject(data.store.modules)) {
-        let modules = data.store.modules;
-        commit("storeModules", { modules });
-      }
-    } catch (e) {}
-
-    try {
-      if (
-        !_.isEmpty(data.store.module_settings) &&
-        _.isObject(data.store.module_settings)
-      ) {
-        let moduleSettings = data.store.module_settings;
-        commit("storeModuleSettings", { moduleSettings });
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.store.coupons) && _.isObject(data.store.coupons)) {
-        let coupons = data.store.coupons;
-        commit("storeCoupons", { coupons });
-      }
-    } catch (e) {}
-
-    try {
-      if (
-        !_.isEmpty(data.store.pickupLocations) &&
-        _.isObject(data.store.pickupLocations)
-      ) {
-        let pickupLocations = data.store.pickupLocations;
-        commit("storePickupLocations", { pickupLocations });
-      }
-    } catch (e) {}
-
-    try {
-      if (
-        !_.isEmpty(data.store.production_groups) &&
-        _.isObject(data.store.production_groups)
-      ) {
-        let productionGroups = data.store.production_groups;
-        commit("storeProductionGroups", { productionGroups });
-      }
-    } catch (e) {}
-
-    try {
-      if (
-        !_.isEmpty(data.store.lineItems) &&
-        _.isObject(data.store.lineItems)
-      ) {
-        let lineItems = data.store.lineItems;
-        commit("storeLineItems", { lineItems });
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.store.meals) && _.isObject(data.store.meals)) {
-        let meals = data.store.meals;
-        commit("storeMeals", { meals });
-      }
-    } catch (e) {}
-
-    try {
-      if (
-        !_.isEmpty(data.store.customers) &&
-        _.isObject(data.store.customers)
-      ) {
-        let customers = data.store.customers;
-        commit("storeCustomers", { customers });
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.orders) && _.isObject(data.orders)) {
-        let orders = data.orders;
-        commit("storeOrders", { orders });
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.upcomingOrders) && _.isObject(data.upcomingOrders)) {
-        let orders = data.upcomingOrders;
-        commit("storeUpcomingOrders", { orders });
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.ordersToday) && _.isObject(data.ordersToday)) {
-        let orders = data.ordersToday;
-        commit("storeOrdersToday", { orders });
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.subscriptions) && _.isObject(data.subscriptions)) {
-        let subscriptions = data.subscriptions;
-        commit("storeSubscriptions", { subscriptions });
-      }
-    } catch (e) {}
-
     // Required actions
-    await Promise.all([
-      dispatch("refreshMeals"),
-      dispatch("refreshMealPackages"),
-      // dispatch("refreshOrders"),
-      dispatch("refreshUpcomingOrders"),
-      dispatch("refreshOrdersToday"),
-      dispatch("refreshViewedStore")
-    ]);
+    /*await Promise.all([
+      // dispatch("refreshMeals"),
+      // dispatch("refreshMealPackages"),
+      
+      //dispatch("refreshOrders"),
+      //dispatch("refreshUpcomingOrders"),
+      //dispatch("refreshOrdersToday"),
+      
+      // dispatch("refreshViewedStore")
+    ]);*/
 
+    if (data.store) {
+      await dispatch("refreshViewedOwnerStore", data);
+    }
+
+    dispatch("refreshOrders");
+    dispatch("refreshUpcomingOrders");
+    dispatch("refreshOrdersToday");
     dispatch("refreshStoreCustomers");
     dispatch("refreshOrderIngredients");
     dispatch("refreshIngredients");
@@ -970,25 +937,73 @@ const actions = {
       if (data.store_distance) {
         commit("setViewedStoreDistance", data.store_distance);
       }
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
 
     try {
       if (data.distance) {
         commit("setViewedStoreDistance", data.distance);
       }
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
 
     try {
       if (_.isBoolean(data.will_deliver)) {
         commit("setViewedStoreWillDeliver", data.will_deliver);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.coupons)) {
+        let coupons = data.coupons;
+
+        if (!_.isEmpty(coupons)) {
+          commit("setViewedStoreCoupons", { coupons });
+        }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.pickup_locations)) {
+        let pickupLocations = data.store.pickup_locations;
+
+        if (!_.isEmpty(pickupLocations)) {
+          commit("setViewedStorePickupLocations", { pickupLocations });
+        }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.line_items)) {
+        let lineItems = data.store.line_items;
+
+        if (!_.isEmpty(lineItems)) {
+          commit("setViewedStoreLineItems", { lineItems });
+        }
+      }
+    } catch (e) {}
+  },
+
+  async refreshViewedOwnerStore({ commit, state }, data = {}) {
+    if (_.isObject(data.store) && !_.isEmpty(data.store)) {
+      commit("setViewedStore", data.store);
     }
+
+    try {
+      if (data.store_distance) {
+        commit("setViewedStoreDistance", data.store_distance);
+      }
+    } catch (e) {}
+
+    try {
+      if (data.distance) {
+        commit("setViewedStoreDistance", data.distance);
+      }
+    } catch (e) {}
+
+    try {
+      if (_.isBoolean(data.will_deliver)) {
+        commit("setViewedStoreWillDeliver", data.will_deliver);
+      }
+    } catch (e) {}
 
     try {
       if (!_.isEmpty(data.coupons)) {
@@ -1033,25 +1048,19 @@ const actions = {
       if (data.store_distance) {
         commit("setViewedStoreDistance", data.store_distance);
       }
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
 
     try {
       if (data.distance) {
         commit("setViewedStoreDistance", data.distance);
       }
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
 
     try {
       if (_.isBoolean(data.will_deliver)) {
         commit("setViewedStoreWillDeliver", data.will_deliver);
       }
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
 
     try {
       if (!_.isEmpty(data.coupons)) {

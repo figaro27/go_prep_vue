@@ -231,7 +231,6 @@ export default {
     };
   },
   created() {
-    this.refreshViewedStore();
     axios.get("/api/me/stripe/login").then(resp => {
       if (resp.data.url) {
         this.stripeUrl = resp.data.url;
@@ -477,8 +476,7 @@ export default {
       refreshOrders: "refreshOrders",
       refreshUpcomingOrders: "refreshUpcomingOrders",
       refreshOrdersToday: "refreshOrdersToday",
-      updateOrder: "updateOrder",
-      refreshViewedStore: "refreshViewedStore"
+      updateOrder: "updateOrder"
     }),
     refreshTable() {
       this.refreshOrders();

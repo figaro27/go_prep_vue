@@ -227,51 +227,82 @@ class SpaController extends Controller
         }
         /* Context End */
 
-        $store = defined('STORE_ID')
-            ? Store::with([
-                'units',
-                'categories',
-                'settings',
-                'modules',
-                'moduleSettings',
-                'details',
-                'coupons',
-                'pickupLocations',
-                'lineItems'
-            ])->find(STORE_ID)
-            : $last_viewed_store;
+        if ($context == "store") {
+            $store = $user
+                ->store()
+                ->with([
+                    'categories',
+                    'ingredients',
+                    'units',
+                    'settings',
+                    'storeDetail',
+                    'coupons',
+                    'pickupLocations',
+                    'productionGroups',
+                    'lineItems',
+                    'modules',
+                    'moduleSettings'
+                ])
+                ->first();
 
-        if ($store && $user) {
-            $distance = $user->distanceFrom($store);
+            $user->storeOwner = true;
 
-            if ($store->settings->delivery_distance_type === 'radius') {
-                ///$distance = $user->distanceFrom($store);
-                $willDeliver =
-                    $distance < $store->settings->delivery_distance_radius;
+            return [
+                'context' => $context,
+                'user' => $user,
+                'store' => $store,
+                'allergies' => Allergy::all(),
+                'tags' => MealTag::all()
+            ];
+        } else {
+            $store = defined('STORE_ID')
+                ? Store::with([
+                    'units',
+                    'categories',
+                    'settings',
+                    'modules',
+                    'moduleSettings',
+                    'details',
+                    'coupons',
+                    'pickupLocations',
+                    'lineItems'
+                ])->find(STORE_ID)
+                : $last_viewed_store;
+
+            if ($store && $user) {
+                $distance = $user->distanceFrom($store);
+
+                if ($store->settings->delivery_distance_type === 'radius') {
+                    ///$distance = $user->distanceFrom($store);
+                    $willDeliver =
+                        $distance < $store->settings->delivery_distance_radius;
+                } else {
+                    $willDeliver = $store->deliversToZip(
+                        $user->userDetail->zip
+                    );
+                }
+
+                $user->last_viewed_store_id = $store->id;
+                $user->save();
+
+                return [
+                    'context' => $context,
+                    'user' => $user,
+                    'store' => $store,
+                    'store_distance' => $distance ?? null,
+                    'will_deliver' => $willDeliver,
+                    'allergies' => Allergy::all(),
+                    'tags' => MealTag::all()
+                ];
             } else {
-                $willDeliver = $store->deliversToZip($user->userDetail->zip);
+                return [
+                    'context' => $context,
+                    'user' => $user,
+                    'store' => $store,
+                    'allergies' => Allergy::all(),
+                    'tags' => MealTag::all()
+                ];
             }
-
-            $user->last_viewed_store_id = $store->id;
-            $user->save();
-
-            return [
-                'context' => $context,
-                'user' => $user,
-                'store' => $store,
-                'store_distance' => $distance ?? null,
-                'will_deliver' => $willDeliver,
-                'allergies' => Allergy::all(),
-                'tags' => MealTag::all()
-            ];
-        } else {
-            return [
-                'context' => $context,
-                'user' => $user,
-                'store' => $store,
-                'allergies' => Allergy::all(),
-                'tags' => MealTag::all()
-            ];
         }
     }
 

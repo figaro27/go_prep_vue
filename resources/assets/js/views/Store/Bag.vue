@@ -74,9 +74,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      refreshViewedStore: "refreshViewedStore"
-    }),
+    ...mapActions({}),
     ...mapMutations({
       setBagMealPlan: "setBagMealPlan"
     })

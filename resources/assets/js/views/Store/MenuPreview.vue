@@ -20,14 +20,10 @@ export default {
       isLoading: "isLoading"
     })
   },
-  created() {
-    this.refreshViewedStore();
-  },
+  created() {},
   mounted() {},
   methods: {
-    ...mapActions({
-      refreshViewedStore: "refreshViewedStore"
-    })
+    ...mapActions({})
   }
 };
 </script>

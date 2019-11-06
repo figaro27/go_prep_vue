@@ -687,9 +687,7 @@ export default {
       deliveryNote: ""
     };
   },
-  created() {
-    this.refreshViewedStore();
-  },
+  created() {},
   mounted() {
     if (this.storeModules.dailyOrderNumbers) {
       this.columns.splice(1, 0, "dailyOrderNumber");
@@ -722,7 +720,6 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
-      // orders: "storeOrders",
       upcomingOrders: "storeUpcomingOrders",
       isLoading: "isLoading",
       initialized: "initialized",
@@ -772,8 +769,7 @@ export default {
       refreshOrdersToday: "refreshOrdersToday",
       updateOrder: "updateOrder",
       addJob: "addJob",
-      removeJob: "removeJob",
-      refreshViewedStore: "refreshViewedStore"
+      removeJob: "removeJob"
     }),
     refreshTable() {
       this.refreshOrders();
@@ -806,35 +802,6 @@ export default {
         this.refreshTable();
         this.$toastr.s("Order notes saved.");
       });
-    },
-    getMealQuantities(order) {
-      if (!this.initialized || !order.items) return [];
-
-      let data = order.items.map(item => {
-        const meal = this.getMeal(item.meal_id);
-        if (!meal) {
-          return null;
-        }
-
-        const size = meal.getSize(item.meal_size_id);
-        const title = meal.getTitle(
-          true,
-          size,
-          item.components,
-          item.addons,
-          item.special_instructions
-        );
-
-        return {
-          image: meal.image,
-          title: title,
-          quantity: item.quantity,
-          unit_price: format.money(item.unit_price, order.currency),
-          subtotal: format.money(item.price, order.currency)
-        };
-      });
-
-      return _.filter(data);
     },
     printPackingSlip(order_id) {
       axios

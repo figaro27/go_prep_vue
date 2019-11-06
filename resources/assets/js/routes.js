@@ -210,15 +210,7 @@ let routes = [
   {
     path: "/store/manual-order",
     component: StoreManualOrder,
-    name: "store-manual-order",
-    async beforeEnter(to, from, next) {
-      if (!store.getters.viewedStore.id) {
-        store.state.isLoading = true;
-        await store.dispatch("refreshViewedStore");
-        store.state.isLoading = false;
-      }
-      next();
-    }
+    name: "store-manual-order"
   },
   {
     path: "/store/adjust-order",
@@ -233,15 +225,7 @@ let routes = [
   {
     path: "/store/bag",
     component: StoreBag,
-    name: "store-bag",
-    async beforeEnter(to, from, next) {
-      if (!store.getters.viewedStore.id) {
-        store.state.isLoading = true;
-        await store.dispatch("refreshViewedStore");
-        store.state.isLoading = false;
-      }
-      next();
-    }
+    name: "store-bag"
   },
   {
     path: "/store/updates",

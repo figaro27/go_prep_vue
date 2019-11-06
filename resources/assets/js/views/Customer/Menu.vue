@@ -707,11 +707,7 @@ export default {
     });
   },
   mounted() {
-    if (
-      (this.context == "customer" || this.context == "guest") &&
-      !this.isLazy
-    ) {
-      //store.dispatch("refreshStoreMeals")
+    if (!this.isLazy) {
       store.dispatch("refreshLazy");
     }
 

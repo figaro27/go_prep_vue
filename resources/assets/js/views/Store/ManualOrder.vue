@@ -98,9 +98,7 @@ export default {
   created() {},
   mounted() {},
   methods: {
-    ...mapActions({
-      refreshViewedStore: "refreshViewedStore"
-    }),
+    ...mapActions({}),
     setLoadingToFalse() {
       this.loading = false;
     }
