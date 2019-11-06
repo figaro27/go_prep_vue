@@ -85,7 +85,7 @@ $brandColor = $order->store->settings->color;
           </th>
           <th class="drop-shadow no-border">
             <div class="text-11 align-center" style="position:relative;right:27px">
-            @if ($order->store->settings->website) {{ $order->store->settings->website }} 
+            @if ($order->store->settings->website) {{ $order->store->settings->website }}<br>
             @else www{{$order->store->settings->domain}}.goprep.com<br>
             @endif
             {{ $order->store->user->email }}
