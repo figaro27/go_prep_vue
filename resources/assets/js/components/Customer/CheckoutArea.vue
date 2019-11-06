@@ -1344,7 +1344,11 @@ export default {
       });
     },
     checkout() {
-      if (this.bagDeliveryDate === null) {
+      if (
+        this.bagDeliveryDate === null &&
+        !this.store.modules.hideTransferOptions &&
+        this.deliveryDateOptions.length > 1
+      ) {
         this.$toastr.w("Please select a delivery/pickup date.");
         return;
       }
@@ -1406,7 +1410,9 @@ export default {
           bag: this.bagMealPrice,
           plan: weeklySubscriptionValue,
           pickup: this.pickup,
-          delivery_day: this.bagDeliveryDate,
+          delivery_day: this.bagDeliveryDate
+            ? this.bagDeliveryDate
+            : this.deliveryDateOptions[0].value,
           card_id: cardId,
           store_id: this.store.id,
           salesTax: this.tax,
