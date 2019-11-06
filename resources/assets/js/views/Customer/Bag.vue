@@ -34,6 +34,7 @@
             :subscriptionId="subscriptionId"
             :orderId="orderId"
             :cashOrder="cashOrder"
+            :noBalance="noBalance"
             :creditCardId="creditCardId"
             :creditCardList="creditCardList"
             :salesTax="salesTax"
@@ -113,6 +114,7 @@ export default {
       //couponFreeDelivery: 0,
       transferTime: "",
       cashOrder: null,
+      noBalance: null,
       addCustomerModal: false,
       deposit: 100,
       creditCardList: [],
@@ -382,6 +384,10 @@ export default {
     ) {
       this.cashOrder = true;
     }
+
+    if (this.storeModules.cashOrderNoBalance) {
+      this.noBalance = true;
+    }
     // this.deliveryDay = this.$route.params.deliveryDay;
     this.transferTime = this.$route.params.transferTime;
     if (this.$route.params.pickup != undefined) {
@@ -435,6 +441,10 @@ export default {
 
         if (newData.hasOwnProperty("cashOrder")) {
           this.cashOrder = newData.cashOrder;
+        }
+
+        if (newData.hasOwnProperty("noBalance")) {
+          this.noBalance = newData.noBalance;
         }
 
         if (newData.hasOwnProperty("creditCardList")) {

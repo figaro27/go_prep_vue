@@ -190,7 +190,9 @@ class CheckoutController extends UserController
 
             $balance = null;
 
-            if ($cashOrder && !$store->modules->cashOrderNoBalance) {
+            $showBalance = $request->get('showBalance');
+
+            if ($cashOrder && $showBalance) {
                 $balance = $total;
             }
 

@@ -443,6 +443,13 @@
             >
               {{ storeModuleSettings.cashOrderWording }}
             </b-form-checkbox>
+            <b-form-checkbox
+              v-if="$route.params.storeView || storeOwner"
+              v-model="noBalance"
+              class="pb-2 mediumCheckbox mt-1 mb-1"
+            >
+              No Balance
+            </b-form-checkbox>
             <!-- <p
               v-if="
                 storeModuleSettings.cashAllowedForCustomer && cashOrder && creditCardList.length === 0 && creditCardId === null
@@ -664,6 +671,7 @@ export default {
     manualOrder: false,
     forceValue: false,
     cashOrder: false,
+    noBalance: false,
     mobile: false,
     salesTax: 0,
     creditCardList: null,
@@ -1411,6 +1419,7 @@ export default {
           customer: this.customerModel,
           deposit: deposit,
           cashOrder: this.cashOrder,
+          noBalance: this.noBalance,
           transferTime: this.transferTime,
           lineItemsOrder: this.orderLineItems,
           grandTotal: this.grandTotal

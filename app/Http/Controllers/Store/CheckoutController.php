@@ -199,11 +199,13 @@ class CheckoutController extends StoreController
 
             $balance = null;
 
-            if ($cashOrder && !$store->modules->cashOrderNoBalance) {
+            $noBalance = $request->get('noBalance');
+
+            if ($cashOrder && !$noBalance) {
                 $balance = $total;
             }
 
-            if ($deposit < 1) {
+            if ($deposit < 1 && !$noBalance) {
                 $balance = $total - $deposit * $total;
             }
 
