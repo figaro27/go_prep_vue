@@ -595,6 +595,7 @@ import vSelect from "vue-select";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import checkDateRange from "../../mixins/deliveryDates";
 import { sidebarCssClasses } from "../../shared/classes";
+import store from "../../store";
 
 export default {
   components: {
@@ -689,6 +690,10 @@ export default {
   },
   created() {},
   mounted() {
+    if (!this.isLazy) {
+      store.dispatch("refreshLazy", { includeStore: true });
+    }
+
     if (this.storeModules.dailyOrderNumbers) {
       this.columns.splice(1, 0, "dailyOrderNumber");
     }
@@ -728,7 +733,8 @@ export default {
       getMeal: "storeMeal",
       storeModules: "storeModules",
       storeSettings: "storeSettings",
-      getStoreMeal: "viewedStoreMeal"
+      getStoreMeal: "viewedStoreMeal",
+      isLazy: "isLazy"
     }),
     tableData() {
       let filters = { ...this.filters };
