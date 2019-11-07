@@ -43,7 +43,7 @@ export default {
         : moment();
       const cats = this._categories;
 
-      cats.foreach(cat => {
+      for (let cat of cats) {
         if (
           cat.date_range &&
           cat.date_range_exclusive &&
@@ -51,7 +51,7 @@ export default {
         ) {
           return cat;
         }
-      });
+      }
 
       return null;
     }
