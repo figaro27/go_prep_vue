@@ -263,10 +263,10 @@ $brandColor = $order->store->settings->color;
     </table>
 
 
-    <br>
+    <br><br>
     @foreach ($order->items as $i => $item)
     @if ($item->instructions)
-    <p><b>{!! $item->title !!}</b> - {{ $item->instructions }}</p>
+    <p><b>{!! $item->title !!}</b>: {{ $item->instructions }}</p>
     @endif
     @endforeach
   </div>
