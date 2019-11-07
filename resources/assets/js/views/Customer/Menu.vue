@@ -11,7 +11,11 @@
 
       <!-- Temp fix to make the modal show -->
       <delivery-date-modal
-        v-if="!bagDeliveryDate && store.modules.category_restrictions"
+        v-if="
+          !bagDeliveryDate &&
+            store.modules.category_restrictions &&
+            !$route.params.storeView
+        "
       ></delivery-date-modal>
 
       <store-description-modal
