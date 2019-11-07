@@ -1275,7 +1275,7 @@ export default {
             if (response.data.length) {
               this.creditCardId = response.data[0].id;
               this.creditCard = response.data[0];
-              this.$cardPicker.setCard(response.data[0].id);
+              this.$refs.cardPicker.setCard(response.data[0].id);
             }
           });
       });
