@@ -82,7 +82,11 @@ class RegisterController extends StoreController
         }
 
         $user = User::findOrFail($user->id);
-        $user->createStoreCustomer($storeId);
+        $user->createStoreCustomer(
+            $storeId,
+            $store->settings->currency,
+            $store->settings->payment_gateway
+        );
 
         return Customer::where('user_id', $user->id)
             ->pluck('id')
