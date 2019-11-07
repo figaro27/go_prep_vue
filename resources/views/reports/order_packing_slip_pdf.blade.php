@@ -66,9 +66,9 @@ $brandColor = $order->store->settings->color;
   <div id="print-area">
 
   <div class="row">
-    <div class="col-4 center-text" style="position:relative;top:60px">
-          <p class="center-text text-16" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order Placed: {{$order->created_at->format('m/d/Y')}}</p>
-          <h6>Customer:</h6>
+    <div class="col-4" style="position:relative;top:60px">
+          <p class="text-16" style="text-transform: uppercase;color: #3e3e3e;">Order Placed: {{$order->created_at->format('m/d/Y')}}</p>
+          <p>Customer:</p>
         <p>{{$order->user->name}}</p>
         <p>{{$order->user->details->address}}</p>
         <p>{{$order->user->details->city}},
@@ -81,7 +81,8 @@ $brandColor = $order->store->settings->color;
       <div class="col-4 center-text">
           <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4>
           <img style="zoom: 1" src="{{$logo}}" />
-          <p class="center-text">{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
+          <p class="center-text">{{ $order->store->details->address }}</p>
+          <p>{{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
           <p class="center-text">{{ $order->store->user->details->phone }}</p>
           @if ($order->store->settings->website) 
           <p class="center-text">{{ $order->store->settings->website }}</p>
@@ -90,14 +91,14 @@ $brandColor = $order->store->settings->color;
           @endif
       </div>
       
-      <div class="col-4 center-text" style="position:relative;top:60px">
-          <p class="center-text text-16" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Daily Order #{{$order->dailyOrderNumber}}</p>
-          <p class="center-text text-16" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order ID: {{$order->order_number}}</p>
+      <div class="col-4" style="position:relative;top:60px">
+          <p class="text-16" style="text-transform: uppercase;color: #3e3e3e;">Daily Order #{{$order->dailyOrderNumber}}</p>
+          <p class="text-16" style="text-transform: uppercase;color: #3e3e3e;">Order ID: {{$order->order_number}}</p>
           @if ($order->pickup === 0)
-          <h6>Delivery</h6>
+          <p>Delivery</p>
           @endif
           @if ($order->pickup === 1)
-          <h6>Pickup</h6>
+          <p>Pickup</p>
           @endif
           <p>Date: {{$order->delivery_date->format('m/d/Y')}}
           </p>
@@ -248,8 +249,8 @@ $brandColor = $order->store->settings->color;
         @endif
         @if ($order->balance <= 0)
         <tr>
-          <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px"><b>Total Paid</b></th>
-          <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{ $amount }}</th>
+          <th class="full-left-border-radius" style="border:none;font-size:18px;position:relative;left:30px">Total Paid</th>
+          <th class="full-right-border-radius" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{ $amount }}</th>
         </tr>
         @endif
       </tfoot>
