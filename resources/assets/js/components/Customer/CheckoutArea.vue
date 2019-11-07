@@ -257,10 +257,7 @@
           storeOwner
       "
     >
-      <li
-        class="checkout-item"
-        v-if="$route.params.storeView || storeOwner || !bagDeliveryDate"
-      >
+      <li class="checkout-item" v-if="$route.params.storeView || storeOwner">
         <div>
           <strong v-if="pickup === 0">Delivery Day</strong>
           <strong v-if="pickup === 1">Pickup Day</strong>
@@ -278,9 +275,9 @@
       <li
         class="checkout-item"
         v-if="
-          (deliveryDateOptions.length > 1 &&
+          deliveryDateOptions.length > 1 &&
             $route.params.subscriptionId === undefined &&
-            (!$route.params.storeView && !storeOwner)) ||
+            (!$route.params.storeView && !storeOwner) &&
             !bagDeliveryDate
         "
       >
@@ -312,9 +309,9 @@
       <li
         class="checkout-item"
         v-if="
-          (deliveryDateOptions.length === 1 &&
+          deliveryDateOptions.length === 1 &&
             $route.params.subscriptionId === undefined &&
-            (!$route.params.storeView && !storeOwner)) ||
+            (!$route.params.storeView && !storeOwner) &&
             !bagDeliveryDate
         "
       >
