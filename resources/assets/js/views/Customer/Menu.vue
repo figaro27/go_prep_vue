@@ -6,8 +6,14 @@
 
     <div class="menu">
       <delivery-date-modal
-        v-if="!bagDeliveryDate && deliveryDateRequired"
+        v-if="store.modules.category_restrictions"
       ></delivery-date-modal>
+
+      <!-- Your v-if doesn't work-->
+
+      <!-- <delivery-date-modal
+        v-if="!bagDeliveryDate && deliveryDateRequired"
+      ></delivery-date-modal> -->
 
       <store-description-modal
         :showDescriptionModal="showDescriptionModal"
