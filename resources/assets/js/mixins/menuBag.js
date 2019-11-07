@@ -42,6 +42,7 @@ export default {
         ? moment(this.bagDeliveryDate)
         : moment();
       const cats = this._categories;
+      return cats;
 
       for (let cat of cats) {
         if (
@@ -49,7 +50,7 @@ export default {
           cat.date_range_exclusive &&
           today.isBetween(cat.date_range_from, cat.date_range_to)
         ) {
-          return cats;
+          return cat;
         }
       }
 
