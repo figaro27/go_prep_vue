@@ -18,8 +18,8 @@
       <b-form-group :state="true">
         <b-select
           v-if="deliveryDateOptions.length >= 1"
+          v-model="date"
           :options="deliveryDateOptions"
-          :value="date"
           class="delivery-select ml-2 width-140"
           required
         >
