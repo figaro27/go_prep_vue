@@ -66,16 +66,26 @@ $brandColor = $order->store->settings->color;
   <div id="print-area">
 
   <div class="row">
+    <div class="col-4 center-text">
+          <p class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order Date: {{$order->created_at->format('m/d/Y')}}</p>
+
+      </div>
+    
     <center>
-      <div class="col-12 center-text">
-          <!-- <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4> -->
+      <div class="col-4 center-text">
+          <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4>
           <img style="zoom: 1" src="{{$logo}}" />
+      </div>
+      
+      <div class="col-4 center-text">
+          <p class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Daily Order #{{$order->dailyOrderNumber}}</p>
+          <p class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order ID: {{$order->order_number}}</p>
       </div>
     </center>
     </div>
     <br>
 
-    <table class="no-border table-heading" style="border-style:none">
+    <!-- <table class="no-border table-heading" style="border-style:none">
       <thead>
         <tr>
           <th class="full-left-border-radius drop-shadow no-border">
@@ -98,12 +108,12 @@ $brandColor = $order->store->settings->color;
         </th>
         </tr>
       </thead>
-    </table>
+    </table> -->
 
     <br>
 
     <div class="row">
-      <div class="col-4 align-center">
+      <div class="col-12 align-center">
         <p><b>{{$order->user->name}}</b></p>
         <p>{{$order->user->details->address}}</p>
         <p>{{$order->user->details->city}},
@@ -112,7 +122,7 @@ $brandColor = $order->store->settings->color;
         <p>{{$order->user->details->phone}}</p>
       </div>
 
-      <div class="col-4 align-center" style="position:relative;left:7px">
+      <!-- <div class="col-4 align-center" style="position:relative;left:7px">
         <p><b>Order Info</b></p>
         @if ($order->store->modules->dailyOrderNumbers && $order->dailyOrderNumber)
         <p>Daily Order #{{$order->dailyOrderNumber}}</p>
@@ -149,7 +159,7 @@ $brandColor = $order->store->settings->color;
         <p>Pickup Time: {{ $order->transferTime }}</p>
         @endif
         @endif
-      </div>
+      </div> -->
 
     </div>
 
