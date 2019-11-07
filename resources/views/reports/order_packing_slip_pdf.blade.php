@@ -67,7 +67,7 @@ $brandColor = $order->store->settings->color;
 
   <div class="row">
     <div class="col-4 center-text" style="position:relative;top:60px">
-          <h3 class="center-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order Placed: {{$order->created_at->format('m/d/Y')}}</h3>
+          <p class="center-text text-16" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order Placed: {{$order->created_at->format('m/d/Y')}}</p>
 
       </div>
     
@@ -78,8 +78,8 @@ $brandColor = $order->store->settings->color;
       </div>
       
       <div class="col-4 center-text" style="position:relative;top:60px">
-          <h3 class="center-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Daily Order #{{$order->dailyOrderNumber}}</h3>
-          <h3 class="center-textt" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order ID: {{$order->order_number}}</h3>
+          <p class="center-text text-16" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Daily Order #{{$order->dailyOrderNumber}}</p>
+          <p class="center-text text-16" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order ID: {{$order->order_number}}</p>
       </div>
     </center>
     </div>
@@ -123,12 +123,12 @@ $brandColor = $order->store->settings->color;
         <p>{{$order->user->details->phone}}</p>
       </div>
       <div class="col-4">
-        <p>{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
-        <p>{{ $order->store->user->details->phone }}</p>
+        <p class="center-text">{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
+        <p class="center-text">{{ $order->store->user->details->phone }}</p>
         @if ($order->store->settings->website) 
-        <p>{{ $order->store->settings->website }}</p>
+        <p class="center-text">{{ $order->store->settings->website }}</p>
         @else 
-        <p>www{{$order->store->settings->domain}}.goprep.com</p>
+        <p class="center-text">www{{$order->store->settings->domain}}.goprep.com</p>
         @endif
       </div>
       <div class="col-4">
