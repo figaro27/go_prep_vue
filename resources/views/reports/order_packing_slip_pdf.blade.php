@@ -203,7 +203,7 @@ $brandColor = $order->store->settings->color;
     </table>
     <table class="no-border drop-shadow" style="border-style:none">
       <tr>
-        <td style="width:70%;padding-top:5px;padding-bottom:20px">
+        <td style="width:70%;padding:5px 5px 20px 0px">
           @if ($order->store->settings->notesForCustomer != null)
           <p style="position:relative;top:10px" class="text-11">{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
           @endif
