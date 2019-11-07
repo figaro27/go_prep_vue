@@ -13,8 +13,8 @@
     hide-footer
     hide-header
   >
-    <h4>Please select the delivery/pickup date for your order.</h4>
-    <b-form class="mt-2 text-center" @submit.prevent="changeDeliveryDate">
+    <h5>Select the delivery/pickup date for your order.</h5>
+    <b-form class="mt-2 text-center" @submit="changeDeliveryDate">
       <b-form-group :state="true">
         <b-select
           v-if="deliveryDateOptions.length >= 1"
