@@ -84,18 +84,22 @@ $brandColor = $order->store->settings->color;
       <div class="col-4 center-text">
           <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4>
           <img style="zoom: 1" src="{{$logo}}" />
-          <p class="center-text text-9">{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
-          <p class="center-text text-9">{{ $order->store->user->details->phone }}</p>
+          <p class="center-text text-10">{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
+          <p class="center-text text-10">{{ $order->store->user->details->phone }}</p>
           @if ($order->store->settings->website) 
-          <p class="center-text text-9">{{ $order->store->settings->website }}</p>
+          <p class="center-text text-10">{{ $order->store->settings->website }}</p>
           @else 
-          <p class="center-text text-9">www{{$order->store->settings->domain}}.goprep.com</p>
+          <p class="center-text text-10">www{{$order->store->settings->domain}}.goprep.com</p>
           @endif
       </div>
       
       <div class="col-4 right-text" style="position:relative;top:40px">
           <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">Daily Order #{{$order->dailyOrderNumber}}</p>
+          @if ($order->dailyOrderNumber)
+          <p>Order ID: {{$order->order_number}}</p>
+          @else
           <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">Order ID: {{$order->order_number}}</p>
+          @endif
           @if ($order->pickup === 0)
           <p>Delivery</p>
           @endif
@@ -199,12 +203,12 @@ $brandColor = $order->store->settings->color;
     </table>
     <table class="no-border" style="border-style:none">
       <tr>
-        <td style="width:64%;padding-top:10px">
+        <td style="width:60%;padding-top:10px">
           @if ($order->store->settings->notesForCustomer != null)
-          <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
+          <p style="position:relative;top:10px">{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
           @endif
         </td>
-        <td style="width:36%;margin-left:0px;padding-left:0px">
+        <td style="width:40%;margin-left:0px;padding-left:0px">
           <table border="0" style="border:0px;border-style:none;">
             <tr>
               <td style="border:none"><b>Subtotal</b></td>
