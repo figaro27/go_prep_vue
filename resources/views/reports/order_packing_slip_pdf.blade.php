@@ -53,6 +53,10 @@ $brandColor = $order->store->settings->color;
       text-align: center;
     }
 
+    .right-text {
+      text-align: right;
+    }
+
     .brandColor {
       background: <?= $brandColor ?>;;
       background-color: <?= $brandColor ?>;;
@@ -91,7 +95,7 @@ $brandColor = $order->store->settings->color;
           @endif
       </div>
       
-      <div class="col-4" style="position:relative;top:60px">
+      <div class="col-4 right-text" style="position:relative;top:60px">
           <p class="text-16" style="text-transform: uppercase;color: #3e3e3e;">Daily Order #{{$order->dailyOrderNumber}}</p>
           <p class="text-16" style="text-transform: uppercase;color: #3e3e3e;">Order ID: {{$order->order_number}}</p>
           @if ($order->pickup === 0)
@@ -113,7 +117,7 @@ $brandColor = $order->store->settings->color;
       </div>
     </center>
     </div>
-    <br>
+    <br><br>
 
     <!-- <table class="no-border table-heading" style="border-style:none">
       <thead>
@@ -197,12 +201,12 @@ $brandColor = $order->store->settings->color;
     </table>
     <table class="no-border" style="border-style:none">
       <tr>
-        <td style="width:67%;padding-top:10px">
+        <td style="width:64%;padding-top:10px">
           @if ($order->store->settings->notesForCustomer != null)
           <p>{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
           @endif
         </td>
-        <td style="width:33%;margin-left:0px;padding-left:0px">
+        <td style="width:36%;margin-left:0px;padding-left:0px">
           <table border="0" style="border:0px;border-style:none;">
             <tr>
               <td style="border:none"><b>Subtotal</b></td>
