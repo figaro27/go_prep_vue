@@ -763,15 +763,17 @@ export default {
         return [];
       }
 
-      let grouped = [];
+      let grouped = {};
       customers.forEach(customer => {
-        grouped.push({
+        grouped[customer.user_id] = {
           value: customer.id,
           text: customer.name
-        });
+        };
       });
 
-      let sorted = grouped.sort((a, b) => a.text.localeCompare(b.text));
+      let sorted = Object.values(grouped).sort((a, b) =>
+        a.text.localeCompare(b.text)
+      );
 
       return sorted;
     },

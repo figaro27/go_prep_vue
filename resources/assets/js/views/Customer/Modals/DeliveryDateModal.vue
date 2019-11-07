@@ -66,6 +66,7 @@ export default {
     }),
     changeDeliveryDate() {
       this.setBagDeliveryDate(this.date);
+      this.visible = false;
     }
   }
 };
