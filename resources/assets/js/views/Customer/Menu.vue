@@ -9,7 +9,10 @@
         v-if="!bagDeliveryDate && deliveryDateRequired"
       ></delivery-date-modal> -->
 
-      <delivery-date-modal v-if="!bagDeliveryDate"></delivery-date-modal>
+      <!-- Temp fix to make the modal show -->
+      <delivery-date-modal
+        v-if="!bagDeliveryDate && store.modules.category_restrictions"
+      ></delivery-date-modal>
 
       <store-description-modal
         :showDescriptionModal="showDescriptionModal"
