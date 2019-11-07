@@ -49,9 +49,9 @@ const state = {
   bag: {
     items: {},
     coupon: null,
-    meal_plan: false,
-    delivery_date: null
+    meal_plan: false
   },
+  delivery_date: null,
 
   allergies: {},
 
@@ -310,7 +310,7 @@ const mutations = {
     }
   },
   setBagDeliveryDate(state, date) {
-    this.state.bag.delivery_date = date;
+    this.state.delivery_date = date;
   },
   makeItemFree(
     state,
@@ -905,11 +905,11 @@ const actions = {
     /*await Promise.all([
       // dispatch("refreshMeals"),
       // dispatch("refreshMealPackages"),
-      
+
       //dispatch("refreshOrders"),
       //dispatch("refreshUpcomingOrders"),
       //dispatch("refreshOrdersToday"),
-      
+
       // dispatch("refreshViewedStore")
     ]);*/
 
@@ -2055,7 +2055,7 @@ const getters = {
     return state.bag.meal_plan;
   },
   bagDeliveryDate(state) {
-    return state.bag.delivery_date;
+    return state.delivery_date;
   },
   bagHasMeal: state => meal => {
     if (!_.isNumber(meal)) {

@@ -5,7 +5,8 @@ import { mapGetters } from "vuex";
 export default {
   computed: {
     ...mapGetters({
-      storeSetting: "viewedStoreSetting"
+      storeSetting: "viewedStoreSetting",
+      bagDeliveryDate: "bagDeliveryDate"
     }),
     deliveryDateOptions() {
       return this.storeSetting("next_delivery_dates", []).map(date => {
@@ -17,7 +18,9 @@ export default {
       });
     },
     hasDeliveryDateRestrictionToday() {
-      const today = moment();
+      const today = this.bagDeliveryDate
+        ? moment(this.bagDeliveryDate)
+        : moment();
       const cats = this._categories;
 
       for (let cat of cats) {
@@ -35,7 +38,9 @@ export default {
       return this.exclusiveDateRestrictedCategory !== null;
     },
     exclusiveDateRestrictedCategory() {
-      const today = moment();
+      const today = this.bagDeliveryDate
+        ? moment(this.bagDeliveryDate)
+        : moment();
       const cats = this._categories;
 
       for (let cat of cats) {
