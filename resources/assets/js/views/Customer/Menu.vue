@@ -5,7 +5,9 @@
     <category-slider></category-slider>
 
     <div class="menu">
-      <delivery-date-modal></delivery-date-modal>
+      <delivery-date-modal
+        v-if="!bagDeliveryDate && deliveryDateRequired"
+      ></delivery-date-modal>
 
       <store-description-modal
         :showDescriptionModal="showDescriptionModal"
