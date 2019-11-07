@@ -68,18 +68,47 @@ $brandColor = $order->store->settings->color;
   <div class="row">
     <div class="col-4 center-text" style="position:relative;top:60px">
           <p class="center-text text-16" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order Placed: {{$order->created_at->format('m/d/Y')}}</p>
-
+          <h6>Customer:</h6>
+        <p>{{$order->user->name}}</p>
+        <p>{{$order->user->details->address}}</p>
+        <p>{{$order->user->details->city}},
+          {{$order->user->details->state}}
+          {{$order->user->details->zip}}</p>
+        <p>{{$order->user->details->phone}}</p>
       </div>
     
     <center>
       <div class="col-4 center-text">
           <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4>
           <img style="zoom: 1" src="{{$logo}}" />
+          <p class="center-text">{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
+          <p class="center-text">{{ $order->store->user->details->phone }}</p>
+          @if ($order->store->settings->website) 
+          <p class="center-text">{{ $order->store->settings->website }}</p>
+          @else 
+          <p class="center-text">www{{$order->store->settings->domain}}.goprep.com</p>
+          @endif
       </div>
       
       <div class="col-4 center-text" style="position:relative;top:60px">
           <p class="center-text text-16" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Daily Order #{{$order->dailyOrderNumber}}</p>
           <p class="center-text text-16" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order ID: {{$order->order_number}}</p>
+          @if ($order->pickup === 0)
+          <h6>Delivery</h6>
+          @endif
+          @if ($order->pickup === 1)
+          <h6>Pickup</h6>
+          @endif
+          <p>Date: {{$order->delivery_date->format('m/d/Y')}}
+          </p>
+          @if ($order->transferTime)
+          @if ($order->pickup === 0)
+          <p>Delivery Time: {{ $order->transferTime }}</p>
+          @endif
+          @if ($order->pickup === 1)
+          <p>Pickup Time: {{ $order->transferTime }}</p>
+          @endif
+          @endif
       </div>
     </center>
     </div>
@@ -109,51 +138,6 @@ $brandColor = $order->store->settings->color;
         </tr>
       </thead>
     </table> -->
-
-    <br>
-
-    <div class="row">
-      <div class="col-4">
-        <h5>Customer:</h5>
-        <p>{{$order->user->name}}</p>
-        <p>{{$order->user->details->address}}</p>
-        <p>{{$order->user->details->city}},
-          {{$order->user->details->state}}
-          {{$order->user->details->zip}}</p>
-        <p>{{$order->user->details->phone}}</p>
-      </div>
-      <div class="col-4">
-        <p class="center-text">{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
-        <p class="center-text">{{ $order->store->user->details->phone }}</p>
-        @if ($order->store->settings->website) 
-        <p class="center-text">{{ $order->store->settings->website }}</p>
-        @else 
-        <p class="center-text">www{{$order->store->settings->domain}}.goprep.com</p>
-        @endif
-      </div>
-      <div class="col-4">
-        @if ($order->pickup === 0)
-        <h5>Delivery</h5>
-        @endif
-        @if ($order->pickup === 1)
-        <h5>Pickup</h5>
-        @endif
-        <p>Date: {{$order->delivery_date->format('m/d/Y')}}
-        </p>
-        @if ($order->transferTime)
-        @if ($order->pickup === 0)
-        <p>Delivery Time: {{ $order->transferTime }}</p>
-        @endif
-        @if ($order->pickup === 1)
-        <p>Pickup Time: {{ $order->transferTime }}</p>
-        @endif
-        @endif
-      </div>
-
-    </div>
-
-
-    <br>
     <table class="no-border table-heading" style="border-style:none;">
       <thead>
           <th class="top-left-border-radius drop-shadow no-border" style="text-align:center">Quantity</th>
