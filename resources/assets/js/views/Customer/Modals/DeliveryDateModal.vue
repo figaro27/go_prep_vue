@@ -13,8 +13,8 @@
     hide-footer
     hide-header
   >
-    <h5 class="mb-2 center-text">
-      Select the delivery/pickup date for your order.
+    <h5 class="mb-2 mt-3 center-text">
+      Please select the pickup date for your order.
     </h5>
     <b-form class="mt-2 text-center" @submit.prevent="changeDeliveryDate">
       <b-form-group :state="true">
