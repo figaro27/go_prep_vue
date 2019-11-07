@@ -159,7 +159,7 @@
           <ul>
             <li v-for="(mealItem, i) in getItemMeals(item)" :key="i">
               <span class="small">
-                {{ mealItem.quantity }} x {{ mealItem.meal.item_title }}
+                {{ mealItem.quantity }} x {{ mealItem.meal.title }}
               </span>
             </li>
           </ul>

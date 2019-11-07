@@ -115,7 +115,11 @@ class Meal extends Model implements HasMedia
 
     public function getMealSizeAttribute()
     {
-        if ($this->pivot && $this->pivot->meal_size_id) {
+        if (
+            $this->pivot &&
+            $this->pivot->meal_size_id &&
+            $this->pivot->meal_size
+        ) {
             return MealSize::find($this->pivot->meal_size_id);
         } else {
             return null;
@@ -136,7 +140,11 @@ class Meal extends Model implements HasMedia
         $title = $this->title;
 
         if ($this->has('sizes')) {
-            if ($this->pivot && $this->pivot->meal_size_id) {
+            if (
+                $this->pivot &&
+                $this->pivot->meal_size_id &&
+                $this->pivot->meal_size
+            ) {
                 return $title . ' - ' . $this->meal_size->title;
             } elseif ($this->default_size_title) {
                 return $title . ' - ' . $this->default_size_title;
