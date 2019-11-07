@@ -70,9 +70,8 @@ $brandColor = $order->store->settings->color;
   <div id="print-area">
 
   <div class="row">
-    <div class="col-4" style="position:relative;top:60px">
+    <div class="col-4" style="position:relative;top:40px">
           <p class="text-16" style="text-transform: uppercase;color: #3e3e3e;">Order Placed: {{$order->created_at->format('m/d/Y')}}</p>
-          <p>Customer:</p>
         <p>{{$order->user->name}}</p>
         <p>{{$order->user->details->address}}</p>
         <p>{{$order->user->details->city}},
@@ -95,7 +94,7 @@ $brandColor = $order->store->settings->color;
           @endif
       </div>
       
-      <div class="col-4 right-text" style="position:relative;top:60px">
+      <div class="col-4 right-text" style="position:relative;top:40px">
           <p class="text-16" style="text-transform: uppercase;color: #3e3e3e;">Daily Order #{{$order->dailyOrderNumber}}</p>
           <p class="text-16" style="text-transform: uppercase;color: #3e3e3e;">Order ID: {{$order->order_number}}</p>
           @if ($order->pickup === 0)
