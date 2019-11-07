@@ -42,7 +42,6 @@ export default {
         ? moment(this.bagDeliveryDate)
         : moment();
       const cats = this._categories;
-      return cats;
 
       for (let cat of cats) {
         if (
