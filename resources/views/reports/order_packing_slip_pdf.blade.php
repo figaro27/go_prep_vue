@@ -67,7 +67,7 @@ $brandColor = $order->store->settings->color;
 
   <div class="row">
     <div class="col-4 center-text" style="position:relative;top:60px">
-          <p class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order Date: {{$order->created_at->format('m/d/Y')}}</p>
+          <h3 class="center-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order Placed: {{$order->created_at->format('m/d/Y')}}</h3>
 
       </div>
     
@@ -78,8 +78,8 @@ $brandColor = $order->store->settings->color;
       </div>
       
       <div class="col-4 center-text" style="position:relative;top:60px">
-          <p class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Daily Order #{{$order->dailyOrderNumber}}</p>
-          <p class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order ID: {{$order->order_number}}</p>
+          <h3 class="center-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Daily Order #{{$order->dailyOrderNumber}}</h3>
+          <h3 class="center-textt" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order ID: {{$order->order_number}}</h3>
       </div>
     </center>
     </div>
@@ -113,44 +113,33 @@ $brandColor = $order->store->settings->color;
     <br>
 
     <div class="row">
-      <div class="col-6">
-        <p><b>{{$order->user->name}}</b></p>
+      <div class="col-4">
+        <h5>Customer:</h5>
+        <p>{{$order->user->name}}</p>
         <p>{{$order->user->details->address}}</p>
         <p>{{$order->user->details->city}},
           {{$order->user->details->state}}
           {{$order->user->details->zip}}</p>
         <p>{{$order->user->details->phone}}</p>
       </div>
-
-      <!-- <div class="col-4 align-center" style="position:relative;left:7px">
-        <p><b>Order Info</b></p>
-        @if ($order->store->modules->dailyOrderNumbers && $order->dailyOrderNumber)
-        <p>Daily Order #{{$order->dailyOrderNumber}}</p>
+      <div class="col-4">
+        <p>{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
+        <p>{{ $order->store->user->details->phone }}</p>
+        @if ($order->store->settings->website) 
+        <p>{{ $order->store->settings->website }}</p>
+        @else 
+        <p>www{{$order->store->settings->domain}}.goprep.com</p>
         @endif
-        <p>Order ID: {{$order->order_number}}</p>
-        @if ($order->subscription)
-        <p>Subscription #{{ $order->subscription->stripe_id }}</p>
-        @endif
-        <p>Order Date: {{$order->created_at->format('m/d/Y')}}</p>
-        
-      </div> -->
-
-      <div class="col-6">
-        <p><b>Delivery Info</b></p>
+      </div>
+      <div class="col-4">
         @if ($order->pickup === 0)
-        <p>Type: Delivery</p>
+        <h5>Delivery</h5>
         @endif
         @if ($order->pickup === 1)
-        <p>Type: Pickup</p>
+        <h5>Pickup</h5>
         @endif
-        @if ($order->pickup === 0)
-        <p>Delivery Date: {{$order->delivery_date->format('m/d/Y')}}
+        <p>Date: {{$order->delivery_date->format('m/d/Y')}}
         </p>
-        @endif
-        @if ($order->pickup === 1)
-        <p>Pick Up Date: {{$order->delivery_date->format('m/d/Y')}}
-        </p>
-        @endif
         @if ($order->transferTime)
         @if ($order->pickup === 0)
         <p>Delivery Time: {{ $order->transferTime }}</p>
