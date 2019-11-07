@@ -66,7 +66,7 @@ $brandColor = $order->store->settings->color;
   <div id="print-area">
 
   <div class="row">
-    <div class="col-4 center-text" style="position:relative;top:40px">
+    <div class="col-4 center-text" style="position:relative;top:60px">
           <p class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order Date: {{$order->created_at->format('m/d/Y')}}</p>
 
       </div>
@@ -77,7 +77,7 @@ $brandColor = $order->store->settings->color;
           <img style="zoom: 1" src="{{$logo}}" />
       </div>
       
-      <div class="col-4 center-text" style="position:relative;top:40px">
+      <div class="col-4 center-text" style="position:relative;top:60px">
           <p class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Daily Order #{{$order->dailyOrderNumber}}</p>
           <p class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">Order ID: {{$order->order_number}}</p>
       </div>
@@ -113,7 +113,7 @@ $brandColor = $order->store->settings->color;
     <br>
 
     <div class="row">
-      <div class="col-6 align-center">
+      <div class="col-6 center-text">
         <p><b>{{$order->user->name}}</b></p>
         <p>{{$order->user->details->address}}</p>
         <p>{{$order->user->details->city}},
@@ -135,7 +135,7 @@ $brandColor = $order->store->settings->color;
         
       </div> -->
 
-      <div class="col-6 align-center">
+      <div class="col-6 center-text">
         <p><b>Delivery Info</b></p>
         @if ($order->pickup === 0)
         <p>Type: Delivery</p>
