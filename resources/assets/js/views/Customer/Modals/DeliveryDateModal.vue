@@ -11,8 +11,9 @@
     no-close-on-backdrop
     no-close-on-esc
     hide-footer
+    hide-header
   >
-    <h4>Please select your required delivery date to continue</h4>
+    <h4>Please select the delivery/pickup date for your order.</h4>
     <b-form class="mt-2 text-center" @submit.prevent="changeDeliveryDate">
       <b-form-group :state="true">
         <b-select
@@ -26,7 +27,9 @@
         </b-select>
       </b-form-group>
 
-      <b-btn variant="primary" size="lg" type="submit">View Menu</b-btn>
+      <b-btn variant="primary" size="lg" type="submit" class="brand-color"
+        >View Menu</b-btn
+      >
     </b-form>
   </b-modal>
 </template>
