@@ -720,7 +720,7 @@ export default {
       store.dispatch("refreshLazy");
     }
 
-    if (this.bag.length > 0) {
+    if (this.bag.length > 0 || this.subscriptionId !== undefined) {
       this.showBagClass = "shopping-cart show-right bag-area";
     } else this.showBagClass = "shopping-cart hidden-right bag-area";
 
