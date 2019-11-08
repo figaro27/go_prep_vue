@@ -53,7 +53,7 @@
         ></page-spinner>
         <!-- <Breadcrumb :list="list"/> -->
         <div class="container-fluid" v-if="initialized">
-          <b-alert
+          <!-- <b-alert
             show
             variant="info"
             class="mt-3 mb-2 ml-2 center-text"
@@ -65,10 +65,9 @@
                 params: { viewedUpdates: true }
               }"
             >
-              <!--<b-btn variant="warning ml-3" @click="viewedUpdates"!-->
               <b-btn variant="warning ml-3">View Updates</b-btn>
             </router-link>
-          </b-alert>
+          </b-alert> -->
           <router-view></router-view>
         </div>
       </main>
