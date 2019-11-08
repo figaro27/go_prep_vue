@@ -117,8 +117,8 @@ class Meal extends Model implements HasMedia
     {
         if (
             $this->pivot &&
-            $this->pivot->meal_size_id &&
-            $this->pivot->meal_size
+            $this->pivot->meal_size_id
+            //&& $this->pivot->meal_size
         ) {
             return MealSize::find($this->pivot->meal_size_id);
         } else {

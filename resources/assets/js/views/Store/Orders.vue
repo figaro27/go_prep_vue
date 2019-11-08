@@ -3,7 +3,8 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <Spinner v-if="isLoading" />
+          <!--<Spinner v-if="isLoading" />!-->
+
           <v-client-table
             :columns="columns"
             :data="tableData"

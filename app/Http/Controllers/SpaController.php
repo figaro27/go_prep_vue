@@ -688,6 +688,7 @@ class SpaController extends Controller
         // Full Refresh
         $package = MealPackage::with([
             'meals',
+            'meals.sizes',
             'sizes',
             'sizes.meals',
             'components',
