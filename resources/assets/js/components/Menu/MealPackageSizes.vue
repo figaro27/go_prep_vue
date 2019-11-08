@@ -193,7 +193,7 @@ export default {
         return size;
       });
 
-      this.hideMealPicker();
+      // this.hideMealPicker();
     },
     save() {
       this.$emit("save", this.sizes);

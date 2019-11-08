@@ -214,7 +214,7 @@ export default {
         this.meal_picker_addon_id
       ].selectable = selectable;
 
-      this.hideMealPicker();
+      // this.hideMealPicker();
     },
     save() {
       this.$emit("save", this.meal_package.addons);

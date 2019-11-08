@@ -328,6 +328,7 @@ export default {
         meals: this.selected,
         selectable: this.meals_selectable
       });
+      this.$toastr.s("Meals saved.");
     },
     findMealIndex(id) {
       return _.findIndex(this.selected, { id });
@@ -355,10 +356,18 @@ export default {
       } else {
         this.addMeal(id, 1);
       }
+      this.$emit("save", {
+        meals: this.selected,
+        selectable: this.meals_selectable
+      });
     },
     removeMeal(id) {
       this.selected = _.filter(this.selected, meal => {
         return meal.id !== id;
+      });
+      this.$emit("save", {
+        meals: this.selected,
+        selectable: this.meals_selectable
       });
     },
     addMeal(id, quantity = 1, meal_size_id = null) {
@@ -374,6 +383,10 @@ export default {
         meal.quantity += 1;
         this.$set(this.selected, index, meal);
       }
+      this.$emit("save", {
+        meals: this.selected,
+        selectable: this.meals_selectable
+      });
     },
     setMealQuantity(id, quantity) {
       const index = this.findMealIndex(id);

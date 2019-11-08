@@ -319,7 +319,7 @@ export default {
         this.meal_picker_option_id
       ].selectable = selectable;
 
-      this.hideMealPicker();
+      // this.hideMealPicker();
     },
     save() {
       this.$emit("save", this.meal_package.components);
