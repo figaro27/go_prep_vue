@@ -468,6 +468,7 @@ class CheckoutController extends UserController
                 $userSubscription = new Subscription();
                 $userSubscription->user_id = $user->id;
                 $userSubscription->customer_id = $customer->id;
+                $userSubscription->card_id = $cardId;
                 $userSubscription->stripe_customer_id = $storeCustomer->id;
                 $userSubscription->store_id = $store->id;
                 $userSubscription->name =

@@ -336,6 +336,7 @@ class Subscription extends Model
         $newOrder = new Order();
         $newOrder->user_id = $this->user_id;
         $newOrder->customer_id = $this->customer_id;
+        $newOrder->card_id = $this->card_id ? $this->card_id : null;
         $newOrder->store_id = $this->store->id;
         $newOrder->subscription_id = $this->id;
         $newOrder->order_number = strtoupper(
