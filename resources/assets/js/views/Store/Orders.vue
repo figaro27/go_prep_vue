@@ -769,11 +769,12 @@ export default {
       return orders;
     },
     fullyRefunded() {
-      return false;
+      // return false;
+
       // Add back in after a week or two when new orders have these figures logged
-      // if (this.order.originalAmount - this.order.refundedAmount <= 0)
-      //   return true;
-      // else return false;
+      if (this.order.originalAmount - this.order.refundedAmount <= 0)
+        return true;
+      else return false;
     }
   },
   beforeDestroy() {
