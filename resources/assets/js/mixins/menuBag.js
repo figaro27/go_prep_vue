@@ -17,7 +17,11 @@ export default {
         };
       });
     },
-    hasDeliveryDateRestrictionToday() {
+    /**
+     * Whether at least one category has a delivery date restriction,
+     * for today/selected delivery date
+     */
+    hasDeliveryDateRestriction() {
       const today = this.bagDeliveryDate
         ? moment(this.bagDeliveryDate)
         : moment();
@@ -34,26 +38,32 @@ export default {
 
       return false;
     },
-    hasExclusiveDeliveryDateRestrictionToday() {
-      return this.exclusiveDateRestrictedCategory !== null;
+    /**
+     * Whether at least one category has a delivery date restriction,
+     * for today/selected delivery date
+     * and restricts / hides other categories
+     */
+    hasExclusiveDeliveryDateRestriction() {
+      return 0 < this.exclusiveDateRestrictedCategories.length;
     },
-    exclusiveDateRestrictedCategory() {
+    /**
+     * A list of categories which are exclusively restricted today
+     */
+    exclusiveDateRestrictedCategories() {
       const today = this.bagDeliveryDate
         ? moment(this.bagDeliveryDate)
         : moment();
       const cats = this._categories;
 
-      for (let cat of cats) {
+      return _.filter(cats, cat => {
         if (
           cat.date_range &&
           cat.date_range_exclusive &&
           today.isBetween(cat.date_range_from, cat.date_range_to)
         ) {
-          return cat;
+          return true;
         }
-      }
-
-      return null;
+      });
     }
   },
   methods: {
@@ -361,12 +371,15 @@ export default {
         : category.category_id || category.id;
       const today = moment();
 
-      if (this.hasExclusiveDeliveryDateRestrictionToday) {
-        const categories = { ...this._categories };
-        const exclusiveCat = this.exclusiveDateRestrictedCategory;
-        return id === exclusiveCat.id;
+      // If there is at least one "exclusive" category for the delivery date
+      // hide the others
+      if (this.hasExclusiveDeliveryDateRestriction) {
+        const exclusiveCats = this.exclusiveDateRestrictedCategories;
+        return _.find(exclusiveCats, { id });
       }
 
+      // Hide if this category is date-restricted
+      // but delivery date doesn't fall within its date range
       if (
         category &&
         category.date_range &&

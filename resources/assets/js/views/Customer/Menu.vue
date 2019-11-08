@@ -411,7 +411,7 @@ export default {
       bagDeliveryDate: "bagDeliveryDate"
     }),
     deliveryDateRequired() {
-      return this.hasDeliveryDateRestrictionToday;
+      return this.hasDeliveryDateRestriction;
     },
     showSpinner() {
       if (this.context == "customer" || this.context == "guest") {
