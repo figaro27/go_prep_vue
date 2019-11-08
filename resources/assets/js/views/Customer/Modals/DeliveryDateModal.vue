@@ -29,9 +29,7 @@
         </b-select>
       </b-form-group>
 
-      <b-btn variant="primary" size="lg" type="submit" class="brand-color"
-        >View Menu</b-btn
-      >
+      <b-btn size="lg" type="submit" class="brand-color">View Menu</b-btn>
     </b-form>
   </b-modal>
 </template>
