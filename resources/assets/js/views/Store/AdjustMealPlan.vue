@@ -4,6 +4,7 @@
     :storeView="true"
     :adjustMealPlan="true"
     :weeklySubscriptionValue="1"
+    :pickup="pickup"
   ></customer-menu>
 </template>
 
@@ -22,7 +23,8 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
-      isLoading: false
+      isLoading: false,
+      pickup: null
     };
   },
   computed: {
@@ -50,7 +52,9 @@ export default {
       if (!subscription) {
         return;
       }
-      console.log(this.subscriptions, subscription);
+
+      // Setting pickup here
+      this.pickup = subscription.pickup;
 
       this.clearAll();
 
