@@ -542,7 +542,12 @@ export default {
           if (!meal) return null;
 
           //const size = meal && sizeId ? meal.getSize(sizeId) : null;
-          const size = meal && meal.meal_size ? meal.meal_size : null;
+          const size =
+            meal && meal.meal_size
+              ? meal.meal_size
+              : meal && sizeId
+              ? meal.getSize(sizeId)
+              : null;
           const title = size ? size.full_title : meal.full_title;
 
           return {
