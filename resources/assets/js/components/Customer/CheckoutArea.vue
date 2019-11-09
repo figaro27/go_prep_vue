@@ -1192,7 +1192,8 @@ export default {
       "emptyBag",
       "setBagMealPlan",
       "setBagCoupon",
-      "setBagDeliveryDate"
+      "setBagDeliveryDate",
+      "clearBagDeliveryDate"
     ]),
     preventNegative() {
       if (this.total < 0) {
@@ -1331,6 +1332,7 @@ export default {
           this.$toastr.s("Order Adjusted");
           this.$router.push({ path: "/store/orders" });
           this.refreshUpcomingOrders();
+          this.clearBagDeliveryDate();
         });
     },
     mounted() {
@@ -1478,6 +1480,7 @@ export default {
         })
         .finally(() => {
           this.loading = false;
+          this.clearBagDeliveryDate();
         });
     },
     setCustomer(id) {

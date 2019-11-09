@@ -312,6 +312,9 @@ const mutations = {
   setBagDeliveryDate(state, date) {
     this.state.delivery_date = date;
   },
+  clearBagDeliveryDate(state, date) {
+    this.state.delivery_date = null;
+  },
   makeItemFree(
     state,
     {
