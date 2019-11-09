@@ -540,8 +540,9 @@ export default {
           const { mealId, sizeId } = JSON.parse(guid);
           const meal = this.getMeal(mealId, item.meal);
           if (!meal) return null;
-          const size = meal && sizeId ? meal.getSize(sizeId) : null;
 
+          //const size = meal && sizeId ? meal.getSize(sizeId) : null;
+          const size = meal && meal.meal_size ? meal.meal_size : null;
           const title = size ? size.full_title : meal.full_title;
 
           return {
