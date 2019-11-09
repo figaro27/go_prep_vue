@@ -77,14 +77,16 @@
           ></b-form-input>
         </b-form-group>
         <b-form-group horizontal label="Address">
+          <b-form-checkbox v-model="noAddress">Don't Have</b-form-checkbox>
           <b-form-input
+            v-if="!noAddress"
             v-model="form.address"
             type="text"
             required
             placeholder="Address"
           ></b-form-input>
         </b-form-group>
-        <b-form-group horizontal label="City">
+        <b-form-group horizontal label="City" v-if="!noAddress">
           <b-form-input
             v-model="form.city"
             type="text"
@@ -92,7 +94,7 @@
             placeholder="City"
           ></b-form-input>
         </b-form-group>
-        <b-form-group horizontal label="State">
+        <b-form-group horizontal label="State" v-if="!noAddress">
           <v-select
             v-model="form.state"
             label="name"
@@ -100,7 +102,7 @@
             @keypress.enter.native.prevent=""
           ></v-select>
         </b-form-group>
-        <b-form-group horizontal label="Zip">
+        <b-form-group horizontal label="Zip" v-if="!noAddress">
           <b-form-input
             v-model="form.zip"
             type="text"
@@ -108,7 +110,7 @@
             placeholder="Zip"
           ></b-form-input>
         </b-form-group>
-        <b-form-group horizontal label="Delivery">
+        <b-form-group horizontal label="Delivery" v-if="!noAddress">
           <b-form-input
             v-model="form.delivery"
             type="text"
@@ -147,6 +149,7 @@ export default {
   data() {
     return {
       noEmail: false,
+      noAddress: false,
       existingEmail: "",
       showExistingCustomerAlert: false,
       form: {
@@ -175,6 +178,9 @@ export default {
   methods: {
     ...mapActions(["refreshStoreCustomersNoOrders", "refreshStoreCustomers"]),
     addCustomer() {
+      if (this.noAddress) {
+        this.form.state = null;
+      }
       let form = this.form;
 
       if (!form.accepted_tos) {

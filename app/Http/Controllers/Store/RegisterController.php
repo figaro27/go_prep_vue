@@ -62,11 +62,17 @@ class RegisterController extends StoreController
                 'firstname' => $request->get('first_name'),
                 'lastname' => $request->get('last_name'),
                 'phone' => $request->get('phone'),
-                'address' => $request->get('address'),
-                'city' => $request->get('city'),
-                'state' => $request->get('state')['value'],
-                'zip' => $request->get('zip'),
-                'delivery' => $request->get('delivery'),
+                'address' => $request->get('address')
+                    ? $request->get('address')
+                    : 'N/A',
+                'city' => $request->get('city') ? $request->get('city') : 'N/A',
+                'state' => $request->get('state')
+                    ? $request->get('state')['value']
+                    : 'N/A',
+                'zip' => $request->get('zip') ? $request->get('zip') : 'N/A',
+                'delivery' => $request->get('delivery')
+                    ? $request->get('delivery')
+                    : 'N/A',
                 'country' => 'USA',
                 'created_at' => now(),
                 'updated_at' => now(),
