@@ -30,7 +30,7 @@
 
     <div class="unbreakable">
       <table border="1" width="100" class="light-border">
-        <thead>
+        <thead style="border:none">
           <tr>
             <th><h4>Meal</h4></th>
             @if(!$params['group_by_date'] || $params['group_by_date'] === 'false')
