@@ -85,7 +85,7 @@ $brandColor = $order->store->settings->color;
           <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4>
           <img style="zoom: 1" src="{{$logo}}" />
           <p class="center-text text-11">{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
-          <p class="center-text text-11">{{ $order->store->user->details->phone }}</p>
+          <p class="center-text text-11">{{ $order->store->details->phone }}</p>
           @if ($order->store->settings->website) 
           <p class="center-text text-11">{{ $order->store->settings->website }}</p>
           @else 
