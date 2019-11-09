@@ -673,8 +673,7 @@ export default {
         }
 
         if (
-          meal.sizes &&
-          meal.sizes.length > 0 &&
+          (meal.sizes && meal.sizes.length > 0) ||
           ((meal.components && meal.components.length > 0) ||
             (meal.addons && meal.addons.length > 0))
         ) {
