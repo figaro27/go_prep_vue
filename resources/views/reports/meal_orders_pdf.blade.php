@@ -8,9 +8,9 @@
 <body class="{{ $body_classes }}">
   <div id="print-area">
     @if ($params->productionGroupTitle != null)
-    <h1>{{ $params->productionGroupTitle }} - Meal Production</h1>
+    <h2>{{ $params->productionGroupTitle }} - Meal Production</h2>
     @else
-    <h1>Meal Production</h1>
+    <h2>Meal Production</h2>
     @endif
 
     <div class="delivery-part">

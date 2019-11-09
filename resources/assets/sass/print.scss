@@ -138,6 +138,10 @@ tfoot td {
 
 .light-border * {
   border: 1px solid #d1d1d1;
+
+  th {
+    border: none;
+  }
 }
 
 thead td,
@@ -242,8 +246,8 @@ h2 {
   page-break-after: avoid;
 }
 .delivery-part {
-  margin-top: 6pt;
-  margin-bottom: 6pt;
+  margin-top: 2pt;
+  margin-bottom: 2pt;
   // border-top: 0.07cm solid #000000;
   // border-bottom: 0.07cm solid #000000;
   page-break-after: avoid;
