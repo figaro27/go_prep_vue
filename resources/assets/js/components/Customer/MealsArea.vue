@@ -657,6 +657,7 @@ export default {
       } else if (this.$parent.showBagScrollbar) {
         this.$parent.showBagClass -= " area-scroll";
       }
+      this.$parent.search = "";
     },
     async addMeal(meal, mealPackage, size) {
       if (meal.meal_package) {
@@ -695,12 +696,14 @@ export default {
           this.$parent.showBagClass -= " area-scroll";
         }
       }
+      this.$parent.search = "";
     },
     showMealPackage(mealPackage, size) {
       $([document.documentElement, document.body]).scrollTop(0);
       this.$parent.showMealPackagePage(mealPackage, size);
       this.$parent.showMealsArea = false;
       this.$parent.showMealPackagesArea = false;
+      this.$parent.search = "";
     },
     showMeal(meal, group) {
       if (meal.meal_package) {
@@ -715,6 +718,7 @@ export default {
         this.$parent.showMealsArea = false;
         this.$parent.showMealPackagesArea = false;
       }
+      this.$parent.search = "";
     }
   }
 };
