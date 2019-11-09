@@ -255,7 +255,7 @@ $brandColor = $order->store->settings->color;
         @endif
         @if ($order->balance <= 0)
         <tr>
-          <th class="full-left-border-radius" style="border:none;font-size:18px;position:relative;left:30px">Total Paid</th>
+          <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">Total Paid</th>
           <th class="full-right-border-radius" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{ $amount }}</th>
         </tr>
         @endif
