@@ -28,7 +28,7 @@
       <h2>All Order Dates</h2>
     @endif
     <div class="unbreakable">
-      <table border="1" width="100">
+      <table border="1" width="100" class="light-border">
         <thead>
           <tr>
             <th>Payment Date</th>

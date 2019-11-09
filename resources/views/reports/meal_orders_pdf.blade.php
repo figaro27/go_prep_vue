@@ -30,11 +30,11 @@
 
     <div class="unbreakable">
       <table border="1" width="100" class="light-border">
-        <thead style="border:none">
+        <thead>
           <tr>
-            <th><h4>Meal</h4></th>
+            <th style="border:none"><h4>Meal</h4></th>
             @if(!$params['group_by_date'] || $params['group_by_date'] === 'false')
-            <th><h4>Orders</h4></th>
+            <th style="border:none"><h4>Orders</h4></th>
             @else
               @foreach($dates as $i => $date)
                 <th>

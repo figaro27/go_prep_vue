@@ -9,17 +9,22 @@
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <h1>Ingredients Production</h1>
-    @if ($delivery_dates)
-      <h2>
-        Delivery Days:
-        {{ $delivery_dates['from']->format('D, m/d/Y') }} -
-        {{ $delivery_dates['to']->format('D, m/d/Y') }}
-      </h2>
-    @else
-      <h2>All Delivery Dates</h2>
-    @endif
+    <div class="delivery-part">
+      @if ($delivery_dates)
+        <h2>
+          Delivery Days:
+          {{ $delivery_dates['from']->format('D, m/d/Y') }} -
+          {{ $delivery_dates['to']->format('D, m/d/Y') }}
+        </h2>
+      @else
+        <h2>All Delivery Dates</h2>
+      @endif
 
-    <table border="1" width="100">
+      <h2>{{ date('m/d/Y h:i:a')}}</h2>
+      <div style="clear:both"></div>
+    </div>
+
+    <table border="1" width="100" class="light-border">
       <tbody>
         @foreach($data as $i => $row)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
