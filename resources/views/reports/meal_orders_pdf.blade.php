@@ -8,7 +8,7 @@
 <body class="{{ $body_classes }}">
   <div id="print-area">
     @if ($params->productionGroupTitle != null)
-    <h1>Meal Production - {{ $params->productionGroupTitle }}</h1>
+    <h1>{{ $params->productionGroupTitle }} - Meal Production</h1>
     @else
     <h1>Meal Production</h1>
     @endif
@@ -29,7 +29,7 @@
     </div>
 
     <div class="unbreakable">
-      <table border="1" width="100">
+      <table border="1" width="100" class="light-border">
         <thead>
           <tr>
             <th><h4>Meal</h4></th>
