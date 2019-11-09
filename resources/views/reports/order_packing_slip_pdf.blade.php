@@ -68,7 +68,9 @@ $brandColor = $order->store->settings->color;
 
 <body class="{{ $body_classes }}">
   <div id="print-area">
-
+  @if ($order->voided)
+  <h1 class="center-text bold-text red">VOIDED</h1>
+  @endif
   <div class="row">
     <div class="col-4" style="position:relative;top:40px">
           <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">Order Placed: {{$order->created_at->format('m/d/Y')}}</p>
