@@ -68,7 +68,7 @@ class CheckoutController extends StoreController
         $subtotal = $request->get('subtotal');
         $afterDiscountBeforeFees = $bagTotal;
         $preFeePreDiscount = $subtotal;
-        $deposit = $request->get('deposit') / 100;
+        $deposit = $request->get('deposit') ? $request->get('deposit') : 0;
 
         $processingFee = $request->get('processingFee');
         $mealPlanDiscount = $request->get('mealPlanDiscount');
@@ -205,8 +205,8 @@ class CheckoutController extends StoreController
                 $balance = $total;
             }
 
-            if ($deposit < 1 && !$noBalance) {
-                $balance = $total - $deposit * $total;
+            if ($deposit > 0 && !$noBalance) {
+                $balance = $total - $deposit;
             }
 
             $order = new Order();
@@ -239,7 +239,7 @@ class CheckoutController extends StoreController
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
-            $order->deposit = $deposit * 100;
+            $order->deposit = $deposit;
             $order->balance = $balance;
             $order->manual = 1;
             $order->cashOrder = $cashOrder;
@@ -247,7 +247,7 @@ class CheckoutController extends StoreController
             if ($store->modules->dailyOrderNumbers) {
                 $order->dailyOrderNumber = $dailyOrderNumber;
             }
-            $order->originalAmount = $total * $deposit;
+            $order->originalAmount = $deposit > 0 ? $deposit : $total;
             $order->save();
 
             $order_transaction = new OrderTransaction();
@@ -263,7 +263,7 @@ class CheckoutController extends StoreController
                 $order_transaction->stripe_id = null;
                 $order_transaction->card_id = null;
             }
-            $order_transaction->amount = $total * $deposit;
+            $order_transaction->amount = $deposit > 0 ? $deposit : $total;
             $order_transaction->save();
 
             foreach ($bag->getItems() as $item) {
@@ -555,7 +555,7 @@ class CheckoutController extends StoreController
                 $order->dailyOrderNumber = $dailyOrderNumber;
             }
             $order->cashOrder = $cashOrder;
-            $order->originalAmount = $total * $deposit;
+            $order->originalAmount = $deposit > 0 ? $deposit : $total;
             $order->save();
 
             foreach ($bag->getItems() as $item) {

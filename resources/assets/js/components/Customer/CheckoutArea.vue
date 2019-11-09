@@ -478,13 +478,13 @@
               ($route.params.storeView || storeOwner) && storeModules.deposits
             "
             horizontal
-            label="Deposit %"
+            label="Deposit"
           >
             <b-form-input
               v-model="deposit"
               type="text"
               required
-              placeholder="Deposit %"
+              placeholder="$0.00"
             ></b-form-input>
           </b-form-group>
         </div>
@@ -659,7 +659,7 @@ export default {
       stripeKey: window.app.stripe_key,
       loading: false,
       checkingOut: false,
-      deposit: 100,
+      deposit: null,
       creditCardId: null,
       couponCode: "",
       addCustomerModal: false,
@@ -1294,7 +1294,7 @@ export default {
         return;
       }
       let deposit = this.deposit;
-      if (deposit.toString().includes("%")) {
+      if (deposit !== null && deposit.toString().includes("%")) {
         deposit.replace("%", "");
         deposit = parseInt(deposit);
       }
@@ -1382,7 +1382,7 @@ export default {
       // }
 
       let deposit = this.deposit;
-      if (deposit.toString().includes("%")) {
+      if (deposit !== null && deposit.toString().includes("%")) {
         deposit.replace("%", "");
         deposit = parseInt(deposit);
       }
