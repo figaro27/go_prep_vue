@@ -8,15 +8,20 @@
 <body class="{{ $body_classes }}">
   <div id="print-area" class="unbreakable">
     <h1>Delivery Routes</h1>
-    @if ($delivery_dates)
-      <h2>
-        Delivery Days:
-        {{ $delivery_dates['from']->format('D, m/d/Y') }} -
-        {{ $delivery_dates['to']->format('D, m/d/Y') }}
-      </h2>
-    @else
-      <h2>All Delivery Dates</h2>
-    @endif
+     <div class="delivery-part">
+      @if ($delivery_dates)
+        <h2>
+          Delivery Days:
+          {{ $delivery_dates['from']->format('D, m/d/Y') }} -
+          {{ $delivery_dates['to']->format('D, m/d/Y') }}
+        </h2>
+      @else
+        <h2>All Delivery Dates</h2>
+      @endif
+
+      <h2>{{ date('m/d/Y h:i:a')}}</h2>
+      <div style="clear:both"></div>
+    </div>
 
     <div>
     @foreach($data as $i => $row)

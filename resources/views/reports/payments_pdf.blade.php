@@ -18,15 +18,20 @@
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <h1>Payments</h1>
-    @if ($delivery_dates)
-      <h2>
-        Order Dates:
-        {{ $delivery_dates['from']->format('D, m/d/Y') }} -
-        {{ $delivery_dates['to']->format('D, m/d/Y') }}
-      </h2>
-    @else
-      <h2>All Order Dates</h2>
-    @endif
+     <div class="delivery-part">
+      @if ($delivery_dates)
+        <h2>
+          Order Dates:
+          {{ $delivery_dates['from']->format('D, m/d/Y') }} -
+          {{ $delivery_dates['to']->format('D, m/d/Y') }}
+        </h2>
+      @else
+        <h2>All Order Dates</h2>
+      @endif
+
+      <h2>{{ date('m/d/Y h:i:a')}}</h2>
+      <div style="clear:both"></div>
+    </div>
     <div class="unbreakable">
       <table border="1" width="100" class="light-border">
         <thead>
