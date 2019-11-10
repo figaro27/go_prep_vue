@@ -698,15 +698,14 @@ export default {
   watch: {
     customer: function(val) {
       this.customerModel = this.getCustomerObject(val);
-      console.log("object", this.customerModel);
 
-      /*if (this.$route.params.manualOrder) {
+      if (this.$route.params.manualOrder) {
         this.getCards();
-      }*/
+      }
     }
   },
   mounted: function() {
-    this.customerModel = this.customer;
+    this.customerModel = this.getCustomerObject(this.customer);
 
     if (this.forceValue) {
       if (this.customer) {
@@ -1265,7 +1264,7 @@ export default {
     },
     updateParentData() {
       this.$emit("updateData", {
-        customer: this.customerModel,
+        customer: this.customerModel.value,
         weeklySubscriptionValue: this.weeklySubscriptionValue,
         pickup: this.pickup,
         transferTime: this.transferTime,
@@ -1283,7 +1282,7 @@ export default {
       this.$nextTick(() => {
         axios
           .post("/api/me/getCards", {
-            id: this.customerModel
+            id: this.customerModel.value
           })
           .then(response => {
             this.$parent.creditCardList = response.data;
@@ -1297,7 +1296,7 @@ export default {
       });
     },
     getCustomer() {
-      return this.customerModel;
+      return this.customerModel.value;
     },
     async adjust() {
       if (this.bagDeliveryDate === null) {
@@ -1333,7 +1332,7 @@ export default {
           couponReduction: this.couponReduction,
           couponCode: this.couponApplied ? this.coupon.code : null,
           pickupLocation: this.selectedPickupLocation,
-          customer: this.customerModel,
+          customer: this.customerModel.value,
           deposit: deposit,
           cashOrder: this.cashOrder,
           lineItemsOrder: this.orderLineItems,
@@ -1439,7 +1438,7 @@ export default {
           deliveryFee: this.deliveryFee,
           processingFee: this.processingFeeAmount,
           pickupLocation: this.selectedPickupLocation,
-          customer: this.customerModel,
+          customer: this.customerModel.value,
           deposit: deposit,
           cashOrder: this.cashOrder,
           noBalance: this.noBalance,
@@ -1495,9 +1494,7 @@ export default {
         });
     },
     inputCustomer(id) {
-      console.log("selecting1", id);
-      console.log("selecting2", this.customerModel);
-      //this.getCards();
+      this.getCards();
     },
     setCustomer(id) {
       //this.customer = id;
