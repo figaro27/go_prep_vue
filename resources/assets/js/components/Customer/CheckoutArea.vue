@@ -414,8 +414,8 @@
               label="text"
               :options="customers"
               :reduce="customer => customer.value"
-              v-model="customerModel"
-              @input="getCards"
+              :value="customerModel"
+              @input="inputCustomer"
             >
             </v-select>
           </b-form-group>
@@ -699,8 +699,7 @@ export default {
   watch: {
     customer: function(val) {
       console.log("incoming customer", val);
-      //this.customerModel = val;
-      this.customerModel = 627;
+      this.customerModel = val;
       if (this.$route.params.manualOrder) {
         this.getCards();
       }
@@ -1491,6 +1490,10 @@ export default {
           this.loading = false;
           this.clearBagDeliveryDate();
         });
+    },
+    inputCustomer(id) {
+      this.customerModel = id;
+      this.getCards();
     },
     setCustomer(id) {
       //this.customer = id;
