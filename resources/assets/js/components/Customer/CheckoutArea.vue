@@ -413,6 +413,7 @@
             <v-select
               label="text"
               :options="customers"
+              :reduce="customer => customer.value"
               v-model="customerModel"
               @input="inputCustomer"
             >
