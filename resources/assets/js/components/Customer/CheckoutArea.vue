@@ -413,7 +413,6 @@
             <v-select
               label="text"
               :options="customers"
-              :reduce="customer => customer.value"
               v-model="customerModel"
               @input="inputCustomer"
             >
@@ -699,8 +698,9 @@ export default {
   watch: {
     customer: function(val) {
       setTimeout(() => {
+        console.log("customer...", val);
         this.customerModel = val;
-      }, 500);
+      }, 2000);
 
       /*if (this.$route.params.manualOrder) {
         this.getCards();
@@ -1494,7 +1494,9 @@ export default {
         });
     },
     inputCustomer(id) {
-      this.getCards();
+      console.log("selecting1", id);
+      console.log("selecting2", this.customerModel);
+      //this.getCards();
     },
     setCustomer(id) {
       //this.customer = id;
