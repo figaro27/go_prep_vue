@@ -22,7 +22,7 @@ class MealPackageOrder extends Pivot
 
     public function meal_package()
     {
-        return $this->belongsTo('App\MealPackage');
+        return $this->belongsTo('App\MealPackage')->withTrashed();
     }
 
     public function meal_package_size()

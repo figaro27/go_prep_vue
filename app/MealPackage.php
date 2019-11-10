@@ -7,10 +7,12 @@ use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MealPackage extends Model implements HasMedia
 {
     use HasMediaTrait;
+    use SoftDeletes;
 
     public $fillable = [
         'title',

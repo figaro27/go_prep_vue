@@ -44,7 +44,7 @@ class RegisterController extends StoreController
         $email = $request->get('email')
             ? $request->get('email')
             : 'noemail-' .
-                substr(uniqid(rand(10, 99), false), 0, 6) .
+                substr(uniqid(rand(10, 99), false), 0, 8) .
                 '@goprep.com';
 
         if (!$user) {
