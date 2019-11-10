@@ -108,7 +108,9 @@ export default {
   },
   methods: {
     goTo(index) {
-      this.$refs.categorySlider.goTo(index);
+      if (this.$refs.categorySlider) {
+        this.$refs.categorySlider.goTo(index);
+      }
     },
     goToCategory(category) {
       if ($("#xs").is(":visible") || $("#sm").is(":visible")) {

@@ -664,6 +664,7 @@ export default {
     },
     setCustomer(id) {
       if (id) {
+        console.log("setting customer", id);
         this.customer = id;
       } else {
         this.customer = this.storeCustomers.slice(-1)[0].id;

@@ -691,6 +691,7 @@ export default {
   },
   watch: {
     customer: function(val) {
+      console.log("incoming customer", val);
       this.customerModel = val;
       if (this.$route.params.manualOrder) {
         this.getCards();
