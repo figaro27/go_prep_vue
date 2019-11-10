@@ -1047,8 +1047,8 @@ export default {
   },
   mounted() {
     // Temporarily adding this because not all meals are loading
-    this.refreshMeals;
-    this.rereshMealPackages;
+    this.refreshMeals();
+    this.rereshMealPackages();
 
     this.onChangeStatusFilter(this.filter.status);
 
