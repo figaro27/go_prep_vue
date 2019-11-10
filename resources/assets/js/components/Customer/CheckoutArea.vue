@@ -402,12 +402,19 @@
         <div v-if="$route.params.manualOrder">
           <b-form-group>
             <h4 class="mt-2 mb-3">Customer</h4>
-            <v-select
+            <!--<v-select
               label="text"
               :options="customers"
               :reduce="customer => customer.value"
               v-model="customerModel"
               :value="customer"
+              @input="getCards"
+            >!-->
+            <v-select
+              label="text"
+              :options="customers"
+              :reduce="customer => customer.value"
+              v-model="customerModel"
               @input="getCards"
             >
             </v-select>
@@ -700,7 +707,6 @@ export default {
     }
   },
   mounted: function() {
-    console.log("mounted");
     this.customerModel = this.customer;
 
     if (this.forceValue) {
