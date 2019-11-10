@@ -1046,6 +1046,10 @@ export default {
     }, 300);
   },
   mounted() {
+    // Temporarily adding this because not all meals are loading
+    this.refreshMeals;
+    this.rereshMealPackages;
+
     this.onChangeStatusFilter(this.filter.status);
 
     if (!this.isLazy) {
