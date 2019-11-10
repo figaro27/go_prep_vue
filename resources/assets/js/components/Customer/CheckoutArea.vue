@@ -414,7 +414,7 @@
               label="text"
               :options="customers"
               :reduce="customer => customer.value"
-              :value="customerModel"
+              v-model="customerModel"
               @input="inputCustomer"
             >
             </v-select>
@@ -698,11 +698,13 @@ export default {
   },
   watch: {
     customer: function(val) {
-      console.log("incoming customer", val);
-      this.customerModel = val;
-      if (this.$route.params.manualOrder) {
+      setTimeout(() => {
+        this.customerModel = val;
+      }, 500);
+
+      /*if (this.$route.params.manualOrder) {
         this.getCards();
-      }
+      }*/
     }
   },
   mounted: function() {
@@ -1492,7 +1494,6 @@ export default {
         });
     },
     inputCustomer(id) {
-      this.customerModel = id;
       this.getCards();
     },
     setCustomer(id) {
