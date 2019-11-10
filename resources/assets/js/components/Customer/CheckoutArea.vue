@@ -692,13 +692,15 @@ export default {
   watch: {
     customer: function(val) {
       console.log("incoming customer", val);
-      this.customerModel = val;
+      //this.customerModel = val;
+      this.customerModel = 627;
       if (this.$route.params.manualOrder) {
-        //this.getCards();
+        this.getCards();
       }
     }
   },
   mounted: function() {
+    console.log("mounted");
     this.customerModel = this.customer;
 
     if (this.forceValue) {
