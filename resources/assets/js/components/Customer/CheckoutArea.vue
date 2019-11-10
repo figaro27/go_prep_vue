@@ -1264,7 +1264,7 @@ export default {
     },
     updateParentData() {
       this.$emit("updateData", {
-        customer: this.customerModel.value,
+        customer: this.customerModel ? this.customerModel.value : null,
         weeklySubscriptionValue: this.weeklySubscriptionValue,
         pickup: this.pickup,
         transferTime: this.transferTime,
