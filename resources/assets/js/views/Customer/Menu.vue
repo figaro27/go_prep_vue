@@ -2,7 +2,7 @@
   <div>
     <auth-modal :showAuthModal="showAuthModal"></auth-modal>
 
-    <category-slider></category-slider>
+    <category-slider ref="categorySlider"></category-slider>
 
     <div class="menu">
       <!-- <delivery-date-modal
