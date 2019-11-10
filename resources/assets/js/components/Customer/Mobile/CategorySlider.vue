@@ -34,7 +34,26 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
+import MenuBag from "../../../mixins/menuBag";
+
 export default {
+  mixins: [MenuBag],
+  watch: {
+    categories(val, oldVal) {
+      const ref = this.$refs.categorySlider;
+      if (!ref) {
+        return;
+      }
+
+      const currIndex = ref.currentSlide();
+
+      ref.destroy();
+      this.$nextTick(() => {
+        ref.create();
+        ref.goTo(currIndex, true);
+      });
+    }
+  },
   computed: {
     ...mapGetters({
       _categories: "viewedStoreCategories",
@@ -51,7 +70,11 @@ export default {
       this.store.meals.forEach(meal => {
         meal.category_ids.forEach(categoryId => {
           let category = _.find(this._categories, { id: categoryId });
-          if (category && !_.includes(grouped, category.category)) {
+          if (
+            category &&
+            !_.includes(grouped, category.category) &&
+            this.isCategoryVisible(category)
+          ) {
             grouped.push(category.category);
           }
         });
@@ -84,6 +107,9 @@ export default {
     }
   },
   methods: {
+    goTo(index) {
+      this.$refs.categorySlider.goTo(index);
+    },
     goToCategory(category) {
       if ($("#xs").is(":visible") || $("#sm").is(":visible")) {
         const top = $(`#${category}`).offset().top;
