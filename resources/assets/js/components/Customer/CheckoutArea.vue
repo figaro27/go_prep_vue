@@ -694,7 +694,7 @@ export default {
       console.log("incoming customer", val);
       this.customerModel = val;
       if (this.$route.params.manualOrder) {
-        this.getCards();
+        //this.getCards();
       }
     }
   },
