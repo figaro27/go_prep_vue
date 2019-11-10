@@ -154,6 +154,13 @@
                     'This order was voided and taken out of your reports.'
                   "
                 ></i>
+                <i
+                  v-if="props.row.subscription_id"
+                  class="fa fa-shopping-cart orange-text"
+                  v-b-popover.hover.top="
+                    'This order was created from an active subscription.'
+                  "
+                ></i>
               </p>
             </div>
             <div slot="created_at" slot-scope="props">
@@ -253,6 +260,13 @@
                   class="fas fa-ban text-danger"
                   v-b-popover.hover.top="
                     'This order was voided and taken out of your reports.'
+                  "
+                ></i>
+                <i
+                  v-if="order.subscription_id"
+                  class="fa fa-shopping-cart orange-text"
+                  v-b-popover.hover.top="
+                    'This order was created from an active subscription.'
                   "
                 ></i>
               </p>
