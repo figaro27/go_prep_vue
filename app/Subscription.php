@@ -370,6 +370,7 @@ class Subscription extends Model
                 $mealPackageSub->meal_package_size_id;
             $mealPackageOrder->quantity = $mealPackageSub->quantity;
             $mealPackageOrder->price = $mealPackageSub->price;
+            $mealPackageOrder->save();
         }
 
         // Assign subscription meals to new order
