@@ -483,7 +483,7 @@ class SpaController extends Controller
                         ) use ($temp_id) {
                             $query->where('categories.id', $temp_id);
                         })
-                            ->where('store_id', $store_id)
+                            ->where(['store_id' => $store_id, 'active' => 1])
                             ->first();
 
                         $temp_package = OptimizedMealPackage::whereHas(
@@ -492,7 +492,7 @@ class SpaController extends Controller
                                 $query->where('categories.id', $temp_id);
                             }
                         )
-                            ->where('store_id', $store_id)
+                            ->where(['store_id' => $store_id, 'active' => 1])
                             ->first();
 
                         if ($temp_meal || $temp_package) {
@@ -530,7 +530,7 @@ class SpaController extends Controller
                         ) {
                             $query->where('categories.id', $category_id);
                         })
-                        ->where('store_id', $store_id)
+                        ->where(['store_id' => $store_id, 'active' => 1])
                         ->orderBy('title')
                         ->offset($offset_meal)
                         ->limit($limit)
@@ -550,7 +550,7 @@ class SpaController extends Controller
                         ) {
                             $query->where('categories.id', $category_id);
                         })
-                        ->where('store_id', $store_id)
+                        ->where(['store_id' => $store_id, 'active' => 1])
                         ->orderBy('title')
                         ->offset($offset_package)
                         ->limit($new_limit)
