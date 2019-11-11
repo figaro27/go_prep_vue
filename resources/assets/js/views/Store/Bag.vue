@@ -14,7 +14,6 @@
 import Spinner from "../../components/Spinner";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import CustomerBag from "../Customer/Bag";
-import store from "../../store";
 
 export default {
   props: {
@@ -33,8 +32,7 @@ export default {
   },*/
   computed: {
     ...mapGetters({
-      isLoading: "isLoading",
-      isLazy: "isLazy"
+      isLoading: "isLoading"
     }),
     forceValue() {
       return this.$route.params.forceValue
@@ -73,10 +71,6 @@ export default {
       !this.$route.params.storeView
     ) {
       this.$router.push({ path: "/store/orders" });
-    }
-
-    if (!this.isLazy) {
-      store.dispatch("refreshLazy", { includeStore: true });
     }
   },
   methods: {

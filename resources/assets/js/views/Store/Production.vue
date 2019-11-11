@@ -153,7 +153,7 @@ export default {
       storeSettings: "storeSettings",
       storeModules: "storeModules",
       storeProductionGroups: "storeProductionGroups",
-      isLazy: "isLazy"
+      isLazyStore: "isLazyStore"
     }),
     tableData() {
       let filters = { ...this.filters };
@@ -249,8 +249,8 @@ export default {
     }
   },
   mounted() {
-    if (!this.isLazy) {
-      store.dispatch("refreshLazy", { includeStore: true });
+    if (!this.isLazyStore) {
+      store.dispatch("refreshLazyStore");
     }
 
     let vue_select = document.createElement("script");

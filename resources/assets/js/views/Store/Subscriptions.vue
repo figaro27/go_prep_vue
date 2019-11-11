@@ -358,8 +358,8 @@ export default {
     };
   },
   mounted() {
-    if (!this.isLazy) {
-      store.dispatch("refreshLazy", { includeStore: true });
+    if (!this.isLazyStore) {
+      store.dispatch("refreshLazyStore");
     }
 
     if (this.$route.query.updated) {
@@ -391,7 +391,7 @@ export default {
       initialized: "initialized",
       getMeal: "storeMeal",
       storeModules: "storeModules",
-      isLazy: "isLazy"
+      isLazyStore: "isLazyStore"
     }),
     tableData() {
       let filters = {};

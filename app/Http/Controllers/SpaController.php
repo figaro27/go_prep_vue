@@ -329,6 +329,93 @@ class SpaController extends Controller
         ];
     }
 
+    public function refresh_lazy_store(Request $request)
+    {
+        // Speed Optimization
+        $user = auth('api')->user();
+
+        $store_id = 0;
+        if ($user && $user->hasRole('store') && $user->has('store')) {
+            $store_id = $user->store->id;
+        }
+
+        $limit = 30;
+        $offset_meal = $offset_package = $bypass_meal = 0;
+
+        $data = $request->all();
+        extract($data);
+
+        $offset_meal = (int) $offset_meal;
+        $offset_package = (int) $offset_package;
+        $bypass_meal = (int) $bypass_meal;
+
+        $meals = $packages = [];
+        $end = 0;
+
+        if ($bypass_meal == 0) {
+            $meals = Meal::with([
+                'orders',
+                'tags',
+                'ingredients',
+                'sizes',
+                'attachments'
+            ])
+                ->without(['allergies', 'categories', 'store'])
+                ->where('store_id', $store_id)
+                ->orderBy('title')
+                ->offset($offset_meal)
+                ->limit($limit)
+                ->get()
+                ->toArray();
+        }
+
+        $new_limit = $limit;
+        if ($meals && count($meals) > 0) {
+            $new_limit = $limit - count($meals);
+        }
+
+        if ($new_limit > 0) {
+            $packages = MealPackage::with(['meals'])
+                ->where('store_id', $store_id)
+                ->orderBy('title')
+                ->offset($offset_package)
+                ->limit($new_limit)
+                ->get()
+                ->toArray();
+
+            if (count($packages) > 0) {
+                foreach ($packages as &$package) {
+                    $package['meal_package'] = true;
+                }
+            }
+        }
+
+        // Set Return Value
+        if (count($meals) >= $limit) {
+            $offset_meal += $limit;
+            $offset_package = $bypass_meal = 0;
+        } elseif (count($packages) > 0) {
+            if (count($meals) + count($packages) >= $limit) {
+                $offset_meal = 0;
+                $bypass_meal = 1;
+                $offset_package += count($packages);
+            } else {
+                $end = 1;
+            }
+        } else {
+            $end = 1;
+        }
+
+        return [
+            'meals' => $meals,
+            'packages' => $packages,
+            'offset_meal' => $offset_meal,
+            'offset_package' => $offset_package,
+            'bypass_meal' => $bypass_meal,
+            'end' => $end
+        ];
+    }
+
     public function refresh_lazy(Request $request)
     {
         // Speed Optimization

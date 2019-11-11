@@ -949,7 +949,7 @@ export default {
       storeCurrencySymbol: "storeCurrencySymbol",
       storeModules: "storeModules",
       storeProductionGroups: "storeProductionGroups",
-      isLazy: "isLazy"
+      isLazyStore: "isLazyStore"
     }),
     storeURLcheck() {
       let URL = window.location.href;
@@ -1046,14 +1046,10 @@ export default {
     }, 300);
   },
   mounted() {
-    // Temporarily adding this because not all meals are loading
-    this.refreshMeals();
-    this.refreshMealPackages();
-
     this.onChangeStatusFilter(this.filter.status);
 
-    if (!this.isLazy) {
-      store.dispatch("refreshLazy", { includeStore: true });
+    if (!this.isLazyStore) {
+      store.dispatch("refreshLazyStore");
     }
   },
   methods: {

@@ -379,7 +379,7 @@ export default {
       storeModules: "storeModules",
       initialized: "initialized",
       getStoreMeal: "viewedStoreMeal",
-      isLazy: "isLazy"
+      isLazyStore: "isLazyStore"
     }),
     stateNames() {
       return states.selectOptions("US");
@@ -393,8 +393,8 @@ export default {
   },
   created() {},
   mounted() {
-    if (!this.isLazy) {
-      store.dispatch("refreshLazy", { includeStore: true });
+    if (!this.isLazyStore) {
+      store.dispatch("refreshLazyStore");
     }
   },
   methods: {

@@ -239,8 +239,8 @@ export default {
     });
   },
   mounted() {
-    if (!this.isLazy) {
-      store.dispatch("refreshLazy", { includeStore: true });
+    if (!this.isLazyStore) {
+      store.dispatch("refreshLazyStore", { includeStore: true });
     }
 
     this.getApplicationFee();
@@ -256,7 +256,7 @@ export default {
       customers: "storeCustomers",
       nextDeliveryDates: "storeNextDeliveryDates",
       getMeal: "storeMeal",
-      isLazy: "isLazy"
+      isLazyStore: "isLazyStore"
     }),
     tableData() {
       let filters = { ...this.filters };

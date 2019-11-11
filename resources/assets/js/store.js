@@ -17,6 +17,7 @@ const ttl = 60; // 60 seconds
 const state = {
   context: null,
   isLazy: false,
+  isLazyStore: false,
   jobs: {},
   viewed_store: {
     distance: 0,
@@ -480,6 +481,30 @@ const mutations = {
   }
 };
 
+const callLazyStore = (offset_meal, offset_package, bypass_meal) => {
+  return new Promise((resolve, reject) => {
+    const url =
+      "/api/refresh_lazy_store?offset_meal=" +
+      offset_meal +
+      "&offset_package=" +
+      offset_package +
+      "&bypass_meal=" +
+      bypass_meal;
+    axios
+      .get(url)
+      .then(res => {
+        if (res.data) {
+          resolve(res.data);
+        } else {
+          reject("");
+        }
+      })
+      .catch(error => {
+        reject("");
+      });
+  });
+};
+
 const callLazy = (
   offset_meal,
   offset_package,
@@ -511,6 +536,52 @@ const callLazy = (
       .catch(error => {
         reject("");
       });
+  });
+};
+
+const triggerLazyStore = (state, offset_meal, offset_package, bypass_meal) => {
+  callLazyStore(offset_meal, offset_package, bypass_meal).then(data => {
+    if (data && (data.meals.length > 0 || data.packages.length > 0)) {
+      let store_meals = state.store.meals.data;
+      let store_packages = state.store.meal_packages.data;
+
+      if (data.meals.length > 0) {
+        if (store_meals && store_meals.length > 0) {
+          store_meals = store_meals.concat(data.meals);
+        } else {
+          store_meals = data.meals;
+        }
+      }
+
+      if (data.packages.length > 0) {
+        if (store_packages && store_packages.length > 0) {
+          store_packages = store_packages.concat(data.packages);
+        } else {
+          store_packages = data.packages;
+        }
+      }
+
+      state.store = {
+        ...state.store,
+        meals: {
+          data: store_meals
+        },
+        meal_packages: {
+          data: store_packages
+        }
+      };
+    }
+
+    if (data.end == 0) {
+      triggerLazyStore(
+        state,
+        data.offset_meal,
+        data.offset_package,
+        data.bypass_meal
+      );
+    } else {
+      // Finished
+    }
   });
 };
 
@@ -1410,6 +1481,11 @@ const actions = {
     }
   },
 
+  async refreshLazyStore({ state }, args = {}) {
+    state.isLazyStore = true;
+    triggerLazyStore(state, 0, 0, 0, "", 0);
+  },
+
   async refreshLazy({ state }, args = {}) {
     state.isLazy = true;
     let includeStore = args && args.includeStore ? true : false;
@@ -1746,6 +1822,9 @@ const getters = {
   },
   isLazy(state) {
     return state.isLazy;
+  },
+  isLazyStore(state) {
+    return state.isLazyStore;
   },
   store: (state, getters) => id => {
     return _.find(state.stores, ["id", id]);

@@ -703,8 +703,8 @@ export default {
   },
   created() {},
   mounted() {
-    if (!this.isLazy) {
-      store.dispatch("refreshLazy", { includeStore: true });
+    if (!this.isLazyStore) {
+      store.dispatch("refreshLazyStore");
     }
 
     if (this.storeModules.dailyOrderNumbers) {
@@ -747,7 +747,7 @@ export default {
       storeModules: "storeModules",
       storeSettings: "storeSettings",
       getStoreMeal: "viewedStoreMeal",
-      isLazy: "isLazy"
+      isLazyStore: "isLazyStore"
     }),
     tableData() {
       let filters = { ...this.filters };
