@@ -697,7 +697,11 @@ export default {
   },
   watch: {
     customer: function(val) {
-      this.customerModel = this.getCustomerObject(val);
+      if (val) {
+        this.customerModel = this.getCustomerObject(val);
+      } else {
+        this.customerModel = null;
+      }
 
       if (this.$route.params.manualOrder) {
         this.getCards();
@@ -705,7 +709,11 @@ export default {
     }
   },
   mounted: function() {
-    this.customerModel = this.getCustomerObject(this.customer);
+    if (this.customer) {
+      this.customerModel = this.getCustomerObject(this.customer);
+    } else {
+      this.customerModel = null;
+    }
 
     if (this.forceValue) {
       if (this.customer) {
