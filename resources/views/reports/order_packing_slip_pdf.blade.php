@@ -172,11 +172,9 @@ $brandColor = $order->store->settings->color;
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$item->quantity}}</td>
           <td>{!! $item->html_title !!}</td>
-          <td style="text-align:center">@if ($item->meal_package_title === null)
-            ${{ number_format($item->unit_price, 2) }}
-            @else
+          <td style="text-align:center">
             In Package
-            @endif</td>
+          </td>
         </tr>
 
         @endif
