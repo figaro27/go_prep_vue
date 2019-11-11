@@ -23,7 +23,7 @@ class AddFreeAndMealPackageAndAttachedFieldsToMealSubscriptionsTable extends
             // $table->boolean('attached')->after('special_instructions')->nullable();
             $table
                 ->boolean('meal_package')
-                ->after('attached')
+                ->after('special_instructions')
                 ->nullable();
         });
     }
