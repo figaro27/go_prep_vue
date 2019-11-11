@@ -356,6 +356,19 @@ class Subscription extends Model
         $newOrder->delivery_date = $latestOrder->delivery_date->addWeeks(1);
         $newOrder->save();
 
+        // Assign meal package orders from meal package subscriptions
+        foreach ($this->meal_package_subscriptions as $mealPackageSub) {
+            $mealPackageOrder = new MealPackageOrder();
+            $mealPackageOrder->store_id = $this->store->id;
+            $mealPackageOrder->order_id = $newOrder->id;
+            $mealPackageOrder->meal_package_id =
+                $mealPackageSub->meal_package_id;
+            $mealPackageOrder->meal_package_size_id =
+                $mealPackageSub->meal_package_size_id;
+            $mealPackageOrder->quantity = $mealPackageSub->quantity;
+            $mealPackageOrder->price = $mealPackageSub->price;
+        }
+
         // Assign subscription meals to new order
         foreach ($this->meal_subscriptions as $mealSub) {
             $mealOrder = new MealOrder();
@@ -364,6 +377,22 @@ class Subscription extends Model
             $mealOrder->meal_id = $mealSub->meal_id;
             $mealOrder->meal_size_id = $mealSub->meal_size_id;
             $mealOrder->quantity = $mealSub->quantity;
+
+            if ($mealSub->meal_package_subscription_id !== null) {
+                $mealPackageSub = MeaLPackageSubscription::where(
+                    'id',
+                    $mealSub->meal_package_subscription_id
+                )->first();
+                $mealOrder->meal_package_order_id = MealPackageOrder::where([
+                    'meal_package_id' => $mealPackageSub->meal_package_id,
+                    'meal_package_size_id' =>
+                        $mealPackageSub->meal_package_size_id,
+                    'order_id' => $newOrder->id
+                ])
+                    ->first()
+                    ->pluck('id');
+            }
+
             $mealOrder->save();
 
             if ($mealSub->has('components')) {
