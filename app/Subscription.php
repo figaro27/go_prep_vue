@@ -3,6 +3,9 @@
 namespace App;
 
 use App\MealOrder;
+use App\MealPackageOrder;
+use App\MealPackageSubscription;
+use App\MealAttachment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -356,6 +359,19 @@ class Subscription extends Model
         $newOrder->delivery_date = $latestOrder->delivery_date->addWeeks(1);
         $newOrder->save();
 
+        // Assign meal package orders from meal package subscriptions
+        foreach ($this->meal_package_subscriptions as $mealPackageSub) {
+            $mealPackageOrder = new MealPackageOrder();
+            $mealPackageOrder->store_id = $this->store->id;
+            $mealPackageOrder->order_id = $newOrder->id;
+            $mealPackageOrder->meal_package_id =
+                $mealPackageSub->meal_package_id;
+            $mealPackageOrder->meal_package_size_id =
+                $mealPackageSub->meal_package_size_id;
+            $mealPackageOrder->quantity = $mealPackageSub->quantity;
+            $mealPackageOrder->price = $mealPackageSub->price;
+        }
+
         // Assign subscription meals to new order
         foreach ($this->meal_subscriptions as $mealSub) {
             $mealOrder = new MealOrder();
@@ -364,6 +380,25 @@ class Subscription extends Model
             $mealOrder->meal_id = $mealSub->meal_id;
             $mealOrder->meal_size_id = $mealSub->meal_size_id;
             $mealOrder->quantity = $mealSub->quantity;
+            $mealOrder->special_instructions = $mealSub->special_instructions;
+            $mealOrder->meal_package = $mealSub->meal_package;
+            $mealOrder->free = $mealSub->free;
+
+            if ($mealSub->meal_package_subscription_id !== null) {
+                $mealPackageSub = MeaLPackageSubscription::where(
+                    'id',
+                    $mealSub->meal_package_subscription_id
+                )->first();
+                $mealOrder->meal_package_order_id = MealPackageOrder::where([
+                    'meal_package_id' => $mealPackageSub->meal_package_id,
+                    'meal_package_size_id' =>
+                        $mealPackageSub->meal_package_size_id,
+                    'order_id' => $newOrder->id
+                ])
+                    ->first()
+                    ->pluck('id');
+            }
+
             $mealOrder->save();
 
             if ($mealSub->has('components')) {
@@ -383,6 +418,22 @@ class Subscription extends Model
                         'meal_order_id' => $mealOrder->id,
                         'meal_addon_id' => $addon->meal_addon_id
                     ]);
+                }
+            }
+
+            $attachments = MealAttachment::where(
+                'meal_id',
+                $mealSub->meal_id
+            )->get();
+            if ($attachments) {
+                foreach ($attachments as $attachment) {
+                    $mealOrder = new MealOrder();
+                    $mealOrder->order_id = $order->id;
+                    $mealOrder->store_id = $store->id;
+                    $mealOrder->meal_id = $attachment->attached_meal_id;
+                    $mealOrder->quantity =
+                        $attachment->quantity * $item['quantity'];
+                    $mealOrder->save();
                 }
             }
         }

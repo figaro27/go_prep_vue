@@ -665,6 +665,12 @@ class CheckoutController extends UserController
                         $mealSub->special_instructions =
                             $item['special_instructions'];
                     }
+                    if (isset($item['free'])) {
+                        $mealSub->free = $item['free'];
+                    }
+                    if ($item['meal_package']) {
+                        $mealSub->meal_package = $item['meal_package'];
+                    }
                     if ($item['meal_package'] === true) {
                         if (
                             MealPackageSubscription::where([
