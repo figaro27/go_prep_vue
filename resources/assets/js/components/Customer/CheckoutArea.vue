@@ -1264,7 +1264,7 @@ export default {
     },
     updateParentData() {
       this.$emit("updateData", {
-        customer: this.customerModel ? this.customerModel.value : null,
+        customer: this.customerModel ? this.customerModel.value : this.customer,
         weeklySubscriptionValue: this.weeklySubscriptionValue,
         pickup: this.pickup,
         transferTime: this.transferTime,
@@ -1282,7 +1282,7 @@ export default {
       this.$nextTick(() => {
         axios
           .post("/api/me/getCards", {
-            id: this.customerModel.value
+            id: this.customerModel ? this.customerModel.value : this.customer
           })
           .then(response => {
             this.$parent.creditCardList = response.data;
@@ -1296,7 +1296,8 @@ export default {
       });
     },
     getCustomer() {
-      return this.customerModel.value;
+      if (this.customerModel) return this.customerModel.value;
+      return this.customer;
     },
     async adjust() {
       if (this.bagDeliveryDate === null) {
@@ -1332,7 +1333,9 @@ export default {
           couponReduction: this.couponReduction,
           couponCode: this.couponApplied ? this.coupon.code : null,
           pickupLocation: this.selectedPickupLocation,
-          customer: this.customerModel.value,
+          customer: this.customerModel
+            ? this.customerModel.value
+            : this.customer,
           deposit: deposit,
           cashOrder: this.cashOrder,
           lineItemsOrder: this.orderLineItems,
@@ -1438,7 +1441,9 @@ export default {
           deliveryFee: this.deliveryFee,
           processingFee: this.processingFeeAmount,
           pickupLocation: this.selectedPickupLocation,
-          customer: this.customerModel.value,
+          customer: this.customerModel
+            ? this.customerModel.value
+            : this.customer,
           deposit: deposit,
           cashOrder: this.cashOrder,
           noBalance: this.noBalance,
