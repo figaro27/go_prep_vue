@@ -1374,7 +1374,7 @@ export default {
       if (
         this.bagDeliveryDate === null &&
         !this.store.modules.hideTransferOptions &&
-        this.deliveryDateOptions.length > 1
+        (this.deliveryDateOptions.length > 1 || this.$route.params.storeView)
       ) {
         this.$toastr.w("Please select a delivery/pickup date.");
         return;
