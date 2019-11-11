@@ -1056,8 +1056,6 @@ export default {
         });
     },
     getMealTableData(order) {
-      if (!this.initialized || !order.items) return [];
-
       let data = [];
 
       order.meal_package_items.forEach(meal_package_item => {
