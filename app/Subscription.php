@@ -381,8 +381,10 @@ class Subscription extends Model
             $mealOrder->meal_size_id = $mealSub->meal_size_id;
             $mealOrder->quantity = $mealSub->quantity;
             $mealOrder->special_instructions = $mealSub->special_instructions;
-            $mealOrder->meal_package = $mealSub->meal_package;
-            $mealOrder->free = $mealSub->free;
+            $mealOrder->meal_package = $mealSub->meal_package
+                ? $mealSub->meal_package
+                : 0;
+            $mealOrder->free = $mealSub->free ? $mealSub->free : 0;
 
             if ($mealSub->meal_package_subscription_id !== null) {
                 $mealPackageSub = MeaLPackageSubscription::where(
