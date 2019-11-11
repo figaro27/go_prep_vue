@@ -551,7 +551,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <!-- title -->
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Special Meal Instructions</td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Instructions</td>
                 </tr>
                 <!-- end title -->
                 <tr>
