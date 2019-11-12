@@ -302,11 +302,11 @@ export default {
         this.selectedPickupLocation = null;
       }
 
-      let deposit = this.deposit;
-      if (deposit.toString().includes("%")) {
-        deposit.replace("%", "");
-        deposit = parseInt(deposit);
-      }
+      // let deposit = this.deposit;
+      // if (deposit.toString().includes("%")) {
+      //   deposit.replace("%", "");
+      //   deposit = parseInt(deposit);
+      // }
 
       try {
         const { data } = await axios.post(
@@ -326,7 +326,7 @@ export default {
             deliveryFee: this.deliveryFee,
             pickupLocation: this.selectedPickupLocation,
             customer: this.customer,
-            deposit: deposit,
+            // deposit: deposit,
             cashOrder: this.cashOrder,
             transferTime: this.transferTime
           }
