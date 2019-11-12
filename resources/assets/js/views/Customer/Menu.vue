@@ -120,17 +120,6 @@
 
           <div class="categoryNavArea_body">
             <div class="categoryNavArea_body_inner">
-              <div class="row" v-if="mealPackagePageView">
-                <div class="col-md-12 center-text mb-3">
-                  <button
-                    @click="backFromPackagPage"
-                    type="button"
-                    class="btn btn-secondary btn-md brand-color white-text"
-                  >
-                    Back
-                  </button>
-                </div>
-              </div>
               <div class="row">
                 <div class="col-md-2">
                   <img
@@ -175,6 +164,17 @@
                   @click="search = ''"
                 >
                   {{ cat.category }}
+                </div>
+              </div>
+              <div class="row" v-if="mealPackagePageView">
+                <div class="col-md-12 center-text mb-3">
+                  <button
+                    @click="backFromPackagPage"
+                    type="button"
+                    class="btn btn-secondary btn-md brand-color white-text"
+                  >
+                    Back
+                  </button>
                 </div>
               </div>
             </div>
