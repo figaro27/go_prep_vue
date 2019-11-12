@@ -47,6 +47,8 @@ class CheckoutController extends StoreController
             'modules',
             'storeDetail'
         ])->findOrFail($storeId);
+
+        $store->setTimezone();
         $storeName = strtolower($store->storeDetail->name);
 
         $bag = new Bag($request->get('bag'), $store);
