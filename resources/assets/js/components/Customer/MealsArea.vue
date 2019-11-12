@@ -67,7 +67,7 @@
                   </div>
 
                   <div class="meta">
-                    <div class="title d-none d-md-block">
+                    <div class="title d-none d-md-block center-text">
                       {{ meal.title }}
                     </div>
                     <div
