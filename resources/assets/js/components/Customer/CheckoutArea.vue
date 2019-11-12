@@ -308,7 +308,11 @@
       </li>
       <li
         class="checkout-item"
-        v-if="store.modules.category_restrictions && bagDeliveryDate"
+        v-if="
+          store.modules.category_restrictions &&
+            bagDeliveryDate &&
+            !$route.params.storeView
+        "
       >
         <div>
           <strong>
