@@ -757,6 +757,11 @@ export default {
         this.$set(this.choices, component.id, {});
       }
 
+      // Ensure meal obj is set
+      if (!choice.meal) {
+        choice.meal = this.getMeal(choice.meal_id);
+      }
+
       let choices = this.choices[component.id][option.id] || [];
       choices.push(choice);
       this.$set(this.choices[component.id], option.id, choices);
@@ -815,7 +820,8 @@ export default {
 
           if (component.minimum === 1 && component.maximum === 1) {
             let choice = _.find(opt.meals, { meal_id: choices[0].meal_id });
-            this.addOptionChoice(comp, opt, choice || choices[0]);
+            choice = choice || choices[0];
+            this.addOptionChoice(comp, opt, choice);
           }
 
           // Deselected meal in parent. Remove from restricted
