@@ -519,6 +519,7 @@
           already been charged for an order this week.
         </div>
         <b-alert
+          style="margin-bottom:250px"
           show
           variant="warning"
           class="center-text pt-2"
