@@ -24,7 +24,7 @@
                   buttons
                   v-model="productionGroupId"
                   null
-                  class="storeFilters ml-2 mt-1"
+                  class="storeFilters ml-2 mt-1 d-inline"
                   @change="val => {}"
                   :options="productionGroupOptions"
                 ></b-form-radio-group>
