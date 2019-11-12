@@ -186,7 +186,13 @@ $brandColor = $order->store->settings->color;
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$item->quantity}}</td>
           <td>{!! $item->html_title !!}</td>
-          <td style="text-align:center">${{ number_format($item->price, 2) }}</td>
+          <td style="text-align:center">
+            @if ($item->attached)
+            Free
+            @else
+            ${{ number_format($item->price, 2) }}
+            @endif
+          </td>
         </tr>
 
         @endif
