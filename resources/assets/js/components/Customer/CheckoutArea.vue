@@ -265,7 +265,7 @@
             :options="deliveryDateOptionsStoreView"
             :value="bagDeliveryDate"
             @input="changeDeliveryDay"
-            class="delivery-select ml-2 width-130"
+            class="delivery-select ml-2"
             required
           >
             <option slot="top" disabled>-- Select delivery day --</option>
@@ -299,7 +299,7 @@
             :options="deliveryDateOptions"
             :value="bagDeliveryDate"
             @input="changeDeliveryDay"
-            class="delivery-select ml-2 width-140"
+            class="delivery-select ml-2"
             required
           >
             <option slot="top" disabled>-- Select delivery day --</option>
