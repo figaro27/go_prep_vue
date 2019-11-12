@@ -788,7 +788,7 @@ class CheckoutController extends StoreController
             }*/
 
             try {
-                $user->sendNotification('meal_plan', [
+                $customerUser->sendNotification('meal_plan', [
                     'order' => $order ?? null,
                     'pickup' => $pickup ?? null,
                     'card' => $card ?? null,

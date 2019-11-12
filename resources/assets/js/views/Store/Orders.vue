@@ -290,7 +290,7 @@
             >
               <b-form-checkbox v-model="applyToBalanceCharge"
                 >Apply Charge to Balance</b-form-checkbox
-              >
+              ><br />
               <b-btn
                 class="btn mb-2 d-inline mr-1"
                 variant="success"
@@ -311,6 +311,7 @@
                 class="popover-size d-inline"
               />
             </div>
+            <br />
             <div
               class="d-inline"
               v-if="
@@ -320,7 +321,7 @@
             >
               <b-form-checkbox v-model="applyToBalanceRefund"
                 >Apply Refund to Balance</b-form-checkbox
-              >
+              ><br />
               <b-btn
                 :disabled="fullyRefunded"
                 class="btn mb-2 d-inline mr-1 purpleBG"

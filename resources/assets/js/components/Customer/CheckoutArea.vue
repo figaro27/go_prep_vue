@@ -265,7 +265,7 @@
             :options="deliveryDateOptionsStoreView"
             :value="bagDeliveryDate"
             @input="changeDeliveryDay"
-            class="delivery-select ml-2 width-130"
+            class="delivery-select ml-2"
             required
           >
             <option slot="top" disabled>-- Select delivery day --</option>
@@ -278,7 +278,7 @@
           deliveryDateOptions.length > 1 &&
             $route.params.subscriptionId === undefined &&
             (!$route.params.storeView && !storeOwner) &&
-            !bagDeliveryDate
+            (!bagDeliveryDate || !store.modules.category_restrictions)
         "
       >
         <div>
@@ -299,11 +299,26 @@
             :options="deliveryDateOptions"
             :value="bagDeliveryDate"
             @input="changeDeliveryDay"
-            class="delivery-select ml-2 width-140"
+            class="delivery-select ml-2"
             required
           >
             <option slot="top" disabled>-- Select delivery day --</option>
           </b-select>
+        </div>
+      </li>
+      <li
+        class="checkout-item"
+        v-if="
+          store.modules.category_restrictions &&
+            bagDeliveryDate &&
+            !$route.params.storeView
+        "
+      >
+        <div>
+          <strong>
+            Pickup Day: {{ moment(bagDeliveryDate).format("dddd, MMM Do") }}
+            <!-- Add Delivery/Pickup option when next store uses category_restrictions -->
+          </strong>
         </div>
       </li>
       <li
@@ -1374,7 +1389,7 @@ export default {
       if (
         this.bagDeliveryDate === null &&
         !this.store.modules.hideTransferOptions &&
-        this.deliveryDateOptions.length > 1
+        (this.deliveryDateOptions.length > 1 || this.$route.params.storeView)
       ) {
         this.$toastr.w("Please select a delivery/pickup date.");
         return;

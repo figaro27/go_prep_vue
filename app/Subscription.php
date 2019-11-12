@@ -398,8 +398,8 @@ class Subscription extends Model
                         $mealPackageSub->meal_package_size_id,
                     'order_id' => $newOrder->id
                 ])
-                    ->first()
-                    ->pluck('id');
+                    ->pluck('id')
+                    ->first();
             }
 
             $mealOrder->save();
