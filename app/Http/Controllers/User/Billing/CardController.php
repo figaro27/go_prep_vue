@@ -17,7 +17,20 @@ class CardController extends UserController
      */
     public function index()
     {
-        return $this->user->cards()->get();
+        $storeId = $this->store->id;
+        $gateway = $this->store->settings->payment_gateway;
+
+        return $this->user
+            ->cards()
+            ->where('payment_gateway', $gateway)
+            ->get()
+            ->filter(function ($card) use ($storeId, $gateway) {
+                if ($gateway === 'authorize') {
+                    return $card->store_id === $storeId;
+                } else {
+                    return true;
+                }
+            });
     }
 
     /**
@@ -103,7 +116,8 @@ class CardController extends UserController
             'exp_year' => $card['exp_year'],
             'last4' => $card['last4'],
             'country' => $card['country'],
-            'payment_gateway' => $gateway
+            'payment_gateway' => $gateway,
+            'store_id' => $this->store->id
         ]);
     }
 
