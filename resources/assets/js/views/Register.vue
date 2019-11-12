@@ -227,7 +227,12 @@
                 label="Delivery Instructions"
                 :state="state(1, 'delivery')"
               >
+                <b-form-checkbox v-model="noDeliveryInstructions" class="pt-1"
+                  >Picking Up. Delivery Instructions Not
+                  Needed.</b-form-checkbox
+                >
                 <b-input
+                  v-if="!noDeliveryInstructions"
                   v-model="form[1].delivery"
                   type="text"
                   @input="
@@ -561,6 +566,7 @@ export default {
   },
   data() {
     return {
+      noDeliveryInstructions: false,
       redirect: null,
       step: 0,
       plans: {},
