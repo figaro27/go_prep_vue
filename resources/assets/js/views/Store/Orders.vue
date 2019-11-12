@@ -760,7 +760,7 @@ export default {
       getMeal: "storeMeal",
       storeModules: "storeModules",
       storeSettings: "storeSettings",
-      getStoreMeal: "viewedStoreMeal",
+      getStoreMeal: "storeMeal",
       isLazyStore: "isLazyStore"
     }),
     tableData() {
