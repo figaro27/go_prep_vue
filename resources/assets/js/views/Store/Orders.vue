@@ -1077,11 +1077,7 @@ export default {
           });
         } else {
           data.push({
-            meal:
-              meal_package_item.meal_package.title +
-              meal_package_item_meal_package_size.title
-                ? " - " + meal_package_item.meal_package_size.title
-                : null,
+            meal: meal_package_item.meal_package.title,
             quantity: meal_package_item.quantity,
             unit_price: format.money(meal_package_item.price, order.currency),
             subtotal: format.money(
