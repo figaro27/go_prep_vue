@@ -2463,8 +2463,8 @@ const getters = {
         let title = meal.title;
 
         if (
-          meal.default_size_title != null ||
-          meal.default_size_title.length !== 0
+          meal.default_size_title != null &&
+          meal.default_size_title.length > 0
         ) {
           title = title + " - " + meal.default_size_title;
         }
