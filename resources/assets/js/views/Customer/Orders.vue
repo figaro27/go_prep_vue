@@ -196,6 +196,7 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import format from "../../lib/format.js";
 import Spinner from "../../components/Spinner";
+import store from "../../store";
 
 export default {
   components: {
@@ -210,7 +211,8 @@ export default {
       initialized: "initialized",
       isLoading: "isLoading",
       getStoreMeal: "viewedStoreMeal",
-      storeModules: "viewedStoreModules"
+      storeModules: "viewedStoreModules",
+      isLazy: "isLazy"
     }),
     orders() {
       if (_.isNull(this._orders)) {
@@ -221,7 +223,11 @@ export default {
       });
     }
   },
-  mounted() {},
+  mounted() {
+    if (!this.isLazy) {
+      store.dispatch("refreshLazy");
+    }
+  },
   methods: {
     ...mapActions(["refreshCustomerOrders"]),
     getMealTableData(order) {

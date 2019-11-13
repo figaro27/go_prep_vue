@@ -338,6 +338,7 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import format from "../../lib/format.js";
 import Spinner from "../../components/Spinner";
 import moment from "moment";
+import store from "../../store";
 
 export default {
   components: {
@@ -354,7 +355,8 @@ export default {
       storeSettings: "storeSettings",
       initialized: "initialized",
       getStoreMeal: "viewedStoreMeal",
-      storeModules: "viewedStoreModules"
+      storeModules: "viewedStoreModules",
+      isLazy: "isLazy"
     }),
     activeSubscriptions() {
       if (this.subscriptions)
@@ -363,7 +365,11 @@ export default {
         );
     }
   },
-  mounted() {},
+  mounted() {
+    if (!this.isLazy) {
+      store.dispatch("refreshLazy");
+    }
+  },
   methods: {
     ...mapActions(["refreshSubscriptions"]),
     ...mapMutations([
