@@ -445,7 +445,7 @@ class OrderController extends StoreController
         $order_transaction->customer_id = $customer->id;
         $order_transaction->type = 'refund';
         $order_transaction->stripe_id = $refund->id;
-        $order_transaction->card_id = $card->id;
+        $order_transaction->card_id = $card ? $card->id : null;
         $order_transaction->amount = $refundAmount;
         $order_transaction->applyToBalance = $applyToBalance;
         $order_transaction->save();
@@ -473,7 +473,7 @@ class OrderController extends StoreController
                     $order_transaction->customer_id = $customer->id;
                     $order_transaction->type = 'refund';
                     $order_transaction->stripe_id = $refund->id;
-                    $order_transaction->card_id = $card->id;
+                    $order_transaction->card_id = $card ? $card->id : null;
                     $order_transaction->amount = $difference;
                     $order_transaction->applyToBalance = $applyToBalance;
                     $order_transaction->save();

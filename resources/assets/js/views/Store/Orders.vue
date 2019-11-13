@@ -1032,6 +1032,9 @@ export default {
             this.applyToBalanceCharge = false;
             this.applyToBalanceRefund = false;
           }
+        })
+        .catch(err => {
+          this.$toastr.e("Error. Please contact GoPrep.");
         });
     },
     settle() {
