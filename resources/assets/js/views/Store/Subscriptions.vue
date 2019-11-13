@@ -84,7 +84,7 @@
                 >Resume</b-btn
               > -->
               <router-link :to="`/store/adjust-meal-plan/${props.row.id}`">
-                <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
+                <b-btn class="btn btn-success btn-sm">Edit</b-btn>
               </router-link>
             </div>
 
