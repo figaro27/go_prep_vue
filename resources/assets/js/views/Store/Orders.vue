@@ -1079,8 +1079,9 @@ export default {
           data.push({
             meal:
               meal_package_item.meal_package.title +
-              " - " +
-              meal_package_item.meal_package_size.title,
+              meal_package_item.meal_package_size
+                ? " - " + meal_package_item.meal_package_size.title
+                : null,
             quantity: meal_package_item.quantity,
             unit_price: format.money(meal_package_item.price, order.currency),
             subtotal: format.money(
