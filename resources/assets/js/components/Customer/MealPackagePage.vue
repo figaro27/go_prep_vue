@@ -275,6 +275,20 @@
                                 <div class="mt-1 content-text">
                                   {{ mealOption.meal.description }}
                                 </div>
+
+                                <b-form-textarea
+                                  v-if="
+                                    (storeModules.specialInstructions &&
+                                      !storeModuleSettings.specialInstructionsStoreOnly) ||
+                                      (storeModuleSettings.specialInstructionsStoreOnly &&
+                                        $route.params.storeView)
+                                  "
+                                  class="mt-2"
+                                  v-model="mealOption.specialInstructions"
+                                  placeholder="Special instructions"
+                                  rows="3"
+                                  max-rows="6"
+                                ></b-form-textarea>
                               </div>
                               <!-- Content Text Wrap End !-->
                             </div>
@@ -301,6 +315,20 @@
                                     )
                                   }}
                                 </div>
+
+                                <b-form-textarea
+                                  v-if="
+                                    (storeModules.specialInstructions &&
+                                      !storeModuleSettings.specialInstructionsStoreOnly) ||
+                                      (storeModuleSettings.specialInstructionsStoreOnly &&
+                                        $route.params.storeView)
+                                  "
+                                  class="mt-2"
+                                  v-model="mealOption.specialInstructions"
+                                  placeholder="Special instructions"
+                                  rows="3"
+                                  max-rows="6"
+                                ></b-form-textarea>
                               </div>
                             </div>
                           </div>
