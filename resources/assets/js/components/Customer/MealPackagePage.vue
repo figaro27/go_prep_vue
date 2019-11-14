@@ -120,7 +120,7 @@
                                     $route.params.storeView)
                               "
                               class="mt-4"
-                              v-model="mealOption.specialInstructions"
+                              v-model="specialInstructions[mealOption.meal_id]"
                               placeholder="Special instructions"
                               rows="3"
                               max-rows="6"
@@ -284,7 +284,9 @@
                                         $route.params.storeView)
                                   "
                                   class="mt-2"
-                                  v-model="mealOption.specialInstructions"
+                                  v-model="
+                                    specialInstructions[mealOption.meal_id]
+                                  "
                                   placeholder="Special instructions"
                                   rows="3"
                                   max-rows="6"
@@ -324,7 +326,9 @@
                                         $route.params.storeView)
                                   "
                                   class="mt-2"
-                                  v-model="mealOption.specialInstructions"
+                                  v-model="
+                                    specialInstructions[mealOption.meal_id]
+                                  "
                                   placeholder="Special instructions"
                                   rows="3"
                                   max-rows="6"
@@ -404,7 +408,8 @@ export default {
   data() {
     return {
       choices: {},
-      addons: []
+      addons: [],
+      specialInstructions: {}
     };
   },
   components: {},
@@ -535,6 +540,22 @@ export default {
           components = { ...this.choices };
           addons = { ...this.addons };
         }
+
+        /* Checking Special Instructions */
+        if (components) {
+          for (let i in components) {
+            for (let option in components[i]) {
+              components[i][option].forEach(mealOption => {
+                if (this.specialInstructions[mealOption.meal_id]) {
+                  mealOption.specialInstructions = this.specialInstructions[
+                    mealOption.meal_id
+                  ];
+                }
+              });
+            }
+          }
+        }
+        /* Checking Special Instructions End */
 
         this.addOne(
           this.mealPackage,
