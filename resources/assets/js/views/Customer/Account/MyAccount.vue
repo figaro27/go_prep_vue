@@ -285,6 +285,7 @@ export default {
       });
     },
     addBillingAddress() {
+      this.userDetail.billingState = this.userDetail.billingState.value;
       axios.patch("/api/me/detail", this.userDetail).then(resp => {
         this.$toastr.s("Billing address updated.");
       });
