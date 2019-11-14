@@ -516,7 +516,7 @@
               >
             </div>
           </div>
-          <div
+          <!-- <div
             v-if="
               store.settings.payment_gateway === 'authorize' &&
                 !$route.params.storeView &&
@@ -526,11 +526,9 @@
             class="pb-2"
           >
             <p>
-              <b>Billing Address:</b> {{ user.user_detail.address }},
-              {{ user.user_detail.city }}, {{ user.user_detail.state }},
-              {{ user.user_detail.zip }}
+              <b>Billing Address:</b> {{ currentBillingAddress }}
             </p>
-          </div>
+          </div> -->
           <card-picker
             v-if="!cashOrder"
             :selectable="true"
@@ -879,6 +877,30 @@ export default {
     }),
     stateNames() {
       return states.selectOptions("US");
+    },
+    currentBillingAddress() {
+      if (this.form.billingAddress !== undefined) {
+        return (
+          this.form.address +
+          ", " +
+          this.form.city +
+          ", " +
+          this.form.state.value +
+          ", " +
+          this.form.zip
+        );
+      } else {
+        let details = this.user.user_detail;
+        return details.billingAddress
+          ? details.billingAddress
+          : details.address + ", " + details.billingCity
+          ? details.billingCity
+          : details.city + ", " + details.billingState
+          ? details.billingState
+          : details.state + ", " + details.billingZip
+          ? details.billingZip
+          : details.zip;
+      }
     },
     addedBillingAddress() {
       return (
