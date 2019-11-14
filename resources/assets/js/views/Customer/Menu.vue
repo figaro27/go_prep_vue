@@ -61,7 +61,7 @@
             :storeView="storeView"
           ></store-closed>
           <outside-delivery-area
-            v-if="!$route.params.storeView"
+            v-if="!$route.params.storeView && !store.modules.hideDeliveryOption"
             :storeView="storeView"
           ></outside-delivery-area>
           <!--<meals-area
