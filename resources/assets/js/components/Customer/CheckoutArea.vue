@@ -905,7 +905,8 @@ export default {
     addedBillingAddress() {
       return (
         this.billingAddressVerified ||
-        this.user.user_detail.billingAddress != null
+        (this.user.user_detail.billingAddress != null &&
+          this.user.user_detail.billingAddress.length > 0)
       );
     },
     inSub() {
