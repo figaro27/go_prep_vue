@@ -148,7 +148,7 @@ export default {
         if (!data.token) {
           if (this.storeSettings.payment_gateway === "authorize") {
             this.$toast.e(
-              "Failed to save payment method. Does your billing address match the credit card? You can update your billing address in My Account."
+              "Failed to save payment method. Does your billing address match the credit card? You can update your billing address in My Account. Click the icon on the top right."
             );
           } else {
             this.$toastr.e("Failed to save payment method");
@@ -196,7 +196,7 @@ export default {
           let error = "";
           if (this.storeSettings.payment_gateway === "authorize") {
             error =
-              "Failed to add card. Does your billing address match the credit card? You can update your billing address in My Account.";
+              "Failed to add card. Does your billing address match the credit card? You can update your billing address in My Account. Click the icon on the top right.";
           } else {
             error = "Failed to add card.";
           }
