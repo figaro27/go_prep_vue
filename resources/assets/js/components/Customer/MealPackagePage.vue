@@ -112,6 +112,20 @@
                               {{ mealOption.title }}
                             </div>
 
+                            <b-form-textarea
+                              v-if="
+                                (storeModules.specialInstructions &&
+                                  !storeModuleSettings.specialInstructionsStoreOnly) ||
+                                  (storeModuleSettings.specialInstructionsStoreOnly &&
+                                    $route.params.storeView)
+                              "
+                              class="mt-4"
+                              v-model="mealOption.specialInstructions"
+                              placeholder="Special instructions"
+                              rows="3"
+                              max-rows="6"
+                            ></b-form-textarea>
+
                             <div
                               class="actions"
                               v-if="mealOption && mealOption.quantity > 0"
@@ -375,7 +389,9 @@ export default {
   computed: {
     ...mapGetters({
       getMeal: "viewedStoreMeal",
-      getMealPackage: "viewedStoreMealPackage"
+      getMealPackage: "viewedStoreMealPackage",
+      storeModules: "viewedStoreModules",
+      storeModuleSettings: "viewedStoreModuleSettings"
     }),
     showPage() {
       if (this.$parent.mealPackagePageView) {

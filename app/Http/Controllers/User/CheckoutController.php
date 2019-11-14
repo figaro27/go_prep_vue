@@ -46,6 +46,7 @@ class CheckoutController extends UserController
         $storeSettings = $store->settings;
 
         $bag = new Bag($request->get('bag'), $store);
+
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
         $deliveryDay = $request->get('delivery_day');
@@ -255,6 +256,7 @@ class CheckoutController extends UserController
             $order_transaction->save();
 
             $items = $bag->getItems();
+
             foreach ($items as $item) {
                 $mealOrder = new MealOrder();
                 $mealOrder->order_id = $order->id;

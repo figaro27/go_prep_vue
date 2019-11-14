@@ -61,6 +61,11 @@ class Bag
         );
     }
 
+    public function getRawItems()
+    {
+        return $this->items;
+    }
+
     public function getItems()
     {
         $items = [];
@@ -222,7 +227,16 @@ class Bag
                                                     $optionItem['quantity'],
                                                 'price' => $mealOption->price,
                                                 'meal_size_id' =>
-                                                    $mealOption->meal_size_id
+                                                    $mealOption->meal_size_id,
+                                                'special_instructions' => isset(
+                                                    $optionItem[
+                                                        'specialInstructions'
+                                                    ]
+                                                )
+                                                    ? $optionItem[
+                                                        'specialInstructions'
+                                                    ]
+                                                    : null
                                             ]);
                                         }
                                     }
@@ -247,7 +261,12 @@ class Bag
                                         'size' => [
                                             'id' => $meal['meal_size_id']
                                         ],
-                                        'quantity' => $meal['quantity']
+                                        'quantity' => $meal['quantity'],
+                                        'special_instructions' => isset(
+                                            $meal['special_instructions']
+                                        )
+                                            ? $meal['special_instructions']
+                                            : null
                                     ];
 
                                     $mealItemId = $this->getItemId($mealItem);
