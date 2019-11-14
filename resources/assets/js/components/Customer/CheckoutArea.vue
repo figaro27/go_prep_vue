@@ -484,6 +484,53 @@
             </p> -->
           </div>
 
+          <div
+            v-if="
+              store.settings.payment_gateway === 'authorize' &&
+                !$route.params.storeView &&
+                loggedIn &&
+                !addedBillingAddress
+            "
+            class="pb-2"
+          >
+            <p class="strong">
+              Does your billing address below match your delivery address?
+            </p>
+            <p>
+              <b>Billing Address:</b> {{ user.user_detail.address }},
+              {{ user.user_detail.city }}, {{ user.user_detail.state }},
+              {{ user.user_detail.zip }}
+            </p>
+            <div class="d-inline">
+              <b-btn
+                variant="danger"
+                class="d-inline"
+                @click="showBillingAddressModal = true"
+                >No</b-btn
+              >
+              <b-btn
+                variant="success"
+                class="d-inline"
+                @click="billingAddressVerified = true"
+                >Yes</b-btn
+              >
+            </div>
+          </div>
+          <div
+            v-if="
+              store.settings.payment_gateway === 'authorize' &&
+                !$route.params.storeView &&
+                loggedIn &&
+                addedBillingAddress
+            "
+            class="pb-2"
+          >
+            <p>
+              <b>Billing Address:</b> {{ user.user_detail.address }},
+              {{ user.user_detail.city }}, {{ user.user_detail.state }},
+              {{ user.user_detail.zip }}
+            </p>
+          </div>
           <card-picker
             v-if="!cashOrder"
             :selectable="true"
@@ -658,6 +705,53 @@
     <add-customer-modal
       :addCustomerModal="addCustomerModal"
     ></add-customer-modal>
+
+    <b-modal
+      size="md"
+      title="Please Add Billing Address"
+      v-model="showBillingAddressModal"
+      v-if="showBillingAddressModal"
+      hide-footer
+      no-fade
+    >
+      <b-form @submit.prevent="addBillingAddress" class="mt-4">
+        <b-form-group horizontal label="Billing Address">
+          <b-form-input
+            v-model="form.billingAddress"
+            type="text"
+            required
+            placeholder="Billing Address"
+          ></b-form-input>
+        </b-form-group>
+        <b-form-group horizontal label="Billing City">
+          <b-form-input
+            v-model="form.billingCity"
+            type="text"
+            required
+            placeholder="Billing City"
+          ></b-form-input>
+        </b-form-group>
+        <b-form-group horizontal label="Billing State">
+          <v-select
+            v-model="form.billingState"
+            label="name"
+            :options="stateNames"
+            @keypress.enter.native.prevent=""
+          ></v-select>
+        </b-form-group>
+        <b-form-group horizontal label="Billing Zip">
+          <b-form-input
+            v-model="form.billingZip"
+            type="text"
+            required
+            placeholder="Billing Zip"
+          ></b-form-input>
+        </b-form-group>
+        <b-button type="submit" variant="primary" class="float-right"
+          >Add</b-button
+        >
+      </b-form>
+    </b-modal>
   </div>
 </template>
 
@@ -668,6 +762,7 @@ import SalesTax from "sales-tax";
 import CardPicker from "../../components/Billing/CardPicker";
 import { createToken } from "vue-stripe-elements-plus";
 import AddCustomerModal from "../../components/Customer/AddCustomerModal";
+import states from "../../data/states.js";
 
 export default {
   components: {
@@ -676,6 +771,11 @@ export default {
   },
   data() {
     return {
+      form: {
+        billingState: null
+      },
+      showBillingAddressModal: false,
+      billingAddressVerified: false,
       customDeliveryFee: 0,
       editingDeliveryFee: false,
       stripeKey: window.app.stripe_key,
@@ -736,6 +836,13 @@ export default {
         this.getCards();
       }
     }
+
+    let stateAbr = this.store.details.state;
+    let state = this.stateNames.filter(stateName => {
+      return stateName.value.toLowerCase() === stateAbr.toLowerCase();
+    });
+
+    this.form.billingState = state[0];
   },
   mixins: [MenuBag],
   computed: {
@@ -770,6 +877,15 @@ export default {
       subscriptions: "subscriptions",
       user: "user"
     }),
+    stateNames() {
+      return states.selectOptions("US");
+    },
+    addedBillingAddress() {
+      return (
+        this.billingAddressVerified ||
+        this.user.user_detail.billingAddress != null
+      );
+    },
     inSub() {
       return this.$route.params.inSub;
     },
@@ -1537,6 +1653,20 @@ export default {
     },
     editDeliveryFee() {
       this.editingDeliveryFee = true;
+    },
+    addBillingAddress() {
+      axios
+        .post("/api/me/addBillingAddress", {
+          billingAddress: this.form.billingAddress,
+          billingCity: this.form.billingCity,
+          billingState: this.form.billingState.value,
+          billingZip: this.form.billingZip
+        })
+        .then(resp => {
+          this.showBillingAddressModal = false;
+          this.billingAddressVerified = true;
+          this.$toastr.s("Billing address added. Please add your credit card.");
+        });
     },
     // Temporary work around for two delivery fees based on day of the week. Will remove when two delivery day feature is added.
     DBD() {

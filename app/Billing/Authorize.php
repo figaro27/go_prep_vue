@@ -100,15 +100,33 @@ class Authorize implements IBilling
         $paymentCreditCard->setOpaqueData($opaque);
 
         // Create the Bill To info for new payment type
+
+        $firstName = $user->details->firstname;
+        $lastName = $user->details->lastname;
+        $address = $user->details->billingAddress
+            ? $user->details->billingAddress
+            : $user->details->address;
+        $city = $user->details->billingCity
+            ? $user->details->billingCity
+            : $user->details->city;
+        $state = $user->details->billingState
+            ? $user->details->billingState
+            : $user->details->state;
+        $zip = $user->details->billingZip
+            ? $user->details->billingZip
+            : $user->details->zip;
+        $country = $user->details->country;
+        $phone = $user->details->phone;
+
         $billto = new AnetAPI\CustomerAddressType();
-        $billto->setFirstName($user->details->firstname);
-        $billto->setLastName($user->details->firstname);
-        $billto->setAddress($user->details->address);
-        $billto->setCity($user->details->city);
-        $billto->setState($user->details->state);
-        $billto->setZip($user->details->zip);
-        $billto->setCountry($user->details->country);
-        $billto->setPhoneNumber($user->details->phone);
+        $billto->setFirstName($firstName);
+        $billto->setLastName($lastName);
+        $billto->setAddress($address);
+        $billto->setCity($city);
+        $billto->setState($state);
+        $billto->setZip($zip);
+        $billto->setCountry($country);
+        $billto->setPhoneNumber($phone);
 
         // Create a new Customer Payment Profile object
         $paymentprofile = new AnetAPI\CustomerPaymentProfileType();

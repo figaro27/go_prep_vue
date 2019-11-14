@@ -60,6 +60,46 @@
           ></b-form-input>
           <b-button type="submit" variant="primary" class="mt-3">Save</b-button>
         </b-form>
+        <p class="strong mt-3">Billing Address</p>
+        <div v-if="gateway === 'authorize'">
+          <b-form @submit.prevent="addBillingAddress" class="mt-4">
+            <b-form-group>
+              <b-form-input
+                v-model="userDetail.billingAddress"
+                type="text"
+                required
+                placeholder="Billing Address"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group>
+              <b-form-input
+                v-model="userDetail.billingCity"
+                type="text"
+                required
+                placeholder="Billing City"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group>
+              <v-select
+                v-model="userDetail.billingState"
+                label="name"
+                :options="stateNames"
+                @keypress.enter.native.prevent=""
+              ></v-select>
+            </b-form-group>
+            <b-form-group>
+              <b-form-input
+                v-model="userDetail.billingZip"
+                type="text"
+                required
+                placeholder="Billing Zip"
+              ></b-form-input>
+            </b-form-group>
+            <b-button type="submit" variant="primary" class="mt-3"
+              >Save</b-button
+            >
+          </b-form>
+        </div>
 
         <p class="strong mt-4">Change Password</p>
         <b-form @submit.prevent="updatePassword">
@@ -167,6 +207,7 @@
 import CardPicker from "../../../components/Billing/CardPicker";
 import { mapGetters, mapActions } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
+import states from "../../../data/states.js";
 
 import toasts from "../../../mixins/toasts";
 
@@ -178,6 +219,9 @@ export default {
   },
   data() {
     return {
+      form: {
+        billingState: null
+      },
       password: {
         current: null,
         new: null,
@@ -194,6 +238,9 @@ export default {
     }),
     gateway() {
       return this.storeSettings.payment_gateway;
+    },
+    stateNames() {
+      return states.selectOptions("US");
     }
   },
   mounted() {},
@@ -235,6 +282,11 @@ export default {
     getCustomer() {
       axios.get("/api/me/getCustomer").then(resp => {
         return resp.data.id;
+      });
+    },
+    addBillingAddress() {
+      axios.patch("/api/me/detail", this.userDetail).then(resp => {
+        this.$toastr.s("Billing address updated.");
       });
     }
   }

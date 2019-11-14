@@ -16,7 +16,11 @@ class UserDetail extends Model
         'zip',
         'country',
         'delivery',
-        'notifications'
+        'notifications',
+        'billingAddress',
+        'billingCity',
+        'billingState',
+        'billingZip'
     ];
 
     public function user()

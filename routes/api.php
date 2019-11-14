@@ -370,6 +370,11 @@ foreach (
                                 'UserDetailController@update'
                             );
 
+                            Route::post(
+                                '/me/addBillingAddress',
+                                'UserDetailController@addBillingAddress'
+                            );
+
                             Route::patch(
                                 '/me/password',
                                 'PasswordController@update'

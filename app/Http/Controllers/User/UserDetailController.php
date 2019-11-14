@@ -78,7 +78,11 @@ class UserDetailController extends UserController
             'city' => 'required|string',
             'state' => 'required|string',
             'zip' => 'required',
-            'delivery' => 'required|string'
+            'delivery' => 'required|string',
+            'billingAddress' => 'string',
+            'billingCity' => 'string',
+            'billingState' => 'string',
+            'billingZip' => 'string'
         ]);
 
         $values = $request->only(['notifications']);
@@ -102,5 +106,21 @@ class UserDetailController extends UserController
     public function destroy(UserDetail $userDetail)
     {
         //
+    }
+
+    public function addBillingAddress(Request $request)
+    {
+        $billingAddress = $request->get('billingAddress');
+        $billingCity = $request->get('billingCity');
+        $billingState = $request->get('billingState');
+        $billingZip = $request->get('billingZip');
+
+        $userDetail = auth('api')->user()->details;
+
+        $userDetail->billingAddress = $billingAddress;
+        $userDetail->billingCity = $billingCity;
+        $userDetail->billingState = $billingState;
+        $userDetail->billingZip = $billingZip;
+        $userDetail->save();
     }
 }
