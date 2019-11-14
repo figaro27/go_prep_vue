@@ -367,6 +367,7 @@ class CheckoutController extends StoreController
                         $mealOrder->quantity =
                             $attachment->quantity * $item['quantity'];
                         $mealOrder->attached = 1;
+                        $mealOrder->free = 1;
                         $mealOrder->save();
                     }
                 }
