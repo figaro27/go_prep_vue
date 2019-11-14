@@ -95,7 +95,8 @@ export default {
       storeModuleSettings: "viewedStoreModuleSettings",
       storeCustomers: "storeCustomers",
       total: "bagQuantity",
-      bag: "bagItems",
+      //bag: "bagItems",
+      bag: "bagMealPrice",
       coupon: "bagCoupon",
       deliveryPlan: "bagMealPlan",
       mealPlan: "bagMealPlan",
@@ -164,6 +165,7 @@ export default {
         return true;
       else return false;
     }
-  }
+  },
+  mounted() {}
 };
 </script>

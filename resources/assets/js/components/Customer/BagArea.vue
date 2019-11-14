@@ -132,11 +132,11 @@
               >
                 <input
                   type="checkbox"
-                  id="checkbox"
+                  :id="`checkox_${mealId}`"
                   v-model="item.free"
                   @change="makeFree(item)"
                 />
-                <label for="checkbox">Free</label>
+                <label :for="`checkox_${mealId}`">Free</label>
               </div>
             </div>
             <div class="flex-grow-0">
@@ -339,7 +339,8 @@ export default {
       storeSettings: "viewedStoreSetting",
       total: "bagQuantity",
       allergies: "allergies",
-      bag: "bagItems",
+      //bag: "bagItems",
+      bag: "bagMealPrice",
       hasMeal: "bagHasMeal",
       willDeliver: "viewedStoreWillDeliver",
       _categories: "viewedStoreCategories",
@@ -592,8 +593,8 @@ export default {
       this.orderLineItems.splice(index, 1);
     },
     makeFree(item) {
-      if (item.meal.price != 0) this.makeItemFree(item);
-      else this.makeItemNonFree(item);
+      //if (item.meal.price != 0) this.makeItemFree(item);
+      //else this.makeItemNonFree(item);
     }
   }
 };

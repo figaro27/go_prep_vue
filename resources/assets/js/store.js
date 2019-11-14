@@ -2204,7 +2204,9 @@ const getters = {
     });
   },
   bagMealPrice(state, getters) {
-    let items = _.compact(_.toArray(state.bag.items));
+    //let items = _.compact(_.toArray(state.bag.items));
+    let items = getters.bagItems;
+
     items.forEach(item => {
       let price = item.size ? item.size.price : item.meal.price;
       if (item.components) {
@@ -2266,11 +2268,28 @@ const getters = {
       } // End IF
 
       item.price = parseFloat(parseFloat(price).toFixed(2));
+      if (!item.hasOwnProperty("free")) {
+        item.free = false;
+      }
     });
 
     return items;
   },
   totalBagPricePreFees(state, getters) {
+    let totalBagPricePreFees = 0;
+    let items = getters.bagMealPrice;
+
+    if (items) {
+      items.forEach(item => {
+        if (!isNaN(item.price) && !isNaN(item.quantity) && !item.free) {
+          totalBagPricePreFees += item.price * item.quantity;
+        }
+      });
+    }
+
+    return totalBagPricePreFees;
+    // Old Flow
+    /*
     let items = _.compact(_.toArray(state.bag.items));
     let totalBagPricePreFees = 0;
     items.forEach(item => {
@@ -2333,10 +2352,25 @@ const getters = {
       }
       totalBagPricePreFees += item.quantity * price;
     });
+    */
 
     return totalBagPricePreFees;
   },
   totalBagPrice(state, getters) {
+    let totalBagPricePreFees = getters.totalBagPricePreFees;
+    let totalBagPrice = totalBagPricePreFees;
+
+    if (getters.viewedStoreSetting("applyDeliveryFee", false)) {
+      totalBagPrice += getters.viewedStore.settings.deliveryFee;
+    }
+    if (getters.viewedStoreSetting("applyProcessingFee", false)) {
+      totalBagPrice += getters.viewedStore.settings.processingFee;
+    }
+
+    return totalBagPrice;
+
+    // Old Flow
+    /*
     let items = _.compact(_.toArray(state.bag.items));
     let totalBagPrice = 0;
     items.forEach(item => {
@@ -2350,6 +2384,7 @@ const getters = {
     }
 
     return totalBagPrice.toFixed(2);
+    */
   },
 
   // Getters for logged in users (of any role)
