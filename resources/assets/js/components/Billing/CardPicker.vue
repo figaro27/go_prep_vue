@@ -193,7 +193,13 @@ export default {
           this.$toastr.s("Payment method saved.");
         })
         .catch(resp => {
-          let error = "Failed to add card.";
+          let error = "";
+          if (this.storeSettings.payment_gateway === "authorize") {
+            error =
+              "Failed to add card. Does your billing address match the credit card? You can update your billing address in My Account.";
+          } else {
+            error = "Failed to add card.";
+          }
 
           if (!_.isEmpty(resp.response.data.error)) {
             error = resp.response.data.error;
