@@ -146,7 +146,13 @@ export default {
         const data = await createToken();
 
         if (!data.token) {
-          this.$toastr.e("Failed to save payment method");
+          if (this.storeSettings.payment_gateway === "authorize") {
+            this.$toast.e(
+              "Failed to save payment method. Does your billing address match the credit card? You can update your billing address in My Account."
+            );
+          } else {
+            this.$toastr.e("Failed to save payment method");
+          }
           throw new Error("Failed to save payment method", data);
         }
 
