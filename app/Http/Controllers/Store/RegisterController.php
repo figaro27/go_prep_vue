@@ -143,7 +143,9 @@ class RegisterController extends StoreController
         $user = User::findOrFail($user->id);
         $store = $this->store;
         $storeId = $this->store->id;
-        $user->createStoreCustomer($storeId);
+        $currency = $this->store->settings->currency;
+        $gateway = $this->store->settings->payment_gateway;
+        $user->createStoreCustomer($storeId, $currency, $gateway);
     }
 
     /**

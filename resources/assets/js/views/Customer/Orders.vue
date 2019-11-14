@@ -304,12 +304,14 @@ export default {
           data.push({
             meal: title,
             quantity: item.quantity,
-            unit_price: item.attached
-              ? "Free"
-              : format.money(item.unit_price, order.currency),
-            subtotal: item.attached
-              ? "Free"
-              : format.money(item.price, order.currency)
+            unit_price:
+              item.attached || item.free
+                ? "Free"
+                : format.money(item.unit_price, order.currency),
+            subtotal:
+              item.attached || item.free
+                ? "Free"
+                : format.money(item.price, order.currency)
           });
         }
       });

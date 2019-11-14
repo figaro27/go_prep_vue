@@ -187,7 +187,7 @@ $brandColor = $order->store->settings->color;
           <td style="text-align:center">{{$item->quantity}}</td>
           <td>{!! $item->html_title !!}</td>
           <td style="text-align:center">
-            @if ($item->attached)
+            @if ($item->attached || $item->free)
             Free
             @else
             ${{ number_format($item->price, 2) }}

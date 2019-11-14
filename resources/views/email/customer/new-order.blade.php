@@ -267,7 +267,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 <tr>
                   <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
-                    @if ($item->attached)
+                    @if ($item->attached || $item->free)
                     Free
                     @else
                     ${{ number_format($item->unit_price, 2) }}
@@ -275,7 +275,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                     </td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;">
-                    @if ($item->attached)
+                    @if ($item->attached || $item->free)
                     Free
                     @else
                     ${{ number_format($item->price, 2) }}
