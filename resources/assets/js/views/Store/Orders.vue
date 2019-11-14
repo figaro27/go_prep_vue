@@ -720,6 +720,9 @@ export default {
   mounted() {
     if (!this.isLazyStore) {
       store.dispatch("refreshLazyStore");
+
+      // Refreshing customer menu on store log in automatically
+      store.dispatch("refreshLazy");
     }
 
     if (this.storeModules.dailyOrderNumbers) {
