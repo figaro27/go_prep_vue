@@ -14,7 +14,8 @@
         v-if="
           !bagDeliveryDate &&
             store.modules.category_restrictions &&
-            !$route.params.storeView
+            !$route.params.storeView &&
+            !storeView
         "
       ></delivery-date-modal>
 
@@ -57,11 +58,15 @@
           <Spinner v-if="showSpinner || forceShow" position="fixed" />
 
           <store-closed
-            v-if="!$route.params.storeView"
+            v-if="!$route.params.storeView && !storeView"
             :storeView="storeView"
           ></store-closed>
           <outside-delivery-area
-            v-if="!$route.params.storeView && !store.modules.hideDeliveryOption"
+            v-if="
+              !$route.params.storeView &&
+                !storeView &&
+                !store.modules.hideDeliveryOption
+            "
             :storeView="storeView"
           ></outside-delivery-area>
           <!--<meals-area
@@ -736,7 +741,7 @@ export default {
       this.showBagClass = "shopping-cart show-right bag-area";
     } else this.showBagClass = "shopping-cart hidden-right bag-area";
 
-    if (this.storeView) {
+    if (this.storeView || this.$route.params.storeView) {
       /* Sidebar Check */
       let isOpen = false;
 
@@ -752,7 +757,7 @@ export default {
       }
       /* Sidebar Check End */
 
-      if (this.$route.params.storeView)
+      if (this.$route.params.storeView || this.storeView)
         this.showBagClass = "shopping-cart show-right bag-area";
       else this.showBagClass = "shopping-cart show-right bag-area";
     }
@@ -983,7 +988,7 @@ export default {
       };
     },
     showBag() {
-      if (this.storeView) return;
+      if (this.storeView || this.$route.params.storeView) return;
       if (this.showBagClass.includes("hidden-right")) {
         this.showBagClass = "d-inline shopping-cart show-right bag-area";
         if (this.menuPage) {

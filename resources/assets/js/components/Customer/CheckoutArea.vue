@@ -852,7 +852,6 @@ export default {
       storeCustomers: "storeCustomers",
       total: "bagQuantity",
       bag: "bagItems",
-      bagMealPrice: "bagMealPrice",
       bagDeliveryDate: "bagDeliveryDate",
       coupon: "bagCoupon",
       deliveryPlan: "bagMealPlan",
@@ -1589,7 +1588,7 @@ export default {
           subtotal: this.subtotal,
           mealPlanDiscount: this.mealPlanDiscount,
           afterDiscount: this.afterDiscount,
-          bag: this.bagMealPrice,
+          bag: this.bag,
           plan: weeklySubscriptionValue,
           pickup: this.pickup,
           delivery_day: this.bagDeliveryDate

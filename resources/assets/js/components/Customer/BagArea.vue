@@ -11,7 +11,7 @@
     >
       <h3 class="d-inline ml-3 float-left">
         <i
-          v-if="!$route.params.storeView"
+          v-if="!$route.params.storeView && !storeView"
           class="fa fa-angle-right white-text"
           @click="$parent.showBag()"
         ></i>
@@ -130,14 +130,16 @@
                   type="checkbox"
                   :id="`checkox_${mealId}`"
                   v-model="item.free"
+                  @change="e => makeFree(item, e)"
                 />
                 <label :for="`checkox_${mealId}`">Free</label>
 
                 <span v-if="editingPrice">
                   <b-form-input
                     type="number"
-                    v-model.number="item.price"
+                    v-model="item.price"
                     class="d-inline width-70 mb-1"
+                    @input="v => changePrice(item, v)"
                   ></b-form-input>
                   <i
                     class="fas fa-check-circle text-primary"
@@ -151,7 +153,7 @@
                   )
                 }}</span>
                 <i
-                  v-if="$route.params.storeView && !editingPrice"
+                  v-if="($route.params.storeView || storeView) && !editingPrice"
                   @click="editPrice"
                   class="fa fa-edit text-warning"
                 ></i>
@@ -185,7 +187,9 @@
         </li>
       </ul>
     </div>
-    <div v-if="$route.params.storeView && storeModules.lineItems">
+    <div
+      v-if="($route.params.storeView || storeView) && storeModules.lineItems"
+    >
       <ul class="list-group">
         <li
           v-for="(orderLineItem, index) in orderLineItems"
@@ -358,8 +362,7 @@ export default {
       storeSettings: "viewedStoreSetting",
       total: "bagQuantity",
       allergies: "allergies",
-      //bag: "bagItems",
-      bag: "bagMealPrice",
+      bag: "bagItems",
       hasMeal: "bagHasMeal",
       willDeliver: "viewedStoreWillDeliver",
       _categories: "viewedStoreCategories",
@@ -611,9 +614,15 @@ export default {
     removeLineItem(index) {
       this.orderLineItems.splice(index, 1);
     },
-    makeFree(item) {
-      //if (item.meal.price != 0) this.makeItemFree(item);
-      //else this.makeItemNonFree(item);
+    makeFree(item, event) {
+      item.free = event.target.checked;
+      this.updateBagItem(item);
+    },
+    changePrice(item, v) {
+      if (!isNaN(v) && parseFloat(v) > 0) {
+        item.price = parseFloat(parseFloat(v).toFixed(2));
+        this.updateBagItem(item);
+      }
     },
     editPrice() {
       this.editingPrice = true;
