@@ -1091,7 +1091,9 @@ export default {
         this.bagDeliveryDate === "2019-11-28 00:00:00" &&
         (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
       ) {
-        for (let i = 0; i <= 5; i++) newHourOptions.pop();
+        newHourOptions.unshift("8 AM - 9 AM");
+        newHourOptions.unshift("7 AM - 8 AM");
+        for (let i = 0; i <= 6; i++) newHourOptions.pop();
       }
 
       return newHourOptions;
