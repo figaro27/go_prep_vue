@@ -1086,6 +1086,14 @@ export default {
         }
       });
 
+      // Temporary fix for Livoti's to limit Thanksgiving day hours until hour by pickup day feature is ready
+      if (
+        this.bagDeliveryDate === "2019-11-28 00:00:00" &&
+        (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
+      ) {
+        for (let i = 0; i <= 5; i++) newHourOptions.pop();
+      }
+
       return newHourOptions;
     },
     transferType() {
