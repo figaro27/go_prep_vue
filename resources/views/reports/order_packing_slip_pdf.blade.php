@@ -83,9 +83,9 @@ $brandColor = $order->store->settings->color;
         @endif
         <p>{{$order->user->details->phone}}</p>
         @if ($order->manual)
-        <p class="text-16" style="text-transform: uppercase;color: #3e3e3e;">Manual Order Placed: {{$order->created_at->format('D, m/d/Y')}}</p>
+        <p class="text-16">Manual Order Placed: {{$order->created_at->format('D, m/d/Y')}}</p>
         @else
-        <p class="text-16" style="text-transform: uppercase;color: #3e3e3e;">Order Placed: {{$order->created_at->format('D, m/d/Y')}}</p>
+        <p class="text-16">Order Placed: {{$order->created_at->format('D, m/d/Y')}}</p>
         @endif
       </div>
     
