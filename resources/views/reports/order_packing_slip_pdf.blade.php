@@ -73,7 +73,6 @@ $brandColor = $order->store->settings->color;
   @endif
   <div class="row">
     <div class="col-4" style="position:relative;top:40px">
-          
         <p class="bold-text">{{$order->user->name}}</p>
         @if ($order->user->details->address !== 'N/A')
         <p>{{$order->user->details->address}}</p>
@@ -83,9 +82,9 @@ $brandColor = $order->store->settings->color;
         @endif
         <p>{{$order->user->details->phone}}</p>
         @if ($order->manual)
-        <p>Manual Order Placed: {{$order->created_at->format('D, m/d/Y')}}</p>
+        <p>Manual Order: {{$order->created_at->format('D, m/d/Y')}}</p>
         @else
-        <p>Order Placed: {{$order->created_at->format('D, m/d/Y')}}</p>
+        <p>Order: {{$order->created_at->format('D, m/d/Y')}}</p>
         @endif
       </div>
     
@@ -104,22 +103,10 @@ $brandColor = $order->store->settings->color;
       
       <div class="col-4 right-text" style="position:relative;top:40px">
           @if ($order->dailyOrderNumber && $order->store->modules->dailyOrderNumbers)
-          <p class="text-16">Daily Order <b>#{{$order->dailyOrderNumber}}</b></p>
+          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">Daily Order #{{$order->dailyOrderNumber}}</p>
           <p>Order ID: {{$order->order_number}}</p>
           @else
           <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">Order ID: {{$order->order_number}}</p>
-          @endif
-          @if (!$order->store->modules->hideTransferOptions)
-          @if ($order->transferTime)
-          @if ($order->pickup === 0)
-          <p class="bold-text">Delivery Time: {{ $order->transferTime }}</p>
-          @endif
-          @if ($order->pickup === 1)
-          <p class="bold-text">Pickup Time: {{ $order->transferTime }}</p>
-          @endif
-          @endif
-          <p class="bold-text">Date: {{$order->delivery_date->format('D, m/d/Y')}}
-          </p>
           @endif
           @if ($order->pickup === 0)
           <p>Delivery</p>
@@ -127,7 +114,18 @@ $brandColor = $order->store->settings->color;
           @if ($order->pickup === 1)
           <p>Pickup</p>
           @endif
-
+          @if (!$order->store->modules->hideTransferOptions)
+          <p>Date: {{$order->delivery_date->format('D, m/d/Y')}}
+          </p>
+          @if ($order->transferTime)
+          @if ($order->pickup === 0)
+          <p>Delivery Time: {{ $order->transferTime }}</p>
+          @endif
+          @if ($order->pickup === 1)
+          <p>Pickup Time: {{ $order->transferTime }}</p>
+          @endif
+          @endif
+          @endif
       </div>
     </center>
     </div>
@@ -191,7 +189,7 @@ $brandColor = $order->store->settings->color;
         @endforeach
         @foreach($order->items as $i => $item)
         @if ($item->meal_package_order_id === null)
-        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }} bold-text">
+        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$item->quantity}}</td>
           <td>{!! $item->html_title !!}</td>
           <td style="text-align:center">
@@ -208,9 +206,9 @@ $brandColor = $order->store->settings->color;
 
         @if (count($order->lineItemsOrders))
         @foreach ($order->lineItemsOrders as $i => $lineItemOrder)
-        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }} bold-text">
+        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$lineItemOrder->quantity}}</td>
-          <td><b>{!! $lineItemOrder->title !!}</td>
+          <td>{!! $lineItemOrder->title !!}</td>
           <td style="text-align:center">${{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
         </tr>
         @endforeach
