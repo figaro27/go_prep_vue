@@ -371,14 +371,14 @@ class Bag
             } else {
                 $mealId = $item['meal']['id'];
                 $itemId = $this->getItemId($item);
-                $price = $meals[$mealId]->price;
+                // $price = $meals[$mealId]->price;
 
-                // Ensure size variations are counted separately
-                if (isset($item['size']) && $item['size']) {
-                    $price = $item['size']['price'];
-                }
+                // // Ensure size variations are counted separately
+                // if (isset($item['size']) && $item['size']) {
+                //     $price = $item['size']['price'];
+                // }
 
-                $item['price'] = $price;
+                // $item['price'] = $price;
 
                 if (!isset($items[$itemId])) {
                     $items[$itemId] = $item;

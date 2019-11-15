@@ -316,6 +316,39 @@ const mutations = {
   clearBagDeliveryDate(state, date) {
     this.state.delivery_date = null;
   },
+  updateItemPrice(
+    state,
+    {
+      meal,
+      quantity = 1,
+      mealPackage = false,
+      size = null,
+      components = null,
+      addons = null,
+      special_instructions = null
+    }
+  ) {
+    let mealId = meal;
+    if (!_.isNumber(mealId)) {
+      mealId = meal.id;
+    }
+
+    if (mealPackage || meal.meal_package) {
+      mealPackage = true;
+    }
+
+    let guid = CryptoJS.MD5(
+      JSON.stringify({
+        meal: mealId,
+        mealPackage,
+        size,
+        components,
+        addons,
+        special_instructions
+      })
+    ).toString();
+    state.bag.items[guid].meal.price = meal.price;
+  },
   makeItemFree(
     state,
     {
@@ -2268,6 +2301,9 @@ const getters = {
       } // End IF
 
       item.price = parseFloat(parseFloat(price).toFixed(2));
+      if (item.editedPrice) {
+        item.price = item.editedPrice;
+      }
       if (!item.hasOwnProperty("free")) {
         item.free = false;
       }

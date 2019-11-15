@@ -125,18 +125,36 @@
                   {{ addon }}
                 </li>
               </ul>
-              <div
-                v-if="
-                  ($route.params.storeView || storeView) && !item.meal_package
-                "
-              >
+              <div v-if="$route.params.storeView || storeView">
                 <input
                   type="checkbox"
                   :id="`checkox_${mealId}`"
                   v-model="item.free"
-                  @change="makeFree(item)"
                 />
                 <label :for="`checkox_${mealId}`">Free</label>
+
+                <span v-if="editingPrice">
+                  <b-form-input
+                    type="number"
+                    v-model.number="item.price"
+                    class="d-inline width-70 mb-1"
+                  ></b-form-input>
+                  <i
+                    class="fas fa-check-circle text-primary"
+                    @click="editingPrice = false"
+                  ></i>
+                </span>
+                <span v-else>{{
+                  format.money(
+                    item.price * item.quantity,
+                    storeSettings.currency
+                  )
+                }}</span>
+                <i
+                  v-if="$route.params.storeView && !editingPrice"
+                  @click="editPrice"
+                  class="fa fa-edit text-warning"
+                ></i>
               </div>
             </div>
             <div class="flex-grow-0">
@@ -310,6 +328,7 @@ import store from "../../store";
 export default {
   data() {
     return {
+      editingPrice: false,
       showLineItemModal: false,
       lineItem: {
         title: "",
@@ -595,6 +614,9 @@ export default {
     makeFree(item) {
       //if (item.meal.price != 0) this.makeItemFree(item);
       //else this.makeItemNonFree(item);
+    },
+    editPrice() {
+      this.editingPrice = true;
     }
   }
 };
