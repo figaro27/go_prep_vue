@@ -115,8 +115,6 @@ $brandColor = $order->store->settings->color;
           <p>Pickup</p>
           @endif
           @if (!$order->store->modules->hideTransferOptions)
-          <p>Date: {{$order->delivery_date->format('D, m/d/Y')}}
-          </p>
           @if ($order->transferTime)
           @if ($order->pickup === 0)
           <p>Delivery Time: {{ $order->transferTime }}</p>
@@ -125,6 +123,8 @@ $brandColor = $order->store->settings->color;
           <p>Pickup Time: {{ $order->transferTime }}</p>
           @endif
           @endif
+          <p>Date: {{$order->delivery_date->format('D, m/d/Y')}}
+          </p>
           @endif
       </div>
     </center>
