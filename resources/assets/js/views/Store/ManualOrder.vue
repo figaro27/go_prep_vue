@@ -96,7 +96,14 @@ export default {
     }
   },
   created() {},
-  mounted() {},
+  mounted() {
+    if (
+      this.$route.path === "/store/manual-order" &&
+      !this.$route.params.storeView
+    ) {
+      this.$router.push({ path: "/store/orders" });
+    }
+  },
   methods: {
     ...mapActions({}),
     setLoadingToFalse() {
