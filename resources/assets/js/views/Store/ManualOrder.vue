@@ -34,7 +34,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isLoading: "isLoading"
+      isLoading: "isLoading",
+      store: "viewedStore"
     }),
     storeView: function() {
       return this.$route.params.storeView ? this.$route.params.storeView : true;
@@ -55,6 +56,9 @@ export default {
         : null;
     },
     pickup: function() {
+      if (this.store.modules.hideDeliveryOption) {
+        return 1;
+      }
       if (
         this.$route.params.checkoutData &&
         this.$route.params.checkoutData.hasOwnProperty("pickup")
