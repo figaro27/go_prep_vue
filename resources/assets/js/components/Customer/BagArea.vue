@@ -178,10 +178,13 @@
           </div>
           <ul>
             <li v-for="(mealItem, i) in getItemMeals(item)" :key="i">
-              <span class="small">
+              <div class="medium">
                 {{ mealItem.quantity }} x
                 {{ mealItem.title ? mealItem.title : mealItem.meal.title }}
-              </span>
+              </div>
+              <div class="small" v-if="mealItem.specialInstructions != null">
+                {{ mealItem.specialInstructions }}
+              </div>
             </li>
           </ul>
         </li>
@@ -492,7 +495,8 @@ export default {
               } else if (item.meal) {
                 mealQuantities[guid] = {
                   quantity: item.quantity,
-                  meal: item.meal
+                  meal: item.meal,
+                  specialInstructions: item.specialInstructions
                 };
               }
             });
@@ -507,7 +511,8 @@ export default {
               } else if (item.meal) {
                 mealQuantities[guid] = {
                   quantity: item.quantity,
-                  meal: item.meal
+                  meal: item.meal,
+                  specialInstructions: item.specialInstructions
                 };
               }
             });
@@ -529,7 +534,8 @@ export default {
             } else if (addonItem.meal) {
               mealQuantities[guid] = {
                 quantity: addonItem.quantity,
-                meal: addonItem.meal
+                meal: addonItem.meal,
+                specialInstructions: addonItem.specialInstructions
               };
             }
           });
@@ -544,7 +550,8 @@ export default {
             } else if (addonItem.meal) {
               mealQuantities[guid] = {
                 quantity: addonItem.quantity,
-                meal: addonItem.meal
+                meal: addonItem.meal,
+                specialInstructions: addonItem.specialInstructions
               };
             }
           });
@@ -562,6 +569,7 @@ export default {
 
           const { mealId, sizeId } = JSON.parse(guid);
           const meal = this.getMeal(mealId, item.meal);
+
           if (!meal) return null;
 
           //const size = meal && sizeId ? meal.getSize(sizeId) : null;
@@ -573,11 +581,14 @@ export default {
               : null;
           const title = size ? size.full_title : meal.full_title;
 
+          const specialInstructions = item.specialInstructions;
+
           return {
             meal,
             size,
             quantity: item.quantity,
-            title
+            title,
+            specialInstructions
           };
         })
         .filter()
