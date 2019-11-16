@@ -61,6 +61,7 @@ class StoreDetail extends Model implements HasMedia
                 return [
                     'url' => $url,
                     'url_thumb' => $url,
+                    'url_small' => $url,
                     'url_medium' => $url
                 ];
             }
