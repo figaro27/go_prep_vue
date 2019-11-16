@@ -73,6 +73,9 @@ class StoreDetail extends Model implements HasMedia
                 'url_thumb' => $this->store->getUrl(
                     MediaUtils::getMediaPath($logo, 'thumb')
                 ),
+                'url_small' => $this->store->getUrl(
+                    MediaUtils::getMediaPath($logo, 'small')
+                ),
                 'url_medium' => $this->store->getUrl(
                     MediaUtils::getMediaPath($logo, 'medium')
                 ),
