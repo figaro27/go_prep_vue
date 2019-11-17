@@ -134,7 +134,7 @@
                 />
                 <label :for="`checkox_${mealId}`">Free</label>
 
-                <span v-if="editingPrice">
+                <span v-if="editingPrice[item.guid] ? true : false">
                   <b-form-input
                     type="number"
                     v-model="item.price"
@@ -143,7 +143,7 @@
                   ></b-form-input>
                   <i
                     class="fas fa-check-circle text-primary"
-                    @click="editingPrice = false"
+                    @click="endEditPrice(item)"
                   ></i>
                 </span>
                 <span v-else>{{
@@ -153,8 +153,11 @@
                   )
                 }}</span>
                 <i
-                  v-if="($route.params.storeView || storeView) && !editingPrice"
-                  @click="editPrice"
+                  v-if="
+                    ($route.params.storeView || storeView) &&
+                      !editingPrice[item.guid]
+                  "
+                  @click="enableEditPrice(item)"
                   class="fa fa-edit text-warning"
                 ></i>
               </div>
@@ -332,7 +335,7 @@ import store from "../../store";
 export default {
   data() {
     return {
-      editingPrice: false,
+      editingPrice: {},
       showLineItemModal: false,
       lineItem: {
         title: "",
@@ -434,6 +437,12 @@ export default {
     }
   },
   mounted() {
+    if (this.bag) {
+      this.bag.forEach(item => {
+        this.editingPrice[item.guid] = false;
+      });
+    }
+
     let lineItemsOrder = [];
 
     if (this.$route.params && this.$route.params.line_items_order) {
@@ -624,8 +633,21 @@ export default {
         this.updateBagItem(item);
       }
     },
-    editPrice() {
-      this.editingPrice = true;
+    enableEditPrice(item) {
+      this.editingPrice[item.guid] = true;
+
+      this.editingPrice = {
+        ...this.editingPrice,
+        updated: true
+      };
+    },
+    endEditPrice(item) {
+      this.editingPrice[item.guid] = false;
+
+      this.editingPrice = {
+        ...this.editingPrice,
+        updated: true
+      };
     }
   }
 };
