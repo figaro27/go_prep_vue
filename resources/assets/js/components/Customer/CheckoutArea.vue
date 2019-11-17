@@ -1294,6 +1294,20 @@ export default {
       else return "Prepared Once";
     },
     tax() {
+      // Custom Sales Tax Per Meal
+      let removableItemAmount = 0;
+      let customSalesTaxAmount = 0;
+      this.bag.forEach(item => {
+        // Remove the meal from the total amount of the bag, and then add it back in using its custom sales tax rate.
+        if (item.meal.salesTax !== null) {
+          removableItemAmount += item.price * item.quantity;
+          customSalesTaxAmount +=
+            item.price * item.quantity * item.meal.salesTax;
+        }
+      });
+      let taxableAmount =
+        this.afterDiscount - removableItemAmount + customSalesTaxAmount;
+
       if (
         this.storeSettings.enableSalesTax === 0 ||
         this.storeSettings.enableSalesTax === false
@@ -1301,8 +1315,8 @@ export default {
         return 0;
       }
       if (this.storeSettings.salesTax > 0)
-        return (this.storeSettings.salesTax / 100) * this.afterDiscount;
-      else return this.salesTax * this.afterDiscount;
+        return (this.storeSettings.salesTax / 100) * taxableAmount;
+      else return this.salesTax * taxableAmount;
     },
     subscriptionId() {
       return this.$route.params.subscriptionId;

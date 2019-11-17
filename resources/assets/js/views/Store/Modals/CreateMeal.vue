@@ -139,6 +139,23 @@
                 :options="allergyOptions"
                 class="storeFilters"
               ></b-form-checkbox-group>
+              <div v-if="store.modules.customSalesTax">
+                <h4 class="mt-4">
+                  Custom Sales Tax
+                  <img
+                    v-b-popover.hover="
+                      'If this meal should be charged different sales tax or even 0 sales tax, you can type the amount in this field.'
+                    "
+                    title="Custom Sales Tax"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </h4>
+                <b-form-input
+                  v-model.number="meal.salesTax"
+                  placeholder="Leave blank for default sales tax or type 0 for no sales tax."
+                ></b-form-input>
+              </div>
 
               <h4 v-if="storeSettings.mealInstructions" class="mt-4">
                 Instructions
@@ -432,7 +449,8 @@ export default {
         default_size_title: this.meal.default_size_title,
         components: this.meal.components,
         addons: this.meal.addons,
-        macros: this.meal.macros
+        macros: this.meal.macros,
+        salesTax: this.meal.salesTax
       };
       const updated = await this.updateMeal(this.meal.id, data, true);
 
