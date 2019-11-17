@@ -643,11 +643,17 @@ export default {
       storeModules: "viewedStoreModules",
       storeModuleSettings: "viewedStoreModuleSettings"
     }),
+    isStoreView() {
+      if (this.$route.params.storeView || this.storeView) {
+        return true;
+      }
+      return false;
+    },
     showPage() {
       if (this.$parent.mealPackagePageView) {
         let finalCategoriesSub = [];
 
-        if (this.isStoreView()) {
+        if (this.isStoreView) {
           finalCategoriesSub.push({
             id: "top",
             title: "Top Level"
@@ -740,12 +746,6 @@ export default {
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPackagePageView = false;
       this.$parent.finalCategoriesSub = [];
-    },
-    isStoreView() {
-      if (this.$route.params.storeView || this.storeView) {
-        return true;
-      }
-      return false;
     },
     done() {
       this.$v.$touch();
