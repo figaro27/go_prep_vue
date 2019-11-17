@@ -8,6 +8,201 @@
     </div>
 
     <div v-if="mealPackage">
+      <b-row class="my-3">
+        <b-col>
+          <div>
+            <div
+              class="categorySection"
+              target="categorySection_top"
+              v-if="isStoreView"
+            >
+              <h3 class="center-text mb-3">Top Level Meals</h3>
+
+              <b-form-group :label="null">
+                <div class="my-2">
+                  <b-row v-if="storeSettings.menuStyle === 'image'">
+                    <div
+                      class="item col-sm-6 col-md-6 col-lg-6 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
+                      v-for="mealOption in getTopLevel()"
+                      :key="mealOption.meal_id"
+                    >
+                      <div class="item-wrap">
+                        <div class="title d-md-none">
+                          {{ mealOption.title }}
+                        </div>
+
+                        <div class="image">
+                          <thumbnail
+                            v-if="
+                              mealOption.meal.image != null &&
+                                mealOption.meal.image.url_thumb
+                            "
+                            :src="mealOption.meal.image.url_thumb"
+                            :spinner="false"
+                            class="menu-item-img"
+                            width="100%"
+                            style="background-color:#ffffff"
+                            v-b-popover.hover="`${mealOption.meal.description}`"
+                          ></thumbnail>
+
+                          <div class="price" v-if="mealOption.price > 0">
+                            {{
+                              format.money(
+                                mealOption.price,
+                                storeSettings.currency
+                              )
+                            }}
+                          </div>
+                        </div>
+                        <!-- Image End !-->
+
+                        <div class="meta">
+                          <div class="title d-none d-md-block">
+                            {{ mealOption.title }}
+                          </div>
+
+                          <b-form-textarea
+                            v-if="
+                              (storeModules.specialInstructions &&
+                                !storeModuleSettings.specialInstructionsStoreOnly) ||
+                                (storeModuleSettings.specialInstructionsStoreOnly &&
+                                  $route.params.storeView)
+                            "
+                            class="mt-4"
+                            v-model="specialInstructions[mealOption.meal_id]"
+                            placeholder="Special instructions"
+                            rows="3"
+                            max-rows="6"
+                          ></b-form-textarea>
+                        </div>
+                        <!-- Meta End !-->
+                      </div>
+                      <!-- Item Wrap End !-->
+                    </div>
+                  </b-row>
+
+                  <b-row v-if="storeSettings.menuStyle === 'text'">
+                    <div
+                      class="item item-text col-sm-6 col-md-6 col-lg-12 col-xl-6"
+                      v-for="mealOption in getTopLevel()"
+                      :key="mealOption.meal_id"
+                      style="margin-bottom: 10px !important;"
+                    >
+                      <div
+                        class="card card-text-menu border-light p-3 mr-1"
+                        style="height: 100%;"
+                        v-if="mealOption && mealOption.quantity > 0"
+                      >
+                        <div
+                          class="bag-item-quantity"
+                          style="display: flex; min-height: 128px !important;"
+                        >
+                          <div
+                            v-if="mealOption.meal.image != null"
+                            class="content-area"
+                            style="position: relative;"
+                          >
+                            <div class="image-area" style="position: relative;">
+                              <thumbnail
+                                class="text-menu-image"
+                                v-if="mealOption.meal.image != null"
+                                :src="mealOption.meal.image.url_thumb"
+                                :spinner="false"
+                              ></thumbnail>
+
+                              <div
+                                class="price"
+                                style="top: 5px !important; right: 5px !important;"
+                                v-if="mealOption.price > 0"
+                              >
+                                {{
+                                  format.money(
+                                    mealOption.price,
+                                    storeSettings.currency
+                                  )
+                                }}
+                              </div>
+                            </div>
+                            <!-- Image Area End !-->
+
+                            <div class="content-text-wrap">
+                              <strong>{{ mealOption.title }}</strong>
+                              <div class="mt-1 content-text">
+                                {{ mealOption.meal.description }}
+                              </div>
+
+                              <b-form-textarea
+                                v-if="
+                                  (storeModules.specialInstructions &&
+                                    !storeModuleSettings.specialInstructionsStoreOnly) ||
+                                    (storeModuleSettings.specialInstructionsStoreOnly &&
+                                      $route.params.storeView)
+                                "
+                                class="mt-2"
+                                v-model="
+                                  specialInstructions[mealOption.meal_id]
+                                "
+                                placeholder="Special instructions"
+                                rows="3"
+                                max-rows="6"
+                              ></b-form-textarea>
+                            </div>
+                            <!-- Content Text Wrap End !-->
+                          </div>
+
+                          <div
+                            v-else
+                            class="content-area"
+                            style="position: relative;"
+                          >
+                            <div class="content-text-wrap">
+                              <strong>{{ mealOption.title }}</strong>
+                              <div class="mt-1 content-text">
+                                {{ mealOption.meal.description }}
+                              </div>
+                              <div
+                                class="price-no-bg"
+                                style="top: 0 !important; right: 0 !important;"
+                                v-if="mealOption.price > 0"
+                              >
+                                {{
+                                  format.money(
+                                    mealOption.price,
+                                    storeSettings.currency
+                                  )
+                                }}
+                              </div>
+
+                              <b-form-textarea
+                                v-if="
+                                  (storeModules.specialInstructions &&
+                                    !storeModuleSettings.specialInstructionsStoreOnly) ||
+                                    (storeModuleSettings.specialInstructionsStoreOnly &&
+                                      $route.params.storeView)
+                                "
+                                class="mt-2"
+                                v-model="
+                                  specialInstructions[mealOption.meal_id]
+                                "
+                                placeholder="Special instructions"
+                                rows="3"
+                                max-rows="6"
+                              ></b-form-textarea>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Bag Item Quantity End !-->
+                      </div>
+                      <!-- Card End !-->
+                    </div>
+                  </b-row>
+                </div>
+              </b-form-group>
+            </div>
+          </div>
+        </b-col>
+      </b-row>
+
       <b-row v-if="components.length" class="my-3">
         <b-col>
           <div
@@ -372,11 +567,33 @@
               <b-checkbox-group
                 class="meal-checkboxes"
                 v-model="addons[addon.id]"
-                :options="getMealOptions(addon.meals)"
                 stacked
                 @input.native="e => console.log(e)"
                 @change="choices => onChangeAddonChoices(addon, choices)"
-              ></b-checkbox-group>
+              >
+                <b-checkbox
+                  v-for="(option, index) in getMealOptions(addon.meals)"
+                  :value="option.value"
+                  v-bind:key="index"
+                >
+                  {{ option.text }}
+
+                  <b-form-textarea
+                    v-if="
+                      (storeModules.specialInstructions &&
+                        !storeModuleSettings.specialInstructionsStoreOnly) ||
+                        (storeModuleSettings.specialInstructionsStoreOnly &&
+                          $route.params.storeView)
+                    "
+                    style="width: 100%;"
+                    class="mb-2"
+                    v-model="specialInstructions[option.id]"
+                    placeholder="Special instructions"
+                    rows="3"
+                    max-rows="6"
+                  ></b-form-textarea>
+                </b-checkbox>
+              </b-checkbox-group>
             </div>
           </div>
         </b-col>
@@ -429,6 +646,13 @@ export default {
     showPage() {
       if (this.$parent.mealPackagePageView) {
         let finalCategoriesSub = [];
+
+        if (this.isStoreView()) {
+          finalCategoriesSub.push({
+            id: "top",
+            title: "Top Level"
+          });
+        }
 
         if (this.components && this.components.length > 0) {
           this.components.map(component => {
@@ -517,6 +741,12 @@ export default {
       this.$parent.mealPackagePageView = false;
       this.$parent.finalCategoriesSub = [];
     },
+    isStoreView() {
+      if (this.$route.params.storeView || this.storeView) {
+        return true;
+      }
+      return false;
+    },
     done() {
       this.$v.$touch();
 
@@ -542,6 +772,17 @@ export default {
         }
 
         /* Checking Special Instructions */
+        const meals = this.mealPackageSize
+          ? this.mealPackageSize.meals
+          : this.mealPackage.meals;
+        if (meals) {
+          meals.forEach(meal => {
+            if (this.specialInstructions[meal.id]) {
+              meal.specialInstructions = this.specialInstructions[meal.id];
+            }
+          });
+        }
+
         if (components) {
           for (let i in components) {
             for (let option in components[i]) {
@@ -553,6 +794,18 @@ export default {
                 }
               });
             }
+          }
+        }
+
+        if (addons) {
+          for (let i in addons) {
+            addons[i].forEach(mealOption => {
+              if (this.specialInstructions[mealOption.meal_id]) {
+                mealOption.specialInstructions = this.specialInstructions[
+                  mealOption.meal_id
+                ];
+              }
+            });
           }
         }
         /* Checking Special Instructions End */
@@ -675,6 +928,45 @@ export default {
       }
       return null;
     },
+    getTopLevel() {
+      let mealOptions = this.mealPackageSize
+        ? this.mealPackageSize.meals
+        : this.mealPackage.meals;
+
+      mealOptions = _.filter(mealOptions, mealOption => {
+        const meal = this.getMeal(mealOption.id);
+        if (!meal) return false;
+
+        mealOption.meal_id = mealOption.id;
+
+        if (
+          this.$parent.search &&
+          !meal.title.toLowerCase().includes(this.$parent.search.toLowerCase())
+        ) {
+          return false;
+        }
+
+        return true;
+      });
+
+      return _(mealOptions)
+        .map(mealOption => {
+          const meal = this.getMeal(mealOption.meal_id);
+          if (!meal) return null;
+
+          const size = meal.getSize(mealOption.meal_size_id);
+
+          let title = size ? size.full_title : meal.full_title;
+
+          return {
+            ...mealOption,
+            meal,
+            size,
+            title
+          };
+        })
+        .value();
+    },
     getMealOptions(mealOptions, checkboxes = true) {
       mealOptions = _.filter(mealOptions, mealOption => {
         const meal = this.getMeal(mealOption.meal_id);
@@ -709,7 +1001,8 @@ export default {
 
             return {
               text: title,
-              value: mealOption
+              value: mealOption,
+              id: mealOption.meal_id
             };
           } else {
             return {
