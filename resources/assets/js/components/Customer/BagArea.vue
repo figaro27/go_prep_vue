@@ -486,7 +486,11 @@ export default {
           });
         }),
         mealItem => {
-          return { quantity: mealItem.quantity, meal: mealItem };
+          return {
+            quantity: mealItem.quantity,
+            meal: mealItem,
+            specialInstructions: mealItem.specialInstructions
+          };
         }
       );
 
