@@ -60,7 +60,7 @@
                       storeSettings.mealPlanDiscount > 0
                   "
                 >
-                  Subscribe & save
+                  Subscribe &amp; save
                   <span class="text-success standout">{{
                     format.money(subscribeAndSaveAmount, storeSettings.currency)
                   }}</span>
@@ -82,6 +82,18 @@
                   "
                 /></p
             ></strong>
+          </div>
+        </div>
+
+        <div v-if="storeModules.monthlyPlans" class="row">
+          <div class="col-6 col-md-4">
+            <strong>Billing period:</strong>
+          </div>
+          <div class="col-6 col-md-5">
+            <b-select v-model="subscriptionInterval">
+              <option value="week">Weekly</option>
+              <option value="month">Monthly</option>
+            </b-select>
           </div>
         </div>
       </li>
@@ -396,7 +408,6 @@
         ></b-select>
       </div>
     </li>
-
     <li v-if="loggedIn">
       <div
         v-if="
@@ -784,6 +795,7 @@ export default {
       couponCode: "",
       addCustomerModal: false,
       weeklySubscriptionValue: null,
+      subscriptionInterval: "week",
       customerModel: null
     };
   },
@@ -1642,6 +1654,7 @@ export default {
           afterDiscount: this.afterDiscount,
           bag: this.bag,
           plan: weeklySubscriptionValue,
+          plan_interval: this.subscriptionInterval,
           pickup: this.pickup,
           delivery_day: this.bagDeliveryDate
             ? this.bagDeliveryDate
