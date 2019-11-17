@@ -1299,12 +1299,40 @@ export default {
       let customSalesTaxAmount = 0;
       this.bag.forEach(item => {
         // Remove the meal from the total amount of the bag, and then add it back in using its custom sales tax rate.
-        if (item.meal.salesTax !== null) {
-          removableItemAmount += item.price * item.quantity;
-          customSalesTaxAmount +=
-            item.price * item.quantity * item.meal.salesTax;
+        if (!item.meal_package) {
+          if (item.meal.salesTax !== null) {
+            removableItemAmount += item.price * item.quantity;
+            customSalesTaxAmount +=
+              item.price * item.quantity * item.meal.salesTax;
+          }
+        } else {
+          // Meal packages size (top level) meals don't affect the package price, so not included below.
+          if (item.addons.length > 0) {
+            item.addons.forEach(addonItem => {
+              if (addonItem.meal.salesTax !== null) {
+                removableItemAmount += addonItem.price * addonItem.quantity;
+                customSalesTaxAmount +=
+                  addonItem.price *
+                  addonItem.quantity *
+                  addonItem.meal.salesTax;
+              }
+            });
+          }
+          Object.values(item.components).forEach(component => {
+            Object.values(component).forEach(componentOption => {
+              if (componentOption[0].meal.salesTax !== null) {
+                removableItemAmount +=
+                  componentOption[0].price * componentOption[0].quantity;
+                customSalesTaxAmount +=
+                  componentOption[0].price *
+                  componentOption[0].quantity *
+                  componentOption[0].meal.salesTax;
+              }
+            });
+          });
         }
       });
+
       let taxableAmount =
         this.afterDiscount - removableItemAmount + customSalesTaxAmount;
 
