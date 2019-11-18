@@ -274,6 +274,7 @@
           <strong v-if="pickup === 0">Delivery Day</strong>
           <strong v-if="pickup === 1">Pickup Day</strong>
           <b-select
+            v-model="deliveryDay"
             :options="deliveryDateOptionsStoreView"
             :value="bagDeliveryDate"
             @input="changeDeliveryDay"
