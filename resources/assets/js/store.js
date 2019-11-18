@@ -196,6 +196,158 @@ const mutations = {
       state.bag.total = 0;
     }
   },
+  updateOneSubItemFromAdjust(state, { item, order_bag, plus }) {
+    let guid = order_bag.guid.toString();
+
+    if (!_.has(state.bag.items, guid)) {
+      return;
+    }
+
+    let bag_item = state.bag.items[guid];
+    const mealPackage = !!bag_item.meal_package;
+    const size_id = item.size ? item.size.id : null;
+
+    if (!mealPackage || !bag_item.meal) {
+      return;
+    }
+
+    const pkg = bag_item.meal;
+    const size = pkg && bag_item.size ? bag_item.size : null;
+
+    const packageMeals = size ? size.meals : pkg ? pkg.meals : null;
+    let found = false;
+
+    _.forEach(packageMeals, (pkgMeal, index) => {
+      if (
+        pkgMeal &&
+        pkgMeal.id == item.meal.id &&
+        pkgMeal.meal_size_id == size_id &&
+        !found
+      ) {
+        found = true;
+
+        if (plus) {
+          pkgMeal.quantity += 1;
+        } else {
+          pkgMeal.quantity -= 1;
+        }
+
+        if (pkgMeal.quantity <= 0) {
+          packageMeals.splice(index, 1);
+        }
+      }
+    });
+
+    if (!found) {
+      // Not Found
+      _(bag_item.components).forEach((options, componentId) => {
+        const component = pkg.getComponent(componentId);
+        const optionIds = mealPackage ? Object.keys(options) : options;
+
+        _.forEach(optionIds, optionId => {
+          const option = pkg.getComponentOption(component, optionId);
+          if (!option) {
+            return null;
+          }
+
+          if (option.selectable) {
+            _.forEach(options[option.id], (optionItem, index) => {
+              if (
+                optionItem &&
+                optionItem.meal_id == item.meal.id &&
+                optionItem.meal_size_id == size_id &&
+                !found
+              ) {
+                found = true;
+
+                if (plus) {
+                  optionItem.quantity += 1;
+                } else {
+                  optionItem.quantity -= 1;
+                }
+
+                if (optionItem.quantity <= 0) {
+                  options[option.id].splice(index, 1);
+                }
+              }
+            });
+          } else {
+            _.forEach(option.meals, (mealItem, index) => {
+              if (
+                mealItem &&
+                mealItem.meal_id == item.meal.id &&
+                mealItem.meal_size_id == size_id &&
+                !found
+              ) {
+                found = true;
+
+                if (plus) {
+                  mealItem.quantity += 1;
+                } else {
+                  mealItem.quantity -= 1;
+                }
+
+                if (mealItem.quantity <= 0) {
+                  option.meals.splice(index, 1);
+                }
+              }
+            });
+          }
+        });
+      });
+    }
+
+    if (!found) {
+      _(bag_item.addons).forEach((addonItems, addonId) => {
+        const addon = pkg.getAddon(addonId);
+        if (addon.selectable) {
+          _.forEach(addonItems, (addonItem, index) => {
+            if (
+              addonItem &&
+              addonItem.meal_id == item.meal.id &&
+              addonItem.meal_size_id == size_id &&
+              !found
+            ) {
+              found = true;
+
+              if (plus) {
+                addonItem.quantity += 1;
+              } else {
+                addonItem.quantity -= 1;
+              }
+
+              if (addonItem.quantity <= 0) {
+                addonItems.splice(index, 1);
+              }
+            }
+          });
+        } else {
+          _.forEach(addonItems, (addonItem, index) => {
+            if (
+              addonItem &&
+              addonItem.meal_id == item.meal.id &&
+              addonItem.meal_size_id == size_id &&
+              !found
+            ) {
+              found = true;
+
+              if (plus) {
+                addonItem.quantity += 1;
+              } else {
+                addonItem.quantity -= 1;
+              }
+
+              if (addonItem.quantity <= 0) {
+                addonItems.splice(index, 1);
+              }
+            }
+          });
+        }
+      });
+    }
+
+    Vue.set(state.bag.items, guid, bag_item);
+  },
   addToBagFromAdjust(state, order_bag) {
     let guid = order_bag.guid.toString();
 

@@ -493,12 +493,10 @@ export default {
       }
     },
     adjustMinus(mealItem, item) {
-      console.log("mealItem", mealItem);
-      console.log("item", item);
+      this.updateOneSubItemFromAdjust(mealItem, item, false);
     },
     adjustPlus(mealItem, item) {
-      console.log("mealItem", mealItem);
-      console.log("item", item);
+      this.updateOneSubItemFromAdjust(mealItem, item, true);
     },
     isAdjustOrder() {
       if (
@@ -518,7 +516,8 @@ export default {
       }
 
       const pkg = this.getMealPackage(item.meal.id, item.meal);
-      const size = pkg && item.size ? pkg.getSize(item.size.id) : null;
+      //const size = pkg && item.size ? pkg.getSize(item.size.id) : null;
+      const size = pkg && item.size ? item.size : null;
 
       const packageMeals = size ? size.meals : pkg ? pkg.meals : null;
 
