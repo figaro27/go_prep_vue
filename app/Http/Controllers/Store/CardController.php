@@ -100,7 +100,8 @@ class CardController extends StoreController
             'exp_year' => $card['exp_year'],
             'last4' => $card['last4'],
             'country' => $card['country'],
-            'payment_gateway' => $gateway
+            'payment_gateway' => $gateway,
+            'store_id' => $this->store->id
         ]);
     }
 
