@@ -82,7 +82,7 @@ $brandColor = $order->store->settings->color;
         @endif
         <p>{{$order->user->details->phone}}</p>
         @if (strpos($order->user->email, 'noemail') === false)
-        {{$order->user->email}}
+        <p>{{$order->user->email}}</p>
         @endif
         @if ($order->manual)
         <p>Manual Order: {{$order->created_at->format('D, m/d/Y')}}</p>
