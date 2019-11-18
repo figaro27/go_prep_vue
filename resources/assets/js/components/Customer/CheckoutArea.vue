@@ -85,7 +85,7 @@
           </div>
         </div>
 
-        <div v-if="storeModules.monthlyPlans" class="row">
+        <div v-if="weeklySubscription && storeModules.monthlyPlans" class="row">
           <div class="col-6 col-md-4">
             <strong>Billing period:</strong>
           </div>

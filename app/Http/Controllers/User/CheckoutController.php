@@ -519,9 +519,6 @@ class CheckoutController extends UserController
                     'N',
                     strtotime($deliveryDay)
                 );
-                $userSubscription->next_renewal_at = $cutoff
-                    ->copy()
-                    ->addDays(7);
                 $userSubscription->coupon_id = $couponId;
                 $userSubscription->couponReduction = $couponReduction;
                 $userSubscription->couponCode = $couponCode;
