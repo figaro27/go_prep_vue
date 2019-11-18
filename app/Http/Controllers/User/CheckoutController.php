@@ -439,6 +439,13 @@ class CheckoutController extends UserController
             if ($diff >= 7) {
                 $billingAnchor->addWeeks(1);
             }
+
+            // Is billing anchor past the cutoff?
+            // Set to the cutoff date
+            if ($billingAnchor->greaterThan($cutoff)) {
+                $billingAnchor = $cutoff->copy();
+            }
+
             if (!$cashOrder) {
                 if ($gateway === Constants::GATEWAY_STRIPE) {
                     $plan = \Stripe\Plan::create(
