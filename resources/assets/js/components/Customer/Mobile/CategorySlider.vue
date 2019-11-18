@@ -1,33 +1,35 @@
 <template>
   <div class="category-slider d-block d-md-none">
-    <slick
-      v-if="categories.length > 4"
-      ref="categorySlider"
-      :options="{
-        arrows: false,
-        centerMode: true,
-        variableWidth: true,
-        infinite: false
-      }"
-    >
-      <div
-        v-for="category in categories"
-        :key="category"
-        @click.prevent="goToCategory(slugify(category))"
-        class="m-2"
+    <div v-if="!isLazy">
+      <slick
+        v-if="categories.length > 4"
+        ref="categorySlider"
+        :options="{
+          arrows: false,
+          centerMode: true,
+          variableWidth: true,
+          infinite: false
+        }"
       >
-        {{ category }}
-      </div>
-    </slick>
+        <div
+          v-for="category in categories"
+          :key="category"
+          @click.prevent="goToCategory(slugify(category))"
+          class="m-2"
+        >
+          {{ category }}
+        </div>
+      </slick>
 
-    <div v-else class="text-center">
-      <span
-        v-for="category in categories"
-        :key="category"
-        @click.prevent="goToCategory(slugify(category))"
-        class="d-inline-block m-2"
-        >{{ category }}</span
-      >
+      <div v-else class="text-center">
+        <span
+          v-for="category in categories"
+          :key="category"
+          @click.prevent="goToCategory(slugify(category))"
+          class="d-inline-block m-2"
+          >{{ category }}</span
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -45,7 +47,7 @@ export default {
         return;
       }
 
-      const currIndex = ref.currentSlide();
+      const currIndex = 0; //ref.currentSlide();
 
       ref.destroy();
       this.$nextTick(() => {
@@ -58,12 +60,13 @@ export default {
     ...mapGetters({
       _categories: "viewedStoreCategories",
       store: "viewedStore",
-      storeSettings: "viewedStoreSetting"
+      storeSettings: "viewedStoreSetting",
+      isLazy: "isLazy"
     }),
     categories() {
       let sorting = {};
       this._categories.forEach(cat => {
-        sorting[cat.category] = cat.order.toString() + cat.category;
+        sorting[cat.category] = cat.order; //cat.order.toString() + cat.category;
       });
 
       let grouped = [];
