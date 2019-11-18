@@ -198,11 +198,32 @@ const mutations = {
   },
   addToBagFromAdjust(state, order_bag) {
     let guid = order_bag.guid.toString();
-    order_bag = {
-      ...order_bag,
-      adjust: true
+
+    if (!_.has(state.bag.items, guid)) {
+      Vue.set(state.bag.items, guid, {
+        quantity: 0,
+        meal: order_bag.meal,
+        meal_package: order_bag.meal_package,
+        added: moment().unix(),
+        size: order_bag.size,
+        components: order_bag.components,
+        addons: order_bag.addons,
+        special_instructions: order_bag.special_instructions,
+        free: order_bag.free,
+        adjust: true,
+        price: order_bag.price,
+        original_price: order_bag.original_price
+      });
+    }
+
+    let item = {
+      ...state.bag.items[guid]
     };
-    Vue.set(state.bag.items, guid, order_bag);
+
+    item.quantity = (item.quantity || 0) + order_bag.quantity;
+    item.guid = guid;
+
+    Vue.set(state.bag.items, guid, item);
   },
   addToBag(
     state,
@@ -342,6 +363,18 @@ const mutations = {
     /* Adjustments End */
 
     Vue.set(state.bag.items, guid, item);
+  },
+  removeFromBagFromAdjust(state, order_bag) {
+    let guid = order_bag.guid.toString();
+
+    if (!_.has(state.bag.items, guid)) {
+      return;
+    }
+
+    state.bag.items[guid].quantity -= order_bag.quantity;
+    if (state.bag.items[guid].quantity <= 0) {
+      Vue.delete(state.bag.items, guid);
+    }
   },
   removeFromBag(
     state,

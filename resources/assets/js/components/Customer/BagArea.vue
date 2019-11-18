@@ -36,49 +36,14 @@
           >
             <div class="bag-item-quantity mr-2">
               <div
-                v-if="!item.meal_package"
-                @click="
-                  addOne(
-                    item.meal,
-                    false,
-                    item.size,
-                    item.components,
-                    item.addons,
-                    item.special_instructions
-                  )
-                "
-                class="bag-plus-minus brand-color white-text"
-              >
-                <i>+</i>
-              </div>
-              <div
-                v-if="item.meal_package"
-                @click="
-                  addOne(
-                    item.meal,
-                    true,
-                    item.size,
-                    item.components,
-                    item.addons,
-                    item.special_instructions
-                  )
-                "
+                @click="addToBag(item)"
                 class="bag-plus-minus brand-color white-text"
               >
                 <i>+</i>
               </div>
               <p class="bag-quantity">{{ item.quantity }}</p>
               <div
-                @click="
-                  minusOne(
-                    item.meal,
-                    false,
-                    item.size,
-                    item.components,
-                    item.addons,
-                    item.special_instructions
-                  )
-                "
+                @click="removeFromBag(item)"
                 class="bag-plus-minus gray white-text"
               >
                 <i>-</i>
@@ -493,6 +458,40 @@ export default {
     this.$emit("updateLineItems", this.orderLineItems);
   },
   methods: {
+    addToBag(item) {
+      if (this.isAdjustOrder()) {
+        this.addOneFromAdjust({
+          ...item,
+          quantity: 1
+        });
+      } else {
+        this.addOne(
+          item.meal,
+          item.meal_package,
+          item.size,
+          item.components,
+          item.addons,
+          item.special_instructions
+        );
+      }
+    },
+    removeFromBag(item) {
+      if (this.isAdjustOrder()) {
+        this.removeOneFromAdjust({
+          ...item,
+          quantity: 1
+        });
+      } else {
+        this.minusOne(
+          item.meal,
+          item.meal_package,
+          item.size,
+          item.components,
+          item.addons,
+          item.special_instructions
+        );
+      }
+    },
     adjustMinus(mealItem, item) {
       console.log("mealItem", mealItem);
       console.log("item", item);
