@@ -7,27 +7,28 @@
         :options="{
           arrows: false,
           centerMode: true,
+          slidesToShow: 1,
           variableWidth: true,
           infinite: false
         }"
       >
         <div
           v-for="category in categories"
-          :key="category"
-          @click.prevent="goToCategory(slugify(category))"
+          :key="category.id"
+          @click.prevent="goToCategory(slugify(category.category))"
           class="m-2"
         >
-          {{ category }}
+          {{ category.category }}
         </div>
       </slick>
 
       <div v-else class="text-center">
         <span
           v-for="category in categories"
-          :key="category"
-          @click.prevent="goToCategory(slugify(category))"
+          :key="category.category"
+          @click.prevent="goToCategory(slugify(category.category))"
           class="d-inline-block m-2"
-          >{{ category }}</span
+          >{{ category.category }}</span
         >
       </div>
     </div>
@@ -41,20 +42,20 @@ import MenuBag from "../../../mixins/menuBag";
 export default {
   mixins: [MenuBag],
   watch: {
-    categories(val, oldVal) {
+    /*categories(val, oldVal) {
       const ref = this.$refs.categorySlider;
-      if (!ref) {
+      if (!ref || val.length === oldVal.length) {
         return;
       }
 
-      const currIndex = 0; //ref.currentSlide();
+      const currIndex = ref.currentSlide();
 
       ref.destroy();
-      this.$nextTick(() => {
-        ref.create();
-        ref.goTo(currIndex, true);
+      this.$nextTick(async () => {
+        await ref.create();
+        ref.goTo(0, true);
       });
-    }
+    }*/
   },
   computed: {
     ...mapGetters({
@@ -66,7 +67,7 @@ export default {
     categories() {
       let sorting = {};
       this._categories.forEach(cat => {
-        sorting[cat.category] = cat.order; //cat.order.toString() + cat.category;
+        sorting[cat.id] = cat.order; //cat.order.toString() + cat.category;
       });
 
       let grouped = [];
@@ -75,16 +76,16 @@ export default {
           let category = _.find(this._categories, { id: categoryId });
           if (
             category &&
-            !_.includes(grouped, category.category) &&
+            !_.find(grouped, { id: category.id }) &&
             this.isCategoryVisible(category)
           ) {
-            grouped.push(category.category);
+            grouped.push(category);
           }
         });
       });
 
       let categories = _.orderBy(grouped, cat => {
-        return cat in sorting ? sorting[cat] : 9999;
+        return cat.id in sorting ? sorting[cat.id] : 9999;
       });
 
       if (
@@ -110,12 +111,17 @@ export default {
     }
   },
   methods: {
-    goTo(index) {
+    goTo(categoryId) {
       if (this.$refs.categorySlider) {
+        const index = _.findIndex(this.categories, { id: categoryId });
         this.$refs.categorySlider.goTo(index);
       }
     },
     goToCategory(category) {
+      if (this.isLazy) {
+        return;
+      }
+
       if ($("#xs").is(":visible") || $("#sm").is(":visible")) {
         const top = $(`#${category}`).offset().top;
         $(document).scrollTop(top - 90);
