@@ -90,11 +90,7 @@
                   {{ addon }}
                 </li>
               </ul>
-              <div
-                v-if="
-                  ($route.params.storeView || storeView) && !isAdjustOrder()
-                "
-              >
+              <div v-if="$route.params.storeView || storeView">
                 <input
                   type="checkbox"
                   :id="`checkox_${mealId}`"
@@ -163,7 +159,7 @@
                 style="display: flex; align-items: center; margin-bottom: 5px;"
               >
                 <div
-                  v-if="isAdjustOrder()"
+                  v-if="$route.params.storeView || storeView"
                   style="display: flex; align-items: center;"
                 >
                   <div
