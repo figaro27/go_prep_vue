@@ -117,18 +117,22 @@ class CustomerController extends StoreController
 
     public function getCards(Request $request)
     {
-        /*$customerId = $request->get('id');
-        $userId = $this->store->customers
-            ->where('id', $customerId)
-            ->pluck('user_id')
-            ->first();*/
-
         $customerId = $request->get('id');
-        $userId = Customer::where('id', $customerId)
-            ->pluck('user_id')
-            ->first();
-        $card = Card::where('user_id', $userId)->get();
+        $customer = Customer::where('id', $customerId)->first();
 
-        return $card;
+        $storeId = $this->store->id;
+        $gateway = $this->store->settings->payment_gateway;
+
+        return $customer->user
+            ->cards()
+            ->where('payment_gateway', $gateway)
+            ->get()
+            ->filter(function ($card) use ($storeId, $gateway) {
+                if ($gateway === 'authorize') {
+                    return $card->store_id === $storeId;
+                } else {
+                    return true;
+                }
+            });
     }
 }
