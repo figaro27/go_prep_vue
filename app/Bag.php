@@ -205,9 +205,9 @@ class Bag
                                             'meal_size_id' =>
                                                 $mealOption->meal_size_id,
                                             'special_instructions' => isset(
-                                                $meal['specialInstructions']
+                                                $meal['special_instructions']
                                             )
-                                                ? $meal['specialInstructions']
+                                                ? $meal['special_instructions']
                                                 : null
                                         ]);
                                     }
@@ -315,9 +315,11 @@ class Bag
                                         'meal_size_id' =>
                                             $mealOption->meal_size_id,
                                         'special_instructions' => isset(
-                                            $mealOption['specialInstructions']
+                                            $mealOption['special_instructions']
                                         )
-                                            ? $mealOption['specialInstructions']
+                                            ? $mealOption[
+                                                'special_instructions'
+                                            ]
                                             : null
                                     ]);
                                 }
