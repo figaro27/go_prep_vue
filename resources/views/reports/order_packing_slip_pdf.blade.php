@@ -81,6 +81,9 @@ $brandColor = $order->store->settings->color;
           {{$order->user->details->zip}}</p>
         @endif
         <p>{{$order->user->details->phone}}</p>
+        @if (strpos($order->user->email, 'noemail') === false)
+        {{$order->user->email}}
+        @endif
         @if ($order->manual)
         <p>Manual Order: {{$order->created_at->format('D, m/d/Y')}}</p>
         @else
@@ -194,7 +197,7 @@ $brandColor = $order->store->settings->color;
           <td>{!! $item->html_title !!}</td>
           <td style="text-align:center">
             @if ($item->attached || $item->free)
-            Free
+            Included
             @else
             ${{ number_format($item->price, 2) }}
             @endif
