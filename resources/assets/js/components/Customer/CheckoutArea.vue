@@ -60,7 +60,7 @@
                       storeSettings.mealPlanDiscount > 0
                   "
                 >
-                  Subscribe & save
+                  Subscribe &amp; save
                   <span class="text-success standout">{{
                     format.money(subscribeAndSaveAmount, storeSettings.currency)
                   }}</span>
@@ -82,6 +82,18 @@
                   "
                 /></p
             ></strong>
+          </div>
+        </div>
+
+        <div v-if="weeklySubscription && storeModules.monthlyPlans" class="row">
+          <div class="col-6 col-md-4">
+            <strong>Billing period:</strong>
+          </div>
+          <div class="col-6 col-md-5">
+            <b-select v-model="subscriptionInterval">
+              <option value="week">Weekly</option>
+              <option value="month">Monthly</option>
+            </b-select>
           </div>
         </div>
       </li>
@@ -396,7 +408,6 @@
         ></b-select>
       </div>
     </li>
-
     <li v-if="loggedIn">
       <div
         v-if="
@@ -784,6 +795,7 @@ export default {
       couponCode: "",
       addCustomerModal: false,
       weeklySubscriptionValue: null,
+      subscriptionInterval: "week",
       customerModel: null
     };
   },
@@ -1299,12 +1311,40 @@ export default {
       let customSalesTaxAmount = 0;
       this.bag.forEach(item => {
         // Remove the meal from the total amount of the bag, and then add it back in using its custom sales tax rate.
-        if (item.meal.salesTax !== null) {
-          removableItemAmount += item.price * item.quantity;
-          customSalesTaxAmount +=
-            item.price * item.quantity * item.meal.salesTax;
+        if (!item.meal_package) {
+          if (item.meal.salesTax !== null) {
+            removableItemAmount += item.price * item.quantity;
+            customSalesTaxAmount +=
+              item.price * item.quantity * item.meal.salesTax;
+          }
+        } else {
+          // Meal packages size (top level) meals don't affect the package price, so not included below.
+          if (item.addons.length > 0) {
+            item.addons.forEach(addonItem => {
+              if (addonItem.meal.salesTax !== null) {
+                removableItemAmount += addonItem.price * addonItem.quantity;
+                customSalesTaxAmount +=
+                  addonItem.price *
+                  addonItem.quantity *
+                  addonItem.meal.salesTax;
+              }
+            });
+          }
+          Object.values(item.components).forEach(component => {
+            Object.values(component).forEach(componentOption => {
+              if (componentOption[0].meal.salesTax !== null) {
+                removableItemAmount +=
+                  componentOption[0].price * componentOption[0].quantity;
+                customSalesTaxAmount +=
+                  componentOption[0].price *
+                  componentOption[0].quantity *
+                  componentOption[0].meal.salesTax;
+              }
+            });
+          });
         }
       });
+
       let taxableAmount =
         this.afterDiscount - removableItemAmount + customSalesTaxAmount;
 
@@ -1614,6 +1654,7 @@ export default {
           afterDiscount: this.afterDiscount,
           bag: this.bag,
           plan: weeklySubscriptionValue,
+          plan_interval: this.subscriptionInterval,
           pickup: this.pickup,
           delivery_day: this.bagDeliveryDate
             ? this.bagDeliveryDate

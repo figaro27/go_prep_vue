@@ -165,6 +165,14 @@
                   class="fa fa-edit text-warning"
                 ></i>
               </div>
+              <div v-if="!$route.params.storeView && !storeView">
+                <span>{{
+                  format.money(
+                    item.price * item.quantity,
+                    storeSettings.currency
+                  )
+                }}</span>
+              </div>
             </div>
             <div class="flex-grow-0">
               <img

@@ -30,6 +30,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\OrderBag;
 use DB;
+use Exception;
 
 class CheckoutController extends UserController
 {
@@ -58,6 +59,8 @@ class CheckoutController extends UserController
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
+        $interval = $request->get('plan_interval', Constants::INTERVAL_WEEK);
+        $period = Constants::PERIOD[$interval] ?? Constants::PERIOD_WEEKLY;
         //$stripeToken = $request->get('token');
         $deposit = 1;
 
@@ -413,6 +416,15 @@ class CheckoutController extends UserController
         } else {
             $weekIndex = date('N', strtotime($deliveryDay));
 
+            if (
+                $interval == Constants::INTERVAL_MONTH &&
+                !$store->modules->monthlyPlans
+            ) {
+                throw new Exception(
+                    'Cannot create monthly plan with this store'
+                );
+            }
+
             // Get cutoff date for selected delivery day
             $cutoff = $store->getCutoffDate(new Carbon($deliveryDay));
 
@@ -432,10 +444,11 @@ class CheckoutController extends UserController
                     $plan = \Stripe\Plan::create(
                         [
                             "amount" => round($total * 100),
-                            "interval" => "week",
+                            "interval" => $interval,
                             "product" => [
                                 "name" =>
-                                    "Weekly subscription (" .
+                                    ucwords($period) .
+                                    " subscription (" .
                                     $store->storeDetail->name .
                                     ")"
                             ],
@@ -476,7 +489,7 @@ class CheckoutController extends UserController
                     $subscription->customer = $customer;
                     $subscription->card = $card;
                     $subscription->startDate = $billingAnchor;
-                    $subscription->period = Constants::PERIOD_WEEKLY;
+                    $subscription->period = $period;
 
                     $transactionId = $billing->subscribe($subscription);
                     $subscription->id = $transactionId;
@@ -489,7 +502,10 @@ class CheckoutController extends UserController
                 $userSubscription->stripe_customer_id = $storeCustomer->id;
                 $userSubscription->store_id = $store->id;
                 $userSubscription->name =
-                    "Weekly subscription (" . $store->storeDetail->name . ")";
+                    ucwords($period) .
+                    " subscription (" .
+                    $store->storeDetail->name .
+                    ")";
                 if (!$cashOrder) {
                     $userSubscription->stripe_plan = $plan->id;
                     $userSubscription->stripe_id = substr($subscription->id, 4);
@@ -509,14 +525,11 @@ class CheckoutController extends UserController
                 $userSubscription->amount = $total;
                 $userSubscription->currency = $storeSettings->currency;
                 $userSubscription->pickup = $request->get('pickup', 0);
-                $userSubscription->interval = 'week';
+                $userSubscription->interval = $interval;
                 $userSubscription->delivery_day = date(
                     'N',
                     strtotime($deliveryDay)
                 );
-                $userSubscription->next_renewal_at = $cutoff
-                    ->copy()
-                    ->addDays(7);
                 $userSubscription->coupon_id = $couponId;
                 $userSubscription->couponReduction = $couponReduction;
                 $userSubscription->couponCode = $couponCode;

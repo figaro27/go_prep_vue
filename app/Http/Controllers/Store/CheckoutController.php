@@ -83,6 +83,8 @@ class CheckoutController extends StoreController
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
+        $interval = $request->get('plan_interval', Constants::INTERVAL_WEEK);
+        $period = Constants::PERIOD[$interval] ?? Constants::PERIOD_WEEKLY;
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
@@ -461,6 +463,15 @@ class CheckoutController extends StoreController
         } else {
             $weekIndex = date('N', strtotime($deliveryDay));
 
+            if (
+                $interval == Constants::INTERVAL_MONTH &&
+                !$store->modules->monthlyPlans
+            ) {
+                throw new Exception(
+                    'Cannot create monthly plan with this store'
+                );
+            }
+
             // Get cutoff date for selected delivery day
             $cutoff = $store->getCutoffDate(new Carbon($deliveryDay));
 
@@ -479,10 +490,11 @@ class CheckoutController extends StoreController
                 $plan = \Stripe\Plan::create(
                     [
                         "amount" => round($total * 100),
-                        "interval" => "week",
+                        "interval" => $interval,
                         "product" => [
                             "name" =>
-                                "Weekly subscription (" .
+                                ucwords($period) .
+                                " subscription (" .
                                 $store->storeDetail->name .
                                 ")"
                         ],
@@ -543,12 +555,11 @@ class CheckoutController extends StoreController
             $userSubscription->salesTax = $salesTax;
             $userSubscription->amount = $total;
             $userSubscription->pickup = $request->get('pickup', 0);
-            $userSubscription->interval = 'week';
+            $userSubscription->interval = $interval;
             $userSubscription->delivery_day = date(
                 'N',
                 strtotime($deliveryDay)
             );
-            $userSubscription->next_renewal_at = $cutoff->copy()->addDays(7);
             $userSubscription->coupon_id = $couponId;
             $userSubscription->couponReduction = $couponReduction;
             $userSubscription->couponCode = $couponCode;

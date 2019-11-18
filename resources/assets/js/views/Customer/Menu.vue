@@ -784,9 +784,9 @@ export default {
       "refreshUpcomingOrders"
     ]),
     ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
-    onCategoryVisible(isVisible, index) {
+    onCategoryVisible(isVisible, category) {
       if (isVisible && this.$refs.categorySlider) {
-        this.$refs.categorySlider.goTo(index);
+        this.$refs.categorySlider.goTo(category.category_id);
       }
     },
     showActiveFilters() {

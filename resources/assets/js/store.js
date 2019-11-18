@@ -866,6 +866,7 @@ const triggerLazy = (
         );
       } else {
         // Finished
+        state.isLazy = false;
       }
     })
     .catch(error => {

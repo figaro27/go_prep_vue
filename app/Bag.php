@@ -203,7 +203,12 @@ class Bag
                                             'quantity' => $mealOption->quantity,
                                             'price' => $mealOption->price,
                                             'meal_size_id' =>
-                                                $mealOption->meal_size_id
+                                                $mealOption->meal_size_id,
+                                            'special_instructions' => isset(
+                                                $meal['specialInstructions']
+                                            )
+                                                ? $meal['specialInstructions']
+                                                : null
                                         ]);
                                     }
                                 } else {
@@ -308,7 +313,12 @@ class Bag
                                         'quantity' => $mealOption->quantity,
                                         'price' => $mealOption->price,
                                         'meal_size_id' =>
-                                            $mealOption->meal_size_id
+                                            $mealOption->meal_size_id,
+                                        'special_instructions' => isset(
+                                            $mealOption['specialInstructions']
+                                        )
+                                            ? $mealOption['specialInstructions']
+                                            : null
                                     ]);
                                 }
                             } else {
