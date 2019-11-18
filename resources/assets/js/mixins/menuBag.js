@@ -149,6 +149,9 @@ export default {
       this.mealModal = false;
       this.mealPackageModal = false;
     },
+    addOneFromAdjust(order_bag) {
+      this.$store.commit("addToBagFromAdjust", order_bag);
+    },
     minusOne(
       meal,
       mealPackage = false,

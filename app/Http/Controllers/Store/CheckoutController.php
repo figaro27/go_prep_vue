@@ -27,6 +27,7 @@ use App\LineItem;
 use App\LineItemOrder;
 use App\MealPackageOrder;
 use App\MealPackageSubscription;
+use App\OrderBag;
 use App\Billing\Constants;
 use App\Billing\Charge;
 use App\Billing\Authorize;
@@ -38,6 +39,24 @@ use DB;
 
 class CheckoutController extends StoreController
 {
+    public function orderBag($order_id)
+    {
+        $order_bags = OrderBag::where('order_id', $order_id)
+            ->orderBy('id', 'asc')
+            ->get();
+        $data = [];
+
+        if ($order_bags) {
+            foreach ($order_bags as $order_bag) {
+                $data[] = json_decode($order_bag->bag);
+            }
+        }
+
+        return [
+            'order_bags' => $data
+        ];
+    }
+
     public function checkout(\App\Http\Requests\CheckoutRequest $request)
     {
         $user = auth('api')->user();
@@ -51,7 +70,9 @@ class CheckoutController extends StoreController
         $store->setTimezone();
         $storeName = strtolower($store->storeDetail->name);
 
-        $bag = new Bag($request->get('bag'), $store);
+        $bagItems = $request->get('bag');
+        $bag = new Bag($bagItems, $store);
+
         $bagTotal = $bag->getTotal() + $request->get('lineItemTotal');
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
@@ -417,6 +438,15 @@ class CheckoutController extends StoreController
                     ->send($email);
             } catch (\Exception $e) {
             }*/
+
+            if ($bagItems && count($bagItems) > 0) {
+                foreach ($bagItems as $bagItem) {
+                    $orderBag = new OrderBag();
+                    $orderBag->order_id = (int) $order->id;
+                    $orderBag->bag = json_encode($bagItem);
+                    $orderBag->save();
+                }
+            }
 
             try {
                 $customerUser->sendNotification('new_order', [
@@ -792,6 +822,15 @@ class CheckoutController extends StoreController
                     ->send($email);
             } catch (\Exception $e) {
             }*/
+
+            if ($bagItems && count($bagItems) > 0) {
+                foreach ($bagItems as $bagItem) {
+                    $orderBag = new OrderBag();
+                    $orderBag->order_id = (int) $order->id;
+                    $orderBag->bag = json_encode($bagItem);
+                    $orderBag->save();
+                }
+            }
 
             try {
                 $customerUser->sendNotification('meal_plan', [

@@ -122,7 +122,7 @@
                 $route.params.storeView)
           "
           class="mt-4"
-          v-model="specialInstructions"
+          v-model="special_instructions"
           placeholder="Special instructions"
           rows="3"
           max-rows="6"
@@ -198,7 +198,7 @@ export default {
       sizeChanged: false,
       invalidCheck: false,
       invalid: false,
-      specialInstructions: null,
+      special_instructions: null,
       mealVariationPrice: null,
       totalAddonPrice: null,
       totalComponentPrice: null,
@@ -346,7 +346,7 @@ export default {
         size,
         this.components,
         this.addons,
-        this.specialInstructions
+        this.special_instructions
       );
 
       this.mealSize = null;
@@ -356,7 +356,7 @@ export default {
       this.components = null;
       this.addons = [];
       this.defaultMealSize = null;
-      this.specialInstructions = null;
+      this.special_instructions = null;
       this.invalid = false;
     },
     back() {

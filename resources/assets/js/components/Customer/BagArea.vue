@@ -125,7 +125,11 @@
                   {{ addon }}
                 </li>
               </ul>
-              <div v-if="$route.params.storeView || storeView">
+              <div
+                v-if="
+                  ($route.params.storeView || storeView) && !isAdjustOrder()
+                "
+              >
                 <input
                   type="checkbox"
                   :id="`checkox_${mealId}`"
@@ -181,12 +185,35 @@
           </div>
           <ul>
             <li v-for="(mealItem, i) in getItemMeals(item)" :key="i">
-              <div class="medium">
+              <div
+                class="medium"
+                style="display: flex; align-items: center; margin-bottom: 5px;"
+              >
+                <div
+                  v-if="isAdjustOrder()"
+                  style="display: flex; align-items: center;"
+                >
+                  <div
+                    @click="adjustMinus(mealItem, item)"
+                    class="bag-plus-minus gray white-text"
+                    style="margin-right: 3px;"
+                  >
+                    <i>-</i>
+                  </div>
+                  <div
+                    @click="adjustPlus(mealItem, item)"
+                    class="bag-plus-minus brand-color white-text"
+                    style="margin-right: 5px;"
+                  >
+                    <i>+</i>
+                  </div>
+                </div>
+
                 {{ mealItem.quantity }} x
                 {{ mealItem.title ? mealItem.title : mealItem.meal.title }}
               </div>
-              <div class="small" v-if="mealItem.specialInstructions != null">
-                {{ mealItem.specialInstructions }}
+              <div class="small" v-if="mealItem.special_instructions != null">
+                {{ mealItem.special_instructions }}
               </div>
             </li>
           </ul>
@@ -458,6 +485,24 @@ export default {
     this.$emit("updateLineItems", this.orderLineItems);
   },
   methods: {
+    adjustMinus(mealItem, item) {
+      console.log("mealItem", mealItem);
+      console.log("item", item);
+    },
+    adjustPlus(mealItem, item) {
+      console.log("mealItem", mealItem);
+      console.log("item", item);
+    },
+    isAdjustOrder() {
+      if (
+        this.adjustOrder ||
+        this.$route.params.adjustOrder ||
+        this.$route.name == "store-adjust-order"
+      ) {
+        return true;
+      }
+      return false;
+    },
     getItemMeals(item) {
       const mealPackage = !!item.meal_package;
 
@@ -478,7 +523,11 @@ export default {
           });
         }),
         mealItem => {
-          return { quantity: mealItem.quantity, meal: mealItem };
+          return {
+            quantity: mealItem.quantity,
+            meal: mealItem,
+            special_instructions: mealItem.special_instructions
+          };
         }
       );
 
@@ -505,7 +554,7 @@ export default {
                 mealQuantities[guid] = {
                   quantity: item.quantity,
                   meal: item.meal,
-                  specialInstructions: item.specialInstructions
+                  special_instructions: item.special_instructions
                 };
               }
             });
@@ -521,7 +570,7 @@ export default {
                 mealQuantities[guid] = {
                   quantity: item.quantity,
                   meal: item.meal,
-                  specialInstructions: item.specialInstructions
+                  special_instructions: item.special_instructions
                 };
               }
             });
@@ -544,7 +593,7 @@ export default {
               mealQuantities[guid] = {
                 quantity: addonItem.quantity,
                 meal: addonItem.meal,
-                specialInstructions: addonItem.specialInstructions
+                special_instructions: addonItem.special_instructions
               };
             }
           });
@@ -560,7 +609,7 @@ export default {
               mealQuantities[guid] = {
                 quantity: addonItem.quantity,
                 meal: addonItem.meal,
-                specialInstructions: addonItem.specialInstructions
+                special_instructions: addonItem.special_instructions
               };
             }
           });
@@ -590,14 +639,14 @@ export default {
               : null;
           const title = size ? size.full_title : meal.full_title;
 
-          const specialInstructions = item.specialInstructions;
+          const special_instructions = item.special_instructions;
 
           return {
             meal,
             size,
             quantity: item.quantity,
             title,
-            specialInstructions
+            special_instructions
           };
         })
         .filter()

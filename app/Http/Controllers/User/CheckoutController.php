@@ -28,6 +28,7 @@ use App\Billing\Authorize;
 use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
+use App\OrderBag;
 use DB;
 
 class CheckoutController extends UserController
@@ -45,7 +46,8 @@ class CheckoutController extends UserController
         $store->setTimezone();
         $storeSettings = $store->settings;
 
-        $bag = new Bag($request->get('bag'), $store);
+        $bagItems = $request->get('bag');
+        $bag = new Bag($bagItems, $store);
 
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
@@ -388,6 +390,15 @@ class CheckoutController extends UserController
                     ->send($email);
             } catch (\Exception $e) {
             }*/
+
+            if ($bagItems && count($bagItems) > 0) {
+                foreach ($bagItems as $bagItem) {
+                    $orderBag = new OrderBag();
+                    $orderBag->order_id = (int) $order->id;
+                    $orderBag->bag = json_encode($bagItem);
+                    $orderBag->save();
+                }
+            }
 
             try {
                 $user->sendNotification('new_order', [
@@ -790,6 +801,15 @@ class CheckoutController extends UserController
                     ->send($email);
             } catch (\Exception $e) {
             }*/
+
+                if ($bagItems && count($bagItems) > 0) {
+                    foreach ($bagItems as $bagItem) {
+                        $orderBag = new OrderBag();
+                        $orderBag->order_id = (int) $order->id;
+                        $orderBag->bag = json_encode($bagItem);
+                        $orderBag->save();
+                    }
+                }
 
                 try {
                     $user->sendNotification('meal_plan', [

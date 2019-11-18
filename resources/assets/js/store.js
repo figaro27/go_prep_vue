@@ -196,6 +196,14 @@ const mutations = {
       state.bag.total = 0;
     }
   },
+  addToBagFromAdjust(state, order_bag) {
+    let guid = order_bag.guid.toString();
+    order_bag = {
+      ...order_bag,
+      adjust: true
+    };
+    Vue.set(state.bag.items, guid, order_bag);
+  },
   addToBag(
     state,
     {

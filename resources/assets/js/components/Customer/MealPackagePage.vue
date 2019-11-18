@@ -69,7 +69,7 @@
                                   $route.params.storeView)
                             "
                             class="mt-4"
-                            v-model="specialInstructions[mealOption.meal_id]"
+                            v-model="special_instructions[mealOption.meal_id]"
                             placeholder="Special instructions"
                             rows="3"
                             max-rows="6"
@@ -140,7 +140,7 @@
                                 "
                                 class="mt-2"
                                 v-model="
-                                  specialInstructions[mealOption.meal_id]
+                                  special_instructions[mealOption.meal_id]
                                 "
                                 placeholder="Special instructions"
                                 rows="3"
@@ -182,7 +182,7 @@
                                 "
                                 class="mt-2"
                                 v-model="
-                                  specialInstructions[mealOption.meal_id]
+                                  special_instructions[mealOption.meal_id]
                                 "
                                 placeholder="Special instructions"
                                 rows="3"
@@ -315,7 +315,7 @@
                                     $route.params.storeView)
                               "
                               class="mt-4"
-                              v-model="specialInstructions[mealOption.meal_id]"
+                              v-model="special_instructions[mealOption.meal_id]"
                               placeholder="Special instructions"
                               rows="3"
                               max-rows="6"
@@ -480,7 +480,7 @@
                                   "
                                   class="mt-2"
                                   v-model="
-                                    specialInstructions[mealOption.meal_id]
+                                    special_instructions[mealOption.meal_id]
                                   "
                                   placeholder="Special instructions"
                                   rows="3"
@@ -522,7 +522,7 @@
                                   "
                                   class="mt-2"
                                   v-model="
-                                    specialInstructions[mealOption.meal_id]
+                                    special_instructions[mealOption.meal_id]
                                   "
                                   placeholder="Special instructions"
                                   rows="3"
@@ -587,7 +587,7 @@
                     "
                     style="width: 100%;"
                     class="mb-2"
-                    v-model="specialInstructions[option.id]"
+                    v-model="special_instructions[option.id]"
                     placeholder="Special instructions"
                     rows="3"
                     max-rows="6"
@@ -626,7 +626,7 @@ export default {
     return {
       choices: {},
       addons: [],
-      specialInstructions: {}
+      special_instructions: {}
     };
   },
   components: {},
@@ -777,8 +777,8 @@ export default {
           : this.mealPackage.meals;
         if (meals) {
           meals.forEach(meal => {
-            if (this.specialInstructions[meal.id]) {
-              meal.specialInstructions = this.specialInstructions[meal.id];
+            if (this.special_instructions[meal.id]) {
+              meal.special_instructions = this.special_instructions[meal.id];
             }
           });
         }
@@ -787,8 +787,8 @@ export default {
           for (let i in components) {
             for (let option in components[i]) {
               components[i][option].forEach(mealOption => {
-                if (this.specialInstructions[mealOption.meal_id]) {
-                  mealOption.specialInstructions = this.specialInstructions[
+                if (this.special_instructions[mealOption.meal_id]) {
+                  mealOption.special_instructions = this.special_instructions[
                     mealOption.meal_id
                   ];
                 }
@@ -800,8 +800,8 @@ export default {
         if (addons) {
           for (let i in addons) {
             addons[i].forEach(mealOption => {
-              if (this.specialInstructions[mealOption.meal_id]) {
-                mealOption.specialInstructions = this.specialInstructions[
+              if (this.special_instructions[mealOption.meal_id]) {
+                mealOption.special_instructions = this.special_instructions[
                   mealOption.meal_id
                 ];
               }

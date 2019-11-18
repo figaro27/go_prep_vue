@@ -106,8 +106,11 @@ class Bag
                                     // : null
                                 ],
                                 'quantity' => $meal['quantity'],
-                                'special_instructions' =>
-                                    $meal['special_instructions'] ?? null
+                                'special_instructions' => isset(
+                                    $meal['special_instructions']
+                                )
+                                    ? $meal['special_instructions']
+                                    : null
                             ];
 
                             $mealItemId = $this->getItemId($mealItem);
@@ -152,8 +155,11 @@ class Bag
                                             : null
                                     ],
                                     'quantity' => $meal['quantity'],
-                                    'special_instructions' =>
-                                        $meal['special_instructions'] ?? null
+                                    'special_instructions' => isset(
+                                        $meal['special_instructions']
+                                    )
+                                        ? $meal['special_instructions']
+                                        : null
                                 ];
 
                                 $mealItemId = $this->getItemId($mealItem);
@@ -230,11 +236,11 @@ class Bag
                                                     $mealOption->meal_size_id,
                                                 'special_instructions' => isset(
                                                     $optionItem[
-                                                        'specialInstructions'
+                                                        'special_instructions'
                                                     ]
                                                 )
                                                     ? $optionItem[
-                                                        'specialInstructions'
+                                                        'special_instructions'
                                                     ]
                                                     : null
                                             ]);
@@ -329,7 +335,16 @@ class Bag
                                                 $addonItem['quantity'],
                                             'price' => $mealOption->price,
                                             'meal_size_id' =>
-                                                $mealOption->meal_size_id
+                                                $mealOption->meal_size_id,
+                                            'special_instructions' => isset(
+                                                $addonItem[
+                                                    'special_instructions'
+                                                ]
+                                            )
+                                                ? $addonItem[
+                                                    'special_instructions'
+                                                ]
+                                                : null
                                         ]);
                                     }
                                 }
@@ -353,7 +368,12 @@ class Bag
                                     'size' => [
                                         'id' => $meal['meal_size_id']
                                     ],
-                                    'quantity' => $meal['quantity']
+                                    'quantity' => $meal['quantity'],
+                                    'special_instructions' => isset(
+                                        $meal['special_instructions']
+                                    )
+                                        ? $meal['special_instructions']
+                                        : null
                                 ];
 
                                 $mealItemId = $this->getItemId($mealItem);
