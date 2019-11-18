@@ -168,7 +168,7 @@ f<template>
                       {{
                         format.money(subscription.amount, subscription.currency)
                       }}
-                      per week.
+                      per {{ subscription.interval }}.
                     </p>
                     <div v-if="subscription.latest_paid_order">
                       <p>
@@ -187,7 +187,7 @@ f<template>
                         </span>
                         <span v-else>
                           Any changes to this subscription will be applied to
-                          next week's order.
+                          next {{ subscription.interval }}'s order.
                         </span>
                       </p>
                       <!--Removing pause functionality for the time being -->
@@ -195,7 +195,7 @@ f<template>
                         variant="warning"
                         @click.stop="() => pauseSubscription(subscription)"
                         >Pause</b-btn
-                      > 
+                      >
                       <div
                     class="col-md-4"
                     v-else-if="subscription.status === 'paused'"

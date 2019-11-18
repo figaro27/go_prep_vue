@@ -356,7 +356,10 @@ class Subscription extends Model
         $newOrder->currency = $this->currency;
         $newOrder->fulfilled = false;
         $newOrder->pickup = $this->pickup;
-        $newOrder->delivery_date = $latestOrder->delivery_date->addWeeks(1);
+        $newOrder->delivery_date = $latestOrder->delivery_date->add(
+            1,
+            $this->interval
+        );
         $newOrder->save();
 
         // Assign meal package orders from meal package subscriptions
