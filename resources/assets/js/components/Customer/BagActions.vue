@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <div class="row" v-if="!bagView">
+      <div class="row" v-if="!bagView" class="bottom-margin">
         <div class="col-md-7">
           <p class="mt-4 ml-2" v-if="!minimumMet && !storeView">
             {{ addMore }}
