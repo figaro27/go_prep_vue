@@ -271,7 +271,7 @@
                         :key="mealOption.meal_id"
                       >
                         <div class="item-wrap">
-                          <div class="title d-md-none">
+                          <div class="title d-md-none center-text">
                             {{ mealOption.title }}
                           </div>
 
@@ -279,9 +279,9 @@
                             <thumbnail
                               v-if="
                                 mealOption.meal.image != null &&
-                                  mealOption.meal.image.url_thumb
+                                  mealOption.meal.image.url_medium
                               "
-                              :src="mealOption.meal.image.url_thumb"
+                              :src="mealOption.meal.image.url_medium"
                               :spinner="false"
                               class="menu-item-img"
                               width="100%"
@@ -303,7 +303,7 @@
                           <!-- Image End !-->
 
                           <div class="meta">
-                            <div class="title d-none d-md-block">
+                            <div class="title d-none d-md-block center-text">
                               {{ mealOption.title }}
                             </div>
 
