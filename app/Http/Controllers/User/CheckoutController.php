@@ -268,7 +268,7 @@ class CheckoutController extends UserController
                 $mealOrder->store_id = $store->id;
                 $mealOrder->meal_id = $item['meal']['id'];
                 $mealOrder->quantity = $item['quantity'];
-                $mealOrder->price = $item['price'];
+                $mealOrder->price = $item['price'] * $item['quantity'];
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
@@ -439,6 +439,13 @@ class CheckoutController extends UserController
             if ($diff >= 7) {
                 $billingAnchor->addWeeks(1);
             }
+
+            // Is billing anchor past the cutoff?
+            // Set to the cutoff date
+            if ($billingAnchor->greaterThan($cutoff)) {
+                $billingAnchor = $cutoff->copy();
+            }
+
             if (!$cashOrder) {
                 if ($gateway === Constants::GATEWAY_STRIPE) {
                     $plan = \Stripe\Plan::create(
@@ -581,7 +588,7 @@ class CheckoutController extends UserController
                     $mealOrder->store_id = $store->id;
                     $mealOrder->meal_id = $item['meal']['id'];
                     $mealOrder->quantity = $item['quantity'];
-                    $mealOrder->price = $item['price'];
+                    $mealOrder->price = $item['price'] * $item['quantity'];
                     if (isset($item['size']) && $item['size']) {
                         $mealOrder->meal_size_id = $item['size']['id'];
                     }
@@ -689,7 +696,7 @@ class CheckoutController extends UserController
                     $mealSub->store_id = $store->id;
                     $mealSub->meal_id = $item['meal']['id'];
                     $mealSub->quantity = $item['quantity'];
-                    $mealSub->price = $item['price'];
+                    $mealSub->price = $item['price'] * $item['quantity'];
                     if (isset($item['size']) && $item['size']) {
                         $mealSub->meal_size_id = $item['size']['id'];
                     }

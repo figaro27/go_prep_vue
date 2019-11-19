@@ -81,6 +81,9 @@ $brandColor = $order->store->settings->color;
           {{$order->user->details->zip}}</p>
         @endif
         <p>{{$order->user->details->phone}}</p>
+        @if (strpos($order->user->email, 'noemail') === false)
+        <p>{{$order->user->email}}</p>
+        @endif
         @if ($order->manual)
         <p>Manual Order: {{$order->created_at->format('D, m/d/Y')}}</p>
         @else
@@ -91,7 +94,7 @@ $brandColor = $order->store->settings->color;
     <center>
       <div class="col-4 center-text">
           <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4>
-          <img src="{{$logo}}" />
+          <img src="{{$logo}}" style="width:200px;height:auto"/>
           <p class="center-text text-11">{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
           <p class="center-text text-11">{{ $order->store->details->phone }}</p>
           @if ($order->store->settings->website) 
@@ -194,7 +197,7 @@ $brandColor = $order->store->settings->color;
           <td>{!! $item->html_title !!}</td>
           <td style="text-align:center">
             @if ($item->attached || $item->free)
-            Free
+            Included
             @else
             ${{ number_format($item->price, 2) }}
             @endif

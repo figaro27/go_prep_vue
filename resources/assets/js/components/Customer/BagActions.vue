@@ -50,7 +50,7 @@
           }
         }"
       >
-        <b-btn class="menu-bag-btn">NEXT</b-btn>
+        <b-btn class="menu-bag-btn bottom-margin">NEXT</b-btn>
       </router-link>
 
       <router-link to="/customer/menu">

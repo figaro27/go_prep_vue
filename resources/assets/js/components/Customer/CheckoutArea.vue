@@ -274,6 +274,7 @@
           <strong v-if="pickup === 0">Delivery Day</strong>
           <strong v-if="pickup === 1">Pickup Day</strong>
           <b-select
+            v-model="deliveryDay"
             :options="deliveryDateOptionsStoreView"
             :value="bagDeliveryDate"
             @input="changeDeliveryDay"
@@ -1319,31 +1320,33 @@ export default {
           }
         } else {
           // Meal packages size (top level) meals don't affect the package price, so not included below.
-          if (item.addons && item.addons.length > 0) {
-            item.addons.forEach(addonItem => {
-              if (addonItem.meal.salesTax !== null) {
-                removableItemAmount += addonItem.price * addonItem.quantity;
-                customSalesTaxAmount +=
-                  addonItem.price *
-                  addonItem.quantity *
-                  addonItem.meal.salesTax;
-              }
-            });
-          }
-
-          if (item.components) {
-            Object.values(item.components).forEach(component => {
-              Object.values(component).forEach(componentOption => {
-                if (componentOption[0].meal.salesTax !== null) {
-                  removableItemAmount +=
-                    componentOption[0].price * componentOption[0].quantity;
+          if (item.addons !== null) {
+            if (item.addons && item.addons.length > 0) {
+              item.addons.forEach(addonItem => {
+                if (addonItem.meal.salesTax !== null) {
+                  removableItemAmount += addonItem.price * addonItem.quantity;
                   customSalesTaxAmount +=
-                    componentOption[0].price *
-                    componentOption[0].quantity *
-                    componentOption[0].meal.salesTax;
+                    addonItem.price *
+                    addonItem.quantity *
+                    addonItem.meal.salesTax;
                 }
               });
-            });
+            }
+          }
+          if (item.components !== null) {
+            if (Object.entries(item.components).length > 0) {
+              Object.values(item.components).forEach(component => {
+                Object.values(component).forEach(componentOption => {
+                  if (componentOption[0].meal.salesTax !== null) {
+                    removableItemAmount += componentOption[0].price;
+                    customSalesTaxAmount +=
+                      componentOption[0].price *
+                      componentOption[0].quantity *
+                      componentOption[0].meal.salesTax;
+                  }
+                });
+              });
+            }
           }
         }
       });
@@ -1358,8 +1361,8 @@ export default {
         return 0;
       }
       if (this.storeSettings.salesTax > 0)
-        return (this.storeSettings.salesTax / 100) * this.afterDiscount;
-      else return this.salesTax * this.afterDiscount;
+        return (this.storeSettings.salesTax / 100) * taxableAmount;
+      else return this.salesTax * taxableAmount;
     },
     subscriptionId() {
       return this.$route.params.subscriptionId;

@@ -388,8 +388,11 @@ export default {
     if (this.storeModules.cashOrderNoBalance) {
       this.noBalance = true;
     }
-    // this.deliveryDay = this.$route.params.deliveryDay;
-    this.transferTime = this.$route.params.transferTime;
+    if (this.$route.params.adjustOrder) {
+      this.deliveryDay = this.$route.params.deliveryDay;
+      this.transferTime = this.$route.params.transferTime;
+    }
+
     if (this.$route.params.pickup != undefined) {
       this.pickup = this.$route.params.pickup;
     } else if (

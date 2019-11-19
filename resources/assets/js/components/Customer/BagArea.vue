@@ -150,7 +150,7 @@
                 style="display: flex; align-items: center; margin-bottom: 5px;"
               >
                 <div
-                  v-if="isAdjustOrder()"
+                  v-if="$route.params.storeView || storeView"
                   style="display: flex; align-items: center;"
                 >
                   <div

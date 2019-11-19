@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Store;
 use App\Order;
 use App\Bag;
 use App\MealOrder;
+use App\MealPackageOrder;
 use App\MealOrderComponent;
 use App\MealOrderAddon;
 use App\LineItem;
@@ -195,8 +196,8 @@ class OrderController extends StoreController
         $transferTime = $request->get('transferTime');
         $bagTotal = $bag->getTotal() + $request->get('lineItemTotal');
         $subtotal = $request->get('subtotal');
-        $afterDiscountBeforeFees = $bagTotal;
-        $preFeePreDiscount = $bagTotal;
+        $preFeePreDiscount = $request->get('subtotal');
+        $afterDiscountBeforeFees = $request->get('afterDiscount');
         $processingFee = $request->get('processingFee');
         $mealPlanDiscount = $request->get('mealPlanDiscount');
         $salesTax = $request->get('salesTax');
@@ -244,14 +245,66 @@ class OrderController extends StoreController
         $order->save();
 
         $order->meal_orders()->delete();
+        $order->meal_package_orders()->delete();
         foreach ($bag->getItems() as $item) {
             $mealOrder = new MealOrder();
             $mealOrder->order_id = $order->id;
             $mealOrder->store_id = $store->id;
             $mealOrder->meal_id = $item['meal']['id'];
             $mealOrder->quantity = $item['quantity'];
+            $mealOrder->price = $item['price'] * $item['quantity'];
             if (isset($item['size']) && $item['size']) {
                 $mealOrder->meal_size_id = $item['size']['id'];
+            }
+            if (isset($item['special_instructions'])) {
+                $mealOrder->special_instructions =
+                    $item['special_instructions'];
+            }
+            if (isset($item['free'])) {
+                $mealOrder->free = $item['free'];
+            }
+            if ($item['meal_package']) {
+                $mealOrder->meal_package = $item['meal_package'];
+            }
+
+            if (isset($item['meal_package_title'])) {
+                $mealOrder->meal_package_title = $item['meal_package_title'];
+            }
+
+            if ($item['meal_package'] === true) {
+                if (
+                    MealPackageOrder::where([
+                        'meal_package_id' => $item['meal_package_id'],
+                        'meal_package_size_id' => $item['meal_package_size_id'],
+                        'order_id' => $order->id
+                    ])
+                        ->get()
+                        ->count() === 0
+                ) {
+                    $mealPackageOrder = new MealPackageOrder();
+                    $mealPackageOrder->store_id = $store->id;
+                    $mealPackageOrder->order_id = $order->id;
+                    $mealPackageOrder->meal_package_id =
+                        $item['meal_package_id'];
+                    $mealPackageOrder->meal_package_size_id =
+                        $item['meal_package_size_id'];
+                    $mealPackageOrder->quantity = $item['package_quantity'];
+                    $mealPackageOrder->price = $item['package_price'];
+                    $mealPackageOrder->save();
+
+                    $mealOrder->meal_package_order_id = $mealPackageOrder->id;
+                } else {
+                    $mealOrder->meal_package_order_id = MealPackageOrder::where(
+                        [
+                            'meal_package_id' => $item['meal_package_id'],
+                            'meal_package_size_id' =>
+                                $item['meal_package_size_id'],
+                            'order_id' => $order->id
+                        ]
+                    )
+                        ->pluck('id')
+                        ->first();
+                }
             }
 
             $mealOrder->save();

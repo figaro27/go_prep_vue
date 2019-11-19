@@ -540,11 +540,11 @@ export default {
             quantity: item.quantity,
             unit_price:
               item.attached || item.free
-                ? "Free"
+                ? "Included"
                 : format.money(item.unit_price, order.currency),
             subtotal:
               item.attached || item.free
-                ? "Free"
+                ? "Included"
                 : format.money(item.price, order.currency)
           });
         }

@@ -384,7 +384,7 @@ class Subscription extends Model
             $mealOrder->meal_id = $mealSub->meal_id;
             $mealOrder->meal_size_id = $mealSub->meal_size_id;
             $mealOrder->quantity = $mealSub->quantity;
-            $mealOrder->price = $mealSub->price;
+            $mealOrder->price = $mealSub->price * $mealSub->quantity;
             $mealOrder->special_instructions = $mealSub->special_instructions;
             $mealOrder->meal_package = $mealSub->meal_package
                 ? $mealSub->meal_package
