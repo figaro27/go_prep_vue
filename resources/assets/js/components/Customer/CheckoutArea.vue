@@ -1331,7 +1331,7 @@ export default {
               }
             });
           }
-          if (item.components && item.components.length > 0) {
+          if (Object.entries(item.components).length > 0) {
             Object.values(item.components).forEach(component => {
               Object.values(component).forEach(componentOption => {
                 if (componentOption[0].meal.salesTax !== null) {
