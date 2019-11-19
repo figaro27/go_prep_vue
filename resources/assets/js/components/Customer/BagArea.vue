@@ -446,7 +446,7 @@ export default {
   },
   methods: {
     addToBag(item) {
-      if (this.isAdjustOrder()) {
+      if (this.isAdjustOrder() || this.isManualOrder()) {
         this.addOneFromAdjust({
           ...item,
           quantity: 1
@@ -463,7 +463,7 @@ export default {
       }
     },
     clearFromBag(item) {
-      if (this.isAdjustOrder()) {
+      if (this.isAdjustOrder() || this.isManualOrder()) {
         this.removeFromAdjust(item);
       } else {
         this.clearMeal(
@@ -477,7 +477,7 @@ export default {
       }
     },
     removeFromBag(item) {
-      if (this.isAdjustOrder()) {
+      if (this.isAdjustOrder() || this.isManualOrder()) {
         this.removeOneFromAdjust({
           ...item,
           quantity: 1
@@ -498,6 +498,16 @@ export default {
     },
     adjustPlus(mealItem, item) {
       this.updateOneSubItemFromAdjust(mealItem, item, true);
+    },
+    isManualOrder() {
+      if (
+        this.manualOrder ||
+        this.$route.params.manualOrder ||
+        this.$route.name == "store-manual-order"
+      ) {
+        return true;
+      }
+      return false;
     },
     isAdjustOrder() {
       if (

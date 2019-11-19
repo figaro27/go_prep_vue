@@ -2467,9 +2467,8 @@ const getters = {
       } else {
         return (
           item.quantity *
-          _.sumBy(
-            _.compact(_.toArray(item.meal.meals)),
-            item => item.pivot.quantity
+          _.sumBy(_.compact(_.toArray(item.meal.meals)), item =>
+            item.pivot ? item.pivot.quantity : 1
           )
         );
       }

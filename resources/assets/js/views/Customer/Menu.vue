@@ -75,6 +75,9 @@
                 v-bind:key="index"
               >
                 {{ option.meal.title }}
+                <span v-if="option.size && option.size.title !== 'Regular'">
+                  - {{ option.size.title }}
+                </span>
               </b-checkbox>
 
               <b-checkbox :value="adjustMealModal_items.length">
@@ -117,6 +120,7 @@
             :search="search"
             :filteredView="filteredView"
             :adjustOrder="adjustOrder"
+            :manualOrder="manualOrder"
             @onCategoryVisible="onCategoryVisible($event)"
           ></meals-area>
 

@@ -691,6 +691,16 @@ export default {
       }
       return items;
     },
+    isManualOrder() {
+      if (
+        this.manualOrder ||
+        this.$route.params.manualOrder ||
+        this.$route.name == "store-manual-order"
+      ) {
+        return true;
+      }
+      return false;
+    },
     isAdjustOrder() {
       if (
         this.adjustOrder ||
@@ -817,7 +827,7 @@ export default {
           meal.addons &&
           meal.addons.length === 0
         ) {
-          if (this.isAdjustOrder()) {
+          if (this.isAdjustOrder() || this.isManualOrder()) {
             //const items = this.getRelatedBagItems(meal, null);
             const items = this.getPackageBagItems();
 
@@ -843,7 +853,7 @@ export default {
             size = null;
           }
 
-          if (this.isAdjustOrder()) {
+          if (this.isAdjustOrder() || this.isManualOrder()) {
             //const items = this.getRelatedBagItems(meal, size);
             const items = this.getPackageBagItems();
 
