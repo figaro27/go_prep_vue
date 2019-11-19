@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Store;
 use App\Order;
 use App\Bag;
 use App\MealOrder;
+use App\MealPackageOrder;
 use App\MealOrderComponent;
 use App\MealOrderAddon;
 use App\LineItem;
@@ -242,6 +243,7 @@ class OrderController extends StoreController
         $order->save();
 
         $order->meal_orders()->delete();
+        $order->meal_package_orders()->delete();
         foreach ($bag->getItems() as $item) {
             $mealOrder = new MealOrder();
             $mealOrder->order_id = $order->id;
@@ -266,8 +268,41 @@ class OrderController extends StoreController
             if (isset($item['meal_package_title'])) {
                 $mealOrder->meal_package_title = $item['meal_package_title'];
             }
-            if (isset($item['size']) && $item['size']) {
-                $mealOrder->meal_size_id = $item['size']['id'];
+
+            if ($item['meal_package'] === true) {
+                if (
+                    MealPackageOrder::where([
+                        'meal_package_id' => $item['meal_package_id'],
+                        'meal_package_size_id' => $item['meal_package_size_id'],
+                        'order_id' => $order->id
+                    ])
+                        ->get()
+                        ->count() === 0
+                ) {
+                    $mealPackageOrder = new MealPackageOrder();
+                    $mealPackageOrder->store_id = $store->id;
+                    $mealPackageOrder->order_id = $order->id;
+                    $mealPackageOrder->meal_package_id =
+                        $item['meal_package_id'];
+                    $mealPackageOrder->meal_package_size_id =
+                        $item['meal_package_size_id'];
+                    $mealPackageOrder->quantity = $item['package_quantity'];
+                    $mealPackageOrder->price = $item['package_price'];
+                    $mealPackageOrder->save();
+
+                    $mealOrder->meal_package_order_id = $mealPackageOrder->id;
+                } else {
+                    $mealOrder->meal_package_order_id = MealPackageOrder::where(
+                        [
+                            'meal_package_id' => $item['meal_package_id'],
+                            'meal_package_size_id' =>
+                                $item['meal_package_size_id'],
+                            'order_id' => $order->id
+                        ]
+                    )
+                        ->pluck('id')
+                        ->first();
+                }
             }
 
             $mealOrder->save();
