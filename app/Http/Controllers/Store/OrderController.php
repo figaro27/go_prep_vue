@@ -248,6 +248,24 @@ class OrderController extends StoreController
             $mealOrder->store_id = $store->id;
             $mealOrder->meal_id = $item['meal']['id'];
             $mealOrder->quantity = $item['quantity'];
+            $mealOrder->price = $item['price'];
+            if (isset($item['size']) && $item['size']) {
+                $mealOrder->meal_size_id = $item['size']['id'];
+            }
+            if (isset($item['special_instructions'])) {
+                $mealOrder->special_instructions =
+                    $item['special_instructions'];
+            }
+            if (isset($item['free'])) {
+                $mealOrder->free = $item['free'];
+            }
+            if ($item['meal_package']) {
+                $mealOrder->meal_package = $item['meal_package'];
+            }
+
+            if (isset($item['meal_package_title'])) {
+                $mealOrder->meal_package_title = $item['meal_package_title'];
+            }
             if (isset($item['size']) && $item['size']) {
                 $mealOrder->meal_size_id = $item['size']['id'];
             }
