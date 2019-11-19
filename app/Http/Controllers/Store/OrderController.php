@@ -248,7 +248,7 @@ class OrderController extends StoreController
             $mealOrder->store_id = $store->id;
             $mealOrder->meal_id = $item['meal']['id'];
             $mealOrder->quantity = $item['quantity'];
-            $mealOrder->price = $item['price'];
+            $mealOrder->price = $item['price'] * $item['quantity'];
             if (isset($item['size']) && $item['size']) {
                 $mealOrder->meal_size_id = $item['size']['id'];
             }
