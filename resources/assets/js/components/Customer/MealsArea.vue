@@ -664,6 +664,20 @@ export default {
 
       return found;
     },
+    getPackageBagItems() {
+      const items = [];
+      const bag = this.bag;
+
+      if (bag) {
+        bag.forEach(item => {
+          if (item.meal_package) {
+            items.push(item);
+          }
+        });
+      }
+
+      return items;
+    },
     getRelatedBagItems(meal, size) {
       const items = [];
       const bag = this.bag;
@@ -804,7 +818,8 @@ export default {
           meal.addons.length === 0
         ) {
           if (this.isAdjustOrder()) {
-            const items = this.getRelatedBagItems(meal, null);
+            //const items = this.getRelatedBagItems(meal, null);
+            const items = this.getPackageBagItems();
 
             if (items && items.length > 0) {
               this.$parent.showAdjustModal(meal, null, items);
@@ -829,7 +844,8 @@ export default {
           }
 
           if (this.isAdjustOrder()) {
-            const items = this.getRelatedBagItems(meal, size);
+            //const items = this.getRelatedBagItems(meal, size);
+            const items = this.getPackageBagItems();
 
             if (items && items.length > 0) {
               this.$parent.showAdjustModal(meal, size, items);

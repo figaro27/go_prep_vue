@@ -349,6 +349,24 @@ const mutations = {
       });
     }
 
+    if (!found && plus) {
+      // New
+      const addingMeal = {
+        ...item.meal,
+        quantity: 1
+      };
+
+      if (item.size) {
+        addingMeal.meal_size = item.size;
+        addingMeal.meal_size_id = item.size.id;
+      } else {
+        addingMeal.meal_size = null;
+        addingMeal.meal_size_id = null;
+      }
+
+      packageMeals.push(addingMeal);
+    }
+
     Vue.set(state.bag.items, guid, bag_item);
   },
   addToBagFromAdjust(state, order_bag) {

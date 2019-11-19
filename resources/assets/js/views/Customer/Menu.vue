@@ -825,8 +825,16 @@ export default {
     ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
     showAdjustModal(meal, size, items) {
       this.adjustMealModal = true;
-      this.adjustMealModal_meal = meal;
-      this.adjustMealModal_size = size;
+      this.adjustMealModal_meal = this.getMeal(meal.id, meal);
+      if (_.isObject(size) && size.id) {
+        this.adjustMealModal_size = size;
+      } else {
+        if (size) {
+          this.adjustMealModal_size = this.adjustMealModal_meal.getSize(size);
+        } else {
+          this.adjustMealModal_size = null;
+        }
+      }
       this.adjustMealModal_items = items;
       this.adjustMealModal_index = items.length;
     },
