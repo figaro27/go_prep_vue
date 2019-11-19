@@ -1356,8 +1356,8 @@ export default {
         return 0;
       }
       if (this.storeSettings.salesTax > 0)
-        return (this.storeSettings.salesTax / 100) * this.afterDiscount;
-      else return this.salesTax * this.afterDiscount;
+        return (this.storeSettings.salesTax / 100) * taxableAmount;
+      else return this.salesTax * taxableAmount;
     },
     subscriptionId() {
       return this.$route.params.subscriptionId;
