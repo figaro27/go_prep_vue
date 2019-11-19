@@ -194,8 +194,8 @@ class OrderController extends StoreController
         $transferTime = $request->get('transferTime');
         $bagTotal = $bag->getTotal() + $request->get('lineItemTotal');
         $subtotal = $request->get('subtotal');
-        $afterDiscountBeforeFees = $bagTotal;
-        $preFeePreDiscount = $bagTotal;
+        $preFeePreDiscount = $request->get('subtotal');
+        $afterDiscountBeforeFees = $request->get('afterDiscount');
         $processingFee = $request->get('processingFee');
         $mealPlanDiscount = $request->get('mealPlanDiscount');
         $salesTax = $request->get('salesTax');
