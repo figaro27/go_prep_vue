@@ -1335,8 +1335,7 @@ export default {
             Object.values(item.components).forEach(component => {
               Object.values(component).forEach(componentOption => {
                 if (componentOption[0].meal.salesTax !== null) {
-                  removableItemAmount +=
-                    componentOption[0].price * componentOption[0].quantity;
+                  removableItemAmount += componentOption[0].price;
                   customSalesTaxAmount +=
                     componentOption[0].price *
                     componentOption[0].quantity *
