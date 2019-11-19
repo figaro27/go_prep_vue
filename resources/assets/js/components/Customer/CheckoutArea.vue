@@ -1319,7 +1319,7 @@ export default {
           }
         } else {
           // Meal packages size (top level) meals don't affect the package price, so not included below.
-          if (item.addons.length > 0) {
+          if (item.addons && item.addons.length > 0) {
             item.addons.forEach(addonItem => {
               if (addonItem.meal.salesTax !== null) {
                 removableItemAmount += addonItem.price * addonItem.quantity;
@@ -1330,18 +1330,21 @@ export default {
               }
             });
           }
-          Object.values(item.components).forEach(component => {
-            Object.values(component).forEach(componentOption => {
-              if (componentOption[0].meal.salesTax !== null) {
-                removableItemAmount +=
-                  componentOption[0].price * componentOption[0].quantity;
-                customSalesTaxAmount +=
-                  componentOption[0].price *
-                  componentOption[0].quantity *
-                  componentOption[0].meal.salesTax;
-              }
+
+          if (item.components) {
+            Object.values(item.components).forEach(component => {
+              Object.values(component).forEach(componentOption => {
+                if (componentOption[0].meal.salesTax !== null) {
+                  removableItemAmount +=
+                    componentOption[0].price * componentOption[0].quantity;
+                  customSalesTaxAmount +=
+                    componentOption[0].price *
+                    componentOption[0].quantity *
+                    componentOption[0].meal.salesTax;
+                }
+              });
             });
-          });
+          }
         }
       });
 

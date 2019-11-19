@@ -152,8 +152,11 @@ export default {
     addOneFromAdjust(order_bag) {
       this.$store.commit("addToBagFromAdjust", order_bag);
     },
-    removeOneFromAdjust(order_bag) {
+    removeFromAdjust(order_bag) {
       this.$store.commit("removeFromBagFromAdjust", order_bag);
+    },
+    removeOneFromAdjust(order_bag) {
+      this.$store.commit("removeOneFromBagFromAdjust", order_bag);
     },
     updateOneSubItemFromAdjust(item, order_bag, plus = false) {
       this.$store.commit("updateOneSubItemFromAdjust", {

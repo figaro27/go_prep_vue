@@ -198,6 +198,9 @@ const mutations = {
   },
   updateOneSubItemFromAdjust(state, { item, order_bag, plus }) {
     let guid = order_bag.guid.toString();
+    /*if (!guid.includes("_adjust")) {
+      guid += "_adjust"
+    }*/
 
     if (!_.has(state.bag.items, guid)) {
       return;
@@ -350,6 +353,9 @@ const mutations = {
   },
   addToBagFromAdjust(state, order_bag) {
     let guid = order_bag.guid.toString();
+    /*if (!guid.includes("_adjust")) {
+      guid += "_adjust"
+    }*/
 
     if (!_.has(state.bag.items, guid)) {
       Vue.set(state.bag.items, guid, {
@@ -518,6 +524,21 @@ const mutations = {
   },
   removeFromBagFromAdjust(state, order_bag) {
     let guid = order_bag.guid.toString();
+    /*if (!guid.includes("_adjust")) {
+      guid += "_adjust"
+    }*/
+
+    if (!_.has(state.bag.items, guid)) {
+      return;
+    }
+
+    Vue.delete(state.bag.items, guid);
+  },
+  removeOneFromBagFromAdjust(state, order_bag) {
+    let guid = order_bag.guid.toString();
+    /*if (!guid.includes("_adjust")) {
+      guid += "_adjust"
+    }*/
 
     if (!_.has(state.bag.items, guid)) {
       return;

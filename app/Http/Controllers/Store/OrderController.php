@@ -13,6 +13,7 @@ use App\MealAttachment;
 use App\User;
 use App\Customer;
 use App\Card;
+use App\OrderBag;
 use App\OrderTransaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
@@ -183,7 +184,8 @@ class OrderController extends StoreController
     {
         $order = Order::where('id', $request->get('orderId'))->first();
         $store = $order->store;
-        $bag = new Bag($request->get('bag'), $store);
+        $bagItems = $request->get('bag');
+        $bag = new Bag($bagItems, $store);
         $couponId = $request->get('coupon_id');
         $couponReduction = $request->get('couponReduction');
         $couponCode = $request->get('couponCode');
@@ -318,6 +320,17 @@ class OrderController extends StoreController
                     $lineItemOrder->quantity = $quantity;
                     $lineItemOrder->save();
                 }
+            }
+        }
+
+        if ($bagItems && count($bagItems) > 0) {
+            OrderBag::where('order_id', (int) $order->id)->delete();
+
+            foreach ($bagItems as $bagItem) {
+                $orderBag = new OrderBag();
+                $orderBag->order_id = (int) $order->id;
+                $orderBag->bag = json_encode($bagItem);
+                $orderBag->save();
             }
         }
     }

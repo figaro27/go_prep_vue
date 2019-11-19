@@ -90,11 +90,7 @@
                   {{ addon }}
                 </li>
               </ul>
-              <div
-                v-if="
-                  ($route.params.storeView || storeView) && !isAdjustOrder()
-                "
-              >
+              <div v-if="$route.params.storeView || storeView">
                 <input
                   type="checkbox"
                   :id="`checkox_${mealId}`"
@@ -142,16 +138,7 @@
             <div class="flex-grow-0">
               <img
                 src="/images/customer/x.png"
-                @click="
-                  clearMeal(
-                    item.meal,
-                    false,
-                    item.size,
-                    item.components,
-                    item.addons,
-                    item.special_instructions
-                  )
-                "
+                @click="clearFromBag(item)"
                 class="clear-meal"
               />
             </div>
@@ -466,6 +453,20 @@ export default {
         });
       } else {
         this.addOne(
+          item.meal,
+          item.meal_package,
+          item.size,
+          item.components,
+          item.addons,
+          item.special_instructions
+        );
+      }
+    },
+    clearFromBag(item) {
+      if (this.isAdjustOrder()) {
+        this.removeFromAdjust(item);
+      } else {
+        this.clearMeal(
           item.meal,
           item.meal_package,
           item.size,

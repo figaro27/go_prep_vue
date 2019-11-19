@@ -535,7 +535,8 @@ export default {
     cardBody: "",
     filters: null,
     search: "",
-    filteredView: false
+    filteredView: false,
+    adjustOrder: false
   },
   mounted: function() {},
   mixins: [MenuBag],
@@ -545,11 +546,11 @@ export default {
       context: "context",
       isLazy: "isLazy",
       //total: "bagQuantity",
-      //bag: "bagItems",
       //hasMeal: "bagHasMeal",
       //minOption: "minimumOption",
       //minMeals: "minimumMeals",
       //minPrice: "minimumPrice",
+      bag: "bagItems",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       _categories: "viewedStoreCategories"
@@ -566,6 +567,126 @@ export default {
     }
   },
   methods: {
+    existInBagItem(meal, meal_size, item) {
+      const mealPackage = !!item.meal_package;
+
+      if (!mealPackage || !item.meal) {
+        return false;
+      }
+
+      const meal_size_id = meal_size ? meal_size.id : null;
+
+      let found = false;
+      const pkg = this.getMealPackage(item.meal.id, item.meal);
+      const size = pkg && item.size ? item.size : null;
+      const packageMeals = size ? size.meals : pkg ? pkg.meals : null;
+
+      if (packageMeals) {
+        packageMeals.forEach(pkgMeal => {
+          if (
+            pkgMeal &&
+            meal.id == pkgMeal.id &&
+            meal_size_id == pkgMeal.meal_size_id &&
+            !found
+          ) {
+            found = true;
+          }
+        });
+      }
+
+      if (!found) {
+        _(item.components).forEach((options, componentId) => {
+          const component = pkg.getComponent(componentId);
+          const optionIds = mealPackage ? Object.keys(options) : options;
+
+          _.forEach(optionIds, optionId => {
+            const option = pkg.getComponentOption(component, optionId);
+            if (!option) {
+              return null;
+            }
+
+            if (option.selectable) {
+              _.forEach(options[option.id], optionItem => {
+                if (
+                  optionItem &&
+                  optionItem.meal_id == meal.id &&
+                  optionItem.meal_size_id == meal_size_id &&
+                  !found
+                ) {
+                  found = true;
+                }
+              });
+            } else {
+              _.forEach(option.meals, mealItem => {
+                if (
+                  mealItem &&
+                  mealItem.meal_id == meal.id &&
+                  mealItem.meal_size_id == meal_size_id &&
+                  !found
+                ) {
+                  found = true;
+                }
+              });
+            }
+          });
+        });
+      }
+
+      if (!found) {
+        _(item.addons).forEach((addonItems, addonId) => {
+          const addon = pkg.getAddon(addonId);
+
+          if (addon.selectable) {
+            _.forEach(addonItems, addonItem => {
+              if (
+                addonItem &&
+                addonItem.meal_id == meal.id &&
+                addonItem.meal_size_id == meal_size_id &&
+                !found
+              ) {
+                found = true;
+              }
+            });
+          } else {
+            _.forEach(addonItems, addonItem => {
+              if (
+                addonItem &&
+                addonItem.meal_id == meal.id &&
+                addonItem.meal_size_id == meal_size_id &&
+                !found
+              ) {
+                found = true;
+              }
+            });
+          }
+        });
+      }
+
+      return found;
+    },
+    getRelatedBagItems(meal, size) {
+      const items = [];
+      const bag = this.bag;
+
+      if (bag) {
+        bag.forEach(item => {
+          if (this.existInBagItem(meal, size, item)) {
+            items.push(item);
+          }
+        });
+      }
+      return items;
+    },
+    isAdjustOrder() {
+      if (
+        this.adjustOrder ||
+        this.$route.params.adjustOrder ||
+        this.$route.name == "store-adjust-order"
+      ) {
+        return true;
+      }
+      return false;
+    },
     mealMixQuantity(meal) {
       if (meal.meal_package) {
         return this.quantity(meal, true);
@@ -682,7 +803,18 @@ export default {
           meal.addons &&
           meal.addons.length === 0
         ) {
-          this.addOne(meal, false, null, null, [], null);
+          if (this.isAdjustOrder()) {
+            const items = this.getRelatedBagItems(meal, null);
+
+            if (items && items.length > 0) {
+              this.$parent.showAdjustModal(meal, null, items);
+              return;
+            } else {
+              this.addOne(meal, false, null, null, [], null);
+            }
+          } else {
+            this.addOne(meal, false, null, null, [], null);
+          }
         }
 
         if (
@@ -696,7 +828,18 @@ export default {
             size = null;
           }
 
-          this.addOne(meal, false, size, null, [], null);
+          if (this.isAdjustOrder()) {
+            const items = this.getRelatedBagItems(meal, size);
+
+            if (items && items.length > 0) {
+              this.$parent.showAdjustModal(meal, size, items);
+              return;
+            } else {
+              this.addOne(meal, false, size, null, [], null);
+            }
+          } else {
+            this.addOne(meal, false, size, null, [], null);
+          }
         }
 
         if (this.$parent.showBagClass.includes("hidden-right")) {
