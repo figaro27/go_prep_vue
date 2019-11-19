@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <div class="row pb-4" v-if="!bagView">
+      <div class="row" v-if="!bagView">
         <div class="col-md-7">
           <p class="mt-4 ml-2" v-if="!minimumMet && !storeView">
             {{ addMore }}
@@ -24,7 +24,7 @@
         }"
         v-if="minimumMet && !storeView && !bagView"
       >
-        <b-btn class="menu-bag-btn bottom-margin">NEXT</b-btn>
+        <b-btn class="menu-bag-btn">NEXT</b-btn>
       </router-link>
 
       <router-link
