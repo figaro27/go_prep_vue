@@ -133,6 +133,7 @@
             :nutritionalFacts="nutritionalFacts"
             :adjustOrder="adjustOrder"
             :manualOrder="manualOrder"
+            ref="mealPage"
           ></meal-page>
 
           <meal-package-page
@@ -893,6 +894,8 @@ export default {
           special_instructions
         );
       }
+
+      this.$refs.mealPage.back();
     },
     onCategoryVisible(isVisible, category) {
       if (isVisible && this.$refs.categorySlider) {

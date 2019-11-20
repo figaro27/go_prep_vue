@@ -431,7 +431,12 @@ export default {
           }
         });
       }
-
+      this.mealSize = null;
+      this.components = null;
+      this.addons = [];
+      this.defaultMealSize = null;
+      this.special_instructions = null;
+      this.invalid = false;
       this.sizeChanged = false;
       this.addons = [];
       this.$parent.showMealsArea = true;
