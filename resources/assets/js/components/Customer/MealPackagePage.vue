@@ -16,7 +16,9 @@
               target="categorySection_top"
               v-if="isStoreView"
             >
-              <h3 class="center-text mb-3">Included Items</h3>
+              <h3 class="center-text mb-3" v-if="getTopLevel().length > 0">
+                Included Items
+              </h3>
 
               <b-form-group :label="null">
                 <div class="my-2">

@@ -50,7 +50,7 @@
                 <div :class="cardBody">
                   <div class="item-wrap">
                     <div class="title d-md-none">
-                      {{ meal.title }}
+                      <strong>{{ meal.title }}</strong>
                     </div>
 
                     <div class="image">
@@ -70,7 +70,7 @@
 
                     <div class="meta">
                       <div class="title d-none d-md-block center-text">
-                        {{ meal.title }}
+                        <strong>{{ meal.title }}</strong>
                       </div>
                       <div
                         class="title"
