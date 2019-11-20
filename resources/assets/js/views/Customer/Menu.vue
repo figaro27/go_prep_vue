@@ -654,6 +654,7 @@ export default {
 
         sortedCategories.push({
           category: cat.category,
+          subtitle: cat.subtitle,
           order,
           id: cat.id,
           cat
@@ -686,10 +687,12 @@ export default {
         let name = sortedCategories[i].category;
         let order = sortedCategories[i].order;
         let category_id = sortedCategories[i].id;
+        let subtitle = sortedCategories[i].subtitle;
 
         if (grouped[name] && grouped[name].length > 0) {
           finalData.push({
             category: name,
+            subtitle,
             category_id,
             meals: grouped[name],
             order
