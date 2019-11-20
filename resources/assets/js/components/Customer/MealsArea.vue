@@ -31,7 +31,9 @@
           <h2 class="text-center mb-2 dbl-underline">
             {{ group.category }}
           </h2>
-          <h5 class="text-center mb-4">{{ group.subtitle }}</h5>
+          <h5 v-if="group.subtitle !== null" class="text-center mb-4">
+            {{ group.subtitle }}
+          </h5>
           <div class="row">
             <div
               class="item col-sm-6 col-md-6 col-lg-6 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
