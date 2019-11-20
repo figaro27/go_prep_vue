@@ -1337,12 +1337,14 @@ export default {
             if (Object.entries(item.components).length > 0) {
               Object.values(item.components).forEach(component => {
                 Object.values(component).forEach(componentOption => {
-                  if (componentOption[0].meal.salesTax !== null) {
-                    removableItemAmount += componentOption[0].price;
-                    customSalesTaxAmount +=
-                      componentOption[0].price *
-                      componentOption[0].quantity *
-                      componentOption[0].meal.salesTax;
+                  if (componentOption.length > 0) {
+                    if (componentOption[0].meal.salesTax !== null) {
+                      removableItemAmount += componentOption[0].price;
+                      customSalesTaxAmount +=
+                        componentOption[0].price *
+                        componentOption[0].quantity *
+                        componentOption[0].meal.salesTax;
+                    }
                   }
                 });
               });
