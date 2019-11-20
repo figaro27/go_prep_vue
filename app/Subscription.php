@@ -236,7 +236,9 @@ class Subscription extends Model
                     'html_title' => $mealSub->html_title,
                     'quantity' => $mealSub->quantity,
                     'unit_price' => $mealSub->unit_price,
-                    'price' => $mealSub->price,
+                    'price' => $mealSub->price
+                        ? $mealSub->price
+                        : $mealSub->unit_price * $mealSub->quantity,
                     'special_instructions' => $mealSub->special_instructions,
                     'meal_package_subscription_id' =>
                         $mealSub->meal_package_subscription_id,

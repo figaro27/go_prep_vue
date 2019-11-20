@@ -227,7 +227,9 @@ class Order extends Model
                     'html_title' => $mealOrder->html_title,
                     'quantity' => $mealOrder->quantity,
                     'unit_price' => $mealOrder->unit_price,
-                    'price' => $mealOrder->price,
+                    'price' => $mealOrder->price
+                        ? $mealOrder->price
+                        : $mealOrder->unit_price * $mealOrder->quantity,
                     'free' => $mealOrder->free,
                     'special_instructions' => $mealOrder->special_instructions,
                     'attached' => $mealOrder->attached,
