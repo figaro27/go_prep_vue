@@ -414,6 +414,13 @@ const mutations = {
       free = null
     }
   ) {
+    /* Remove Mutation - This is temporary solution. Not professional code. */
+    meal = JSON.parse(JSON.stringify(meal));
+    size = JSON.parse(JSON.stringify(size));
+    components = JSON.parse(JSON.stringify(components));
+    addons = JSON.parse(JSON.stringify(addons));
+    /* Remove Mutation End */
+
     let mealId = meal;
     if (!_.isNumber(mealId)) {
       mealId = meal.id;

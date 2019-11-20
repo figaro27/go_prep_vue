@@ -66,7 +66,7 @@
                               (storeModules.specialInstructions &&
                                 !storeModuleSettings.specialInstructionsStoreOnly) ||
                                 (storeModuleSettings.specialInstructionsStoreOnly &&
-                                  $route.params.storeView)
+                                  isStoreView)
                             "
                             class="mt-4"
                             v-model="special_instructions[mealOption.meal_id]"
@@ -136,7 +136,7 @@
                                   (storeModules.specialInstructions &&
                                     !storeModuleSettings.specialInstructionsStoreOnly) ||
                                     (storeModuleSettings.specialInstructionsStoreOnly &&
-                                      $route.params.storeView)
+                                      isStoreView)
                                 "
                                 class="mt-2"
                                 v-model="
@@ -178,7 +178,7 @@
                                   (storeModules.specialInstructions &&
                                     !storeModuleSettings.specialInstructionsStoreOnly) ||
                                     (storeModuleSettings.specialInstructionsStoreOnly &&
-                                      $route.params.storeView)
+                                      isStoreView)
                                 "
                                 class="mt-2"
                                 v-model="
@@ -312,7 +312,7 @@
                                 (storeModules.specialInstructions &&
                                   !storeModuleSettings.specialInstructionsStoreOnly) ||
                                   (storeModuleSettings.specialInstructionsStoreOnly &&
-                                    $route.params.storeView)
+                                    isStoreView)
                               "
                               class="mt-4"
                               v-model="special_instructions[mealOption.meal_id]"
@@ -476,7 +476,7 @@
                                     (storeModules.specialInstructions &&
                                       !storeModuleSettings.specialInstructionsStoreOnly) ||
                                       (storeModuleSettings.specialInstructionsStoreOnly &&
-                                        $route.params.storeView)
+                                        isStoreView)
                                   "
                                   class="mt-2"
                                   v-model="
@@ -518,7 +518,7 @@
                                     (storeModules.specialInstructions &&
                                       !storeModuleSettings.specialInstructionsStoreOnly) ||
                                       (storeModuleSettings.specialInstructionsStoreOnly &&
-                                        $route.params.storeView)
+                                        isStoreView)
                                   "
                                   class="mt-2"
                                   v-model="
@@ -568,7 +568,7 @@
                 class="meal-checkboxes"
                 v-model="addons[addon.id]"
                 stacked
-                @input.native="e => console.log(e)"
+                @input.native="e => e"
                 @change="choices => onChangeAddonChoices(addon, choices)"
               >
                 <b-checkbox
@@ -583,7 +583,7 @@
                       (storeModules.specialInstructions &&
                         !storeModuleSettings.specialInstructionsStoreOnly) ||
                         (storeModuleSettings.specialInstructionsStoreOnly &&
-                          $route.params.storeView)
+                          isStoreView)
                     "
                     style="width: 100%;"
                     class="mb-2"
@@ -633,7 +633,8 @@ export default {
   props: {
     mealPackage: {},
     mealPackageSize: null,
-    storeSettings: {}
+    storeSettings: {},
+    storeView: false
   },
   mixins: [MenuBag],
   computed: {

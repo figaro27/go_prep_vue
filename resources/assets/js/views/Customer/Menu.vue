@@ -64,26 +64,26 @@
       >
         <div class="row mt-3">
           <div class="col-md-12">
-            <b-checkbox-group
+            <b-radio-group
               v-model="adjustMealModal_index"
               stacked
               @input.native="e => e"
             >
-              <b-checkbox
+              <b-radio
                 v-for="(option, index) in adjustMealModal_items"
                 :value="index"
-                v-bind:key="index"
+                v-bind:key="'adjustMealPackage_' + index"
               >
                 {{ option.meal.title }}
                 <span v-if="option.size && option.size.title !== 'Regular'">
                   - {{ option.size.title }}
                 </span>
-              </b-checkbox>
+              </b-radio>
 
-              <b-checkbox :value="adjustMealModal_items.length">
+              <b-radio :value="adjustMealModal_items.length">
                 Bag
-              </b-checkbox>
-            </b-checkbox-group>
+              </b-radio>
+            </b-radio-group>
           </div>
         </div>
       </b-modal>
@@ -132,12 +132,14 @@
             :ingredients="ingredients"
             :nutritionalFacts="nutritionalFacts"
             :adjustOrder="adjustOrder"
+            :manualOrder="manualOrder"
           ></meal-page>
 
           <meal-package-page
             :mealPackage="mealPackage"
             :mealPackageSize="mealPackageSize"
             :storeSettings="storeSettings"
+            :storeView="storeView"
             ref="mealPackagePage"
           ></meal-package-page>
 
@@ -411,7 +413,10 @@ export default {
       adjustMealModal: false,
       adjustMealModal_meal: null,
       adjustMealModal_size: null,
+      adjustMealModal_special_instructions: null,
       adjustMealModal_items: [],
+      adjustMealModal_components: null,
+      adjustMealModal_addons: null,
       adjustMealModal_index: 0,
       showBagClass: "shopping-cart show-right bag-area d-none",
       showFilterClass: "shopping-cart hidden-left bag-area",
@@ -827,9 +832,20 @@ export default {
       "refreshUpcomingOrders"
     ]),
     ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
-    showAdjustModal(meal, size, items) {
+    showAdjustModal(
+      meal,
+      size = null,
+      components = null,
+      addons = [],
+      special_instructions = null,
+      items = []
+    ) {
       this.adjustMealModal = true;
       this.adjustMealModal_meal = this.getMeal(meal.id, meal);
+      this.adjustMealModal_special_instructions = special_instructions;
+      this.adjustMealModal_components = components;
+      this.adjustMealModal_addons = addons;
+
       if (_.isObject(size) && size.id) {
         this.adjustMealModal_size = size;
       } else {
@@ -846,21 +862,36 @@ export default {
       this.adjustMealModal = false;
       const meal = this.adjustMealModal_meal;
       const size = this.adjustMealModal_size;
+      const special_instructions = this.adjustMealModal_special_instructions;
       const items = this.adjustMealModal_items;
       const index = this.adjustMealModal_index;
+      const addons = this.adjustMealModal_addons;
+      const components = this.adjustMealModal_components;
 
       if (index != null && items && items[index]) {
         this.updateOneSubItemFromAdjust(
           {
             meal,
-            size
+            size,
+            special_instructions
           },
           items[index],
           true
         );
       } else if (index == items.length) {
         // Directly to Bag
-        this.addOne(meal, false, size, null, [], null);
+        if (!addons) {
+          addons = [];
+        }
+
+        this.addOne(
+          meal,
+          false,
+          size,
+          components,
+          addons,
+          special_instructions
+        );
       }
     },
     onCategoryVisible(isVisible, category) {

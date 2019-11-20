@@ -832,7 +832,7 @@ export default {
             const items = this.getPackageBagItems();
 
             if (items && items.length > 0) {
-              this.$parent.showAdjustModal(meal, null, items);
+              this.$parent.showAdjustModal(meal, null, null, [], null, items);
               return;
             } else {
               this.addOne(meal, false, null, null, [], null);
@@ -858,7 +858,7 @@ export default {
             const items = this.getPackageBagItems();
 
             if (items && items.length > 0) {
-              this.$parent.showAdjustModal(meal, size, items);
+              this.$parent.showAdjustModal(meal, size, null, [], null, items);
               return;
             } else {
               this.addOne(meal, false, size, null, [], null);

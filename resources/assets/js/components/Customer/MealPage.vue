@@ -218,7 +218,8 @@ export default {
     mealDescription: "",
     ingredients: "",
     nutritionalFacts: {},
-    adjustOrder: false
+    adjustOrder: false,
+    manualOrder: false
   },
   mixins: [MenuBag],
   computed: {
@@ -316,115 +317,15 @@ export default {
     this.totalComponentPrice = 0;
   },
   methods: {
-    existInBagItem(meal, meal_size, item) {
-      const mealPackage = !!item.meal_package;
-
-      if (!mealPackage || !item.meal) {
-        return false;
+    isManualOrder() {
+      if (
+        this.manualOrder ||
+        this.$route.params.manualOrder ||
+        this.$route.name == "store-manual-order"
+      ) {
+        return true;
       }
-
-      const meal_size_id = meal_size ? meal_size.id : null;
-
-      let found = false;
-      const pkg = this.getMealPackage(item.meal.id, item.meal);
-      const size = pkg && item.size ? item.size : null;
-      const packageMeals = size ? size.meals : pkg ? pkg.meals : null;
-
-      if (packageMeals) {
-        packageMeals.forEach(pkgMeal => {
-          if (
-            pkgMeal &&
-            meal.id == pkgMeal.id &&
-            meal_size_id == pkgMeal.meal_size_id &&
-            !found
-          ) {
-            found = true;
-          }
-        });
-      }
-
-      if (!found) {
-        _(item.components).forEach((options, componentId) => {
-          const component = pkg.getComponent(componentId);
-          const optionIds = mealPackage ? Object.keys(options) : options;
-
-          _.forEach(optionIds, optionId => {
-            const option = pkg.getComponentOption(component, optionId);
-            if (!option) {
-              return null;
-            }
-
-            if (option.selectable) {
-              _.forEach(options[option.id], optionItem => {
-                if (
-                  optionItem &&
-                  optionItem.meal_id == meal.id &&
-                  optionItem.meal_size_id == meal_size_id &&
-                  !found
-                ) {
-                  found = true;
-                }
-              });
-            } else {
-              _.forEach(option.meals, mealItem => {
-                if (
-                  mealItem &&
-                  mealItem.meal_id == meal.id &&
-                  mealItem.meal_size_id == meal_size_id &&
-                  !found
-                ) {
-                  found = true;
-                }
-              });
-            }
-          });
-        });
-      }
-
-      if (!found) {
-        _(item.addons).forEach((addonItems, addonId) => {
-          const addon = pkg.getAddon(addonId);
-
-          if (addon.selectable) {
-            _.forEach(addonItems, addonItem => {
-              if (
-                addonItem &&
-                addonItem.meal_id == meal.id &&
-                addonItem.meal_size_id == meal_size_id &&
-                !found
-              ) {
-                found = true;
-              }
-            });
-          } else {
-            _.forEach(addonItems, addonItem => {
-              if (
-                addonItem &&
-                addonItem.meal_id == meal.id &&
-                addonItem.meal_size_id == meal_size_id &&
-                !found
-              ) {
-                found = true;
-              }
-            });
-          }
-        });
-      }
-
-      return found;
-    },
-    getRelatedBagItems(meal, size) {
-      const items = [];
-      const bag = this.bag;
-
-      if (bag) {
-        bag.forEach(item => {
-          if (this.existInBagItem(meal, size, item)) {
-            items.push(item);
-          }
-        });
-      }
-      return items;
+      return false;
     },
     isAdjustOrder() {
       if (
@@ -453,6 +354,20 @@ export default {
       $(ref).nutritionLabel(this.nutritionalFacts);
       // }
     },
+    getPackageBagItems() {
+      const items = [];
+      const bag = this.bag;
+
+      if (bag) {
+        bag.forEach(item => {
+          if (item.meal_package) {
+            items.push(item);
+          }
+        });
+      }
+
+      return items;
+    },
     addMeal(meal) {
       if (this.invalidCheck && this.hasVariations) {
         this.invalid = true;
@@ -461,23 +376,28 @@ export default {
 
       let size = this.mealSize;
 
-      if (this.isAdjustOrder()) {
-        /*const items = this.getRelatedBagItems(meal, size);
-            
+      if (this.isAdjustOrder() || this.isManualOrder()) {
+        const items = this.getPackageBagItems();
         if (items && items.length > 0) {
-          this.$parent.showAdjustModal(meal, size, items)
-          return
+          this.$parent.showAdjustModal(
+            meal,
+            size,
+            this.components,
+            this.addons,
+            this.special_instructions,
+            items
+          );
+          return;
         } else {
-          this.addOne(meal, false, size, this.components, this.addons, this.special_instructions);
-        }*/
-        this.addOne(
-          meal,
-          false,
-          size,
-          this.components,
-          this.addons,
-          this.special_instructions
-        );
+          this.addOne(
+            meal,
+            false,
+            size,
+            this.components,
+            this.addons,
+            this.special_instructions
+          );
+        }
       } else {
         this.addOne(
           meal,
