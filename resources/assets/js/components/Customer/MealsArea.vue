@@ -28,7 +28,7 @@
         "
       >
         <div v-if="storeSettings.menuStyle === 'image'">
-          <h2 class="text-center mb-2 dbl-underline">
+          <h2 class="text-center mb-1 dbl-underline">
             {{ group.category }}
           </h2>
           <h5 v-if="group.subtitle !== null" class="text-center mb-4">
