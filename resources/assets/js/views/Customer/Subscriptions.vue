@@ -55,6 +55,8 @@ f<template>
                   <div class="col-md-4">
                     <h4>Subscription ID</h4>
                     <p>{{ subscription.stripe_id }}</p>
+                    <h4>Interval</h4>
+                    <p>{{ subscription.interval_title }}</p>
                     <span v-if="!storeModules.hideTransferOptions">
                       <h4>
                         {{
@@ -177,13 +179,21 @@ f<template>
                           the following order on
                           <strong>
                             {{
+                              moment(subscription.latest_paid_order.created_at)
+                                .add(getIntervalDays(subscription), "days")
+                                .format("dddd, MMM Do")
+                            }}</strong
+                          >
+                          for the delivery date of
+                          <strong>
+                            {{
                               moment(
                                 subscription.latest_paid_order.delivery_date
                               )
-                                .add(7, "days")
+                                .add(getIntervalDays(subscription), "days")
                                 .format("dddd, MMM Do")
-                            }}.</strong
-                          >
+                            }}
+                          </strong>
                         </span>
                         <span v-else>
                           Any changes to this subscription will be applied to
@@ -469,6 +479,14 @@ export default {
       }
 
       this.refreshSubscriptions();
+    },
+    getIntervalDays(subscription) {
+      if (subscription.interval === "week") {
+        return 7;
+      }
+      if (subscription.interval === "month") {
+        return 30;
+      }
     }
   }
 };

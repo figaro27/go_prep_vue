@@ -27,7 +27,8 @@ class Subscription extends Model
         'meal_quantities',
         'pre_coupon',
         'items',
-        'meal_package_items'
+        'meal_package_items',
+        'interval_title'
     ];
 
     protected $casts = [
@@ -186,6 +187,27 @@ class Subscription extends Model
             return $this->latest_paid_order;
         } else {
             return $this->latest_unpaid_order;
+        }
+    }
+
+    public function getIntervalTitleAttribute()
+    {
+        switch ($this->interval) {
+            case 'day':
+                return 'Daily';
+                break;
+
+            case 'week':
+                return 'Weekly';
+                break;
+
+            case 'biweek':
+                return 'Bi-Weekly';
+                break;
+
+            case 'month':
+                return 'Monthly';
+                break;
         }
     }
 
