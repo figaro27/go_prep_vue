@@ -212,14 +212,21 @@
                   {{ cat.category }}
                 </div>
               </div>
-              <div class="row" v-if="mealPackagePageView">
+              <div class="row d-inline" v-if="mealPackagePageView">
                 <div class="col-md-12 center-text mb-3">
                   <button
                     @click="backFromPackagePage"
                     type="button"
-                    class="btn btn-secondary btn-md brand-color white-text"
+                    class="btn btn-secondary btn-md white-text d-inline"
                   >
                     Back
+                  </button>
+                  <button
+                    @click="addFromPackagePage"
+                    type="button"
+                    class="btn btn-secondary btn-md brand-color white-text d-inline"
+                  >
+                    Add
                   </button>
                 </div>
               </div>
@@ -1157,6 +1164,9 @@ export default {
     },
     backFromPackagePage() {
       this.$refs.mealPackagePage.back();
+    },
+    addFromPackagePage() {
+      this.$refs.mealPackagePage.add();
     }
   }
 };
