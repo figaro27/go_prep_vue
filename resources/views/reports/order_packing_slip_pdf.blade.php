@@ -76,6 +76,7 @@ $brandColor = $order->store->settings->color;
   <div class="col-4"></div>
   <div class="col-4"></div>
   <div class="col-4"><h1 class="center-text bold-text red">BALANCE DUE</h1></div>
+</div>
   @endif
   <div class="row">
     <div class="col-4" style="position:relative;top:40px">
