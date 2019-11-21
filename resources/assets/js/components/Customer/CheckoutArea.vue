@@ -9,7 +9,7 @@
             $parent.orderId === undefined
         "
       >
-        <div class="row" v-if="!manualOrder">
+        <div class="row" v-if="!manualOrder && !store.modules.subscriptionOnly">
           <div class="col-md-12 pb-1">
             <h3>
               <img
@@ -50,7 +50,7 @@
             </h3>
           </div>
         </div>
-        <div class="row">
+        <div class="row" v-if="!store.modules.subscriptionOnly">
           <div class="col-md-9">
             <strong
               ><p class="mr-1">
@@ -1292,6 +1292,9 @@ export default {
       return "Meal";
     },
     weeklySubscription() {
+      if (this.store.modules.subscriptionOnly) {
+        return true;
+      }
       if (
         this.checkoutData &&
         this.checkoutData.hasOwnProperty("weeklySubscriptionValue")
