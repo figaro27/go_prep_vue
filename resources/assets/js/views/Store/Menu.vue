@@ -219,7 +219,6 @@
                     id="meal-description"
                     class="form-control"
                     :rows="4"
-                    :maxlength="300"
                     @change="
                       e => updateMealDescription(meal.id, e.target.value)
                     "
