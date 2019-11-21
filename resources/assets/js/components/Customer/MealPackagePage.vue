@@ -7,6 +7,21 @@
       </div>
     </div>
 
+    <b-modal
+      size="lg"
+      :title="mealTitle"
+      v-model="mealPackageMealModal"
+      v-if="mealPackageMealModal"
+      hide-backdrop
+    >
+      {{ mealDescription }}
+    </b-modal>
+
+    <!-- v-model="viewMealModal"
+        v-if="viewMealModal"
+        :key="`view-meal-modal${meal.id}`"
+        @ok.prevent="onViewMealModalOk" -->
+
     <div v-if="mealPackage">
       <b-row class="my-3">
         <b-col>
@@ -44,10 +59,12 @@
                             class="menu-item-img"
                             width="100%"
                             style="background-color:#ffffff"
-                            v-b-popover.focus="{
-                              customClass: 'popover-large',
-                              content: `${mealOption.meal.description}`
-                            }"
+                            @click="
+                              showMealPackageMealModal(
+                                mealOption.meal.description,
+                                mealOption.meal.title
+                              )
+                            "
                           ></thumbnail>
 
                           <div class="price" v-if="mealOption.price > 0">
@@ -291,10 +308,12 @@
                               class="menu-item-img"
                               width="100%"
                               style="background-color:#ffffff"
-                              v-b-popover.click="{
-                                customClass: 'popover-large',
-                                content: `${mealOption.meal.description}`
-                              }"
+                              @click="
+                                showMealPackageMealModal(
+                                  mealOption.meal.description,
+                                  mealOption.meal.title
+                                )
+                              "
                             ></thumbnail>
 
                             <div class="price" v-if="mealOption.price > 0">
@@ -632,7 +651,10 @@ export default {
     return {
       choices: {},
       addons: [],
-      special_instructions: {}
+      special_instructions: {},
+      mealDescription: null,
+      mealTitle: null,
+      mealPackageMealModal: false
     };
   },
   updated() {
@@ -1204,6 +1226,11 @@ export default {
           });
         });
       });
+    },
+    showMealPackageMealModal(description, title) {
+      this.mealDescription = description;
+      this.mealTitle = title;
+      this.mealPackageMealModal = true;
     }
   }
 };
