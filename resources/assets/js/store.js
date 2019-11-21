@@ -1034,6 +1034,7 @@ const triggerLazy = (
           for (let i in finalCategories) {
             const {
               category,
+              subtitle,
               id,
               order,
               date_range,
@@ -1043,6 +1044,7 @@ const triggerLazy = (
             } = finalCategories[i];
             items.push({
               category: category,
+              subtitle: subtitle,
               category_id: id,
               meals: [],
               order,
