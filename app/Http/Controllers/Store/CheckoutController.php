@@ -416,15 +416,16 @@ class CheckoutController extends StoreController
             }
 
             // Send notification to store
-            if ($store->settings->notificationEnabled('new_order')) {
-                $store->sendNotification('new_order', [
-                    'order' => $order ?? null,
-                    'pickup' => $pickup ?? null,
-                    'card' => $card ?? null,
-                    'customer' => $customer ?? null,
-                    'subscription' => null
-                ]);
-            }
+
+            // if ($store->settings->notificationEnabled('new_order')) {
+            //     $store->sendNotification('new_order', [
+            //         'order' => $order ?? null,
+            //         'pickup' => $pickup ?? null,
+            //         'card' => $card ?? null,
+            //         'customer' => $customer ?? null,
+            //         'subscription' => null
+            //     ]);
+            // }
 
             // Send notification
             /*$email = new NewOrder([
