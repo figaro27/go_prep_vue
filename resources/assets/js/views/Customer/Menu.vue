@@ -226,7 +226,9 @@
               <div
                 v-if="mealPackagePageView && mealPackagePageComponents === 1"
               >
-                <h4 class="center-text">Remaining: {{ remainingMeals }}</h4>
+                <h4 class="center-text mt-2">
+                  Remaining: {{ remainingMeals }}
+                </h4>
               </div>
             </div>
             <!-- Inner Body End !-->
