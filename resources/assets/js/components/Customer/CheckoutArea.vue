@@ -85,12 +85,15 @@
           </div>
         </div>
 
-        <div v-if="weeklySubscription && storeModules.monthlyPlans" class="row">
-          <div class="col-6 col-md-4">
-            <strong>Billing period:</strong>
+        <div
+          v-if="weeklySubscription && storeModules.monthlyPlans"
+          class="d-inline"
+        >
+          <div class="d-inline">
+            <strong>Billing Period:</strong>
           </div>
-          <div class="col-6 col-md-5">
-            <b-select v-model="subscriptionInterval">
+          <div class="d-inline pl-3">
+            <b-select v-model="subscriptionInterval" class="mb-1">
               <option value="week">Weekly</option>
               <option value="month">Monthly</option>
             </b-select>
