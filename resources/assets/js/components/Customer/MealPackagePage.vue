@@ -14,7 +14,7 @@
       v-if="mealPackageMealModal"
       hide-backdrop
     >
-      {{ mealDescription }}
+      <p v-html="mealDescription"></p>
     </b-modal>
 
     <!-- v-model="viewMealModal"
@@ -59,12 +59,7 @@
                             class="menu-item-img"
                             width="100%"
                             style="background-color:#ffffff"
-                            @click="
-                              showMealPackageMealModal(
-                                mealOption.meal.description,
-                                mealOption.meal.title
-                              )
-                            "
+                            v-b-popover.click="`${mealOption.meal.description}`"
                           ></thumbnail>
 
                           <div class="price" v-if="mealOption.price > 0">
@@ -308,11 +303,8 @@
                               class="menu-item-img"
                               width="100%"
                               style="background-color:#ffffff"
-                              @click="
-                                showMealPackageMealModal(
-                                  mealOption.meal.description,
-                                  mealOption.meal.title
-                                )
+                              v-b-popover.click="
+                                `${mealOption.meal.description}`
                               "
                             ></thumbnail>
 
