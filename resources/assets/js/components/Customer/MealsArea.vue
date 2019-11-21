@@ -170,14 +170,11 @@
                             :ref="
                               'dropdown_' + meal.id + '_' + group.category_id
                             "
+                            class="mx-auto"
+                            size="lg"
                           >
-                            <b-btn
-                              class="brand-color white-text"
-                              slot="button-content"
-                              :id="
-                                'dropdown_' + meal.id + '_' + group.category_id
-                              "
-                              >Select</b-btn
+                            <span class="white-text" slot="button-content"
+                              >Select</span
                             >
                             <b-dropdown-item
                               @click="addMeal(meal, false)"
