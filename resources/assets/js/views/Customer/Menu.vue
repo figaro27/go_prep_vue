@@ -215,13 +215,18 @@
               <div class="row" v-if="mealPackagePageView">
                 <div class="col-md-12 center-text mb-3">
                   <button
-                    @click="backFromPackagPage"
+                    @click="backFromPackagePage"
                     type="button"
                     class="btn btn-secondary btn-md brand-color white-text"
                   >
                     Back
                   </button>
                 </div>
+              </div>
+              <div
+                v-if="mealPackagePageView && mealPackagePageComponents === 1"
+              >
+                <h4 class="center-text">Remaining: {{ remainingMeals }}</h4>
               </div>
             </div>
             <!-- Inner Body End !-->
@@ -453,6 +458,8 @@ export default {
       mealModal: false,
       mealPageView: false,
       mealPackagePageView: false,
+      mealPackagePageComponents: null,
+      remainingMeals: null,
       mealPackageModal: false,
       nutritionalFacts: {},
       showMealsArea: true,
@@ -1146,7 +1153,7 @@ export default {
       this.mealPackagePageView = false;
       this.finalCategoriesSub = [];
     },
-    backFromPackagPage() {
+    backFromPackagePage() {
       this.$refs.mealPackagePage.back();
     }
   }

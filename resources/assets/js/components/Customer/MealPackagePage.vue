@@ -631,6 +631,10 @@ export default {
       special_instructions: {}
     };
   },
+  updated() {
+    if (this.components)
+      this.$parent.mealPackagePageComponents = this.components.length;
+  },
   components: {},
   props: {
     mealPackage: {},
@@ -890,14 +894,15 @@ export default {
       const component = this.getComponent(componentId);
       const max = component.maximum;
       const choices = this.getComponentChoices(componentId);
-
-      return _.reduce(
+      let remainingMeals = _.reduce(
         choices,
         (remaining, meals) => {
           return remaining - meals.length;
         },
         max
       );
+      this.$parent.remainingMeals = remainingMeals;
+      return remainingMeals;
     },
     getComponentChoices(id) {
       return this.choices[id] ? this.choices[id] : [];
