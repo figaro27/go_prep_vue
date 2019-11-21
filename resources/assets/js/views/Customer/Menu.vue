@@ -217,7 +217,7 @@
                   <button
                     @click="backFromPackagePage"
                     type="button"
-                    class="btn btn-secondary btn-md white-text d-inline"
+                    class="btn btn-secondary btn-md d-inline"
                   >
                     Back
                   </button>
@@ -1166,7 +1166,7 @@ export default {
       this.$refs.mealPackagePage.back();
     },
     addFromPackagePage() {
-      this.$refs.mealPackagePage.add();
+      this.$refs.mealPackagePage.done();
     }
   }
 };
