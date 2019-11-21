@@ -44,7 +44,10 @@
                             class="menu-item-img"
                             width="100%"
                             style="background-color:#ffffff"
-                            v-b-popover.click="`${mealOption.meal.description}`"
+                            v-b-popover.click="{
+                              customClass: 'popover-large',
+                              content: `${mealOption.meal.description}`
+                            }"
                           ></thumbnail>
 
                           <div class="price" v-if="mealOption.price > 0">
@@ -288,9 +291,10 @@
                               class="menu-item-img"
                               width="100%"
                               style="background-color:#ffffff"
-                              v-b-popover.click="
-                                `${mealOption.meal.description}`
-                              "
+                              v-b-popover.click="{
+                                customClass: 'popover-large',
+                                content: `${mealOption.meal.description}`
+                              }"
                             ></thumbnail>
 
                             <div class="price" v-if="mealOption.price > 0">
