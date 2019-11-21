@@ -370,6 +370,7 @@
             class="delivery-select ml-2"
             v-model="transferTime"
             :options="transferTimeOptions"
+            @input="changeDeliveryTime"
           ></b-form-select>
         </div>
       </li>
@@ -388,6 +389,7 @@
             class="delivery-select ml-2"
             v-model="transferTime"
             :options="transferTimeOptions"
+            @input="changeDeliveryTime"
           ></b-form-select>
         </div>
       </li>
@@ -1494,6 +1496,9 @@ export default {
     },
     changeDeliveryDay(val) {
       this.setBagDeliveryDate(val);
+      this.updateParentData();
+    },
+    changeDeliveryTime(val) {
       this.updateParentData();
     },
     changePickupV() {
