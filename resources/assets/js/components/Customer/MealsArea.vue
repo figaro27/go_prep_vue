@@ -134,10 +134,12 @@
                           <b-btn
                             @click.stop="minusMixOne(meal)"
                             class="plus-minus gray"
+                            v-if="!meal.meal_package && meal.sizes.length === 0"
                           >
                             <i>-</i>
                           </b-btn>
                           <b-form-input
+                            v-if="!meal.meal_package && meal.sizes.length === 0"
                             type="text"
                             name
                             id
@@ -164,17 +166,15 @@
                                 meal.sizes &&
                                 meal.sizes.length > 0
                             "
-                            toggle-class="menu-bag-btn plus-minus"
+                            toggle-class="brand-color"
                             :ref="
                               'dropdown_' + meal.id + '_' + group.category_id
                             "
+                            class="mx-auto"
+                            size="lg"
                           >
-                            <i
-                              slot="button-content"
-                              :id="
-                                'dropdown_' + meal.id + '_' + group.category_id
-                              "
-                              >+</i
+                            <span class="white-text" slot="button-content"
+                              >Select</span
                             >
                             <b-dropdown-item
                               @click="addMeal(meal, false)"
@@ -198,7 +198,7 @@
                             </b-dropdown-item>
                           </b-dropdown>
 
-                          <b-btn
+                          <!-- <b-btn
                             v-if="
                               meal.meal_package &&
                                 (!meal.sizes || meal.sizes.length === 0)
@@ -207,7 +207,19 @@
                             class="plus-minus menu-bag-btn"
                           >
                             <i>+</i>
-                          </b-btn>
+                          </b-btn> -->
+
+                          <b-btn
+                            slot="button-content"
+                            class="brand-color mx-auto white-text"
+                            size="lg"
+                            v-if="
+                              meal.meal_package &&
+                                (!meal.sizes || meal.sizes.length === 0)
+                            "
+                            @click="addMeal(meal, true)"
+                            >Select</b-btn
+                          >
 
                           <b-dropdown
                             v-if="
@@ -215,19 +227,18 @@
                                 meal.sizes &&
                                 meal.sizes.length > 0
                             "
-                            toggle-class="menu-bag-btn"
+                            toggle-class="brand-color"
                             :ref="
                               'dropdown_' + meal.id + '_' + group.category_id
                             "
+                            class="mx-auto"
+                            size="lg"
                             right
                           >
-                            <span
-                              slot="button-content"
-                              :id="
-                                'dropdown_' + meal.id + '_' + group.category_id
-                              "
-                              >+</span
+                            <span class="white-text" slot="button-content"
+                              >Select</span
                             >
+
                             <b-dropdown-item
                               @click="addMeal(meal, true)"
                               class="variation-dropdown"
