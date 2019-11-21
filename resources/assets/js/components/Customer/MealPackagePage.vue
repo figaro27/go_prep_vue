@@ -14,7 +14,7 @@
       v-if="mealPackageMealModal"
       hide-backdrop
     >
-      {{ mealDescription }}
+      <p v-html="mealDescription"></p>
     </b-modal>
 
     <!-- v-model="viewMealModal"
