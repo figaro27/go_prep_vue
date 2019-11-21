@@ -382,7 +382,7 @@ class Subscription extends Model
         $newOrder->pickup = $this->pickup;
         $newOrder->delivery_date = $latestOrder->delivery_date
             ->copy()
-            ->add("1 $interval");
+            ->add('1 ' . $this->interval);
         $newOrder->save();
 
         // Assign meal package orders from meal package subscriptions
