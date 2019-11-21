@@ -134,10 +134,12 @@
                           <b-btn
                             @click.stop="minusMixOne(meal)"
                             class="plus-minus gray"
+                            v-if="!meal.meal_package && meal.sizes.length === 0"
                           >
                             <i>-</i>
                           </b-btn>
                           <b-form-input
+                            v-if="!meal.meal_package && meal.sizes.length === 0"
                             type="text"
                             name
                             id
@@ -164,17 +166,18 @@
                                 meal.sizes &&
                                 meal.sizes.length > 0
                             "
-                            toggle-class="menu-bag-btn plus-minus"
+                            toggle-class="brand-color"
                             :ref="
                               'dropdown_' + meal.id + '_' + group.category_id
                             "
                           >
-                            <i
+                            <b-btn
+                              class="brand-color white-text"
                               slot="button-content"
                               :id="
                                 'dropdown_' + meal.id + '_' + group.category_id
                               "
-                              >+</i
+                              >Select</b-btn
                             >
                             <b-dropdown-item
                               @click="addMeal(meal, false)"
