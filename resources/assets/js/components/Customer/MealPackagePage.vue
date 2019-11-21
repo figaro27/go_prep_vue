@@ -291,7 +291,7 @@
                               class="menu-item-img"
                               width="100%"
                               style="background-color:#ffffff"
-                              v-b-popover.focus="{
+                              v-b-popover.click="{
                                 customClass: 'popover-large',
                                 content: `${mealOption.meal.description}`
                               }"
