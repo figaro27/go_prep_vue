@@ -59,7 +59,12 @@
                             class="menu-item-img"
                             width="100%"
                             style="background-color:#ffffff"
-                            v-b-popover.click="`${mealOption.meal.description}`"
+                            @click="
+                              showMealPackageMealModal(
+                                mealOption.meal.description,
+                                mealOption.meal.title
+                              )
+                            "
                           ></thumbnail>
 
                           <div class="price" v-if="mealOption.price > 0">
@@ -303,8 +308,11 @@
                               class="menu-item-img"
                               width="100%"
                               style="background-color:#ffffff"
-                              v-b-popover.click="
-                                `${mealOption.meal.description}`
+                              @click="
+                                showMealPackageMealModal(
+                                  mealOption.meal.description,
+                                  mealOption.meal.title
+                                )
                               "
                             ></thumbnail>
 
@@ -1220,7 +1228,7 @@ export default {
       });
     },
     showMealPackageMealModal(description, title) {
-      this.mealDescription = description;
+      this.mealDescription = description.replace(/(\r\n|\n|\r)/gm, "<br />");
       this.mealTitle = title;
       this.mealPackageMealModal = true;
     }
