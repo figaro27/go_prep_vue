@@ -72,7 +72,7 @@ $brandColor = $order->store->settings->color;
   <h1 class="center-text bold-text red">VOIDED</h1>
   @endif
   @if ($order->balance > 0)
-  <h1 class="center-text bold-text red">BALANCE DUE</h1>
+  <h1 class="align-right bold-text red" style="float:right">BALANCE DUE</h1>
   @endif
   <div class="row">
     <div class="col-4" style="position:relative;top:40px">
