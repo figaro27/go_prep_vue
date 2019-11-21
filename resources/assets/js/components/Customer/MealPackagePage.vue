@@ -44,7 +44,7 @@
                             class="menu-item-img"
                             width="100%"
                             style="background-color:#ffffff"
-                            v-b-popover.hover="`${mealOption.meal.description}`"
+                            v-b-popover.click="`${mealOption.meal.description}`"
                           ></thumbnail>
 
                           <div class="price" v-if="mealOption.price > 0">
@@ -288,7 +288,7 @@
                               class="menu-item-img"
                               width="100%"
                               style="background-color:#ffffff"
-                              v-b-popover.hover="
+                              v-b-popover.click="
                                 `${mealOption.meal.description}`
                               "
                             ></thumbnail>
