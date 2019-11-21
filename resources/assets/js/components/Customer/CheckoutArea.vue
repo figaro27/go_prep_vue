@@ -100,14 +100,14 @@
           </div>
         </div>
       </li>
-      <li class="checkout-item">
+      <!-- <li class="checkout-item">
         <p>
           <strong>
             {{ total }} {{ singOrPluralTotal }}
             {{ deliveryPlanText }}
           </strong>
         </p>
-      </li>
+      </li> -->
       <li class="checkout-item">
         <div class="row">
           <div class="col-6 col-md-4">
