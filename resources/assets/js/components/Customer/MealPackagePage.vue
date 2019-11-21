@@ -773,6 +773,16 @@ export default {
   },
   methods: {
     back() {
+      this.special_instructions = {};
+
+      if (this.mealPackage.sizes.length > 0) {
+        this.mealPackage.sizes.forEach(size => {
+          size.meals.forEach(meal => {
+            meal.special_instructions = null;
+          });
+        });
+      }
+
       this.choices = {};
       this.addons = [];
       this.$parent.showMealsArea = true;
