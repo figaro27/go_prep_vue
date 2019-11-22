@@ -307,7 +307,7 @@
                           meal.sizes.length > 0
                       "
                       toggle-class="brand-color"
-                      style="position:relative;top:30%"
+                      style="position:relative;top:15%"
                       :ref="'dropdown_' + meal.id + '_' + group.category_id"
                       class="mx-auto align-items-center"
                       size="lg"
@@ -360,7 +360,7 @@
                         meal.meal_package && meal.sizes && meal.sizes.length > 0
                       "
                       toggle-class="brand-color"
-                      style="position:relative;top:30%"
+                      style="position:relative;top:15%"
                       :ref="'dropdown_' + meal.id + '_' + group.category_id"
                       class="mx-auto"
                       size="lg"
