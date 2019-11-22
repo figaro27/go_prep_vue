@@ -436,7 +436,7 @@ body.sidebar-minimized {
 }
 
 .clear-meal {
-  width: 10px;
+  font-size: 22px !important;
 }
 
 .filters ul {
@@ -1441,4 +1441,8 @@ body.forgotresettoken {
 
 .medium {
   font-size: 13.5px !important;
+}
+
+.dark-gray {
+  color: #535353 !important;
 }
