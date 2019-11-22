@@ -22,13 +22,7 @@ class CustomerController extends StoreController
         //     ->without(['user', 'orders', 'paid_orders'])
         //     ->get();
         $customers = $this->store->customers;
-        $customers->makeHidden([
-            'first_order',
-            'last_order',
-            'total_payments',
-            'total_paid',
-            'paid_orders'
-        ]);
+        $customers->makeHidden(['first_order', 'paid_orders']);
         return $customers;
     }
 
