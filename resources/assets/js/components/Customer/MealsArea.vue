@@ -301,13 +301,9 @@
                     </div> -->
 
                     <b-dropdown
-                      v-if="
-                        !meal.meal_package &&
-                          meal.sizes &&
-                          meal.sizes.length > 0
-                      "
+                      v-if="!meal.meal_package && hasVariations(meal)"
                       toggle-class="brand-color"
-                      style="position:relative;top:15%"
+                      style="position:relative;top:10%"
                       :ref="'dropdown_' + meal.id + '_' + group.category_id"
                       class="mx-auto align-items-center"
                       size="lg"
@@ -334,10 +330,7 @@
                     </b-dropdown>
 
                     <b-btn
-                      v-if="
-                        !meal.meal_package &&
-                          (!meal.sizes || meal.sizes.length === 0)
-                      "
+                      v-if="!meal.meal_package && !hasVariations(meal)"
                       @click.stop="addMeal(meal, null)"
                       class="menu-bag-btn small-buttons plus-minus"
                     >
@@ -345,10 +338,7 @@
                     </b-btn>
 
                     <b-btn
-                      v-if="
-                        meal.meal_package &&
-                          (!meal.sizes || meal.sizes.length === 0)
-                      "
+                      v-if="meal.meal_package && !hasVariations(meal)"
                       @click.stop="addMeal(meal, false)"
                       class="menu-bag-btn small-buttons plus-minus"
                     >
@@ -356,11 +346,9 @@
                     </b-btn>
 
                     <b-dropdown
-                      v-if="
-                        meal.meal_package && meal.sizes && meal.sizes.length > 0
-                      "
+                      v-if="meal.meal_package && hasVariations(meal)"
                       toggle-class="brand-color"
-                      style="position:relative;top:15%"
+                      style="position:relative;top:10%"
                       :ref="'dropdown_' + meal.id + '_' + group.category_id"
                       class="mx-auto"
                       size="lg"
@@ -390,10 +378,7 @@
 
                     <p
                       class="mt-3 ml-1"
-                      v-if="
-                        !meal.meal_package &&
-                          (!meal.sizes || meal.sizes.length === 0)
-                      "
+                      v-if="!meal.meal_package && !hasVariations(meal)"
                     >
                       {{ mealMixQuantity(meal) }}
                     </p>
@@ -409,10 +394,7 @@
                     <div
                       @click.stop="minusMixOne(meal)"
                       class="bag-plus-minus small-buttons gray white-text"
-                      v-if="
-                        !meal.meal_package &&
-                          (!meal.sizes || meal.sizes.length === 0)
-                      "
+                      v-if="!meal.meal_package && !hasVariations(meal)"
                     >
                       <i>-</i>
                     </div>
@@ -930,6 +912,14 @@ export default {
         this.$parent.showMealPackagesArea = false;
       }
       this.$parent.search = "";
+    },
+    hasVariations(meal) {
+      if (
+        (meal.sizes && meal.sizes.length > 0) ||
+        (meal.components && meal.components.length > 0) ||
+        (meal.addons && meal.addons.length > 0)
+      )
+        return true;
     }
   }
 };
