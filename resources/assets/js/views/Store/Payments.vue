@@ -138,15 +138,15 @@
                 {{ formatMoney(props.row.stripe_fee, props.row.currency) }}
               </div>
             </div>
-            <div slot="grandTotal" slot-scope="props">
+            <div slot="amount" slot-scope="props">
               <div>
-                {{ formatMoney(props.row.grandTotal, props.row.currency) }}
+                {{ formatMoney(props.row.amount, props.row.currency) }}
               </div>
             </div>
-            <div slot="deposit" slot-scope="props">
+            <div slot="balance" slot-scope="props">
               <div>
                 <!-- {{ formatMoney((100 - props.row.deposit)/100 * props.row.grandTotal, props.row.currency) }} -->
-                {{ props.row.deposit }}%
+                {{ formatMoney(props.row.balance, props.row.currency) }}
               </div>
             </div>
             <div slot="refundedAmount" slot-scope="props">
@@ -208,8 +208,8 @@ export default {
           // total: "PreFee Total",
           goprep_fee: "GoPrep Fee",
           stripe_fee: "Stripe Fee",
-          grandTotal: "Total",
-          deposit: "Balance Remaining",
+          amount: "Total",
+          balance: "Balance",
           refundedAmount: "Refunded"
         },
         customSorting: {
@@ -292,9 +292,10 @@ export default {
             processingFee: 0,
             deliveryFee: 0,
             salesTax: 0,
-            goprep_fee: 0,
-            stripe_fee: 0,
-            grandTotal: 0
+            // goprep_fee: 0,
+            // stripe_fee: 0,
+            amount: 0,
+            balance: 0
           };
 
           orderByDay.forEach(order => {
@@ -307,9 +308,10 @@ export default {
             sums.processingFee += order.processingFee;
             sums.deliveryFee += order.deliveryFee;
             sums.salesTax += order.salesTax;
-            sums.goprep_fee += order.goprep_fee;
-            sums.stripe_fee += order.stripe_fee;
-            sums.grandTotal += order.grandTotal;
+            // sums.goprep_fee += order.goprep_fee;
+            // sums.stripe_fee += order.stripe_fee;
+            sums.amount += order.amount;
+            sums.balance += order.balance;
           });
           orders.push({
             created_at: created_at,
@@ -321,9 +323,10 @@ export default {
             processingFee: sums.processingFee,
             deliveryFee: sums.deliveryFee,
             salesTax: sums.salesTax,
-            goprep_fee: sums.goprep_fee,
-            stripe_fee: sums.stripe_fee,
-            grandTotal: sums.grandTotal
+            // goprep_fee: sums.goprep_fee,
+            // stripe_fee: sums.stripe_fee,
+            amount: sums.amount,
+            balance: sums.balance
           });
         });
 
@@ -349,7 +352,8 @@ export default {
           salesTax: 0,
           goprep_fee: 0,
           stripe_fee: 0,
-          grandTotal: 0,
+          amount: 0,
+          balance: 0,
           refundedAmount: 0
         };
 
@@ -361,9 +365,10 @@ export default {
           sums.processingFee += order.processingFee;
           sums.deliveryFee += order.deliveryFee;
           sums.salesTax += order.salesTax;
-          sums.goprep_fee += order.goprep_fee;
-          sums.stripe_fee += order.stripe_fee;
-          sums.grandTotal += order.grandTotal;
+          // sums.goprep_fee += order.goprep_fee;
+          // sums.stripe_fee += order.stripe_fee;
+          sums.amount += order.amount;
+          sums.balance += order.balance;
           sums.refundedAmount += order.refundedAmount;
         });
 
@@ -377,9 +382,10 @@ export default {
           processingFee: sums.processingFee,
           deliveryFee: sums.deliveryFee,
           salesTax: sums.salesTax,
-          goprep_fee: sums.goprep_fee,
-          stripe_fee: sums.stripe_fee,
-          grandTotal: sums.grandTotal,
+          // goprep_fee: sums.goprep_fee,
+          // stripe_fee: sums.stripe_fee,
+          amount: sums.amount,
+          balance: sums.balance,
           refundedAmount: sums.refundedAmount,
           sumRow: 1
         });
@@ -394,7 +400,7 @@ export default {
         "salesTax",
         // "total",
 
-        "grandTotal"
+        "amount"
       ];
 
       let addedColumns = [];
@@ -416,15 +422,15 @@ export default {
         if (!columns.includes("deliveryFee") && order.deliveryFee > 0) {
           columns.splice(2, 0, "deliveryFee");
         }
-        if (!columns.includes("deposit") && order.deposit < 100) {
-          columns.splice(columns.length, 0, "deposit");
+        if (!columns.includes("balance") && order.balance > 0) {
+          columns.splice(columns.length, 0, "balance");
         }
-        if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
-          columns.splice(columns.length - 1, 0, "goprep_fee");
-        }
-        if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
-          columns.splice(columns.length - 1, 0, "stripe_fee");
-        }
+        // if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
+        //   columns.splice(columns.length - 1, 0, "goprep_fee");
+        // }
+        // if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
+        //   columns.splice(columns.length - 1, 0, "stripe_fee");
+        // }
         if (!columns.includes("refundedAmount") && order.refundedAmount > 0) {
           columns.splice(columns.length, 0, "refundedAmount");
         }
@@ -447,15 +453,15 @@ export default {
         if (!columns.includes("deliveryFee") && order.deliveryFee > 0) {
           columns.splice(2, 0, "deliveryFee");
         }
-        if (!columns.includes("deposit") && order.deposit < 100) {
-          columns.splice(columns.length, 0, "deposit");
+        if (!columns.includes("balance") && order.balance > 0) {
+          columns.splice(columns.length, 0, "balance");
         }
-        if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
-          columns.splice(columns.length - 1, 0, "goprep_fee");
-        }
-        if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
-          columns.splice(columns.length - 1, 0, "stripe_fee");
-        }
+        // if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
+        //   columns.splice(columns.length - 1, 0, "goprep_fee");
+        // }
+        // if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
+        //   columns.splice(columns.length - 1, 0, "stripe_fee");
+        // }
         if (!columns.includes("refundedAmount") && order.refundedAmount > 0) {
           columns.splice(columns.length - 1, 0, "refundedAmount");
         }

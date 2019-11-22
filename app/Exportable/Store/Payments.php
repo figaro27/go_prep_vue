@@ -46,10 +46,10 @@ class Payments
                     $sums[5] += $payment->processingFee;
                     $sums[6] += $payment->deliveryFee;
                     $sums[7] += $payment->salesTax;
-                    $sums[8] += $payment->goprep_fee;
-                    $sums[9] += $payment->stripe_fee;
-                    $sums[10] += $payment->grandTotal;
-                    $sums[11] = 100 - $payment->deposit;
+                    // $sums[8] += $payment->goprep_fee;
+                    // $sums[9] += $payment->stripe_fee;
+                    $sums[10] += $payment->amount;
+                    $sums[11] = $payment->balance;
                     $sums[12] += $payment->refundedAmount;
 
                     $paymentsRows = [
@@ -61,10 +61,10 @@ class Payments
                         '$' . number_format($payment->deliveryFee, 2),
                         '$' . number_format($payment->processingFee, 2),
                         '$' . number_format($payment->salesTax, 2),
-                        '$' . number_format($payment->goprep_fee, 2),
-                        '$' . number_format($payment->stripe_fee, 2),
-                        '$' . number_format($payment->grandTotal, 2),
-                        100 - $payment->deposit . '%',
+                        // '$' . number_format($payment->goprep_fee, 2),
+                        // '$' . number_format($payment->stripe_fee, 2),
+                        '$' . number_format($payment->amount, 2),
+                        '$' . number_format($payment->balance, 2),
                         '$' . number_format($payment->refundedAmount, 2)
                     ];
 
@@ -95,9 +95,10 @@ class Payments
                 $processingFee = 0;
                 $deliveryFee = 0;
                 $salesTax = 0;
-                $goPrepFeeAmount = 0;
-                $stripeFeeAmount = 0;
-                $grandTotal = 0;
+                // $goPrepFeeAmount = 0;
+                // $stripeFeeAmount = 0;
+                $amount = 0;
+                $balance = 0;
                 $refundedAmount = 0;
 
                 foreach ($orderByDay as $order) {
@@ -109,10 +110,10 @@ class Payments
                     $processingFee += $order->processingFee;
                     $deliveryFee += $order->deliveryFee;
                     $salesTax += $order->salesTax;
-                    $goPrepFeeAmount += $order->goprep_fee;
-                    $stripeFeeAmount += $order->stripe_fee;
-                    $grandTotal += $order->grandTotal;
-                    // $deposit = 100 - $order->deposit;
+                    // $goPrepFeeAmount += $order->goprep_fee;
+                    // $stripeFeeAmount += $order->stripe_fee;
+                    $amount += $order->amount;
+                    $balance += $order->balance;
                     $refundedAmount += $order->refundedAmount;
                 }
                 $orderDay = Carbon::createFromFormat(
@@ -128,9 +129,10 @@ class Payments
                     '$' . number_format($deliveryFee, 2),
                     '$' . number_format($processingFee, 2),
                     '$' . number_format($salesTax, 2),
-                    '$' . number_format($goPrepFeeAmount, 2),
-                    '$' . number_format($stripeFeeAmount, 2),
-                    '$' . number_format($grandTotal, 2),
+                    // '$' . number_format($goPrepFeeAmount, 2),
+                    // '$' . number_format($stripeFeeAmount, 2),
+                    '$' . number_format($amount, 2),
+                    '$' . number_format($balance, 2),
                     '$' . number_format($refundedAmount, 2)
                 ]);
 
@@ -141,10 +143,11 @@ class Payments
                 $sumsByDaily[5] += $deliveryFee;
                 $sumsByDaily[6] += $processingFee;
                 $sumsByDaily[7] += $salesTax;
-                $sumsByDaily[8] += $goPrepFeeAmount;
-                $sumsByDaily[9] += $stripeFeeAmount;
-                $sumsByDaily[10] += $grandTotal;
-                $sumsByDaily[11] += $refundedAmount;
+                // $sumsByDaily[8] += $goPrepFeeAmount;
+                // $sumsByDaily[9] += $stripeFeeAmount;
+                $sumsByDaily[8] += $amount;
+                $sumsByDaily[9] += $balance;
+                $sumsByDaily[10] += $refundedAmount;
             }
 
             foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as $i) {
@@ -173,8 +176,8 @@ class Payments
                 'Processing Fee',
                 'Delivery Fee',
                 'Sales Tax',
-                'GoPrep Fee',
-                'Stripe Fee',
+                // 'GoPrep Fee',
+                // 'Stripe Fee',
                 'Total',
                 'Balance',
                 'Refunded'
