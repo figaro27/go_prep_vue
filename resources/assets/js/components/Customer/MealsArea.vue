@@ -300,19 +300,33 @@
                       <i>+</i>
                     </div> -->
 
-                    <b-dropdown
-                      v-if="!meal.meal_package && hasVariations(meal)"
-                      toggle-class="brand-color"
-                      style="position:relative;top:10%"
-                      :ref="'dropdown_' + meal.id + '_' + group.category_id"
-                      class="mx-auto align-items-center"
-                      size="lg"
+                    <b-btn
+                      v-if="
+                        !meal.meal_package &&
+                          (!meal.sizes || meal.sizes.length === 0)
+                      "
+                      @click.stop="addMeal(meal, null)"
+                      class="menu-bag-btn small-buttons plus-minus"
                     >
-                      <span class="white-text" slot="button-content"
-                        >Select</span
+                      <i>+</i>
+                    </b-btn>
+
+                    <b-dropdown
+                      v-if="
+                        !meal.meal_package &&
+                          meal.sizes &&
+                          meal.sizes.length > 0
+                      "
+                      toggle-class="menu-bag-btn small-buttons plus-minus"
+                      :ref="'dropdown_' + meal.id + '_' + group.category_id"
+                    >
+                      <i
+                        slot="button-content"
+                        :id="'dropdown_' + meal.id + '_' + group.category_id"
+                        >+</i
                       >
                       <b-dropdown-item
-                        @click="addMeal(meal, false)"
+                        @click.stop="addMeal(meal, false)"
                         class="variation-dropdown"
                       >
                         {{ meal.default_size_title || "Regular" }} -
@@ -330,15 +344,10 @@
                     </b-dropdown>
 
                     <b-btn
-                      v-if="!meal.meal_package && !hasVariations(meal)"
-                      @click.stop="addMeal(meal, null)"
-                      class="menu-bag-btn small-buttons plus-minus"
-                    >
-                      <i>+</i>
-                    </b-btn>
-
-                    <b-btn
-                      v-if="meal.meal_package && !hasVariations(meal)"
+                      v-if="
+                        meal.meal_package &&
+                          (!meal.sizes || meal.sizes.length === 0)
+                      "
                       @click.stop="addMeal(meal, false)"
                       class="menu-bag-btn small-buttons plus-minus"
                     >
@@ -346,18 +355,17 @@
                     </b-btn>
 
                     <b-dropdown
-                      v-if="meal.meal_package && hasVariations(meal)"
-                      toggle-class="brand-color"
-                      style="position:relative;top:10%"
+                      v-if="
+                        meal.meal_package && meal.sizes && meal.sizes.length > 0
+                      "
+                      toggle-class="menu-bag-btn small-buttons plus-minus"
                       :ref="'dropdown_' + meal.id + '_' + group.category_id"
-                      class="mx-auto"
-                      size="lg"
-                      right
                     >
-                      <span class="white-text" slot="button-content"
-                        >Select</span
+                      <i
+                        slot="button-content"
+                        :id="'dropdown_' + meal.id + '_' + group.category_id"
+                        >+</i
                       >
-
                       <b-dropdown-item
                         @click="addMeal(meal, true)"
                         class="variation-dropdown"
@@ -376,12 +384,7 @@
                       </b-dropdown-item>
                     </b-dropdown>
 
-                    <p
-                      class="mt-3 ml-1"
-                      v-if="!meal.meal_package && !hasVariations(meal)"
-                    >
-                      {{ mealMixQuantity(meal) }}
-                    </p>
+                    <p class="mt-3 ml-1">{{ mealMixQuantity(meal) }}</p>
                     <!-- <b-form-input
                       type="text"
                       name
@@ -394,7 +397,6 @@
                     <div
                       @click.stop="minusMixOne(meal)"
                       class="bag-plus-minus small-buttons gray white-text"
-                      v-if="!meal.meal_package && !hasVariations(meal)"
                     >
                       <i>-</i>
                     </div>
@@ -912,14 +914,6 @@ export default {
         this.$parent.showMealPackagesArea = false;
       }
       this.$parent.search = "";
-    },
-    hasVariations(meal) {
-      if (
-        (meal.sizes && meal.sizes.length > 0) ||
-        (meal.components && meal.components.length > 0) ||
-        (meal.addons && meal.addons.length > 0)
-      )
-        return true;
     }
   }
 };
