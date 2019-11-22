@@ -43,11 +43,13 @@ class Orders
             ->map(function ($order) {
                 return [
                     $order->order_number,
+                    $order->dailyOrderNumber,
                     $order->user->name,
                     $order->user->details->address,
                     $order->user->details->zip,
                     $order->user->details->phone,
                     '$' . number_format($order->amount, 2),
+                    '$' . number_format($order->balance, 2),
                     $order->created_at->format('D, m/d/Y'),
                     $order->delivery_date->format('D, m/d/Y')
                 ];
