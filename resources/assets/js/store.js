@@ -1231,13 +1231,6 @@ const actions = {
     } catch (e) {}
 
     try {
-      if (!_.isEmpty(data.upcomingOrders) && _.isObject(data.upcomingOrders)) {
-        let orders = data.upcomingOrders;
-        commit("storeUpcomingOrders", { orders });
-      }
-    } catch (e) {}
-
-    try {
       if (
         !_.isEmpty(data.upcomingOrdersWithoutItems) &&
         _.isObject(data.upcomingOrdersWithoutItems)
@@ -1295,23 +1288,6 @@ const actions = {
     } catch (e) {}
 
     try {
-      if (!_.isEmpty(data.store.lineItems)) {
-        let lineItems = data.store.lineItems;
-
-        if (!_.isEmpty(lineItems)) {
-          commit("storeLineItems", { lineItems });
-        }
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.orders) && _.isObject(data.orders)) {
-        let orders = data.orders;
-        commit("storeOrders", { orders });
-      }
-    } catch (e) {}
-
-    try {
       if (!_.isEmpty(data.tags)) {
         let tags = data.tags;
 
@@ -1323,6 +1299,30 @@ const actions = {
 
     state.isLoading = false;
     state.initialized = true;
+
+    try {
+      if (!_.isEmpty(data.orders) && _.isObject(data.orders)) {
+        let orders = data.orders;
+        commit("storeOrders", { orders });
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.upcomingOrders) && _.isObject(data.upcomingOrders)) {
+        let orders = data.upcomingOrders;
+        commit("storeUpcomingOrders", { orders });
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.lineItems)) {
+        let lineItems = data.store.lineItems;
+
+        if (!_.isEmpty(lineItems)) {
+          commit("storeLineItems", { lineItems });
+        }
+      }
+    } catch (e) {}
 
     // try {   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
     //     let orders = data.store.orders;     commit('storeOrders', {orders});   }
