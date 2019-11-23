@@ -196,211 +196,6 @@ const mutations = {
       state.bag.total = 0;
     }
   },
-  updateOneSubItemFromAdjust(state, { item, order_bag, plus }) {
-    let guid = order_bag.guid.toString();
-    /*if (!guid.includes("_adjust")) {
-      guid += "_adjust"
-    }*/
-
-    if (!_.has(state.bag.items, guid)) {
-      return;
-    }
-
-    let bag_item = state.bag.items[guid];
-    const mealPackage = !!bag_item.meal_package;
-    const size_id = item.size ? item.size.id : null;
-
-    if (!mealPackage || !bag_item.meal) {
-      return;
-    }
-
-    const pkg = bag_item.meal;
-    const size = pkg && bag_item.size ? bag_item.size : null;
-
-    const packageMeals = size ? size.meals : pkg ? pkg.meals : null;
-    let found = false;
-
-    _.forEach(packageMeals, (pkgMeal, index) => {
-      if (
-        pkgMeal &&
-        pkgMeal.id == item.meal.id &&
-        pkgMeal.meal_size_id == size_id &&
-        !found
-      ) {
-        found = true;
-
-        if (plus) {
-          pkgMeal.quantity += 1;
-        } else {
-          pkgMeal.quantity -= 1;
-        }
-
-        if (pkgMeal.quantity <= 0) {
-          packageMeals.splice(index, 1);
-        }
-      }
-    });
-
-    if (!found) {
-      // Not Found
-      _(bag_item.components).forEach((options, componentId) => {
-        const component = pkg.getComponent(componentId);
-        const optionIds = mealPackage ? Object.keys(options) : options;
-
-        _.forEach(optionIds, optionId => {
-          const option = pkg.getComponentOption(component, optionId);
-          if (!option) {
-            return null;
-          }
-
-          if (option.selectable) {
-            _.forEach(options[option.id], (optionItem, index) => {
-              if (
-                optionItem &&
-                optionItem.meal_id == item.meal.id &&
-                optionItem.meal_size_id == size_id &&
-                !found
-              ) {
-                found = true;
-
-                if (plus) {
-                  optionItem.quantity += 1;
-                } else {
-                  optionItem.quantity -= 1;
-                }
-
-                if (optionItem.quantity <= 0) {
-                  options[option.id].splice(index, 1);
-                }
-              }
-            });
-          } else {
-            _.forEach(option.meals, (mealItem, index) => {
-              if (
-                mealItem &&
-                mealItem.meal_id == item.meal.id &&
-                mealItem.meal_size_id == size_id &&
-                !found
-              ) {
-                found = true;
-
-                if (plus) {
-                  mealItem.quantity += 1;
-                } else {
-                  mealItem.quantity -= 1;
-                }
-
-                if (mealItem.quantity <= 0) {
-                  option.meals.splice(index, 1);
-                }
-              }
-            });
-          }
-        });
-      });
-    }
-
-    if (!found) {
-      _(bag_item.addons).forEach((addonItems, addonId) => {
-        const addon = pkg.getAddon(addonId);
-        if (addon.selectable) {
-          _.forEach(addonItems, (addonItem, index) => {
-            if (
-              addonItem &&
-              addonItem.meal_id == item.meal.id &&
-              addonItem.meal_size_id == size_id &&
-              !found
-            ) {
-              found = true;
-
-              if (plus) {
-                addonItem.quantity += 1;
-              } else {
-                addonItem.quantity -= 1;
-              }
-
-              if (addonItem.quantity <= 0) {
-                addonItems.splice(index, 1);
-              }
-            }
-          });
-        } else {
-          _.forEach(addonItems, (addonItem, index) => {
-            if (
-              addonItem &&
-              addonItem.meal_id == item.meal.id &&
-              addonItem.meal_size_id == size_id &&
-              !found
-            ) {
-              found = true;
-
-              if (plus) {
-                addonItem.quantity += 1;
-              } else {
-                addonItem.quantity -= 1;
-              }
-
-              if (addonItem.quantity <= 0) {
-                addonItems.splice(index, 1);
-              }
-            }
-          });
-        }
-      });
-    }
-
-    if (!found && plus) {
-      // New
-      const addingMeal = {
-        ...item.meal,
-        quantity: 1
-      };
-
-      if (item.size) {
-        addingMeal.meal_size = item.size;
-        addingMeal.meal_size_id = item.size.id;
-      } else {
-        addingMeal.meal_size = null;
-        addingMeal.meal_size_id = null;
-      }
-
-      packageMeals.push(addingMeal);
-    }
-
-    Vue.set(state.bag.items, guid, bag_item);
-  },
-  addToBagFromAdjust(state, order_bag) {
-    let guid = order_bag.guid.toString();
-    /*if (!guid.includes("_adjust")) {
-      guid += "_adjust"
-    }*/
-
-    if (!_.has(state.bag.items, guid)) {
-      Vue.set(state.bag.items, guid, {
-        quantity: 0,
-        meal: order_bag.meal,
-        meal_package: order_bag.meal_package,
-        added: moment().unix(),
-        size: order_bag.size,
-        components: order_bag.components,
-        addons: order_bag.addons,
-        special_instructions: order_bag.special_instructions,
-        free: order_bag.free,
-        adjust: true,
-        price: order_bag.price,
-        original_price: order_bag.original_price
-      });
-    }
-
-    let item = {
-      ...state.bag.items[guid]
-    };
-
-    item.quantity = (item.quantity || 0) + order_bag.quantity;
-    item.guid = guid;
-
-    Vue.set(state.bag.items, guid, item);
-  },
   addToBag(
     state,
     {
@@ -414,13 +209,6 @@ const mutations = {
       free = null
     }
   ) {
-    /* Remove Mutation - This is temporary solution. Not professional code. */
-    meal = JSON.parse(JSON.stringify(meal));
-    size = JSON.parse(JSON.stringify(size));
-    components = JSON.parse(JSON.stringify(components));
-    addons = JSON.parse(JSON.stringify(addons));
-    /* Remove Mutation End */
-
     let mealId = meal;
     if (!_.isNumber(mealId)) {
       mealId = meal.id;
@@ -450,9 +238,7 @@ const mutations = {
       })
     ).toString();
 
-    let isNew = false;
     if (!_.has(state.bag.items, guid)) {
-      isNew = true;
       Vue.set(state.bag.items, guid, {
         quantity: 0,
         meal,
@@ -469,110 +255,12 @@ const mutations = {
     let item = {
       ...state.bag.items[guid]
     };
-
     item.quantity = (item.quantity || 0) + quantity;
-
     if (!item.added) {
       item.added = moment().unix();
     }
 
-    /* Adjustments */
-    let price = item.size ? item.size.price : item.meal.price;
-    if (item.components) {
-      _.forEach(item.components, (choices, componentId) => {
-        let component = _.find(item.meal.components, {
-          id: parseInt(componentId)
-        });
-
-        if (!item.meal_package) {
-          _.forEach(choices, optionId => {
-            let option = _.find(component.options, {
-              id: parseInt(optionId)
-            });
-            price += option.price;
-          });
-        } else {
-          if (component.price) {
-            price += component.price;
-          }
-          _.forEach(choices, (choices, optionId) => {
-            let option = _.find(component.options, {
-              id: parseInt(optionId)
-            });
-            price += option.price;
-
-            _.forEach(choices, choice => {
-              if (choice.price) {
-                price += choice.price;
-              }
-            });
-          });
-        }
-      });
-    } // End If
-
-    if (item.addons) {
-      if (!item.meal_package) {
-        _.forEach(item.addons, addonId => {
-          let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
-          price += addon.price;
-        });
-      } else {
-        _.forEach(item.addons, (choices, addonId) => {
-          let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
-
-          // Add base addon price * choices selected
-          if (addon.price) {
-            price += addon.price * Math.max(1, choices.length);
-          }
-
-          // Add addon choice prices
-          _.forEach(choices, choice => {
-            if (choice.price) {
-              price += choice.price;
-            }
-          });
-        });
-      }
-    } // End IF
-
-    item.original_price = parseFloat(parseFloat(price).toFixed(2));
-    item.price = item.original_price + 0;
-
-    if (isNew) {
-      item.free = false;
-      item.guid = guid;
-    }
-    /* Adjustments End */
-
     Vue.set(state.bag.items, guid, item);
-  },
-  removeFromBagFromAdjust(state, order_bag) {
-    let guid = order_bag.guid.toString();
-    /*if (!guid.includes("_adjust")) {
-      guid += "_adjust"
-    }*/
-
-    if (!_.has(state.bag.items, guid)) {
-      return;
-    }
-
-    Vue.delete(state.bag.items, guid);
-  },
-  removeOneFromBagFromAdjust(state, order_bag) {
-    let guid = order_bag.guid.toString();
-    /*if (!guid.includes("_adjust")) {
-      guid += "_adjust"
-    }*/
-
-    if (!_.has(state.bag.items, guid)) {
-      return;
-    }
-
-    state.bag.items[guid].quantity -= order_bag.quantity;
-    if (state.bag.items[guid].quantity <= 0) {
-      Vue.delete(state.bag.items, guid);
-    }
   },
   removeFromBag(
     state,
@@ -627,44 +315,6 @@ const mutations = {
   },
   clearBagDeliveryDate(state, date) {
     this.state.delivery_date = null;
-  },
-  updateBagItem(state, item) {
-    if (item.guid) {
-      state.bag.items[item.guid] = item;
-    }
-  },
-  updateItemPrice(
-    state,
-    {
-      meal,
-      quantity = 1,
-      mealPackage = false,
-      size = null,
-      components = null,
-      addons = null,
-      special_instructions = null
-    }
-  ) {
-    let mealId = meal;
-    if (!_.isNumber(mealId)) {
-      mealId = meal.id;
-    }
-
-    if (mealPackage || meal.meal_package) {
-      mealPackage = true;
-    }
-
-    let guid = CryptoJS.MD5(
-      JSON.stringify({
-        meal: mealId,
-        mealPackage,
-        size,
-        components,
-        addons,
-        special_instructions
-      })
-    ).toString();
-    state.bag.items[guid].meal.price = meal.price;
   },
   makeItemFree(
     state,
@@ -1034,7 +684,6 @@ const triggerLazy = (
           for (let i in finalCategories) {
             const {
               category,
-              subtitle,
               id,
               order,
               date_range,
@@ -1044,7 +693,6 @@ const triggerLazy = (
             } = finalCategories[i];
             items.push({
               category: category,
-              subtitle: subtitle,
               category_id: id,
               meals: [],
               order,
@@ -1099,14 +747,12 @@ const triggerLazy = (
         );
       } else {
         // Finished
-        state.isLazy = false;
       }
     })
     .catch(error => {
       // Finished
     });
 };
-
 // actions are functions that cause side effects and can involve asynchronous
 // operations.
 const actions = {
@@ -2476,8 +2122,9 @@ const getters = {
       } else {
         return (
           item.quantity *
-          _.sumBy(_.compact(_.toArray(item.meal.meals)), item =>
-            item.pivot ? item.pivot.quantity : 1
+          _.sumBy(
+            _.compact(_.toArray(item.meal.meals)),
+            item => item.pivot.quantity
           )
         );
       }
@@ -2556,9 +2203,81 @@ const getters = {
       } else return 0;
     });
   },
+  bagMealPrice(state, getters) {
+    //let items = _.compact(_.toArray(state.bag.items));
+    let items = getters.bagItems;
+
+    items.forEach(item => {
+      let price = item.size ? item.size.price : item.meal.price;
+      if (item.components) {
+        _.forEach(item.components, (choices, componentId) => {
+          let component = _.find(item.meal.components, {
+            id: parseInt(componentId)
+          });
+
+          if (!item.meal_package) {
+            _.forEach(choices, optionId => {
+              let option = _.find(component.options, {
+                id: parseInt(optionId)
+              });
+              price += option.price;
+            });
+          } else {
+            if (component.price) {
+              price += component.price;
+            }
+            _.forEach(choices, (choices, optionId) => {
+              let option = _.find(component.options, {
+                id: parseInt(optionId)
+              });
+              price += option.price;
+
+              _.forEach(choices, choice => {
+                if (choice.price) {
+                  price += choice.price;
+                }
+              });
+            });
+          }
+        });
+      } // End If
+
+      if (item.addons) {
+        if (!item.meal_package) {
+          _.forEach(item.addons, addonId => {
+            let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
+            price += addon.price;
+          });
+        } else {
+          _.forEach(item.addons, (choices, addonId) => {
+            let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
+
+            // Add base addon price * choices selected
+            if (addon.price) {
+              price += addon.price * Math.max(1, choices.length);
+            }
+
+            // Add addon choice prices
+            _.forEach(choices, choice => {
+              if (choice.price) {
+                price += choice.price;
+              }
+            });
+          });
+        }
+      } // End IF
+
+      item.price = parseFloat(parseFloat(price).toFixed(2));
+      if (!item.hasOwnProperty("free")) {
+        item.free = false;
+      }
+    });
+
+    return items;
+  },
   totalBagPricePreFees(state, getters) {
     let totalBagPricePreFees = 0;
-    let items = getters.bagItems;
+    let items = getters.bagMealPrice;
 
     if (items) {
       items.forEach(item => {
@@ -2638,16 +2357,8 @@ const getters = {
     return totalBagPricePreFees;
   },
   totalBagPrice(state, getters) {
-    let totalBagPrice = 0;
-    let items = getters.bagItems;
-
-    if (items) {
-      items.forEach(item => {
-        if (!isNaN(item.price) && !isNaN(item.quantity) && !item.free) {
-          totalBagPrice += item.price * item.quantity;
-        }
-      });
-    }
+    let totalBagPricePreFees = getters.totalBagPricePreFees;
+    let totalBagPrice = totalBagPricePreFees;
 
     if (getters.viewedStoreSetting("applyDeliveryFee", false)) {
       totalBagPrice += getters.viewedStore.settings.deliveryFee;

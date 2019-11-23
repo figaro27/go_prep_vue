@@ -7,21 +7,6 @@
       </div>
     </div>
 
-    <b-modal
-      size="lg"
-      :title="mealTitle"
-      v-model="mealPackageMealModal"
-      v-if="mealPackageMealModal"
-      hide-backdrop
-    >
-      <p v-html="mealDescription"></p>
-    </b-modal>
-
-    <!-- v-model="viewMealModal"
-        v-if="viewMealModal"
-        :key="`view-meal-modal${meal.id}`"
-        @ok.prevent="onViewMealModalOk" -->
-
     <div v-if="mealPackage">
       <b-row class="my-3">
         <b-col>
@@ -31,9 +16,7 @@
               target="categorySection_top"
               v-if="isStoreView"
             >
-              <h3 class="center-text mb-3" v-if="getTopLevel().length > 0">
-                Included Items
-              </h3>
+              <h3 class="center-text mb-3">Included Items</h3>
 
               <b-form-group :label="null">
                 <div class="my-2">
@@ -59,12 +42,7 @@
                             class="menu-item-img"
                             width="100%"
                             style="background-color:#ffffff"
-                            @click="
-                              showMealPackageMealModal(
-                                mealOption.meal.description,
-                                mealOption.meal.title
-                              )
-                            "
+                            v-b-popover.hover="`${mealOption.meal.description}`"
                           ></thumbnail>
 
                           <div class="price" v-if="mealOption.price > 0">
@@ -88,7 +66,7 @@
                               (storeModules.specialInstructions &&
                                 !storeModuleSettings.specialInstructionsStoreOnly) ||
                                 (storeModuleSettings.specialInstructionsStoreOnly &&
-                                  isStoreView)
+                                  $route.params.storeView)
                             "
                             class="mt-4"
                             v-model="special_instructions[mealOption.meal_id]"
@@ -158,7 +136,7 @@
                                   (storeModules.specialInstructions &&
                                     !storeModuleSettings.specialInstructionsStoreOnly) ||
                                     (storeModuleSettings.specialInstructionsStoreOnly &&
-                                      isStoreView)
+                                      $route.params.storeView)
                                 "
                                 class="mt-2"
                                 v-model="
@@ -200,7 +178,7 @@
                                   (storeModules.specialInstructions &&
                                     !storeModuleSettings.specialInstructionsStoreOnly) ||
                                     (storeModuleSettings.specialInstructionsStoreOnly &&
-                                      isStoreView)
+                                      $route.params.storeView)
                                 "
                                 class="mt-2"
                                 v-model="
@@ -308,11 +286,8 @@
                               class="menu-item-img"
                               width="100%"
                               style="background-color:#ffffff"
-                              @click="
-                                showMealPackageMealModal(
-                                  mealOption.meal.description,
-                                  mealOption.meal.title
-                                )
+                              v-b-popover.hover="
+                                `${mealOption.meal.description}`
                               "
                             ></thumbnail>
 
@@ -337,7 +312,7 @@
                                 (storeModules.specialInstructions &&
                                   !storeModuleSettings.specialInstructionsStoreOnly) ||
                                   (storeModuleSettings.specialInstructionsStoreOnly &&
-                                    isStoreView)
+                                    $route.params.storeView)
                               "
                               class="mt-4"
                               v-model="special_instructions[mealOption.meal_id]"
@@ -501,7 +476,7 @@
                                     (storeModules.specialInstructions &&
                                       !storeModuleSettings.specialInstructionsStoreOnly) ||
                                       (storeModuleSettings.specialInstructionsStoreOnly &&
-                                        isStoreView)
+                                        $route.params.storeView)
                                   "
                                   class="mt-2"
                                   v-model="
@@ -543,7 +518,7 @@
                                     (storeModules.specialInstructions &&
                                       !storeModuleSettings.specialInstructionsStoreOnly) ||
                                       (storeModuleSettings.specialInstructionsStoreOnly &&
-                                        isStoreView)
+                                        $route.params.storeView)
                                   "
                                   class="mt-2"
                                   v-model="
@@ -593,7 +568,7 @@
                 class="meal-checkboxes"
                 v-model="addons[addon.id]"
                 stacked
-                @input.native="e => e"
+                @input.native="e => console.log(e)"
                 @change="choices => onChangeAddonChoices(addon, choices)"
               >
                 <b-checkbox
@@ -608,7 +583,7 @@
                       (storeModules.specialInstructions &&
                         !storeModuleSettings.specialInstructionsStoreOnly) ||
                         (storeModuleSettings.specialInstructionsStoreOnly &&
-                          isStoreView)
+                          $route.params.storeView)
                     "
                     style="width: 100%;"
                     class="mb-2"
@@ -651,22 +626,14 @@ export default {
     return {
       choices: {},
       addons: [],
-      special_instructions: {},
-      mealDescription: null,
-      mealTitle: null,
-      mealPackageMealModal: false
+      special_instructions: {}
     };
-  },
-  updated() {
-    if (this.components)
-      this.$parent.mealPackagePageComponents = this.components.length;
   },
   components: {},
   props: {
     mealPackage: {},
     mealPackageSize: null,
-    storeSettings: {},
-    storeView: false
+    storeSettings: {}
   },
   mixins: [MenuBag],
   computed: {
@@ -773,16 +740,6 @@ export default {
   },
   methods: {
     back() {
-      this.special_instructions = {};
-
-      if (this.mealPackage.sizes.length > 0) {
-        this.mealPackage.sizes.forEach(size => {
-          size.meals.forEach(meal => {
-            meal.special_instructions = null;
-          });
-        });
-      }
-
       this.choices = {};
       this.addons = [];
       this.$parent.showMealsArea = true;
@@ -930,15 +887,14 @@ export default {
       const component = this.getComponent(componentId);
       const max = component.maximum;
       const choices = this.getComponentChoices(componentId);
-      let remainingMeals = _.reduce(
+
+      return _.reduce(
         choices,
         (remaining, meals) => {
           return remaining - meals.length;
         },
         max
       );
-      this.$parent.remainingMeals = remainingMeals;
-      return remainingMeals;
     },
     getComponentChoices(id) {
       return this.choices[id] ? this.choices[id] : [];
@@ -1236,11 +1192,6 @@ export default {
           });
         });
       });
-    },
-    showMealPackageMealModal(description, title) {
-      this.mealDescription = description.replace(/(\r\n|\n|\r)/gm, "<br />");
-      this.mealTitle = title;
-      this.mealPackageMealModal = true;
     }
   }
 };

@@ -47,9 +47,7 @@
         </h4>
         <h5>Order ID - {{$order['order_number']}}</h5>
         <h5>Customer: {{$orderGroup['user']->name }}</h5>
-        @if ($order['address'] !== 'N/A')
         <h5>Address: {{$order['address']}}, {{$order['city']}}, {{$order['state']}}, {{$order['zip']}}</h5>
-        @endif
         @if ($order['pickup'] === 0)
         @if ($order['delivery'])
         <h5>Delivery Instructions: {{$order['delivery']}}</h5>

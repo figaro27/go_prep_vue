@@ -44,9 +44,7 @@
                 >
               </b-dropdown>
             </span>
-            <div slot="interval" class="text-nowrap" slot-scope="props">
-              {{ props.row.interval_title }}
-            </div>
+
             <div slot="delivery_day" class="text-nowrap" slot-scope="props">
               {{ moment(props.row.next_delivery_date).format("dddd, MMM Do") }}
             </div>
@@ -302,7 +300,6 @@ export default {
       columns: [
         // "notes",
         "stripe_id",
-        "interval",
         "user.user_detail.full_name",
         "user.user_detail.address",
         "user.user_detail.zip",
@@ -319,7 +316,6 @@ export default {
         headings: {
           // notes: "Notes",
           stripe_id: "Subscription #",
-          interval: "Interval",
           "user.user_detail.full_name": "Name",
           "user.user_detail.address": "Address",
           "user.user_detail.zip": "Zip Code",

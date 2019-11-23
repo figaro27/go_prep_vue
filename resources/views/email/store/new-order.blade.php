@@ -115,7 +115,6 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <td height="5"></td>
                       </tr>
                       <!-- address -->
-                      @if ($order->user->details->address !== 'N/A')
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $order->user->details->address }}</td>
                       </tr>
@@ -124,7 +123,6 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           {{ $order->user->details->city }}, {{ $order->user->details->state }} {{ $order->user->details->zip }}
                           </td>
                       </tr>
-                      @endif
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
                           {{ $order->user->details->phone }}
@@ -273,7 +271,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
                     @if ($item->attached || $item->free)
-                    Included
+                    Free
                     @else
                     ${{ number_format($item->unit_price, 2) }}
                     @endif
@@ -281,7 +279,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;">
                     @if ($item->attached || $item->free)
-                    Included
+                    Free
                     @else
                     ${{ number_format($item->price, 2) }}
                     @endif

@@ -1,36 +1,33 @@
 <template>
   <div class="category-slider d-block d-md-none">
-    <div v-if="!isLazy">
-      <slick
-        v-if="categories.length > 4"
-        ref="categorySlider"
-        :options="{
-          arrows: false,
-          centerMode: true,
-          slidesToShow: 1,
-          variableWidth: true,
-          infinite: false
-        }"
+    <slick
+      v-if="categories.length > 4"
+      ref="categorySlider"
+      :options="{
+        arrows: false,
+        centerMode: true,
+        variableWidth: true,
+        infinite: false
+      }"
+    >
+      <div
+        v-for="category in categories"
+        :key="category"
+        @click.prevent="goToCategory(slugify(category))"
+        class="m-2"
       >
-        <div
-          v-for="category in categories"
-          :key="category.id"
-          @click.prevent="goToCategory(slugify(category.category))"
-          class="m-2"
-        >
-          {{ category.category }}
-        </div>
-      </slick>
-
-      <div v-else class="text-center">
-        <span
-          v-for="category in categories"
-          :key="category.category"
-          @click.prevent="goToCategory(slugify(category.category))"
-          class="d-inline-block m-2"
-          >{{ category.category }}</span
-        >
+        {{ category }}
       </div>
+    </slick>
+
+    <div v-else class="text-center">
+      <span
+        v-for="category in categories"
+        :key="category"
+        @click.prevent="goToCategory(slugify(category))"
+        class="d-inline-block m-2"
+        >{{ category }}</span
+      >
     </div>
   </div>
 </template>
@@ -42,32 +39,31 @@ import MenuBag from "../../../mixins/menuBag";
 export default {
   mixins: [MenuBag],
   watch: {
-    /*categories(val, oldVal) {
+    categories(val, oldVal) {
       const ref = this.$refs.categorySlider;
-      if (!ref || val.length === oldVal.length) {
+      if (!ref) {
         return;
       }
 
       const currIndex = ref.currentSlide();
 
       ref.destroy();
-      this.$nextTick(async () => {
-        await ref.create();
-        ref.goTo(0, true);
+      this.$nextTick(() => {
+        ref.create();
+        ref.goTo(currIndex, true);
       });
-    }*/
+    }
   },
   computed: {
     ...mapGetters({
       _categories: "viewedStoreCategories",
       store: "viewedStore",
-      storeSettings: "viewedStoreSetting",
-      isLazy: "isLazy"
+      storeSettings: "viewedStoreSetting"
     }),
     categories() {
       let sorting = {};
       this._categories.forEach(cat => {
-        sorting[cat.id] = cat.order; //cat.order.toString() + cat.category;
+        sorting[cat.category] = cat.order.toString() + cat.category;
       });
 
       let grouped = [];
@@ -76,16 +72,16 @@ export default {
           let category = _.find(this._categories, { id: categoryId });
           if (
             category &&
-            !_.find(grouped, { id: category.id }) &&
+            !_.includes(grouped, category.category) &&
             this.isCategoryVisible(category)
           ) {
-            grouped.push(category);
+            grouped.push(category.category);
           }
         });
       });
 
       let categories = _.orderBy(grouped, cat => {
-        return cat.id in sorting ? sorting[cat.id] : 9999;
+        return cat in sorting ? sorting[cat] : 9999;
       });
 
       if (
@@ -111,17 +107,12 @@ export default {
     }
   },
   methods: {
-    goTo(categoryId) {
+    goTo(index) {
       if (this.$refs.categorySlider) {
-        const index = _.findIndex(this.categories, { id: categoryId });
         this.$refs.categorySlider.goTo(index);
       }
     },
     goToCategory(category) {
-      if (this.isLazy) {
-        return;
-      }
-
       if ($("#xs").is(":visible") || $("#sm").is(":visible")) {
         const top = $(`#${category}`).offset().top;
         $(document).scrollTop(top - 90);

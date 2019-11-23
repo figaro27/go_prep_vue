@@ -46,12 +46,6 @@
                 </b-dropdown>
               </span>
 
-              <div slot="created_at" slot-scope="props">
-                <div>
-                  {{ moment(props.row.created_at).format("dddd, MMM Do") }}
-                </div>
-              </div>
-
               <div slot="total_paid" slot-scope="props">
                 <div>{{ format.money(props.row.total_paid) }}</div>
               </div>
@@ -320,7 +314,7 @@ export default {
         "address",
         "city",
         "zip",
-        "created_at",
+        "first_order",
         "total_payments",
         "total_paid",
         "last_order",
@@ -336,7 +330,7 @@ export default {
           address: "Address",
           city: "City",
           zip: "Zip",
-          created_at: "Customer Since",
+          first_order: "Customer Since",
           actions: "Actions"
         },
         dateColumns: ["Joined"],
@@ -546,11 +540,11 @@ export default {
             quantity: item.quantity,
             unit_price:
               item.attached || item.free
-                ? "Included"
+                ? "Free"
                 : format.money(item.unit_price, order.currency),
             subtotal:
               item.attached || item.free
-                ? "Included"
+                ? "Free"
                 : format.money(item.price, order.currency)
           });
         }

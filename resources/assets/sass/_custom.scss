@@ -436,7 +436,7 @@ body.sidebar-minimized {
 }
 
 .clear-meal {
-  font-size: 22px !important;
+  width: 10px;
 }
 
 .filters ul {
@@ -626,7 +626,6 @@ body.sidebar-minimized {
   color: #ffffff !important;
   font-size: 20px !important;
   font-weight: bold !important;
-  line-height: 40px;
 }
 
 .width-80 {
@@ -1112,6 +1111,7 @@ body.forgotresettoken {
   .bag-bottom-area {
     -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15) !important;
     background-color: #ffffff;
+    height: 15vh !important;
     width: 100%;
     position: absolute;
     bottom: 0;
@@ -1437,12 +1437,4 @@ body.forgotresettoken {
 
 .variation-dropdown {
   line-height: 1.35 !important;
-}
-
-.medium {
-  font-size: 13.5px !important;
-}
-
-.dark-gray {
-  color: #535353 !important;
 }

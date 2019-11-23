@@ -55,8 +55,6 @@ f<template>
                   <div class="col-md-4">
                     <h4>Subscription ID</h4>
                     <p>{{ subscription.stripe_id }}</p>
-                    <h4>Interval</h4>
-                    <p>{{ subscription.interval_title }}</p>
                     <span v-if="!storeModules.hideTransferOptions">
                       <h4>
                         {{
@@ -170,7 +168,7 @@ f<template>
                       {{
                         format.money(subscription.amount, subscription.currency)
                       }}
-                      per {{ subscription.interval }}.
+                      per week.
                     </p>
                     <div v-if="subscription.latest_paid_order">
                       <p>
@@ -179,25 +177,17 @@ f<template>
                           the following order on
                           <strong>
                             {{
-                              moment(subscription.latest_paid_order.created_at)
-                                .add(getIntervalDays(subscription), "days")
-                                .format("dddd, MMM Do")
-                            }}</strong
-                          >
-                          for the delivery date of
-                          <strong>
-                            {{
                               moment(
                                 subscription.latest_paid_order.delivery_date
                               )
-                                .add(getIntervalDays(subscription), "days")
+                                .add(7, "days")
                                 .format("dddd, MMM Do")
-                            }}
-                          </strong>
+                            }}.</strong
+                          >
                         </span>
                         <span v-else>
                           Any changes to this subscription will be applied to
-                          next {{ subscription.interval }}'s order.
+                          next week's order.
                         </span>
                       </p>
                       <!--Removing pause functionality for the time being -->
@@ -205,7 +195,7 @@ f<template>
                         variant="warning"
                         @click.stop="() => pauseSubscription(subscription)"
                         >Pause</b-btn
-                      >
+                      > 
                       <div
                     class="col-md-4"
                     v-else-if="subscription.status === 'paused'"
@@ -479,14 +469,6 @@ export default {
       }
 
       this.refreshSubscriptions();
-    },
-    getIntervalDays(subscription) {
-      if (subscription.interval === "week") {
-        return 7;
-      }
-      if (subscription.interval === "month") {
-        return 30;
-      }
     }
   }
 };

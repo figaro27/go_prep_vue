@@ -38,8 +38,7 @@ class Meal extends Model implements HasMedia
         'price',
         'default_size_title',
         'created_at',
-        'production_group_id',
-        'salesTax'
+        'production_group_id'
     ];
 
     protected $casts = [
@@ -575,8 +574,7 @@ class Meal extends Model implements HasMedia
                         ->count(),
                     "created_at" => $meal->created_at,
                     'ingredients' => $meal->ingredients,
-                    'meal_tags' => $meal->meal_tags,
-                    "salesTax" => $meal->salesTax ? $meal->salesTax : null
+                    'meal_tags' => $meal->meal_tags
                 ];
             });
     }
@@ -628,8 +626,7 @@ class Meal extends Model implements HasMedia
             'components',
             'addons',
             'macros',
-            'production_group_id',
-            'salesTax'
+            'production_group_id'
         ]);
 
         $meal = new Meal();
@@ -640,7 +637,6 @@ class Meal extends Model implements HasMedia
         $meal->instructions = $props->get('instructions', '');
         $meal->price = $props->get('price', 0);
         $meal->default_size_title = $props->get('default_size_title', '');
-        $meal->salesTax = $props->get('salesTax');
         $meal->save();
 
         try {
@@ -969,8 +965,7 @@ class Meal extends Model implements HasMedia
             'components',
             'addons',
             'macros',
-            'production_group_id',
-            'salesTax'
+            'production_group_id'
         ]);
 
         if ($props->has('featured_image')) {
