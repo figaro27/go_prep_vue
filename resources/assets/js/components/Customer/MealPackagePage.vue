@@ -23,6 +23,13 @@
         @ok.prevent="onViewMealModalOk" -->
 
     <div v-if="mealPackage">
+      <b-row class="my-3" v-if="mealPackage.description != null">
+        <b-col>
+          <div>
+            <p>{{ mealPackage.description }}</p>
+          </div>
+        </b-col>
+      </b-row>
       <b-row class="my-3">
         <b-col>
           <div>
