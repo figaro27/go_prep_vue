@@ -172,9 +172,7 @@ trait Exportable
 
             $dates = [
                 'from' => Carbon::parse($dates->from)->startOfDay(),
-                'to' => Carbon::parse($dates->to)
-                    ->addDays(1)
-                    ->startOfDay()
+                'to' => Carbon::parse($dates->to)->endOfDay()
             ];
         } elseif ($defaultFuture) {
             $dates = [
