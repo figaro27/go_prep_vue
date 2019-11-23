@@ -48,9 +48,9 @@ class Payments
                     $sums[7] += $payment->salesTax;
                     // $sums[8] += $payment->goprep_fee;
                     // $sums[9] += $payment->stripe_fee;
-                    $sums[10] += $payment->amount;
-                    $sums[11] = $payment->balance;
-                    $sums[12] += $payment->refundedAmount;
+                    $sums[8] += $payment->amount;
+                    $sums[9] = $payment->balance;
+                    $sums[10] += $payment->refundedAmount;
 
                     $paymentsRows = [
                         $payment->created_at->format('D, m/d/Y'),
