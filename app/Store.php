@@ -503,7 +503,7 @@ class Store extends Model
                 $orders = $orders->where(
                     $date,
                     '<=',
-                    $to->addDays(1)->format('Y-m-d')
+                    $to->addDays(2)->format('Y-m-d')
                 );
             }
         }
