@@ -572,7 +572,7 @@ export default {
     },
     onChangeDateFilter() {
       axios
-        .post("/api/me/getOrdersWithDates", {
+        .post("/api/me/getOrdersWithDatesNoItems", {
           start: this.filters.delivery_dates.start,
           end: this.filters.delivery_dates.end,
           payments: 1
