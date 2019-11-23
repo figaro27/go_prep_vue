@@ -436,9 +436,30 @@
             <p v-if="order.refundedAmount">
               Refunded: {{ format.money(order.refundedAmount, order.currency) }}
             </p>
-            <p v-if="order.balance !== null">
-              Balance: {{ format.money(order.balance, order.currency) }}
-            </p>
+            <div class="d-inline">
+              <p class="d-inline">
+                Balance: {{ format.money(order.balance, order.currency) }}
+              </p>
+
+              <span v-if="editingBalance">
+                <b-form-input
+                  type="number"
+                  v-model="balance"
+                  class="d-inline mb-1 "
+                  style="width:100px"
+                ></b-form-input>
+                <i
+                  class="fas fa-check-circle text-primary d-inline"
+                  @click="updateBalance(order.id)"
+                ></i>
+              </span>
+              <i
+                v-if="!editingBalance"
+                @click="editingBalance = true"
+                class="fa fa-edit text-warning d-inline"
+              ></i>
+            </div>
+            <br /><br />
             <div
               class="d-inline"
               v-if="order.balance !== null && order.balance != 0"
@@ -633,6 +654,8 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      editingBalance: false,
+      balance: 0,
       chargeAmount: 0,
       refundAmount: 0,
       applyToBalanceRefund: false,
@@ -1148,6 +1171,15 @@ export default {
       });
 
       return _.filter(data);
+    },
+    updateBalance(id) {
+      axios
+        .post("/api/me/updateBalance", { id: id, balance: this.balance })
+        .then(resp => {
+          this.editingBalance = false;
+          this.viewOrder(id);
+          this.$toastr.s("Balance updated.");
+        });
     }
   }
 };

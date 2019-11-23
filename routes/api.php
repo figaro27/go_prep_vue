@@ -232,6 +232,10 @@ foreach (
                                 'voidOrder',
                                 'OrderController@voidOrder'
                             );
+                            Route::post(
+                                'updateBalance',
+                                'OrderController@updateBalance'
+                            );
                             Route::resource(
                                 'subscriptions',
                                 'SubscriptionController'

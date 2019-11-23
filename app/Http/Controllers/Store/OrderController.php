@@ -578,4 +578,11 @@ class OrderController extends StoreController
             return 'Order unvoided.';
         }
     }
+
+    public function updateBalance(Request $request)
+    {
+        $order = Order::where('id', $request->get('id'))->first();
+        $order->balance = $request->get('balance');
+        $order->save();
+    }
 }
