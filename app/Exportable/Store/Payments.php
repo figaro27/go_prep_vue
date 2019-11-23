@@ -43,8 +43,8 @@ class Payments
                     $sums[1] += $payment->preFeePreDiscount;
                     $sums[3] += $payment->couponReduction;
                     $sums[4] += $payment->mealPlanDiscount;
-                    $sums[5] += $payment->processingFee;
-                    $sums[6] += $payment->deliveryFee;
+                    $sums[5] += $payment->deliveryFee;
+                    $sums[6] += $payment->processingFee;
                     $sums[7] += $payment->salesTax;
                     // $sums[8] += $payment->goprep_fee;
                     // $sums[9] += $payment->stripe_fee;
@@ -150,7 +150,7 @@ class Payments
                 $sumsByDaily[10] += $refundedAmount;
             }
 
-            foreach ([2, 3, 4, 5, 6, 7, 8, 9] as $i) {
+            foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10] as $i) {
                 $sumsByDaily[$i] = '$' . number_format($sumsByDaily[$i], 2);
             }
 
@@ -159,7 +159,7 @@ class Payments
         }
 
         // Format the sum row
-        foreach ([1, 3, 4, 5, 6, 7, 8, 9] as $i) {
+        foreach ([1, 3, 4, 5, 6, 7, 8, 9, 10] as $i) {
             $sums[$i] = '$' . number_format($sums[$i], 2);
         }
 
