@@ -49,7 +49,7 @@ class Payments
                     // $sums[8] += $payment->goprep_fee;
                     // $sums[9] += $payment->stripe_fee;
                     $sums[8] += $payment->amount;
-                    $sums[9] = $payment->balance;
+                    $sums[9] += $payment->balance;
                     // $sums[10] += $payment->refundedAmount;
 
                     $paymentsRows = [
