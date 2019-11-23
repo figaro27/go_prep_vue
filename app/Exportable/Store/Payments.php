@@ -25,8 +25,8 @@ class Payments
         $couponCode = $this->params->get('couponCode');
         $dailySummary = $this->params->get('dailySummary');
 
-        $sums = ['TOTALS', 0, '', 0, 0, 0, 0, 0, 0, 0, 0];
-        $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        $sums = ['TOTALS', 0, '', 0, 0, 0, 0, 0, 0, 0];
+        $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0];
 
         if ($dailySummary != 1) {
             $payments = $this->store
@@ -50,7 +50,7 @@ class Payments
                     // $sums[9] += $payment->stripe_fee;
                     $sums[8] += $payment->amount;
                     $sums[9] = $payment->balance;
-                    $sums[10] += $payment->refundedAmount;
+                    // $sums[10] += $payment->refundedAmount;
 
                     $paymentsRows = [
                         $payment->created_at->format('D, m/d/Y'),
@@ -64,8 +64,8 @@ class Payments
                         // '$' . number_format($payment->goprep_fee, 2),
                         // '$' . number_format($payment->stripe_fee, 2),
                         '$' . number_format($payment->amount, 2),
-                        '$' . number_format($payment->balance, 2),
-                        '$' . number_format($payment->refundedAmount, 2)
+                        '$' . number_format($payment->balance, 2)
+                        // '$' . number_format($payment->refundedAmount, 2)
                     ];
 
                     return $paymentsRows;
@@ -99,7 +99,7 @@ class Payments
                 // $stripeFeeAmount = 0;
                 $amount = 0;
                 $balance = 0;
-                $refundedAmount = 0;
+                // $refundedAmount = 0;
 
                 foreach ($orderByDay as $order) {
                     $created_at = $order->order_day;
@@ -114,7 +114,7 @@ class Payments
                     // $stripeFeeAmount += $order->stripe_fee;
                     $amount += $order->amount;
                     $balance += $order->balance;
-                    $refundedAmount += $order->refundedAmount;
+                    // $refundedAmount += $order->refundedAmount;
                 }
                 $orderDay = Carbon::createFromFormat(
                     'm d',
@@ -132,8 +132,8 @@ class Payments
                     // '$' . number_format($goPrepFeeAmount, 2),
                     // '$' . number_format($stripeFeeAmount, 2),
                     '$' . number_format($amount, 2),
-                    '$' . number_format($balance, 2),
-                    '$' . number_format($refundedAmount, 2)
+                    '$' . number_format($balance, 2)
+                    // '$' . number_format($refundedAmount, 2)
                 ]);
 
                 $sumsByDaily[1] += $totalOrders;
@@ -147,7 +147,7 @@ class Payments
                 // $sumsByDaily[9] += $stripeFeeAmount;
                 $sumsByDaily[8] += $amount;
                 $sumsByDaily[9] += $balance;
-                $sumsByDaily[10] += $refundedAmount;
+                // $sumsByDaily[10] += $refundedAmount;
             }
 
             foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10] as $i) {
@@ -179,8 +179,8 @@ class Payments
                 // 'GoPrep Fee',
                 // 'Stripe Fee',
                 'Total',
-                'Balance',
-                'Refunded'
+                'Balance'
+                // 'Refunded'
             ]);
         }
 

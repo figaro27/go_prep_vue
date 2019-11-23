@@ -36,13 +36,13 @@
       <table border="1" width="100" class="light-border payments-report">
         <thead>
           <tr>
-            <th>Payment Date</th>
+            <th>Order Date</th>
             @if ($params['dailySummary'])
             <th>Orders</th>
             @endif
             <th>Subtotal</th>
             @if ($params['dailySummary'] == 0)
-            <th>Coupon</th>
+            <th>Coupon Code</th>
             @endif
             <th>Coupon Reduction</th>
             <th>Subscription Discount</th>
@@ -53,7 +53,7 @@
             <th>Stripe Fee</th> -->
             <th>Total</th>           
             <th>Balance</th>
-            <th>Refunded</th>
+            <!-- <th>Refunded</th> -->
           </tr>
         </thead>
         <tbody>
