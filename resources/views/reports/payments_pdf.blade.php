@@ -36,7 +36,7 @@
       <table border="1" width="100" class="light-border payments-report">
         <thead>
           <tr>
-            <th>Order Date</th>
+            <th style="width:200px">Order Date</th>
             @if ($params['dailySummary'])
             <th>Orders</th>
             @endif
