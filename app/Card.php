@@ -24,8 +24,7 @@ class Card extends Model
         'exp_year',
         'last4',
         'country',
-        'payment_gateway',
-        'store_id'
+        'payment_gateway'
     ];
 
     /**

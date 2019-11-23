@@ -27,7 +27,8 @@ class Subscription extends Model
         'meal_quantities',
         'pre_coupon',
         'items',
-        'meal_package_items'
+        'meal_package_items',
+        'interval_title'
     ];
 
     protected $casts = [
@@ -189,6 +190,27 @@ class Subscription extends Model
         }
     }
 
+    public function getIntervalTitleAttribute()
+    {
+        switch ($this->interval) {
+            case 'day':
+                return 'Daily';
+                break;
+
+            case 'week':
+                return 'Weekly';
+                break;
+
+            case 'biweek':
+                return 'Bi-Weekly';
+                break;
+
+            case 'month':
+                return 'Monthly';
+                break;
+        }
+    }
+
     public function getMealIdsAttribute()
     {
         return $this->meals()
@@ -236,7 +258,9 @@ class Subscription extends Model
                     'html_title' => $mealSub->html_title,
                     'quantity' => $mealSub->quantity,
                     'unit_price' => $mealSub->unit_price,
-                    'price' => $mealSub->price,
+                    'price' => $mealSub->price
+                        ? $mealSub->price
+                        : $mealSub->unit_price * $mealSub->quantity,
                     'special_instructions' => $mealSub->special_instructions,
                     'meal_package_subscription_id' =>
                         $mealSub->meal_package_subscription_id,
@@ -356,7 +380,12 @@ class Subscription extends Model
         $newOrder->currency = $this->currency;
         $newOrder->fulfilled = false;
         $newOrder->pickup = $this->pickup;
-        $newOrder->delivery_date = $latestOrder->delivery_date->addWeeks(1);
+
+        // Refine this
+        $newOrder->delivery_date =
+            $this->interval === 'week'
+                ? $latestOrder->delivery_date->addWeeks(1)
+                : $latestOrder->delivery_date->addDays(30);
         $newOrder->save();
 
         // Assign meal package orders from meal package subscriptions
@@ -381,6 +410,7 @@ class Subscription extends Model
             $mealOrder->meal_id = $mealSub->meal_id;
             $mealOrder->meal_size_id = $mealSub->meal_size_id;
             $mealOrder->quantity = $mealSub->quantity;
+            $mealOrder->price = $mealSub->price * $mealSub->quantity;
             $mealOrder->special_instructions = $mealSub->special_instructions;
             $mealOrder->meal_package = $mealSub->meal_package
                 ? $mealSub->meal_package

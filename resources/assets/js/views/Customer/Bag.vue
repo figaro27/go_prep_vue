@@ -49,6 +49,7 @@
             :gateway="storeSettings.payment_gateway"
             :order="order"
             :adjustMealPlan="adjustMealPlan"
+            ref="checkoutArea"
           ></checkout-area>
 
           <store-closed
@@ -377,6 +378,9 @@ export default {
     }
   },
   mounted() {
+    if (this.store.modules.subscriptionOnly) {
+      this.$refs.checkoutArea.weeklySubscriptionValue = true;
+    }
     if (
       this.$route.params.storeView &&
       this.storeModules.cashOrders &&
@@ -388,8 +392,11 @@ export default {
     if (this.storeModules.cashOrderNoBalance) {
       this.noBalance = true;
     }
-    // this.deliveryDay = this.$route.params.deliveryDay;
-    this.transferTime = this.$route.params.transferTime;
+    if (this.$route.params.adjustOrder) {
+      this.deliveryDay = this.$route.params.deliveryDay;
+      this.transferTime = this.$route.params.transferTime;
+    }
+
     if (this.$route.params.pickup != undefined) {
       this.pickup = this.$route.params.pickup;
     } else if (

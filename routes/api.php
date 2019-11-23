@@ -334,6 +334,10 @@ foreach (
                                 'getAcceptedTOA',
                                 'StoreDetailController@getAcceptedTOA'
                             );
+                            Route::get(
+                                'order_bag/{order_id}',
+                                'CheckoutController@orderBag'
+                            );
                             Route::post(
                                 'checkout',
                                 'CheckoutController@checkout'

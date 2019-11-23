@@ -121,7 +121,8 @@ class MealController extends StoreController
                 'components',
                 'addons',
                 'macros',
-                'production_group_id'
+                'production_group_id',
+                'salesTax'
             ]),
             'menu'
         );

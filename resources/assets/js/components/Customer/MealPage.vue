@@ -122,7 +122,7 @@
                 $route.params.storeView)
           "
           class="mt-4"
-          v-model="specialInstructions"
+          v-model="special_instructions"
           placeholder="Special instructions"
           rows="3"
           max-rows="6"
@@ -198,7 +198,7 @@ export default {
       sizeChanged: false,
       invalidCheck: false,
       invalid: false,
-      specialInstructions: null,
+      special_instructions: null,
       mealVariationPrice: null,
       totalAddonPrice: null,
       totalComponentPrice: null,
@@ -217,7 +217,9 @@ export default {
     storeSettings: {},
     mealDescription: "",
     ingredients: "",
-    nutritionalFacts: {}
+    nutritionalFacts: {},
+    adjustOrder: false,
+    manualOrder: false
   },
   mixins: [MenuBag],
   computed: {
@@ -315,6 +317,26 @@ export default {
     this.totalComponentPrice = 0;
   },
   methods: {
+    isManualOrder() {
+      if (
+        this.manualOrder ||
+        this.$route.params.manualOrder ||
+        this.$route.name == "store-manual-order"
+      ) {
+        return true;
+      }
+      return false;
+    },
+    isAdjustOrder() {
+      if (
+        this.adjustOrder ||
+        this.$route.params.adjustOrder ||
+        this.$route.name == "store-adjust-order"
+      ) {
+        return true;
+      }
+      return false;
+    },
     getMealGallery(meal) {
       return meal.gallery.map((item, i) => {
         return {
@@ -332,6 +354,20 @@ export default {
       $(ref).nutritionLabel(this.nutritionalFacts);
       // }
     },
+    getPackageBagItems() {
+      const items = [];
+      const bag = this.bag;
+
+      if (bag) {
+        bag.forEach(item => {
+          if (item.meal_package) {
+            items.push(item);
+          }
+        });
+      }
+
+      return items;
+    },
     addMeal(meal) {
       if (this.invalidCheck && this.hasVariations) {
         this.invalid = true;
@@ -340,14 +376,38 @@ export default {
 
       let size = this.mealSize;
 
-      this.addOne(
-        meal,
-        false,
-        size,
-        this.components,
-        this.addons,
-        this.specialInstructions
-      );
+      if (this.isAdjustOrder() || this.isManualOrder()) {
+        const items = this.getPackageBagItems();
+        if (items && items.length > 0) {
+          this.$parent.showAdjustModal(
+            meal,
+            size,
+            this.components,
+            this.addons,
+            this.special_instructions,
+            items
+          );
+          return;
+        } else {
+          this.addOne(
+            meal,
+            false,
+            size,
+            this.components,
+            this.addons,
+            this.special_instructions
+          );
+        }
+      } else {
+        this.addOne(
+          meal,
+          false,
+          size,
+          this.components,
+          this.addons,
+          this.special_instructions
+        );
+      }
 
       this.mealSize = null;
       this.back();
@@ -356,7 +416,7 @@ export default {
       this.components = null;
       this.addons = [];
       this.defaultMealSize = null;
-      this.specialInstructions = null;
+      this.special_instructions = null;
       this.invalid = false;
     },
     back() {
@@ -371,7 +431,12 @@ export default {
           }
         });
       }
-
+      this.mealSize = null;
+      this.components = null;
+      this.addons = [];
+      this.defaultMealSize = null;
+      this.special_instructions = null;
+      this.invalid = false;
       this.sizeChanged = false;
       this.addons = [];
       this.$parent.showMealsArea = true;

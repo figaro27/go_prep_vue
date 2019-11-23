@@ -17,17 +17,17 @@
         </div>
       </div>
 
-      <router-link
+      <b-btn
         :to="{
           name: 'customer-bag',
           params: { subscriptionId: subscriptionId }
         }"
         v-if="minimumMet && !storeView && !bagView"
+        class="menu-bag-btn"
+        >NEXT</b-btn
       >
-        <b-btn class="menu-bag-btn">NEXT</b-btn>
-      </router-link>
 
-      <router-link
+      <b-btn
         v-if="storeView"
         :to="{
           name: 'store-bag',
@@ -49,9 +49,9 @@
             weeklySubscriptionValue: weeklySubscriptionValue
           }
         }"
+        class="menu-bag-btn bottom-margin"
+        >NEXT</b-btn
       >
-        <b-btn class="menu-bag-btn">NEXT</b-btn>
-      </router-link>
 
       <router-link to="/customer/menu">
         <b-btn
@@ -95,8 +95,7 @@ export default {
       storeModuleSettings: "viewedStoreModuleSettings",
       storeCustomers: "storeCustomers",
       total: "bagQuantity",
-      //bag: "bagItems",
-      bag: "bagMealPrice",
+      bag: "bagItems",
       coupon: "bagCoupon",
       deliveryPlan: "bagMealPlan",
       mealPlan: "bagMealPlan",

@@ -27,6 +27,7 @@ use App\LineItem;
 use App\LineItemOrder;
 use App\MealPackageOrder;
 use App\MealPackageSubscription;
+use App\OrderBag;
 use App\Billing\Constants;
 use App\Billing\Charge;
 use App\Billing\Authorize;
@@ -38,6 +39,24 @@ use DB;
 
 class CheckoutController extends StoreController
 {
+    public function orderBag($order_id)
+    {
+        $order_bags = OrderBag::where('order_id', $order_id)
+            ->orderBy('id', 'asc')
+            ->get();
+        $data = [];
+
+        if ($order_bags) {
+            foreach ($order_bags as $order_bag) {
+                $data[] = json_decode($order_bag->bag);
+            }
+        }
+
+        return [
+            'order_bags' => $data
+        ];
+    }
+
     public function checkout(\App\Http\Requests\CheckoutRequest $request)
     {
         $user = auth('api')->user();
@@ -51,7 +70,9 @@ class CheckoutController extends StoreController
         $store->setTimezone();
         $storeName = strtolower($store->storeDetail->name);
 
-        $bag = new Bag($request->get('bag'), $store);
+        $bagItems = $request->get('bag');
+        $bag = new Bag($bagItems, $store);
+
         $bagTotal = $bag->getTotal() + $request->get('lineItemTotal');
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
@@ -62,6 +83,8 @@ class CheckoutController extends StoreController
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
+        $interval = $request->get('plan_interval', Constants::INTERVAL_WEEK);
+        $period = Constants::PERIOD[$interval] ?? Constants::PERIOD_WEEKLY;
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
@@ -246,9 +269,7 @@ class CheckoutController extends StoreController
             $order->manual = 1;
             $order->cashOrder = $cashOrder;
             $order->payment_gateway = $gateway;
-            if ($store->modules->dailyOrderNumbers) {
-                $order->dailyOrderNumber = $dailyOrderNumber;
-            }
+            $order->dailyOrderNumber = $dailyOrderNumber;
             $order->originalAmount = $deposit > 0 ? $deposit : $total;
             $order->save();
 
@@ -274,6 +295,7 @@ class CheckoutController extends StoreController
                 $mealOrder->store_id = $store->id;
                 $mealOrder->meal_id = $item['meal']['id'];
                 $mealOrder->quantity = $item['quantity'];
+                $mealOrder->price = $item['price'] * $item['quantity'];
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
@@ -392,15 +414,16 @@ class CheckoutController extends StoreController
             }
 
             // Send notification to store
-            if ($store->settings->notificationEnabled('new_order')) {
-                $store->sendNotification('new_order', [
-                    'order' => $order ?? null,
-                    'pickup' => $pickup ?? null,
-                    'card' => $card ?? null,
-                    'customer' => $customer ?? null,
-                    'subscription' => null
-                ]);
-            }
+
+            // if ($store->settings->notificationEnabled('new_order')) {
+            //     $store->sendNotification('new_order', [
+            //         'order' => $order ?? null,
+            //         'pickup' => $pickup ?? null,
+            //         'card' => $card ?? null,
+            //         'customer' => $customer ?? null,
+            //         'subscription' => null
+            //     ]);
+            // }
 
             // Send notification
             /*$email = new NewOrder([
@@ -417,6 +440,15 @@ class CheckoutController extends StoreController
             } catch (\Exception $e) {
             }*/
 
+            if ($bagItems && count($bagItems) > 0) {
+                foreach ($bagItems as $bagItem) {
+                    $orderBag = new OrderBag();
+                    $orderBag->order_id = (int) $order->id;
+                    $orderBag->bag = json_encode($bagItem);
+                    $orderBag->save();
+                }
+            }
+
             try {
                 $customerUser->sendNotification('new_order', [
                     'order' => $order ?? null,
@@ -429,6 +461,15 @@ class CheckoutController extends StoreController
             }
         } else {
             $weekIndex = date('N', strtotime($deliveryDay));
+
+            if (
+                $interval == Constants::INTERVAL_MONTH &&
+                !$store->modules->monthlyPlans
+            ) {
+                throw new Exception(
+                    'Cannot create monthly plan with this store'
+                );
+            }
 
             // Get cutoff date for selected delivery day
             $cutoff = $store->getCutoffDate(new Carbon($deliveryDay));
@@ -444,14 +485,22 @@ class CheckoutController extends StoreController
             if ($diff >= 7) {
                 $billingAnchor->addWeeks(1);
             }
+
+            // Is billing anchor past the cutoff?
+            // Set to the cutoff date
+            if ($billingAnchor->greaterThan($cutoff)) {
+                $billingAnchor = $cutoff->copy();
+            }
+
             if (!$cashOrder) {
                 $plan = \Stripe\Plan::create(
                     [
                         "amount" => round($total * 100),
-                        "interval" => "week",
+                        "interval" => $interval,
                         "product" => [
                             "name" =>
-                                "Weekly subscription (" .
+                                ucwords($period) .
+                                " subscription (" .
                                 $store->storeDetail->name .
                                 ")"
                         ],
@@ -512,12 +561,11 @@ class CheckoutController extends StoreController
             $userSubscription->salesTax = $salesTax;
             $userSubscription->amount = $total;
             $userSubscription->pickup = $request->get('pickup', 0);
-            $userSubscription->interval = 'week';
+            $userSubscription->interval = $interval;
             $userSubscription->delivery_day = date(
                 'N',
                 strtotime($deliveryDay)
             );
-            $userSubscription->next_renewal_at = $cutoff->copy()->addDays(7);
             $userSubscription->coupon_id = $couponId;
             $userSubscription->couponReduction = $couponReduction;
             $userSubscription->couponCode = $couponCode;
@@ -554,9 +602,7 @@ class CheckoutController extends StoreController
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
-            if ($store->modules->dailyOrderNumbers) {
-                $order->dailyOrderNumber = $dailyOrderNumber;
-            }
+            $order->dailyOrderNumber = $dailyOrderNumber;
             $order->cashOrder = $cashOrder;
             $order->originalAmount = $deposit > 0 ? $deposit : $total;
             $order->save();
@@ -567,6 +613,7 @@ class CheckoutController extends StoreController
                 $mealOrder->store_id = $store->id;
                 $mealOrder->meal_id = $item['meal']['id'];
                 $mealOrder->quantity = $item['quantity'];
+                $mealOrder->price = $item['price'] * $item['quantity'];
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
                 }
@@ -669,6 +716,8 @@ class CheckoutController extends StoreController
                 $mealSub->store_id = $store->id;
                 $mealSub->meal_id = $item['meal']['id'];
                 $mealSub->quantity = $item['quantity'];
+                $mealSub->price = $item['price'];
+                $mealSub->price = $item['price'] * $item['quantity'];
                 if (isset($item['size']) && $item['size']) {
                     $mealSub->meal_size_id = $item['size']['id'];
                 }
@@ -789,6 +838,15 @@ class CheckoutController extends StoreController
                     ->send($email);
             } catch (\Exception $e) {
             }*/
+
+            if ($bagItems && count($bagItems) > 0) {
+                foreach ($bagItems as $bagItem) {
+                    $orderBag = new OrderBag();
+                    $orderBag->order_id = (int) $order->id;
+                    $orderBag->bag = json_encode($bagItem);
+                    $orderBag->save();
+                }
+            }
 
             try {
                 $customerUser->sendNotification('meal_plan', [
