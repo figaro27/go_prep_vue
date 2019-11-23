@@ -40,7 +40,7 @@ class Payments
                     $byDeliveryDate ? false : true,
                     $couponCode
                 )
-                ->map(function ($payment) use (&$sums) {
+                ->map(function ($payment) use (&$sums, $byDeliveryDate) {
                     $sums[1] += $payment->preFeePreDiscount;
                     $sums[3] += $payment->couponReduction;
                     $sums[4] += $payment->mealPlanDiscount;
@@ -54,7 +54,9 @@ class Payments
                     // $sums[10] += $payment->refundedAmount;
 
                     $paymentsRows = [
-                        $payment->created_at->format('D, m/d/Y'),
+                        $byDeliveryDate
+                            ? $payment->delivery_date->format('D, m/d/Y')
+                            : $payment->created_at->format('D, m/d/Y'),
                         '$' . number_format($payment->preFeePreDiscount, 2),
                         $payment->couponCode,
                         '$' . number_format($payment->couponReduction, 2),
@@ -88,6 +90,7 @@ class Payments
 
             foreach ($ordersByDay as $orderByDay) {
                 $created_at = "";
+                $delivery_date = "";
                 $totalOrders = 0;
                 $preFeePreDiscount = 0;
                 $mealPlanDiscount = 0;
@@ -104,6 +107,7 @@ class Payments
 
                 foreach ($orderByDay as $order) {
                     $created_at = $order->order_day;
+                    $delivery_date = $order->delivery_date;
                     $totalOrders += 1;
                     $preFeePreDiscount += $order->preFeePreDiscount;
                     $couponReduction += $order->couponReduction;
@@ -121,8 +125,13 @@ class Payments
                     'm d',
                     $created_at
                 )->format('D, M d, Y');
+
+                $deliveryDay = Carbon::createFromFormat(
+                    'm d',
+                    $delivery_date
+                )->format('D, M d, Y');
                 array_push($dailySums, [
-                    $orderDay,
+                    $byDeliveryDate ? $deliveryDay : $orderDay,
                     $totalOrders,
                     '$' . number_format($preFeePreDiscount, 2),
                     '$' . number_format($couponReduction, 2),
@@ -169,7 +178,7 @@ class Payments
 
         if ($type !== 'pdf') {
             $payments->prepend([
-                'Payment Date',
+                'Date',
                 'Subtotal',
                 'Coupon',
                 'Coupon Reduction',

@@ -21,7 +21,7 @@
      <div class="delivery-part">
       @if ($delivery_dates)
         <h2>
-          Order Dates:
+          Dates:
           {{ $delivery_dates['from']->format('D, m/d/Y') }} -
           {{ $delivery_dates['to']->format('D, m/d/Y') }}
         </h2>
