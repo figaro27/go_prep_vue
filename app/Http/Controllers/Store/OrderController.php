@@ -45,7 +45,7 @@ class OrderController extends StoreController
             $this->store->settings->timezone
         )->startOfDay();
 
-        return $this->store->has('orders')
+        $orders = $this->store->has('orders')
             ? $this->store
                 ->orders()
                 ->with(['user', 'pickup_location'])
@@ -53,6 +53,25 @@ class OrderController extends StoreController
                 ->where('delivery_date', '>=', $fromDate)
                 ->get()
             : [];
+
+        $orders->makeHidden([
+            'store',
+            'store_id',
+            'store_name',
+            'transferTime',
+            'pickup_location',
+            'pickup_location_id',
+            'cutoff_date',
+            'cutoff_passed',
+            'adjustedDifference',
+            'afterDiscountBeforeFees',
+            'card_id',
+            'couponCode',
+            'couponReduction',
+            'coupon_id',
+            'fulfilled'
+        ]);
+        return $orders;
     }
 
     public function getUpcomingOrdersWithoutItems()
@@ -139,7 +158,7 @@ class OrderController extends StoreController
             $date = 'delivery_date';
         }
 
-        return $this->store->has('orders')
+        $orders = $this->store->has('orders')
             ? $this->store
                 ->orders()
                 ->with(['user', 'pickup_location'])
@@ -148,10 +167,31 @@ class OrderController extends StoreController
                 ->where($date, '<=', $endDate)
                 ->get()
             : [];
+
+        $orders->makeHidden([
+            'store',
+            'store_id',
+            'store_name',
+            'transferTime',
+            'pickup_location',
+            'pickup_location_id',
+            'cutoff_date',
+            'cutoff_passed',
+            'adjustedDifference',
+            'afterDiscountBeforeFees',
+            'card_id',
+            'couponCode',
+            'couponReduction',
+            'coupon_id',
+            'fulfilled'
+        ]);
+        return $orders;
     }
 
     public function getOrdersWithDatesWithoutItems(Request $request)
     {
+        // Optimized orders for Store/Orders & Store/Payments pages
+
         $paymentsPage = $request->get('payments');
 
         if ($request->get('end') != null) {
