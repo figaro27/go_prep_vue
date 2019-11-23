@@ -1118,7 +1118,6 @@ const triggerLazy = (
 // operations.
 const actions = {
   async init({ commit, state, dispatch }, args = {}) {
-    state.isLoading = true;
     state.initialized = false;
 
     /*const resContext = await axios.get("/api/context");
@@ -1143,6 +1142,9 @@ const actions = {
     const context = data.context;
     state.context = context;
 
+    state.isLoading = false;
+    state.initialized = true;
+
     if (context === "store") {
       await dispatch("initStore", data);
     } else if (context === "customer") {
@@ -1150,6 +1152,16 @@ const actions = {
     } else {
       await dispatch("initGuest", data);
     }
+
+    try {
+      if (
+        !_.isEmpty(data.upcomingOrdersWithoutItems) &&
+        _.isObject(data.upcomingOrdersWithoutItems)
+      ) {
+        let orders = data.upcomingOrdersWithoutItems;
+        commit("storeUpcomingOrdersWithoutItems", { orders });
+      }
+    } catch (e) {}
 
     try {
       if (!_.isEmpty(data.allergies) && _.isObject(data.allergies)) {
@@ -1238,16 +1250,6 @@ const actions = {
     } catch (e) {}
 
     try {
-      if (
-        !_.isEmpty(data.upcomingOrdersWithoutItems) &&
-        _.isObject(data.upcomingOrdersWithoutItems)
-      ) {
-        let orders = data.upcomingOrdersWithoutItems;
-        commit("storeUpcomingOrdersWithoutItems", { orders });
-      }
-    } catch (e) {}
-
-    try {
       if (!_.isEmpty(data.store.coupons)) {
         let coupons = data.store.coupons;
 
@@ -1320,9 +1322,6 @@ const actions = {
         }
       }
     } catch (e) {}
-
-    state.isLoading = false;
-    state.initialized = true;
 
     // try {   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
     //     let orders = data.store.orders;     commit('storeOrders', {orders});   }
