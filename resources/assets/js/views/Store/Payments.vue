@@ -98,6 +98,14 @@
                 props.row.created_at
               }}</span>
             </div>
+            <div slot="delivery_date" slot-scope="props">
+              <span v-if="props.row.delivery_date != 'TOTALS'">{{
+                moment(props.row.delivery_date).format("dddd, MMM Do")
+              }}</span>
+              <span v-if="props.row.delivery_date === 'TOTALS'">{{
+                props.row.delivery_date
+              }}</span>
+            </div>
             <div slot="subtotal" slot-scope="props">
               <div>
                 {{
@@ -208,6 +216,7 @@ export default {
       options: {
         headings: {
           created_at: "Payment Date",
+          delivery_date: "Delivery Date",
           totalOrders: "Orders",
           subtotal: "Subtotal",
           mealPlanDiscount: "Subscription Discount",
@@ -277,6 +286,10 @@ export default {
         orders = this.ordersToday;
       } else {
         orders = this.ordersByDate;
+      }
+
+      if (this.filters.byDeliveryDate) {
+        orders = this.upcomingOrders;
       }
 
       if (this.filters.couponCode != null) {
@@ -407,6 +420,7 @@ export default {
     columns() {
       let columns = [
         "created_at",
+        "delivery_date",
         "subtotal",
         "salesTax",
         // "total",

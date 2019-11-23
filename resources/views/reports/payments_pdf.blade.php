@@ -26,7 +26,7 @@
           {{ $delivery_dates['to']->format('D, m/d/Y') }}
         </h2>
       @else
-        <h2>All Order Dates</h2>
+        <h2>All Dates</h2>
       @endif
 
       <h2>{{ date('m/d/Y h:i:a')}}</h2>
@@ -36,7 +36,7 @@
       <table border="1" width="100" class="light-border payments-report">
         <thead>
           <tr>
-            <th style="width:50px">Order Date</th>
+            <th style="width:100px">Date</th>
             @if ($params['dailySummary'])
             <th>Orders</th>
             @endif
