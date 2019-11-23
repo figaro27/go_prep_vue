@@ -30,8 +30,8 @@
             <th>Phone</th>
             <th>Total</th>
             <th>Balance</th>
-            <th>Order Placed</th>
-            <th>Delivery Date</th>
+            <th style="width:100px">Order Placed</th>
+            <th style="width:100px">Delivery Date</th>
           </tr>
         </thead>
 
