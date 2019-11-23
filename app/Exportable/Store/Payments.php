@@ -37,7 +37,7 @@ class Payments
                     null,
                     true,
                     null,
-                    $byDeliveryDate = 1 ? false : true,
+                    $byDeliveryDate ? false : true,
                     $couponCode
                 )
                 ->map(function ($payment) use (&$sums) {
