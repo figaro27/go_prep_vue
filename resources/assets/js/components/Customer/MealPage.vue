@@ -119,7 +119,7 @@
             (storeModules.specialInstructions &&
               !storeModuleSettings.specialInstructionsStoreOnly) ||
               (storeModuleSettings.specialInstructionsStoreOnly &&
-                $route.params.storeView)
+                ($route.params.storeView || $route.params.orderId))
           "
           class="mt-4"
           v-model="special_instructions"
