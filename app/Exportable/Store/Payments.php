@@ -150,7 +150,7 @@ class Payments
                 // $sumsByDaily[10] += $refundedAmount;
             }
 
-            foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10] as $i) {
+            foreach ([2, 3, 4, 5, 6, 7, 8, 9] as $i) {
                 $sumsByDaily[$i] = '$' . number_format($sumsByDaily[$i], 2);
             }
 
@@ -159,7 +159,7 @@ class Payments
         }
 
         // Format the sum row
-        foreach ([1, 3, 4, 5, 6, 7, 8, 9, 10] as $i) {
+        foreach ([1, 3, 4, 5, 6, 7, 8, 9] as $i) {
             $sums[$i] = '$' . number_format($sums[$i], 2);
         }
 
