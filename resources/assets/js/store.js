@@ -1186,13 +1186,6 @@ const actions = {
     } catch (e) {}
 
     try {
-      if (!_.isEmpty(data.ordersToday) && _.isObject(data.ordersToday)) {
-        let orders = data.ordersToday;
-        commit("storeOrdersToday", { orders });
-      }
-    } catch (e) {}
-
-    try {
       if (!_.isEmpty(data.store.modules) && _.isObject(data.store.modules)) {
         let modules = data.store.modules;
         commit("storeModules", { modules });
@@ -1203,20 +1196,6 @@ const actions = {
       if (!_.isEmpty(data.subscriptions) && _.isObject(data.subscriptions)) {
         let subscriptions = data.subscriptions;
         commit("storeSubscriptions", { subscriptions });
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.store.units)) {
-        let units = {};
-
-        _.forEach(data.store.units, unit => {
-          units[unit.ingredient_id] = unit.unit;
-        });
-
-        if (!_.isEmpty(units)) {
-          commit("ingredientUnits", { units });
-        }
       }
     } catch (e) {}
 
@@ -1247,16 +1226,6 @@ const actions = {
         if (!_.isEmpty(coupons)) {
           commit("storeCoupons", { coupons });
         }
-      }
-    } catch (e) {}
-
-    try {
-      if (
-        !_.isEmpty(data.store.customers) &&
-        _.isObject(data.store.customers)
-      ) {
-        let customers = data.store.customers;
-        commit("storeCustomers", { customers });
       }
     } catch (e) {}
 
@@ -1301,6 +1270,27 @@ const actions = {
     state.initialized = true;
 
     try {
+      if (!_.isEmpty(data.ordersToday) && _.isObject(data.ordersToday)) {
+        let orders = data.ordersToday;
+        commit("storeOrdersToday", { orders });
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.units)) {
+        let units = {};
+
+        _.forEach(data.store.units, unit => {
+          units[unit.ingredient_id] = unit.unit;
+        });
+
+        if (!_.isEmpty(units)) {
+          commit("ingredientUnits", { units });
+        }
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.orders) && _.isObject(data.orders)) {
         let orders = data.orders;
         commit("storeOrders", { orders });
@@ -1321,6 +1311,16 @@ const actions = {
         if (!_.isEmpty(lineItems)) {
           commit("storeLineItems", { lineItems });
         }
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.customers) &&
+        _.isObject(data.store.customers)
+      ) {
+        let customers = data.store.customers;
+        commit("storeCustomers", { customers });
       }
     } catch (e) {}
 
