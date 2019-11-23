@@ -541,7 +541,10 @@ p {
   background-position: 0 0;
 }
 
-.orders-report,
-.payments-report * {
+.orders-report {
   font-size: 11px;
+}
+
+.payments-report * {
+  font-size: 12px;
 }
