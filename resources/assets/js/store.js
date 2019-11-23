@@ -130,6 +130,9 @@ const state = {
   upcomingOrders: {
     data: []
   },
+  upcomingOrdersWithoutItems: {
+    data: []
+  },
   ordersToday: {
     data: []
   },
@@ -810,6 +813,10 @@ const mutations = {
     state.upcomingOrders.data = orders;
   },
 
+  storeUpcomingOrdersWithoutItems(state, { orders }) {
+    state.upcomingOrdersWithoutItems.data = orders;
+  },
+
   storeOrdersToday(state, { orders }) {
     state.ordersToday.data = orders;
   },
@@ -1231,6 +1238,16 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (
+        !_.isEmpty(data.upcomingOrdersWithoutItems) &&
+        _.isObject(data.upcomingOrdersWithoutItems)
+      ) {
+        let orders = data.upcomingOrdersWithoutItems;
+        commit("storeUpcomingOrdersWithoutItems", { orders });
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.coupons)) {
         let coupons = data.store.coupons;
 
@@ -1347,6 +1364,7 @@ const actions = {
 
     dispatch("refreshOrders");
     dispatch("refreshUpcomingOrders");
+    dispatch("refreshUpcomingOrdersWithoutItems");
     dispatch("refreshOrdersToday");
     dispatch("refreshStoreCustomers");
     dispatch("refreshOrderIngredients");
@@ -2068,6 +2086,24 @@ const actions = {
         return order;
       });
       commit("storeUpcomingOrders", { orders });
+    } else {
+      throw new Error("Failed to retrieve orders");
+    }
+  },
+
+  async refreshUpcomingOrdersWithoutItems({ commit, state }, args = {}) {
+    const res = await axios.post("/api/me/getUpcomingOrdersWithoutItems");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      const orders = _.map(data, order => {
+        order.created_at = moment.utc(order.created_at).local(); //.format('ddd, MMMM Do')
+        order.updated_at = moment.utc(order.updated_at).local(); //.format('ddd, MMMM Do')
+        order.delivery_date = moment.utc(order.delivery_date);
+        //.local(); //.format('ddd, MMMM Do')
+        return order;
+      });
+      commit("storeUpcomingOrdersWithoutItems", { orders });
     } else {
       throw new Error("Failed to retrieve orders");
     }
@@ -2880,6 +2916,13 @@ const getters = {
   storeUpcomingOrders: state => {
     try {
       return state.upcomingOrders.data || [];
+    } catch (e) {
+      return {};
+    }
+  },
+  storeUpcomingOrdersWithoutItems: state => {
+    try {
+      return state.upcomingOrdersWithoutItems.data || [];
     } catch (e) {
       return {};
     }

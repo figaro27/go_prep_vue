@@ -201,6 +201,10 @@ foreach (
                                 'OrderController@getUpcomingOrders'
                             );
                             Route::post(
+                                'getUpcomingOrdersWithoutItems',
+                                'OrderController@getUpcomingOrdersWithoutItems'
+                            );
+                            Route::post(
                                 'getOrdersToday',
                                 'OrderController@getOrdersToday'
                             );

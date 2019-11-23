@@ -55,6 +55,46 @@ class OrderController extends StoreController
             : [];
     }
 
+    public function getUpcomingOrdersWithoutItems()
+    {
+        // Optimized orders for Store/Orders & Store/Payments pages
+        $fromDate = Carbon::today(
+            $this->store->settings->timezone
+        )->startOfDay();
+
+        $orders = $this->store->has('orders')
+            ? $this->store
+                ->orders()
+                ->with(['user', 'pickup_location'])
+                ->where(['paid' => 1])
+                ->where('delivery_date', '>=', $fromDate)
+                ->get()
+            : [];
+
+        $orders->makeHidden([
+            'items',
+            'meal_ids',
+            'line_items_order',
+            'meal_package_items',
+            'store',
+            'store_id',
+            'store_name',
+            'transferTime',
+            'pickup_location',
+            'pickup_location_id',
+            'cutoff_date',
+            'cutoff_passed',
+            'adjustedDifference',
+            'afterDiscountBeforeFees',
+            'card_id',
+            'couponCode',
+            'couponReduction',
+            'coupon_id',
+            'fulfilled'
+        ]);
+        return $orders;
+    }
+
     public function getOrdersToday()
     {
         $fromDate = Carbon::today(

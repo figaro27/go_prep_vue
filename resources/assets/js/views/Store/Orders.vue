@@ -779,7 +779,7 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
-      upcomingOrders: "storeUpcomingOrders",
+      upcomingOrdersWithoutItems: "storeUpcomingOrdersWithoutItems",
       isLoading: "isLoading",
       initialized: "initialized",
       customers: "storeCustomers",
@@ -795,7 +795,7 @@ export default {
 
       let orders = [];
       if (this.filters.delivery_dates.start === null) {
-        orders = this.upcomingOrders;
+        orders = this.upcomingOrdersWithoutItems;
       } else {
         orders = this.ordersByDate;
       }
