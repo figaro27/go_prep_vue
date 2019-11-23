@@ -44,7 +44,8 @@ class Orders
                 return [
                     $order->dailyOrderNumber,
                     $order->order_number,
-                    $order->user->name,
+                    $order->user->details->firstname,
+                    $order->user->details->lastname,
                     $order->user->details->address,
                     $order->user->details->zip,
                     $order->user->details->phone,
@@ -59,7 +60,8 @@ class Orders
             $orders->prepend([
                 'Daily Order #',
                 'Order ID',
-                'Name',
+                'First Name',
+                'Last Name',
                 'Address',
                 'Zip',
                 'Phone',

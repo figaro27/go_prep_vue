@@ -23,7 +23,8 @@
           <tr>
             <th>Daily Order #</th>
             <th>Order ID</th>
-            <th>Name</th>
+            <th>First Name</th>
+            <th>Last Name</th>
             <th>Address</th>
             <th>Zip</th>
             <th>Phone</th>
