@@ -24,6 +24,7 @@ class Payments
         $params = $this->params;
         $couponCode = $this->params->get('couponCode');
         $dailySummary = $this->params->get('dailySummary');
+        $byDeliveryDate = $this->params->get('byDeliveryDate');
 
         $sums = ['TOTALS', 0, '', 0, 0, 0, 0, 0, 0, 0];
         $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -36,7 +37,7 @@ class Payments
                     null,
                     true,
                     null,
-                    true,
+                    $byDeliveryDate = 1 ? false : true,
                     $couponCode
                 )
                 ->map(function ($payment) use (&$sums) {

@@ -62,6 +62,16 @@
             </div>
 
             <span slot="beforeLimit">
+              <b-form-checkbox
+                class="mediumCheckbox ml-3"
+                type="checkbox"
+                v-model="filters.byDeliveryDate"
+                :value="1"
+                :unchecked-value="0"
+                ><span class="paragraph"
+                  >By Delivery Date</span
+                ></b-form-checkbox
+              >
               <b-btn
                 variant="primary"
                 @click="exportData('payments', 'pdf', true)"
@@ -189,7 +199,8 @@ export default {
           end: null
         },
         couponCode: null,
-        dailySummary: 0
+        dailySummary: 0,
+        byDeliveryDate: 0
       },
       order: {},
       orderId: "",
@@ -520,6 +531,7 @@ export default {
 
       params.couponCode = this.filters.couponCode;
       params.dailySummary = this.filters.dailySummary;
+      params.byDeliveryDate = this.filters.byDeliveryDate;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
