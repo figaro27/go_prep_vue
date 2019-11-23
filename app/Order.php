@@ -10,7 +10,23 @@ class Order extends Model
 {
     protected $fillable = ['fulfilled', 'notes', 'delivery_day'];
 
-    protected $hidden = [];
+    protected $hidden = [
+        'store',
+        'store_id',
+        'store_name',
+        'transferTime',
+        'pickup_location',
+        'pickup_location_id',
+        'cutoff_date',
+        'cutoff_passed',
+        'adjustedDifference',
+        'afterDiscountBeforeFees',
+        'card_id',
+        'couponCode',
+        'couponReduction',
+        'coupon_id',
+        'fulfilled'
+    ];
 
     protected $casts = [
         'delivery_date' => 'date:Y-m-d',

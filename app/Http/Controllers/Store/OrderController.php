@@ -45,7 +45,7 @@ class OrderController extends StoreController
             $this->store->settings->timezone
         )->startOfDay();
 
-        $orders = $this->store->has('orders')
+        return $this->store->has('orders')
             ? $this->store
                 ->orders()
                 ->with(['user', 'pickup_location'])
@@ -53,25 +53,6 @@ class OrderController extends StoreController
                 ->where('delivery_date', '>=', $fromDate)
                 ->get()
             : [];
-
-        $orders->makeHidden([
-            'store',
-            'store_id',
-            'store_name',
-            'transferTime',
-            'pickup_location',
-            'pickup_location_id',
-            'cutoff_date',
-            'cutoff_passed',
-            'adjustedDifference',
-            'afterDiscountBeforeFees',
-            'card_id',
-            'couponCode',
-            'couponReduction',
-            'coupon_id',
-            'fulfilled'
-        ]);
-        return $orders;
     }
 
     public function getUpcomingOrdersWithoutItems()
@@ -94,22 +75,7 @@ class OrderController extends StoreController
             'items',
             'meal_ids',
             'line_items_order',
-            'meal_package_items',
-            'store',
-            'store_id',
-            'store_name',
-            'transferTime',
-            'pickup_location',
-            'pickup_location_id',
-            'cutoff_date',
-            'cutoff_passed',
-            'adjustedDifference',
-            'afterDiscountBeforeFees',
-            'card_id',
-            'couponCode',
-            'couponReduction',
-            'coupon_id',
-            'fulfilled'
+            'meal_package_items'
         ]);
         return $orders;
     }
@@ -133,22 +99,7 @@ class OrderController extends StoreController
             'items',
             'meal_ids',
             'line_items_order',
-            'meal_package_items',
-            'store',
-            'store_id',
-            'store_name',
-            'transferTime',
-            'pickup_location',
-            'pickup_location_id',
-            'cutoff_date',
-            'cutoff_passed',
-            'adjustedDifference',
-            'afterDiscountBeforeFees',
-            'card_id',
-            'couponCode',
-            'couponReduction',
-            'coupon_id',
-            'fulfilled'
+            'meal_package_items'
         ]);
         return $orders;
     }
@@ -181,7 +132,7 @@ class OrderController extends StoreController
             $date = 'delivery_date';
         }
 
-        $orders = $this->store->has('orders')
+        return $this->store->has('orders')
             ? $this->store
                 ->orders()
                 ->with(['user', 'pickup_location'])
@@ -190,25 +141,6 @@ class OrderController extends StoreController
                 ->where($date, '<=', $endDate)
                 ->get()
             : [];
-
-        $orders->makeHidden([
-            'store',
-            'store_id',
-            'store_name',
-            'transferTime',
-            'pickup_location',
-            'pickup_location_id',
-            'cutoff_date',
-            'cutoff_passed',
-            'adjustedDifference',
-            'afterDiscountBeforeFees',
-            'card_id',
-            'couponCode',
-            'couponReduction',
-            'coupon_id',
-            'fulfilled'
-        ]);
-        return $orders;
     }
 
     public function getOrdersWithDatesWithoutItems(Request $request)
@@ -244,22 +176,7 @@ class OrderController extends StoreController
             'items',
             'meal_ids',
             'line_items_order',
-            'meal_package_items',
-            'store',
-            'store_id',
-            'store_name',
-            'transferTime',
-            'pickup_location',
-            'pickup_location_id',
-            'cutoff_date',
-            'cutoff_passed',
-            'adjustedDifference',
-            'afterDiscountBeforeFees',
-            'card_id',
-            'couponCode',
-            'couponReduction',
-            'coupon_id',
-            'fulfilled'
+            'meal_package_items'
         ]);
 
         return $orders;
