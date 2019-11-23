@@ -288,9 +288,9 @@ export default {
         orders = this.ordersByDate;
       }
 
-      if (this.filters.byDeliveryDate) {
-        orders = this.upcomingOrders;
-      }
+      // if (this.filters.byDeliveryDate) {
+      //   orders = this.upcomingOrders;
+      // }
 
       if (this.filters.couponCode != null) {
         orders = orders.filter(
