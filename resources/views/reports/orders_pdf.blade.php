@@ -21,7 +21,7 @@
       <table border="1" width="100" class="orders-report">
         <thead>
           <tr>
-            <th style="width:100px">Daily Order #</th>
+            <th style="width:60px">Daily Order #</th>
             <th>Order ID</th>
             <th>First Name</th>
             <th>Last Name</th>
