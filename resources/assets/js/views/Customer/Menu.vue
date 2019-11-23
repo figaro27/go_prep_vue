@@ -14,8 +14,7 @@
         v-if="
           !bagDeliveryDate &&
             store.modules.category_restrictions &&
-            !$route.params.storeView &&
-            !storeView
+            !$route.params.storeView
         "
       ></delivery-date-modal>
 
@@ -53,55 +52,16 @@
         :loaded="loaded"
       ></meal-package-modal>
 
-      <b-modal
-        size="lg"
-        title="Add Meal To"
-        v-model="adjustMealModal"
-        v-if="adjustMealModal"
-        @hide="adjustMealModal = false"
-        @ok.prevent="e => ok(e)"
-        no-fade
-      >
-        <div class="row mt-3">
-          <div class="col-md-12">
-            <b-radio-group
-              v-model="adjustMealModal_index"
-              stacked
-              @input.native="e => e"
-            >
-              <b-radio
-                v-for="(option, index) in adjustMealModal_items"
-                :value="index"
-                v-bind:key="'adjustMealPackage_' + index"
-              >
-                {{ option.meal.title }}
-                <span v-if="option.size && option.size.title !== 'Regular'">
-                  - {{ option.size.title }}
-                </span>
-              </b-radio>
-
-              <b-radio :value="adjustMealModal_items.length">
-                Bag
-              </b-radio>
-            </b-radio-group>
-          </div>
-        </div>
-      </b-modal>
-
       <div class="row">
         <div :class="`col-md-12 main-menu-area menu-page`">
           <Spinner v-if="showSpinner || forceShow" position="fixed" />
 
           <store-closed
-            v-if="!$route.params.storeView && !storeView"
+            v-if="!$route.params.storeView"
             :storeView="storeView"
           ></store-closed>
           <outside-delivery-area
-            v-if="
-              !$route.params.storeView &&
-                !storeView &&
-                !store.modules.hideDeliveryOption
-            "
+            v-if="!$route.params.storeView && !store.modules.hideDeliveryOption"
             :storeView="storeView"
           ></outside-delivery-area>
           <!--<meals-area
@@ -119,8 +79,6 @@
             :filters="filters"
             :search="search"
             :filteredView="filteredView"
-            :adjustOrder="adjustOrder"
-            :manualOrder="manualOrder"
             @onCategoryVisible="onCategoryVisible($event)"
           ></meals-area>
 
@@ -131,16 +89,12 @@
             :mealDescription="mealDescription"
             :ingredients="ingredients"
             :nutritionalFacts="nutritionalFacts"
-            :adjustOrder="adjustOrder"
-            :manualOrder="manualOrder"
-            ref="mealPage"
           ></meal-page>
 
           <meal-package-page
             :mealPackage="mealPackage"
             :mealPackageSize="mealPackageSize"
             :storeSettings="storeSettings"
-            :storeView="storeView"
             ref="mealPackagePage"
           ></meal-package-page>
 
@@ -168,10 +122,11 @@
             <div class="categoryNavArea_body_inner">
               <div class="row">
                 <div class="col-md-2">
-                  <i
-                    class="fas fa-times-circle clear-meal dark-gray pt-1"
+                  <img
+                    src="/images/customer/x.png"
                     @click="search = ''"
-                  ></i>
+                    class="clear-meal"
+                  />
                 </div>
                 <div class="col-md-10">
                   <b-form-textarea
@@ -211,30 +166,16 @@
                   {{ cat.category }}
                 </div>
               </div>
-              <div class="row d-inline" v-if="mealPackagePageView">
+              <div class="row" v-if="mealPackagePageView">
                 <div class="col-md-12 center-text mb-3">
                   <button
-                    @click="backFromPackagePage"
+                    @click="backFromPackagPage"
                     type="button"
-                    class="btn btn-secondary btn-md d-inline"
+                    class="btn btn-secondary btn-md brand-color white-text"
                   >
                     Back
                   </button>
-                  <button
-                    @click="addFromPackagePage"
-                    type="button"
-                    class="btn btn-secondary btn-md brand-color white-text d-inline"
-                  >
-                    Add
-                  </button>
                 </div>
-              </div>
-              <div
-                v-if="mealPackagePageView && mealPackagePageComponents === 1"
-              >
-                <h4 class="center-text mt-2">
-                  Remaining: {{ remainingMeals }}
-                </h4>
               </div>
             </div>
             <!-- Inner Body End !-->
@@ -424,14 +365,6 @@ export default {
   },
   data() {
     return {
-      adjustMealModal: false,
-      adjustMealModal_meal: null,
-      adjustMealModal_size: null,
-      adjustMealModal_special_instructions: null,
-      adjustMealModal_items: [],
-      adjustMealModal_components: null,
-      adjustMealModal_addons: null,
-      adjustMealModal_index: 0,
       showBagClass: "shopping-cart show-right bag-area d-none",
       showFilterClass: "shopping-cart hidden-left bag-area",
       search: "",
@@ -466,8 +399,6 @@ export default {
       mealModal: false,
       mealPageView: false,
       mealPackagePageView: false,
-      mealPackagePageComponents: null,
-      remainingMeals: null,
       mealPackageModal: false,
       nutritionalFacts: {},
       showMealsArea: true,
@@ -675,7 +606,6 @@ export default {
 
         sortedCategories.push({
           category: cat.category,
-          subtitle: cat.subtitle,
           order,
           id: cat.id,
           cat
@@ -708,12 +638,10 @@ export default {
         let name = sortedCategories[i].category;
         let order = sortedCategories[i].order;
         let category_id = sortedCategories[i].id;
-        let subtitle = sortedCategories[i].subtitle;
 
         if (grouped[name] && grouped[name].length > 0) {
           finalData.push({
             category: name,
-            subtitle,
             category_id,
             meals: grouped[name],
             order
@@ -808,7 +736,7 @@ export default {
       this.showBagClass = "shopping-cart show-right bag-area";
     } else this.showBagClass = "shopping-cart hidden-right bag-area";
 
-    if (this.storeView || this.$route.params.storeView) {
+    if (this.storeView) {
       /* Sidebar Check */
       let isOpen = false;
 
@@ -824,7 +752,7 @@ export default {
       }
       /* Sidebar Check End */
 
-      if (this.$route.params.storeView || this.storeView)
+      if (this.$route.params.storeView)
         this.showBagClass = "shopping-cart show-right bag-area";
       else this.showBagClass = "shopping-cart show-right bag-area";
     }
@@ -851,73 +779,9 @@ export default {
       "refreshUpcomingOrders"
     ]),
     ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
-    showAdjustModal(
-      meal,
-      size = null,
-      components = null,
-      addons = [],
-      special_instructions = null,
-      items = []
-    ) {
-      this.adjustMealModal = true;
-      this.adjustMealModal_meal = this.getMeal(meal.id, meal);
-      this.adjustMealModal_special_instructions = special_instructions;
-      this.adjustMealModal_components = components;
-      this.adjustMealModal_addons = addons;
-
-      if (_.isObject(size) && size.id) {
-        this.adjustMealModal_size = size;
-      } else {
-        if (size) {
-          this.adjustMealModal_size = this.adjustMealModal_meal.getSize(size);
-        } else {
-          this.adjustMealModal_size = null;
-        }
-      }
-      this.adjustMealModal_items = items;
-      this.adjustMealModal_index = items.length;
-    },
-    ok() {
-      this.adjustMealModal = false;
-      const meal = this.adjustMealModal_meal;
-      const size = this.adjustMealModal_size;
-      const special_instructions = this.adjustMealModal_special_instructions;
-      const items = this.adjustMealModal_items;
-      const index = this.adjustMealModal_index;
-      const addons = this.adjustMealModal_addons;
-      const components = this.adjustMealModal_components;
-
-      if (index != null && items && items[index]) {
-        this.updateOneSubItemFromAdjust(
-          {
-            meal,
-            size,
-            special_instructions
-          },
-          items[index],
-          true
-        );
-      } else if (index == items.length) {
-        // Directly to Bag
-        if (!addons) {
-          addons = [];
-        }
-
-        this.addOne(
-          meal,
-          false,
-          size,
-          components,
-          addons,
-          special_instructions
-        );
-      }
-
-      this.$refs.mealPage.back();
-    },
-    onCategoryVisible(isVisible, category) {
+    onCategoryVisible(isVisible, index) {
       if (isVisible && this.$refs.categorySlider) {
-        this.$refs.categorySlider.goTo(category.category_id);
+        this.$refs.categorySlider.goTo(index);
       }
     },
     showActiveFilters() {
@@ -1119,7 +983,7 @@ export default {
       };
     },
     showBag() {
-      if (this.storeView || this.$route.params.storeView) return;
+      if (this.storeView) return;
       if (this.showBagClass.includes("hidden-right")) {
         this.showBagClass = "d-inline shopping-cart show-right bag-area";
         if (this.menuPage) {
@@ -1161,11 +1025,8 @@ export default {
       this.mealPackagePageView = false;
       this.finalCategoriesSub = [];
     },
-    backFromPackagePage() {
+    backFromPackagPage() {
       this.$refs.mealPackagePage.back();
-    },
-    addFromPackagePage() {
-      this.$refs.mealPackagePage.done();
     }
   }
 };

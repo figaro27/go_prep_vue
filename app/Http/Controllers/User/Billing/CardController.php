@@ -20,7 +20,7 @@ class CardController extends UserController
         $storeId = $this->store->id;
         $gateway = $this->store->settings->payment_gateway;
 
-        return $this->user
+        $cards = $this->user
             ->cards()
             ->where('payment_gateway', $gateway)
             ->get()
@@ -30,7 +30,10 @@ class CardController extends UserController
                 } else {
                     return true;
                 }
-            });
+            })
+            ->values();
+
+        return $cards;
     }
 
     /**

@@ -467,7 +467,6 @@ class SpaController extends Controller
                     'store_id',
                     'id',
                     'category',
-                    'subtitle',
                     'order',
                     'date_range',
                     'date_range_exclusive',

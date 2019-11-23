@@ -17,13 +17,10 @@ class CustomerController extends StoreController
      */
     public function index()
     {
-        // return $this->store
-        //     ->customers()
-        //     ->without(['user', 'orders', 'paid_orders'])
-        //     ->get();
-        $customers = $this->store->customers;
-        $customers->makeHidden(['first_order', 'paid_orders']);
-        return $customers;
+        return $this->store
+            ->customers()
+            ->without(['user'])
+            ->get();
     }
 
     public function customersNoOrders()

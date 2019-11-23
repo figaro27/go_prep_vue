@@ -10,12 +10,4 @@ class Constants
 
     const PERIOD_WEEKLY = 'weekly';
     const PERIOD_MONTHLY = 'monthly';
-
-    const PERIOD = [
-        'week' => 'weekly',
-        'month' => 'monthly'
-    ];
-
-    const INTERVAL_WEEK = 'week';
-    const INTERVAL_MONTH = 'month';
 }

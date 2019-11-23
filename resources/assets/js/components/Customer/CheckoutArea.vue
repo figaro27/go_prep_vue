@@ -9,7 +9,7 @@
             $parent.orderId === undefined
         "
       >
-        <div class="row" v-if="!manualOrder && !store.modules.subscriptionOnly">
+        <div class="row" v-if="!manualOrder">
           <div class="col-md-12 pb-1">
             <h3>
               <img
@@ -50,7 +50,7 @@
             </h3>
           </div>
         </div>
-        <div class="row" v-if="!store.modules.subscriptionOnly">
+        <div class="row">
           <div class="col-md-9">
             <strong
               ><p class="mr-1">
@@ -60,7 +60,7 @@
                       storeSettings.mealPlanDiscount > 0
                   "
                 >
-                  Subscribe &amp; save
+                  Subscribe & save
                   <span class="text-success standout">{{
                     format.money(subscribeAndSaveAmount, storeSettings.currency)
                   }}</span>
@@ -84,30 +84,15 @@
             ></strong>
           </div>
         </div>
-
-        <div
-          v-if="weeklySubscription && storeModules.monthlyPlans"
-          class="d-inline"
-        >
-          <div class="d-inline">
-            <strong>Billing Period:</strong>
-          </div>
-          <div class="d-inline pl-3">
-            <b-select v-model="subscriptionInterval" class="mb-1">
-              <option value="week">Weekly</option>
-              <option value="month">Monthly</option>
-            </b-select>
-          </div>
-        </div>
       </li>
-      <!-- <li class="checkout-item">
+      <li class="checkout-item">
         <p>
           <strong>
             {{ total }} {{ singOrPluralTotal }}
             {{ deliveryPlanText }}
           </strong>
         </p>
-      </li> -->
+      </li>
       <li class="checkout-item">
         <div class="row">
           <div class="col-6 col-md-4">
@@ -277,7 +262,6 @@
           <strong v-if="pickup === 0">Delivery Day</strong>
           <strong v-if="pickup === 1">Pickup Day</strong>
           <b-select
-            v-model="deliveryDay"
             :options="deliveryDateOptionsStoreView"
             :value="bagDeliveryDate"
             @input="changeDeliveryDay"
@@ -369,9 +353,7 @@
           <b-form-select
             class="delivery-select ml-2"
             v-model="transferTime"
-            :value="transferTime"
             :options="transferTimeOptions"
-            @input="changeDeliveryTime"
           ></b-form-select>
         </div>
       </li>
@@ -389,9 +371,7 @@
           <b-form-select
             class="delivery-select ml-2"
             v-model="transferTime"
-            :value="transferTime"
             :options="transferTimeOptions"
-            @input="changeDeliveryTime"
           ></b-form-select>
         </div>
       </li>
@@ -416,6 +396,7 @@
         ></b-select>
       </div>
     </li>
+
     <li v-if="loggedIn">
       <div
         v-if="
@@ -803,7 +784,6 @@ export default {
       couponCode: "",
       addCustomerModal: false,
       weeklySubscriptionValue: null,
-      subscriptionInterval: "week",
       customerModel: null
     };
   },
@@ -872,6 +852,7 @@ export default {
       storeCustomers: "storeCustomers",
       total: "bagQuantity",
       bag: "bagItems",
+      bagMealPrice: "bagMealPrice",
       bagDeliveryDate: "bagDeliveryDate",
       coupon: "bagCoupon",
       deliveryPlan: "bagMealPlan",
@@ -1296,9 +1277,6 @@ export default {
       return "Meal";
     },
     weeklySubscription() {
-      if (this.store.modules.subscriptionOnly) {
-        return true;
-      }
       if (
         this.checkoutData &&
         this.checkoutData.hasOwnProperty("weeklySubscriptionValue")
@@ -1317,55 +1295,6 @@ export default {
       else return "Prepared Once";
     },
     tax() {
-      // Custom Sales Tax Per Meal
-      let removableItemAmount = 0;
-      let customSalesTaxAmount = 0;
-      this.bag.forEach(item => {
-        // Remove the meal from the total amount of the bag, and then add it back in using its custom sales tax rate.
-        if (!item.meal_package) {
-          if (item.meal.salesTax !== null) {
-            removableItemAmount += item.price * item.quantity;
-            customSalesTaxAmount +=
-              item.price * item.quantity * item.meal.salesTax;
-          }
-        } else {
-          // Meal packages size (top level) meals don't affect the package price, so not included below.
-          if (item.addons !== null) {
-            if (item.addons && item.addons.length > 0) {
-              item.addons.forEach(addonItem => {
-                if (addonItem.meal.salesTax !== null) {
-                  removableItemAmount += addonItem.price * addonItem.quantity;
-                  customSalesTaxAmount +=
-                    addonItem.price *
-                    addonItem.quantity *
-                    addonItem.meal.salesTax;
-                }
-              });
-            }
-          }
-          if (item.components !== null) {
-            if (Object.entries(item.components).length > 0) {
-              Object.values(item.components).forEach(component => {
-                Object.values(component).forEach(componentOption => {
-                  if (componentOption.length > 0) {
-                    if (componentOption[0].meal.salesTax !== null) {
-                      removableItemAmount += componentOption[0].price;
-                      customSalesTaxAmount +=
-                        componentOption[0].price *
-                        componentOption[0].quantity *
-                        componentOption[0].meal.salesTax;
-                    }
-                  }
-                });
-              });
-            }
-          }
-        }
-      });
-
-      let taxableAmount =
-        this.afterDiscount - removableItemAmount + customSalesTaxAmount;
-
       if (
         this.storeSettings.enableSalesTax === 0 ||
         this.storeSettings.enableSalesTax === false
@@ -1373,8 +1302,8 @@ export default {
         return 0;
       }
       if (this.storeSettings.salesTax > 0)
-        return (this.storeSettings.salesTax / 100) * taxableAmount;
-      else return this.salesTax * taxableAmount;
+        return (this.storeSettings.salesTax / 100) * this.afterDiscount;
+      else return this.salesTax * this.afterDiscount;
     },
     subscriptionId() {
       return this.$route.params.subscriptionId;
@@ -1498,9 +1427,6 @@ export default {
     },
     changeDeliveryDay(val) {
       this.setBagDeliveryDate(val);
-      this.updateParentData();
-    },
-    changeDeliveryTime(val) {
       this.updateParentData();
     },
     changePickupV() {
@@ -1673,9 +1599,8 @@ export default {
           subtotal: this.subtotal,
           mealPlanDiscount: this.mealPlanDiscount,
           afterDiscount: this.afterDiscount,
-          bag: this.bag,
+          bag: this.bagMealPrice,
           plan: weeklySubscriptionValue,
-          plan_interval: this.subscriptionInterval,
           pickup: this.pickup,
           delivery_day: this.bagDeliveryDate
             ? this.bagDeliveryDate
@@ -1700,9 +1625,6 @@ export default {
           grandTotal: this.grandTotal
         })
         .then(async resp => {
-          //this.checkingOut = false;
-          //return false
-
           this.emptyBag();
           let weeklyDelivery = this.weeklySubscription;
           this.setBagMealPlan(false);

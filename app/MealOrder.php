@@ -13,7 +13,13 @@ class MealOrder extends Pivot
         'meal_package' => 'boolean'
     ];
 
-    protected $appends = ['title', 'html_title', 'unit_price', 'instructions'];
+    protected $appends = [
+        'title',
+        'html_title',
+        'unit_price',
+        'price',
+        'instructions'
+    ];
     protected $with = ['components', 'addons'];
 
     public function meals()
@@ -215,10 +221,6 @@ class MealOrder extends Pivot
 
     public function getUnitPriceAttribute()
     {
-        if ($this->price) {
-            return $this->price / $this->quantity;
-        }
-
         $price = $this->meal->price;
 
         if (
@@ -251,6 +253,11 @@ class MealOrder extends Pivot
         }
 
         return $price;
+    }
+
+    public function getPriceAttribute()
+    {
+        return $this->unit_price * $this->quantity;
     }
 
     public function getInstructionsAttribute()

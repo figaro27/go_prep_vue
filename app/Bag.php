@@ -106,11 +106,8 @@ class Bag
                                     // : null
                                 ],
                                 'quantity' => $meal['quantity'],
-                                'special_instructions' => isset(
-                                    $meal['special_instructions']
-                                )
-                                    ? $meal['special_instructions']
-                                    : null
+                                'special_instructions' =>
+                                    $meal['special_instructions'] ?? null
                             ];
 
                             $mealItemId = $this->getItemId($mealItem);
@@ -155,11 +152,8 @@ class Bag
                                             : null
                                     ],
                                     'quantity' => $meal['quantity'],
-                                    'special_instructions' => isset(
-                                        $meal['special_instructions']
-                                    )
-                                        ? $meal['special_instructions']
-                                        : null
+                                    'special_instructions' =>
+                                        $meal['special_instructions'] ?? null
                                 ];
 
                                 $mealItemId = $this->getItemId($mealItem);
@@ -203,12 +197,7 @@ class Bag
                                             'quantity' => $mealOption->quantity,
                                             'price' => $mealOption->price,
                                             'meal_size_id' =>
-                                                $mealOption->meal_size_id,
-                                            'special_instructions' => isset(
-                                                $meal['special_instructions']
-                                            )
-                                                ? $meal['special_instructions']
-                                                : null
+                                                $mealOption->meal_size_id
                                         ]);
                                     }
                                 } else {
@@ -241,11 +230,11 @@ class Bag
                                                     $mealOption->meal_size_id,
                                                 'special_instructions' => isset(
                                                     $optionItem[
-                                                        'special_instructions'
+                                                        'specialInstructions'
                                                     ]
                                                 )
                                                     ? $optionItem[
-                                                        'special_instructions'
+                                                        'specialInstructions'
                                                     ]
                                                     : null
                                             ]);
@@ -313,14 +302,7 @@ class Bag
                                         'quantity' => $mealOption->quantity,
                                         'price' => $mealOption->price,
                                         'meal_size_id' =>
-                                            $mealOption->meal_size_id,
-                                        'special_instructions' => isset(
-                                            $mealOption['special_instructions']
-                                        )
-                                            ? $mealOption[
-                                                'special_instructions'
-                                            ]
-                                            : null
+                                            $mealOption->meal_size_id
                                     ]);
                                 }
                             } else {
@@ -347,16 +329,7 @@ class Bag
                                                 $addonItem['quantity'],
                                             'price' => $mealOption->price,
                                             'meal_size_id' =>
-                                                $mealOption->meal_size_id,
-                                            'special_instructions' => isset(
-                                                $addonItem[
-                                                    'special_instructions'
-                                                ]
-                                            )
-                                                ? $addonItem[
-                                                    'special_instructions'
-                                                ]
-                                                : null
+                                                $mealOption->meal_size_id
                                         ]);
                                     }
                                 }
@@ -380,12 +353,7 @@ class Bag
                                     'size' => [
                                         'id' => $meal['meal_size_id']
                                     ],
-                                    'quantity' => $meal['quantity'],
-                                    'special_instructions' => isset(
-                                        $meal['special_instructions']
-                                    )
-                                        ? $meal['special_instructions']
-                                        : null
+                                    'quantity' => $meal['quantity']
                                 ];
 
                                 $mealItemId = $this->getItemId($mealItem);
@@ -403,14 +371,14 @@ class Bag
             } else {
                 $mealId = $item['meal']['id'];
                 $itemId = $this->getItemId($item);
-                // $price = $meals[$mealId]->price;
+                $price = $meals[$mealId]->price;
 
-                // // Ensure size variations are counted separately
-                // if (isset($item['size']) && $item['size']) {
-                //     $price = $item['size']['price'];
-                // }
+                // Ensure size variations are counted separately
+                if (isset($item['size']) && $item['size']) {
+                    $price = $item['size']['price'];
+                }
 
-                // $item['price'] = $price;
+                $item['price'] = $price;
 
                 if (!isset($items[$itemId])) {
                     $items[$itemId] = $item;

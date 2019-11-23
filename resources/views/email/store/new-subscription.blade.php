@@ -123,14 +123,10 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           {{ $subscription->user->details->phone }}
                         </td>
                       </tr>
-                      <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->interval_title }} Subscription
-                        </td>
-                      </tr>
                       @if ($subscription->store->modules->hideTransferOptions === 0)
                       @if ($subscription->latest_order->pickup === 0)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $subscription->next_delivery_date->format('D, m/d/Y') }}
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> First Delivery Date - {{ $subscription->next_delivery_date->format('D, m/d/Y') }}
                           @if ($subscription->transferTime)
                             - {{ $subscription->transferTime }}
                           @endif
@@ -138,7 +134,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       @else ($subscription->latest_order->pickup === 1)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $subscription->next_delivery_date->format('D, m/d/Y') }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> First Pickup Date - {{ $subscription->next_delivery_date->format('D, m/d/Y') }}</td>
                       </tr>
                       @endif
                       @endif

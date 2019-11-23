@@ -128,10 +128,6 @@ u + .body .full { width:100% !important; width:100vw !important;}
                           {{ $subscription->user->details->phone }}
                         </td>
                       </tr>
-                      <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->interval_title }} Subscription
-                        </td>
-                      </tr>
                       @if ($subscription->store->modules->hideTransferOptions === 0)
                       @if ($subscription->pickup === 0)
                       <tr>

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    protected $fillable = ['store_id', 'category', 'subtitle'];
+    protected $fillable = ['store_id', 'category'];
 
     /**
      * The attributes that should be hidden for arrays.

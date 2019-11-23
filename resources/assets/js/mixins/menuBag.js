@@ -149,22 +149,6 @@ export default {
       this.mealModal = false;
       this.mealPackageModal = false;
     },
-    addOneFromAdjust(order_bag) {
-      this.$store.commit("addToBagFromAdjust", order_bag);
-    },
-    removeFromAdjust(order_bag) {
-      this.$store.commit("removeFromBagFromAdjust", order_bag);
-    },
-    removeOneFromAdjust(order_bag) {
-      this.$store.commit("removeOneFromBagFromAdjust", order_bag);
-    },
-    updateOneSubItemFromAdjust(item, order_bag, plus = false) {
-      this.$store.commit("updateOneSubItemFromAdjust", {
-        item,
-        order_bag,
-        plus
-      });
-    },
     minusOne(
       meal,
       mealPackage = false,
@@ -182,12 +166,6 @@ export default {
         addons,
         special_instructions
       });
-    },
-    updateItemPrice(bag) {
-      this.$store.commit("updateItemPrice", bag);
-    },
-    updateBagItem(item) {
-      this.$store.commit("updateBagItem", item);
     },
     makeItemFree(bag) {
       this.$store.commit("makeItemFree", bag);

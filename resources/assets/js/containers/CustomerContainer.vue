@@ -118,8 +118,7 @@
     </TheFooter>-->
     <v-style>
       .menu-bag-btn, .brand-color, .filters .active { background: {{ bgColor }};
-      border: none; } .brand-color:hover { background: {{ bgColor }}; border:
-      none; } .dbl-underline:after { border-bottom: 3px double {{ bgColor }}; }
+      } .dbl-underline:after { border-bottom: 3px double {{ bgColor }}; }
       .customer-nav-icon:hover, .nav-item a:hover{color:
       {{ bgColor }} !important} }
     </v-style>

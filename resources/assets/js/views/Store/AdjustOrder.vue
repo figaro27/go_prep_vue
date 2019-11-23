@@ -29,8 +29,7 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
-      isLoading: false,
-      order_bags: []
+      isLoading: false
     };
   },
   computed: {
@@ -82,22 +81,12 @@ export default {
       // if (!order) {
       //   return;
       // }
+      // console.log(this.orders, order);
 
       this.clearAll();
 
-      axios.get("/api/me/order_bag/" + this.order.id).then(resp => {
-        if (resp.data && resp.data.order_bags) {
-          this.order_bags = resp.data.order_bags;
-
-          if (this.order_bags) {
-            this.order_bags.forEach(item => {
-              this.addOneFromAdjust(item);
-            });
-          }
-        }
-      });
-
-      /*
+      /*console.log('order', this.order)
+      
       if (this.order.meal_package_items) {
         _.forEach(this.order.meal_package_items, item => {
             let meal_package_id = item.meal_package_id
@@ -110,7 +99,7 @@ export default {
         })
       }*/
 
-      /*_.forEach(this.order.items, item => {
+      _.forEach(this.order.items, item => {
         const meal = this.getMeal(item.meal_id);
         if (!meal) {
           return;
@@ -140,7 +129,7 @@ export default {
             free
           );
         }
-      });*/
+      });
     }
   }
 };

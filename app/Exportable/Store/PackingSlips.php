@@ -127,10 +127,10 @@ class PackingSlips
 
         try {
             $logo = \App\Utils\Images::encodeB64(
-                $this->store->details->logo['url']
+                $this->store->details->logo['url_thumb']
             );
         } catch (\Exception $e) {
-            $logo = $this->store->details->logo['url'];
+            $logo = $this->store->details->logo['url_thumb'];
         }
 
         Log::info('Logo URL: ' . $logo);

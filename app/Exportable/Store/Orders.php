@@ -42,14 +42,12 @@ class Orders
             })
             ->map(function ($order) {
                 return [
-                    $order->dailyOrderNumber,
                     $order->order_number,
                     $order->user->name,
                     $order->user->details->address,
                     $order->user->details->zip,
                     $order->user->details->phone,
                     '$' . number_format($order->amount, 2),
-                    '$' . number_format($order->balance, 2),
                     $order->created_at->format('D, m/d/Y'),
                     $order->delivery_date->format('D, m/d/Y')
                 ];
@@ -57,14 +55,12 @@ class Orders
 
         if ($type !== 'pdf') {
             $orders->prepend([
-                'Daily Order #',
                 'Order ID',
                 'Name',
                 'Address',
                 'Zip',
                 'Phone',
                 'Total',
-                'Balance',
                 'Order Placed',
                 'Delivery Day'
             ]);

@@ -11,7 +11,7 @@
     >
       <h3 class="d-inline ml-3 float-left">
         <i
-          v-if="!$route.params.storeView && !storeView"
+          v-if="!$route.params.storeView"
           class="fa fa-angle-right white-text"
           @click="$parent.showBag()"
         ></i>
@@ -36,14 +36,49 @@
           >
             <div class="bag-item-quantity mr-2">
               <div
-                @click="addToBag(item)"
+                v-if="!item.meal_package"
+                @click="
+                  addOne(
+                    item.meal,
+                    false,
+                    item.size,
+                    item.components,
+                    item.addons,
+                    item.special_instructions
+                  )
+                "
+                class="bag-plus-minus brand-color white-text"
+              >
+                <i>+</i>
+              </div>
+              <div
+                v-if="item.meal_package"
+                @click="
+                  addOne(
+                    item.meal,
+                    true,
+                    item.size,
+                    item.components,
+                    item.addons,
+                    item.special_instructions
+                  )
+                "
                 class="bag-plus-minus brand-color white-text"
               >
                 <i>+</i>
               </div>
               <p class="bag-quantity">{{ item.quantity }}</p>
               <div
-                @click="removeFromBag(item)"
+                @click="
+                  minusOne(
+                    item.meal,
+                    false,
+                    item.size,
+                    item.components,
+                    item.addons,
+                    item.special_instructions
+                  )
+                "
                 class="bag-plus-minus gray white-text"
               >
                 <i>-</i>
@@ -90,99 +125,49 @@
                   {{ addon }}
                 </li>
               </ul>
-              <div v-if="$route.params.storeView || storeView">
+              <div
+                v-if="
+                  ($route.params.storeView || storeView) && !item.meal_package
+                "
+              >
                 <input
                   type="checkbox"
                   :id="`checkox_${mealId}`"
                   v-model="item.free"
-                  @change="e => makeFree(item, e)"
+                  @change="makeFree(item)"
                 />
                 <label :for="`checkox_${mealId}`">Free</label>
-
-                <span v-if="editingPrice[item.guid] ? true : false">
-                  <b-form-input
-                    type="number"
-                    v-model="item.price"
-                    class="d-inline width-70 mb-1"
-                    @input="v => changePrice(item, v)"
-                  ></b-form-input>
-                  <i
-                    class="fas fa-check-circle text-primary"
-                    @click="endEditPrice(item)"
-                  ></i>
-                </span>
-                <span v-else>{{
-                  format.money(
-                    item.price * item.quantity,
-                    storeSettings.currency
-                  )
-                }}</span>
-                <i
-                  v-if="
-                    ($route.params.storeView || storeView) &&
-                      !editingPrice[item.guid]
-                  "
-                  @click="enableEditPrice(item)"
-                  class="fa fa-edit text-warning"
-                ></i>
-              </div>
-              <div v-if="!$route.params.storeView && !storeView">
-                <span>{{
-                  format.money(
-                    item.price * item.quantity,
-                    storeSettings.currency
-                  )
-                }}</span>
               </div>
             </div>
             <div class="flex-grow-0">
               <img
                 src="/images/customer/x.png"
-                @click="clearFromBag(item)"
+                @click="
+                  clearMeal(
+                    item.meal,
+                    false,
+                    item.size,
+                    item.components,
+                    item.addons,
+                    item.special_instructions
+                  )
+                "
                 class="clear-meal"
               />
             </div>
           </div>
           <ul>
             <li v-for="(mealItem, i) in getItemMeals(item)" :key="i">
-              <div
-                class="medium"
-                style="display: flex; align-items: center; margin-bottom: 5px;"
-              >
-                <div
-                  v-if="$route.params.storeView || storeView"
-                  style="display: flex; align-items: center;"
-                >
-                  <div
-                    @click="adjustMinus(mealItem, item)"
-                    class="bag-plus-minus gray white-text"
-                    style="margin-right: 3px;"
-                  >
-                    <i>-</i>
-                  </div>
-                  <div
-                    @click="adjustPlus(mealItem, item)"
-                    class="bag-plus-minus brand-color white-text"
-                    style="margin-right: 5px;"
-                  >
-                    <i>+</i>
-                  </div>
-                </div>
-
+              <span class="small">
                 {{ mealItem.quantity }} x
                 {{ mealItem.title ? mealItem.title : mealItem.meal.title }}
-              </div>
-              <div class="small" v-if="mealItem.special_instructions != null">
-                {{ mealItem.special_instructions }}
-              </div>
+              </span>
             </li>
           </ul>
         </li>
       </ul>
     </div>
-    <div
-      v-if="($route.params.storeView || storeView) && storeModules.lineItems"
-    >
+    <div v-if="$route.params.storeView && storeModules.lineItems">
       <ul class="list-group">
         <li
           v-for="(orderLineItem, index) in orderLineItems"
@@ -325,7 +310,6 @@ import store from "../../store";
 export default {
   data() {
     return {
-      editingPrice: {},
       showLineItemModal: false,
       lineItem: {
         title: "",
@@ -355,7 +339,8 @@ export default {
       storeSettings: "viewedStoreSetting",
       total: "bagQuantity",
       allergies: "allergies",
-      bag: "bagItems",
+      //bag: "bagItems",
+      bag: "bagMealPrice",
       hasMeal: "bagHasMeal",
       willDeliver: "viewedStoreWillDeliver",
       _categories: "viewedStoreCategories",
@@ -427,12 +412,6 @@ export default {
     }
   },
   mounted() {
-    if (this.bag) {
-      this.bag.forEach(item => {
-        this.editingPrice[item.guid] = false;
-      });
-    }
-
     let lineItemsOrder = [];
 
     if (this.$route.params && this.$route.params.line_items_order) {
@@ -445,80 +424,6 @@ export default {
     this.$emit("updateLineItems", this.orderLineItems);
   },
   methods: {
-    addToBag(item) {
-      if (this.isAdjustOrder() || this.isManualOrder()) {
-        this.addOneFromAdjust({
-          ...item,
-          quantity: 1
-        });
-      } else {
-        this.addOne(
-          item.meal,
-          item.meal_package,
-          item.size,
-          item.components,
-          item.addons,
-          item.special_instructions
-        );
-      }
-    },
-    clearFromBag(item) {
-      if (this.isAdjustOrder() || this.isManualOrder()) {
-        this.removeFromAdjust(item);
-      } else {
-        this.clearMeal(
-          item.meal,
-          item.meal_package,
-          item.size,
-          item.components,
-          item.addons,
-          item.special_instructions
-        );
-      }
-    },
-    removeFromBag(item) {
-      if (this.isAdjustOrder() || this.isManualOrder()) {
-        this.removeOneFromAdjust({
-          ...item,
-          quantity: 1
-        });
-      } else {
-        this.minusOne(
-          item.meal,
-          item.meal_package,
-          item.size,
-          item.components,
-          item.addons,
-          item.special_instructions
-        );
-      }
-    },
-    adjustMinus(mealItem, item) {
-      this.updateOneSubItemFromAdjust(mealItem, item, false);
-    },
-    adjustPlus(mealItem, item) {
-      this.updateOneSubItemFromAdjust(mealItem, item, true);
-    },
-    isManualOrder() {
-      if (
-        this.manualOrder ||
-        this.$route.params.manualOrder ||
-        this.$route.name == "store-manual-order"
-      ) {
-        return true;
-      }
-      return false;
-    },
-    isAdjustOrder() {
-      if (
-        this.adjustOrder ||
-        this.$route.params.adjustOrder ||
-        this.$route.name == "store-adjust-order"
-      ) {
-        return true;
-      }
-      return false;
-    },
     getItemMeals(item) {
       const mealPackage = !!item.meal_package;
 
@@ -527,8 +432,7 @@ export default {
       }
 
       const pkg = this.getMealPackage(item.meal.id, item.meal);
-      //const size = pkg && item.size ? pkg.getSize(item.size.id) : null;
-      const size = pkg && item.size ? item.size : null;
+      const size = pkg && item.size ? pkg.getSize(item.size.id) : null;
 
       const packageMeals = size ? size.meals : pkg ? pkg.meals : null;
 
@@ -540,11 +444,7 @@ export default {
           });
         }),
         mealItem => {
-          return {
-            quantity: mealItem.quantity,
-            meal: mealItem,
-            special_instructions: mealItem.special_instructions
-          };
+          return { quantity: mealItem.quantity, meal: mealItem };
         }
       );
 
@@ -570,8 +470,7 @@ export default {
               } else if (item.meal) {
                 mealQuantities[guid] = {
                   quantity: item.quantity,
-                  meal: item.meal,
-                  special_instructions: item.special_instructions
+                  meal: item.meal
                 };
               }
             });
@@ -586,8 +485,7 @@ export default {
               } else if (item.meal) {
                 mealQuantities[guid] = {
                   quantity: item.quantity,
-                  meal: item.meal,
-                  special_instructions: item.special_instructions
+                  meal: item.meal
                 };
               }
             });
@@ -609,8 +507,7 @@ export default {
             } else if (addonItem.meal) {
               mealQuantities[guid] = {
                 quantity: addonItem.quantity,
-                meal: addonItem.meal,
-                special_instructions: addonItem.special_instructions
+                meal: addonItem.meal
               };
             }
           });
@@ -625,8 +522,7 @@ export default {
             } else if (addonItem.meal) {
               mealQuantities[guid] = {
                 quantity: addonItem.quantity,
-                meal: addonItem.meal,
-                special_instructions: addonItem.special_instructions
+                meal: addonItem.meal
               };
             }
           });
@@ -644,7 +540,6 @@ export default {
 
           const { mealId, sizeId } = JSON.parse(guid);
           const meal = this.getMeal(mealId, item.meal);
-
           if (!meal) return null;
 
           //const size = meal && sizeId ? meal.getSize(sizeId) : null;
@@ -656,14 +551,11 @@ export default {
               : null;
           const title = size ? size.full_title : meal.full_title;
 
-          const special_instructions = item.special_instructions;
-
           return {
             meal,
             size,
             quantity: item.quantity,
-            title,
-            special_instructions
+            title
           };
         })
         .filter()
@@ -700,31 +592,9 @@ export default {
     removeLineItem(index) {
       this.orderLineItems.splice(index, 1);
     },
-    makeFree(item, event) {
-      item.free = event.target.checked;
-      this.updateBagItem(item);
-    },
-    changePrice(item, v) {
-      if (!isNaN(v) && parseFloat(v) > 0) {
-        item.price = parseFloat(parseFloat(v).toFixed(2));
-        this.updateBagItem(item);
-      }
-    },
-    enableEditPrice(item) {
-      this.editingPrice[item.guid] = true;
-
-      this.editingPrice = {
-        ...this.editingPrice,
-        updated: true
-      };
-    },
-    endEditPrice(item) {
-      this.editingPrice[item.guid] = false;
-
-      this.editingPrice = {
-        ...this.editingPrice,
-        updated: true
-      };
+    makeFree(item) {
+      //if (item.meal.price != 0) this.makeItemFree(item);
+      //else this.makeItemNonFree(item);
     }
   }
 };
