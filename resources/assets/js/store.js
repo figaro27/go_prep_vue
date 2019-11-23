@@ -1186,6 +1186,13 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.ordersToday) && _.isObject(data.ordersToday)) {
+        let orders = data.ordersToday;
+        commit("storeOrdersToday", { orders });
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.modules) && _.isObject(data.store.modules)) {
         let modules = data.store.modules;
         commit("storeModules", { modules });
@@ -1200,12 +1207,33 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.store.units)) {
+        let units = {};
+
+        _.forEach(data.store.units, unit => {
+          units[unit.ingredient_id] = unit.unit;
+        });
+
+        if (!_.isEmpty(units)) {
+          commit("ingredientUnits", { units });
+        }
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.categories)) {
         let categories = data.store.categories;
 
         if (!_.isEmpty(categories)) {
           commit("storeCategories", { categories });
         }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.upcomingOrders) && _.isObject(data.upcomingOrders)) {
+        let orders = data.upcomingOrders;
+        commit("storeUpcomingOrders", { orders });
       }
     } catch (e) {}
 
@@ -1226,6 +1254,16 @@ const actions = {
         if (!_.isEmpty(coupons)) {
           commit("storeCoupons", { coupons });
         }
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.customers) &&
+        _.isObject(data.store.customers)
+      ) {
+        let customers = data.store.customers;
+        commit("storeCustomers", { customers });
       }
     } catch (e) {}
 
@@ -1257,35 +1295,11 @@ const actions = {
     } catch (e) {}
 
     try {
-      if (!_.isEmpty(data.tags)) {
-        let tags = data.tags;
+      if (!_.isEmpty(data.store.lineItems)) {
+        let lineItems = data.store.lineItems;
 
-        if (_.isArray(tags)) {
-          commit("tags", { tags });
-        }
-      }
-    } catch (e) {}
-
-    state.isLoading = false;
-    state.initialized = true;
-
-    try {
-      if (!_.isEmpty(data.ordersToday) && _.isObject(data.ordersToday)) {
-        let orders = data.ordersToday;
-        commit("storeOrdersToday", { orders });
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.store.units)) {
-        let units = {};
-
-        _.forEach(data.store.units, unit => {
-          units[unit.ingredient_id] = unit.unit;
-        });
-
-        if (!_.isEmpty(units)) {
-          commit("ingredientUnits", { units });
+        if (!_.isEmpty(lineItems)) {
+          commit("storeLineItems", { lineItems });
         }
       }
     } catch (e) {}
@@ -1298,31 +1312,17 @@ const actions = {
     } catch (e) {}
 
     try {
-      if (!_.isEmpty(data.upcomingOrders) && _.isObject(data.upcomingOrders)) {
-        let orders = data.upcomingOrders;
-        commit("storeUpcomingOrders", { orders });
-      }
-    } catch (e) {}
+      if (!_.isEmpty(data.tags)) {
+        let tags = data.tags;
 
-    try {
-      if (!_.isEmpty(data.store.lineItems)) {
-        let lineItems = data.store.lineItems;
-
-        if (!_.isEmpty(lineItems)) {
-          commit("storeLineItems", { lineItems });
+        if (_.isArray(tags)) {
+          commit("tags", { tags });
         }
       }
     } catch (e) {}
 
-    try {
-      if (
-        !_.isEmpty(data.store.customers) &&
-        _.isObject(data.store.customers)
-      ) {
-        let customers = data.store.customers;
-        commit("storeCustomers", { customers });
-      }
-    } catch (e) {}
+    state.isLoading = false;
+    state.initialized = true;
 
     // try {   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
     //     let orders = data.store.orders;     commit('storeOrders', {orders});   }
