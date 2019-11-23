@@ -1142,9 +1142,6 @@ const actions = {
     const context = data.context;
     state.context = context;
 
-    state.isLoading = false;
-    state.initialized = true;
-
     if (context === "store") {
       await dispatch("initStore", data);
     } else if (context === "customer") {
@@ -1322,6 +1319,9 @@ const actions = {
         }
       }
     } catch (e) {}
+
+    state.isLoading = false;
+    state.initialized = true;
 
     // try {   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
     //     let orders = data.store.orders;     commit('storeOrders', {orders});   }
