@@ -150,6 +150,58 @@ class OrderController extends StoreController
             : [];
     }
 
+    public function getOrdersWithDatesWithoutItems(Request $request)
+    {
+        $paymentsPage = $request->get('payments');
+
+        if ($request->get('end') != null) {
+            $endDate = $request->get('end');
+        } else {
+            $endDate = $request->get('start');
+        }
+
+        $date = '';
+        if ($paymentsPage) {
+            $date = 'created_at';
+        } else {
+            $date = 'delivery_date';
+        }
+
+        $orders = $this->store->has('orders')
+            ? $this->store
+                ->orders()
+                ->with(['user', 'pickup_location'])
+                ->where(['paid' => 1])
+                ->where($date, '>=', $request->get('start'))
+                ->where($date, '<=', $endDate)
+                ->get()
+            : [];
+
+        $orders->makeHidden([
+            'items',
+            'meal_ids',
+            'line_items_order',
+            'meal_package_items',
+            'store',
+            'store_id',
+            'store_name',
+            'transferTime',
+            'pickup_location',
+            'pickup_location_id',
+            'cutoff_date',
+            'cutoff_passed',
+            'adjustedDifference',
+            'afterDiscountBeforeFees',
+            'card_id',
+            'couponCode',
+            'couponReduction',
+            'coupon_id',
+            'fulfilled'
+        ]);
+
+        return $orders;
+    }
+
     public function getLatestOrder()
     {
         $orders = $this->store->has('orders') ? $this->store->orders() : [];
