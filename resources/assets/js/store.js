@@ -1150,9 +1150,6 @@ const actions = {
       await dispatch("initGuest", data);
     }
 
-    // state.isLoading = false;
-    // state.initialized = true;
-
     try {
       if (
         !_.isEmpty(data.upcomingOrdersWithoutItems) &&
@@ -1323,6 +1320,9 @@ const actions = {
       }
     } catch (e) {}
 
+    state.isLoading = false;
+    state.initialized = true;
+
     // try {   if (!_.isEmpty(data.store.orders) && _.isObject(data.store.orders)) {
     //     let orders = data.store.orders;     commit('storeOrders', {orders});   }
     // } catch (e) {}
@@ -1361,12 +1361,9 @@ const actions = {
       await dispatch("refreshViewedOwnerStore", data);
     }
 
-    dispatch("refreshUpcomingOrdersWithoutItems");
-    state.isLoading = false;
-    state.initialized = true;
-
     dispatch("refreshOrders");
     dispatch("refreshUpcomingOrders");
+    dispatch("refreshUpcomingOrdersWithoutItems");
     dispatch("refreshOrdersToday");
     dispatch("refreshStoreCustomers");
     dispatch("refreshOrderIngredients");
@@ -1379,8 +1376,6 @@ const actions = {
       await dispatch("refreshViewedCustomerStore", data);
     }
 
-    state.isLoading = false;
-    state.initialized = true;
     //dispatch("refreshStores");
     dispatch("refreshCards");
     dispatch("refreshCustomerOrders");
@@ -1393,9 +1388,6 @@ const actions = {
     if (data.store) {
       await dispatch("refreshViewedCustomerStore", data);
     }
-
-    state.isLoading = false;
-    state.initialized = true;
 
     //dispatch("refreshStores");
   },
