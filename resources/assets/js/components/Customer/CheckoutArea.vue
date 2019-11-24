@@ -1437,6 +1437,7 @@ export default {
       "refreshOrdersToday",
       "refreshStoreSubscriptions",
       "refreshUpcomingOrders",
+      "refreshUpcomingOrdersWithoutItems",
       "refreshStoreCustomers"
     ]),
     ...mapMutations([
@@ -1715,9 +1716,10 @@ export default {
             });
             return;
           } else if (this.$route.params.manualOrder && !weeklyDelivery) {
+            // this.refreshOrdersToday();
+            // this.refreshOrders();
             this.refreshUpcomingOrders();
-            this.refreshOrdersToday();
-            this.refreshOrders();
+            this.refreshUpcomingOrdersWithoutItems();
             this.$router.push({
               name: "store-orders",
               params: {
