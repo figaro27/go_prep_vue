@@ -595,6 +595,7 @@ export default {
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
       this.$refs.deliveryDates.clearDates();
+      this.toggleByOrderDate();
     },
     getApplicationFee() {
       axios.get("/api/me/getApplicationFee").then(resp => {
