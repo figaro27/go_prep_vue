@@ -238,31 +238,77 @@
           <div class="col-md-12">
             <h4>Items</h4>
             <hr />
-            <ul class="meal-quantities">
-              <li
-                v-for="meal in getMealQuantities(subscription)"
-                :key="meal.id"
-              >
-                <div class="row">
-                  <div class="col-md-5 pr-0">
-                    <span class="order-quantity">{{ meal.quantity }}</span>
-                    <img src="/images/store/x-modal.png" class="mr-2 ml-2" />
-                    <thumbnail
-                      v-if="meal.image != null && meal.image.url_thumb"
-                      :src="meal.image.url_thumb"
-                      :spinner="false"
-                      class="mr-0 pr-0"
-                    ></thumbnail>
-                  </div>
-                  <div class="col-md-7 pt-3 nopadding pl-0 ml-0">
-                    <p v-html="meal.title"></p>
-                    <p class="strong">
-                      {{ format.money(meal.subtotal, subscription.currency) }}
-                    </p>
-                  </div>
-                </div>
-              </li>
-            </ul>
+            <b-table
+              striped
+              stacked="sm"
+              :items="getMealTableData(subscription)"
+              foot-clone
+            >
+              <template slot="meal" slot-scope="row">
+                <div v-html="row.value"></div>
+              </template>
+
+              <template slot="FOOT_subtotal" slot-scope="row">
+                <p>
+                  Subtotal:
+                  {{
+                    format.money(
+                      subscription.preFeePreDiscount,
+                      subscription.currency
+                    )
+                  }}
+                </p>
+                <p class="text-success" v-if="subscription.couponReduction > 0">
+                  Coupon {{ subscription.couponCode }}: ({{
+                    format.money(
+                      subscription.couponReduction,
+                      subscription.currency
+                    )
+                  }})
+                </p>
+                <p
+                  v-if="subscription.mealPlanDiscount > 0"
+                  class="text-success"
+                >
+                  Subscription Discount: ({{
+                    format.money(
+                      subscription.mealPlanDiscount,
+                      subscription.currency
+                    )
+                  }})
+                </p>
+                <p v-if="subscription.deliveryFee > 0">
+                  Delivery Fee:
+                  {{
+                    format.money(
+                      subscription.deliveryFee,
+                      subscription.currency
+                    )
+                  }}
+                </p>
+                <p v-if="subscription.processingFee > 0">
+                  Processing Fee:
+                  {{
+                    format.money(
+                      subscription.processingFee,
+                      subscription.currency
+                    )
+                  }}
+                </p>
+                <p v-if="subscription.salesTax > 0">
+                  Sales Tax:
+                  {{
+                    format.money(subscription.salesTax, subscription.currency)
+                  }}
+                </p>
+                <p class="strong">
+                  Total:
+                  {{ format.money(subscription.amount, subscription.currency) }}
+                </p>
+              </template>
+
+              <template slot="table-caption"></template>
+            </b-table>
           </div>
         </div>
       </b-modal>
@@ -395,7 +441,8 @@ export default {
       initialized: "initialized",
       getMeal: "storeMeal",
       storeModules: "storeModules",
-      isLazyStore: "isLazyStore"
+      isLazyStore: "isLazyStore",
+      getStoreMeal: "storeMeal"
     }),
     tableData() {
       let filters = {};
@@ -599,6 +646,100 @@ export default {
           "Failed to resume Subscription"
         );
       }
+    },
+    getMealTableData(subscription) {
+      if (!this.initialized || !subscription.items) return [];
+
+      let data = [];
+
+      subscription.meal_package_items.forEach(meal_package_item => {
+        if (meal_package_item.meal_package_size === null) {
+          data.push({
+            size: meal_package_item.meal_package.default_size_title,
+            meal: meal_package_item.meal_package.title,
+            quantity: meal_package_item.quantity,
+            unit_price: format.money(
+              meal_package_item.price,
+              subscription.currency
+            ),
+            subtotal: format.money(
+              meal_package_item.price * meal_package_item.quantity,
+              subscription.currency
+            )
+          });
+        } else {
+          data.push({
+            size: meal_package_item.meal_package_size.title,
+            meal: meal_package_item.meal_package.title,
+            quantity: meal_package_item.quantity,
+            unit_price: format.money(
+              meal_package_item.price,
+              subscription.currency
+            ),
+            subtotal: format.money(
+              meal_package_item.price * meal_package_item.quantity,
+              subscription.currency
+            )
+          });
+        }
+
+        subscription.items.forEach(item => {
+          if (item.meal_package_subscription_id === meal_package_item.id) {
+            const meal = this.getStoreMeal(item.meal_id);
+            if (!meal) {
+              return null;
+            }
+            const size = meal.getSize(item.meal_size_id);
+            const title = meal.getTitle(
+              true,
+              size,
+              item.components,
+              item.addons,
+              item.special_instructions
+            );
+
+            data.push({
+              size: size ? size.title : meal.default_size_title,
+              meal: meal.title,
+              quantity: item.quantity,
+              unit_price: "In Package",
+              subtotal: "In Package"
+            });
+          }
+        });
+      });
+
+      subscription.items.forEach(item => {
+        if (item.meal_package_subscription_id === null) {
+          const meal = this.getStoreMeal(item.meal_id);
+          if (!meal) {
+            return null;
+          }
+          const size = meal.getSize(item.meal_size_id);
+          const title = meal.getTitle(
+            true,
+            size,
+            item.components,
+            item.addons,
+            item.special_instructions
+          );
+
+          data.push({
+            size: size ? size.title : meal.default_size_title,
+            meal: meal.title,
+            unit_price:
+              item.attached || item.free
+                ? "Included"
+                : format.money(item.unit_price, subscription.currency),
+            subtotal:
+              item.attached || item.free
+                ? "Included"
+                : format.money(item.price, subscription.currency)
+          });
+        }
+      });
+
+      return _.filter(data);
     }
   }
 };

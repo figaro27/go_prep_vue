@@ -181,6 +181,41 @@
                     <template slot="table-caption"></template>
                   </b-table>
                 </b-collapse>
+                <div class="row mt-4" v-if="order.line_items_order.length">
+                  <div class="col-md-12">
+                    <h4>Extras</h4>
+                    <hr />
+                    <ul class="meal-quantities">
+                      <li
+                        v-for="lineItemOrder in order.line_items_order"
+                        v-bind:key="lineItemOrder.id"
+                      >
+                        <div class="row">
+                          <div class="col-md-3">
+                            <span class="order-quantity">{{
+                              lineItemOrder.quantity
+                            }}</span>
+                            <img
+                              src="/images/store/x-modal.png"
+                              class="mr-1 ml-1"
+                            />
+                          </div>
+                          <div class="col-md-9">
+                            <p class="mt-1">{{ lineItemOrder.title }}</p>
+                            <p class="strong">
+                              {{
+                                format.money(
+                                  lineItemOrder.price * lineItemOrder.quantity,
+                                  order.currency
+                                )
+                              }}
+                            </p>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
                 <hr />
                 <div class="space-divider-20"></div>
               </div>
@@ -238,6 +273,7 @@ export default {
       order.meal_package_items.forEach(meal_package_item => {
         if (meal_package_item.meal_package_size === null) {
           data.push({
+            size: meal_package_item.meal_package.default_size_title,
             meal: meal_package_item.meal_package.title,
             quantity: meal_package_item.quantity,
             unit_price: format.money(meal_package_item.price, order.currency),
@@ -248,10 +284,8 @@ export default {
           });
         } else {
           data.push({
-            meal:
-              meal_package_item.meal_package.title +
-              " - " +
-              meal_package_item.meal_package_size.title,
+            size: meal_package_item.meal_package_size.title,
+            meal: meal_package_item.meal_package.title,
             quantity: meal_package_item.quantity,
             unit_price: format.money(meal_package_item.price, order.currency),
             subtotal: format.money(
@@ -277,7 +311,8 @@ export default {
             );
 
             data.push({
-              meal: title,
+              size: size ? size.title : meal.default_size_title,
+              meal: meal.title,
               quantity: item.quantity,
               unit_price: "In Package",
               subtotal: "In Package"
@@ -302,8 +337,8 @@ export default {
           );
 
           data.push({
-            meal: title,
-            quantity: item.quantity,
+            size: size ? size.title : meal.default_size_title,
+            meal: meal.title,
             unit_price:
               item.attached || item.free
                 ? "Included"
