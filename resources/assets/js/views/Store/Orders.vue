@@ -1071,6 +1071,7 @@ export default {
         if (meal_package_item.meal_package_size === null) {
           data.push({
             meal: meal_package_item.meal_package.title,
+            size: meal_package_item.meal_package.default_size_title,
             quantity: meal_package_item.quantity,
             unit_price: format.money(meal_package_item.price, order.currency),
             subtotal: format.money(
@@ -1080,10 +1081,8 @@ export default {
           });
         } else {
           data.push({
-            meal:
-              meal_package_item.meal_package.title +
-              " - " +
-              meal_package_item.meal_package_size.title,
+            meal: meal_package_item.meal_package.title,
+            size: meal_package_item.meal_package_size.title,
             quantity: meal_package_item.quantity,
             unit_price: format.money(meal_package_item.price, order.currency),
             subtotal: format.money(
@@ -1108,7 +1107,9 @@ export default {
             );
 
             data.push({
-              meal: title,
+              //meal: title,
+              meal: meal.title,
+              size: size ? size.title : meal.default_size_title,
               quantity: item.quantity,
               unit_price: "In Package",
               subtotal: "In Package"
@@ -1133,7 +1134,9 @@ export default {
           );
 
           data.push({
-            meal: title,
+            //meal: title,
+            meal: meal.title,
+            size: size ? size.title : meal.default_size_title,
             quantity: item.quantity,
             unit_price:
               item.attached || item.free

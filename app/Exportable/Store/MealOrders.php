@@ -209,10 +209,14 @@ class MealOrders
                     return null;
                 }
 
-                $title =
+                /*$title =
                     $this->type !== 'pdf'
                         ? $mealOrder->getTitle()
-                        : $mealOrder->html_title;
+                        : $mealOrder->html_title; */
+
+                $title = $mealOrder->base_title;
+                $size = $mealOrder->base_size;
+                $title = $title . '<sep>' . $size;
 
                 if ($groupByDate) {
                     if (!isset($mealQuantities[$title])) {
@@ -242,15 +246,22 @@ class MealOrders
 
         if (!$groupByDate) {
             foreach ($mealQuantities as $title => $quantity) {
-                $production->push([$title, $quantity]);
+                $temp = explode('<sep>', $title);
+                $title = $temp[0];
+                $size = $temp && isset($temp[1]) ? $temp[1] : "";
+                $production->push([$title, $size, $quantity]);
             }
 
             foreach ($lineItemQuantities as $title => $quantity) {
-                $production->push([$title, $quantity]);
+                $production->push([$title, '', $quantity]);
             }
         } else {
             foreach ($mealQuantities as $title => $mealDates) {
-                $row = [$title];
+                $temp = explode('<sep>', $title);
+                $title = $temp[0];
+                $size = $temp && isset($temp[1]) ? $temp[1] : "";
+
+                $row = [$title, $size];
                 foreach ($allDates as $date) {
                     if (isset($mealDates[$date])) {
                         $row[] = $mealDates[$date];
@@ -262,7 +273,7 @@ class MealOrders
             }
 
             foreach ($lineItemQuantities as $title => $lineItemDates) {
-                $row = [$title];
+                $row = [$title, ''];
                 foreach ($allDates as $date) {
                     if (isset($lineItemDates[$date])) {
                         $row[] = $lineItemDates[$date];

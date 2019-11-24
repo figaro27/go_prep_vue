@@ -158,18 +158,17 @@ class OrdersByCustomer
                                 'dailyOrderNumber' => $order->dailyOrderNumber,
                                 'notes' => $order->notes,
                                 'meal_quantities' => array_merge(
-                                    [['Meal', 'Quantity']], // Heading
+                                    [['Quantity', 'Size', 'Meal']], // Heading
                                     $order
                                         ->meal_orders()
                                         ->get()
                                         ->map(function ($mealOrder) {
                                             return [
-                                                'title' =>
-                                                    $this->type !== 'pdf'
-                                                        ? $mealOrder->title
-                                                        : $mealOrder->html_title,
                                                 'quantity' =>
-                                                    $mealOrder->quantity ?? 1
+                                                    $mealOrder->quantity ?? 1,
+                                                'size' => $mealOrder->base_size,
+                                                'title' =>
+                                                    $mealOrder->base_title
                                             ];
                                         })
                                         ->toArray()

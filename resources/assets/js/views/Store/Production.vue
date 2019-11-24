@@ -40,7 +40,17 @@
               ></thumbnail>
             </div>
 
-            <div slot="title" slot-scope="props" v-html="props.row.title"></div>
+            <div
+              slot="size"
+              slot-scope="props"
+              v-html="props.row.base_size"
+            ></div>
+
+            <div
+              slot="title"
+              slot-scope="props"
+              v-html="props.row.base_title"
+            ></div>
 
             <div slot="price" slot-scope="props">
               {{ format.money(props.row.price, storeSettings.currency) }}
@@ -116,7 +126,14 @@ export default {
         },
         group_by_date: false
       },
-      columns: ["featured_image", "title", "price", "quantity", "total"],
+      columns: [
+        "featured_image",
+        "size",
+        "title",
+        "price",
+        "quantity",
+        "total"
+      ],
       options: {
         headings: {
           featured_image: "Image",
@@ -171,6 +188,7 @@ export default {
 
       let mealCounts = {};
       let mealIds = {};
+      let mealSizes = {};
 
       orders.forEach(order => {
         _.forEach(order.items, item => {
@@ -192,6 +210,7 @@ export default {
             if (!mealCounts[title]) {
               mealCounts[title] = 0;
               mealIds[title] = item.meal_id;
+              mealSizes[title] = size;
             }
             mealCounts[title] += item.quantity;
           }
@@ -200,12 +219,24 @@ export default {
 
       return _.map(mealCounts, (quantity, title) => {
         let meal = this.getMeal(mealIds[title]);
-        let size = null;
+        let base_title = meal.title + "";
+
+        let size = mealSizes[title];
+        let base_size = "";
+
+        if (size) {
+          base_size = size.title;
+        } else if (meal.default_size_title) {
+          base_size = meal.default_size_title;
+        }
+
         let price = meal.price;
 
         return {
           ...meal,
           title,
+          base_title,
+          base_size,
           price,
           size,
           quantity: quantity,

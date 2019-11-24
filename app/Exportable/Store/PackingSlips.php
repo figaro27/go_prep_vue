@@ -90,6 +90,14 @@ class PackingSlips
 
         $orders = $this->exportData();
 
+        $vars = [
+            'order' => null,
+            'params' => $this->params,
+            'delivery_dates' => $this->getDeliveryDates(),
+            'body_classes' => implode(' ', [$this->orientation]),
+            'logo' => ''
+        ];
+
         Log::info('Found ' . count($orders) . ' orders');
 
         if (!count($orders)) {

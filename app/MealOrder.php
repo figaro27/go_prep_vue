@@ -13,7 +13,14 @@ class MealOrder extends Pivot
         'meal_package' => 'boolean'
     ];
 
-    protected $appends = ['title', 'html_title', 'unit_price', 'instructions'];
+    protected $appends = [
+        'title',
+        'html_title',
+        'base_title',
+        'base_size',
+        'unit_price',
+        'instructions'
+    ];
     protected $with = ['components', 'addons'];
 
     public function meals()
@@ -49,6 +56,26 @@ class MealOrder extends Pivot
     public function addons()
     {
         return $this->hasMany('App\MealOrderAddon', 'meal_order_id', 'id');
+    }
+
+    public function getBaseTitleAttribute()
+    {
+        $title = $this->meal->title;
+        return $title;
+    }
+
+    public function getBaseSizeAttribute()
+    {
+        if ($this->meal_size_id && $this->meal_size) {
+            return $this->meal_size->title;
+        } else {
+            if (
+                $this->meal->default_size_title != 'Medium' &&
+                $this->meal->default_size_title != null
+            ) {
+                return $this->meal->default_size_title;
+            }
+        }
     }
 
     public function getTitleAttribute()

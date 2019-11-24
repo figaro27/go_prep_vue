@@ -220,6 +220,8 @@ class Order extends Model
             ->map(function ($mealOrder) {
                 return (object) [
                     'meal_id' => $mealOrder->meal_id,
+                    'base_title' => $mealOrder->base_title,
+                    'base_size' => $mealOrder->base_size,
                     'meal_size_id' => $mealOrder->meal_size_id,
                     'meal_title' => $mealOrder->title,
                     'instructions' => $mealOrder->instructions,

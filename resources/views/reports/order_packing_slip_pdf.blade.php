@@ -161,6 +161,7 @@ $brandColor = $order->store->settings->color;
     <table class="no-border table-heading" style="border-style:none;">
       <thead>
           <th class="top-left-border-radius drop-shadow no-border" style="text-align:center">Quantity</th>
+          <th class="drop-shadow no-border">Size</th>
           <th class="drop-shadow no-border">Item</th>
           <th class="top-right-border-radius drop-shadow no-border" style="text-align:center">Price</th>
       </thead>
@@ -170,17 +171,18 @@ $brandColor = $order->store->settings->color;
         @foreach($order->meal_package_items as $i => $mealPackageItem)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$mealPackageItem->quantity}}</td>
+          <td>{{ isset($mealPackageItem->meal_package_size) && $mealPackageItem->meal_package_size? $mealPackageItem->meal_package_size->title:$mealPackageItem->meal_package->default_size_title }}</td>
           <td>{{ $mealPackageItem->meal_package->title }}</td>
           <td style="text-align:center">${{number_format($mealPackageItem->price * $mealPackageItem->quantity, 2)}}</td>
         </tr>
-
-
 
         @foreach($order->items as $i => $item)
         @if ($item->meal_package_order_id === $mealPackageItem->id)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$item->quantity}}</td>
-          <td>{!! $item->html_title !!}</td>
+          <td>{{ $item->base_size }}</td>
+          <!--<td>{!! $item->html_title !!}</td>!-->
+          <td>{{ $item->base_title }}</td>
           <td style="text-align:center">
             In Package
           </td>
@@ -194,7 +196,9 @@ $brandColor = $order->store->settings->color;
         @if ($item->meal_package_order_id === null)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$item->quantity}}</td>
-          <td>{!! $item->html_title !!}</td>
+          <td>{{ $item->base_size }}</td>
+          <!--<td>{!! $item->html_title !!}</td>!-->
+          <td>{{ $item->base_title }}</td>
           <td style="text-align:center">
             @if ($item->attached || $item->free)
             Included
@@ -211,6 +215,7 @@ $brandColor = $order->store->settings->color;
         @foreach ($order->lineItemsOrders as $i => $lineItemOrder)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$lineItemOrder->quantity}}</td>
+          <td></td>
           <td>{!! $lineItemOrder->title !!}</td>
           <td style="text-align:center">${{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
         </tr>
