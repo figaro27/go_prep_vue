@@ -258,8 +258,8 @@ class MealOrders
         } else {
             foreach ($mealQuantities as $title => $mealDates) {
                 $temp = explode('<sep>', $title);
-                $title = $temp[0];
-                $size = $temp && isset($temp[1]) ? $temp[1] : "";
+                $size = $temp && isset($temp[0]) ? $temp[0] : "";
+                $title = $temp[1];
 
                 $row = [$title, $size];
                 foreach ($allDates as $date) {
