@@ -26,7 +26,7 @@ class Payments
         $dailySummary = $this->params->get('dailySummary');
         $byOrderDate = $this->params->get('byOrderDate');
 
-        $sums = ['TOTALS', 0, '', 0, 0, 0, 0, 0, 0, 0];
+        $sums = ['TOTALS', '', 0, '', 0, 0, 0, 0, 0, 0, 0];
         $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         if ($dailySummary != 1) {
