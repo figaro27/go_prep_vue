@@ -41,16 +41,16 @@ class Payments
                     $couponCode
                 )
                 ->map(function ($payment) use (&$sums, $byOrderDate) {
-                    $sums[1] += $payment->preFeePreDiscount;
-                    $sums[3] += $payment->couponReduction;
-                    $sums[4] += $payment->mealPlanDiscount;
-                    $sums[5] += $payment->deliveryFee;
-                    $sums[6] += $payment->processingFee;
-                    $sums[7] += $payment->salesTax;
+                    $sums[2] += $payment->preFeePreDiscount;
+                    $sums[4] += $payment->couponReduction;
+                    $sums[5] += $payment->mealPlanDiscount;
+                    $sums[6] += $payment->deliveryFee;
+                    $sums[7] += $payment->processingFee;
+                    $sums[8] += $payment->salesTax;
                     // $sums[8] += $payment->goprep_fee;
                     // $sums[9] += $payment->stripe_fee;
-                    $sums[8] += $payment->amount;
-                    $sums[9] += $payment->balance;
+                    $sums[9] += $payment->amount;
+                    $sums[10] += $payment->balance;
                     // $sums[10] += $payment->refundedAmount;
 
                     $paymentsRows = [
