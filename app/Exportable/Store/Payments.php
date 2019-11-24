@@ -54,9 +54,8 @@ class Payments
                     // $sums[10] += $payment->refundedAmount;
 
                     $paymentsRows = [
-                        $byOrderDate
-                            ? $payment->created_at->format('D, m/d/Y')
-                            : $payment->delivery_date->format('D, m/d/Y'),
+                        $payment->created_at->format('D, m/d/Y'),
+                        $payment->delivery_date->format('D, m/d/Y'),
                         '$' . number_format($payment->preFeePreDiscount, 2),
                         $payment->couponCode,
                         '$' . number_format($payment->couponReduction, 2),
@@ -178,7 +177,8 @@ class Payments
 
         if ($type !== 'pdf') {
             $payments->prepend([
-                'Date',
+                'Order Date',
+                'Delivery Date',
                 'Subtotal',
                 'Coupon',
                 'Coupon Reduction',

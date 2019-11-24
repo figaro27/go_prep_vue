@@ -218,7 +218,7 @@ export default {
       user_detail: {},
       options: {
         headings: {
-          created_at: "Payment Date",
+          created_at: "Order Date",
           delivery_date: "Delivery Date",
           totalOrders: "Orders",
           subtotal: "Subtotal",
