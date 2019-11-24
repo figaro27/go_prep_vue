@@ -10,7 +10,7 @@
     <h1>Customers</h1>
     <h2>{{ date("m/d/Y") }}</h2>
     <div class="unbreakable">
-      <table border="1" width="100">
+      <table border="1" width="100" class="customers-report">
         <thead>
           <tr>
             <th>Name</th>
