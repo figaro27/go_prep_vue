@@ -69,10 +69,7 @@ class MealOrder extends Pivot
         if ($this->meal_size_id && $this->meal_size) {
             return $this->meal_size->title;
         } else {
-            if (
-                $this->meal->default_size_title != 'Medium' &&
-                $this->meal->default_size_title != null
-            ) {
+            if ($this->meal->default_size_title != null) {
                 return $this->meal->default_size_title;
             }
         }
