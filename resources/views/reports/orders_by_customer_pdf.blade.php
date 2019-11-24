@@ -77,7 +77,7 @@
                 @foreach($order['meal_quantities'] as $i => $row)
                   <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
                     @foreach($row as $value)
-                      <td width="50%">{!! $value !!}</td>
+                      <td>{!! $value !!}</td>
                     @endforeach
                   </tr>
                 @endforeach
