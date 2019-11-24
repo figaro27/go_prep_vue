@@ -26,11 +26,14 @@ class Customer extends Model
 
     protected $appends = [
         'joined',
+        'added_by_store_id',
         'first_order',
         'last_order',
         'total_payments',
         'total_paid',
         'paid_orders',
+        'firstname',
+        'lastname',
         'name',
         'phone',
         'address',
@@ -123,6 +126,21 @@ class Customer extends Model
     public function getNameAttribute()
     {
         return $this->user->name;
+    }
+
+    public function getFirstnameAttribute()
+    {
+        return $this->user->userDetail->firstname;
+    }
+
+    public function getLastnameAttribute()
+    {
+        return $this->user->userDetail->lastname;
+    }
+
+    public function getAddedByStoreIdAttribute()
+    {
+        return $this->user->added_by_store_id;
     }
 
     public function getPhoneAttribute()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Store;
 
 use App\User;
+use App\UserDetail;
 use App\Customer;
 use App\Card;
 use Illuminate\Http\Request;
@@ -98,14 +99,19 @@ class CustomerController extends StoreController
     {
     }
 
-    public function updateEmail(Request $request)
+    public function updateCustomerUserDetails(Request $request)
     {
         $customerId = $request->get('id');
+        $details = $request->get('details');
         $customer = Customer::where('id', $customerId)->first();
+        $userDetail = UserDetail::where('user_id', $customer->user_id)->first();
+        $userDetail->update($details);
+
         $user = User::where('id', $customer->user_id)->first();
-        $newEmail = $request->get('email');
-        $user->email = $newEmail;
+        $user->email = $details['email'];
         $user->save();
+
+        //Add Email
     }
 
     /**

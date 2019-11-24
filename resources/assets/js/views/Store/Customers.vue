@@ -81,45 +81,96 @@
         <div class="row light-background border-bottom mb-3">
           <div class="col-md-4 pt-4">
             <h4>Customer</h4>
-            <p>{{ customer.name }}</p>
+            <span v-if="editingCustomer">
+              <b-form-input
+                v-model="customer.firstname"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+              <b-form-input
+                v-model="customer.lastname"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+            </span>
+            <span v-else>
+              <p>{{ customer.firstname }} {{ customer.lastname }}</p>
+            </span>
 
             <h4>Phone</h4>
-            <p>{{ customer.phone }}</p>
+            <span v-if="editingCustomer">
+              <b-form-input
+                v-model="customer.phone"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+            </span>
+            <span v-else>
+              <p>{{ customer.phone }}</p>
+            </span>
 
             <h4>
               Email
-              <i
-                v-if="!editingEmail"
-                @click="editEmail"
-                class="fa fa-edit text-warning"
-              ></i>
             </h4>
-            <span v-if="editingEmail">
+            <span v-if="editingCustomer">
               <b-form-input
-                v-model="editableEmail"
+                v-model="customer.email"
                 class="d-inline width-70 mb-3"
               ></b-form-input>
-              <img
-                class="couponX d-inline ml-1"
-                src="/images/customer/x.png"
-                @click="editingEmail = false"
-              />
-              <b-btn variant="primary" size="sm" @click="updateEmail"
-                >Save</b-btn
-              >
             </span>
             <span v-else>
               <p>{{ customer.email }}</p>
             </span>
+            <div v-if="customer.added_by_store_id === store.id">
+              <b-btn
+                variant="warning"
+                class="d-inline mb-2"
+                @click="editCustomer"
+                >Edit Customer</b-btn
+              >
+              <b-btn
+                variant="primary"
+                class="d-inline mb-2"
+                @click="updateCustomer(customer.id)"
+                >Save</b-btn
+              >
+            </div>
           </div>
           <div class="col-md-4 pt-4">
             <h4>Address</h4>
-            <p>{{ customer.address }}</p>
-            <p>{{ customer.city }}, {{ customer.state }} {{ customer.zip }}</p>
+            <span v-if="editingCustomer">
+              <b-form-input
+                v-model="customer.address"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+              <b-form-input
+                v-model="customer.city"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+              <b-form-input
+                v-model="customer.state"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+              <b-form-input
+                v-model="customer.zip"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+            </span>
+            <span v-else>
+              <p>{{ customer.address }}</p>
+              <p>
+                {{ customer.city }}, {{ customer.state }} {{ customer.zip }}
+              </p>
+            </span>
           </div>
           <div class="col-md-4 pt-4">
             <h4>Delivery Instructions</h4>
-            <p>{{ customer.delivery }}</p>
+            <span v-if="editingCustomer">
+              <b-form-input
+                v-model="customer.delivery"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+            </span>
+            <span v-else>
+              <p>{{ customer.delivery }}</p>
+            </span>
           </div>
         </div>
         <div
@@ -304,8 +355,7 @@ export default {
   },
   data() {
     return {
-      editingEmail: false,
-      editableEmail: "",
+      editingCustomer: false,
       form: {},
       addCustomerModal: false,
       viewCustomerModal: false,
@@ -560,20 +610,20 @@ export default {
 
       return _.filter(data);
     },
-    editEmail() {
-      this.editingEmail = true;
+    editCustomer() {
+      this.editingCustomer = !this.editingCustomer;
     },
-    updateEmail() {
+    updateCustomer(id) {
       axios
-        .post("/api/me/updateCustomerEmail", {
-          id: this.userId,
-          email: this.editableEmail
+        .post(`/api/me/updateCustomerUserDetails`, {
+          id: id,
+          details: this.customer
         })
         .then(resp => {
-          this.viewCustomerModal = false;
-          this.editableEmail = "";
-          this.$toastr.s("Email updated.");
-          this.editingEmail = false;
+          this.viewCustomer(id);
+          this.refreshStoreCustomers();
+          this.$toastr.s("Customer updated.");
+          this.editingCustomer = false;
         });
     }
   }

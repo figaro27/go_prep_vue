@@ -58,6 +58,14 @@
             placeholder="Last name"
           ></b-form-input>
         </b-form-group>
+        <b-form-group horizontal label="Phone">
+          <b-form-input
+            v-model="form.phone"
+            type="text"
+            required
+            placeholder="Phone"
+          ></b-form-input>
+        </b-form-group>
         <b-form-group horizontal label="Email">
           <b-form-checkbox v-model="noEmail">Don't Have</b-form-checkbox>
           <b-form-input
@@ -66,14 +74,6 @@
             type="email"
             required
             placeholder="Enter email"
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group horizontal label="Phone">
-          <b-form-input
-            v-model="form.phone"
-            type="text"
-            required
-            placeholder="Phone"
           ></b-form-input>
         </b-form-group>
         <b-form-group horizontal label="Address">

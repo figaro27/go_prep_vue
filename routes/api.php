@@ -145,8 +145,8 @@ foreach (
                             );
                             Route::patch('user', 'UserController@update');
                             Route::post(
-                                'updateCustomerEmail',
-                                'CustomerController@updateEmail'
+                                'updateCustomerUserDetails',
+                                'CustomerController@updateCustomerUserDetails'
                             );
                             Route::get('user', 'UserController@show');
 
