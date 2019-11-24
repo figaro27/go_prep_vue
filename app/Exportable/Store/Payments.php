@@ -24,7 +24,7 @@ class Payments
         $params = $this->params;
         $couponCode = $this->params->get('couponCode');
         $dailySummary = $this->params->get('dailySummary');
-        $byDeliveryDate = $this->params->get('byDeliveryDate');
+        $byOrderDate = $this->params->get('byOrderDate');
 
         $sums = ['TOTALS', 0, '', 0, 0, 0, 0, 0, 0, 0];
         $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -37,10 +37,10 @@ class Payments
                     null,
                     true,
                     null,
-                    $byDeliveryDate ? false : true,
+                    $byOrderDate ? true : false,
                     $couponCode
                 )
-                ->map(function ($payment) use (&$sums, $byDeliveryDate) {
+                ->map(function ($payment) use (&$sums, $byOrderDate) {
                     $sums[1] += $payment->preFeePreDiscount;
                     $sums[3] += $payment->couponReduction;
                     $sums[4] += $payment->mealPlanDiscount;
@@ -54,9 +54,9 @@ class Payments
                     // $sums[10] += $payment->refundedAmount;
 
                     $paymentsRows = [
-                        $byDeliveryDate
-                            ? $payment->delivery_date->format('D, m/d/Y')
-                            : $payment->created_at->format('D, m/d/Y'),
+                        $byOrderDate
+                            ? $payment->created_at->format('D, m/d/Y')
+                            : $payment->delivery_date->format('D, m/d/Y'),
                         '$' . number_format($payment->preFeePreDiscount, 2),
                         $payment->couponCode,
                         '$' . number_format($payment->couponReduction, 2),
@@ -131,7 +131,7 @@ class Payments
                     $delivery_date
                 )->format('D, M d, Y');
                 array_push($dailySums, [
-                    $byDeliveryDate ? $deliveryDay : $orderDay,
+                    $byOrderDate ? $orderDay : $deliveryDay,
                     $totalOrders,
                     '$' . number_format($preFeePreDiscount, 2),
                     '$' . number_format($couponReduction, 2),

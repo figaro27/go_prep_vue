@@ -19,15 +19,25 @@
                     >
                   </a>
                 </div>
+
                 <delivery-date-picker
                   v-model="filters.delivery_dates"
                   @change="onChangeDateFilter"
                   class="mt-3 mt-sm-0"
                   ref="deliveryDates"
-                  :orderDate="true"
+                  :orderDate="filters.byOrderDate"
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
-                <p class="pt-3 ml-3">
+                <b-form-checkbox
+                  class="mediumCheckbox ml-3"
+                  type="checkbox"
+                  v-model="filters.byOrderDate"
+                  :value="1"
+                  :unchecked-value="0"
+                  @input="toggleByOrderDate"
+                  ><span class="paragraph">By Order Date</span></b-form-checkbox
+                >
+                <!-- <p class="pt-3 ml-3">
                   <img
                     v-b-popover.hover="
                       'GoPrep takes ' +
@@ -37,16 +47,18 @@
                     src="/images/store/popover.png"
                     class="popover-size mr-2"
                   />Fees
-                </p>
+                </p> -->
 
-                <b-form-checkbox
+                <!-- Add back in and make it work with delivery / order dates -->
+
+                <!-- <b-form-checkbox
                   class="mediumCheckbox ml-3"
                   type="checkbox"
                   v-model="filters.dailySummary"
                   :value="1"
                   :unchecked-value="0"
                   ><span class="paragraph">Daily Summary</span></b-form-checkbox
-                >
+                > -->
 
                 <b-form-select
                   v-model="filters.couponCode"
@@ -62,16 +74,6 @@
             </div>
 
             <span slot="beforeLimit">
-              <b-form-checkbox
-                class="mediumCheckbox ml-3"
-                type="checkbox"
-                v-model="filters.byDeliveryDate"
-                :value="1"
-                :unchecked-value="0"
-                ><span class="paragraph"
-                  >By Delivery Date</span
-                ></b-form-checkbox
-              >
               <b-btn
                 variant="primary"
                 @click="exportData('payments', 'pdf', true)"
@@ -195,6 +197,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      upcomingOrdersByOrderDate: [],
       goPrepFee: 0.05,
       stripeFee: 0.029,
       stripeUrl: "",
@@ -208,7 +211,7 @@ export default {
         },
         couponCode: null,
         dailySummary: 0,
-        byDeliveryDate: 0
+        byOrderDate: 0
       },
       order: {},
       orderId: "",
@@ -270,7 +273,7 @@ export default {
       store: "viewedStore",
       storeCoupons: "storeCoupons",
       ordersToday: "storeOrdersToday",
-      upcomingOrders: "storeUpcomingOrders",
+      upcomingOrdersWithoutItems: "storeUpcomingOrdersWithoutItems",
       isLoading: "isLoading",
       initialized: "initialized",
       customers: "storeCustomers",
@@ -283,7 +286,11 @@ export default {
 
       let orders = [];
       if (this.filters.delivery_dates.start === null) {
-        orders = this.ordersToday;
+        if (!this.filters.byOrderDate) {
+          orders = this.upcomingOrdersWithoutItems;
+        } else {
+          orders = this.upcomingOrdersByOrderDate;
+        }
       } else {
         orders = this.ordersByDate;
       }
@@ -430,7 +437,7 @@ export default {
 
       let addedColumns = [];
 
-      this.upcomingOrders.forEach(order => {
+      this.upcomingOrdersWithoutItems.forEach(order => {
         if (!columns.includes("couponCode") && order.couponCode != null) {
           columns.splice(2, 0, "couponReduction");
           columns.splice(2, 0, "couponCode");
@@ -511,7 +518,7 @@ export default {
   methods: {
     ...mapActions({
       refreshOrders: "refreshOrders",
-      refreshUpcomingOrders: "refreshUpcomingOrders",
+      refreshUpcomingOrdersWithoutItems: "refreshUpcomingOrdersWithoutItems",
       refreshOrdersToday: "refreshOrdersToday",
       updateOrder: "updateOrder"
     }),
@@ -545,7 +552,7 @@ export default {
 
       params.couponCode = this.filters.couponCode;
       params.dailySummary = this.filters.dailySummary;
-      params.byDeliveryDate = this.filters.byDeliveryDate;
+      params.byOrderDate = this.filters.byOrderDate;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
@@ -575,7 +582,7 @@ export default {
         .post("/api/me/getOrdersWithDatesWithoutItems", {
           start: this.filters.delivery_dates.start,
           end: this.filters.delivery_dates.end,
-          payments: 1
+          payments: this.filters.byOrderDate
         })
         .then(response => {
           this.ordersByDate = response.data;
@@ -593,6 +600,19 @@ export default {
       axios.get("/api/me/getApplicationFee").then(resp => {
         this.goPrepFee = resp.data / 100;
       });
+    },
+    toggleByOrderDate() {
+      if (this.filters.delivery_dates.start !== null) {
+        this.onChangeDateFilter();
+      } else {
+        axios
+          .post("/api/me/getOrdersToday", {
+            payments: this.filters.byOrderDate
+          })
+          .then(response => {
+            this.upcomingOrdersByOrderDate = response.data;
+          });
+      }
     }
   }
 };

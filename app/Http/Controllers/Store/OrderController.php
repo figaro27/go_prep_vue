@@ -80,18 +80,27 @@ class OrderController extends StoreController
         return $orders;
     }
 
-    public function getOrdersToday()
+    public function getOrdersToday(Request $request)
     {
+        $paymentsPage = $request->get('payments');
+
         $fromDate = Carbon::today(
             $this->store->settings->timezone
         )->startOfDay();
+
+        $date = '';
+        if ($paymentsPage) {
+            $date = 'created_at';
+        } else {
+            $date = 'delivery_date';
+        }
 
         $orders = $this->store->has('orders')
             ? $this->store
                 ->orders()
                 ->with(['user', 'pickup_location'])
                 ->where(['paid' => 1])
-                ->where('created_at', '>=', $fromDate)
+                ->where($date, '>=', $fromDate)
                 ->get()
             : [];
 
