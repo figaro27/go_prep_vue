@@ -347,10 +347,20 @@ class CheckoutController extends UserController
                     }
                 }
 
-                $attachments = MealAttachment::where(
-                    'meal_id',
-                    $item['meal']['id']
-                )->get();
+                $attachments = MealAttachment::where([
+                    'meal_id' => $item['meal']['id'],
+                    'meal_size_id' => isset($item['size']['id'])
+                        ? $item['size']['id']
+                        : null,
+                    'meal_package_id' => isset($item['meal_package_id'])
+                        ? $item['meal_package_id']
+                        : null,
+                    'meal_package_size_id' => isset(
+                        $item['meal_package_size_id']
+                    )
+                        ? $item['meal_package_size_id']
+                        : null
+                ])->get();
                 if ($attachments) {
                     foreach ($attachments as $attachment) {
                         $mealOrder = new MealOrder();
@@ -669,10 +679,20 @@ class CheckoutController extends UserController
                         }
                     }
 
-                    $attachments = MealAttachment::where(
-                        'meal_id',
-                        $item['meal']['id']
-                    )->get();
+                    $attachments = MealAttachment::where([
+                        'meal_id' => $item['meal']['id'],
+                        'meal_size_id' => isset($item['size']['id'])
+                            ? $item['size']['id']
+                            : null,
+                        'meal_package_id' => isset($item['meal_package_id'])
+                            ? $item['meal_package_id']
+                            : null,
+                        'meal_package_size_id' => isset(
+                            $item['meal_package_size_id']
+                        )
+                            ? $item['meal_package_size_id']
+                            : null
+                    ])->get();
                     if ($attachments) {
                         foreach ($attachments as $attachment) {
                             $mealOrder = new MealOrder();
@@ -774,10 +794,20 @@ class CheckoutController extends UserController
                         }
                     }
 
-                    $attachments = MealAttachment::where(
-                        'meal_id',
-                        $item['meal']['id']
-                    )->get();
+                    $attachments = MealAttachment::where([
+                        'meal_id' => $item['meal']['id'],
+                        'meal_size_id' => isset($item['size']['id'])
+                            ? $item['size']['id']
+                            : null,
+                        'meal_package_id' => isset($item['meal_package_id'])
+                            ? $item['meal_package_id']
+                            : null,
+                        'meal_package_size_id' => isset(
+                            $item['meal_package_size_id']
+                        )
+                            ? $item['meal_package_size_id']
+                            : null
+                    ])->get();
                     if ($attachments) {
                         foreach ($attachments as $attachment) {
                             $mealSub = new MealSubscription();
