@@ -55,20 +55,62 @@ class OrderController extends StoreController
             : [];
     }
 
-    public function getOrdersToday()
+    public function getUpcomingOrdersWithoutItems()
     {
+        // Optimized orders for Store/Orders & Store/Payments pages
         $fromDate = Carbon::today(
             $this->store->settings->timezone
         )->startOfDay();
 
-        return $this->store->has('orders')
+        $orders = $this->store->has('orders')
             ? $this->store
                 ->orders()
                 ->with(['user', 'pickup_location'])
                 ->where(['paid' => 1])
-                ->where('created_at', '>=', $fromDate)
+                ->where('delivery_date', '>=', $fromDate)
                 ->get()
             : [];
+
+        $orders->makeHidden([
+            'items',
+            'meal_ids',
+            'line_items_order',
+            'meal_package_items'
+        ]);
+        return $orders;
+    }
+
+    public function getOrdersToday(Request $request)
+    {
+        $paymentsPage = $request->get('payments');
+
+        $fromDate = Carbon::today(
+            $this->store->settings->timezone
+        )->startOfDay();
+
+        $date = '';
+        if ($paymentsPage) {
+            $date = 'created_at';
+        } else {
+            $date = 'delivery_date';
+        }
+
+        $orders = $this->store->has('orders')
+            ? $this->store
+                ->orders()
+                ->with(['user', 'pickup_location'])
+                ->where(['paid' => 1])
+                ->where($date, '>=', $fromDate)
+                ->get()
+            : [];
+
+        $orders->makeHidden([
+            'items',
+            'meal_ids',
+            'line_items_order',
+            'meal_package_items'
+        ]);
+        return $orders;
     }
 
     public function getFulfilledOrders()
@@ -108,6 +150,45 @@ class OrderController extends StoreController
                 ->where($date, '<=', $endDate)
                 ->get()
             : [];
+    }
+
+    public function getOrdersWithDatesWithoutItems(Request $request)
+    {
+        // Optimized orders for Store/Orders & Store/Payments pages
+
+        $paymentsPage = $request->get('payments');
+
+        if ($request->get('end') != null) {
+            $endDate = $request->get('end');
+        } else {
+            $endDate = $request->get('start');
+        }
+
+        $date = '';
+        if ($paymentsPage) {
+            $date = 'created_at';
+        } else {
+            $date = 'delivery_date';
+        }
+
+        $orders = $this->store->has('orders')
+            ? $this->store
+                ->orders()
+                ->with(['user', 'pickup_location'])
+                ->where(['paid' => 1])
+                ->where($date, '>=', $request->get('start'))
+                ->where($date, '<=', $endDate)
+                ->get()
+            : [];
+
+        $orders->makeHidden([
+            'items',
+            'meal_ids',
+            'line_items_order',
+            'meal_package_items'
+        ]);
+
+        return $orders;
     }
 
     public function getLatestOrder()
@@ -577,5 +658,12 @@ class OrderController extends StoreController
             $order->save();
             return 'Order unvoided.';
         }
+    }
+
+    public function updateBalance(Request $request)
+    {
+        $order = Order::where('id', $request->get('id'))->first();
+        $order->balance = $request->get('balance');
+        $order->save();
     }
 }

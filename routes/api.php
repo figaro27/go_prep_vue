@@ -201,6 +201,10 @@ foreach (
                                 'OrderController@getUpcomingOrders'
                             );
                             Route::post(
+                                'getUpcomingOrdersWithoutItems',
+                                'OrderController@getUpcomingOrdersWithoutItems'
+                            );
+                            Route::post(
                                 'getOrdersToday',
                                 'OrderController@getOrdersToday'
                             );
@@ -211,6 +215,11 @@ foreach (
                             Route::post(
                                 'getOrdersWithDates',
                                 'OrderController@getOrdersWithDates'
+                            );
+
+                            Route::post(
+                                'getOrdersWithDatesWithoutItems',
+                                'OrderController@getOrdersWithDatesWithoutItems'
                             );
                             Route::get(
                                 'ordersUpdateViewed',
@@ -231,6 +240,10 @@ foreach (
                             Route::post(
                                 'voidOrder',
                                 'OrderController@voidOrder'
+                            );
+                            Route::post(
+                                'updateBalance',
+                                'OrderController@updateBalance'
                             );
                             Route::resource(
                                 'subscriptions',

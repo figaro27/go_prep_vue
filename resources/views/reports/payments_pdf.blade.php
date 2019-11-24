@@ -21,41 +21,40 @@
      <div class="delivery-part">
       @if ($delivery_dates)
         <h2>
-          Order Dates:
+          Dates:
           {{ $delivery_dates['from']->format('D, m/d/Y') }} -
           {{ $delivery_dates['to']->format('D, m/d/Y') }}
         </h2>
       @else
-        <h2>All Order Dates</h2>
+        <h2>All Dates</h2>
       @endif
 
       <h2>{{ date('m/d/Y h:i:a')}}</h2>
       <div style="clear:both"></div>
     </div>
     <div class="unbreakable">
-      <table border="1" width="100" class="light-border">
+      <table border="1" width="100" class="light-border payments-report">
         <thead>
           <tr>
-            <th>Payment Date</th>
+            <th style="width:100px">Order Date</th>
+            <th style="width:100px">Delivery Date</th>
             @if ($params['dailySummary'])
             <th>Orders</th>
             @endif
             <th>Subtotal</th>
             @if ($params['dailySummary'] == 0)
-            <th>Coupon</th>
+            <th>Coupon Code</th>
             @endif
             <th>Coupon Reduction</th>
             <th>Subscription Discount</th>
             <th>Delivery Fee</th>
             <th>Processing Fee</th>
             <th>Sales Tax</th>
-            <th>GoPrep Fee</th>
-            <th>Stripe Fee</th>
-            <th>Total</th>
-            @if ($params['dailySummary'] == 0)
+            <!-- <th>GoPrep Fee</th>
+            <th>Stripe Fee</th> -->
+            <th>Total</th>           
             <th>Balance</th>
-            @endif
-            <th>Refunded</th>
+            <!-- <th>Refunded</th> -->
           </tr>
         </thead>
         <tbody>

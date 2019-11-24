@@ -369,6 +369,7 @@
           <b-form-select
             class="delivery-select ml-2"
             v-model="transferTime"
+            :value="transferTime"
             :options="transferTimeOptions"
             @input="changeDeliveryTime"
           ></b-form-select>
@@ -388,6 +389,7 @@
           <b-form-select
             class="delivery-select ml-2"
             v-model="transferTime"
+            :value="transferTime"
             :options="transferTimeOptions"
             @input="changeDeliveryTime"
           ></b-form-select>

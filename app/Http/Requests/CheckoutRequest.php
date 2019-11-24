@@ -25,12 +25,12 @@ class CheckoutRequest extends FormRequest
     public function rules()
     {
         return [
-            'bag' => 'required|array',
+            // 'bag' => 'required|array',
             'plan' => 'required|boolean',
             'pickup' => 'required|boolean',
             'delivery_day' => 'date|required',
             'store_id' => 'required|numeric',
-            'card_id' => 'required|numeric',
+            'card_id' => 'required|numeric'
         ];
     }
 
@@ -42,8 +42,6 @@ class CheckoutRequest extends FormRequest
      */
     public function withValidator($validator)
     {
-        $validator->after(function (Validator $validator) {
-
-        });
+        $validator->after(function (Validator $validator) {});
     }
 }

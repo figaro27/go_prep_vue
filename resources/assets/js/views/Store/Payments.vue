@@ -19,15 +19,25 @@
                     >
                   </a>
                 </div>
+
                 <delivery-date-picker
                   v-model="filters.delivery_dates"
                   @change="onChangeDateFilter"
                   class="mt-3 mt-sm-0"
                   ref="deliveryDates"
-                  :orderDate="true"
+                  :orderDate="filters.byOrderDate"
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
-                <p class="pt-3 ml-3">
+                <b-form-checkbox
+                  class="mediumCheckbox ml-3"
+                  type="checkbox"
+                  v-model="filters.byOrderDate"
+                  :value="1"
+                  :unchecked-value="0"
+                  @input="toggleByOrderDate"
+                  ><span class="paragraph">By Order Date</span></b-form-checkbox
+                >
+                <!-- <p class="pt-3 ml-3">
                   <img
                     v-b-popover.hover="
                       'GoPrep takes ' +
@@ -37,16 +47,18 @@
                     src="/images/store/popover.png"
                     class="popover-size mr-2"
                   />Fees
-                </p>
+                </p> -->
 
-                <b-form-checkbox
+                <!-- Add back in and make it work with delivery / order dates -->
+
+                <!-- <b-form-checkbox
                   class="mediumCheckbox ml-3"
                   type="checkbox"
                   v-model="filters.dailySummary"
                   :value="1"
                   :unchecked-value="0"
                   ><span class="paragraph">Daily Summary</span></b-form-checkbox
-                >
+                > -->
 
                 <b-form-select
                   v-model="filters.couponCode"
@@ -86,6 +98,14 @@
               }}</span>
               <span v-if="props.row.created_at === 'TOTALS'">{{
                 props.row.created_at
+              }}</span>
+            </div>
+            <div slot="delivery_date" slot-scope="props">
+              <span v-if="props.row.delivery_date != 'TOTALS'">{{
+                moment(props.row.delivery_date).format("dddd, MMM Do")
+              }}</span>
+              <span v-if="props.row.delivery_date === 'TOTALS'">{{
+                props.row.delivery_date
               }}</span>
             </div>
             <div slot="subtotal" slot-scope="props">
@@ -138,15 +158,15 @@
                 {{ formatMoney(props.row.stripe_fee, props.row.currency) }}
               </div>
             </div>
-            <div slot="grandTotal" slot-scope="props">
+            <div slot="amount" slot-scope="props">
               <div>
-                {{ formatMoney(props.row.grandTotal, props.row.currency) }}
+                {{ formatMoney(props.row.amount, props.row.currency) }}
               </div>
             </div>
-            <div slot="deposit" slot-scope="props">
+            <div slot="balance" slot-scope="props">
               <div>
                 <!-- {{ formatMoney((100 - props.row.deposit)/100 * props.row.grandTotal, props.row.currency) }} -->
-                {{ props.row.deposit }}%
+                {{ formatMoney(props.row.balance, props.row.currency) }}
               </div>
             </div>
             <div slot="refundedAmount" slot-scope="props">
@@ -177,6 +197,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      upcomingOrdersByOrderDate: [],
       goPrepFee: 0.05,
       stripeFee: 0.029,
       stripeUrl: "",
@@ -189,14 +210,16 @@ export default {
           end: null
         },
         couponCode: null,
-        dailySummary: 0
+        dailySummary: 0,
+        byOrderDate: 0
       },
       order: {},
       orderId: "",
       user_detail: {},
       options: {
         headings: {
-          created_at: "Payment Date",
+          created_at: "Order Date",
+          delivery_date: "Delivery Date",
           totalOrders: "Orders",
           subtotal: "Subtotal",
           mealPlanDiscount: "Subscription Discount",
@@ -208,8 +231,8 @@ export default {
           // total: "PreFee Total",
           goprep_fee: "GoPrep Fee",
           stripe_fee: "Stripe Fee",
-          grandTotal: "Total",
-          deposit: "Balance Remaining",
+          amount: "Total",
+          balance: "Balance",
           refundedAmount: "Refunded"
         },
         customSorting: {
@@ -250,7 +273,7 @@ export default {
       store: "viewedStore",
       storeCoupons: "storeCoupons",
       ordersToday: "storeOrdersToday",
-      upcomingOrders: "storeUpcomingOrders",
+      upcomingOrdersWithoutItems: "storeUpcomingOrdersWithoutItems",
       isLoading: "isLoading",
       initialized: "initialized",
       customers: "storeCustomers",
@@ -263,10 +286,18 @@ export default {
 
       let orders = [];
       if (this.filters.delivery_dates.start === null) {
-        orders = this.ordersToday;
+        if (!this.filters.byOrderDate) {
+          orders = this.upcomingOrdersWithoutItems;
+        } else {
+          orders = this.upcomingOrdersByOrderDate;
+        }
       } else {
         orders = this.ordersByDate;
       }
+
+      // if (this.filters.byDeliveryDate) {
+      //   orders = this.upcomingOrders;
+      // }
 
       if (this.filters.couponCode != null) {
         orders = orders.filter(
@@ -292,9 +323,10 @@ export default {
             processingFee: 0,
             deliveryFee: 0,
             salesTax: 0,
-            goprep_fee: 0,
-            stripe_fee: 0,
-            grandTotal: 0
+            // goprep_fee: 0,
+            // stripe_fee: 0,
+            amount: 0,
+            balance: 0
           };
 
           orderByDay.forEach(order => {
@@ -307,9 +339,10 @@ export default {
             sums.processingFee += order.processingFee;
             sums.deliveryFee += order.deliveryFee;
             sums.salesTax += order.salesTax;
-            sums.goprep_fee += order.goprep_fee;
-            sums.stripe_fee += order.stripe_fee;
-            sums.grandTotal += order.grandTotal;
+            // sums.goprep_fee += order.goprep_fee;
+            // sums.stripe_fee += order.stripe_fee;
+            sums.amount += order.amount;
+            sums.balance += order.balance;
           });
           orders.push({
             created_at: created_at,
@@ -321,9 +354,10 @@ export default {
             processingFee: sums.processingFee,
             deliveryFee: sums.deliveryFee,
             salesTax: sums.salesTax,
-            goprep_fee: sums.goprep_fee,
-            stripe_fee: sums.stripe_fee,
-            grandTotal: sums.grandTotal
+            // goprep_fee: sums.goprep_fee,
+            // stripe_fee: sums.stripe_fee,
+            amount: sums.amount,
+            balance: sums.balance
           });
         });
 
@@ -349,7 +383,8 @@ export default {
           salesTax: 0,
           goprep_fee: 0,
           stripe_fee: 0,
-          grandTotal: 0,
+          amount: 0,
+          balance: 0,
           refundedAmount: 0
         };
 
@@ -361,9 +396,10 @@ export default {
           sums.processingFee += order.processingFee;
           sums.deliveryFee += order.deliveryFee;
           sums.salesTax += order.salesTax;
-          sums.goprep_fee += order.goprep_fee;
-          sums.stripe_fee += order.stripe_fee;
-          sums.grandTotal += order.grandTotal;
+          // sums.goprep_fee += order.goprep_fee;
+          // sums.stripe_fee += order.stripe_fee;
+          sums.amount += order.amount;
+          sums.balance += order.balance;
           sums.refundedAmount += order.refundedAmount;
         });
 
@@ -377,9 +413,10 @@ export default {
           processingFee: sums.processingFee,
           deliveryFee: sums.deliveryFee,
           salesTax: sums.salesTax,
-          goprep_fee: sums.goprep_fee,
-          stripe_fee: sums.stripe_fee,
-          grandTotal: sums.grandTotal,
+          // goprep_fee: sums.goprep_fee,
+          // stripe_fee: sums.stripe_fee,
+          amount: sums.amount,
+          balance: sums.balance,
           refundedAmount: sums.refundedAmount,
           sumRow: 1
         });
@@ -390,16 +427,17 @@ export default {
     columns() {
       let columns = [
         "created_at",
+        "delivery_date",
         "subtotal",
         "salesTax",
         // "total",
 
-        "grandTotal"
+        "amount"
       ];
 
       let addedColumns = [];
 
-      this.upcomingOrders.forEach(order => {
+      this.upcomingOrdersWithoutItems.forEach(order => {
         if (!columns.includes("couponCode") && order.couponCode != null) {
           columns.splice(2, 0, "couponReduction");
           columns.splice(2, 0, "couponCode");
@@ -416,15 +454,15 @@ export default {
         if (!columns.includes("deliveryFee") && order.deliveryFee > 0) {
           columns.splice(2, 0, "deliveryFee");
         }
-        if (!columns.includes("deposit") && order.deposit < 100) {
-          columns.splice(columns.length, 0, "deposit");
+        if (!columns.includes("balance") && order.balance > 0) {
+          columns.splice(columns.length, 0, "balance");
         }
-        if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
-          columns.splice(columns.length - 1, 0, "goprep_fee");
-        }
-        if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
-          columns.splice(columns.length - 1, 0, "stripe_fee");
-        }
+        // if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
+        //   columns.splice(columns.length - 1, 0, "goprep_fee");
+        // }
+        // if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
+        //   columns.splice(columns.length - 1, 0, "stripe_fee");
+        // }
         if (!columns.includes("refundedAmount") && order.refundedAmount > 0) {
           columns.splice(columns.length, 0, "refundedAmount");
         }
@@ -447,15 +485,15 @@ export default {
         if (!columns.includes("deliveryFee") && order.deliveryFee > 0) {
           columns.splice(2, 0, "deliveryFee");
         }
-        if (!columns.includes("deposit") && order.deposit < 100) {
-          columns.splice(columns.length, 0, "deposit");
+        if (!columns.includes("balance") && order.balance > 0) {
+          columns.splice(columns.length, 0, "balance");
         }
-        if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
-          columns.splice(columns.length - 1, 0, "goprep_fee");
-        }
-        if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
-          columns.splice(columns.length - 1, 0, "stripe_fee");
-        }
+        // if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
+        //   columns.splice(columns.length - 1, 0, "goprep_fee");
+        // }
+        // if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
+        //   columns.splice(columns.length - 1, 0, "stripe_fee");
+        // }
         if (!columns.includes("refundedAmount") && order.refundedAmount > 0) {
           columns.splice(columns.length - 1, 0, "refundedAmount");
         }
@@ -480,7 +518,7 @@ export default {
   methods: {
     ...mapActions({
       refreshOrders: "refreshOrders",
-      refreshUpcomingOrders: "refreshUpcomingOrders",
+      refreshUpcomingOrdersWithoutItems: "refreshUpcomingOrdersWithoutItems",
       refreshOrdersToday: "refreshOrdersToday",
       updateOrder: "updateOrder"
     }),
@@ -514,6 +552,7 @@ export default {
 
       params.couponCode = this.filters.couponCode;
       params.dailySummary = this.filters.dailySummary;
+      params.byOrderDate = this.filters.byOrderDate;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
@@ -540,10 +579,10 @@ export default {
     },
     onChangeDateFilter() {
       axios
-        .post("/api/me/getOrdersWithDates", {
+        .post("/api/me/getOrdersWithDatesWithoutItems", {
           start: this.filters.delivery_dates.start,
           end: this.filters.delivery_dates.end,
-          payments: 1
+          payments: this.filters.byOrderDate
         })
         .then(response => {
           this.ordersByDate = response.data;
@@ -556,11 +595,25 @@ export default {
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
       this.$refs.deliveryDates.clearDates();
+      this.toggleByOrderDate();
     },
     getApplicationFee() {
       axios.get("/api/me/getApplicationFee").then(resp => {
         this.goPrepFee = resp.data / 100;
       });
+    },
+    toggleByOrderDate() {
+      if (this.filters.delivery_dates.start !== null) {
+        this.onChangeDateFilter();
+      } else {
+        axios
+          .post("/api/me/getOrdersToday", {
+            payments: this.filters.byOrderDate
+          })
+          .then(response => {
+            this.upcomingOrdersByOrderDate = response.data;
+          });
+      }
     }
   }
 };

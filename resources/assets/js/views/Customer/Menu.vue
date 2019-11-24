@@ -168,11 +168,10 @@
             <div class="categoryNavArea_body_inner">
               <div class="row">
                 <div class="col-md-2">
-                  <img
-                    src="/images/customer/x.png"
+                  <i
+                    class="fas fa-times-circle clear-meal dark-gray pt-1"
                     @click="search = ''"
-                    class="clear-meal"
-                  />
+                  ></i>
                 </div>
                 <div class="col-md-10">
                   <b-form-textarea

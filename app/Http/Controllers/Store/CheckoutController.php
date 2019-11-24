@@ -269,9 +269,7 @@ class CheckoutController extends StoreController
             $order->manual = 1;
             $order->cashOrder = $cashOrder;
             $order->payment_gateway = $gateway;
-            if ($store->modules->dailyOrderNumbers) {
-                $order->dailyOrderNumber = $dailyOrderNumber;
-            }
+            $order->dailyOrderNumber = $dailyOrderNumber;
             $order->originalAmount = $deposit > 0 ? $deposit : $total;
             $order->save();
 
@@ -604,9 +602,7 @@ class CheckoutController extends StoreController
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
-            if ($store->modules->dailyOrderNumbers) {
-                $order->dailyOrderNumber = $dailyOrderNumber;
-            }
+            $order->dailyOrderNumber = $dailyOrderNumber;
             $order->cashOrder = $cashOrder;
             $order->originalAmount = $deposit > 0 ? $deposit : $total;
             $order->save();

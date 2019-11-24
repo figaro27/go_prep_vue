@@ -18,17 +18,20 @@
       <h2>All Delivery Dates</h2>
     @endif
     <div class="unbreakable">
-      <table border="1" width="100">
+      <table border="1" width="100" class="orders-report">
         <thead>
           <tr>
+            <th style="width:80px">Daily Order #</th>
             <th>Order ID</th>
-            <th>Name</th>
+            <th>First Name</th>
+            <th>Last Name</th>
             <th>Address</th>
             <th>Zip</th>
             <th>Phone</th>
             <th>Total</th>
-            <th>Order Placed</th>
-            <th>Delivery Date</th>
+            <th>Balance</th>
+            <th style="width:100px">Order Placed</th>
+            <th style="width:100px">Delivery Date</th>
           </tr>
         </thead>
 

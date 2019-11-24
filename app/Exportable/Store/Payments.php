@@ -24,9 +24,10 @@ class Payments
         $params = $this->params;
         $couponCode = $this->params->get('couponCode');
         $dailySummary = $this->params->get('dailySummary');
+        $byOrderDate = $this->params->get('byOrderDate');
 
-        $sums = ['TOTALS', 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        $sums = ['TOTALS', '', 0, '', 0, 0, 0, 0, 0, 0, 0];
+        $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         if ($dailySummary != 1) {
             $payments = $this->store
@@ -36,24 +37,25 @@ class Payments
                     null,
                     true,
                     null,
-                    true,
+                    $byOrderDate ? true : false,
                     $couponCode
                 )
-                ->map(function ($payment) use (&$sums) {
-                    $sums[1] += $payment->preFeePreDiscount;
-                    $sums[3] += $payment->couponReduction;
-                    $sums[4] += $payment->mealPlanDiscount;
-                    $sums[5] += $payment->processingFee;
+                ->map(function ($payment) use (&$sums, $byOrderDate) {
+                    $sums[2] += $payment->preFeePreDiscount;
+                    $sums[4] += $payment->couponReduction;
+                    $sums[5] += $payment->mealPlanDiscount;
                     $sums[6] += $payment->deliveryFee;
-                    $sums[7] += $payment->salesTax;
-                    $sums[8] += $payment->goprep_fee;
-                    $sums[9] += $payment->stripe_fee;
-                    $sums[10] += $payment->grandTotal;
-                    $sums[11] = 100 - $payment->deposit;
-                    $sums[12] += $payment->refundedAmount;
+                    $sums[7] += $payment->processingFee;
+                    $sums[8] += $payment->salesTax;
+                    // $sums[8] += $payment->goprep_fee;
+                    // $sums[9] += $payment->stripe_fee;
+                    $sums[9] += $payment->amount;
+                    $sums[10] += $payment->balance;
+                    // $sums[10] += $payment->refundedAmount;
 
                     $paymentsRows = [
                         $payment->created_at->format('D, m/d/Y'),
+                        $payment->delivery_date->format('D, m/d/Y'),
                         '$' . number_format($payment->preFeePreDiscount, 2),
                         $payment->couponCode,
                         '$' . number_format($payment->couponReduction, 2),
@@ -61,11 +63,11 @@ class Payments
                         '$' . number_format($payment->deliveryFee, 2),
                         '$' . number_format($payment->processingFee, 2),
                         '$' . number_format($payment->salesTax, 2),
-                        '$' . number_format($payment->goprep_fee, 2),
-                        '$' . number_format($payment->stripe_fee, 2),
-                        '$' . number_format($payment->grandTotal, 2),
-                        100 - $payment->deposit . '%',
-                        '$' . number_format($payment->refundedAmount, 2)
+                        // '$' . number_format($payment->goprep_fee, 2),
+                        // '$' . number_format($payment->stripe_fee, 2),
+                        '$' . number_format($payment->amount, 2),
+                        '$' . number_format($payment->balance, 2)
+                        // '$' . number_format($payment->refundedAmount, 2)
                     ];
 
                     return $paymentsRows;
@@ -87,6 +89,7 @@ class Payments
 
             foreach ($ordersByDay as $orderByDay) {
                 $created_at = "";
+                $delivery_date = "";
                 $totalOrders = 0;
                 $preFeePreDiscount = 0;
                 $mealPlanDiscount = 0;
@@ -95,13 +98,15 @@ class Payments
                 $processingFee = 0;
                 $deliveryFee = 0;
                 $salesTax = 0;
-                $goPrepFeeAmount = 0;
-                $stripeFeeAmount = 0;
-                $grandTotal = 0;
-                $refundedAmount = 0;
+                // $goPrepFeeAmount = 0;
+                // $stripeFeeAmount = 0;
+                $amount = 0;
+                $balance = 0;
+                // $refundedAmount = 0;
 
                 foreach ($orderByDay as $order) {
                     $created_at = $order->order_day;
+                    $delivery_date = $order->delivery_date;
                     $totalOrders += 1;
                     $preFeePreDiscount += $order->preFeePreDiscount;
                     $couponReduction += $order->couponReduction;
@@ -109,18 +114,23 @@ class Payments
                     $processingFee += $order->processingFee;
                     $deliveryFee += $order->deliveryFee;
                     $salesTax += $order->salesTax;
-                    $goPrepFeeAmount += $order->goprep_fee;
-                    $stripeFeeAmount += $order->stripe_fee;
-                    $grandTotal += $order->grandTotal;
-                    // $deposit = 100 - $order->deposit;
-                    $refundedAmount += $order->refundedAmount;
+                    // $goPrepFeeAmount += $order->goprep_fee;
+                    // $stripeFeeAmount += $order->stripe_fee;
+                    $amount += $order->amount;
+                    $balance += $order->balance;
+                    // $refundedAmount += $order->refundedAmount;
                 }
                 $orderDay = Carbon::createFromFormat(
                     'm d',
                     $created_at
                 )->format('D, M d, Y');
+
+                $deliveryDay = Carbon::createFromFormat(
+                    'm d',
+                    $delivery_date
+                )->format('D, M d, Y');
                 array_push($dailySums, [
-                    $orderDay,
+                    $byOrderDate ? $orderDay : $deliveryDay,
                     $totalOrders,
                     '$' . number_format($preFeePreDiscount, 2),
                     '$' . number_format($couponReduction, 2),
@@ -128,10 +138,11 @@ class Payments
                     '$' . number_format($deliveryFee, 2),
                     '$' . number_format($processingFee, 2),
                     '$' . number_format($salesTax, 2),
-                    '$' . number_format($goPrepFeeAmount, 2),
-                    '$' . number_format($stripeFeeAmount, 2),
-                    '$' . number_format($grandTotal, 2),
-                    '$' . number_format($refundedAmount, 2)
+                    // '$' . number_format($goPrepFeeAmount, 2),
+                    // '$' . number_format($stripeFeeAmount, 2),
+                    '$' . number_format($amount, 2),
+                    '$' . number_format($balance, 2)
+                    // '$' . number_format($refundedAmount, 2)
                 ]);
 
                 $sumsByDaily[1] += $totalOrders;
@@ -141,13 +152,14 @@ class Payments
                 $sumsByDaily[5] += $deliveryFee;
                 $sumsByDaily[6] += $processingFee;
                 $sumsByDaily[7] += $salesTax;
-                $sumsByDaily[8] += $goPrepFeeAmount;
-                $sumsByDaily[9] += $stripeFeeAmount;
-                $sumsByDaily[10] += $grandTotal;
-                $sumsByDaily[11] += $refundedAmount;
+                // $sumsByDaily[8] += $goPrepFeeAmount;
+                // $sumsByDaily[9] += $stripeFeeAmount;
+                $sumsByDaily[8] += $amount;
+                $sumsByDaily[9] += $balance;
+                // $sumsByDaily[10] += $refundedAmount;
             }
 
-            foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as $i) {
+            foreach ([2, 3, 4, 5, 6, 7, 8, 9] as $i) {
                 $sumsByDaily[$i] = '$' . number_format($sumsByDaily[$i], 2);
             }
 
@@ -156,7 +168,7 @@ class Payments
         }
 
         // Format the sum row
-        foreach ([1, 3, 4, 5, 6, 7, 8, 9, 10, 11] as $i) {
+        foreach ([2, 4, 5, 6, 7, 8, 9, 10] as $i) {
             $sums[$i] = '$' . number_format($sums[$i], 2);
         }
 
@@ -165,7 +177,8 @@ class Payments
 
         if ($type !== 'pdf') {
             $payments->prepend([
-                'Payment Date',
+                'Order Date',
+                'Delivery Date',
                 'Subtotal',
                 'Coupon',
                 'Coupon Reduction',
@@ -173,11 +186,11 @@ class Payments
                 'Processing Fee',
                 'Delivery Fee',
                 'Sales Tax',
-                'GoPrep Fee',
-                'Stripe Fee',
+                // 'GoPrep Fee',
+                // 'Stripe Fee',
                 'Total',
-                'Balance',
-                'Refunded'
+                'Balance'
+                // 'Refunded'
             ]);
         }
 

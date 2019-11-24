@@ -463,6 +463,7 @@ class SpaController extends Controller
             /* Building Categories */
             if ($category_id == 0 || count($category_ids) == 0) {
                 $categories = Category::select(
+                    'active',
                     'store_id',
                     'id',
                     'category',
@@ -476,6 +477,10 @@ class SpaController extends Controller
                     ->where('store_id', $store_id)
                     ->orderBy('order')
                     ->get();
+
+                if ($user === null || $user->user_role_id === 1) {
+                    $categories = $categories->where('active', 1);
+                }
 
                 if ($categories && count($categories) > 0) {
                     foreach ($categories as $category) {
