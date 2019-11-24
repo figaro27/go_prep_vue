@@ -498,7 +498,8 @@ class Store extends Model
         }
         if (isset($dateRange['to'])) {
             $to = Carbon::parse($dateRange['to']);
-            if ($date = 'created_at') {
+
+            if ($date == 'created_at') {
                 $orders = $orders->where(
                     $date,
                     '<=',
