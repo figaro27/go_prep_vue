@@ -287,7 +287,7 @@ export default {
       let orders = [];
       if (this.filters.delivery_dates.start === null) {
         if (!this.filters.byOrderDate) {
-          orders = this.upcomingOrdersWithoutItems;
+          orders = [...this.upcomingOrdersWithoutItems];
         } else {
           orders = this.upcomingOrdersByOrderDate;
         }

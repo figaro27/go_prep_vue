@@ -407,33 +407,95 @@ export default {
       });
     },
     getMealTableData(subscription) {
-      if (!this.initialized) return [];
+      if (!this.initialized || !subscription.items) return [];
 
-      let data = subscription.items.map(item => {
-        const meal = this.getStoreMeal(item.meal_id);
-        if (!meal) {
-          return null;
+      let data = [];
+
+      subscription.meal_package_items.forEach(meal_package_item => {
+        if (meal_package_item.meal_package_size === null) {
+          data.push({
+            size: meal_package_item.meal_package.default_size_title,
+            meal: meal_package_item.meal_package.title,
+            quantity: meal_package_item.quantity,
+            unit_price: format.money(
+              meal_package_item.price,
+              subscription.currency
+            ),
+            subtotal: format.money(
+              meal_package_item.price * meal_package_item.quantity,
+              subscription.currency
+            )
+          });
+        } else {
+          data.push({
+            size: meal_package_item.meal_package_size.title,
+            meal: meal_package_item.meal_package.title,
+            quantity: meal_package_item.quantity,
+            unit_price: format.money(
+              meal_package_item.price,
+              subscription.currency
+            ),
+            subtotal: format.money(
+              meal_package_item.price * meal_package_item.quantity,
+              subscription.currency
+            )
+          });
         }
 
-        const size = meal.getSize(item.meal_size_id);
-        const title = meal.getTitle(
-          true,
-          size,
-          item.components,
-          item.addons,
-          item.special_instructions
-        );
+        subscription.items.forEach(item => {
+          if (item.meal_package_subscription_id === meal_package_item.id) {
+            const meal = this.getStoreMeal(item.meal_id);
+            if (!meal) {
+              return null;
+            }
+            const size = meal.getSize(item.meal_size_id);
+            const title = meal.getTitle(
+              true,
+              size,
+              item.components,
+              item.addons,
+              item.special_instructions
+            );
 
-        let image = null;
-        if (meal.image != null) image = meal.image.url_thumb;
+            data.push({
+              size: size ? size.title : meal.default_size_title,
+              meal: meal.title,
+              quantity: item.quantity,
+              unit_price: "In Package",
+              subtotal: "In Package"
+            });
+          }
+        });
+      });
 
-        return {
-          image: image,
-          meal: title,
-          quantity: item.quantity,
-          unit_price: format.money(item.unit_price, subscription.currency),
-          subtotal: format.money(item.price, subscription.currency)
-        };
+      subscription.items.forEach(item => {
+        if (item.meal_package_subscription_id === null) {
+          const meal = this.getStoreMeal(item.meal_id);
+          if (!meal) {
+            return null;
+          }
+          const size = meal.getSize(item.meal_size_id);
+          const title = meal.getTitle(
+            true,
+            size,
+            item.components,
+            item.addons,
+            item.special_instructions
+          );
+
+          data.push({
+            size: size ? size.title : meal.default_size_title,
+            meal: meal.title,
+            unit_price:
+              item.attached || item.free
+                ? "Included"
+                : format.money(item.unit_price, subscription.currency),
+            subtotal:
+              item.attached || item.free
+                ? "Included"
+                : format.money(item.price, subscription.currency)
+          });
+        }
       });
 
       return _.filter(data);
