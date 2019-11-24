@@ -144,7 +144,7 @@ export default {
   watch: {
     deliveryDateOptions(val) {
       if (!this.deliveryDay && val[0]) {
-        this.deliveryDay = val[0].value;
+        // this.deliveryDay = val[0].value;
       }
     }
   },
