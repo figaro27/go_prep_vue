@@ -82,13 +82,13 @@ class Customer extends Model
 
     public function getJoinedAttribute()
     {
-        return $this->user->created_at->format('F d, Y');
+        return $this->user->created_at->format('m/d/Y');
     }
 
     public function getFirstOrderAttribute()
     {
         if (count($this->user->order) === 0) {
-            return $this->user->created_at->format('F d, Y');
+            return $this->user->created_at->format('m/d/Y');
         }
         $date = $this->user->order
             ->where('store_id', $this->getStoreID())
@@ -101,7 +101,7 @@ class Customer extends Model
         $date = $this->user->order
             ->where('store_id', $this->getStoreID())
             ->max("created_at");
-        return $date ? $date->format('F d, Y') : null;
+        return $date ? $date->format('m/d/Y') : null;
     }
 
     public function getTotalPaymentsAttribute()
