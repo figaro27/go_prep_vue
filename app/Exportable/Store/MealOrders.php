@@ -249,7 +249,7 @@ class MealOrders
                 $temp = explode('<sep>', $title);
                 $title = $temp[0];
                 $size = $temp && isset($temp[1]) ? $temp[1] : "";
-                $production->push([$title, $size, $quantity]);
+                $production->push([$size, $title, $quantity]);
             }
 
             foreach ($lineItemQuantities as $title => $quantity) {
