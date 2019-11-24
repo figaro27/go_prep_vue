@@ -374,7 +374,7 @@ export default {
     }),
     productionGroupOptions() {
       let prodGroups = this.storeProductionGroups;
-      let prodGroupOptions = [{ text: "All", value: null }];
+      let prodGroupOptions = [];
 
       prodGroups.forEach(prodGroup => {
         prodGroupOptions.push({ text: prodGroup.title, value: prodGroup.id });
@@ -683,8 +683,19 @@ export default {
           orderLineItems.push(this.selectedLineItem);
         }
       } else {
+        if (
+          this.store.modules.productionGroups &&
+          (this.lineItem.production_group_id === null ||
+            this.lineItem.production_group_id === undefined)
+        ) {
+          this.$toastr.e(
+            "Please select a production group or the extra won't show up in your reports."
+          );
+          return;
+        }
         axios.post("/api/me/lineItems", this.lineItem);
         orderLineItems.push(this.lineItem);
+        this.lineItem.production_group_id = null;
       }
 
       this.showLineItemModal = false;
