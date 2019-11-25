@@ -213,6 +213,7 @@
         size="xl"
         title="Order Information"
         no-fade
+        no-close-on-backdrop
       >
         <div class="row">
           <div class="col-md-12 light-background">

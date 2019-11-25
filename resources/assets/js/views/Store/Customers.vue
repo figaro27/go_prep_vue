@@ -455,7 +455,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      refreshStoreCustomers: "refreshStoreCustomers"
+      refreshStoreCustomers: "refreshStoreCustomers",
+      refreshUpcomingOrdersWithoutItems: "refreshUpcomingOrdersWithoutItems"
     }),
     resetUserId() {
       this.userId = 0;
@@ -623,6 +624,7 @@ export default {
         .then(resp => {
           this.viewCustomer(id);
           this.refreshStoreCustomers();
+          this.refreshUpcomingOrdersWithoutItems();
           this.$toastr.s("Customer updated.");
           this.editingCustomer = false;
         });
