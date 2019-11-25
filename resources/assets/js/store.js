@@ -2293,10 +2293,11 @@ const getters = {
         size = null,
         components = null,
         addons = null,
-        special_instructions = null
+        special_instructions = null,
+        showSize = true
       ) => {
-        let title = meal.base_title;
-        if (_.isObject(size)) {
+        let title = meal.title;
+        if (_.isObject(size) && showSize) {
           title = size.full_title;
         }
 
@@ -2382,11 +2383,12 @@ const getters = {
         size = null,
         components = null,
         addons = null,
-        special_instructions = null
+        special_instructions = null,
+        showSize = true
       ) => {
         let title = meal.title;
 
-        if (_.isObject(size)) {
+        if (_.isObject(size) && showSize) {
           title = size.full_title;
         }
 
@@ -2821,18 +2823,20 @@ const getters = {
         size = null,
         components = null,
         addons = null,
-        special_instructions = null
+        special_instructions = null,
+        showSize = true
       ) => {
         let title = meal.title;
 
         if (
           meal.default_size_title != null &&
-          meal.default_size_title.length > 0
+          meal.default_size_title.length > 0 &&
+          showSize
         ) {
           title = title + " - " + meal.default_size_title;
         }
 
-        if (_.isObject(size)) {
+        if (_.isObject(size) && showSize) {
           title = size.full_title;
         }
 

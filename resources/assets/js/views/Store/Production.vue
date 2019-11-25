@@ -204,7 +204,8 @@ export default {
               size,
               item.components,
               item.addons,
-              item.special_instructions
+              item.special_instructions,
+              false
             );
 
             if (!mealCounts[title]) {
@@ -219,7 +220,9 @@ export default {
 
       return _.map(mealCounts, (quantity, title) => {
         let meal = this.getMeal(mealIds[title]);
-        let base_title = meal.title + "";
+
+        //let base_title = meal.title + "";
+        let base_title = title;
 
         let size = mealSizes[title];
         let base_size = "";
