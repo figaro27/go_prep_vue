@@ -2295,7 +2295,7 @@ const getters = {
         addons = null,
         special_instructions = null
       ) => {
-        let title = meal.full_title;
+        let title = meal.base_title;
         if (_.isObject(size)) {
           title = size.full_title;
         }
