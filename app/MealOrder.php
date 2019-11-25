@@ -62,30 +62,43 @@ class MealOrder extends Pivot
     {
         $title = $this->meal->title;
 
-        if (count($this->components)) {
-            if (
-                isset($component->option) &&
-                $component->option != null &&
-                isset($component->option->price)
-            ) {
-                $comp = $this->components
-                    ->map(function ($component) {
-                        return $component->option->title;
-                    })
-                    ->implode(', ');
-                $title .= ' - ' . $comp;
+        $hasComponents = count($this->components);
+        $hasAddons = count($this->addons);
+
+        if ($hasComponents || $hasAddons) {
+            $title .= '<ul class="plain mb-0 pb-0">';
+
+            if ($hasComponents) {
+                foreach ($this->components as $component) {
+                    if (
+                        isset($component->option) &&
+                        $component->option != null &&
+                        isset($component->option->title)
+                    ) {
+                        $title .=
+                            '<li class="plain" style="font-size:14px">' .
+                            $component->option->title .
+                            '</li>';
+                    }
+                }
             }
+            if ($hasAddons) {
+                foreach ($this->addons as $addon) {
+                    $title .=
+                        '<li class="plus" style="font-size:14px;">' .
+                        $addon->addon->title .
+                        '</li>';
+                }
+            }
+
+            $title .= '</ul>';
         }
-        if (count($this->addons)) {
-            $comp = $this->addons
-                ->map(function ($addon) {
-                    return $addon->addon->title;
-                })
-                ->implode(', ');
-            $title .= ' - ' . $comp;
-        }
+
         if ($this->special_instructions != null) {
-            $title .= $this->special_instructions;
+            $title .=
+                '<p style="font-size:10px">' .
+                $this->special_instructions .
+                '</p>';
         }
 
         return $title;
