@@ -24,7 +24,12 @@ class CustomerController extends StoreController
         //     ->get();
         $customers = $this->store->customers;
         $customers->makeHidden(['first_order', 'paid_orders']);
-        return $customers;
+
+        if ($customers && count($customers) > 0) {
+            return $customers->toArray();
+        }
+
+        return [];
     }
 
     public function customersNoOrders()
