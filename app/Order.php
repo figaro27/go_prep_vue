@@ -14,7 +14,6 @@ class Order extends Model
         'store',
         'store_id',
         'store_name',
-        'transferTime',
         'pickup_location',
         'pickup_location_id',
         'cutoff_date',
