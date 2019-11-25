@@ -94,22 +94,42 @@ class CategoryController extends StoreController
         $category = $store->categories()->findOrFail($id);
         $category->category = $request->get('category');
 
+        $dateRange = $request->get('date_range', false);
         $dateRangeFrom = $request->get('date_range_from', null);
         $dateRangeTo = $request->get('date_range_to', null);
+
+        $dateRangeExclusive = $request->get('date_range_exclusive', false);
+        $dateRangeExclusiveFrom = $request->get(
+            'date_range_exclusive_from',
+            null
+        );
+        $dateRangeExclusiveTo = $request->get('date_range_exclusive_to', null);
 
         if ($dateRangeFrom && $dateRangeTo) {
             $dateRangeFrom = new Carbon($dateRangeFrom);
             $dateRangeTo = new Carbon($dateRangeTo);
         }
 
+        if ($dateRangeExclusiveFrom && $dateRangeExclusiveTo) {
+            $dateRangeExclusiveFrom = new Carbon($dateRangeExclusiveFrom);
+            $dateRangeExclusiveTo = new Carbon($dateRangeExclusiveTo);
+        }
+
         if ($store->modules->category_restrictions) {
-            $category->date_range = $request->get('date_range', false);
+            $category->date_range = $dateRange;
             $category->date_range_from = $dateRangeFrom;
             $category->date_range_to = $dateRangeTo;
-            $category->date_range_exclusive = $request->get(
-                'date_range_exclusive',
-                false
-            );
+            $category->date_range_exclusive = $dateRangeExclusive;
+
+            if ($dateRangeExclusive) {
+                $category->date_range_exclusive_from =
+                    $dateRangeExclusiveFrom ?? $dateRangeFrom;
+                $category->date_range_exclusive_to =
+                    $dateRangeExclusiveTo ?? $dateRangeTo;
+            } else {
+                $category->date_range_exclusive_from = null;
+                $category->date_range_exclusive_to = null;
+            }
         }
 
         $category->save();

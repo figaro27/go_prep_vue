@@ -59,7 +59,10 @@ export default {
         if (
           cat.date_range &&
           cat.date_range_exclusive &&
-          today.isBetween(cat.date_range_from, cat.date_range_to)
+          today.isBetween(
+            cat.date_range_exclusive_from,
+            cat.date_range_exclusive_to
+          )
         ) {
           return true;
         }
@@ -391,7 +394,10 @@ export default {
       const id = _.isNumber(category)
         ? category
         : category.category_id || category.id;
-      const today = moment();
+
+      const today = this.bagDeliveryDate
+        ? moment(this.bagDeliveryDate)
+        : moment();
 
       // If there is at least one "exclusive" category for the delivery date
       // hide the others
