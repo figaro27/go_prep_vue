@@ -73,7 +73,7 @@ class PackingSlips
                 $order = $orders
                     ->where('dailyOrderNumber', '>', 0)
                     ->where('dailyOrderNumber', '<', 41)
-                    ->orderBy('dailyOrderNumber', 'desc');
+                    ->orderBy('dailyOrderNumber', 'asc');
             }
 
             $orders = $orders->get();
