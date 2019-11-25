@@ -273,7 +273,7 @@ class MealOrders
             }
 
             foreach ($lineItemQuantities as $title => $lineItemDates) {
-                $row = [$title, ''];
+                $row = ['', $title];
                 foreach ($allDates as $date) {
                     if (isset($lineItemDates[$date])) {
                         $row[] = $lineItemDates[$date];
