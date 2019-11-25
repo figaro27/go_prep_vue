@@ -186,13 +186,13 @@ class MealOrders
                         $lineItemQuantities[$title] = [];
                     }
                     if (!isset($lineItemQuantities[$title][$date])) {
-                        $lineItemQuantities[$title][$date] = 0;
+                        $lineItemQuantities[$title][$date] = 1;
                     }
                     $lineItemQuantities[$title][$date] +=
                         $lineItemsOrder->quantity;
                 } else {
                     if (!isset($lineItemQuantities[$title])) {
-                        $lineItemQuantities[$title] = 0;
+                        $lineItemQuantities[$title] = 1;
                     }
 
                     $lineItemQuantities[$title] += $lineItemsOrder->quantity;
