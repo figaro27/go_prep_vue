@@ -282,14 +282,15 @@
               </div>
 
               <b-collapse :id="'collapse' + order.order_number" class="mt-2">
-                <b-table
+                <v-client-table
                   striped
                   stacked="sm"
-                  :items="getMealTableData(order)"
+                  :columns="columnsMeal"
+                  :data="getMealTableData(order)"
                   foot-clone
                 >
-                  <template slot="meal" slot-scope="row">
-                    <div v-html="row.value"></div>
+                  <template slot="meal" slot-scope="props">
+                    <div v-html="props.row.meal"></div>
                   </template>
 
                   <template slot="FOOT_subtotal" slot-scope="row">
@@ -328,7 +329,7 @@
                   </template>
 
                   <template slot="table-caption"></template>
-                </b-table>
+                </v-client-table>
               </b-collapse>
             </b-list-group-item>
           </div>
@@ -364,6 +365,7 @@ export default {
       id: "",
       customer: [],
       orders: [],
+      columnsMeal: ["size", "meal", "quantity", "unit_price", "subtotal"],
       columns: [
         "name",
         "phone",
@@ -562,13 +564,14 @@ export default {
               size,
               item.components,
               item.addons,
-              item.special_instructions
+              item.special_instructions,
+              false
             );
 
             data.push({
-              //meal: title,
               size: size ? size.title : meal.default_size_title,
-              meal: meal.title,
+              //meal: meal.title,
+              meal: title,
               quantity: item.quantity,
               unit_price: "In Package",
               subtotal: "In Package"
@@ -589,13 +592,14 @@ export default {
             size,
             item.components,
             item.addons,
-            item.special_instructions
+            item.special_instructions,
+            false
           );
 
           data.push({
-            //meal: title,
+            //meal: meal.title,
             size: size ? size.title : meal.default_size_title,
-            meal: meal.title,
+            meal: title,
             quantity: item.quantity,
             unit_price:
               item.attached || item.free

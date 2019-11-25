@@ -129,18 +129,19 @@
                 </div>
 
                 <b-collapse :id="'collapse' + order.id" class="mt-2">
-                  <b-table
+                  <v-client-table
                     striped
                     stacked="sm"
-                    :items="getMealTableData(order)"
+                    :columns="columnsMeal"
+                    :data="getMealTableData(order)"
                     foot-clone
                   >
                     <template slot="image" slot-scope="row">
                       <img :src="row.value" class="modalMeal" />
                     </template>
 
-                    <template slot="meal" slot-scope="row">
-                      <div v-html="row.value"></div>
+                    <template slot="meal" slot-scope="props">
+                      <div v-html="props.row.meal"></div>
                     </template>
 
                     <template slot="FOOT_subtotal" slot-scope="row">
@@ -179,7 +180,7 @@
                     </template>
 
                     <template slot="table-caption"></template>
-                  </b-table>
+                  </v-client-table>
                 </b-collapse>
                 <div class="row mt-4" v-if="order.line_items_order.length">
                   <div class="col-md-12">
@@ -238,7 +239,9 @@ export default {
     Spinner
   },
   data() {
-    return {};
+    return {
+      columnsMeal: ["size", "meal", "quantity", "unit_price", "subtotal"]
+    };
   },
   computed: {
     ...mapGetters({
@@ -307,12 +310,14 @@ export default {
               size,
               item.components,
               item.addons,
-              item.special_instructions
+              item.special_instructions,
+              false
             );
 
             data.push({
               size: size ? size.title : meal.default_size_title,
-              meal: meal.title,
+              //meal: meal.title,
+              meal: title,
               quantity: item.quantity,
               unit_price: "In Package",
               subtotal: "In Package"
@@ -333,12 +338,14 @@ export default {
             size,
             item.components,
             item.addons,
-            item.special_instructions
+            item.special_instructions,
+            false
           );
 
           data.push({
             size: size ? size.title : meal.default_size_title,
-            meal: meal.title,
+            //meal: meal.title,
+            meal: title,
             unit_price:
               item.attached || item.free
                 ? "Included"

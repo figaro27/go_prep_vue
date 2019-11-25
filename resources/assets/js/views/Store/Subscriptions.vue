@@ -238,17 +238,18 @@
           <div class="col-md-12">
             <h4>Items</h4>
             <hr />
-            <b-table
+            <v-client-table
               striped
               stacked="sm"
-              :items="getMealTableData(subscription)"
+              :columns="columnsMeal"
+              :data="getMealTableData(subscription)"
               foot-clone
             >
-              <template slot="meal" slot-scope="row">
-                <div v-html="row.value"></div>
+              <template slot="meal" slot-scope="props">
+                <div v-html="props.row.meal"></div>
               </template>
 
-              <template slot="FOOT_subtotal" slot-scope="row">
+              <template slot="FOOT_subtotal" slot-scope="props">
                 <p>
                   Subtotal:
                   {{
@@ -308,7 +309,7 @@
               </template>
 
               <template slot="table-caption"></template>
-            </b-table>
+            </v-client-table>
           </div>
         </div>
       </b-modal>
@@ -345,6 +346,7 @@ export default {
       subscriptionId: "",
       user_detail: {},
       meals: {},
+      columnsMeal: ["size", "meal", "unit_price", "subtotal"],
       columns: [
         // "notes",
         "stripe_id",
@@ -695,12 +697,14 @@ export default {
               size,
               item.components,
               item.addons,
-              item.special_instructions
+              item.special_instructions,
+              false
             );
 
             data.push({
               size: size ? size.title : meal.default_size_title,
-              meal: meal.title,
+              //meal: meal.title,
+              meal: title,
               quantity: item.quantity,
               unit_price: "In Package",
               subtotal: "In Package"
@@ -721,12 +725,14 @@ export default {
             size,
             item.components,
             item.addons,
-            item.special_instructions
+            item.special_instructions,
+            false
           );
 
           data.push({
             size: size ? size.title : meal.default_size_title,
-            meal: meal.title,
+            //meal: meal.title,
+            meal: title,
             unit_price:
               item.attached || item.free
                 ? "Included"

@@ -247,18 +247,19 @@ f<template>
                 </div>
 
                 <b-collapse :id="'collapse' + subscription.id" class="mt-2">
-                  <b-table
+                  <v-client-table
                     striped
                     stacked="sm"
-                    :items="getMealTableData(subscription)"
+                    :columns="columns"
+                    :data="getMealTableData(subscription)"
                     foot-clone
                   >
                     <template slot="image" slot-scope="row">
                       <img :src="row.value" class="modalMeal" />
                     </template>
 
-                    <template slot="meal" slot-scope="row">
-                      <div v-html="row.value"></div>
+                    <template slot="meal" slot-scope="props">
+                      <div v-html="props.row.meal"></div>
                     </template>
 
                     <template slot="FOOT_subtotal" slot-scope="row">
@@ -330,7 +331,7 @@ f<template>
                         }}
                       </p>
                     </template>
-                  </b-table>
+                  </v-client-table>
                 </b-collapse>
                 <hr />
                 <div class="space-divider-20"></div>
@@ -356,7 +357,8 @@ export default {
   },
   data() {
     return {
-      isLoading: false
+      isLoading: false,
+      columns: ["size", "meal", "unit_price", "subtotal"]
     };
   },
   computed: {
@@ -454,12 +456,14 @@ export default {
               size,
               item.components,
               item.addons,
-              item.special_instructions
+              item.special_instructions,
+              false
             );
 
             data.push({
               size: size ? size.title : meal.default_size_title,
-              meal: meal.title,
+              //meal: meal.title,
+              meal: title,
               quantity: item.quantity,
               unit_price: "In Package",
               subtotal: "In Package"
@@ -480,12 +484,14 @@ export default {
             size,
             item.components,
             item.addons,
-            item.special_instructions
+            item.special_instructions,
+            false
           );
 
           data.push({
             size: size ? size.title : meal.default_size_title,
-            meal: meal.title,
+            //meal: meal.title,
+            meal: title,
             unit_price:
               item.attached || item.free
                 ? "Included"
