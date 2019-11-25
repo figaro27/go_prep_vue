@@ -32,7 +32,7 @@
       <table border="1" width="100" class="light-border">
         <thead>
           <tr>
-            <th><h4>Size</h4></th>
+            <th style="width:150px"><h4>Size</h4></th>
             <th><h4>Item</h4></th>
             @if(!$params['group_by_date'] || $params['group_by_date'] === 'false')
             <th><h4>Orders</h4></th>
