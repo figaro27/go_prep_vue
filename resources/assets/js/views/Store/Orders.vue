@@ -485,15 +485,47 @@
         <div class="row">
           <div class="col-md-4">
             <h4>Customer</h4>
-            <p>{{ user_detail.firstname }} {{ user_detail.lastname }}</p>
+            <span v-if="editingCustomer">
+              <b-form-input
+                v-model="user_detail.firstname"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+              <b-form-input
+                v-model="user_detail.lastname"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+            </span>
+            <span v-else>
+              <p>{{ user_detail.firstname }} {{ user_detail.lastname }}</p>
+            </span>
           </div>
           <div class="col-md-4">
             <h4>Address</h4>
-            <p>
-              {{ user_detail.address }}<br />
-              {{ user_detail.city }}, {{ user_detail.state }}
-              {{ user_detail.zip }}
-            </p>
+            <span v-if="editingCustomer">
+              <b-form-input
+                v-model="user_detail.address"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+              <b-form-input
+                v-model="user_detail.city"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+              <b-form-input
+                v-model="user_detail.state"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+              <b-form-input
+                v-model="user_detail.zip"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+            </span>
+            <span v-else>
+              <p>{{ user_detail.address }}</p>
+              <p>
+                {{ user_detail.city }}, {{ user_detail.state }}
+                {{ user_detail.zip }}
+              </p>
+            </span>
           </div>
           <div class="col-md-4">
             <span v-if="!storeModules.hideTransferOptions">
@@ -514,17 +546,52 @@
         <div class="row">
           <div class="col-md-4">
             <h4>Phone</h4>
-            <p>{{ user_detail.phone }}</p>
+            <span v-if="editingCustomer">
+              <b-form-input v-model="user_detail.phone"></b-form-input>
+            </span>
+            <span v-else>
+              <p>{{ user_detail.phone }}</p>
+            </span>
+
+            <div v-if="order.added_by_store_id === store.id">
+              <b-btn
+                variant="warning"
+                class="d-inline mb-2 mt-2"
+                @click="editCustomer"
+                >Edit Customer</b-btn
+              >
+              <b-btn
+                v-if="editingCustomer"
+                variant="primary"
+                class="d-inline mb-2 mt-2"
+                @click="updateCustomer(user_detail.user_id)"
+                >Save</b-btn
+              >
+            </div>
           </div>
           <div class="col-md-4">
             <h4>Email</h4>
-            <p>
-              {{ email }}
-            </p>
+            <span v-if="editingCustomer">
+              <b-form-input
+                v-model="email"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+            </span>
+            <span v-else>
+              <p>{{ email }}</p>
+            </span>
           </div>
           <div class="col-md-4">
             <h4 v-if="!order.pickup">Delivery Instructions</h4>
-            {{ user_detail.delivery }}
+            <span v-if="editingCustomer">
+              <b-form-input
+                v-model="user_detail.delivery"
+                class="d-inline width-70 mb-3"
+              ></b-form-input>
+            </span>
+            <span v-else>
+              <p>{{ user_detail.delivery }}</p>
+            </span>
           </div>
         </div>
         <div class="row" v-if="storeModules.orderNotes">
@@ -599,7 +666,11 @@
         </div>
         <div
           class="row mt-4"
-          v-if="viewOrderModal && order.line_items_order.length"
+          v-if="
+            viewOrderModal &&
+              order.line_items_order &&
+              order.line_items_order.length
+          "
         >
           <div class="col-md-12">
             <h4>Extras</h4>
@@ -654,6 +725,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      editingCustomer: false,
       editingBalance: false,
       balance: 0,
       chargeAmount: 0,
@@ -826,8 +898,10 @@ export default {
     ...mapActions({
       refreshOrders: "refreshOrders",
       refreshOrdersWithFulfilled: "refreshOrdersWithFulfilled",
+      refreshUpcomingOrdersWithoutItems: "refreshUpcomingOrdersWithoutItems",
       refreshUpcomingOrders: "refreshUpcomingOrders",
       refreshOrdersToday: "refreshOrdersToday",
+      refreshStoreCustomers: "refreshStoreCustomers",
       updateOrder: "updateOrder",
       addJob: "addJob",
       removeJob: "removeJob"
@@ -1182,6 +1256,24 @@ export default {
           this.editingBalance = false;
           this.viewOrder(id);
           this.$toastr.s("Balance updated.");
+        });
+    },
+    editCustomer() {
+      this.editingCustomer = !this.editingCustomer;
+    },
+    updateCustomer(id) {
+      axios
+        .post(`/api/me/updateCustomerUserDetails`, {
+          id: id,
+          details: this.user_detail,
+          email: this.email
+        })
+        .then(resp => {
+          this.viewOrder(this.orderId);
+          this.refreshStoreCustomers();
+          this.refreshUpcomingOrdersWithoutItems();
+          this.$toastr.s("Customer updated.");
+          this.editingCustomer = false;
         });
     }
   }

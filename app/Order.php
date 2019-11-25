@@ -61,7 +61,8 @@ class Order extends Model
         'goprep_fee',
         'stripe_fee',
         'grandTotal',
-        'line_items_order'
+        'line_items_order',
+        'added_by_store_id'
         // 'balance'
     ];
 
@@ -186,6 +187,11 @@ class Order extends Model
         } else {
             return false;
         }
+    }
+
+    public function getAddedByStoreIdAttribute()
+    {
+        return $this->user->added_by_store_id;
     }
 
     public function getMealOrdersAttribute()

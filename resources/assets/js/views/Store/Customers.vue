@@ -617,7 +617,8 @@ export default {
       axios
         .post(`/api/me/updateCustomerUserDetails`, {
           id: id,
-          details: this.customer
+          details: this.customer,
+          customers: true
         })
         .then(resp => {
           this.viewCustomer(id);

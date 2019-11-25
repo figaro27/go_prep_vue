@@ -102,14 +102,27 @@ class CustomerController extends StoreController
     public function updateCustomerUserDetails(Request $request)
     {
         $customerId = $request->get('id');
+        $userDetailId = $request->get('id');
         $details = $request->get('details');
-        $customer = Customer::where('id', $customerId)->first();
-        $userDetail = UserDetail::where('user_id', $customer->user_id)->first();
-        $userDetail->update($details);
+        $customers = $request->get('customers');
 
-        $user = User::where('id', $customer->user_id)->first();
-        $user->email = $details['email'];
-        $user->save();
+        if ($customers) {
+            $customer = Customer::where('id', $customerId)->first();
+            $userDetail = UserDetail::where(
+                'user_id',
+                $customer->user_id
+            )->first();
+            $userDetail->update($details);
+            $user = User::where('id', $customer->user_id)->first();
+            $user->email = $details['email'];
+            $user->save();
+        } else {
+            $userDetail = UserDetail::where('user_id', $userDetailId)->first();
+            $userDetail->update($details);
+            $user = User::where('id', $userDetail->user_id)->first();
+            $user->email = $request->get('email');
+            $user->save();
+        }
 
         //Add Email
     }
