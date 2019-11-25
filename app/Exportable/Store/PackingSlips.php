@@ -72,7 +72,7 @@ class PackingSlips
             if ($this->store->id === 108) {
                 $order = $orders
                     ->where('dailyOrderNumber', '>', 0)
-                    ->where('dailyOrderNumber', '<', 51)
+                    ->where('dailyOrderNumber', '<', 41)
                     ->orderBy('dailyOrderNumber', 'desc');
             }
 
