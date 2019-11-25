@@ -187,7 +187,7 @@ $brandColor = $order->store->settings->color;
           <td style="text-align:center">{{$item->quantity}}</td>
           <td>{{ $item->base_size }}</td>
           <!--<td>{!! $item->html_title !!}</td>!-->
-          <td>{{ $item->base_title }}</td>
+          <td>{!! $item->base_title !!}</td>
           <td style="text-align:center">
             In Package
           </td>
@@ -203,7 +203,7 @@ $brandColor = $order->store->settings->color;
           <td style="text-align:center">{{$item->quantity}}</td>
           <td>{{ $item->base_size }}</td>
           <!--<td>{!! $item->html_title !!}</td>!-->
-          <td>{{ $item->base_title }}</td>
+          <td>{!! $item->base_title !!}</td>
           <td style="text-align:center">
             @if ($item->attached || $item->free)
             Included
