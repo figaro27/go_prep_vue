@@ -19,7 +19,10 @@
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
 
-                <div v-if="storeModules.productionGroups" class="width-40 row">
+                <div
+                  v-if="storeModules.productionGroups"
+                  class="width-40 row pt-1"
+                >
                   <p class="col-md-2 ml-3 pt-1">Production:</p>
                   <v-select
                     class="col-md-6"
