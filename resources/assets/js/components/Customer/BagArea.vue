@@ -257,10 +257,6 @@
     >
       <div class="col-md-12">
         <h4>Order Notes</h4>
-        <p>
-          These appear publicly to your customer in emails & packing slips. You
-          can adjust after if needed.
-        </p>
         <textarea
           type="text"
           id="form7"
