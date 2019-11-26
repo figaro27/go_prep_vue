@@ -443,7 +443,11 @@ export default {
       return states.selectOptions("US");
     },
     tableData() {
-      return Object.values(this.customers);
+      return Object.values(
+        _.uniqBy(this.customers, customer => {
+          return customer.user_id;
+        })
+      );
     },
     customerOrders() {
       let orders = this.userId ? this._storeOrdersByCustomer(this.userId) : [];

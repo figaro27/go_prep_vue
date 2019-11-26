@@ -256,7 +256,7 @@
       "
     >
       <div class="col-md-12">
-        <h4>Optional Order Notes</h4>
+        <h4>Order Notes</h4>
         <p>
           These appear publicly to your customer in emails & packing slips. You
           can adjust after if needed.
@@ -268,6 +268,7 @@
           rows="3"
           v-model="orderNotes"
           @input="passOrderNotes"
+          placeholder="Optional"
         ></textarea>
       </div>
     </div>
