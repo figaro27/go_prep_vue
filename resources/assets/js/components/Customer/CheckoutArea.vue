@@ -608,8 +608,7 @@
         <div
           v-if="
             ($route.params.adjustOrder || $route.params.manualOrder) &&
-              !customerEmail.includes('noemail') &&
-              customerEmail !== ''
+              !customerEmail.includes('noemail')
           "
         >
           <b-form-checkbox
