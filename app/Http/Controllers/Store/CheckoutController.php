@@ -85,6 +85,7 @@ class CheckoutController extends StoreController
         $transferTime = $request->get('transferTime');
         $interval = $request->get('plan_interval', Constants::INTERVAL_WEEK);
         $period = Constants::PERIOD[$interval] ?? Constants::PERIOD_WEEKLY;
+        $notes = $request->get('notes');
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
@@ -242,6 +243,7 @@ class CheckoutController extends StoreController
             $order->order_number = strtoupper(
                 substr(uniqid(rand(10, 99), false), 0, 10)
             );
+            $order->notes = $notes;
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
@@ -596,6 +598,7 @@ class CheckoutController extends StoreController
             $order->order_number = strtoupper(
                 substr(uniqid(rand(10, 99), false), 0, 10)
             );
+            $order->notes = $notes;
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;

@@ -247,6 +247,31 @@
       </b-button>
     </div>
 
+    <div
+      class="row mt-5"
+      v-if="
+        store.modules.orderNotes &&
+          $route.params.manualOrder &&
+          $route.name != 'store-manual-order'
+      "
+    >
+      <div class="col-md-12">
+        <h4>Optional Order Notes</h4>
+        <p>
+          These appear publicly to your customer in emails & packing slips. You
+          can adjust after if needed.
+        </p>
+        <textarea
+          type="text"
+          id="form7"
+          class="md-textarea form-control"
+          rows="3"
+          v-model="orderNotes"
+          @input="passOrderNotes"
+        ></textarea>
+      </div>
+    </div>
+
     <b-modal
       size="lg"
       title="Add New Extra"
@@ -325,6 +350,7 @@ import store from "../../store";
 export default {
   data() {
     return {
+      orderNotes: null,
       editingPrice: {},
       showLineItemModal: false,
       lineItem: {
@@ -736,6 +762,9 @@ export default {
         ...this.editingPrice,
         updated: true
       };
+    },
+    passOrderNotes() {
+      this.$emit("passOrderNotes", this.orderNotes);
     }
   }
 };

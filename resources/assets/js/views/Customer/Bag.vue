@@ -16,6 +16,7 @@
             :pickup="pickup"
             :order="order"
             @updateLineItems="updateLineItems($event)"
+            @passOrderNotes="passOrderNotes($event)"
           ></bag-area>
           <bag-actions
             :manualOrder="manualOrder"
@@ -50,6 +51,7 @@
             :order="order"
             :adjustMealPlan="adjustMealPlan"
             ref="checkoutArea"
+            :orderNotes="orderNotes"
           ></checkout-area>
 
           <store-closed
@@ -111,6 +113,7 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
+      orderNotes: null,
       showAuthModal: false,
       //couponFreeDelivery: 0,
       transferTime: "",
@@ -681,6 +684,9 @@ export default {
     },
     updateLineItems(orderLineItems) {
       this.orderLineItems = orderLineItems;
+    },
+    passOrderNotes(notes) {
+      this.orderNotes = notes;
     }
   }
 };

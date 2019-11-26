@@ -808,6 +808,7 @@ export default {
     };
   },
   props: {
+    orderNotes: null,
     customer: null,
     preview: false,
     manualOrder: false,
@@ -1671,6 +1672,7 @@ export default {
 
       axios
         .post(endPoint, {
+          notes: this.orderNotes,
           subtotal: this.subtotal,
           mealPlanDiscount: this.mealPlanDiscount,
           afterDiscount: this.afterDiscount,
