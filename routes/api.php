@@ -245,6 +245,10 @@ foreach (
                                 'updateBalance',
                                 'OrderController@updateBalance'
                             );
+                            Route::post(
+                                'emailCustomerReceipt',
+                                'OrderController@emailCustomerReceipt'
+                            );
                             Route::resource(
                                 'subscriptions',
                                 'SubscriptionController'

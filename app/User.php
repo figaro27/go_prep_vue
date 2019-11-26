@@ -12,6 +12,7 @@ use App\Mail\Customer\NewOrder;
 use App\Mail\Customer\SubscriptionRenewing;
 use App\Mail\Customer\SubscriptionMealSubstituted;
 use App\Mail\Customer\SubscriptionCancelled;
+use App\Mail\Customer\AdjustedOrder;
 use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -494,6 +495,9 @@ class User extends Authenticatable implements JWTSubject
                 break;
             case 'subscription_cancelled':
                 $email = new SubscriptionCancelled($data);
+                break;
+            case 'adjusted_order':
+                $email = new AdjustedOrder($data);
                 break;
         }
 

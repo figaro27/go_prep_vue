@@ -388,6 +388,24 @@
                 >Print Packing Slip</b-btn
               >
             </div>
+
+            <div>
+              <b-btn
+                class="btn mb-2 white-text d-inline"
+                variant="secondary"
+                @click="emailCustomerReceipt(order.id)"
+                >Email Receipt</b-btn
+              >
+              <img
+                v-if="order.voided === 0"
+                v-b-popover.hover="
+                  'Customer\'s receive emails after they checkout. This would just be a second copy if they didn\'t receive the first for any reason.'
+                "
+                title="Email Receipt"
+                src="/images/store/popover.png"
+                class="popover-size d-inline"
+              />
+            </div>
           </div>
           <div class="col-md-3 pt-1">
             <h4>Placed On</h4>
@@ -1281,6 +1299,11 @@ export default {
           this.$toastr.s("Customer updated.");
           this.editingCustomer = false;
         });
+    },
+    emailCustomerReceipt(id) {
+      axios.post("/api/me/emailCustomerReceipt", { id: id }).then(resp => {
+        this.$toastr.s("Customer emailed.");
+      });
     }
   }
 };

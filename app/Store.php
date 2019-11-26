@@ -6,6 +6,7 @@ use App\Mail\Store\CancelledSubscription;
 use App\Mail\Store\NewOrder;
 use App\Mail\Store\NewSubscription;
 use App\Mail\Store\ReadyToPrint;
+use App\Mail\Store\AdjustedOrder;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -665,6 +666,10 @@ class Store extends Model
                     'store' => $store,
                     'storeDetails' => $storeDetails
                 ]);
+                break;
+
+            case 'adjusted_order':
+                $email = new AdjustedOrder($data);
                 break;
         }
 

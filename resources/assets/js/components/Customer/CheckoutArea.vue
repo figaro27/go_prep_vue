@@ -583,7 +583,6 @@
           already been charged for an order this week.
         </div>
         <b-alert
-          style="margin-bottom:250px"
           show
           variant="warning"
           class="center-text pt-2"
@@ -606,6 +605,21 @@
           "
           >Please choose a payment method.</b-alert
         >
+        <div
+          v-if="
+            ($route.params.adjustOrder || $route.params.manualOrder) &&
+              !customerEmail.includes('noemail') &&
+              customerEmail !== ''
+          "
+        >
+          <b-form-checkbox
+            v-model="emailCustomer"
+            class="pb-2 mediumCheckbox mt-1 mb-1"
+          >
+            Email Customer
+          </b-form-checkbox>
+        </div>
+
         <b-btn
           v-if="
             // Condense all this logic / put in computed prop
@@ -804,7 +818,8 @@ export default {
       addCustomerModal: false,
       weeklySubscriptionValue: null,
       subscriptionInterval: "week",
-      customerModel: null
+      customerModel: null,
+      emailCustomer: true
     };
   },
   props: {
@@ -1426,6 +1441,17 @@ export default {
         });
       }
       return hasActiveSub;
+    },
+    customerEmail() {
+      let customerEmail = "";
+      let customers = this.storeCustomers;
+      customers.forEach(customer => {
+        if (customer.id === this.customer) {
+          customerEmail = customer.email;
+          return;
+        }
+      });
+      return customerEmail;
     }
   },
   created() {},
@@ -1588,7 +1614,8 @@ export default {
           deposit: deposit,
           cashOrder: this.cashOrder,
           lineItemsOrder: this.orderLineItems,
-          grandTotal: this.grandTotal
+          grandTotal: this.grandTotal,
+          emailCustomer: this.emailCustomer
         })
         .then(resp => {
           this.$toastr.s("Order Adjusted");
@@ -1700,7 +1727,8 @@ export default {
           noBalance: this.noBalance,
           transferTime: this.transferTime,
           lineItemsOrder: this.orderLineItems,
-          grandTotal: this.grandTotal
+          grandTotal: this.grandTotal,
+          emailCustomer: this.emailCustomer
         })
         .then(async resp => {
           //this.checkingOut = false;

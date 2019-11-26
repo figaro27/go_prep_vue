@@ -475,6 +475,29 @@ class OrderController extends StoreController
                 $orderBag->save();
             }
         }
+
+        // Send email to store only if it's not a manual order. Subject to change in future.
+        if ($order->manual === 0) {
+            try {
+                $store->sendNotification('adjusted_order', [
+                    'order' => $order ?? null,
+                    'pickup' => $order->pickup ?? null
+                ]);
+            } catch (\Exception $e) {
+            }
+        }
+
+        // Send email to customer
+        $customerUser = User::where('id', $order->user_id)->first();
+        if ($request->get('emailCustomer')) {
+            try {
+                $customerUser->sendNotification('adjusted_order', [
+                    'order' => $order ?? null,
+                    'pickup' => $pickup ?? null
+                ]);
+            } catch (\Exception $e) {
+            }
+        }
     }
 
     /**
@@ -673,5 +696,19 @@ class OrderController extends StoreController
         $order = Order::where('id', $request->get('id'))->first();
         $order->balance = $request->get('balance');
         $order->save();
+    }
+
+    public function emailCustomerReceipt(Request $request)
+    {
+        // Send email to customer
+        $order = Order::where('id', $request->get('id'))->first();
+        $customerUser = User::where('id', $order->user_id)->first();
+        try {
+            $customerUser->sendNotification('new_order', [
+                'order' => $order ?? null,
+                'pickup' => $order->pickup ?? null
+            ]);
+        } catch (\Exception $e) {
+        }
     }
 }

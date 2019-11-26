@@ -461,8 +461,23 @@ class CheckoutController extends StoreController
                 }
             }
 
+            if ($request->get('emailCustomer')) {
+                try {
+                    $customerUser->sendNotification('new_order', [
+                        'order' => $order ?? null,
+                        'pickup' => $pickup ?? null,
+                        'card' => $card ?? null,
+                        'customer' => $customer ?? null,
+                        'subscription' => null
+                    ]);
+                } catch (\Exception $e) {
+                }
+            }
+
+            // Send a copy of all orders to GoPrep email
+            $goPrepOrders = User::first();
             try {
-                $customerUser->sendNotification('new_order', [
+                $goPrepOrders->sendNotification('new_order', [
                     'order' => $order ?? null,
                     'pickup' => $pickup ?? null,
                     'card' => $card ?? null,
