@@ -189,6 +189,7 @@ export default {
       let mealCounts = {};
       let mealIds = {};
       let mealSizes = {};
+      let mealTitles = {};
 
       orders.forEach(order => {
         _.forEach(order.items, item => {
@@ -204,6 +205,13 @@ export default {
               size,
               item.components,
               item.addons,
+              item.special_instructions
+            );
+            let base_title = meal.getTitle(
+              true,
+              size,
+              item.components,
+              item.addons,
               item.special_instructions,
               false
             );
@@ -212,6 +220,7 @@ export default {
               mealCounts[title] = 0;
               mealIds[title] = item.meal_id;
               mealSizes[title] = size;
+              mealTitles[title] = base_title;
             }
             mealCounts[title] += item.quantity;
           }
@@ -222,7 +231,7 @@ export default {
         let meal = this.getMeal(mealIds[title]);
 
         //let base_title = meal.title + "";
-        let base_title = title;
+        let base_title = mealTitles[title];
 
         let size = mealSizes[title];
         let base_size = "";
