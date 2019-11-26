@@ -516,7 +516,10 @@ export default {
       let filters = this.filters;
 
       if (this.context == "customer" || this.context == "guest") {
-        this.finalCategories = this.store.finalCategories;
+        //this.finalCategories = this.store.finalCategories;
+
+        const finalCategories = [];
+        const categoryIds = [];
 
         let items = [...this.store.items, {}];
 
@@ -533,6 +536,12 @@ export default {
 
             return true;
           });
+
+          if (object.meals && object.meals.length > 0) {
+            if (!categoryIds.includes(object.category_id)) {
+              categoryIds.push(object.category_id);
+            }
+          }
 
           return object;
         });
@@ -575,9 +584,27 @@ export default {
               return !skip;
             });
 
+            if (object.meals && object.meals.length > 0) {
+              if (!categoryIds.includes(object.category_id)) {
+                categoryIds.push(object.category_id);
+              }
+            }
+
             return object;
           });
         }
+
+        /* Categories */
+        if (this.store.finalCategories) {
+          this.store.finalCategories.forEach(category => {
+            if (categoryIds.includes(category.id)) {
+              finalCategories.push(category);
+            }
+          });
+        }
+
+        this.finalCategories = finalCategories;
+        /* Categories End */
 
         return items;
       }
