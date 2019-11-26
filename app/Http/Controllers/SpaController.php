@@ -378,7 +378,7 @@ class SpaController extends Controller
         if ($new_limit > 0) {
             $packages = MealPackage::with(['meals'])
                 ->where('store_id', $store_id)
-                ->withTrashed()
+                // ->withTrashed()
                 ->orderBy('title')
                 ->offset($offset_package)
                 ->limit($new_limit)
