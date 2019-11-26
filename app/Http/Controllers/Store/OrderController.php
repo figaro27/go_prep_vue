@@ -411,23 +411,31 @@ class OrderController extends StoreController
                 }
             }
 
-            // Ignore attachments on adjusting orders or it will cause duplication issues. Pending feedback.
-
-            // $attachments = MealAttachment::where(
-            //     'meal_id',
-            //     $item['meal']['id']
-            // )->get();
-            // if ($attachments) {
-            //     foreach ($attachments as $attachment) {
-            //         $mealOrder = new MealOrder();
-            //         $mealOrder->order_id = $order->id;
-            //         $mealOrder->store_id = $store->id;
-            //         $mealOrder->meal_id = $attachment->attached_meal_id;
-            //         $mealOrder->quantity =
-            //             $attachment->quantity * $item['quantity'];
-            //         $mealOrder->save();
-            //     }
-            // }
+            $attachments = MealAttachment::where([
+                'meal_id' => $item['meal']['id'],
+                'meal_size_id' => isset($item['size']['id'])
+                    ? $item['size']['id']
+                    : null,
+                'meal_package_id' => isset($item['meal_package_id'])
+                    ? $item['meal_package_id']
+                    : null,
+                'meal_package_size_id' => isset($item['meal_package_size_id'])
+                    ? $item['meal_package_size_id']
+                    : null
+            ])->get();
+            if ($attachments) {
+                foreach ($attachments as $attachment) {
+                    $mealOrder = new MealOrder();
+                    $mealOrder->order_id = $order->id;
+                    $mealOrder->store_id = $store->id;
+                    $mealOrder->meal_id = $attachment->attached_meal_id;
+                    $mealOrder->quantity =
+                        $attachment->quantity * $item['quantity'];
+                    $mealOrder->attached = 1;
+                    $mealOrder->free = 1;
+                    $mealOrder->save();
+                }
+            }
         }
 
         $lineItemsOrder = $request->get('lineItemsOrder');
