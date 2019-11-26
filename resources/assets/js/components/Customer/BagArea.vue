@@ -299,15 +299,17 @@
         </b-input-group>
       </div>
 
-      <b-form-radio-group
-        v-if="storeModules.productionGroups"
-        buttons
-        v-model="lineItem.production_group_id"
-        null
-        class="storeFilters ml-2 mt-3 mb-5"
-        @change="val => {}"
-        :options="productionGroupOptions"
-      ></b-form-radio-group>
+      <div v-if="storeModules.productionGroups" class="width-70 row mt-2">
+        <p class="col-md-2 pt-1">Production:</p>
+        <v-select
+          class="col-md-6"
+          v-model="lineItem.production_group_id"
+          label="text"
+          :options="productionGroupOptions"
+          :reduce="group => group.value"
+        >
+        </v-select>
+      </div>
 
       <hr />
 
@@ -716,9 +718,12 @@ export default {
           );
           return;
         }
-        axios.post("/api/me/lineItems", this.lineItem);
+
         orderLineItems.push(this.lineItem);
-        this.lineItem.production_group_id = null;
+
+        axios.post("/api/me/lineItems", this.lineItem).then(resp => {
+          this.lineItem.production_group_id = null;
+        });
       }
 
       this.showLineItemModal = false;

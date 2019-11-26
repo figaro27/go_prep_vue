@@ -19,15 +19,17 @@
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
 
-                <b-form-radio-group
-                  v-if="storeModules.productionGroups"
-                  buttons
-                  v-model="productionGroupId"
-                  null
-                  class="storeFilters ml-2 mt-1 d-inline"
-                  @change="val => {}"
-                  :options="productionGroupOptions"
-                ></b-form-radio-group>
+                <div v-if="storeModules.productionGroups" class="width-40 row">
+                  <p class="col-md-2 ml-3 pt-1">Production:</p>
+                  <v-select
+                    class="col-md-6"
+                    v-model="productionGroupId"
+                    label="text"
+                    :options="productionGroupOptions"
+                    :reduce="group => group.value"
+                  >
+                  </v-select>
+                </div>
               </div>
             </div>
 
