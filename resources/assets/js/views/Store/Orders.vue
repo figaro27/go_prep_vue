@@ -604,7 +604,7 @@
               class="md-textarea form-control"
               rows="3"
               v-model="deliveryNote"
-              placeholder="E.G. Customer didn't answer phone or doorbell."
+              placeholder="Optional."
             ></textarea>
             <button
               class="btn btn-primary btn-md pull-right mt-2"
