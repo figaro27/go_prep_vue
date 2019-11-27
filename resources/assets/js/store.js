@@ -1876,12 +1876,12 @@ const actions = {
       return false;
     }
 
-    const key = "dd_" + delivery_day_id;
+    /*const key = "dd_" + delivery_day_id;
     if (state.isLazyDD[key]) {
       return false;
     }
 
-    state.isLazyDD[key] = true;
+    state.isLazyDD[key] = true;*/
     triggerLazy(state, 0, 0, 0, "", 0, false, delivery_day_id);
   },
 
