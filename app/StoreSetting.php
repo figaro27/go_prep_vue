@@ -181,7 +181,7 @@ class StoreSetting extends Model
                     }
                 }
 
-                $allDates = $upcomingWeeksDates;
+                $allDates = $dates + $upcomingWeeksDates;
 
                 usort($allDates, function ($a, $b) {
                     return $a->getTimestamp() - $b->getTimestamp();
