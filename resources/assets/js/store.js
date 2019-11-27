@@ -18,6 +18,7 @@ const state = {
   context: null,
   isLazy: false,
   isLazyStore: false,
+  isLazyDD: {},
   jobs: {},
   viewed_store: {
     delivery_days: [],
@@ -868,7 +869,8 @@ const callLazy = (
   offset_package,
   category_id,
   category_ids_str,
-  bypass_meal
+  bypass_meal,
+  delivery_day_id
 ) => {
   return new Promise((resolve, reject) => {
     const url =
@@ -881,7 +883,9 @@ const callLazy = (
       "&category_ids_str=" +
       category_ids_str +
       "&bypass_meal=" +
-      bypass_meal;
+      bypass_meal +
+      "&delivery_day_id=" +
+      delivery_day_id;
     axios
       .get(url)
       .then(res => {
@@ -950,14 +954,16 @@ const triggerLazy = (
   category_id,
   category_ids_str,
   bypass_meal,
-  includeStore
+  includeStore,
+  delivery_day_id = 0
 ) => {
   callLazy(
     offset_meal,
     offset_package,
     category_id,
     category_ids_str,
-    bypass_meal
+    bypass_meal,
+    delivery_day_id
   )
     .then(data => {
       if (data.items && data.items.length > 0) {
@@ -1107,7 +1113,8 @@ const triggerLazy = (
           data.category_id,
           data.category_ids_str,
           data.bypass_meal,
-          includeStore
+          includeStore,
+          delivery_day_id
         );
       } else {
         // Finished
@@ -1860,6 +1867,22 @@ const actions = {
   async refreshLazyStore({ state }, args = {}) {
     state.isLazyStore = true;
     triggerLazyStore(state, 0, 0, 0, "", 0);
+  },
+
+  async refreshLazyDD({ state }, args = {}) {
+    const { delivery_day_id } = args;
+
+    if (!delivery_day_id) {
+      return false;
+    }
+
+    const key = "dd_" + delivery_day_id;
+    if (state.isLazyDD[key]) {
+      return false;
+    }
+
+    state.isLazyDD[key] = true;
+    triggerLazy(state, 0, 0, 0, "", 0, false, delivery_day_id);
   },
 
   async refreshLazy({ state }, args = {}) {

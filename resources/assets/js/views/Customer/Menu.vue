@@ -939,7 +939,9 @@ export default {
       if (this.selectedDeliveryDayID) {
         this.finalDeliveryDayID = this.selectedDeliveryDayID;
         this.showDeliveryDayModal = false;
-        //store.dispatch("refreshLazyDD");
+        store.dispatch("refreshLazyDD", {
+          delivery_day_id: this.finalDeliveryDayID
+        });
       }
     },
     showAdjustModal(
