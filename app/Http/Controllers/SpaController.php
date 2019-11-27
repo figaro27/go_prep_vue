@@ -425,7 +425,7 @@ class SpaController extends Controller
         // Speed Optimization
         $user = auth('api')->user();
 
-        $store_id = $offset_meal = $offset_package = 0;
+        $store_id = $offset_meal = $offset_package = $delivery_day_id = 0;
         $limit = 30;
 
         $category_id = 0;
@@ -436,9 +436,12 @@ class SpaController extends Controller
         $data = $request->all();
         extract($data);
 
+        $delivery_day_id = (int) $delivery_day_id;
+
         $offset_meal = (int) $offset_meal;
         $offset_package = (int) $offset_package;
         $category_id = (int) $category_id;
+        $delivery_day_id = (int) $delivery_day_id;
         $category_ids =
             trim($category_ids_str) == ""
                 ? []
@@ -493,23 +496,37 @@ class SpaController extends Controller
                         ) use ($temp_id) {
                             $query->where('categories.id', $temp_id);
                         })
+                            ->whereHas('days', function ($query) use (
+                                $delivery_day_id
+                            ) {
+                                if ($delivery_day_id != 0) {
+                                    $query->where(
+                                        'delivery_day_meals.delivery_day_id',
+                                        $delivery_day_id
+                                    );
+                                }
+                            })
                             ->where([
                                 'store_id' => $store_id,
                                 'deleted_at' => null
                             ])
                             ->first();
 
-                        $temp_package = OptimizedMealPackage::whereHas(
-                            'categories',
-                            function ($query) use ($temp_id) {
-                                $query->where('categories.id', $temp_id);
-                            }
-                        )
-                            ->where([
-                                'store_id' => $store_id,
-                                'deleted_at' => null
-                            ])
-                            ->first();
+                        if ($delivery_day_id == 0) {
+                            $temp_package = OptimizedMealPackage::whereHas(
+                                'categories',
+                                function ($query) use ($temp_id) {
+                                    $query->where('categories.id', $temp_id);
+                                }
+                            )
+                                ->where([
+                                    'store_id' => $store_id,
+                                    'deleted_at' => null
+                                ])
+                                ->first();
+                        } else {
+                            $temp_package = null;
+                        }
 
                         if ($temp_meal || $temp_package) {
                             // Meal or Package exists
@@ -546,6 +563,16 @@ class SpaController extends Controller
                         ) {
                             $query->where('categories.id', $category_id);
                         })
+                        ->whereHas('days', function ($query) use (
+                            $delivery_day_id
+                        ) {
+                            if ($delivery_day_id != 0) {
+                                $query->where(
+                                    'delivery_day_meals.delivery_day_id',
+                                    $delivery_day_id
+                                );
+                            }
+                        })
                         ->where(['store_id' => $store_id, 'deleted_at' => null])
                         ->orderBy('title')
                         ->offset($offset_meal)
@@ -560,22 +587,27 @@ class SpaController extends Controller
                 }
 
                 if ($new_limit > 0) {
-                    $packages = OptimizedMealPackage::with(['sizes'])
-                        ->whereHas('categories', function ($query) use (
-                            $category_id
-                        ) {
-                            $query->where('categories.id', $category_id);
-                        })
-                        ->where(['store_id' => $store_id, 'deleted_at' => null])
-                        ->orderBy('title')
-                        ->offset($offset_package)
-                        ->limit($new_limit)
-                        ->get()
-                        ->toArray();
+                    if ($delivery_day_id == 0) {
+                        $packages = OptimizedMealPackage::with(['sizes'])
+                            ->whereHas('categories', function ($query) use (
+                                $category_id
+                            ) {
+                                $query->where('categories.id', $category_id);
+                            })
+                            ->where([
+                                'store_id' => $store_id,
+                                'deleted_at' => null
+                            ])
+                            ->orderBy('title')
+                            ->offset($offset_package)
+                            ->limit($new_limit)
+                            ->get()
+                            ->toArray();
 
-                    if (count($packages) > 0) {
-                        foreach ($packages as &$package) {
-                            $package['meal_package'] = true;
+                        if (count($packages) > 0) {
+                            foreach ($packages as &$package) {
+                                $package['meal_package'] = true;
+                            }
                         }
                     }
                 }

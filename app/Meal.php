@@ -96,6 +96,11 @@ class Meal extends Model implements HasMedia
      */
     protected $dates = ['deleted_at', 'local_created_at'];
 
+    public function days()
+    {
+        return $this->hasMany('App\DeliveryDayMeal', 'meal_id', 'id');
+    }
+
     public function getQuantityAttribute()
     {
         if ($this->pivot && $this->pivot->quantity) {
