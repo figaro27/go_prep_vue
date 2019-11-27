@@ -495,22 +495,23 @@ class SpaController extends Controller
                             $query
                         ) use ($temp_id) {
                             $query->where('categories.id', $temp_id);
-                        })
-                            ->whereHas('days', function ($query) use (
-                                $delivery_day_id
-                            ) {
-                                if ($delivery_day_id != 0) {
-                                    $query->where(
-                                        'delivery_day_meals.delivery_day_id',
-                                        $delivery_day_id
-                                    );
-                                }
-                            })
-                            ->where([
-                                'store_id' => $store_id,
-                                'deleted_at' => null
-                            ])
-                            ->first();
+                        })->where([
+                            'store_id' => $store_id,
+                            'deleted_at' => null
+                        ]);
+
+                        if ($delivery_day_id != 0) {
+                            $temp_meal = $temp_meal->whereHas('days', function (
+                                $query
+                            ) use ($delivery_day_id) {
+                                $query->where(
+                                    'delivery_day_meals.delivery_day_id',
+                                    $delivery_day_id
+                                );
+                            });
+                        }
+
+                        $temp_meal = $temp_meal->first();
 
                         if ($delivery_day_id == 0) {
                             $temp_package = OptimizedMealPackage::whereHas(
@@ -563,17 +564,23 @@ class SpaController extends Controller
                         ) {
                             $query->where('categories.id', $category_id);
                         })
-                        ->whereHas('days', function ($query) use (
-                            $delivery_day_id
-                        ) {
-                            if ($delivery_day_id != 0) {
-                                $query->where(
-                                    'delivery_day_meals.delivery_day_id',
-                                    $delivery_day_id
-                                );
-                            }
-                        })
-                        ->where(['store_id' => $store_id, 'deleted_at' => null])
+                        ->where([
+                            'store_id' => $store_id,
+                            'deleted_at' => null
+                        ]);
+
+                    if ($delivery_day_id != 0) {
+                        $meals = $meals->whereHas('days', function (
+                            $query
+                        ) use ($delivery_day_id) {
+                            $query->where(
+                                'delivery_day_meals.delivery_day_id',
+                                $delivery_day_id
+                            );
+                        });
+                    }
+
+                    $meals = $meals
                         ->orderBy('title')
                         ->offset($offset_meal)
                         ->limit($limit)

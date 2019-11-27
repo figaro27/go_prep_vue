@@ -535,7 +535,6 @@ export default {
       bagDeliveryDate: "bagDeliveryDate"
     }),
     isMultipleDelivery() {
-      console.log("settings", this.store.modules);
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
     },
     isLoadingDeliveryDays() {
