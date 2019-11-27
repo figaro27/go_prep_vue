@@ -181,13 +181,13 @@ class StoreSetting extends Model
                     }
                 }
 
-                $dates = $dates + $upcomingWeeksDates;
+                $allDates = $dates + $upcomingWeeksDates;
 
-                usort($dates, function ($a, $b) {
+                usort($allDates, function ($a, $b) {
                     return $a->getTimestamp() - $b->getTimestamp();
                 });
 
-                return collect($dates);
+                return collect($allDates);
             }
         );
     }
