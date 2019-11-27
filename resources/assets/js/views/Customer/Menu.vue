@@ -28,6 +28,46 @@
       <!--<meal-package-components-modal
         ref="packageComponentModal"
       ></meal-package-components-modal>!-->
+      <b-modal
+        size="md"
+        cancel-disabled
+        @hide="okDeliveryDayModal"
+        @ok="okDeliveryDayModal"
+        v-model="showDeliveryDayModal"
+        hide-header
+        no-fade
+      >
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <div style="position: relative">
+              <h4 class="center-text">Select Delivery Day:</h4>
+
+              <Spinner
+                v-if="isLoadingDeliveryDays"
+                position="relative"
+                style="left: 0;"
+              />
+
+              <div class="delivery_day_wrap mt-3">
+                <div
+                  @click="selectedDeliveryDayID = delivery_day.id"
+                  v-bind:class="
+                    selectedDeliveryDayID == delivery_day.id
+                      ? 'delivery_day_item active'
+                      : 'delivery_day_item'
+                  "
+                  v-for="(delivery_day, index) in store.delivery_days"
+                  v-bind:key="index"
+                >
+                  {{ moment(delivery_day.day).format("MMM Do YYYY") }}
+                </div>
+              </div>
+            </div>
+            <!-- Relative End !-->
+          </div>
+        </div>
+        <!-- Row End !-->
+      </b-modal>
 
       <meal-filter-modal
         :viewFilterModal="viewFilterModalParent"
@@ -436,6 +476,9 @@ export default {
       showFilterClass: "shopping-cart hidden-left bag-area",
       search: "",
       showAuthModal: false,
+      showDeliveryDayModal: false,
+      selectedDeliveryDayID: 0,
+      finalDeliveryDayID: 0,
       slickOptions: {
         slidesToShow: 4,
         infinite: false,
@@ -491,6 +534,15 @@ export default {
       allTags: "tags",
       bagDeliveryDate: "bagDeliveryDate"
     }),
+    isMultipleDelivery() {
+      return this.store.modules.multipleDeliveryDays == 1 ? true : false;
+    },
+    isLoadingDeliveryDays() {
+      if (!this.store.delivery_days || this.store.delivery_days.length == 0) {
+        return true;
+      }
+      return false;
+    },
     deliveryDateRequired() {
       return this.hasDeliveryDateRestriction;
     },
@@ -516,7 +568,7 @@ export default {
       let filters = this.filters;
 
       if (this.context == "customer" || this.context == "guest") {
-        //this.finalCategories = this.store.finalCategories;
+        this.finalCategories = this.store.finalCategories;
 
         const finalCategories = [];
         const categoryIds = [];
@@ -595,7 +647,7 @@ export default {
         }
 
         /* Categories */
-        if (this.store.finalCategories) {
+        /*if (this.store.finalCategories) {
           this.store.finalCategories.forEach(category => {
             if (categoryIds.includes(category.id)) {
               finalCategories.push(category);
@@ -603,7 +655,7 @@ export default {
           });
         }
 
-        this.finalCategories = finalCategories;
+        this.finalCategories = finalCategories;*/
         /* Categories End */
 
         return items;
@@ -827,8 +879,13 @@ export default {
     });
   },
   mounted() {
-    if (!this.isLazy) {
-      store.dispatch("refreshLazy");
+    if (this.isMultipleDelivery) {
+      store.dispatch("refreshDeliveryDay");
+      this.showDeliveryDayModal = true;
+    } else {
+      if (!this.isLazy) {
+        store.dispatch("refreshLazy");
+      }
     }
 
     if (this.bag.length > 0 || this.subscriptionId !== undefined) {
@@ -878,6 +935,13 @@ export default {
       "refreshUpcomingOrders"
     ]),
     ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
+    okDeliveryDayModal(e) {
+      if (this.selectedDeliveryDayID) {
+        this.finalDeliveryDayID = this.selectedDeliveryDayID;
+        this.showDeliveryDayModal = false;
+        //store.dispatch("refreshLazyDD");
+      }
+    },
     showAdjustModal(
       meal,
       size = null,

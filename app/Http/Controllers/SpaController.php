@@ -9,6 +9,8 @@ use App\OptimizedMeal;
 use App\OptimizedMealPackage;
 use App\MealPackage;
 use App\Category;
+use App\DeliveryDay;
+use App\DeliveryDayMeal;
 use Illuminate\Http\Request;
 
 class SpaController extends Controller
@@ -647,6 +649,29 @@ class SpaController extends Controller
             'bypass_meal' => $bypass_meal,
             'category_ids_str' => $category_ids_str,
             'end' => $end
+        ];
+    }
+
+    public function delivery_days(Request $request)
+    {
+        $store_id = 0;
+        $base_day = '';
+
+        $params = $request->all();
+        extract($params);
+
+        $store_id = (int) $store_id;
+
+        $delivery_days = [];
+        if ($store_id != 0 && $base_day != "") {
+            $delivery_days = DeliveryDay::where('store_id', $store_id)
+                ->where('day', '>', $base_day)
+                ->get()
+                ->toArray();
+        }
+
+        return [
+            'delivery_days' => $delivery_days
         ];
     }
 

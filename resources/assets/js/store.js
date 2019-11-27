@@ -20,6 +20,7 @@ const state = {
   isLazyStore: false,
   jobs: {},
   viewed_store: {
+    delivery_days: [],
     distance: 0,
     meals: [],
     packages: [],
@@ -1866,6 +1867,25 @@ const actions = {
     let includeStore = args && args.includeStore ? true : false;
 
     triggerLazy(state, 0, 0, 0, "", 0, includeStore);
+  },
+
+  async refreshDeliveryDay({ state }, args = {}) {
+    const base_day = moment().format("YYYY-MM-DD");
+    const store_id = state.viewed_store.id;
+
+    if (store_id) {
+      const res = await axios.get(
+        "/api/delivery_days?base_day=" + base_day + "&store_id=" + store_id
+      );
+      const { data } = await res;
+
+      if (data && data.delivery_days) {
+        state.viewed_store = {
+          ...state.viewed_store,
+          delivery_days: data.delivery_days
+        };
+      }
+    }
   },
 
   async refreshStoreMeals({ commit, state }, args = {}) {

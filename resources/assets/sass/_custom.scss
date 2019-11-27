@@ -1458,3 +1458,22 @@ body.forgotresettoken {
 .dark-gray {
   color: #535353 !important;
 }
+
+.delivery_day_wrap {
+  .delivery_day_item {
+    border: 1px solid #efefef;
+    padding: 1rem;
+    box-sizing: border-box;
+    cursor: pointer;
+    border-bottom: none;
+
+    &:last-child {
+      border-bottom: 1px solid #efefef;
+    }
+
+    &:hover,
+    &.active {
+      color: #f25727;
+    }
+  }
+}
