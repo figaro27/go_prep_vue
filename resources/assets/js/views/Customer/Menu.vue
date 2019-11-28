@@ -940,6 +940,20 @@ export default {
       "refreshUpcomingOrders"
     ]),
     ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
+    updateScrollbar() {
+      return; // disabling for now
+
+      const isMobile = $("#xs:visible").length;
+
+      if (!isMobile && !this.menuPs) {
+        this.menuPs = new PerfectScrollbar(".main-menu-area:not(.ps)");
+      } else if (!isMobile && this.menuPs) {
+        this.menuPs.update();
+      } else if (isMobile && this.menuPs) {
+        this.menuPs.destroy();
+        this.menuPs = null;
+      }
+    },
     okDeliveryDayModal(e) {
       if (this.selectedDeliveryDay) {
         this.finalDeliveryDay = this.selectedDeliveryDay;

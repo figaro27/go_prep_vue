@@ -312,6 +312,8 @@ body.sidebar-minimized {
   min-height: calc(100vh - 70px);
 
   @include media-breakpoint-down(sm) {
+    //overflow: hidden;
+    //height: auto;
     //margin-bottom: 160px;
   }
 }
