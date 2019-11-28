@@ -6,6 +6,7 @@ use App\Model;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use App\OmittedDeliveryDates;
 
 class StoreSetting extends Model
 {
@@ -181,13 +182,31 @@ class StoreSetting extends Model
                     }
                 }
 
-                $dates = $dates + $upcomingWeeksDates;
+                $allDates = array_merge($dates, $upcomingWeeksDates);
 
-                usort($dates, function ($a, $b) {
+                // Adjust for UTC
+                $omittedDeliveryDates = OmittedDeliveryDates::where(
+                    'store_id',
+                    $this->store->id
+                )->get();
+                foreach ($omittedDeliveryDates as $omittedDeliveryDate) {
+                    if (in_array($omittedDeliveryDate->date, $allDates)) {
+                        unset(
+                            $allDates[
+                                array_search(
+                                    $omittedDeliveryDate->date,
+                                    $allDates
+                                )
+                            ]
+                        );
+                    }
+                }
+
+                usort($allDates, function ($a, $b) {
                     return $a->getTimestamp() - $b->getTimestamp();
                 });
 
-                return collect($dates);
+                return collect($allDates);
             }
         );
     }
