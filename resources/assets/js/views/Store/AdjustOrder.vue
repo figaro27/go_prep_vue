@@ -10,6 +10,7 @@
       :pickup="pickup"
       :order="order"
       :inSub="inSub"
+      :lineItemOrders="lineItemOrders"
     ></customer-menu>
   </div>
 </template>
@@ -30,7 +31,8 @@ export default {
   data() {
     return {
       isLoading: false,
-      order_bags: []
+      order_bags: [],
+      lineItemOrders: []
     };
   },
   computed: {
@@ -95,6 +97,12 @@ export default {
             });
           }
         }
+      });
+
+      axios.get("/api/me/getLineItemOrders/" + this.order.id).then(resp => {
+        resp.data.forEach(lineItemOrder => {
+          this.lineItemOrders.push(lineItemOrder);
+        });
       });
 
       /*

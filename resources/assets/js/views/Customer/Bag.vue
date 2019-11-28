@@ -17,6 +17,7 @@
             :order="order"
             @updateLineItems="updateLineItems($event)"
             @passOrderNotes="passOrderNotes($event)"
+            ref="bagArea"
           ></bag-area>
           <bag-actions
             :manualOrder="manualOrder"
@@ -108,7 +109,8 @@ export default {
     preview: false,
     orderId: null,
     checkoutDataProp: null,
-    adjustMealPlan: null
+    adjustMealPlan: null,
+    lineItemOrders: null
   },
   mixins: [MenuBag],
   data() {
@@ -411,6 +413,10 @@ export default {
       this.pickup = 0;
     }
 
+    if (this.$route.params.lineItemOrders != undefined) {
+      this.lineItemOrders = this.$route.params.lineItemOrders;
+    }
+
     this.creditCardId = this.card;
 
     SalesTax.getSalesTax("US", this.store.details.state).then(tax => {
@@ -428,6 +434,10 @@ export default {
   },
   updated() {
     this.creditCardId = this.card;
+
+    if (this.$route.params.adjustOrder) {
+      this.$refs.bagArea.setOrderLineItems(this.lineItemOrders);
+    }
   },
   methods: {
     updateData(newData) {

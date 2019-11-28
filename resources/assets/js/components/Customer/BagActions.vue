@@ -46,7 +46,8 @@
             checkoutData: checkoutData,
             forceValue: forceValue,
             inSub: inSub,
-            weeklySubscriptionValue: weeklySubscriptionValue
+            weeklySubscriptionValue: weeklySubscriptionValue,
+            lineItemOrders: lineItemOrders
           }
         }"
         class="menu-bag-btn bottom-margin"
@@ -84,7 +85,8 @@ export default {
     checkoutData: null,
     forceValue: false,
     inSub: null,
-    weeklySubscriptionValue: null
+    weeklySubscriptionValue: null,
+    lineItemOrders: null
   },
   mixins: [MenuBag],
   computed: {

@@ -184,7 +184,6 @@ class StoreSetting extends Model
 
                 $allDates = array_merge($dates, $upcomingWeeksDates);
 
-                // Adjust for UTC
                 $omittedDeliveryDates = OmittedDeliveryDates::where(
                     'store_id',
                     $this->store->id
