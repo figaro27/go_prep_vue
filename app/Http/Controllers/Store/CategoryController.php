@@ -17,7 +17,9 @@ class CategoryController extends StoreController
      */
     public function index()
     {
-        return $this->store->has('categories') ? $this->store->categories : [];
+        return $this->store->has('categories')
+            ? $this->store->categories->where('activeForStore', 1)
+            : [];
     }
 
     /**
