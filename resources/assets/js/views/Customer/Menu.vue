@@ -572,26 +572,72 @@ export default {
       const search = this.search.toLowerCase();
       let filters = this.filters;
 
-      if (this.context == "customer" || this.context == "guest") {
-        this.finalCategories = this.store.finalCategories;
+      this.finalCategories = this.store.finalCategories;
 
-        const finalCategories = [];
-        const categoryIds = [];
+      const finalCategories = [];
+      const categoryIds = [];
 
-        let items = [...this.store.items, {}];
+      let items = [...this.store.items, {}];
 
+      items = items.map(item => {
+        let object = { ...item };
+
+        object.meals = _.filter(object.meals, meal => {
+          if (
+            !meal.active ||
+            (this.search && !meal.title.toLowerCase().includes(search))
+          ) {
+            return false;
+          }
+
+          return true;
+        });
+
+        if (object.meals && object.meals.length > 0) {
+          if (!categoryIds.includes(object.category_id)) {
+            categoryIds.push(object.category_id);
+          }
+        }
+
+        return object;
+      });
+
+      if (this.filteredView) {
         items = items.map(item => {
           let object = { ...item };
 
           object.meals = _.filter(object.meals, meal => {
-            if (
-              !meal.active ||
-              (this.search && !meal.title.toLowerCase().includes(search))
-            ) {
-              return false;
+            let skip = false;
+
+            if (!skip && filters.tags.length > 0) {
+              let hasAllTags = _.reduce(
+                filters.tags,
+                (has, tag) => {
+                  if (!has) return false;
+                  let x = _.includes(meal.tag_titles, tag);
+                  return x;
+                },
+                true
+              );
+
+              skip = !hasAllTags;
             }
 
-            return true;
+            if (!skip && filters.allergies.length > 0) {
+              let hasAllergy = _.reduce(
+                meal.allergy_ids,
+                (has, allergyId) => {
+                  if (has) return true;
+                  let x = _.includes(filters.allergies, allergyId);
+                  return x;
+                },
+                false
+              );
+
+              skip = hasAllergy;
+            }
+
+            return !skip;
           });
 
           if (object.meals && object.meals.length > 0) {
@@ -602,70 +648,24 @@ export default {
 
           return object;
         });
-
-        if (this.filteredView) {
-          items = items.map(item => {
-            let object = { ...item };
-
-            object.meals = _.filter(object.meals, meal => {
-              let skip = false;
-
-              if (!skip && filters.tags.length > 0) {
-                let hasAllTags = _.reduce(
-                  filters.tags,
-                  (has, tag) => {
-                    if (!has) return false;
-                    let x = _.includes(meal.tag_titles, tag);
-                    return x;
-                  },
-                  true
-                );
-
-                skip = !hasAllTags;
-              }
-
-              if (!skip && filters.allergies.length > 0) {
-                let hasAllergy = _.reduce(
-                  meal.allergy_ids,
-                  (has, allergyId) => {
-                    if (has) return true;
-                    let x = _.includes(filters.allergies, allergyId);
-                    return x;
-                  },
-                  false
-                );
-
-                skip = hasAllergy;
-              }
-
-              return !skip;
-            });
-
-            if (object.meals && object.meals.length > 0) {
-              if (!categoryIds.includes(object.category_id)) {
-                categoryIds.push(object.category_id);
-              }
-            }
-
-            return object;
-          });
-        }
-
-        /* Categories */
-        /*if (this.store.finalCategories) {
-          this.store.finalCategories.forEach(category => {
-            if (categoryIds.includes(category.id)) {
-              finalCategories.push(category);
-            }
-          });
-        }
-
-        this.finalCategories = finalCategories;*/
-        /* Categories End */
-
-        return items;
       }
 
+      /* Categories */
+      /*if (this.store.finalCategories) {
+        this.store.finalCategories.forEach(category => {
+          if (categoryIds.includes(category.id)) {
+            finalCategories.push(category);
+          }
+        });
+      }
+
+      this.finalCategories = finalCategories;*/
+      /* Categories End */
+
+      return items;
+
+      /* Disabled Old Workflow */
+      /*
       let meals = this.store.meals;
       let packages = this.store.packages;
       let grouped = {};
@@ -750,7 +750,7 @@ export default {
         });
       });
 
-      /* Sort Categories */
+      // Sort Categories
       let sortedCategories = [];
 
       for (let i = 0; i < this._categories.length; i++) {
@@ -783,7 +783,7 @@ export default {
           }
         }
       }
-      /* Sort Categories End */
+      // Sort Categories End
 
       let finalData = [];
       let finalCategories = [];
@@ -809,6 +809,7 @@ export default {
 
       this.finalCategories = finalCategories;
       return finalData;
+      */
     },
     card() {
       if (this.mobile) {

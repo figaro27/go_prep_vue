@@ -394,7 +394,8 @@ const mutations = {
         free: order_bag.free,
         adjust: true,
         price: order_bag.price,
-        original_price: order_bag.original_price
+        original_price: order_bag.original_price,
+        delivery_day: order_bag.delivery_day ? order_bag.delivery_day : null
       });
     }
 
@@ -645,105 +646,6 @@ const mutations = {
     if (item.guid) {
       state.bag.items[item.guid] = item;
     }
-  },
-  updateItemPrice(
-    state,
-    {
-      meal,
-      quantity = 1,
-      mealPackage = false,
-      size = null,
-      components = null,
-      addons = null,
-      special_instructions = null
-    }
-  ) {
-    let mealId = meal;
-    if (!_.isNumber(mealId)) {
-      mealId = meal.id;
-    }
-
-    if (mealPackage || meal.meal_package) {
-      mealPackage = true;
-    }
-
-    let guid = CryptoJS.MD5(
-      JSON.stringify({
-        meal: mealId,
-        mealPackage,
-        size,
-        components,
-        addons,
-        special_instructions
-      })
-    ).toString();
-    state.bag.items[guid].meal.price = meal.price;
-  },
-  makeItemFree(
-    state,
-    {
-      meal,
-      quantity = 1,
-      mealPackage = false,
-      size = null,
-      components = null,
-      addons = null,
-      special_instructions = null
-    }
-  ) {
-    let mealId = meal;
-    if (!_.isNumber(mealId)) {
-      mealId = meal.id;
-    }
-
-    if (mealPackage || meal.meal_package) {
-      mealPackage = true;
-    }
-
-    let guid = CryptoJS.MD5(
-      JSON.stringify({
-        meal: mealId,
-        mealPackage,
-        size,
-        components,
-        addons,
-        special_instructions
-      })
-    ).toString();
-    state.bag.items[guid].meal.price = 0;
-  },
-  makeItemNonFree(
-    state,
-    {
-      meal,
-      quantity = 1,
-      mealPackage = false,
-      size = null,
-      components = null,
-      addons = null,
-      special_instructions = null
-    }
-  ) {
-    let mealId = meal;
-    if (!_.isNumber(mealId)) {
-      mealId = meal.id;
-    }
-
-    if (mealPackage || meal.meal_package) {
-      mealPackage = true;
-    }
-
-    let guid = CryptoJS.MD5(
-      JSON.stringify({
-        meal: mealId,
-        mealPackage,
-        size,
-        components,
-        addons,
-        special_instructions
-      })
-    ).toString();
-    state.bag.items[guid].meal.price = state.bag.items[guid].meal.item_price;
   },
   emptyBag(state) {
     state.bag.items = {};

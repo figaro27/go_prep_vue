@@ -186,17 +186,8 @@ export default {
         special_instructions
       });
     },
-    updateItemPrice(bag) {
-      this.$store.commit("updateItemPrice", bag);
-    },
     updateBagItem(item) {
       this.$store.commit("updateBagItem", item);
-    },
-    makeItemFree(bag) {
-      this.$store.commit("makeItemFree", bag);
-    },
-    makeItemNonFree(bag) {
-      this.$store.commit("makeItemNonFree", bag);
     },
     addBagItems(bag) {
       this.$store.commit("addBagItems", bag);

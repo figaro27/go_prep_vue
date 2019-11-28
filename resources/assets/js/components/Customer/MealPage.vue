@@ -248,6 +248,9 @@ export default {
     //   if (this.storeSettings.menuStyle === "image") return "col-md-8";
     //   else return "col-md-12";
     // },
+    isMultipleDelivery() {
+      return this.store.modules.multipleDeliveryDays == 1 ? true : false;
+    },
     showPage() {
       if (this.meal) {
         let mealSizes = null;
@@ -361,7 +364,17 @@ export default {
       if (bag) {
         bag.forEach(item => {
           if (item.meal_package) {
-            items.push(item);
+            if (!this.isMultipleDelivery) {
+              items.push(item);
+            } else {
+              if (
+                item.delivery_day &&
+                this.store.delivery_day &&
+                item.delivery_day.id == this.store.delivery_day.id
+              ) {
+                items.push(item);
+              }
+            }
           }
         });
       }

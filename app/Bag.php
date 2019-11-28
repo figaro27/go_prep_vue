@@ -56,7 +56,11 @@ class Bag
                 'size' => $item['size'] ?? null,
                 'components' => $item['components'] ?? [],
                 'addons' => $item['addons'] ?? [],
-                'special_instructions' => $item['special_instructions'] ?? []
+                'special_instructions' => $item['special_instructions'] ?? [],
+                'delivery_day' =>
+                    isset($item['delivery_day']) && $item['delivery_day']
+                        ? $item['delivery_day']
+                        : null
             ])
         );
     }
@@ -110,7 +114,12 @@ class Bag
                                     $meal['special_instructions']
                                 )
                                     ? $meal['special_instructions']
-                                    : null
+                                    : null,
+                                'delivery_day' =>
+                                    isset($item['delivery_day']) &&
+                                    $item['delivery_day']
+                                        ? $item['delivery_day']
+                                        : null
                             ];
 
                             $mealItemId = $this->getItemId($mealItem);
@@ -159,7 +168,12 @@ class Bag
                                         $meal['special_instructions']
                                     )
                                         ? $meal['special_instructions']
-                                        : null
+                                        : null,
+                                    'delivery_day' =>
+                                        isset($item['delivery_day']) &&
+                                        $item['delivery_day']
+                                            ? $item['delivery_day']
+                                            : null
                                 ];
 
                                 $mealItemId = $this->getItemId($mealItem);
@@ -277,7 +291,12 @@ class Bag
                                             $meal['special_instructions']
                                         )
                                             ? $meal['special_instructions']
-                                            : null
+                                            : null,
+                                        'delivery_day' =>
+                                            isset($item['delivery_day']) &&
+                                            $item['delivery_day']
+                                                ? $item['delivery_day']
+                                                : null
                                     ];
 
                                     $mealItemId = $this->getItemId($mealItem);
@@ -385,7 +404,12 @@ class Bag
                                         $meal['special_instructions']
                                     )
                                         ? $meal['special_instructions']
-                                        : null
+                                        : null,
+                                    'delivery_day' =>
+                                        isset($item['delivery_day']) &&
+                                        $item['delivery_day']
+                                            ? $item['delivery_day']
+                                            : null
                                 ];
 
                                 $mealItemId = $this->getItemId($mealItem);

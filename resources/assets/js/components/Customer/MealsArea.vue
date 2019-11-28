@@ -569,6 +569,9 @@ export default {
       getMealPackage: "viewedStoreMealPackage",
       _categories: "viewedStoreCategories"
     }),
+    isMultipleDelivery() {
+      return this.store.modules.multipleDeliveryDays == 1 ? true : false;
+    },
     storeSettings() {
       return this.store.settings;
     },
@@ -685,7 +688,17 @@ export default {
       if (bag) {
         bag.forEach(item => {
           if (item.meal_package) {
-            items.push(item);
+            if (!this.isMultipleDelivery) {
+              items.push(item);
+            } else {
+              if (
+                item.delivery_day &&
+                this.store.delivery_day &&
+                item.delivery_day.id == this.store.delivery_day.id
+              ) {
+                items.push(item);
+              }
+            }
           }
         });
       }

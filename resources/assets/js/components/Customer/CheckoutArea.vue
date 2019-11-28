@@ -272,7 +272,12 @@
           storeOwner
       "
     >
-      <li class="checkout-item" v-if="$route.params.storeView || storeOwner">
+      <li
+        class="checkout-item"
+        v-if="
+          ($route.params.storeView || storeOwner) && !this.isMultipleDelivery
+        "
+      >
         <div>
           <strong v-if="pickup === 0">Delivery Day</strong>
           <strong v-if="pickup === 1">Pickup Day</strong>
@@ -294,7 +299,8 @@
           deliveryDateOptions.length > 1 &&
             $route.params.subscriptionId === undefined &&
             (!$route.params.storeView && !storeOwner) &&
-            (!bagDeliveryDate || !store.modules.category_restrictions)
+            (!bagDeliveryDate || !store.modules.category_restrictions) &&
+            !isMultipleDelivery
         "
       >
         <div>
@@ -346,7 +352,7 @@
             !bagDeliveryDate
         "
       >
-        <div>
+        <div v-if="!isMultipleDelivery">
           <strong v-if="pickup === 0">
             Delivery Day: {{ deliveryDateOptions[0].text }}
           </strong>
@@ -1636,9 +1642,11 @@ export default {
       return this.customer;
     },
     async adjust() {
-      if (this.bagDeliveryDate === null) {
-        this.$toastr.w("Please select a delivery/pickup date.");
-        return;
+      if (!this.isMultipleDelivery) {
+        if (this.bagDeliveryDate === null) {
+          this.$toastr.w("Please select a delivery/pickup date.");
+          return;
+        }
       }
       let deposit = this.deposit;
       if (deposit !== null && deposit.toString().includes("%")) {
@@ -1654,6 +1662,7 @@ export default {
         .post(`/api/me/orders/adjustOrder`, {
           orderId: this.$parent.orderId,
           deliveryDate: this.bagDeliveryDate,
+          isMultipleDelivery: this.isMultipleDelivery,
           pickup: this.pickup,
           transferTime: this.transferTime,
           subtotal: this.subtotal,
@@ -1701,14 +1710,17 @@ export default {
       });
     },
     checkout() {
-      if (
-        this.bagDeliveryDate === null &&
-        !this.store.modules.hideTransferOptions &&
-        (this.deliveryDateOptions.length > 1 || this.$route.params.storeView)
-      ) {
-        this.$toastr.w("Please select a delivery/pickup date.");
-        return;
+      if (!this.isMultipleDelivery) {
+        if (
+          this.bagDeliveryDate === null &&
+          !this.store.modules.hideTransferOptions &&
+          (this.deliveryDateOptions.length > 1 || this.$route.params.storeView)
+        ) {
+          this.$toastr.w("Please select a delivery/pickup date.");
+          return;
+        }
       }
+
       if (this.grandTotal <= 0 && !this.cashOrder) {
         this.$toastr.e(
           "At least .50 cents is required to process an order.",
@@ -1769,6 +1781,7 @@ export default {
           plan: weeklySubscriptionValue,
           plan_interval: this.subscriptionInterval,
           pickup: this.pickup,
+          isMultipleDelivery: this.isMultipleDelivery,
           delivery_day: this.bagDeliveryDate
             ? this.bagDeliveryDate
             : this.deliveryDateOptions[0].value,
