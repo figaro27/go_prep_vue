@@ -1548,6 +1548,9 @@ export default {
       });
     },
     getCards() {
+      if (this.store.modules.cashOrderAutoSelect) {
+        return;
+      }
       this.updateParentData();
 
       window.localStorage.clear();
