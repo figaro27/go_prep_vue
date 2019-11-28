@@ -1886,6 +1886,7 @@ const actions = {
   },
 
   async refreshLazyDD({ state }, args = {}) {
+    state.isLazy = true;
     const { delivery_day } = args;
 
     if (!delivery_day) {
