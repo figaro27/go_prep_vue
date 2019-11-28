@@ -26,157 +26,167 @@
     <div :class="shoppingCartClass" style="overflow-y: auto">
       <ul class="list-group">
         <li
-          v-for="(item, mealId) in bag"
-          :key="`bag-${mealId}`"
+          v-for="(groupItem, indexGroup) in groupBag"
+          :key="`bagGroup-${indexGroup}`"
           class="bag-item"
         >
-          <div
-            v-if="item && item.quantity > 0"
-            class="d-flex align-items-center"
-          >
-            <div class="bag-item-quantity mr-2">
-              <div
-                @click="addToBag(item)"
-                class="bag-plus-minus brand-color white-text"
-              >
-                <i>+</i>
-              </div>
-              <p class="bag-quantity">{{ item.quantity }}</p>
-              <div
-                @click="removeFromBag(item)"
-                class="bag-plus-minus gray white-text"
-              >
-                <i>-</i>
-              </div>
-            </div>
-            <div class="bag-item-image mr-2">
-              <thumbnail
-                v-if="item.meal.image != null"
-                :src="item.meal.image.url_thumb"
-                :spinner="false"
-                class="cart-item-img"
-                width="80px"
-              ></thumbnail>
-            </div>
-            <div class="flex-grow-1 mr-2">
-              <span v-if="item.meal_package">
-                {{ item.meal.title }}
-                <span v-if="item.size && item.size.title !== 'Regular'">
-                  - {{ item.size.title }}
-                </span>
-              </span>
-              <span v-else-if="item.size && item.size.title !== 'Regular'">{{
-                item.size.full_title
-              }}</span>
-              <span v-else>{{ item.meal.item_title }}</span>
-              <p class="small">{{ item.special_instructions }}</p>
+          <h4 v-if="isMultipleDelivery && groupItem.delivery_day">
+            {{ groupItem.delivery_day.day }}
+          </h4>
 
-              <ul
-                v-if="!item.meal_package && (item.components || item.addons)"
-                class="plain"
-              >
-                <li
-                  v-for="(component, index) in itemComponents(item)"
-                  v-bind:key="'itemComponent' + index"
+          <div
+            v-for="(item, mealId) in groupItem.items"
+            :key="`bag-${mealId}`"
+            style="margin-bottom: 12px;"
+          >
+            <div
+              v-if="item && item.quantity > 0"
+              class="d-flex align-items-center"
+            >
+              <div class="bag-item-quantity mr-2">
+                <div
+                  @click="addToBag(item)"
+                  class="bag-plus-minus brand-color white-text"
+                >
+                  <i>+</i>
+                </div>
+                <p class="bag-quantity">{{ item.quantity }}</p>
+                <div
+                  @click="removeFromBag(item)"
+                  class="bag-plus-minus gray white-text"
+                >
+                  <i>-</i>
+                </div>
+              </div>
+              <div class="bag-item-image mr-2">
+                <thumbnail
+                  v-if="item.meal.image != null"
+                  :src="item.meal.image.url_thumb"
+                  :spinner="false"
+                  class="cart-item-img"
+                  width="80px"
+                ></thumbnail>
+              </div>
+              <div class="flex-grow-1 mr-2">
+                <span v-if="item.meal_package">
+                  {{ item.meal.title }}
+                  <span v-if="item.size && item.size.title !== 'Regular'">
+                    - {{ item.size.title }}
+                  </span>
+                </span>
+                <span v-else-if="item.size && item.size.title !== 'Regular'">{{
+                  item.size.full_title
+                }}</span>
+                <span v-else>{{ item.meal.item_title }}</span>
+                <p class="small">{{ item.special_instructions }}</p>
+
+                <ul
+                  v-if="!item.meal_package && (item.components || item.addons)"
                   class="plain"
                 >
-                  {{ component }}
-                </li>
-                <li
-                  v-for="(addon, index) in itemAddons(item)"
-                  v-bind:key="'itemAddon' + index"
-                  class="plus"
-                >
-                  {{ addon }}
-                </li>
-              </ul>
-              <div v-if="$route.params.storeView || storeView">
-                <input
-                  type="checkbox"
-                  :id="`checkox_${mealId}`"
-                  v-model="item.free"
-                  @change="e => makeFree(item, e)"
-                />
-                <label :for="`checkox_${mealId}`">Free</label>
+                  <li
+                    v-for="(component, index) in itemComponents(item)"
+                    v-bind:key="'itemComponent' + index"
+                    class="plain"
+                  >
+                    {{ component }}
+                  </li>
+                  <li
+                    v-for="(addon, index) in itemAddons(item)"
+                    v-bind:key="'itemAddon' + index"
+                    class="plus"
+                  >
+                    {{ addon }}
+                  </li>
+                </ul>
+                <div v-if="$route.params.storeView || storeView">
+                  <input
+                    type="checkbox"
+                    :id="`checkox_${mealId}`"
+                    v-model="item.free"
+                    @change="e => makeFree(item, e)"
+                  />
+                  <label :for="`checkox_${mealId}`">Free</label>
 
-                <span v-if="editingPrice[item.guid] ? true : false">
-                  <b-form-input
-                    type="number"
-                    v-model="item.price"
-                    class="d-inline width-70 mb-1"
-                    @input="v => changePrice(item, v)"
-                  ></b-form-input>
+                  <span v-if="editingPrice[item.guid] ? true : false">
+                    <b-form-input
+                      type="number"
+                      v-model="item.price"
+                      class="d-inline width-70 mb-1"
+                      @input="v => changePrice(item, v)"
+                    ></b-form-input>
+                    <i
+                      class="fas fa-check-circle text-primary"
+                      @click="endEditPrice(item)"
+                    ></i>
+                  </span>
+                  <span v-else>{{
+                    format.money(
+                      item.price * item.quantity,
+                      storeSettings.currency
+                    )
+                  }}</span>
                   <i
-                    class="fas fa-check-circle text-primary"
-                    @click="endEditPrice(item)"
+                    v-if="
+                      ($route.params.storeView || storeView) &&
+                        !editingPrice[item.guid]
+                    "
+                    @click="enableEditPrice(item)"
+                    class="fa fa-edit text-warning"
                   ></i>
-                </span>
-                <span v-else>{{
-                  format.money(
-                    item.price * item.quantity,
-                    storeSettings.currency
-                  )
-                }}</span>
-                <i
-                  v-if="
-                    ($route.params.storeView || storeView) &&
-                      !editingPrice[item.guid]
-                  "
-                  @click="enableEditPrice(item)"
-                  class="fa fa-edit text-warning"
-                ></i>
+                </div>
+                <div v-if="!$route.params.storeView && !storeView">
+                  <span>{{
+                    format.money(
+                      item.price * item.quantity,
+                      storeSettings.currency
+                    )
+                  }}</span>
+                </div>
               </div>
-              <div v-if="!$route.params.storeView && !storeView">
-                <span>{{
-                  format.money(
-                    item.price * item.quantity,
-                    storeSettings.currency
-                  )
-                }}</span>
+              <div class="flex-grow-0">
+                <img
+                  src="/images/customer/x.png"
+                  @click="clearFromBag(item)"
+                  class="clear-meal"
+                />
               </div>
             </div>
-            <div class="flex-grow-0">
-              <img
-                src="/images/customer/x.png"
-                @click="clearFromBag(item)"
-                class="clear-meal"
-              />
-            </div>
-          </div>
-          <ul>
-            <li v-for="(mealItem, i) in getItemMeals(item)" :key="i">
-              <div
-                class="medium"
-                style="display: flex; align-items: center; margin-bottom: 5px;"
-              >
+            <ul>
+              <li v-for="(mealItem, i) in getItemMeals(item)" :key="i">
                 <div
-                  v-if="$route.params.storeView || storeView"
-                  style="display: flex; align-items: center;"
+                  class="medium"
+                  style="display: flex; align-items: center; margin-bottom: 5px;"
                 >
                   <div
-                    @click="adjustMinus(mealItem, item)"
-                    class="bag-plus-minus gray white-text"
-                    style="margin-right: 3px;"
+                    v-if="$route.params.storeView || storeView"
+                    style="display: flex; align-items: center;"
                   >
-                    <i>-</i>
+                    <div
+                      @click="adjustMinus(mealItem, item)"
+                      class="bag-plus-minus gray white-text"
+                      style="margin-right: 3px;"
+                    >
+                      <i>-</i>
+                    </div>
+                    <div
+                      @click="adjustPlus(mealItem, item)"
+                      class="bag-plus-minus brand-color white-text"
+                      style="margin-right: 5px;"
+                    >
+                      <i>+</i>
+                    </div>
                   </div>
-                  <div
-                    @click="adjustPlus(mealItem, item)"
-                    class="bag-plus-minus brand-color white-text"
-                    style="margin-right: 5px;"
-                  >
-                    <i>+</i>
-                  </div>
-                </div>
 
-                {{ mealItem.quantity }} x
-                {{ mealItem.title ? mealItem.title : mealItem.meal.title }}
-              </div>
-              <div class="small" v-if="mealItem.special_instructions != null">
-                {{ mealItem.special_instructions }}
-              </div>
-            </li>
-          </ul>
+                  {{ mealItem.quantity }} x
+                  {{ mealItem.title ? mealItem.title : mealItem.meal.title }}
+                </div>
+                <div class="small" v-if="mealItem.special_instructions != null">
+                  {{ mealItem.special_instructions }}
+                </div>
+              </li>
+            </ul>
+          </div>
         </li>
       </ul>
     </div>
@@ -397,6 +407,49 @@ export default {
       lineItems: "viewedStoreLineItems",
       storeProductionGroups: "storeProductionGroups"
     }),
+    isMultipleDelivery() {
+      return this.storeModules.multipleDeliveryDays == 1 ? true : false;
+    },
+    groupBag() {
+      let grouped = [];
+      let groupedDD = [];
+
+      if (this.bag) {
+        if (this.isMultipleDelivery) {
+          this.bag.forEach((bagItem, index) => {
+            if (bagItem.delivery_day) {
+              const key = "dd_" + bagItem.delivery_day.id;
+              if (!groupedDD[key]) {
+                groupedDD[key] = {
+                  items: [],
+                  delivery_day: bagItem.delivery_day
+                };
+              }
+
+              groupedDD[key].items.push(bagItem);
+            }
+          });
+
+          if (JSON.stringify(groupedDD) != "{}") {
+            for (let i in groupedDD) {
+              grouped.push(groupedDD[i]);
+            }
+          }
+
+          grouped.sort((a, b) => {
+            const ddA = a.delivery_day.day;
+            const ddB = b.delivery_day.day;
+
+            return moment(ddA).unix() - moment(ddB).unix();
+          });
+        } else {
+          grouped.push({
+            items: this.bag
+          });
+        }
+      }
+      return grouped;
+    },
     productionGroupOptions() {
       let prodGroups = this.storeProductionGroups;
       let prodGroupOptions = [];
@@ -452,8 +505,6 @@ export default {
     }
   },
   mounted() {
-    console.log("bag", this.bag);
-
     if (this.bag) {
       this.bag.forEach(item => {
         this.editingPrice[item.guid] = false;

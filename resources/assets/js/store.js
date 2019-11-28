@@ -610,6 +610,8 @@ const mutations = {
       //mealId = "size-" + mealId + "-" + size.id;
     }
 
+    const delivery_day = meal.delivery_day ? meal.delivery_day : null;
+
     let guid = CryptoJS.MD5(
       JSON.stringify({
         meal: mealId,
@@ -617,7 +619,8 @@ const mutations = {
         size,
         components,
         addons,
-        special_instructions
+        special_instructions,
+        delivery_day
       })
     ).toString();
 

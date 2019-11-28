@@ -943,6 +943,8 @@ export default {
         store.dispatch("refreshLazyDD", {
           delivery_day: this.finalDeliveryDay
         });
+      } else {
+        e.preventDefault();
       }
     },
     showAdjustModal(
