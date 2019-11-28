@@ -550,14 +550,15 @@ export default {
       return this.hasDeliveryDateRestriction;
     },
     showSpinner() {
-      if (this.context == "customer" || this.context == "guest") {
+      return this.store.items.length == 0;
+      /*if (this.context == "customer" || this.context == "guest") {
         return this.store.items.length == 0;
       } else {
         return (
           (!this.meals || this.meals.length == 0) &&
           (!this.mealPackages || this.mealPackages.length == 0)
         );
-      }
+      }*/
     },
     meals() {
       return this.store.meals;

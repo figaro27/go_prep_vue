@@ -30,9 +30,23 @@
           :key="`bagGroup-${indexGroup}`"
           class="bag-item"
         >
-          <h4 v-if="isMultipleDelivery && groupItem.delivery_day">
-            {{ groupItem.delivery_day.day }}
-          </h4>
+          <div
+            style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;"
+            v-if="isMultipleDelivery && groupItem.delivery_day"
+          >
+            <h5>
+              {{ moment(groupItem.delivery_day.day).format("MMM Do YYYY") }}
+            </h5>
+
+            <button
+              v-if="$route.name != 'store-bag' && $route.name != 'customer-bag'"
+              type="button"
+              class="btn btn-primary btn-sm"
+              @click="loadDeliveryDayMenu(groupItem.delivery_day)"
+            >
+              Pick Meals
+            </button>
+          </div>
 
           <div
             v-for="(item, mealId) in groupItem.items"
@@ -406,6 +420,7 @@ export default {
       total: "bagQuantity",
       allergies: "allergies",
       bag: "bagItems",
+      isLazy: "isLazy",
       hasMeal: "bagHasMeal",
       willDeliver: "viewedStoreWillDeliver",
       _categories: "viewedStoreCategories",
@@ -538,6 +553,13 @@ export default {
     this.$emit("updateLineItems", this.orderLineItems);
   },
   methods: {
+    loadDeliveryDayMenu(delivery_day) {
+      if (!this.isLazy) {
+        store.dispatch("refreshLazyDD", {
+          delivery_day
+        });
+      }
+    },
     addToBag(item) {
       if (this.isAdjustOrder() || this.isManualOrder()) {
         this.addOneFromAdjust({

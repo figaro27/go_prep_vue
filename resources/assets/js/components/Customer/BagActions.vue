@@ -3,9 +3,25 @@
     <div>
       <div class="row" v-if="!bagView">
         <div class="col-md-7">
-          <p class="mt-4 ml-2" v-if="!minimumMet && !storeView">
+          <p
+            class="mt-2 ml-2"
+            style="margin-bottom:0;"
+            v-if="!minimumMet && !storeView"
+          >
             {{ addMore }}
           </p>
+          <button
+            v-if="
+              isMultipleDelivery &&
+                $route.name != 'store-bag' &&
+                $route.name != 'customer-bag'
+            "
+            type="button"
+            class="mb-3 mt-2 ml-2 btn btn-success btn-sm"
+            @click="addDeliveryDay()"
+          >
+            Add Delivery Day
+          </button>
         </div>
         <div class="col-md-5">
           <p class="small pl-2 pt-2">Subtotal</p>
@@ -75,6 +91,7 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../mixins/menuBag";
 import format from "../../lib/format";
+import store from "../../store";
 
 export default {
   props: {
@@ -96,6 +113,12 @@ export default {
     lineItemOrders: null
   },
   mixins: [MenuBag],
+  methods: {
+    addDeliveryDay() {
+      store.dispatch("refreshDeliveryDay");
+      this.$parent.showDeliveryDayModal = true;
+    }
+  },
   computed: {
     ...mapGetters({
       creditCards: "cards",
@@ -125,6 +148,9 @@ export default {
       _orders: "orders",
       loggedIn: "loggedIn"
     }),
+    isMultipleDelivery() {
+      return this.storeModules.multipleDeliveryDays == 1 ? true : false;
+    },
     storeSettings() {
       return this.store.settings;
     },

@@ -1803,7 +1803,11 @@ const actions = {
     state.isLazyDD[key] = true;*/
     state.viewed_store = {
       ...state.viewed_store,
-      delivery_day
+      delivery_day,
+      items: [],
+      finalCategories: [],
+      meals: [],
+      packages: []
     };
 
     triggerLazy(state, 0, 0, 0, "", 0, false, delivery_day);
