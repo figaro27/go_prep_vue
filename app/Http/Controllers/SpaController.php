@@ -472,6 +472,7 @@ class SpaController extends Controller
             if ($category_id == 0 || count($category_ids) == 0) {
                 $categories = Category::select(
                     'active',
+                    'activeForStore',
                     'store_id',
                     'id',
                     'category',
@@ -482,7 +483,7 @@ class SpaController extends Controller
                     'date_range_from',
                     'date_range_to'
                 )
-                    ->where('store_id', $store_id)
+                    ->where(['store_id' => $store_id, 'activeForStore' => 1])
                     ->orderBy('order')
                     ->get();
 
