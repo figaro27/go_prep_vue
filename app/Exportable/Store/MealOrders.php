@@ -287,7 +287,7 @@ class MealOrders
 
         if ($type !== 'pdf') {
             if (!$groupByDate) {
-                $production->prepend(['Size', 'Title', 'Active Orders']);
+                $production->prepend(['Size', 'Title', 'Orders']);
             } else {
                 $headings = array_merge(['Title'], $this->allDates);
                 $production->prepend($headings);
