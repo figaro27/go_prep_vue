@@ -951,6 +951,8 @@ export default {
     ]),
     ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
     updateScrollbar() {
+      return; // disabling for now
+
       const isMobile = $("#xs:visible").length;
 
       if (!isMobile && !this.menuPs) {

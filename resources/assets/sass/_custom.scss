@@ -309,11 +309,11 @@ body.sidebar-minimized {
 }
 
 .main-menu-area {
-  height: calc(100vh - 70px);
-  overflow: hidden;
+  min-height: calc(100vh - 70px);
+  //overflow: hidden;
 
   @include media-breakpoint-down(sm) {
-    height: auto;
+    //height: auto;
     //margin-bottom: 160px;
   }
 }
