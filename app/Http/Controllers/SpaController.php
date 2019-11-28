@@ -486,7 +486,7 @@ class SpaController extends Controller
                     ->where('store_id', $store_id)
                     ->where('activeForStore', 1)
                     ->orderBy('order')
-                    ->get();
+                    ->first();
 
                 if ($user === null || $user->user_role_id === 1) {
                     $categories = $categories->where('active', 1);
