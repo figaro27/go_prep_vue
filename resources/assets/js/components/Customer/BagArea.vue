@@ -244,17 +244,14 @@
             ($route.params.adjustOrder && $route.name != 'store-adjust-order')
         "
       >
-        <span
-          class="d-sm-inline"
-          v-if="
-            ($route.params.manualOrder &&
-              $route.name != 'store-manual-order') ||
-              ($route.params.adjustOrder && $route.name != 'store-adjust-order')
-          "
-          >Add Extra</span
-        >
+        <span class="d-sm-inline">Add Extra</span>
       </b-button>
-      <span class="d-inline"
+      <span
+        class="d-inline"
+        v-if="
+          ($route.params.manualOrder && $route.name != 'store-manual-order') ||
+            ($route.params.adjustOrder && $route.name != 'store-adjust-order')
+        "
         ><img
           v-b-popover.hover="
             'Here you can add any extra line item to the order for your customer. An example may include a customized meal that you don\'t want to have available to all on your main menu.'
@@ -470,8 +467,6 @@ export default {
     }
   },
   mounted() {
-    console.log("bag", this.bag);
-
     if (this.bag) {
       this.bag.forEach(item => {
         this.editingPrice[item.guid] = false;

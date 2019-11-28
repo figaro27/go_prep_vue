@@ -435,7 +435,9 @@ export default {
   updated() {
     this.creditCardId = this.card;
 
-    this.$refs.bagArea.setOrderLineItems(this.lineItemOrders);
+    if (this.$route.params.adjustOrder) {
+      this.$refs.bagArea.setOrderLineItems(this.lineItemOrders);
+    }
   },
   methods: {
     updateData(newData) {
