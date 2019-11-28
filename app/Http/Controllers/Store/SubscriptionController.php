@@ -26,6 +26,7 @@ class SubscriptionController extends StoreController
     {
         return $this->store
             ->subscriptions()
+            ->where('status', 'active')
             ->with(['user:id', 'pickup_location'])
             ->orderBy('created_at')
             ->get();

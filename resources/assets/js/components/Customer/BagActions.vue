@@ -20,7 +20,14 @@
       <b-btn
         :to="{
           name: 'customer-bag',
-          params: { subscriptionId: subscriptionId }
+          params: {
+            subscriptionId: subscriptionId,
+            transferTime: transferTime,
+            pickup: pickup,
+            inSub: inSub,
+            weeklySubscriptionValue: weeklySubscriptionValue,
+            lineItemOrders: lineItemOrders
+          }
         }"
         v-if="minimumMet && !storeView && !bagView"
         class="menu-bag-btn"

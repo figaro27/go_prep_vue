@@ -1,5 +1,9 @@
 <template>
-  <customer-menu :subscription-id="$route.params.id"></customer-menu>
+  <customer-menu
+    :subscription-id="$route.params.id"
+    :weeklySubscriptionValue="1"
+    :pickup="pickup"
+  ></customer-menu>
 </template>
 
 <script>
@@ -17,7 +21,8 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
-      isLoading: false
+      isLoading: false,
+      pickup: null
     };
   },
   computed: {
@@ -45,6 +50,8 @@ export default {
       if (!subscription) {
         return;
       }
+
+      this.pickup = subscription.pickup;
 
       this.clearAll();
 

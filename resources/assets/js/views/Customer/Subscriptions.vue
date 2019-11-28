@@ -358,7 +358,7 @@ export default {
   data() {
     return {
       isLoading: false,
-      columns: ["size", "meal", "unit_price", "subtotal"]
+      columns: ["size", "meal", "quantity", "unit_price", "subtotal"]
     };
   },
   computed: {
@@ -492,6 +492,7 @@ export default {
             size: size ? size.title : meal.default_size_title,
             //meal: meal.title,
             meal: title,
+            quantity: item.quantity,
             unit_price:
               item.attached || item.free
                 ? "Included"
