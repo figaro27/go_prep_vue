@@ -447,7 +447,10 @@ class SpaController extends Controller
                 ? []
                 : explode(",", trim($category_ids_str));
 
-        $category_data = null;
+        $category_data = $delivery_day = null;
+        if ($delivery_day_id != 0) {
+            $delivery_day = DeliveryDay::find($delivery_day_id);
+        }
 
         if ($user && $user->hasRole('store') && $user->has('store')) {
             $store_id = $user->store->id;
@@ -618,6 +621,16 @@ class SpaController extends Controller
                         }
                     }
                 }
+
+                /* Set Delivery Day */
+                if ($delivery_day && $delivery_day_id != 0) {
+                    if (count($meals)) {
+                        foreach ($meals as &$meal) {
+                            $meal['delivery_day'] = $delivery_day;
+                        }
+                    }
+                }
+                /* Set Delivery Day End */
 
                 /* Set Return Value */
                 $next = false;

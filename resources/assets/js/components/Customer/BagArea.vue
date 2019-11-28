@@ -452,6 +452,8 @@ export default {
     }
   },
   mounted() {
+    console.log("bag", this.bag);
+
     if (this.bag) {
       this.bag.forEach(item => {
         this.editingPrice[item.guid] = false;

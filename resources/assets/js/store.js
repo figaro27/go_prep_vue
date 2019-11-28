@@ -22,6 +22,7 @@ const state = {
   jobs: {},
   viewed_store: {
     delivery_days: [],
+    delivery_day: null,
     distance: 0,
     meals: [],
     packages: [],
@@ -444,6 +445,8 @@ const mutations = {
       //mealId += JSON.stringify(components);
     }
 
+    const delivery_day = meal.delivery_day ? meal.delivery_day : null;
+
     let guid = CryptoJS.MD5(
       JSON.stringify({
         meal: mealId,
@@ -451,7 +454,8 @@ const mutations = {
         size,
         components,
         addons,
-        special_instructions
+        special_instructions,
+        delivery_day
       })
     ).toString();
 
@@ -543,6 +547,7 @@ const mutations = {
 
     item.original_price = parseFloat(parseFloat(price).toFixed(2));
     item.price = item.original_price + 0;
+    item.delivery_day = delivery_day;
 
     if (isNew) {
       item.free = false;
@@ -870,8 +875,9 @@ const callLazy = (
   category_id,
   category_ids_str,
   bypass_meal,
-  delivery_day_id
+  delivery_day = null
 ) => {
+  const delivery_day_id = delivery_day ? delivery_day.id : 0;
   return new Promise((resolve, reject) => {
     const url =
       "/api/refresh_lazy?offset_meal=" +
@@ -955,7 +961,7 @@ const triggerLazy = (
   category_ids_str,
   bypass_meal,
   includeStore,
-  delivery_day_id = 0
+  delivery_day = null
 ) => {
   callLazy(
     offset_meal,
@@ -963,7 +969,7 @@ const triggerLazy = (
     category_id,
     category_ids_str,
     bypass_meal,
-    delivery_day_id
+    delivery_day
   )
     .then(data => {
       if (data.items && data.items.length > 0) {
@@ -1114,7 +1120,7 @@ const triggerLazy = (
           data.category_ids_str,
           data.bypass_meal,
           includeStore,
-          delivery_day_id
+          delivery_day
         );
       } else {
         // Finished
@@ -1870,9 +1876,9 @@ const actions = {
   },
 
   async refreshLazyDD({ state }, args = {}) {
-    const { delivery_day_id } = args;
+    const { delivery_day } = args;
 
-    if (!delivery_day_id) {
+    if (!delivery_day) {
       return false;
     }
 
@@ -1882,7 +1888,12 @@ const actions = {
     }
 
     state.isLazyDD[key] = true;*/
-    triggerLazy(state, 0, 0, 0, "", 0, false, delivery_day_id);
+    state.viewed_store = {
+      ...state.viewed_store,
+      delivery_day
+    };
+
+    triggerLazy(state, 0, 0, 0, "", 0, false, delivery_day);
   },
 
   async refreshLazy({ state }, args = {}) {
