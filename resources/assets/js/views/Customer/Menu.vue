@@ -50,9 +50,10 @@
 
               <div class="delivery_day_wrap mt-3">
                 <div
-                  @click="selectedDeliveryDayID = delivery_day.id"
+                  @click="selectedDeliveryDay = delivery_day"
                   v-bind:class="
-                    selectedDeliveryDayID == delivery_day.id
+                    selectedDeliveryDay &&
+                    selectedDeliveryDay.id == delivery_day.id
                       ? 'delivery_day_item active'
                       : 'delivery_day_item'
                   "
@@ -477,8 +478,8 @@ export default {
       search: "",
       showAuthModal: false,
       showDeliveryDayModal: false,
-      selectedDeliveryDayID: 0,
-      finalDeliveryDayID: 0,
+      selectedDeliveryDay: null,
+      finalDeliveryDay: null,
       slickOptions: {
         slidesToShow: 4,
         infinite: false,
@@ -936,11 +937,11 @@ export default {
     ]),
     ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
     okDeliveryDayModal(e) {
-      if (this.selectedDeliveryDayID) {
-        this.finalDeliveryDayID = this.selectedDeliveryDayID;
+      if (this.selectedDeliveryDay) {
+        this.finalDeliveryDay = this.selectedDeliveryDay;
         this.showDeliveryDayModal = false;
         store.dispatch("refreshLazyDD", {
-          delivery_day_id: this.finalDeliveryDayID
+          delivery_day: this.finalDeliveryDay
         });
       }
     },
