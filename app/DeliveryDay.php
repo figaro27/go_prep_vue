@@ -10,6 +10,16 @@ class DeliveryDay extends Model
     {
         return $this->hasManyThrough(
             'App\Meal',
+            'App\DeliveryDayMealPackage',
+            'delivery_day_id',
+            'id'
+        );
+    }
+
+    public function meal_packages()
+    {
+        return $this->hasManyThrough(
+            'App\MealPackage',
             'App\DeliveryDayMeal',
             'delivery_day_id',
             'id'

@@ -1794,13 +1794,20 @@ const actions = {
         return oldMealPackage;
       }
 
-      const res = await axios.get(
-        "/api/refresh/meal_package/" + oldMealPackage.id
-      );
+      let url = "/api/refresh/meal_package/" + oldMealPackage.id;
+
+      const res = await axios.get(url);
       const { data } = await res;
 
       if (data.package) {
         let meal_package = data.package;
+        if (oldMealPackage.delivery_day) {
+          meal_package = {
+            ...meal_package,
+            delivery_day: oldMealPackage.delivery_day
+          };
+        }
+
         //meal_package.refreshed = true;
         //meal_package.refreshed_bag = true;
 

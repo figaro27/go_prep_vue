@@ -36,6 +36,15 @@ class OptimizedMealPackage extends Model implements HasMedia
         'meal_carousel' => 'boolean'
     ];
 
+    public function days()
+    {
+        return $this->hasMany(
+            'App\DeliveryDayMealPackage',
+            'meal_package_id',
+            'id'
+        );
+    }
+
     public function meals()
     {
         return $this->belongsToMany(

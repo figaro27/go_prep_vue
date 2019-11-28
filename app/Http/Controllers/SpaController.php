@@ -516,21 +516,29 @@ class SpaController extends Controller
 
                         $temp_meal = $temp_meal->first();
 
-                        if ($delivery_day_id == 0) {
-                            $temp_package = OptimizedMealPackage::whereHas(
-                                'categories',
-                                function ($query) use ($temp_id) {
-                                    $query->where('categories.id', $temp_id);
+                        $temp_package = OptimizedMealPackage::whereHas(
+                            'categories',
+                            function ($query) use ($temp_id) {
+                                $query->where('categories.id', $temp_id);
+                            }
+                        )->where([
+                            'store_id' => $store_id,
+                            'deleted_at' => null
+                        ]);
+
+                        if ($delivery_day_id != 0) {
+                            $temp_package = $temp_package->whereHas(
+                                'days',
+                                function ($query) use ($delivery_day_id) {
+                                    $query->where(
+                                        'delivery_day_meal_packages.delivery_day_id',
+                                        $delivery_day_id
+                                    );
                                 }
-                            )
-                                ->where([
-                                    'store_id' => $store_id,
-                                    'deleted_at' => null
-                                ])
-                                ->first();
-                        } else {
-                            $temp_package = null;
+                            );
                         }
+
+                        $temp_package = $temp_package->first();
 
                         if ($temp_meal || $temp_package) {
                             // Meal or Package exists
@@ -597,26 +605,41 @@ class SpaController extends Controller
                 }
 
                 if ($new_limit > 0) {
-                    if ($delivery_day_id == 0) {
-                        $packages = OptimizedMealPackage::with(['sizes'])
-                            ->whereHas('categories', function ($query) use (
-                                $category_id
-                            ) {
-                                $query->where('categories.id', $category_id);
-                            })
-                            ->where([
-                                'store_id' => $store_id,
-                                'deleted_at' => null
-                            ])
-                            ->orderBy('title')
-                            ->offset($offset_package)
-                            ->limit($new_limit)
-                            ->get()
-                            ->toArray();
+                    $packages = OptimizedMealPackage::with(['sizes'])
+                        ->whereHas('categories', function ($query) use (
+                            $category_id
+                        ) {
+                            $query->where('categories.id', $category_id);
+                        })
+                        ->where([
+                            'store_id' => $store_id,
+                            'deleted_at' => null
+                        ]);
 
-                        if (count($packages) > 0) {
-                            foreach ($packages as &$package) {
-                                $package['meal_package'] = true;
+                    if ($delivery_day_id != 0) {
+                        $packages = $packages->whereHas('days', function (
+                            $query
+                        ) use ($delivery_day_id) {
+                            $query->where(
+                                'delivery_day_meal_packages.delivery_day_id',
+                                $delivery_day_id
+                            );
+                        });
+                    }
+
+                    $packages = $packages
+                        ->orderBy('title')
+                        ->offset($offset_package)
+                        ->limit($new_limit)
+                        ->get()
+                        ->toArray();
+
+                    if (count($packages) > 0) {
+                        foreach ($packages as &$package) {
+                            $package['meal_package'] = true;
+
+                            if ($delivery_day && $delivery_day_id != 0) {
+                                $package['delivery_day'] = $delivery_day;
                             }
                         }
                     }

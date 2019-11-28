@@ -909,6 +909,49 @@ export default {
       subscriptions: "subscriptions",
       user: "user"
     }),
+    isMultipleDelivery() {
+      return this.storeModules.multipleDeliveryDays == 1 ? true : false;
+    },
+    groupBag() {
+      let grouped = [];
+      let groupedDD = [];
+
+      if (this.bag) {
+        if (this.isMultipleDelivery) {
+          this.bag.forEach((bagItem, index) => {
+            if (bagItem.delivery_day) {
+              const key = "dd_" + bagItem.delivery_day.id;
+              if (!groupedDD[key]) {
+                groupedDD[key] = {
+                  items: [],
+                  delivery_day: bagItem.delivery_day
+                };
+              }
+
+              groupedDD[key].items.push(bagItem);
+            }
+          });
+
+          if (JSON.stringify(groupedDD) != "{}") {
+            for (let i in groupedDD) {
+              grouped.push(groupedDD[i]);
+            }
+          }
+
+          grouped.sort((a, b) => {
+            const ddA = a.delivery_day.day;
+            const ddB = b.delivery_day.day;
+
+            return moment(ddA).unix() - moment(ddB).unix();
+          });
+        } else {
+          grouped.push({
+            items: this.bag
+          });
+        }
+      }
+      return grouped;
+    },
     stateNames() {
       return states.selectOptions("US");
     },
@@ -1247,19 +1290,35 @@ export default {
         }
         if (!this.couponFreeDelivery) {
           if (this.storeSettings.applyDeliveryFee) {
+            let fee = 0;
             if (this.storeSettings.deliveryFeeType === "flat") {
               // DBD Temp Workaround. Remove when adding the double delivery day feature.
               let addedFee = this.DBD();
               //
-              return this.storeSettings.deliveryFee + addedFee;
+              fee = this.storeSettings.deliveryFee + addedFee;
             } else if (this.storeSettings.deliveryFeeType === "mileage") {
               let mileageBase = parseFloat(this.storeSettings.mileageBase);
               let mileagePerMile = parseFloat(
                 this.storeSettings.mileagePerMile
               );
               let distance = parseFloat(this.store.distance);
-              return mileageBase + mileagePerMile * distance;
+              fee = mileageBase + mileagePerMile * distance;
             }
+
+            if (this.groupBag) {
+              this.groupBag.forEach(item => {
+                if (
+                  item.delivery_day &&
+                  parseInt(item.delivery_day.applyFee) == 1 &&
+                  item.items &&
+                  item.items.length > 0
+                ) {
+                  fee += parseFloat(item.delivery_day.fee);
+                }
+              });
+            }
+
+            return fee;
           } else return 0;
         } else return 0;
       } else return 0;
