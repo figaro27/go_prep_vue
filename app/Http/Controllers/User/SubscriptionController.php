@@ -25,6 +25,7 @@ class SubscriptionController extends UserController
     {
         return $this->user
             ->subscriptions()
+            ->where('status', 'active')
             ->with(['orders', 'pickup_location'])
             ->get();
     }
