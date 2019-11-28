@@ -1620,6 +1620,7 @@ export default {
           this.$toastr.s("Order Adjusted");
           this.$router.push({ path: "/store/orders" });
           this.refreshUpcomingOrders();
+          this.refreshUpcomingOrdersWithoutItems();
           this.clearBagDeliveryDate();
         });
     },

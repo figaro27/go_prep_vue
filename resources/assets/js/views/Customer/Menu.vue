@@ -309,6 +309,7 @@
               :order="order"
               :inSub="inSub"
               :weeklySubscriptionValue="weeklySubscriptionValue"
+              :lineItemOrders="lineItemOrders"
             ></bag-actions>
           </div>
         </div>
@@ -461,7 +462,8 @@ export default {
     transferTime: null,
     pickup: null,
     inSub: null,
-    weeklySubscriptionValue: null
+    weeklySubscriptionValue: null,
+    lineItemOrders: null
   },
   data() {
     return {

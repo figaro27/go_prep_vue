@@ -360,6 +360,10 @@ foreach (
                                 'order_bag/{order_id}',
                                 'CheckoutController@orderBag'
                             );
+                            Route::get(
+                                'getLineItemOrders/{order_id}',
+                                'OrderController@getLineItemOrders'
+                            );
                             Route::post(
                                 'checkout',
                                 'CheckoutController@checkout'

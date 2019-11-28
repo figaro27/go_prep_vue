@@ -711,4 +711,18 @@ class OrderController extends StoreController
         } catch (\Exception $e) {
         }
     }
+
+    public function getLineItemOrders($order_id)
+    {
+        return LineItemOrder::where('order_id', $order_id)
+            ->get()
+            ->map(function ($lineItemOrder) {
+                return [
+                    'price' => $lineItemOrder->price,
+                    'quantity' => $lineItemOrder->quantity,
+                    'title' => $lineItemOrder->title,
+                    'production_group_id' => $lineItemOrder->production_group_id
+                ];
+            });
+    }
 }
