@@ -483,7 +483,8 @@ class SpaController extends Controller
                     'date_range_from',
                     'date_range_to'
                 )
-                    ->where(['store_id' => $store_id, 'activeForStore' => 1])
+                    ->where('store_id', $store_id)
+                    ->where('activeForStore', 1)
                     ->orderBy('order')
                     ->get();
 
