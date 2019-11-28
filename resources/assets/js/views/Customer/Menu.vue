@@ -339,7 +339,6 @@ import keyboardJS from "keyboardjs";
 import LightBox from "vue-image-lightbox";
 import "vue-image-lightbox/src/components/style.css";
 import { Carousel, Slide } from "vue-carousel";
-import PerfectScrollbar from "perfect-scrollbar";
 
 import CategorySlider from "../../components/Customer/Mobile/CategorySlider";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
@@ -521,8 +520,7 @@ export default {
       showMealPackagesArea: true,
       mealSizePrice: null,
       forceShow: false,
-      deliveryDate: null,
-      menuPs: null // perfect-scrollbar instance
+      deliveryDate: null
     };
   },
   computed: {
@@ -883,13 +881,6 @@ export default {
     this.$eventBus.$on("backToMenu", () => {
       this.backToMenu();
     });
-
-    $(window).on(
-      "resize",
-      _.debounce(() => {
-        this.updateScrollbar();
-      })
-    );
   },
   mounted() {
     if (this.isMultipleDelivery) {
@@ -938,9 +929,6 @@ export default {
       }
     });
   },
-  updated() {
-    this.updateScrollbar();
-  },
   beforeDestroy() {
     this.showActiveFilters();
   },
@@ -951,18 +939,6 @@ export default {
       "refreshUpcomingOrders"
     ]),
     ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
-    updateScrollbar() {
-      const isMobile = $("#xs:visible").length;
-
-      if (!isMobile && !this.menuPs) {
-        this.menuPs = new PerfectScrollbar(".main-menu-area:not(.ps)");
-      } else if (!isMobile && this.menuPs) {
-        this.menuPs.update();
-      } else if (isMobile && this.menuPs) {
-        this.menuPs.destroy();
-        this.menuPs = null;
-      }
-    },
     okDeliveryDayModal(e) {
       if (this.selectedDeliveryDay) {
         this.finalDeliveryDay = this.selectedDeliveryDay;
