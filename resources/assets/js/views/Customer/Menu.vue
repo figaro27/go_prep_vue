@@ -942,9 +942,12 @@ export default {
       if (this.selectedDeliveryDay) {
         this.finalDeliveryDay = this.selectedDeliveryDay;
         this.showDeliveryDayModal = false;
-        store.dispatch("refreshLazyDD", {
-          delivery_day: this.finalDeliveryDay
-        });
+
+        if (!this.isLazy) {
+          store.dispatch("refreshLazyDD", {
+            delivery_day: this.finalDeliveryDay
+          });
+        }
       } else {
         e.preventDefault();
       }
