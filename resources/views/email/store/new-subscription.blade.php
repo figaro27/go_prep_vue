@@ -166,19 +166,26 @@ u + .body .full { width:100% !important; width:100vw !important;}
         <table align="center" width="600" style="max-width:600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
               @if ($subscription->pickup_location_id != null)
               <tr>
-                <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d;"> Pickup Location:
-                {{ $subscription->pickup_location->name }}<br>
-                {{ $subscription->pickup_location->address }},
-                {{ $subscription->pickup_location->city }},
-                {{ $subscription->pickup_location->state }},
-                {{ $subscription->pickup_location->zip }}
-                </td>
-              </tr>
-                        <tr>
-            <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
+            <td height="15"></td>
           </tr>
+              <tr>
+                <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#7f8c8d;"> <b>Pickup Location:</b>
+                  {{ $subscription->pickup_location->name }}, 
+                  {{ $subscription->pickup_location->address }},
+                  {{ $subscription->pickup_location->city }},
+                  {{ $subscription->pickup_location->state }},
+                  {{ $subscription->pickup_location->zip }}<br><br>
+                  @if ($subscription->pickup_location->instructions)
+                  <b>Instructions:</b> {{ $subscription->pickup_location->instructions }}
+                  @endif
+                  </td>
+              </tr>
+
               @endif
           <!-- header -->
+          <tr>
+            <td height="15"></td>
+          </tr>
           <tr>
             <td>
               <table class="table-inner" width="100%" border="0" cellspacing="0" cellpadding="0">

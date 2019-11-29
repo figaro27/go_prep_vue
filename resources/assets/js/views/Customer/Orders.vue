@@ -54,11 +54,16 @@
                         {{ moment(order.delivery_date).format("dddd, MMM Do") }}
                       </p>
                       <p v-if="order.pickup_location_id != null">
-                        {{ order.pickup_location.name }}<br />
+                        <b>Pickup Location:</b>
+                        {{ order.pickup_location.name }},
                         {{ order.pickup_location.address }},
                         {{ order.pickup_location.city }},
                         {{ order.pickup_location.state }}
-                        {{ order.pickup_location.zip }}
+                        {{ order.pickup_location.zip }}<br />
+                        <span v-if="order.pickup_location.instructions">
+                          <b>Instructions:</b>
+                          {{ order.pickup_location.instructions }}
+                        </span>
                       </p>
                     </span>
                   </div>

@@ -144,17 +144,23 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       @endif
                       @if ($subscription->pickup_location_id != null)
                       <tr>
-                        <td style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d;"> Pickup Location:
-                        {{ $subscription->pickup_location->name }}<br>
-                        {{ $subscription->pickup_location->address }},
-                        {{ $subscription->pickup_location->city }},
-                        {{ $subscription->pickup_location->state }},
-                        {{ $subscription->pickup_location->zip }}
-                        </td>
+                        <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#7f8c8d;"> <b>Pickup Location:</b>
+                  {{ $subscription->pickup_location->name }}, 
+                  {{ $subscription->pickup_location->address }},
+                  {{ $subscription->pickup_location->city }},
+                  {{ $subscription->pickup_location->state }},
+                  {{ $subscription->pickup_location->zip }}<br><br>
+                  @if ($subscription->pickup_location->instructions)
+                  <b>Instructions:</b> {{ $subscription->pickup_location->instructions }}
+                  @endif
+                  </td>
                       </tr>
                       @endif
                       @endif
                       <!-- end address -->
+                      <tr>
+            <td height="15"></td>
+          </tr>
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Subscription #{{ $subscription->stripe_id }}</td>
                       </tr>

@@ -89,11 +89,16 @@ f<template>
                       </p>
                     </span>
                     <p v-if="subscription.pickup_location_id != null">
-                      {{ subscription.pickup_location.name }}<br />
+                      <b>Pickup Location:</b>
+                      {{ subscription.pickup_location.name }},
                       {{ subscription.pickup_location.address }},
                       {{ subscription.pickup_location.city }},
                       {{ subscription.pickup_location.state }}
-                      {{ subscription.pickup_location.zip }}
+                      {{ subscription.pickup_location.zip }}<br />
+                      <span v-if="subscription.pickup_location.instructions">
+                        <b>Instructions:</b>
+                        {{ subscription.pickup_location.instructions }}
+                      </span>
                     </p>
                   </div>
                   <div class="col-md-4">

@@ -399,7 +399,7 @@
               <img
                 v-if="order.voided === 0"
                 v-b-popover.hover="
-                  'Customer\'s receive emails after they checkout. This would just be a second copy if they didn\'t receive the first for any reason.'
+                  'Customers receive emails after they checkout. This would just be a second copy if they didn\'t receive the first for any reason.'
                 "
                 title="Email Receipt"
                 src="/images/store/popover.png"
@@ -553,12 +553,17 @@
               {{ moment(order.delivery_date).format("dddd, MMM Do") }}
               <span v-if="order.transferTime"> {{ order.transferTime }}</span>
             </span>
-            <p v-if="order.pickup_location_id != null">
-              {{ order.pickup_location.name }}<br />
+            <p v-if="order.pickup_location_id != null" class="mt-1">
+              <b>Pickup Location:</b>
+              {{ order.pickup_location.name }},
               {{ order.pickup_location.address }},
               {{ order.pickup_location.city }},
               {{ order.pickup_location.state }}
-              {{ order.pickup_location.zip }}
+              {{ order.pickup_location.zip }}<br />
+              <span v-if="order.pickup_location.instructions">
+                <b>Instructions:</b>
+                {{ order.pickup_location.instructions }}
+              </span>
             </p>
           </div>
         </div>
@@ -609,7 +614,7 @@
               ></b-form-input>
             </span>
             <span v-else>
-              <p>{{ user_detail.delivery }}</p>
+              <p v-if="!order.pickup">{{ user_detail.delivery }}</p>
             </span>
           </div>
         </div>

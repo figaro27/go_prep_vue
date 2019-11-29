@@ -824,7 +824,8 @@ export default {
       weeklySubscriptionValue: null,
       subscriptionInterval: "week",
       customerModel: null,
-      emailCustomer: true
+      emailCustomer: true,
+      selectedPickupLocation: null
     };
   },
   props: {
@@ -1053,6 +1054,11 @@ export default {
       this.storeSettings.deliveryInstructions;
     },
     pickupInstructions() {
+      if (this.selectedPickupLocation !== null) {
+        return _.find(this.pickupLocationOptions, loc => {
+          return loc.value === this.selectedPickupLocation;
+        }).instructions;
+      }
       if (this.storeSettings.pickupInstructions != null) {
         return this.storeSettings.pickupInstructions.replace(/\n/g, "<br>");
       } else return;
@@ -1066,7 +1072,8 @@ export default {
       return this.pickupLocations.map(loc => {
         return {
           value: loc.id,
-          text: loc.name
+          text: loc.name,
+          instructions: loc.instructions
         };
       });
     },
