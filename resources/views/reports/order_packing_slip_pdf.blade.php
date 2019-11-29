@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 @php
-$currency = $order->store->settings->currency_symbol
+$currency = $order->store->settings->currency_symbol;
 $subtotal = $currency . number_format($order->preFeePreDiscount, 2);
 $mealPlanDiscount = $currency . number_format($order->mealPlanDiscount, 2);
 $deliveryFee = $currency . number_format($order->deliveryFee, 2);
@@ -240,7 +240,7 @@ $brandColor = $order->store->settings->color;
           <table border="0" style="border:0px;border-style:none;">
             <tr>
               <td style="border:none"><b>Subtotal</b></td>
-              <td style="border:none;text-align:right;position:relative;right:30px">{{ $subtotal }}</td>
+              <td style="border:none;text-align:right;position:relative;right:30px">1</td>
             </tr>
             @if ($order->mealPlanDiscount > 0)<tr>
               <td style="border:none"><b>Subscription Discount</b></td>
