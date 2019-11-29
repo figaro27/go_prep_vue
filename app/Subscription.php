@@ -454,6 +454,7 @@ class Subscription extends Model
                 }
             }
 
+            // Update Meal Attachments using Explicits
             $attachments = MealAttachment::where(
                 'meal_id',
                 $mealSub->meal_id

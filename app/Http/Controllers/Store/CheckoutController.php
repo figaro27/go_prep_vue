@@ -395,6 +395,11 @@ class CheckoutController extends StoreController
 
                 $attachments = MealAttachment::where([
                     'meal_id' => $item['meal']['id'],
+                    'meal_size_id' => 0
+                ])->get();
+
+                $explicitAttachments = MealAttachment::where([
+                    'meal_id' => $item['meal']['id'],
                     'meal_size_id' => isset($item['size']['id'])
                         ? $item['size']['id']
                         : null,
@@ -407,6 +412,11 @@ class CheckoutController extends StoreController
                         ? $item['meal_package_size_id']
                         : null
                 ])->get();
+
+                if (count($explicitAttachments) > 0) {
+                    $attachments = $explicitAttachments;
+                }
+
                 if ($attachments) {
                     foreach ($attachments as $attachment) {
                         $mealOrder = new MealOrder();
@@ -758,6 +768,11 @@ class CheckoutController extends StoreController
 
                 $attachments = MealAttachment::where([
                     'meal_id' => $item['meal']['id'],
+                    'meal_size_id' => 0
+                ])->get();
+
+                $explicitAttachments = MealAttachment::where([
+                    'meal_id' => $item['meal']['id'],
                     'meal_size_id' => isset($item['size']['id'])
                         ? $item['size']['id']
                         : null,
@@ -770,6 +785,10 @@ class CheckoutController extends StoreController
                         ? $item['meal_package_size_id']
                         : null
                 ])->get();
+
+                if (count($explicitAttachments) > 0) {
+                    $attachments = $explicitAttachments;
+                }
                 if ($attachments) {
                     foreach ($attachments as $attachment) {
                         $mealOrder = new MealOrder();
@@ -877,6 +896,11 @@ class CheckoutController extends StoreController
 
                 $attachments = MealAttachment::where([
                     'meal_id' => $item['meal']['id'],
+                    'meal_size_id' => 0
+                ])->get();
+
+                $explicitAttachments = MealAttachment::where([
+                    'meal_id' => $item['meal']['id'],
                     'meal_size_id' => isset($item['size']['id'])
                         ? $item['size']['id']
                         : null,
@@ -889,6 +913,10 @@ class CheckoutController extends StoreController
                         ? $item['meal_package_size_id']
                         : null
                 ])->get();
+
+                if (count($explicitAttachments) > 0) {
+                    $attachments = $explicitAttachments;
+                }
                 if ($attachments) {
                     foreach ($attachments as $attachment) {
                         $mealSub = new MealSubscription();
