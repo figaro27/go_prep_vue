@@ -44,7 +44,8 @@ class StoreSetting extends Model
         'next_delivery_dates',
         'next_orderable_delivery_dates',
         'subscribed_delivery_days', // Delivery days with active subscriptionss
-        'stripe'
+        'stripe',
+        'currency_symbol'
     ];
 
     public static function boot()
@@ -287,5 +288,17 @@ class StoreSetting extends Model
     {
         return isset($this->notifications[$notif]) &&
             $this->notifications[$notif];
+    }
+
+    public function getCurrencySymbolAttribute()
+    {
+        switch ($this->currency) {
+            case "USD":
+                return '$';
+                break;
+            case "GBP":
+                return '£';
+                break;
+        }
     }
 }

@@ -37,6 +37,9 @@ body { width: auto !important; font-family: 'Open Sans', Arial, Sans-serif !impo
 u + .body .full { width:100% !important; width:100vw !important;}
 }
 </style>
+@php
+$currency = $order->store->settings->currency_symbol
+@endphp
 </head>
 
 <body class="body">
@@ -239,13 +242,13 @@ u + .body .full { width:100% !important; width:100vw !important;}
                     @endif
                   </td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;font-weight: bold; ">
-                    ${{ number_format($mealPackageItem->price, 2) }}
+                    {{$currency}}{{ number_format($mealPackageItem->price, 2) }}
                   </td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;font-weight: bold; ">
                     {{ $mealPackageItem->quantity }}
                   </td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;  font-weight: bold;">
-                    ${{ number_format($mealPackageItem->price * $mealPackageItem->quantity, 2) }}
+                    {{$currency}}{{ number_format($mealPackageItem->price * $mealPackageItem->quantity, 2) }}
                   </td>
                 </tr>
 
@@ -275,7 +278,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                     @if ($item->attached || $item->free)
                     Included
                     @else
-                    ${{ number_format($item->unit_price, 2) }}
+                    {{$currency}}{{ number_format($item->unit_price, 2) }}
                     @endif
                     </td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
@@ -283,7 +286,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                     @if ($item->attached || $item->free)
                     Included
                     @else
-                    ${{ number_format($item->price, 2) }}
+                    {{$currency}}{{ number_format($item->price, 2) }}
                     @endif
                   </td>
                 </tr>
@@ -300,9 +303,9 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 <tr>
                   <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->title }}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
-                    ${{ number_format($lineItemOrder->price, 2) }}</td>
+                    {{$currency}}{{ number_format($lineItemOrder->price, 2) }}</td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->quantity }}</td>
-                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; font-weight: bold ">${{ number_format($lineItemOrder->quantity * $lineItemOrder->price, 2) }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; font-weight: bold ">{{$currency}}{{ number_format($lineItemOrder->quantity * $lineItemOrder->price, 2) }}</td>
                 </tr>
               @endforeach
               </table>
@@ -378,34 +381,34 @@ u + .body .full { width:100% !important; width:100vw !important;}
                     
                       
                         <td bgcolor="#e1e6e7" style="padding-left:15px;font-family: 'Open Sans', Arial, sans-serif; font-size:12px; color:#3b3b3b; line-height:26px; text-transform:uppercase;line-height:24px;">
-                          ${{ number_format($subtotal, 2) }}<br>
+                          {{$currency}}{{ number_format($subtotal, 2) }}<br>
                           @if ($coupon > 0)
-                          (${{ number_format($coupon, 2) }})<br>
+                          ({{$currency}}{{ number_format($coupon, 2) }})<br>
                           @endif
                           @if ($mealPlanDiscount > 0)
-                          (${{ number_format($mealPlanDiscount, 2) }})<br>
+                          ({{$currency}}{{ number_format($mealPlanDiscount, 2) }})<br>
                           @endif
                           @if ($salesTax > 0)
-                          ${{ number_format($salesTax, 2) }}<br>
+                          {{$currency}}{{ number_format($salesTax, 2) }}<br>
                           @endif
                           @if ($deliveryFee > 0)
-                          ${{ number_format($deliveryFee, 2) }}<br>
+                          {{$currency}}{{ number_format($deliveryFee, 2) }}<br>
                           @endif
                           @if ($processingFee > 0)
-                          ${{ number_format($processingFee, 2) }}<br>
+                          {{$currency}}{{ number_format($processingFee, 2) }}<br>
                           @endif
                           
                           <br>
-                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold; ">${{ number_format($order->amount, 2) }}
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold; ">{{$currency}}{{ number_format($order->amount, 2) }}
                             @if ($order->cashOrder)
                               {{$order->store->moduleSettings->cashOrderWording }}
                             @endif
                           </span><br>
                           @if ($balance > 0)
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
-                            ${{number_format($order->amount - $order->balance, 2)}}</span><br>
+                            {{$currency}}{{number_format($order->amount - $order->balance, 2)}}</span><br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
-                            ${{number_format($order->balance, 2)}}</span>
+                            {{$currency}}{{number_format($order->balance, 2)}}</span>
                           @endif
                         </td>
                       </tr>

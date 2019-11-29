@@ -1,15 +1,16 @@
 <!doctype html>
 <html>
 @php
-$subtotal = '$'.number_format($order->preFeePreDiscount, 2);
-$mealPlanDiscount = '$'.number_format($order->mealPlanDiscount, 2);
-$deliveryFee = '$'.number_format($order->deliveryFee, 2);
-$processingFee = '$'.number_format($order->processingFee, 2);
-$salesTax = '$'.number_format($order->salesTax, 2);
-$coupon = '$'.number_format($order->couponReduction, 2);
+$currency = $order->store->settings->currency_symbol
+$subtotal = $currency . number_format($order->preFeePreDiscount, 2);
+$mealPlanDiscount = $currency . number_format($order->mealPlanDiscount, 2);
+$deliveryFee = $currency . number_format($order->deliveryFee, 2);
+$processingFee = $currency . number_format($order->processingFee, 2);
+$salesTax = $currency . number_format($order->salesTax, 2);
+$coupon = $currency . number_format($order->couponReduction, 2);
 $couponCode = $order->couponCode;
-$amount = '$'.number_format($order->amount, 2);
-$deposit = '$'.number_format($order->deposit, 2);
+$amount = $currency . number_format($order->amount, 2);
+$deposit = $currency . number_format($order->deposit, 2);
 $cashOrder = $order->cashOrder;
 $balance = $order->balance;
 $brandColor = $order->store->settings->color;
@@ -178,7 +179,7 @@ $brandColor = $order->store->settings->color;
           <td style="text-align:center">{{$mealPackageItem->quantity}}</td>
           <td>{{ isset($mealPackageItem->meal_package_size) && $mealPackageItem->meal_package_size? $mealPackageItem->meal_package_size->title:$mealPackageItem->meal_package->default_size_title }}</td>
           <td>{{ $mealPackageItem->meal_package->title }}</td>
-          <td style="text-align:center">${{number_format($mealPackageItem->price * $mealPackageItem->quantity, 2)}}</td>
+          <td style="text-align:center">{{$currency}}{{number_format($mealPackageItem->price * $mealPackageItem->quantity, 2)}}</td>
         </tr>
 
         @foreach($order->items as $i => $item)
@@ -208,7 +209,7 @@ $brandColor = $order->store->settings->color;
             @if ($item->attached || $item->free)
             Included
             @else
-            ${{ number_format($item->price, 2) }}
+            {{$currency}}{{ number_format($item->price, 2) }}
             @endif
           </td>
         </tr>
@@ -222,7 +223,7 @@ $brandColor = $order->store->settings->color;
           <td style="text-align:center">{{$lineItemOrder->quantity}}</td>
           <td></td>
           <td>{!! $lineItemOrder->title !!}</td>
-          <td style="text-align:center">${{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
+          <td style="text-align:center">{{$currency}}{{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
         </tr>
         @endforeach
         @endif
@@ -266,7 +267,7 @@ $brandColor = $order->store->settings->color;
               <td style="border:none;text-align:right;position:relative;right:30px">{{ $amount }}</td>
             </tr><tr>
             <td style="border:none"><b>Paid</b></td>
-              <td style="border:none;text-align:right;position:relative;right:30px">${{number_format($order->amount - $order->balance, 2)}}</td>
+              <td style="border:none;text-align:right;position:relative;right:30px">{{$currency}}{{number_format($order->amount - $order->balance, 2)}}</td>
             </tr>
             @endif
           </table>
@@ -277,7 +278,7 @@ $brandColor = $order->store->settings->color;
         <tr>
           <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">
           Amount Due</th>
-          <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">${{number_format($order->balance, 2)}}</th>
+          <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{$currency}}{{number_format($order->balance, 2)}}</th>
         </tr>
         @endif
         @if ($order->balance <= 0)

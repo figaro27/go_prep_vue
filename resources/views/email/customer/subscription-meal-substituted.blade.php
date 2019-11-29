@@ -37,6 +37,9 @@ body { width: auto !important; font-family: 'Open Sans', Arial, Sans-serif !impo
 u + .body .full { width:100% !important; width:100vw !important;}
 }
 </style>
+@php
+$currency = $subscription->store->settings->currency_symbol
+@endphp
 </head>
 
 <body class="body">
