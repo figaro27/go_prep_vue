@@ -240,7 +240,7 @@ $brandColor = $order->store->settings->color;
           <table border="0" style="border:0px;border-style:none;">
             <tr>
               <td style="border:none"><b>Subtotal</b></td>
-              <td style="border:none;text-align:right;position:relative;right:30px">1</td>
+              <td style="border:none;text-align:right;position:relative;right:30px">{{ $subtotal }}</td>
             </tr>
             @if ($order->mealPlanDiscount > 0)<tr>
               <td style="border:none"><b>Subscription Discount</b></td>
