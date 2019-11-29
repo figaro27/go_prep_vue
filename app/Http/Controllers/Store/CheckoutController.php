@@ -423,6 +423,8 @@ class CheckoutController extends StoreController
                         $mealOrder->order_id = $order->id;
                         $mealOrder->store_id = $store->id;
                         $mealOrder->meal_id = $attachment->attached_meal_id;
+                        $mealOrder->meal_size_id =
+                            $attachment->attached_meal_size_id;
                         $mealOrder->quantity =
                             $attachment->quantity * $item['quantity'];
                         $mealOrder->attached = 1;
@@ -795,6 +797,8 @@ class CheckoutController extends StoreController
                         $mealOrder->order_id = $order->id;
                         $mealOrder->store_id = $store->id;
                         $mealOrder->meal_id = $attachment->attached_meal_id;
+                        $mealOrder->meal_size_id =
+                            $attachment->attached_meal_size_id;
                         $mealOrder->quantity =
                             $attachment->quantity * $item['quantity'];
                         if (
@@ -923,6 +927,8 @@ class CheckoutController extends StoreController
                         $mealSub->subscription_id = $userSubscription->id;
                         $mealSub->store_id = $store->id;
                         $mealSub->meal_id = $attachment->attached_meal_id;
+                        $mealOrder->meal_size_id =
+                            $attachment->attached_meal_size_id;
                         $mealSub->quantity =
                             $attachment->quantity * $item['quantity'];
                         $mealSub->save();
