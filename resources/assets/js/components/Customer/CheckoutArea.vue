@@ -75,8 +75,8 @@
                   @change="
                     val => {
                       setWeeklySubscriptionValue(val);
+                      setBagPurchasedGiftCard(null);
                       updateParentData();
-
                       setBagMealPlan(val);
                     }
                   "
@@ -122,7 +122,7 @@
         <div class="row">
           <div class="col-6 col-md-4">
             <span class="d-inline mr-2" @click="removeCoupon">
-              <img class="couponX" src="/images/customer/x.png" />
+              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
             </span>
             <span class="text-success">({{ coupon.code }})</span>
           </div>
@@ -149,7 +149,7 @@
         <div class="row">
           <div class="col-6 col-md-4">
             <span class="d-inline mr-2" @click="removePurchasedGiftCard">
-              <img class="couponX" src="/images/customer/x.png" />
+              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
             </span>
             <span class="text-success">({{ purchasedGiftCard.code }})</span>
           </div>
@@ -248,6 +248,7 @@
         </div>
       </li>
 
+      <!-- Coupon Area -->
       <li v-if="hasCoupons">
         <div class="row">
           <div class="col-xs-6 pl-3">
@@ -1622,7 +1623,10 @@ export default {
           this.$toastr.s("Coupon Applied.", "Success");
         }
       });
-
+      if (this.weeklySubscriptionValue) {
+        this.$toastr.w("Gift cards are allowed on one time orders only.");
+        return;
+      }
       this.purchasedGiftCards.forEach(purchasedGiftCard => {
         if (
           this.couponCode.toUpperCase() === purchasedGiftCard.code.toUpperCase()
@@ -1757,6 +1761,7 @@ export default {
           emailCustomer: this.emailCustomer
         })
         .then(resp => {
+          this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
           this.$toastr.s("Order Adjusted");
           this.$router.push({ path: "/store/orders" });
           this.refreshUpcomingOrders();
@@ -1882,13 +1887,12 @@ export default {
         .then(async resp => {
           //this.checkingOut = false;
           //return false
-
+          this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
           this.emptyBag();
           let weeklyDelivery = this.weeklySubscription;
           this.setBagMealPlan(false);
           this.setBagCoupon(null);
           this.setBagPurchasedGiftCard(null);
-          this.refreshStorePurchasedGiftCards();
 
           if (this.$route.params.manualOrder && weeklyDelivery) {
             this.refreshStoreSubscriptions();
