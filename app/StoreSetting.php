@@ -37,7 +37,8 @@ class StoreSetting extends Model
     protected $hidden = [
         'stripe_account',
         'application_fee',
-        'authorize_transaction_key'
+        'authorize_transaction_key',
+        'currency_symbol'
     ];
 
     public $appends = [
