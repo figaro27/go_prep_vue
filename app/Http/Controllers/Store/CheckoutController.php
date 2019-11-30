@@ -492,13 +492,14 @@ class CheckoutController extends StoreController
                     ->send($email);
             } catch (\Exception $e) {
             }*/
-
-            $purchasedGiftCard = PurchasedGiftCard::where(
-                'id',
-                $purchasedGiftCardId
-            )->first();
-            $purchasedGiftCard->balance -= $purchasedGiftCardReduction;
-            $purchasedGiftCard->update();
+            if (isset($purchasedGiftCardId)) {
+                $purchasedGiftCard = PurchasedGiftCard::where(
+                    'id',
+                    $purchasedGiftCardId
+                )->first();
+                $purchasedGiftCard->balance -= $purchasedGiftCardReduction;
+                $purchasedGiftCard->update();
+            }
 
             if ($bagItems && count($bagItems) > 0) {
                 foreach ($bagItems as $bagItem) {

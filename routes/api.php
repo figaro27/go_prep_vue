@@ -286,6 +286,7 @@ foreach (
                             Route::resource('units', 'UnitController');
                             Route::resource('categories', 'CategoryController');
                             Route::resource('coupons', 'CouponController');
+                            Route::resource('giftCards', 'GiftCardController');
                             Route::resource(
                                 'purchasedGiftCards',
                                 'PurchasedGiftCardController'

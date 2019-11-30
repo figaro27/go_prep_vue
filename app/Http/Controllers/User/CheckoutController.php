@@ -416,13 +416,14 @@ class CheckoutController extends UserController
                     }
                 }
             }
-
-            $purchasedGiftCard = PurchasedGiftCard::where(
-                'id',
-                $purchasedGiftCardId
-            )->first();
-            $purchasedGiftCard->balance -= $purchasedGiftCardReduction;
-            $purchasedGiftCard->update();
+            if (isset($purchasedGiftCardId)) {
+                $purchasedGiftCard = PurchasedGiftCard::where(
+                    'id',
+                    $purchasedGiftCardId
+                )->first();
+                $purchasedGiftCard->balance -= $purchasedGiftCardReduction;
+                $purchasedGiftCard->update();
+            }
 
             // Send notification to store
             if ($storeSettings->notificationEnabled('new_order')) {

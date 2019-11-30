@@ -139,7 +139,7 @@ class Store extends Model
 
     public function giftCards()
     {
-        return $this->hasMany('App\giftCards');
+        return $this->hasMany('App\GiftCard');
     }
 
     public function purchasedGiftCards()

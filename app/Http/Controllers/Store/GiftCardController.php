@@ -14,7 +14,7 @@ class GiftCardController extends StoreController
      */
     public function index()
     {
-        //
+        return $this->store->giftCards;
     }
 
     /**

@@ -11,6 +11,7 @@ use App\MealPackage;
 use App\Category;
 use App\DeliveryDay;
 use App\DeliveryDayMeal;
+use App\GiftCard;
 use Illuminate\Http\Request;
 
 class SpaController extends Controller
@@ -67,6 +68,7 @@ class SpaController extends Controller
                         'moduleSettings',
                         'details',
                         'coupons',
+                        'giftCards',
                         'purchasedGiftCards',
                         'pickupLocations',
                         'lineItems',
@@ -101,6 +103,7 @@ class SpaController extends Controller
                         'settings',
                         'storeDetail',
                         'coupons',
+                        'giftCards',
                         'purchasedGiftCards',
                         'pickupLocations',
                         'productionGroups',
@@ -131,6 +134,7 @@ class SpaController extends Controller
                         'moduleSettings',
                         'details',
                         'coupons',
+                        'giftCards',
                         'purchasedGiftCards',
                         'pickupLocations',
                         'lineItems',
@@ -242,6 +246,7 @@ class SpaController extends Controller
                     'settings',
                     'storeDetail',
                     'coupons',
+                    'giftCards',
                     'purchasedGiftCards',
                     'pickupLocations',
                     'productionGroups',
@@ -270,6 +275,7 @@ class SpaController extends Controller
                     'moduleSettings',
                     'details',
                     'coupons',
+                    'giftCards',
                     'purchasedGiftCards',
                     'pickupLocations',
                     'lineItems'
@@ -469,7 +475,7 @@ class SpaController extends Controller
             }
         }
 
-        $items = $meals = $packages = []; // Both of meals and packages
+        $items = $meals = $packages = $giftCards = []; // Both of meals and packages
         $end = 0;
 
         if ($store_id != 0) {
@@ -650,6 +656,27 @@ class SpaController extends Controller
                     }
                 }
 
+                $new_limit = $limit;
+                if ($packages && count($packages) > 0) {
+                    $new_limit = $limit - count($packages);
+                }
+
+                if ($new_limit > 0) {
+                    $giftCards = GiftCard::whereHas('categories', function (
+                        $query
+                    ) use ($category_id) {
+                        $query->where('categories.id', $category_id);
+                    })->where([
+                        'store_id' => $store_id
+                    ]);
+
+                    $giftCards = $giftCards
+                        ->orderBy('title')
+                        ->limit($new_limit)
+                        ->get()
+                        ->toArray();
+                }
+
                 /* Set Delivery Day */
                 if ($delivery_day && $delivery_day_id != 0) {
                     if (count($meals)) {
@@ -662,12 +689,20 @@ class SpaController extends Controller
 
                 /* Set Return Value */
                 $next = false;
-                if (count($meals) == 0 && count($packages) == 0) {
+                if (
+                    count($meals) == 0 &&
+                    count($packages) == 0 &&
+                    count($giftCards) == 0
+                ) {
                     // Next
                     $items = [];
                     $next = true;
-                } elseif (count($meals) > 0 && count($packages) > 0) {
-                    $items = array_merge($meals, $packages);
+                } elseif (
+                    count($meals) > 0 &&
+                    count($packages) > 0 &&
+                    count($giftCards) > 0
+                ) {
+                    $items = array_merge($meals, $packages, $giftCards);
 
                     if (count($items) >= $limit) {
                         $offset_meal = 0;
@@ -722,6 +757,7 @@ class SpaController extends Controller
             'items' => $items,
             'meals' => $meals,
             'packages' => $packages,
+            'gift_cards' => $giftCards,
             'category_data' => $category_data,
             'offset_meal' => $offset_meal,
             'offset_package' => $offset_package,
@@ -929,6 +965,7 @@ class SpaController extends Controller
                 'settings',
                 'details',
                 'coupons',
+                'giftCards',
                 'purchasedGiftCards',
                 'pickupLocations',
                 'lineItems',

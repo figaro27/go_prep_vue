@@ -115,25 +115,26 @@
               <div
                 slot="tags"
                 slot-scope="props"
-                v-if="!props.row.meal_package"
+                v-if="!props.row.meal_package && !props.row.gift_card"
               >
                 {{ props.row.tag_titles.join(", ") }}
               </div>
               <div slot="categories" slot-scope="props">
-                <div v-if="!props.row.meal_package">
+                <div v-if="!props.row.meal_package && !props.row.gift_card">
                   {{
                     props.row.category_ids
                       .map(categoryId => getCategoryTitle(categoryId))
                       .join(", ")
                   }}
                 </div>
-                <div v-else>Packages</div>
+                <div v-else-if="props.row.meal_package">Packages</div>
+                <div v-else>Gift Cards</div>
               </div>
 
               <div
                 slot="contains"
                 slot-scope="props"
-                v-if="!props.row.meal_package"
+                v-if="!props.row.meal_package && !props.row.gift_card"
               >
                 {{
                   props.row.allergy_ids
@@ -967,7 +968,8 @@ export default {
       storeCurrencySymbol: "storeCurrencySymbol",
       storeModules: "storeModules",
       storeProductionGroups: "storeProductionGroups",
-      isLazyStore: "isLazyStore"
+      isLazyStore: "isLazyStore",
+      giftCards: "storeGiftCards"
     }),
     storeURLcheck() {
       let URL = window.location.href;
@@ -993,7 +995,11 @@ export default {
       const meals = Object.values(this.meals).filter(
         meal => meal.deleted_at === null
       );
-      return _.concat(packages, meals);
+      const giftCards = Object.values(this.giftCards).map(mealPackage => {
+        return mealPackage;
+      });
+
+      return _.concat(packages, meals, giftCards);
     },
     tagOptions() {
       return Object.values(this.tags).map(tag => {
