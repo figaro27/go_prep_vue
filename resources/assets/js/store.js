@@ -45,6 +45,7 @@ const state = {
       data: {}
     },
     coupons: [],
+    purchased_gift_cards: [],
     pickupLocations: [],
     lineItems: []
   },
@@ -53,6 +54,7 @@ const state = {
   bag: {
     items: {},
     coupon: null,
+    purchased_gift_card: null,
     meal_plan: false
   },
   delivery_date: null,
@@ -115,6 +117,9 @@ const state = {
       data: {}
     },
     coupons: {
+      data: {}
+    },
+    purchased_gift_cards: {
       data: {}
     },
     pickupLocations: {
@@ -186,6 +191,9 @@ const mutations = {
   },
   setViewedStoreCoupons(state, { coupons }) {
     state.viewed_store.coupons = coupons;
+  },
+  setViewedStorePurchasedGiftCards(state, { purchased_gift_cards }) {
+    state.viewed_store.purchased_gift_cards = purchased_gift_cards;
   },
   setViewedStorePickupLocations(state, { pickupLocations }) {
     state.viewed_store.pickupLocations = pickupLocations;
@@ -653,6 +661,9 @@ const mutations = {
   setBagCoupon(state, coupon) {
     state.bag.coupon = coupon;
   },
+  setBagPurchasedGiftCard(state, purchased_gift_card) {
+    state.bag.purchased_gift_card = purchased_gift_card;
+  },
   setBagMealPlan(state, mealPlan) {
     state.bag.meal_plan = mealPlan;
   },
@@ -691,6 +702,10 @@ const mutations = {
 
   storeCoupons(state, { coupons }) {
     state.store.coupons.data = coupons;
+  },
+
+  storePurchasedGiftCards(state, { purchased_gift_cards }) {
+    state.store.purchased_gift_cards.data = purchased_gift_cards;
   },
 
   storePickupLocations(state, { pickupLocations }) {
@@ -1180,6 +1195,16 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.store.purchased_gift_cards)) {
+        let purchased_gift_cards = data.store.purchased_gift_cards;
+
+        if (!_.isEmpty(purchased_gift_cards)) {
+          commit("storePurchasedGiftCards", { purchased_gift_cards });
+        }
+      }
+    } catch (e) {}
+
+    try {
       if (
         !_.isEmpty(data.store.customers) &&
         _.isObject(data.store.customers)
@@ -1383,6 +1408,16 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.purchased_gift_cards)) {
+        let purchased_gift_cards = data.purchased_gift_cards;
+
+        if (!_.isEmpty(purchased_gift_cards)) {
+          commit("setViewedStorePurchasedGiftCards", { purchased_gift_cards });
+        }
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.pickup_locations)) {
         let pickupLocations = data.store.pickup_locations;
 
@@ -1432,6 +1467,16 @@ const actions = {
 
         if (!_.isEmpty(coupons)) {
           commit("setViewedStoreCoupons", { coupons });
+        }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.purchased_gift_cards)) {
+        let purchased_gift_cards = data.purchased_gift_cards;
+
+        if (!_.isEmpty(purchased_gift_cards)) {
+          commit("setViewedStorePurchasedGiftCards", { purchased_gift_cards });
         }
       }
     } catch (e) {}
@@ -1489,6 +1534,16 @@ const actions = {
 
         if (!_.isEmpty(coupons)) {
           commit("setViewedStoreCoupons", { coupons });
+        }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.purchased_gift_cards)) {
+        let purchased_gift_cards = data.purchased_gift_cards;
+
+        if (!_.isEmpty(purchased_gift_cards)) {
+          commit("setViewedStorePurchasedGiftCards", { purchased_gift_cards });
         }
       }
     } catch (e) {}
@@ -1575,6 +1630,17 @@ const actions = {
       commit("storeCoupons", { coupons: data });
     } else {
       throw new Error("Failed to retrieve coupons");
+    }
+  },
+
+  async refreshStorePurchasedGiftCards({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/purchasedGiftCards");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      commit("storePurchasedGiftCards", { purchased_gift_cards: data });
+    } else {
+      throw new Error("Failed to retrieve gift cards");
     }
   },
 
@@ -2228,6 +2294,13 @@ const getters = {
       return null;
     }
   },
+  viewedStorePurchasedGiftCards(state, getters) {
+    try {
+      return state.viewed_store.purchased_gift_cards;
+    } catch (e) {
+      return null;
+    }
+  },
   viewedStorePickupLocations(state, getters) {
     try {
       return state.viewed_store.pickupLocations;
@@ -2498,6 +2571,9 @@ const getters = {
   bagCoupon(state) {
     return state.bag.coupon;
   },
+  bagPurchasedGiftCard(state) {
+    return state.bag.purchased_gift_card;
+  },
   bagMealPlan(state) {
     return state.bag.meal_plan;
   },
@@ -2746,6 +2822,13 @@ const getters = {
   storeCoupons: state => {
     try {
       return state.store.coupons.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storePurchasedGiftCards: state => {
+    try {
+      return state.store.purchased_gift_cards.data || {};
     } catch (e) {
       return {};
     }

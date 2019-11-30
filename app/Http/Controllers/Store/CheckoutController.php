@@ -28,6 +28,7 @@ use App\LineItemOrder;
 use App\MealPackageOrder;
 use App\MealPackageSubscription;
 use App\OrderBag;
+use App\PurchasedGiftCard;
 use App\Billing\Constants;
 use App\Billing\Charge;
 use App\Billing\Authorize;
@@ -81,6 +82,10 @@ class CheckoutController extends StoreController
         $couponId = $request->get('coupon_id');
         $couponReduction = $request->get('couponReduction');
         $couponCode = $request->get('couponCode');
+        $purchasedGiftCardId = $request->get('purchased_gift_card_id');
+        $purchasedGiftCardReduction = $request->get(
+            'purchasedGiftCardReduction'
+        );
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
@@ -268,6 +273,8 @@ class CheckoutController extends StoreController
             $order->coupon_id = $couponId;
             $order->couponReduction = $couponReduction;
             $order->couponCode = $couponCode;
+            $order->purchased_gift_card_id = $purchasedGiftCardId;
+            $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->deposit = $deposit;
@@ -485,6 +492,13 @@ class CheckoutController extends StoreController
                     ->send($email);
             } catch (\Exception $e) {
             }*/
+
+            $purchasedGiftCard = PurchasedGiftCard::where(
+                'id',
+                $purchasedGiftCardId
+            )->first();
+            $purchasedGiftCard->balance -= $purchasedGiftCardReduction;
+            $purchasedGiftCard->update();
 
             if ($bagItems && count($bagItems) > 0) {
                 foreach ($bagItems as $bagItem) {

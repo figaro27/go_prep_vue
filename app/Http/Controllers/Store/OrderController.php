@@ -16,6 +16,7 @@ use App\Customer;
 use App\Card;
 use App\OrderBag;
 use App\OrderTransaction;
+use App\PurchasedGiftCard;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Carbon;
@@ -271,6 +272,10 @@ class OrderController extends StoreController
         $couponId = $request->get('coupon_id');
         $couponReduction = $request->get('couponReduction');
         $couponCode = $request->get('couponCode');
+        $purchasedGiftCardId = $request->get('purchased_gift_card_id');
+        $purchasedGiftCardReduction = $request->get(
+            'purchasedGiftCardReduction'
+        );
         $deliveryFee = $request->get('deliveryFee');
         $deliveryDate = $request->get('deliveryDate');
         $isMultipleDelivery = (int) $request->get('isMultipleDelivery');
@@ -313,6 +318,8 @@ class OrderController extends StoreController
         $order->coupon_id = $couponId;
         $order->couponReduction = $couponReduction;
         $order->couponCode = $couponCode;
+        $order->purchased_gift_card_id = $purchasedGiftCardId;
+        $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
         $order->pickup_location_id = $pickupLocation;
         $order->transferTime = $transferTime;
 
