@@ -953,16 +953,13 @@ const triggerLazy = (
         }
 
         if (data.category_data && data.category_data.length > 0) {
-          if (!finalCategories.length) {
-            finalCategories = data.category_data.map(item => {
-              return {
-                ...item,
-                visible: false
-              };
-            });
-          }
-
-          items = [];
+          finalCategories = [];
+          finalCategories = data.category_data.map(item => {
+            return {
+              ...item,
+              visible: false
+            };
+          });
 
           for (let i in finalCategories) {
             const {
@@ -977,7 +974,7 @@ const triggerLazy = (
               date_range_exclusive_from,
               date_range_exclusive_to
             } = finalCategories[i];
-            items.push({
+            const itemData = {
               category: category,
               subtitle: subtitle,
               category_id: id,
@@ -989,7 +986,8 @@ const triggerLazy = (
               date_range_to,
               date_range_exclusive_from,
               date_range_exclusive_to
-            });
+            };
+            items.push(itemData);
           }
 
           category_id = finalCategories[0].id;
@@ -1306,6 +1304,7 @@ const actions = {
     dispatch("refreshOrderIngredients");
     dispatch("refreshIngredients");
     dispatch("refreshStoreSubscriptions");
+    dispatch("refreshLazy");
   },
 
   async initCustomer({ commit, state, dispatch }, data = {}) {
@@ -1317,6 +1316,7 @@ const actions = {
     dispatch("refreshCards");
     dispatch("refreshCustomerOrders");
     dispatch("refreshSubscriptions");
+    dispatch("refreshLazy");
   },
 
   async initGuest({ commit, state, dispatch }, data = {}) {
