@@ -432,17 +432,21 @@
                   <div v-else class="content-area" style="position: relative;">
                     <div class="content-text-wrap">
                       <!--<div v-else class="col-md-11">!-->
-                      <strong style="word-break: break-all;">{{
-                        meal.title
-                      }}</strong>
-                      <div class="mt-1 content-text">
-                        {{ meal.description }}
+                      <div style="flex-basis:80%">
+                        <strong style="word-break: break-all;">{{
+                          meal.title
+                        }}</strong>
                       </div>
-                      <div
-                        class="price-no-bg"
-                        style="top: 0 !important; right: 0 !important;"
-                      >
-                        {{ format.money(meal.price, storeSettings.currency) }}
+                      <div style="flex-basis:20%">
+                        <div class="mt-1 content-text">
+                          {{ meal.description }}
+                        </div>
+                        <div
+                          class="price-no-bg"
+                          style="top: 0 !important; right: 0 !important;"
+                        >
+                          {{ format.money(meal.price, storeSettings.currency) }}
+                        </div>
                       </div>
                     </div>
                   </div>
