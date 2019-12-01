@@ -415,10 +415,7 @@
                         :src="meal.image.url_thumb"
                         :spinner="false"
                       ></thumbnail>
-                      <div
-                        class="price"
-                        style="top: 5px !important; right: 5px !important;"
-                      >
+                      <div class="price" style="right: 5px !important;">
                         {{ format.money(meal.price, storeSettings.currency) }}
                       </div>
                     </div>

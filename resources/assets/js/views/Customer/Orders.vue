@@ -60,7 +60,7 @@
                         </p>
                       </template>
                       <template v-else>
-                        <p>Multiple Delivery</p>
+                        <p>Multiple Days</p>
                       </template>
                       <p v-if="order.pickup_location_id != null">
                         <b>Pickup Location:</b>
@@ -315,7 +315,7 @@ export default {
         "size",
         "meal",
         "quantity",
-        "unit_price",
+        "Unit_Price",
         "subtotal"
       ]
     };
@@ -353,7 +353,9 @@ export default {
       order.meal_package_items.forEach(meal_package_item => {
         if (meal_package_item.meal_package_size === null) {
           data.push({
-            delivery_date: meal_package_item.delivery_date,
+            delivery_date: moment(meal_package_item.delivery_date).format(
+              "dddd, MMM Do"
+            ),
             size: meal_package_item.meal_package.default_size_title,
             meal: meal_package_item.meal_package.title,
             quantity: meal_package_item.quantity,
@@ -365,7 +367,9 @@ export default {
           });
         } else {
           data.push({
-            delivery_date: meal_package_item.delivery_date,
+            delivery_date: moment(meal_package_item.delivery_date).format(
+              "dddd, MMM Do"
+            ),
             size: meal_package_item.meal_package_size.title,
             meal: meal_package_item.meal_package.title,
             quantity: meal_package_item.quantity,
@@ -394,7 +398,7 @@ export default {
             );
 
             data.push({
-              delivery_date: item.delivery_date,
+              delivery_date: moment(item.delivery_date).format("dddd, MMM Do"),
               size: size ? size.title : meal.default_size_title,
               //meal: meal.title,
               meal: title,
@@ -423,7 +427,7 @@ export default {
           );
 
           data.push({
-            delivery_date: item.delivery_date,
+            delivery_date: moment(item.delivery_date).format("dddd, MMM Do"),
             size: size ? size.title : meal.default_size_title,
             //meal: meal.title,
             meal: title,
