@@ -167,7 +167,12 @@
               {{ moment(props.row.created_at).format("dddd, MMM Do") }}
             </div>
             <div slot="delivery_date" slot-scope="props">
-              {{ moment(props.row.delivery_date).format("dddd, MMM Do") }}
+              <template v-if="!props.row.isMultipleDelivery">
+                {{ moment(props.row.delivery_date).format("dddd, MMM Do") }}
+              </template>
+              <template v-else>
+                Multiple Delivery
+              </template>
             </div>
             <div slot="pickup" slot-scope="props">
               {{ props.row.pickup ? "Pickup" : "Delivery" }}
@@ -550,8 +555,13 @@
             <span v-if="!storeModules.hideTransferOptions">
               <h4 v-if="!order.pickup">Delivery Day</h4>
               <h4 v-if="order.pickup">Pickup Day</h4>
-              {{ moment(order.delivery_date).format("dddd, MMM Do") }}
-              <span v-if="order.transferTime"> {{ order.transferTime }}</span>
+              <template v-if="!order.isMultipleDelivery">
+                {{ moment(order.delivery_date).format("dddd, MMM Do") }}
+                <span v-if="order.transferTime"> {{ order.transferTime }}</span>
+              </template>
+              <template v-else>
+                <p>Multiple Delivery</p>
+              </template>
             </span>
             <p v-if="order.pickup_location_id != null" class="mt-1">
               <b>Pickup Location:</b>
@@ -642,9 +652,59 @@
             <h4>Items</h4>
             <hr />
             <v-client-table
+              v-if="!order.isMultipleDelivery"
               striped
               stacked="sm"
               :columns="columnsMeal"
+              :data="getMealTableData(order)"
+              ref="mealsTable"
+              foot-clone
+            >
+              <template slot="meal" slot-scope="props">
+                <div v-html="props.row.meal"></div>
+              </template>
+
+              <template slot="FOOT_subtotal" slot-scope="row">
+                <p>
+                  Subtotal:
+                  {{ format.money(order.preFeePreDiscount, order.currency) }}
+                </p>
+                <p class="text-success" v-if="order.couponReduction > 0">
+                  Coupon {{ order.couponCode }}: ({{
+                    format.money(order.couponReduction, order.currency)
+                  }})
+                </p>
+                <p v-if="order.mealPlanDiscount > 0" class="text-success">
+                  Subscription Discount: ({{
+                    format.money(order.mealPlanDiscount, order.currency)
+                  }})
+                </p>
+                <p v-if="order.deliveryFee > 0">
+                  Delivery Fee:
+                  {{ format.money(order.deliveryFee, order.currency) }}
+                </p>
+                <p v-if="order.processingFee > 0">
+                  Processing Fee:
+                  {{ format.money(order.processingFee, order.currency) }}
+                </p>
+                <p v-if="order.salesTax > 0">
+                  Sales Tax:
+                  {{ format.money(order.salesTax, order.currency) }}
+                </p>
+                <p class="strong">
+                  Total:
+                  {{ format.money(order.amount, order.currency) }}
+                </p>
+              </template>
+
+              <template slot="table-caption"></template>
+            </v-client-table>
+
+            <v-client-table
+              v-if="order.isMultipleDelivery"
+              striped
+              stacked="sm"
+              :columns="columnsMealMultipleDelivery"
               :data="getMealTableData(order)"
               ref="mealsTable"
               foot-clone
@@ -779,6 +839,14 @@ export default {
       user_detail: {},
       meals: {},
       columnsMeal: ["size", "meal", "quantity", "unit_price", "subtotal"],
+      columnsMealMultipleDelivery: [
+        "delivery_date",
+        "size",
+        "meal",
+        "quantity",
+        "unit_price",
+        "subtotal"
+      ],
       columns: [
         "icons",
         "order_number",
@@ -1194,6 +1262,7 @@ export default {
       order.meal_package_items.forEach(meal_package_item => {
         if (meal_package_item.meal_package_size === null) {
           data.push({
+            delivery_date: meal_package_item.delivery_date,
             size: meal_package_item.meal_package.default_size_title,
             meal: meal_package_item.meal_package.title,
             quantity: meal_package_item.quantity,
@@ -1205,6 +1274,7 @@ export default {
           });
         } else {
           data.push({
+            delivery_date: meal_package_item.delivery_date,
             size: meal_package_item.meal_package_size.title,
             meal: meal_package_item.meal_package.title,
             quantity: meal_package_item.quantity,
@@ -1232,6 +1302,7 @@ export default {
             );
 
             data.push({
+              delivery_date: item.delivery_date,
               //meal: meal.title,
               size: size ? size.title : meal.default_size_title,
               meal: title,
@@ -1260,6 +1331,7 @@ export default {
           );
 
           data.push({
+            delivery_date: item.delivery_date,
             //meal: meal.title,
             size: size ? size.title : meal.default_size_title,
             meal: title,

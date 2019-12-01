@@ -12,6 +12,8 @@ use App\Category;
 use App\DeliveryDay;
 use App\DeliveryDayMeal;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Collection;
+use App\Http\Resources\{DeliveryDayResource, DeliveryDayCollection};
 
 class SpaController extends Controller
 {
@@ -436,8 +438,6 @@ class SpaController extends Controller
         $data = $request->all();
         extract($data);
 
-        $delivery_day_id = (int) $delivery_day_id;
-
         $offset_meal = (int) $offset_meal;
         $offset_package = (int) $offset_package;
         $category_id = (int) $category_id;
@@ -737,16 +737,15 @@ class SpaController extends Controller
 
         $store_id = (int) $store_id;
 
-        $delivery_days = [];
+        $delivery_days = new Collection();
         if ($store_id != 0 && $base_day != "") {
             $delivery_days = DeliveryDay::where('store_id', $store_id)
-                ->where('day', '>', $base_day)
-                ->get()
-                ->toArray();
+                // ->where('day', '>', $base_day)
+                ->get();
         }
 
         return [
-            'delivery_days' => $delivery_days
+            'delivery_days' => DeliveryDayResource::collection($delivery_days)
         ];
     }
 
