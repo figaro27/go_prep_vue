@@ -953,14 +953,14 @@ const triggerLazy = (
         }
 
         if (data.category_data && data.category_data.length > 0) {
-          finalCategories = data.category_data;
-
-          finalCategories = data.category_data.map(item => {
-            return {
-              ...item,
-              visible: false
-            };
-          });
+          if (!finalCategories.length) {
+            finalCategories = data.category_data.map(item => {
+              return {
+                ...item,
+                visible: false
+              };
+            });
+          }
 
           items = [];
 
