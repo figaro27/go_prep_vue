@@ -122,15 +122,19 @@
                   />
                   <label :for="`checkox_${mealId}`">Free</label>
 
-                  <span v-if="editingPrice[item.guid] ? true : false">
+                  <span
+                    v-if="editingPrice[item.guid] ? true : false"
+                    class="d-flex"
+                  >
                     <b-form-input
+                      style="flex-basis:70%"
                       type="number"
                       v-model="item.price"
-                      class="d-inline width-70 mb-1"
                       @input="v => changePrice(item, v)"
                     ></b-form-input>
                     <i
-                      class="fas fa-check-circle text-primary"
+                      style="flex-basis:30%"
+                      class="fas fa-check-circle text-primary pt-2 pl-1"
                       @click="endEditPrice(item)"
                     ></i>
                   </span>
@@ -159,11 +163,10 @@
                 </div>
               </div>
               <div class="flex-grow-0">
-                <img
-                  src="/images/customer/x.png"
+                <i
+                  class="fas fa-times-circle clear-meal dark-gray pt-2"
                   @click="clearFromBag(item)"
-                  class="clear-meal"
-                />
+                ></i>
               </div>
             </div>
             <ul>
