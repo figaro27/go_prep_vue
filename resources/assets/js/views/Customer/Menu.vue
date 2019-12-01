@@ -192,13 +192,20 @@
             v-if="!subscriptionId || !adjustOrder"
           >
             <div class="d-flex flex-column h-100">
-              <i
-                v-if="store.modules.multipleDeliveryDays"
-                class="far fa-calendar-alt text-white"
-                @click="showDeliveryDayModal = true"
-              ></i>
               <i class="fa fa-shopping-bag text-white"></i>
               <i v-if="total" class="text-white mt-1">{{ total }}</i>
+            </div>
+          </floating-action-button>
+
+          <floating-action-button
+            class="d-md-none"
+            :style="brandColor"
+            @click="showDeliveryDayModal = true"
+            v-if="store.modules.multipleDeliveryDays"
+          >
+            <div class="d-flex flex-column h-100">
+              <i class="far fa-calendar-alt text-white"></i>
+              <i class="text-white mt-1">{{ finalDeliveryDay.day_friendly }}</i>
             </div>
           </floating-action-button>
 
