@@ -436,11 +436,11 @@
                         <strong style="word-break: break-all;">{{
                           meal.title
                         }}</strong>
+                        <span class="content-text">
+                          {{ meal.description }}
+                        </span>
                       </div>
                       <div style="flex-basis:20%">
-                        <div class="mt-1 content-text">
-                          {{ meal.description }}
-                        </div>
                         <div
                           class="price-no-bg"
                           style="top: 0 !important; right: 0 !important;"
