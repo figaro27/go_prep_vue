@@ -1887,7 +1887,9 @@ export default {
         .then(async resp => {
           //this.checkingOut = false;
           //return false
-          this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
+          if (this.purchasedGiftCard !== null) {
+            this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
+          }
           this.emptyBag();
           let weeklyDelivery = this.weeklySubscription;
           this.setBagMealPlan(false);

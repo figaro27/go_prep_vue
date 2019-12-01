@@ -82,7 +82,7 @@
                 ></thumbnail>
               </div>
               <div class="flex-grow-1 mr-2">
-                <span v-if="item.meal_package">
+                <span v-if="item.meal_package || item.meal.gift_card">
                   {{ item.meal.title }}
                   <span v-if="item.size && item.size.title !== 'Regular'">
                     - {{ item.size.title }}
