@@ -1331,6 +1331,7 @@ export default {
           );
 
           data.push({
+            delivery_date: item.delivery_date,
             //meal: meal.title,
             size: size ? size.title : meal.default_size_title,
             meal: title,
