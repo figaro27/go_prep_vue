@@ -192,6 +192,11 @@
             v-if="!subscriptionId || !adjustOrder"
           >
             <div class="d-flex flex-column h-100">
+              <i
+                v-if="store.modules.multipleDeliveryDays"
+                class="far fa-calendar-alt text-white"
+                @click="showDeliveryDayModal = true"
+              ></i>
               <i class="fa fa-shopping-bag text-white"></i>
               <i v-if="total" class="text-white mt-1">{{ total }}</i>
             </div>
