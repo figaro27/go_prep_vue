@@ -52,10 +52,7 @@
               <div :class="card">
                 <div :class="cardBody">
                   <div class="item-wrap">
-                    <div
-                      class="title d-md-none"
-                      style="display: flex;flex-basis:70%"
-                    >
+                    <div class="title d-md-none">
                       <strong>{{ meal.title }}</strong>
                     </div>
 
@@ -69,7 +66,7 @@
                         @click="showMeal(meal, group)"
                       ></thumbnail>
 
-                      <div class="price">
+                      <div class="price" style="position:relative;bottom:8px">
                         {{ format.money(meal.price, storeSettings.currency) }}
                       </div>
                     </div>
