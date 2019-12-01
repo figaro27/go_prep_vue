@@ -49,6 +49,7 @@ class Order extends Model
         'has_notes',
         'meal_ids',
         'items',
+        'meal_orders',
         'meal_package_items',
         'store_name',
         'cutoff_date',
@@ -239,6 +240,7 @@ class Order extends Model
             ->map(function ($mealOrder) {
                 return (object) [
                     'meal_id' => $mealOrder->meal_id,
+                    'delivery_date' => $mealOrder->delivery_date,
                     'base_title' => $mealOrder->base_title,
                     'base_size' => $mealOrder->base_size,
                     'meal_size_id' => $mealOrder->meal_size_id,
