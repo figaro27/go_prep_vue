@@ -844,7 +844,7 @@ export default {
       store.dispatch("refreshLazyStore");
 
       // Refreshing customer menu on store log in automatically
-      store.dispatch("refreshLazy");
+      // store.dispatch("refreshLazy");
     }
 
     if (this.storeModules.dailyOrderNumbers) {

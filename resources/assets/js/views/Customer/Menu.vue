@@ -889,7 +889,7 @@ export default {
       this.showDeliveryDayModal = true;
     } else {
       if (!this.isLazy) {
-        store.dispatch("refreshLazy");
+        // store.dispatch("refreshLazy");
       }
     }
 

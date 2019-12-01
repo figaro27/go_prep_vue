@@ -268,7 +268,7 @@ export default {
   },
   mounted() {
     if (!this.isLazy) {
-      store.dispatch("refreshLazy");
+      // store.dispatch("refreshLazy");
     }
   },
   methods: {
