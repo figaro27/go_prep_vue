@@ -226,12 +226,11 @@
               <div v-if="finalCategoriesSub && finalCategoriesSub.length > 0">
                 <div
                   v-for="(cat, index) in finalCategoriesSub"
-                  v-if="isCategoryVisible(cat)"
+                  v-if="isCategoryVisible(cat) && cat.visible"
                   :key="'com_' + cat.id"
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
-                  :style="{ visibility: cat.visible ? 'visible' : 'hidden' }"
                   :target="'categorySection_' + cat.id"
                   @click="search = ''"
                 >
@@ -242,12 +241,11 @@
               <div v-else>
                 <div
                   v-for="(cat, index) in finalCategories"
-                  v-if="isCategoryVisible(cat)"
+                  v-if="isCategoryVisible(cat) && cat.visible"
                   :key="cat.category"
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
-                  :style="{ visibility: cat.visible ? 'visible' : 'hidden' }"
                   :target="'categorySection_' + cat.id"
                   @click="search = ''"
                 >
@@ -886,7 +884,6 @@ export default {
     });
   },
   mounted() {
-    this.finalCategories = [];
     if (this.isMultipleDelivery) {
       store.dispatch("refreshDeliveryDay");
       this.showDeliveryDayModal = true;
