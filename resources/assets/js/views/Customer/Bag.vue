@@ -9,6 +9,8 @@
             :storeView="storeView || storeOwner"
             :manualOrder="manualOrder"
             :checkoutData="checkoutData"
+            :lineItemOrders="lineItemOrders"
+            ref="aboveBag"
             class="mb-4"
           >
           </above-bag>
@@ -17,6 +19,7 @@
             :order="order"
             @updateLineItems="updateLineItems($event)"
             @passOrderNotes="passOrderNotes($event)"
+            @updateData="updateData"
             ref="bagArea"
           ></bag-area>
           <bag-actions
@@ -25,6 +28,7 @@
             :adjustMealPlan="adjustMealPlan"
             :subscriptionId="subscriptionId"
             :orderId="orderId"
+            :lineItemOrders="lineItemOrders"
           ></bag-actions>
         </div>
 
@@ -438,6 +442,17 @@ export default {
     if (this.$route.params.adjustOrder) {
       this.$refs.bagArea.setOrderLineItems(this.lineItemOrders);
     }
+    if (
+      this.checkoutDataProp.lineItemOrders.length > 0 ||
+      this.$route.params.checkoutData.lineItemOrders.length > 0
+    ) {
+      this.$refs.bagArea.setOrderLineItems(
+        this.checkoutDataProp.lineItemOrders
+      );
+      this.$refs.aboveBag.setOrderLineItems(
+        this.$route.params.checkoutData.lineItemOrders
+      );
+    }
   },
   methods: {
     updateData(newData) {
@@ -469,6 +484,10 @@ export default {
 
         if (newData.hasOwnProperty("creditCardList")) {
           this.creditCardList = newData.creditCardList;
+        }
+
+        if (newData.hasOwnProperty("lineItemOrders")) {
+          this.lineItemOrders = newData.lineItemOrders;
         }
       }
     },

@@ -816,6 +816,10 @@ export default {
         });
       }
 
+      this.$emit("updateData", {
+        lineItemOrders: this.orderLineItems
+      });
+
       this.showLineItemModal = false;
       this.lineItem = { title: "", price: null, quantity: 1 };
       this.selectedLineItem = { title: "", price: null, quantity: 1 };

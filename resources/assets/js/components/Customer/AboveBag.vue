@@ -60,6 +60,11 @@ export default {
       else if (this.$route.params.preview) return "/store/menu/preview";
       else if (this.$route.params.manualOrder) return "/store/manual-order";
     }
+  },
+  methods: {
+    setOrderLineItems(lineItemOrders) {
+      this.checkoutData.lineItemOrders = lineItemOrders;
+    }
   }
 };
 </script>
