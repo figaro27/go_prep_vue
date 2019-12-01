@@ -311,7 +311,7 @@ $currency = $order->store->settings->currency_symbol
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
                     {{$currency}}{{ number_format($lineItemOrder->price, 2) }}</td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->quantity }}</td>
-                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; font-weight: bold ">{{$currency}}{{ number_format($lineItemOrder->quantity * $lineItemOrder->price, 2) }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{$currency}}{{ number_format($lineItemOrder->quantity * $lineItemOrder->price, 2) }}</td>
                 </tr>
               @endforeach
               </table>
