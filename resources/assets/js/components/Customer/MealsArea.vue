@@ -52,7 +52,10 @@
               <div :class="card">
                 <div :class="cardBody">
                   <div class="item-wrap">
-                    <div class="title d-md-none">
+                    <div
+                      class="title d-md-none"
+                      style="display: flex;flex-basis:70%"
+                    >
                       <strong>{{ meal.title }}</strong>
                     </div>
 
