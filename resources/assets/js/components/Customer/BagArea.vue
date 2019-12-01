@@ -35,7 +35,11 @@
             v-if="isMultipleDelivery && groupItem.delivery_day"
           >
             <h5>
-              {{ moment(groupItem.delivery_day.day).format("MMM Do YYYY") }}
+              {{
+                moment(groupItem.delivery_day.day_friendly).format(
+                  "MMM Do YYYY"
+                )
+              }}
             </h5>
 
             <button

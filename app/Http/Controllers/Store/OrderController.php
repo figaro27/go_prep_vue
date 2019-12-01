@@ -20,9 +20,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Carbon;
 use DB;
+use App\Traits\DeliveryDates;
 
 class OrderController extends StoreController
 {
+    use DeliveryDates;
+
     /**
      * Display a listing of the resource.
      *
@@ -340,7 +343,10 @@ class OrderController extends StoreController
             $mealOrder->quantity = $item['quantity'];
             $mealOrder->price = $item['price'] * $item['quantity'];
             if (isset($item['delivery_day']) && $item['delivery_day']) {
-                $mealOrder->delivery_date = $item['delivery_day']['day'];
+                $mealOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
+                    $item['delivery_day']['day'],
+                    $isMultipleDelivery
+                );
             }
             if (isset($item['size']) && $item['size']) {
                 $mealOrder->meal_size_id = $item['size']['id'];
@@ -380,8 +386,10 @@ class OrderController extends StoreController
                     $mealPackageOrder->quantity = $item['package_quantity'];
                     $mealPackageOrder->price = $item['package_price'];
                     if (isset($item['delivery_day']) && $item['delivery_day']) {
-                        $mealPackageOrder->delivery_date =
-                            $item['delivery_day']['day'];
+                        $mealPackageOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
+                            $item['delivery_day']['day'],
+                            $isMultipleDelivery
+                        );
                     }
                     $mealPackageOrder->save();
 
@@ -457,8 +465,10 @@ class OrderController extends StoreController
                     $mealOrder->attached = 1;
                     $mealOrder->free = 1;
                     if (isset($item['delivery_day']) && $item['delivery_day']) {
-                        $mealOrder->delivery_date =
-                            $item['delivery_day']['day'];
+                        $mealOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
+                            $item['delivery_day']['day'],
+                            $isMultipleDelivery
+                        );
                     }
                     $mealOrder->save();
                 }
