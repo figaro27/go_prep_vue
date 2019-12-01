@@ -430,7 +430,7 @@
                     </div>
                   </div>
                   <div v-else class="content-area" style="position: relative;">
-                    <div class="content-text-wrap">
+                    <div class="content-text-wrap d-flex">
                       <!--<div v-else class="col-md-11">!-->
                       <div style="flex-basis:80%">
                         <strong style="word-break: break-all;">{{
