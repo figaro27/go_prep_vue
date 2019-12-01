@@ -199,13 +199,17 @@
 
           <floating-action-button
             class="d-md-none"
-            :style="brandColor"
-            @click="showDeliveryDayModal = true"
-            v-if="store.modules.multipleDeliveryDays"
+            style="margin-right:65px;background-color:#22b14c"
+            v-if="store.modules.multipleDeliveryDays && finalDeliveryDay"
           >
-            <div class="d-flex flex-column h-100">
-              <i class="far fa-calendar-alt text-white"></i>
-              <!-- <i class="text-white mt-1">{{ finalDeliveryDay.day_friendly }}</i> -->
+            <div
+              class="d-flex flex-column h-100"
+              @click="showDeliveryDayModal = true"
+            >
+              <!-- <i class="far fa-calendar-alt text-white"></i> -->
+              <span class="text-white mt-1" v-if="finalDeliveryDay">{{
+                moment(finalDeliveryDay.day_friendly).format("ddd")
+              }}</span>
             </div>
           </floating-action-button>
 
