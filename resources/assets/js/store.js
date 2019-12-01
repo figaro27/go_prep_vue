@@ -954,6 +954,14 @@ const triggerLazy = (
 
         if (data.category_data && data.category_data.length > 0) {
           finalCategories = data.category_data;
+
+          finalCategories = data.category_data.map(item => {
+            return {
+              ...item,
+              visible: false
+            };
+          });
+
           items = [];
 
           for (let i in finalCategories) {
@@ -986,6 +994,12 @@ const triggerLazy = (
 
           category_id = finalCategories[0].id;
         }
+
+        const currentCatIndex = finalCategories.findIndex(
+          item => item.id == category_id
+        );
+        if (currentCatIndex > -1)
+          finalCategories[currentCatIndex].visible = true;
 
         for (let i in items) {
           if (items[i].category_id == category_id) {

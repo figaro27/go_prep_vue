@@ -231,6 +231,7 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
+                  :style="{ visibility: cat.visible ? 'visible' : 'hidden' }"
                   :target="'categorySection_' + cat.id"
                   @click="search = ''"
                 >
@@ -246,6 +247,7 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
+                  :style="{ visibility: cat.visible ? 'visible' : 'hidden' }"
                   :target="'categorySection_' + cat.id"
                   @click="search = ''"
                 >
@@ -884,6 +886,7 @@ export default {
     });
   },
   mounted() {
+    this.finalCategories = [];
     if (this.isMultipleDelivery) {
       store.dispatch("refreshDeliveryDay");
       this.showDeliveryDayModal = true;
