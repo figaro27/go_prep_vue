@@ -66,7 +66,7 @@
                         @click="showMeal(meal, group)"
                       ></thumbnail>
 
-                      <div class="price" style="position:relative;bottom:8px">
+                      <div class="price">
                         {{ format.money(meal.price, storeSettings.currency) }}
                       </div>
                     </div>
