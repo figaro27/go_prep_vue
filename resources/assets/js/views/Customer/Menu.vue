@@ -60,7 +60,11 @@
                   v-for="(delivery_day, index) in store.delivery_days"
                   v-bind:key="index"
                 >
-                  {{ moment(delivery_day.day_friendly).format("MMM Do YYYY") }}
+                  {{
+                    moment(delivery_day.day_friendly).format(
+                      "dddd, MMM Do YYYY"
+                    )
+                  }}
                 </div>
               </div>
             </div>
