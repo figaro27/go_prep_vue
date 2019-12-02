@@ -37,7 +37,7 @@
             <h5>
               {{
                 moment(groupItem.delivery_day.day_friendly).format(
-                  "dddd, MMM Do YYYY"
+                  "ddd, MMM Do YYYY"
                 )
               }}
             </h5>
