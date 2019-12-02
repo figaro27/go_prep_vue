@@ -157,16 +157,36 @@
           </div>
         </div>
       </li>
+
       <li class="checkout-item" v-if="storeSettings.enableSalesTax">
         <div class="row">
           <div class="col-6 col-md-4">
-            <strong>Sales Tax:</strong>
+            <strong>Sales Tax</strong>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
-            {{ format.money(tax, storeSettings.currency) }}
+            <span v-if="editingSalesTax">
+              <b-form-input
+                type="number"
+                v-model="customSalesTax"
+                class="d-inline width-70"
+              ></b-form-input>
+              <i
+                class="fas fa-check-circle text-primary pt-2 pl-1"
+                @click="editingSalesTax = false"
+              ></i>
+            </span>
+            <span v-else>
+              {{ format.money(tax, storeSettings.currency) }}
+            </span>
+            <i
+              v-if="($route.params.storeView || storeOwner) && !editingSalesTax"
+              @click="editSalesTax"
+              class="fa fa-edit text-warning"
+            ></i>
           </div>
         </div>
       </li>
+
       <li
         class="checkout-item"
         v-if="
@@ -180,14 +200,15 @@
           <div class="col-6 col-md-3 offset-md-5">
             <span v-if="editingDeliveryFee">
               <b-form-input
+                type="number"
                 v-model="customDeliveryFee"
                 class="d-inline width-70"
-              ></b-form-input
-              ><img
-                class="couponX d-inline ml-1"
-                src="/images/customer/x.png"
+              ></b-form-input>
+              <i
+                style="flex-basis:30%"
+                class="fas fa-check-circle text-primary pt-2 pl-1"
                 @click="editingDeliveryFee = false"
-              />
+              ></i>
             </span>
             <span v-else>{{
               format.money(deliveryFeeAmount, storeSettings.currency)
@@ -812,7 +833,9 @@ export default {
       },
       showBillingAddressModal: false,
       billingAddressVerified: false,
-      customDeliveryFee: 0,
+      customSalesTax: null,
+      customDeliveryFee: null,
+      editingSalesTax: false,
       editingDeliveryFee: false,
       stripeKey: window.app.stripe_key,
       loading: false,
@@ -1298,7 +1321,7 @@ export default {
     },
     deliveryFeeAmount() {
       if (!this.pickup) {
-        if (this.editingDeliveryFee) {
+        if (this.customDeliveryFee !== null) {
           return parseFloat(this.customDeliveryFee);
         }
         if (!this.couponFreeDelivery) {
@@ -1404,6 +1427,9 @@ export default {
       else return "Prepared Once";
     },
     tax() {
+      if (this.customSalesTax !== null) {
+        return parseFloat(this.customSalesTax);
+      }
       // Custom Sales Tax Per Meal
       let removableItemAmount = 0;
       let customSalesTaxAmount = 0;
@@ -1878,6 +1904,9 @@ export default {
     },
     editDeliveryFee() {
       this.editingDeliveryFee = true;
+    },
+    editSalesTax() {
+      this.editingSalesTax = true;
     },
     addBillingAddress() {
       axios
