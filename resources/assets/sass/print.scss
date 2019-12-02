@@ -180,6 +180,7 @@ td {
   padding-top: 0.5mm;
   padding-bottom: 0.5mm;
   border: none;
+  font-size: 10px;
 }
 th p {
   text-align: left;
@@ -552,16 +553,4 @@ p {
 .payments-report *,
 .customers-report * {
   font-size: 12px;
-}
-
-// Attemping line break fix
-
-table,
-tr,
-td,
-th,
-tbody,
-thead,
-tfoot {
-  page-break-inside: avoid !important;
 }
