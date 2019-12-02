@@ -17,7 +17,7 @@
                 $route.name != 'customer-bag'
             "
             type="button"
-            class="mb-3 mt-2 ml-2 btn btn-success btn-sm"
+            class="mb-3 mt-2 ml-2 btn btn-success btn-md"
             @click="addDeliveryDay()"
           >
             Add Delivery Day
