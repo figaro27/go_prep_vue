@@ -351,7 +351,7 @@ export default {
       subscriptionId: "",
       user_detail: {},
       meals: {},
-      columnsMeal: ["size", "meal", "unit_price", "subtotal"],
+      columnsMeal: ["size", "quantity", "meal", "unit_price", "subtotal"],
       columns: [
         // "notes",
         "stripe_id",
@@ -738,6 +738,7 @@ export default {
             size: size ? size.title : meal.default_size_title,
             //meal: meal.title,
             meal: title,
+            quantity: item.quantity,
             unit_price:
               item.attached || item.free
                 ? "Included"
