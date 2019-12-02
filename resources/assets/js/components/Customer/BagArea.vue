@@ -45,7 +45,7 @@
             <button
               v-if="$route.name != 'store-bag' && $route.name != 'customer-bag'"
               type="button"
-              class="btn btn-primary btn-sm white-text"
+              class="btn btn-sm white-text"
               :style="brandColor"
               @click="loadDeliveryDayMenu(groupItem.delivery_day)"
             >
