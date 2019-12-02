@@ -174,11 +174,6 @@
                 class="fas fa-check-circle text-primary pt-2 pl-1"
                 @click="editingSalesTax = false"
               ></i>
-              <i
-                class="fas fa-undo-alt text-danger"
-                v-if="customSalesTax !== null"
-                @click="customSalesTax = null"
-              ></i>
             </span>
             <span v-else>
               {{ format.money(tax, storeSettings.currency) }}
@@ -187,6 +182,14 @@
               v-if="($route.params.storeView || storeOwner) && !editingSalesTax"
               @click="editSalesTax"
               class="fa fa-edit text-warning"
+            ></i>
+            <i
+              class="fas fa-undo-alt text-secondary"
+              v-if="customSalesTax !== null && editingSalesTax === false"
+              @click="
+                customSalesTax = null;
+                editingSalesTax = false;
+              "
             ></i>
           </div>
         </div>
@@ -214,11 +217,6 @@
                 class="fas fa-check-circle text-primary pt-2 pl-1"
                 @click="editingDeliveryFee = false"
               ></i>
-              <i
-                class="fas fa-undo-alt text-danger"
-                v-if="customDeliveryFee !== null"
-                @click="customDeliveryFee = null"
-              ></i>
             </span>
             <span v-else>{{
               format.money(deliveryFeeAmount, storeSettings.currency)
@@ -229,6 +227,14 @@
               "
               @click="editDeliveryFee"
               class="fa fa-edit text-warning"
+            ></i>
+            <i
+              class="fas fa-undo-alt text-secondary"
+              v-if="customDeliveryFee !== null && editingDeliveryFee === false"
+              @click="
+                customDeliveryFee = null;
+                editingDeliveryFee = false;
+              "
             ></i>
           </div>
         </div>
