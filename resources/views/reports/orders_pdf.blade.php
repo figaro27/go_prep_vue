@@ -28,6 +28,7 @@
             <th>Address</th>
             <th>Zip</th>
             <th>Phone</th>
+            <th>Email</th>
             <th>Total</th>
             <th>Balance</th>
             <th style="width:100px">Order Placed</th>
