@@ -60,7 +60,9 @@
           ></b-form-input>
           <b-button type="submit" variant="primary" class="mt-3">Save</b-button>
         </b-form>
-        <p class="strong mt-3">Billing Address</p>
+        <p class="strong mt-3" v-if="gateway === 'authorize'">
+          Billing Address
+        </p>
         <div v-if="gateway === 'authorize'">
           <b-form @submit.prevent="addBillingAddress" class="mt-4">
             <b-form-group>
@@ -251,7 +253,7 @@ export default {
       axios
         .patch("/api/me/detail", this.userDetail)
         .then(response => {
-          this.$toastr.s("Profile updated.");
+          this.$toastr.s("Account updated.");
           this.refreshUser();
           this.refreshViewedStore();
         })

@@ -78,11 +78,11 @@ class UserDetailController extends UserController
             'city' => 'required|string',
             'state' => 'required|string',
             'zip' => 'required',
-            'delivery' => 'required|string',
-            'billingAddress' => 'string',
-            'billingCity' => 'string',
-            'billingState' => 'string',
-            'billingZip' => 'string'
+            'delivery' => 'required|string'
+            // 'billingAddress' => 'string',
+            // 'billingCity' => 'string',
+            // 'billingState' => 'string',
+            // 'billingZip' => 'string'
         ]);
 
         $values = $request->only(['notifications']);
