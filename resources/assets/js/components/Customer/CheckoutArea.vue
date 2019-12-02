@@ -1368,7 +1368,8 @@ export default {
                 }
               });
             }
-
+            // Multiple delivery days
+            fee = fee * this.groupBag.length;
             return fee;
           } else return 0;
         } else return 0;
