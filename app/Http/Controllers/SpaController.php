@@ -11,6 +11,7 @@ use App\MealPackage;
 use App\Category;
 use App\DeliveryDay;
 use App\DeliveryDayMeal;
+use App\DeliveryDayMealPackage;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use App\Http\Resources\{DeliveryDayResource, DeliveryDayCollection};
@@ -540,16 +541,16 @@ class SpaController extends Controller
 
                         $temp_package = $temp_package->first();
 
-                        if ($temp_meal || $temp_package) {
-                            // Meal or Package exists
-                            $category_ids[] = $temp_id;
+                        // if ($temp_meal || $temp_package) {
+                        // Meal or Package exists
+                        $category_ids[] = $temp_id;
 
-                            if (!$category_data) {
-                                $category_data = [];
-                            }
-
-                            $category_data[] = $category;
+                        if (!$category_data) {
+                            $category_data = [];
                         }
+
+                        $category_data[] = $category;
+                        // }
                     }
 
                     if (count($category_ids) > 0) {
@@ -558,9 +559,24 @@ class SpaController extends Controller
                     }
                 }
             }
-            /* Building Categories End */
 
+            $delivery_day_meals = DeliveryDayMeal::where(
+                'delivery_day_id',
+                $delivery_day_id
+            )
+                ->get()
+                ->toArray();
+            $delivery_day_meal_packages = DeliveryDayMealPackage::where(
+                'delivery_day_id',
+                $delivery_day_id
+            )
+                ->get()
+                ->toArray();
+
+            /* Building Categories End */
             if ($category_id != 0 && count($category_ids) > 0) {
+                $meals = [];
+                $packages = [];
                 if ($bypass_meal == 0) {
                     $meals = Meal::with([
                         'allergies',
@@ -580,7 +596,7 @@ class SpaController extends Controller
                             'deleted_at' => null
                         ]);
 
-                    if ($delivery_day_id != 0) {
+                    if ($delivery_day_id != 0 && count($delivery_day_meals)) {
                         $meals = $meals->whereHas('days', function (
                             $query
                         ) use ($delivery_day_id) {
@@ -616,7 +632,10 @@ class SpaController extends Controller
                             'deleted_at' => null
                         ]);
 
-                    if ($delivery_day_id != 0) {
+                    if (
+                        $delivery_day_id != 0 &&
+                        count($delivery_day_meal_packages)
+                    ) {
                         $packages = $packages->whereHas('days', function (
                             $query
                         ) use ($delivery_day_id) {
@@ -710,7 +729,13 @@ class SpaController extends Controller
                     }
                 }
                 /* Set Return Value End */
-            } // Checking Category ID and Category IDs End
+            }
+            // Checking Category ID and Category IDs End
+            else {
+                $category_id = 0;
+                $bypass_meal = 1;
+                $end = 1;
+            }
         }
 
         return [
