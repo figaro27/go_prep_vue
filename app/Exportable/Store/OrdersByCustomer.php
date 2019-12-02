@@ -157,6 +157,8 @@ class OrdersByCustomer
                                 'pickup_location' => $order->pickup_location,
                                 'dailyOrderNumber' => $order->dailyOrderNumber,
                                 'notes' => $order->notes,
+                                'isMultipleDelivery' =>
+                                    $order->isMultipleDelivery,
                                 'meal_quantities' => array_merge(
                                     [['Quantity', 'Size', 'Meal']], // Heading
                                     $order
