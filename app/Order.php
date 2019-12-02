@@ -156,13 +156,15 @@ class Order extends Model
                 if (
                     strpos(
                         $multipleDates,
-                        strval($date->format('D, m/d/Y') . ' ')
+                        strval($date->format('D m/d/Y') . ', ')
                     ) === false
                 ) {
-                    $multipleDates .= $date->format('D, m/d/Y') . ' ';
+                    $multipleDates .= $date->format('D m/d/Y') . ', ';
                 }
             }
         }
+
+        $multipleDates = substr($multipleDates, 0, -2);
         return $multipleDates;
     }
 

@@ -36,10 +36,28 @@
         @endif
         <h4>
           @if ($order['pickup'] === 0)
-            DELIVERY - {{ $order['delivery_date']->format('D, m/d/Y') }}
+
+
+
+
+
+@if ($order->isMultipleDelivery === 0)
+          DELIVERY - {{ $order['delivery_date']->format('D, m/d/Y') }}
+            @endif
+          @if ($order->isMultipleDelivery === 1)
+         DELIVERY - {{ $order->multipleDates }}
+            @endif
+
+
+
           @endif
           @if ($order['pickup'] === 1)
-            PICKUP - {{ $order['delivery_date']->format('D, m/d/Y') }}
+            @if ($order->isMultipleDelivery === 0)
+          PICKUP - {{ $order['delivery_date']->format('D, m/d/Y') }}
+            @endif
+          @if ($order->isMultipleDelivery === 1)
+         PICKUP - {{ $order->multipleDates }}
+            @endif
           @endif
           @if ($order['transferTime'])
             {{ $order['transferTime'] }}

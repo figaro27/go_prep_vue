@@ -16,8 +16,9 @@
                 $route.name != 'store-bag' &&
                 $route.name != 'customer-bag'
             "
+            :style="brandColor"
             type="button"
-            class="mb-3 mt-2 ml-2 btn btn-success btn-md"
+            class="mb-3 mt-2 ml-2 btn btn-md white-text"
             @click="addDeliveryDay()"
           >
             Add Delivery Day
@@ -150,6 +151,11 @@ export default {
     }),
     isMultipleDelivery() {
       return this.storeModules.multipleDeliveryDays == 1 ? true : false;
+    },
+    brandColor() {
+      let style = "background-color:";
+      style += this.store.settings.color;
+      return style;
     },
     storeSettings() {
       return this.store.settings;

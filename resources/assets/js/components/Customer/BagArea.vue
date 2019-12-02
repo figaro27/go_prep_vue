@@ -45,7 +45,8 @@
             <button
               v-if="$route.name != 'store-bag' && $route.name != 'customer-bag'"
               type="button"
-              class="btn btn-primary btn-sm"
+              class="btn btn-primary btn-sm white-text"
+              :style="brandColor"
               @click="loadDeliveryDayMenu(groupItem.delivery_day)"
             >
               Pick Meals
@@ -446,6 +447,11 @@ export default {
     }),
     isMultipleDelivery() {
       return this.storeModules.multipleDeliveryDays == 1 ? true : false;
+    },
+    brandColor() {
+      let style = "background-color:";
+      style += this.store.settings.color;
+      return style;
     },
     groupBag() {
       let grouped = [];

@@ -311,9 +311,7 @@
     >
       <li
         class="checkout-item"
-        v-if="
-          ($route.params.storeView || storeOwner) && !this.isMultipleDelivery
-        "
+        v-if="($route.params.storeView || storeOwner) && !isMultipleDelivery"
       >
         <div>
           <strong v-if="pickup === 0">Delivery Day</strong>
@@ -386,10 +384,11 @@
           deliveryDateOptions.length === 1 &&
             $route.params.subscriptionId === undefined &&
             (!$route.params.storeView && !storeOwner) &&
-            !bagDeliveryDate
+            !bagDeliveryDate &&
+            !isMultipleDelivery
         "
       >
-        <div v-if="!isMultipleDelivery">
+        <div>
           <strong v-if="pickup === 0">
             Delivery Day: {{ deliveryDateOptions[0].text }}
           </strong>

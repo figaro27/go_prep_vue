@@ -203,7 +203,8 @@
 
           <floating-action-button
             class="d-md-none"
-            style="margin-right:65px;background-color:#22b14c"
+            :style="brandColor"
+            style="margin-right:65px;"
             v-if="store.modules.multipleDeliveryDays && finalDeliveryDay"
           >
             <div

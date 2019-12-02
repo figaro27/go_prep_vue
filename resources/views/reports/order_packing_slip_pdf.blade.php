@@ -132,7 +132,12 @@ $brandColor = $order->store->settings->color;
           <p>Pickup Time: {{ $order->transferTime }}</p>
           @endif
           @endif
-          <p>Date: {{$order->delivery_date->format('D, m/d/Y')}}
+          @if ($order->isMultipleDelivery === 0)
+          <p>Date: {{$order->delivery_date->format('D, m/d/Y')}}</p>
+            @endif
+          @if ($order->isMultipleDelivery === 1)
+          <p>Dates: {{ $order->multipleDates }}
+            @endif
           </p>
           @endif
       </div>
