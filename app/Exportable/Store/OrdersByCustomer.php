@@ -159,6 +159,7 @@ class OrdersByCustomer
                                 'notes' => $order->notes,
                                 'isMultipleDelivery' =>
                                     $order->isMultipleDelivery,
+                                'multipleDates' => $order->multipleDates,
                                 'meal_quantities' => array_merge(
                                     [['Quantity', 'Size', 'Meal']], // Heading
                                     $order
