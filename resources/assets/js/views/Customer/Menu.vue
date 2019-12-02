@@ -906,7 +906,6 @@ export default {
   mounted() {
     if (this.isMultipleDelivery) {
       store.dispatch("refreshDeliveryDay");
-      this.showDeliveryDayModal = true;
     } else {
       if (!this.isLazy) {
         // store.dispatch("refreshLazy");
@@ -949,6 +948,14 @@ export default {
         this.$refs.carousel.handleNavigation("forward");
       }
     });
+  },
+  updated() {
+    // Temporary hotfix for Freshly Prepped - to be removed and reworked.
+    if (this.isMultipleDelivery) {
+      if (this.meals && this.meals.length > 35) {
+        this.showDeliveryDayModal = true;
+      }
+    }
   },
   beforeDestroy() {
     this.showActiveFilters();
