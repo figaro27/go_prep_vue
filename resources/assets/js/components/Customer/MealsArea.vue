@@ -740,10 +740,12 @@ export default {
       return false;
     },
     mealMixQuantity(meal) {
-      if (meal.meal_package) {
+      if (meal.meal_package && !isNaN(this.quantity(meal, true))) {
         return this.quantity(meal, true);
-      } else {
+      } else if (!meal.meal_package && !isNaN(this.mealQuantity(meal))) {
         return this.mealQuantity(meal);
+      } else {
+        return 0;
       }
     },
     async minusMixOne(

@@ -2561,11 +2561,17 @@ const getters = {
       })
     ).toString();
 
-    if (!_.has(state.bag.items, guid) || !_.isObject(state.bag.items[guid])) {
-      return 0;
-    }
+    let qty = Object.entries(state.bag.items).filter(item => {
+      if (item[1].meal.id === mealId) {
+        return item[1].quantity;
+      } else {
+        return 0;
+      }
+    });
 
-    return state.bag.items[guid].quantity || 0;
+    return qty;
+
+    // return state.bag.items[guid].quantity || 0;
   },
   bagMealQuantity: state => meal => {
     if (!meal) {
