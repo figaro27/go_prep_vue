@@ -133,7 +133,7 @@ $currency = $order->store->settings->currency_symbol
                           {{ $order->user->details->phone }}
                         </td>
                       </tr>
-                      @if ($order->store->modules->hideTransferOptions === 0)
+                      @if ($order->store->modules->hideTransferOptions === 0 && $order->store->modules->multipleDeliveryDays === 0)
                       @if ($pickup === 0)
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format('D, m/d/Y') }}
@@ -151,6 +151,13 @@ $currency = $order->store->settings->currency_symbol
                         </td>
                       </tr>
                       @endif
+                      @endif
+
+                      @if ($order->store->modules->multipleDeliveryDays === 1)
+                      <tr>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Dates - {{ $order->multipleDates }}
+                        </td>
+                      </tr>
                       @endif
                       <!-- end address -->
                       @if ($order->store->modules->dailyOrderNumbers)

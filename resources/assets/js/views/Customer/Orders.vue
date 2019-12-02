@@ -60,7 +60,7 @@
                         </p>
                       </template>
                       <template v-else>
-                        <p>Multiple Days</p>
+                        <p>{{ order.multiple_dates }}</p>
                       </template>
                       <p v-if="order.pickup_location_id != null">
                         <b>Pickup Location:</b>

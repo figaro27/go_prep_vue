@@ -171,7 +171,8 @@
                 {{ moment(props.row.delivery_date).format("dddd, MMM Do") }}
               </template>
               <template v-else>
-                Multiple Delivery
+                Multiple Dates
+                <!-- {{ order.multiple_dates }} -->
               </template>
             </div>
             <div slot="pickup" slot-scope="props">
@@ -560,7 +561,7 @@
                 <span v-if="order.transferTime"> {{ order.transferTime }}</span>
               </template>
               <template v-else>
-                <p>Multiple Delivery</p>
+                <p>{{ order.multiple_dates }}</p>
               </template>
             </span>
             <p v-if="order.pickup_location_id != null" class="mt-1">

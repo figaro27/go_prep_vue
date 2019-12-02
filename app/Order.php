@@ -4,6 +4,7 @@ namespace App;
 
 use App\Coupon;
 use App\LineItemOrder;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -60,7 +61,8 @@ class Order extends Model
         'stripe_fee',
         'grandTotal',
         'line_items_order',
-        'added_by_store_id'
+        'added_by_store_id',
+        'multiple_dates'
         // 'balance'
     ];
 
@@ -143,6 +145,26 @@ class Order extends Model
     //     $amount = $this->amount * (100 - $this->deposit) / 100;
     //     return ($amount + ($amount - $this->adjustedDifference)) * -1;
     // }
+
+    public function getMultipleDatesAttribute()
+    {
+        $multipleDates = '';
+        $items = $this->items;
+        if ($this->isMultipleDelivery) {
+            foreach ($items as $item) {
+                $date = new Carbon($item->delivery_date);
+                if (
+                    strpos(
+                        $multipleDates,
+                        strval($date->format('D, m/d/Y') . ' ')
+                    ) === false
+                ) {
+                    $multipleDates .= $date->format('D, m/d/Y') . ' ';
+                }
+            }
+        }
+        return $multipleDates;
+    }
 
     public function getOrderDayAttribute()
     {
