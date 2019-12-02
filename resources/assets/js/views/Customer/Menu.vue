@@ -906,7 +906,9 @@ export default {
   mounted() {
     if (this.isMultipleDelivery) {
       store.dispatch("refreshDeliveryDay");
-      this.showDeliveryDayModal = true;
+      setTimeout(() => {
+        this.showDeliveryDateModal();
+      }, 5000);
     } else {
       if (!this.isLazy) {
         // store.dispatch("refreshLazy");
@@ -1303,6 +1305,9 @@ export default {
     },
     addFromPackagePage() {
       this.$refs.mealPackagePage.done();
+    },
+    showDeliveryDateModal() {
+      this.showDeliveryDayModal = true;
     }
   }
 };
