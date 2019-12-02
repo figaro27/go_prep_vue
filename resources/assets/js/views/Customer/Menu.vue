@@ -908,7 +908,7 @@ export default {
       store.dispatch("refreshDeliveryDay");
       setTimeout(() => {
         this.showDeliveryDateModal();
-      }, 3500);
+      }, 5500);
     } else {
       if (!this.isLazy) {
         // store.dispatch("refreshLazy");
