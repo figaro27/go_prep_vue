@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class MealOrder extends Pivot
@@ -101,6 +101,12 @@ class MealOrder extends Pivot
                 '</p>';
         }
 
+        $deliveryDate = new Carbon($this->delivery_date);
+
+        if ($this->order->store->modules->multipleDeliveryDays) {
+            $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
+        }
+
         return $title;
     }
 
@@ -168,6 +174,13 @@ class MealOrder extends Pivot
         if ($this->special_instructions != null) {
             $title .= $this->special_instructions;
         }
+
+        $deliveryDate = new Carbon($this->delivery_date);
+
+        if ($this->order->store->modules->multipleDeliveryDays) {
+            $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
+        }
+
         return $title;
     }
 
@@ -214,6 +227,13 @@ class MealOrder extends Pivot
         if ($this->special_instructions != null) {
             $title .= $this->special_instructions;
         }
+
+        $deliveryDate = new Carbon($this->delivery_date);
+
+        if ($this->order->store->modules->multipleDeliveryDays) {
+            $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
+        }
+
         return $title;
     }
 
@@ -272,6 +292,12 @@ class MealOrder extends Pivot
                 '<p style="font-size:10px">' .
                 $this->special_instructions .
                 '</p>';
+        }
+
+        $deliveryDate = new Carbon($this->delivery_date);
+
+        if ($this->order->store->modules->multipleDeliveryDays) {
+            $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
         }
 
         return $title;
