@@ -588,7 +588,7 @@ export default {
       if (this.isAdjustOrder() || this.isManualOrder()) {
         this.removeFromAdjust(item);
       } else {
-        this.clearMeal(
+        this.clearMealFullQuantity(
           item.meal,
           item.meal_package,
           item.size,

@@ -629,12 +629,60 @@ const mutations = {
       return;
     }
 
+    // Vue.delete(state.bag.items, guid);
+
     state.bag.items[guid].quantity -= quantity;
 
     if (state.bag.items[guid].quantity <= 0) {
       state.bag.items[guid].meal.price = state.bag.items[guid].meal.item_price;
       Vue.delete(state.bag.items, guid);
     }
+  },
+  removeFullQuantityFromBag(
+    state,
+    {
+      meal,
+      quantity = 1,
+      mealPackage = false,
+      size = null,
+      components = null,
+      addons = null,
+      special_instructions = null
+    }
+  ) {
+    let mealId = meal;
+    if (!_.isNumber(mealId)) {
+      mealId = meal.id;
+    }
+
+    if (mealPackage || meal.meal_package) {
+      //mealId = "package-" + mealId;
+      mealPackage = true;
+    }
+
+    if (size) {
+      //mealId = "size-" + mealId + "-" + size.id;
+    }
+
+    const delivery_day = meal.delivery_day ? meal.delivery_day : null;
+
+    let guid = CryptoJS.MD5(
+      JSON.stringify({
+        meal: mealId,
+        mealPackage,
+        size,
+        components,
+        addons,
+        special_instructions,
+        delivery_day
+      })
+    ).toString();
+
+    if (!_.has(state.bag.items, guid)) {
+      return;
+    }
+
+    Vue.delete(state.bag.items, guid);
   },
   setBagDeliveryDate(state, date) {
     this.state.delivery_date = date;

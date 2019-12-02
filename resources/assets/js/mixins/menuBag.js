@@ -218,6 +218,32 @@ export default {
         special_instructions
       });
     },
+    clearMealFullQuantity(
+      meal,
+      mealPackage = false,
+      size = null,
+      components = null,
+      addons = null,
+      special_instructions = null
+    ) {
+      let quantity = this.quantity(
+        meal,
+        mealPackage,
+        size,
+        components,
+        addons,
+        special_instructions
+      );
+      this.$store.commit("removeFullQuantityFromBag", {
+        meal,
+        quantity,
+        mealPackage,
+        size,
+        components,
+        addons,
+        special_instructions
+      });
+    },
     clearAll() {
       this.$store.commit("emptyBag");
     },
