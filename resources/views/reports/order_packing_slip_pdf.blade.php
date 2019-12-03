@@ -169,7 +169,7 @@ $brandColor = $order->store->settings->color;
         </tr>
       </thead>
     </table> -->
-    <table class="no-border table-heading unbreakable" style="border-style:none;">
+    <table class="no-border table-heading" style="border-style:none;">
       <thead>
           <th class="top-left-border-radius drop-shadow no-border" style="text-align:center">Quantity</th>
           <th class="drop-shadow no-border">Size</th>
