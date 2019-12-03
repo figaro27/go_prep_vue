@@ -575,14 +575,20 @@ $currency = $order->store->settings->currency_symbol
                   <td height="15"></td>
                 </tr>
                 <!-- content -->
+                @php
+                  $titles = [];
+                @endphp
                 @foreach($order->items as $item)
-                  @if ($item->instructions)
+                  @if ($item->instructions && !in_array($item->short_title, $titles))
                     <tr>
                       <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
-                        <b>{!! $item->html_title !!}</b> - {{ $item->instructions }}
+                        <b>{{ $item->short_title }}</b> - {{ $item->instructions }}
                       </td>
                     </tr>
                     <tr>
+                      @php
+                      array_push($titles, $item->short_title);
+                      @endphp
                   <td height="10"></td>
                 </tr>
                   @endif
