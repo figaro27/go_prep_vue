@@ -69,13 +69,6 @@ class PackingSlips
                 );
             }
 
-            if ($this->store->id === 108) {
-                $order = $orders
-                    ->where('dailyOrderNumber', '>', 0)
-                    ->where('dailyOrderNumber', '<', 40)
-                    ->orderBy('dailyOrderNumber', 'asc');
-            }
-
             $orders = $orders->get();
         }
 
