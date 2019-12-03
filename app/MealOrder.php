@@ -14,6 +14,7 @@ class MealOrder extends Pivot
     ];
 
     protected $appends = [
+        'short_title',
         'title',
         'html_title',
         'base_title',
@@ -56,6 +57,11 @@ class MealOrder extends Pivot
     public function addons()
     {
         return $this->hasMany('App\MealOrderAddon', 'meal_order_id', 'id');
+    }
+
+    public function getShortTitleAttribute()
+    {
+        return $this->meal->title;
     }
 
     public function getBaseTitleAttribute()

@@ -299,7 +299,7 @@ $brandColor = $order->store->settings->color;
     <br><br>
     @foreach ($order->items as $i => $item)
     @if ($item->instructions)
-    <p><b>{!! $item->title !!}</b>: {{ $item->instructions }}</p>
+    <p><b>{{ $item->short_title }}</b>: {{ $item->instructions }}</p>
     @endif
     @endforeach
   </div>
