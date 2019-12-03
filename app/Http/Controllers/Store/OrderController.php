@@ -335,6 +335,7 @@ class OrderController extends StoreController
 
         $order->meal_orders()->delete();
         $order->meal_package_orders()->delete();
+        $order->lineItemsOrder()->delete();
         foreach ($bag->getItems() as $item) {
             $mealOrder = new MealOrder();
             $mealOrder->order_id = $order->id;
