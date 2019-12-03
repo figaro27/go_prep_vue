@@ -867,6 +867,7 @@ export default {
     };
   },
   props: {
+    order: null,
     orderNotes: null,
     customer: null,
     preview: false,
@@ -1339,6 +1340,9 @@ export default {
         if (this.customDeliveryFee !== null) {
           return parseFloat(this.customDeliveryFee);
         }
+        if (this.$route.params.adjustOrder) {
+          return this.order.deliveryFee;
+        }
         if (!this.couponFreeDelivery) {
           if (this.storeSettings.applyDeliveryFee) {
             let fee = 0;
@@ -1445,6 +1449,9 @@ export default {
     tax() {
       if (this.customSalesTax !== null) {
         return parseFloat(this.customSalesTax);
+      }
+      if (this.$route.params.adjustOrder) {
+        return this.order.salesTax;
       }
       // Custom Sales Tax Per Meal
       let removableItemAmount = 0;
