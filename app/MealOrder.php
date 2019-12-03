@@ -102,9 +102,9 @@ class MealOrder extends Pivot
 
         if ($this->special_instructions != null) {
             $title .=
-                '<p style="font-size:10px">' .
+                '<p style="font-size:12px;font-weight:bold;">(' .
                 $this->special_instructions .
-                '</p>';
+                ')</p>';
         }
 
         $deliveryDate = new Carbon($this->delivery_date);
