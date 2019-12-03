@@ -135,17 +135,17 @@ export default {
         "featured_image",
         "size",
         "title",
-        "price",
-        "quantity",
-        "total"
+        // "price",
+        "quantity"
+        // "total"
       ],
       options: {
         headings: {
           featured_image: "Image",
           title: "Title",
-          price: "Price",
-          quantity: "Current Orders",
-          total: "Total Amount"
+          // price: "Price",
+          quantity: "Current Orders"
+          // total: "Total Amount"
         },
         customSorting: {
           created_at: function(ascending) {
@@ -168,6 +168,7 @@ export default {
     ...mapGetters({
       meals: "storeMeals",
       getMeal: "storeMeal",
+      getLineItem: "storeLineItem",
       upcomingOrders: "storeUpcomingOrders",
       // orders: "storeOrders",
       isLoading: "isLoading",
@@ -232,8 +233,34 @@ export default {
         });
       });
 
+      orders.forEach(order => {
+        _.forEach(order.line_items_order, lineItem => {
+          let item = lineItem;
+          if (item) {
+            if (this.productionGroupId != null) {
+              if (item.production_group_id !== this.productionGroupId)
+                return null;
+            }
+
+            let title = lineItem.title;
+            let base_title = lineItem.title;
+
+            if (!mealCounts[title]) {
+              mealCounts[title] = 0;
+              mealIds[title] = lineItem.id;
+              mealTitles[title] = base_title;
+            }
+            mealCounts[title] += lineItem.quantity;
+          }
+        });
+      });
+
       return _.map(mealCounts, (quantity, title) => {
         let meal = this.getMeal(mealIds[title]);
+
+        if (meal === null) {
+          meal = [];
+        }
 
         //let base_title = meal.title + "";
         let base_title = mealTitles[title];
@@ -243,7 +270,7 @@ export default {
 
         if (size) {
           base_size = size.title;
-        } else if (meal.default_size_title) {
+        } else if (meal && meal.default_size_title) {
           base_size = meal.default_size_title;
         }
 

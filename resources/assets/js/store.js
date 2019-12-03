@@ -2844,6 +2844,7 @@ const getters = {
   storeMeal: state => id => {
     try {
       let meal = _.find(state.store.meals.data, ["id", parseInt(id)]) || null;
+
       if (!meal) {
         return null;
       }
@@ -2912,6 +2913,22 @@ const getters = {
       return null;
     }
   },
+
+  storeLineItem: state => id => {
+    try {
+      let lineItem =
+        _.find(state.store.lineItems.data, ["id", parseInt(id)]) || null;
+      console.log(state.store.lineItems);
+      if (!lineItem) {
+        return null;
+      }
+
+      return lineItem;
+    } catch (e) {
+      return null;
+    }
+  },
+
   storeCategories: state => {
     try {
       return _.orderBy(state.store.categories.data, "order") || {};
