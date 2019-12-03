@@ -247,7 +247,7 @@
               <div v-if="finalCategoriesSub && finalCategoriesSub.length > 0">
                 <div
                   v-for="(cat, index) in finalCategoriesSub"
-                  v-if="isCategoryVisible(cat) && cat.visible"
+                  v-if="isCategoryVisible(cat)"
                   :key="'com_' + cat.id"
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
