@@ -277,21 +277,25 @@ class CheckoutController extends UserController
                     isset($item['meal']['gift_card']) &&
                     $item['meal']['gift_card']
                 ) {
-                    $purchasedGiftCard = new PurchasedGiftCard();
-                    $purchasedGiftCard->store_id = $store->id;
-                    $purchasedGiftCard->user_id = $user->id;
-                    $purchasedGiftCard->order_id = $order->id;
-                    $purchasedGiftCard->code = strtoupper(
-                        substr(uniqid(rand(10, 99), false), 0, 5)
-                    );
-                    $purchasedGiftCard->amount = $item['meal']['price'];
-                    $purchasedGiftCard->balance = $item['meal']['price'];
-                    $purchasedGiftCard->emailRecipient = isset(
-                        $giftCardEmailRecipient
-                    )
-                        ? $giftCardEmailRecipient
-                        : null;
-                    $purchasedGiftCard->save();
+                    $quantity = $item['quantity'];
+
+                    for ($i = 0; $i < $quantity; $i++) {
+                        $purchasedGiftCard = new PurchasedGiftCard();
+                        $purchasedGiftCard->store_id = $store->id;
+                        $purchasedGiftCard->user_id = $user->id;
+                        $purchasedGiftCard->order_id = $order->id;
+                        $purchasedGiftCard->code = strtoupper(
+                            substr(uniqid(rand(10, 99), false), 0, 5)
+                        );
+                        $purchasedGiftCard->amount = $item['meal']['price'];
+                        $purchasedGiftCard->balance = $item['meal']['price'];
+                        $purchasedGiftCard->emailRecipient = isset(
+                            $giftCardEmailRecipient
+                        )
+                            ? $giftCardEmailRecipient
+                            : null;
+                        $purchasedGiftCard->save();
+                    }
                 }
 
                 $mealOrder = new MealOrder();

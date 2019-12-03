@@ -885,7 +885,7 @@ export default {
     async addMeal(meal, mealPackage, size) {
       if (meal.gift_card) {
         this.addOne(meal);
-        return;
+        this.$parent.showBagClass = "shopping-cart show-right bag-area";
       }
       if (meal.meal_package) {
         this.addMealPackage(meal, true);

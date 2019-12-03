@@ -8,6 +8,11 @@ class PurchasedGiftCard extends Model
 {
     protected $appends = ['purchased_by'];
 
+    public function order()
+    {
+        return $this->belongsTo('App\Order');
+    }
+
     public function getPurchasedByAttribute()
     {
         $user = User::where('id', $this->user_id)->first();

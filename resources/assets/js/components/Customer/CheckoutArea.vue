@@ -257,7 +257,7 @@
                 id="coupon-code"
                 v-model="couponCode"
                 required
-                placeholder="Enter Coupon Code"
+                placeholder="Enter Promotional Code"
               ></b-form-input>
             </b-form-group>
           </div>

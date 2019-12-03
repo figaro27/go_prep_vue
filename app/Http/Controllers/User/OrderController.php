@@ -16,7 +16,7 @@ class OrderController extends UserController
     {
         return $this->user
             ->orders()
-            ->with(['pickup_location'])
+            ->with(['pickup_location', 'purchased_gift_cards'])
             ->get();
     }
 }
