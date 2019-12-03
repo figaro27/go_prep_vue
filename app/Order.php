@@ -265,6 +265,7 @@ class Order extends Model
                 return (object) [
                     'meal_id' => $mealOrder->meal_id,
                     'delivery_date' => $mealOrder->delivery_date,
+                    'short_title' => $mealOrder->short_title,
                     'base_title' => $mealOrder->base_title,
                     'base_size' => $mealOrder->base_size,
                     'meal_size_id' => $mealOrder->meal_size_id,
