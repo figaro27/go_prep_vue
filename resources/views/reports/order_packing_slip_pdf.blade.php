@@ -9,6 +9,8 @@ $processingFee = $currency . number_format($order->processingFee, 2);
 $salesTax = $currency . number_format($order->salesTax, 2);
 $coupon = $currency . number_format($order->couponReduction, 2);
 $couponCode = $order->couponCode;
+$purchasedGiftCard = $order->purchased_gift_card_code;
+$purchasedGiftCardReduction = $order->purchasedGiftCardReduction;
 $amount = $currency . number_format($order->amount, 2);
 $deposit = $currency . number_format($order->deposit, 2);
 $cashOrder = $order->cashOrder;
@@ -261,6 +263,10 @@ $brandColor = $order->store->settings->color;
             @if ($order->couponReduction > 0)<tr>
               <td style="border:none"><b>Coupon</b></td>
               <td style="border:none;text-align:right;position:relative;right:30px">({{ $couponCode }}) {{ $coupon }}</td>
+            </tr>@endif
+            @if ($order->purchasedGiftCardReduction > 0)<tr>
+              <td style="border:none"><b>Coupon</b></td>
+              <td style="border:none;text-align:right;position:relative;right:30px">({{ $purchasedGiftCard }}) {{ $purchasedGiftCardReduction }}</td>
             </tr>@endif
             @if ($order->balance > 0)<tr>
             <td style="border:none"><b>Total</b></td>
