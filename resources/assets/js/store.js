@@ -1375,7 +1375,7 @@ const actions = {
     }
 
     //dispatch("refreshStores");
-    //dispatch("refreshLazy");
+    dispatch("refreshLazy");
   },
 
   async logout({ commit, state }) {
