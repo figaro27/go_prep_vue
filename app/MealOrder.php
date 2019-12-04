@@ -109,7 +109,12 @@ class MealOrder extends Pivot
 
         $deliveryDate = new Carbon($this->delivery_date);
 
-        if ($this->order->store->modules->multipleDeliveryDays) {
+        if (
+            isset($this->order) &&
+            isset($this->order->store) &&
+            isset($this->order->store->modules) &&
+            $this->order->store->modules->multipleDeliveryDays
+        ) {
             $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
         }
 
@@ -183,7 +188,12 @@ class MealOrder extends Pivot
 
         $deliveryDate = new Carbon($this->delivery_date);
 
-        if ($this->order->store->modules->multipleDeliveryDays) {
+        if (
+            isset($this->order) &&
+            isset($this->order->store) &&
+            isset($this->order->store->modules) &&
+            $this->order->store->modules->multipleDeliveryDays
+        ) {
             $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
         }
 
@@ -236,7 +246,12 @@ class MealOrder extends Pivot
 
         $deliveryDate = new Carbon($this->delivery_date);
 
-        if ($this->order->store->modules->multipleDeliveryDays) {
+        if (
+            isset($this->order) &&
+            isset($this->order->store) &&
+            isset($this->order->store->modules) &&
+            $this->order->store->modules->multipleDeliveryDays
+        ) {
             $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
         }
 
@@ -302,7 +317,12 @@ class MealOrder extends Pivot
 
         $deliveryDate = new Carbon($this->delivery_date);
 
-        if ($this->order->store->modules->multipleDeliveryDays) {
+        if (
+            isset($this->order) &&
+            isset($this->order->store) &&
+            isset($this->order->store->modules) &&
+            $this->order->store->modules->multipleDeliveryDays
+        ) {
             $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
         }
 
