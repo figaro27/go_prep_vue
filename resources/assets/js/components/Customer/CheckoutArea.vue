@@ -953,7 +953,8 @@ export default {
       getMealPackage: "viewedStoreMealPackage",
       _orders: "orders",
       subscriptions: "subscriptions",
-      user: "user"
+      user: "user",
+      storeCoupons: "storeCoupons"
     }),
     isMultipleDelivery() {
       return this.storeModules.multipleDeliveryDays == 1 ? true : false;
@@ -1603,7 +1604,11 @@ export default {
       return _.find(this.customers, ["value", id]);
     },
     applyCoupon() {
-      this.coupons.forEach(coupon => {
+      let coupons = this.coupons;
+      if (this.$route.params.storeView) {
+        coupons = this.storeCoupons;
+      }
+      coupons.forEach(coupon => {
         if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
           if (coupon.oneTime) {
             let oneTimePass = this.oneTimeCouponCheck(coupon.id);
