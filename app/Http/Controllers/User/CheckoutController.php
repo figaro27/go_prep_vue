@@ -406,6 +406,7 @@ class CheckoutController extends UserController
                             $attachment->quantity * $item['quantity'];
                         $mealOrder->attached = 1;
                         $mealOrder->free = 1;
+                        $mealOrder->hidden = $attachment->hidden;
                         if (
                             isset($item['delivery_day']) &&
                             $item['delivery_day']

@@ -465,6 +465,7 @@ class OrderController extends StoreController
                         $attachment->quantity * $item['quantity'];
                     $mealOrder->attached = 1;
                     $mealOrder->free = 1;
+                    $mealOrder->hidden = $attachment->hidden;
                     if (isset($item['delivery_day']) && $item['delivery_day']) {
                         $mealOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
                             $item['delivery_day']['day'],

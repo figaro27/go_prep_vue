@@ -188,7 +188,7 @@ $brandColor = $order->store->settings->color;
         </tr>
 
         @foreach($order->items as $i => $item)
-        @if ($item->meal_package_order_id === $mealPackageItem->id)
+        @if ($item->meal_package_order_id === $mealPackageItem->id  && !$item->hidden)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$item->quantity}}</td>
           <td>{{ $item->base_size }}</td>
@@ -204,7 +204,7 @@ $brandColor = $order->store->settings->color;
 
         @endforeach
         @foreach($order->items as $i => $item)
-        @if ($item->meal_package_order_id === null)
+        @if ($item->meal_package_order_id === null && !$item->hidden)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$item->quantity}}</td>
           <td>{{ $item->base_size }}</td>
@@ -301,7 +301,7 @@ $brandColor = $order->store->settings->color;
   $titles = [];
 @endphp
     @foreach ($order->items as $i => $item)
-    @if ($item->instructions && !in_array($item->short_title, $titles))
+    @if ($item->instructions && !in_array($item->short_title, $titles && !$item->hidden))
     <p><b>{{ $item->short_title }}</b>: {{ $item->instructions }}</p>
   @php
   array_push($titles, $item->short_title);

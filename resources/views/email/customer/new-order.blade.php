@@ -263,7 +263,7 @@ $currency = $order->store->settings->currency_symbol
 
 
                 @foreach($order->items as $item)
-                @if ($item->meal_package_order_id === $mealPackageItem->id)
+                @if ($item->meal_package_order_id === $mealPackageItem->id && !$item->hidden)
                 <tr>
                   <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
@@ -280,7 +280,7 @@ $currency = $order->store->settings->currency_symbol
               @endforeach
                 
                 @foreach($order->items as $item)
-                @if ($item->meal_package_order_id === null)
+                @if ($item->meal_package_order_id === null && !$item->hidden)
                 <tr>
                   <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">

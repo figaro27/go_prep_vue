@@ -8,6 +8,8 @@ class MealOrder extends Pivot
 {
     protected $table = 'meal_orders';
 
+    protected $hidden = [];
+
     protected $casts = [
         'free' => 'boolean',
         'meal_package' => 'boolean'

@@ -382,7 +382,10 @@ export default {
         }
 
         order.items.forEach(item => {
-          if (item.meal_package_order_id === meal_package_item.id) {
+          if (
+            item.meal_package_order_id === meal_package_item.id &&
+            !item.hidden
+          ) {
             const meal = this.getStoreMeal(item.meal_id);
             if (!meal) {
               return null;
@@ -411,7 +414,7 @@ export default {
       });
 
       order.items.forEach(item => {
-        if (item.meal_package_order_id === null) {
+        if (item.meal_package_order_id === null && !item.hidden) {
           const meal = this.getStoreMeal(item.meal_id);
           if (!meal) {
             return null;
