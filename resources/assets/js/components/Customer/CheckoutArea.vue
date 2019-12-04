@@ -437,6 +437,27 @@
           ></b-form-select>
         </div>
       </li>
+      <!-- Temporary Workaround for Steve -->
+      <li
+        class="checkout-item"
+        style="height:125px;"
+        v-if="$route.params.storeView && store.id === 109"
+      >
+        <div>
+          <strong>Pickup/Delivery Time</strong>
+          <p class="small">
+            Temporary workaround before half hour time intervals are developed.
+            Typing in the box below overwrites anything selected in the time
+            dropdown above.
+          </p>
+          <b-form-input
+            class="width-50"
+            v-model="overwriteTransferTime"
+            :value="overwriteTransferTime"
+          ></b-form-input>
+        </div>
+      </li>
+      <!-- Temporary Workaround for Steve -->
     </div>
 
     <li
@@ -863,7 +884,8 @@ export default {
       subscriptionInterval: "week",
       customerModel: null,
       emailCustomer: true,
-      selectedPickupLocation: null
+      selectedPickupLocation: null,
+      overwriteTransferTime: null
     };
   },
   props: {
@@ -1727,7 +1749,10 @@ export default {
           deliveryDate: this.bagDeliveryDate,
           isMultipleDelivery: this.isMultipleDelivery,
           pickup: this.pickup,
-          transferTime: this.transferTime,
+          transferTime:
+            this.overwriteTransferTime != null
+              ? this.overwriteTransferTime
+              : this.transferTime,
           subtotal: this.subtotal,
           mealPlanDiscount: this.mealPlanDiscount,
           afterDiscount: this.afterDiscount,
@@ -1863,7 +1888,10 @@ export default {
           deposit: deposit,
           cashOrder: this.cashOrder,
           noBalance: this.noBalance,
-          transferTime: this.transferTime,
+          transferTime:
+            this.overwriteTransferTime != null
+              ? this.overwriteTransferTime
+              : this.transferTime,
           lineItemsOrder: this.orderLineItems,
           grandTotal: this.grandTotal,
           emailCustomer: this.emailCustomer
