@@ -87,6 +87,19 @@
                   <span v-if="item.size && item.size.title !== 'Regular'">
                     - {{ item.size.title }}
                   </span>
+                  <b-form-input
+                    v-if="
+                      item.meal.gift_card &&
+                        ($route.name === 'customer-bag' ||
+                          $route.name === 'store-bag')
+                    "
+                    placeholder="Optional Email Recipient"
+                    @input="
+                      val => {
+                        item.emailRecipient = val;
+                      }
+                    "
+                  ></b-form-input>
                 </span>
                 <span v-else-if="item.size && item.size.title !== 'Regular'">{{
                   item.size.full_title

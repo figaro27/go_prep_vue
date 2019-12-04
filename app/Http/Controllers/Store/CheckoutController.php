@@ -8,6 +8,7 @@ use App\User;
 use App\Http\Controllers\Store\StoreController;
 use App\Mail\Customer\MealPlan;
 use App\Mail\Customer\NewOrder;
+use App\Mail\Customer\NewGiftCard;
 use App\MealOrder;
 use App\MealOrderComponent;
 use App\MealSubscriptionComponent;
@@ -326,6 +327,17 @@ class CheckoutController extends StoreController
                             ? $giftCardEmailRecipient
                             : null;
                         $purchasedGiftCard->save();
+
+                        if (isset($item['emailRecipient'])) {
+                            $email = new NewGiftCard([
+                                'purchasedGiftCard' => $purchasedGiftCard,
+                                'order' => $order
+                            ]);
+                            try {
+                                Mail::to($item['emailRecipient'])->send($email);
+                            } catch (\Exception $e) {
+                            }
+                        }
                     }
                 }
 
