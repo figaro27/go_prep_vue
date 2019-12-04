@@ -17,7 +17,6 @@ const ttl = 60; // 60 seconds
 const state = {
   context: null,
   isLazy: false,
-  isLazyLoading: false,
   isLazyStore: false,
   isLazyDD: {},
   jobs: {},
@@ -1091,7 +1090,6 @@ const triggerLazy = (
       } else {
         // Finished
         state.isLazy = false;
-        state.isLazyLoading = false;
       }
     })
     .catch(error => {
@@ -1354,7 +1352,7 @@ const actions = {
     dispatch("refreshOrderIngredients");
     dispatch("refreshIngredients");
     dispatch("refreshStoreSubscriptions");
-    //dispatch("refreshLazy");
+    dispatch("refreshLazy");
   },
 
   async initCustomer({ commit, state, dispatch }, data = {}) {
@@ -1366,7 +1364,7 @@ const actions = {
     dispatch("refreshCards");
     dispatch("refreshCustomerOrders");
     dispatch("refreshSubscriptions");
-    //dispatch("refreshLazy");
+    dispatch("refreshLazy");
   },
 
   async initGuest({ commit, state, dispatch }, data = {}) {
@@ -1854,8 +1852,6 @@ const actions = {
 
   async refreshLazyDD({ state }, args = {}) {
     state.isLazy = true;
-    state.isLazyLoading = true;
-
     const { delivery_day } = args;
 
     if (!delivery_day) {
@@ -1868,7 +1864,6 @@ const actions = {
     }
 
     state.isLazyDD[key] = true;*/
-
     state.viewed_store = {
       ...state.viewed_store,
       delivery_day,
@@ -1883,8 +1878,6 @@ const actions = {
 
   async refreshLazy({ state }, args = {}) {
     state.isLazy = true;
-    state.isLazyLoading = true;
-
     let includeStore = args && args.includeStore ? true : false;
 
     triggerLazy(state, 0, 0, 0, "", 0, includeStore);
@@ -2256,9 +2249,6 @@ const getters = {
   },
   isLazy(state) {
     return state.isLazy;
-  },
-  isLazyLoading(state) {
-    return state.isLazyLoading;
   },
   isLazyStore(state) {
     return state.isLazyStore;

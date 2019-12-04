@@ -549,7 +549,6 @@ export default {
       store: "viewedStore",
       context: "context",
       isLazy: "isLazy",
-      isLazyLoading: "isLazyLoading",
       total: "bagQuantity",
       allergies: "allergies",
       bag: "bagItems",
@@ -572,8 +571,7 @@ export default {
       return this.hasDeliveryDateRestriction;
     },
     showSpinner() {
-      return this.store.items.length == 0 && this.isLazyLoading;
-
+      return this.store.items.length == 0;
       /*if (this.context == "customer" || this.context == "guest") {
         return this.store.items.length == 0;
       } else {
@@ -909,14 +907,12 @@ export default {
   mounted() {
     if (this.isMultipleDelivery) {
       store.dispatch("refreshDeliveryDay");
-      /*setTimeout(() => {
+      setTimeout(() => {
         this.showDeliveryDateModal();
-      }, 5500);*/
-
-      this.showDeliveryDateModal();
+      }, 5500);
     } else {
       if (!this.isLazy) {
-        store.dispatch("refreshLazy");
+        // store.dispatch("refreshLazy");
       }
     }
 
