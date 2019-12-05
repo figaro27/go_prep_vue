@@ -195,7 +195,11 @@
                 ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="State" :state="state(1, 'state')">
+              <b-form-group
+                horizontal
+                :label="stateWording"
+                :state="state(1, 'state')"
+              >
                 <b-select
                   label="name"
                   :options="getStateNames(form[1].country)"
@@ -357,7 +361,11 @@
                 ></b-select>
               </b-form-group>
 
-              <b-form-group horizontal label="State" :state="state(2, 'state')">
+              <b-form-group
+                horizontal
+                :label="stateWording"
+                :state="state(2, 'state')"
+              >
                 <b-select
                   label="name"
                   :options="getStateNames(form[2].country)"
@@ -622,6 +630,13 @@ export default {
     ...mapGetters({
       store: "viewedStore"
     }),
+    stateWording() {
+      if (this.form[1].country === "US") {
+        return "State";
+      } else {
+        return "County";
+      }
+    },
     stateNames() {
       return states.selectOptions("US");
     },
@@ -727,6 +742,9 @@ export default {
     });
   },
   mounted() {
+    this.form[1].state = this.store.details.state;
+    this.form[1].country = this.store.details.country;
+    return;
     if (this.store.details) {
       let stateAbr = this.store.details.state;
       let state = this.stateNames.filter(stateName => {
