@@ -80,7 +80,22 @@ $brandColor = $order->store->settings->color;
   </div>
   @endif
   <div class="row">
-    <div class="col-4" style="position:relative;top:40px">
+    <div class="col-4">
+          <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4>
+          <img src="{{$logo}}" style="width:200px;height:auto"/>
+          <p class="center-text text-11">{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
+          <p class="center-text text-11">{{ $order->store->details->phone }}</p>
+          @if ($order->store->settings->website) 
+          <p class="center-text text-11">{{ $order->store->settings->website }}</p>
+          @else 
+          <p class="center-text text-11">www{{$order->store->settings->domain}}.goprep.com</p>
+          @endif
+      </div>
+    
+    <center>
+
+
+      <div class="col-4" style="position:relative;top:40px">
         <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">{{$order->user->name}}</p>
         @if ($order->user->details->address !== 'N/A')
         <p>{{$order->user->details->address}}</p>
@@ -97,19 +112,6 @@ $brandColor = $order->store->settings->color;
         @else
         <p>Online Order: {{$order->created_at->format('D, m/d/Y')}}</p>
         @endif
-      </div>
-    
-    <center>
-      <div class="col-4 center-text">
-          <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4>
-          <img src="{{$logo}}" style="width:200px;height:auto"/>
-          <p class="center-text text-11">{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
-          <p class="center-text text-11">{{ $order->store->details->phone }}</p>
-          @if ($order->store->settings->website) 
-          <p class="center-text text-11">{{ $order->store->settings->website }}</p>
-          @else 
-          <p class="center-text text-11">www{{$order->store->settings->domain}}.goprep.com</p>
-          @endif
       </div>
       
       <div class="col-4 right-text" style="position:relative;top:40px">
