@@ -95,7 +95,7 @@ $brandColor = $order->store->settings->color;
     <center>
 
 
-      <div class="col-4 align-left">
+      <div class="col-4 align-right">
         <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">{{$order->user->name}}</p>
         @if ($order->user->details->address !== 'N/A')
         <p>{{$order->user->details->address}}</p>
