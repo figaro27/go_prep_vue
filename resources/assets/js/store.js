@@ -2120,6 +2120,26 @@ const actions = {
     Vue.set(state.store.meal_packages.data, index, resp.data);
   },
 
+  async updateGiftCard({ commit, state, getters, dispatch }, { data, id }) {
+    if (!id || !data) {
+      return;
+    }
+
+    const index = _.findIndex(getters.storeGiftCards, ["id", id]);
+
+    if (index === -1) {
+      return;
+    }
+
+    Vue.set(
+      state.store.gift_cards.data,
+      index,
+      _.merge(state.store.gift_cards.data[index], data)
+    );
+    const resp = await axios.patch(`/api/me/giftCards/${id}`, data);
+    Vue.set(state.store.gift_cards.data, index, resp.data);
+  },
+
   async refreshMeals({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/meals");
     const { data } = await res;

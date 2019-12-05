@@ -15,6 +15,11 @@ class GiftCard extends Model implements HasMedia
 
     public $appends = ['category_ids', 'gift_card', 'salesTax', 'image'];
 
+    protected $casts = [
+        'created_at' => 'date:F d, Y',
+        'created_at_local' => 'date:F d, Y'
+    ];
+
     public function categories()
     {
         return $this->belongsToMany('App\Category')->using(

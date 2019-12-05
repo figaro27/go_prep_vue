@@ -35,7 +35,30 @@ class GiftCardController extends StoreController
      */
     public function store(Request $request)
     {
-        //
+        $giftCard = new GiftCard();
+        $giftCard->store_id = $this->store->id;
+        $giftCard->title = $request->get('title');
+        $giftCard->price = $request->get('price');
+
+        if ($request->has('featured_image')) {
+            $imagePath = Utils\Images::uploadB64(
+                $request->get('featured_image'),
+                'path',
+                'giftCards/'
+            );
+            $fullImagePath = \Storage::disk('public')->path($imagePath);
+            $this->clearMediaCollection('featured_image');
+            $this->addMedia($fullImagePath)->toMediaCollection(
+                'featured_image'
+            );
+        }
+
+        $giftCard->save();
+
+        $categories = $request->get('category_ids');
+        if (is_array($categories)) {
+            $giftCard->categories()->sync($categories);
+        }
     }
 
     /**
@@ -67,8 +90,15 @@ class GiftCardController extends StoreController
      * @param  \App\GiftCard  $giftCard
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
+        if ($id !== null) {
+            $giftCard = GiftCard::where('id', $id)->first();
+            $giftCard->active = $request->get('active');
+            $giftCard->update();
+            return;
+        }
+
         $giftCard = GiftCard::where('id', $request->get('id'))->first();
         $giftCard->title = $request->get('title');
         $giftCard->price = $request->get('price');

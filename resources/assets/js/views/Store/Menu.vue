@@ -36,6 +36,12 @@
                   Add Package
                 </button>
 
+                <button
+                  class="btn btn-success btn-md mb-2 mb-sm-0"
+                  @click="createGiftCardModal = true"
+                >
+                  Add Gift Card
+                </button>
                 <b-form-radio-group
                   buttons
                   button-variant="primary"
@@ -100,7 +106,12 @@
                   :unchecked-value="0"
                   @change="
                     val =>
-                      updateActive(props.row.id, val, props.row.meal_package)
+                      updateActive(
+                        props.row.id,
+                        val,
+                        props.row.meal_package,
+                        props.row.gift_card
+                      )
                   "
                 ></b-form-checkbox>
               </div>
@@ -185,6 +196,7 @@
       v-if="viewGiftCardModal"
       :giftCard="giftCard"
     ></view-gift-card-modal>
+    <create-gift-card-modal v-if="createGiftCardModal"></create-gift-card-modal>
     <create-meal-modal v-if="createMealModal" @created="refreshTable()" />
     <create-package-modal v-if="createPackageModal" @created="refreshTable()" />
     <view-package-modal
@@ -787,6 +799,7 @@ import IngredientPicker from "../../components/IngredientPicker";
 import MealSizes from "../../components/Menu/MealSizes";
 import MealComponents from "../../components/Menu/MealComponents";
 import MealAddons from "../../components/Menu/MealAddons";
+import CreateGiftCardModal from "./Modals/CreateGiftCard";
 import CreateMealModal from "./Modals/CreateMeal";
 import CreatePackageModal from "./Modals/CreateMealPackage";
 import ViewPackageModal from "./Modals/ViewMealPackage";
@@ -810,6 +823,7 @@ export default {
     Spinner,
     PictureInput,
     IngredientPicker,
+    CreateGiftCardModal,
     CreateMealModal,
     CreatePackageModal,
     ViewPackageModal,
@@ -850,6 +864,7 @@ export default {
       editingCategoryId: null,
       newCategoryName: "",
       showCategoriesModal: false,
+      createGiftCardModal: false,
       createMealModal: false,
       createPackageModal: false,
       viewMealModal: false,
@@ -1092,6 +1107,7 @@ export default {
       refreshMealPackages: "refreshMealPackages",
       _updateMeal: "updateMeal",
       _updateMealPackage: "updateMealPackage",
+      _updateGiftCard: "updateGiftCard",
       refreshCategories: "refreshCategories",
       addJob: "addJob",
       removeJob: "removeJob",
@@ -1206,7 +1222,7 @@ export default {
         return false;
       }
     },
-    async updateActive(id, active, isMealPackage = false) {
+    async updateActive(id, active, isMealPackage = false, isGiftCard = false) {
       const i = _.findIndex(this.tableData, o => {
         return o.id === id && !!o.meal_package === isMealPackage;
       });
@@ -1215,8 +1231,10 @@ export default {
         return this.getTableData();
       }
 
-      if (!isMealPackage) {
+      if (!isMealPackage && !isGiftCard) {
         await this._updateMeal({ id, data: { active } });
+      } else if (isGiftCard) {
+        await this._updateGiftCard({ id, data: { active } });
       } else {
         await this._updateMealPackage({ id, data: { active } });
       }

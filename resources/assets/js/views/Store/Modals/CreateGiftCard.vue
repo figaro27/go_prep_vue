@@ -2,9 +2,9 @@
   <div class="modal-full modal-tabs">
     <b-modal
       size="xl"
-      title="View Gift Card"
-      ref="viewGiftCardModal"
-      @ok.prevent="e => updateGiftCard(e)"
+      title="Add Gift Card"
+      ref="createGiftCardModal"
+      @ok.prevent="e => addGiftCard(e)"
       @cancel.prevent="toggleModal()"
       @hidden="toggleModal"
       no-fade
@@ -38,7 +38,6 @@
             v-model="giftCard.category_ids"
             :options="categoryOptions"
             class="storeFilters"
-            @input="updateGiftCard(1)"
             required
           ></b-form-checkbox-group>
         </b-col>
@@ -70,11 +69,10 @@ export default {
     Spinner,
     PictureInput
   },
-  props: {
-    giftCard: null
-  },
   data() {
-    return {};
+    return {
+      giftCard: {}
+    };
   },
   computed: {
     ...mapGetters({
@@ -95,7 +93,7 @@ export default {
     }
   },
   mounted() {
-    this.$refs.viewGiftCardModal.show();
+    this.$refs.createGiftCardModal.show();
     setTimeout(() => {
       this.$refs.featuredImageInput.onResize();
     }, 100);
@@ -112,16 +110,14 @@ export default {
       this.giftCard.featured_image = b64;
     },
     toggleModal() {
-      this.$parent.viewGiftCardModal = false;
+      this.$parent.createGiftCardModal = false;
     },
-    updateGiftCard(cat) {
-      axios
-        .patch(`/api/me/giftCards/${this.giftCard.id}`, this.giftCard)
-        .then(resp => {
-          this.$toastr.s("Gift card updated.");
-          this.refreshGiftCards();
-          if (cat !== 1) this.toggleModal();
-        });
+    addGiftCard() {
+      axios.post("/api/me/giftCards", this.giftCard).then(resp => {
+        this.$toastr.s("Gift card created.");
+        this.refreshGiftCards();
+        this.toggleModal();
+      });
     }
   }
 };
