@@ -172,13 +172,6 @@ class Ingredient extends Model
                 $mealArr[$field] = 0;
                 continue;
             }
-
-            // We already do this in the FE
-            //$mealArr[$field] /= $unitFactor;
-
-            if (in_array($field, ['totalfat', 'satfat', 'totalcarb'])) {
-                $mealArr[$field] *= $unitFactor;
-            }
         }
 
         // Thumbnail
