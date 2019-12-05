@@ -195,12 +195,7 @@
                 ></b-input>
               </b-form-group>
 
-              <b-form-group
-                horizontal
-                :label="stateWording"
-                :state="state(1, 'state')"
-                v-if="store.id !== 98"
-              >
+              <b-form-group horizontal label="State" :state="state(1, 'state')">
                 <b-select
                   label="name"
                   :options="getStateNames(form[1].country)"
@@ -362,11 +357,7 @@
                 ></b-select>
               </b-form-group>
 
-              <b-form-group
-                horizontal
-                :label="stateWording"
-                :state="state(2, 'state')"
-              >
+              <b-form-group horizontal label="State" :state="state(2, 'state')">
                 <b-select
                   label="name"
                   :options="getStateNames(form[2].country)"
@@ -631,13 +622,6 @@ export default {
     ...mapGetters({
       store: "viewedStore"
     }),
-    stateWording() {
-      if (this.form[1].country === "GB") {
-        return "County";
-      } else {
-        return "State";
-      }
-    },
     stateNames() {
       return states.selectOptions("US");
     },
@@ -743,18 +727,13 @@ export default {
     });
   },
   mounted() {
-    // if (this.store.details) {
-    //   let stateAbr = this.store.details.state;
-    //   let state = this.stateNames.filter(stateName => {
-    //     return stateName.value.toLowerCase() === stateAbr.toLowerCase();
-    //   });
+    if (this.store.details) {
+      let stateAbr = this.store.details.state;
+      let state = this.stateNames.filter(stateName => {
+        return stateName.value.toLowerCase() === stateAbr.toLowerCase();
+      });
 
-    //   this.form[1].state = state[0].value;
-    // }
-
-    // Temp for Kyle
-    if (this.store.id === 98) {
-      this.form[1].state = "TWR";
+      this.form[1].state = state[0].value;
     }
   },
   methods: {
