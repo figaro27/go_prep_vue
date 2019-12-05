@@ -137,6 +137,16 @@ class Store extends Model
         return $this->hasMany('App\Coupon');
     }
 
+    public function giftCards()
+    {
+        return $this->hasMany('App\GiftCard');
+    }
+
+    public function purchasedGiftCards()
+    {
+        return $this->hasMany('App\PurchasedGiftCard');
+    }
+
     public function pickupLocations()
     {
         return $this->hasMany('App\PickupLocation');

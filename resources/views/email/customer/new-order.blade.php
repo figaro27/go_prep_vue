@@ -320,6 +320,22 @@ $currency = $order->store->settings->currency_symbol
               </table>
             </td>
           </tr>
+          <tr>
+            <td align="center">
+              <table width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
+                @foreach($order->purchased_gift_cards as $purchasedGiftCard)
+
+                <tr>
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">Gift Card Code: {{ $purchasedGiftCard->code }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
+                    {{$currency}}{{ number_format($purchasedGiftCard->amount, 2) }}</td>
+                  <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">1</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{$currency}}{{ number_format($purchasedGiftCard->amount, 2) }}</td>
+                </tr>
+              @endforeach
+              </table>
+            </td>
+          </tr>
           <!-- detail -->
           <tr>
           </tr>
@@ -362,11 +378,16 @@ $currency = $order->store->settings->currency_symbol
                         $couponCode = $order->couponCode;
                         $deposit = $order->deposit;
                         $balance = $order->balance;
+                        $purchasedGiftCard = $order->purchased_gift_card_code;
+                        $purchasedGiftCardReduction = $order->purchasedGiftCardReduction;
                         @endphp
 
                         Subtotal: <br>
                         @if ($coupon > 0)
                         Coupon ({{ $couponCode }})<br>
+                        @endif
+                        @if ($purchasedGiftCardReduction > 0)
+                        Gift Card ({{$purchasedGiftCard}})<br>
                         @endif
                         @if ($mealPlanDiscount > 0)
                         Subscription Discount<br>
@@ -395,6 +416,9 @@ $currency = $order->store->settings->currency_symbol
                           {{$currency}}{{ number_format($subtotal, 2) }}<br>
                           @if ($coupon > 0)
                           ({{$currency}}{{ number_format($coupon, 2) }})<br>
+                          @endif
+                          @if ($purchasedGiftCardReduction > 0)
+                          ({{$currency}}{{ number_format($purchasedGiftCardReduction, 2) }})<br>
                           @endif
                           @if ($mealPlanDiscount > 0)
                           ({{$currency}}{{ number_format($mealPlanDiscount, 2) }})<br>

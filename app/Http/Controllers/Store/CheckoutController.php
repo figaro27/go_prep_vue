@@ -8,6 +8,7 @@ use App\User;
 use App\Http\Controllers\Store\StoreController;
 use App\Mail\Customer\MealPlan;
 use App\Mail\Customer\NewOrder;
+use App\Mail\Customer\NewGiftCard;
 use App\MealOrder;
 use App\MealOrderComponent;
 use App\MealSubscriptionComponent;
@@ -28,6 +29,7 @@ use App\LineItemOrder;
 use App\MealPackageOrder;
 use App\MealPackageSubscription;
 use App\OrderBag;
+use App\PurchasedGiftCard;
 use App\Billing\Constants;
 use App\Billing\Charge;
 use App\Billing\Authorize;
@@ -84,6 +86,10 @@ class CheckoutController extends StoreController
         $couponId = $request->get('coupon_id');
         $couponReduction = $request->get('couponReduction');
         $couponCode = $request->get('couponCode');
+        $purchasedGiftCardId = $request->get('purchased_gift_card_id');
+        $purchasedGiftCardReduction = $request->get(
+            'purchasedGiftCardReduction'
+        );
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
@@ -271,6 +277,8 @@ class CheckoutController extends StoreController
             $order->coupon_id = $couponId;
             $order->couponReduction = $couponReduction;
             $order->couponCode = $couponCode;
+            $order->purchased_gift_card_id = $purchasedGiftCardId;
+            $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->deposit = $deposit;
@@ -300,6 +308,42 @@ class CheckoutController extends StoreController
             $order_transaction->save();
 
             foreach ($bag->getItems() as $item) {
+                if (
+                    isset($item['meal']['gift_card']) &&
+                    $item['meal']['gift_card']
+                ) {
+                    $quantity = $item['quantity'];
+
+                    for ($i = 0; $i < $quantity; $i++) {
+                        $purchasedGiftCard = new PurchasedGiftCard();
+                        $purchasedGiftCard->store_id = $store->id;
+                        $purchasedGiftCard->user_id = $user->id;
+                        $purchasedGiftCard->order_id = $order->id;
+                        $purchasedGiftCard->code = strtoupper(
+                            substr(uniqid(rand(10, 99), false), 0, 5)
+                        );
+                        $purchasedGiftCard->amount = $item['meal']['price'];
+                        $purchasedGiftCard->balance = $item['meal']['price'];
+                        $purchasedGiftCard->emailRecipient = isset(
+                            $giftCardEmailRecipient
+                        )
+                            ? $giftCardEmailRecipient
+                            : null;
+                        $purchasedGiftCard->save();
+
+                        if (isset($item['emailRecipient'])) {
+                            $email = new NewGiftCard([
+                                'purchasedGiftCard' => $purchasedGiftCard,
+                                'order' => $order
+                            ]);
+                            try {
+                                Mail::to($item['emailRecipient'])->send($email);
+                            } catch (\Exception $e) {
+                            }
+                        }
+                    }
+                }
+
                 $mealOrder = new MealOrder();
                 $mealOrder->order_id = $order->id;
                 $mealOrder->store_id = $store->id;
@@ -496,6 +540,14 @@ class CheckoutController extends StoreController
                     ->send($email);
             } catch (\Exception $e) {
             }*/
+            if (isset($purchasedGiftCardId)) {
+                $purchasedGiftCard = PurchasedGiftCard::where(
+                    'id',
+                    $purchasedGiftCardId
+                )->first();
+                $purchasedGiftCard->balance -= $purchasedGiftCardReduction;
+                $purchasedGiftCard->update();
+            }
 
             if ($bagItems && count($bagItems) > 0) {
                 foreach ($bagItems as $bagItem) {

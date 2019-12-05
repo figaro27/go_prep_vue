@@ -75,8 +75,8 @@
                   @change="
                     val => {
                       setWeeklySubscriptionValue(val);
+                      setBagPurchasedGiftCard(null);
                       updateParentData();
-
                       setBagMealPlan(val);
                     }
                   "
@@ -122,7 +122,7 @@
         <div class="row">
           <div class="col-6 col-md-4">
             <span class="d-inline mr-2" @click="removeCoupon">
-              <img class="couponX" src="/images/customer/x.png" />
+              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
             </span>
             <span class="text-success">({{ coupon.code }})</span>
           </div>
@@ -144,6 +144,28 @@
           </div>
         </div>
       </li>
+
+      <li class="checkout-item" v-if="purchasedGiftCardApplied">
+        <div class="row">
+          <div class="col-6 col-md-4">
+            <span class="d-inline mr-2" @click="removePurchasedGiftCard">
+              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
+            </span>
+            <span class="text-success">({{ purchasedGiftCard.code }})</span>
+          </div>
+          <div class="col-6 col-md-3 offset-md-5">
+            <span class="text-success" v-if="purchasedGiftCardReduction > 0"
+              >({{
+                format.money(
+                  purchasedGiftCardReduction,
+                  storeSettings.currency
+                )
+              }})</span
+            >
+          </div>
+        </div>
+      </li>
+
       <li
         class="checkout-item"
         v-if="(weeklySubscription && applyMealPlanDiscount) || inSub"
@@ -263,6 +285,7 @@
         </div>
       </li>
 
+      <!-- Coupon Area -->
       <li v-if="hasCoupons">
         <div class="row">
           <div class="col-xs-6 pl-3">
@@ -271,7 +294,7 @@
                 id="coupon-code"
                 v-model="couponCode"
                 required
-                placeholder="Enter Coupon Code"
+                placeholder="Enter Promotional Code"
               ></b-form-input>
             </b-form-group>
           </div>
@@ -957,6 +980,7 @@ export default {
       bag: "bagItems",
       bagDeliveryDate: "bagDeliveryDate",
       coupon: "bagCoupon",
+      purchasedGiftCard: "bagPurchasedGiftCard",
       deliveryPlan: "bagMealPlan",
       mealPlan: "bagMealPlan",
       hasMeal: "bagHasMeal",
@@ -970,6 +994,7 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
       coupons: "viewedStoreCoupons",
+      purchasedGiftCards: "viewedStorePurchasedGiftCards",
       pickupLocations: "viewedStorePickupLocations",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
@@ -1074,6 +1099,9 @@ export default {
     },
     couponApplied() {
       return !_.isNull(this.coupon);
+    },
+    purchasedGiftCardApplied() {
+      return !_.isNull(this.purchasedGiftCard);
     },
     customers() {
       let customers = this.storeCustomers;
@@ -1339,11 +1367,25 @@ export default {
         return (coupon.amount / 100) * subtotal;
       }
     },
-    afterCoupon() {
+    purchasedGiftCardReduction() {
+      if (!this.purchasedGiftCardApplied) {
+        return 0;
+      }
+      if (this.purchasedGiftCard.balance > this.subtotal) {
+        return this.subtotal;
+      }
+      return this.purchasedGiftCard.balance;
+    },
+    afterPromotion() {
+      let subtotal = this.subtotal;
       if (this.couponApplied) {
-        let subtotal = this.subtotal - this.couponReduction;
-        return subtotal;
-      } else return this.subtotal;
+        subtotal -= this.couponReduction;
+      }
+      if (this.purchasedGiftCardApplied) {
+        subtotal -= this.purchasedGiftCardReduction;
+      }
+
+      return subtotal;
     },
     mealPlanDiscount() {
       if (this.weeklySubscription || this.inSub || this.adjustMealPlan)
@@ -1357,8 +1399,8 @@ export default {
         (this.applyMealPlanDiscount && this.weeklySubscription) ||
         this.inSub
       ) {
-        return this.afterCoupon - this.mealPlanDiscount;
-      } else return this.afterCoupon;
+        return this.afterPromotion - this.mealPlanDiscount;
+      } else return this.afterPromotion;
     },
     deliveryFeeAmount() {
       if (!this.pickup) {
@@ -1429,7 +1471,7 @@ export default {
       return this.afterFees + this.tax;
     },
     hasCoupons() {
-      if (this.coupons.length > 0) {
+      if (this.coupons.length > 0 || this.purchasedGiftCards.length > 0) {
         return true;
       } else {
         return false;
@@ -1610,12 +1652,14 @@ export default {
       "refreshStoreSubscriptions",
       "refreshUpcomingOrders",
       "refreshUpcomingOrdersWithoutItems",
-      "refreshStoreCustomers"
+      "refreshStoreCustomers",
+      "refreshStorePurchasedGiftCards"
     ]),
     ...mapMutations([
       "emptyBag",
       "setBagMealPlan",
       "setBagCoupon",
+      "setBagPurchasedGiftCard",
       "setBagDeliveryDate",
       "clearBagDeliveryDate"
     ]),
@@ -1655,6 +1699,24 @@ export default {
           this.setBagCoupon(coupon);
           this.couponCode = "";
           this.$toastr.s("Coupon Applied.", "Success");
+        }
+      });
+      if (this.weeklySubscriptionValue) {
+        this.$toastr.w("Gift cards are allowed on one time orders only.");
+        return;
+      }
+      this.purchasedGiftCards.forEach(purchasedGiftCard => {
+        if (
+          this.couponCode.toUpperCase() === purchasedGiftCard.code.toUpperCase()
+        ) {
+          if (purchasedGiftCard.balance === "0.00") {
+            this.$toastr.e("There is no more funds left on this gift card.");
+            return;
+          }
+          this.purchasedGiftCard = purchasedGiftCard;
+          this.setBagPurchasedGiftCard(purchasedGiftCard);
+          this.couponCode = "";
+          this.$toastr.s("Gift Card Applied.", "Success");
         }
       });
     },
@@ -1765,6 +1827,10 @@ export default {
           coupon_id: this.couponApplied ? this.coupon.id : null,
           couponReduction: this.couponReduction,
           couponCode: this.couponApplied ? this.coupon.code : null,
+          purchased_gift_card_id: this.purchasedGiftCardApplied
+            ? this.purchasedGiftCard.id
+            : null,
+          purchasedGiftCardReduction: this.purchasedGiftCardReduction,
           pickupLocation: this.selectedPickupLocation,
           customer: this.customerModel
             ? this.customerModel.value
@@ -1776,11 +1842,13 @@ export default {
           emailCustomer: this.emailCustomer
         })
         .then(resp => {
+          this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
           this.$toastr.s("Order Adjusted");
           this.$router.push({ path: "/store/orders" });
           this.refreshUpcomingOrders();
           this.refreshUpcomingOrdersWithoutItems();
           this.clearBagDeliveryDate();
+          this.refreshStorePurchasedGiftCards();
         });
     },
     mounted() {
@@ -1876,9 +1944,13 @@ export default {
           card_id: cardId,
           store_id: this.store.id,
           salesTax: this.tax,
+          couponCode: this.couponApplied ? this.coupon.code : null,
           coupon_id: this.couponApplied ? this.coupon.id : null,
           couponReduction: this.couponReduction,
-          couponCode: this.couponApplied ? this.coupon.code : null,
+          purchased_gift_card_id: this.purchasedGiftCardApplied
+            ? this.purchasedGiftCard.id
+            : null,
+          purchasedGiftCardReduction: this.purchasedGiftCardReduction,
           deliveryFee: this.deliveryFee,
           processingFee: this.processingFeeAmount,
           pickupLocation: this.selectedPickupLocation,
@@ -1899,11 +1971,14 @@ export default {
         .then(async resp => {
           //this.checkingOut = false;
           //return false
-
+          if (this.purchasedGiftCard !== null) {
+            this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
+          }
           this.emptyBag();
           let weeklyDelivery = this.weeklySubscription;
           this.setBagMealPlan(false);
           this.setBagCoupon(null);
+          this.setBagPurchasedGiftCard(null);
 
           if (this.$route.params.manualOrder && weeklyDelivery) {
             this.refreshStoreSubscriptions();
@@ -1958,6 +2033,12 @@ export default {
     removeCoupon() {
       this.coupon = {};
       this.setBagCoupon(null);
+      this.couponCode = "";
+    },
+    removePurchasedGiftCard() {
+      this.purchasedGiftCard = {};
+      this.setBagPurchasedGiftCard(null);
+      //edit
       this.couponCode = "";
     },
     editDeliveryFee() {
