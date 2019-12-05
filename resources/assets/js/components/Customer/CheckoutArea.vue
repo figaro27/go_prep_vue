@@ -962,7 +962,7 @@ export default {
       hasMeal: "bagHasMeal",
       totalBagPricePreFees: "totalBagPricePreFees",
       totalBagPrice: "totalBagPrice",
-      willDeliver: "viewedStoreWillDeliver",
+      // willDeliver: "viewedStoreWillDeliver",
       isLoading: "isLoading",
       storeLogo: "viewedStoreLogo",
       loggedIn: "loggedIn",
@@ -978,6 +978,9 @@ export default {
       user: "user",
       storeCoupons: "storeCoupons"
     }),
+    willDeliver() {
+      return true;
+    },
     isMultipleDelivery() {
       return this.storeModules.multipleDeliveryDays == 1 ? true : false;
     },
