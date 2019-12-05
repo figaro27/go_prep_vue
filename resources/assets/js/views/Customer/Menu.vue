@@ -141,14 +141,14 @@
             v-if="!$route.params.storeView && !storeView"
             :storeView="storeView"
           ></store-closed>
-          <outside-delivery-area
+          <!-- <outside-delivery-area
             v-if="
               !$route.params.storeView &&
                 !storeView &&
                 !store.modules.hideDeliveryOption
             "
             :storeView="storeView"
-          ></outside-delivery-area>
+          ></outside-delivery-area> -->
           <!--<meals-area
             :meals="mealsMix"
             :card="card"
