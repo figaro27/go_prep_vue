@@ -955,12 +955,10 @@ const triggerLazy = (
         let items = state.viewed_store.items;
         let meals = state.viewed_store.meals;
         let packages = state.viewed_store.packages;
-        let gift_cards = state.viewed_store.gift_cards;
         let finalCategories = state.viewed_store.finalCategories;
 
         let store_meals = state.store.meals.data;
         let store_packages = state.store.meal_packages.data;
-        let store_gift_cards = state.store.gift_cards.data;
 
         if (data.meals && data.meals.length > 0) {
           /* Include Store */
@@ -1028,41 +1026,6 @@ const triggerLazy = (
           }
         }
 
-        if (data.gift_cards && data.gift_cards.length > 0) {
-          /* Include Store */
-          if (includeStore) {
-            if (store_gift_cards.length > 0) {
-              for (let i in data.gift_cards) {
-                let giftCard = data.gift_cards[i];
-
-                let found =
-                  _.find(store_gift_cards, ["id", parseInt(giftCard.id)]) ||
-                  null;
-                if (!found) {
-                  store_gift_cards.push(giftCard);
-                }
-              }
-            } else {
-              store_gift_cards = data.gift_cards;
-            }
-          }
-          /* Include Store End */
-
-          if (gift_cards.length > 0) {
-            for (let i in data.gift_cards) {
-              let giftCard = data.gift_cards[i];
-
-              let found =
-                _.find(gift_cards, ["id", parseInt(giftCard.id)]) || null;
-              if (!found) {
-                gift_cards.push(giftCard);
-              }
-            }
-          } else {
-            gift_cards = data.gift_cards;
-          }
-        }
-
         if (data.category_data && data.category_data.length > 0) {
           finalCategories = [];
           finalCategories = data.category_data.map(item => {
@@ -1123,8 +1086,7 @@ const triggerLazy = (
           items,
           finalCategories,
           meals,
-          packages,
-          gift_cards
+          packages
         };
 
         if (includeStore) {
@@ -1135,9 +1097,6 @@ const triggerLazy = (
             },
             meal_packages: {
               data: store_packages
-            },
-            gift_cards: {
-              data: store_gift_cards
             }
           };
         }
