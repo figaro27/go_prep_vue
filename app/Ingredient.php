@@ -13,36 +13,36 @@ class Ingredient extends Model
         'food_name',
         'unit_type',
         'calories',
-        'totalFat',
+        'totalfat',
         'satFat',
-        'transFat',
+        'transfat',
         'cholesterol',
         'sodium',
-        'totalCarb',
+        'totalcarb',
         'fibers',
         'sugars',
         'proteins',
-        'vitaminD',
+        'vitamind',
         'potassium',
         'calcium',
         'iron',
-        'addedSugars',
+        'addedsugars',
         'image',
         'image_thumb'
     ];
 
     const NUTRITION_FIELDS = [
         'calories',
-        'totalFat',
-        'satFat',
-        'transFat',
+        'totalfat',
+        'satfat',
+        'transfat',
         'cholesterol',
         'sodium',
-        'totalCarb',
+        'totalcarb',
         'fibers',
         'sugars',
         'proteins',
-        'vitaminD',
+        'vitamind',
         'potassium',
         'calcium',
         'iron',
@@ -108,7 +108,7 @@ class Ingredient extends Model
      * Normalizes all nutritional values to a base unit of measure
      *
      * @param array|object $mealArr
-     * @return void
+     * @return array
      */
     public static function normalize($mealArr)
     {
@@ -176,7 +176,7 @@ class Ingredient extends Model
             // We already do this in the FE
             //$mealArr[$field] /= $unitFactor;
 
-            if (in_array($field, ['totalFat', 'satFat', 'totalCarb'])) {
+            if (in_array($field, ['totalfat', 'satfat', 'totalcarb'])) {
                 $mealArr[$field] *= $unitFactor;
             }
         }
