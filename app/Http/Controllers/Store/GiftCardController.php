@@ -44,9 +44,9 @@ class GiftCardController extends StoreController
      * @param  \App\GiftCard  $giftCard
      * @return \Illuminate\Http\Response
      */
-    public function show(GiftCard $giftCard)
+    public function show($id)
     {
-        //
+        return GiftCard::where('id', $id)->first();
     }
 
     /**
@@ -67,9 +67,31 @@ class GiftCardController extends StoreController
      * @param  \App\GiftCard  $giftCard
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, GiftCard $giftCard)
+    public function update(Request $request)
     {
-        //
+        $giftCard = GiftCard::where('id', $request->get('id'))->first();
+        $giftCard->title = $request->get('title');
+        $giftCard->price = $request->get('price');
+
+        $categories = $request->get('category_ids');
+        if (is_array($categories)) {
+            $giftCard->categories()->sync($categories);
+        }
+
+        if ($request->has('featured_image')) {
+            $imagePath = Utils\Images::uploadB64(
+                $request->get('featured_image'),
+                'path',
+                'giftCards/'
+            );
+            $fullImagePath = \Storage::disk('public')->path($imagePath);
+            $this->clearMediaCollection('featured_image');
+            $this->addMedia($fullImagePath)->toMediaCollection(
+                'featured_image'
+            );
+        }
+
+        $giftCard->update();
     }
 
     /**

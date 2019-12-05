@@ -155,7 +155,9 @@
                 <button
                   class="btn view btn-warning btn-sm"
                   @click="
-                    props.row.meal_package
+                    props.row.gift_card
+                      ? viewGiftCard(props.row.id)
+                      : props.row.meal_package
                       ? viewMealPackage(props.row.id)
                       : viewMeal(props.row.id)
                   "
@@ -179,6 +181,10 @@
       </div>
     </div>
 
+    <view-gift-card-modal
+      v-if="viewGiftCardModal"
+      :giftCard="giftCard"
+    ></view-gift-card-modal>
     <create-meal-modal v-if="createMealModal" @created="refreshTable()" />
     <create-package-modal v-if="createPackageModal" @created="refreshTable()" />
     <view-package-modal
@@ -784,6 +790,7 @@ import MealAddons from "../../components/Menu/MealAddons";
 import CreateMealModal from "./Modals/CreateMeal";
 import CreatePackageModal from "./Modals/CreateMealPackage";
 import ViewPackageModal from "./Modals/ViewMealPackage";
+import ViewGiftCardModal from "./Modals/ViewGiftCard";
 import MenuCategoriesModal from "./Modals/MenuCategories";
 import moment from "moment";
 import tags from "bootstrap-tagsinput";
@@ -806,6 +813,7 @@ export default {
     CreateMealModal,
     CreatePackageModal,
     ViewPackageModal,
+    ViewGiftCardModal,
     MenuCategoriesModal,
     MealSizes,
     MealComponents,
@@ -836,6 +844,8 @@ export default {
         macros: {},
         salesTax: null
       },
+      giftCard: {},
+      viewGiftCardModal: false,
       editingCategory: false,
       editingCategoryId: null,
       newCategoryName: "",
@@ -1479,6 +1489,24 @@ export default {
     getMealImage(meal) {
       if (meal.image === null) return null;
       else return meal.image.url_thumb ? meal.image.url_thumb : false;
+    },
+    async viewGiftCard(id) {
+      this.viewGiftCardModal = false;
+
+      const jobId = await this.addJob();
+      axios
+        .get(`/api/me/giftCards/${id}`)
+        .then(response => {
+          this.giftCard = response.data;
+          this.viewGiftCardModal = true;
+
+          setTimeout(() => {
+            window.dispatchEvent(new window.Event("resize"));
+          }, 100);
+        })
+        .finally(() => {
+          this.removeJob(jobId);
+        });
     }
   }
 };
