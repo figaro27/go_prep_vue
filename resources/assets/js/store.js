@@ -45,8 +45,6 @@ const state = {
       data: {}
     },
     coupons: [],
-    gift_cards: [],
-    purchased_gift_cards: [],
     pickupLocations: [],
     lineItems: []
   },
@@ -55,7 +53,6 @@ const state = {
   bag: {
     items: {},
     coupon: null,
-    purchased_gift_card: null,
     meal_plan: false
   },
   delivery_date: null,
@@ -118,12 +115,6 @@ const state = {
       data: {}
     },
     coupons: {
-      data: {}
-    },
-    gift_cards: {
-      data: {}
-    },
-    purchased_gift_cards: {
       data: {}
     },
     pickupLocations: {
@@ -195,12 +186,6 @@ const mutations = {
   },
   setViewedStoreCoupons(state, { coupons }) {
     state.viewed_store.coupons = coupons;
-  },
-  setViewedStoreGiftCards(state, { gift_cards }) {
-    state.viewed_store.gift_cards = gift_cards;
-  },
-  setViewedStorePurchasedGiftCards(state, { purchased_gift_cards }) {
-    state.viewed_store.purchased_gift_cards = purchased_gift_cards;
   },
   setViewedStorePickupLocations(state, { pickupLocations }) {
     state.viewed_store.pickupLocations = pickupLocations;
@@ -716,9 +701,6 @@ const mutations = {
   setBagCoupon(state, coupon) {
     state.bag.coupon = coupon;
   },
-  setBagPurchasedGiftCard(state, purchased_gift_card) {
-    state.bag.purchased_gift_card = purchased_gift_card;
-  },
   setBagMealPlan(state, mealPlan) {
     state.bag.meal_plan = mealPlan;
   },
@@ -757,14 +739,6 @@ const mutations = {
 
   storeCoupons(state, { coupons }) {
     state.store.coupons.data = coupons;
-  },
-
-  storeGiftCards(state, { gift_cards }) {
-    state.store.gift_cards.data = gift_cards;
-  },
-
-  storePurchasedGiftCards(state, { purchased_gift_cards }) {
-    state.store.purchased_gift_cards.data = purchased_gift_cards;
   },
 
   storePickupLocations(state, { pickupLocations }) {
@@ -955,12 +929,10 @@ const triggerLazy = (
         let items = state.viewed_store.items;
         let meals = state.viewed_store.meals;
         let packages = state.viewed_store.packages;
-        let gift_cards = state.viewed_store.gift_cards;
         let finalCategories = state.viewed_store.finalCategories;
 
         let store_meals = state.store.meals.data;
         let store_packages = state.store.meal_packages.data;
-        let store_gift_cards = state.store.gift_cards.data;
 
         if (data.meals && data.meals.length > 0) {
           /* Include Store */
@@ -1028,41 +1000,6 @@ const triggerLazy = (
           }
         }
 
-        if (data.gift_cards && data.gift_cards.length > 0) {
-          /* Include Store */
-          if (includeStore) {
-            if (store_gift_cards.length > 0) {
-              for (let i in data.gift_cards) {
-                let giftCard = data.gift_cards[i];
-
-                let found =
-                  _.find(store_gift_cards, ["id", parseInt(giftCard.id)]) ||
-                  null;
-                if (!found) {
-                  store_gift_cards.push(giftCard);
-                }
-              }
-            } else {
-              store_gift_cards = data.gift_cards;
-            }
-          }
-          /* Include Store End */
-
-          if (gift_cards.length > 0) {
-            for (let i in data.gift_cards) {
-              let giftCard = data.gift_cards[i];
-
-              let found =
-                _.find(gift_cards, ["id", parseInt(giftCard.id)]) || null;
-              if (!found) {
-                gift_cards.push(giftCard);
-              }
-            }
-          } else {
-            gift_cards = data.gift_cards;
-          }
-        }
-
         if (data.category_data && data.category_data.length > 0) {
           finalCategories = [];
           finalCategories = data.category_data.map(item => {
@@ -1123,8 +1060,7 @@ const triggerLazy = (
           items,
           finalCategories,
           meals,
-          packages,
-          gift_cards
+          packages
         };
 
         if (includeStore) {
@@ -1135,9 +1071,6 @@ const triggerLazy = (
             },
             meal_packages: {
               data: store_packages
-            },
-            gift_cards: {
-              data: store_gift_cards
             }
           };
         }
@@ -1302,26 +1235,6 @@ const actions = {
 
         if (!_.isEmpty(coupons)) {
           commit("storeCoupons", { coupons });
-        }
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.store.gift_cards)) {
-        let gift_cards = data.store.gift_cards;
-
-        if (!_.isEmpty(gift_cards)) {
-          commit("storeGiftCards", { gift_cards });
-        }
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.store.purchased_gift_cards)) {
-        let purchased_gift_cards = data.store.purchased_gift_cards;
-
-        if (!_.isEmpty(purchased_gift_cards)) {
-          commit("storePurchasedGiftCards", { purchased_gift_cards });
         }
       }
     } catch (e) {}
@@ -1533,26 +1446,6 @@ const actions = {
     } catch (e) {}
 
     try {
-      if (!_.isEmpty(data.gift_cards)) {
-        let gift_cards = data.gift_cards;
-
-        if (!_.isEmpty(gift_cards)) {
-          commit("setViewedStoreGiftCards", { gift_cards });
-        }
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.purchased_gift_cards)) {
-        let purchased_gift_cards = data.purchased_gift_cards;
-
-        if (!_.isEmpty(purchased_gift_cards)) {
-          commit("setViewedStorePurchasedGiftCards", { purchased_gift_cards });
-        }
-      }
-    } catch (e) {}
-
-    try {
       if (!_.isEmpty(data.store.pickup_locations)) {
         let pickupLocations = data.store.pickup_locations;
 
@@ -1602,26 +1495,6 @@ const actions = {
 
         if (!_.isEmpty(coupons)) {
           commit("setViewedStoreCoupons", { coupons });
-        }
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.gift_cards)) {
-        let gift_cards = data.gift_cards;
-
-        if (!_.isEmpty(gift_cards)) {
-          commit("setViewedStoreGiftCards", { gift_cards });
-        }
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.purchased_gift_cards)) {
-        let purchased_gift_cards = data.purchased_gift_cards;
-
-        if (!_.isEmpty(purchased_gift_cards)) {
-          commit("setViewedStorePurchasedGiftCards", { purchased_gift_cards });
         }
       }
     } catch (e) {}
@@ -1679,26 +1552,6 @@ const actions = {
 
         if (!_.isEmpty(coupons)) {
           commit("setViewedStoreCoupons", { coupons });
-        }
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.gift_cards)) {
-        let gift_cards = data.gift_cards;
-
-        if (!_.isEmpty(gift_cards)) {
-          commit("setViewedStoreGiftCards", { gift_cards });
-        }
-      }
-    } catch (e) {}
-
-    try {
-      if (!_.isEmpty(data.purchased_gift_cards)) {
-        let purchased_gift_cards = data.purchased_gift_cards;
-
-        if (!_.isEmpty(purchased_gift_cards)) {
-          commit("setViewedStorePurchasedGiftCards", { purchased_gift_cards });
         }
       }
     } catch (e) {}
@@ -1785,28 +1638,6 @@ const actions = {
       commit("storeCoupons", { coupons: data });
     } else {
       throw new Error("Failed to retrieve coupons");
-    }
-  },
-
-  async refreshStoreGiftCards({ commit, state }, args = {}) {
-    const res = await axios.get("/api/me/giftCards");
-    const { data } = await res;
-
-    if (_.isArray(data)) {
-      commit("storeGiftCards", { gift_cards: data });
-    } else {
-      throw new Error("Failed to retrieve gift cards");
-    }
-  },
-
-  async refreshStorePurchasedGiftCards({ commit, state }, args = {}) {
-    const res = await axios.get("/api/me/purchasedGiftCards");
-    const { data } = await res;
-
-    if (_.isArray(data)) {
-      commit("storePurchasedGiftCards", { purchased_gift_cards: data });
-    } else {
-      throw new Error("Failed to retrieve gift cards");
     }
   },
 
@@ -2224,26 +2055,6 @@ const actions = {
     Vue.set(state.store.meal_packages.data, index, resp.data);
   },
 
-  async updateGiftCard({ commit, state, getters, dispatch }, { data, id }) {
-    if (!id || !data) {
-      return;
-    }
-
-    const index = _.findIndex(getters.storeGiftCards, ["id", id]);
-
-    if (index === -1) {
-      return;
-    }
-
-    Vue.set(
-      state.store.gift_cards.data,
-      index,
-      _.merge(state.store.gift_cards.data[index], data)
-    );
-    const resp = await axios.patch(`/api/me/giftCards/${id}`, data);
-    Vue.set(state.store.gift_cards.data, index, resp.data);
-  },
-
   async refreshMeals({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/meals");
     const { data } = await res;
@@ -2476,20 +2287,6 @@ const getters = {
   viewedStoreCoupons(state, getters) {
     try {
       return state.viewed_store.coupons;
-    } catch (e) {
-      return null;
-    }
-  },
-  viewedStoreGiftCards(state, getters) {
-    try {
-      return state.viewed_store.gift_cards;
-    } catch (e) {
-      return null;
-    }
-  },
-  viewedStorePurchasedGiftCards(state, getters) {
-    try {
-      return state.viewed_store.purchased_gift_cards;
     } catch (e) {
       return null;
     }
@@ -2764,9 +2561,6 @@ const getters = {
   bagCoupon(state) {
     return state.bag.coupon;
   },
-  bagPurchasedGiftCard(state) {
-    return state.bag.purchased_gift_card;
-  },
   bagMealPlan(state) {
     return state.bag.meal_plan;
   },
@@ -3015,20 +2809,6 @@ const getters = {
   storeCoupons: state => {
     try {
       return state.store.coupons.data || {};
-    } catch (e) {
-      return {};
-    }
-  },
-  storeGiftCards: state => {
-    try {
-      return state.store.gift_cards.data || {};
-    } catch (e) {
-      return {};
-    }
-  },
-  storePurchasedGiftCards: state => {
-    try {
-      return state.store.purchased_gift_cards.data || {};
     } catch (e) {
       return {};
     }
