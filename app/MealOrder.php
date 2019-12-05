@@ -104,7 +104,7 @@ class MealOrder extends Pivot
 
         if ($this->special_instructions != null) {
             $title .=
-                '<p style="font-size:13px;font-weight:bold;">' .
+                '<p style="font-size:14px;font-weight:bold;">' .
                 $this->special_instructions .
                 '</p>';
         }
