@@ -36,12 +36,12 @@
                   Add Package
                 </button>
 
-                <button
+                <!-- <button
                   class="btn btn-success btn-md mb-2 mb-sm-0"
                   @click="createGiftCardModal = true"
                 >
                   Add Gift Card
-                </button>
+                </button> -->
                 <b-form-radio-group
                   buttons
                   button-variant="primary"
@@ -195,8 +195,12 @@
     <view-gift-card-modal
       v-if="viewGiftCardModal"
       :giftCard="giftCard"
+      @updated="refreshTable()"
     ></view-gift-card-modal>
-    <create-gift-card-modal v-if="createGiftCardModal"></create-gift-card-modal>
+    <create-gift-card-modal
+      v-if="createGiftCardModal"
+      @created="refreshTable()"
+    ></create-gift-card-modal>
     <create-meal-modal v-if="createMealModal" @created="refreshTable()" />
     <create-package-modal v-if="createPackageModal" @created="refreshTable()" />
     <view-package-modal
@@ -1111,7 +1115,8 @@ export default {
       refreshCategories: "refreshCategories",
       addJob: "addJob",
       removeJob: "removeJob",
-      refreshSubscriptions: "refreshStoreSubscriptions"
+      refreshSubscriptions: "refreshStoreSubscriptions",
+      refreshGiftCards: "refreshStoreGiftCards"
     }),
     ...mapMutations({
       setBagMealPlan: "setBagMealPlan"
@@ -1121,6 +1126,7 @@ export default {
     refreshTable() {
       this.refreshMeals();
       this.refreshMealPackages();
+      this.refreshGiftCards();
     },
     getTableDataIndexById(id) {
       return _.findIndex(this.tableData, o => {

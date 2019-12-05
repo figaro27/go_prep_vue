@@ -115,9 +115,11 @@ export default {
       this.$parent.viewGiftCardModal = false;
     },
     updateGiftCard(cat) {
+      this.giftCard.fromModal = true;
       axios
         .patch(`/api/me/giftCards/${this.giftCard.id}`, this.giftCard)
         .then(resp => {
+          this.$emit("updated");
           this.$toastr.s("Gift card updated.");
           this.refreshGiftCards();
           if (cat !== 1) this.toggleModal();

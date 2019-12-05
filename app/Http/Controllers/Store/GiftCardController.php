@@ -92,36 +92,35 @@ class GiftCardController extends StoreController
      */
     public function update(Request $request, $id)
     {
-        if ($id !== null) {
+        if ($request->get('fromModal')) {
+            $giftCard = GiftCard::where('id', $request->get('id'))->first();
+            $giftCard->title = $request->get('title');
+            $giftCard->price = $request->get('price');
+
+            $categories = $request->get('category_ids');
+            if (is_array($categories)) {
+                $giftCard->categories()->sync($categories);
+            }
+
+            if ($request->has('featured_image')) {
+                $imagePath = Utils\Images::uploadB64(
+                    $request->get('featured_image'),
+                    'path',
+                    'giftCards/'
+                );
+                $fullImagePath = \Storage::disk('public')->path($imagePath);
+                $this->clearMediaCollection('featured_image');
+                $this->addMedia($fullImagePath)->toMediaCollection(
+                    'featured_image'
+                );
+            }
+
+            $giftCard->update();
+        } else {
             $giftCard = GiftCard::where('id', $id)->first();
             $giftCard->active = $request->get('active');
             $giftCard->update();
-            return;
         }
-
-        $giftCard = GiftCard::where('id', $request->get('id'))->first();
-        $giftCard->title = $request->get('title');
-        $giftCard->price = $request->get('price');
-
-        $categories = $request->get('category_ids');
-        if (is_array($categories)) {
-            $giftCard->categories()->sync($categories);
-        }
-
-        if ($request->has('featured_image')) {
-            $imagePath = Utils\Images::uploadB64(
-                $request->get('featured_image'),
-                'path',
-                'giftCards/'
-            );
-            $fullImagePath = \Storage::disk('public')->path($imagePath);
-            $this->clearMediaCollection('featured_image');
-            $this->addMedia($fullImagePath)->toMediaCollection(
-                'featured_image'
-            );
-        }
-
-        $giftCard->update();
     }
 
     /**

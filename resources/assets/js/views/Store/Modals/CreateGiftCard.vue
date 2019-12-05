@@ -114,6 +114,7 @@ export default {
     },
     addGiftCard() {
       axios.post("/api/me/giftCards", this.giftCard).then(resp => {
+        this.$emit("created");
         this.$toastr.s("Gift card created.");
         this.refreshGiftCards();
         this.toggleModal();
