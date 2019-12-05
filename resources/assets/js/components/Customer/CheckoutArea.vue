@@ -464,7 +464,10 @@
       <li
         class="checkout-item"
         style="height:125px;"
-        v-if="$route.params.storeView && store.id === 109"
+        v-if="
+          $route.params.storeView &&
+            (store.id === 108 || store.id === 109 || store.id === 110)
+        "
       >
         <div>
           <strong>Pickup/Delivery Time</strong>
