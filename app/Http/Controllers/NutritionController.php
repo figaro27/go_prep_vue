@@ -106,9 +106,6 @@ class NutritionController extends Controller
                     $multiplier = $rawFood->serving_qty;
                 }
 
-                if (in_array($key, $normalizeKeys) && $rawFood->serving_qty) {
-                    $item = $item / $multiplier;
-                }
                 return [$key => $item];
             });
         }
