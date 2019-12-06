@@ -130,7 +130,7 @@
                   "
                 ></i>
                 <i
-                  v-if="props.row.notes"
+                  v-if="props.row.notes || props.row.publicNotes"
                   class="fas fa-sticky-note text-muted"
                   v-b-popover.hover.top="'This order has notes.'"
                 ></i>
@@ -245,7 +245,7 @@
                   "
                 ></i>
                 <i
-                  v-if="order.notes"
+                  v-if="order.notes || order.publicNotes"
                   class="fas fa-sticky-note text-muted"
                   v-b-popover.hover.top="'This order has notes.'"
                 ></i>
@@ -636,7 +636,7 @@
         </div>
         <div class="row" v-if="storeModules.orderNotes">
           <div class="col-md-12">
-            <h4>Notes</h4>
+            <h4>Private Notes</h4>
             <textarea
               type="text"
               id="form7"
@@ -648,6 +648,23 @@
             <button
               class="btn btn-primary btn-md pull-right mt-2"
               @click="saveNotes(orderId)"
+            >
+              Save
+            </button>
+          </div>
+          <div class="col-md-12">
+            <h4>Public Notes</h4>
+            <textarea
+              type="text"
+              id="form7"
+              class="md-textarea form-control"
+              rows="3"
+              v-model="publicOrderNotes"
+              placeholder="Optional."
+            ></textarea>
+            <button
+              class="btn btn-primary btn-md pull-right mt-2"
+              @click="savePublicNotes(orderId)"
             >
               Save
             </button>
@@ -909,7 +926,8 @@ export default {
           }
         }
       },
-      deliveryNote: ""
+      deliveryNote: "",
+      publicOrderNotes: ""
     };
   },
   created() {},
@@ -1032,6 +1050,13 @@ export default {
         this.$toastr.s("Order notes saved.");
       });
     },
+    async savePublicNotes(id) {
+      let data = { publicNotes: this.publicOrderNotes };
+      axios.patch(`/api/me/orders/${id}`, data).then(resp => {
+        this.refreshTable();
+        this.$toastr.s("Order notes saved.");
+      });
+    },
     printPackingSlip(order_id) {
       axios
         .get(`/api/me/print/packing_slips/pdf`, {
@@ -1063,6 +1088,7 @@ export default {
         .then(response => {
           this.orderId = response.data.id;
           this.deliveryNote = response.data.notes;
+          this.publicOrderNotes = response.data.publicNotes;
           this.order = response.data;
           this.user_detail = response.data.user.user_detail;
           this.meals = response.data.meals;

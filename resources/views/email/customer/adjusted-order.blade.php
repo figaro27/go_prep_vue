@@ -442,6 +442,22 @@ $currency = $order->store->settings->currency_symbol
                   <td height="20"></td>
                 </tr>
                 <!-- title -->
+                @if ($order->publicNotes !== null)
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Order Notes</td>
+                </tr>
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                    {{ $order->publicNotes }}
+                  </td>
+                </tr>
+                <tr>
+                  <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
+                </tr>
+                <tr>
+                  <td height="20"></td>
+                </tr>
+                @endif
                 <tr>
                   @if ($order->pickup === 0)
                   @if ($order->store->settings->deliveryInstructions)

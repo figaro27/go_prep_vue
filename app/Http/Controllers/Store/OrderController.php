@@ -372,9 +372,14 @@ class OrderController extends StoreController
         $grandTotal = $request->get('grandTotal');
         $adjustedDifference = $request->get('grandTotal') - $order->amount;
         $balance = $request->get('grandTotal') - $order->amount;
+        $notes = $request->get('notes');
+        $publicOrderNotes = $request->get('publicOrderNotes');
         // $deposit =
         //     (($order->deposit * $order->amount) / 100 / $grandTotal) * 100;
         $originalDeliveryDate = $order->delivery_date;
+
+        $order->notes = $notes;
+        $order->publicNotes = $publicOrderNotes;
         $order->delivery_date = $deliveryDate;
         $order->transferTime = $request->get('transferTime');
         $order->adjusted = 1;

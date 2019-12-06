@@ -228,7 +228,33 @@
     <div
       v-if="($route.params.storeView || storeView) && storeModules.lineItems"
     >
-      <ul class="list-group">
+      <b-button
+        size="lg"
+        variant="success"
+        class="d-inline"
+        @click="showLineItemModal = true"
+        v-if="
+          ($route.params.manualOrder && $route.name != 'store-manual-order') ||
+            ($route.params.adjustOrder && $route.name != 'store-adjust-order')
+        "
+      >
+        <span class="d-sm-inline">Add Extra</span>
+      </b-button>
+      <span
+        class="d-inline"
+        v-if="
+          ($route.params.manualOrder && $route.name != 'store-manual-order') ||
+            ($route.params.adjustOrder && $route.name != 'store-adjust-order')
+        "
+        ><img
+          v-b-popover.hover="
+            'Here you can add any extra line item to the order for your customer. An example may include a customized meal that you don\'t want to have available to all on your main menu.'
+          "
+          title="Extras"
+          src="/images/store/popover.png"
+          class="popover-size"
+      /></span>
+      <ul class="list-group mt-2">
         <li
           v-for="(orderLineItem, index) in orderLineItems"
           v-bind:key="'orderLineItem' + index"
@@ -279,32 +305,6 @@
           </div>
         </li>
       </ul>
-      <b-button
-        size="lg"
-        variant="success"
-        class="d-inline"
-        @click="showLineItemModal = true"
-        v-if="
-          ($route.params.manualOrder && $route.name != 'store-manual-order') ||
-            ($route.params.adjustOrder && $route.name != 'store-adjust-order')
-        "
-      >
-        <span class="d-sm-inline">Add Extra</span>
-      </b-button>
-      <span
-        class="d-inline"
-        v-if="
-          ($route.params.manualOrder && $route.name != 'store-manual-order') ||
-            ($route.params.adjustOrder && $route.name != 'store-adjust-order')
-        "
-        ><img
-          v-b-popover.hover="
-            'Here you can add any extra line item to the order for your customer. An example may include a customized meal that you don\'t want to have available to all on your main menu.'
-          "
-          title="Extras"
-          src="/images/store/popover.png"
-          class="popover-size"
-      /></span>
     </div>
 
     <div
@@ -316,7 +316,7 @@
       "
     >
       <div class="col-md-12">
-        <h4>Order Notes</h4>
+        <h4>Private Order Notes</h4>
         <textarea
           type="text"
           id="form7"
@@ -324,7 +324,19 @@
           rows="3"
           v-model="orderNotes"
           @input="passOrderNotes"
-          placeholder="Optional"
+          placeholder="Private notes found on your orders page and Order Summary report."
+        ></textarea>
+      </div>
+      <div class="col-md-12 pt-2">
+        <h4>Public Order Notes</h4>
+        <textarea
+          type="text"
+          id="form7"
+          class="md-textarea form-control"
+          rows="3"
+          v-model="publicOrderNotes"
+          @input="passPublicOrderNotes"
+          placeholder="Public notes sent to the customer in their emails and shown on your packing slips."
         ></textarea>
       </div>
     </div>
@@ -410,6 +422,7 @@ export default {
   data() {
     return {
       orderNotes: null,
+      publicOrderNotes: null,
       editingPrice: {},
       showLineItemModal: false,
       lineItem: {
@@ -884,6 +897,9 @@ export default {
     },
     passOrderNotes() {
       this.$emit("passOrderNotes", this.orderNotes);
+    },
+    passPublicOrderNotes() {
+      this.$emit("passPublicOrderNotes", this.publicOrderNotes);
     },
     setOrderLineItems(lineItemOrders) {
       this.orderLineItems = lineItemOrders;

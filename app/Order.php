@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['fulfilled', 'notes', 'delivery_day'];
+    protected $fillable = ['fulfilled', 'notes', 'publicNotes', 'delivery_day'];
 
     protected $hidden = [
         'store',
@@ -395,7 +395,7 @@ class Order extends Model
     {
         $order = Order::with(['user', 'user.userDetail'])->findOrFail($id);
 
-        $props = collect($props)->only(['fulfilled', 'notes']);
+        $props = collect($props)->only(['fulfilled', 'notes', 'publicNotes']);
 
         $order->update($props->toArray());
 

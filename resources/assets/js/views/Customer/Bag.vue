@@ -19,6 +19,7 @@
             :order="order"
             @updateLineItems="updateLineItems($event)"
             @passOrderNotes="passOrderNotes($event)"
+            @passPublicOrderNotes="passPublicOrderNotes($event)"
             @updateData="updateData"
             ref="bagArea"
           ></bag-area>
@@ -57,6 +58,7 @@
             :adjustMealPlan="adjustMealPlan"
             ref="checkoutArea"
             :orderNotes="orderNotes"
+            :publicOrderNotes="publicOrderNotes"
           ></checkout-area>
 
           <store-closed
@@ -120,6 +122,7 @@ export default {
   data() {
     return {
       orderNotes: null,
+      publicOrderNotes: null,
       showAuthModal: false,
       //couponFreeDelivery: 0,
       transferTime: "",
@@ -718,6 +721,9 @@ export default {
     },
     passOrderNotes(notes) {
       this.orderNotes = notes;
+    },
+    passPublicOrderNotes(notes) {
+      this.publicOrderNotes = notes;
     }
   }
 };
