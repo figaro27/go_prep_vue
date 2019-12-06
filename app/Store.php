@@ -797,14 +797,15 @@ class Store extends Model
 
     public function deliversToZip($zip)
     {
-        return true;
-        // foreach ($this->settings->delivery_distance_zipcodes as $zipcode) {
-        //     $zipcode = strval($zipcode);
-        //     if (strpos($zip, $zipcode) !== false) {
-        //         return true;
-        //     }
-        // }
-        // return false;
+        // return true;
+        $zip = strtoupper(strval($zip));
+        foreach ($this->settings->delivery_distance_zipcodes as $zipcode) {
+            $zipcode = strtoupper(strval($zipcode));
+            if (strpos($zip, $zipcode) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function hasStripe()
