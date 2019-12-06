@@ -596,6 +596,7 @@ class Store extends Model
 
     public function deliversToZip($zip)
     {
+        $zip = strval($zip);
         foreach ($this->settings->delivery_distance_zipcodes as $zipcode) {
             if (strpos($zip, $zipcode) !== false) {
                 return true;
