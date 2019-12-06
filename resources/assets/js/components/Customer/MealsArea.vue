@@ -957,12 +957,8 @@ export default {
       this.$parent.search = "";
     },
     showMeal(meal, group) {
-      if (meal.meal_package) {
-        if (!meal.sizes || meal.sizes.length === 0) {
-          this.addMealPackage(meal, true);
-        } else {
-          $("#dropdown_" + meal.id + "_" + group.category_id).click();
-        }
+      if (meal.meal_package || meal.gift_card) {
+        return;
       } else {
         $([document.documentElement, document.body]).scrollTop(0);
         this.$parent.showMealPage(meal);
