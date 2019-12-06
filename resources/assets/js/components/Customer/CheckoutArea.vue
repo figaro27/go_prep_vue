@@ -1834,7 +1834,9 @@ export default {
           emailCustomer: this.emailCustomer
         })
         .then(resp => {
-          this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
+          if (this.purchasedGiftCard !== null) {
+            this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
+          }
           this.$toastr.s("Order Adjusted");
           this.$router.push({ path: "/store/orders" });
           this.refreshUpcomingOrders();
