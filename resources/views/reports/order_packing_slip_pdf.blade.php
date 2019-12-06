@@ -126,7 +126,7 @@ $brandColor = $order->store->settings->color;
           @if ($order->pickup === 1)
           <p>Pickup</p>
           @endif
-          @if (!$order->dailyOrderNumber && !$order->store->modules->dailyOrderNumbers)
+          @if ($order->dailyOrderNumber && $order->store->modules->dailyOrderNumbers)
           <p>Order ID: {{$order->order_number}}</p>
           @endif
 
