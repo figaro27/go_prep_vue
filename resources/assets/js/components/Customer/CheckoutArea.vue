@@ -460,30 +460,17 @@
           ></b-form-select>
         </div>
       </li>
-      <!-- Temporary Workaround for Steve -->
-      <li
-        class="checkout-item"
-        style="height:125px;"
-        v-if="
-          $route.params.storeView &&
-            (store.id === 108 || store.id === 109 || store.id === 110)
-        "
-      >
-        <div>
-          <strong>Pickup/Delivery Time</strong>
-          <p class="small">
-            Temporary workaround before half hour time intervals are developed.
-            Typing in the box below overwrites anything selected in the time
-            dropdown above.
-          </p>
+
+      <li class="checkout-item" v-if="$route.params.storeView">
+        <div class="d-inline">
+          <p class="strong d-inline">Custom Time</p>
           <b-form-input
-            class="width-50"
-            v-model="overwriteTransferTime"
-            :value="overwriteTransferTime"
+            class="delivery-select ml-2 d-inline"
+            v-model="transferTime"
+            :value="transferTime"
           ></b-form-input>
         </div>
       </li>
-      <!-- Temporary Workaround for Steve -->
     </div>
 
     <li
@@ -910,8 +897,7 @@ export default {
       subscriptionInterval: "week",
       customerModel: null,
       emailCustomer: true,
-      selectedPickupLocation: null,
-      overwriteTransferTime: null
+      selectedPickupLocation: null
     };
   },
   props: {
@@ -1814,10 +1800,7 @@ export default {
           deliveryDate: this.bagDeliveryDate,
           isMultipleDelivery: this.isMultipleDelivery,
           pickup: this.pickup,
-          transferTime:
-            this.overwriteTransferTime != null
-              ? this.overwriteTransferTime
-              : this.transferTime,
+          transferTime: this.transferTime,
           subtotal: this.subtotal,
           mealPlanDiscount: this.mealPlanDiscount,
           afterDiscount: this.afterDiscount,
@@ -1963,10 +1946,7 @@ export default {
           deposit: deposit,
           cashOrder: this.cashOrder,
           noBalance: this.noBalance,
-          transferTime:
-            this.overwriteTransferTime != null
-              ? this.overwriteTransferTime
-              : this.transferTime,
+          transferTime: this.transferTime,
           lineItemsOrder: this.orderLineItems,
           grandTotal: this.grandTotal,
           emailCustomer: this.emailCustomer
