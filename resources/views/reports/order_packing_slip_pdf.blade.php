@@ -116,7 +116,7 @@ $brandColor = $order->store->settings->color;
       
       <div class="col-4 right-text">
           @if ($order->dailyOrderNumber && $order->store->modules->dailyOrderNumbers)
-          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;font-size:35px">#{{$order->dailyOrderNumber}}</p>
+          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;font-size:40px">#{{$order->dailyOrderNumber}}</p>
           @else
           <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">Order ID: {{$order->order_number}}</p>
           @endif
