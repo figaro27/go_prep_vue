@@ -116,12 +116,12 @@ $brandColor = $order->store->settings->color;
       
       <div class="col-4 right-text">
           @if ($order->dailyOrderNumber && $order->store->modules->dailyOrderNumbers)
-          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;font-size:40px">#{{$order->dailyOrderNumber}}</p>
+          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;font-size:35px">#{{$order->dailyOrderNumber}}</p>
           @else
           <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">Order ID: {{$order->order_number}}</p>
           @endif
           @if ($order->pickup === 0)
-          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;font-size:30px">Delivery</p>
+          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;font-size:25px">Delivery</p>
           @endif
           @if ($order->pickup === 1)
           <p>Pickup</p>
