@@ -29,8 +29,7 @@ const validators = {
     required
   },
   zip: {
-    required,
-    minLength: minLength(5)
+    required
   },
   country: {
     required

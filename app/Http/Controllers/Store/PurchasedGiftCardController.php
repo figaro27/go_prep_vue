@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Store;
 
-use App\OmittedDeliveryDates;
+use App\PurchasedGiftCard;
 use Illuminate\Http\Request;
 
-class OmittedDeliveryDatesController extends Controller
+class PurchasedGiftCardController extends StoreController
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class OmittedDeliveryDatesController extends Controller
      */
     public function index()
     {
-        //
+        return $this->store->purchasedGiftCards;
     }
 
     /**
@@ -41,10 +41,10 @@ class OmittedDeliveryDatesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\OmittedDeliveryDates  $omittedDeliveryDates
+     * @param  \App\GiftCard  $giftCard
      * @return \Illuminate\Http\Response
      */
-    public function show(OmittedDeliveryDates $omittedDeliveryDates)
+    public function show(PurchasedGiftCard $purchasedGiftCards)
     {
         //
     }
@@ -52,10 +52,10 @@ class OmittedDeliveryDatesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\OmittedDeliveryDates  $omittedDeliveryDates
+     * @param  \App\GiftCard  $giftCard
      * @return \Illuminate\Http\Response
      */
-    public function edit(OmittedDeliveryDates $omittedDeliveryDates)
+    public function edit(PurchasedGiftCard $purchasedGiftCards)
     {
         //
     }
@@ -64,12 +64,12 @@ class OmittedDeliveryDatesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\OmittedDeliveryDates  $omittedDeliveryDates
+     * @param  \App\GiftCard  $giftCard
      * @return \Illuminate\Http\Response
      */
     public function update(
         Request $request,
-        OmittedDeliveryDates $omittedDeliveryDates
+        PurchasedGiftCard $purchasedGiftCards
     ) {
         //
     }
@@ -77,10 +77,10 @@ class OmittedDeliveryDatesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\OmittedDeliveryDates  $omittedDeliveryDates
+     * @param  \App\GiftCard  $giftCard
      * @return \Illuminate\Http\Response
      */
-    public function destroy(OmittedDeliveryDates $omittedDeliveryDates)
+    public function destroy(PurchasedGiftCard $purchasedGiftCards)
     {
         //
     }

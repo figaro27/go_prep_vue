@@ -10,16 +10,15 @@
     <h1>Delivery Routes</h1>
      <div class="delivery-part">
       @if ($delivery_dates)
-        <h2>
-          Delivery Days:
+        <h1>
           {{ $delivery_dates['from']->format('D, m/d/Y') }} -
           {{ $delivery_dates['to']->format('D, m/d/Y') }}
-        </h2>
+        </h1>
       @else
-        <h2>All Delivery Dates</h2>
+        <h1>All Delivery Dates</h1>
       @endif
 
-      <h2>{{ date('m/d/Y h:i:a')}}</h2>
+      <!-- <h2>{{ date('m/d/Y h:i:a')}}</h2> -->
       <div style="clear:both"></div>
     </div>
 

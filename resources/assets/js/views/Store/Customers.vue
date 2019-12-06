@@ -552,7 +552,10 @@ export default {
           });
         }
         order.items.forEach(item => {
-          if (item.meal_package_order_id === meal_package_item.id) {
+          if (
+            item.meal_package_order_id === meal_package_item.id &&
+            !item.hidden
+          ) {
             const meal = this.getStoreMeal(item.meal_id);
             if (!meal) {
               return null;
@@ -580,7 +583,7 @@ export default {
       });
 
       order.items.forEach(item => {
-        if (item.meal_package_order_id === null) {
+        if (item.meal_package_order_id === null && !item.hidden) {
           const meal = this.getStoreMeal(item.meal_id);
           if (!meal) {
             return null;
@@ -610,6 +613,15 @@ export default {
                 : format.money(item.price, order.currency)
           });
         }
+      });
+
+      order.purchased_gift_cards.forEach(purchasedGiftCard => {
+        data.push({
+          meal: "Gift Card Code: " + purchasedGiftCard.code,
+          quantity: 1,
+          unit_price: format.money(purchasedGiftCard.amount, order.currency),
+          subtotal: format.money(purchasedGiftCard.amount, order.currency)
+        });
       });
 
       return _.filter(data);

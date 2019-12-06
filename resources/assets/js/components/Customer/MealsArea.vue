@@ -134,12 +134,45 @@
                           <b-btn
                             @click.stop="minusMixOne(meal)"
                             class="plus-minus gray"
-                            v-if="!meal.meal_package && meal.sizes.length === 0"
+                            v-if="meal.gift_card"
                           >
                             <i>-</i>
                           </b-btn>
                           <b-form-input
-                            v-if="!meal.meal_package && meal.sizes.length === 0"
+                            v-if="meal.gift_card"
+                            type="text"
+                            name
+                            id
+                            class="quantity"
+                            :value="mealMixQuantity(meal)"
+                            readonly
+                          ></b-form-input>
+
+                          <b-btn
+                            v-if="meal.gift_card"
+                            @click.stop="addMeal(meal, null)"
+                            class="menu-bag-btn plus-minus"
+                          >
+                            <i>+</i>
+                          </b-btn>
+
+                          <b-btn
+                            @click.stop="minusMixOne(meal)"
+                            class="plus-minus gray"
+                            v-if="
+                              !meal.meal_package &&
+                                !meal.gift_card &&
+                                meal.sizes.length === 0
+                            "
+                          >
+                            <i>-</i>
+                          </b-btn>
+                          <b-form-input
+                            v-if="
+                              !meal.meal_package &&
+                                !meal.gift_card &&
+                                meal.sizes.length === 0
+                            "
                             type="text"
                             name
                             id
@@ -151,6 +184,7 @@
                           <b-btn
                             v-if="
                               !meal.meal_package &&
+                                !meal.gift_card &&
                                 (!meal.sizes || meal.sizes.length === 0)
                             "
                             @click.stop="addMeal(meal, null)"
@@ -163,6 +197,7 @@
                             right
                             v-if="
                               !meal.meal_package &&
+                                !meal.gift_card &&
                                 meal.sizes &&
                                 meal.sizes.length > 0
                             "
@@ -215,6 +250,7 @@
                             size="lg"
                             v-if="
                               meal.meal_package &&
+                                !meal.gift_card &&
                                 (!meal.sizes || meal.sizes.length === 0)
                             "
                             @click="addMeal(meal, true)"
@@ -303,6 +339,7 @@
                     <b-btn
                       v-if="
                         !meal.meal_package &&
+                          !meal.gift_card &&
                           (!meal.sizes || meal.sizes.length === 0)
                       "
                       @click.stop="addMeal(meal, null)"
@@ -314,6 +351,7 @@
                     <b-dropdown
                       v-if="
                         !meal.meal_package &&
+                          !meal.gift_card &&
                           meal.sizes &&
                           meal.sizes.length > 0
                       "
@@ -346,6 +384,7 @@
                     <b-btn
                       v-if="
                         meal.meal_package &&
+                          !meal.gift_card &&
                           (!meal.sizes || meal.sizes.length === 0)
                       "
                       @click.stop="addMeal(meal, false)"
@@ -844,6 +883,10 @@ export default {
       this.$parent.search = "";
     },
     async addMeal(meal, mealPackage, size) {
+      if (meal.gift_card) {
+        this.addOne(meal);
+        this.$parent.showBagClass = "shopping-cart show-right bag-area";
+      }
       if (meal.meal_package) {
         this.addMealPackage(meal, true);
       } else {

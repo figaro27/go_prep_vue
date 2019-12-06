@@ -548,6 +548,7 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       context: "context",
+      isLazy: "isLazy",
       total: "bagQuantity",
       allergies: "allergies",
       bag: "bagItems",

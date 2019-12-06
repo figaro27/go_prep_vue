@@ -8,6 +8,8 @@ class MealOrder extends Pivot
 {
     protected $table = 'meal_orders';
 
+    protected $hidden = [];
+
     protected $casts = [
         'free' => 'boolean',
         'meal_package' => 'boolean'
@@ -102,7 +104,7 @@ class MealOrder extends Pivot
 
         if ($this->special_instructions != null) {
             $title .=
-                '<p style="font-size:12px;font-weight:bold;">' .
+                '<p style="font-size:14px;font-weight:bold;">' .
                 $this->special_instructions .
                 '</p>';
         }
