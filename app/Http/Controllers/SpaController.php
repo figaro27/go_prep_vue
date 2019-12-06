@@ -569,16 +569,16 @@ class SpaController extends Controller
 
                         $temp_package = $temp_package->first();
 
-                        // if ($temp_meal || $temp_package) {
-                        // Meal or Package exists
-                        $category_ids[] = $temp_id;
+                        if ($temp_meal || $temp_package) {
+                            // Meal or Package exists
+                            $category_ids[] = $temp_id;
 
-                        if (!$category_data) {
-                            $category_data = [];
+                            if (!$category_data) {
+                                $category_data = [];
+                            }
+
+                            $category_data[] = $category;
                         }
-
-                        $category_data[] = $category;
-                        // }
                     }
 
                     if (count($category_ids) > 0) {
