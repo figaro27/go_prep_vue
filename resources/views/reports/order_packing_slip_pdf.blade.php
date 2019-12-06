@@ -312,7 +312,7 @@ $brandColor = $order->store->settings->color;
   $titles = [];
 @endphp
     @foreach ($order->items as $i => $item)
-    @if ($item->instructions && !in_array($item->short_title, $titles && !$item->hidden))
+    @if ($item->instructions && !$item->hidden && !in_array($item->short_title, $titles))
     <p><b>{{ $item->short_title }}</b>: {{ $item->instructions }}</p>
   @php
   array_push($titles, $item->short_title);
