@@ -18,7 +18,7 @@
         <h1>All Delivery Dates</h1>
       @endif
 
-      <h2>{{ date('m/d/Y h:i:a')}}</h2>
+      <!-- <h2>{{ date('m/d/Y h:i:a')}}</h2> -->
       <div style="clear:both"></div>
     </div>
 
