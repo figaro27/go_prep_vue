@@ -709,20 +709,12 @@ class SpaController extends Controller
 
                 /* Set Return Value */
                 $next = false;
-                if (
-                    count($meals) == 0 &&
-                    count($packages) == 0 &&
-                    count($giftCards) == 0
-                ) {
+                if (count($meals) == 0 && count($packages) == 0) {
                     // Next
                     $items = [];
                     $next = true;
-                } elseif (
-                    count($meals) > 0 &&
-                    count($packages) > 0 &&
-                    count($giftCards) > 0
-                ) {
-                    $items = array_merge($meals, $packages, $giftCards);
+                } elseif (count($meals) > 0 && count($packages) > 0) {
+                    $items = array_merge($meals, $packages);
 
                     if (count($items) >= $limit) {
                         $offset_meal = 0;
@@ -754,6 +746,10 @@ class SpaController extends Controller
                         // Next
                         $next = true;
                     }
+                }
+
+                if (count($giftCards)) {
+                    $items = array_merge($items, $giftCards);
                 }
 
                 if ($next) {
