@@ -320,7 +320,7 @@ class CheckoutController extends StoreController
                         $purchasedGiftCard->user_id = $customerUser->id;
                         $purchasedGiftCard->order_id = $order->id;
                         $purchasedGiftCard->code = strtoupper(
-                            substr(uniqid(rand(10, 99), false), 0, 5)
+                            substr(uniqid(rand(10, 99), false), 0, 8)
                         );
                         $purchasedGiftCard->amount = $item['meal']['price'];
                         $purchasedGiftCard->balance = $item['meal']['price'];
