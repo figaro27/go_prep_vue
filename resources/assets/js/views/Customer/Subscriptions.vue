@@ -372,8 +372,7 @@ export default {
       storeSettings: "storeSettings",
       initialized: "initialized",
       getStoreMeal: "viewedStoreMeal",
-      storeModules: "viewedStoreModules",
-      isLazy: "isLazy"
+      storeModules: "viewedStoreModules"
     }),
     activeSubscriptions() {
       if (this.subscriptions)
@@ -382,11 +381,7 @@ export default {
         );
     }
   },
-  mounted() {
-    if (!this.isLazy) {
-      // store.dispatch("refreshLazy");
-    }
-  },
+  mounted() {},
   methods: {
     ...mapActions(["refreshSubscriptions"]),
     ...mapMutations([

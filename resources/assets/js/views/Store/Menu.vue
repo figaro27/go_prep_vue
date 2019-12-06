@@ -966,8 +966,7 @@ export default {
       isLoading: "isLoading",
       storeCurrencySymbol: "storeCurrencySymbol",
       storeModules: "storeModules",
-      storeProductionGroups: "storeProductionGroups",
-      isLazyStore: "isLazyStore"
+      storeProductionGroups: "storeProductionGroups"
     }),
     storeURLcheck() {
       let URL = window.location.href;
@@ -1065,10 +1064,6 @@ export default {
   },
   mounted() {
     this.onChangeStatusFilter(this.filter.status);
-
-    if (!this.isLazyStore) {
-      store.dispatch("refreshLazyStore");
-    }
   },
   methods: {
     ...mapActions({

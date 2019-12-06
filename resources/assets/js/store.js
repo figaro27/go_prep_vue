@@ -17,19 +17,21 @@ const ttl = 60; // 60 seconds
 const state = {
   context: null,
   isLazy: false,
-  isLazyLoading: false,
   isLazyStore: false,
+  isLazyLoading: false,
   isLazyDD: {},
+  isLazyDDLoading: {},
   jobs: {},
   viewed_store: {
     delivery_days: [],
     delivery_day: null,
-    distance: 0,
+    dataDD: {},
     meals: [],
     packages: [],
-    refreshed_package_ids: [],
     items: [],
     finalCategories: [],
+    refreshed_package_ids: [],
+    distance: 0,
     will_deliver: true,
     settings: {
       applyDeliveryFee: 0,
@@ -907,15 +909,14 @@ const triggerLazyStore = (state, offset_meal, offset_package, bypass_meal) => {
   });
 };
 
-const triggerLazy = (
+const triggerLazyDD = (
   state,
   offset_meal,
   offset_package,
   category_id,
   category_ids_str,
   bypass_meal,
-  includeStore,
-  delivery_day = null
+  delivery_day
 ) => {
   callLazy(
     offset_meal,
@@ -926,34 +927,24 @@ const triggerLazy = (
     delivery_day
   )
     .then(data => {
-      if (data.items && data.items.length > 0) {
-        let items = state.viewed_store.items;
-        let meals = state.viewed_store.meals;
-        let packages = state.viewed_store.packages;
-        let finalCategories = state.viewed_store.finalCategories;
+      const key = "dd_" + delivery_day.id;
 
-        let store_meals = state.store.meals.data;
-        let store_packages = state.store.meal_packages.data;
+      if (data.items && data.items.length > 0) {
+        if (!state.viewed_store.dataDD[key]) {
+          Vue.set(state.viewed_store.dataDD, key, {
+            items: [],
+            meals: [],
+            packages: [],
+            finalCategories: []
+          });
+        }
+
+        let items = state.viewed_store.dataDD[key].items;
+        let meals = state.viewed_store.dataDD[key].meals;
+        let packages = state.viewed_store.dataDD[key].packages;
+        let finalCategories = state.viewed_store.dataDD[key].finalCategories;
 
         if (data.meals && data.meals.length > 0) {
-          /* Include Store */
-          if (includeStore) {
-            if (store_meals.length > 0) {
-              for (let i in data.meals) {
-                let meal = data.meals[i];
-
-                let found =
-                  _.find(store_meals, ["id", parseInt(meal.id)]) || null;
-                if (!found) {
-                  store_meals.push(meal);
-                }
-              }
-            } else {
-              store_meals = data.meals;
-            }
-          }
-          /* Include Store End */
-
           if (meals.length > 0) {
             for (let i in data.meals) {
               let meal = data.meals[i];
@@ -969,24 +960,142 @@ const triggerLazy = (
         }
 
         if (data.packages && data.packages.length > 0) {
-          /* Include Store */
-          if (includeStore) {
-            if (store_packages.length > 0) {
-              for (let i in data.packages) {
-                let pack = data.packages[i];
+          if (packages.length > 0) {
+            for (let i in data.packages) {
+              let pack = data.packages[i];
 
-                let found =
-                  _.find(store_packages, ["id", parseInt(pack.id)]) || null;
-                if (!found) {
-                  store_packages.push(pack);
-                }
+              let found = _.find(packages, ["id", parseInt(pack.id)]) || null;
+              if (!found) {
+                packages.push(pack);
               }
-            } else {
-              store_packages = data.packages;
             }
+          } else {
+            packages = data.packages;
           }
-          /* Include Store End */
+        }
 
+        if (data.category_data && data.category_data.length > 0) {
+          finalCategories = [];
+          finalCategories = data.category_data.map(item => {
+            return {
+              ...item,
+              visible: false
+            };
+          });
+
+          for (let i in finalCategories) {
+            const {
+              category,
+              subtitle,
+              id,
+              order,
+              date_range,
+              date_range_exclusive,
+              date_range_from,
+              date_range_to,
+              date_range_exclusive_from,
+              date_range_exclusive_to
+            } = finalCategories[i];
+
+            const itemData = {
+              category: category,
+              subtitle: subtitle,
+              category_id: id,
+              meals: [],
+              order,
+              date_range,
+              date_range_exclusive,
+              date_range_from,
+              date_range_to,
+              date_range_exclusive_from,
+              date_range_exclusive_to
+            };
+            items.push(itemData);
+          }
+
+          category_id = finalCategories[0].id;
+        }
+
+        const currentCatIndex = finalCategories.findIndex(
+          item => item.id == category_id
+        );
+        if (currentCatIndex > -1)
+          finalCategories[currentCatIndex].visible = true;
+
+        for (let i in items) {
+          if (items[i].category_id == category_id) {
+            items[i].meals = items[i].meals.concat(data.items);
+
+            break;
+          }
+        }
+
+        Vue.set(state.viewed_store.dataDD, key, {
+          items,
+          meals,
+          packages,
+          finalCategories
+        });
+      }
+
+      if (data.end == 0) {
+        triggerLazyDD(
+          state,
+          data.offset_meal,
+          data.offset_package,
+          data.category_id,
+          data.category_ids_str,
+          data.bypass_meal,
+          delivery_day
+        );
+      } else {
+        // Finished
+        Vue.set(state.isLazyDDLoading, key, false);
+      }
+    })
+    .catch(error => {
+      // Finished
+    });
+};
+
+const triggerLazy = (
+  state,
+  offset_meal,
+  offset_package,
+  category_id,
+  category_ids_str,
+  bypass_meal
+) => {
+  callLazy(
+    offset_meal,
+    offset_package,
+    category_id,
+    category_ids_str,
+    bypass_meal
+  )
+    .then(data => {
+      if (data.items && data.items.length > 0) {
+        let items = state.viewed_store.items;
+        let meals = state.viewed_store.meals;
+        let packages = state.viewed_store.packages;
+        let finalCategories = state.viewed_store.finalCategories;
+
+        if (data.meals && data.meals.length > 0) {
+          if (meals.length > 0) {
+            for (let i in data.meals) {
+              let meal = data.meals[i];
+
+              let found = _.find(meals, ["id", parseInt(meal.id)]) || null;
+              if (!found) {
+                meals.push(meal);
+              }
+            }
+          } else {
+            meals = data.meals;
+          }
+        }
+
+        if (data.packages && data.packages.length > 0) {
           if (packages.length > 0) {
             for (let i in data.packages) {
               let pack = data.packages[i];
@@ -1063,18 +1172,6 @@ const triggerLazy = (
           meals,
           packages
         };
-
-        if (includeStore) {
-          state.store = {
-            ...state.store,
-            meals: {
-              data: store_meals
-            },
-            meal_packages: {
-              data: store_packages
-            }
-          };
-        }
       }
 
       if (data.end == 0) {
@@ -1084,13 +1181,10 @@ const triggerLazy = (
           data.offset_package,
           data.category_id,
           data.category_ids_str,
-          data.bypass_meal,
-          includeStore,
-          delivery_day
+          data.bypass_meal
         );
       } else {
         // Finished
-        state.isLazy = false;
         state.isLazyLoading = false;
       }
     })
@@ -1354,7 +1448,8 @@ const actions = {
     dispatch("refreshOrderIngredients");
     dispatch("refreshIngredients");
     dispatch("refreshStoreSubscriptions");
-    //dispatch("refreshLazy");
+    dispatch("refreshLazy");
+    dispatch("refreshLazyStore");
   },
 
   async initCustomer({ commit, state, dispatch }, data = {}) {
@@ -1366,7 +1461,7 @@ const actions = {
     dispatch("refreshCards");
     dispatch("refreshCustomerOrders");
     dispatch("refreshSubscriptions");
-    //dispatch("refreshLazy");
+    dispatch("refreshLazy");
   },
 
   async initGuest({ commit, state, dispatch }, data = {}) {
@@ -1377,7 +1472,7 @@ const actions = {
     }
 
     //dispatch("refreshStores");
-    //dispatch("refreshLazy");
+    dispatch("refreshLazy");
   },
 
   async logout({ commit, state }) {
@@ -1848,46 +1943,53 @@ const actions = {
   },
 
   async refreshLazyStore({ state }, args = {}) {
+    if (state.isLazyStore) {
+      return false;
+    }
+
     state.isLazyStore = true;
     triggerLazyStore(state, 0, 0, 0, "", 0);
   },
 
   async refreshLazyDD({ state }, args = {}) {
-    state.isLazy = true;
-    state.isLazyLoading = true;
-
     const { delivery_day } = args;
 
     if (!delivery_day) {
       return false;
+    } else if (!delivery_day.has_items) {
+      state.viewed_store = {
+        ...state.viewed_store,
+        delivery_day
+      };
+
+      return false;
     }
 
-    /*const key = "dd_" + delivery_day_id;
+    const key = "dd_" + delivery_day.id;
     if (state.isLazyDD[key]) {
       return false;
     }
 
-    state.isLazyDD[key] = true;*/
+    Vue.set(state.isLazyDD, key, true);
+    Vue.set(state.isLazyDDLoading, key, true);
 
     state.viewed_store = {
       ...state.viewed_store,
-      delivery_day,
-      items: [],
-      finalCategories: [],
-      meals: [],
-      packages: []
+      delivery_day
     };
 
-    triggerLazy(state, 0, 0, 0, "", 0, false, delivery_day);
+    triggerLazyDD(state, 0, 0, 0, "", 0, delivery_day);
   },
 
   async refreshLazy({ state }, args = {}) {
+    if (state.isLazy) {
+      return false;
+    }
+
     state.isLazy = true;
     state.isLazyLoading = true;
 
-    let includeStore = args && args.includeStore ? true : false;
-
-    triggerLazy(state, 0, 0, 0, "", 0, includeStore);
+    triggerLazy(state, 0, 0, 0, "", 0);
   },
 
   async refreshDeliveryDay({ state }, args = {}) {
@@ -2260,6 +2362,13 @@ const getters = {
   isLazyLoading(state) {
     return state.isLazyLoading;
   },
+  isLazyDDLoading: state => delivery_day => {
+    if (delivery_day) {
+      return state.isLazyDDLoading["dd_" + delivery_day.id];
+    } else {
+      return false;
+    }
+  },
   isLazyStore(state) {
     return state.isLazyStore;
   },
@@ -2529,6 +2638,31 @@ const getters = {
     bag.items = _.filter(bag.items);
     //bag.items = _.sortBy(bag.items, 'added');
     return bag;
+  },
+  mealMixItems(state) {
+    if (
+      !state.viewed_store.delivery_day ||
+      !state.viewed_store.delivery_day.has_items
+    ) {
+      return {
+        finalCategories: state.viewed_store.finalCategories,
+        items: [...state.viewed_store.items, {}]
+      };
+    } else {
+      const key = "dd_" + state.viewed_store.delivery_day.id;
+
+      if (state.viewed_store.dataDD[key]) {
+        return {
+          finalCategories: state.viewed_store.dataDD[key].finalCategories,
+          items: state.viewed_store.dataDD[key].items
+        };
+      }
+
+      return {
+        finalCategories: [],
+        items: []
+      };
+    }
   },
   bagItems(state) {
     let menu_update_time = 0;
@@ -2928,7 +3062,7 @@ const getters = {
     try {
       let lineItem =
         _.find(state.store.lineItems.data, ["id", parseInt(id)]) || null;
-      console.log(state.store.lineItems);
+
       if (!lineItem) {
         return null;
       }

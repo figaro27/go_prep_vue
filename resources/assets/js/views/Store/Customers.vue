@@ -436,8 +436,7 @@ export default {
       _storeOrdersByCustomer: "storeOrdersByCustomer",
       storeModules: "storeModules",
       initialized: "initialized",
-      getStoreMeal: "viewedStoreMeal",
-      isLazyStore: "isLazyStore"
+      getStoreMeal: "viewedStoreMeal"
     }),
     stateNames() {
       return states.selectOptions("US");
@@ -454,11 +453,7 @@ export default {
     }
   },
   created() {},
-  mounted() {
-    if (!this.isLazyStore) {
-      store.dispatch("refreshLazyStore");
-    }
-  },
+  mounted() {},
   methods: {
     ...mapActions({
       refreshStoreCustomers: "refreshStoreCustomers",

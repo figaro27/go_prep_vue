@@ -909,13 +909,6 @@ export default {
   },
   created() {},
   mounted() {
-    if (!this.isLazyStore) {
-      store.dispatch("refreshLazyStore");
-
-      // Refreshing customer menu on store log in automatically
-      // store.dispatch("refreshLazy");
-    }
-
     if (this.storeModules.dailyOrderNumbers) {
       this.columns.splice(1, 0, "dailyOrderNumber");
     }
@@ -955,13 +948,13 @@ export default {
       getMeal: "storeMeal",
       storeModules: "storeModules",
       storeSettings: "storeSettings",
-      getStoreMeal: "storeMeal",
-      isLazyStore: "isLazyStore"
+      getStoreMeal: "storeMeal"
     }),
     tableData() {
       let filters = { ...this.filters };
 
       let orders = [];
+
       if (this.filters.delivery_dates.start === null) {
         orders = this.upcomingOrdersWithoutItems;
       } else {

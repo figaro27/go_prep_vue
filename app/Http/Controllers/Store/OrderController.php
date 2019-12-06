@@ -48,14 +48,49 @@ class OrderController extends StoreController
             $this->store->settings->timezone
         )->startOfDay();
 
-        return $this->store->has('orders')
+        $data = [];
+        if ($this->store->has('orders')) {
+            $orders = $this->store->orders()->with(['user', 'pickup_location']);
+
+            $orders = $orders
+                ->where(function ($query) use ($fromDate) {
+                    $query->where('isMultipleDelivery', 0)->where('paid', 1);
+                    $query->where(
+                        'delivery_date',
+                        '>=',
+                        $fromDate->format('Y-m-d')
+                    );
+                })
+                ->orWhere(function ($query) use ($fromDate) {
+                    $query
+                        ->where('isMultipleDelivery', 1)
+                        ->where('paid', 1)
+                        ->whereHas('meal_orders', function ($subquery1) use (
+                            $fromDate
+                        ) {
+                            $subquery1->whereNotNull(
+                                'meal_orders.delivery_date'
+                            );
+                            $subquery1->where(
+                                'meal_orders.delivery_date',
+                                '>=',
+                                $fromDate->format('Y-m-d')
+                            );
+                        });
+                });
+
+            $data = $orders->get();
+        }
+        return $data;
+
+        /*return $this->store->has('orders')
             ? $this->store
                 ->orders()
                 ->with(['user', 'pickup_location'])
                 ->where(['paid' => 1])
                 ->where('delivery_date', '>=', $fromDate)
                 ->get()
-            : [];
+            : [];*/
     }
 
     public function getUpcomingOrdersWithoutItems()
@@ -137,22 +172,61 @@ class OrderController extends StoreController
             $endDate = $request->get('start');
         }
 
-        $date = '';
-        if ($paymentsPage) {
-            $date = 'created_at';
-        } else {
-            $date = 'delivery_date';
-        }
+        $startDate = Carbon::parse($request->get('start'))->format('Y-m-d');
+        $endDate = Carbon::parse($endDate)->format('Y-m-d');
 
-        return $this->store->has('orders')
-            ? $this->store
-                ->orders()
-                ->with(['user', 'pickup_location'])
-                ->where(['paid' => 1])
-                ->where($date, '>=', $request->get('start'))
-                ->where($date, '<=', $endDate)
-                ->get()
-            : [];
+        if ($paymentsPage) {
+            return $this->store->has('orders')
+                ? $this->store
+                    ->orders()
+                    ->with(['user', 'pickup_location'])
+                    ->where(['paid' => 1])
+                    ->where('created_at', '>=', $startDate)
+                    ->where('created_at', '<=', $endDate)
+                    ->get()
+                : [];
+        } else {
+            if ($this->store->has('orders')) {
+                $orders = $this->store
+                    ->orders()
+                    ->with(['user', 'pickup_location']);
+
+                $orders = $orders
+                    ->where(function ($query) use ($startDate, $endDate) {
+                        $query
+                            ->where('isMultipleDelivery', 0)
+                            ->where('paid', 1);
+                        $query->where('delivery_date', '>=', $startDate);
+                        $query->where('delivery_date', '<=', $endDate);
+                    })
+                    ->orWhere(function ($query) use ($startDate, $endDate) {
+                        $query
+                            ->where('isMultipleDelivery', 1)
+                            ->where('paid', 1)
+                            ->whereHas('meal_orders', function (
+                                $subquery1
+                            ) use ($startDate, $endDate) {
+                                $subquery1->whereNotNull(
+                                    'meal_orders.delivery_date'
+                                );
+                                $subquery1->where(
+                                    'meal_orders.delivery_date',
+                                    '>=',
+                                    $startDate
+                                );
+                                $subquery1->where(
+                                    'meal_orders.delivery_date',
+                                    '<=',
+                                    $endDate
+                                );
+                            });
+                    });
+
+                return $orders->get();
+            }
+
+            return [];
+        }
     }
 
     public function getOrdersWithDatesWithoutItems(Request $request)

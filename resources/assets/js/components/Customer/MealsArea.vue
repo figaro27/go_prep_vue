@@ -559,7 +559,6 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       context: "context",
-      isLazy: "isLazy",
       //total: "bagQuantity",
       //hasMeal: "bagHasMeal",
       //minOption: "minimumOption",

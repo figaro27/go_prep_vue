@@ -326,8 +326,7 @@ export default {
       initialized: "initialized",
       isLoading: "isLoading",
       getStoreMeal: "viewedStoreMeal",
-      storeModules: "viewedStoreModules",
-      isLazy: "isLazy"
+      storeModules: "viewedStoreModules"
     }),
     orders() {
       if (_.isNull(this._orders)) {
@@ -338,11 +337,7 @@ export default {
       });
     }
   },
-  mounted() {
-    if (!this.isLazy) {
-      // store.dispatch("refreshLazy");
-    }
-  },
+  mounted() {},
   methods: {
     ...mapActions(["refreshCustomerOrders"]),
     getMealTableData(order) {

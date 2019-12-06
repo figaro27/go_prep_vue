@@ -33,7 +33,8 @@ class DeliveryDayResource extends JsonResource
             'mileagePerMile' => $this->mileagePerMile,
             'store_id' => $this->store_id,
             'type' => $this->type,
-            'updated_at' => $this->updated_at
+            'updated_at' => $this->updated_at,
+            'has_items' => $this->has_items
         ];
     }
 }

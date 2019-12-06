@@ -46,6 +46,106 @@ class PackingSlips
             ]);
 
             $dateRange = $this->getDeliveryDates();
+
+            $orders = $orders
+                ->where(function ($query) use ($dateRange) {
+                    $query->where('isMultipleDelivery', 0);
+
+                    if ($dateRange === []) {
+                        $query->where(
+                            'delivery_date',
+                            $this->store->getNextDeliveryDate()
+                        );
+                    }
+
+                    if (isset($dateRange['from'])) {
+                        $from = Carbon::parse($dateRange['from']);
+                        $query->where(
+                            'delivery_date',
+                            '>=',
+                            $from->format('Y-m-d')
+                        );
+                    }
+
+                    if (isset($dateRange['to'])) {
+                        $to = Carbon::parse($dateRange['to']);
+                        $query->where(
+                            'delivery_date',
+                            '<=',
+                            $to->format('Y-m-d')
+                        );
+                    }
+                })
+                ->orWhere(function ($query) use ($dateRange) {
+                    $query
+                        ->where('isMultipleDelivery', 1)
+                        ->whereHas('meal_orders', function ($subquery1) use (
+                            $dateRange
+                        ) {
+                            $subquery1->whereNotNull(
+                                'meal_orders.delivery_date'
+                            );
+
+                            if ($dateRange === []) {
+                                $subquery1->where(
+                                    'meal_orders.delivery_date',
+                                    $this->store->getNextDeliveryDate()
+                                );
+                            }
+
+                            if (isset($dateRange['from'])) {
+                                $from = Carbon::parse($dateRange['from']);
+                                $subquery1->where(
+                                    'meal_orders.delivery_date',
+                                    '>=',
+                                    $from->format('Y-m-d')
+                                );
+                            }
+
+                            if (isset($dateRange['to'])) {
+                                $to = Carbon::parse($dateRange['to']);
+                                $subquery1->where(
+                                    'meal_orders.delivery_date',
+                                    '<=',
+                                    $to->format('Y-m-d')
+                                );
+                            }
+                        })
+                        ->orWhereHas('meal_package_orders', function (
+                            $subquery2
+                        ) use ($dateRange) {
+                            $subquery2->whereNotNull(
+                                'meal_package_orders.delivery_date'
+                            );
+
+                            if ($dateRange === []) {
+                                $subquery2->where(
+                                    'meal_package_orders.delivery_date',
+                                    $this->store->getNextDeliveryDate()
+                                );
+                            }
+
+                            if (isset($dateRange['from'])) {
+                                $from = Carbon::parse($dateRange['from']);
+                                $subquery2->where(
+                                    'meal_package_orders.delivery_date',
+                                    '>=',
+                                    $from->format('Y-m-d')
+                                );
+                            }
+
+                            if (isset($dateRange['to'])) {
+                                $to = Carbon::parse($dateRange['to']);
+                                $subquery2->where(
+                                    'meal_package_orders.delivery_date',
+                                    '<=',
+                                    $to->format('Y-m-d')
+                                );
+                            }
+                        });
+                });
+            // Disabled Workflow
+            /*
             if ($dateRange === []) {
                 $orders = $orders->where(
                     'delivery_date',
@@ -67,7 +167,7 @@ class PackingSlips
                     '<=',
                     $to->format('Y-m-d')
                 );
-            }
+            }*/
 
             $orders = $orders->get();
         }

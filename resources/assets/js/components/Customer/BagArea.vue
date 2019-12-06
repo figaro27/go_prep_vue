@@ -428,7 +428,6 @@ export default {
       total: "bagQuantity",
       allergies: "allergies",
       bag: "bagItems",
-      isLazy: "isLazy",
       hasMeal: "bagHasMeal",
       willDeliver: "viewedStoreWillDeliver",
       _categories: "viewedStoreCategories",
@@ -567,11 +566,9 @@ export default {
   },
   methods: {
     loadDeliveryDayMenu(delivery_day) {
-      if (!this.isLazy) {
-        store.dispatch("refreshLazyDD", {
-          delivery_day
-        });
-      }
+      store.dispatch("refreshLazyDD", {
+        delivery_day
+      });
     },
     addToBag(item) {
       if (this.isAdjustOrder() || this.isManualOrder()) {
