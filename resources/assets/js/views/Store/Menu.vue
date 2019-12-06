@@ -36,12 +36,12 @@
                   Add Package
                 </button>
 
-                <button
+                <!-- <button
                   class="btn btn-success btn-md mb-2 mb-sm-0"
                   @click="createGiftCardModal = true"
                 >
                   Add Gift Card
-                </button>
+                </button> -->
                 <b-form-radio-group
                   buttons
                   button-variant="primary"
