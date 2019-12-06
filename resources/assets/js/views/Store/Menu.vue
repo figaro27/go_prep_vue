@@ -36,6 +36,12 @@
                   Add Package
                 </button>
 
+                <button
+                  class="btn btn-success btn-md mb-2 mb-sm-0"
+                  @click="createGiftCardModal = true"
+                >
+                  Add Gift Card
+                </button>
                 <b-form-radio-group
                   buttons
                   button-variant="primary"
@@ -100,7 +106,12 @@
                   :unchecked-value="0"
                   @change="
                     val =>
-                      updateActive(props.row.id, val, props.row.meal_package)
+                      updateActive(
+                        props.row.id,
+                        val,
+                        props.row.meal_package,
+                        props.row.gift_card
+                      )
                   "
                 ></b-form-checkbox>
               </div>
@@ -115,25 +126,26 @@
               <div
                 slot="tags"
                 slot-scope="props"
-                v-if="!props.row.meal_package"
+                v-if="!props.row.meal_package && !props.row.gift_card"
               >
                 {{ props.row.tag_titles.join(", ") }}
               </div>
               <div slot="categories" slot-scope="props">
-                <div v-if="!props.row.meal_package">
+                <div v-if="!props.row.meal_package && !props.row.gift_card">
                   {{
                     props.row.category_ids
                       .map(categoryId => getCategoryTitle(categoryId))
                       .join(", ")
                   }}
                 </div>
-                <div v-else>Packages</div>
+                <div v-else-if="props.row.meal_package">Packages</div>
+                <div v-else>Gift Cards</div>
               </div>
 
               <div
                 slot="contains"
                 slot-scope="props"
-                v-if="!props.row.meal_package"
+                v-if="!props.row.meal_package && !props.row.gift_card"
               >
                 {{
                   props.row.allergy_ids
@@ -154,7 +166,9 @@
                 <button
                   class="btn view btn-warning btn-sm"
                   @click="
-                    props.row.meal_package
+                    props.row.gift_card
+                      ? viewGiftCard(props.row.id)
+                      : props.row.meal_package
                       ? viewMealPackage(props.row.id)
                       : viewMeal(props.row.id)
                   "
@@ -178,6 +192,15 @@
       </div>
     </div>
 
+    <view-gift-card-modal
+      v-if="viewGiftCardModal"
+      :giftCard="giftCard"
+      @updated="refreshTable()"
+    ></view-gift-card-modal>
+    <create-gift-card-modal
+      v-if="createGiftCardModal"
+      @created="refreshTable()"
+    ></create-gift-card-modal>
     <create-meal-modal v-if="createMealModal" @created="refreshTable()" />
     <create-package-modal v-if="createPackageModal" @created="refreshTable()" />
     <view-package-modal
@@ -780,9 +803,11 @@ import IngredientPicker from "../../components/IngredientPicker";
 import MealSizes from "../../components/Menu/MealSizes";
 import MealComponents from "../../components/Menu/MealComponents";
 import MealAddons from "../../components/Menu/MealAddons";
+import CreateGiftCardModal from "./Modals/CreateGiftCard";
 import CreateMealModal from "./Modals/CreateMeal";
 import CreatePackageModal from "./Modals/CreateMealPackage";
 import ViewPackageModal from "./Modals/ViewMealPackage";
+import ViewGiftCardModal from "./Modals/ViewGiftCard";
 import MenuCategoriesModal from "./Modals/MenuCategories";
 import moment from "moment";
 import tags from "bootstrap-tagsinput";
@@ -802,9 +827,11 @@ export default {
     Spinner,
     PictureInput,
     IngredientPicker,
+    CreateGiftCardModal,
     CreateMealModal,
     CreatePackageModal,
     ViewPackageModal,
+    ViewGiftCardModal,
     MenuCategoriesModal,
     MealSizes,
     MealComponents,
@@ -835,10 +862,13 @@ export default {
         macros: {},
         salesTax: null
       },
+      giftCard: {},
+      viewGiftCardModal: false,
       editingCategory: false,
       editingCategoryId: null,
       newCategoryName: "",
       showCategoriesModal: false,
+      createGiftCardModal: false,
       createMealModal: false,
       createPackageModal: false,
       viewMealModal: false,
@@ -967,7 +997,8 @@ export default {
       storeCurrencySymbol: "storeCurrencySymbol",
       storeModules: "storeModules",
       storeProductionGroups: "storeProductionGroups",
-      isLazyStore: "isLazyStore"
+      isLazyStore: "isLazyStore",
+      giftCards: "storeGiftCards"
     }),
     storeURLcheck() {
       let URL = window.location.href;
@@ -993,7 +1024,11 @@ export default {
       const meals = Object.values(this.meals).filter(
         meal => meal.deleted_at === null
       );
-      return _.concat(packages, meals);
+      const giftCards = Object.values(this.giftCards).map(mealPackage => {
+        return mealPackage;
+      });
+
+      return _.concat(packages, meals, giftCards);
     },
     tagOptions() {
       return Object.values(this.tags).map(tag => {
@@ -1076,10 +1111,12 @@ export default {
       refreshMealPackages: "refreshMealPackages",
       _updateMeal: "updateMeal",
       _updateMealPackage: "updateMealPackage",
+      _updateGiftCard: "updateGiftCard",
       refreshCategories: "refreshCategories",
       addJob: "addJob",
       removeJob: "removeJob",
-      refreshSubscriptions: "refreshStoreSubscriptions"
+      refreshSubscriptions: "refreshStoreSubscriptions",
+      refreshGiftCards: "refreshStoreGiftCards"
     }),
     ...mapMutations({
       setBagMealPlan: "setBagMealPlan"
@@ -1089,6 +1126,7 @@ export default {
     refreshTable() {
       this.refreshMeals();
       this.refreshMealPackages();
+      this.refreshGiftCards();
     },
     getTableDataIndexById(id) {
       return _.findIndex(this.tableData, o => {
@@ -1190,7 +1228,7 @@ export default {
         return false;
       }
     },
-    async updateActive(id, active, isMealPackage = false) {
+    async updateActive(id, active, isMealPackage = false, isGiftCard = false) {
       const i = _.findIndex(this.tableData, o => {
         return o.id === id && !!o.meal_package === isMealPackage;
       });
@@ -1199,8 +1237,10 @@ export default {
         return this.getTableData();
       }
 
-      if (!isMealPackage) {
+      if (!isMealPackage && !isGiftCard) {
         await this._updateMeal({ id, data: { active } });
+      } else if (isGiftCard) {
+        await this._updateGiftCard({ id, data: { active } });
       } else {
         await this._updateMealPackage({ id, data: { active } });
       }
@@ -1473,6 +1513,24 @@ export default {
     getMealImage(meal) {
       if (meal.image === null) return null;
       else return meal.image.url_thumb ? meal.image.url_thumb : false;
+    },
+    async viewGiftCard(id) {
+      this.viewGiftCardModal = false;
+
+      const jobId = await this.addJob();
+      axios
+        .get(`/api/me/giftCards/${id}`)
+        .then(response => {
+          this.giftCard = response.data;
+          this.viewGiftCardModal = true;
+
+          setTimeout(() => {
+            window.dispatchEvent(new window.Event("resize"));
+          }, 100);
+        })
+        .finally(() => {
+          this.removeJob(jobId);
+        });
     }
   }
 };

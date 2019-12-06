@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Coupon;
+use App\PurchasedGiftCard;
 use App\LineItemOrder;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -62,7 +63,8 @@ class Order extends Model
         'grandTotal',
         'line_items_order',
         'added_by_store_id',
-        'multiple_dates'
+        'multiple_dates',
+        'purchased_gift_card_code'
         // 'balance'
     ];
 
@@ -138,6 +140,22 @@ class Order extends Model
     public function card()
     {
         return $this->hasOne('App\Card');
+    }
+
+    public function purchased_gift_cards()
+    {
+        return $this->hasMany('App\PurchasedGiftCard');
+    }
+
+    public function getPurchasedGiftCardCodeAttribute()
+    {
+        if ($this->purchased_gift_card_id) {
+            return PurchasedGiftCard::where('id', $this->purchased_gift_card_id)
+                ->pluck('code')
+                ->first();
+        } else {
+            return null;
+        }
     }
 
     // public function getBalanceAttribute()
@@ -281,6 +299,7 @@ class Order extends Model
                     'free' => $mealOrder->free,
                     'special_instructions' => $mealOrder->special_instructions,
                     'attached' => $mealOrder->attached,
+                    'hidden' => $mealOrder->hidden,
                     'meal_package_order_id' =>
                         $mealOrder->meal_package_order_id,
                     'meal_package_title' => $mealOrder->meal_package_title,

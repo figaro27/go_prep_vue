@@ -30,207 +30,6 @@
           </div>
         </b-col>
       </b-row>
-      <b-row class="my-3">
-        <b-col>
-          <div>
-            <div
-              class="categorySection"
-              target="categorySection_top"
-              v-if="isStoreView"
-            >
-              <h3 class="center-text mb-3" v-if="getTopLevel().length > 0">
-                Included Items
-              </h3>
-
-              <b-form-group :label="null">
-                <div class="my-2">
-                  <b-row v-if="storeSettings.menuStyle === 'image'">
-                    <div
-                      class="item col-sm-6 col-md-6 col-lg-6 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
-                      v-for="mealOption in getTopLevel()"
-                      :key="mealOption.meal_id"
-                    >
-                      <div class="item-wrap">
-                        <div class="title d-md-none center-text">
-                          {{ mealOption.title }}
-                        </div>
-
-                        <div class="image">
-                          <thumbnail
-                            v-if="
-                              mealOption.meal.image != null &&
-                                mealOption.meal.image.url_medium
-                            "
-                            :src="mealOption.meal.image.url_medium"
-                            :spinner="false"
-                            class="menu-item-img"
-                            width="100%"
-                            style="background-color:#ffffff"
-                            @click="
-                              showMealPackageMealModal(
-                                mealOption.meal.description,
-                                mealOption.meal.title
-                              )
-                            "
-                          ></thumbnail>
-
-                          <div class="price" v-if="mealOption.price > 0">
-                            {{
-                              format.money(
-                                mealOption.price,
-                                storeSettings.currency
-                              )
-                            }}
-                          </div>
-                        </div>
-                        <!-- Image End !-->
-
-                        <div class="meta">
-                          <div class="title d-none d-md-block center-text">
-                            {{ mealOption.title }}
-                          </div>
-
-                          <b-form-textarea
-                            v-if="
-                              (storeModules.specialInstructions &&
-                                !storeModuleSettings.specialInstructionsStoreOnly) ||
-                                (storeModuleSettings.specialInstructionsStoreOnly &&
-                                  isStoreView)
-                            "
-                            class="mt-4"
-                            v-model="special_instructions[mealOption.meal_id]"
-                            placeholder="Special instructions"
-                            rows="3"
-                            max-rows="6"
-                          ></b-form-textarea>
-                        </div>
-                        <!-- Meta End !-->
-                      </div>
-                      <!-- Item Wrap End !-->
-                    </div>
-                  </b-row>
-
-                  <b-row v-if="storeSettings.menuStyle === 'text'">
-                    <div
-                      class="item item-text col-sm-6 col-md-6 col-lg-12 col-xl-6"
-                      v-for="mealOption in getTopLevel()"
-                      :key="mealOption.meal_id"
-                      style="margin-bottom: 10px !important;"
-                    >
-                      <div
-                        class="card card-text-menu border-light p-3 mr-1"
-                        style="height: 100%;"
-                        v-if="mealOption && mealOption.quantity > 0"
-                      >
-                        <div
-                          class="bag-item-quantity"
-                          style="display: flex; min-height: 128px !important;"
-                        >
-                          <div
-                            v-if="mealOption.meal.image != null"
-                            class="content-area"
-                            style="position: relative;"
-                          >
-                            <div class="image-area" style="position: relative;">
-                              <thumbnail
-                                class="text-menu-image"
-                                v-if="mealOption.meal.image != null"
-                                :src="mealOption.meal.image.url_thumb"
-                                :spinner="false"
-                              ></thumbnail>
-
-                              <div
-                                class="price"
-                                style="top: 5px !important; right: 5px !important;"
-                                v-if="mealOption.price > 0"
-                              >
-                                {{
-                                  format.money(
-                                    mealOption.price,
-                                    storeSettings.currency
-                                  )
-                                }}
-                              </div>
-                            </div>
-                            <!-- Image Area End !-->
-
-                            <div class="content-text-wrap">
-                              <strong>{{ mealOption.title }}</strong>
-                              <div class="mt-1 content-text">
-                                {{ mealOption.meal.description }}
-                              </div>
-
-                              <b-form-textarea
-                                v-if="
-                                  (storeModules.specialInstructions &&
-                                    !storeModuleSettings.specialInstructionsStoreOnly) ||
-                                    (storeModuleSettings.specialInstructionsStoreOnly &&
-                                      isStoreView)
-                                "
-                                class="mt-2"
-                                v-model="
-                                  special_instructions[mealOption.meal_id]
-                                "
-                                placeholder="Special instructions"
-                                rows="3"
-                                max-rows="6"
-                              ></b-form-textarea>
-                            </div>
-                            <!-- Content Text Wrap End !-->
-                          </div>
-
-                          <div
-                            v-else
-                            class="content-area"
-                            style="position: relative;"
-                          >
-                            <div class="content-text-wrap">
-                              <strong>{{ mealOption.title }}</strong>
-                              <div class="mt-1 content-text">
-                                {{ mealOption.meal.description }}
-                              </div>
-                              <div
-                                class="price-no-bg"
-                                style="top: 0 !important; right: 0 !important;"
-                                v-if="mealOption.price > 0"
-                              >
-                                {{
-                                  format.money(
-                                    mealOption.price,
-                                    storeSettings.currency
-                                  )
-                                }}
-                              </div>
-
-                              <b-form-textarea
-                                v-if="
-                                  (storeModules.specialInstructions &&
-                                    !storeModuleSettings.specialInstructionsStoreOnly) ||
-                                    (storeModuleSettings.specialInstructionsStoreOnly &&
-                                      isStoreView)
-                                "
-                                class="mt-2"
-                                v-model="
-                                  special_instructions[mealOption.meal_id]
-                                "
-                                placeholder="Special instructions"
-                                rows="3"
-                                max-rows="6"
-                              ></b-form-textarea>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- Bag Item Quantity End !-->
-                      </div>
-                      <!-- Card End !-->
-                    </div>
-                  </b-row>
-                </div>
-              </b-form-group>
-            </div>
-          </div>
-        </b-col>
-      </b-row>
 
       <b-row v-if="components.length" class="my-3">
         <b-col>
@@ -626,6 +425,208 @@
                   ></b-form-textarea>
                 </b-checkbox>
               </b-checkbox-group>
+            </div>
+          </div>
+        </b-col>
+      </b-row>
+
+      <b-row class="my-3">
+        <b-col>
+          <div>
+            <div
+              class="categorySection"
+              target="categorySection_top"
+              v-if="isStoreView"
+            >
+              <h3 class="center-text mb-3" v-if="getTopLevel().length > 0">
+                Included Items
+              </h3>
+
+              <b-form-group :label="null">
+                <div class="my-2">
+                  <b-row v-if="storeSettings.menuStyle === 'image'">
+                    <div
+                      class="item col-sm-6 col-md-6 col-lg-6 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
+                      v-for="mealOption in getTopLevel()"
+                      :key="mealOption.meal_id"
+                    >
+                      <div class="item-wrap">
+                        <div class="title d-md-none center-text">
+                          {{ mealOption.title }}
+                        </div>
+
+                        <div class="image">
+                          <thumbnail
+                            v-if="
+                              mealOption.meal.image != null &&
+                                mealOption.meal.image.url_medium
+                            "
+                            :src="mealOption.meal.image.url_medium"
+                            :spinner="false"
+                            class="menu-item-img"
+                            width="100%"
+                            style="background-color:#ffffff"
+                            @click="
+                              showMealPackageMealModal(
+                                mealOption.meal.description,
+                                mealOption.meal.title
+                              )
+                            "
+                          ></thumbnail>
+
+                          <div class="price" v-if="mealOption.price > 0">
+                            {{
+                              format.money(
+                                mealOption.price,
+                                storeSettings.currency
+                              )
+                            }}
+                          </div>
+                        </div>
+                        <!-- Image End !-->
+
+                        <div class="meta">
+                          <div class="title d-none d-md-block center-text">
+                            {{ mealOption.title }}
+                          </div>
+
+                          <b-form-textarea
+                            v-if="
+                              (storeModules.specialInstructions &&
+                                !storeModuleSettings.specialInstructionsStoreOnly) ||
+                                (storeModuleSettings.specialInstructionsStoreOnly &&
+                                  isStoreView)
+                            "
+                            class="mt-4"
+                            v-model="special_instructions[mealOption.meal_id]"
+                            placeholder="Special instructions"
+                            rows="3"
+                            max-rows="6"
+                          ></b-form-textarea>
+                        </div>
+                        <!-- Meta End !-->
+                      </div>
+                      <!-- Item Wrap End !-->
+                    </div>
+                  </b-row>
+
+                  <b-row v-if="storeSettings.menuStyle === 'text'">
+                    <div
+                      class="item item-text col-sm-6 col-md-6 col-lg-12 col-xl-6"
+                      v-for="mealOption in getTopLevel()"
+                      :key="mealOption.meal_id"
+                      style="margin-bottom: 10px !important;"
+                    >
+                      <div
+                        class="card card-text-menu border-light p-3 mr-1"
+                        style="height: 100%;"
+                        v-if="mealOption && mealOption.quantity > 0"
+                      >
+                        <div
+                          class="bag-item-quantity"
+                          style="display: flex; min-height: 128px !important;"
+                        >
+                          <div
+                            v-if="mealOption.meal.image != null"
+                            class="content-area"
+                            style="position: relative;"
+                          >
+                            <div class="image-area" style="position: relative;">
+                              <thumbnail
+                                class="text-menu-image"
+                                v-if="mealOption.meal.image != null"
+                                :src="mealOption.meal.image.url_thumb"
+                                :spinner="false"
+                              ></thumbnail>
+
+                              <div
+                                class="price"
+                                style="top: 5px !important; right: 5px !important;"
+                                v-if="mealOption.price > 0"
+                              >
+                                {{
+                                  format.money(
+                                    mealOption.price,
+                                    storeSettings.currency
+                                  )
+                                }}
+                              </div>
+                            </div>
+                            <!-- Image Area End !-->
+
+                            <div class="content-text-wrap">
+                              <strong>{{ mealOption.title }}</strong>
+                              <div class="mt-1 content-text">
+                                {{ mealOption.meal.description }}
+                              </div>
+
+                              <b-form-textarea
+                                v-if="
+                                  (storeModules.specialInstructions &&
+                                    !storeModuleSettings.specialInstructionsStoreOnly) ||
+                                    (storeModuleSettings.specialInstructionsStoreOnly &&
+                                      isStoreView)
+                                "
+                                class="mt-2"
+                                v-model="
+                                  special_instructions[mealOption.meal_id]
+                                "
+                                placeholder="Special instructions"
+                                rows="3"
+                                max-rows="6"
+                              ></b-form-textarea>
+                            </div>
+                            <!-- Content Text Wrap End !-->
+                          </div>
+
+                          <div
+                            v-else
+                            class="content-area"
+                            style="position: relative;"
+                          >
+                            <div class="content-text-wrap">
+                              <strong>{{ mealOption.title }}</strong>
+                              <div class="mt-1 content-text">
+                                {{ mealOption.meal.description }}
+                              </div>
+                              <div
+                                class="price-no-bg"
+                                style="top: 0 !important; right: 0 !important;"
+                                v-if="mealOption.price > 0"
+                              >
+                                {{
+                                  format.money(
+                                    mealOption.price,
+                                    storeSettings.currency
+                                  )
+                                }}
+                              </div>
+
+                              <b-form-textarea
+                                v-if="
+                                  (storeModules.specialInstructions &&
+                                    !storeModuleSettings.specialInstructionsStoreOnly) ||
+                                    (storeModuleSettings.specialInstructionsStoreOnly &&
+                                      isStoreView)
+                                "
+                                class="mt-2"
+                                v-model="
+                                  special_instructions[mealOption.meal_id]
+                                "
+                                placeholder="Special instructions"
+                                rows="3"
+                                max-rows="6"
+                              ></b-form-textarea>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Bag Item Quantity End !-->
+                      </div>
+                      <!-- Card End !-->
+                    </div>
+                  </b-row>
+                </div>
+              </b-form-group>
             </div>
           </div>
         </b-col>

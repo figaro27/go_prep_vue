@@ -79,6 +79,13 @@ export default {
       special_instructions = null,
       free = false
     ) {
+      if (meal.gift_card) {
+        this.$store.commit("addToBag", {
+          meal,
+          quantity: 1
+        });
+        return;
+      }
       if (!mealPackage) {
         meal = this.getMeal(meal.id, meal);
       } else {

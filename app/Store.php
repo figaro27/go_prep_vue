@@ -137,6 +137,16 @@ class Store extends Model
         return $this->hasMany('App\Coupon');
     }
 
+    public function giftCards()
+    {
+        return $this->hasMany('App\GiftCard');
+    }
+
+    public function purchasedGiftCards()
+    {
+        return $this->hasMany('App\PurchasedGiftCard');
+    }
+
     public function pickupLocations()
     {
         return $this->hasMany('App\PickupLocation');
@@ -586,7 +596,12 @@ class Store extends Model
 
     public function deliversToZip($zip)
     {
-        return in_array($zip, $this->settings->delivery_distance_zipcodes);
+        foreach ($this->settings->delivery_distance_zipcodes as $zipcode) {
+            if (strpos($zip, $zipcode) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function hasStripe()

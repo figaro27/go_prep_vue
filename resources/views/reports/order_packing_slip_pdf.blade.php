@@ -9,6 +9,8 @@ $processingFee = $currency . number_format($order->processingFee, 2);
 $salesTax = $currency . number_format($order->salesTax, 2);
 $coupon = $currency . number_format($order->couponReduction, 2);
 $couponCode = $order->couponCode;
+$purchasedGiftCard = $order->purchased_gift_card_code;
+$purchasedGiftCardReduction = $order->purchasedGiftCardReduction;
 $amount = $currency . number_format($order->amount, 2);
 $deposit = $currency . number_format($order->deposit, 2);
 $cashOrder = $order->cashOrder;
@@ -78,7 +80,22 @@ $brandColor = $order->store->settings->color;
   </div>
   @endif
   <div class="row">
-    <div class="col-4" style="position:relative;top:40px">
+    <div class="col-4">
+          <h4 class="bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4>
+          <img src="{{$logo}}" style="width:200px;height:auto"/>
+          <p class="text-11">{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
+          <p class="text-11">{{ $order->store->details->phone }}</p>
+          @if ($order->store->settings->website) 
+          <p class="text-11">{{ $order->store->settings->website }}</p>
+          @else 
+          <p class="text-11">www{{$order->store->settings->domain}}.goprep.com</p>
+          @endif
+      </div>
+    
+    <center>
+
+
+      <div class="col-4 align-right">
         <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">{{$order->user->name}}</p>
         @if ($order->user->details->address !== 'N/A')
         <p>{{$order->user->details->address}}</p>
@@ -93,36 +110,26 @@ $brandColor = $order->store->settings->color;
         @if ($order->manual)
         <p>Manual Order: {{$order->created_at->format('D, m/d/Y')}}</p>
         @else
-        <p>Order: {{$order->created_at->format('D, m/d/Y')}}</p>
+        <p>Online Order: {{$order->created_at->format('D, m/d/Y')}}</p>
         @endif
       </div>
-    
-    <center>
-      <div class="col-4 center-text">
-          <h4 class="center-text bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4>
-          <img src="{{$logo}}" style="width:200px;height:auto"/>
-          <p class="center-text text-11">{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
-          <p class="center-text text-11">{{ $order->store->details->phone }}</p>
-          @if ($order->store->settings->website) 
-          <p class="center-text text-11">{{ $order->store->settings->website }}</p>
-          @else 
-          <p class="center-text text-11">www{{$order->store->settings->domain}}.goprep.com</p>
-          @endif
-      </div>
       
-      <div class="col-4 right-text" style="position:relative;top:40px">
+      <div class="col-4 right-text">
           @if ($order->dailyOrderNumber && $order->store->modules->dailyOrderNumbers)
-          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">Daily Order <span style="font-size:40px">#{{$order->dailyOrderNumber}}</span></p>
-          <p>Order ID: {{$order->order_number}}</p>
+          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;font-size:40px">#{{$order->dailyOrderNumber}}</p>
           @else
           <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">Order ID: {{$order->order_number}}</p>
           @endif
           @if ($order->pickup === 0)
-          <p>Delivery</p>
+          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;font-size:30px">Delivery</p>
           @endif
           @if ($order->pickup === 1)
           <p>Pickup</p>
           @endif
+          @if (!$order->dailyOrderNumber && !$order->store->modules->dailyOrderNumbers)
+          <p>Order ID: {{$order->order_number}}</p>
+          @endif
+
           @if (!$order->store->modules->hideTransferOptions)
           @if ($order->transferTime)
           @if ($order->pickup === 0)
@@ -188,7 +195,7 @@ $brandColor = $order->store->settings->color;
         </tr>
 
         @foreach($order->items as $i => $item)
-        @if ($item->meal_package_order_id === $mealPackageItem->id)
+        @if ($item->meal_package_order_id === $mealPackageItem->id  && !$item->hidden)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$item->quantity}}</td>
           <td>{{ $item->base_size }}</td>
@@ -204,7 +211,7 @@ $brandColor = $order->store->settings->color;
 
         @endforeach
         @foreach($order->items as $i => $item)
-        @if ($item->meal_package_order_id === null)
+        @if ($item->meal_package_order_id === null && !$item->hidden)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$item->quantity}}</td>
           <td>{{ $item->base_size }}</td>
@@ -267,6 +274,10 @@ $brandColor = $order->store->settings->color;
               <td style="border:none"><b>Coupon</b></td>
               <td style="border:none;text-align:right;position:relative;right:30px">({{ $couponCode }}) {{ $coupon }}</td>
             </tr>@endif
+            @if ($order->purchasedGiftCardReduction > 0)<tr>
+              <td style="border:none"><b>Coupon</b></td>
+              <td style="border:none;text-align:right;position:relative;right:30px">({{ $purchasedGiftCard }}) {{ $purchasedGiftCardReduction }}</td>
+            </tr>@endif
             @if ($order->balance > 0)<tr>
             <td style="border:none"><b>Total</b></td>
               <td style="border:none;text-align:right;position:relative;right:30px">{{ $amount }}</td>
@@ -301,7 +312,7 @@ $brandColor = $order->store->settings->color;
   $titles = [];
 @endphp
     @foreach ($order->items as $i => $item)
-    @if ($item->instructions && !in_array($item->short_title, $titles))
+    @if ($item->instructions && !in_array($item->short_title, $titles && !$item->hidden))
     <p><b>{{ $item->short_title }}</b>: {{ $item->instructions }}</p>
   @php
   array_push($titles, $item->short_title);

@@ -817,6 +817,46 @@
                 </div>
               </v-client-table>
             </b-tab>
+            <b-tab title="Gift Cards">
+              <p>
+                <span class="mr-1">Purchased Gift Cards</span>
+                <img
+                  v-b-popover.hover="
+                    'Add gift cards available for purchase on your menu and if anyone buys a gift card, the purchased codes can be viewed here along with their remaining balances.'
+                  "
+                  title="Purchased Gift Cards"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+
+              <v-client-table
+                :columns="purchasedGiftCardColumns"
+                :data="purchasedGiftCardTableData"
+                :options="{
+                  orderBy: {
+                    column: 'created_at',
+                    ascending: false
+                  },
+                  headings: {
+                    created_at: 'Purchased',
+                    purchased_by: 'Purchased By',
+                    emailRecipient: 'Emailed To',
+                    code: 'Code',
+                    amount: 'Amount',
+                    balance: 'Balance'
+                  },
+                  filterable: false
+                }"
+              >
+                <div slot="created_at" slot-scope="props">
+                  <p>
+                    {{ moment(props.row.created_at).format("dddd MMM Do") }}
+                  </p>
+                </div>
+              </v-client-table>
+            </b-tab>
+
             <b-tab title="Notifications">
               <b-form @submit.prevent="updateStoreSettings">
                 <b-form-group label="New Orders" :state="true">
@@ -1094,6 +1134,14 @@ export default {
       payments_url: "",
       coupon: { type: "flat", freeDelivery: 0, oneTime: 0 },
       columns: ["code", "type", "amount", "freeDelivery", "oneTime", "actions"],
+      purchasedGiftCardColumns: [
+        "created_at",
+        "purchased_by",
+        "emailRecipient",
+        "code",
+        "amount",
+        "balance"
+      ],
       deselectedDeliveryDay: null,
       showCutoffModal: false,
       stripeConnectUrl: null,
@@ -1110,10 +1158,15 @@ export default {
       storeCategories: "storeCategories",
       storeSubscriptions: "storeSubscriptions",
       storeCoupons: "storeCoupons",
-      storeModules: "storeModules"
+      storeModules: "storeModules",
+      purchasedGiftCards: "storePurchasedGiftCards"
     }),
     tableData() {
       if (this.storeCoupons.length > 0) return this.storeCoupons;
+      else return [];
+    },
+    purchasedGiftCardTableData() {
+      if (this.purchasedGiftCards.length > 0) return this.purchasedGiftCards;
       else return [];
     },
     storeDetails() {

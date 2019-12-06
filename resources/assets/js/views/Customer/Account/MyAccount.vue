@@ -236,7 +236,8 @@ export default {
       cards: "cards",
       user: "user",
       userDetail: "userDetail",
-      storeSettings: "viewedStoreSettings"
+      storeSettings: "viewedStoreSettings",
+      store: "viewedStore"
     }),
     gateway() {
       return this.storeSettings.payment_gateway;
@@ -249,7 +250,9 @@ export default {
   methods: {
     ...mapActions(["refreshUser", "refreshViewedStore"]),
     updateCustomer() {
-      this.spliceZip();
+      if (this.store.details.country === "US") {
+        this.spliceZip();
+      }
       axios
         .patch("/api/me/detail", this.userDetail)
         .then(response => {
@@ -276,9 +279,11 @@ export default {
         });
     },
     spliceZip() {
-      if (this.userDetail.zip.toString().length > 5) {
-        let reducedZip = this.userDetail.zip.toString();
-        this.userDetail.zip = parseInt(reducedZip.substring(0, 5));
+      let zip = this.userDetail.zip;
+      zip = zip.replace(/\s/g, "");
+      if (zip.toString().length > 5) {
+        let reducedZip = zip.toString();
+        zip = parseInt(reducedZip.substring(0, 5));
       }
     },
     getCustomer() {

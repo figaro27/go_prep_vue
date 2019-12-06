@@ -6,6 +6,7 @@ use App\Bag;
 use App\Http\Controllers\User\UserController;
 use App\Mail\Customer\MealPlan;
 use App\Mail\Customer\NewOrder;
+use App\Mail\Customer\NewGiftCard;
 use App\MealOrder;
 use App\MealOrderComponent;
 use App\MealSubscriptionComponent;
@@ -21,6 +22,7 @@ use App\Subscription;
 use App\Coupon;
 use App\MealPackageOrder;
 use App\MealPackageSubscription;
+use App\PurchasedGiftCard;
 use App\Billing\Billing;
 use App\Billing\Constants;
 use App\Billing\Charge;
@@ -60,6 +62,10 @@ class CheckoutController extends UserController
         $couponId = $request->get('coupon_id');
         $couponReduction = $request->get('couponReduction');
         $couponCode = $request->get('couponCode');
+        $purchasedGiftCardId = $request->get('purchased_gift_card_id');
+        $purchasedGiftCardReduction = $request->get(
+            'purchasedGiftCardReduction'
+        );
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
@@ -217,7 +223,7 @@ class CheckoutController extends UserController
             $order->card_id = $cardId;
             $order->store_id = $store->id;
             $order->order_number = strtoupper(
-                substr(uniqid(rand(10, 99), false), 0, 10)
+                substr(uniqid(rand(10, 99), false), 0, 5)
             );
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
@@ -241,6 +247,8 @@ class CheckoutController extends UserController
             $order->coupon_id = $couponId;
             $order->couponReduction = $couponReduction;
             $order->couponCode = $couponCode;
+            $order->purchased_gift_card_id = $purchasedGiftCardId;
+            $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->cashOrder = $cashOrder;
@@ -269,6 +277,42 @@ class CheckoutController extends UserController
             $items = $bag->getItems();
 
             foreach ($items as $item) {
+                if (
+                    isset($item['meal']['gift_card']) &&
+                    $item['meal']['gift_card']
+                ) {
+                    $quantity = $item['quantity'];
+
+                    for ($i = 0; $i < $quantity; $i++) {
+                        $purchasedGiftCard = new PurchasedGiftCard();
+                        $purchasedGiftCard->store_id = $store->id;
+                        $purchasedGiftCard->user_id = $user->id;
+                        $purchasedGiftCard->order_id = $order->id;
+                        $purchasedGiftCard->code = strtoupper(
+                            substr(uniqid(rand(10, 99), false), 0, 5)
+                        );
+                        $purchasedGiftCard->amount = $item['meal']['price'];
+                        $purchasedGiftCard->balance = $item['meal']['price'];
+                        $purchasedGiftCard->emailRecipient = isset(
+                            $giftCardEmailRecipient
+                        )
+                            ? $giftCardEmailRecipient
+                            : null;
+                        $purchasedGiftCard->save();
+
+                        if (isset($item['emailRecipient'])) {
+                            $email = new NewGiftCard([
+                                'purchasedGiftCard' => $purchasedGiftCard,
+                                'order' => $order
+                            ]);
+                            try {
+                                Mail::to($item['emailRecipient'])->send($email);
+                            } catch (\Exception $e) {
+                            }
+                        }
+                    }
+                }
+
                 $mealOrder = new MealOrder();
                 $mealOrder->order_id = $order->id;
                 $mealOrder->store_id = $store->id;
@@ -406,6 +450,7 @@ class CheckoutController extends UserController
                             $attachment->quantity * $item['quantity'];
                         $mealOrder->attached = 1;
                         $mealOrder->free = 1;
+                        $mealOrder->hidden = $attachment->hidden;
                         if (
                             isset($item['delivery_day']) &&
                             $item['delivery_day']
@@ -418,6 +463,14 @@ class CheckoutController extends UserController
                         $mealOrder->save();
                     }
                 }
+            }
+            if (isset($purchasedGiftCardId)) {
+                $purchasedGiftCard = PurchasedGiftCard::where(
+                    'id',
+                    $purchasedGiftCardId
+                )->first();
+                $purchasedGiftCard->balance -= $purchasedGiftCardReduction;
+                $purchasedGiftCard->update();
             }
 
             // Send notification to store
