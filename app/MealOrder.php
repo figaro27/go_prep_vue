@@ -115,7 +115,8 @@ class MealOrder extends Pivot
             isset($this->order) &&
             isset($this->order->store) &&
             isset($this->order->store->modules) &&
-            $this->order->store->modules->multipleDeliveryDays
+            $this->order->store->modules->multipleDeliveryDays &&
+            $this->order->isMultipleDelivery
         ) {
             $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
         }
