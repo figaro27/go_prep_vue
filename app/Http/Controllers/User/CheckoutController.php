@@ -294,9 +294,9 @@ class CheckoutController extends UserController
                         $purchasedGiftCard->amount = $item['meal']['price'];
                         $purchasedGiftCard->balance = $item['meal']['price'];
                         $purchasedGiftCard->emailRecipient = isset(
-                            $giftCardEmailRecipient
+                            $item['emailRecipient']
                         )
-                            ? $giftCardEmailRecipient
+                            ? $item['emailRecipient']
                             : null;
                         $purchasedGiftCard->save();
 
