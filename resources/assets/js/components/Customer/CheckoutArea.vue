@@ -463,7 +463,10 @@
 
       <li
         class="checkout-item"
-        v-if="$route.params.storeView && (storeModules.deliveryHours ||  storeModules.pickupHours"
+        v-if="
+          $route.params.storeView &&
+            (storeModules.deliveryHours || storeModules.pickupHours)
+        "
       >
         <div class="d-inline">
           <p class="strong d-inline">Custom Time</p>
