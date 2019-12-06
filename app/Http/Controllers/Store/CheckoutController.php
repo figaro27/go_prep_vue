@@ -254,7 +254,7 @@ class CheckoutController extends StoreController
             $order->card_id = $cardId;
             $order->store_id = $store->id;
             $order->order_number = strtoupper(
-                substr(uniqid(rand(10, 99), false), 0, 6)
+                substr(uniqid(rand(10, 99), false), 0, 8)
             );
             $order->notes = $notes;
             $order->preFeePreDiscount = $preFeePreDiscount;
@@ -320,7 +320,7 @@ class CheckoutController extends StoreController
                         $purchasedGiftCard->user_id = $user->id;
                         $purchasedGiftCard->order_id = $order->id;
                         $purchasedGiftCard->code = strtoupper(
-                            substr(uniqid(rand(10, 99), false), 0, 5)
+                            substr(uniqid(rand(10, 99), false), 0, 8)
                         );
                         $purchasedGiftCard->amount = $item['meal']['price'];
                         $purchasedGiftCard->balance = $item['meal']['price'];

@@ -223,7 +223,7 @@ class CheckoutController extends UserController
             $order->card_id = $cardId;
             $order->store_id = $store->id;
             $order->order_number = strtoupper(
-                substr(uniqid(rand(10, 99), false), 0, 6)
+                substr(uniqid(rand(10, 99), false), 0, 8)
             );
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
@@ -660,7 +660,7 @@ class CheckoutController extends UserController
                 $order->store_id = $store->id;
                 $order->subscription_id = $userSubscription->id;
                 $order->order_number = strtoupper(
-                    substr(uniqid(rand(10, 99), false), 0, 6)
+                    substr(uniqid(rand(10, 99), false), 0, 8)
                 );
                 $order->preFeePreDiscount = $preFeePreDiscount;
                 $order->mealPlanDiscount = $mealPlanDiscount;
