@@ -503,13 +503,24 @@ class Store extends Model
         $orders = $this->orders()->with(['meals', 'meal_orders']);
 
         if ($orderDates === false) {
-            //$orders = $orders->where('isMultipleDelivery', 0);
-            /*$orders->whereHas('meal_orders', function($query) use($dateRange) {
-            
-          });*/
             $orders = $orders
-                ->where(function ($query) use ($dateRange) {
+                ->where(function ($query) use (
+                    $dateRange,
+                    $onlyPaid,
+                    $onlyDelivery,
+                    $couponCode
+                ) {
                     $query->where('isMultipleDelivery', 0);
+
+                    if ($onlyPaid) {
+                        $query->where('paid', 1);
+                    }
+                    if ($onlyDelivery) {
+                        $query->where('pickup', 0);
+                    }
+                    if ($couponCode != '') {
+                        $query->where('couponCode', $couponCode);
+                    }
 
                     if (isset($dateRange['from'])) {
                         $from = Carbon::parse($dateRange['from']);
@@ -529,34 +540,47 @@ class Store extends Model
                         );
                     }
                 })
-                ->orWhere(function ($query) use ($dateRange) {
-                    $query
-                        ->where('isMultipleDelivery', 1)
-                        ->whereHas('meal_orders', function ($subquery1) use (
-                            $dateRange
-                        ) {
-                            $subquery1->whereNotNull(
-                                'meal_orders.delivery_date'
+                ->orWhere(function ($query) use (
+                    $dateRange,
+                    $onlyPaid,
+                    $onlyDelivery,
+                    $couponCode
+                ) {
+                    $query->where('isMultipleDelivery', 1);
+
+                    if ($onlyPaid) {
+                        $query->where('paid', 1);
+                    }
+                    if ($onlyDelivery) {
+                        $query->where('pickup', 0);
+                    }
+                    if ($couponCode != '') {
+                        $query->where('couponCode', $couponCode);
+                    }
+
+                    $query->whereHas('meal_orders', function ($subquery1) use (
+                        $dateRange
+                    ) {
+                        $subquery1->whereNotNull('meal_orders.delivery_date');
+
+                        if (isset($dateRange['from'])) {
+                            $from = Carbon::parse($dateRange['from']);
+                            $subquery1->where(
+                                'meal_orders.delivery_date',
+                                '>=',
+                                $from->format('Y-m-d')
                             );
+                        }
 
-                            if (isset($dateRange['from'])) {
-                                $from = Carbon::parse($dateRange['from']);
-                                $subquery1->where(
-                                    'meal_orders.delivery_date',
-                                    '>=',
-                                    $from->format('Y-m-d')
-                                );
-                            }
-
-                            if (isset($dateRange['to'])) {
-                                $to = Carbon::parse($dateRange['to']);
-                                $subquery1->where(
-                                    'meal_orders.delivery_date',
-                                    '<=',
-                                    $to->format('Y-m-d')
-                                );
-                            }
-                        });
+                        if (isset($dateRange['to'])) {
+                            $to = Carbon::parse($dateRange['to']);
+                            $subquery1->where(
+                                'meal_orders.delivery_date',
+                                '<=',
+                                $to->format('Y-m-d')
+                            );
+                        }
+                    });
                     /*->orWhereHas('meal_package_orders', function($subquery2) use($dateRange) {
               $subquery2->whereNotNull('meal_package_orders.delivery_date');
 
@@ -588,6 +612,16 @@ class Store extends Model
                     '<=',
                     $to->addDays(1)->format('Y-m-d')
                 );
+            }
+
+            if ($onlyPaid) {
+                $orders = $orders->where('paid', 1);
+            }
+            if ($onlyDelivery) {
+                $orders = $orders->where('pickup', 0);
+            }
+            if ($couponCode != '') {
+                $orders = $orders->where('couponCode', $couponCode);
             }
         }
 
@@ -622,16 +656,6 @@ class Store extends Model
         // if ($onlyUnfulfilled) {
         //     $orders = $orders->where('fulfilled', 0);
         // }
-        if ($onlyPaid) {
-            $orders = $orders->where('paid', 1);
-        }
-        if ($onlyDelivery) {
-            $orders = $orders->where('pickup', 0);
-        }
-
-        if ($couponCode != '') {
-            $orders = $orders->where('couponCode', $couponCode);
-        }
 
         $orders = $orders->get();
 
