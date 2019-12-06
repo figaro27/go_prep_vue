@@ -317,7 +317,7 @@ class CheckoutController extends StoreController
                     for ($i = 0; $i < $quantity; $i++) {
                         $purchasedGiftCard = new PurchasedGiftCard();
                         $purchasedGiftCard->store_id = $store->id;
-                        $purchasedGiftCard->user_id = $user->id;
+                        $purchasedGiftCard->user_id = $customerUser->id;
                         $purchasedGiftCard->order_id = $order->id;
                         $purchasedGiftCard->code = strtoupper(
                             substr(uniqid(rand(10, 99), false), 0, 5)
