@@ -141,6 +141,9 @@ trait Exportable
             ]);
         }
 
+        var_dump($html);
+        exit();
+
         $pdf = new Pdf($pdfConfig);
         $pdf->addPage($html);
 
