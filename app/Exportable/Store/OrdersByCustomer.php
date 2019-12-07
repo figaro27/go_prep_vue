@@ -27,14 +27,16 @@ class OrdersByCustomer
         $dateRange = $this->getDeliveryDates();
         $params = $this->params;
         $params['dailyOrderNumbers'] = $this->store->modules->dailyOrderNumbers;
-
+        $dates = $this->getDeliveryDates();
         // if ($params->has('fulfilled')) {
         //     $fulfilled = $params->get('fulfilled');
         // } else {
         //     $fulfilled = 0;
         // }
 
-        $orders = $this->store->orders()->where(['paid' => 1, 'voided' => 0]);
+        $orders = $this->store->getOrders(null, $dates, true);
+
+        $orders = $orders->where(['paid' => 1, 'voided' => 0]);
         // ->where(['fulfilled' => $fulfilled, 'paid' => 1]);
 
         $orders = $orders
