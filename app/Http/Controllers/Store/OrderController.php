@@ -53,35 +53,46 @@ class OrderController extends StoreController
         if ($this->store->has('orders')) {
             $orders = $this->store->orders()->with(['user', 'pickup_location']);
 
-            $orders = $orders
-                ->where(function ($query) use ($fromDate) {
-                    $query->where('isMultipleDelivery', 0)->where('paid', 1);
-                    $query->where(
-                        'delivery_date',
-                        '>=',
-                        $fromDate->format('Y-m-d')
-                    );
-                })
-                ->orWhere(function ($query) use ($fromDate) {
-                    $query
-                        ->where('isMultipleDelivery', 1)
-                        ->where('paid', 1)
-                        ->whereHas('meal_orders', function ($subquery1) use (
-                            $fromDate
-                        ) {
-                            $subquery1->whereNotNull(
-                                'meal_orders.delivery_date'
-                            );
-                            $subquery1->where(
-                                'meal_orders.delivery_date',
-                                '>=',
-                                $fromDate->format('Y-m-d')
-                            );
-                        });
-                });
+            $orders = $orders->where(function ($query) use ($fromDate) {
+                $query
+                    ->where(function ($query1) use ($fromDate) {
+                        $query1
+                            ->where('isMultipleDelivery', 0)
+                            ->where('paid', 1);
+                        $query1->where(
+                            'delivery_date',
+                            '>=',
+                            $fromDate->format('Y-m-d')
+                        );
+                    })
+                    ->orWhere(function ($query2) use ($fromDate) {
+                        $query2
+                            ->where('isMultipleDelivery', 1)
+                            ->where('paid', 1)
+                            ->whereHas('meal_orders', function ($subquery) use (
+                                $fromDate
+                            ) {
+                                $subquery->whereNotNull(
+                                    'meal_orders.delivery_date'
+                                );
+                                $subquery->where(
+                                    'meal_orders.delivery_date',
+                                    '>=',
+                                    $fromDate->format('Y-m-d')
+                                );
+                            });
+                    });
+            });
 
             $data = $orders->get();
+
+            // Newly Added for Table Data
+            if ($data) {
+                foreach ($data as &$order) {
+                }
+            }
         }
+
         return $data;
 
         /*return $this->store->has('orders')
