@@ -17,6 +17,9 @@ export default {
     checkoutData: null
   },
   computed: {
+    order() {
+      return this.$route.params.order;
+    },
     changeMealsRouter() {
       if (this.$route.params.forceValue && this.$route.params.manualOrder) {
         return {
@@ -47,6 +50,7 @@ export default {
           params: {
             storeView: true,
             orderId: this.$route.params.orderId,
+            order: this.order,
             forceValue: true,
             checkoutData: this.checkoutData
           }
