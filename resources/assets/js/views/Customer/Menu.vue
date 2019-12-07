@@ -1092,9 +1092,10 @@ export default {
       this.mealPackage = meal;
       this.mealPackageSize = size;
     },
-    async showMealPage(meal) {
+    async showMealPage(meal, size) {
       this.mealPageView = true;
       this.meal = meal;
+      this.$refs.mealPage.setSizeFromMealsArea(size);
       this.mealDescription = meal.description
         ? meal.description.replace(/\n/g, "<br>")
         : "";

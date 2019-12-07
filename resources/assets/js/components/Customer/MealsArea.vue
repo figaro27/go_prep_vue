@@ -916,7 +916,7 @@ export default {
           (meal.components && meal.components.length > 0) ||
           (meal.addons && meal.addons.length > 0)
         ) {
-          this.showMeal(meal);
+          this.showMeal(meal, null, size);
           return;
         } else {
           if (size === undefined) {
@@ -956,12 +956,12 @@ export default {
       this.$parent.showMealPackagesArea = false;
       this.$parent.search = "";
     },
-    showMeal(meal, group) {
+    showMeal(meal, group, size) {
       if (meal.meal_package || meal.gift_card) {
         return;
       } else {
         $([document.documentElement, document.body]).scrollTop(0);
-        this.$parent.showMealPage(meal);
+        this.$parent.showMealPage(meal, size ? size.id : null);
         this.$parent.showMealsArea = false;
         this.$parent.showMealPackagesArea = false;
       }
