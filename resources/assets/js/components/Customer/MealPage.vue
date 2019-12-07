@@ -219,7 +219,8 @@ export default {
     ingredients: "",
     nutritionalFacts: {},
     adjustOrder: false,
-    manualOrder: false
+    manualOrder: false,
+    sizeSelection: null
   },
   mixins: [MenuBag],
   computed: {
@@ -549,6 +550,10 @@ export default {
       this.$nextTick(() => {
         this.getNutritionFacts();
       });
+    },
+    setSizeFromMealsArea(size) {
+      this.sizeChanged = true;
+      this.mealSize = size;
     }
   }
 };

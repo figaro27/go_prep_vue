@@ -909,6 +909,7 @@ export default {
   props: {
     order: null,
     orderNotes: null,
+    publicOrderNotes: null,
     customer: null,
     preview: false,
     manualOrder: false,
@@ -1802,6 +1803,8 @@ export default {
 
       axios
         .post(`/api/me/orders/adjustOrder`, {
+          notes: this.orderNotes,
+          publicOrderNotes: this.publicOrderNotes,
           orderId: this.$parent.orderId,
           deliveryDate: this.bagDeliveryDate,
           isMultipleDelivery: this.isMultipleDelivery,
@@ -1834,7 +1837,9 @@ export default {
           emailCustomer: this.emailCustomer
         })
         .then(resp => {
-          this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
+          if (this.purchasedGiftCard !== null) {
+            this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
+          }
           this.$toastr.s("Order Adjusted");
           this.$router.push({ path: "/store/orders" });
           this.refreshUpcomingOrders();
@@ -1922,6 +1927,7 @@ export default {
       axios
         .post(endPoint, {
           notes: this.orderNotes,
+          publicOrderNotes: this.publicOrderNotes,
           subtotal: this.subtotal,
           mealPlanDiscount: this.mealPlanDiscount,
           afterDiscount: this.afterDiscount,
