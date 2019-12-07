@@ -119,9 +119,6 @@ trait Exportable
 
         $html = view($this->exportPdfView(), $vars)->render();
 
-        var_dump($html);
-        exit();
-
         $pdfConfig = [
             'encoding' => 'utf-8',
             'orientation' => $this->orientation,
