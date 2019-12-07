@@ -441,7 +441,7 @@ class SpaController extends Controller
         $user = auth('api')->user();
 
         $store_id = $offset_meal = $offset_package = $delivery_day_id = 0;
-        $limit = 30;
+        $limit = 15;
 
         $category_id = 0;
         $category_ids_str = ""; // Full Category Ids
