@@ -47,10 +47,7 @@ export default {
       return this.$route.params.orderId;
     },
     order() {
-      let order = _.find(this.upcomingOrders, order => {
-        return order.id === this.orderId;
-      });
-      return order;
+      return this.$route.params.order;
     },
     inSub() {
       return this.order.subscription_id ? 1 : 0;

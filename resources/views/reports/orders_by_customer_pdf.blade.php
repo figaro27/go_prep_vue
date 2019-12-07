@@ -34,7 +34,7 @@
         @if ($params['dailyOrderNumbers'])
         <h4>Daily Order #{{$order['dailyOrderNumber']}}</h4>
         @endif
-        <h4>
+        <h5>
           @if ($order['pickup'] === 0)
 
 
@@ -62,7 +62,7 @@
           @if ($order['transferTime'])
             {{ $order['transferTime'] }}
           @endif
-        </h4>
+        </h5>
         <h5>Order ID - {{$order['order_number']}}</h5>
         <h5>Customer: {{$orderGroup['user']->name }}</h5>
         @if ($order['address'] !== 'N/A')

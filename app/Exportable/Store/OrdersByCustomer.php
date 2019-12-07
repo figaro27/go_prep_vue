@@ -1,112 +1,86 @@
 <?php
-
 namespace App\Exportable\Store;
-
 use App\Exportable\Exportable;
 use App\Store;
 use App\StoreModule;
 use App\User;
 use App\MealOrder;
 use Illuminate\Support\Carbon;
-
 class OrdersByCustomer
 {
     use Exportable;
-
     protected $store;
-
     public function __construct(Store $store, $params)
     {
         $this->store = $store;
         $this->params = $params;
         $this->orientation = 'portrait';
     }
-
     public function exportData($type = null)
     {
         $dateRange = $this->getDeliveryDates();
         $params = $this->params;
         $params['dailyOrderNumbers'] = $this->store->modules->dailyOrderNumbers;
-
         // if ($params->has('fulfilled')) {
         //     $fulfilled = $params->get('fulfilled');
         // } else {
         //     $fulfilled = 0;
         // }
-
         $orders = $this->store->orders()->where(['paid' => 1, 'voided' => 0]);
         // ->where(['fulfilled' => $fulfilled, 'paid' => 1]);
+        $orders = $orders->where(function ($query) use ($dateRange) {
+            $query
+                ->where(function ($query1) use ($dateRange) {
+                    $query1->where('isMultipleDelivery', 0);
 
-        $orders = $orders
-            ->where(function ($query) use ($dateRange) {
-                $query->where('isMultipleDelivery', 0);
-
-                if (isset($dateRange['from'])) {
-                    $from = Carbon::parse($dateRange['from']);
-                    $query->where(
-                        'delivery_date',
-                        '>=',
-                        $from->format('Y-m-d')
-                    );
-                }
-
-                if (isset($dateRange['to'])) {
-                    $to = Carbon::parse($dateRange['to']);
-                    $query->where('delivery_date', '<=', $to->format('Y-m-d'));
-                }
-            })
-            ->orWhere(function ($query) use ($dateRange) {
-                $query
-                    ->where('isMultipleDelivery', 1)
-                    ->whereHas('meal_orders', function ($subquery1) use (
-                        $dateRange
-                    ) {
-                        $subquery1->whereNotNull('meal_orders.delivery_date');
-
-                        if (isset($dateRange['from'])) {
-                            $from = Carbon::parse($dateRange['from']);
-                            $subquery1->where(
-                                'meal_orders.delivery_date',
-                                '>=',
-                                $from->format('Y-m-d')
-                            );
-                        }
-
-                        if (isset($dateRange['to'])) {
-                            $to = Carbon::parse($dateRange['to']);
-                            $subquery1->where(
-                                'meal_orders.delivery_date',
-                                '<=',
-                                $to->format('Y-m-d')
-                            );
-                        }
-                    })
-                    ->orWhereHas('meal_package_orders', function (
-                        $subquery2
-                    ) use ($dateRange) {
-                        $subquery2->whereNotNull(
-                            'meal_package_orders.delivery_date'
+                    if (isset($dateRange['from'])) {
+                        $from = Carbon::parse($dateRange['from']);
+                        $query1->where(
+                            'delivery_date',
+                            '>=',
+                            $from->format('Y-m-d')
                         );
+                    }
 
-                        if (isset($dateRange['from'])) {
-                            $from = Carbon::parse($dateRange['from']);
-                            $subquery2->where(
-                                'meal_package_orders.delivery_date',
-                                '>=',
-                                $from->format('Y-m-d')
+                    if (isset($dateRange['to'])) {
+                        $to = Carbon::parse($dateRange['to']);
+                        $query1->where(
+                            'delivery_date',
+                            '<=',
+                            $to->format('Y-m-d')
+                        );
+                    }
+                })
+                ->orWhere(function ($query2) use ($dateRange) {
+                    $query2
+                        ->where('isMultipleDelivery', 1)
+                        ->whereHas('meal_orders', function ($subquery1) use (
+                            $dateRange
+                        ) {
+                            $subquery1->whereNotNull(
+                                'meal_orders.delivery_date'
                             );
-                        }
 
-                        if (isset($dateRange['to'])) {
-                            $to = Carbon::parse($dateRange['to']);
-                            $subquery2->where(
-                                'meal_package_orders.delivery_date',
-                                '<=',
-                                $to->format('Y-m-d')
-                            );
-                        }
-                    });
-            });
+                            if (isset($dateRange['from'])) {
+                                $from = Carbon::parse($dateRange['from']);
+                                $subquery1->where(
+                                    'meal_orders.delivery_date',
+                                    '>=',
+                                    $from->format('Y-m-d')
+                                );
+                            }
+
+                            if (isset($dateRange['to'])) {
+                                $to = Carbon::parse($dateRange['to']);
+                                $subquery1->where(
+                                    'meal_orders.delivery_date',
+                                    '<=',
+                                    $to->format('Y-m-d')
+                                );
+                            }
+                        });
+                });
+        });
         // Disabled Old Workflow
         /*if (isset($dateRange['from'])) {
             $from = Carbon::parse($dateRange['from']);
@@ -124,7 +98,6 @@ class OrdersByCustomer
                 $to->format('Y-m-d')
             );
         }*/
-
         if ($type === 'csv' || $type === 'xls') {
             $mealOrders = MealOrder::where('store_id', $this->store->id)
                 ->get()
@@ -147,7 +120,6 @@ class OrdersByCustomer
                         $mealOrder->order->delivery_date <=
                             $to->format('Y-m-d');
                 });
-
             $customerMealOrders = $mealOrders->map(function ($mealOrder) {
                 return [
                     'order_ID' => $mealOrder->order->order_number,
@@ -182,7 +154,6 @@ class OrdersByCustomer
                         )
                 ];
             });
-
             $customerMealOrders->prepend([
                 'Order ID',
                 'Order Placed',
@@ -200,7 +171,6 @@ class OrdersByCustomer
                 'Quantity',
                 'Price'
             ]);
-
             return $customerMealOrders;
         } elseif ($type = 'pdf') {
             $customerOrders = $orders
@@ -266,11 +236,9 @@ class OrdersByCustomer
                         })
                     ];
                 });
-
             return $customerOrders->values();
         }
     }
-
     public function exportPdfView()
     {
         return 'reports.orders_by_customer_pdf';
