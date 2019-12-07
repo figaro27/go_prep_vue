@@ -245,7 +245,8 @@ $brandColor = $order->store->settings->color;
       <tr>
         <td style="width:70%;padding:5px 5px 20px 0px">
           @if ($order->publicNotes !== null)
-          <p style="position:relative;top:10px;font-weight:bold;padding-bottom:8px" class="text-12">{!! nl2br($order->publicNotes) !!}</p>
+          <p style="position:relative;top:10px;font-weight:bold;" class="text-12">Order Notes</p>
+          <p style="position:relative;top:10px;padding-bottom:8px" class="text-12">{!! nl2br($order->publicNotes) !!}</p>
           @endif
 
           @if ($order->store->settings->notesForCustomer != null)
