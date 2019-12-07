@@ -332,15 +332,11 @@ class Order extends Model
                         $component
                     ) {
                         return (object) [
-                            'meal_component_id' => $component->component
-                                ? $component->component->id
-                                : null,
+                            'meal_component_id' => $component->component->id,
                             'meal_component_option_id' => $component->option
                                 ? $component->option->id
                                 : null,
-                            'component' => $component->component
-                                ? $component->component->title
-                                : null,
+                            'component' => $component->component->title,
                             'option' => $component->option
                                 ? $component->option->title
                                 : null
