@@ -423,7 +423,7 @@
                       </b-dropdown-item>
                     </b-dropdown>
 
-                    <p class="mt-3 ml-1">{{ mealMixQuantity(meal) }}</p>
+                    <p class="mt-3 ml-2">{{ mealMixQuantity(meal) }}</p>
                     <!-- <b-form-input
                       type="text"
                       name
