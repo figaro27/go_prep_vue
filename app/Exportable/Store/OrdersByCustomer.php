@@ -57,7 +57,7 @@ class OrdersByCustomer
                     $query->where('delivery_date', '<=', $to->format('Y-m-d'));
                 }
             })
-            ->orWhere(function ($query) use ($dateRange) {
+            ->where(function ($query) use ($dateRange) {
                 $query
                     ->where('isMultipleDelivery', 1)
                     ->whereHas('meal_orders', function ($subquery1) use (
