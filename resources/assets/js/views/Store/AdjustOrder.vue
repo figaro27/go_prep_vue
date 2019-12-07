@@ -80,12 +80,12 @@ export default {
         return order.id === this.orderId;
       });
       this.order = order;
-      this.inSub = this.order.subscription_id ? 1 : 0;
-      this.deliveryDay = moment(this.order.delivery_date).format(
+      this.inSub = order.subscription_id ? 1 : 0;
+      this.deliveryDay = moment(order.delivery_date).format(
         "YYYY-MM-DD 00:00:00"
       );
-      this.transferTime = this.order.transferTime;
-      this.pickup = this.order.pickup;
+      this.transferTime = order.transferTime;
+      this.pickup = order.pickup;
     },
     async initBag() {
       // await this.refreshUpcomingOrders();
