@@ -175,8 +175,7 @@ export default {
       nextDeliveryDates: "storeNextDeliveryDates",
       storeSettings: "storeSettings",
       storeModules: "storeModules",
-      storeProductionGroups: "storeProductionGroups",
-      isLazyStore: "isLazyStore"
+      storeProductionGroups: "storeProductionGroups"
     }),
     tableData() {
       let filters = { ...this.filters };
@@ -324,10 +323,6 @@ export default {
     }
   },
   mounted() {
-    if (!this.isLazyStore) {
-      store.dispatch("refreshLazyStore");
-    }
-
     let vue_select = document.createElement("script");
     vue_select.setAttribute("src", "https://unpkg.com/vue-select@latest");
     document.head.appendChild(vue_select);

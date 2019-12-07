@@ -552,6 +552,7 @@ export default {
       total: "bagQuantity",
       allergies: "allergies",
       bag: "bagItems",
+      mealMixItems: "mealMixItems",
       _categories: "viewedStoreCategories",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
@@ -571,15 +572,13 @@ export default {
       return this.hasDeliveryDateRestriction;
     },
     showSpinner() {
-      return this.store.items.length == 0;
-      /*if (this.context == "customer" || this.context == "guest") {
-        return this.store.items.length == 0;
-      } else {
-        return (
-          (!this.meals || this.meals.length == 0) &&
-          (!this.mealPackages || this.mealPackages.length == 0)
-        );
-      }*/
+      const { items } = this.mealMixItems;
+
+      if (!items || items.length == 0) {
+        return true;
+      }
+
+      return false;
     },
     meals() {
       return this.store.meals;
@@ -587,17 +586,15 @@ export default {
     mealPackages() {
       return this.store.packages;
     },
-
     mealsMix() {
       const search = this.search.toLowerCase();
       let filters = this.filters;
 
-      this.finalCategories = this.store.finalCategories;
+      let { items, finalCategories } = this.mealMixItems;
 
-      const finalCategories = [];
+      this.finalCategories = finalCategories;
+
       const categoryIds = [];
-
-      let items = [...this.store.items, {}];
 
       items = items.map(item => {
         let object = { ...item };
@@ -671,6 +668,7 @@ export default {
       }
 
       /* Categories */
+      // const finalCategories = [];
       /*if (this.store.finalCategories) {
         this.store.finalCategories.forEach(category => {
           if (categoryIds.includes(category.id)) {
@@ -907,13 +905,8 @@ export default {
   mounted() {
     if (this.isMultipleDelivery) {
       store.dispatch("refreshDeliveryDay");
-      setTimeout(() => {
-        this.showDeliveryDateModal();
-      }, 5500);
+      this.showDeliveryDateModal();
     } else {
-      if (!this.isLazy) {
-        // store.dispatch("refreshLazy");
-      }
     }
 
     if (this.bag.length > 0 || this.subscriptionId !== undefined) {
@@ -982,11 +975,9 @@ export default {
         this.finalDeliveryDay = this.selectedDeliveryDay;
         this.showDeliveryDayModal = false;
 
-        if (!this.isLazy) {
-          store.dispatch("refreshLazyDD", {
-            delivery_day: this.finalDeliveryDay
-          });
-        }
+        store.dispatch("refreshLazyDD", {
+          delivery_day: this.finalDeliveryDay
+        });
       } else {
         e.preventDefault();
       }
@@ -1101,9 +1092,10 @@ export default {
       this.mealPackage = meal;
       this.mealPackageSize = size;
     },
-    async showMealPage(meal) {
+    async showMealPage(meal, size) {
       this.mealPageView = true;
       this.meal = meal;
+      this.$refs.mealPage.setSizeFromMealsArea(size);
       this.mealDescription = meal.description
         ? meal.description.replace(/\n/g, "<br>")
         : "";

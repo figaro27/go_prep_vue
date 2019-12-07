@@ -14,20 +14,20 @@ const nutrition = {
   getTotals(ingredients, normalize = true) {
     let nutrition = {
       calories: 0,
-      totalFat: 0,
-      satFat: 0,
-      transFat: 0,
+      totalfat: 0,
+      satfat: 0,
+      transfat: 0,
       cholesterol: 0,
       sodium: 0,
-      totalCarb: 0,
+      totalcarb: 0,
       fibers: 0,
       sugars: 0,
       proteins: 0,
-      vitaminD: 0,
+      vitamind: 0,
       potassium: 0,
       calcium: 0,
       iron: 0,
-      addedSugars: 0
+      addedsugars: 0
     };
 
     ingredients.forEach(ingredient => {
@@ -67,11 +67,11 @@ const nutrition = {
 
       nutrition.calories +=
         (ingredient.nf_calories || ingredient.calories) * multiplier;
-      nutrition.totalFat +=
+      nutrition.totalfat +=
         (ingredient.nf_total_fat || ingredient.totalfat) * multiplier;
-      nutrition.satFat +=
+      nutrition.satfat +=
         (ingredient.nf_saturated_fat || ingredient.satfat) * multiplier;
-      nutrition.transFat +=
+      nutrition.transfat +=
         transfatIndex > -1
           ? ingredient.full_nutrients[transfatIndex].value
           : ingredient.transfat;
@@ -79,13 +79,13 @@ const nutrition = {
         (ingredient.nf_cholesterol || ingredient.cholesterol) * multiplier;
       nutrition.sodium +=
         (ingredient.nf_sodium || ingredient.sodium) * multiplier;
-      nutrition.totalCarb +=
+      nutrition.totalcarb +=
         (ingredient.nf_total_carbohydrate || ingredient.totalcarb) * multiplier;
       nutrition.fibers +=
         (ingredient.nf_dietary_fiber || ingredient.fibers) * multiplier;
       nutrition.sugars +=
         (ingredient.nf_sugars || ingredient.sugars) * multiplier;
-      nutrition.addedSugars +=
+      nutrition.addedsugars +=
         addedSugarIndex > -1
           ? ingredient.full_nutrients[addedSugarIndex].value
           : ingredient.addedSugars || 0;
@@ -93,7 +93,7 @@ const nutrition = {
         (ingredient.nf_protein || ingredient.proteins) * multiplier;
       nutrition.potassium +=
         (ingredient.nf_potassium || ingredient.potassium) * multiplier;
-      nutrition.vitaminD +=
+      nutrition.vitamind +=
         vitamindIndex > -1
           ? ingredient.full_nutrients[vitamindIndex].value
           : ingredient.vitamind || 0;

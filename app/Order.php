@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['fulfilled', 'notes', 'delivery_day'];
+    protected $fillable = ['fulfilled', 'notes', 'publicNotes', 'delivery_day'];
 
     protected $hidden = [
         'store',
@@ -64,6 +64,7 @@ class Order extends Model
         'line_items_order',
         'added_by_store_id',
         'multiple_dates',
+        'delivery_dates_array',
         'purchased_gift_card_code'
         // 'balance'
     ];
@@ -164,20 +165,44 @@ class Order extends Model
     //     return ($amount + ($amount - $this->adjustedDifference)) * -1;
     // }
 
+    public function getDeliveryDatesArrayAttribute()
+    {
+        $dates = [];
+        if ($this->isMultipleDelivery) {
+            $items = $this->items;
+            foreach ($items as $item) {
+                if ($item->delivery_date) {
+                    $date = (new Carbon($item->delivery_date))->format('Y-m-d');
+
+                    if (!in_array($date, $dates)) {
+                        $dates[] = $date;
+                    }
+                }
+            }
+        } else {
+            $dates[] = $this->delivery_date->toDateString();
+        }
+
+        sort($dates);
+        return $dates;
+    }
+
     public function getMultipleDatesAttribute()
     {
         $multipleDates = '';
         $items = $this->items;
         if ($this->isMultipleDelivery) {
             foreach ($items as $item) {
-                $date = new Carbon($item->delivery_date);
-                if (
-                    strpos(
-                        $multipleDates,
-                        strval($date->format('D m/d/Y') . ', ')
-                    ) === false
-                ) {
-                    $multipleDates .= $date->format('D m/d/Y') . ', ';
+                if ($item->delivery_date) {
+                    $date = new Carbon($item->delivery_date);
+                    if (
+                        strpos(
+                            $multipleDates,
+                            strval($date->format('D m/d/Y') . ', ')
+                        ) === false
+                    ) {
+                        $multipleDates .= $date->format('D m/d/Y') . ', ';
+                    }
                 }
             }
         }
@@ -370,7 +395,7 @@ class Order extends Model
     {
         $order = Order::with(['user', 'user.userDetail'])->findOrFail($id);
 
-        $props = collect($props)->only(['fulfilled', 'notes']);
+        $props = collect($props)->only(['fulfilled', 'notes', 'publicNotes']);
 
         $order->update($props->toArray());
 

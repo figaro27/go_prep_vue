@@ -96,6 +96,7 @@ class CheckoutController extends StoreController
         $interval = $request->get('plan_interval', Constants::INTERVAL_WEEK);
         $period = Constants::PERIOD[$interval] ?? Constants::PERIOD_WEEKLY;
         $notes = $request->get('notes');
+        $publicOrderNotes = $request->get('publicOrderNotes');
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
@@ -257,6 +258,7 @@ class CheckoutController extends StoreController
                 substr(uniqid(rand(10, 99), false), 0, 8)
             );
             $order->notes = $notes;
+            $order->publicNotes = $publicOrderNotes;
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
@@ -317,7 +319,7 @@ class CheckoutController extends StoreController
                     for ($i = 0; $i < $quantity; $i++) {
                         $purchasedGiftCard = new PurchasedGiftCard();
                         $purchasedGiftCard->store_id = $store->id;
-                        $purchasedGiftCard->user_id = $user->id;
+                        $purchasedGiftCard->user_id = $customerUser->id;
                         $purchasedGiftCard->order_id = $order->id;
                         $purchasedGiftCard->code = strtoupper(
                             substr(uniqid(rand(10, 99), false), 0, 8)
@@ -710,9 +712,10 @@ class CheckoutController extends StoreController
             $order->store_id = $store->id;
             $order->subscription_id = $userSubscription->id;
             $order->order_number = strtoupper(
-                substr(uniqid(rand(10, 99), false), 0, 6)
+                substr(uniqid(rand(10, 99), false), 0, 8)
             );
             $order->notes = $notes;
+            $order->publicOrderNotes = $publicOrderNotes;
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;

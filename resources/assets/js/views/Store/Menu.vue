@@ -997,7 +997,6 @@ export default {
       storeCurrencySymbol: "storeCurrencySymbol",
       storeModules: "storeModules",
       storeProductionGroups: "storeProductionGroups",
-      isLazyStore: "isLazyStore",
       giftCards: "storeGiftCards"
     }),
     storeURLcheck() {
@@ -1100,10 +1099,6 @@ export default {
   },
   mounted() {
     this.onChangeStatusFilter(this.filter.status);
-
-    if (!this.isLazyStore) {
-      store.dispatch("refreshLazyStore");
-    }
   },
   methods: {
     ...mapActions({

@@ -481,6 +481,23 @@ class SpaController extends Controller
         $end = 0;
 
         if ($store_id != 0) {
+            $isValidDD = false;
+
+            if ($delivery_day_id != 0) {
+                /*$delivery_day_meals = DeliveryDayMeal::has('meal.categories')->where(
+                'delivery_day_id',
+                $delivery_day_id
+              )->first();
+
+              $delivery_day_meal_packages = DeliveryDayMealPackage::has('meal_package.categories')->where(
+                  'delivery_day_id',
+                  $delivery_day_id
+              )->first();
+                
+              $isValidDD = ($delivery_day_meals || $delivery_day_meal_packages) ? true : false;*/
+                $isValidDD = true;
+            }
+
             /* Building Categories */
             if ($category_id == 0 || count($category_ids) == 0) {
                 $categories = Category::select(
@@ -494,14 +511,13 @@ class SpaController extends Controller
                     'date_range_exclusive',
                     'date_range_from',
                     'date_range_to'
-                )
-                    ->where('store_id', $store_id)
-                    ->orderBy('order')
-                    ->get();
+                )->where('store_id', $store_id);
 
                 if ($user === null || $user->user_role_id === 1) {
                     $categories = $categories->where('active', 1);
                 }
+
+                $categories = $categories->orderBy('order')->get();
 
                 if ($categories && count($categories) > 0) {
                     foreach ($categories as $category) {
@@ -516,7 +532,7 @@ class SpaController extends Controller
                             'deleted_at' => null
                         ]);
 
-                        if ($delivery_day_id != 0) {
+                        if ($delivery_day_id != 0 && $isValidDD) {
                             $temp_meal = $temp_meal->whereHas('days', function (
                                 $query
                             ) use ($delivery_day_id) {
@@ -539,7 +555,7 @@ class SpaController extends Controller
                             'deleted_at' => null
                         ]);
 
-                        if ($delivery_day_id != 0) {
+                        if ($delivery_day_id != 0 && $isValidDD) {
                             $temp_package = $temp_package->whereHas(
                                 'days',
                                 function ($query) use ($delivery_day_id) {
@@ -553,16 +569,16 @@ class SpaController extends Controller
 
                         $temp_package = $temp_package->first();
 
-                        // if ($temp_meal || $temp_package) {
-                        // Meal or Package exists
-                        $category_ids[] = $temp_id;
+                        if ($temp_meal || $temp_package) {
+                            // Meal or Package exists
+                            $category_ids[] = $temp_id;
 
-                        if (!$category_data) {
-                            $category_data = [];
+                            if (!$category_data) {
+                                $category_data = [];
+                            }
+
+                            $category_data[] = $category;
                         }
-
-                        $category_data[] = $category;
-                        // }
                     }
 
                     if (count($category_ids) > 0) {
@@ -571,19 +587,6 @@ class SpaController extends Controller
                     }
                 }
             }
-
-            $delivery_day_meals = DeliveryDayMeal::where(
-                'delivery_day_id',
-                $delivery_day_id
-            )
-                ->get()
-                ->toArray();
-            $delivery_day_meal_packages = DeliveryDayMealPackage::where(
-                'delivery_day_id',
-                $delivery_day_id
-            )
-                ->get()
-                ->toArray();
 
             /* Building Categories End */
             if ($category_id != 0 && count($category_ids) > 0) {
@@ -608,7 +611,7 @@ class SpaController extends Controller
                             'deleted_at' => null
                         ]);
 
-                    if ($delivery_day_id != 0 && count($delivery_day_meals)) {
+                    if ($delivery_day_id != 0 && $isValidDD) {
                         $meals = $meals->whereHas('days', function (
                             $query
                         ) use ($delivery_day_id) {
@@ -644,10 +647,7 @@ class SpaController extends Controller
                             'deleted_at' => null
                         ]);
 
-                    if (
-                        $delivery_day_id != 0 &&
-                        count($delivery_day_meal_packages)
-                    ) {
+                    if ($delivery_day_id != 0 && $isValidDD) {
                         $packages = $packages->whereHas('days', function (
                             $query
                         ) use ($delivery_day_id) {
@@ -775,6 +775,8 @@ class SpaController extends Controller
             }
         }
 
+        //sleep(5);
+
         return [
             'items' => $items,
             'meals' => $meals,
@@ -802,9 +804,29 @@ class SpaController extends Controller
 
         $delivery_days = new Collection();
         if ($store_id != 0 && $base_day != "") {
-            $delivery_days = DeliveryDay::where('store_id', $store_id)
-                // ->where('day', '>', $base_day)
-                ->get();
+            $delivery_days = DeliveryDay::where('store_id', $store_id)->get();
+
+            if ($delivery_days) {
+                foreach ($delivery_days as &$delivery_day) {
+                    $delivery_day_meals = DeliveryDayMeal::has(
+                        'meal.categories'
+                    )
+                        ->where('delivery_day_id', $delivery_day->id)
+                        ->first();
+
+                    $delivery_day_meal_packages = DeliveryDayMealPackage::has(
+                        'meal_package.categories'
+                    )
+                        ->where('delivery_day_id', $delivery_day->id)
+                        ->first();
+
+                    if ($delivery_day_meals || $delivery_day_meal_packages) {
+                        $delivery_day->has_items = true;
+                    } else {
+                        $delivery_day->has_items = false;
+                    }
+                }
+            }
         }
 
         return [

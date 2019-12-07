@@ -257,6 +257,9 @@ class Store extends Model
         if ($dateRange === []) {
             //$orders = $orders->where('delivery_date', $this->getNextDeliveryDate());
         }
+
+        // Disabled Old Workflow
+        /*
         if (isset($dateRange['from'])) {
             $from = Carbon::parse($dateRange['from']);
             $orders = $orders->where(
@@ -279,6 +282,7 @@ class Store extends Model
                 $to->format('Y-m-d')
             );
         }
+        */
 
         // if ($excludeFulfilled) {
         //     $orders = $orders->where('fulfilled', false);
@@ -498,6 +502,110 @@ class Store extends Model
     ) {
         $orders = $this->orders()->with(['meals', 'meal_orders']);
 
+        if ($orderDates === false) {
+            $orders = $orders->where(function ($query) use (
+                $dateRange,
+                $onlyPaid,
+                $onlyDelivery,
+                $couponCode
+            ) {
+                if ($onlyPaid) {
+                    $query->where('paid', 1);
+                }
+                if ($onlyDelivery) {
+                    $query->where('pickup', 0);
+                }
+                if ($couponCode != '') {
+                    $query->where('couponCode', $couponCode);
+                }
+
+                $query->where(function ($innerQuery) use ($dateRange) {
+                    $innerQuery
+                        ->where(function ($query1) use ($dateRange) {
+                            $query1->where('isMultipleDelivery', 0);
+
+                            if (isset($dateRange['from'])) {
+                                $from = Carbon::parse($dateRange['from']);
+                                $query1->where(
+                                    'delivery_date',
+                                    '>=',
+                                    $from->format('Y-m-d')
+                                );
+                            }
+
+                            if (isset($dateRange['to'])) {
+                                $to = Carbon::parse($dateRange['to']);
+                                $query1->where(
+                                    'delivery_date',
+                                    '<=',
+                                    $to->format('Y-m-d')
+                                );
+                            }
+                        })
+                        ->orWhere(function ($query2) use ($dateRange) {
+                            $query2->where('isMultipleDelivery', 1);
+
+                            $query2->whereHas('meal_orders', function (
+                                $subquery1
+                            ) use ($dateRange) {
+                                $subquery1->whereNotNull(
+                                    'meal_orders.delivery_date'
+                                );
+
+                                if (isset($dateRange['from'])) {
+                                    $from = Carbon::parse($dateRange['from']);
+                                    $subquery1->where(
+                                        'meal_orders.delivery_date',
+                                        '>=',
+                                        $from->format('Y-m-d')
+                                    );
+                                }
+
+                                if (isset($dateRange['to'])) {
+                                    $to = Carbon::parse($dateRange['to']);
+                                    $subquery1->where(
+                                        'meal_orders.delivery_date',
+                                        '<=',
+                                        $to->format('Y-m-d')
+                                    );
+                                }
+                            });
+                        });
+                });
+            });
+        } else {
+            if (isset($dateRange['from'])) {
+                $from = Carbon::parse($dateRange['from']);
+                $orders = $orders->where(
+                    'created_at',
+                    '>=',
+                    $from->format('Y-m-d')
+                );
+            }
+
+            if (isset($dateRange['to'])) {
+                $to = Carbon::parse($dateRange['to']);
+                $orders = $orders->where(
+                    'created_at',
+                    '<=',
+                    $to->addDays(1)->format('Y-m-d')
+                );
+            }
+
+            if ($onlyPaid) {
+                $orders = $orders->where('paid', 1);
+            }
+            if ($onlyDelivery) {
+                $orders = $orders->where('pickup', 0);
+            }
+            if ($couponCode != '') {
+                $orders = $orders->where('couponCode', $couponCode);
+            }
+        }
+
+        // Disabled Old Workflow
+        /*$orders = $this->orders()->with(['meals', 'meal_orders']);
+
         $date = '';
         if ($orderDates === false) {
             $date = 'delivery_date';
@@ -521,21 +629,11 @@ class Store extends Model
             } else {
                 $orders = $orders->where($date, '<=', $to->format('Y-m-d'));
             }
-        }
+        }*/
 
         // if ($onlyUnfulfilled) {
         //     $orders = $orders->where('fulfilled', 0);
         // }
-        if ($onlyPaid) {
-            $orders = $orders->where('paid', 1);
-        }
-        if ($onlyDelivery) {
-            $orders = $orders->where('pickup', 0);
-        }
-
-        if ($couponCode != '') {
-            $orders = $orders->where('couponCode', $couponCode);
-        }
 
         $orders = $orders->get();
 
@@ -549,10 +647,50 @@ class Store extends Model
     public function getOrdersForNextDelivery($groupBy = null)
     {
         $date = $this->getNextDeliveryDate();
-        $orders = $this->orders()
+
+        $orders = $this->orders()->with('meals');
+
+        $orders = $orders
+            ->where(function ($query) use ($dateRange) {
+                $query->where('isMultipleDelivery', 0)->where('paid', 1);
+
+                $query->where('delivery_date', $date->format('Y-m-d'));
+            })
+            ->orWhere(function ($query) use ($dateRange) {
+                $query
+                    ->where('isMultipleDelivery', 1)
+                    ->where('paid', 1)
+                    ->whereHas('meal_orders', function ($subquery1) use (
+                        $dateRange
+                    ) {
+                        $subquery1->whereNotNull('meal_orders.delivery_date');
+
+                        $subquery1->where(
+                            'meal_orders.delivery_date',
+                            $date->format('Y-m-d')
+                        );
+                    })
+                    ->orWhereHas('meal_package_orders', function (
+                        $subquery2
+                    ) use ($dateRange) {
+                        $subquery2->whereNotNull(
+                            'meal_package_orders.delivery_date'
+                        );
+
+                        $subquery2->where(
+                            'meal_package_orders.delivery_date',
+                            $date->format('Y-m-d')
+                        );
+                    });
+            });
+
+        $orders = $orders->get();
+
+        // Disabled Old Workflow
+        /*$orders = $this->orders()
             ->with('meals')
             ->where([['paid', 1], ['delivery_date', $date->format('Y-m-d')]])
-            ->get();
+            ->get();*/
 
         if ($groupBy) {
             $orders = $orders->groupBy($groupBy);
@@ -564,13 +702,54 @@ class Store extends Model
     public function getPastOrders($groupBy = null)
     {
         $date = $this->getNextDeliveryDate();
-        $orders = $this->orders()
+
+        $orders = $this->orders()->with('meals');
+
+        $orders = $orders
+            ->where(function ($query) use ($dateRange) {
+                $query->where('isMultipleDelivery', 0)->where('paid', 1);
+
+                $query->where('delivery_date', '<', $date->format('Y-m-d'));
+            })
+            ->orWhere(function ($query) use ($dateRange) {
+                $query
+                    ->where('isMultipleDelivery', 1)
+                    ->where('paid', 1)
+                    ->whereHas('meal_orders', function ($subquery1) use (
+                        $dateRange
+                    ) {
+                        $subquery1->whereNotNull('meal_orders.delivery_date');
+
+                        $subquery1->where(
+                            'meal_orders.delivery_date',
+                            '<',
+                            $date->format('Y-m-d')
+                        );
+                    })
+                    ->orWhereHas('meal_package_orders', function (
+                        $subquery2
+                    ) use ($dateRange) {
+                        $subquery2->whereNotNull(
+                            'meal_package_orders.delivery_date'
+                        );
+
+                        $subquery2->where(
+                            'meal_package_orders.delivery_date',
+                            '<',
+                            $date->format('Y-m-d')
+                        );
+                    });
+            });
+
+        $orders = $orders->get();
+
+        /*$orders = $this->orders()
             ->with('meals')
             ->where([
                 ['paid', 1],
                 ['delivery_date', '<', $date->format('Y-m-d')]
             ])
-            ->get();
+            ->get();*/
 
         if ($groupBy) {
             $orders = $orders->groupBy($groupBy);
@@ -596,14 +775,15 @@ class Store extends Model
 
     public function deliversToZip($zip)
     {
-        return true;
-        // foreach ($this->settings->delivery_distance_zipcodes as $zipcode) {
-        //     $zipcode = strval($zipcode);
-        //     if (strpos($zip, $zipcode) !== false) {
-        //         return true;
-        //     }
-        // }
-        // return false;
+        // return true;
+        $zip = strtoupper(strval($zip));
+        foreach ($this->settings->delivery_distance_zipcodes as $zipcode) {
+            $zipcode = strtoupper(strval($zipcode));
+            if (strpos($zip, $zipcode) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function hasStripe()

@@ -109,14 +109,15 @@ class MealOrder extends Pivot
                 '</p>';
         }
 
-        $deliveryDate = new Carbon($this->delivery_date);
-
         if (
             isset($this->order) &&
             isset($this->order->store) &&
             isset($this->order->store->modules) &&
-            $this->order->store->modules->multipleDeliveryDays
+            $this->order->store->modules->multipleDeliveryDays &&
+            (int) $this->order->isMultipleDelivery == 1 &&
+            $this->delivery_date
         ) {
+            $deliveryDate = new Carbon($this->delivery_date);
             $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
         }
 

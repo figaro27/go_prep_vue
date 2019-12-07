@@ -138,11 +138,42 @@ class MealOrders
             &$lineItemQuantities,
             $groupByDate,
             &$allDates,
+            $dates,
             $productionGroupId
         ) {
-            $date = $order->delivery_date->toDateString();
-            if (!in_array($date, $allDates)) {
-                $allDates[] = $date;
+            $date = "";
+            if ($order->delivery_date) {
+                $date = $order->delivery_date->toDateString();
+            }
+
+            $dd_dates = $order->delivery_dates_array;
+
+            /*if (!in_array($date, $allDates)) {
+              $allDates[] = $date;
+            }*/
+
+            foreach ($dd_dates as $d) {
+                if (!in_array($d, $allDates)) {
+                    $isValid = true;
+
+                    if (isset($dates['from'])) {
+                        $from = Carbon::parse($dates['from'])->format('Y-m-d');
+                        if ($d < $from) {
+                            $isValid = false;
+                        }
+                    }
+
+                    if (isset($dates['to'])) {
+                        $to = Carbon::parse($dates['to'])->format('Y-m-d');
+                        if ($d > $to) {
+                            $isValid = false;
+                        }
+                    }
+
+                    if ($isValid) {
+                        $allDates[] = $d;
+                    }
+                }
             }
 
             $mealOrders = $order->meal_orders()->with('meal');
@@ -209,6 +240,43 @@ class MealOrders
                     return null;
                 }
 
+                $newDate = $date;
+                if (
+                    $mealOrder->delivery_date &&
+                    $mealOrder->order->isMultipleDelivery
+                ) {
+                    $newDate = (new Carbon($mealOrder->delivery_date))->format(
+                        'Y-m-d'
+                    );
+                }
+
+                $isValid = true;
+
+                if (
+                    $mealOrder->order->isMultipleDelivery &&
+                    !$mealOrder->delivery_date
+                ) {
+                    $isValid = false;
+                }
+
+                if (isset($dates['from'])) {
+                    $from = Carbon::parse($dates['from'])->format('Y-m-d');
+                    if ($newDate < $from) {
+                        $isValid = false;
+                    }
+                }
+
+                if (isset($dates['to'])) {
+                    $to = Carbon::parse($dates['to'])->format('Y-m-d');
+                    if ($newDate > $to) {
+                        $isValid = false;
+                    }
+                }
+
+                if (!$isValid) {
+                    continue;
+                }
+
                 /*$title =
                     $this->type !== 'pdf'
                         ? $mealOrder->getTitle()
@@ -222,10 +290,10 @@ class MealOrders
                     if (!isset($mealQuantities[$title])) {
                         $mealQuantities[$title] = [];
                     }
-                    if (!isset($mealQuantities[$title][$date])) {
-                        $mealQuantities[$title][$date] = 0;
+                    if (!isset($mealQuantities[$title][$newDate])) {
+                        $mealQuantities[$title][$newDate] = 0;
                     }
-                    $mealQuantities[$title][$date] += $mealOrder->quantity;
+                    $mealQuantities[$title][$newDate] += $mealOrder->quantity;
                 } else {
                     if (!isset($mealQuantities[$title])) {
                         $mealQuantities[$title] = 0;

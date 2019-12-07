@@ -147,6 +147,17 @@ class OptimizedMeal extends Model implements HasMedia
         return $this->hasOne('App\MealMacro', 'meal_id', 'id');
     }
 
+    public function categories()
+    {
+        //return $this->belongsToMany('App\Category')->using('App\MealPackageCategory');
+        return $this->belongsToMany(
+            'App\Category',
+            'category_meal',
+            'meal_id',
+            'category_id'
+        );
+    }
+
     public function getCategoryIdsAttribute()
     {
         $meal_id = $this->id;

@@ -415,10 +415,6 @@ export default {
     };
   },
   mounted() {
-    if (!this.isLazyStore) {
-      store.dispatch("refreshLazyStore");
-    }
-
     if (this.$route.query.updated) {
       this.refreshSubscriptions();
       this.$toastr.s("Subscription Updated");
@@ -448,7 +444,6 @@ export default {
       initialized: "initialized",
       getMeal: "storeMeal",
       storeModules: "storeModules",
-      isLazyStore: "isLazyStore",
       getStoreMeal: "storeMeal"
     }),
     tableData() {
