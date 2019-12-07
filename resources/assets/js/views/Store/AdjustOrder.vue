@@ -30,11 +30,6 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
-      order: [],
-      inSub: null,
-      deliveryDay: null,
-      transferTime: null,
-      pickup: null,
       isLoading: false,
       order_bags: [],
       lineItemOrders: []
@@ -50,43 +45,36 @@ export default {
     }),
     orderId() {
       return this.$route.params.orderId;
+    },
+    order() {
+      let order = _.find(this.upcomingOrders, order => {
+        return order.id === this.orderId;
+      });
+      return order;
+    },
+    inSub() {
+      return this.order.subscription_id ? 1 : 0;
+    },
+    deliveryDay() {
+      return moment(this.order.delivery_date).format("YYYY-MM-DD 00:00:00");
+    },
+    transferTime() {
+      return this.order.transferTime;
+    },
+    pickup() {
+      return this.order.pickup;
     }
-    // inSub() {
-    //   return this.order.subscription_id ? 1 : 0;
-    // },
-    // deliveryDay() {
-    //   return moment(this.order.delivery_date).format("YYYY-MM-DD 00:00:00");
-    // },
-    // transferTime() {
-    //   return this.order.transferTime;
-    // },
-    // pickup() {
-    //   return this.order.pickup;
-    // }
   },
   mounted() {
     if (this.orderId === undefined) {
       this.$router.push({ path: "/store/orders" });
     }
-    this.initOrder();
     this.initBag();
   },
   methods: {
     ...mapActions({
       refreshUpcomingOrders: "refreshUpcomingOrders"
     }),
-    initOrder() {
-      let order = _.find(this.upcomingOrders, order => {
-        return order.id === this.orderId;
-      });
-      this.order = order;
-      this.inSub = order.subscription_id ? 1 : 0;
-      this.deliveryDay = moment(order.delivery_date).format(
-        "YYYY-MM-DD 00:00:00"
-      );
-      this.transferTime = order.transferTime;
-      this.pickup = order.pickup;
-    },
     async initBag() {
       // await this.refreshUpcomingOrders();
       // const order = _.find(this.upcomingOrders, {
