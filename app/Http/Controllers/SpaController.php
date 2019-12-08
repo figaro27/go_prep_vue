@@ -993,7 +993,7 @@ class SpaController extends Controller
             ->pluck('meal_package_id')
             ->first();
 
-        MealPackage::where('id', $packageId)
+        $package = MealPackage::where('id', $packageId)
             ->with([
                 'meals',
                 'meals.sizes',
