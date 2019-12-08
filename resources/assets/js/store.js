@@ -1474,31 +1474,19 @@ const actions = {
 
   async initStore({ commit, state, dispatch }, data = {}) {
     // Required actions
-    /*await Promise.all([
-      // dispatch("refreshMeals"),
-      // dispatch("refreshMealPackages"),
-
-      //dispatch("refreshOrders"),
-      //dispatch("refreshUpcomingOrders"),
-      //dispatch("refreshOrdersToday"),
-
-      // dispatch("refreshViewedStore")
-    ]);*/
-
     if (data.store) {
       await dispatch("refreshViewedOwnerStore", data);
     }
 
-    dispatch("refreshOrders");
+    await Promise.all([dispatch("refreshUpcomingOrdersWithoutItems")]);
+
+    await Promise.all([dispatch("refreshLazy"), dispatch("refreshLazyStore")]);
+
+    dispatch("refreshStoreCustomers"),
+      dispatch("refreshOrderIngredients"),
+      dispatch("refreshIngredients"),
+      dispatch("refreshStoreSubscriptions");
     dispatch("refreshUpcomingOrders");
-    dispatch("refreshUpcomingOrdersWithoutItems");
-    dispatch("refreshOrdersToday");
-    dispatch("refreshStoreCustomers");
-    dispatch("refreshOrderIngredients");
-    dispatch("refreshIngredients");
-    dispatch("refreshStoreSubscriptions");
-    dispatch("refreshLazy");
-    dispatch("refreshLazyStore");
   },
 
   async initCustomer({ commit, state, dispatch }, data = {}) {
@@ -1981,13 +1969,20 @@ const actions = {
         return oldMealPackage;
       }*/
 
-      if (
-        state.viewed_store.refreshed_package_ids.includes(oldMealPackage.id)
-      ) {
-        return oldMealPackage;
-      }
+      // if (
+      //   state.viewed_store.refreshed_package_ids.includes(oldMealPackage.id)
+      // ) {
+      //   return oldMealPackage;
+      // }
 
-      let url = "/api/refresh/meal_package/" + oldMealPackage.id;
+      let url = "";
+      if (oldMealPackage.selectedSizeId !== undefined) {
+        url =
+          "/api/refresh/meal_package_with_size/" +
+          oldMealPackage.selectedSizeId;
+      } else {
+        url = "/api/refresh/meal_package/" + oldMealPackage.id;
+      }
 
       const res = await axios.get(url);
       const { data } = await res;

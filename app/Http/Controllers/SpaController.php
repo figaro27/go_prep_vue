@@ -8,6 +8,7 @@ use App\Meal;
 use App\OptimizedMeal;
 use App\OptimizedMealPackage;
 use App\MealPackage;
+use App\MealPackageSize;
 use App\Category;
 use App\DeliveryDay;
 use App\DeliveryDayMeal;
@@ -511,7 +512,7 @@ class SpaController extends Controller
                     'date_range_exclusive',
                     'date_range_from',
                     'date_range_to'
-                )->where('store_id', $store_id);
+                )->where(['store_id' => $store_id, 'activeForStore' => 1]);
 
                 if ($user === null || $user->user_role_id === 1) {
                     $categories = $categories->where('active', 1);
@@ -970,15 +971,40 @@ class SpaController extends Controller
 
     public function refreshMealPackage($meal_package_id)
     {
-        // Full Refresh
-        $package = MealPackage::with([
-            'meals',
-            'meals.sizes',
-            'sizes',
-            'sizes.meals',
-            'components',
-            'addons'
-        ])->find($meal_package_id);
+        $package = MealPackage::where('id', $meal_package_id)
+            ->with([
+                'meals',
+                'meals.sizes',
+                'sizes',
+                'sizes.meals',
+                'components',
+                'addons'
+            ])
+            ->first();
+
+        return [
+            'package' => $package
+        ];
+    }
+
+    public function refreshMealPackageWithSize($meal_package_size_id)
+    {
+        $packageId = MealPackageSize::where('id', $meal_package_size_id)
+            ->pluck('meal_package_id')
+            ->first();
+
+        $package = MealPackage::where('id', $packageId)
+            ->with([
+                'meals',
+                'meals.sizes',
+                'sizes' => function ($query) use ($meal_package_size_id) {
+                    $query->where('id', $meal_package_size_id);
+                },
+                'sizes.meals',
+                'components',
+                'addons'
+            ])
+            ->first();
 
         return [
             'package' => $package

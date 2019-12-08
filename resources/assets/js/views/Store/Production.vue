@@ -23,7 +23,7 @@
                   v-if="storeModules.productionGroups"
                   class="width-40 row pt-1"
                 >
-                  <p class="col-md-2 ml-3 pt-1">Production:</p>
+                  <p class="col-md-2 ml-3 pt-1">Group:</p>
                   <v-select
                     class="col-md-6"
                     v-model="productionGroupId"

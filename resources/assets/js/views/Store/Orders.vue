@@ -349,11 +349,11 @@
                 class="popover-size d-inline"
               />
             </div>
-            <div>
+            <div v-if="!store.modules.multipleDeliveryDays">
               <router-link
                 :to="{
                   name: 'store-adjust-order',
-                  params: { orderId: orderId }
+                  params: { order: order, orderId: orderId }
                 }"
               >
                 <b-btn class="btn btn-warning mb-2 mt-1">Adjust</b-btn>
@@ -873,9 +873,9 @@ export default {
       columns: [
         "icons",
         "order_number",
-        "user.user_detail.full_name",
-        "user.user_detail.address",
-        "user.user_detail.zip",
+        "customer_name",
+        "customer_address",
+        "customer_zip",
         // "user.user_detail.phone",
         "created_at",
         "delivery_date",
@@ -888,9 +888,9 @@ export default {
           icons: "Status",
           dailyOrderNumber: "Daily Order #",
           order_number: "Order ID",
-          "user.user_detail.full_name": "Name",
-          "user.user_detail.address": "Address",
-          "user.user_detail.zip": "Zip Code",
+          customer_name: "Name",
+          customer_address: "Address",
+          customer_zip: "Zip Code",
           // "user.user_detail.phone": "Phone",
           created_at: "Order Placed",
           delivery_date: "Delivery Date",
