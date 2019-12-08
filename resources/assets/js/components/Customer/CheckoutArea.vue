@@ -111,7 +111,7 @@
       <li class="checkout-item">
         <div class="row">
           <div class="col-6 col-md-4">
-            <strong>Subtotal:</strong>
+            <strong>Subtotal</strong>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
             {{ format.money(subtotal, storeSettings.currency) }}
@@ -225,7 +225,7 @@
       >
         <div class="row">
           <div class="col-6 col-md-4">
-            <strong>Delivery Fee:</strong>
+            <strong>Delivery Fee</strong>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
             <span v-if="editingDeliveryFee">
