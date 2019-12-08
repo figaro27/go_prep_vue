@@ -1474,30 +1474,19 @@ const actions = {
 
   async initStore({ commit, state, dispatch }, data = {}) {
     // Required actions
-    /*await Promise.all([
-      // dispatch("refreshMeals"),
-      // dispatch("refreshMealPackages"),
-
-      //dispatch("refreshOrders"),
-      //dispatch("refreshUpcomingOrders"),
-      //dispatch("refreshOrdersToday"),
-
-      // dispatch("refreshViewedStore")
-    ]);*/
-
     if (data.store) {
       await dispatch("refreshViewedOwnerStore", data);
     }
-    dispatch("refreshUpcomingOrdersWithoutItems");
-    dispatch("refreshLazy");
-    dispatch("refreshLazyStore");
-    dispatch("refreshOrders");
+
+    await Promise.all([dispatch("refreshUpcomingOrdersWithoutItems")]);
+
+    await Promise.all([dispatch("refreshLazy"), dispatch("refreshLazyStore")]);
+
+    dispatch("refreshStoreCustomers"),
+      dispatch("refreshOrderIngredients"),
+      dispatch("refreshIngredients"),
+      dispatch("refreshStoreSubscriptions");
     dispatch("refreshUpcomingOrders");
-    dispatch("refreshOrdersToday");
-    dispatch("refreshStoreCustomers");
-    dispatch("refreshOrderIngredients");
-    dispatch("refreshIngredients");
-    dispatch("refreshStoreSubscriptions");
   },
 
   async initCustomer({ commit, state, dispatch }, data = {}) {
