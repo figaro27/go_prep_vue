@@ -203,36 +203,44 @@ class OrderController extends StoreController
                     ->orders()
                     ->with(['user', 'pickup_location']);
 
-                $orders = $orders
-                    ->where(function ($query) use ($startDate, $endDate) {
-                        $query
-                            ->where('isMultipleDelivery', 0)
-                            ->where('paid', 1);
-                        $query->where('delivery_date', '>=', $startDate);
-                        $query->where('delivery_date', '<=', $endDate);
-                    })
-                    ->orWhere(function ($query) use ($startDate, $endDate) {
-                        $query
-                            ->where('isMultipleDelivery', 1)
-                            ->where('paid', 1)
-                            ->whereHas('meal_orders', function (
-                                $subquery1
-                            ) use ($startDate, $endDate) {
-                                $subquery1->whereNotNull(
-                                    'meal_orders.delivery_date'
-                                );
-                                $subquery1->where(
-                                    'meal_orders.delivery_date',
-                                    '>=',
-                                    $startDate
-                                );
-                                $subquery1->where(
-                                    'meal_orders.delivery_date',
-                                    '<=',
-                                    $endDate
-                                );
-                            });
-                    });
+                $orders = $orders->where(function ($query) use (
+                    $startDate,
+                    $endDate
+                ) {
+                    $query
+                        ->where(function ($query1) use ($startDate, $endDate) {
+                            $query1
+                                ->where('isMultipleDelivery', 0)
+                                ->where('paid', 1);
+                            $query1->where('delivery_date', '>=', $startDate);
+                            $query1->where('delivery_date', '<=', $endDate);
+                        })
+                        ->orWhere(function ($query2) use (
+                            $startDate,
+                            $endDate
+                        ) {
+                            $query2
+                                ->where('isMultipleDelivery', 1)
+                                ->where('paid', 1)
+                                ->whereHas('meal_orders', function (
+                                    $subquery1
+                                ) use ($startDate, $endDate) {
+                                    $subquery1->whereNotNull(
+                                        'meal_orders.delivery_date'
+                                    );
+                                    $subquery1->where(
+                                        'meal_orders.delivery_date',
+                                        '>=',
+                                        $startDate
+                                    );
+                                    $subquery1->where(
+                                        'meal_orders.delivery_date',
+                                        '<=',
+                                        $endDate
+                                    );
+                                });
+                        });
+                });
 
                 return $orders->get();
             }
