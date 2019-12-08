@@ -118,6 +118,7 @@ class OrderController extends StoreController
                 ->with(['pickup_location'])
                 ->where(['paid' => 1])
                 ->where('delivery_date', '>=', $fromDate)
+                ->take(50)
                 ->get()
             : [];
 
