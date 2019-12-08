@@ -119,7 +119,6 @@ class OrderController extends StoreController
                 ->where(['paid' => 1])
                 ->whereDate('delivery_date', '>=', $fromDate)
                 ->whereDate('delivery_date', '<=', $fromDate->addWeeks(2))
-                ->take(10)
                 ->get()
             : [];
 
