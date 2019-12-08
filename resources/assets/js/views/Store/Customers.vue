@@ -614,7 +614,7 @@ export default {
           });
         }
       });
-      if (order.purchased_gift_cards.length > 0) {
+      if (order.purchased_gift_cards && order.purchased_gift_cards.length > 0) {
         order.purchased_gift_cards.forEach(purchasedGiftCard => {
           data.push({
             meal: "Gift Card Code: " + purchasedGiftCard.code,
