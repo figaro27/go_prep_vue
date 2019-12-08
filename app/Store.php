@@ -358,6 +358,35 @@ class Store extends Model
         foreach ($orders as $order) {
             $mealOrders = $order->meal_orders()->get();
             foreach ($mealOrders as $mealOrder) {
+                $isMultipleDelivery =
+                    (int) $mealOrder->order->isMultipleDelivery;
+
+                if ($isMultipleDelivery) {
+                    if (!$mealOrder->delivery_date) {
+                        continue;
+                    }
+
+                    $mealOrder_date = Carbon::parse(
+                        $mealOrder->delivery_date
+                    )->format('Y-m-d');
+
+                    if (isset($dateRange['from'])) {
+                        $from = Carbon::parse($dateRange['from'])->format(
+                            'Y-m-d'
+                        );
+                        if ($mealOrder_date < $from) {
+                            continue;
+                        }
+                    }
+
+                    if (isset($dateRange['to'])) {
+                        $to = Carbon::parse($dateRange['to'])->format('Y-m-d');
+                        if ($mealOrder_date > $to) {
+                            continue;
+                        }
+                    }
+                }
+
                 $quantity = $mealOrder->quantity;
                 $meal = $mealOrder->meal;
                 $multiplier = 1;
@@ -381,6 +410,21 @@ class Store extends Model
                         $adjuster;
 
                     $key = $ingredient->id;
+                    if ($isMultipleDelivery) {
+                        $key =
+                            $key .
+                            '-' .
+                            Carbon::parse($mealOrder->delivery_date)->format(
+                                'Y-m-d'
+                            );
+                        $ingredient->food_name =
+                            '(' .
+                            Carbon::parse($mealOrder->delivery_date)->format(
+                                'D, m/d/y'
+                            ) .
+                            ') ' .
+                            $ingredient->food_name;
+                    }
 
                     if (!isset($ingredients[$key])) {
                         $ingredients[$key] = [
@@ -404,6 +448,21 @@ class Store extends Model
                         //* $multiplier;
 
                         $key = $ingredient->id;
+                        if ($isMultipleDelivery) {
+                            $key =
+                                $key .
+                                '-' .
+                                Carbon::parse(
+                                    $mealOrder->delivery_date
+                                )->format('Y-m-d');
+                            $ingredient->food_name =
+                                '(' .
+                                Carbon::parse(
+                                    $mealOrder->delivery_date
+                                )->format('D, m/d/y') .
+                                ') ' .
+                                $ingredient->food_name;
+                        }
 
                         if (!isset($ingredients[$key])) {
                             $ingredients[$key] = [
@@ -428,6 +487,21 @@ class Store extends Model
                         //* $multiplier;
 
                         $key = $ingredient->id;
+                        if ($isMultipleDelivery) {
+                            $key =
+                                $key .
+                                '-' .
+                                Carbon::parse(
+                                    $mealOrder->delivery_date
+                                )->format('Y-m-d');
+                            $ingredient->food_name =
+                                '(' .
+                                Carbon::parse(
+                                    $mealOrder->delivery_date
+                                )->format('D, m/d/y') .
+                                ') ' .
+                                $ingredient->food_name;
+                        }
 
                         if (!isset($ingredients[$key])) {
                             $ingredients[$key] = [

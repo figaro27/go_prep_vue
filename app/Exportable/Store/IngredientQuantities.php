@@ -28,43 +28,43 @@ class IngredientQuantities
         $ingredients = collect($this->store->getOrderIngredients($dates));
         $units = collect($this->store->units)->keyBy('ingredient_id');
 
-        $data = $ingredients
-            ->map(function ($orderIngredient) use ($units) {
-                $ingredient = $orderIngredient['ingredient'];
+        $data = [];
 
-                $baseUnit = Format::baseUnit($ingredient->unit_type);
-                $unit = $units->has($ingredient->id)
-                    ? $units->get($ingredient->id)->unit
-                    : $baseUnit;
+        $ingredients->map(function ($orderIngredient) use ($units, &$data) {
+            $ingredient = $orderIngredient['ingredient'];
 
-                switch ($ingredient->unit_type) {
-                    case 'mass':
-                        $mass = new Mass(
-                            $orderIngredient['quantity'],
-                            $baseUnit
-                        );
-                        $quantity = $mass->toUnit($unit);
-                        break;
+            $baseUnit = Format::baseUnit($ingredient->unit_type);
+            $unit = $units->has($ingredient->id)
+                ? $units->get($ingredient->id)->unit
+                : $baseUnit;
 
-                    case 'volume':
-                        $volume = new Volume(
-                            $orderIngredient['quantity'],
-                            $baseUnit
-                        );
-                        $quantity = $volume->toUnit($unit);
-                        break;
+            switch ($ingredient->unit_type) {
+                case 'mass':
+                    $mass = new Mass($orderIngredient['quantity'], $baseUnit);
+                    $quantity = $mass->toUnit($unit);
+                    break;
 
-                    default:
-                        $quantity = $orderIngredient['quantity'];
-                }
+                case 'volume':
+                    $volume = new Volume(
+                        $orderIngredient['quantity'],
+                        $baseUnit
+                    );
+                    $quantity = $volume->toUnit($unit);
+                    break;
 
-                return [
-                    $ingredient->food_name,
-                    ceil($quantity * 10) / 10, // round up to 1 decimal place
-                    $unit
-                ];
-            })
-            ->sortBy('0');
+                default:
+                    $quantity = $orderIngredient['quantity'];
+            }
+
+            $data[] = [
+                $ingredient->food_name,
+                ceil($quantity * 10) / 10, // round up to 1 decimal place
+                $unit
+            ];
+        });
+
+        $data = collect($data);
+        $data = $data->sortBy('0');
 
         $data = array_merge(
             [['Ingredient', 'Quantity', 'Unit']],
