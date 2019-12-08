@@ -349,7 +349,7 @@
                 class="popover-size d-inline"
               />
             </div>
-            <div>
+            <div v-if="!store.modules.multipleDeliveryDates">
               <router-link
                 :to="{
                   name: 'store-adjust-order',
