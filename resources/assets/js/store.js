@@ -1981,13 +1981,20 @@ const actions = {
         return oldMealPackage;
       }*/
 
-      if (
-        state.viewed_store.refreshed_package_ids.includes(oldMealPackage.id)
-      ) {
-        return oldMealPackage;
-      }
+      // if (
+      //   state.viewed_store.refreshed_package_ids.includes(oldMealPackage.id)
+      // ) {
+      //   return oldMealPackage;
+      // }
 
-      let url = "/api/refresh/meal_package/" + oldMealPackage.id;
+      let url = "";
+      if (oldMealPackage.selectedSizeId !== undefined) {
+        url =
+          "/api/refresh/meal_package_with_size/" +
+          oldMealPackage.selectedSizeId;
+      } else {
+        url = "/api/refresh/meal_package/" + oldMealPackage.id;
+      }
 
       const res = await axios.get(url);
       const { data } = await res;
