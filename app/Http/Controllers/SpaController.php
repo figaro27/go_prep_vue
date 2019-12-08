@@ -993,31 +993,18 @@ class SpaController extends Controller
             ->pluck('meal_package_id')
             ->first();
 
-        $package = MealPackage::with([
-            'meals',
-            'meals.sizes',
-            'sizes',
-            'sizes.meals',
-            'components',
-            'addons'
-        ])
-            ->whereHas('sizes', function ($query) use ($meal_package_size_id) {
-                $query->where('id', $meal_package_size_id);
-            })
-            ->find($packageId);
-
-        // MealPackage::where('id', $packageId)
-        //     ->with([
-        //         'meals',
-        //         'meals.sizes',
-        //         'sizes' => function ($query) use ($meal_package_size_id) {
-        //             $query->where('id', $meal_package_size_id);
-        //         },
-        //         'sizes.meals',
-        //         'components',
-        //         'addons'
-        //     ])
-        //     ->first();
+        MealPackage::where('id', $packageId)
+            ->with([
+                'meals',
+                'meals.sizes',
+                'sizes' => function ($query) use ($meal_package_size_id) {
+                    $query->where('id', $meal_package_size_id);
+                },
+                'sizes.meals',
+                'components',
+                'addons'
+            ])
+            ->first();
 
         return [
             'package' => $package
