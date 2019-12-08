@@ -1488,17 +1488,16 @@ const actions = {
     if (data.store) {
       await dispatch("refreshViewedOwnerStore", data);
     }
-
+    dispatch("refreshUpcomingOrdersWithoutItems");
+    dispatch("refreshLazy");
+    dispatch("refreshLazyStore");
     dispatch("refreshOrders");
     dispatch("refreshUpcomingOrders");
-    dispatch("refreshUpcomingOrdersWithoutItems");
     dispatch("refreshOrdersToday");
     dispatch("refreshStoreCustomers");
     dispatch("refreshOrderIngredients");
     dispatch("refreshIngredients");
     dispatch("refreshStoreSubscriptions");
-    dispatch("refreshLazy");
-    dispatch("refreshLazyStore");
   },
 
   async initCustomer({ commit, state, dispatch }, data = {}) {
