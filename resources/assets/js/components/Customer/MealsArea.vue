@@ -821,18 +821,20 @@ export default {
           this.packageTitle = mealPackage.title;
         }
       }
-
-      /* Refresh Meal Package */
-      if (!this.store.refreshed_package_ids.includes(mealPackage.id)) {
-        this.$parent.forceShow = true;
-        mealPackage = await store.dispatch(
-          "refreshStoreMealPackage",
-          mealPackage
-        );
-        this.$parent.forceShow = false;
-      } else {
-        mealPackage = this.getMealPackage(mealPackage.id);
+      if (size) {
+        mealPackage.selectedSizeId = size.id;
       }
+      /* Refresh Meal Package */
+      // if (!this.store.refreshed_package_ids.includes(mealPackage.id)) {
+      this.$parent.forceShow = true;
+      mealPackage = await store.dispatch(
+        "refreshStoreMealPackage",
+        mealPackage
+      );
+      this.$parent.forceShow = false;
+      // } else {
+      //   mealPackage = this.getMealPackage(mealPackage.id);
+      // }
       /* Refresh Meal Package End */
 
       /* Show Detail Page or not */

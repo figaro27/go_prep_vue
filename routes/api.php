@@ -118,6 +118,14 @@ foreach (
                 'uses' => 'SpaController@refreshMealPackage'
             ]);
 
+            Route::get(
+                '/refresh/meal_package_with_size/{meal_package_size_id}',
+                [
+                    'middleware' => ['view.api'],
+                    'uses' => 'SpaController@refreshMealPackageWithSize'
+                ]
+            );
+
             Route::get('/refresh_bag/meal_package/{meal_package_id}', [
                 'middleware' => ['view.api'],
                 'uses' => 'SpaController@refreshMealPackageBag'
