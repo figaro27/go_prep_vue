@@ -367,7 +367,7 @@ class Subscription extends Model
         $newOrder->store_id = $this->store->id;
         $newOrder->subscription_id = $this->id;
         $newOrder->order_number = strtoupper(
-            substr(uniqid(rand(10, 99), false), 0, 10)
+            substr(uniqid(rand(10, 99), false), 0, 6)
         );
         $newOrder->preFeePreDiscount = $this->preFeePreDiscount;
         $newOrder->mealPlanDiscount = $this->mealPlanDiscount;
