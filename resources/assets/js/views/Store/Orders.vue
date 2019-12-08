@@ -353,7 +353,7 @@
               <router-link
                 :to="{
                   name: 'store-adjust-order',
-                  params: { order: order, orderId: orderId }
+                  params: { orderId: orderId }
                 }"
               >
                 <b-btn class="btn btn-warning mb-2 mt-1">Adjust</b-btn>

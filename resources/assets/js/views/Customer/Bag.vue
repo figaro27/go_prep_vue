@@ -114,7 +114,6 @@ export default {
     adjustMealPlan: false,
     preview: false,
     orderId: null,
-    order: null,
     checkoutDataProp: null,
     adjustMealPlan: null,
     lineItemOrders: null
@@ -205,6 +204,9 @@ export default {
       }
 
       return flag;
+    },
+    order() {
+      return this.$route.params.order;
     },
     couponFreeDelivery() {
       return this.coupon ? this.coupon.freeDelivery : 0;

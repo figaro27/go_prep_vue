@@ -3,7 +3,6 @@
     :forceValue="forceValue"
     :preview="preview"
     :orderId="orderId"
-    :order="order"
     :storeView="storeView"
     :manualOrder="manualOrder"
     :checkoutDataProp="checkoutData"
@@ -41,9 +40,6 @@ export default {
         : false;
     },
     orderId() {
-      return this.$route.params.orderId;
-    },
-    order() {
       return this.$route.params.orderId;
     },
     storeView() {
