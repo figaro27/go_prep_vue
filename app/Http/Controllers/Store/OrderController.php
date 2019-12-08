@@ -147,7 +147,7 @@ class OrderController extends StoreController
             'user_id'
         ]);
 
-        if (!$this->store->modules->multipleDelivery) {
+        if (!$this->store->modules->multipleDeliveryDays) {
             $orders->makeHIdden(['delivery_dates_array', 'isMultipleDelivery']);
         }
         return $orders;
