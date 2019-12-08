@@ -1491,9 +1491,9 @@ const actions = {
     dispatch("refreshUpcomingOrdersWithoutItems");
     dispatch("refreshLazy");
     dispatch("refreshLazyStore");
-    dispatch("refreshOrders");
-    dispatch("refreshUpcomingOrders");
-    dispatch("refreshOrdersToday");
+    // dispatch("refreshOrders");
+    // dispatch("refreshUpcomingOrders");
+    // dispatch("refreshOrdersToday");
     dispatch("refreshStoreCustomers");
     dispatch("refreshOrderIngredients");
     dispatch("refreshIngredients");
