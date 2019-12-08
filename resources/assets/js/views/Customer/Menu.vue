@@ -278,14 +278,14 @@
                   <button
                     @click="backFromPackagePage"
                     type="button"
-                    class="btn btn-secondary btn-md d-inline"
+                    class="btn btn-secondary btn-lg d-inline"
                   >
                     Back
                   </button>
                   <button
                     @click="addFromPackagePage"
                     type="button"
-                    class="btn btn-secondary btn-md brand-color white-text d-inline"
+                    class="btn btn-secondary btn-lg brand-color white-text d-inline"
                   >
                     Add
                   </button>
