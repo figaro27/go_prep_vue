@@ -44,7 +44,7 @@ export default {
       return this.$route.params.orderId;
     },
     order() {
-      return this.$route.params.orderId;
+      return this.$route.params.order;
     },
     storeView() {
       return this.$route.params.forceValue && this.$route.params.storeView
