@@ -1116,7 +1116,14 @@ body.forgotresettoken {
     margin-top: 70px !important;
   }
 
-  .shopping-cart-meals {
+  .shopping-cart-meals-menu {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 125px !important;
+    max-height: 85vh !important;
+  }
+
+  .shopping-cart-meals-bag {
     padding-left: 10px;
     padding-right: 10px;
     padding-bottom: 75px !important;
