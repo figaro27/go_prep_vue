@@ -143,18 +143,7 @@ class OrderController extends StoreController
             'purchased_gift_card_id',
             'stripe_id',
             'transferTime',
-            'user_id',
-
-            'deliveryFee',
-            'deposit',
-            'goprep_fee',
-            'mealPlanDiscount',
-            'preFeePreDiscount',
-            'pre_coupon',
-            'processingFee',
-            'refundedAmount',
-            'salesTax',
-            'stripe_fee'
+            'user_id'
         ]);
 
         if (!$this->store->modules->multipleDelivery) {
