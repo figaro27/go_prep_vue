@@ -649,7 +649,7 @@
           >
             <b-form-input
               v-model="deposit"
-              type="text"
+              type="number"
               required
               placeholder="$0.00"
             ></b-form-input>

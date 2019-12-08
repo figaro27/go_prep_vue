@@ -258,73 +258,6 @@ class Store extends Model
             //$orders = $orders->where('delivery_date', $this->getNextDeliveryDate());
         }
 
-        $orders = $orders->where(function ($query) use ($dateRange) {
-            $query
-                ->where(function ($query1) use ($dateRange) {
-                    $query1->where('isMultipleDelivery', 0);
-
-                    if (isset($dateRange['from'])) {
-                        $from = Carbon::parse($dateRange['from']);
-                        $query1->where(
-                            'delivery_date',
-                            '>=',
-                            $from->format('Y-m-d')
-                        );
-                    } else {
-                        $query1->where(
-                            'delivery_date',
-                            '>=',
-                            Carbon::now()->format('Y-m-d')
-                        );
-                    }
-
-                    if (isset($dateRange['to'])) {
-                        $to = Carbon::parse($dateRange['to']);
-                        $query1->where(
-                            'delivery_date',
-                            '<=',
-                            $to->format('Y-m-d')
-                        );
-                    }
-                })
-                ->orWhere(function ($query2) use ($dateRange) {
-                    $query2
-                        ->where('isMultipleDelivery', 1)
-                        ->whereHas('meal_orders', function ($subquery) use (
-                            $dateRange
-                        ) {
-                            $subquery->whereNotNull(
-                                'meal_orders.delivery_date'
-                            );
-                            if (isset($dateRange['from'])) {
-                                $from = Carbon::parse($dateRange['from']);
-                                $subquery->where(
-                                    'meal_orders.delivery_date',
-                                    '>=',
-                                    $from->format('Y-m-d')
-                                );
-                            } else {
-                                $subquery->where(
-                                    'meal_orders.delivery_date',
-                                    '>=',
-                                    Carbon::now()->format('Y-m-d')
-                                );
-                            }
-
-                            if (isset($dateRange['to'])) {
-                                $to = Carbon::parse($dateRange['to']);
-                                $subquery->where(
-                                    'meal_orders.delivery_date',
-                                    '<=',
-                                    $to->format('Y-m-d')
-                                );
-                            }
-                        });
-                });
-        });
-
-        $orders = $orders->get();
-
         // Disabled Old Workflow
         /*
         if (isset($dateRange['from'])) {
@@ -354,6 +287,8 @@ class Store extends Model
         // if ($excludeFulfilled) {
         //     $orders = $orders->where('fulfilled', false);
         // }
+
+        $orders = $orders->get();
 
         foreach ($orders as $order) {
             $mealOrders = $order->meal_orders()->get();
@@ -789,42 +724,39 @@ class Store extends Model
 
         $orders = $this->orders()->with('meals');
 
-        $orders = $orders->where(function ($query) use ($dateRange) {
-            $query
-                ->where(function ($query1) use ($dateRange) {
-                    $query1->where('isMultipleDelivery', 0)->where('paid', 1);
-                    $query1->where('delivery_date', $date->format('Y-m-d'));
-                })
-                ->orWhere(function ($query2) use ($dateRange) {
-                    $query2
-                        ->where('isMultipleDelivery', 1)
-                        ->where('paid', 1)
-                        ->whereHas('meal_orders', function ($subquery1) use (
-                            $dateRange
-                        ) {
-                            $subquery1->whereNotNull(
-                                'meal_orders.delivery_date'
-                            );
+        $orders = $orders
+            ->where(function ($query) use ($dateRange) {
+                $query->where('isMultipleDelivery', 0)->where('paid', 1);
 
-                            $subquery1->where(
-                                'meal_orders.delivery_date',
-                                $date->format('Y-m-d')
-                            );
-                        })
-                        ->orWhereHas('meal_package_orders', function (
-                            $subquery2
-                        ) use ($dateRange) {
-                            $subquery2->whereNotNull(
-                                'meal_package_orders.delivery_date'
-                            );
+                $query->where('delivery_date', $date->format('Y-m-d'));
+            })
+            ->orWhere(function ($query) use ($dateRange) {
+                $query
+                    ->where('isMultipleDelivery', 1)
+                    ->where('paid', 1)
+                    ->whereHas('meal_orders', function ($subquery1) use (
+                        $dateRange
+                    ) {
+                        $subquery1->whereNotNull('meal_orders.delivery_date');
 
-                            $subquery2->where(
-                                'meal_package_orders.delivery_date',
-                                $date->format('Y-m-d')
-                            );
-                        });
-                });
-        });
+                        $subquery1->where(
+                            'meal_orders.delivery_date',
+                            $date->format('Y-m-d')
+                        );
+                    })
+                    ->orWhereHas('meal_package_orders', function (
+                        $subquery2
+                    ) use ($dateRange) {
+                        $subquery2->whereNotNull(
+                            'meal_package_orders.delivery_date'
+                        );
+
+                        $subquery2->where(
+                            'meal_package_orders.delivery_date',
+                            $date->format('Y-m-d')
+                        );
+                    });
+            });
 
         $orders = $orders->get();
 
@@ -844,36 +776,44 @@ class Store extends Model
     public function getPastOrders($groupBy = null)
     {
         $date = $this->getNextDeliveryDate();
+
         $orders = $this->orders()->with('meals');
 
-        $orders = $orders->where(function ($query) use ($date) {
-            $query
-                ->where(function ($query1) use ($date) {
-                    $query1->where('isMultipleDelivery', 0)->where('paid', 1);
-                    $query1->where(
-                        'delivery_date',
-                        '<',
-                        $date->format('Y-m-d')
-                    );
-                })
-                ->orWhere(function ($query2) use ($date) {
-                    $query2
-                        ->where('isMultipleDelivery', 1)
-                        ->where('paid', 1)
-                        ->whereHas('meal_orders', function ($subquery1) use (
-                            $date
-                        ) {
-                            $subquery1->whereNotNull(
-                                'meal_orders.delivery_date'
-                            );
-                            $subquery1->where(
-                                'meal_orders.delivery_date',
-                                '<',
-                                $date->format('Y-m-d')
-                            );
-                        });
-                });
-        });
+        $orders = $orders
+            ->where(function ($query) use ($dateRange) {
+                $query->where('isMultipleDelivery', 0)->where('paid', 1);
+
+                $query->where('delivery_date', '<', $date->format('Y-m-d'));
+            })
+            ->orWhere(function ($query) use ($dateRange) {
+                $query
+                    ->where('isMultipleDelivery', 1)
+                    ->where('paid', 1)
+                    ->whereHas('meal_orders', function ($subquery1) use (
+                        $dateRange
+                    ) {
+                        $subquery1->whereNotNull('meal_orders.delivery_date');
+
+                        $subquery1->where(
+                            'meal_orders.delivery_date',
+                            '<',
+                            $date->format('Y-m-d')
+                        );
+                    })
+                    ->orWhereHas('meal_package_orders', function (
+                        $subquery2
+                    ) use ($dateRange) {
+                        $subquery2->whereNotNull(
+                            'meal_package_orders.delivery_date'
+                        );
+
+                        $subquery2->where(
+                            'meal_package_orders.delivery_date',
+                            '<',
+                            $date->format('Y-m-d')
+                        );
+                    });
+            });
 
         $orders = $orders->get();
 
