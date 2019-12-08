@@ -65,7 +65,10 @@ class Order extends Model
         'added_by_store_id',
         'multiple_dates',
         'delivery_dates_array',
-        'purchased_gift_card_code'
+        'purchased_gift_card_code',
+        'customer_name',
+        'customer_address',
+        'customer_zip'
         // 'balance'
     ];
 
@@ -146,6 +149,23 @@ class Order extends Model
     public function purchased_gift_cards()
     {
         return $this->hasMany('App\PurchasedGiftCard');
+    }
+
+    public function getCustomerNameAttribute()
+    {
+        return $this->user->details->firstname .
+            ' ' .
+            $this->user->details->lastname;
+    }
+
+    public function getCustomerAddressAttribute()
+    {
+        return $this->user->details->address;
+    }
+
+    public function getCustomerZipAttribute()
+    {
+        return $this->user->details->zip;
     }
 
     public function getPurchasedGiftCardCodeAttribute()
