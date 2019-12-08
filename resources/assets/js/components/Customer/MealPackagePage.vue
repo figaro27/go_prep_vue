@@ -694,12 +694,12 @@ export default {
       if (this.$parent.mealPackagePageView) {
         let finalCategoriesSub = [];
 
-        if (this.isStoreView) {
-          finalCategoriesSub.push({
-            id: "top",
-            title: "Top Level"
-          });
-        }
+        // if (this.isStoreView) {
+        //   finalCategoriesSub.push({
+        //     id: "top",
+        //     title: "Top Level"
+        //   });
+        // }
 
         if (this.components && this.components.length > 0) {
           this.components.map(component => {
