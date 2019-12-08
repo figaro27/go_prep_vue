@@ -115,18 +115,40 @@ class OrderController extends StoreController
         $orders = $this->store->has('orders')
             ? $this->store
                 ->orders()
-                ->with(['user', 'pickup_location'])
+                ->with(['pickup_location'])
                 ->where(['paid' => 1])
                 ->where('delivery_date', '>=', $fromDate)
                 ->get()
             : [];
 
         $orders->makeHidden([
+            'user',
             'items',
             'meal_ids',
             'line_items_order',
-            'meal_package_items'
+            'meal_package_items',
+
+            'added_by_store_id',
+            'chargedAmount',
+            'currency',
+            'order_day',
+            'originalAmount',
+            'payment_gateway',
+            'paid',
+            'paid_at',
+            'pickup_location',
+            'pickup_location_id',
+            'purchasedGiftCardReduction',
+            'purchased_gift_card_code',
+            'purchased_gift_card_id',
+            'stripe_id',
+            'transferTime',
+            'user_id'
         ]);
+
+        if (!$this->store->modules->multipleDelivery) {
+            $orders->makeHIdden(['delivery_dates_array', 'isMultipleDelivery']);
+        }
         return $orders;
     }
 
