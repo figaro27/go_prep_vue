@@ -443,7 +443,7 @@ export default {
     },
     tableData() {
       return Object.values(
-        _.uniqBy(this.customers.reverse(), customer => {
+        _.uniqBy(this.customers, customer => {
           return customer.user_id;
         })
       );
