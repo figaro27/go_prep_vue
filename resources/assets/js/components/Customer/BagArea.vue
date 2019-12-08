@@ -568,8 +568,8 @@ export default {
     },
     shoppingCartClass() {
       if (this.$route.name === "customer-menu")
-        return "shopping-cart-meals area-scroll";
-      else return "shopping-cart-meals";
+        return "shopping-cart-meals-bag area-scroll";
+      else return "shopping-cart-meals-menu";
     }
   },
   mounted() {
