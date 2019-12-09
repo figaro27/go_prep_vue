@@ -717,7 +717,7 @@ class CheckoutController extends StoreController
                 substr(uniqid(rand(10, 99), false), 0, 8)
             );
             $order->notes = $notes;
-            $order->publicOrderNotes = $publicOrderNotes;
+            $order->publicNotes = $publicOrderNotes;
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
