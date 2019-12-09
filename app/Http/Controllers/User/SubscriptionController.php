@@ -197,46 +197,47 @@ class SubscriptionController extends UserController
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
-        $total = $bag->getTotal();
+        $total = $request->get('subtotal');
         $subtotal = $request->get('subtotal');
-        $afterDiscountBeforeFees = $bag->getTotal();
-        $preFeePreDiscount = $bag->getTotal();
+        $afterDiscountBeforeFees = $request->get('afterDiscount');
+        $preFeePreDiscount = $subtotal;
         $deposit = $request->get('deposit') / 100;
 
-        $processingFee = 0;
-        $mealPlanDiscount = 0;
+        $processingFee = $request->get('processingFee');
+        $mealPlanDiscount = $request->get('mealPlanDiscount');
         $salesTax = $request->get('salesTax');
 
-        if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
-            $discount = $store->settings->mealPlanDiscount / 100;
-            $mealPlanDiscount = $total * $discount;
-            $total -= $mealPlanDiscount;
-            $afterDiscountBeforeFees = $total;
-        }
+        // if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
+        //     $discount = $store->settings->mealPlanDiscount / 100;
+        //     $mealPlanDiscount = $total * $discount;
+        //     $total -= $mealPlanDiscount;
+        //     $afterDiscountBeforeFees = $total;
+        // }
 
-        if ($store->settings->applyDeliveryFee) {
-            $total += $deliveryFee;
-        }
+        // if ($store->settings->applyDeliveryFee) {
+        //     $total += $deliveryFee;
+        // }
 
-        if ($store->settings->applyProcessingFee) {
-            if ($store->settings->processingFeeType === 'flat') {
-                $processingFee += $store->settings->processingFee;
-            } elseif ($store->settings->processingFeeType === 'percent') {
-                $processingFee +=
-                    ($store->settings->processingFee / 100) * $subtotal;
-            }
+        // if ($store->settings->applyProcessingFee) {
+        //     if ($store->settings->processingFeeType === 'flat') {
+        //         $processingFee += $store->settings->processingFee;
+        //     } elseif ($store->settings->processingFeeType === 'percent') {
+        //         $processingFee +=
+        //             ($store->settings->processingFee / 100) * $subtotal;
+        //     }
 
-            $total += $processingFee;
-        }
+        //     $total += $processingFee;
+        // }
 
-        if ($couponId != null) {
-            $total -= $couponReduction;
-        }
+        // if ($couponId != null) {
+        //     $total -= $couponReduction;
+        // }
 
         $customerId = $request->get('customer');
         $customer = Customer::where('id', $customerId)->first();
 
-        $total += $salesTax;
+        // $total += $salesTax;
+        $total = $request->get('grandTotal');
 
         $cashOrder = $request->get('cashOrder');
         if ($cashOrder) {

@@ -86,9 +86,10 @@ class CheckoutController extends UserController
         }
 
         $application_fee = $storeSettings->application_fee;
+
         $total = $request->get('subtotal');
         $subtotal = $request->get('subtotal');
-        $preFeePreDiscount = $request->get('subtotal');
+        $preFeePreDiscount = $subtotal;
         $afterDiscountBeforeFees = $request->get('afterDiscount');
 
         $processingFee = $request->get('processingFee');

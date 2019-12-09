@@ -100,11 +100,11 @@ class CheckoutController extends StoreController
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
-        $total = $request->get('subtotal');
 
+        $total = $request->get('subtotal');
         $subtotal = $request->get('subtotal');
-        $afterDiscountBeforeFees = $bagTotal;
         $preFeePreDiscount = $subtotal;
+        $afterDiscountBeforeFees = $request->get('afterDiscount');
         $deposit = $request->get('deposit') ? $request->get('deposit') : 0;
 
         $processingFee = $request->get('processingFee');
