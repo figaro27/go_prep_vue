@@ -20,26 +20,31 @@ class OrderIngredientController extends StoreController
      */
     public function index(Request $request)
     {
+        $ingredients = [];
         if (!$request->has('delivery_dates')) {
             //$ingredients = Cache::remember('store_order_ingredients' . $this->store->id, 10, function () {
-            return collect($this->store->getOrderIngredients());
+            $ingredients = collect($this->store->getOrderIngredients());
             //});
         } else {
             $ddates = json_decode($request->get('delivery_dates'));
 
             $dates = [];
-            if($ddates->from) $dates['from'] = Carbon::parse($ddates->from);
-            if($ddates->to) $dates['to'] = Carbon::parse($ddates->to);
+            if ($ddates->from) {
+                $dates['from'] = Carbon::parse($ddates->from);
+            }
+            if ($ddates->to) {
+                $dates['to'] = Carbon::parse($ddates->to);
+            }
 
             $ingredients = collect($this->store->getOrderIngredients($dates));
         }
 
-        $ingredients = $ingredients->map(function ($item, $id) {
+        /*$ingredients = $ingredients->map(function ($item, $id) {
             return [
                 'id' => $id,
                 'quantity' => $item['quantity'],
             ];
-        })->toArray();
+        })->toArray();*/
 
         return $ingredients;
     }
@@ -50,32 +55,29 @@ class OrderIngredientController extends StoreController
         $units = collect($this->store->units)->keyBy('ingredient_id');
         $ingredients = $this->store->ingredients->keyBy('id');
 
-        $data = $orderIngredients->map(function ($orderIngredient) use ($units, $ingredients) {
-            $ingredient = $ingredients->get($orderIngredient['id']);
-            if ($units->has($ingredient->id)) {
-                $unit = $units->get($ingredient->id)->unit;
-                $quantity = Unit::convert(
-                    $orderIngredient['quantity'],
-                    Format::baseUnit($ingredient->unit_type),
-                    $unit
-                );
-            } else {
-                $unit = Format::baseUnit($ingredient->unit_type);
-                $quantity = ceil($orderIngredient['quantity']);
-            }
+        $data = $orderIngredients
+            ->map(function ($orderIngredient) use ($units, $ingredients) {
+                $ingredient = $ingredients->get($orderIngredient['id']);
+                if ($units->has($ingredient->id)) {
+                    $unit = $units->get($ingredient->id)->unit;
+                    $quantity = Unit::convert(
+                        $orderIngredient['quantity'],
+                        Format::baseUnit($ingredient->unit_type),
+                        $unit
+                    );
+                } else {
+                    $unit = Format::baseUnit($ingredient->unit_type);
+                    $quantity = ceil($orderIngredient['quantity']);
+                }
 
-            return [
-                $ingredient->food_name,
-                ceil($quantity),
-                $unit,
-            ];
-        })->sortBy('0');
+                return [$ingredient->food_name, ceil($quantity), $unit];
+            })
+            ->sortBy('0');
 
-        $data = array_merge([
-            [
-                'Ingredient', 'Quantity', 'Unit',
-            ],
-        ], $data->toArray());
+        $data = array_merge(
+            [['Ingredient', 'Quantity', 'Unit']],
+            $data->toArray()
+        );
         return $data;
     }
 

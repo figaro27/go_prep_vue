@@ -197,6 +197,37 @@ export default {
       let mealTitles = {};
 
       orders.forEach(order => {
+        _.forEach(order.newItems, item => {
+          let meal = this.getMeal(item.meal_id);
+          if (meal) {
+            if (this.productionGroupId != null) {
+              if (meal.production_group_id !== this.productionGroupId)
+                return null;
+            }
+
+            let size = meal.getSize(item.meal_size_id);
+            let title = meal.getTitle(
+              true,
+              size,
+              item.components,
+              item.addons,
+              item.special_instructions
+            );
+            let base_title = item.base_title;
+
+            if (!mealCounts[base_title]) {
+              mealCounts[base_title] = 0;
+              mealIds[base_title] = item.meal_id;
+              mealSizes[base_title] = size;
+              mealTitles[base_title] = base_title;
+            }
+            mealCounts[base_title] += item.quantity;
+          }
+        });
+      });
+
+      /*
+      orders.forEach(order => {
         _.forEach(order.items, item => {
           let meal = this.getMeal(item.meal_id);
           if (meal) {
@@ -231,6 +262,7 @@ export default {
           }
         });
       });
+      */
 
       orders.forEach(order => {
         _.forEach(order.line_items_order, lineItem => {
@@ -244,27 +276,24 @@ export default {
             let title = lineItem.title;
             let base_title = lineItem.title;
 
-            if (!mealCounts[title]) {
-              mealCounts[title] = 0;
-              mealIds[title] = lineItem.id;
-              mealTitles[title] = base_title;
+            if (!mealCounts[base_title]) {
+              mealCounts[base_title] = 0;
+              mealIds[base_title] = lineItem.id;
+              mealTitles[base_title] = base_title;
             }
-            mealCounts[title] += lineItem.quantity;
+            mealCounts[base_title] += lineItem.quantity;
           }
         });
       });
 
-      return _.map(mealCounts, (quantity, title) => {
-        let meal = this.getMeal(mealIds[title]);
+      return _.map(mealCounts, (quantity, base_title) => {
+        let meal = this.getMeal(mealIds[base_title]);
 
         if (meal === null) {
           meal = [];
         }
 
-        //let base_title = meal.title + "";
-        let base_title = mealTitles[title];
-
-        let size = mealSizes[title];
+        let size = mealSizes[base_title];
         let base_size = "";
 
         if (size) {
@@ -277,7 +306,7 @@ export default {
 
         return {
           ...meal,
-          title,
+          //title,
           base_title,
           base_size,
           price,
