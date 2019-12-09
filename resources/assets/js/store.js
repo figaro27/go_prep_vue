@@ -83,6 +83,9 @@ const state = {
     order_ingredients: {
       data: {}
     },
+    order_ingredients_special: {
+      data: {}
+    },
     ingredient_units: {
       data: {}
     },
@@ -743,6 +746,10 @@ const mutations = {
 
   orderIngredients(state, { ingredients }) {
     state.store.order_ingredients.data = ingredients;
+  },
+
+  orderIngredientsSpecial(state, { ingredients }) {
+    state.store.order_ingredients_special.data = ingredients;
   },
 
   storeDetail(state, { detail }) {
@@ -2214,7 +2221,7 @@ const actions = {
     }
 
     if (_.isArray(data)) {
-      commit("orderIngredients", {
+      commit("orderIngredientsSpecial", {
         ingredients: _.keyBy(data, "id")
       });
     } else {
@@ -3077,6 +3084,9 @@ const getters = {
   },
   orderIngredients(state) {
     return state.store.order_ingredients.data || {};
+  },
+  orderIngredientsSpecial(state) {
+    return state.store.order_ingredients_special.data || {};
   },
   storeDetail: (state, getters) => {
     try {

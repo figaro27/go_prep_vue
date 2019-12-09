@@ -154,15 +154,16 @@ export default {
   },
   computed: {
     ...mapGetters({
-      orderIngredients: "orderIngredients",
+      orderIngredientsSpecial: "orderIngredientsSpecial",
       ingredient: "ingredient",
       defaultWeightUnit: "defaultWeightUnit",
       isLoading: "isLoading"
     }),
     tableData() {
       return (
-        _.map(this.orderIngredients, (orderIngredient, id) => {
-          let ingredient = this.getIngredient(id);
+        _.map(this.orderIngredientsSpecial, (orderIngredient, id) => {
+          //let ingredient = this.getIngredient(id);
+          let ingredient = orderIngredient.ingredient;
 
           if (!ingredient) {
             return {};
