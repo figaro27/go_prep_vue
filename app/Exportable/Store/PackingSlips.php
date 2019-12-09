@@ -47,13 +47,6 @@ class PackingSlips
 
             $dateRange = $this->getDeliveryDates();
 
-            $orders = $orders
-                ->with(['items'])
-                ->whereHas('items', function ($q) {
-                    $q->where('hidden', 0);
-                })
-                ->get();
-
             $orders = $orders->where(function ($query) use ($dateRange) {
                 $query
                     ->where(function ($query1) use ($dateRange) {
