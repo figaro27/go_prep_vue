@@ -336,51 +336,14 @@ class Store extends Model
                 }
 
                 foreach ($mealIngredients as $ingredient) {
-                    $adjuster = $ingredient->adjuster / 100;
-                    $quantity_unit = $ingredient->pivot->quantity_unit;
-                    $quantity_base =
-                        $ingredient->pivot->quantity_base *
-                        $quantity *
-                        $multiplier *
-                        $adjuster;
-
-                    $key = $ingredient->id;
-                    if ($isMultipleDelivery) {
-                        $key =
-                            $key .
-                            '-' .
-                            Carbon::parse($mealOrder->delivery_date)->format(
-                                'Y-m-d'
-                            );
-                        $ingredient->food_name =
-                            '(' .
-                            Carbon::parse($mealOrder->delivery_date)->format(
-                                'D, m/d/y'
-                            ) .
-                            ') ' .
-                            $ingredient->food_name;
-                    }
-
-                    if (!isset($ingredients[$key])) {
-                        $ingredients[$key] = [
-                            'id' => $ingredient->id,
-                            'ingredient' => $ingredient,
-                            'quantity' => $quantity_base,
-                            'adjuster' => $adjuster
-                        ];
-                    } else {
-                        $ingredients[$key]['quantity'] += $quantity_base;
-                    }
-                }
-
-                $components = collect($mealOrder->components);
-
-                foreach ($components as $component) {
-                    foreach ($component->option->ingredients as $ingredient) {
+                    if (!$ingredient->attributes['hidden']) {
+                        $adjuster = $ingredient->adjuster / 100;
                         $quantity_unit = $ingredient->pivot->quantity_unit;
                         $quantity_base =
-                            $ingredient->pivot->quantity_base * $quantity;
-                        //* $multiplier;
+                            $ingredient->pivot->quantity_base *
+                            $quantity *
+                            $multiplier *
+                            $adjuster;
 
                         $key = $ingredient->id;
                         if ($isMultipleDelivery) {
@@ -408,6 +371,48 @@ class Store extends Model
                             ];
                         } else {
                             $ingredients[$key]['quantity'] += $quantity_base;
+                        }
+                    }
+                }
+
+                $components = collect($mealOrder->components);
+
+                foreach ($components as $component) {
+                    foreach ($component->option->ingredients as $ingredient) {
+                        if (!$ingredient->attributes['hidden']) {
+                            $quantity_unit = $ingredient->pivot->quantity_unit;
+                            $quantity_base =
+                                $ingredient->pivot->quantity_base * $quantity;
+                            //* $multiplier;
+
+                            $key = $ingredient->id;
+                            if ($isMultipleDelivery) {
+                                $key =
+                                    $key .
+                                    '-' .
+                                    Carbon::parse(
+                                        $mealOrder->delivery_date
+                                    )->format('Y-m-d');
+                                $ingredient->food_name =
+                                    '(' .
+                                    Carbon::parse(
+                                        $mealOrder->delivery_date
+                                    )->format('D, m/d/y') .
+                                    ') ' .
+                                    $ingredient->food_name;
+                            }
+                            if (!isset($ingredients[$key])) {
+                                $ingredients[$key] = [
+                                    'id' => $ingredient->id,
+                                    'ingredient' => $ingredient,
+                                    'quantity' => $quantity_base,
+                                    'adjuster' => $adjuster
+                                ];
+                            } else {
+                                $ingredients[$key][
+                                    'quantity'
+                                ] += $quantity_base;
+                            }
                         }
                     }
                 }
@@ -416,37 +421,41 @@ class Store extends Model
 
                 foreach ($addons as $addon) {
                     foreach ($addon->addon->ingredients as $ingredient) {
-                        $quantity_unit = $ingredient->pivot->quantity_unit;
-                        $quantity_base =
-                            $ingredient->pivot->quantity_base * $quantity;
-                        //* $multiplier;
+                        if (!$ingredient->attributes['hidden']) {
+                            $quantity_unit = $ingredient->pivot->quantity_unit;
+                            $quantity_base =
+                                $ingredient->pivot->quantity_base * $quantity;
+                            //* $multiplier;
 
-                        $key = $ingredient->id;
-                        if ($isMultipleDelivery) {
-                            $key =
-                                $key .
-                                '-' .
-                                Carbon::parse(
-                                    $mealOrder->delivery_date
-                                )->format('Y-m-d');
-                            $ingredient->food_name =
-                                '(' .
-                                Carbon::parse(
-                                    $mealOrder->delivery_date
-                                )->format('D, m/d/y') .
-                                ') ' .
-                                $ingredient->food_name;
-                        }
+                            $key = $ingredient->id;
+                            if ($isMultipleDelivery) {
+                                $key =
+                                    $key .
+                                    '-' .
+                                    Carbon::parse(
+                                        $mealOrder->delivery_date
+                                    )->format('Y-m-d');
+                                $ingredient->food_name =
+                                    '(' .
+                                    Carbon::parse(
+                                        $mealOrder->delivery_date
+                                    )->format('D, m/d/y') .
+                                    ') ' .
+                                    $ingredient->food_name;
+                            }
 
-                        if (!isset($ingredients[$key])) {
-                            $ingredients[$key] = [
-                                'id' => $ingredient->id,
-                                'ingredient' => $ingredient,
-                                'quantity' => $quantity_base,
-                                'adjuster' => $adjuster
-                            ];
-                        } else {
-                            $ingredients[$key]['quantity'] += $quantity_base;
+                            if (!isset($ingredients[$key])) {
+                                $ingredients[$key] = [
+                                    'id' => $ingredient->id,
+                                    'ingredient' => $ingredient,
+                                    'quantity' => $quantity_base,
+                                    'adjuster' => $adjuster
+                                ];
+                            } else {
+                                $ingredients[$key][
+                                    'quantity'
+                                ] += $quantity_base;
+                            }
                         }
                     }
                 }

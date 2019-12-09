@@ -185,6 +185,7 @@
                 :options="{ saveButton: true }"
                 :meal="meal"
                 @save="onViewMealModalOk"
+                :createMealModal="true"
               ></ingredient-picker>
             </b-tab>
 
@@ -192,6 +193,7 @@
               <b-tabs pills>
                 <b-tab title="Sizes">
                   <meal-sizes
+                    :createMealModal="true"
                     :meal="meal"
                     @change="val => (meal.sizes = val)"
                     @changeDefault="val => (meal.default_size_title = val)"
@@ -200,6 +202,7 @@
 
                 <b-tab title="Components">
                   <meal-components
+                    :createMealModal="true"
                     :meal="meal"
                     @change="val => (meal.components = val)"
                   ></meal-components>
@@ -207,6 +210,7 @@
 
                 <b-tab title="Addons">
                   <meal-addons
+                    :createMealModal="true"
                     :meal="meal"
                     @change="val => (meal.addons = val)"
                   ></meal-addons>

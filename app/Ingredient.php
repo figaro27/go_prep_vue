@@ -12,6 +12,7 @@ class Ingredient extends Model
     public $fillable = [
         'food_name',
         'unit_type',
+        'hidden',
         'calories',
         'totalfat',
         'satFat',
@@ -214,6 +215,9 @@ class Ingredient extends Model
 
             $ingredient = new Ingredient($ingredientArr);
             $ingredient->store_id = $meal->store_id;
+            $ingredient->hidden = isset($ingredientArr['hidden'])
+                ? $ingredientArr['hidden']
+                : 0;
             if ($ingredient->save()) {
                 $meal->store->units()->create([
                     'store_id' => $meal->store_id,
