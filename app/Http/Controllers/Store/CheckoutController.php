@@ -394,8 +394,7 @@ class CheckoutController extends StoreController
                                 $item['meal_package_id'];
                             $mealPackageOrder->meal_package_size_id =
                                 $item['meal_package_size_id'];
-                            $mealPackageOrder->quantity =
-                                $item['package_quantity'];
+                            $mealPackageOrder->quantity = $item['quantity'];
                             $mealPackageOrder->price = $item['package_price'];
                             if (
                                 isset($item['delivery_day']) &&
@@ -411,17 +410,15 @@ class CheckoutController extends StoreController
                             $mealOrder->meal_package_order_id =
                                 $mealPackageOrder->id;
                         } else {
-                            $mealOrder->meal_package_order_id = MealPackageOrder::where(
-                                [
-                                    'meal_package_id' =>
-                                        $item['meal_package_id'],
-                                    'meal_package_size_id' =>
-                                        $item['meal_package_size_id'],
-                                    'order_id' => $order->id
-                                ]
-                            )
-                                ->pluck('id')
-                                ->first();
+                            $mealPackageOrder = MealPackageOrder::where([
+                                'meal_package_id' => $item['meal_package_id'],
+                                'meal_package_size_id' =>
+                                    $item['meal_package_size_id'],
+                                'order_id' => $order->id
+                            ])->first();
+
+                            $mealOrder->meal_package_order_id =
+                                $mealPackageOrder->id;
                         }
                     }
 
