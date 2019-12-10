@@ -643,7 +643,7 @@
               class="md-textarea form-control"
               rows="3"
               v-model="deliveryNote"
-              placeholder="Optional."
+              placeholder="Private notes found on your orders page and Order Summary report."
             ></textarea>
             <button
               class="btn btn-primary btn-md pull-right mt-2"
@@ -660,7 +660,7 @@
               class="md-textarea form-control"
               rows="3"
               v-model="publicOrderNotes"
-              placeholder="Optional."
+              placeholder="Public notes sent to the customer in their emails and shown on your packing slips."
             ></textarea>
             <button
               class="btn btn-primary btn-md pull-right mt-2"
