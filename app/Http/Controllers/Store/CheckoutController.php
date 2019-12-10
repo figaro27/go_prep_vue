@@ -472,6 +472,18 @@ class CheckoutController extends StoreController
                         $attachments = $explicitAttachments;
                     }
 
+                    $mealPackageAttachments = MealAttachment::where([
+                        'meal_id' => 0,
+                        'meal_package_id' => $item['meal_package_id']
+                    ])->get();
+
+                    foreach (
+                        $mealPackageAttachments
+                        as $mealPackageAttachment
+                    ) {
+                        $attachments->push($mealPackageAttachment);
+                    }
+
                     if ($attachments) {
                         foreach ($attachments as $attachment) {
                             $mealOrder = new MealOrder();
