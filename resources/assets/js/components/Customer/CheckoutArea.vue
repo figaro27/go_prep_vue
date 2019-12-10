@@ -1358,7 +1358,7 @@ export default {
       let coupon = this.coupon;
       let subtotal = this.subtotal;
       if (coupon.type === "flat") {
-        return coupon.amount;
+        return coupon.amount < subtotal ? coupon.amount : subtotal;
       } else if (coupon.type === "percent") {
         return (coupon.amount / 100) * subtotal;
       }
