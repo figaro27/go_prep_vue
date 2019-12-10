@@ -51,9 +51,7 @@ class OrderController extends StoreController
 
         $data = [];
         if ($this->store->has('orders')) {
-            $orders = $this->store
-                ->orders()
-                ->with(['user', 'pickup_location', 'meal_orders']);
+            $orders = $this->store->orders()->with(['user', 'pickup_location']);
 
             $orders = $orders->where(function ($query) use ($fromDate) {
                 $query
@@ -91,36 +89,6 @@ class OrderController extends StoreController
             // Newly Added for Table Data
             if ($data) {
                 foreach ($data as &$order) {
-                    $newItems = [];
-                    $mealOrders = $order
-                        ->meal_orders()
-                        ->with('meal')
-                        ->get();
-
-                    if ($order->isMultipleDelivery) {
-                        if ($mealOrders) {
-                            foreach ($mealOrders as $mealOrder) {
-                                if (!$mealOrder->delivery_date) {
-                                    continue;
-                                }
-
-                                $mealOrder_date = Carbon::parse(
-                                    $mealOrder->delivery_date
-                                )->format('Y-m-d');
-                                if (
-                                    $mealOrder_date < $fromDate->format('Y-m-d')
-                                ) {
-                                    continue;
-                                }
-
-                                $newItems[] = $mealOrder;
-                            }
-                        }
-                    } else {
-                        $newItems = $mealOrders;
-                    }
-
-                    $order->newItems = $newItems;
                 }
             }
         }
@@ -242,10 +210,8 @@ class OrderController extends StoreController
         $startDate = Carbon::parse($request->get('start'))->format('Y-m-d');
         $endDate = Carbon::parse($endDate)->format('Y-m-d');
 
-        $data = [];
-
         if ($paymentsPage) {
-            $data = $this->store->has('orders')
+            return $this->store->has('orders')
                 ? $this->store
                     ->orders()
                     ->with(['user', 'pickup_location'])
@@ -260,87 +226,42 @@ class OrderController extends StoreController
                     ->orders()
                     ->with(['user', 'pickup_location']);
 
-                $orders = $orders->where(function ($query) use (
-                    $startDate,
-                    $endDate
-                ) {
-                    $query
-                        ->where(function ($query1) use ($startDate, $endDate) {
-                            $query1
-                                ->where('isMultipleDelivery', 0)
-                                ->where('paid', 1);
-                            $query1->where('delivery_date', '>=', $startDate);
-                            $query1->where('delivery_date', '<=', $endDate);
-                        })
-                        ->orWhere(function ($query2) use (
-                            $startDate,
-                            $endDate
-                        ) {
-                            $query2
-                                ->where('isMultipleDelivery', 1)
-                                ->where('paid', 1)
-                                ->whereHas('meal_orders', function (
-                                    $subquery1
-                                ) use ($startDate, $endDate) {
-                                    $subquery1->whereNotNull(
-                                        'meal_orders.delivery_date'
-                                    );
-                                    $subquery1->where(
-                                        'meal_orders.delivery_date',
-                                        '>=',
-                                        $startDate
-                                    );
-                                    $subquery1->where(
-                                        'meal_orders.delivery_date',
-                                        '<=',
-                                        $endDate
-                                    );
-                                });
-                        });
-                });
+                $orders = $orders
+                    ->where(function ($query) use ($startDate, $endDate) {
+                        $query
+                            ->where('isMultipleDelivery', 0)
+                            ->where('paid', 1);
+                        $query->where('delivery_date', '>=', $startDate);
+                        $query->where('delivery_date', '<=', $endDate);
+                    })
+                    ->orWhere(function ($query) use ($startDate, $endDate) {
+                        $query
+                            ->where('isMultipleDelivery', 1)
+                            ->where('paid', 1)
+                            ->whereHas('meal_orders', function (
+                                $subquery1
+                            ) use ($startDate, $endDate) {
+                                $subquery1->whereNotNull(
+                                    'meal_orders.delivery_date'
+                                );
+                                $subquery1->where(
+                                    'meal_orders.delivery_date',
+                                    '>=',
+                                    $startDate
+                                );
+                                $subquery1->where(
+                                    'meal_orders.delivery_date',
+                                    '<=',
+                                    $endDate
+                                );
+                            });
+                    });
 
-                $data = $orders->get();
+                return $orders->get();
             }
+
+            return [];
         }
-
-        // Newly Added for Table Data
-        if ($data) {
-            foreach ($data as &$order) {
-                $newItems = [];
-                $mealOrders = $order
-                    ->meal_orders()
-                    ->with('meal')
-                    ->get();
-
-                if ($order->isMultipleDelivery) {
-                    if ($mealOrders) {
-                        foreach ($mealOrders as $mealOrder) {
-                            if (!$mealOrder->delivery_date) {
-                                continue;
-                            }
-
-                            $mealOrder_date = Carbon::parse(
-                                $mealOrder->delivery_date
-                            )->format('Y-m-d');
-                            if ($mealOrder_date < $startDate) {
-                                continue;
-                            }
-                            if ($mealOrder_date > $endDate) {
-                                continue;
-                            }
-
-                            $newItems[] = $mealOrder;
-                        }
-                    }
-                } else {
-                    $newItems = $mealOrders;
-                }
-
-                $order->newItems = $newItems;
-            }
-        }
-
-        return $data;
     }
 
     public function getOrdersWithDatesWithoutItems(Request $request)
