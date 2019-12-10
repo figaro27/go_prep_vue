@@ -839,6 +839,23 @@ class CheckoutController extends UserController
                     if (count($explicitAttachments) > 0) {
                         $attachments = $explicitAttachments;
                     }
+
+                    $mealPackageAttachments = [];
+
+                    if (isset($item['meal_package_id'])) {
+                        $mealPackageAttachments = MealAttachment::where([
+                            'meal_id' => 0,
+                            'meal_package_id' => $item['meal_package_id']
+                        ])->get();
+                    }
+
+                    foreach (
+                        $mealPackageAttachments
+                        as $mealPackageAttachment
+                    ) {
+                        $attachments->push($mealPackageAttachment);
+                    }
+
                     if ($attachments) {
                         foreach ($attachments as $attachment) {
                             $mealOrder = new MealOrder();
@@ -974,6 +991,23 @@ class CheckoutController extends UserController
                     if (count($explicitAttachments) > 0) {
                         $attachments = $explicitAttachments;
                     }
+
+                    $mealPackageAttachments = [];
+
+                    if (isset($item['meal_package_id'])) {
+                        $mealPackageAttachments = MealAttachment::where([
+                            'meal_id' => 0,
+                            'meal_package_id' => $item['meal_package_id']
+                        ])->get();
+                    }
+
+                    foreach (
+                        $mealPackageAttachments
+                        as $mealPackageAttachment
+                    ) {
+                        $attachments->push($mealPackageAttachment);
+                    }
+
                     if ($attachments) {
                         foreach ($attachments as $attachment) {
                             $mealSub = new MealSubscription();
