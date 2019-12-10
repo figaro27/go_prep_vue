@@ -86,9 +86,10 @@ class CheckoutController extends UserController
         }
 
         $application_fee = $storeSettings->application_fee;
+
         $total = $request->get('subtotal');
         $subtotal = $request->get('subtotal');
-        $preFeePreDiscount = $request->get('subtotal');
+        $preFeePreDiscount = $subtotal;
         $afterDiscountBeforeFees = $request->get('afterDiscount');
 
         $processingFee = $request->get('processingFee');
@@ -442,6 +443,7 @@ class CheckoutController extends UserController
                     if (count($explicitAttachments) > 0) {
                         $attachments = $explicitAttachments;
                     }
+
                     if ($attachments) {
                         foreach ($attachments as $attachment) {
                             $mealOrder = new MealOrder();
@@ -821,6 +823,7 @@ class CheckoutController extends UserController
                     if (count($explicitAttachments) > 0) {
                         $attachments = $explicitAttachments;
                     }
+
                     if ($attachments) {
                         foreach ($attachments as $attachment) {
                             $mealOrder = new MealOrder();
@@ -956,6 +959,7 @@ class CheckoutController extends UserController
                     if (count($explicitAttachments) > 0) {
                         $attachments = $explicitAttachments;
                     }
+
                     if ($attachments) {
                         foreach ($attachments as $attachment) {
                             $mealSub = new MealSubscription();

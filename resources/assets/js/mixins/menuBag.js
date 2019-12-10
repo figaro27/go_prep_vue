@@ -377,7 +377,10 @@ export default {
             customer: this.customer,
             // deposit: deposit,
             cashOrder: this.cashOrder,
-            transferTime: this.transferTime
+            transferTime: this.transferTime,
+            grandTotal: this.grandTotal,
+            processingFee: this.processingFeeAmount,
+            mealPlanDiscount: this.mealPlanDiscount
           }
         );
         await this.refreshSubscriptions();

@@ -100,11 +100,11 @@ class CheckoutController extends StoreController
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
-        $total = $request->get('subtotal');
 
+        $total = $request->get('subtotal');
         $subtotal = $request->get('subtotal');
-        $afterDiscountBeforeFees = $bagTotal;
         $preFeePreDiscount = $subtotal;
+        $afterDiscountBeforeFees = $request->get('afterDiscount');
         $deposit = $request->get('deposit') ? $request->get('deposit') : 0;
 
         $processingFee = $request->get('processingFee');
@@ -720,7 +720,7 @@ class CheckoutController extends StoreController
                 substr(uniqid(rand(10, 99), false), 0, 8)
             );
             $order->notes = $notes;
-            $order->publicOrderNotes = $publicOrderNotes;
+            $order->publicNotes = $publicOrderNotes;
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
@@ -867,6 +867,7 @@ class CheckoutController extends StoreController
                 if (count($explicitAttachments) > 0) {
                     $attachments = $explicitAttachments;
                 }
+
                 if ($attachments) {
                     foreach ($attachments as $attachment) {
                         $mealOrder = new MealOrder();
@@ -999,6 +1000,7 @@ class CheckoutController extends StoreController
                 if (count($explicitAttachments) > 0) {
                     $attachments = $explicitAttachments;
                 }
+
                 if ($attachments) {
                     foreach ($attachments as $attachment) {
                         $mealSub = new MealSubscription();

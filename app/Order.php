@@ -21,9 +21,6 @@ class Order extends Model
         'adjustedDifference',
         'afterDiscountBeforeFees',
         'card_id',
-        'couponCode',
-        'couponReduction',
-        'coupon_id',
         'fulfilled'
     ];
 
