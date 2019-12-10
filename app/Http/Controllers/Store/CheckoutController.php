@@ -110,6 +110,7 @@ class CheckoutController extends StoreController
         $processingFee = $request->get('processingFee');
         $mealPlanDiscount = $request->get('mealPlanDiscount');
         $salesTax = $request->get('salesTax');
+        $customSalesTax = $request->get('customSalesTax');
 
         $dailyOrderNumber = 0;
         if (!$isMultipleDelivery) {
@@ -265,6 +266,7 @@ class CheckoutController extends StoreController
             $order->deliveryFee = $deliveryFee;
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
+            $order->customSalesTax = $customSalesTax;
             $order->amount = $total;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
@@ -727,6 +729,7 @@ class CheckoutController extends StoreController
             $order->deliveryFee = $deliveryFee;
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
+            $order->customSalesTax = $customSalesTax;
             $order->amount = $total;
             $order->currency = $store->settings->currency;
             $order->fulfilled = false;

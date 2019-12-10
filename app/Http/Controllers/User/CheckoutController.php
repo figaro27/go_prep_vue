@@ -95,6 +95,7 @@ class CheckoutController extends UserController
         $processingFee = $request->get('processingFee');
         $mealPlanDiscount = $request->get('mealPlanDiscount');
         $salesTax = $request->get('salesTax');
+        $customSalesTax = $request->get('customSalesTax');
 
         $dailyOrderNumber = 0;
         if (!$isMultipleDelivery) {
@@ -232,6 +233,7 @@ class CheckoutController extends UserController
             $order->deliveryFee = $deliveryFee;
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
+            $order->customSalesTax = $customSalesTax;
             $order->amount = $total;
             $order->balance = $balance;
             $order->currency = $storeSettings->currency;
@@ -675,6 +677,7 @@ class CheckoutController extends UserController
                 $order->deliveryFee = $deliveryFee;
                 $order->processingFee = $processingFee;
                 $order->salesTax = $salesTax;
+                $order->customSalesTax = $customSalesTax;
                 $order->amount = $total;
                 $order->currency = $storeSettings->currency;
                 $order->fulfilled = false;
