@@ -40,17 +40,20 @@ class SubscriptionController extends StoreController
      */
     public function show($id)
     {
-        return $this->store
+        $subscriptions = $this->store
             ->subscriptions()
-            ->with([
-                'user',
-                'user.userDetail',
-                'orders',
-                'orders.meals',
-                'pickup_location'
-            ])
+            ->with(['user', 'user.userDetail', 'pickup_location'])
             ->where('id', $id)
             ->first();
+
+        $subscriptions->makeHidden([
+            'meal_ids',
+            'meal_quantities',
+            'store',
+            'next_delivery_date'
+        ]);
+
+        return $subscriptions;
     }
 
     /**
