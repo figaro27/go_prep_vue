@@ -1493,7 +1493,7 @@ const actions = {
       dispatch("refreshOrderIngredients"),
       dispatch("refreshIngredients"),
       dispatch("refreshStoreSubscriptions");
-    dispatch("refreshUpcomingOrders");
+    // dispatch("refreshUpcomingOrders");
   },
 
   async initCustomer({ commit, state, dispatch }, data = {}) {
