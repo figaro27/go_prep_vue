@@ -31,7 +31,10 @@ ul {
 }
 
 .plain li {
-  list-style-position: outside !important;
+  text-indent: -1em;
+  padding-left: 1em;
+  list-style-type: disc;
+  list-style-position: outside;
 }
 
 html,
