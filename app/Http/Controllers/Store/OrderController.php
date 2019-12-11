@@ -40,12 +40,22 @@ class OrderController extends StoreController
         }
 
         $hide = $request->query('hide', ['items']);
+        $start = $request->query('start', null);
+        $end = $request->query('end', null);
 
         $query = $this->store
             ->orders()
             ->with(['user', 'pickup_location', 'purchased_gift_cards'])
             ->where(['paid' => 1])
             ->without($hide);
+
+        if ($start) {
+            $query = $query->whereDate('delivery_date', '>=', $start);
+        }
+
+        if ($end) {
+            $query = $query->whereDate('delivery_date', '<=', $end);
+        }
 
         if ($page === -1) {
             return $query->get();

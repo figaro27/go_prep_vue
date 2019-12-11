@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <!--<Spinner v-if="isLoading" />!-->
+          <Spinner v-if="orders.loading" />
 
           <v-client-table
             :columns="columns"
@@ -11,6 +11,7 @@
             :options="options"
             v-show="initialized"
             @pagination="onChangePage"
+            :class="{ 'table-loading': this.orders.loading }"
           >
             <div slot="beforeTable" class="mb-2">
               <div class="table-before d-flex flex-wrap align-items-center">
@@ -217,6 +218,7 @@
               :total-rows="orders.total"
               :per-page="10"
               align="center"
+              :hide-ellipsis="true"
             ></b-pagination>
 
             {{ orders.total }} Records
@@ -991,7 +993,18 @@ export default {
       page: 1,
       pageSize: 10,
       args() {
-        return {};
+        const { filters } = this;
+        let args = {};
+
+        if (filters.delivery_dates.start) {
+          args = {
+            ...args,
+            start: filters.delivery_dates.start,
+            end: filters.delivery_dates.end
+          };
+        }
+
+        return args;
       }
     }),
     tableData() {
