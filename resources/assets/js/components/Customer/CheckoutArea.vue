@@ -1981,6 +1981,7 @@ export default {
           this.setBagMealPlan(false);
           this.setBagCoupon(null);
           this.setBagPurchasedGiftCard(null);
+          this.clearBagDeliveryDate();
 
           if (this.$route.params.manualOrder && weeklyDelivery) {
             this.refreshStoreSubscriptions();
@@ -1991,8 +1992,8 @@ export default {
           } else if (this.$route.params.manualOrder && !weeklyDelivery) {
             // this.refreshOrdersToday();
             // this.refreshOrders();
-            this.refreshUpcomingOrders();
-            this.refreshUpcomingOrdersWithoutItems();
+            // this.refreshUpcomingOrders();
+            // this.refreshUpcomingOrdersWithoutItems();
             this.$router.push({
               name: "store-orders",
               params: {
@@ -2021,7 +2022,6 @@ export default {
         })
         .finally(() => {
           this.loading = false;
-          this.clearBagDeliveryDate();
         });
     },
     inputCustomer(id) {
