@@ -30,6 +30,10 @@ ul {
   }
 }
 
+.plain li {
+  list-style-position: outside !important;
+}
+
 html,
 body {
   margin: 0;
