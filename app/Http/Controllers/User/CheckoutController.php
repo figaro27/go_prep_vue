@@ -95,7 +95,10 @@ class CheckoutController extends UserController
         $processingFee = $request->get('processingFee');
         $mealPlanDiscount = $request->get('mealPlanDiscount');
         $salesTax = $request->get('salesTax');
-        $customSalesTax = $request->get('customSalesTax');
+        $customSalesTax =
+            $request->get('customSalesTax') !== null
+                ? $request->get('customSalesTax')
+                : 0;
 
         $dailyOrderNumber = 0;
         if (!$isMultipleDelivery) {
@@ -448,7 +451,9 @@ class CheckoutController extends UserController
 
                     $mealPackageAttachments = MealAttachment::where([
                         'meal_id' => 0,
-                        'meal_package_id' => $item['meal_package_id'],
+                        'meal_package_id' => isset($item['meal_package_id'])
+                            ? $item['meal_package_id']
+                            : null,
                         'meal_package_size_id' => isset(
                             $item['meal_package_size_id']
                         )
