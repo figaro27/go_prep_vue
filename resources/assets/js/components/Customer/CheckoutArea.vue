@@ -184,12 +184,6 @@
         <div class="row">
           <div class="col-6 col-md-4">
             <strong>Sales Tax</strong>
-            <p
-              v-if="$route.params.adjustOrder && order.customSalesTax"
-              class="small"
-            >
-              Custom Amount Entered
-            </p>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
             <span v-if="editingSalesTax">
@@ -1364,7 +1358,7 @@ export default {
       let coupon = this.coupon;
       let subtotal = this.subtotal;
       if (coupon.type === "flat") {
-        return coupon.amount < subtotal ? coupon.amount : subtotal;
+        return coupon.amount;
       } else if (coupon.type === "percent") {
         return (coupon.amount / 100) * subtotal;
       }
@@ -1519,7 +1513,7 @@ export default {
       if (this.customSalesTax !== null) {
         return parseFloat(this.customSalesTax);
       }
-      if (this.$route.params.adjustOrder && this.order.customSalesTax) {
+      if (this.$route.params.adjustOrder) {
         return this.order.salesTax;
       }
       // Custom Sales Tax Per Meal
@@ -1948,7 +1942,6 @@ export default {
           card_id: cardId,
           store_id: this.store.id,
           salesTax: this.tax,
-          customSalesTax: this.customSalesTax !== null ? 1 : 0,
           couponCode: this.couponApplied ? this.coupon.code : null,
           coupon_id: this.couponApplied ? this.coupon.id : null,
           couponReduction: this.couponReduction,

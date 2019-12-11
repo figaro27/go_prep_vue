@@ -197,47 +197,46 @@ class SubscriptionController extends UserController
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
-        $total = $request->get('subtotal');
+        $total = $bag->getTotal();
         $subtotal = $request->get('subtotal');
-        $afterDiscountBeforeFees = $request->get('afterDiscount');
-        $preFeePreDiscount = $subtotal;
+        $afterDiscountBeforeFees = $bag->getTotal();
+        $preFeePreDiscount = $bag->getTotal();
         $deposit = $request->get('deposit') / 100;
 
-        $processingFee = $request->get('processingFee');
-        $mealPlanDiscount = $request->get('mealPlanDiscount');
+        $processingFee = 0;
+        $mealPlanDiscount = 0;
         $salesTax = $request->get('salesTax');
 
-        // if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
-        //     $discount = $store->settings->mealPlanDiscount / 100;
-        //     $mealPlanDiscount = $total * $discount;
-        //     $total -= $mealPlanDiscount;
-        //     $afterDiscountBeforeFees = $total;
-        // }
+        if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
+            $discount = $store->settings->mealPlanDiscount / 100;
+            $mealPlanDiscount = $total * $discount;
+            $total -= $mealPlanDiscount;
+            $afterDiscountBeforeFees = $total;
+        }
 
-        // if ($store->settings->applyDeliveryFee) {
-        //     $total += $deliveryFee;
-        // }
+        if ($store->settings->applyDeliveryFee) {
+            $total += $deliveryFee;
+        }
 
-        // if ($store->settings->applyProcessingFee) {
-        //     if ($store->settings->processingFeeType === 'flat') {
-        //         $processingFee += $store->settings->processingFee;
-        //     } elseif ($store->settings->processingFeeType === 'percent') {
-        //         $processingFee +=
-        //             ($store->settings->processingFee / 100) * $subtotal;
-        //     }
+        if ($store->settings->applyProcessingFee) {
+            if ($store->settings->processingFeeType === 'flat') {
+                $processingFee += $store->settings->processingFee;
+            } elseif ($store->settings->processingFeeType === 'percent') {
+                $processingFee +=
+                    ($store->settings->processingFee / 100) * $subtotal;
+            }
 
-        //     $total += $processingFee;
-        // }
+            $total += $processingFee;
+        }
 
-        // if ($couponId != null) {
-        //     $total -= $couponReduction;
-        // }
+        if ($couponId != null) {
+            $total -= $couponReduction;
+        }
 
         $customerId = $request->get('customer');
         $customer = Customer::where('id', $customerId)->first();
 
-        // $total += $salesTax;
-        $total = $request->get('grandTotal');
+        $total += $salesTax;
 
         $cashOrder = $request->get('cashOrder');
         if ($cashOrder) {
@@ -304,7 +303,6 @@ class SubscriptionController extends UserController
             $mealSub->store_id = $store->id;
             $mealSub->meal_id = $item['meal']['id'];
             $mealSub->quantity = $item['quantity'];
-            $mealSub->price = $item['price'] * $item['quantity'];
             if (isset($item['size']) && $item['size']) {
                 $mealSub->meal_size_id = $item['size']['id'];
             }

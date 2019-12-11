@@ -187,7 +187,7 @@ $brandColor = $order->store->settings->color;
       <tbody>
 
         @foreach($order->meal_package_items as $i => $mealPackageItem)
-        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'even' }}">
+        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$mealPackageItem->quantity}}</td>
           <td>{{ isset($mealPackageItem->meal_package_size) && $mealPackageItem->meal_package_size? $mealPackageItem->meal_package_size->title:$mealPackageItem->meal_package->default_size_title }}</td>
           <td>{{ $mealPackageItem->meal_package->title }}</td>
@@ -196,7 +196,7 @@ $brandColor = $order->store->settings->color;
 
         @foreach($order->items as $i => $item)
         @if ($item->meal_package_order_id === $mealPackageItem->id  && !$item->hidden)
-        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'even' }}">
+        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$item->quantity}}</td>
           <td>{{ $item->base_size }}</td>
           <!--<td>{!! $item->html_title !!}</td>!-->
@@ -211,9 +211,8 @@ $brandColor = $order->store->settings->color;
 
         @endforeach
         @foreach($order->items as $i => $item)
-        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'even' }}">
         @if ($item->meal_package_order_id === null && !$item->hidden)
-        
+        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$item->quantity}}</td>
           <td>{{ $item->base_size }}</td>
           <!--<td>{!! $item->html_title !!}</td>!-->
@@ -225,15 +224,14 @@ $brandColor = $order->store->settings->color;
             {{$currency}}{{ number_format($item->price, 2) }}
             @endif
           </td>
-        
+        </tr>
 
         @endif
-        </tr>
         @endforeach
 
         @if (count($order->lineItemsOrders))
         @foreach ($order->lineItemsOrders as $i => $lineItemOrder)
-        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'even' }}">
+        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$lineItemOrder->quantity}}</td>
           <td></td>
           <td>{!! $lineItemOrder->title !!}</td>

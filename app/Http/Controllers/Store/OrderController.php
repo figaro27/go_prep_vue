@@ -456,9 +456,10 @@ class OrderController extends StoreController
      */
     public function show($id)
     {
-        $order = $this->store
+        return $this->store
             ->orders()
             ->with([
+                'user',
                 'user.userDetail',
                 'meals',
                 'pickup_location',
@@ -467,27 +468,6 @@ class OrderController extends StoreController
             ])
             ->where('id', $id)
             ->first();
-
-        $order->makeHidden([
-            'meals',
-            'meal_ids',
-            'payment_gateway',
-            'paid',
-            'paid_at',
-            'pickup_location',
-            'pickup_location_id',
-            'purchasedGiftCardReduction',
-            'purchased_gift_card_code',
-            'purchased_gift_card_id',
-            'stripe_id',
-            'user_id'
-        ]);
-
-        if (!$this->store->modules->multipleDeliveryDays) {
-            $order->makeHIdden(['delivery_dates_array', 'isMultipleDelivery']);
-        }
-
-        return $order;
     }
 
     /**

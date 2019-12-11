@@ -504,7 +504,7 @@ class User extends Authenticatable implements JWTSubject
         if ($email) {
             if ($bcc === true) {
                 Mail::to($this)
-                    ->bcc('orders@goprep.com')
+                    ->bcc('mike@goprep.com')
                     ->send($email);
                 return true;
             } else {

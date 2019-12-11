@@ -278,12 +278,12 @@ export default {
             let title = lineItem.title;
             let base_title = lineItem.title;
 
-            if (!mealCounts[title]) {
-              mealCounts[title] = 0;
-              mealIds[title] = lineItem.id;
-              mealTitles[title] = base_title;
+            if (!mealCounts[base_title]) {
+              mealCounts[base_title] = 0;
+              mealIds[base_title] = lineItem.id;
+              mealTitles[base_title] = base_title;
             }
-            mealCounts[title] += lineItem.quantity;
+            mealCounts[base_title] += lineItem.quantity;
           }
         });
       });
@@ -313,7 +313,7 @@ export default {
 
         return {
           ...meal,
-          title,
+          //title,
           base_title,
           base_size,
           price,

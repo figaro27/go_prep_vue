@@ -86,16 +86,14 @@ class CheckoutController extends UserController
         }
 
         $application_fee = $storeSettings->application_fee;
-
         $total = $request->get('subtotal');
         $subtotal = $request->get('subtotal');
-        $preFeePreDiscount = $subtotal;
+        $preFeePreDiscount = $request->get('subtotal');
         $afterDiscountBeforeFees = $request->get('afterDiscount');
 
         $processingFee = $request->get('processingFee');
         $mealPlanDiscount = $request->get('mealPlanDiscount');
         $salesTax = $request->get('salesTax');
-        $customSalesTax = $request->get('customSalesTax');
 
         $dailyOrderNumber = 0;
         if (!$isMultipleDelivery) {
@@ -233,7 +231,6 @@ class CheckoutController extends UserController
             $order->deliveryFee = $deliveryFee;
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
-            $order->customSalesTax = $customSalesTax;
             $order->amount = $total;
             $order->balance = $balance;
             $order->currency = $storeSettings->currency;
@@ -445,24 +442,6 @@ class CheckoutController extends UserController
                     if (count($explicitAttachments) > 0) {
                         $attachments = $explicitAttachments;
                     }
-
-                    $mealPackageAttachments = MealAttachment::where([
-                        'meal_id' => 0,
-                        'meal_package_id' => $item['meal_package_id'],
-                        'meal_package_size_id' => isset(
-                            $item['meal_package_size_id']
-                        )
-                            ? $item['meal_package_size_id']
-                            : null
-                    ])->get();
-
-                    foreach (
-                        $mealPackageAttachments
-                        as $mealPackageAttachment
-                    ) {
-                        $attachments->push($mealPackageAttachment);
-                    }
-
                     if ($attachments) {
                         foreach ($attachments as $attachment) {
                             $mealOrder = new MealOrder();
@@ -694,7 +673,6 @@ class CheckoutController extends UserController
                 $order->deliveryFee = $deliveryFee;
                 $order->processingFee = $processingFee;
                 $order->salesTax = $salesTax;
-                $order->customSalesTax = $customSalesTax;
                 $order->amount = $total;
                 $order->currency = $storeSettings->currency;
                 $order->fulfilled = false;
@@ -843,24 +821,6 @@ class CheckoutController extends UserController
                     if (count($explicitAttachments) > 0) {
                         $attachments = $explicitAttachments;
                     }
-
-                    $mealPackageAttachments = MealAttachment::where([
-                        'meal_id' => 0,
-                        'meal_package_id' => $item['meal_package_id'],
-                        'meal_package_size_id' => isset(
-                            $item['meal_package_size_id']
-                        )
-                            ? $item['meal_package_size_id']
-                            : null
-                    ])->get();
-
-                    foreach (
-                        $mealPackageAttachments
-                        as $mealPackageAttachment
-                    ) {
-                        $attachments->push($mealPackageAttachment);
-                    }
-
                     if ($attachments) {
                         foreach ($attachments as $attachment) {
                             $mealOrder = new MealOrder();
@@ -996,7 +956,6 @@ class CheckoutController extends UserController
                     if (count($explicitAttachments) > 0) {
                         $attachments = $explicitAttachments;
                     }
-
                     if ($attachments) {
                         foreach ($attachments as $attachment) {
                             $mealSub = new MealSubscription();
