@@ -100,16 +100,17 @@ class CheckoutController extends StoreController
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
-        $total = $request->get('subtotal');
 
+        $total = $request->get('subtotal');
         $subtotal = $request->get('subtotal');
-        $afterDiscountBeforeFees = $bagTotal;
         $preFeePreDiscount = $subtotal;
+        $afterDiscountBeforeFees = $request->get('afterDiscount');
         $deposit = $request->get('deposit') ? $request->get('deposit') : 0;
 
         $processingFee = $request->get('processingFee');
         $mealPlanDiscount = $request->get('mealPlanDiscount');
         $salesTax = $request->get('salesTax');
+        $customSalesTax = $request->get('customSalesTax');
 
         $dailyOrderNumber = 0;
         if (!$isMultipleDelivery) {
@@ -265,6 +266,7 @@ class CheckoutController extends StoreController
             $order->deliveryFee = $deliveryFee;
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
+            $order->customSalesTax = $customSalesTax;
             $order->amount = $total;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
@@ -473,6 +475,23 @@ class CheckoutController extends StoreController
 
                     if (count($explicitAttachments) > 0) {
                         $attachments = $explicitAttachments;
+                    }
+
+                    $mealPackageAttachments = MealAttachment::where([
+                        'meal_id' => 0,
+                        'meal_package_id' => $item['meal_package_id'],
+                        'meal_package_size_id' => isset(
+                            $item['meal_package_size_id']
+                        )
+                            ? $item['meal_package_size_id']
+                            : null
+                    ])->get();
+
+                    foreach (
+                        $mealPackageAttachments
+                        as $mealPackageAttachment
+                    ) {
+                        $attachments->push($mealPackageAttachment);
                     }
 
                     if ($attachments) {
@@ -720,13 +739,14 @@ class CheckoutController extends StoreController
                 substr(uniqid(rand(10, 99), false), 0, 8)
             );
             $order->notes = $notes;
-            $order->publicOrderNotes = $publicOrderNotes;
+            $order->publicNotes = $publicOrderNotes;
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
             $order->deliveryFee = $deliveryFee;
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
+            $order->customSalesTax = $customSalesTax;
             $order->amount = $total;
             $order->currency = $store->settings->currency;
             $order->fulfilled = false;
@@ -867,6 +887,7 @@ class CheckoutController extends StoreController
                 if (count($explicitAttachments) > 0) {
                     $attachments = $explicitAttachments;
                 }
+
                 if ($attachments) {
                     foreach ($attachments as $attachment) {
                         $mealOrder = new MealOrder();
@@ -897,7 +918,6 @@ class CheckoutController extends StoreController
                 $mealSub->store_id = $store->id;
                 $mealSub->meal_id = $item['meal']['id'];
                 $mealSub->quantity = $item['quantity'];
-                $mealSub->price = $item['price'];
                 $mealSub->price = $item['price'] * $item['quantity'];
                 if (isset($item['size']) && $item['size']) {
                     $mealSub->meal_size_id = $item['size']['id'];
@@ -999,6 +1019,7 @@ class CheckoutController extends StoreController
                 if (count($explicitAttachments) > 0) {
                     $attachments = $explicitAttachments;
                 }
+
                 if ($attachments) {
                     foreach ($attachments as $attachment) {
                         $mealSub = new MealSubscription();
