@@ -25,14 +25,10 @@ ul {
       text-align: left;
       width: 1em;
       display: inline-block;
-      margin-right: 1.5em;
+      margin-right: 1em;
+      list-style-position: outside;
     }
   }
-}
-
-.plain li {
-  list-style-type: disc;
-  list-style-position: inside;
 }
 
 html,
