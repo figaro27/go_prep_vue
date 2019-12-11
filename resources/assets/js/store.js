@@ -1488,7 +1488,7 @@ const actions = {
       await dispatch("refreshViewedOwnerStore", data);
     }
 
-    await Promise.all([dispatch("refreshUpcomingOrdersWithoutItems")]);
+    // await Promise.all([dispatch("refreshUpcomingOrdersWithoutItems")]);
 
     await Promise.all([dispatch("refreshLazy"), dispatch("refreshLazyStore")]);
 
