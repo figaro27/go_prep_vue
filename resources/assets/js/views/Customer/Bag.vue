@@ -388,6 +388,13 @@ export default {
     }
   },
   mounted() {
+    if (this.$route.params.adjustOrder && this.order.coupon_id !== null) {
+      let coupon = this.coupons.find(coupon => {
+        return coupon.id === this.order.coupon_id;
+      });
+      this.setBagCoupon(coupon);
+    }
+
     if (this.store.modules.subscriptionOnly) {
       this.$refs.checkoutArea.weeklySubscriptionValue = true;
     }

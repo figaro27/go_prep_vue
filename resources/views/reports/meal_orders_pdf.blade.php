@@ -10,7 +10,7 @@
     @if ($params->productionGroupTitle != null)
     <h1>{{ $params->productionGroupTitle }} - Production</h1>
     @else
-    <h1>=Production</h1>
+    <h1>Production</h1>
     @endif
 
     <div class="delivery-part">
