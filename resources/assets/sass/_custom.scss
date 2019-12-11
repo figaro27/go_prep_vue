@@ -835,17 +835,13 @@ th {
   color: #73818f !important;
 }
 
-.plain li {
-  list-style-position: outside !important;
-}
-
 ol.plain {
   list-style: decimal;
   padding-inline-start: 10px;
 
   li {
     list-style: decimal;
-    padding-left: 10px;
+    padding-left: 20px;
   }
 }
 
