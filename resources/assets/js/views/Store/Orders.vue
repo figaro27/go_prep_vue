@@ -210,6 +210,17 @@
               <div>{{ formatMoney(props.row.amount, props.row.currency) }}</div>
             </div>
           </v-client-table>
+
+          <div class="text-center">
+            <b-pagination
+              v-model="orders.page"
+              :total-rows="orders.total"
+              :per-page="10"
+              align="center"
+            ></b-pagination>
+
+            {{ orders.total }} Records
+          </div>
         </div>
       </div>
     </div>
@@ -978,32 +989,34 @@ export default {
     }),
     orders: createInstance("orders", {
       page: 1,
-      pageSize: 25,
+      pageSize: 10,
       args() {
-        return {
-          hide: ["items"]
-        };
+        return {};
       }
     }),
     tableData() {
-      /*let filters = { ...this.filters };
+      let filters = { ...this.filters };
 
-      let orders = [];
+      let orders = this.orders.items;
 
-      if (this.filters.delivery_dates.start === null) {
+      /*if (this.filters.delivery_dates.start === null) {
         orders = this.upcomingOrdersWithoutItems;
       } else {
         orders = this.ordersByDate;
-      }
+      }*/
 
       orders.forEach(order => {
         if (order.balance && !this.columns.includes("balance")) {
           this.columns.splice(9, 0, "balance");
           return;
         }
-      });*/
+      });
 
-      return _.isArray(this.orders) ? this.orders : [];
+      //while(orders.length < this.orders.total) {
+      //  orders.push({});
+      //}
+
+      return _.isArray(orders) ? orders : [];
     },
     fullyRefunded() {
       // return false;
@@ -1037,7 +1050,8 @@ export default {
       this.refreshOrdersWithFulfilled();
     },
     onChangePage(page) {
-      this.page = page;
+      console.log("page", page);
+      this.orders.page = page;
     },
     formatMoney: format.money,
     syncEditables() {
@@ -1441,3 +1455,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.VuePagination__count {
+  display: none;
+}
+</style>

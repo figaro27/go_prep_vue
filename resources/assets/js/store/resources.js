@@ -23,7 +23,10 @@ const fetchOrders = async ({ page, pageSize, args }) => {
       data: orders
     };
   } else {
-    throw new Error("Failed to retrieve orders");
+    return {
+      total: 0,
+      data: []
+    };
   }
 };
 

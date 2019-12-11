@@ -22,6 +22,7 @@ use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Carbon;
 use DB;
 use App\Traits\DeliveryDates;
+use Illuminate\Pagination\Paginator;
 
 class OrderController extends StoreController
 {
@@ -51,6 +52,9 @@ class OrderController extends StoreController
         }
 
         // Paginate
+        Paginator::currentPageResolver(function () use ($page) {
+            return $page;
+        });
         return $query->paginate($pageSize);
     }
 
