@@ -58,9 +58,11 @@ class OrderController extends StoreController
             $query = $query->whereDate('delivery_date', '<=', $end);
         }
 
-        if ($query) {
+        if ($search) {
             $query = $query->whereLike(
                 [
+                    'order_number',
+                    'dailyOrderNumber',
                     'user.details.firstname',
                     'user.details.lastName',
                     'user.details.address',
