@@ -208,6 +208,10 @@ foreach (
                                 'IngredientController@adjust'
                             );
                             Route::resource('orders', 'OrderController');
+                            Route::get(
+                                'orders/{page?}/{pageSize?}',
+                                'OrderController@index'
+                            );
                             Route::post('getOrders', 'OrderController@index');
                             Route::post(
                                 'getUpcomingOrders',

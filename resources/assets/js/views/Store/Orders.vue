@@ -10,6 +10,7 @@
             :data="tableData"
             :options="options"
             v-show="initialized"
+            @pagination="onChangePage"
           >
             <div slot="beforeTable" class="mb-2">
               <div class="table-before d-flex flex-wrap align-items-center">
@@ -822,6 +823,7 @@ import Spinner from "../../components/Spinner";
 import format from "../../lib/format";
 import vSelect from "vue-select";
 import { mapGetters, mapActions, mapMutations } from "vuex";
+import { createInstance } from "vuex-pagination";
 import checkDateRange from "../../mixins/deliveryDates";
 import { sidebarCssClasses } from "../../shared/classes";
 import store from "../../store";
@@ -834,6 +836,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      page: 1,
       editingCustomer: false,
       editingBalance: false,
       balance: 0,
@@ -973,8 +976,17 @@ export default {
       storeSettings: "storeSettings",
       getStoreMeal: "storeMeal"
     }),
+    orders: createInstance("orders", {
+      page: 1,
+      pageSize: 25,
+      args() {
+        return {
+          hide: ["items"]
+        };
+      }
+    }),
     tableData() {
-      let filters = { ...this.filters };
+      /*let filters = { ...this.filters };
 
       let orders = [];
 
@@ -989,9 +1001,9 @@ export default {
           this.columns.splice(9, 0, "balance");
           return;
         }
-      });
+      });*/
 
-      return orders;
+      return _.isArray(this.orders) ? this.orders : [];
     },
     fullyRefunded() {
       // return false;
@@ -1023,6 +1035,9 @@ export default {
     },
     refreshTableWithFulfilled() {
       this.refreshOrdersWithFulfilled();
+    },
+    onChangePage(page) {
+      this.page = page;
     },
     formatMoney: format.money,
     syncEditables() {

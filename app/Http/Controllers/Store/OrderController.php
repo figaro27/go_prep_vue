@@ -32,19 +32,31 @@ class OrderController extends StoreController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, $page = -1, $pageSize = -1)
     {
-        return $this->store->has('orders')
-            ? $this->store
-                ->orders()
-                ->with(['user', 'pickup_location', 'purchased_gift_cards'])
-                ->where(['paid' => 1])
-                ->get()
-            : [];
+        if (!$this->store->has('orders')) {
+            return [];
+        }
+
+        $hide = $request->query('hide', ['items']);
+
+        $query = $this->store
+            ->orders()
+            ->with(['user', 'pickup_location', 'purchased_gift_cards'])
+            ->where(['paid' => 1])
+            ->without($hide);
+
+        if ($page === -1) {
+            return $query->get();
+        }
+
+        // Paginate
+        return $query->paginate($pageSize);
     }
 
     public function getUpcomingOrders()
     {
+        return [];
         $fromDate = Carbon::today(
             $this->store->settings->timezone
         )->startOfDay();
@@ -139,6 +151,8 @@ class OrderController extends StoreController
 
     public function getUpcomingOrdersWithoutItems()
     {
+        return [];
+
         // Optimized orders for Store/Orders & Store/Payments pages
         $fromDate = Carbon::today(
             $this->store->settings->timezone
