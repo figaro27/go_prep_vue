@@ -2100,6 +2100,11 @@ const actions = {
 
     const key = "dd_" + delivery_day.id;
     if (state.isLazyDD[key]) {
+      state.viewed_store = {
+        ...state.viewed_store,
+        delivery_day
+      };
+
       return false;
     }
 
@@ -2116,6 +2121,10 @@ const actions = {
 
   async refreshLazy({ state }, args = {}) {
     if (state.isLazy) {
+      return false;
+    }
+
+    if (!state.viewed_store.id) {
       return false;
     }
 

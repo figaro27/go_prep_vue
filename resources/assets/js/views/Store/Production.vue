@@ -197,6 +197,39 @@ export default {
       let mealTitles = {};
 
       orders.forEach(order => {
+        _.forEach(order.newItems, item => {
+          let meal = this.getMeal(item.meal_id);
+          if (meal) {
+            if (this.productionGroupId != null) {
+              if (meal.production_group_id !== this.productionGroupId)
+                return null;
+            }
+
+            let size = meal.getSize(item.meal_size_id);
+            let title = meal.getTitle(
+              true,
+              size,
+              item.components,
+              item.addons,
+              item.special_instructions
+            );
+            let base_title = item.base_title;
+            let base_size = item.base_size ? item.base_size : "";
+            let key = base_title + "<sep>" + base_size;
+
+            if (!mealCounts[key]) {
+              mealCounts[key] = 0;
+              mealIds[key] = item.meal_id;
+              mealSizes[key] = size;
+              mealTitles[key] = base_title;
+            }
+            mealCounts[key] += item.quantity;
+          }
+        });
+      });
+
+      /*
+      orders.forEach(order => {
         _.forEach(order.items, item => {
           let meal = this.getMeal(item.meal_id);
           if (meal) {
@@ -231,6 +264,7 @@ export default {
           }
         });
       });
+      */
 
       orders.forEach(order => {
         _.forEach(order.line_items_order, lineItem => {
@@ -254,17 +288,15 @@ export default {
         });
       });
 
-      return _.map(mealCounts, (quantity, title) => {
-        let meal = this.getMeal(mealIds[title]);
+      return _.map(mealCounts, (quantity, key) => {
+        let meal = this.getMeal(mealIds[key]);
 
         if (meal === null) {
           meal = [];
         }
 
-        //let base_title = meal.title + "";
-        let base_title = mealTitles[title];
-
-        let size = mealSizes[title];
+        let size = mealSizes[key];
+        let base_title = "";
         let base_size = "";
 
         if (size) {
@@ -274,6 +306,10 @@ export default {
         }
 
         let price = meal.price;
+
+        const temp = key.split("<sep>");
+        base_title = temp[0];
+        base_size = temp.length > 1 ? temp[1] : "";
 
         return {
           ...meal,

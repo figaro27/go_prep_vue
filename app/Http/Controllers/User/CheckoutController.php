@@ -499,6 +499,15 @@ class CheckoutController extends UserController
                 $purchasedGiftCard->update();
             }
 
+            if ($bagItems && count($bagItems) > 0) {
+                foreach ($bagItems as $bagItem) {
+                    $orderBag = new OrderBag();
+                    $orderBag->order_id = (int) $order->id;
+                    $orderBag->bag = json_encode($bagItem);
+                    $orderBag->save();
+                }
+            }
+
             // Send notification to store
             if ($storeSettings->notificationEnabled('new_order')) {
                 $store->sendNotification('new_order', [
@@ -524,15 +533,6 @@ class CheckoutController extends UserController
                     ->send($email);
             } catch (\Exception $e) {
             }*/
-
-            if ($bagItems && count($bagItems) > 0) {
-                foreach ($bagItems as $bagItem) {
-                    $orderBag = new OrderBag();
-                    $orderBag->order_id = (int) $order->id;
-                    $orderBag->bag = json_encode($bagItem);
-                    $orderBag->save();
-                }
-            }
 
             try {
                 $user->sendNotification('new_order', [

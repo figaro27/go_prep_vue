@@ -110,10 +110,10 @@ class MealOrder extends Pivot
         }
 
         if (
+            //$this->order->store->modules->multipleDeliveryDays &&
             isset($this->order) &&
             isset($this->order->store) &&
             isset($this->order->store->modules) &&
-            $this->order->store->modules->multipleDeliveryDays &&
             (int) $this->order->isMultipleDelivery == 1 &&
             $this->delivery_date
         ) {
@@ -189,14 +189,15 @@ class MealOrder extends Pivot
             $title .= $this->special_instructions;
         }
 
-        $deliveryDate = new Carbon($this->delivery_date);
-
         if (
+            //$this->order->store->modules->multipleDeliveryDays &&
             isset($this->order) &&
             isset($this->order->store) &&
             isset($this->order->store->modules) &&
-            $this->order->store->modules->multipleDeliveryDays
+            (int) $this->order->isMultipleDelivery == 1 &&
+            $this->delivery_date
         ) {
+            $deliveryDate = new Carbon($this->delivery_date);
             $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
         }
 
@@ -247,14 +248,15 @@ class MealOrder extends Pivot
             $title .= $this->special_instructions;
         }
 
-        $deliveryDate = new Carbon($this->delivery_date);
-
         if (
+            //$this->order->store->modules->multipleDeliveryDays &&
             isset($this->order) &&
             isset($this->order->store) &&
             isset($this->order->store->modules) &&
-            $this->order->store->modules->multipleDeliveryDays
+            (int) $this->order->isMultipleDelivery == 1 &&
+            $this->delivery_date
         ) {
+            $deliveryDate = new Carbon($this->delivery_date);
             $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
         }
 
@@ -318,14 +320,15 @@ class MealOrder extends Pivot
                 '</p>';
         }
 
-        $deliveryDate = new Carbon($this->delivery_date);
-
         if (
+            // $this->order->store->modules->multipleDeliveryDays &&
             isset($this->order) &&
             isset($this->order->store) &&
             isset($this->order->store->modules) &&
-            $this->order->store->modules->multipleDeliveryDays
+            (int) $this->order->isMultipleDelivery == 1 &&
+            $this->delivery_date
         ) {
+            $deliveryDate = new Carbon($this->delivery_date);
             $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
         }
 
