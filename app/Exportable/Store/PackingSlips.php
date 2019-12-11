@@ -22,6 +22,8 @@ class PackingSlips
         $this->store = $store;
         $this->params = $params;
         $this->orientation = 'portrait';
+        $this->page = $params->get('page', 1);
+        $this->perPage = 25;
     }
 
     public function exportData($type = null)
@@ -140,7 +142,26 @@ class PackingSlips
                 );
             }*/
 
-            $orders = $orders->get();
+            $total = $orders->count();
+            $orders = $orders
+                ->get()
+                ->slice(($this->page - 1) * $this->perPage)
+                ->take($this->perPage);
+            $numDone = $this->page * $this->perPage;
+
+            if ($numDone < $total) {
+                $this->page++;
+            } else {
+                $this->page = null;
+            }
+
+            // Filter out hidden items
+            $orders = $orders->map(function ($order) {
+                $order->items = $order->items->filter(function ($item) {
+                    return !$item->hidden;
+                });
+                return $order;
+            });
         }
 
         return $orders;
