@@ -458,7 +458,7 @@ class CheckoutController extends StoreController
 
                     $attachments = MealAttachment::where([
                         'meal_id' => $item['meal']['id'],
-                        'meal_size_id' => 0
+                        'applyToAll' => 1
                     ])->get();
 
                     $explicitAttachments = MealAttachment::where([
@@ -476,8 +476,8 @@ class CheckoutController extends StoreController
                             : null
                     ])->get();
 
-                    if (count($explicitAttachments) > 0) {
-                        $attachments = $explicitAttachments;
+                    foreach ($explicitAttachments as $explicitAttachment) {
+                        $attachments->push($explicitAttachment);
                     }
 
                     $mealPackageAttachments = MealAttachment::where([
