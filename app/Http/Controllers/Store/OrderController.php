@@ -89,40 +89,40 @@ class OrderController extends StoreController
             $data = $orders->get();
 
             // Newly Added for Table Data
-            if ($data) {
-                foreach ($data as &$order) {
-                    $newItems = [];
-                    $mealOrders = $order
-                        ->meal_orders()
-                        ->with('meal')
-                        ->get();
+            // if ($data) {
+            //     foreach ($data as &$order) {
+            //         $newItems = [];
+            //         $mealOrders = $order
+            //             ->meal_orders()
+            //             ->with('meal')
+            //             ->get();
 
-                    if ($order->isMultipleDelivery) {
-                        if ($mealOrders) {
-                            foreach ($mealOrders as $mealOrder) {
-                                if (!$mealOrder->delivery_date) {
-                                    continue;
-                                }
+            //         if ($order->isMultipleDelivery) {
+            //             if ($mealOrders) {
+            //                 foreach ($mealOrders as $mealOrder) {
+            //                     if (!$mealOrder->delivery_date) {
+            //                         continue;
+            //                     }
 
-                                $mealOrder_date = Carbon::parse(
-                                    $mealOrder->delivery_date
-                                )->format('Y-m-d');
-                                if (
-                                    $mealOrder_date < $fromDate->format('Y-m-d')
-                                ) {
-                                    continue;
-                                }
+            //                     $mealOrder_date = Carbon::parse(
+            //                         $mealOrder->delivery_date
+            //                     )->format('Y-m-d');
+            //                     if (
+            //                         $mealOrder_date < $fromDate->format('Y-m-d')
+            //                     ) {
+            //                         continue;
+            //                     }
 
-                                $newItems[] = $mealOrder;
-                            }
-                        }
-                    } else {
-                        $newItems = $mealOrders;
-                    }
+            //                     $newItems[] = $mealOrder;
+            //                 }
+            //             }
+            //         } else {
+            //             $newItems = $mealOrders;
+            //         }
 
-                    $order->newItems = $newItems;
-                }
-            }
+            //         $order->newItems = $newItems;
+            //     }
+            // }
         }
 
         return $data;
