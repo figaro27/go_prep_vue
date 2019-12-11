@@ -42,11 +42,7 @@ class PopulateCardStoreIds extends Command
             if (!$card->user) {
                 continue;
             }
-            $storeId =
-                $card->user
-                    ->customers()
-                    ->where('payment_gateway', $card->payment_gateway)
-                    ->first()->store_id ?? null;
+            $storeId = $card->user->customers()->first()->store_id ?? null;
             if (!$storeId) {
                 continue;
             }
