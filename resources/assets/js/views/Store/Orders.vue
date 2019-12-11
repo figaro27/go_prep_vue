@@ -13,16 +13,24 @@
             @pagination="onChangePage"
             :class="{ 'table-loading': this.orders.loading }"
           >
+            <div slot="beforeFilter">
+              <b-input
+                @change="val => (filters.query = val)"
+                ref="search"
+                lazy
+                placeholder="Search"
+              />
+            </div>
             <div slot="beforeTable" class="mb-2">
               <div class="table-before d-flex flex-wrap align-items-center">
-                <div class="d-inline-block mb-2 mb-md-0 mr-2 flex-grow-0">
+                <div class="d-inline<v--block mb-2 mb-md-0 mr-2 flex-grow-0">
                   <!-- <b-btn
                     @click="$set(filters, 'has_notes', !filters.has_notes)"
                     :selected="filters.has_notes"
                     variant="primary"
                     class="filter-btn"
                     >Filter Notes</b-btn
-                  > -->
+                  >-->
                 </div>
                 <div class="d-inline-block mr-2 flex-grow-0">
                   <!-- <b-btn
@@ -40,7 +48,7 @@
                     class="filter-btn"
                     v-if="filters.fulfilled"
                     >View Open Orders</b-btn
-                  > -->
+                  >-->
 
                   <!--<router-link
                     to="/store/manual-order"
@@ -169,9 +177,9 @@
               {{ moment(props.row.created_at).format("dddd, MMM Do") }}
             </div>
             <div slot="delivery_date" slot-scope="props">
-              <template v-if="!props.row.isMultipleDelivery">
-                {{ moment(props.row.delivery_date).format("dddd, MMM Do") }}
-              </template>
+              <template v-if="!props.row.isMultipleDelivery">{{
+                moment(props.row.delivery_date).format("dddd, MMM Do")
+              }}</template>
               <template v-else>
                 Multiple Dates
                 <!-- {{ order.multiple_dates }} -->
@@ -189,13 +197,12 @@
                   (props.row.balance > 0 || props.row.balance < 0) &&
                     props.row.balance !== null
                 "
-                ><!-- {{
-                  ((props.row.balance / props.row.amount) * 100).toFixed(0)
-                }}% - -->
-                {{
-                  format.money(props.row.balance, storeSettings.currency)
-                }}</span
               >
+                <!-- {{
+                  ((props.row.balance / props.row.amount) * 100).toFixed(0)
+                }}% --->
+                {{ format.money(props.row.balance, storeSettings.currency) }}
+              </span>
               <span v-else>Paid in Full</span>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
@@ -220,7 +227,6 @@
               align="center"
               :hide-ellipsis="true"
             ></b-pagination>
-
             {{ orders.total }} Records
           </div>
         </div>
@@ -311,7 +317,8 @@
             >
               <b-form-checkbox v-model="applyToBalanceCharge"
                 >Apply Charge to Balance</b-form-checkbox
-              ><br />
+              >
+              <br />
               <b-btn
                 class="btn mb-2 d-inline mr-1"
                 variant="success"
@@ -342,7 +349,8 @@
             >
               <b-form-checkbox v-model="applyToBalanceRefund"
                 >Apply Refund to Balance</b-form-checkbox
-              ><br />
+              >
+              <br />
               <b-btn
                 :disabled="fullyRefunded"
                 class="btn mb-2 d-inline mr-1 purpleBG"
@@ -489,7 +497,7 @@
                 <b-form-input
                   type="number"
                   v-model="balance"
-                  class="d-inline mb-1 "
+                  class="d-inline mb-1"
                   style="width:100px"
                 ></b-form-input>
                 <i
@@ -503,7 +511,8 @@
                 class="fa fa-edit text-warning d-inline"
               ></i>
             </div>
-            <br /><br />
+            <br />
+            <br />
             <div
               class="d-inline"
               v-if="order.balance !== null && order.balance != 0"
@@ -577,7 +586,7 @@
               <h4 v-if="order.pickup">Pickup Day</h4>
               <template v-if="!order.isMultipleDelivery">
                 {{ moment(order.delivery_date).format("dddd, MMM Do") }}
-                <span v-if="order.transferTime"> {{ order.transferTime }}</span>
+                <span v-if="order.transferTime">{{ order.transferTime }}</span>
               </template>
               <template v-else>
                 <p>{{ order.multiple_dates }}</p>
@@ -589,7 +598,8 @@
               {{ order.pickup_location.address }},
               {{ order.pickup_location.city }},
               {{ order.pickup_location.state }}
-              {{ order.pickup_location.zip }}<br />
+              {{ order.pickup_location.zip }}
+              <br />
               <span v-if="order.pickup_location.instructions">
                 <b>Instructions:</b>
                 {{ order.pickup_location.instructions }}
@@ -805,9 +815,9 @@
               >
                 <div class="row">
                   <div class="col-md-3">
-                    <span class="order-quantity">{{
-                      lineItemOrder.quantity
-                    }}</span>
+                    <span class="order-quantity">
+                      {{ lineItemOrder.quantity }}
+                    </span>
                     <img src="/images/store/x-modal.png" class="mr-1 ml-1" />
                   </div>
                   <div class="col-md-9">
@@ -870,7 +880,8 @@ export default {
           start: null,
           end: null
         },
-        has_notes: false
+        has_notes: false,
+        query: null
       },
       viewOrderModal: false,
       order: {},
@@ -994,15 +1005,16 @@ export default {
       pageSize: 10,
       args() {
         const { filters } = this;
-        let args = {};
+        const { query, delivery_dates, fulfilled, paid, has_notes } = filters;
 
-        if (filters.delivery_dates.start) {
-          args = {
-            ...args,
-            start: filters.delivery_dates.start,
-            end: filters.delivery_dates.end
-          };
-        }
+        let args = {
+          query,
+          start: delivery_dates.start || null,
+          end: delivery_dates.end || null,
+          fulfilled,
+          paid,
+          has_notes
+        };
 
         return args;
       }
@@ -1470,7 +1482,8 @@ export default {
 </script>
 
 <style lang="scss">
-.VuePagination__count {
+.VuePagination__count,
+.VueTables__search-field {
   display: none;
 }
 </style>

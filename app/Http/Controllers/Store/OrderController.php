@@ -42,6 +42,7 @@ class OrderController extends StoreController
         $hide = $request->query('hide', ['items']);
         $start = $request->query('start', null);
         $end = $request->query('end', null);
+        $search = $request->query('query', null);
 
         $query = $this->store
             ->orders()
@@ -55,6 +56,18 @@ class OrderController extends StoreController
 
         if ($end) {
             $query = $query->whereDate('delivery_date', '<=', $end);
+        }
+
+        if ($query) {
+            $query = $query->whereLike(
+                [
+                    'user.details.firstname',
+                    'user.details.lastName',
+                    'user.details.address',
+                    'user.details.zip'
+                ],
+                $search
+            );
         }
 
         if ($page === -1) {
