@@ -4,6 +4,7 @@ namespace App\Exportable;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Collection;
 use mikehaertl\wkhtmlto\Pdf;
 use \XLSXWriter;
 use Illuminate\Support\Facades\Log;
@@ -11,8 +12,18 @@ use Illuminate\Support\Facades\Log;
 trait Exportable
 {
     protected $orientation = 'landscape';
-    protected $params = [];
+
+    /** @var Collection $params */
+    protected $params = null;
+
+    /** @var string $type */
     protected $type = null;
+
+    /** @var int $page */
+    protected $page = 1;
+
+    /** @var int $perPage */
+    protected $perPage = 25;
 
     abstract public function exportData($type = null);
     abstract public function exportPdfView();
@@ -184,5 +195,13 @@ trait Exportable
         }
 
         return $dates;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPage()
+    {
+        return $this->page;
     }
 }
