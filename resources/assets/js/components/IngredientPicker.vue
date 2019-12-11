@@ -200,6 +200,111 @@
             <b-button type="submit" variant="primary">Add</b-button>
           </b-form>
         </b-tab>
+
+        <b-tab title="Enter Nutrition Directly" v-if="!createMealModal">
+          <b-form @submit.prevent="addToRecipe(true)">
+            <hr />
+            <b-form-group>
+              <div class="row">
+                <div class="col-md-2">
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.calories"
+                    placeholder="Calories"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.cholesterol"
+                    placeholder="Cholesterol"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.vitamind"
+                    placeholder="Vitamin D"
+                    class="mt-2"
+                  ></b-form-input>
+                </div>
+                <div class="col-md-2">
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.totalfat"
+                    placeholder="Total Fat"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.satfat"
+                    placeholder="Saturated Fat"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.transfat"
+                    placeholder="Trans Fat"
+                    class="mt-2"
+                  ></b-form-input>
+                </div>
+                <div class="col-md-2">
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.totalcarb"
+                    placeholder="Total Carb"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.sugars"
+                    placeholder="Sugars"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.sodium"
+                    placeholder="Sodium"
+                    class="mt-2"
+                  ></b-form-input>
+                </div>
+                <div class="col-md-2">
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.proteins"
+                    placeholder="Proteins"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.potassium"
+                    placeholder="Potassium"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.calcium"
+                    placeholder="Calcium"
+                    class="mt-2"
+                  ></b-form-input>
+                </div>
+                <div class="col-md-2">
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.fibers"
+                    placeholder="Fibers"
+                    class="mt-2"
+                  ></b-form-input>
+                  <b-form-input
+                    type="number"
+                    v-model="customIngredient.iron"
+                    placeholder="Iron"
+                    class="mt-2"
+                  ></b-form-input>
+                </div>
+              </div>
+            </b-form-group>
+            <b-button type="submit" variant="primary">Add</b-button>
+          </b-form>
+        </b-tab>
       </b-tabs>
     </b-form>
 
@@ -229,6 +334,7 @@
             <td>
               <b-form-group>
                 <b-form-input
+                  v-if="!ingredient.hidden"
                   placeholder="Weight"
                   v-model="ingredient.quantity"
                   :formatter="
@@ -243,14 +349,18 @@
             <td class="text-center">
               <b-form-group>
                 <b-select
-                  v-if="ingredient.unit_type !== 'unit'"
+                  v-if="ingredient.unit_type !== 'unit' && !ingredient.hidden"
                   v-model="ingredient.quantity_unit"
                   :options="unitOptions(ingredient)"
                   style="width: 60px"
                 >
                   <option slot="top" disabled>-- Select unit --</option>
                 </b-select>
-                <span v-else>{{ ingredient.quantity_unit_display }}</span>
+                <span v-else
+                  ><p v-if="!ingredient.hidden">
+                    {{ ingredient.quantity_unit_display }}
+                  </p></span
+                >
               </b-form-group>
             </td>
             <td>
@@ -341,7 +451,11 @@ import format from "../lib/format";
 
 export default {
   props: {
+    createMealModal: false,
     componentAddonPage: false,
+    componentTitle: null,
+    componentOptionTitle: null,
+    addonTitle: null,
     mealSizeId: null,
     value: {},
     options: {
@@ -518,10 +632,18 @@ export default {
       ) {
         baseUnit = "g";
       }
-      return (
+      let mac = (
         units.convert(macroNutrient, ingredient.quantity_unit, baseUnit, true) *
         ingredient.quantity
       ).toFixed(1);
+
+      return !isNaN(mac) ? mac : 0;
+      // if (!isNaN(mac)){
+      //   return mac;
+      // }
+      // else {
+      //   return 0;
+      // }
     },
     processFoods(foods) {
       return _.map(foods, ingredient => {
@@ -580,15 +702,37 @@ export default {
 
       return ingredient;
     },
-    addToRecipe() {
-      let customIngr = this.processCustomIngredient(this.customIngredient);
-      this.ingredients = _.concat(this.ingredients, customIngr);
+    addToRecipe(directNutrition) {
+      if (!directNutrition) {
+        let customIngr = this.processCustomIngredient(this.customIngredient);
+        this.ingredients = _.concat(this.ingredients, customIngr);
+        this.$toastr.s("Ingredient Added");
+      } else {
+        // Naming the ingredient the full meal with variation title.
+        let baseTitle = this.meal.full_title
+          ? this.meal.full_title
+          : this.meal.title;
+        let componentTitle =
+          this.componentTitle !== undefined
+            ? " - C: " + this.componentTitle + " - " + this.componentOptionTitle
+            : "";
+        let addonTitle =
+          this.addonTitle !== undefined ? " - A: " + this.addonTitle : "";
+        let finalTitle = baseTitle.concat(componentTitle + addonTitle);
+
+        this.customIngredient.food_name = finalTitle;
+        this.customIngredient.serving_qty = 1;
+        this.customIngredient.serving_unit = "g";
+        this.customIngredient.hidden = 1;
+        let customIngr = this.processCustomIngredient(this.customIngredient);
+        this.ingredients = _.concat(this.ingredients, customIngr);
+        this.$toastr.s("Nutrition Added");
+      }
       this.customIngredient = {
         serving_unit: "g",
         image: "http://goprep.com/images/defaultIngredient.jpg",
         image_thumb: "http://goprep.com/images/defaultIngredient.jpg"
       };
-      this.$toastr.s("Ingredient Added");
     },
     searchRecipe() {
       axios
