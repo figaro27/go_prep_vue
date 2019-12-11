@@ -214,14 +214,16 @@ export default {
               item.special_instructions
             );
             let base_title = item.base_title;
+            let base_size = item.base_size ? item.base_size : "";
+            let key = base_title + "<sep>" + base_size;
 
-            if (!mealCounts[base_title]) {
-              mealCounts[base_title] = 0;
-              mealIds[base_title] = item.meal_id;
-              mealSizes[base_title] = size;
-              mealTitles[base_title] = base_title;
+            if (!mealCounts[key]) {
+              mealCounts[key] = 0;
+              mealIds[key] = item.meal_id;
+              mealSizes[key] = size;
+              mealTitles[key] = base_title;
             }
-            mealCounts[base_title] += item.quantity;
+            mealCounts[key] += item.quantity;
           }
         });
       });
@@ -286,14 +288,15 @@ export default {
         });
       });
 
-      return _.map(mealCounts, (quantity, base_title) => {
-        let meal = this.getMeal(mealIds[base_title]);
+      return _.map(mealCounts, (quantity, key) => {
+        let meal = this.getMeal(mealIds[key]);
 
         if (meal === null) {
           meal = [];
         }
 
-        let size = mealSizes[base_title];
+        let size = mealSizes[key];
+        let base_title = "";
         let base_size = "";
 
         if (size) {
@@ -303,6 +306,10 @@ export default {
         }
 
         let price = meal.price;
+
+        const temp = key.split("<sep>");
+        base_title = temp[0];
+        base_size = temp.length > 1 ? temp[1] : "";
 
         return {
           ...meal,

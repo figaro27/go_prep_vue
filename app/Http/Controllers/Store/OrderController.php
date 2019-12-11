@@ -144,45 +144,84 @@ class OrderController extends StoreController
             $this->store->settings->timezone
         )->startOfDay();
 
-        $orders = $this->store->has('orders')
-            ? $this->store
+        if ($this->store->has('orders')) {
+            $orders = $this->store
                 ->orders()
                 ->with(['pickup_location'])
-                ->where(['paid' => 1])
-                ->whereDate('delivery_date', '>=', $fromDate)
-                // ->whereDate('delivery_date', '<=', $fromDate->addWeeks(2))
-                ->get()
-            : [];
+                ->where(['paid' => 1]);
+            $orders = $orders->where(function ($query) use ($fromDate) {
+                $query
+                    ->where(function ($query1) use ($fromDate) {
+                        $query1->where('isMultipleDelivery', 0);
+                        $query1->where(
+                            'delivery_date',
+                            '>=',
+                            $fromDate->format('Y-m-d')
+                        );
+                    })
+                    ->orWhere(function ($query2) use ($fromDate) {
+                        $query2
+                            ->where('isMultipleDelivery', 1)
+                            ->whereHas('meal_orders', function ($subquery) use (
+                                $fromDate
+                            ) {
+                                $subquery->whereNotNull(
+                                    'meal_orders.delivery_date'
+                                );
+                                $subquery->where(
+                                    'meal_orders.delivery_date',
+                                    '>=',
+                                    $fromDate->format('Y-m-d')
+                                );
+                            });
+                    });
+            });
+            $orders = $orders->get();
 
-        $orders->makeHidden([
-            'user',
-            'items',
-            'meal_ids',
-            'line_items_order',
-            'meal_package_items',
+            // Disabled Workflow
+            /*$orders = $this->store
+                  ->orders()
+                  ->with(['pickup_location'])
+                  ->where(['paid' => 1])
+                  ->whereDate('delivery_date', '>=', $fromDate)
+                  // ->whereDate('delivery_date', '<=', $fromDate->addWeeks(2))
+                  ->get();*/
 
-            'added_by_store_id',
-            'chargedAmount',
-            'currency',
-            'order_day',
-            'originalAmount',
-            'payment_gateway',
-            'paid',
-            'paid_at',
-            'pickup_location',
-            'pickup_location_id',
-            'purchasedGiftCardReduction',
-            'purchased_gift_card_code',
-            'purchased_gift_card_id',
-            'stripe_id',
-            'transferTime',
-            'user_id'
-        ]);
+            $orders->makeHidden([
+                'user',
+                'items',
+                'meal_ids',
+                'line_items_order',
+                'meal_package_items',
 
-        if (!$this->store->modules->multipleDeliveryDays) {
-            $orders->makeHIdden(['delivery_dates_array', 'isMultipleDelivery']);
+                'added_by_store_id',
+                'chargedAmount',
+                'currency',
+                'order_day',
+                'originalAmount',
+                'payment_gateway',
+                'paid',
+                'paid_at',
+                'pickup_location',
+                'pickup_location_id',
+                'purchasedGiftCardReduction',
+                'purchased_gift_card_code',
+                'purchased_gift_card_id',
+                'stripe_id',
+                'transferTime',
+                'user_id'
+            ]);
+
+            if (!$this->store->modules->multipleDeliveryDays) {
+                $orders->makeHidden([
+                    'delivery_dates_array',
+                    'isMultipleDelivery'
+                ]);
+            }
+            return $orders;
         }
-        return $orders;
+
+        return [];
     }
 
     public function getOrdersToday(Request $request)
