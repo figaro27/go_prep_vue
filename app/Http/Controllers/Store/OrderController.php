@@ -64,7 +64,7 @@ class OrderController extends StoreController
                     'order_number',
                     'dailyOrderNumber',
                     'user.details.firstname',
-                    'user.details.lastName',
+                    'user.details.lastname',
                     'user.details.address',
                     'user.details.zip'
                 ],
