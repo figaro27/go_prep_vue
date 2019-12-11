@@ -31,10 +31,8 @@ ul {
 }
 
 .plain li {
-  text-indent: -1em;
-  padding-left: 1em;
   list-style-type: disc;
-  list-style-position: outside;
+  list-style-position: inside;
 }
 
 html,
