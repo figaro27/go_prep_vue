@@ -26,9 +26,12 @@ ul {
       width: 1em;
       display: inline-block;
       margin-right: 1.5em;
-      margin-left: 1em;
     }
   }
+}
+
+.plain li {
+  margin-left: 1em !important;
 }
 
 html,
