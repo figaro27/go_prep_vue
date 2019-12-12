@@ -26,6 +26,7 @@ use Illuminate\Pagination\Paginator;
 use App\Billing\Constants;
 use App\Billing\Charge;
 use App\Billing\Authorize;
+use App\Billing\Billing;
 
 class OrderController extends StoreController
 {
