@@ -185,7 +185,6 @@ $brandColor = $order->store->settings->color;
       </thead>
 
       <tbody>
-
         @foreach($order->meal_package_items as $i => $mealPackageItem)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$mealPackageItem->quantity}}</td>
@@ -194,9 +193,12 @@ $brandColor = $order->store->settings->color;
           <td style="text-align:right;padding-right:30px">{{$currency}}{{number_format($mealPackageItem->price * $mealPackageItem->quantity, 2)}}</td>
         </tr>
 
+        @php
+        $count = 0;
+        @endphp
         @foreach($order->visible_items as $i => $item)
         @if ($item->meal_package_order_id === $mealPackageItem->id)
-        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+        <tr class="{{ $count % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$item->quantity}}</td>
           <td>{{ $item->base_size }}</td>
           <!--<td>{!! $item->html_title !!}</td>!-->
@@ -209,11 +211,16 @@ $brandColor = $order->store->settings->color;
             @endif
           </td>
         </tr>
-
+        @php
+        $count += 1;
+        @endphp
         @endif
         @endforeach
-
         @endforeach
+
+        @php
+        $count = 0;
+        @endphp
         @foreach($order->visible_items as $i => $item)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
         @if ($item->meal_package_order_id === null)
@@ -229,8 +236,9 @@ $brandColor = $order->store->settings->color;
             {{$currency}}{{ number_format($item->price, 2) }}
             @endif
           </td>
-        
-
+        @php
+        $count += 1;
+        @endphp
         @endif
         </tr>
         @endforeach
