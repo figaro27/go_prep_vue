@@ -48,7 +48,6 @@ class Order extends Model
         'has_notes',
         'meal_ids',
         'items',
-        'visible_items',
         'meal_orders',
         'meal_package_items',
         'store_name',
@@ -389,15 +388,6 @@ class Order extends Model
             ->map(function ($meal) {
                 return $meal->pivot->quantity ? $meal->pivot->quantity : 0;
             });
-    }
-
-    public function getVisibleItemsAttribute()
-    {
-        return $this->items
-            ->filter(function ($item) {
-                return !$item->hidden;
-            })
-            ->values();
     }
 
     public function getCutoffDateAttribute()
