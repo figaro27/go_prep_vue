@@ -229,7 +229,7 @@ $brandColor = $order->store->settings->color;
           <td>{{ $item->base_size }}</td>
           <!--<td>{!! $item->html_title !!}</td>!-->
           <td>{!! $item->base_title !!}</td>
-          <td style="text-align:center">
+          <td style="text-align:right;padding-right:12px">
             @if ($item->attached || $item->free)
             Included
             @else
