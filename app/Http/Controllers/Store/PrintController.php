@@ -91,7 +91,8 @@ class PrintController extends StoreController
         try {
             $url = $exportable->export($format);
             return [
-                'url' => $url
+                'url' => $url,
+                'next_page' => (int) $exportable->getPage()
             ];
         } catch (\Exception $e) {
             return response()->json(

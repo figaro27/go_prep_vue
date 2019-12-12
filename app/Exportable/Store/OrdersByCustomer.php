@@ -15,6 +15,8 @@ class OrdersByCustomer
         $this->store = $store;
         $this->params = $params;
         $this->orientation = 'portrait';
+        $this->page = $params->get('page', 1);
+        $this->perPage = 25;
     }
     public function exportData($type = null)
     {
@@ -81,6 +83,7 @@ class OrdersByCustomer
                         });
                 });
         });
+
         // Disabled Old Workflow
         /*if (isset($dateRange['from'])) {
             $from = Carbon::parse($dateRange['from']);
@@ -173,9 +176,22 @@ class OrdersByCustomer
             ]);
             return $customerMealOrders;
         } elseif ($type = 'pdf') {
-            $customerOrders = $orders
-                ->with(['meal_orders', 'lineItemsOrders'])
+            $customerOrders = $orders->with(['meal_orders', 'lineItemsOrders']);
+
+            $total = $customerOrders->count();
+            $customerOrders = $customerOrders
                 ->get()
+                ->slice(($this->page - 1) * $this->perPage)
+                ->take($this->perPage);
+            $numDone = $this->page * $this->perPage;
+
+            if ($numDone < $total) {
+                $this->page++;
+            } else {
+                $this->page = null;
+            }
+
+            $customerOrders = $customerOrders
                 ->groupBy('user_id')
                 ->map(function ($orders, $userId) {
                     return [
@@ -236,6 +252,7 @@ class OrdersByCustomer
                         })
                     ];
                 });
+
             return $customerOrders->values();
         }
     }

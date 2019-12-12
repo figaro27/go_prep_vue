@@ -153,10 +153,19 @@ class Authorize implements IBilling
             $paymentprofilerequest
         );
         $response = $controller->executeWithApiResponse($this->environment);
-        /**
-         * @var AnetApi\CreateCustomerPaymentProfileResponse
-         */
-        $response = $this->validateResponse($response);
+
+        try {
+            /**
+             * @var AnetApi\CreateCustomerPaymentProfileResponse
+             */
+            $response = $this->validateResponse($response);
+        } catch (BillingException $e) {
+            // If a duplicate payment profile was found,
+            // skip exception and return the existing profile
+            if ($e->code !== 'E00039') {
+                throw $e;
+            }
+        }
 
         $card = new Card();
         $card->id = $response->getCustomerPaymentProfileId();

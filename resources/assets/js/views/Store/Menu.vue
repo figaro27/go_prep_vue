@@ -448,6 +448,7 @@
                   :options="{ saveButton: true }"
                   :meal="meal"
                   @save="onViewMealModalOk"
+                  :viewMealModal="true"
                 ></ingredient-picker>
               </b-tab>
 

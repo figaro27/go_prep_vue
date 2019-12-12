@@ -9,6 +9,7 @@ use App\Http\Controllers\Store\StoreController;
 use App\Mail\Customer\MealPlan;
 use App\Mail\Customer\NewOrder;
 use App\Mail\Customer\NewGiftCard;
+use App\Meal;
 use App\MealOrder;
 use App\MealOrderComponent;
 use App\MealSubscriptionComponent;
@@ -110,7 +111,10 @@ class CheckoutController extends StoreController
         $processingFee = $request->get('processingFee');
         $mealPlanDiscount = $request->get('mealPlanDiscount');
         $salesTax = $request->get('salesTax');
-        $customSalesTax = $request->get('customSalesTax');
+        $customSalesTax =
+            $request->get('customSalesTax') !== null
+                ? $request->get('customSalesTax')
+                : 0;
 
         $dailyOrderNumber = 0;
         if (!$isMultipleDelivery) {
@@ -205,6 +209,20 @@ class CheckoutController extends StoreController
         }
 
         if (!$weeklyPlan) {
+            $balance = null;
+
+            $noBalance = $request->get('noBalance');
+
+            if ($cashOrder && !$noBalance) {
+                $balance = $total;
+            }
+
+            if ($deposit > 0 && !$noBalance) {
+                $balance = $total - $deposit;
+            }
+
+            $total = $total - $balance;
+
             if ($gateway === Constants::GATEWAY_STRIPE) {
                 $storeSource = \Stripe\Source::create(
                     [
@@ -238,17 +256,7 @@ class CheckoutController extends StoreController
                 $charge->id = $transactionId;
             }
 
-            $balance = null;
-
-            $noBalance = $request->get('noBalance');
-
-            if ($cashOrder && !$noBalance) {
-                $balance = $total;
-            }
-
-            if ($deposit > 0 && !$noBalance) {
-                $balance = $total - $deposit;
-            }
+            $total = $request->get('grandTotal');
 
             $order = new Order();
             $order->user_id = $customerUser->id;
@@ -427,6 +435,11 @@ class CheckoutController extends StoreController
                         }
                     }
 
+                    $hidden = Meal::where('id', $item['meal']['id'])
+                        ->pluck('hidden')
+                        ->first();
+                    $mealOrder->hidden = $hidden;
+
                     $mealOrder->save();
 
                     if (isset($item['components']) && $item['components']) {
@@ -455,10 +468,11 @@ class CheckoutController extends StoreController
 
                     $attachments = MealAttachment::where([
                         'meal_id' => $item['meal']['id'],
-                        'meal_size_id' => 0
+                        'applyToAll' => 1
                     ])->get();
 
                     $explicitAttachments = MealAttachment::where([
+                        'applyToAll' => 0,
                         'meal_id' => $item['meal']['id'],
                         'meal_size_id' => isset($item['size']['id'])
                             ? $item['size']['id']
@@ -473,25 +487,8 @@ class CheckoutController extends StoreController
                             : null
                     ])->get();
 
-                    if (count($explicitAttachments) > 0) {
-                        $attachments = $explicitAttachments;
-                    }
-
-                    $mealPackageAttachments = MealAttachment::where([
-                        'meal_id' => 0,
-                        'meal_package_id' => $item['meal_package_id'],
-                        'meal_package_size_id' => isset(
-                            $item['meal_package_size_id']
-                        )
-                            ? $item['meal_package_size_id']
-                            : null
-                    ])->get();
-
-                    foreach (
-                        $mealPackageAttachments
-                        as $mealPackageAttachment
-                    ) {
-                        $attachments->push($mealPackageAttachment);
+                    foreach ($explicitAttachments as $explicitAttachment) {
+                        $attachments->push($explicitAttachment);
                     }
 
                     if ($attachments) {

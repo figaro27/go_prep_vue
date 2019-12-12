@@ -3,24 +3,35 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <!--<Spinner v-if="isLoading" />!-->
+          <Spinner v-if="orders.loading" />
 
           <v-client-table
             :columns="columns"
             :data="tableData"
             :options="options"
             v-show="initialized"
+            @pagination="onChangePage"
+            :class="{ 'table-loading': this.orders.loading }"
+            class="table-countless"
           >
+            <div slot="beforeFilter">
+              <b-input
+                @change="val => (filters.query = val)"
+                ref="search"
+                lazy
+                placeholder="Search"
+              />
+            </div>
             <div slot="beforeTable" class="mb-2">
               <div class="table-before d-flex flex-wrap align-items-center">
-                <div class="d-inline-block mb-2 mb-md-0 mr-2 flex-grow-0">
+                <div class="d-inline<v--block mb-2 mb-md-0 mr-2 flex-grow-0">
                   <!-- <b-btn
                     @click="$set(filters, 'has_notes', !filters.has_notes)"
                     :selected="filters.has_notes"
                     variant="primary"
                     class="filter-btn"
                     >Filter Notes</b-btn
-                  > -->
+                  >-->
                 </div>
                 <div class="d-inline-block mr-2 flex-grow-0">
                   <!-- <b-btn
@@ -38,7 +49,7 @@
                     class="filter-btn"
                     v-if="filters.fulfilled"
                     >View Open Orders</b-btn
-                  > -->
+                  >-->
 
                   <!--<router-link
                     to="/store/manual-order"
@@ -73,6 +84,10 @@
                   ref="deliveryDates"
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
+
+                <b-btn variant="light" class="ml-auto" @click="refreshTable()">
+                  <i class="fa fa-refresh"></i>
+                </b-btn>
               </div>
             </div>
 
@@ -167,9 +182,9 @@
               {{ moment(props.row.created_at).format("dddd, MMM Do") }}
             </div>
             <div slot="delivery_date" slot-scope="props">
-              <template v-if="!props.row.isMultipleDelivery">
-                {{ moment(props.row.delivery_date).format("dddd, MMM Do") }}
-              </template>
+              <template v-if="!props.row.isMultipleDelivery">{{
+                moment(props.row.delivery_date).format("dddd, MMM Do")
+              }}</template>
               <template v-else>
                 Multiple Dates
                 <!-- {{ order.multiple_dates }} -->
@@ -187,13 +202,12 @@
                   (props.row.balance > 0 || props.row.balance < 0) &&
                     props.row.balance !== null
                 "
-                ><!-- {{
-                  ((props.row.balance / props.row.amount) * 100).toFixed(0)
-                }}% - -->
-                {{
-                  format.money(props.row.balance, storeSettings.currency)
-                }}</span
               >
+                <!-- {{
+                  ((props.row.balance / props.row.amount) * 100).toFixed(0)
+                }}% --->
+                {{ format.money(props.row.balance, storeSettings.currency) }}
+              </span>
               <span v-else>Paid in Full</span>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
@@ -209,6 +223,17 @@
               <div>{{ formatMoney(props.row.amount, props.row.currency) }}</div>
             </div>
           </v-client-table>
+
+          <div class="text-center">
+            <b-pagination
+              v-model="orders.page"
+              :total-rows="orders.total"
+              :per-page="10"
+              align="center"
+              :hide-ellipsis="true"
+            ></b-pagination>
+            {{ orders.total }} Records
+          </div>
         </div>
       </div>
     </div>
@@ -288,16 +313,11 @@
             </span>
             <h4>Order ID</h4>
             <p>{{ order.order_number }}</p>
-            <div
-              class="d-inline"
-              v-if="
-                !order.cashOrder &&
-                  store.settings.payment_gateway !== 'authorize'
-              "
-            >
+            <div class="d-inline" v-if="!order.cashOrder">
               <b-form-checkbox v-model="applyToBalanceCharge"
                 >Apply Charge to Balance</b-form-checkbox
-              ><br />
+              >
+              <br />
               <b-btn
                 class="btn mb-2 d-inline mr-1"
                 variant="success"
@@ -328,7 +348,8 @@
             >
               <b-form-checkbox v-model="applyToBalanceRefund"
                 >Apply Refund to Balance</b-form-checkbox
-              ><br />
+              >
+              <br />
               <b-btn
                 :disabled="fullyRefunded"
                 class="btn mb-2 d-inline mr-1 purpleBG"
@@ -349,7 +370,7 @@
                 class="popover-size d-inline"
               />
             </div>
-            <div v-if="!store.modules.multipleDeliveryDays">
+            <div>
               <router-link
                 :to="{
                   name: 'store-adjust-order',
@@ -475,7 +496,7 @@
                 <b-form-input
                   type="number"
                   v-model="balance"
-                  class="d-inline mb-1 "
+                  class="d-inline mb-1"
                   style="width:100px"
                 ></b-form-input>
                 <i
@@ -489,7 +510,8 @@
                 class="fa fa-edit text-warning d-inline"
               ></i>
             </div>
-            <br /><br />
+            <br />
+            <br />
             <div
               class="d-inline"
               v-if="order.balance !== null && order.balance != 0"
@@ -563,7 +585,7 @@
               <h4 v-if="order.pickup">Pickup Day</h4>
               <template v-if="!order.isMultipleDelivery">
                 {{ moment(order.delivery_date).format("dddd, MMM Do") }}
-                <span v-if="order.transferTime"> {{ order.transferTime }}</span>
+                <span v-if="order.transferTime">{{ order.transferTime }}</span>
               </template>
               <template v-else>
                 <p>{{ order.multiple_dates }}</p>
@@ -575,7 +597,8 @@
               {{ order.pickup_location.address }},
               {{ order.pickup_location.city }},
               {{ order.pickup_location.state }}
-              {{ order.pickup_location.zip }}<br />
+              {{ order.pickup_location.zip }}
+              <br />
               <span v-if="order.pickup_location.instructions">
                 <b>Instructions:</b>
                 {{ order.pickup_location.instructions }}
@@ -791,9 +814,9 @@
               >
                 <div class="row">
                   <div class="col-md-3">
-                    <span class="order-quantity">{{
-                      lineItemOrder.quantity
-                    }}</span>
+                    <span class="order-quantity">
+                      {{ lineItemOrder.quantity }}
+                    </span>
                     <img src="/images/store/x-modal.png" class="mr-1 ml-1" />
                   </div>
                   <div class="col-md-9">
@@ -822,6 +845,7 @@ import Spinner from "../../components/Spinner";
 import format from "../../lib/format";
 import vSelect from "vue-select";
 import { mapGetters, mapActions, mapMutations } from "vuex";
+import { createInstance } from "vuex-pagination";
 import checkDateRange from "../../mixins/deliveryDates";
 import { sidebarCssClasses } from "../../shared/classes";
 import store from "../../store";
@@ -834,6 +858,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      page: 1,
       editingCustomer: false,
       editingBalance: false,
       balance: 0,
@@ -854,7 +879,8 @@ export default {
           start: null,
           end: null
         },
-        has_notes: false
+        has_notes: false,
+        query: null
       },
       viewOrderModal: false,
       order: {},
@@ -884,6 +910,7 @@ export default {
         "actions"
       ],
       options: {
+        filterable: false,
         headings: {
           icons: "Status",
           dailyOrderNumber: "Daily Order #",
@@ -973,16 +1000,35 @@ export default {
       storeSettings: "storeSettings",
       getStoreMeal: "storeMeal"
     }),
+    orders: createInstance("orders", {
+      page: 1,
+      pageSize: 10,
+      args() {
+        const { filters } = this;
+        const { query, delivery_dates, fulfilled, paid, has_notes } = filters;
+
+        let args = {
+          query,
+          start: delivery_dates.start || null,
+          end: delivery_dates.end || null,
+          fulfilled,
+          paid,
+          has_notes
+        };
+
+        return args;
+      }
+    }),
     tableData() {
       let filters = { ...this.filters };
 
-      let orders = [];
+      let orders = this.orders.items;
 
-      if (this.filters.delivery_dates.start === null) {
+      /*if (this.filters.delivery_dates.start === null) {
         orders = this.upcomingOrdersWithoutItems;
       } else {
         orders = this.ordersByDate;
-      }
+      }*/
 
       orders.forEach(order => {
         if (order.balance && !this.columns.includes("balance")) {
@@ -991,7 +1037,11 @@ export default {
         }
       });
 
-      return orders;
+      //while(orders.length < this.orders.total) {
+      //  orders.push({});
+      //}
+
+      return _.isArray(orders) ? orders : [];
     },
     fullyRefunded() {
       // return false;
@@ -1018,11 +1068,15 @@ export default {
       addJob: "addJob",
       removeJob: "removeJob"
     }),
+    ...mapActions("resources", ["refreshResource"]),
     refreshTable() {
-      this.refreshOrders();
+      this.refreshResource("orders");
     },
     refreshTableWithFulfilled() {
       this.refreshOrdersWithFulfilled();
+    },
+    onChangePage(page) {
+      this.orders.page = page;
     },
     formatMoney: format.money,
     syncEditables() {
@@ -1112,11 +1166,7 @@ export default {
             this.applyToBalanceRefund = true;
           }
 
-          if (
-            this.order.adjusted === 1 &&
-            this.order.adjustedDifference > 0 &&
-            this.order.balance != 0
-          ) {
+          if (this.order.balance != 0) {
             this.applyToBalanceCharge = true;
           }
 
@@ -1188,16 +1238,7 @@ export default {
           this.loading = false;
         });
     },
-    onChangeDateFilter() {
-      axios
-        .post("/api/me/getOrdersWithDatesWithoutItems", {
-          start: this.filters.delivery_dates.start,
-          end: this.filters.delivery_dates.end
-        })
-        .then(response => {
-          this.ordersByDate = response.data;
-        });
-    },
+    onChangeDateFilter() {},
     updateViewedOrders() {
       axios.get(`/api/me/ordersUpdateViewed`);
     },
@@ -1224,7 +1265,7 @@ export default {
         .then(response => {
           this.viewOrderModal = false;
           this.chargeAmount = 0;
-          this.refreshUpcomingOrders();
+          this.refreshTable();
           this.$toastr.s(response.data);
           this.applyToBalanceCharge = false;
           this.applyToBalanceRefund = false;
@@ -1397,6 +1438,7 @@ export default {
         .then(resp => {
           this.editingBalance = false;
           this.viewOrder(id);
+          this.refreshTable();
           this.$toastr.s("Balance updated.");
         });
     },
@@ -1426,3 +1468,5 @@ export default {
   }
 };
 </script>
+
+<style lang="scss"></style>

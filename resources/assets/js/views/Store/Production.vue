@@ -1,6 +1,9 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
+      <div class="alert alert-success center-text" role="alert">
+        Please select the date range to see production.
+      </div>
       <div class="card">
         <div class="card-body">
           <Spinner v-if="isLoading" />
@@ -196,6 +199,38 @@ export default {
       let mealSizes = {};
       let mealTitles = {};
 
+      // orders.forEach(order => {
+      //   _.forEach(order.newItems, item => {
+      //     let meal = this.getMeal(item.meal_id);
+      //     if (meal) {
+      //       if (this.productionGroupId != null) {
+      //         if (meal.production_group_id !== this.productionGroupId)
+      //           return null;
+      //       }
+
+      //       let size = meal.getSize(item.meal_size_id);
+      //       let title = meal.getTitle(
+      //         true,
+      //         size,
+      //         item.components,
+      //         item.addons,
+      //         item.special_instructions
+      //       );
+      //       let base_title = item.base_title;
+      //       let base_size = item.base_size ? item.base_size : "";
+      //       let key = base_title + "<sep>" + base_size;
+
+      //       if (!mealCounts[key]) {
+      //         mealCounts[key] = 0;
+      //         mealIds[key] = item.meal_id;
+      //         mealSizes[key] = size;
+      //         mealTitles[key] = base_title;
+      //       }
+      //       mealCounts[key] += item.quantity;
+      //     }
+      //   });
+      // });
+
       orders.forEach(order => {
         _.forEach(order.items, item => {
           let meal = this.getMeal(item.meal_id);
@@ -257,10 +292,6 @@ export default {
       return _.map(mealCounts, (quantity, title) => {
         let meal = this.getMeal(mealIds[title]);
 
-        if (meal === null) {
-          meal = [];
-        }
-
         //let base_title = meal.title + "";
         let base_title = mealTitles[title];
 
@@ -273,7 +304,7 @@ export default {
           base_size = meal.default_size_title;
         }
 
-        let price = meal.price;
+        let price = meal ? meal.price : null;
 
         return {
           ...meal,

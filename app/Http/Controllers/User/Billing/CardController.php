@@ -30,7 +30,8 @@ class CardController extends UserController
                 } else {
                     return true;
                 }
-            });
+            })
+            ->values();
     }
 
     /**

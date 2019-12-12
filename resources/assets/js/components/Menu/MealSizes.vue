@@ -10,6 +10,7 @@
         :meal="ingredient_picker_size"
         @save="val => onChangeIngredients(val)"
         :mealSizeId="ingredient_picker_size.id"
+        :createMealModal="createMealModal"
       ></ingredient-picker>
     </div>
     <div v-else>
@@ -123,6 +124,7 @@ import { mapGetters } from "vuex";
 
 export default {
   props: {
+    createMealModal: null,
     meal: {
       required: true
     }

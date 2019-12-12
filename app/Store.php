@@ -398,51 +398,14 @@ class Store extends Model
                 }
 
                 foreach ($mealIngredients as $ingredient) {
-                    $adjuster = $ingredient->adjuster / 100;
-                    $quantity_unit = $ingredient->pivot->quantity_unit;
-                    $quantity_base =
-                        $ingredient->pivot->quantity_base *
-                        $quantity *
-                        $multiplier *
-                        $adjuster;
-
-                    $key = $ingredient->id;
-                    if ($isMultipleDelivery) {
-                        $key =
-                            $key .
-                            '-' .
-                            Carbon::parse($mealOrder->delivery_date)->format(
-                                'Y-m-d'
-                            );
-                        $ingredient->food_name =
-                            '(' .
-                            Carbon::parse($mealOrder->delivery_date)->format(
-                                'D, m/d/y'
-                            ) .
-                            ') ' .
-                            $ingredient->food_name;
-                    }
-
-                    if (!isset($ingredients[$key])) {
-                        $ingredients[$key] = [
-                            'id' => $ingredient->id,
-                            'ingredient' => $ingredient,
-                            'quantity' => $quantity_base,
-                            'adjuster' => $adjuster
-                        ];
-                    } else {
-                        $ingredients[$key]['quantity'] += $quantity_base;
-                    }
-                }
-
-                $components = collect($mealOrder->components);
-
-                foreach ($components as $component) {
-                    foreach ($component->option->ingredients as $ingredient) {
+                    if (!$ingredient->attributes['hidden']) {
+                        $adjuster = $ingredient->adjuster / 100;
                         $quantity_unit = $ingredient->pivot->quantity_unit;
                         $quantity_base =
-                            $ingredient->pivot->quantity_base * $quantity;
-                        //* $multiplier;
+                            $ingredient->pivot->quantity_base *
+                            $quantity *
+                            $multiplier *
+                            $adjuster;
 
                         $key = $ingredient->id;
                         if ($isMultipleDelivery) {
@@ -470,6 +433,48 @@ class Store extends Model
                             ];
                         } else {
                             $ingredients[$key]['quantity'] += $quantity_base;
+                        }
+                    }
+                }
+
+                $components = collect($mealOrder->components);
+
+                foreach ($components as $component) {
+                    foreach ($component->option->ingredients as $ingredient) {
+                        if (!$ingredient->attributes['hidden']) {
+                            $quantity_unit = $ingredient->pivot->quantity_unit;
+                            $quantity_base =
+                                $ingredient->pivot->quantity_base * $quantity;
+                            //* $multiplier;
+
+                            $key = $ingredient->id;
+                            if ($isMultipleDelivery) {
+                                $key =
+                                    $key .
+                                    '-' .
+                                    Carbon::parse(
+                                        $mealOrder->delivery_date
+                                    )->format('Y-m-d');
+                                $ingredient->food_name =
+                                    '(' .
+                                    Carbon::parse(
+                                        $mealOrder->delivery_date
+                                    )->format('D, m/d/y') .
+                                    ') ' .
+                                    $ingredient->food_name;
+                            }
+                            if (!isset($ingredients[$key])) {
+                                $ingredients[$key] = [
+                                    'id' => $ingredient->id,
+                                    'ingredient' => $ingredient,
+                                    'quantity' => $quantity_base,
+                                    'adjuster' => $adjuster
+                                ];
+                            } else {
+                                $ingredients[$key][
+                                    'quantity'
+                                ] += $quantity_base;
+                            }
                         }
                     }
                 }
@@ -478,37 +483,41 @@ class Store extends Model
 
                 foreach ($addons as $addon) {
                     foreach ($addon->addon->ingredients as $ingredient) {
-                        $quantity_unit = $ingredient->pivot->quantity_unit;
-                        $quantity_base =
-                            $ingredient->pivot->quantity_base * $quantity;
-                        //* $multiplier;
+                        if (!$ingredient->attributes['hidden']) {
+                            $quantity_unit = $ingredient->pivot->quantity_unit;
+                            $quantity_base =
+                                $ingredient->pivot->quantity_base * $quantity;
+                            //* $multiplier;
 
-                        $key = $ingredient->id;
-                        if ($isMultipleDelivery) {
-                            $key =
-                                $key .
-                                '-' .
-                                Carbon::parse(
-                                    $mealOrder->delivery_date
-                                )->format('Y-m-d');
-                            $ingredient->food_name =
-                                '(' .
-                                Carbon::parse(
-                                    $mealOrder->delivery_date
-                                )->format('D, m/d/y') .
-                                ') ' .
-                                $ingredient->food_name;
-                        }
+                            $key = $ingredient->id;
+                            if ($isMultipleDelivery) {
+                                $key =
+                                    $key .
+                                    '-' .
+                                    Carbon::parse(
+                                        $mealOrder->delivery_date
+                                    )->format('Y-m-d');
+                                $ingredient->food_name =
+                                    '(' .
+                                    Carbon::parse(
+                                        $mealOrder->delivery_date
+                                    )->format('D, m/d/y') .
+                                    ') ' .
+                                    $ingredient->food_name;
+                            }
 
-                        if (!isset($ingredients[$key])) {
-                            $ingredients[$key] = [
-                                'id' => $ingredient->id,
-                                'ingredient' => $ingredient,
-                                'quantity' => $quantity_base,
-                                'adjuster' => $adjuster
-                            ];
-                        } else {
-                            $ingredients[$key]['quantity'] += $quantity_base;
+                            if (!isset($ingredients[$key])) {
+                                $ingredients[$key] = [
+                                    'id' => $ingredient->id,
+                                    'ingredient' => $ingredient,
+                                    'quantity' => $quantity_base,
+                                    'adjuster' => $adjuster
+                                ];
+                            } else {
+                                $ingredients[$key][
+                                    'quantity'
+                                ] += $quantity_base;
+                            }
                         }
                     }
                 }
@@ -782,43 +791,46 @@ class Store extends Model
 
     public function getOrdersForNextDelivery($groupBy = null)
     {
+        // Not in use
         $date = $this->getNextDeliveryDate();
 
         $orders = $this->orders()->with('meals');
+        $orders = $orders->where(function ($query) use ($date) {
+            $query
+                ->where(function ($query1) use ($date) {
+                    $query1->where('isMultipleDelivery', 0)->where('paid', 1);
+                    $query1->where('delivery_date', $date->format('Y-m-d'));
+                })
+                ->orWhere(function ($query2) use ($date) {
+                    $query2
+                        ->where('isMultipleDelivery', 1)
+                        ->where('paid', 1)
+                        ->whereHas('meal_orders', function ($subquery1) use (
+                            $date
+                        ) {
+                            $subquery1->whereNotNull(
+                                'meal_orders.delivery_date'
+                            );
 
-        $orders = $orders
-            ->where(function ($query) use ($dateRange) {
-                $query->where('isMultipleDelivery', 0)->where('paid', 1);
+                            $subquery1->where(
+                                'meal_orders.delivery_date',
+                                $date->format('Y-m-d')
+                            );
+                        })
+                        ->orWhereHas('meal_package_orders', function (
+                            $subquery2
+                        ) use ($date) {
+                            $subquery2->whereNotNull(
+                                'meal_package_orders.delivery_date'
+                            );
 
-                $query->where('delivery_date', $date->format('Y-m-d'));
-            })
-            ->orWhere(function ($query) use ($dateRange) {
-                $query
-                    ->where('isMultipleDelivery', 1)
-                    ->where('paid', 1)
-                    ->whereHas('meal_orders', function ($subquery1) use (
-                        $dateRange
-                    ) {
-                        $subquery1->whereNotNull('meal_orders.delivery_date');
-
-                        $subquery1->where(
-                            'meal_orders.delivery_date',
-                            $date->format('Y-m-d')
-                        );
-                    })
-                    ->orWhereHas('meal_package_orders', function (
-                        $subquery2
-                    ) use ($dateRange) {
-                        $subquery2->whereNotNull(
-                            'meal_package_orders.delivery_date'
-                        );
-
-                        $subquery2->where(
-                            'meal_package_orders.delivery_date',
-                            $date->format('Y-m-d')
-                        );
-                    });
-            });
+                            $subquery2->where(
+                                'meal_package_orders.delivery_date',
+                                $date->format('Y-m-d')
+                            );
+                        });
+                });
+        });
 
         $orders = $orders->get();
 
@@ -837,6 +849,7 @@ class Store extends Model
 
     public function getPastOrders($groupBy = null)
     {
+        // Not in use
         $date = $this->getNextDeliveryDate();
 
         $orders = $this->orders()->with('meals');

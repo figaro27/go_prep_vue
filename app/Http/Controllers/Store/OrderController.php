@@ -22,6 +22,11 @@ use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Carbon;
 use DB;
 use App\Traits\DeliveryDates;
+use Illuminate\Pagination\Paginator;
+use App\Billing\Constants;
+use App\Billing\Charge;
+use App\Billing\Authorize;
+use App\Billing\Billing;
 
 class OrderController extends StoreController
 {
@@ -32,19 +37,72 @@ class OrderController extends StoreController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, $page = -1, $pageSize = -1)
     {
-        return $this->store->has('orders')
-            ? $this->store
-                ->orders()
-                ->with(['user', 'pickup_location', 'purchased_gift_cards'])
-                ->where(['paid' => 1])
-                ->get()
-            : [];
+        if (!$this->store->has('orders')) {
+            return [];
+        }
+
+        $hide = $request->query('hide', ['items']);
+        $start = $request->query('start', null);
+        $end = $request->query('end', null);
+        $search = $request->query('query', null);
+        $voided = $request->query('voided', null);
+        $productionGroupId = $request->query('production_group_id', null);
+
+        $query = $this->store
+            ->orders()
+            ->with(['user', 'pickup_location', 'purchased_gift_cards'])
+            ->where(['paid' => 1])
+            ->without($hide);
+
+        if ($start) {
+            $query = $query->whereDate('delivery_date', '>=', $start);
+        }
+
+        if ($end) {
+            $query = $query->whereDate('delivery_date', '<=', $end);
+        }
+
+        if ($search) {
+            $query = $query->whereLike(
+                [
+                    'order_number',
+                    'dailyOrderNumber',
+                    'user.details.firstname',
+                    'user.details.lastname',
+                    'user.details.address',
+                    'user.details.zip'
+                ],
+                $search
+            );
+        }
+
+        if (!is_null($productionGroupId)) {
+            $query = $query->where(
+                'production_group_id',
+                (int) $productionGroupId
+            );
+        }
+
+        if (!is_null($voided)) {
+            $query = $query->where('voided', (int) $voided);
+        }
+
+        if ($page === -1) {
+            return $query->get();
+        }
+
+        // Paginate
+        Paginator::currentPageResolver(function () use ($page) {
+            return $page;
+        });
+        return $query->paginate($pageSize);
     }
 
     public function getUpcomingOrders()
     {
+        return [];
         $fromDate = Carbon::today(
             $this->store->settings->timezone
         )->startOfDay();
@@ -139,50 +197,91 @@ class OrderController extends StoreController
 
     public function getUpcomingOrdersWithoutItems()
     {
+        return [];
+
         // Optimized orders for Store/Orders & Store/Payments pages
         $fromDate = Carbon::today(
             $this->store->settings->timezone
         )->startOfDay();
 
-        $orders = $this->store->has('orders')
-            ? $this->store
+        if ($this->store->has('orders')) {
+            $orders = $this->store
                 ->orders()
                 ->with(['pickup_location'])
-                ->where(['paid' => 1])
-                ->whereDate('delivery_date', '>=', $fromDate)
-                // ->whereDate('delivery_date', '<=', $fromDate->addWeeks(2))
-                ->get()
-            : [];
+                ->where(['paid' => 1]);
+            $orders = $orders->where(function ($query) use ($fromDate) {
+                $query
+                    ->where(function ($query1) use ($fromDate) {
+                        $query1->where('isMultipleDelivery', 0);
+                        $query1->where(
+                            'delivery_date',
+                            '>=',
+                            $fromDate->format('Y-m-d')
+                        );
+                    })
+                    ->orWhere(function ($query2) use ($fromDate) {
+                        $query2
+                            ->where('isMultipleDelivery', 1)
+                            ->whereHas('meal_orders', function ($subquery) use (
+                                $fromDate
+                            ) {
+                                $subquery->whereNotNull(
+                                    'meal_orders.delivery_date'
+                                );
+                                $subquery->where(
+                                    'meal_orders.delivery_date',
+                                    '>=',
+                                    $fromDate->format('Y-m-d')
+                                );
+                            });
+                    });
+            });
+            $orders = $orders->get();
 
-        $orders->makeHidden([
-            'user',
-            'items',
-            'meal_ids',
-            'line_items_order',
-            'meal_package_items',
+            // Disabled Workflow
+            /*$orders = $this->store
+                  ->orders()
+                  ->with(['pickup_location'])
+                  ->where(['paid' => 1])
+                  ->whereDate('delivery_date', '>=', $fromDate)
+                  // ->whereDate('delivery_date', '<=', $fromDate->addWeeks(2))
+                  ->get();*/
 
-            'added_by_store_id',
-            'chargedAmount',
-            'currency',
-            'order_day',
-            'originalAmount',
-            'payment_gateway',
-            'paid',
-            'paid_at',
-            'pickup_location',
-            'pickup_location_id',
-            'purchasedGiftCardReduction',
-            'purchased_gift_card_code',
-            'purchased_gift_card_id',
-            'stripe_id',
-            'transferTime',
-            'user_id'
-        ]);
+            $orders->makeHidden([
+                'user',
+                'items',
+                'meal_ids',
+                'line_items_order',
+                'meal_package_items',
 
-        if (!$this->store->modules->multipleDeliveryDays) {
-            $orders->makeHIdden(['delivery_dates_array', 'isMultipleDelivery']);
+                'added_by_store_id',
+                'chargedAmount',
+                'currency',
+                'order_day',
+                'originalAmount',
+                'payment_gateway',
+                'paid',
+                'paid_at',
+                'pickup_location',
+                'pickup_location_id',
+                'purchasedGiftCardReduction',
+                'purchased_gift_card_code',
+                'purchased_gift_card_id',
+                'stripe_id',
+                'transferTime',
+                'user_id'
+            ]);
+
+            if (!$this->store->modules->multipleDeliveryDays) {
+                $orders->makeHidden([
+                    'delivery_dates_array',
+                    'isMultipleDelivery'
+                ]);
+            }
+            return $orders;
         }
-        return $orders;
+
+        return [];
     }
 
     public function getOrdersToday(Request $request)
@@ -304,41 +403,41 @@ class OrderController extends StoreController
         }
 
         // Newly Added for Table Data
-        if ($data) {
-            foreach ($data as &$order) {
-                $newItems = [];
-                $mealOrders = $order
-                    ->meal_orders()
-                    ->with('meal')
-                    ->get();
+        // if ($data) {
+        //     foreach ($data as &$order) {
+        //         $newItems = [];
+        //         $mealOrders = $order
+        //             ->meal_orders()
+        //             ->with('meal')
+        //             ->get();
 
-                if ($order->isMultipleDelivery) {
-                    if ($mealOrders) {
-                        foreach ($mealOrders as $mealOrder) {
-                            if (!$mealOrder->delivery_date) {
-                                continue;
-                            }
+        //         if ($order->isMultipleDelivery) {
+        //             if ($mealOrders) {
+        //                 foreach ($mealOrders as $mealOrder) {
+        //                     if (!$mealOrder->delivery_date) {
+        //                         continue;
+        //                     }
 
-                            $mealOrder_date = Carbon::parse(
-                                $mealOrder->delivery_date
-                            )->format('Y-m-d');
-                            if ($mealOrder_date < $startDate) {
-                                continue;
-                            }
-                            if ($mealOrder_date > $endDate) {
-                                continue;
-                            }
+        //                     $mealOrder_date = Carbon::parse(
+        //                         $mealOrder->delivery_date
+        //                     )->format('Y-m-d');
+        //                     if ($mealOrder_date < $startDate) {
+        //                         continue;
+        //                     }
+        //                     if ($mealOrder_date > $endDate) {
+        //                         continue;
+        //                     }
 
-                            $newItems[] = $mealOrder;
-                        }
-                    }
-                } else {
-                    $newItems = $mealOrders;
-                }
+        //                     $newItems[] = $mealOrder;
+        //                 }
+        //             }
+        //         } else {
+        //             $newItems = $mealOrders;
+        //         }
 
-                $order->newItems = $newItems;
-            }
-        }
+        //         $order->newItems = $newItems;
+        //     }
+        // }
 
         return $data;
     }
@@ -793,27 +892,50 @@ class OrderController extends StoreController
             $card = Card::where('id', $cardId)->first();
         }
 
-        if (!$cashOrder) {
-            $storeSource = \Stripe\Source::create(
-                [
-                    "customer" => $user->stripe_id,
-                    "original_source" => $card->stripe_id,
-                    "usage" => "single_use"
-                ],
-                ["stripe_account" => $store->settings->stripe_id]
-            );
+        $gateway = $card->payment_gateway;
+        $storeSettings = $this->store->settings;
+        $customer = $user->getStoreCustomer(
+            $store->id,
+            $storeSettings->currency,
+            $gateway
+        );
 
-            $charge = \Stripe\Charge::create(
-                [
-                    "amount" => round(100 * $chargeAmount),
-                    "currency" => "usd",
-                    "source" => $storeSource,
-                    // Change to "application_fee_amount" as per Stripe's updates
-                    "application_fee" => round($chargeAmount * $application_fee)
-                ],
-                ["stripe_account" => $store->settings->stripe_id]
-            );
+        if (!$cashOrder) {
+            if ($gateway === Constants::GATEWAY_STRIPE) {
+                $storeSource = \Stripe\Source::create(
+                    [
+                        "customer" => $user->stripe_id,
+                        "original_source" => $card->stripe_id,
+                        "usage" => "single_use"
+                    ],
+                    ["stripe_account" => $store->settings->stripe_id]
+                );
+
+                $charge = \Stripe\Charge::create(
+                    [
+                        "amount" => round(100 * $chargeAmount),
+                        "currency" => "usd",
+                        "source" => $storeSource,
+                        // Change to "application_fee_amount" as per Stripe's updates
+                        "application_fee" => round(
+                            $chargeAmount * $application_fee
+                        )
+                    ],
+                    ["stripe_account" => $store->settings->stripe_id]
+                );
+            } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
+                $billing = Billing::init($gateway, $store);
+
+                $charge = new \App\Billing\Charge();
+                $charge->amount = round(100 * $chargeAmount);
+                $charge->customer = $customer;
+                $charge->card = $card;
+
+                $transactionId = $billing->charge($charge);
+                $charge->id = $transactionId;
+            }
         }
+
         $order->chargedAmount += $chargeAmount;
 
         if ($applyToBalance) {

@@ -1490,3 +1490,14 @@ body.forgotresettoken {
 .extra-small {
   font-size: 9px;
 }
+
+.table-loading tbody {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.table-countless {
+  .VuePagination__count {
+    display: none;
+  }
+}

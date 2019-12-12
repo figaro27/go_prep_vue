@@ -1008,6 +1008,9 @@ export default {
     isMultipleDelivery() {
       return this.storeModules.multipleDeliveryDays == 1 ? true : false;
     },
+    isManualOrder() {
+      return this.$route.params.manualOrder;
+    },
     groupBag() {
       let grouped = [];
       let groupedDD = [];
@@ -1632,8 +1635,11 @@ export default {
       return hasActiveSub;
     },
     customerEmail() {
+      return "";
       let customerEmail = "";
       let customers = this.storeCustomers;
+      if (customers) {
+      }
       customers.forEach(customer => {
         if (customer.id === this.customer) {
           customerEmail = customer.email;
@@ -1657,6 +1663,7 @@ export default {
       "refreshStoreCustomers",
       "refreshStorePurchasedGiftCards"
     ]),
+    ...mapActions("resources", ["refreshResource"]),
     ...mapMutations([
       "emptyBag",
       "setBagMealPlan",
@@ -1848,6 +1855,7 @@ export default {
           }
           this.$toastr.s("Order Adjusted");
           this.$router.push({ path: "/store/orders" });
+          this.refreshResource("orders");
           this.refreshUpcomingOrders();
           this.refreshUpcomingOrdersWithoutItems();
           this.clearBagDeliveryDate();
@@ -1981,6 +1989,11 @@ export default {
           this.setBagMealPlan(false);
           this.setBagCoupon(null);
           this.setBagPurchasedGiftCard(null);
+          this.clearBagDeliveryDate();
+
+          if (this.isManualOrder) {
+            this.refreshResource("orders");
+          }
 
           if (this.$route.params.manualOrder && weeklyDelivery) {
             this.refreshStoreSubscriptions();
@@ -1991,8 +2004,8 @@ export default {
           } else if (this.$route.params.manualOrder && !weeklyDelivery) {
             // this.refreshOrdersToday();
             // this.refreshOrders();
-            this.refreshUpcomingOrders();
-            this.refreshUpcomingOrdersWithoutItems();
+            // this.refreshUpcomingOrders();
+            // this.refreshUpcomingOrdersWithoutItems();
             this.$router.push({
               name: "store-orders",
               params: {
@@ -2021,7 +2034,6 @@ export default {
         })
         .finally(() => {
           this.loading = false;
-          this.clearBagDeliveryDate();
         });
     },
     inputCustomer(id) {

@@ -10,11 +10,12 @@
           <h6>{{ getComponentLabel(component) }}</h6>
           <b-form-group :label="null">
             <b-checkbox-group
+              v-model="choices[component.id]"
               :options="getOptions(component)"
               :min="component.minimum"
               :max="component.maximum"
               stacked
-              @input="selection => setComponentChoices(component, selection)"
+              @input="setChoices"
             ></b-checkbox-group>
 
             <div v-if="invalid">
@@ -87,6 +88,8 @@ export default {
     } else {
       this.$parent.invalidCheck = false;
     }
+
+    this.initializeChoiceCheckbox();
   },
   updated() {
     if (this.sizeCheck) {
@@ -178,6 +181,13 @@ export default {
     };
   },
   methods: {
+    initializeChoiceCheckbox() {
+      if (this.components) {
+        this.components.forEach(component => {
+          Vue.set(this.choices, component.id, []);
+        });
+      }
+    },
     getOptions(component) {
       let options = _.filter(component.options, option => {
         return option.meal_size_id == this.sizeId;
@@ -224,15 +234,6 @@ export default {
 
       return `${component.title} - ${qty}`;
     },
-    setComponentChoices(component, selection) {
-      if (!component || !component.id) {
-        return false;
-      }
-
-      Vue.set(this.choices, component.id, selection);
-
-      this.setChoices();
-    },
     setChoices() {
       if (this.sizeCheck) {
         this.$parent.invalidCheck = this.$v.$invalid;
@@ -255,8 +256,9 @@ export default {
       this.$parent.refreshNutritionFacts();
     },
     resetVariations() {
-      this.choices = {};
+      //this.choices = {};
       this.addons = [];
+      this.initializeChoiceCheckbox();
     }
   }
 };
