@@ -47,6 +47,8 @@ class OrderController extends StoreController
         $start = $request->query('start', null);
         $end = $request->query('end', null);
         $search = $request->query('query', null);
+        $voided = $request->query('voided', null);
+        $productionGroupId = $request->query('production_group_id', null);
 
         $query = $this->store
             ->orders()
@@ -74,6 +76,17 @@ class OrderController extends StoreController
                 ],
                 $search
             );
+        }
+
+        if (!is_null($productionGroupId)) {
+            $query = $query->where(
+                'production_group_id',
+                (int) $productionGroupId
+            );
+        }
+
+        if (!is_null($voided)) {
+            $query = $query->where('voided', (int) $voided);
         }
 
         if ($page === -1) {
