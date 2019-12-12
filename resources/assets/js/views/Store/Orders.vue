@@ -911,6 +911,7 @@ export default {
         "actions"
       ],
       options: {
+        filterable: false,
         headings: {
           icons: "Status",
           dailyOrderNumber: "Daily Order #",
