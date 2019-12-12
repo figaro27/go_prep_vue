@@ -382,7 +382,8 @@ const mutations = {
       // New
       const addingMeal = {
         ...item.meal,
-        quantity: 1
+        quantity: 1,
+        special_instructions: item.special_instructions
       };
 
       if (item.size) {
