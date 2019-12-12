@@ -1635,8 +1635,11 @@ export default {
       return hasActiveSub;
     },
     customerEmail() {
+      return;
       let customerEmail = "";
       let customers = this.storeCustomers;
+      if (customers) {
+      }
       customers.forEach(customer => {
         if (customer.id === this.customer) {
           customerEmail = customer.email;
