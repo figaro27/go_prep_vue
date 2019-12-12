@@ -308,13 +308,7 @@
             </span>
             <h4>Order ID</h4>
             <p>{{ order.order_number }}</p>
-            <div
-              class="d-inline"
-              v-if="
-                !order.cashOrder &&
-                  store.settings.payment_gateway !== 'authorize'
-              "
-            >
+            <div class="d-inline" v-if="!order.cashOrder">
               <b-form-checkbox v-model="applyToBalanceCharge"
                 >Apply Charge to Balance</b-form-checkbox
               >
