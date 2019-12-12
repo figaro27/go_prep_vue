@@ -202,7 +202,11 @@ $brandColor = $order->store->settings->color;
           <!--<td>{!! $item->html_title !!}</td>!-->
           <td>{!! $item->base_title !!}</td>
           <td style="text-align:center">
-            In Package
+            @if ($item->meal_package_variation && $item->price > 0)
+              In Package <span style="font-size:11px">(+{{$currency}}{{$item->price}})</span>
+            @else
+              In Package
+            @endif
           </td>
         </tr>
 
