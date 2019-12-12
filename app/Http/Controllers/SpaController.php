@@ -781,6 +781,36 @@ class SpaController extends Controller
 
         //sleep(5);
 
+        $items = collect($items)->map(function ($item) {
+            return collect($item)->except([
+                'order_ids',
+                'substitute_ids',
+                'production_group_id',
+                'updated_at',
+                'created_at',
+                'created_at_local',
+                'active_orders',
+                'active_orders_price',
+                'lifetime_orders',
+                'featured_image'
+            ]);
+        });
+
+        $meals = collect($meals)->map(function ($meal) {
+            return collect($meal)->except([
+                'order_ids',
+                'substitute_ids',
+                'production_group_id',
+                'updated_at',
+                'created_at',
+                'created_at_local',
+                'active_orders',
+                'active_orders_price',
+                'lifetime_orders',
+                'featured_image'
+            ]);
+        });
+
         return [
             'items' => $items,
             'meals' => $meals,
