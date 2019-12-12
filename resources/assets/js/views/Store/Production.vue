@@ -196,39 +196,38 @@ export default {
       let mealSizes = {};
       let mealTitles = {};
 
-      orders.forEach(order => {
-        _.forEach(order.newItems, item => {
-          let meal = this.getMeal(item.meal_id);
-          if (meal) {
-            if (this.productionGroupId != null) {
-              if (meal.production_group_id !== this.productionGroupId)
-                return null;
-            }
+      // orders.forEach(order => {
+      //   _.forEach(order.newItems, item => {
+      //     let meal = this.getMeal(item.meal_id);
+      //     if (meal) {
+      //       if (this.productionGroupId != null) {
+      //         if (meal.production_group_id !== this.productionGroupId)
+      //           return null;
+      //       }
 
-            let size = meal.getSize(item.meal_size_id);
-            let title = meal.getTitle(
-              true,
-              size,
-              item.components,
-              item.addons,
-              item.special_instructions
-            );
-            let base_title = item.base_title;
-            let base_size = item.base_size ? item.base_size : "";
-            let key = base_title + "<sep>" + base_size;
+      //       let size = meal.getSize(item.meal_size_id);
+      //       let title = meal.getTitle(
+      //         true,
+      //         size,
+      //         item.components,
+      //         item.addons,
+      //         item.special_instructions
+      //       );
+      //       let base_title = item.base_title;
+      //       let base_size = item.base_size ? item.base_size : "";
+      //       let key = base_title + "<sep>" + base_size;
 
-            if (!mealCounts[key]) {
-              mealCounts[key] = 0;
-              mealIds[key] = item.meal_id;
-              mealSizes[key] = size;
-              mealTitles[key] = base_title;
-            }
-            mealCounts[key] += item.quantity;
-          }
-        });
-      });
+      //       if (!mealCounts[key]) {
+      //         mealCounts[key] = 0;
+      //         mealIds[key] = item.meal_id;
+      //         mealSizes[key] = size;
+      //         mealTitles[key] = base_title;
+      //       }
+      //       mealCounts[key] += item.quantity;
+      //     }
+      //   });
+      // });
 
-      /*
       orders.forEach(order => {
         _.forEach(order.items, item => {
           let meal = this.getMeal(item.meal_id);
@@ -264,7 +263,6 @@ export default {
           }
         });
       });
-      */
 
       orders.forEach(order => {
         _.forEach(order.line_items_order, lineItem => {
