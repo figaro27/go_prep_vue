@@ -462,6 +462,7 @@ class CheckoutController extends StoreController
                     ])->get();
 
                     $explicitAttachments = MealAttachment::where([
+                        'applyToAll' => 0,
                         'meal_id' => $item['meal']['id'],
                         'meal_size_id' => isset($item['size']['id'])
                             ? $item['size']['id']
