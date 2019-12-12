@@ -12,6 +12,9 @@
         :mealSizeId="ingredient_picker_size.id"
         @save="val => onChangeIngredients(val)"
         :componentAddonPage="true"
+        :componentTitle="componentTitle"
+        :componentOptionTitle="componentOptionTitle"
+        :createMealModal="createMealModal"
       ></ingredient-picker>
     </div>
 
@@ -169,6 +172,7 @@ export default {
     IngredientPicker
   },
   props: {
+    createMealModal: null,
     meal: {
       required: true
     }
@@ -185,6 +189,14 @@ export default {
     ...mapGetters({
       storeCurrencySymbol: "storeCurrencySymbol"
     }),
+    componentTitle() {
+      return this.meal.components[this.ingredientComponentId].title;
+    },
+    componentOptionTitle() {
+      return this.meal.components[this.ingredientComponentId].options[
+        this.ingredientOptionId
+      ].title;
+    },
     sizeOptions() {
       return _.concat(
         {

@@ -83,7 +83,12 @@
               <div class="row">
                 <p class="small strong col-6 col-md-12">Calories</p>
                 <p class="small col-6 col-md-12">
-                  {{ meal.macros.calories }}
+                  <span v-if="storeSettings.macrosFromNutrition">
+                    {{ nutritionalFacts.valueCalories }}
+                  </span>
+                  <span v-else>
+                    {{ meal.macros.calories }}
+                  </span>
                 </p>
               </div>
             </div>
@@ -91,7 +96,12 @@
               <div class="row">
                 <p class="small strong col-6 col-md-12">Carbs</p>
                 <p class="small col-6 col-md-12">
-                  {{ meal.macros.carbs }}
+                  <span v-if="storeSettings.macrosFromNutrition">
+                    {{ nutritionalFacts.valueTotalCarbs }}
+                  </span>
+                  <span v-else>
+                    {{ meal.macros.carbs }}
+                  </span>
                 </p>
               </div>
             </div>
@@ -99,7 +109,12 @@
               <div class="row">
                 <p class="small strong col-6 col-md-12">Protein</p>
                 <p class="small col-6 col-md-12">
-                  {{ meal.macros.protein }}
+                  <span v-if="storeSettings.macrosFromNutrition">
+                    {{ nutritionalFacts.valueProteins }}
+                  </span>
+                  <span v-else>
+                    {{ meal.macros.proteins }}
+                  </span>
                 </p>
               </div>
             </div>
@@ -107,7 +122,12 @@
               <div class="row">
                 <p class="small strong col-6 col-md-12">Fat</p>
                 <p class="small col-6 col-md-12">
-                  {{ meal.macros.fat }}
+                  <span v-if="storeSettings.macrosFromNutrition">
+                    {{ nutritionalFacts.valueTotalFat }}
+                  </span>
+                  <span v-else>
+                    {{ meal.macros.fat }}
+                  </span>
                 </p>
               </div>
             </div>

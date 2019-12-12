@@ -22,6 +22,7 @@ use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Carbon;
 use DB;
 use App\Traits\DeliveryDates;
+use Illuminate\Pagination\Paginator;
 
 class OrderController extends StoreController
 {
@@ -32,19 +33,59 @@ class OrderController extends StoreController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, $page = -1, $pageSize = -1)
     {
-        return $this->store->has('orders')
-            ? $this->store
-                ->orders()
-                ->with(['user', 'pickup_location', 'purchased_gift_cards'])
-                ->where(['paid' => 1])
-                ->get()
-            : [];
+        if (!$this->store->has('orders')) {
+            return [];
+        }
+
+        $hide = $request->query('hide', ['items']);
+        $start = $request->query('start', null);
+        $end = $request->query('end', null);
+        $search = $request->query('query', null);
+
+        $query = $this->store
+            ->orders()
+            ->with(['user', 'pickup_location', 'purchased_gift_cards'])
+            ->where(['paid' => 1])
+            ->without($hide);
+
+        if ($start) {
+            $query = $query->whereDate('delivery_date', '>=', $start);
+        }
+
+        if ($end) {
+            $query = $query->whereDate('delivery_date', '<=', $end);
+        }
+
+        if ($search) {
+            $query = $query->whereLike(
+                [
+                    'order_number',
+                    'dailyOrderNumber',
+                    'user.details.firstname',
+                    'user.details.lastname',
+                    'user.details.address',
+                    'user.details.zip'
+                ],
+                $search
+            );
+        }
+
+        if ($page === -1) {
+            return $query->get();
+        }
+
+        // Paginate
+        Paginator::currentPageResolver(function () use ($page) {
+            return $page;
+        });
+        return $query->paginate($pageSize);
     }
 
     public function getUpcomingOrders()
     {
+        return [];
         $fromDate = Carbon::today(
             $this->store->settings->timezone
         )->startOfDay();
@@ -139,6 +180,8 @@ class OrderController extends StoreController
 
     public function getUpcomingOrdersWithoutItems()
     {
+        return [];
+
         // Optimized orders for Store/Orders & Store/Payments pages
         $fromDate = Carbon::today(
             $this->store->settings->timezone

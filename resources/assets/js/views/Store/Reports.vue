@@ -288,6 +288,7 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import vSelect from "vue-select";
 import Spinner from "../../components/Spinner";
 import checkDateRange from "../../mixins/deliveryDates";
+import { sleep } from "../../lib/utils";
 
 export default {
   components: {
@@ -330,8 +331,8 @@ export default {
   mixins: [checkDateRange],
   mounted() {},
   methods: {
-    async print(report, format = "pdf") {
-      let params = {};
+    async print(report, format = "pdf", page = 1) {
+      let params = { page };
 
       let dates = this.delivery_dates[report];
 
@@ -384,15 +385,27 @@ export default {
           params
         })
         .then(response => {
-          if (!_.isEmpty(response.data.url)) {
-            let win = window.open(response.data.url);
-            win.addEventListener(
-              "load",
-              () => {
-                win.print();
-              },
-              false
-            );
+          const { data } = response;
+          if (!_.isEmpty(data.url)) {
+            let win = window.open(data.url);
+            if (win) {
+              win.addEventListener(
+                "load",
+                () => {
+                  win.print();
+
+                  if (data.next_page && data.next_page !== page) {
+                    this.print(report, format, data.next_page);
+                  }
+                },
+                false
+              );
+            } else {
+              this.$toastr.e(
+                "Please add a popup exception to print this report.",
+                "Failed to display PDF."
+              );
+            }
           }
         })
         .catch(err => {
@@ -405,8 +418,8 @@ export default {
           this.loading = false;
         });
     },
-    async exportData(report, format = "pdf", print = false) {
-      let params = {};
+    async exportData(report, format = "pdf", print = false, page = 1) {
+      let params = { page };
 
       let dates = this.delivery_dates[report];
       if (dates.start && dates.end) {
@@ -436,15 +449,28 @@ export default {
           params
         })
         .then(response => {
-          if (!_.isEmpty(response.data.url)) {
-            let win = window.open(response.data.url);
-            if (print) {
-              win.addEventListener(
-                "load",
-                () => {
-                  win.print();
-                },
-                false
+          const { data } = response;
+          if (!_.isEmpty(data.url)) {
+            let win = window.open(data.url);
+
+            if (win) {
+              if (print) {
+                win.addEventListener(
+                  "load",
+                  () => {
+                    win.print();
+                  },
+                  false
+                );
+              }
+
+              if (data.next_page && data.next_page !== page) {
+                this.exportData(report, format, print, data.next_page);
+              }
+            } else {
+              this.$toastr.e(
+                "Please add a popup exception to print this report.",
+                "Failed to display PDF."
               );
             }
           }

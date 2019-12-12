@@ -11,6 +11,9 @@ const Cookies = require("js-cookie");
 
 Vue.use(Vuex);
 
+// Paginated resources
+require("./store/resources");
+
 const ttl = 60; // 60 seconds
 
 // root state object. each Vuex instance is just a single state tree.
@@ -1485,7 +1488,7 @@ const actions = {
       await dispatch("refreshViewedOwnerStore", data);
     }
 
-    await Promise.all([dispatch("refreshUpcomingOrdersWithoutItems")]);
+    // await Promise.all([dispatch("refreshUpcomingOrdersWithoutItems")]);
 
     await Promise.all([dispatch("refreshLazy"), dispatch("refreshLazyStore")]);
 

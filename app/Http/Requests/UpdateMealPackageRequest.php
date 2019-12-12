@@ -27,17 +27,17 @@ class UpdateMealPackageRequest extends FormRequest
         if ($this->request->get('validate_all', false)) {
             return [
                 'title' => 'required',
-                'price' => 'required|numeric|between:0.01,2000', // todo: update price limits
+                'price' => 'required|numeric|between:0.01,6000', // todo: update price limits
                 'default_size_title' => '',
                 'sizes.*.title' => 'required',
-                'sizes.*.price' => 'required|gte:0.1|lte:2000',
+                'sizes.*.price' => 'required|gte:0.1|lte:6000',
                 'sizes.*.meals' => 'array',
                 'components.*.title' => 'required',
                 'components.*.options.*.title' =>
                     'required_if:components.*.options.*.selectable,0',
-                'components.*.options.*.price' => 'required|gte:0|lte:1000',
+                'components.*.options.*.price' => 'required|gte:0|lte:6000',
                 'components.*.options.*.selectable' => 'filled',
-                'addons.*.price' => 'required|gte:0|lte:1000',
+                'addons.*.price' => 'required|gte:0|lte:6000',
                 'addons.*.title' => 'required'
             ];
         } else {

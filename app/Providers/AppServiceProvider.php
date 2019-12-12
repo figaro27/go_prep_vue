@@ -9,6 +9,7 @@ use App\Observers\MealTagObserver;
 use Braintree_Configuration;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Eloquent\Builder;
 use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
 use App\Services\StorePlanService;
 
@@ -67,6 +68,65 @@ class AppServiceProvider extends ServiceProvider
         // UnitsOfMeasure aliases
         $unit = Volume::getUnit('tbsp');
         $unit->addAlias('Tbs');
+
+        Builder::macro('whereLike', function ($attributes, $searchTerm) {
+            $this->where(function (Builder $query) use (
+                $attributes,
+                $searchTerm
+            ) {
+                foreach (array_wrap($attributes) as $attribute) {
+                    $query->when(
+                        str_contains($attribute, '.'),
+                        function (Builder $query) use (
+                            $attribute,
+                            $searchTerm
+                        ) {
+                            $cmps = explode('.', $attribute);
+
+                            if (count($cmps) > 2) {
+                                $query->orWhereHas($cmps[0], function (
+                                    Builder $query
+                                ) use ($cmps, $searchTerm) {
+                                    $query->whereHas($cmps[1], function (
+                                        Builder $query
+                                    ) use ($cmps, $searchTerm) {
+                                        $query->where(
+                                            $cmps[2],
+                                            'LIKE',
+                                            "%{$searchTerm}%"
+                                        );
+                                    });
+                                });
+                            } else {
+                                [$relationName, $relationAttribute] = $cmps;
+
+                                $query->orWhereHas($relationName, function (
+                                    Builder $query
+                                ) use ($relationAttribute, $searchTerm) {
+                                    $query->where(
+                                        $relationAttribute,
+                                        'LIKE',
+                                        "%{$searchTerm}%"
+                                    );
+                                });
+                            }
+                        },
+                        function (Builder $query) use (
+                            $attribute,
+                            $searchTerm
+                        ) {
+                            $query->orWhere(
+                                $attribute,
+                                'LIKE',
+                                "%{$searchTerm}%"
+                            );
+                        }
+                    );
+                }
+            });
+
+            return $this;
+        });
     }
 
     /**
