@@ -300,7 +300,7 @@ export default {
 
         if (size) {
           base_size = size.title;
-        } else if (meal.default_size_title) {
+        } else if (meal && meal.default_size_title) {
           base_size = meal.default_size_title;
         }
 
