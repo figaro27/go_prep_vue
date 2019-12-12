@@ -256,6 +256,8 @@ class CheckoutController extends StoreController
                 $charge->id = $transactionId;
             }
 
+            $total = $request->get('grandTotal');
+
             $order = new Order();
             $order->user_id = $customerUser->id;
             $order->customer_id = $customer->id;
