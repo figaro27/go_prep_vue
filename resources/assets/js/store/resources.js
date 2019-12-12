@@ -16,8 +16,6 @@ const fetchOrders = async ({ page, pageSize, args }) => {
       return order;
     });
 
-    console.log("ORDERS", orders);
-
     return {
       total,
       data: orders
@@ -32,4 +30,13 @@ const fetchOrders = async ({ page, pageSize, args }) => {
 
 const orderResource = createResource("orders", fetchOrders, { prefetch: true });
 
-export { orderResource };
+const actions = {
+  refreshResource(state, res) {
+    resource(res).refresh();
+  }
+};
+
+export default {
+  namespaced: true,
+  actions
+};

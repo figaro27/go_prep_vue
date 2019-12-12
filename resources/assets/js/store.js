@@ -6,13 +6,12 @@ import auth from "./lib/auth";
 import uuid from "uuid";
 import CryptoJS from "crypto-js";
 import getSymbolFromCurrency from "currency-symbol-map";
+// Paginated resources
+import ResourceStore from "./store/resources";
 
 const Cookies = require("js-cookie");
 
 Vue.use(Vuex);
-
-// Paginated resources
-require("./store/resources");
 
 const ttl = 60; // 60 seconds
 
@@ -3396,4 +3395,13 @@ const plugins = [
 
 // A Vuex instance is created by combining the state, mutations, actions, and
 // getters.
-export default new Vuex.Store({ state, getters, actions, mutations, plugins });
+export default new Vuex.Store({
+  state,
+  getters,
+  actions,
+  mutations,
+  plugins,
+  modules: {
+    resources: ResourceStore
+  }
+});

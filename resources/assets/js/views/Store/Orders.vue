@@ -12,6 +12,7 @@
             v-show="initialized"
             @pagination="onChangePage"
             :class="{ 'table-loading': this.orders.loading }"
+            class="table-countless"
           >
             <div slot="beforeFilter">
               <b-input
@@ -83,6 +84,10 @@
                   ref="deliveryDates"
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
+
+                <b-btn variant="light" class="ml-auto" @click="refreshTable()">
+                  <i class="fa fa-refresh"></i>
+                </b-btn>
               </div>
             </div>
 
@@ -1063,14 +1068,14 @@ export default {
       addJob: "addJob",
       removeJob: "removeJob"
     }),
+    ...mapActions("resources", ["refreshResource"]),
     refreshTable() {
-      this.refreshOrders();
+      this.refreshResource("orders");
     },
     refreshTableWithFulfilled() {
       this.refreshOrdersWithFulfilled();
     },
     onChangePage(page) {
-      console.log("page", page);
       this.orders.page = page;
     },
     formatMoney: format.money,
@@ -1233,16 +1238,7 @@ export default {
           this.loading = false;
         });
     },
-    onChangeDateFilter() {
-      axios
-        .post("/api/me/getOrdersWithDatesWithoutItems", {
-          start: this.filters.delivery_dates.start,
-          end: this.filters.delivery_dates.end
-        })
-        .then(response => {
-          this.ordersByDate = response.data;
-        });
-    },
+    onChangeDateFilter() {},
     updateViewedOrders() {
       axios.get(`/api/me/ordersUpdateViewed`);
     },
@@ -1269,7 +1265,7 @@ export default {
         .then(response => {
           this.viewOrderModal = false;
           this.chargeAmount = 0;
-          this.refreshUpcomingOrders();
+          this.refreshTable();
           this.$toastr.s(response.data);
           this.applyToBalanceCharge = false;
           this.applyToBalanceRefund = false;
@@ -1442,6 +1438,7 @@ export default {
         .then(resp => {
           this.editingBalance = false;
           this.viewOrder(id);
+          this.refreshTable();
           this.$toastr.s("Balance updated.");
         });
     },
@@ -1472,8 +1469,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.VuePagination__count {
-  display: none;
-}
-</style>
+<style lang="scss"></style>
