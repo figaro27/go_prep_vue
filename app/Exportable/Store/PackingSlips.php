@@ -156,6 +156,8 @@ class PackingSlips
             }
         }
 
+        dd($orders[0]->items[1]);
+
         return $orders;
     }
 
