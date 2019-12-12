@@ -23,6 +23,9 @@ use Illuminate\Support\Carbon;
 use DB;
 use App\Traits\DeliveryDates;
 use Illuminate\Pagination\Paginator;
+use App\Billing\Constants;
+use App\Billing\Charge;
+use App\Billing\Authorize;
 
 class OrderController extends StoreController
 {
@@ -875,27 +878,50 @@ class OrderController extends StoreController
             $card = Card::where('id', $cardId)->first();
         }
 
-        if (!$cashOrder) {
-            $storeSource = \Stripe\Source::create(
-                [
-                    "customer" => $user->stripe_id,
-                    "original_source" => $card->stripe_id,
-                    "usage" => "single_use"
-                ],
-                ["stripe_account" => $store->settings->stripe_id]
-            );
+        $gateway = $card->payment_gateway;
+        $storeSettings = $this->store->settings;
+        $customer = $user->getStoreCustomer(
+            $store->id,
+            $storeSettings->currency,
+            $gateway
+        );
 
-            $charge = \Stripe\Charge::create(
-                [
-                    "amount" => round(100 * $chargeAmount),
-                    "currency" => "usd",
-                    "source" => $storeSource,
-                    // Change to "application_fee_amount" as per Stripe's updates
-                    "application_fee" => round($chargeAmount * $application_fee)
-                ],
-                ["stripe_account" => $store->settings->stripe_id]
-            );
+        if (!$cashOrder) {
+            if ($gateway === Constants::GATEWAY_STRIPE) {
+                $storeSource = \Stripe\Source::create(
+                    [
+                        "customer" => $user->stripe_id,
+                        "original_source" => $card->stripe_id,
+                        "usage" => "single_use"
+                    ],
+                    ["stripe_account" => $store->settings->stripe_id]
+                );
+
+                $charge = \Stripe\Charge::create(
+                    [
+                        "amount" => round(100 * $chargeAmount),
+                        "currency" => "usd",
+                        "source" => $storeSource,
+                        // Change to "application_fee_amount" as per Stripe's updates
+                        "application_fee" => round(
+                            $chargeAmount * $application_fee
+                        )
+                    ],
+                    ["stripe_account" => $store->settings->stripe_id]
+                );
+            } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
+                $billing = Billing::init($gateway, $store);
+
+                $charge = new \App\Billing\Charge();
+                $charge->amount = round(100 * $chargeAmount);
+                $charge->customer = $customer;
+                $charge->card = $card;
+
+                $transactionId = $billing->charge($charge);
+                $charge->id = $transactionId;
+            }
         }
+
         $order->chargedAmount += $chargeAmount;
 
         if ($applyToBalance) {
