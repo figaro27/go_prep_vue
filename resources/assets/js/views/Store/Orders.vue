@@ -1482,8 +1482,7 @@ export default {
 </script>
 
 <style lang="scss">
-.VuePagination__count,
-.VueTables__search-field {
+.VuePagination__count {
   display: none;
 }
 </style>
