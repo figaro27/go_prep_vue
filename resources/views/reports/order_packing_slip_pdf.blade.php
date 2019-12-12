@@ -222,7 +222,7 @@ $brandColor = $order->store->settings->color;
         $count = 0;
         @endphp
         @foreach($order->visible_items as $i => $item)
-        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+        <tr class="{{ $count % 2 === 0 ? 'evenrow' : 'oddrow' }}">
         @if ($item->meal_package_order_id === null)
         
           <td style="text-align:center">{{$item->quantity}}</td>
@@ -245,7 +245,7 @@ $brandColor = $order->store->settings->color;
 
         @if (count($order->lineItemsOrders))
         @foreach ($order->lineItemsOrders as $i => $lineItemOrder)
-        <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+        <tr class="{{ $count % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$lineItemOrder->quantity}}</td>
           <td></td>
           <td>{!! $lineItemOrder->title !!}</td>
