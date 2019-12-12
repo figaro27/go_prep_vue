@@ -434,7 +434,7 @@ class CheckoutController extends UserController
                         'meal_id' => $item['meal']['id'],
                         'meal_size_id' => isset($item['size']['id'])
                             ? $item['size']['id']
-                            : null,
+                            : 10000,
                         'meal_package_id' => isset($item['meal_package_id'])
                             ? $item['meal_package_id']
                             : null,
