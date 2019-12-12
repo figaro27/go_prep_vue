@@ -286,28 +286,22 @@ export default {
         });
       });
 
-      return _.map(mealCounts, (quantity, key) => {
-        let meal = this.getMeal(mealIds[key]);
+      return _.map(mealCounts, (quantity, title) => {
+        let meal = this.getMeal(mealIds[title]);
 
-        if (meal === null) {
-          meal = [];
-        }
+        //let base_title = meal.title + "";
+        let base_title = mealTitles[title];
 
-        let size = mealSizes[key];
-        let base_title = "";
+        let size = mealSizes[title];
         let base_size = "";
 
         if (size) {
           base_size = size.title;
-        } else if (meal && meal.default_size_title) {
+        } else if (meal.default_size_title) {
           base_size = meal.default_size_title;
         }
 
         let price = meal.price;
-
-        const temp = key.split("<sep>");
-        base_title = temp[0];
-        base_size = temp.length > 1 ? temp[1] : "";
 
         return {
           ...meal,
