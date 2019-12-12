@@ -2123,11 +2123,7 @@ const actions = {
   },
 
   async refreshLazy({ state }, args = {}) {
-    if (state.isLazy) {
-      return false;
-    }
-
-    if (!state.viewed_store.id) {
+    if (state.isLazy || !state.viewed_store.id) {
       return false;
     }
 
