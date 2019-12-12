@@ -23,7 +23,7 @@ class PackingSlips
         $this->params = $params;
         $this->orientation = 'portrait';
         $this->page = $params->get('page', 1);
-        $this->perPage = 10;
+        $this->perPage = 25;
     }
 
     public function exportData($type = null)
