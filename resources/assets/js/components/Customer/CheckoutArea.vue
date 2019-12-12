@@ -1635,7 +1635,7 @@ export default {
       return hasActiveSub;
     },
     customerEmail() {
-      return;
+      return "";
       let customerEmail = "";
       let customers = this.storeCustomers;
       if (customers) {
