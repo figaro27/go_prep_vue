@@ -1161,11 +1161,7 @@ export default {
             this.applyToBalanceRefund = true;
           }
 
-          if (
-            this.order.adjusted === 1 &&
-            this.order.adjustedDifference > 0 &&
-            this.order.balance != 0
-          ) {
+          if (this.order.balance != 0) {
             this.applyToBalanceCharge = true;
           }
 
