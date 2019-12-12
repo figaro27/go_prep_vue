@@ -181,7 +181,7 @@ $brandColor = $order->store->settings->color;
           <th class="top-left-border-radius drop-shadow no-border" style="text-align:center">Quantity</th>
           <th class="drop-shadow no-border">Size</th>
           <th class="drop-shadow no-border">Item</th>
-          <th class="top-right-border-radius drop-shadow no-border" style="text-align:right;position:relative;right:20px">Price</th>
+          <th class="top-right-border-radius drop-shadow no-border" style="text-align:right;padding-right:20px">Price</th>
       </thead>
 
       <tbody>
@@ -191,7 +191,7 @@ $brandColor = $order->store->settings->color;
           <td style="text-align:center">{{$mealPackageItem->quantity}}</td>
           <td>{{ isset($mealPackageItem->meal_package_size) && $mealPackageItem->meal_package_size? $mealPackageItem->meal_package_size->title:$mealPackageItem->meal_package->default_size_title }}</td>
           <td>{{ $mealPackageItem->meal_package->title }}</td>
-          <td style="text-align:right;position:relative;right:20px">{{$currency}}{{number_format($mealPackageItem->price * $mealPackageItem->quantity, 2)}}</td>
+          <td style="text-align:right;padding-right:20px">{{$currency}}{{number_format($mealPackageItem->price * $mealPackageItem->quantity, 2)}}</td>
         </tr>
 
         @foreach($order->visible_items as $i => $item)
@@ -201,7 +201,7 @@ $brandColor = $order->store->settings->color;
           <td>{{ $item->base_size }}</td>
           <!--<td>{!! $item->html_title !!}</td>!-->
           <td>{!! $item->base_title !!}</td>
-          <td style="text-align:right;position:relative;right:20px">
+          <td style="text-align:right;padding-right:20px">
             @if ($item->meal_package_variation && $item->price > 0)
               <span style="font-size:11px">(+{{$currency}}{{$item->price}})</span> In Package
             @else
