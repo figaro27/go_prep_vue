@@ -10,12 +10,11 @@
           <h6>{{ getComponentLabel(component) }}</h6>
           <b-form-group :label="null">
             <b-checkbox-group
-              v-model="choices[component.id]"
               :options="getOptions(component)"
               :min="component.minimum"
               :max="component.maximum"
               stacked
-              @input="setChoices"
+              @input="selection => setComponentChoices(component, selection)"
             ></b-checkbox-group>
 
             <div v-if="invalid">
@@ -224,6 +223,15 @@ export default {
       }
 
       return `${component.title} - ${qty}`;
+    },
+    setComponentChoices(component, selection) {
+      if (!component || !component.id) {
+        return false;
+      }
+
+      Vue.set(this.choices, component.id, selection);
+
+      this.setChoices();
     },
     setChoices() {
       if (this.sizeCheck) {

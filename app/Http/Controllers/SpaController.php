@@ -464,6 +464,9 @@ class SpaController extends Controller
         $category_data = $delivery_day = null;
         if ($delivery_day_id != 0) {
             $delivery_day = DeliveryDay::find($delivery_day_id);
+            if ($delivery_day) {
+                $delivery_day->has_items = true;
+            }
         }
 
         if ($user && $user->hasRole('store') && $user->has('store')) {
