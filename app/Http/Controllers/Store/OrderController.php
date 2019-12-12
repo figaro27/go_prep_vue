@@ -44,7 +44,8 @@ class OrderController extends StoreController
         }
 
         $hide = $request->query('hide', ['items']);
-        $start = $request->query('start', null);
+        // Start date is all future orders by default
+        $start = $request->query('start', Carbon::today());
         $end = $request->query('end', null);
         $search = $request->query('query', null);
         $voided = $request->query('voided', null);
