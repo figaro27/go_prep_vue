@@ -1,6 +1,9 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
+      <div class="alert alert-success center-text" role="alert">
+        Please select the date range to see production.
+      </div>
       <div class="card">
         <div class="card-body">
           <Spinner v-if="isLoading" />
