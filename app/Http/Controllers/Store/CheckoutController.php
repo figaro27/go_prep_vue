@@ -209,6 +209,20 @@ class CheckoutController extends StoreController
         }
 
         if (!$weeklyPlan) {
+            $balance = null;
+
+            $noBalance = $request->get('noBalance');
+
+            if ($cashOrder && !$noBalance) {
+                $balance = $total;
+            }
+
+            if ($deposit > 0 && !$noBalance) {
+                $balance = $total - $deposit;
+            }
+
+            $total = $total - $balance;
+
             if ($gateway === Constants::GATEWAY_STRIPE) {
                 $storeSource = \Stripe\Source::create(
                     [
@@ -240,18 +254,6 @@ class CheckoutController extends StoreController
 
                 $transactionId = $billing->charge($charge);
                 $charge->id = $transactionId;
-            }
-
-            $balance = null;
-
-            $noBalance = $request->get('noBalance');
-
-            if ($cashOrder && !$noBalance) {
-                $balance = $total;
-            }
-
-            if ($deposit > 0 && !$noBalance) {
-                $balance = $total - $deposit;
             }
 
             $order = new Order();
