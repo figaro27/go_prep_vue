@@ -393,9 +393,11 @@ class Order extends Model
 
     public function getVisibleItemsAttribute()
     {
-        return $this->items->filter(function ($item) {
-            return !$item->hidden;
-        });
+        return $this->items
+            ->filter(function ($item) {
+                return !$item->hidden;
+            })
+            ->values();
     }
 
     public function getCutoffDateAttribute()
