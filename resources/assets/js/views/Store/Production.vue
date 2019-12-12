@@ -304,7 +304,7 @@ export default {
           base_size = meal.default_size_title;
         }
 
-        let price = meal.price;
+        let price = meal ? meal.price : null;
 
         return {
           ...meal,
