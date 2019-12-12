@@ -259,38 +259,38 @@ $brandColor = $order->store->settings->color;
           <table border="0" style="border:0px;border-style:none;">
             <tr>
               <td style="border:none"><b>Subtotal</b></td>
-              <td style="border:none;text-align:right;position:relative;right:10px">{{ $subtotal }}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">{{ $subtotal }}</td>
             </tr>
             @if ($order->mealPlanDiscount > 0)<tr>
               <td style="border:none"><b>Subscription Discount</b></td>
-              <td style="border:none;text-align:right;position:relative;right:10px">{{ $mealPlanDiscount }}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">{{ $mealPlanDiscount }}</td>
             </tr>@endif
             @if ($order->salesTax > 0)<tr>
               <td style="border:none"><b>Sales Tax</b></td>
-              <td style="border:none;text-align:right;position:relative;right:10px">{{ $salesTax }}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">{{ $salesTax }}</td>
             </tr>@endif
             @if ($order->processingFee > 0)<tr>
               <td style="border:none"><b>Processing Fee</b></td>
-              <td style="border:none;text-align:right;position:relative;right:10px">{{ $processingFee }}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">{{ $processingFee }}</td>
             </tr>@endif
             @if ($order->deliveryFee > 0)<tr>
               <td style="border:none"><b>Delivery Fee</b></td>
-              <td style="border:none;text-align:right;position:relative;right:10px">{{ $deliveryFee }}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">{{ $deliveryFee }}</td>
             </tr>@endif
             @if ($order->couponReduction > 0)<tr>
               <td style="border:none"><b>Coupon</b></td>
-              <td style="border:none;text-align:right;position:relative;right:10px">({{ $couponCode }}) {{ $coupon }}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">({{ $couponCode }}) {{ $coupon }}</td>
             </tr>@endif
             @if ($order->purchasedGiftCardReduction > 0)<tr>
               <td style="border:none"><b>Coupon</b></td>
-              <td style="border:none;text-align:right;position:relative;right:10px">({{ $purchasedGiftCard }}) {{ $purchasedGiftCardReduction }}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">({{ $purchasedGiftCard }}) {{ $purchasedGiftCardReduction }}</td>
             </tr>@endif
             @if ($order->balance > 0)<tr>
             <td style="border:none"><b>Total</b></td>
-              <td style="border:none;text-align:right;position:relative;right:10px">{{ $amount }}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">{{ $amount }}</td>
             </tr><tr>
             <td style="border:none"><b>Paid</b></td>
-              <td style="border:none;text-align:right;position:relative;right:10px">{{$currency}}{{number_format($order->amount - $order->balance, 2)}}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">{{$currency}}{{number_format($order->amount - $order->balance, 2)}}</td>
             </tr>
             @endif
           </table>
