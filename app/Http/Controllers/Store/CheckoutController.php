@@ -9,6 +9,7 @@ use App\Http\Controllers\Store\StoreController;
 use App\Mail\Customer\MealPlan;
 use App\Mail\Customer\NewOrder;
 use App\Mail\Customer\NewGiftCard;
+use App\Meal;
 use App\MealOrder;
 use App\MealOrderComponent;
 use App\MealSubscriptionComponent;
@@ -429,6 +430,11 @@ class CheckoutController extends StoreController
                                 ->first();
                         }
                     }
+
+                    $hidden = Meal::where('id', $item['meal']['id'])
+                        ->pluck('hidden')
+                        ->first();
+                    $mealOrder->hidden = $hidden;
 
                     $mealOrder->save();
 
