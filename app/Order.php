@@ -48,7 +48,6 @@ class Order extends Model
         'has_notes',
         'meal_ids',
         'items',
-        'visible_items',
         'meal_orders',
         'meal_package_items',
         'store_name',
@@ -66,7 +65,8 @@ class Order extends Model
         'purchased_gift_card_code',
         'customer_name',
         'customer_address',
-        'customer_zip'
+        'customer_zip',
+        'visible_items'
         // 'balance'
     ];
 
@@ -147,6 +147,15 @@ class Order extends Model
     public function purchased_gift_cards()
     {
         return $this->hasMany('App\PurchasedGiftCard');
+    }
+
+    public function getVisibleItemsAttribute()
+    {
+        return $this->items
+            ->filter(function ($item) {
+                return !$item->hidden;
+            })
+            ->values();
     }
 
     public function getCustomerNameAttribute()
@@ -346,6 +355,8 @@ class Order extends Model
                     'meal_package_order_id' =>
                         $mealOrder->meal_package_order_id,
                     'meal_package_title' => $mealOrder->meal_package_title,
+                    'meal_package_variation' =>
+                        $mealOrder->meal_package_variation,
                     'components' => $mealOrder->components->map(function (
                         $component
                     ) {
@@ -387,13 +398,6 @@ class Order extends Model
             ->map(function ($meal) {
                 return $meal->pivot->quantity ? $meal->pivot->quantity : 0;
             });
-    }
-
-    public function getVisibleItemsAttribute()
-    {
-        return $this->items->filter(function ($item) {
-            return !$item->hidden;
-        });
     }
 
     public function getCutoffDateAttribute()

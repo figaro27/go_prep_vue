@@ -344,6 +344,11 @@ class CheckoutController extends UserController
                     }
                     if ($item['meal_package']) {
                         $mealOrder->meal_package = $item['meal_package'];
+                        $mealOrder->meal_package_variation = isset(
+                            $item['meal_package_variation']
+                        )
+                            ? $item['meal_package_variation']
+                            : 0;
                     }
 
                     if (isset($item['meal_package_title'])) {

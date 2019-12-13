@@ -388,11 +388,13 @@
       <h3 class="center-text mt-5">Or Select From Existing</h3>
       <div class="row mt-5">
         <div class="col-md-7">
-          <b-form-select
-            v-model="selectedLineItem"
+          <v-select
+            label="text"
             :options="lineItemOptions"
+            v-model="selectedLineItem"
             class="mr-3 w-100"
-          ></b-form-select>
+          >
+          </v-select>
         </div>
         <div class="col-md-3">
           <p class="pt-1 mr-3 center-text">
@@ -557,11 +559,9 @@ export default {
       this.lineItems.forEach(lineItem => {
         options.push({
           text: lineItem.title,
-          value: {
-            price: lineItem.price,
-            title: lineItem.title,
-            quantity: 1
-          }
+          price: lineItem.price,
+          title: lineItem.title,
+          quantity: 1
         });
       });
       return options;

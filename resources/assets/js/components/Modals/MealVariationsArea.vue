@@ -88,6 +88,8 @@ export default {
     } else {
       this.$parent.invalidCheck = false;
     }
+
+    this.initializeChoiceCheckbox();
   },
   updated() {
     if (this.sizeCheck) {
@@ -179,6 +181,13 @@ export default {
     };
   },
   methods: {
+    initializeChoiceCheckbox() {
+      if (this.components) {
+        this.components.forEach(component => {
+          Vue.set(this.choices, component.id, []);
+        });
+      }
+    },
     getOptions(component) {
       let options = _.filter(component.options, option => {
         return option.meal_size_id == this.sizeId;
@@ -247,8 +256,9 @@ export default {
       this.$parent.refreshNutritionFacts();
     },
     resetVariations() {
-      this.choices = {};
+      //this.choices = {};
       this.addons = [];
+      this.initializeChoiceCheckbox();
     }
   }
 };

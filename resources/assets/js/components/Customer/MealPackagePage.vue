@@ -1045,10 +1045,10 @@ export default {
 
           if (checkboxes) {
             if (mealOption.price > 0) {
-              title += ` <small>+${format.money(
+              title += ` +${format.money(
                 mealOption.price,
                 this.storeSettings.currency
-              )}</small>`;
+              )}`;
             }
 
             return {

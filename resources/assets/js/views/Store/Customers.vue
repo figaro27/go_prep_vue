@@ -576,7 +576,14 @@ export default {
               meal: title,
               quantity: item.quantity,
               unit_price: "In Package",
-              subtotal: "In Package"
+              subtotal:
+                item.meal_package_variation && item.price > 0
+                  ? "In Package " +
+                    "(+" +
+                    this.store.settings.currency_symbol +
+                    item.price +
+                    ")"
+                  : "In Package"
             });
           }
         });

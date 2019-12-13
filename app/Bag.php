@@ -124,7 +124,8 @@ class Bag
                                     $item['emailRecipient']
                                 )
                                     ? $item['emailRecipient']
-                                    : null
+                                    : null,
+                                'meal_package_variation' => false
                             ];
 
                             $mealItemId = $this->getItemId($mealItem);
@@ -183,7 +184,8 @@ class Bag
                                         $item['emailRecipient']
                                     )
                                         ? $item['emailRecipient']
-                                        : null
+                                        : null,
+                                    'meal_package_variation' => false
                                 ];
 
                                 $mealItemId = $this->getItemId($mealItem);
@@ -225,7 +227,9 @@ class Bag
                                                 'id' => $mealOption->meal_id
                                             ],
                                             'quantity' => $mealOption->quantity,
-                                            'price' => $mealOption->price,
+                                            'price' =>
+                                                $mealOption->price /
+                                                $mealOption->quantity,
                                             'meal_size_id' =>
                                                 $mealOption->meal_size_id,
                                             'special_instructions' => isset(
@@ -237,7 +241,8 @@ class Bag
                                                 $item['emailRecipient']
                                             )
                                                 ? $item['emailRecipient']
-                                                : null
+                                                : null,
+                                            'meal_package_variation' => true
                                         ]);
                                     }
                                 } else {
@@ -265,7 +270,9 @@ class Bag
                                                 ],
                                                 'quantity' =>
                                                     $optionItem['quantity'],
-                                                'price' => $mealOption->price,
+                                                'price' =>
+                                                    $mealOption->price /
+                                                    $mealOption->quantity,
                                                 'meal_size_id' =>
                                                     $mealOption->meal_size_id,
                                                 'special_instructions' => isset(
@@ -276,7 +283,8 @@ class Bag
                                                     ? $optionItem[
                                                         'special_instructions'
                                                     ]
-                                                    : null
+                                                    : null,
+                                                'meal_package_variation' => true
                                             ]);
                                         }
                                     }
@@ -316,7 +324,9 @@ class Bag
                                             $item['emailRecipient']
                                         )
                                             ? $item['emailRecipient']
-                                            : null
+                                            : null,
+                                        'meal_package_variation' =>
+                                            $meal['meal_package_variation']
                                     ];
 
                                     $mealItemId = $this->getItemId($mealItem);
@@ -350,7 +360,10 @@ class Bag
                                             'id' => $mealOption->meal_id
                                         ],
                                         'quantity' => $mealOption->quantity,
-                                        'price' => $mealOption->price,
+                                        // 'price' => $mealOption->price,
+                                        'price' =>
+                                            $addon->price /
+                                            $mealOption->quantity,
                                         'meal_size_id' =>
                                             $mealOption->meal_size_id,
                                         'special_instructions' => isset(
@@ -359,7 +372,8 @@ class Bag
                                             ? $mealOption[
                                                 'special_instructions'
                                             ]
-                                            : null
+                                            : null,
+                                        'meal_package_variation' => true
                                     ]);
                                 }
                             } else {
@@ -395,7 +409,8 @@ class Bag
                                                 ? $addonItem[
                                                     'special_instructions'
                                                 ]
-                                                : null
+                                                : null,
+                                            'meal_package_variation' => true
                                         ]);
                                     }
                                 }
@@ -429,7 +444,9 @@ class Bag
                                         isset($item['delivery_day']) &&
                                         $item['delivery_day']
                                             ? $item['delivery_day']
-                                            : null
+                                            : null,
+                                    'meal_package_variation' =>
+                                        $meal['meal_package_variation']
                                 ];
 
                                 $mealItemId = $this->getItemId($mealItem);
