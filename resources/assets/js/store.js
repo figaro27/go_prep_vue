@@ -1536,15 +1536,13 @@ const actions = {
     if (!("expires" in args)) {
       args.expires = 1000000;
     }
-    if (state.jobs.length === 0) {
-      Vue.set(
-        state.jobs,
-        args.id,
-        moment()
-          .add(args.expires, "seconds")
-          .unix()
-      );
-    }
+    Vue.set(
+      state.jobs,
+      args.id,
+      moment()
+        .add(args.expires, "seconds")
+        .unix()
+    );
 
     // Automatically remove after 10s
     setTimeout(() => {
