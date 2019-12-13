@@ -362,7 +362,8 @@ class Bag
                                         'quantity' => $mealOption->quantity,
                                         // 'price' => $mealOption->price,
                                         'price' =>
-                                            $addon->price /
+                                            ($addon->price +
+                                                $mealOption->price) /
                                             $mealOption->quantity,
                                         'meal_size_id' =>
                                             $mealOption->meal_size_id,
