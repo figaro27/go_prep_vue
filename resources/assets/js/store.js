@@ -1537,7 +1537,7 @@ const actions = {
       args.expires = 1000000;
     }
 
-    if (!state.isLoading) {
+    if (!state.isLoading && state.initialized) {
       Vue.set(
         state.jobs,
         args.id,
