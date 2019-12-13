@@ -906,11 +906,6 @@ class CheckoutController extends StoreController
                         : null,
                     'meal_package_id' => isset($item['meal_package_id'])
                         ? $item['meal_package_id']
-                        : null,
-                    'meal_package_size_id' => isset(
-                        $item['meal_package_size_id']
-                    )
-                        ? $item['meal_package_size_id']
                         : null
                 ])->get();
 
