@@ -29,6 +29,8 @@ use App\LineItem;
 use App\LineItemOrder;
 use App\MealPackageOrder;
 use App\MealPackageSubscription;
+use App\MealPackage;
+use App\MealPackageSize;
 use App\OrderBag;
 use App\PurchasedGiftCard;
 use App\Billing\Constants;
@@ -411,7 +413,21 @@ class CheckoutController extends StoreController
                                 $item['meal_package_size_id'];
                             $mealPackageOrder->quantity =
                                 $item['package_quantity'];
-                            $mealPackageOrder->price = $item['package_price'];
+                            // $mealPackageOrder->price = $item['package_price'];
+                            $mealPackageOrder->price =
+                                $item['meal_package_size_id'] !== null
+                                    ? MealPackageSize::where(
+                                        'id',
+                                        $item['meal_package_size_id']
+                                    )
+                                        ->pluck('price')
+                                        ->first()
+                                    : MealPackage::where(
+                                        'id',
+                                        $item['meal_package_id']
+                                    )
+                                        ->pluck('price')
+                                        ->first();
                             if (
                                 isset($item['delivery_day']) &&
                                 $item['delivery_day']
