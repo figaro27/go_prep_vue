@@ -193,7 +193,7 @@ $brandColor = $order->store->settings->color;
           <td style="text-align:right;padding-right:12px">{{$currency}}{{number_format($mealPackageItem->price * $mealPackageItem->quantity, 2)}}</td>
         </tr>
 
-        @foreach($order->items as $i => $item)
+        @foreach($order->visible_items as $i => $item)
         @if ($item->meal_package_order_id === $mealPackageItem->id)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$item->quantity}}</td>
@@ -212,7 +212,7 @@ $brandColor = $order->store->settings->color;
         @endforeach
         @endforeach
 
-        @foreach($order->items as $i => $item)
+        @foreach($order->visible_items as $i => $item)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
         @if ($item->meal_package_order_id === null)
         
@@ -318,7 +318,7 @@ $brandColor = $order->store->settings->color;
   @php
   $titles = [];
 @endphp
-    @foreach ($order->items as $i => $item)
+    @foreach ($order->visible_items as $i => $item)
     @if ($item->instructions && !in_array($item->short_title, $titles))
     <p><b>{{ $item->short_title }}</b>: {{ $item->instructions }}</p>
   @php
