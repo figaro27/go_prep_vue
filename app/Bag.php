@@ -399,7 +399,10 @@ class Bag
                                             ],
                                             'quantity' =>
                                                 $addonItem['quantity'],
-                                            'price' => $mealOption->price,
+                                            'price' =>
+                                                ($addonItem->price +
+                                                    $mealOption->price) /
+                                                $mealOption->quantity,
                                             'meal_size_id' =>
                                                 $mealOption->meal_size_id,
                                             'special_instructions' => isset(
