@@ -1534,7 +1534,7 @@ const actions = {
       args.id = uuid.v1();
     }
     if (!("expires" in args)) {
-      args.expires = 10000;
+      args.expires = 1000000;
     }
     Vue.set(
       state.jobs,
