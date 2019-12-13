@@ -400,7 +400,7 @@ class Bag
                                             'quantity' =>
                                                 $addonItem['quantity'],
                                             'price' =>
-                                                ($addonItem['price'] +
+                                                ($addon->price +
                                                     $mealOption->price) /
                                                 $mealOption->quantity,
                                             'meal_size_id' =>
