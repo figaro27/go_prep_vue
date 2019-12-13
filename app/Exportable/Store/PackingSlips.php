@@ -156,14 +156,7 @@ class PackingSlips
             }
         }
 
-        $orders = $orders->map(function ($order) {
-            $order->items = $order->items->filter(function ($item) {
-                return !$item->hidden;
-            });
-            return $order;
-        });
-
-        return $orders->values();
+        return $orders;
     }
 
     public function exportPdfView()
