@@ -254,7 +254,7 @@ $brandColor = $order->store->settings->color;
           <td style="text-align:center">{{$lineItemOrder->quantity}}</td>
           <td></td>
           <td>{!! $lineItemOrder->title !!}</td>
-          <td style="text-align:center">{{$currency}}{{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
+          <td style="text-align:right;padding-right:12px">{{$currency}}{{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
         </tr>
         @php
         $count += 1;
