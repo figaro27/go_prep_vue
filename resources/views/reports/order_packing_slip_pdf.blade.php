@@ -212,10 +212,10 @@ $brandColor = $order->store->settings->color;
             @endif
           </td>
         </tr>
-        @endif
         @php
         $count += 1;
         @endphp
+        @endif
         @endforeach
         @endforeach
 
@@ -238,11 +238,11 @@ $brandColor = $order->store->settings->color;
             {{$currency}}{{ number_format($item->price, 2) }}
             @endif
           </td>
-        @endif
-        </tr>
-        @php
+          @php
         $count += 1;
         @endphp
+        @endif
+        </tr>
         @endforeach
 
         @php
