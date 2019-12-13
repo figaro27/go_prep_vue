@@ -227,7 +227,9 @@ class Bag
                                                 'id' => $mealOption->meal_id
                                             ],
                                             'quantity' => $mealOption->quantity,
-                                            'price' => $mealOption->price,
+                                            'price' =>
+                                                $mealOption->price /
+                                                $mealOption->quantity,
                                             'meal_size_id' =>
                                                 $mealOption->meal_size_id,
                                             'special_instructions' => isset(
@@ -268,7 +270,9 @@ class Bag
                                                 ],
                                                 'quantity' =>
                                                     $optionItem['quantity'],
-                                                'price' => $mealOption->price,
+                                                'price' =>
+                                                    $mealOption->price /
+                                                    $mealOption->quantity,
                                                 'meal_size_id' =>
                                                     $mealOption->meal_size_id,
                                                 'special_instructions' => isset(
@@ -357,7 +361,9 @@ class Bag
                                         ],
                                         'quantity' => $mealOption->quantity,
                                         // 'price' => $mealOption->price,
-                                        'price' => $addon->price,
+                                        'price' =>
+                                            $addon->price /
+                                            $mealOption->quantity,
                                         'meal_size_id' =>
                                             $mealOption->meal_size_id,
                                         'special_instructions' => isset(
