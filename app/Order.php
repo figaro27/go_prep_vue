@@ -65,8 +65,7 @@ class Order extends Model
         'purchased_gift_card_code',
         'customer_name',
         'customer_address',
-        'customer_zip',
-        'visible_items'
+        'customer_zip'
         // 'balance'
     ];
 
@@ -147,15 +146,6 @@ class Order extends Model
     public function purchased_gift_cards()
     {
         return $this->hasMany('App\PurchasedGiftCard');
-    }
-
-    public function getVisibleItemsAttribute()
-    {
-        return $this->items
-            ->filter(function ($item) {
-                return !$item->hidden;
-            })
-            ->values();
     }
 
     public function getCustomerNameAttribute()

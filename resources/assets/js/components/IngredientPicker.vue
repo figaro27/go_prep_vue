@@ -718,7 +718,17 @@ export default {
             : "";
         let addonTitle =
           this.addonTitle !== undefined ? " - A: " + this.addonTitle : "";
-        let finalTitle = baseTitle.concat(componentTitle + addonTitle);
+        let finalTitle =
+          baseTitle.concat(componentTitle + addonTitle) +
+          " ID - " +
+          Math.random()
+            .toString(18)
+            .substring(2, 6)
+            .toUpperCase() +
+          Math.random()
+            .toString(36)
+            .substring(2, 6)
+            .toUpperCase();
 
         this.customIngredient.food_name = finalTitle;
         this.customIngredient.serving_qty = 1;
