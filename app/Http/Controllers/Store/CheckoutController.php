@@ -413,7 +413,6 @@ class CheckoutController extends StoreController
                                 $item['meal_package_size_id'];
                             $mealPackageOrder->quantity =
                                 $item['package_quantity'];
-                            // $mealPackageOrder->price = $item['package_price'];
                             $mealPackageOrder->price =
                                 $item['meal_package_size_id'] !== null
                                     ? MealPackageSize::where(
@@ -831,7 +830,20 @@ class CheckoutController extends StoreController
                         $mealPackageOrder->meal_package_size_id =
                             $item['meal_package_size_id'];
                         $mealPackageOrder->quantity = $item['package_quantity'];
-                        $mealPackageOrder->price = $item['package_price'];
+                        $mealPackageOrder->price =
+                            $item['meal_package_size_id'] !== null
+                                ? MealPackageSize::where(
+                                    'id',
+                                    $item['meal_package_size_id']
+                                )
+                                    ->pluck('price')
+                                    ->first()
+                                : MealPackage::where(
+                                    'id',
+                                    $item['meal_package_id']
+                                )
+                                    ->pluck('price')
+                                    ->first();
                         if (
                             isset($item['delivery_day']) &&
                             $item['delivery_day']
@@ -972,7 +984,19 @@ class CheckoutController extends StoreController
                         $mealPackageSubscription->quantity =
                             $item['package_quantity'];
                         $mealPackageSubscription->price =
-                            $item['package_price'];
+                            $item['meal_package_size_id'] !== null
+                                ? MealPackageSize::where(
+                                    'id',
+                                    $item['meal_package_size_id']
+                                )
+                                    ->pluck('price')
+                                    ->first()
+                                : MealPackage::where(
+                                    'id',
+                                    $item['meal_package_id']
+                                )
+                                    ->pluck('price')
+                                    ->first();
                         $mealPackageSubscription->save();
 
                         $mealSub->meal_package_subscription_id =
