@@ -1028,14 +1028,26 @@ class SpaController extends Controller
 
         $package = MealPackage::where('id', $packageId)
             ->with([
-                'meals',
-                'meals.sizes',
                 'sizes' => function ($query) use ($meal_package_size_id) {
                     $query->where('id', $meal_package_size_id);
                 },
                 'sizes.meals',
-                'components',
-                'addons'
+                'components' => function ($query) use ($meal_package_size_id) {
+                    $query->whereHas('options', function ($q) use (
+                        $meal_package_size_id
+                    ) {
+                        $q->where(
+                            'meal_package_size_id',
+                            $meal_package_size_id
+                        );
+                    });
+                },
+                'addons' => function ($query) use ($meal_package_size_id) {
+                    $query->where(
+                        'meal_package_size_id',
+                        $meal_package_size_id
+                    );
+                }
             ])
             ->first();
 
