@@ -219,6 +219,11 @@
                 editingSalesTax = false;
               "
             ></i>
+            <i
+              class="fas fa-undo-alt"
+              v-if="$route.params.adjustOrder && order.customSalesTax"
+              @click="order.customSalesTax = 0"
+            ></i>
           </div>
         </div>
       </li>
@@ -1847,7 +1852,8 @@ export default {
           cashOrder: this.cashOrder,
           lineItemsOrder: this.orderLineItems,
           grandTotal: this.grandTotal,
-          emailCustomer: this.emailCustomer
+          emailCustomer: this.emailCustomer,
+          customSalesTax: this.customSalesTax !== null ? 1 : 0
         })
         .then(resp => {
           if (this.purchasedGiftCard !== null) {
