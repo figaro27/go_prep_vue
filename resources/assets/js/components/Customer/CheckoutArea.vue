@@ -1872,6 +1872,10 @@ export default {
               orderId: this.$parent.orderId
             }
           });
+          this.setBagMealPlan(false);
+          this.setBagCoupon(null);
+          this.setBagPurchasedGiftCard(null);
+          this.emptyBag();
           this.refreshResource("orders");
           this.refreshUpcomingOrders();
           this.refreshUpcomingOrdersWithoutItems();
