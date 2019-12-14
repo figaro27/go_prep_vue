@@ -410,7 +410,7 @@ export default {
         })
         .catch(err => {
           this.$toastr.e(
-            "Please confirm that orders exist for the selected date range.",
+            "Please confirm that orders exist for the selected date range and disable any popup blocker in our browser.",
             "Failed to print report."
           );
         })

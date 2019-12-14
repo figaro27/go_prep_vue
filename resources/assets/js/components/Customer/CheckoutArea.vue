@@ -1854,7 +1854,13 @@ export default {
             this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
           }
           this.$toastr.s("Order Adjusted");
-          this.$router.push({ path: "/store/orders" });
+          this.$router.push({
+            name: "store-orders",
+            params: {
+              autoPrintPackingSlip: this.storeModules.autoPrintPackingSlip,
+              orderId: this.$parent.orderId
+            }
+          });
           this.refreshResource("orders");
           this.refreshUpcomingOrders();
           this.refreshUpcomingOrdersWithoutItems();

@@ -962,8 +962,15 @@ export default {
     if (this.storeModules.dailyOrderNumbers) {
       this.columns.splice(1, 0, "dailyOrderNumber");
     }
+    let params = this.$route.params;
 
-    if (this.$route.params.autoPrintPackingSlip) {
+    if (params.autoPrintPackingSlip && params.orderId !== undefined) {
+      axios.get(`/api/me/orders/${params.orderId}`).then(resp => {
+        this.printPackingSlip(resp.data.id);
+      });
+    }
+
+    if (params.autoPrintPackingSlip && params.orderId === undefined) {
       axios.get("/api/me/getLatestOrder").then(resp => {
         this.printPackingSlip(resp.data.id);
       });
@@ -1186,23 +1193,24 @@ export default {
       this.filter = !this.filter;
       this.refreshTable();
     },
-    async exportData(report, format = "pdf", print = false) {
-      const warning = this.checkDateRange({ ...this.filters.delivery_dates });
-      if (warning) {
-        try {
-          let dialog = await this.$dialog.confirm(
-            "You have selected a date range which includes delivery days which haven't passe" +
-              "d their cutoff period. This means new orders can still come in for those days. Continue?"
-          );
-          dialog.close();
-        } catch (e) {
-          return;
-        }
-      }
+    async exportData(report, format = "pdf", print = false, page = 1) {
+      // const warning = this.checkDateRange({ ...this.filters.delivery_dates });
+      // if (warning) {
+      //   try {
+      //     let dialog = await this.$dialog.confirm(
+      //       "You have selected a date range which includes delivery days which haven't passe" +
+      //         "d their cutoff period. This means new orders can still come in for those days. Continue?"
+      //     );
+      //     dialog.close();
+      //   } catch (e) {
+      //     return;
+      //   }
+      // }
 
       let params = {
         has_notes: this.filters.has_notes ? 1 : 0,
-        fulfilled: this.filters.fulfilled ? 1 : 0
+        fulfilled: this.filters.fulfilled ? 1 : 0,
+        page
       };
 
       if (
@@ -1220,15 +1228,24 @@ export default {
           params
         })
         .then(response => {
-          if (!_.isEmpty(response.data.url)) {
-            let win = window.open(response.data.url);
-            if (print) {
+          const { data } = response;
+          if (!_.isEmpty(data.url)) {
+            let win = window.open(data.url);
+            if (win) {
               win.addEventListener(
                 "load",
                 () => {
                   win.print();
+                  if (data.next_page && data.next_page !== page) {
+                    this.exportData(report, format, true, data.next_page);
+                  }
                 },
                 false
+              );
+            } else {
+              this.$toastr.e(
+                "Please add a popup exception to print this report.",
+                "Failed to display PDF."
               );
             }
           }
