@@ -496,14 +496,6 @@ class CheckoutController extends StoreController
                         'meal_id' => $item['meal']['id'],
                         'meal_size_id' => isset($item['size']['id'])
                             ? $item['size']['id']
-                            : null,
-                        'meal_package_id' => isset($item['meal_package_id'])
-                            ? $item['meal_package_id']
-                            : null,
-                        'meal_package_size_id' => isset(
-                            $item['meal_package_size_id']
-                        )
-                            ? $item['meal_package_size_id']
                             : null
                     ])->get();
 
@@ -896,21 +888,19 @@ class CheckoutController extends StoreController
 
                 $attachments = MealAttachment::where([
                     'meal_id' => $item['meal']['id'],
-                    'meal_size_id' => 0
+                    'applyToAll' => 1
                 ])->get();
 
                 $explicitAttachments = MealAttachment::where([
+                    'applyToAll' => 0,
                     'meal_id' => $item['meal']['id'],
                     'meal_size_id' => isset($item['size']['id'])
                         ? $item['size']['id']
-                        : null,
-                    'meal_package_id' => isset($item['meal_package_id'])
-                        ? $item['meal_package_id']
                         : null
                 ])->get();
 
-                if (count($explicitAttachments) > 0) {
-                    $attachments = $explicitAttachments;
+                foreach ($explicitAttachments as $explicitAttachment) {
+                    $attachments->push($explicitAttachment);
                 }
 
                 if ($attachments) {
@@ -1035,26 +1025,19 @@ class CheckoutController extends StoreController
 
                 $attachments = MealAttachment::where([
                     'meal_id' => $item['meal']['id'],
-                    'meal_size_id' => 0
+                    'applyToAll' => 1
                 ])->get();
 
                 $explicitAttachments = MealAttachment::where([
+                    'applyToAll' => 0,
                     'meal_id' => $item['meal']['id'],
                     'meal_size_id' => isset($item['size']['id'])
                         ? $item['size']['id']
-                        : null,
-                    'meal_package_id' => isset($item['meal_package_id'])
-                        ? $item['meal_package_id']
-                        : null,
-                    'meal_package_size_id' => isset(
-                        $item['meal_package_size_id']
-                    )
-                        ? $item['meal_package_size_id']
                         : null
                 ])->get();
 
-                if (count($explicitAttachments) > 0) {
-                    $attachments = $explicitAttachments;
+                foreach ($explicitAttachments as $explicitAttachment) {
+                    $attachments->push($explicitAttachment);
                 }
 
                 if ($attachments) {
