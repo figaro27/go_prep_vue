@@ -543,7 +543,8 @@ class OrderController extends StoreController
             'purchased_gift_card_code',
             'purchased_gift_card_id',
             'stripe_id',
-            'user_id'
+            'user_id',
+            'visible_items'
         ]);
 
         if (!$this->store->modules->multipleDeliveryDays) {
