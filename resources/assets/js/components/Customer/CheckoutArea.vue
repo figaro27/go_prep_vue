@@ -1536,10 +1536,15 @@ export default {
       this.bag.forEach(item => {
         // Remove the meal from the total amount of the bag, and then add it back in using its custom sales tax rate.
         if (!item.meal_package) {
-          if (item.meal.salesTax !== null) {
+          if (item.meal.salesTax !== null && item.size === null) {
             removableItemAmount += item.price * item.quantity;
             customSalesTaxAmount +=
               item.price * item.quantity * item.meal.salesTax;
+          }
+          if (item.size !== null && item.size.salesTax !== null) {
+            removableItemAmount += item.size.price * item.quantity;
+            customSalesTaxAmount +=
+              item.size.price * item.quantity * item.size.salesTax;
           }
         } else {
           // Meal packages size (top level) meals don't affect the package price, so not included below.
