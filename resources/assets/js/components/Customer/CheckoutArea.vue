@@ -596,7 +596,7 @@
             </p> -->
           </div>
 
-          <div
+          <!-- <div
             v-if="
               store.settings.payment_gateway === 'authorize' &&
                 !$route.params.storeView &&
@@ -627,7 +627,7 @@
                 >Yes</b-btn
               >
             </div>
-          </div>
+          </div> -->
           <!-- <div
             v-if="
               store.settings.payment_gateway === 'authorize' &&

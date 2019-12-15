@@ -13,11 +13,7 @@
         @change="evt => onChangeNewCard(evt)"
       ></inline-credit-card-field>
     </b-form-group>
-    <b-btn
-      v-if="newCard"
-      variant="primary"
-      @click="onClickCreateCard()"
-      class="mb-3"
+    <b-btn variant="primary" @click="onClickCreateCard()" class="mb-3"
       >Add Card</b-btn
     >
     <div v-if="cards.length && !$route.params.manualOrder">
@@ -160,10 +156,14 @@ export default {
         card = data.token.card;
       } else if (this.gateway === "authorize") {
         token = await this.createAuthorizeToken();
+        let year = this.newCard.expYear;
+        if (year.length === 4) {
+          year.substr(-2);
+        }
         card = {
           brand: this.newCard.brand || null,
           exp_month: this.newCard.expMonth,
-          exp_year: this.newCard.expYear,
+          exp_year: year,
           last4: this.newCard.number.substr(-4),
           country: "US"
         };
@@ -243,11 +243,13 @@ export default {
       this.value = id;
     },
     onChangeNewCard(evt) {
-      if (!evt.invalid && evt.complete) {
-        this.newCard = evt.card;
-      } else {
-        this.newCard = null;
-      }
+      this.newCard = evt.card;
+      // This is not working when entering four digit year
+      // if (!evt.invalid && evt.complete) {
+      //   this.newCard = evt.card;
+      // } else {
+      //   this.newCard = null;
+      // }
     },
     async createAuthorizeToken() {
       const authorize = window.app.authorize;
