@@ -519,6 +519,30 @@ export default {
     getComponentIngredients() {
       this.meal.components.forEach(component => {
         component.options.forEach(option => {
+          if (this.components && JSON.stringify(this.components != "{}")) {
+            for (let i in this.components) {
+              const component = this.components[i];
+
+              if (
+                component.includes(option.id) &&
+                option.ingredients &&
+                option.ingredients.length > 0
+              ) {
+                if (
+                  !this.selectedComponentOptions.includes(option.ingredients[0])
+                ) {
+                  this.selectedComponentOptions.push(option.ingredients[0]);
+                } else {
+                  this.selectedComponentOptions = this.selectedComponentOptions.filter(
+                    (value, index, arr) => {
+                      return value != option.ingredients[0];
+                    }
+                  );
+                }
+              }
+            }
+          }
+          /*
           if (this.components[1] != null)
             if (this.components[1].includes(option.id))
               if (
@@ -526,6 +550,7 @@ export default {
               )
                 this.selectedComponentOptions.push(option.ingredients[0]);
               else this.selectedComponentOptions.pop(option.ingredients[0]);
+          */
         });
       });
       this.refreshNutritionFacts();
