@@ -418,6 +418,9 @@ export default {
     },
 
     isCategoryVisible(category) {
+      if (this.$route.params.storeView) {
+        return true;
+      }
       const id = _.isNumber(category)
         ? category
         : category.category_id || category.id;
