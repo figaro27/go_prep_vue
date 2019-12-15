@@ -248,6 +248,36 @@ class Authorize implements IBilling
         return $response->getTransactionResponse()->getTransId();
     }
 
+    public function refund(Refund $refund)
+    {
+        $customer = $refund->customer;
+        $amount = $refund->amount / 100;
+        $card = $refund->card;
+        $refId = $refund->refId ?? 'ref' . time();
+
+        $profileToRefund = new AnetAPI\CustomerProfilePaymentType();
+        $profileToRefund->setCustomerProfileId($customer->stripe_id);
+        $paymentProfile = new AnetAPI\PaymentProfileType();
+        $paymentProfile->setPaymentProfileId($card->stripe_id);
+        $profileToRefund->setPaymentProfile($paymentProfile);
+
+        $transactionRequestType = new AnetAPI\TransactionRequestType();
+        $transactionRequestType->setTransactionType("refundTransaction");
+        $transactionRequestType->setAmount($amount);
+        $transactionRequestType->setProfile($profileToRefund);
+
+        $request = new AnetAPI\CreateTransactionRequest();
+        $request->setMerchantAuthentication($this->authContext);
+        $request->setRefId($refId);
+        $request->setTransactionRequest($transactionRequestType);
+        $controller = new AnetController\CreateTransactionController($request);
+        $response = $controller->executeWithApiResponse($this->environment);
+
+        $this->validateResponse($response);
+
+        return $response->getTransactionResponse()->getTransId();
+    }
+
     /**
      * @param
      */

@@ -610,6 +610,10 @@ class OrderController extends StoreController
         $balance = $request->get('grandTotal') - $order->amount;
         $notes = $request->get('notes');
         $publicOrderNotes = $request->get('publicOrderNotes');
+        $customSalesTax =
+            $request->get('customSalesTax') !== null
+                ? $request->get('customSalesTax')
+                : 0;
         // $deposit =
         //     (($order->deposit * $order->amount) / 100 / $grandTotal) * 100;
         $originalDeliveryDate = $order->delivery_date;
@@ -627,6 +631,7 @@ class OrderController extends StoreController
         $order->processingFee = $processingFee;
         $order->isMultipleDelivery = $isMultipleDelivery;
         $order->salesTax = $salesTax;
+        $order->customSalesTax = $customSalesTax;
         $order->amount = $grandTotal;
         // $order->deposit = $deposit;
         $order->adjustedDifference += $adjustedDifference;
