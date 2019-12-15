@@ -60,7 +60,7 @@
           ></b-form-input>
           <b-button type="submit" variant="primary" class="mt-3">Save</b-button>
         </b-form>
-        <p class="strong mt-3" v-if="gateway === 'authorize'">
+        <!-- <p class="strong mt-3" v-if="gateway === 'authorize'">
           Billing Address
         </p>
         <div v-if="gateway === 'authorize'">
@@ -101,7 +101,7 @@
               >Save</b-button
             >
           </b-form>
-        </div>
+        </div> -->
 
         <p class="strong mt-4">Change Password</p>
         <b-form @submit.prevent="updatePassword">
