@@ -296,11 +296,10 @@
               </span>
             </div>
             <div class="flex-grow-0">
-              <img
-                src="/images/customer/x.png"
+              <i
+                class="fas fa-times-circle clear-meal dark-gray pt-2"
                 @click="removeLineItem(index)"
-                class="clear-meal"
-              />
+              ></i>
             </div>
           </div>
         </li>
