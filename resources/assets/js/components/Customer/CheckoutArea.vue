@@ -183,7 +183,7 @@
       <li class="checkout-item" v-if="storeSettings.enableSalesTax">
         <div class="row">
           <div class="col-6 col-md-4">
-            <strong>Sales Tax</strong>
+            <strong>Sales Tax </strong>{{ salesTax * 100 }}%
             <p
               v-if="$route.params.adjustOrder && order.customSalesTax"
               class="small"
@@ -596,7 +596,7 @@
             </p> -->
           </div>
 
-          <div
+          <!-- <div
             v-if="
               store.settings.payment_gateway === 'authorize' &&
                 !$route.params.storeView &&
@@ -627,7 +627,7 @@
                 >Yes</b-btn
               >
             </div>
-          </div>
+          </div> -->
           <!-- <div
             v-if="
               store.settings.payment_gateway === 'authorize' &&
