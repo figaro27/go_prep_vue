@@ -452,8 +452,10 @@ export default {
     }
     if (
       (this.checkoutDataProp &&
+        this.checkoutDataProp.lineItemOrders &&
         this.checkoutDataProp.lineItemOrders.length > 0) ||
       (this.$route.params.checkoutData &&
+        this.checkoutDataProp.lineItemOrders &&
         this.$route.params.checkoutData.lineItemOrders.length > 0)
     ) {
       this.$refs.bagArea.setOrderLineItems(

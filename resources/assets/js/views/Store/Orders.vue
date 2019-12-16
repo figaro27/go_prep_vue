@@ -331,7 +331,7 @@
               ></b-form-input>
               <img
                 v-b-popover.hover="
-                  'Charges allow you to charge your customer directly for any balance on the order. As of right now, you can\'t refund additional charges, only the Original Total.'
+                  'Charges allow you to charge your customer directly for any balance on the order.'
                 "
                 title="Charges"
                 src="/images/store/popover.png"
