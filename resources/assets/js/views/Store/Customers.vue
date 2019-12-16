@@ -453,7 +453,11 @@ export default {
     }
   },
   created() {},
-  mounted() {},
+  mounted() {
+    if (this.customers.length <= 1) {
+      this.refreshStoreCustomers();
+    }
+  },
   methods: {
     ...mapActions({
       refreshStoreCustomers: "refreshStoreCustomers",

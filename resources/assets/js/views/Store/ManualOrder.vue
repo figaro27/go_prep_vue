@@ -35,7 +35,8 @@ export default {
   computed: {
     ...mapGetters({
       isLoading: "isLoading",
-      store: "viewedStore"
+      store: "viewedStore",
+      customers: "storeCustomers"
     }),
     storeView: function() {
       return this.$route.params.storeView ? this.$route.params.storeView : true;
@@ -101,6 +102,9 @@ export default {
   },
   created() {},
   mounted() {
+    if (this.customers.length <= 1) {
+      this.refreshStoreCustomers();
+    }
     if (
       this.$route.path === "/store/manual-order" &&
       !this.$route.params.storeView
@@ -109,7 +113,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions(["refreshStoreCustomers"]),
     setLoadingToFalse() {
       this.loading = false;
     }
