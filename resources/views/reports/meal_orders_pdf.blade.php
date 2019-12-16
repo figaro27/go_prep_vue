@@ -17,7 +17,7 @@
       @if ($delivery_dates)
         <h2>
           Delivery Days:
-          {{ $delivery_dates['from']->format('D, m/d/Y') }} -
+          {{ $delivery_dates['from']->format($store->settings->date_format) }} -
           {{ $delivery_dates['to']->format('D, m/d/Y') }}
         </h2>
       @else
