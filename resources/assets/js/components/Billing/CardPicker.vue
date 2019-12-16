@@ -144,7 +144,7 @@ export default {
         if (!data.token) {
           if (this.storeSettings.payment_gateway === "authorize") {
             this.$toast.e(
-              "Failed to save payment method. Does your billing address match the credit card? You can update your billing address in My Account. Click the icon on the top right."
+              "Failed to add card. Please make sure all of the info is correct."
             );
           } else {
             this.$toastr.e("Failed to save payment method");
