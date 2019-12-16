@@ -57,7 +57,9 @@ class CustomerController extends StoreController
             'state',
             'payment_gateway'
         ]);
-        return $customers;
+
+        $customers = $customers->last();
+        return [$customers];
     }
 
     /**
