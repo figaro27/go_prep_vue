@@ -2007,6 +2007,7 @@ export default {
           this.setBagCoupon(null);
           this.setBagPurchasedGiftCard(null);
           this.clearBagDeliveryDate();
+          this.refreshStoreCustomers();
 
           if (this.isManualOrder) {
             this.refreshResource("orders");
