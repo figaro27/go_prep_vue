@@ -183,7 +183,8 @@
       <li class="checkout-item" v-if="storeSettings.enableSalesTax">
         <div class="row">
           <div class="col-6 col-md-4">
-            <strong>Sales Tax </strong>{{ salesTax * 100 }}%
+            <strong>Sales Tax </strong
+            ><!-- {{ salesTax * 100 }}% -->
             <p
               v-if="$route.params.adjustOrder && order.customSalesTax"
               class="small"
