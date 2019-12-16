@@ -341,7 +341,7 @@
     </div>
 
     <b-modal
-      size="lg"
+      size="xl"
       title="Add New Extra"
       v-model="showLineItemModal"
       v-if="showLineItemModal"
