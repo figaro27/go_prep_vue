@@ -567,7 +567,7 @@ export default {
       return options;
     },
     shoppingCartClass() {
-      if (this.$route.name === "customer-menu")
+      if (this.$route.name === "store-bag")
         return "shopping-cart-meals-bag area-scroll";
       else return "shopping-cart-meals-menu";
     }
