@@ -40,7 +40,22 @@ class CustomerController extends StoreController
             'last_order',
             'total_payments',
             'total_paid',
-            'paid_orders'
+            'paid_orders',
+            'phone',
+            'address',
+            'city',
+            'zip',
+            'delivery',
+            'currency',
+            'store_id',
+            'created_at',
+            'updated_at',
+            'joined',
+            'added_by_store_id',
+            'total_payments',
+            'total_paid',
+            'state',
+            'payment_gateway'
         ]);
         return $customers;
     }

@@ -195,8 +195,8 @@ export default {
         this.$parent.addCustomerModal = false;
         this.form = {};
 
-        //await this.refreshStoreCustomersNoOrders();
-        await this.refreshStoreCustomers();
+        await this.refreshStoreCustomersNoOrders();
+        // await this.refreshStoreCustomers();
 
         this.$toastr.s("Customer Added");
         this.$parent.setCustomer(response.data);
