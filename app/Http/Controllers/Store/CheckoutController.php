@@ -278,6 +278,7 @@ class CheckoutController extends StoreController
             $order->salesTax = $salesTax;
             $order->customSalesTax = $customSalesTax;
             $order->amount = $total;
+            $order->currency = $store->settings->currency;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
