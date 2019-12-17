@@ -1451,10 +1451,7 @@ export default {
           if (this.storeSettings.applyDeliveryFee) {
             let fee = 0;
             if (this.storeSettings.deliveryFeeType === "flat") {
-              // DBD Temp Workaround. Remove when adding the double delivery day feature.
-              let addedFee = this.DBD();
-              //
-              fee = this.storeSettings.deliveryFee + addedFee;
+              fee = this.storeSettings.deliveryFee;
             } else if (this.storeSettings.deliveryFeeType === "mileage") {
               let mileageBase = parseFloat(this.storeSettings.mileageBase);
               let mileagePerMile = parseFloat(
