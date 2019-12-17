@@ -26,7 +26,8 @@ class CustomerController extends StoreController
         $customers->makeHidden(['first_order', 'paid_orders']);
 
         if ($customers && count($customers) > 0) {
-            return $customers->toArray();
+            $customers = $customers->unique('user_id');
+            return $customers->values();
         }
 
         return [];
