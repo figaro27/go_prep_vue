@@ -718,7 +718,7 @@
             v-if="$route.params.adjustOrder"
             v-model="dontAffectBalance"
             class="pb-2 mediumCheckbox mt-1 mb-1 pl-5"
-            >Don't Affect Balance
+            >Don't Adjust Balance
           </b-form-checkbox>
         </div>
 
