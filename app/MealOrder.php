@@ -123,11 +123,7 @@ class MealOrder extends Pivot
             $this->delivery_date
         ) {
             $deliveryDate = new Carbon($this->delivery_date);
-            $title =
-                '(' .
-                $deliveryDate->format($this->store->settings->date_format) .
-                ') ' .
-                $title;
+            $title = '(' . $deliveryDate->format('D') . ') ' . $title;
         }
 
         return $title;
