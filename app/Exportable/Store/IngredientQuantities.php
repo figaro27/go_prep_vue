@@ -27,9 +27,7 @@ class IngredientQuantities
 
         $ingredients = collect($this->store->getOrderIngredients($dates));
         $units = collect($this->store->units)->keyBy('ingredient_id');
-        $store = $this->store;
-        $params = $this->params;
-        $params->date_format = $this->store->settings->date_format;
+
         $data = [];
 
         $ingredients->map(function ($orderIngredient) use ($units, &$data) {

@@ -25,7 +25,6 @@ class Payments
         $couponCode = $this->params->get('couponCode');
         $dailySummary = $this->params->get('dailySummary');
         $byOrderDate = $this->params->get('byOrderDate');
-        $params->date_format = $this->store->settings->date_format;
 
         $sums = ['TOTALS', '', 0, '', 0, 0, 0, 0, 0, 0, 0];
         $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0];

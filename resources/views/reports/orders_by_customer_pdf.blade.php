@@ -13,8 +13,8 @@
       @if ($delivery_dates)
         <h2>
           Delivery Days:
-          {{ $delivery_dates['from']->format($params->date_format) }} -
-          {{ $delivery_dates['to']->format($params->date_format) }}
+          {{ $delivery_dates['from']->format('D, m/d/Y') }} -
+          {{ $delivery_dates['to']->format('D, m/d/Y') }}
         </h2>
       @else
         <h2>All Delivery Dates</h2>
@@ -42,7 +42,7 @@
 
 
 @if ($order['isMultipleDelivery'] === 0)
-          DELIVERY - {{ $order['delivery_date']->format($params->date_format) }}
+          DELIVERY - {{ $order['delivery_date']->format('D, m/d/Y') }}
             @endif
           @if ($order['isMultipleDelivery'] === 1)
          DELIVERY - {{ $order['multipleDates'] }}
@@ -53,7 +53,7 @@
           @endif
           @if ($order['pickup'] === 1)
             @if ($order['isMultipleDelivery'] === 0)
-          PICKUP - {{ $order['delivery_date']->format($params->date_format) }}
+          PICKUP - {{ $order['delivery_date']->format('D, m/d/Y') }}
             @endif
           @if ($order['isMultipleDelivery'] === 1)
          PICKUP - {{ $order['multipleDates'] }}
