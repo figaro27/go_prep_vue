@@ -108,9 +108,9 @@ $brandColor = $order->store->settings->color;
         <p>{{$order->user->email}}</p>
         @endif
         @if ($order->manual)
-        <p>Manual Order: {{$order->created_at->format('D, m/d/Y')}}</p>
+        <p>Manual Order: {{$order->created_at->format($order->store->settings->date_format)}}</p>
         @else
-        <p>Online Order: {{$order->created_at->format('D, m/d/Y')}}</p>
+        <p>Online Order: {{$order->created_at->format($order->store->settings->date_format)}}</p>
         @endif
       </div>
       
@@ -140,7 +140,7 @@ $brandColor = $order->store->settings->color;
           @endif
           @endif
           @if ($order->isMultipleDelivery === 0)
-          <p>Date: {{$order->delivery_date->format('D, m/d/Y')}}</p>
+          <p>Date: {{$order->delivery_date->format($order->store->settings->date_format)}}</p>
             @endif
           @if ($order->isMultipleDelivery === 1)
           <p>Dates: {{ $order->multipleDates }}

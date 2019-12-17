@@ -45,7 +45,8 @@ class StoreSetting extends Model
         'next_orderable_delivery_dates',
         'subscribed_delivery_days', // Delivery days with active subscriptionss
         'stripe',
-        'currency_symbol'
+        'currency_symbol',
+        'date_format'
     ];
 
     public static function boot()
@@ -299,6 +300,15 @@ class StoreSetting extends Model
             case "GBP":
                 return '£';
                 break;
+        }
+    }
+
+    public function getDateFormatAttribute()
+    {
+        if ($this->currency === 'USD') {
+            return 'D, m/d/Y';
+        } else {
+            return 'D, d/m/Y';
         }
     }
 }
