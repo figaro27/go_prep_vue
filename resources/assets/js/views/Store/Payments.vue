@@ -427,7 +427,8 @@ export default {
         "salesTax",
         // "total",
 
-        "amount"
+        "amount",
+        "balance"
       ];
 
       let addedColumns = [];
@@ -449,12 +450,7 @@ export default {
         if (!columns.includes("deliveryFee") && order.deliveryFee > 0) {
           columns.splice(2, 0, "deliveryFee");
         }
-        if (
-          !columns.includes("balance") &&
-          (order.balance > 0 || order.balance < 0)
-        ) {
-          columns.splice(columns.length, 0, "balance");
-        }
+
         // if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
         //   columns.splice(columns.length - 1, 0, "goprep_fee");
         // }
