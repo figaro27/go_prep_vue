@@ -112,7 +112,9 @@ class MealOrders
         $lineItemQuantities = [];
         $dates = $this->getDeliveryDates();
         $groupByDate = 'true' === $this->params->get('group_by_date', false);
+        $store = $this->store;
         $params = $this->params;
+        $params->date_format = $this->store->settings->date_format;
         $allDates = [];
 
         $productionGroupId = $this->params->get('productionGroupId', null);

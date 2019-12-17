@@ -23,6 +23,7 @@ class OrdersByCustomer
         $dateRange = $this->getDeliveryDates();
         $params = $this->params;
         $params['dailyOrderNumbers'] = $this->store->modules->dailyOrderNumbers;
+        $params->date_format = $this->store->settings->date_format;
         // if ($params->has('fulfilled')) {
         //     $fulfilled = $params->get('fulfilled');
         // } else {
