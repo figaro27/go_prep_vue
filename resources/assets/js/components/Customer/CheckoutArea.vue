@@ -492,7 +492,7 @@
     </div>
 
     <li
-      class="checkout-item"
+      class="checkout-item h-100"
       v-if="
         $parent.orderId === undefined &&
           storeModules.pickupLocations &&
@@ -509,6 +509,9 @@
           required
         ></b-select>
       </div>
+      <p v-if="selectedPickupLocationAddress" class="margin-bottom:50px">
+        {{ selectedPickupLocationAddress }}
+      </p>
     </li>
     <li v-if="loggedIn">
       <div
@@ -711,6 +714,12 @@
           >
             Email Customer
           </b-form-checkbox>
+          <b-form-checkbox
+            v-if="$route.params.adjustOrder"
+            v-model="dontAffectBalance"
+            class="pb-2 mediumCheckbox mt-1 mb-1 pl-5"
+            >Don't Affect Balance
+          </b-form-checkbox>
         </div>
 
         <b-btn
@@ -898,6 +907,7 @@ export default {
       form: {
         billingState: null
       },
+      dontAffectBalance: false,
       showBillingAddressModal: false,
       billingAddressVerified: false,
       customSalesTax: null,
@@ -1011,6 +1021,22 @@ export default {
       user: "user",
       storeCoupons: "storeCoupons"
     }),
+    selectedPickupLocationAddress() {
+      if (this.selectedPickupLocation) {
+        let selectedLocation = _.find(this.pickupLocations, location => {
+          return location.id === this.selectedPickupLocation;
+        });
+        let selectedLocationAddress =
+          selectedLocation.address +
+          ", " +
+          selectedLocation.city +
+          ", " +
+          selectedLocation.state +
+          ", " +
+          selectedLocation.zip;
+        return selectedLocationAddress;
+      }
+    },
     isMultipleDelivery() {
       return this.storeModules.multipleDeliveryDays == 1 ? true : false;
     },
@@ -1854,7 +1880,8 @@ export default {
           lineItemsOrder: this.orderLineItems,
           grandTotal: this.grandTotal,
           emailCustomer: this.emailCustomer,
-          customSalesTax: this.customSalesTax !== null ? 1 : 0
+          customSalesTax: this.customSalesTax !== null ? 1 : 0,
+          dontAffectBalance: this.dontAffectBalance
         })
         .then(resp => {
           if (this.purchasedGiftCard !== null) {
@@ -2092,18 +2119,6 @@ export default {
           this.billingAddressVerified = true;
           this.$toastr.s("Billing address added. Please add your credit card.");
         });
-    },
-    // Temporary work around for two delivery fees based on day of the week. Will remove when two delivery day feature is added.
-    DBD() {
-      if (this.store.id === 100) {
-        let cat = [];
-        this.bag.forEach(item => {
-          if (!cat.includes(item.meal.category_ids[0]))
-            cat.push(item.meal.category_ids[0]);
-        });
-        if (cat.length > 1) return 5;
-        else return 0;
-      } else return 0;
     }
   }
 };
