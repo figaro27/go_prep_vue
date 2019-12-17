@@ -714,6 +714,12 @@
           >
             Email Customer
           </b-form-checkbox>
+          <b-form-checkbox
+            v-if="$route.params.adjustOrder"
+            v-model="dontAffectBalance"
+            class="pb-2 mediumCheckbox mt-1 mb-1 pl-5"
+            >Don't Affect Balance
+          </b-form-checkbox>
         </div>
 
         <b-btn
@@ -901,6 +907,7 @@ export default {
       form: {
         billingState: null
       },
+      dontAffectBalance: false,
       showBillingAddressModal: false,
       billingAddressVerified: false,
       customSalesTax: null,
@@ -1873,7 +1880,8 @@ export default {
           lineItemsOrder: this.orderLineItems,
           grandTotal: this.grandTotal,
           emailCustomer: this.emailCustomer,
-          customSalesTax: this.customSalesTax !== null ? 1 : 0
+          customSalesTax: this.customSalesTax !== null ? 1 : 0,
+          dontAffectBalance: this.dontAffectBalance
         })
         .then(resp => {
           if (this.purchasedGiftCard !== null) {

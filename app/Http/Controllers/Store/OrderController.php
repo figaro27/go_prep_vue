@@ -607,7 +607,9 @@ class OrderController extends StoreController
         $cashOrder = $request->get('cashOrder');
         $grandTotal = $request->get('grandTotal');
         $adjustedDifference = $request->get('grandTotal') - $order->amount;
-        $balance = $request->get('grandTotal') - $order->amount;
+        $balance = $request->get('dontAffectBalance')
+            ? 0
+            : $request->get('grandTotal') - $order->amount;
         $notes = $request->get('notes');
         $publicOrderNotes = $request->get('publicOrderNotes');
         $customSalesTax =
