@@ -841,7 +841,9 @@ class SpaController extends Controller
                 }
             }
         }
-        $meals = Meal::where(['store_id' => $store_id, 'active' => 0])->get();
+        $meals = Meal::where(['store_id' => $store_id, 'active' => 0])
+            ->with(['sizes'])
+            ->get();
         return ['meals' => $meals];
     }
 
