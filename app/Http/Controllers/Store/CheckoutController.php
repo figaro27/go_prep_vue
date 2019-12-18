@@ -306,6 +306,8 @@ class CheckoutController extends StoreController
             $order->isMultipleDelivery = $isMultipleDelivery;
             $order->save();
 
+            $orderId = $order->id;
+
             $order_transaction = new OrderTransaction();
             $order_transaction->order_id = $order->id;
             $order_transaction->store_id = $store->id;
@@ -1103,5 +1105,7 @@ class CheckoutController extends StoreController
             } catch (\Exception $e) {
             }
         }
+
+        return $orderId;
     }
 }

@@ -1889,7 +1889,7 @@ export default {
             name: "store-orders",
             params: {
               autoPrintPackingSlip: this.storeModules.autoPrintPackingSlip,
-              orderId: this.$parent.orderId
+              orderId: resp.data
             }
           });
           this.setBagMealPlan(false);
@@ -2052,7 +2052,8 @@ export default {
             this.$router.push({
               name: "store-orders",
               params: {
-                autoPrintPackingSlip: this.storeModules.autoPrintPackingSlip
+                autoPrintPackingSlip: this.storeModules.autoPrintPackingSlip,
+                orderId: resp.data
               }
             });
             return;
