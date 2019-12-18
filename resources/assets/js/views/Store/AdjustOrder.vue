@@ -66,7 +66,9 @@ export default {
     if (this.orderId === undefined) {
       this.$router.push({ path: "/store/orders" });
     }
-    this.initBag();
+    if (!this.$route.params.backFromBagPage) {
+      this.initBag();
+    }
   },
   methods: {
     ...mapActions({
