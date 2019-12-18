@@ -153,8 +153,52 @@ class AddIndexesToTables extends Migration
      */
     public function down()
     {
-        Schema::table('meal_orders', function (Blueprint $table) {
-            //
+        Schema::disableForeignKeyConstraints();
+
+        Schema::table('meals', function (Blueprint $table) {
+            $table->dropForeign('meals_store_id_foreign');
         });
+
+        Schema::table('meal_orders', function (Blueprint $table) {
+            $table->dropForeign('meal_orders_store_id_foreign');
+            $table->dropForeign('meal_orders_meal_id_foreign');
+            $table->dropForeign('meal_orders_meal_size_id_foreign');
+            $table->dropForeign('meal_orders_order_id_foreign');
+        });
+
+        Schema::table('meal_components', function (Blueprint $table) {
+            $table->dropForeign('meal_components_store_id_foreign');
+            $table->dropForeign('meal_components_meal_id_foreign');
+        });
+
+        Schema::table('meal_component_options', function (Blueprint $table) {
+            $table->dropForeign('meal_component_options_store_id_foreign');
+            $table->dropForeign(
+                'meal_component_options_meal_component_id_foreign'
+            );
+            $table->dropForeign('meal_component_options_meal_size_id_foreign');
+        });
+
+        Schema::table('meal_addons', function (Blueprint $table) {
+            $table->dropForeign('meal_addons_store_id_foreign');
+            $table->dropForeign('meal_addons_meal_id_foreign');
+        });
+
+        Schema::table('meal_order_components', function (Blueprint $table) {
+            $table->dropForeign('meal_order_components_meal_order_id_foreign');
+            $table->dropForeign(
+                'meal_order_components_meal_component_id_foreign'
+            );
+            $table->dropForeign(
+                'meal_order_components_meal_component_option_id_foreign'
+            );
+        });
+
+        Schema::table('meal_order_addons', function (Blueprint $table) {
+            $table->dropForeign('meal_order_addons_meal_order_id_foreign');
+            $table->dropForeign('meal_order_addons_meal_addon_id_foreign');
+        });
+
+        Schema::enableForeignKeyConstraints();
     }
 }
