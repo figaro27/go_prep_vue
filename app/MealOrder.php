@@ -51,6 +51,11 @@ class MealOrder extends Pivot
         return $this->belongsTo('App\Order');
     }
 
+    public function store()
+    {
+        return $this->belongsTo('App\Store');
+    }
+
     public function components()
     {
         return $this->hasMany('App\MealOrderComponent', 'meal_order_id', 'id');
@@ -118,7 +123,7 @@ class MealOrder extends Pivot
             $this->delivery_date
         ) {
             $deliveryDate = new Carbon($this->delivery_date);
-            $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
+            $title = '(' . $deliveryDate->format('D') . ') ' . $title;
         }
 
         return $title;
