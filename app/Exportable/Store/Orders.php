@@ -72,7 +72,7 @@ class Orders
                 'Balance',
                 'Order Placed',
                 'Delivery Day',
-                'Pickup Time'
+                'Time'
             ]);
         }
 
