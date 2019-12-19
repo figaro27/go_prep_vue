@@ -882,6 +882,8 @@ class OrderController extends StoreController
             } catch (\Exception $e) {
             }
         }
+
+        return $order->id;
     }
 
     /**

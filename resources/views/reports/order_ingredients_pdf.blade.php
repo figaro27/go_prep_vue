@@ -13,8 +13,8 @@
       @if ($delivery_dates)
         <h2>
           Delivery Days:
-          {{ $delivery_dates['from']->format('D, m/d/Y') }} -
-          {{ $delivery_dates['to']->format('D, m/d/Y') }}
+          {{ $delivery_dates['from']->format($params->date_format) }} -
+          {{ $delivery_dates['to']->format($params->date_format) }}
         </h2>
       @else
         <h2>All Delivery Dates</h2>

@@ -1889,7 +1889,7 @@ export default {
             name: "store-orders",
             params: {
               autoPrintPackingSlip: this.storeModules.autoPrintPackingSlip,
-              orderId: this.$parent.orderId
+              orderId: resp.data
             }
           });
           this.setBagMealPlan(false);
@@ -2022,6 +2022,7 @@ export default {
         .then(async resp => {
           //this.checkingOut = false;
           //return false
+
           if (this.purchasedGiftCard !== null) {
             this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
           }
@@ -2051,7 +2052,8 @@ export default {
             this.$router.push({
               name: "store-orders",
               params: {
-                autoPrintPackingSlip: this.storeModules.autoPrintPackingSlip
+                autoPrintPackingSlip: this.storeModules.autoPrintPackingSlip,
+                orderId: resp.data
               }
             });
             return;

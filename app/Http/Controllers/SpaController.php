@@ -597,14 +597,15 @@ class SpaController extends Controller
                 $meals = [];
                 $packages = [];
                 if ($bypass_meal == 0) {
-                    $meals = Meal::with([
-                        'allergies',
-                        'sizes',
-                        'tags',
-                        'components',
-                        'addons',
-                        'macros'
-                    ])
+                    $meals = Meal::where('active', 1)
+                        ->with([
+                            'allergies',
+                            'sizes',
+                            'tags',
+                            'components',
+                            'addons',
+                            'macros'
+                        ])
                         ->whereHas('categories', function ($query) use (
                             $category_id
                         ) {
@@ -824,6 +825,26 @@ class SpaController extends Controller
             'category_ids_str' => $category_ids_str,
             'end' => $end
         ];
+    }
+
+    public function refresh_inactive_meals(Request $request)
+    {
+        $user = auth('api')->user();
+        if ($user && $user->hasRole('store') && $user->has('store')) {
+            $store_id = $user->store->id;
+        } else {
+            if (defined('STORE_ID')) {
+                $store_id = (int) STORE_ID;
+            } else {
+                if ($user && isset($user->last_viewed_store)) {
+                    $store_id = (int) $user->last_viewed_store->id;
+                }
+            }
+        }
+        $meals = Meal::where(['store_id' => $store_id, 'active' => 0])
+            ->with(['sizes'])
+            ->get();
+        return ['meals' => $meals];
     }
 
     public function delivery_days(Request $request)

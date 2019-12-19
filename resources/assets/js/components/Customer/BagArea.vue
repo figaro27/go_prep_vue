@@ -863,6 +863,9 @@ export default {
     },
     updateLineItems(orderLineItem, increment) {
       orderLineItem.quantity += increment;
+      if (orderLineItem.quantity === 0) {
+        this.orderLineItems.pop(orderLineItem);
+      }
       this.$emit("updateLineItems", this.orderLineItems);
     },
     removeLineItem(index) {

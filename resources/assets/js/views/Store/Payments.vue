@@ -101,10 +101,10 @@
               }}</span>
             </div>
             <div slot="delivery_date" slot-scope="props">
-              <span v-if="props.row.delivery_date != 'TOTALS'">{{
+              <span v-if="props.row.created_at != 'TOTALS'">{{
                 moment(props.row.delivery_date).format("dddd, MMM Do")
               }}</span>
-              <span v-if="props.row.delivery_date === 'TOTALS'">{{
+              <span v-if="props.row.created_at === 'TOTALS'">{{
                 props.row.delivery_date
               }}</span>
             </div>
