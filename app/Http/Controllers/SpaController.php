@@ -1025,7 +1025,7 @@ class SpaController extends Controller
 
     public function refreshMealPackage($meal_package_id)
     {
-        $package = MealPackage::where('id', $packageId)
+        $package = MealPackage::where('id', $meal_package_id)
             ->with([
                 'sizes' => function ($query) {
                     $query->where('id', null);
