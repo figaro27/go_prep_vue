@@ -44,6 +44,10 @@ class CheckoutController extends UserController
 
     public function checkout(\App\Http\Requests\CheckoutRequest $request)
     {
+        //$mealOrder = MealOrder::find(3327);
+        //var_dump(Carbon::parse($mealOrder->delivery_date)->addWeeks(1)->toDateString());
+        //exit();
+
         $user = auth('api')->user();
         $storeId = $request->get('store_id');
         $store = Store::with([
@@ -681,6 +685,7 @@ class CheckoutController extends UserController
                 $userSubscription->pickup_location_id = $pickupLocation;
                 $userSubscription->transferTime = $transferTime;
                 $userSubscription->cashOrder = $cashOrder;
+                $userSubscription->isMultipleDelivery = $isMultipleDelivery;
                 $userSubscription->save();
 
                 // Create initial order
@@ -886,6 +891,12 @@ class CheckoutController extends UserController
                     $mealSub->meal_id = $item['meal']['id'];
                     $mealSub->quantity = $item['quantity'];
                     $mealSub->price = $item['price'] * $item['quantity'];
+                    if (isset($item['delivery_day']) && $item['delivery_day']) {
+                        $mealSub->delivery_date = $this->getDeliveryDateMultipleDelivery(
+                            $item['delivery_day']['day'],
+                            $isMultipleDelivery
+                        );
+                    }
                     if (isset($item['size']) && $item['size']) {
                         $mealSub->meal_size_id = $item['size']['id'];
                     }
@@ -1006,6 +1017,15 @@ class CheckoutController extends UserController
                                 $attachment->attached_meal_size_id;
                             $mealSub->quantity =
                                 $attachment->quantity * $item['quantity'];
+                            if (
+                                isset($item['delivery_day']) &&
+                                $item['delivery_day']
+                            ) {
+                                $mealSub->delivery_date = $this->getDeliveryDateMultipleDelivery(
+                                    $item['delivery_day']['day'],
+                                    $isMultipleDelivery
+                                );
+                            }
                             $mealSub->save();
                         }
                     }
