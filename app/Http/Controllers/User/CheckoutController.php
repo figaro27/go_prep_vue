@@ -51,12 +51,33 @@ class CheckoutController extends UserController
             'modules',
             'storeDetail'
         ])->findOrFail($storeId);
-
         $store->setTimezone();
+        $storeName = strtolower($store->storeDetail->name);
         $storeSettings = $store->settings;
-
         $bagItems = $request->get('bag');
         $bag = new Bag($bagItems, $store);
+
+        // Checking all meals are in stock before proceeding
+        if ($this->store->modules->stockManagement) {
+            foreach ($bag->getItems() as $item) {
+                $meal = Meal::where('id', $item['meal']['id'])->first();
+                if ($meal->stock !== null) {
+                    if ($meal->stock < $item['quantity']) {
+                        throw new \Exception(
+                            $meal->title .
+                                ' currently has ' .
+                                $meal->stock .
+                                ' left in stock. Please adjust your order and checkout again.'
+                        );
+                    }
+                    $meal->stock -= $item['quantity'];
+                    if ($meal->stock === 0) {
+                        $meal->active = 0;
+                    }
+                    $meal->update();
+                }
+            }
+        }
 
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');

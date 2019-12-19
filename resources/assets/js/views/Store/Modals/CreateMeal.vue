@@ -42,7 +42,18 @@
                   v-bind="{ prefix: storeCurrencySymbol }"
                 ></money>
               </b-form-group>
-              <h4 v-if="storeSettings.showMacros" class="mt-4">
+              <h4 v-if="store.modules.stockManagement" class="mb-3">Stock</h4>
+              <b-form-group
+                label-for="meal-stock"
+                :state="true"
+                v-if="store.modules.stockManagement"
+              >
+                <b-form-input
+                  v-model="meal.stock"
+                  placeholder="Leave blank for no stock management."
+                ></b-form-input>
+              </b-form-group>
+              <h4 v-if="storeSettings.showMacros" class="mt-2">
                 Macros
                 <img
                   v-b-popover.hover="

@@ -1901,6 +1901,10 @@ export default {
           this.refreshUpcomingOrdersWithoutItems();
           this.clearBagDeliveryDate();
           this.refreshStorePurchasedGiftCards();
+        })
+        .catch(async response => {
+          this.checkingOut = false;
+          this.$toastr.e(response.data.message, "Error");
         });
     },
     mounted() {
@@ -2074,7 +2078,7 @@ export default {
         })
         .catch(async response => {
           this.checkingOut = false;
-          this.$toastr.e("Please contact GoPrep", "Error");
+          this.$toastr.e(response.data.message, "Error");
         })
         .finally(() => {
           this.loading = false;

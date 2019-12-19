@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Store;
 
 use App\Order;
 use App\Bag;
+use App\Meal;
 use App\MealOrder;
 use App\MealPackageOrder;
 use App\MealPackage;
@@ -583,6 +584,36 @@ class OrderController extends StoreController
         $store = $order->store;
         $bagItems = $request->get('bag');
         $bag = new Bag($bagItems, $store);
+        // Checking all meals are in stock before proceeding
+        if ($this->store->modules->stockManagement) {
+            foreach ($bag->getItems() as $item) {
+                $meal = Meal::where('id', $item['meal']['id'])->first();
+                if ($meal->stock !== null) {
+                    $existingMealOrder = $order
+                        ->meal_orders()
+                        ->where('meal_id', $item['meal']['id'])
+                        ->first();
+                    if (
+                        $meal->stock + $existingMealOrder->quantity <
+                        $item['quantity']
+                    ) {
+                        throw new \Exception(
+                            $meal->title .
+                                ' currently has ' .
+                                $meal->stock .
+                                ' left in stock. Please adjust your order and checkout again.'
+                        );
+                    }
+                    $meal->stock -=
+                        $item['quantity'] - $existingMealOrder->quantity;
+                    if ($meal->stock === 0) {
+                        $meal->active = 0;
+                    }
+                    $meal->update();
+                }
+            }
+        }
+
         $couponId = $request->get('coupon_id');
         $couponReduction = $request->get('couponReduction');
         $couponCode = $request->get('couponCode');
