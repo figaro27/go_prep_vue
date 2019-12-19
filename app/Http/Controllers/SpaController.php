@@ -1027,6 +1027,7 @@ class SpaController extends Controller
     {
         $package = MealPackage::where('id', $meal_package_id)
             ->with([
+                'meals',
                 'sizes' => function ($query) {
                     $query->where('id', null);
                 },
