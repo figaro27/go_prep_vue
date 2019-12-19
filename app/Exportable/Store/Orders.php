@@ -53,7 +53,8 @@ class Orders
                     '$' . number_format($order->amount, 2),
                     '$' . number_format($order->balance, 2),
                     $order->created_at->format('D, m/d/Y'),
-                    $order->delivery_date->format('D, m/d/Y')
+                    $order->delivery_date->format('D, m/d/Y'),
+                    $order->transferTime
                 ];
             });
 
@@ -70,7 +71,8 @@ class Orders
                 'Total',
                 'Balance',
                 'Order Placed',
-                'Delivery Day'
+                'Delivery Day',
+                'Pickup Time'
             ]);
         }
 

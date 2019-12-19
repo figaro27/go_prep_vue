@@ -1043,7 +1043,7 @@ export default {
           special_instructions
         );
       }
-
+      this.search = "";
       this.$refs.mealPage.back();
     },
     onCategoryVisible(isVisible, category) {

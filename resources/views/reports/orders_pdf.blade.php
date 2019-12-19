@@ -33,6 +33,7 @@
             <th>Balance</th>
             <th style="width:100px">Order Placed</th>
             <th style="width:100px">Delivery Date</th>
+            <th>Pickup Time</th>
           </tr>
         </thead>
 
