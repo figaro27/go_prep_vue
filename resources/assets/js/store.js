@@ -1525,6 +1525,7 @@ const actions = {
 
     //dispatch("refreshStores");
     dispatch("refreshLazy");
+    dispatch("refreshInactiveMeals");
   },
 
   async logout({ commit, state }) {
