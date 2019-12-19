@@ -21,19 +21,19 @@
       <table border="1" width="100" class="orders-report">
         <thead>
           <tr>
-            <th style="width:80px">Daily Order #</th>
+            <th style="width:75px">Daily Order #</th>
             <th>Order ID</th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Address</th>
             <th>Zip</th>
             <th>Phone</th>
-            <th>Email</th>
+            <th style="width:100px">Email</th>
             <th>Total</th>
             <th>Balance</th>
             <th style="width:100px">Order Placed</th>
             <th style="width:100px">Delivery Date</th>
-            <th>Pickup Time</th>
+            <th>Time</th>
           </tr>
         </thead>
 
