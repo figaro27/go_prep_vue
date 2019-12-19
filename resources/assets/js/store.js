@@ -1490,7 +1490,11 @@ const actions = {
 
     // await Promise.all([dispatch("refreshUpcomingOrdersWithoutItems")]);
 
-    await Promise.all([dispatch("refreshLazy"), dispatch("refreshLazyStore")]);
+    await Promise.all([
+      dispatch("refreshLazy"),
+      dispatch("refreshLazyStore"),
+      dispatch("refreshInactiveMeals")
+    ]);
 
     dispatch("refreshStoreCustomers"),
       dispatch("refreshOrderIngredients"),
@@ -1509,6 +1513,7 @@ const actions = {
     dispatch("refreshCustomerOrders");
     dispatch("refreshSubscriptions");
     dispatch("refreshLazy");
+    dispatch("refreshInactiveMeals");
   },
 
   async initGuest({ commit, state, dispatch }, data = {}) {
@@ -1520,6 +1525,7 @@ const actions = {
 
     //dispatch("refreshStores");
     dispatch("refreshLazy");
+    dispatch("refreshInactiveMeals");
   },
 
   async logout({ commit, state }) {
@@ -2134,6 +2140,13 @@ const actions = {
     state.isLazyLoading = true;
 
     triggerLazy(state, 0, 0, 0, "", 0);
+  },
+
+  async refreshInactiveMeals({ state }, args = {}) {
+    const res = await axios.get("/api/refresh_inactive_meals");
+    const { data } = await res;
+
+    state.viewed_store.meals = data.meals;
   },
 
   async refreshDeliveryDay({ state }, args = {}) {

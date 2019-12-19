@@ -278,6 +278,7 @@ class CheckoutController extends StoreController
             $order->salesTax = $salesTax;
             $order->customSalesTax = $customSalesTax;
             $order->amount = $total;
+            $order->currency = $store->settings->currency;
             $order->fulfilled = false;
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
@@ -304,6 +305,8 @@ class CheckoutController extends StoreController
             $order->originalAmount = $deposit > 0 ? $deposit : $total;
             $order->isMultipleDelivery = $isMultipleDelivery;
             $order->save();
+
+            $orderId = $order->id;
 
             $order_transaction = new OrderTransaction();
             $order_transaction->order_id = $order->id;
@@ -1102,5 +1105,7 @@ class CheckoutController extends StoreController
             } catch (\Exception $e) {
             }
         }
+
+        return $orderId;
     }
 }

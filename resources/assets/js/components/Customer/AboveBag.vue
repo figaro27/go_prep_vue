@@ -52,7 +52,8 @@ export default {
             orderId: this.$route.params.orderId,
             order: this.order,
             forceValue: true,
-            checkoutData: this.checkoutData
+            checkoutData: this.checkoutData,
+            backFromBagPage: true
           }
         };
       } else if (

@@ -45,6 +45,16 @@ class Bag
         $this->items = array_values($items);
     }
 
+    public function getMealPackageMappingId($item)
+    {
+        return md5(
+            json_encode([
+                'meal_package_id' => $item['meal_package_id'] ?? null, // contained in package
+                'meal_package_size_id' => $item['meal_package_size_id'] ?? null
+            ])
+        );
+    }
+
     public function getItemId($item)
     {
         return md5(
@@ -79,11 +89,24 @@ class Bag
             ->get()
             ->keyBy('id');
 
-        collect($this->items)->map(function ($item) use (&$items, $meals) {
+        $meal_package_mapping = [];
+
+        collect($this->items)->map(function ($item) use (
+            &$items,
+            &$meal_package_mapping,
+            $meals
+        ) {
             $itemId = $this->getItemId($item);
 
             if (isset($item['meal_package']) && $item['meal_package']) {
                 // Repeat for item quantity
+                $mappingId = $this->getMealPackageMappingId($item);
+
+                if (!isset($meal_package_mapping[$mappingId])) {
+                    $meal_package_mapping[$mappingId] = 0;
+                }
+                $meal_package_mapping[$mappingId] += $item['quantity'];
+
                 for ($i = 0; $i < $item['quantity']; $i++) {
                     // Add regular package meals
 
@@ -126,7 +149,8 @@ class Bag
                                 )
                                     ? $item['emailRecipient']
                                     : null,
-                                'meal_package_variation' => false
+                                'meal_package_variation' => false,
+                                'mappingId' => $mappingId
                             ];
 
                             $mealItemId = $this->getItemId($mealItem);
@@ -186,7 +210,8 @@ class Bag
                                     )
                                         ? $item['emailRecipient']
                                         : null,
-                                    'meal_package_variation' => false
+                                    'meal_package_variation' => false,
+                                    'mappingId' => $mappingId
                                 ];
 
                                 $mealItemId = $this->getItemId($mealItem);
@@ -292,13 +317,19 @@ class Bag
                                 }
 
                                 foreach ($meals as $meal) {
+                                    $title = $item['meal']['title'];
+                                    if (
+                                        isset($item['size']) &&
+                                        isset($item['size']['title'])
+                                    ) {
+                                        $title .=
+                                            ' - ' . $item['size']['title'];
+                                    }
+
                                     $mealItem = [
                                         'meal' => $meal['meal'],
                                         'meal_package' => true,
-                                        'meal_package_title' =>
-                                            $item['meal']['title'] .
-                                            ' - ' .
-                                            $item['size']['title'],
+                                        'meal_package_title' => $title,
                                         'meal_package_id' =>
                                             $item['meal']['id'],
                                         'meal_package_size_id' =>
@@ -327,7 +358,8 @@ class Bag
                                             ? $item['emailRecipient']
                                             : null,
                                         'meal_package_variation' =>
-                                            $meal['meal_package_variation']
+                                            $meal['meal_package_variation'],
+                                        'mappingId' => $mappingId
                                     ];
 
                                     $mealItemId = $this->getItemId($mealItem);
@@ -422,13 +454,18 @@ class Bag
                             }
 
                             foreach ($meals as $meal) {
+                                $title = $item['meal']['title'];
+                                if (
+                                    isset($item['size']) &&
+                                    isset($item['size']['title'])
+                                ) {
+                                    $title .= ' - ' . $item['size']['title'];
+                                }
+
                                 $mealItem = [
                                     'meal' => $meal['meal'],
                                     'meal_package' => true,
-                                    'meal_package_title' =>
-                                        $item['meal']['title'] .
-                                        ' - ' .
-                                        $item['size']['title'],
+                                    'meal_package_title' => $title,
                                     'meal_package_id' => $item['meal']['id'],
                                     'meal_package_size_id' =>
                                         $item['size']['id'],
@@ -451,7 +488,8 @@ class Bag
                                             ? $item['delivery_day']
                                             : null,
                                     'meal_package_variation' =>
-                                        $meal['meal_package_variation']
+                                        $meal['meal_package_variation'],
+                                    'mappingId' => $mappingId
                                 ];
 
                                 $mealItemId = $this->getItemId($mealItem);
@@ -486,7 +524,21 @@ class Bag
             }
         });
 
-        return array_values($items);
+        $items = array_values($items);
+
+        if ($meal_package_mapping && $items) {
+            foreach ($items as &$item) {
+                if (
+                    isset($item['mappingId']) &&
+                    isset($meal_package_mapping[$item['mappingId']])
+                ) {
+                    $item['package_quantity'] =
+                        $meal_package_mapping[$item['mappingId']];
+                }
+            }
+        }
+
+        return $items;
     }
 
     /**

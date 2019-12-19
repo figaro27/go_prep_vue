@@ -962,19 +962,13 @@ export default {
     if (this.storeModules.dailyOrderNumbers) {
       this.columns.splice(1, 0, "dailyOrderNumber");
     }
+
     let params = this.$route.params;
 
     if (params.autoPrintPackingSlip && params.orderId !== undefined) {
-      axios.get(`/api/me/orders/${params.orderId}`).then(resp => {
-        this.printPackingSlip(resp.data.id);
-      });
+      this.printPackingSlip(params.orderId);
     }
 
-    if (params.autoPrintPackingSlip && params.orderId === undefined) {
-      axios.get("/api/me/getLatestOrder").then(resp => {
-        this.printPackingSlip(resp.data.id);
-      });
-    }
     /* Sidebar Check */
     let isOpen = false;
 

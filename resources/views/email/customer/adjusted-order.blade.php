@@ -136,7 +136,7 @@ $currency = $order->store->settings->currency_symbol
                       @if ($order->store->modules->hideTransferOptions === 0)
                       @if ($order->pickup === 0)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format('D, m/d/Y') }}
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format($order->store->settings->date_format) }}
                           @if ($order->transferTime)
                             - {{ $order->transferTime }}
                           @endif
@@ -144,7 +144,7 @@ $currency = $order->store->settings->currency_symbol
                       </tr>
                       @else ($order->pickup === 1)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $order->delivery_date->format('D, m/d/Y') }}
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $order->delivery_date->format($order->store->settings->date_format) }}
                           @if ($order->transferTime)
                             - {{ $order->transferTime }}
                           @endif

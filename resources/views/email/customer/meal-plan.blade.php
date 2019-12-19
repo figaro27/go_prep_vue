@@ -138,15 +138,15 @@ $currency = $subscription->store->settings->currency_symbol
                       @if ($subscription->store->modules->hideTransferOptions === 0)
                       @if ($subscription->pickup === 0)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format('D, m/d/Y') }}
-                          @if ($order->transferTime)
-                            - {{ $order->transferTime }}
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $subscription->delivery_date->format($subscription->store->settings->date_format) }}
+                          @if ($subscription->transferTime)
+                            - {{ $subscription->transferTime }}
                           @endif
                         </td>
                       </tr>
                       @else ($subscription->pickup === 1)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $order->delivery_date->format('D, m/d/Y') }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $subscription->delivery_date->format($subscription->store->settings->date_format) }}</td>
                       </tr>
                       @endif
                       @endif
