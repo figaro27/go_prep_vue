@@ -2881,16 +2881,16 @@ const getters = {
   },
   bagQuantity(state) {
     return _.sumBy(_.compact(_.toArray(state.bag.items)), item => {
-      if (!item.meal_package) {
-        return item.quantity;
-      } else {
-        return (
-          item.quantity *
-          _.sumBy(_.compact(_.toArray(item.meal.meals)), item =>
-            item.pivot ? item.pivot.quantity : 1
-          )
-        );
-      }
+      // if (!item.meal_package) {
+      return item.quantity;
+      // } else {
+      //   return (
+      //     item.quantity *
+      //     _.sumBy(_.compact(_.toArray(item.meal.meals)), item =>
+      //       item.pivot ? item.pivot.quantity : 1
+      //     )
+      //   );
+      // }
     });
   },
   bagCoupon(state) {
