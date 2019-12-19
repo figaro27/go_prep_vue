@@ -44,10 +44,6 @@ class CheckoutController extends UserController
 
     public function checkout(\App\Http\Requests\CheckoutRequest $request)
     {
-        //$mealOrder = MealOrder::find(3327);
-        //var_dump(Carbon::parse($mealOrder->delivery_date)->addWeeks(1)->toDateString());
-        //exit();
-
         $user = auth('api')->user();
         $storeId = $request->get('store_id');
         $store = Store::with([

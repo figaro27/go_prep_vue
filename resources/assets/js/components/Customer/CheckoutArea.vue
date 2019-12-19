@@ -2020,8 +2020,8 @@ export default {
           emailCustomer: this.emailCustomer
         })
         .then(async resp => {
-          this.checkingOut = false;
-          return false;
+          //this.checkingOut = false;
+          //return false;
 
           if (this.purchasedGiftCard !== null) {
             this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
