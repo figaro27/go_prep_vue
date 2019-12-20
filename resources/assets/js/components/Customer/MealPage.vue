@@ -87,7 +87,9 @@
                     {{ nutritionalFacts.valueCalories }}
                   </span>
                   <span v-else>
-                    {{ meal.macros.calories }}
+                    <span v-if="!isNaN(meal.macros.calories)">{{
+                      meal.macros.calories
+                    }}</span>
                   </span>
                 </p>
               </div>
@@ -100,7 +102,9 @@
                     {{ nutritionalFacts.valueTotalCarbs }}
                   </span>
                   <span v-else>
-                    {{ meal.macros.carbs }}
+                    <span v-if="!isNaN(meal.macros.calories)">{{
+                      meal.macros.carbs
+                    }}</span>
                   </span>
                 </p>
               </div>
@@ -113,7 +117,9 @@
                     {{ nutritionalFacts.valueProteins }}
                   </span>
                   <span v-else>
-                    {{ meal.macros.proteins }}
+                    <span v-if="!isNaN(meal.macros.calories)">{{
+                      meal.macros.proteins
+                    }}</span>
                   </span>
                 </p>
               </div>
@@ -126,7 +132,9 @@
                     {{ nutritionalFacts.valueTotalFat }}
                   </span>
                   <span v-else>
-                    {{ meal.macros.fat }}
+                    <span v-if="!isNaN(meal.macros.calories)">{{
+                      meal.macros.fat
+                    }}</span>
                   </span>
                 </p>
               </div>
