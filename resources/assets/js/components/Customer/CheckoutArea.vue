@@ -2076,9 +2076,9 @@ export default {
             });
           }
         })
-        .catch(async response => {
+        .catch(e => {
           this.checkingOut = false;
-          this.$toastr.e(response.data.message, "Error");
+          this.$toastr.e(e.response.data.message, "Error");
         })
         .finally(() => {
           this.loading = false;

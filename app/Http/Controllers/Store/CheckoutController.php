@@ -85,11 +85,15 @@ class CheckoutController extends StoreController
                 $meal = Meal::where('id', $item['meal']['id'])->first();
                 if ($meal->stock !== null) {
                     if ($meal->stock < $item['quantity']) {
-                        throw new \Exception(
-                            $meal->title .
-                                ' currently has ' .
-                                $meal->stock .
-                                ' left in stock. Please adjust your order and checkout again.'
+                        return response()->json(
+                            [
+                                'message' =>
+                                    $meal->title .
+                                    ' currently has ' .
+                                    $meal->stock .
+                                    ' left in stock. Please adjust your order and checkout again.'
+                            ],
+                            400
                         );
                     }
                     $meal->stock -= $item['quantity'];
