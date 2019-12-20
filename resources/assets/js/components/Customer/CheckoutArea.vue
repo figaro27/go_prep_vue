@@ -2021,7 +2021,7 @@ export default {
         })
         .then(async resp => {
           //this.checkingOut = false;
-          //return false
+          //return false;
 
           if (this.purchasedGiftCard !== null) {
             this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
