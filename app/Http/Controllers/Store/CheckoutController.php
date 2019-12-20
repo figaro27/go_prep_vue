@@ -774,6 +774,8 @@ class CheckoutController extends StoreController
             $order->isMultipleDelivery = $isMultipleDelivery;
             $order->save();
 
+            $orderId = $order->id;
+
             foreach ($bag->getItems() as $item) {
                 $mealOrder = new MealOrder();
                 $mealOrder->order_id = $order->id;
