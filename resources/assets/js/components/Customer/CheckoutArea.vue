@@ -316,6 +316,7 @@
         </div>
       </li>
     </ul>
+
     <li
       class="checkout-item"
       v-if="
@@ -336,6 +337,28 @@
           </b-form-radio>
         </b-form-radio-group>
       </b-form-group>
+    </li>
+    <li
+      class="checkout-item h-100"
+      v-if="
+        $parent.orderId === undefined &&
+          storeModules.pickupLocations &&
+          pickup &&
+          $route.params.subscriptionId === undefined
+      "
+    >
+      <div>
+        <strong>Pickup Location</strong>
+        <b-select
+          v-model="selectedPickupLocation"
+          :options="pickupLocationOptions"
+          class="delivery-select mb-3 ml-2"
+          required
+        ></b-select>
+      </div>
+      <p v-if="selectedPickupLocationAddress" class="margin-bottom:50px">
+        {{ selectedPickupLocationAddress }}
+      </p>
     </li>
     <div
       v-if="
@@ -383,11 +406,26 @@
           >
             Delivery Day
           </strong>
-          <strong v-if="pickup === 1 && deliveryDateOptions.length > 1">
+          <strong
+            v-if="
+              pickup === 1 &&
+                deliveryDateOptions.length > 1 &&
+                (pickup === 0 ||
+                  !store.modules.pickupLocations ||
+                  (store.modules.pickupLocations &&
+                    selectedPickupLocation !== null))
+            "
+          >
             Pickup Day
           </strong>
           <b-select
-            v-if="deliveryDateOptions.length > 1"
+            v-if="
+              deliveryDateOptions.length > 1 &&
+                (pickup === 0 ||
+                  !store.modules.pickupLocations ||
+                  (store.modules.pickupLocations &&
+                    selectedPickupLocation !== null))
+            "
             :options="deliveryDateOptions"
             :value="bagDeliveryDate"
             @input="changeDeliveryDay"
@@ -491,28 +529,6 @@
       </li>
     </div>
 
-    <li
-      class="checkout-item h-100"
-      v-if="
-        $parent.orderId === undefined &&
-          storeModules.pickupLocations &&
-          pickup &&
-          $route.params.subscriptionId === undefined
-      "
-    >
-      <div>
-        <strong>Pickup Location</strong>
-        <b-select
-          v-model="selectedPickupLocation"
-          :options="pickupLocationOptions"
-          class="delivery-select mb-3 ml-2"
-          required
-        ></b-select>
-      </div>
-      <p v-if="selectedPickupLocationAddress" class="margin-bottom:50px">
-        {{ selectedPickupLocationAddress }}
-      </p>
-    </li>
     <li v-if="loggedIn">
       <div
         v-if="
