@@ -102,6 +102,29 @@ class Subscription extends Model
             ->first();
     }
 
+    public function getLatestUnpaidMDOrder($futureDeliveryDate = true)
+    {
+        $latestOrder = $this->orders()
+            ->where('paid', 0)
+            ->orderBy('id', 'desc');
+
+        if ($futureDeliveryDate) {
+            $latestOrder = $latestOrder->whereHas('meal_orders', function (
+                $query
+            ) {
+                $query->whereNotNull('meal_orders.delivery_date');
+
+                $query->whereDate(
+                    'meal_orders.delivery_date',
+                    '>=',
+                    Carbon::now()
+                );
+            });
+        }
+
+        return $latestOrder->first();
+    }
+
     /**
      * Returns the most recent unpaid order.
      *
@@ -300,7 +323,14 @@ class Subscription extends Model
      */
     public function renew(Collection $stripeInvoice, Collection $stripeEvent)
     {
-        $latestOrder = $this->getLatestUnpaidOrder();
+        $isMultipleDelivery = (int) $this->isMultipleDelivery;
+
+        $latestOrder = null;
+        if ($isMultipleDelivery == 1) {
+            $latestOrder = $this->getLatestUnpaidMDOrder();
+        } else {
+            $latestOrder = $this->getLatestUnpaidOrder();
+        }
 
         if ($this->status != 'cancelled' && !$latestOrder) {
             throw new \Exception(
@@ -432,6 +462,13 @@ class Subscription extends Model
                     ->first();
             }
 
+            if ($isMultipleDelivery == 1 && $mealSub->delivery_date) {
+                $mealOrder->delivery_date =
+                    $this->interval === 'week'
+                        ? $mealSub->delivery_date->addWeeks(1)->toDateString()
+                        : $mealSub->delivery_date->addDays(30)->toDateString();
+            }
+
             $mealOrder->save();
 
             if ($mealSub->has('components')) {
@@ -467,6 +504,18 @@ class Subscription extends Model
                     $mealOrder->meal_id = $attachment->attached_meal_id;
                     $mealOrder->quantity =
                         $attachment->quantity * $item['quantity'];
+
+                    if ($isMultipleDelivery == 1 && $mealSub->delivery_date) {
+                        $mealOrder->delivery_date =
+                            $this->interval === 'week'
+                                ? $mealSub->delivery_date
+                                    ->addWeeks(1)
+                                    ->toDateString()
+                                : $mealSub->delivery_date
+                                    ->addDays(30)
+                                    ->toDateString();
+                    }
+
                     $mealOrder->save();
                 }
             }

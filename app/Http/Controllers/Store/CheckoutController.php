@@ -74,12 +74,36 @@ class CheckoutController extends StoreController
             'modules',
             'storeDetail'
         ])->findOrFail($storeId);
-
         $store->setTimezone();
         $storeName = strtolower($store->storeDetail->name);
-
         $bagItems = $request->get('bag');
         $bag = new Bag($bagItems, $store);
+
+        // Checking all meals are in stock before proceeding
+        if ($this->store->modules->stockManagement) {
+            foreach ($bag->getItems() as $item) {
+                $meal = Meal::where('id', $item['meal']['id'])->first();
+                if ($meal->stock !== null) {
+                    if ($meal->stock < $item['quantity']) {
+                        return response()->json(
+                            [
+                                'message' =>
+                                    $meal->title .
+                                    ' currently has ' .
+                                    $meal->stock .
+                                    ' left in stock. Please adjust your order and checkout again.'
+                            ],
+                            400
+                        );
+                    }
+                    $meal->stock -= $item['quantity'];
+                    if ($meal->stock === 0) {
+                        $meal->active = 0;
+                    }
+                    $meal->update();
+                }
+            }
+        }
 
         $bagTotal = $bag->getTotal() + $request->get('lineItemTotal');
         $weeklyPlan = $request->get('plan');
@@ -130,32 +154,6 @@ class CheckoutController extends StoreController
                 $dailyOrderNumber = 1;
             }
         }
-
-        // if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
-        //     $discount = $store->settings->mealPlanDiscount / 100;
-        //     $mealPlanDiscount = $total * $discount;
-        //     $total -= $mealPlanDiscount;
-        //     $afterDiscountBeforeFees = $total;
-        // }
-
-        // if ($store->settings->applyDeliveryFee) {
-        //     $total += $deliveryFee;
-        // }
-
-        // if ($store->settings->applyProcessingFee) {
-        //     if ($store->settings->processingFeeType === 'flat') {
-        //         $processingFee += $store->settings->processingFee;
-        //     } elseif ($store->settings->processingFeeType === 'percent') {
-        //         $processingFee +=
-        //             ($store->settings->processingFee / 100) * $subtotal;
-        //     }
-
-        //     $total += $processingFee;
-        // }
-
-        // if ($couponId != null) {
-        //     $total -= $couponReduction;
-        // }
 
         $customerId = $request->get('customer');
         $userId = Customer::where('id', $customerId)
@@ -738,6 +736,7 @@ class CheckoutController extends StoreController
             $userSubscription->pickup_location_id = $pickupLocation;
             $userSubscription->transferTime = $transferTime;
             $userSubscription->cashOrder = $cashOrder;
+            $userSubscription->isMultipleDelivery = $isMultipleDelivery;
             $userSubscription->save();
 
             // Create initial order
@@ -774,6 +773,8 @@ class CheckoutController extends StoreController
             $order->originalAmount = $deposit > 0 ? $deposit : $total;
             $order->isMultipleDelivery = $isMultipleDelivery;
             $order->save();
+
+            $orderId = $order->id;
 
             foreach ($bag->getItems() as $item) {
                 $mealOrder = new MealOrder();
@@ -937,6 +938,12 @@ class CheckoutController extends StoreController
                 $mealSub->meal_id = $item['meal']['id'];
                 $mealSub->quantity = $item['quantity'];
                 $mealSub->price = $item['price'] * $item['quantity'];
+                if (isset($item['delivery_day']) && $item['delivery_day']) {
+                    $mealSub->delivery_date = $this->getDeliveryDateMultipleDelivery(
+                        $item['delivery_day']['day'],
+                        $isMultipleDelivery
+                    );
+                }
                 if (isset($item['size']) && $item['size']) {
                     $mealSub->meal_size_id = $item['size']['id'];
                 }
@@ -1053,6 +1060,15 @@ class CheckoutController extends StoreController
                             $attachment->attached_meal_size_id;
                         $mealSub->quantity =
                             $attachment->quantity * $item['quantity'];
+                        if (
+                            isset($item['delivery_day']) &&
+                            $item['delivery_day']
+                        ) {
+                            $mealSub->delivery_date = $this->getDeliveryDateMultipleDelivery(
+                                $item['delivery_day']['day'],
+                                $isMultipleDelivery
+                            );
+                        }
                         $mealSub->save();
                     }
                 }

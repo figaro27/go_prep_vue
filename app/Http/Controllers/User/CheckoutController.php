@@ -51,12 +51,37 @@ class CheckoutController extends UserController
             'modules',
             'storeDetail'
         ])->findOrFail($storeId);
-
         $store->setTimezone();
+        $storeName = strtolower($store->storeDetail->name);
         $storeSettings = $store->settings;
-
         $bagItems = $request->get('bag');
         $bag = new Bag($bagItems, $store);
+
+        // Checking all meals are in stock before proceeding
+        if ($this->store->modules->stockManagement) {
+            foreach ($bag->getItems() as $item) {
+                $meal = Meal::where('id', $item['meal']['id'])->first();
+                if ($meal->stock !== null) {
+                    if ($meal->stock < $item['quantity']) {
+                        return response()->json(
+                            [
+                                'message' =>
+                                    $meal->title .
+                                    ' currently has ' .
+                                    $meal->stock .
+                                    ' left in stock. Please adjust your order and checkout again.'
+                            ],
+                            400
+                        );
+                    }
+                    $meal->stock -= $item['quantity'];
+                    if ($meal->stock === 0) {
+                        $meal->active = 0;
+                    }
+                    $meal->update();
+                }
+            }
+        }
 
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
@@ -681,6 +706,7 @@ class CheckoutController extends UserController
                 $userSubscription->pickup_location_id = $pickupLocation;
                 $userSubscription->transferTime = $transferTime;
                 $userSubscription->cashOrder = $cashOrder;
+                $userSubscription->isMultipleDelivery = $isMultipleDelivery;
                 $userSubscription->save();
 
                 // Create initial order
@@ -886,6 +912,12 @@ class CheckoutController extends UserController
                     $mealSub->meal_id = $item['meal']['id'];
                     $mealSub->quantity = $item['quantity'];
                     $mealSub->price = $item['price'] * $item['quantity'];
+                    if (isset($item['delivery_day']) && $item['delivery_day']) {
+                        $mealSub->delivery_date = $this->getDeliveryDateMultipleDelivery(
+                            $item['delivery_day']['day'],
+                            $isMultipleDelivery
+                        );
+                    }
                     if (isset($item['size']) && $item['size']) {
                         $mealSub->meal_size_id = $item['size']['id'];
                     }
@@ -1006,6 +1038,15 @@ class CheckoutController extends UserController
                                 $attachment->attached_meal_size_id;
                             $mealSub->quantity =
                                 $attachment->quantity * $item['quantity'];
+                            if (
+                                isset($item['delivery_day']) &&
+                                $item['delivery_day']
+                            ) {
+                                $mealSub->delivery_date = $this->getDeliveryDateMultipleDelivery(
+                                    $item['delivery_day']['day'],
+                                    $isMultipleDelivery
+                                );
+                            }
                             $mealSub->save();
                         }
                     }

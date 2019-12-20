@@ -1901,6 +1901,10 @@ export default {
           this.refreshUpcomingOrdersWithoutItems();
           this.clearBagDeliveryDate();
           this.refreshStorePurchasedGiftCards();
+        })
+        .catch(async response => {
+          this.checkingOut = false;
+          this.$toastr.e(response.data.message, "Error");
         });
     },
     mounted() {
@@ -2021,7 +2025,7 @@ export default {
         })
         .then(async resp => {
           //this.checkingOut = false;
-          //return false
+          //return false;
 
           if (this.purchasedGiftCard !== null) {
             this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
@@ -2072,9 +2076,9 @@ export default {
             });
           }
         })
-        .catch(async response => {
+        .catch(e => {
           this.checkingOut = false;
-          this.$toastr.e("Please contact GoPrep", "Error");
+          this.$toastr.w(e.response.data.message, "Error");
         })
         .finally(() => {
           this.loading = false;

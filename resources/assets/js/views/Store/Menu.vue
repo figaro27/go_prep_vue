@@ -260,6 +260,19 @@
                     "
                   ></money>
                   <br />
+                  <h4 v-if="store.modules.stockManagement">Stock</h4>
+                  <b-form-group
+                    label-for="meal-stock"
+                    :state="true"
+                    v-if="store.modules.stockManagement"
+                    class="mb-3"
+                  >
+                    <b-form-input
+                      v-model="meal.stock"
+                      placeholder="Leave blank for no stock management."
+                      @change="val => updateMeal(meal.id, { stock: val }, true)"
+                    ></b-form-input>
+                  </b-form-group>
                   <h4 v-if="storeSettings.showMacros">
                     Macros
                     <img
@@ -343,7 +356,7 @@
                       :options="productionGroupOptions"
                     ></b-form-radio-group>
                   </div>
-                  <h4 class="mt-4">
+                  <h4 class="mt-2">
                     Categories
                     <img
                       v-b-popover.hover="
