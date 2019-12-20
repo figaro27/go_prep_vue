@@ -373,9 +373,12 @@ export default {
     },
     getNutritionFacts() {
       // if (!this.sizeChanged) {
-      $(ref).nutritionLabel(null);
-      let ref = this.$refs.nutritionFacts;
-      $(ref).nutritionLabel(this.nutritionalFacts);
+      //$(ref).nutritionLabel(null);
+      //let ref = this.$refs.nutritionFacts;
+      //$(ref).nutritionLabel(this.nutritionalFacts);
+
+      $("#nutritionFacts").nutritionLabel(null);
+      $("#nutritionFacts").nutritionLabel(this.nutritionalFacts);
       // }
     },
     getPackageBagItems() {
