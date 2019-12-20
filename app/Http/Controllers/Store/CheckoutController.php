@@ -74,12 +74,36 @@ class CheckoutController extends StoreController
             'modules',
             'storeDetail'
         ])->findOrFail($storeId);
-
         $store->setTimezone();
         $storeName = strtolower($store->storeDetail->name);
-
         $bagItems = $request->get('bag');
         $bag = new Bag($bagItems, $store);
+
+        // Checking all meals are in stock before proceeding
+        if ($this->store->modules->stockManagement) {
+            foreach ($bag->getItems() as $item) {
+                $meal = Meal::where('id', $item['meal']['id'])->first();
+                if ($meal->stock !== null) {
+                    if ($meal->stock < $item['quantity']) {
+                        return response()->json(
+                            [
+                                'message' =>
+                                    $meal->title .
+                                    ' currently has ' .
+                                    $meal->stock .
+                                    ' left in stock. Please adjust your order and checkout again.'
+                            ],
+                            400
+                        );
+                    }
+                    $meal->stock -= $item['quantity'];
+                    if ($meal->stock === 0) {
+                        $meal->active = 0;
+                    }
+                    $meal->update();
+                }
+            }
+        }
 
         $bagTotal = $bag->getTotal() + $request->get('lineItemTotal');
         $weeklyPlan = $request->get('plan');
@@ -130,32 +154,6 @@ class CheckoutController extends StoreController
                 $dailyOrderNumber = 1;
             }
         }
-
-        // if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
-        //     $discount = $store->settings->mealPlanDiscount / 100;
-        //     $mealPlanDiscount = $total * $discount;
-        //     $total -= $mealPlanDiscount;
-        //     $afterDiscountBeforeFees = $total;
-        // }
-
-        // if ($store->settings->applyDeliveryFee) {
-        //     $total += $deliveryFee;
-        // }
-
-        // if ($store->settings->applyProcessingFee) {
-        //     if ($store->settings->processingFeeType === 'flat') {
-        //         $processingFee += $store->settings->processingFee;
-        //     } elseif ($store->settings->processingFeeType === 'percent') {
-        //         $processingFee +=
-        //             ($store->settings->processingFee / 100) * $subtotal;
-        //     }
-
-        //     $total += $processingFee;
-        // }
-
-        // if ($couponId != null) {
-        //     $total -= $couponReduction;
-        // }
 
         $customerId = $request->get('customer');
         $userId = Customer::where('id', $customerId)
