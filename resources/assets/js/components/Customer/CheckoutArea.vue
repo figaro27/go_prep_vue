@@ -2078,7 +2078,7 @@ export default {
         })
         .catch(e => {
           this.checkingOut = false;
-          this.$toastr.e(e.response.data.message, "Error");
+          this.$toastr.w(e.response.data.message, "Error");
         })
         .finally(() => {
           this.loading = false;

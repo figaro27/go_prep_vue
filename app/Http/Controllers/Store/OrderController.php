@@ -597,11 +597,15 @@ class OrderController extends StoreController
                         $meal->stock + $existingMealOrder->quantity <
                         $item['quantity']
                     ) {
-                        throw new \Exception(
-                            $meal->title .
-                                ' currently has ' .
-                                $meal->stock .
-                                ' left in stock. Please adjust your order and checkout again.'
+                        return response()->json(
+                            [
+                                'message' =>
+                                    $meal->title .
+                                    ' currently has ' .
+                                    $meal->stock .
+                                    ' left in stock. Please adjust your order and try again.'
+                            ],
+                            400
                         );
                     }
                     $meal->stock -=

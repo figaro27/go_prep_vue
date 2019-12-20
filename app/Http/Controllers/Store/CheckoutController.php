@@ -80,8 +80,8 @@ class CheckoutController extends StoreController
         $bag = new Bag($bagItems, $store);
 
         // Checking all meals are in stock before proceeding
-        foreach ($bag->getItems() as $item) {
-            if ($this->store->modules->stockManagement) {
+        if ($this->store->modules->stockManagement) {
+            foreach ($bag->getItems() as $item) {
                 $meal = Meal::where('id', $item['meal']['id'])->first();
                 if ($meal->stock !== null) {
                     if ($meal->stock < $item['quantity']) {
