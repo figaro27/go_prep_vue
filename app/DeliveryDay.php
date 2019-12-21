@@ -4,12 +4,13 @@ namespace App;
 
 use App\Traits\DeliveryDates;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class DeliveryDay extends Model
 {
     use DeliveryDates;
 
-    protected $appends = ['day_friendly'];
+    protected $appends = ['day_friendly', 'day_short'];
 
     public function meals()
     {
@@ -34,5 +35,15 @@ class DeliveryDay extends Model
     public function getDayFriendlyAttribute()
     {
         return $this->getDeliveryDateMultipleDelivery($this->day);
+    }
+
+    public function getDayShortAttribute()
+    {
+        return ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][$this->day];
+    }
+
+    public function getWeekIndex()
+    {
+        return $this->day;
     }
 }

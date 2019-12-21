@@ -61,7 +61,8 @@ const state = {
     items: {},
     coupon: null,
     purchased_gift_card: null,
-    meal_plan: false
+    meal_plan: false,
+    pickup: false
   },
   delivery_date: null,
 
@@ -1637,6 +1638,16 @@ const actions = {
         }
       }
     } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.delivery_days)) {
+        let lineItems = data.store.line_items;
+
+        if (!_.isEmpty(lineItems)) {
+          commit("setViewedStoreLineItems", { lineItems });
+        }
+      }
+    } catch (e) {}
   },
 
   async refreshViewedOwnerStore({ commit, state }, data = {}) {
@@ -2808,6 +2819,9 @@ const getters = {
       return {};
     }
   },
+  viewedStoreDeliveryDays: state => {
+    return state.viewed_store.delivery_days || [];
+  },
   isLoading(state) {
     return state.isLoading || !_.isEmpty(state.jobs);
   },
@@ -2902,8 +2916,53 @@ const getters = {
   bagMealPlan(state) {
     return state.bag.meal_plan;
   },
+  bagPickup(state) {
+    return state.bag.pickup;
+  },
   bagDeliveryDate(state) {
     return state.delivery_date;
+  },
+  bagDeliverySettings(state, getters) {
+    const { bagCustomDeliveryDay } = getters;
+
+    if (bagCustomDeliveryDay) {
+      const {
+        day,
+        type,
+        instructions,
+        cutoff_type,
+        cutoff_days,
+        cutoff_hours,
+        applyFee,
+        fee,
+        feeType,
+        mileageBase,
+        mileagePerMile
+      } = this.bagCustomDeliveryDay;
+      return {
+        applyDeliveryFee,
+        deliveryFee: fee,
+        deliveryFeeType: feeType,
+        mileageBase,
+        mileagePerMile
+      };
+    } else {
+      return getters.viewedStoreSettings;
+    }
+  },
+  // DeliveryDay which matches delivery date selection
+  bagCustomDeliveryDay(state, getters) {
+    if (!getters.viewedStoreModules.customDeliveryDays) {
+      return null;
+    }
+
+    const weekIndex = moment(state.delivery_date).format("d");
+    const { pickup } = state.bag;
+
+    return _.find(state.viewed_store.delivery_days, {
+      day: parseInt(weekIndex),
+      type: pickup ? "pickup" : "delivery"
+    });
   },
   bagHasMeal: state => meal => {
     if (!_.isNumber(meal)) {

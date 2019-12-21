@@ -149,6 +149,11 @@ class Order extends Model
         return $this->hasMany('App\PurchasedGiftCard');
     }
 
+    public function delivery_day()
+    {
+        return $this->hasOne('App\DeliveryDay');
+    }
+
     public function getVisibleItemsAttribute()
     {
         return $this->items
@@ -413,7 +418,10 @@ class Order extends Model
 
     public function getCutoffDate()
     {
-        return $this->store->getCutoffDate($this->delivery_date);
+        return $this->store->getCutoffDate(
+            $this->delivery_date,
+            $this->delivery_day
+        );
 
         /*$ddate = new Carbon(
     $this->delivery_date,

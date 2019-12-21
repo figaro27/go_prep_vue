@@ -328,7 +328,7 @@
       "
     >
       <b-form-group>
-        <b-form-radio-group v-model="pickup" v-on:input="changePickupV">
+        <b-form-radio-group v-model="pickup" v-on:input="changePickup">
           <b-form-radio :value="0">
             <strong>Delivery</strong>
           </b-form-radio>
@@ -1035,7 +1035,8 @@ export default {
       _orders: "orders",
       subscriptions: "subscriptions",
       user: "user",
-      storeCoupons: "storeCoupons"
+      storeCoupons: "storeCoupons",
+      bagDeliverySettings: "bagDeliverySettings"
     }),
     selectedPickupLocationAddress() {
       if (this.selectedPickupLocation) {
@@ -1351,6 +1352,22 @@ export default {
     deliveryDateOptions() {
       let options = [];
       let dates = this.storeSettings.next_orderable_delivery_dates;
+      let deliveryDays = this.store.delivery_days;
+
+      /*
+use next_delivery_dates
+
+      if(this.storeModules.customDeliveryDays) {
+        return _(this.deliveryDays)
+          .filter({ type: this.bagPickup ? 'pickup' : 'delivery'})
+          .map(dday => {
+            return {
+              value:
+            }
+          })
+          .value();
+      }
+*/
       if (
         this.storeModules.ignoreCutoff &&
         (this.$route.params.storeView || this.storeOwner)
@@ -1457,6 +1474,14 @@ export default {
     },
     deliveryFeeAmount() {
       if (!this.pickup) {
+        let {
+          applyDeliveryFee,
+          deliveryFee,
+          deliveryFeeType,
+          mileageBase,
+          mileagePerMile
+        } = this.bagDeliverySettings;
+
         if (this.customDeliveryFee !== null) {
           return parseFloat(this.customDeliveryFee);
         }
@@ -1464,17 +1489,14 @@ export default {
           return this.order.deliveryFee;
         }
         if (!this.couponFreeDelivery) {
-          if (this.storeSettings.applyDeliveryFee) {
+          if (applyDeliveryFee) {
             let fee = 0;
-            if (this.storeSettings.deliveryFeeType === "flat") {
-              fee = this.storeSettings.deliveryFee;
-            } else if (this.storeSettings.deliveryFeeType === "mileage") {
-              let mileageBase = parseFloat(this.storeSettings.mileageBase);
-              let mileagePerMile = parseFloat(
-                this.storeSettings.mileagePerMile
-              );
+            if (deliveryFeeType === "flat") {
+              fee = deliveryFee;
+            } else if (deliveryFeeType === "mileage") {
               let distance = parseFloat(this.store.distance);
-              fee = mileageBase + mileagePerMile * distance;
+              fee =
+                parseFloat(mileageBase) + parseFloat(mileagePerMile) * distance;
             }
 
             if (this.groupBag) {
@@ -1796,7 +1818,8 @@ export default {
     changeDeliveryTime(val) {
       this.updateParentData();
     },
-    changePickupV() {
+    changePickup(val) {
+      this.setBagPickup(val);
       this.updateParentData();
     },
     setWeeklySubscriptionValue(v) {

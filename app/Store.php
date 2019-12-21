@@ -167,11 +167,22 @@ class Store extends Model
         return $this->hasOne('App\StorePlan');
     }
 
+    public function deliveryDays()
+    {
+        return $this->hasMany('App\DeliveryDay');
+    }
+
+    public function getDeliveryDayByWeekIndex($weekIndex)
+    {
+        return $this->deliveryDays->firstWhere('day', $weekIndex);
+    }
+
     public function clearCaches()
     {
         Cache::forget('store_order_ingredients' . $this->id);
         Cache::forget('store_logo_' . $this->id);
         Cache::forget('store_' . $this->id . '_subscribed_delivery_days');
+        //Cache::forget('store_' . $this->id . '_ddbwi');
     }
 
     public function getUrl($append = '', $secure = true)
@@ -608,30 +619,39 @@ class Store extends Model
      * Get the cutoff date for a particular delivery date
      *
      * @param Carbon $deliveryDate
+     * @param DeliveryDay $deliveryDay
      * @return Carbon $cutoffDate
      */
-    public function getCutoffDate(Carbon $deliveryDate)
-    {
+    public function getCutoffDate(
+        Carbon $deliveryDate,
+        DeliveryDay $deliveryDay = null
+    ) {
+        $settings = $this->settings;
+
+        if ($deliveryDay) {
+            $settings->setDeliveryDayContext($deliveryDay);
+        }
+
         $cutoffDate = Carbon::createFromDate(
             $deliveryDate->year,
             $deliveryDate->month,
             $deliveryDate->day,
-            $this->settings->timezone
+            $settings->timezone
         );
-        if ($this->settings->cutoff_type === 'timed') {
+        if ($settings->cutoff_type === 'timed') {
             return $cutoffDate
                 ->setTime(0, 0, 0)
                 ->subSeconds($this->getCutoffSeconds())
                 ->setTimezone('utc');
-        } elseif ($this->settings->cutoff_type === 'single_day') {
+        } elseif ($settings->cutoff_type === 'single_day') {
             $dayName = date(
                 'l',
-                strtotime("Sunday +{$this->settings->cutoff_days} days")
+                strtotime("Sunday +{$settings->cutoff_days} days")
             );
 
             return $cutoffDate
                 ->modify('last ' . $dayName)
-                ->setTime($this->settings->cutoff_hours, 0, 0)
+                ->setTime($settings->cutoff_hours, 0, 0)
                 ->setTimezone('utc');
         }
     }
@@ -1128,5 +1148,10 @@ class Store extends Model
     public function getUrlAttribute()
     {
         return $this->getUrl();
+    }
+
+    public function isModuleEnabled($module)
+    {
+        return $this->modules[$module];
     }
 }

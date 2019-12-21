@@ -36,6 +36,8 @@ use App\PurchasedGiftCard;
 use App\Billing\Constants;
 use App\Billing\Charge;
 use App\Billing\Authorize;
+use App\Http\Requests\CheckoutRequest;
+use App\StoreSetting;
 use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -65,7 +67,7 @@ class CheckoutController extends StoreController
         ];
     }
 
-    public function checkout(\App\Http\Requests\CheckoutRequest $request)
+    public function checkout(CheckoutRequest $request)
     {
         $user = auth('api')->user();
         $storeId = $request->get('store_id');
@@ -109,6 +111,7 @@ class CheckoutController extends StoreController
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
         $deliveryDay = $request->get('delivery_day');
+        $weekIndex = (int) date('N', strtotime($deliveryDay));
         $isMultipleDelivery = (int) $request->get('isMultipleDelivery');
         $couponId = $request->get('coupon_id');
         $couponReduction = $request->get('couponReduction');
@@ -118,6 +121,7 @@ class CheckoutController extends StoreController
             'purchasedGiftCardReduction'
         );
         $deliveryFee = $request->get('deliveryFee');
+        $pickup = $request->get('pickup', 0);
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
         $interval = $request->get('plan_interval', Constants::INTERVAL_WEEK);
@@ -126,7 +130,9 @@ class CheckoutController extends StoreController
         $publicOrderNotes = $request->get('publicOrderNotes');
         //$stripeToken = $request->get('token');
 
-        $application_fee = $store->settings->application_fee;
+        $storeSettings = $this->getSettings($weekIndex, $pickup, $manualOrder);
+        $storeModules = $store->modules;
+        $application_fee = $storeSettings->application_fee;
 
         $total = $request->get('subtotal');
         $subtotal = $request->get('subtotal');
@@ -174,8 +180,6 @@ class CheckoutController extends StoreController
             $card = Card::where('id', $cardId)->first();
             $gateway = $card->payment_gateway;
         }
-
-        $storeSettings = $this->store->settings;
 
         if (
             !$customerUser->hasStoreCustomer(
@@ -278,7 +282,7 @@ class CheckoutController extends StoreController
             $order->amount = $total;
             $order->currency = $store->settings->currency;
             $order->fulfilled = false;
-            $order->pickup = $request->get('pickup', 0);
+            $order->pickup = $pickup;
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
             $order->paid = true;
             if (!$cashOrder) {
@@ -622,8 +626,6 @@ class CheckoutController extends StoreController
                 }
             }
         } else {
-            $weekIndex = date('N', strtotime($deliveryDay));
-
             if (
                 $interval == Constants::INTERVAL_MONTH &&
                 !$store->modules->monthlyPlans
@@ -1123,5 +1125,40 @@ class CheckoutController extends StoreController
         }
 
         return $orderId;
+    }
+
+    /**
+     * @param int $weekIndex
+     * @param bool $pickup
+     * @return StoreSetting
+     */
+    protected function getSettings(
+        $weekIndex,
+        $pickup,
+        $manualOrder,
+        StoreSetting $settings = null
+    ) {
+        $settings = $settings ?? $this->settings;
+        $modules = $this->modules;
+
+        // Delivery day settings overrides
+        if ($modules->customDeliveryDays) {
+            $customDD = $this->deliveryDays()
+                ->where([
+                    'day' => $weekIndex,
+                    'type' => $pickup ? 'pickup' : 'delivery'
+                ])
+                ->first();
+
+            if ($customDD) {
+                $settings->applyDeliveryFee = $customDD->applyFee;
+                $settings->deliveryFee = $customDD->fee;
+                $settings->cutoff_type = $customDD->cutoff_type;
+                $settings->cutoff_days = $customDD->cutoff_days;
+                $settings->cutoff_hours = $customDD->cutoff_hours;
+            }
+        }
+
+        return $settings;
     }
 }
