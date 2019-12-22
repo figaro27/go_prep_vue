@@ -457,7 +457,6 @@
           deliveryDateOptions.length === 1 &&
             $route.params.subscriptionId === undefined &&
             (!$route.params.storeView && !storeOwner) &&
-            !bagDeliveryDate &&
             !isMultipleDelivery
         "
       >
@@ -1382,6 +1381,13 @@ use next_delivery_dates
           text: moment(date.date).format("dddd MMM Do")
         });
       });
+
+      // only one option. Set as bag date
+      if (options.length === 1 && this.bagDeliveryDate !== options[0].value) {
+        this.$nextTick(() => {
+          this.setBagDeliveryDate(options[0].value);
+        });
+      }
 
       return options;
     },
