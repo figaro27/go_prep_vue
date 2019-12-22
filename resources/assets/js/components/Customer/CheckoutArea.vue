@@ -341,7 +341,7 @@
       </b-form-group>
     </li>
     <li
-      class="checkout-item h-100"
+      :class="pickupLocationClass"
       v-if="
         $parent.orderId === undefined &&
           storeModules.pickupLocations &&
@@ -354,11 +354,14 @@
         <b-select
           v-model="selectedPickupLocation"
           :options="pickupLocationOptions"
-          class="delivery-select mb-3 ml-2"
+          class="delivery-select ml-2"
           required
         ></b-select>
       </div>
-      <p v-if="selectedPickupLocationAddress" class="margin-bottom:50px">
+      <p
+        v-if="selectedPickupLocationAddress && selectedPickupLocation"
+        class="pt-3"
+      >
         {{ selectedPickupLocationAddress }}
       </p>
     </li>
@@ -396,7 +399,7 @@
             (!$route.params.storeView && !storeOwner) &&
             (!bagDeliveryDate || !store.modules.category_restrictions) &&
             !isMultipleDelivery &&
-            !store.modules.pickupLocations) ||
+            (pickup === 0 || !store.modules.pickupLocations)) ||
             (store.modules.pickupLocations && selectedPickupLocation !== null)
         "
       >
@@ -531,6 +534,13 @@
         </div>
       </li>
     </div>
+    <li
+      class="transfer-instruction mt-2"
+      v-if="!$route.params.storeView && !storeOwner"
+    >
+      <p class="strong">{{ transferText }}</p>
+      <p v-html="transferInstructions"></p>
+    </li>
 
     <li v-if="loggedIn">
       <div
@@ -819,14 +829,6 @@
     </li>
 
     <li
-      class="transfer-instruction mt-2"
-      v-if="!$route.params.storeView && !storeOwner"
-    >
-      <p class="strong">{{ transferText }}</p>
-      <p v-html="transferInstructions"></p>
-    </li>
-
-    <li
       v-if="
         minOption === 'meals' &&
           total < minimumMeals &&
@@ -1041,6 +1043,11 @@ export default {
       storeCoupons: "storeCoupons",
       bagDeliverySettings: "bagDeliverySettings"
     }),
+    pickupLocationClass() {
+      if (this.selectedPickupLocationAddress && this.selectedPickupLocation)
+        return "checkout-item h-90";
+      else return "checkout-item";
+    },
     selectedPickupLocationAddress() {
       if (this.selectedPickupLocation) {
         let selectedLocation = _.find(this.pickupLocations, location => {
