@@ -712,7 +712,7 @@ const mutations = {
 
     Vue.delete(state.bag.items, guid);
   },
-  setBagDeliveryDate(state, date) {
+  setBagDeliveryDate({ state, dispatch }, date) {
     this.state.delivery_date = date;
   },
   clearBagDeliveryDate(state, date) {
@@ -1566,6 +1566,12 @@ const actions = {
     Vue.delete(state.jobs, id);
   },
 
+  async getDeliveryDateSettings({ commit, data }, { deliveryDate, pickup }) {
+    const resp = await axios.get(
+      `/api/me/delivery_date/settings/${deliveryDate}/${pickup}`
+    );
+  },
+
   async refreshViewedCustomerStore({ commit, state }, data = {}) {
     if (_.isObject(data.store) && !_.isEmpty(data.store)) {
       commit("setViewedStore", data.store);
@@ -1641,6 +1647,8 @@ const actions = {
 
     try {
       if (!_.isEmpty(data.store.delivery_days)) {
+        commit("setViewedStoreDeliveryDays", data.store.delivery_days);
+
         let lineItems = data.store.line_items;
 
         if (!_.isEmpty(lineItems)) {
@@ -2938,9 +2946,9 @@ const getters = {
         feeType,
         mileageBase,
         mileagePerMile
-      } = this.bagCustomDeliveryDay;
+      } = getters.bagCustomDeliveryDay;
       return {
-        applyDeliveryFee,
+        applyDeliveryFee: applyFee,
         deliveryFee: fee,
         deliveryFeeType: feeType,
         mileageBase,
@@ -2959,10 +2967,12 @@ const getters = {
     const weekIndex = moment(state.delivery_date).format("d");
     const { pickup } = state.bag;
 
-    return _.find(state.viewed_store.delivery_days, {
-      day: parseInt(weekIndex),
+    const dday = _.find(state.viewed_store.delivery_days, {
+      day: weekIndex,
       type: pickup ? "pickup" : "delivery"
     });
+
+    return dday || null;
   },
   bagHasMeal: state => meal => {
     if (!_.isNumber(meal)) {

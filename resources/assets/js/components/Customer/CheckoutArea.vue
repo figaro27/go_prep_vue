@@ -1528,8 +1528,8 @@ use next_delivery_dates
       }
     },
     afterFees() {
-      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
-      let applyProcessingFee = this.storeSettings.applyProcessingFee;
+      let applyDeliveryFee = this.bagDeliverySettings.applyDeliveryFee;
+      let applyProcessingFee = this.bagDeliverySettings.applyProcessingFee;
       let deliveryFee = this.deliveryFeeAmount;
       let processingFee = this.processingFeeAmount;
       let subtotal = this.afterDiscount;

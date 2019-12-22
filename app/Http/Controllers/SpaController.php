@@ -283,7 +283,8 @@ class SpaController extends Controller
                     'giftCards',
                     'purchasedGiftCards',
                     'pickupLocations',
-                    'lineItems'
+                    'lineItems',
+                    'deliveryDays'
                 ])->find(STORE_ID)
                 : $last_viewed_store;
 
@@ -497,7 +498,7 @@ class SpaController extends Controller
                   'delivery_day_id',
                   $delivery_day_id
               )->first();
-                
+
               $isValidDD = ($delivery_day_meals || $delivery_day_meal_packages) ? true : false;*/
                 $isValidDD = true;
             }
