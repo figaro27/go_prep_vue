@@ -1546,7 +1546,7 @@ use next_delivery_dates
         mileagePerMile
       } = this.bagDeliverySettings;
 
-      let applyProcessingFee = this.bagDeliverySettings.applyProcessingFee;
+      let applyProcessingFee = this.storeSettings.applyProcessingFee;
       let processingFee = this.processingFeeAmount;
       let subtotal = this.afterDiscount;
 
