@@ -1351,7 +1351,9 @@ export default {
     },
     deliveryDateOptions() {
       let options = [];
-      let dates = this.storeSettings.next_orderable_delivery_dates;
+      let dates = this.pickup
+        ? this.storeSettings.next_orderable_pickup_dates
+        : this.storeSettings.next_orderable_delivery_dates;
       let deliveryDays = this.store.delivery_days;
 
       /*

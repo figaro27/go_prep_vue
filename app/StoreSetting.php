@@ -49,6 +49,7 @@ class StoreSetting extends Model
     public $appends = [
         'next_delivery_dates',
         'next_orderable_delivery_dates',
+        'next_orderable_pickup_dates',
         'subscribed_delivery_days', // Delivery days with active subscriptionss
         'stripe',
         'currency_symbol',
@@ -182,15 +183,18 @@ class StoreSetting extends Model
         $this->clearDeliveryDayContext();
     }
 
-    public function getNextDeliveryDates($factorCutoff = false, $type = null)
-    {
+    public function getNextDeliveryDates(
+        $factorCutoff = false,
+        $type = 'delivery'
+    ) {
         return Cache::remember(
             'store_' .
                 $this->store_id .
                 'delivery_dates' .
-                ($factorCutoff ? 1 : 0),
+                ($factorCutoff ? 1 : 0) .
+                $type,
             1,
-            function () use ($factorCutoff) {
+            function () use ($factorCutoff, $type) {
                 $modules = $this->store->modules;
                 $dates = [];
 
@@ -204,7 +208,11 @@ class StoreSetting extends Model
                     'customDeliveryDays'
                 );
                 $ddays = $customDeliveryDays
-                    ? $this->store->deliveryDays
+                    ? $this->store->deliveryDays->filter(function (
+                        DeliveryDay $dday
+                    ) use ($type) {
+                        return $dday->type === $type;
+                    })
                     : $this->delivery_days;
 
                 if (!count($ddays)) {
@@ -279,6 +287,19 @@ class StoreSetting extends Model
     public function getNextDeliveryDatesAttribute()
     {
         return $this->getNextDeliveryDates(false)->map(function (Carbon $date) {
+            $cutoff = $this->getCutoffDate($date);
+
+            return [
+                'date' => $date->toDateTimeString(),
+                'date_passed' => $date->isPast(),
+                'cutoff' => $cutoff->toDateTimeString(),
+                'cutoff_passed' => $cutoff->isPast()
+            ];
+        });
+    }
+    public function getNextOrderableDeliveryDatesAttribute()
+    {
+        return $this->getNextDeliveryDates(true)->map(function (Carbon $date) {
             $deliveryDay = null; //$this->store->getDeliveryDayByWeekIndex($date->format('w'));
             $cutoff = $this->getCutoffDate($date, $deliveryDay);
 
@@ -291,9 +312,11 @@ class StoreSetting extends Model
             ];
         });
     }
-    public function getNextOrderableDeliveryDatesAttribute()
+    public function getNextOrderablePickupDatesAttribute()
     {
-        return $this->getNextDeliveryDates(true)->map(function (Carbon $date) {
+        return $this->getNextDeliveryDates(true, 'pickup')->map(function (
+            Carbon $date
+        ) {
             $deliveryDay = null; //$this->store->getDeliveryDayByWeekIndex($date->format('w'));
             $cutoff = $this->getCutoffDate($date, $deliveryDay);
 
