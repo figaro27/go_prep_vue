@@ -809,7 +809,14 @@ class SpaController extends Controller
                 'active_orders',
                 'active_orders_price',
                 'lifetime_orders',
-                'featured_image'
+                'ingredients',
+                'ingredient_ids',
+                'nutrition',
+                'description',
+                'allergy_titles',
+                'nutrition',
+                'substitute',
+                'gallery'
             ]);
         });
 
