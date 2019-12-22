@@ -12,6 +12,14 @@ class DeliveryDay extends Model
 
     protected $appends = ['day_friendly', 'day_short'];
 
+    protected $casts = [
+        'day' => 'number',
+        'applyFee' => 'boolean',
+        'cutoff_days' => 'number',
+        'cutoff_hours' => 'number',
+        'fee' => 'float'
+    ];
+
     public function meals()
     {
         return $this->hasManyThrough(
