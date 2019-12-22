@@ -1647,8 +1647,6 @@ const actions = {
 
     try {
       if (!_.isEmpty(data.store.delivery_days)) {
-        commit("setViewedStoreDeliveryDays", data.store.delivery_days);
-
         let lineItems = data.store.line_items;
 
         if (!_.isEmpty(lineItems)) {
