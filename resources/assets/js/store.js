@@ -1566,12 +1566,6 @@ const actions = {
     Vue.delete(state.jobs, id);
   },
 
-  async getDeliveryDateSettings({ commit, data }, { deliveryDate, pickup }) {
-    const resp = await axios.get(
-      `/api/me/delivery_date/settings/${deliveryDate}/${pickup}`
-    );
-  },
-
   async refreshViewedCustomerStore({ commit, state }, data = {}) {
     if (_.isObject(data.store) && !_.isEmpty(data.store)) {
       commit("setViewedStore", data.store);
