@@ -1230,23 +1230,31 @@ export default {
         decimalPlacesForNutrition: 0,
         showPolyFat: false,
         showMonoFat: false,
-        valueCalories: nutrition.calories / servingsPerMeal,
-        valueFatCalories: nutrition.fatcalories / servingsPerMeal,
-        valueTotalFat: nutrition.totalfat / servingsPerMeal,
-        valueSatFat: nutrition.satfat / servingsPerMeal,
-        valueTransFat: nutrition.transfat / servingsPerMeal,
-        valueCholesterol: nutrition.cholesterol / servingsPerMeal,
-        valueSodium: nutrition.sodium / servingsPerMeal,
-        valueTotalCarb: nutrition.totalcarb / servingsPerMeal,
-        valueFibers: nutrition.fibers / servingsPerMeal,
-        valueSugars: nutrition.sugars / servingsPerMeal,
-        valueProteins: nutrition.proteins / servingsPerMeal,
-        valueVitaminD: ((nutrition.vitamind / 20000) * 100) / servingsPerMeal,
-        valuePotassium_2018:
-          ((nutrition.potassium / 4700) * 100) / servingsPerMeal,
-        valueCalcium: ((nutrition.calcium / 1300) * 100) / servingsPerMeal,
-        valueIron: ((nutrition.iron / 18) * 100) / servingsPerMeal,
-        valueAddedSugars: nutrition.addedsugars / servingsPerMeal,
+        valueCalories: (nutrition.calories / servingsPerMeal).toFixed(0),
+        valueFatCalories: (nutrition.fatcalories / servingsPerMeal).toFixed(0),
+        valueTotalFat: (nutrition.totalfat / servingsPerMeal).toFixed(0),
+        valueSatFat: (nutrition.satfat / servingsPerMeal).toFixed(0),
+        valueTransFat: (nutrition.transfat / servingsPerMeal).toFixed(0),
+        valueCholesterol: (nutrition.cholesterol / servingsPerMeal).toFixed(0),
+        valueSodium: (nutrition.sodium / servingsPerMeal).toFixed(0),
+        valueTotalCarb: (nutrition.totalcarb / servingsPerMeal).toFixed(0),
+        valueFibers: (nutrition.fibers / servingsPerMeal).toFixed(0),
+        valueSugars: (nutrition.sugars / servingsPerMeal).toFixed(0),
+        valueProteins: (nutrition.proteins / servingsPerMeal).toFixed(0),
+        valueVitaminD: (
+          ((nutrition.vitamind / 20000) * 100) /
+          servingsPerMeal
+        ).toFixed(0),
+        valuePotassium_2018: (
+          ((nutrition.potassium / 4700) * 100) /
+          servingsPerMeal
+        ).toFixed(0),
+        valueCalcium: (
+          ((nutrition.calcium / 1300) * 100) /
+          servingsPerMeal
+        ).toFixed(0),
+        valueIron: (((nutrition.iron / 18) * 100) / servingsPerMeal).toFixed(0),
+        valueAddedSugars: (nutrition.addedsugars / servingsPerMeal).toFixed(0),
         showLegacyVersion: false
       };
     },

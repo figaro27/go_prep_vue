@@ -99,7 +99,7 @@
                 <p class="small strong col-6 col-md-12">Carbs</p>
                 <p class="small col-6 col-md-12">
                   <span v-if="storeSettings.macrosFromNutrition">
-                    {{ nutritionalFacts.valueTotalCarbs }}
+                    {{ nutritionalFacts.valueTotalCarb }}
                   </span>
                   <span v-else>
                     <span v-if="!isNaN(meal.macros.calories)">{{
