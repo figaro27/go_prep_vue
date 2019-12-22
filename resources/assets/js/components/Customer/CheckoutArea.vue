@@ -837,7 +837,7 @@
       "
     >
       <p class="strong">
-        Please add {{ remainingMeals }} {{ singOrPlural }} to continue.`
+        Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
       </p>
     </li>
 
@@ -1041,7 +1041,8 @@ export default {
       subscriptions: "subscriptions",
       user: "user",
       storeCoupons: "storeCoupons",
-      bagDeliverySettings: "bagDeliverySettings"
+      bagDeliverySettings: "bagDeliverySettings",
+      deliveryDays: "viewedStoreDeliveryDays"
     }),
     pickupLocationClass() {
       if (this.selectedPickupLocationAddress && this.selectedPickupLocation)
@@ -1380,11 +1381,29 @@ use next_delivery_dates
           .value();
       }
 */
+
       if (
         this.storeModules.ignoreCutoff &&
         (this.$route.params.storeView || this.storeOwner)
       )
         dates = this.storeSettings.next_delivery_dates;
+
+      if (this.storeModules.customDeliveryDays && this.pickup) {
+        dates = _.filter(dates, date => {
+          const deliveryDay = _.find(this.deliveryDays, {
+            day: date.week_index.toString(),
+            type: "pickup"
+          });
+
+          if (!deliveryDay) {
+            return false;
+          }
+
+          return deliveryDay.pickup_location_ids.includes(
+            this.selectedPickupLocation
+          );
+        });
+      }
 
       dates.forEach(date => {
         options.push({

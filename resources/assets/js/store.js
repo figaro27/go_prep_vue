@@ -2937,7 +2937,8 @@ const getters = {
         fee,
         feeType,
         mileageBase,
-        mileagePerMile
+        mileagePerMile,
+        pickup_location_ids
       } = getters.bagCustomDeliveryDay;
       return {
         instructions,
@@ -2948,7 +2949,8 @@ const getters = {
         deliveryFee: fee,
         deliveryFeeType: feeType,
         mileageBase,
-        mileagePerMile
+        mileagePerMile,
+        pickup_location_ids
       };
     } else {
       return getters.viewedStoreSettings;

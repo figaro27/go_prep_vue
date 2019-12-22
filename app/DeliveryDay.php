@@ -10,7 +10,7 @@ class DeliveryDay extends Model
 {
     use DeliveryDates;
 
-    protected $appends = ['day_friendly', 'day_short'];
+    protected $appends = ['day_friendly', 'day_short', 'pickup_location_ids'];
 
     protected $casts = [
         'day' => 'number',
@@ -40,6 +40,14 @@ class DeliveryDay extends Model
         );
     }
 
+    public function pickup_locations()
+    {
+        return $this->belongsToMany(
+            'App\PickupLocation',
+            'delivery_day_pickup_locations'
+        );
+    }
+
     public function getDayFriendlyAttribute()
     {
         return $this->getDeliveryDateMultipleDelivery($this->day);
@@ -48,6 +56,11 @@ class DeliveryDay extends Model
     public function getDayShortAttribute()
     {
         return ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][$this->day];
+    }
+
+    public function getPickupLocationIdsAttribute()
+    {
+        return $this->pickup_locations->pluck('id');
     }
 
     public function getWeekIndex()

@@ -297,7 +297,8 @@ class StoreSetting extends Model
                 'date' => $date->toDateTimeString(),
                 'date_passed' => $date->isPast(),
                 'cutoff' => $cutoff->toDateTimeString(),
-                'cutoff_passed' => $cutoff->isPast()
+                'cutoff_passed' => $cutoff->isPast(),
+                'week_index' => (int) $date->format('w')
             ];
         });
     }
@@ -312,7 +313,7 @@ class StoreSetting extends Model
                 'date_passed' => $date->isPast(),
                 'cutoff' => $cutoff->toDateTimeString(),
                 'cutoff_passed' => $cutoff->isPast(),
-                'settings' => $deliveryDay
+                'week_index' => (int) $date->format('w')
             ];
         });
     }
@@ -329,7 +330,7 @@ class StoreSetting extends Model
                 'date_passed' => $date->isPast(),
                 'cutoff' => $cutoff->toDateTimeString(),
                 'cutoff_passed' => $cutoff->isPast(),
-                'settings' => $deliveryDay
+                'week_index' => (int) $date->format('w')
             ];
         });
     }
