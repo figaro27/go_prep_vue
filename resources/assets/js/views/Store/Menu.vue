@@ -178,7 +178,9 @@
                 <button
                   class="btn btn-danger btn-sm"
                   @click="
-                    props.row.meal_package
+                    props.row.gift_card
+                      ? deleteGiftCard(props.row.id)
+                      : props.row.meal_package
                       ? deleteMealPackage(props.row.id)
                       : deleteMeal(props.row.id)
                   "
@@ -565,6 +567,23 @@
       </b-modal>
     </div>
     <b-modal
+      title="Delete Gift Card"
+      v-model="deleteGiftCardModal"
+      v-if="deleteGiftCardModal"
+      :hide-footer="true"
+      no-fade
+    >
+      <p class="center-text mb-3 mt-3">
+        Are you sure you want to delete this gift card?
+      </p>
+      <b-btn
+        variant="danger"
+        class="center"
+        @click="destroyGiftCard(giftCardId)"
+        >Delete</b-btn
+      >
+    </b-modal>
+    <b-modal
       title="Delete Meal Package"
       v-model="deleteMealPackageModal"
       v-if="deleteMealPackageModal"
@@ -877,6 +896,7 @@ export default {
         salesTax: null
       },
       giftCard: {},
+      deleteGiftCardModal: false,
       viewGiftCardModal: false,
       editingCategory: false,
       editingCategoryId: null,
@@ -892,6 +912,7 @@ export default {
       viewPackageModal: false,
       deleteMealPackageModal: false,
       mealPackageId: null,
+      giftCardId: null,
       deletingMeal: {},
       deactivatingMeal: {},
       substitute_id: null,
@@ -1379,12 +1400,24 @@ export default {
       this.mealPackageId = id;
       this.deleteMealPackageModal = true;
     },
+    deleteGiftCard(id) {
+      this.giftCardId = id;
+      this.deleteGiftCardModal = true;
+    },
     destroyMealPackage() {
       let id = this.mealPackageId;
       axios.delete(`/api/me/packages/${id}`).then(resp => {
         this.refreshTable();
         this.deleteMealPackageModal = false;
         this.$toastr.s("Meal package deleted!");
+      });
+    },
+    destroyGiftCard() {
+      let id = this.giftCardId;
+      axios.delete(`/api/me/giftCards/${id}`).then(resp => {
+        this.refreshTable();
+        this.deleteGiftCardModal = false;
+        this.$toastr.s("Gift card deleted!");
       });
     },
     getNutrition: function() {

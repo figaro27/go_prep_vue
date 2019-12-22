@@ -8,10 +8,12 @@ use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 use App\Media\Utils as MediaUtils;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class GiftCard extends Model implements HasMedia
 {
     use HasMediaTrait;
+    use SoftDeletes;
 
     public $appends = ['category_ids', 'gift_card', 'salesTax', 'image'];
 

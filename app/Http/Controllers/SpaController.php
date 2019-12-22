@@ -560,6 +560,18 @@ class SpaController extends Controller
                             'deleted_at' => null
                         ]);
 
+                        $temp_package = $temp_package->first();
+
+                        $temp_giftCard = GiftCard::whereHas(
+                            'categories',
+                            function ($query) use ($temp_id) {
+                                $query->where('categories.id', $temp_id);
+                            }
+                        )->where([
+                            'store_id' => $store_id,
+                            'deleted_at' => null
+                        ]);
+
                         if ($delivery_day_id != 0 && $isValidDD) {
                             $temp_package = $temp_package->whereHas(
                                 'days',
@@ -572,9 +584,9 @@ class SpaController extends Controller
                             );
                         }
 
-                        $temp_package = $temp_package->first();
+                        $temp_giftCard = $temp_giftCard->first();
 
-                        if ($temp_meal || $temp_package) {
+                        if ($temp_meal || $temp_package || $temp_giftCard) {
                             // Meal or Package exists
                             $category_ids[] = $temp_id;
 
