@@ -41,16 +41,16 @@ class GiftCardController extends StoreController
         $giftCard->price = $request->get('price');
 
         if ($request->has('featured_image')) {
-            $imagePath = \App\Utils\Images::uploadB64(
+            $imagePath = Utils\Images::uploadB64(
                 $request->get('featured_image'),
                 'path',
                 'giftCards/'
             );
             $fullImagePath = \Storage::disk('public')->path($imagePath);
-            $giftCard->clearMediaCollection('featured_image');
-            $giftCard
-                ->addMedia($fullImagePath)
-                ->toMediaCollection('featured_image');
+            $this->clearMediaCollection('featured_image');
+            $this->addMedia($fullImagePath)->toMediaCollection(
+                'featured_image'
+            );
         }
 
         $giftCard->save();
