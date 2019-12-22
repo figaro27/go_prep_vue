@@ -654,6 +654,8 @@ class Store extends Model
                 ->setTime($settings->cutoff_hours, 0, 0)
                 ->setTimezone('utc');
         }
+
+        $settings->clearDeliveryDayContext();
     }
 
     public function getOrders(

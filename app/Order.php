@@ -422,14 +422,6 @@ class Order extends Model
             $this->delivery_date,
             $this->delivery_day
         );
-
-        /*$ddate = new Carbon(
-    $this->delivery_date,
-    $this->store->settings->timezone
-    );
-    $ddate->setTime(0, 0);
-    $cutoff = $ddate->subSeconds($this->store->getCutoffSeconds());
-    return $cutoff;*/
     }
 
     public static function updateOrder($id, $props)
