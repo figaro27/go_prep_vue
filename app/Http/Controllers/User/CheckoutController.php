@@ -619,7 +619,7 @@ class CheckoutController extends UserController
             // Get cutoff date for selected delivery day
             $cutoff = $store->getCutoffDate(
                 new Carbon($deliveryDay),
-                $storeSettings
+                $customDD
             );
 
             // How long into the future is the delivery day? In days

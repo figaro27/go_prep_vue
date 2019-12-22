@@ -127,6 +127,8 @@ class StoreSetting extends Model
         $this->cutoff_type = $deliveryDay->cutoff_type;
         $this->cutoff_days = $deliveryDay->cutoff_days;
         $this->cutoff_hours = $deliveryDay->cutoff_hours;
+        $this->mileageBase = $deliveryDay->mileageBase;
+        $this->mileagePerMile = $deliveryDay->mileagePerMile;
     }
 
     /**
@@ -141,6 +143,8 @@ class StoreSetting extends Model
         $this->cutoff_type = $this->getOriginal('cutoff_type');
         $this->cutoff_days = $this->getOriginal('cutoff_days');
         $this->cutoff_hours = $this->getOriginal('cutoff_hours');
+        $this->mileageBase = $this->getOriginal('mileageBase');
+        $this->mileagePerMile = $this->getOriginal('mileagePerMile');
     }
 
     /**

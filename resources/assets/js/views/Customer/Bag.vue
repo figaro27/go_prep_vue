@@ -305,15 +305,21 @@ export default {
     },
     deliveryFeeAmount() {
       if (!this.pickup) {
+        let {
+          applyDeliveryFee,
+          deliveryFee,
+          deliveryFeeType,
+          mileageBase,
+          mileagePerMile
+        } = this.bagDeliverySettings;
+
         if (!this.couponFreeDelivery) {
-          if (this.storeSettings.applyDeliveryFee) {
-            if (this.storeSettings.deliveryFeeType === "flat") {
-              return this.storeSettings.deliveryFee;
-            } else if (this.storeSettings.deliveryFeeType === "mileage") {
-              let mileageBase = parseFloat(this.storeSettings.mileageBase);
-              let mileagePerMile = parseFloat(
-                this.storeSettings.mileagePerMile
-              );
+          if (applyDeliveryFee) {
+            if (deliveryFeeType === "flat") {
+              return deliveryFee;
+            } else if (deliveryFeeType === "mileage") {
+              let mileageBase = parseFloat(mileageBase);
+              let mileagePerMile = parseFloat(mileagePerMile);
               let distance = parseFloat(this.store.distance);
               return mileageBase + mileagePerMile * distance;
             }
@@ -329,9 +335,15 @@ export default {
       }
     },
     afterFees() {
-      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+      let {
+        applyDeliveryFee,
+        deliveryFee,
+        deliveryFeeType,
+        mileageBase,
+        mileagePerMile
+      } = this.bagDeliverySettings;
+
       let applyProcessingFee = this.storeSettings.applyProcessingFee;
-      let deliveryFee = this.deliveryFeeAmount;
       let processingFee = this.processingFeeAmount;
       let subtotal = this.afterDiscount;
 

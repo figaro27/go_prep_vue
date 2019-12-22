@@ -2948,6 +2948,10 @@ const getters = {
         mileagePerMile
       } = getters.bagCustomDeliveryDay;
       return {
+        instructions,
+        cutoff_type,
+        cutoff_days,
+        cutoff_hours,
         applyDeliveryFee: applyFee,
         deliveryFee: fee,
         deliveryFeeType: feeType,

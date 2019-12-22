@@ -232,7 +232,9 @@
       <li
         class="checkout-item"
         v-if="
-          storeSettings.applyDeliveryFee && pickup === 0 && !couponFreeDelivery
+          bagDeliverySettings.applyDeliveryFee &&
+            pickup === 0 &&
+            !couponFreeDelivery
         "
       >
         <div class="row">
@@ -1536,9 +1538,15 @@ use next_delivery_dates
       }
     },
     afterFees() {
-      let applyDeliveryFee = this.bagDeliverySettings.applyDeliveryFee;
+      let {
+        applyDeliveryFee,
+        deliveryFee,
+        deliveryFeeType,
+        mileageBase,
+        mileagePerMile
+      } = this.bagDeliverySettings;
+
       let applyProcessingFee = this.bagDeliverySettings.applyProcessingFee;
-      let deliveryFee = this.deliveryFeeAmount;
       let processingFee = this.processingFeeAmount;
       let subtotal = this.afterDiscount;
 
