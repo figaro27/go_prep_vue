@@ -395,7 +395,9 @@
             $route.params.subscriptionId === undefined &&
             (!$route.params.storeView && !storeOwner) &&
             (!bagDeliveryDate || !store.modules.category_restrictions) &&
-            !isMultipleDelivery
+            !isMultipleDelivery && !store.modules.pickupLocations ||
+                  (store.modules.pickupLocations &&
+                    selectedPickupLocation !== null
         "
       >
         <div>
