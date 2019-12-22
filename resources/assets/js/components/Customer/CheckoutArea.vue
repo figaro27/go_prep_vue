@@ -391,13 +391,13 @@
       <li
         class="checkout-item"
         v-if="
-          deliveryDateOptions.length > 1 &&
+          (deliveryDateOptions.length > 1 &&
             $route.params.subscriptionId === undefined &&
             (!$route.params.storeView && !storeOwner) &&
             (!bagDeliveryDate || !store.modules.category_restrictions) &&
-            !isMultipleDelivery && !store.modules.pickupLocations ||
-                  (store.modules.pickupLocations &&
-                    selectedPickupLocation !== null
+            !isMultipleDelivery &&
+            !store.modules.pickupLocations) ||
+            (store.modules.pickupLocations && selectedPickupLocation !== null)
         "
       >
         <div>
