@@ -437,7 +437,7 @@ export default {
 
     if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
 
-    if (this.storeModules.pickupLocations)
+    if (this.storeModules.pickupLocations && this.pickupLocationOptions)
       this.selectedPickupLocation = this.pickupLocationOptions[0].value;
 
     // if (!this.deliveryDay && this.deliveryDateOptions.length > 0) {

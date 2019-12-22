@@ -124,7 +124,8 @@ class CheckoutController extends UserController
 
         // Delivery day settings overrides
         if ($storeModules->customDeliveryDays) {
-            $customDD = $this->deliveryDays()
+            $customDD = $this->store
+                ->deliveryDays()
                 ->where([
                     'day' => $weekIndex,
                     'type' => $pickup ? 'pickup' : 'delivery'
