@@ -196,7 +196,8 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       _orders: "orders",
-      user: "user"
+      user: "user",
+      bagDeliverySettings: "bagDeliverySettings"
     }),
     storeOwner() {
       let flag = false;
@@ -318,8 +319,8 @@ export default {
             if (deliveryFeeType === "flat") {
               return deliveryFee;
             } else if (deliveryFeeType === "mileage") {
-              let mileageBase = parseFloat(mileageBase);
-              let mileagePerMile = parseFloat(mileagePerMile);
+              mileageBase = parseFloat(mileageBase);
+              mileagePerMile = parseFloat(mileagePerMile);
               let distance = parseFloat(this.store.distance);
               return mileageBase + mileagePerMile * distance;
             }
@@ -347,7 +348,8 @@ export default {
       let processingFee = this.processingFeeAmount;
       let subtotal = this.afterDiscount;
 
-      if (applyDeliveryFee & (this.pickup === 0)) subtotal += deliveryFee;
+      if (applyDeliveryFee & (this.pickup === 0))
+        subtotal += this.deliveryFeeAmount;
       if (applyProcessingFee) subtotal += processingFee;
 
       return subtotal;

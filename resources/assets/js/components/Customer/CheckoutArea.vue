@@ -1550,7 +1550,8 @@ use next_delivery_dates
       let processingFee = this.processingFeeAmount;
       let subtotal = this.afterDiscount;
 
-      if (applyDeliveryFee & (this.pickup === 0)) subtotal += deliveryFee;
+      if (applyDeliveryFee & (this.pickup === 0))
+        subtotal += this.deliveryFeeAmount;
       if (applyProcessingFee) subtotal += processingFee;
 
       return subtotal;
