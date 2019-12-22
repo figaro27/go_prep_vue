@@ -205,7 +205,7 @@ class Subscription extends Model
     {
         if (
             $this->latest_paid_order &&
-            $this->latest_paid_order->delivery_day > Carbon::now()
+            $this->latest_paid_order->delivery_date > Carbon::now()
         ) {
             return $this->latest_paid_order;
         } else {
