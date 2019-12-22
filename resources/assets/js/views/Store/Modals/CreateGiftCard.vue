@@ -51,6 +51,7 @@
             size="10"
             button-class="btn"
             @change="val => changeImage(val)"
+            v-observe-visibility="forceResize"
           ></picture-input>
         </b-col>
       </b-row>
