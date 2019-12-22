@@ -196,7 +196,8 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       _orders: "orders",
-      user: "user"
+      user: "user",
+      bagDeliverySettings: "bagDeliverySettings"
     }),
     storeOwner() {
       let flag = false;
@@ -305,15 +306,21 @@ export default {
     },
     deliveryFeeAmount() {
       if (!this.pickup) {
+        let {
+          applyDeliveryFee,
+          deliveryFee,
+          deliveryFeeType,
+          mileageBase,
+          mileagePerMile
+        } = this.bagDeliverySettings;
+
         if (!this.couponFreeDelivery) {
-          if (this.storeSettings.applyDeliveryFee) {
-            if (this.storeSettings.deliveryFeeType === "flat") {
-              return this.storeSettings.deliveryFee;
-            } else if (this.storeSettings.deliveryFeeType === "mileage") {
-              let mileageBase = parseFloat(this.storeSettings.mileageBase);
-              let mileagePerMile = parseFloat(
-                this.storeSettings.mileagePerMile
-              );
+          if (applyDeliveryFee) {
+            if (deliveryFeeType === "flat") {
+              return deliveryFee;
+            } else if (deliveryFeeType === "mileage") {
+              mileageBase = parseFloat(mileageBase);
+              mileagePerMile = parseFloat(mileagePerMile);
               let distance = parseFloat(this.store.distance);
               return mileageBase + mileagePerMile * distance;
             }
@@ -329,13 +336,20 @@ export default {
       }
     },
     afterFees() {
-      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+      let {
+        applyDeliveryFee,
+        deliveryFee,
+        deliveryFeeType,
+        mileageBase,
+        mileagePerMile
+      } = this.bagDeliverySettings;
+
       let applyProcessingFee = this.storeSettings.applyProcessingFee;
-      let deliveryFee = this.deliveryFeeAmount;
       let processingFee = this.processingFeeAmount;
       let subtotal = this.afterDiscount;
 
-      if (applyDeliveryFee & (this.pickup === 0)) subtotal += deliveryFee;
+      if (applyDeliveryFee & (this.pickup === 0))
+        subtotal += this.deliveryFeeAmount;
       if (applyProcessingFee) subtotal += processingFee;
 
       return subtotal;
@@ -437,7 +451,7 @@ export default {
 
     if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
 
-    if (this.storeModules.pickupLocations)
+    if (this.storeModules.pickupLocations && this.pickupLocationOptions)
       this.selectedPickupLocation = this.pickupLocationOptions[0].value;
 
     // if (!this.deliveryDay && this.deliveryDateOptions.length > 0) {

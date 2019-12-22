@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Model;
+use App\DeliveryDay;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -10,6 +11,11 @@ use App\OmittedDeliveryDates;
 
 class StoreSetting extends Model
 {
+    /**
+     * @var DeliveryDay $deliveryDay
+     */
+    protected $deliveryDay = null;
+
     protected $fillable = [
         'minimum',
         'minimumOption',
@@ -43,6 +49,7 @@ class StoreSetting extends Model
     public $appends = [
         'next_delivery_dates',
         'next_orderable_delivery_dates',
+        'next_orderable_pickup_dates',
         'subscribed_delivery_days', // Delivery days with active subscriptionss
         'stripe',
         'currency_symbol',
@@ -106,19 +113,61 @@ class StoreSetting extends Model
     }
 
     /**
+     * Sets the delivery day for cutoff calculations etc.
+     *
+     * @param DeliveryDay $deliveryDay
+     * @param boolean $pickup
+     */
+    public function setDeliveryDayContext(DeliveryDay $deliveryDay, $pickup = 0)
+    {
+        $this->deliveryDay = $deliveryDay;
+
+        $this->applyDeliveryFee = $deliveryDay->applyFee;
+        $this->deliveryFee = $deliveryDay->fee;
+        $this->cutoff_type = $deliveryDay->cutoff_type;
+        $this->cutoff_days = $deliveryDay->cutoff_days;
+        $this->cutoff_hours = $deliveryDay->cutoff_hours;
+        $this->mileageBase = $deliveryDay->mileageBase;
+        $this->mileagePerMile = $deliveryDay->mileagePerMile;
+    }
+
+    /**
+     * Resets the delivery day context
+     */
+    public function clearDeliveryDayContext()
+    {
+        $this->deliveryDay = null;
+
+        $this->applyDeliveryFee = $this->getOriginal('applyDeliveryFee');
+        $this->deliveryFee = $this->getOriginal('deliveryFee');
+        $this->cutoff_type = $this->getOriginal('cutoff_type');
+        $this->cutoff_days = $this->getOriginal('cutoff_days');
+        $this->cutoff_hours = $this->getOriginal('cutoff_hours');
+        $this->mileageBase = $this->getOriginal('mileageBase');
+        $this->mileagePerMile = $this->getOriginal('mileagePerMile');
+    }
+
+    /**
      * Get the cutoff date for a particular delivery date
      *
      * @param Carbon $deliveryDate
      * @return Carbon $cutoffDate
      */
-    public function getCutoffDate(Carbon $deliveryDate)
-    {
+    public function getCutoffDate(
+        Carbon $deliveryDate,
+        DeliveryDay $deliveryDayContext = null
+    ) {
+        if ($deliveryDayContext) {
+            $this->setDeliveryDayContext($deliveryDayContext);
+        }
+
         $cutoffDate = Carbon::createFromDate(
             $deliveryDate->year,
             $deliveryDate->month,
             $deliveryDate->day,
             $this->timezone
         );
+
         if ($this->cutoff_type === 'timed') {
             return $cutoffDate
                 ->setTime(0, 0, 0)
@@ -134,17 +183,23 @@ class StoreSetting extends Model
                 ->setTime($this->cutoff_hours, 0, 0)
                 ->setTimezone('utc');
         }
+
+        $this->clearDeliveryDayContext();
     }
 
-    public function getNextDeliveryDates($factorCutoff = false)
-    {
+    public function getNextDeliveryDates(
+        $factorCutoff = false,
+        $type = 'delivery'
+    ) {
         return Cache::remember(
             'store_' .
                 $this->store_id .
                 'delivery_dates' .
-                ($factorCutoff ? 1 : 0),
+                ($factorCutoff ? 1 : 0) .
+                $type,
             1,
-            function () use ($factorCutoff) {
+            function () use ($factorCutoff, $type) {
+                $modules = $this->store->modules;
                 $dates = [];
 
                 $now = Carbon::now('utc');
@@ -153,13 +208,30 @@ class StoreSetting extends Model
                     $this->cutoff_days * (60 * 60 * 24) +
                     $this->cutoff_hours * (60 * 60);
 
-                $ddays = $this->delivery_days;
+                $customDeliveryDays = $this->store->isModuleEnabled(
+                    'customDeliveryDays'
+                );
+                $ddays = $customDeliveryDays
+                    ? $this->store->deliveryDays->filter(function (
+                        DeliveryDay $dday
+                    ) use ($type) {
+                        return $dday->type === $type;
+                    })
+                    : $this->delivery_days;
 
-                if (!is_array($ddays)) {
+                if (!count($ddays)) {
                     return collect([]);
                 }
 
                 foreach ($ddays as $i => $day) {
+                    $customDeliveryDay = null;
+
+                    if ($customDeliveryDays) {
+                        $customDeliveryDay = $day;
+                        $day = $customDeliveryDay->day_short;
+                        $this->setDeliveryDayContext($customDeliveryDay);
+                    }
+
                     $date = Carbon::createFromFormat(
                         'D',
                         $day,
@@ -172,6 +244,10 @@ class StoreSetting extends Model
                         $dates[] = $date;
                     } else {
                         $dates[] = $date->addWeek(1);
+                    }
+
+                    if ($customDeliveryDays) {
+                        $this->clearDeliveryDayContext();
                     }
                 }
 
@@ -221,22 +297,49 @@ class StoreSetting extends Model
                 'date' => $date->toDateTimeString(),
                 'date_passed' => $date->isPast(),
                 'cutoff' => $cutoff->toDateTimeString(),
-                'cutoff_passed' => $cutoff->isPast()
+                'cutoff_passed' => $cutoff->isPast(),
+                'week_index' => (int) $date->format('w')
             ];
         });
     }
     public function getNextOrderableDeliveryDatesAttribute()
     {
         return $this->getNextDeliveryDates(true)->map(function (Carbon $date) {
-            $cutoff = $this->getCutoffDate($date);
+            $deliveryDay = null; //$this->store->getDeliveryDayByWeekIndex($date->format('w'));
+            $cutoff = $this->getCutoffDate($date, $deliveryDay);
 
             return [
                 'date' => $date->toDateTimeString(),
                 'date_passed' => $date->isPast(),
                 'cutoff' => $cutoff->toDateTimeString(),
-                'cutoff_passed' => $cutoff->isPast()
+                'cutoff_passed' => $cutoff->isPast(),
+                'week_index' => (int) $date->format('w')
             ];
         });
+    }
+    public function getNextOrderablePickupDatesAttribute()
+    {
+        return $this->getNextDeliveryDates(true, 'pickup')->map(function (
+            Carbon $date
+        ) {
+            $deliveryDay = null; //$this->store->getDeliveryDayByWeekIndex($date->format('w'));
+            $cutoff = $this->getCutoffDate($date, $deliveryDay);
+
+            return [
+                'date' => $date->toDateTimeString(),
+                'date_passed' => $date->isPast(),
+                'cutoff' => $cutoff->toDateTimeString(),
+                'cutoff_passed' => $cutoff->isPast(),
+                'week_index' => (int) $date->format('w')
+            ];
+        });
+    }
+
+    public function getDeliveryDay(Carbon $date)
+    {
+        return $this->store->deliveryDays
+            ->where('day', $date->format('w'))
+            ->first();
     }
 
     public function getSubscribedDeliveryDaysAttribute()

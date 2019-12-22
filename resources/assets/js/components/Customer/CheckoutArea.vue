@@ -232,7 +232,9 @@
       <li
         class="checkout-item"
         v-if="
-          storeSettings.applyDeliveryFee && pickup === 0 && !couponFreeDelivery
+          bagDeliverySettings.applyDeliveryFee &&
+            pickup === 0 &&
+            !couponFreeDelivery
         "
       >
         <div class="row">
@@ -316,6 +318,7 @@
         </div>
       </li>
     </ul>
+
     <li
       class="checkout-item"
       v-if="
@@ -327,7 +330,7 @@
       "
     >
       <b-form-group>
-        <b-form-radio-group v-model="pickup" v-on:input="changePickupV">
+        <b-form-radio-group v-model="pickup" v-on:input="changePickup">
           <b-form-radio :value="0">
             <strong>Delivery</strong>
           </b-form-radio>
@@ -336,6 +339,31 @@
           </b-form-radio>
         </b-form-radio-group>
       </b-form-group>
+    </li>
+    <li
+      :class="pickupLocationClass"
+      v-if="
+        $parent.orderId === undefined &&
+          storeModules.pickupLocations &&
+          pickup &&
+          $route.params.subscriptionId === undefined
+      "
+    >
+      <div>
+        <strong>Pickup Location</strong>
+        <b-select
+          v-model="selectedPickupLocation"
+          :options="pickupLocationOptions"
+          class="delivery-select ml-2"
+          required
+        ></b-select>
+      </div>
+      <p
+        v-if="selectedPickupLocationAddress && selectedPickupLocation"
+        class="pt-3"
+      >
+        {{ selectedPickupLocationAddress }}
+      </p>
     </li>
     <div
       v-if="
@@ -370,7 +398,11 @@
             $route.params.subscriptionId === undefined &&
             (!$route.params.storeView && !storeOwner) &&
             (!bagDeliveryDate || !store.modules.category_restrictions) &&
-            !isMultipleDelivery
+            !isMultipleDelivery &&
+            (pickup === 0 ||
+              !store.modules.pickupLocations ||
+              (store.modules.pickupLocations &&
+                selectedPickupLocation !== null))
         "
       >
         <div>
@@ -383,11 +415,26 @@
           >
             Delivery Day
           </strong>
-          <strong v-if="pickup === 1 && deliveryDateOptions.length > 1">
+          <strong
+            v-if="
+              pickup === 1 &&
+                deliveryDateOptions.length > 1 &&
+                (pickup === 0 ||
+                  !store.modules.pickupLocations ||
+                  (store.modules.pickupLocations &&
+                    selectedPickupLocation !== null))
+            "
+          >
             Pickup Day
           </strong>
           <b-select
-            v-if="deliveryDateOptions.length > 1"
+            v-if="
+              deliveryDateOptions.length > 1 &&
+                (pickup === 0 ||
+                  !store.modules.pickupLocations ||
+                  (store.modules.pickupLocations &&
+                    selectedPickupLocation !== null))
+            "
             :options="deliveryDateOptions"
             :value="bagDeliveryDate"
             @input="changeDeliveryDay"
@@ -419,7 +466,6 @@
           deliveryDateOptions.length === 1 &&
             $route.params.subscriptionId === undefined &&
             (!$route.params.storeView && !storeOwner) &&
-            !bagDeliveryDate &&
             !isMultipleDelivery
         "
       >
@@ -490,29 +536,14 @@
         </div>
       </li>
     </div>
-
     <li
-      class="checkout-item h-100"
-      v-if="
-        $parent.orderId === undefined &&
-          storeModules.pickupLocations &&
-          pickup &&
-          $route.params.subscriptionId === undefined
-      "
+      class="transfer-instruction mt-2"
+      v-if="!$route.params.storeView && !storeOwner"
     >
-      <div>
-        <strong>Pickup Location</strong>
-        <b-select
-          v-model="selectedPickupLocation"
-          :options="pickupLocationOptions"
-          class="delivery-select mb-3 ml-2"
-          required
-        ></b-select>
-      </div>
-      <p v-if="selectedPickupLocationAddress" class="margin-bottom:50px">
-        {{ selectedPickupLocationAddress }}
-      </p>
+      <p class="strong">{{ transferText }}</p>
+      <p v-html="transferInstructions"></p>
     </li>
+
     <li v-if="loggedIn">
       <div
         v-if="
@@ -800,14 +831,6 @@
     </li>
 
     <li
-      class="transfer-instruction mt-2"
-      v-if="!$route.params.storeView && !storeOwner"
-    >
-      <p class="strong">{{ transferText }}</p>
-      <p v-html="transferInstructions"></p>
-    </li>
-
-    <li
       v-if="
         minOption === 'meals' &&
           total < minimumMeals &&
@@ -816,7 +839,7 @@
       "
     >
       <p class="strong">
-        Please add {{ remainingMeals }} {{ singOrPlural }} to continue.`
+        Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
       </p>
     </li>
 
@@ -1019,8 +1042,15 @@ export default {
       _orders: "orders",
       subscriptions: "subscriptions",
       user: "user",
-      storeCoupons: "storeCoupons"
+      storeCoupons: "storeCoupons",
+      bagDeliverySettings: "bagDeliverySettings",
+      deliveryDays: "viewedStoreDeliveryDays"
     }),
+    pickupLocationClass() {
+      if (this.selectedPickupLocationAddress && this.selectedPickupLocation)
+        return "checkout-item h-90";
+      else return "checkout-item";
+    },
     selectedPickupLocationAddress() {
       if (this.selectedPickupLocation) {
         let selectedLocation = _.find(this.pickupLocations, location => {
@@ -1334,12 +1364,48 @@ export default {
     },
     deliveryDateOptions() {
       let options = [];
-      let dates = this.storeSettings.next_orderable_delivery_dates;
+      let dates = this.pickup
+        ? this.storeSettings.next_orderable_pickup_dates
+        : this.storeSettings.next_orderable_delivery_dates;
+      let deliveryDays = this.store.delivery_days;
+
+      /*
+use next_delivery_dates
+
+      if(this.storeModules.customDeliveryDays) {
+        return _(this.deliveryDays)
+          .filter({ type: this.bagPickup ? 'pickup' : 'delivery'})
+          .map(dday => {
+            return {
+              value:
+            }
+          })
+          .value();
+      }
+*/
+
       if (
         this.storeModules.ignoreCutoff &&
         (this.$route.params.storeView || this.storeOwner)
       )
         dates = this.storeSettings.next_delivery_dates;
+
+      if (this.storeModules.customDeliveryDays && this.pickup) {
+        dates = _.filter(dates, date => {
+          const deliveryDay = _.find(this.deliveryDays, {
+            day: date.week_index.toString(),
+            type: "pickup"
+          });
+
+          if (!deliveryDay) {
+            return false;
+          }
+
+          return deliveryDay.pickup_location_ids.includes(
+            this.selectedPickupLocation
+          );
+        });
+      }
 
       dates.forEach(date => {
         options.push({
@@ -1347,6 +1413,13 @@ export default {
           text: moment(date.date).format("dddd MMM Do")
         });
       });
+
+      // only one option. Set as bag date
+      if (options.length === 1 && this.bagDeliveryDate !== options[0].value) {
+        this.$nextTick(() => {
+          this.setBagDeliveryDate(options[0].value);
+        });
+      }
 
       return options;
     },
@@ -1441,6 +1514,14 @@ export default {
     },
     deliveryFeeAmount() {
       if (!this.pickup) {
+        let {
+          applyDeliveryFee,
+          deliveryFee,
+          deliveryFeeType,
+          mileageBase,
+          mileagePerMile
+        } = this.bagDeliverySettings;
+
         if (this.customDeliveryFee !== null) {
           return parseFloat(this.customDeliveryFee);
         }
@@ -1448,17 +1529,14 @@ export default {
           return this.order.deliveryFee;
         }
         if (!this.couponFreeDelivery) {
-          if (this.storeSettings.applyDeliveryFee) {
+          if (applyDeliveryFee) {
             let fee = 0;
-            if (this.storeSettings.deliveryFeeType === "flat") {
-              fee = this.storeSettings.deliveryFee;
-            } else if (this.storeSettings.deliveryFeeType === "mileage") {
-              let mileageBase = parseFloat(this.storeSettings.mileageBase);
-              let mileagePerMile = parseFloat(
-                this.storeSettings.mileagePerMile
-              );
+            if (deliveryFeeType === "flat") {
+              fee = deliveryFee;
+            } else if (deliveryFeeType === "mileage") {
               let distance = parseFloat(this.store.distance);
-              fee = mileageBase + mileagePerMile * distance;
+              fee =
+                parseFloat(mileageBase) + parseFloat(mileagePerMile) * distance;
             }
 
             if (this.groupBag) {
@@ -1490,13 +1568,20 @@ export default {
       }
     },
     afterFees() {
-      let applyDeliveryFee = this.storeSettings.applyDeliveryFee;
+      let {
+        applyDeliveryFee,
+        deliveryFee,
+        deliveryFeeType,
+        mileageBase,
+        mileagePerMile
+      } = this.bagDeliverySettings;
+
       let applyProcessingFee = this.storeSettings.applyProcessingFee;
-      let deliveryFee = this.deliveryFeeAmount;
       let processingFee = this.processingFeeAmount;
       let subtotal = this.afterDiscount;
 
-      if (applyDeliveryFee & (this.pickup === 0)) subtotal += deliveryFee;
+      if (applyDeliveryFee & (this.pickup === 0))
+        subtotal += this.deliveryFeeAmount;
       if (applyProcessingFee) subtotal += processingFee;
 
       return subtotal;
@@ -1780,7 +1865,8 @@ export default {
     changeDeliveryTime(val) {
       this.updateParentData();
     },
-    changePickupV() {
+    changePickup(val) {
+      this.setBagPickup(val);
       this.updateParentData();
     },
     setWeeklySubscriptionValue(v) {

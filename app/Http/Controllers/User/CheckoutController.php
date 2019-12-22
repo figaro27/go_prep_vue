@@ -19,6 +19,7 @@ use App\Order;
 use App\OrderTransaction;
 use App\Store;
 use App\StoreDetail;
+use App\StoreSetting;
 use App\Subscription;
 use App\Coupon;
 use App\MealPackageOrder;
@@ -30,6 +31,7 @@ use App\Billing\Billing;
 use App\Billing\Constants;
 use App\Billing\Charge;
 use App\Billing\Authorize;
+use App\Http\Requests\CheckoutRequest;
 use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -42,7 +44,7 @@ class CheckoutController extends UserController
 {
     use DeliveryDates;
 
-    public function checkout(\App\Http\Requests\CheckoutRequest $request)
+    public function checkout(CheckoutRequest $request)
     {
         $user = auth('api')->user();
         $storeId = $request->get('store_id');
@@ -86,6 +88,7 @@ class CheckoutController extends UserController
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
         $deliveryDay = $request->get('delivery_day');
+        $weekIndex = (int) date('N', strtotime($deliveryDay));
         $isMultipleDelivery = (int) $request->get('isMultipleDelivery');
         $couponId = $request->get('coupon_id');
         $couponReduction = $request->get('couponReduction');
@@ -111,6 +114,27 @@ class CheckoutController extends UserController
             $cardId = $request->get('card_id');
             $card = $this->user->cards()->findOrFail($cardId);
             $gateway = $card->payment_gateway;
+        }
+
+        $storeSettings = $this->store->settings;
+        $storeModules = $this->store->modules;
+
+        /** @var DeliveryDay $customDD */
+        $customDD = null;
+
+        // Delivery day settings overrides
+        if ($storeModules->customDeliveryDays) {
+            $customDD = $this->store
+                ->deliveryDays()
+                ->where([
+                    'day' => $weekIndex,
+                    'type' => $pickup ? 'pickup' : 'delivery'
+                ])
+                ->first();
+
+            if ($customDD) {
+                $storeSettings->setDeliveryDayContext($customDD, $pickup);
+            }
         }
 
         $application_fee = $storeSettings->application_fee;
@@ -290,6 +314,12 @@ class CheckoutController extends UserController
             $order->dailyOrderNumber = $dailyOrderNumber;
             $order->originalAmount = $total * $deposit;
             $order->isMultipleDelivery = $isMultipleDelivery;
+
+            // Assign custom delivery day
+            if ($customDD) {
+                $order->delivery_day_id = $customDD->id;
+            }
+
             $order->save();
 
             $order_transaction = new OrderTransaction();
@@ -587,7 +617,10 @@ class CheckoutController extends UserController
             }
 
             // Get cutoff date for selected delivery day
-            $cutoff = $store->getCutoffDate(new Carbon($deliveryDay));
+            $cutoff = $store->getCutoffDate(
+                new Carbon($deliveryDay),
+                $customDD
+            );
 
             // How long into the future is the delivery day? In days
             $diff = (strtotime($deliveryDay) - time()) / 86400;

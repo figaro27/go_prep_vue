@@ -61,7 +61,8 @@ const state = {
     items: {},
     coupon: null,
     purchased_gift_card: null,
-    meal_plan: false
+    meal_plan: false,
+    pickup: false
   },
   delivery_date: null,
 
@@ -711,7 +712,7 @@ const mutations = {
 
     Vue.delete(state.bag.items, guid);
   },
-  setBagDeliveryDate(state, date) {
+  setBagDeliveryDate({ state, dispatch }, date) {
     this.state.delivery_date = date;
   },
   clearBagDeliveryDate(state, date) {
@@ -1630,6 +1631,16 @@ const actions = {
 
     try {
       if (!_.isEmpty(data.store.line_items)) {
+        let lineItems = data.store.line_items;
+
+        if (!_.isEmpty(lineItems)) {
+          commit("setViewedStoreLineItems", { lineItems });
+        }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.delivery_days)) {
         let lineItems = data.store.line_items;
 
         if (!_.isEmpty(lineItems)) {
@@ -2808,6 +2819,9 @@ const getters = {
       return {};
     }
   },
+  viewedStoreDeliveryDays: state => {
+    return state.viewed_store.delivery_days || [];
+  },
   isLoading(state) {
     return state.isLoading || !_.isEmpty(state.jobs);
   },
@@ -2902,8 +2916,61 @@ const getters = {
   bagMealPlan(state) {
     return state.bag.meal_plan;
   },
+  bagPickup(state) {
+    return state.bag.pickup;
+  },
   bagDeliveryDate(state) {
     return state.delivery_date;
+  },
+  bagDeliverySettings(state, getters) {
+    const { bagCustomDeliveryDay } = getters;
+
+    if (bagCustomDeliveryDay) {
+      const {
+        day,
+        type,
+        instructions,
+        cutoff_type,
+        cutoff_days,
+        cutoff_hours,
+        applyFee,
+        fee,
+        feeType,
+        mileageBase,
+        mileagePerMile,
+        pickup_location_ids
+      } = getters.bagCustomDeliveryDay;
+      return {
+        instructions,
+        cutoff_type,
+        cutoff_days,
+        cutoff_hours,
+        applyDeliveryFee: applyFee,
+        deliveryFee: fee,
+        deliveryFeeType: feeType,
+        mileageBase,
+        mileagePerMile,
+        pickup_location_ids
+      };
+    } else {
+      return getters.viewedStoreSettings;
+    }
+  },
+  // DeliveryDay which matches delivery date selection
+  bagCustomDeliveryDay(state, getters) {
+    if (!getters.viewedStoreModules.customDeliveryDays) {
+      return null;
+    }
+
+    const weekIndex = moment(state.delivery_date).format("d");
+    const { pickup } = state.bag;
+
+    const dday = _.find(state.viewed_store.delivery_days, {
+      day: weekIndex,
+      type: pickup ? "pickup" : "delivery"
+    });
+
+    return dday || null;
   },
   bagHasMeal: state => meal => {
     if (!_.isNumber(meal)) {
