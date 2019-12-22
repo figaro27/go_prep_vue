@@ -101,7 +101,8 @@ class StoreSettingController extends StoreController
             'stripe',
             'store',
             'currency_symbol',
-            'date_format'
+            'date_format',
+            'next_orderable_pickup_dates'
         ]);
         $values['delivery_days'] = json_encode($values['delivery_days']);
         $values['delivery_distance_zipcodes'] = json_encode(
