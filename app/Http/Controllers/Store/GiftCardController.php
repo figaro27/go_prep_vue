@@ -131,6 +131,16 @@ class GiftCardController extends StoreController
      */
     public function destroy(GiftCard $giftCard)
     {
-        //
+        $giftCard = $this->store
+            ->giftCards()
+            ->find($giftCard)
+            ->first();
+        $giftCard->delete();
+
+        if ($this->store) {
+            $this->store->setTimezone();
+            $this->store->menu_update_time = date('Y-m-d H:i:s');
+            $this->store->save();
+        }
     }
 }
