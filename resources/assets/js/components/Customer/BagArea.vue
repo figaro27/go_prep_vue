@@ -824,6 +824,10 @@ export default {
     addLineItem(existing) {
       let orderLineItems = this.orderLineItems;
       if (existing) {
+        if (Object.keys(this.selectedLineItem).length === 0) {
+          this.$toastr.w("Please select an extra from the dropdown.");
+          return;
+        }
         if (orderLineItems.includes(this.selectedLineItem)) {
           let index = _.findIndex(orderLineItems, orderLineItem => {
             return orderLineItem.title === this.selectedLineItem.title;
