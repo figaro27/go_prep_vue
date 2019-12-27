@@ -855,7 +855,7 @@ export default {
         });
       }
 
-      this.$emit("updateParentData", {
+      this.$emit("updateData", {
         lineItemOrders: this.orderLineItems
       });
 
@@ -868,7 +868,8 @@ export default {
       if (orderLineItem.quantity === 0) {
         this.orderLineItems.pop(orderLineItem);
       }
-      this.$emit("updateParentData", {
+
+      this.$emit("updateData", {
         lineItemOrders: this.orderLineItems
       });
     },
