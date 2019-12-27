@@ -47,10 +47,22 @@ class Bag
 
     public function getMealPackageMappingId($item)
     {
+        $meal_package_id = $meal_package_size_id = null;
+
+        if (isset($item['meal_package']) && $item['meal_package']) {
+            if (isset($item['meal']) && isset($item['meal']['id'])) {
+                $meal_package_id = (int) $item['meal']['id'];
+            }
+
+            if (isset($item['size']) && isset($item['size']['id'])) {
+                $meal_package_size_id = (int) $item['size']['id'];
+            }
+        }
+
         return md5(
             json_encode([
-                'meal_package_id' => $item['meal_package_id'] ?? null, // contained in package
-                'meal_package_size_id' => $item['meal_package_size_id'] ?? null
+                'meal_package_id' => $meal_package_id, // contained in package
+                'meal_package_size_id' => $meal_package_size_id
             ])
         );
     }
