@@ -855,22 +855,22 @@ export default {
         });
       }
 
-      this.$emit("updateData", {
+      this.$emit("updateParentData", {
         lineItemOrders: this.orderLineItems
       });
 
       this.showLineItemModal = false;
       this.lineItem = { title: "", price: null, quantity: 1 };
       this.selectedLineItem = { title: "", price: null, quantity: 1 };
-
-      this.$emit("updateLineItems", this.orderLineItems);
     },
     updateLineItems(orderLineItem, increment) {
       orderLineItem.quantity += increment;
       if (orderLineItem.quantity === 0) {
         this.orderLineItems.pop(orderLineItem);
       }
-      this.$emit("updateLineItems", this.orderLineItems);
+      this.$emit("updateParentData", {
+        lineItemOrders: this.orderLineItems
+      });
     },
     removeLineItem(index) {
       this.orderLineItems.splice(index, 1);
