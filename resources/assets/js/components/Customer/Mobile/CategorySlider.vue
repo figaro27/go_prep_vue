@@ -1,5 +1,5 @@
 <template>
-  <div class="category-slider d-block">
+  <div class="category-slider d-block d-md-none">
     <div>
       <slick
         v-if="categories.length > 4"
@@ -118,10 +118,6 @@ export default {
       }
     },
     goToCategory(category) {
-      if (this.isLazy) {
-        return;
-      }
-
       if ($("#xs").is(":visible") || $("#sm").is(":visible")) {
         const top = $(`#${category}`).offset().top;
         $(document).scrollTop(top - 90);
