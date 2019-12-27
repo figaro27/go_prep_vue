@@ -823,6 +823,8 @@ export default {
       }
       if (size) {
         mealPackage.selectedSizeId = size.id;
+      } else {
+        mealPackage.selectedSizeId = undefined;
       }
       /* Refresh Meal Package */
       // if (!this.store.refreshed_package_ids.includes(mealPackage.id)) {
