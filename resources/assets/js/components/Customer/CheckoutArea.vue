@@ -1657,6 +1657,11 @@ use next_delivery_dates
             customSalesTaxAmount +=
               item.price * item.quantity * item.meal.salesTax;
           }
+          if (item.size !== null && item.size.salesTax !== null) {
+            removableItemAmount += item.size.price * item.quantity;
+            customSalesTaxAmount +=
+              item.size.price * item.quantity * item.size.salesTax;
+          }
         } else {
           // Meal packages size (top level) meals don't affect the package price, so not included below.
           if (item.addons !== null) {
