@@ -141,7 +141,10 @@ export default {
       selectedPickupLocation: null,
       pickup: 0,
       transferTime: null,
-      deliveryDay: null,
+      deliveryDay:
+        this.checkoutDataProp && this.checkoutDataProp.deliveryDay
+          ? this.checkoutDataProp.deliveryDay
+          : null,
       stripeKey: window.app.stripe_key,
       loading: false,
       checkingOut: false,

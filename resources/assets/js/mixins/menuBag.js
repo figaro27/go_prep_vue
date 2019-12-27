@@ -9,13 +9,15 @@ export default {
       bagDeliveryDate: "bagDeliveryDate"
     }),
     deliveryDateOptions() {
-      return this.storeSetting("next_delivery_dates", []).map(date => {
-        return {
-          value: date.date,
-          text: moment(date.date).format("dddd MMM Do"),
-          moment: moment(date.date)
-        };
-      });
+      return this.storeSetting("next_orderable_delivery_dates", []).map(
+        date => {
+          return {
+            value: date.date,
+            text: moment(date.date).format("dddd MMM Do"),
+            moment: moment(date.date)
+          };
+        }
+      );
     },
     /**
      * Whether at least one category has a delivery date restriction,

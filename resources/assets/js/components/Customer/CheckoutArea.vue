@@ -1880,7 +1880,8 @@ use next_delivery_dates
         transferTime: this.transferTime,
         deliveryDay: this.deliveryDay,
         cashOrder: this.cashOrder,
-        creditCardList: this.creditCardList
+        creditCardList: this.creditCardList,
+        lineItemOrders: this.orderLineItems
       });
     },
     getCards() {
