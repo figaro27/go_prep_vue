@@ -331,7 +331,10 @@
     >
       <b-form-group>
         <b-form-radio-group v-model="pickup" v-on:input="changePickup">
-          <b-form-radio :value="0">
+          <b-form-radio
+            :value="0"
+            v-if="this.storeSettings.next_orderable_delivery_dates.length > 0"
+          >
             <strong>Delivery</strong>
           </b-form-radio>
           <b-form-radio :value="1">
@@ -766,7 +769,8 @@
                 pickup === 1 ||
                 ($route.params.storeView || storeOwner)) &&
               (customerModel != null ||
-                (!$route.params.storeView && !storeOwner))
+                (!$route.params.storeView && !storeOwner)) &&
+              (!$route.params.storeView && bagDeliveryDate)
           "
           @click="checkout"
           :disabled="checkingOut"
