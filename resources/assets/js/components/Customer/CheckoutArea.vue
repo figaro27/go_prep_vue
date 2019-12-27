@@ -1659,9 +1659,7 @@ use next_delivery_dates
           }
           if (item.size !== null && item.size.salesTax !== null) {
             removableItemAmount += item.size.price * item.quantity;
-            console.log("removeable - " + removableItemAmount);
             customSalesTaxAmount += item.quantity * item.size.salesTax;
-            console.log("custom - " + customSalesTaxAmount);
           }
         } else {
           // Meal packages size (top level) meals don't affect the package price, so not included below.
@@ -1879,7 +1877,7 @@ use next_delivery_dates
       this.updateParentData();
     },
     changePickup(val) {
-      this.setBagPickup(val);
+      // this.setBagPickup(val);
       this.updateParentData();
     },
     setWeeklySubscriptionValue(v) {
