@@ -73,7 +73,7 @@
             Nutritional info is optional but required if you display nutrition
             facts to customers.
           </p>
-          <b-form @submit.prevent="addToRecipe">
+          <b-form @submit.prevent="addToRecipe(false)">
             <div class="row">
               <div class="col-md-6">
                 <b-form-input
