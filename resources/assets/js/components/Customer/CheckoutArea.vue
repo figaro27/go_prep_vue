@@ -337,7 +337,10 @@
           >
             <strong>Delivery</strong>
           </b-form-radio>
-          <b-form-radio :value="1">
+          <b-form-radio
+            :value="1"
+            v-if="this.storeSettings.next_orderable_pickup_dates.length > 0"
+          >
             <strong>Pickup</strong>
           </b-form-radio>
         </b-form-radio-group>
