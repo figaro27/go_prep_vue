@@ -42,7 +42,7 @@ import MenuBag from "../../../mixins/menuBag";
 export default {
   mixins: [MenuBag],
   watch: {
-    /*categories(val, oldVal) {
+    categories(val, oldVal) {
       const ref = this.$refs.categorySlider;
       if (!ref || val.length === oldVal.length) {
         return;
@@ -55,7 +55,7 @@ export default {
         await ref.create();
         ref.goTo(0, true);
       });
-    }*/
+    }
   },
   computed: {
     ...mapGetters({
