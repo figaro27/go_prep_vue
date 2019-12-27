@@ -1659,7 +1659,7 @@ use next_delivery_dates
           }
           if (item.size !== null && item.size.salesTax !== null) {
             removableItemAmount += item.size.price * item.quantity;
-            console.log("removeable - " + removeableItemAmount);
+            console.log("removeable - " + removableItemAmount);
             customSalesTaxAmount += item.quantity * item.size.salesTax;
             console.log("custom - " + customSalesTaxAmount);
           }
