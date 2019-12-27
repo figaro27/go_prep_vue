@@ -243,7 +243,9 @@ class StoreSetting extends Model
                     if (!$factorCutoff || !$cutoff->isPast()) {
                         $dates[] = $date;
                     } else {
-                        $dates[] = $date->addWeek(1);
+                        if (!$this->preventNextWeekOrders) {
+                            $dates[] = $date->addWeek(1);
+                        }
                     }
 
                     if ($customDeliveryDays) {
