@@ -2044,13 +2044,13 @@ use next_delivery_dates
         }
       }
 
-      if (this.grandTotal <= 0 && !this.cashOrder) {
-        this.$toastr.e(
-          "At least .50 cents is required to process an order.",
-          "Error"
-        );
-        return;
-      }
+      // if (this.grandTotal <= 0 && !this.cashOrder) {
+      //   this.$toastr.e(
+      //     "At least .50 cents is required to process an order.",
+      //     "Error"
+      //   );
+      //   return;
+      // }
 
       if (this.checkingOut) {
         return;
