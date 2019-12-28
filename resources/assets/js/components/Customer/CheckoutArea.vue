@@ -1659,7 +1659,8 @@ use next_delivery_dates
           }
           if (
             item.size !== null &&
-            (item.size.salesTax !== null || item.size.salesTax !== undefined)
+            item.size.salesTax !== null &&
+            item.size.salesTax !== undefined
           ) {
             console.log(item.size);
             console.log(item.size.salesTax);
