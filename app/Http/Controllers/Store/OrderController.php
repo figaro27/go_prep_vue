@@ -538,6 +538,7 @@ class OrderController extends StoreController
             'payment_gateway',
             'paid',
             'paid_at',
+            'pickup_location',
             'pickup_location_id',
             'purchasedGiftCardReduction',
             'purchased_gift_card_code',
