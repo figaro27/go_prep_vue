@@ -7,7 +7,7 @@
         :options="{
           arrows: false,
           centerMode: false,
-          slidesToShow: 0,
+          slidesToShow: 1,
           variableWidth: true,
           infinite: false
         }"
