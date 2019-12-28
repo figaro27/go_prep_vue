@@ -138,7 +138,7 @@ $brandColor = $order->store->settings->color;
           @if ($order->pickup === 1)
           <p>Pickup Time: {{ $order->transferTime }}</p>
           @endif
-          @if ($order->pickup_location_id)
+          @if ($order->pickup_location_id !== null)
           <p>Pickup Location: {{ $order->pickup_location_name }}</p>
           @endif
           @endif
