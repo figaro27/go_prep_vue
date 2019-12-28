@@ -1491,12 +1491,9 @@ const actions = {
 
     // await Promise.all([dispatch("refreshUpcomingOrdersWithoutItems")]);
 
-    await Promise.all([
-      dispatch("refreshLazy"),
-      dispatch("refreshLazyStore"),
-      dispatch("refreshInactiveMeals")
-    ]);
+    await Promise.all([dispatch("refreshLazy"), dispatch("refreshLazyStore")]);
 
+    dispatch("refreshInactiveMeals");
     dispatch("refreshStoreCustomers"),
       dispatch("refreshOrderIngredients"),
       dispatch("refreshIngredients"),
