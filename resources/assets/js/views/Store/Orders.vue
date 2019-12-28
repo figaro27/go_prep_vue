@@ -591,11 +591,12 @@
                 <p>{{ order.multiple_dates }}</p>
               </template>
             </span>
-            <p v-if="order.pickup_location_id" class="mt-1">
-              <b>Pickup Location:</b>
-              {{ order.pickup_location_name }}
-              <br />
-            </p>
+
+            <h4 v-if="order.pickup_location_id" class="mt-3">
+              Pickup Location:
+            </h4>
+            {{ order.pickup_location_name }}
+            <br />
           </div>
         </div>
         <div class="row">

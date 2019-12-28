@@ -138,6 +138,9 @@ $brandColor = $order->store->settings->color;
           @if ($order->pickup === 1)
           <p>Pickup Time: {{ $order->transferTime }}</p>
           @endif
+          @if ($order->pickup_location_id)
+          <p>Pickup Location: {{ $order->pickup_location_name }}</p>
+          @endif
           @endif
           @if ($order->isMultipleDelivery === 0)
           <p>Date: {{$order->delivery_date->format($order->store->settings->date_format)}}</p>
