@@ -7,7 +7,7 @@
         :options="{
           arrows: false,
           centerMode: false,
-          slidesToShow: 1,
+          slidesToShow: 0,
           variableWidth: true,
           infinite: false
         }"
@@ -16,6 +16,7 @@
           v-for="category in categories"
           :key="category.id"
           @click.prevent="goToCategory(slugify(category.category))"
+          class="m-2"
         >
           {{ category.category }}
         </div>
