@@ -5,6 +5,7 @@ namespace App;
 use App\Coupon;
 use App\PurchasedGiftCard;
 use App\LineItemOrder;
+use App\PickupLocation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -66,7 +67,8 @@ class Order extends Model
         'customer_name',
         'customer_address',
         'customer_zip',
-        'visible_items'
+        'visible_items',
+        'pickup_location_name'
         // 'balance'
     ];
 
@@ -299,6 +301,13 @@ class Order extends Model
         //     array_push($meals, Meal::where('id', $meal)->get());
         // }
         // return $meals;
+    }
+
+    public function getPickupLocationNameAttribute()
+    {
+        return PickupLocation::where('id', $this->pickup_location_id)
+            ->pluck('name')
+            ->first();
     }
 
     public function getLineItemsOrderAttribute()
