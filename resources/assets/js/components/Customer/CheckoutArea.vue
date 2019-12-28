@@ -2024,6 +2024,15 @@ use next_delivery_dates
       });
     },
     checkout() {
+      if (
+        this.pickup === 1 &&
+        this.store.modules.pickupLocations &&
+        this.pickupLocationOptions.length > 0 &&
+        !this.selectedPickupLocation
+      ) {
+        this.$toastr.w("Please select a pickup location.");
+        return;
+      }
       if (!this.isMultipleDelivery) {
         if (
           this.bagDeliveryDate === null &&
