@@ -9,7 +9,7 @@
           centerMode: false,
           slidesToShow: 1,
           variableWidth: true,
-          infinite: false
+          infinite: true
         }"
       >
         <div
