@@ -1662,8 +1662,6 @@ use next_delivery_dates
             item.size.salesTax !== null &&
             item.size.salesTax !== undefined
           ) {
-            console.log(item.size);
-            console.log(item.size.salesTax);
             removableItemAmount += item.size.price * item.quantity;
             customSalesTaxAmount += item.quantity * item.size.salesTax;
           }
