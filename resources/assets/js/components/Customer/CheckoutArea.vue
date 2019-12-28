@@ -781,7 +781,7 @@
                 ($route.params.storeView || storeOwner)) &&
               (customerModel != null ||
                 (!$route.params.storeView && !storeOwner)) &&
-              ((!$route.params.storeView || storeOwner) && bagDeliveryDate)
+              ((!$route.params.storeView || !storeOwner) && bagDeliveryDate)
           "
           @click="checkout"
           :disabled="checkingOut"
