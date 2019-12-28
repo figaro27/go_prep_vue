@@ -357,8 +357,7 @@
     <li
       :class="pickupLocationClass"
       v-if="
-        $parent.orderId === undefined &&
-          storeModules.pickupLocations &&
+        storeModules.pickupLocations &&
           pickup &&
           $route.params.subscriptionId === undefined
       "
