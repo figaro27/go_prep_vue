@@ -8,7 +8,7 @@
           arrows: false,
           centerMode: false,
           slidesToShow: 1,
-          variableWidth: true,
+          variableWidth: false,
           infinite: true
         }"
       >
