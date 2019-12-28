@@ -5,10 +5,10 @@
         v-if="categories.length > 4"
         ref="categorySlider"
         :options="{
-          arrows: true,
-          centerMode: true,
+          arrows: false,
+          centerMode: false,
           slidesToShow: 1,
-          variableWidth: false,
+          variableWidth: true,
           infinite: false
         }"
       >
