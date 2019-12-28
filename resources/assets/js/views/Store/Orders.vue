@@ -591,7 +591,7 @@
                 <p>{{ order.multiple_dates }}</p>
               </template>
             </span>
-            <p v-if="order.pickup_location_id != null" class="mt-1">
+            <p v-if="order.pickup_location_id !== null" class="mt-1">
               <b>Pickup Location:</b>
               {{ order.pickup_location.name }},
               {{ order.pickup_location.address }},
