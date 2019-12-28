@@ -8,15 +8,14 @@
           arrows: false,
           centerMode: false,
           slidesToShow: 1,
-          variableWidth: false,
-          infinite: true
+          variableWidth: true,
+          infinite: false
         }"
       >
         <div
           v-for="category in categories"
           :key="category.id"
           @click.prevent="goToCategory(slugify(category.category))"
-          class="m-2"
         >
           {{ category.category }}
         </div>
