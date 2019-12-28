@@ -234,26 +234,28 @@ class CheckoutController extends UserController
 
         if (!$weeklyPlan) {
             if ($gateway === Constants::GATEWAY_STRIPE) {
-                $storeSource = \Stripe\Source::create(
-                    [
-                        "customer" => $this->user->stripe_id,
-                        "original_source" => $card->stripe_id,
-                        "usage" => "single_use"
-                    ],
-                    ["stripe_account" => $storeSettings->stripe_id]
-                );
+                if ($total > 0.5) {
+                    $storeSource = \Stripe\Source::create(
+                        [
+                            "customer" => $this->user->stripe_id,
+                            "original_source" => $card->stripe_id,
+                            "usage" => "single_use"
+                        ],
+                        ["stripe_account" => $storeSettings->stripe_id]
+                    );
 
-                $charge = \Stripe\Charge::create(
-                    [
-                        "amount" => round($total * 100),
-                        "currency" => $storeSettings->currency,
-                        "source" => $storeSource,
-                        "application_fee" => round(
-                            $afterDiscountBeforeFees * $application_fee
-                        )
-                    ],
-                    ["stripe_account" => $storeSettings->stripe_id]
-                );
+                    $charge = \Stripe\Charge::create(
+                        [
+                            "amount" => round($total * 100),
+                            "currency" => $storeSettings->currency,
+                            "source" => $storeSource,
+                            "application_fee" => round(
+                                $afterDiscountBeforeFees * $application_fee
+                            )
+                        ],
+                        ["stripe_account" => $storeSettings->stripe_id]
+                    );
+                }
             } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
                 $billing = Billing::init($gateway, $store);
 
@@ -296,7 +298,7 @@ class CheckoutController extends UserController
             $order->pickup = $request->get('pickup', 0);
             $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
             $order->paid = true;
-            if (!$cashOrder) {
+            if (!$cashOrder && $total > 0.5) {
                 $order->stripe_id = $charge->id;
             } else {
                 $order->stripe_id = null;
@@ -321,22 +323,23 @@ class CheckoutController extends UserController
             }
 
             $order->save();
-
-            $order_transaction = new OrderTransaction();
-            $order_transaction->order_id = $order->id;
-            $order_transaction->store_id = $store->id;
-            $order_transaction->user_id = $user->id;
-            $order_transaction->customer_id = $customer->id;
-            $order_transaction->type = 'order';
-            if (!$cashOrder) {
-                $order_transaction->stripe_id = $charge->id;
-                $order_transaction->card_id = $cardId;
-            } else {
-                $order_transaction->stripe_id = null;
-                $order_transaction->card_id = null;
+            if ($total > 0.5) {
+                $order_transaction = new OrderTransaction();
+                $order_transaction->order_id = $order->id;
+                $order_transaction->store_id = $store->id;
+                $order_transaction->user_id = $user->id;
+                $order_transaction->customer_id = $customer->id;
+                $order_transaction->type = 'order';
+                if (!$cashOrder) {
+                    $order_transaction->stripe_id = $charge->id;
+                    $order_transaction->card_id = $cardId;
+                } else {
+                    $order_transaction->stripe_id = null;
+                    $order_transaction->card_id = null;
+                }
+                $order_transaction->amount = $total * $deposit;
+                $order_transaction->save();
             }
-            $order_transaction->amount = $total * $deposit;
-            $order_transaction->save();
 
             $items = $bag->getItems();
 

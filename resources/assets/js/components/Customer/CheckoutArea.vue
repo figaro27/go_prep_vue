@@ -333,13 +333,21 @@
         <b-form-radio-group v-model="pickup" v-on:input="changePickup">
           <b-form-radio
             :value="0"
-            v-if="this.storeSettings.next_orderable_delivery_dates.length > 0"
+            v-if="
+              storeSettings.next_orderable_delivery_dates.length > 0 ||
+                $route.params.storeView ||
+                storeOwner
+            "
           >
             <strong>Delivery</strong>
           </b-form-radio>
           <b-form-radio
             :value="1"
-            v-if="this.storeSettings.next_orderable_pickup_dates.length > 0"
+            v-if="
+              storeSettings.next_orderable_pickup_dates.length > 0 ||
+                $route.params.storeView ||
+                storeOwner
+            "
           >
             <strong>Pickup</strong>
           </b-form-radio>
@@ -2024,24 +2032,36 @@ use next_delivery_dates
       });
     },
     checkout() {
+      if (
+        this.pickup === 1 &&
+        this.store.modules.pickupLocations &&
+        this.pickupLocationOptions.length > 0 &&
+        !this.selectedPickupLocation
+      ) {
+        this.$toastr.w("Please select a pickup location.");
+        return;
+      }
       if (!this.isMultipleDelivery) {
         if (
-          this.bagDeliveryDate === null &&
-          !this.store.modules.hideTransferOptions &&
-          (this.deliveryDateOptions.length > 1 || this.$route.params.storeView)
+          !this.bagDeliveryDate ||
+          (!this.store.modules.category_restrictions &&
+            !this.deliveryDay &&
+            !this.store.modules.hideTransferOptions &&
+            (this.deliveryDateOptions.length > 1 ||
+              this.$route.params.storeView))
         ) {
           this.$toastr.w("Please select a delivery/pickup date.");
           return;
         }
       }
 
-      if (this.grandTotal <= 0 && !this.cashOrder) {
-        this.$toastr.e(
-          "At least .50 cents is required to process an order.",
-          "Error"
-        );
-        return;
-      }
+      // if (this.grandTotal <= 0 && !this.cashOrder) {
+      //   this.$toastr.e(
+      //     "At least .50 cents is required to process an order.",
+      //     "Error"
+      //   );
+      //   return;
+      // }
 
       if (this.checkingOut) {
         return;

@@ -124,7 +124,7 @@
                       </div>
 
                       <div class="description d-md-none">
-                        {{ meal.description }}
+                        {{ truncate(meal.description, 150, "...") }}
                       </div>
 
                       <div class="actions">
@@ -623,6 +623,11 @@ export default {
     }
   },
   methods: {
+    truncate(text, length, suffix) {
+      if (text) {
+        return text.substring(0, length) + suffix;
+      }
+    },
     existInBagItem(meal, meal_size, item) {
       const mealPackage = !!item.meal_package;
 
