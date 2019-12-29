@@ -40,6 +40,11 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../../mixins/menuBag";
 
 export default {
+  data() {
+    return {
+      test: false
+    };
+  },
   mixins: [MenuBag],
   watch: {
     /*categories(val, oldVal) {
@@ -64,11 +69,6 @@ export default {
       storeSettings: "viewedStoreSetting",
       isLazy: "isLazy"
     }),
-    test() {
-      setTimeout(function() {
-        return true;
-      }, 8000);
-    },
     categories() {
       let sorting = {};
       this._categories.forEach(cat => {
@@ -100,7 +100,7 @@ export default {
       ) {
         categories.push("Packages");
       }
-
+      this.test = true;
       return categories;
     },
     mealPackages() {
