@@ -75,6 +75,22 @@ class Hourly extends Command
                         return $order->subscription;
                     });
             }
+
+            $currentDay = date('D');
+            $currentHour = date('H');
+            $settings = $store->settings;
+            if (
+                $settings->disableNextWeekDay === $currentDay &&
+                $settings->disableNextWeekHour === $currentHour
+            ) {
+                $store->disableNextWeekOrders();
+            }
+            if (
+                $settings->enableNextWeekDay === $currentDay &&
+                $settings->enableNextWeekHour === $currentHour
+            ) {
+                $store->enableNextWeekOrders();
+            }
         }
         $this->info($count . ' `Ready to Print` notifications sent');
         $count = 0;
