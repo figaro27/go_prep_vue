@@ -2,6 +2,7 @@
   <div class="category-slider d-block d-md-none">
     <div class="text-center">
       <slick
+        v-if="categories.length > 4"
         ref="categorySlider"
         :options="{
           arrows: false,
@@ -20,6 +21,16 @@
           {{ category.category }}
         </div>
       </slick>
+
+      <div v-else class="text-center">
+        <span
+          v-for="category in categories"
+          :key="category.category"
+          @click.prevent="goToCategory(slugify(category.category))"
+          class="d-inline-block m-2"
+          >{{ category.category }}</span
+        >
+      </div>
     </div>
   </div>
 </template>
