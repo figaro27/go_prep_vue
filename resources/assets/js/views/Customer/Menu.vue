@@ -903,6 +903,9 @@ export default {
     });
   },
   mounted() {
+    if (this.$route.query.filter) {
+      this.search = this.$route.query.filter;
+    }
     if (this.isMultipleDelivery) {
       store.dispatch("refreshDeliveryDay");
       this.showDeliveryDateModal();
