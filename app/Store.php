@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use App\StoreSetting;
 
 class Store extends Model
 {
@@ -1155,5 +1156,19 @@ class Store extends Model
     public function isModuleEnabled($module)
     {
         return $this->modules[$module];
+    }
+
+    public function disableNextWeekOrders()
+    {
+        $settings = StoreSetting::where('store_id', $this->id)->first();
+        $settings->preventNextWeekOrders = 0;
+        $settings->update();
+    }
+
+    public function enableNextWeekOrders()
+    {
+        $settings = StoreSetting::where('store_id', $this->id)->first();
+        $settings->preventNextWeekOrders = 1;
+        $settings->update();
     }
 }
