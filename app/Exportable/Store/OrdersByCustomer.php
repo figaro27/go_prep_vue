@@ -85,6 +85,13 @@ class OrdersByCustomer
                 });
         });
 
+        if (isset($params['pickupLocationId'])) {
+            $orders = $orders->where(
+                'pickup_location_id',
+                $params['pickupLocationId']
+            );
+        }
+
         // Disabled Old Workflow
         /*if (isset($dateRange['from'])) {
             $from = Carbon::parse($dateRange['from']);

@@ -141,6 +141,12 @@ class PackingSlips
                     $to->format('Y-m-d')
                 );
             }*/
+            if (isset($params['pickupLocationId'])) {
+                $orders = $orders->where(
+                    'pickup_location_id',
+                    $params['pickupLocationId']
+                );
+            }
 
             $total = $orders->count();
             $orders = $orders
