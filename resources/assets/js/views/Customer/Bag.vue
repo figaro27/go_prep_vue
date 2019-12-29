@@ -59,7 +59,6 @@
             ref="checkoutArea"
             :orderNotes="orderNotes"
             :publicOrderNotes="publicOrderNotes"
-            :selectedPickupLocation="selectedPickupLocation"
           ></checkout-area>
 
           <store-closed
@@ -139,10 +138,7 @@ export default {
         this.checkoutDataProp && this.checkoutDataProp.customer
           ? this.checkoutDataProp.customer
           : null,
-      selectedPickupLocation:
-        this.checkoutDataProp && this.checkoutDataProp.pickupLocationId
-          ? this.checkoutDataProp.pickupLocationId
-          : null,
+      selectedPickupLocation: null,
       pickup: 0,
       transferTime: null,
       deliveryDay:
