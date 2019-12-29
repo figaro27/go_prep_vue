@@ -65,8 +65,9 @@ export default {
       isLazy: "isLazy"
     }),
     test() {
-      wait(10000);
-      return true;
+      setTimeout(function() {
+        return true;
+      }, 8000);
     },
     categories() {
       let sorting = {};
