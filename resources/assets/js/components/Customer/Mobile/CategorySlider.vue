@@ -1,6 +1,6 @@
 <template>
   <div class="category-slider d-block d-md-none">
-    <div class="text-center" v-if="test">
+    <div class="text-center" v-if="showCategorySlider">
       <slick
         v-if="categories.length > 4"
         ref="categorySlider"
@@ -42,8 +42,13 @@ import MenuBag from "../../../mixins/menuBag";
 export default {
   data() {
     return {
-      test: false
+      showCategorySlider: false
     };
+  },
+  mounted() {
+    setTimeout(() => {
+      this.showCategorySlider = true;
+    }, 10000);
   },
   mixins: [MenuBag],
   watch: {
@@ -100,7 +105,6 @@ export default {
       ) {
         categories.push("Packages");
       }
-      this.test = true;
       return categories;
     },
     mealPackages() {
