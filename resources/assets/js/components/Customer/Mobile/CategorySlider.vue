@@ -2,7 +2,7 @@
   <div class="category-slider d-block d-md-none">
     <div class="text-center">
       <slick
-        v-if="categories.length > 4"
+        v-if="categories.length > 4 && test"
         ref="categorySlider"
         :options="{
           arrows: false,
@@ -57,9 +57,6 @@ export default {
       });
     }*/
   },
-  updated() {
-    console.log(this.categories);
-  },
   computed: {
     ...mapGetters({
       _categories: "viewedStoreCategories",
@@ -67,6 +64,10 @@ export default {
       storeSettings: "viewedStoreSetting",
       isLazy: "isLazy"
     }),
+    test() {
+      wait(10000);
+      return true;
+    },
     categories() {
       let sorting = {};
       this._categories.forEach(cat => {
