@@ -11,6 +11,7 @@
       :order="order"
       :inSub="inSub"
       :lineItemOrders="lineItemOrders"
+      :pickupLocationId="pickupLocationId"
     ></customer-menu>
   </div>
 </template>
@@ -60,6 +61,9 @@ export default {
     },
     pickup() {
       return this.order.pickup;
+    },
+    pickupLocationId() {
+      return this.order.pickup_location_id;
     }
   },
   mounted() {
