@@ -2043,17 +2043,17 @@ use next_delivery_dates
         return;
       }
       if (!this.isMultipleDelivery) {
-        if (
-          !this.bagDeliveryDate ||
-          (!this.store.modules.category_restrictions &&
-            !this.deliveryDay &&
-            !this.store.modules.hideTransferOptions &&
-            (this.deliveryDateOptions.length > 1 ||
-              this.$route.params.storeView))
-        ) {
-          this.$toastr.w("Please select a delivery/pickup date.");
-          return;
-        }
+        // if (
+        //   !this.bagDeliveryDate ||
+        //   (!this.store.modules.category_restrictions &&
+        //     !this.deliveryDay &&
+        //     !this.store.modules.hideTransferOptions &&
+        //     (this.deliveryDateOptions.length > 1 ||
+        //       this.$route.params.storeView))
+        // ) {
+        //   this.$toastr.w("Please select a delivery/pickup date.");
+        //   return;
+        // }
       }
 
       // if (this.grandTotal <= 0 && !this.cashOrder) {
