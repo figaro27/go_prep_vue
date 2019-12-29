@@ -960,7 +960,11 @@ export default {
       weeklySubscriptionValue: null,
       subscriptionInterval: "week",
       customerModel: null,
-      emailCustomer: true
+      emailCustomer: true,
+      selectedPickupLocation:
+        this.order && this.order.pickup_location_id
+          ? this.order.pickup_location_id
+          : null
     };
   },
   props: {
@@ -986,8 +990,7 @@ export default {
       type: String,
       default: "stripe"
     },
-    adjustMealPlan: null,
-    selectedPickupLocation: null
+    adjustMealPlan: null
   },
   watch: {
     customer: function(val) {

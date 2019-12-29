@@ -71,8 +71,7 @@
             forceValue: forceValue,
             inSub: inSub,
             weeklySubscriptionValue: weeklySubscriptionValue,
-            lineItemOrders: lineItemOrders,
-            pickupLocationId: pickupLocationId
+            lineItemOrders: lineItemOrders
           }
         }"
         class="menu-bag-btn bottom-margin"
@@ -112,8 +111,7 @@ export default {
     forceValue: false,
     inSub: null,
     weeklySubscriptionValue: null,
-    lineItemOrders: null,
-    pickupLocationId: null
+    lineItemOrders: null
   },
   mixins: [MenuBag],
   methods: {
