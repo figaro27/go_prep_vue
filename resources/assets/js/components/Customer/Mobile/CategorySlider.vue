@@ -1,8 +1,8 @@
 <template>
   <div class="category-slider d-block d-md-none">
     <div class="text-center">
-      <slick
-        v-if="categories.length > 0"
+      <!--  <slick
+        v-if="categories.length > 4"
         ref="categorySlider"
         :options="{
           arrows: false,
@@ -20,9 +20,9 @@
         >
           {{ category.category }}
         </div>
-      </slick>
+      </slick> -->
 
-      <div v-else class="text-center">
+      <div>
         <span
           v-for="category in categories"
           :key="category.category"
