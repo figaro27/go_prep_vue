@@ -48,7 +48,7 @@ export default {
   mounted() {
     setTimeout(() => {
       this.showCategorySlider = true;
-    }, 10000);
+    }, 1000);
   },
   mixins: [MenuBag],
   watch: {
