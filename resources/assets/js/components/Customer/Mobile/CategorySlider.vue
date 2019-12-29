@@ -57,6 +57,9 @@ export default {
       });
     }*/
   },
+  mounted: function() {
+    console.log(this.categories);
+  },
   computed: {
     ...mapGetters({
       _categories: "viewedStoreCategories",
