@@ -1161,14 +1161,14 @@ class Store extends Model
     public function disableNextWeekOrders()
     {
         $settings = StoreSetting::where('store_id', $this->id)->first();
-        $settings->preventNextWeekOrders = 0;
+        $settings->preventNextWeekOrders = 1;
         $settings->update();
     }
 
     public function enableNextWeekOrders()
     {
         $settings = StoreSetting::where('store_id', $this->id)->first();
-        $settings->preventNextWeekOrders = 1;
+        $settings->preventNextWeekOrders = 0;
         $settings->update();
     }
 }
