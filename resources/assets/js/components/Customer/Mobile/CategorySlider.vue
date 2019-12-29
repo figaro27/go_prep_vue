@@ -1,8 +1,8 @@
 <template>
   <div class="category-slider d-block d-md-none">
-    <div class="text-center">
+    <div class="text-center" v-if="test">
       <slick
-        v-if="categories.length > 4 && test"
+        v-if="categories.length > 4"
         ref="categorySlider"
         :options="{
           arrows: false,
