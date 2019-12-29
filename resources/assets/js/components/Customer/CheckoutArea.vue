@@ -961,7 +961,10 @@ export default {
       subscriptionInterval: "week",
       customerModel: null,
       emailCustomer: true,
-      selectedPickupLocation: null
+      selectedPickupLocation:
+        this.order && this.order.pickup_location_id
+          ? this.order.pickup_location_id
+          : null
     };
   },
   props: {
