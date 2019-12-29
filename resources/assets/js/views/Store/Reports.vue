@@ -116,6 +116,15 @@
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Orders Summary</h4>
             <div class="report-date-picker">
+              <p v-if="pickupLocations.length > 0">Pickup Location</p>
+              <b-select
+                v-if="pickupLocations.length > 0"
+                v-model="selectedPickupLocation"
+                :options="pickupLocationOptions"
+                class="delivery-select ml-2"
+              ></b-select>
+            </div>
+            <div class="report-date-picker mt-2">
               <delivery-date-picker
                 v-model="delivery_dates.orders_by_customer"
                 ref="ordersByCustomerDates"
@@ -165,6 +174,15 @@
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Packing Slips</h4>
             <div class="report-date-picker">
+              <p v-if="pickupLocations.length > 0">Pickup Location</p>
+              <b-select
+                v-if="pickupLocations.length > 0"
+                v-model="selectedPickupLocation"
+                :options="pickupLocationOptions"
+                class="delivery-select ml-2"
+              ></b-select>
+            </div>
+            <div class="report-date-picker mt-2">
               <delivery-date-picker
                 v-model="delivery_dates.packing_slips"
                 :rtl="true"
@@ -305,15 +323,26 @@ export default {
         packing_slips: [],
         delivery_routes: [],
         payments: []
-      }
+      },
+      selectedPickupLocation: null
     };
   },
   computed: {
     ...mapGetters({
       store: "viewedStore",
       orders: "storeOrders",
-      isLoading: "isLoading"
+      isLoading: "isLoading",
+      pickupLocations: "viewedStorePickupLocations"
     }),
+    pickupLocationOptions() {
+      return this.pickupLocations.map(loc => {
+        return {
+          value: loc.id,
+          text: loc.name,
+          instructions: loc.instructions
+        };
+      });
+    },
     selected() {
       return this.deliveryDates;
     },
@@ -379,6 +408,8 @@ export default {
       }
 
       params.dailySummary = 0;
+
+      params.pickupLocationId = this.selectedPickupLocation;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
