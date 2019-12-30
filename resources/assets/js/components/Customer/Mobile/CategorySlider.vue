@@ -46,9 +46,9 @@ export default {
     };
   },
   mounted() {
-    this.$nextTick(function() {
+    setTimeout(() => {
       this.showCategorySlider = true;
-    });
+    }, 6000);
   },
   mixins: [MenuBag],
   watch: {
