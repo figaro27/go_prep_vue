@@ -77,13 +77,14 @@ class Hourly extends Command
             }
 
             // Test
-            if ($store->id === 13) {
+            $settings = $store->settings;
+            if ($store->id === 13 && $settings->disableNextWeekDay === 'Sun') {
                 $store->disableNextWeekOrders();
             }
 
             $currentDay = date('D');
             $currentHour = date('H');
-            $settings = $store->settings;
+
             if (
                 $settings->disableNextWeekDay === $currentDay &&
                 $settings->disableNextWeekHour === $currentHour
