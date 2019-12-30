@@ -409,7 +409,7 @@
         v-if="
           deliveryDateOptions.length > 1 &&
             $route.params.subscriptionId === undefined &&
-            (!$route.params.storeView && !storeOwner) &&
+            !$route.params.storeView && !storeOwner &&
             (!bagDeliveryDate || !store.modules.category_restrictions) &&
             !isMultipleDelivery &&
             (pickup === 0 ||
@@ -478,7 +478,7 @@
         v-if="
           deliveryDateOptions.length === 1 &&
             $route.params.subscriptionId === undefined &&
-            (!$route.params.storeView && !storeOwner) &&
+            !$route.params.storeView && !storeOwner &&
             !isMultipleDelivery
         "
       >
@@ -563,11 +563,11 @@
           !willDeliver &&
             !manualOrder &&
             pickup != 1 &&
-            (!$route.params.storeView && !storeOwner)
+            !$route.params.storeView && !storeOwner
         "
       >
         <b-alert
-          v-if="!loading && (!$route.params.storeView && !storeOwner)"
+          v-if="!loading && !$route.params.storeView && !storeOwner"
           variant="warning center-text"
           show
           >You are outside of the delivery area.</b-alert
@@ -617,7 +617,7 @@
               storeModules.cashOrders &&
                 !weeklySubscriptionValue &&
                 (storeModuleSettings.cashAllowedForCustomer ||
-                  ($route.params.storeView || storeOwner))
+                  $route.params.storeView || storeOwner)
             "
           >
             <b-form-checkbox
@@ -770,16 +770,15 @@
           v-if="
             // Condense all this logic / put in computed prop
             (card != null || cashOrder) &&
-              (minimumMet || ($route.params.storeView || storeOwner)) &&
+              (minimumMet || $route.params.storeView || storeOwner) &&
               $route.params.adjustOrder != true &&
               $route.params.subscriptionId === undefined &&
               (store.settings.open === true ||
-                ($route.params.storeView || storeOwner)) &&
+                $route.params.storeView || storeOwner) &&
               (willDeliver ||
                 pickup === 1 ||
-                ($route.params.storeView || storeOwner)) &&
-              (customerModel != null ||
-                (!$route.params.storeView || !storeOwner))
+                $route.params.storeView || storeOwner) &&
+              (customerModel != null || !$route.params.storeView || !storeOwner)
           "
           @click="checkout"
           :disabled="checkingOut"
@@ -2043,17 +2042,10 @@ use next_delivery_dates
         return;
       }
       if (!this.isMultipleDelivery) {
-        // if (
-        //   !this.bagDeliveryDate ||
-        //   (!this.store.modules.category_restrictions &&
-        //     !this.deliveryDay &&
-        //     !this.store.modules.hideTransferOptions &&
-        //     (this.deliveryDateOptions.length > 1 ||
-        //       this.$route.params.storeView))
-        // ) {
-        //   this.$toastr.w("Please select a delivery/pickup date.");
-        //   return;
-        // }
+        if (!this.bagDeliveryDate) {
+          this.$toastr.w("Please select a delivery/pickup date.");
+          return;
+        }
       }
 
       // if (this.grandTotal <= 0 && !this.cashOrder) {
