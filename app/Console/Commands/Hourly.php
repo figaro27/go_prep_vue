@@ -76,18 +76,9 @@ class Hourly extends Command
                     });
             }
 
-            // Test
-
             $currentDay = date('D');
             $currentHour = date('H');
-
             $settings = $store->settings;
-            if (
-                $store->id === 13 &&
-                $settings->disableNextWeekDay === $currentDay
-            ) {
-                $store->disableNextWeekOrders();
-            }
 
             if (
                 $settings->disableNextWeekDay === $currentDay &&
