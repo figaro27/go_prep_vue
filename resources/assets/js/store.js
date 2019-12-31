@@ -2629,10 +2629,9 @@ const getters = {
       if (defaultMeal != null) {
         meal = defaultMeal;
       } else {
-        meal = _.find(state.viewed_store.items, ["id", parseInt(id)]) || null;
+        meal = _.find(state.viewed_store.meals, ["id", parseInt(id)]) || null;
       }
-      console.log(id);
-      console.log(state.viewed_store.items);
+
       if (!meal) {
         return null;
       }
