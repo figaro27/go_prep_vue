@@ -2624,6 +2624,7 @@ const getters = {
     }
   },
   viewedStoreMeal: state => (id, defaultMeal = null) => {
+    console.log(state.viewed_store.meals);
     try {
       let meal = null;
       if (defaultMeal != null) {
