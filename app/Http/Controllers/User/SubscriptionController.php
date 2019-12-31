@@ -23,11 +23,43 @@ class SubscriptionController extends UserController
      */
     public function index()
     {
-        return $this->user
+        $subscriptions = $this->user
             ->subscriptions()
             ->where('status', 'active')
             ->with(['orders', 'pickup_location'])
             ->get();
+
+        $subscriptions->makeHidden([
+            'latest_order',
+            'latest_paid_order',
+            'latest_unpaid_order',
+            'next_order',
+            'items',
+            'meal_ids',
+            'meal_quantities',
+            'store',
+            'orders'
+        ]);
+
+        return $subscriptions;
+    }
+
+    public function show($id)
+    {
+        $subscriptions = $this->user
+            ->subscriptions()
+            ->with(['user', 'user.userDetail', 'pickup_location'])
+            ->where('id', $id)
+            ->first();
+
+        $subscriptions->makeHidden([
+            'meal_ids',
+            'meal_quantities',
+            'store',
+            'next_delivery_date'
+        ]);
+
+        return $subscriptions;
     }
 
     /**

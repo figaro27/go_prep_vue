@@ -16,7 +16,6 @@ class Order extends Model
     protected $hidden = [
         'store',
         'store_id',
-        'store_name',
         'cutoff_date',
         'cutoff_passed',
         'adjustedDifference',

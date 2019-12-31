@@ -1199,6 +1199,8 @@ body.forgotresettoken {
     //max-width: 61vw !important;
     width: 100% !important;
     margin: 0px auto !important;
+    max-width: calc(100vw - 600px) !important;
+    overflow: hidden !important;
   }
 
   .menu-page {

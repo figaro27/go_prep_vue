@@ -34,317 +34,246 @@ f<template>
         </b-alert>
 
         <b-alert
-          :show="
-            null !== activeSubscriptions && 0 === activeSubscriptions.length
-          "
+          :show="activeSubscriptions && activeSubscriptions.length === 0"
           variant="warning"
         >
           <p class="center-text mt-3">You have no active subscriptions.</p>
         </b-alert>
 
         <Spinner v-if="isLoading" />
-        <div class="order-list" v-if="null !== activeSubscriptions">
+        <v-client-table
+          :columns="columns"
+          :data="tableData"
+          :options="options"
+          v-show="!isLoading"
+        >
+          <div slot="interval" class="text-nowrap" slot-scope="props">
+            {{ props.row.interval_title }}
+          </div>
+          <div slot="delivery_day" class="text-nowrap" slot-scope="props">
+            {{ moment(props.row.next_delivery_date).format("dddd, MMM Do") }}
+          </div>
           <div
-            v-for="subscription in activeSubscriptions"
-            :key="subscription.id"
-            class="mb-4"
+            slot="charge_day"
+            class="text-nowrap"
+            slot-scope="props"
+            v-if="storeSettings.timezone"
           >
-            <div v-b-toggle="'collapse' + subscription.id" class="mb-4">
-              <div class="order-list-item">
-                <div class="row">
-                  <div class="col-md-4">
-                    <h4>Subscription ID</h4>
-                    <p>{{ subscription.stripe_id }}</p>
-                    <h4>Interval</h4>
-                    <p>{{ subscription.interval_title }}</p>
-                    <span v-if="!storeModules.hideTransferOptions">
-                      <h4>
-                        {{
-                          subscription.pickup ? "Pickup Day" : "Delivery Day"
-                        }}
-                      </h4>
-                      <p
-                        v-if="
-                          subscription.latest_order &&
-                            !subscription.latest_order.fulfilled &&
-                            subscription.next_order
-                        "
-                      >
-                        {{
-                          moment(subscription.next_order.delivery_date).format(
-                            "dddd, MMM Do"
-                          )
-                        }}
-                        <span v-if="subscription.transferTime">
-                          {{ subscription.transferTime }}</span
-                        >
-                      </p>
-                      <p v-else-if="subscription.latest_order">
-                        Delivered On:
-                        {{
-                          moment(
-                            subscription.latest_paid_order.delivery_date
-                          ).format("dddd, MMM Do")
-                        }}
-                      </p>
-                    </span>
-                    <p v-if="subscription.pickup_location_id != null">
-                      <b>Pickup Location:</b>
-                      {{ subscription.pickup_location.name }},
-                      {{ subscription.pickup_location.address }},
-                      {{ subscription.pickup_location.city }},
-                      {{ subscription.pickup_location.state }}
-                      {{ subscription.pickup_location.zip }}<br />
-                      <span v-if="subscription.pickup_location.instructions">
-                        <b>Instructions:</b>
-                        {{ subscription.pickup_location.instructions }}
-                      </span>
-                    </p>
-                  </div>
-                  <div class="col-md-4">
-                    <h4>Placed On</h4>
-                    <p>
-                      {{
-                        moment
-                          .utc(subscription.created_at)
-                          .local()
-                          .format("dddd, MMM Do, Y")
-                      }}
-                    </p>
-                    <h4>Company</h4>
-                    <p>{{ subscription.store_name }}</p>
-                  </div>
-                  <div class="col-md-4" v-if="subscription.status === 'active'">
-                    <h4>Amount</h4>
-                    <p>
-                      Subtotal:
-                      {{
-                        format.money(
-                          subscription.preFeePreDiscount,
-                          subscription.currency
-                        )
-                      }}
-                    </p>
-                    <p
-                      class="text-success"
-                      v-if="subscription.couponReduction > 0"
-                    >
-                      Coupon {{ subscription.couponCode }}: ({{
-                        format.money(
-                          subscription.couponReduction,
-                          subscription.currency
-                        )
-                      }})
-                    </p>
-                    <p
-                      v-if="subscription.mealPlanDiscount > 0"
-                      class="text-success"
-                    >
-                      Subscription Discount: ({{
-                        format.money(
-                          subscription.mealPlanDiscount,
-                          subscription.currency
-                        )
-                      }})
-                    </p>
-                    <p v-if="subscription.salesTax > 0">
-                      Sales Tax:
-                      {{
-                        format.money(
-                          subscription.salesTax,
-                          subscription.currency
-                        )
-                      }}
-                    </p>
-                    <p v-if="subscription.deliveryFee > 0">
-                      Delivery Fee:
-                      {{
-                        format.money(
-                          subscription.deliveryFee,
-                          subscription.currency
-                        )
-                      }}
-                    </p>
-                    <p v-if="subscription.processingFee > 0">
-                      Processing Fee:
-                      {{ format.money(subscription.processingFee) }}
-                    </p>
+            {{ moment(props.row.next_renewal_at).format("dddd") }}
+          </div>
+          <div slot="actions" class="text-nowrap" slot-scope="props">
+            <button
+              class="btn view btn-primary btn-sm"
+              @click="viewSubscription(props.row.id)"
+            >
+              View
+            </button>
+            <button
+              class="btn btn-danger btn-sm"
+              @click="cancelSubscription(props.row.id)"
+            >
+              Cancel
+            </button>
+            <!--Removing pause functionality for the time being -->
 
-                    <p class="strong">
-                      Total:
-                      {{
-                        format.money(subscription.amount, subscription.currency)
-                      }}
-                      per {{ subscription.interval }}.
-                    </p>
-                    <div v-if="subscription.latest_paid_order">
-                      <p>
-                        <span v-if="!storeModules.hideTransferOptions">
-                          Any changes to this subscription will be applied to
-                          the following order on
-                          <strong>
-                            {{
-                              moment(subscription.latest_paid_order.created_at)
-                                .add(getIntervalDays(subscription), "days")
-                                .format("dddd, MMM Do")
-                            }}</strong
-                          >
-                          for the delivery date of
-                          <strong>
-                            {{
-                              moment(
-                                subscription.latest_paid_order.delivery_date
-                              )
-                                .add(getIntervalDays(subscription), "days")
-                                .format("dddd, MMM Do")
-                            }}
-                          </strong>
-                        </span>
-                        <span v-else>
-                          Any changes to this subscription will be applied to
-                          next {{ subscription.interval }}'s order.
-                        </span>
-                      </p>
-                      <!--Removing pause functionality for the time being -->
-                      <!-- <b-btn
-                        variant="warning"
-                        @click.stop="() => pauseSubscription(subscription)"
-                        >Pause</b-btn
-                      >
-                      <div
-                    class="col-md-4"
-                    v-else-if="subscription.status === 'paused'"
-                  >
-                    <b-btn
-                      variant="warning"
-                      @click.stop="() => resumeSubscription(subscription)"
-                      >Resume</b-btn
-                    >
-                    <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
-                  </div>
+            <!-- <b-btn
+                v-if="props.row.status === 'active'"
+                class="btn btn-warning btn-sm"
+                @click.stop="() => pauseSubscription(props.row.id)"
+                >Pause</b-btn
+              >
+              <b-btn
+                v-if="props.row.status === 'paused'"
+                class="btn btn-warning btn-sm"
+                @click.stop="() => resumeSubscription(props.row.id)"
+                >Resume</b-btn
+              > -->
+            <router-link :to="`/customer/subscriptions/${props.row.id}`">
+              <b-btn class="btn btn-success btn-sm">Edit</b-btn>
+            </router-link>
+          </div>
 
-                    -->
-                      <b-btn
-                        variant="danger"
-                        @click.stop="() => cancelSubscription(subscription)"
-                        >Cancel</b-btn
-                      >
-                      <router-link
-                        :to="`/customer/subscriptions/${subscription.id}`"
-                      >
-                        <b-btn variant="success">Edit Subscription</b-btn>
-                      </router-link>
-                    </div>
-                    <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
-                  </div>
-                  <div class="col-md-4" v-else>
-                    <h4>Cancelled On</h4>
-                    <p>
-                      {{
-                        moment
-                          .utc(subscription.cancelled_at)
-                          .local()
-                          .format("dddd, MMM Do, Y")
-                      }}
-                    </p>
-                    <img src="/images/collapse-arrow.png" class="mt-4 pt-3" />
-                  </div>
-                </div>
+          <div slot="amount" slot-scope="props">
+            <div>{{ formatMoney(props.row.amount, props.row.currency) }}</div>
+          </div>
+        </v-client-table>
+      </div>
+    </div>
 
-                <b-collapse :id="'collapse' + subscription.id" class="mt-2">
-                  <v-client-table
-                    striped
-                    stacked="sm"
-                    :columns="columns"
-                    :data="getMealTableData(subscription)"
-                    foot-clone
-                  >
-                    <template slot="image" slot-scope="row">
-                      <img :src="row.value" class="modalMeal" />
-                    </template>
+    <div class="modal-basic">
+      <b-modal
+        v-model="viewSubscriptionModal"
+        v-if="viewSubscriptionModal"
+        size="lg"
+        title="Subscription Details"
+        no-fade
+      >
+        <div class="row mt-4">
+          <div class="col-md-4">
+            <h4>Subscription ID</h4>
+            <p>{{ subscription.stripe_id }}</p>
+          </div>
+          <div class="col-md-4">
+            <h4>Placed On</h4>
+            <p>{{ moment(subscription.created_at).format("dddd, MMM Do") }}</p>
+            <span v-if="!storeModules.hideTransferOptions" class="mt-2">
+              <h4 v-if="!subscription.pickup">Delivery Day</h4>
+              <h4 v-if="subscription.pickup">Pickup Day</h4>
+              {{
+                moment(subscription.next_order.delivery_date).format(
+                  "dddd, MMM Do"
+                )
+              }}
+              <span v-if="subscription.transferTime">
+                {{ subscription.transferTime }}</span
+              >
+            </span>
+            <p v-if="subscription.pickup_location_id != null" class="mt-1">
+              <b>Pickup Location:</b>
+              {{ subscription.pickup_location.name }},
+              {{ subscription.pickup_location.address }},
+              {{ subscription.pickup_location.city }},
+              {{ subscription.pickup_location.state }}
+              {{ subscription.pickup_location.zip }}<br />
+              <span v-if="subscription.pickup_location.instructions">
+                <b>Instructions:</b>
+                {{ subscription.pickup_location.instructions }}
+              </span>
+            </p>
+          </div>
+          <div class="col-md-4">
+            <p>
+              Subtotal:
+              {{
+                format.money(
+                  subscription.preFeePreDiscount,
+                  subscription.currency
+                )
+              }}
+            </p>
+            <p class="text-success" v-if="subscription.couponReduction > 0">
+              Coupon {{ subscription.couponCode }}: ({{
+                format.money(
+                  subscription.couponReduction,
+                  subscription.currency
+                )
+              }})
+            </p>
+            <p v-if="subscription.mealPlanDiscount > 0" class="text-success">
+              Subscription Discount: ({{
+                format.money(
+                  subscription.mealPlanDiscount,
+                  subscription.currency
+                )
+              }})
+            </p>
+            <p v-if="subscription.salesTax > 0">
+              Sales Tax:
+              {{ format.money(subscription.salesTax, subscription.currency) }}
+            </p>
+            <p v-if="subscription.deliveryFee > 0">
+              Delivery Fee:
+              {{
+                format.money(subscription.deliveryFee, subscription.currency)
+              }}
+            </p>
+            <p v-if="subscription.processingFee > 0">
+              Processing Fee:
+              {{
+                format.money(subscription.processingFee, subscription.currency)
+              }}
+            </p>
 
-                    <template slot="meal" slot-scope="props">
-                      <div v-html="props.row.meal"></div>
-                    </template>
-
-                    <template slot="FOOT_subtotal" slot-scope="row">
-                      <p>
-                        Subtotal:
-                        {{
-                          format.money(
-                            subscription.preFeePreDiscount,
-                            subscription.currency
-                          )
-                        }}
-                      </p>
-                      <p
-                        class="text-success"
-                        v-if="subscription.couponReduction > 0"
-                      >
-                        Coupon {{ subscription.couponCode }}: ({{
-                          format.money(
-                            subscription.couponReduction,
-                            subscription.currency
-                          )
-                        }})
-                      </p>
-                      <p
-                        v-if="subscription.mealPlanDiscount > 0"
-                        class="text-success"
-                      >
-                        Subscription Discount: ({{
-                          format.money(
-                            subscription.mealPlanDiscount,
-                            subscription.currency
-                          )
-                        }})
-                      </p>
-                      <p v-if="subscription.deliveryFee > 0">
-                        Delivery Fee:
-                        {{
-                          format.money(
-                            subscription.deliveryFee,
-                            subscription.currency
-                          )
-                        }}
-                      </p>
-                      <p v-if="subscription.processingFee > 0">
-                        Processing Fee:
-                        {{
-                          format.money(
-                            subscription.processingFee,
-                            subscription.currency
-                          )
-                        }}
-                      </p>
-                      <p>
-                        Sales Tax:
-                        {{
-                          format.money(
-                            subscription.salesTax,
-                            subscription.currency
-                          )
-                        }}
-                      </p>
-                      <p class="strong">
-                        Total:
-                        {{
-                          format.money(
-                            subscription.amount,
-                            subscription.currency
-                          )
-                        }}
-                      </p>
-                    </template>
-                  </v-client-table>
-                </b-collapse>
-                <hr />
-                <div class="space-divider-20"></div>
-              </div>
-            </div>
+            <p class="strong">
+              Total:
+              {{ format.money(subscription.amount, subscription.currency) }}
+            </p>
           </div>
         </div>
-      </div>
+        <div class="row">
+          <div class="col-md-12">
+            <hr />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <h4>Items</h4>
+            <hr />
+            <v-client-table
+              striped
+              stacked="sm"
+              :columns="columnsMeal"
+              :data="getMealTableData(subscription)"
+              foot-clone
+            >
+              <template slot="meal" slot-scope="props">
+                <div v-html="props.row.meal"></div>
+              </template>
+
+              <template slot="FOOT_subtotal" slot-scope="props">
+                <p>
+                  Subtotal:
+                  {{
+                    format.money(
+                      subscription.preFeePreDiscount,
+                      subscription.currency
+                    )
+                  }}
+                </p>
+                <p class="text-success" v-if="subscription.couponReduction > 0">
+                  Coupon {{ subscription.couponCode }}: ({{
+                    format.money(
+                      subscription.couponReduction,
+                      subscription.currency
+                    )
+                  }})
+                </p>
+                <p
+                  v-if="subscription.mealPlanDiscount > 0"
+                  class="text-success"
+                >
+                  Subscription Discount: ({{
+                    format.money(
+                      subscription.mealPlanDiscount,
+                      subscription.currency
+                    )
+                  }})
+                </p>
+                <p v-if="subscription.deliveryFee > 0">
+                  Delivery Fee:
+                  {{
+                    format.money(
+                      subscription.deliveryFee,
+                      subscription.currency
+                    )
+                  }}
+                </p>
+                <p v-if="subscription.processingFee > 0">
+                  Processing Fee:
+                  {{
+                    format.money(
+                      subscription.processingFee,
+                      subscription.currency
+                    )
+                  }}
+                </p>
+                <p v-if="subscription.salesTax > 0">
+                  Sales Tax:
+                  {{
+                    format.money(subscription.salesTax, subscription.currency)
+                  }}
+                </p>
+                <p class="strong">
+                  Total:
+                  {{ format.money(subscription.amount, subscription.currency) }}
+                </p>
+              </template>
+
+              <template slot="table-caption"></template>
+            </v-client-table>
+          </div>
+        </div>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -362,8 +291,61 @@ export default {
   },
   data() {
     return {
+      subscription: null,
+      viewSubscriptionModal: false,
       isLoading: false,
-      columns: ["size", "meal", "quantity", "unit_price", "subtotal"]
+      filters: {
+        delivery_days: ["All"]
+      },
+      columns: [
+        "stripe_id",
+        "interval",
+        "store_name",
+        "amount",
+        "created_at",
+        "delivery_day",
+        "charge_day",
+        "status",
+        "actions"
+      ],
+      columnsMeal: ["size", "meal", "quantity", "unit_price", "subtotal"],
+      options: {
+        headings: {
+          stripe_id: "Subscription #",
+          interval: "Interval",
+          amount: "Total",
+          created_at: "Subscription Placed",
+          delivery_day: "Delivery Day",
+          charge_day: "Charge Day",
+          status: "Status",
+          actions: "Actions"
+        },
+        rowClassCallback: function(row) {
+          let classes = `subscription-${row.id}`;
+          return classes;
+        },
+        customSorting: {
+          created_at: function(ascending) {
+            return function(a, b) {
+              var numA = moment(a.created_at);
+              var numB = moment(b.created_at);
+              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
+              return numA.isAfter(numB, "day") ? 1 : -1;
+            };
+          },
+          delivery_day: function(ascending) {
+            return function(a, b) {
+              var numA = moment(a.delivery_day);
+              var numB = moment(b.delivery_day);
+              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
+              return numA.isAfter(numB, "day") ? 1 : -1;
+            };
+          }
+        },
+        orderBy: {
+          column: "created_at"
+        }
+      }
     };
   },
   computed: {
@@ -379,11 +361,51 @@ export default {
         return this.subscriptions.filter(
           subscription => subscription.status != "cancelled"
         );
+    },
+    tableData() {
+      let filters = {};
+      if (_.isArray(this.filters.delivery_days)) {
+        filters.delivery_days = this.filters.delivery_days;
+      }
+
+      const subs = _.filter(this.subscriptions, subscription => {
+        if ("delivery_days" in filters) {
+          let dateMatch = _.reduce(
+            filters.delivery_days,
+            (match, date) => {
+              if (date === "All") {
+                return true;
+              }
+              if (moment(date).isSame(subscription.delivery_day, "day")) {
+                return true;
+              }
+
+              return match;
+            },
+            false
+          );
+
+          if (!dateMatch) return false;
+        }
+
+        if ("status" in filters && subscription.status !== filters.status)
+          return false;
+
+        return true;
+      });
+
+      const activeSubs = _.filter(subs, sub => {
+        if (sub.status != "cancelled") {
+          return true;
+        }
+      });
+
+      return activeSubs;
     }
   },
   mounted() {},
   methods: {
-    ...mapActions(["refreshSubscriptions"]),
+    ...mapActions(["refreshSubscriptions", "addJob", "removeJob"]),
     ...mapMutations([
       "emptyBag",
       "addBagItems",
@@ -537,7 +559,7 @@ export default {
     async cancelSubscription(subscription) {
       try {
         const resp = await axios.delete(
-          `/api/me/subscriptions/${subscription.id}`
+          `/api/me/subscriptions/${subscription}`
         );
         this.$toastr.s("Subscription cancelled.");
       } catch (e) {
@@ -556,7 +578,20 @@ export default {
       if (subscription.interval === "month") {
         return 30;
       }
-    }
+    },
+    async viewSubscription(id) {
+      const jobId = await this.addJob();
+      axios
+        .get(`/api/me/subscriptions/${id}`)
+        .then(response => {
+          this.subscription = response.data;
+          this.viewSubscriptionModal = true;
+        })
+        .finally(() => {
+          this.removeJob(jobId);
+        });
+    },
+    formatMoney: format.money
   }
 };
 </script>
