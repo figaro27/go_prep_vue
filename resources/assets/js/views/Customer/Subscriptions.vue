@@ -305,8 +305,7 @@ export default {
         "created_at",
         "delivery_day",
         "charge_day",
-        "status",
-        "actions"
+        "status"
       ],
       columnsMeal: ["size", "meal", "quantity", "unit_price", "subtotal"],
       options: {
@@ -317,8 +316,7 @@ export default {
           created_at: "Subscription Placed",
           delivery_day: "Delivery Day",
           charge_day: "Charge Day",
-          status: "Status",
-          actions: "Actions"
+          status: "Status"
         },
         rowClassCallback: function(row) {
           let classes = `subscription-${row.id}`;

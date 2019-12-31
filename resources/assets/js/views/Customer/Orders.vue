@@ -358,8 +358,7 @@ export default {
         "created_at",
         "delivery_date",
         "pickup",
-        "amount",
-        "actions"
+        "amount"
       ],
       options: {
         filterable: false,
@@ -372,9 +371,8 @@ export default {
           delivery_date: "Delivery Date",
           pickup: "Type",
           amount: "Total",
-          balance: "Balance",
+          balance: "Balance"
           // chargeType: "Charge Type",
-          actions: "Actions"
         }
       },
       columnsMeal: ["size", "meal", "quantity", "unit_price", "subtotal"],
