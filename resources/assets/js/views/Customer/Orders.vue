@@ -423,7 +423,6 @@ export default {
     getMealTableData() {
       let data = [];
       let order = this.order;
-      if (!this.initialized || !order.items) return [];
 
       order.meal_package_items.forEach(meal_package_item => {
         if (meal_package_item.meal_package_size === null) {
