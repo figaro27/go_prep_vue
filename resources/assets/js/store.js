@@ -1507,7 +1507,6 @@ const actions = {
     }
     //dispatch("refreshStores");
     dispatch("refreshLazy");
-    dispatch("refreshLazyStore");
     dispatch("refreshCards");
     dispatch("refreshCustomerOrders");
     dispatch("refreshSubscriptions");
