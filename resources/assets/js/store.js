@@ -1506,11 +1506,12 @@ const actions = {
       await dispatch("refreshViewedCustomerStore", data);
     }
 
+    await Promise.all([dispatch("refreshLazy")]);
+
     //dispatch("refreshStores");
     dispatch("refreshCards");
     dispatch("refreshCustomerOrders");
     dispatch("refreshSubscriptions");
-    dispatch("refreshLazy");
     dispatch("refreshInactiveMeals");
   },
 
