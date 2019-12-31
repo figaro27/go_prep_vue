@@ -420,10 +420,9 @@ export default {
   methods: {
     ...mapActions(["refreshCustomerOrders", "addJob", "removeJob"]),
     formatMoney: format.money,
-    getMealTableData(order) {
+    getMealTableData() {
       let data = [];
-
-      console.log(order.items);
+      let order = this.order;
 
       order.meal_package_items.forEach(meal_package_item => {
         if (meal_package_item.meal_package_size === null) {
