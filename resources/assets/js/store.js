@@ -1116,6 +1116,7 @@ const triggerLazy = (
     .then(data => {
       if (data.items && data.items.length > 0) {
         let items = state.viewed_store.items;
+        console.log(state.viewed_store.meals);
         let meals = state.viewed_store.meals;
         let packages = state.viewed_store.packages;
         let finalCategories = state.viewed_store.finalCategories;
@@ -2623,7 +2624,6 @@ const getters = {
     }
   },
   viewedStoreMeal: state => (id, defaultMeal = null) => {
-    console.log(state.viewed_store.meals);
     try {
       let meal = null;
       if (defaultMeal != null) {
