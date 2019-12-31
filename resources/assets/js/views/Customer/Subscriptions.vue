@@ -431,9 +431,7 @@ export default {
       });
     },
     getMealTableData() {
-      if (!this.initialized || !subscription.items) return [];
       let subscription = this.subscription;
-
       let data = [];
 
       subscription.meal_package_items.forEach(meal_package_item => {
