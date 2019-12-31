@@ -496,7 +496,9 @@ export default {
 
       order.items.forEach(item => {
         if (item.meal_package_order_id === null && !item.hidden) {
+          console.log(item.meal_id);
           const meal = this.getStoreMeal(item.meal_id);
+          console.log(meal);
 
           if (!meal) {
             return null;
