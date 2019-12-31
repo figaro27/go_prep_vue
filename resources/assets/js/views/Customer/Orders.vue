@@ -423,6 +423,8 @@ export default {
     getMealTableData(order) {
       let data = [];
 
+      console.log(order.items);
+
       order.meal_package_items.forEach(meal_package_item => {
         if (meal_package_item.meal_package_size === null) {
           data.push({
@@ -496,6 +498,8 @@ export default {
       order.items.forEach(item => {
         if (item.meal_package_order_id === null && !item.hidden) {
           const meal = this.getStoreMeal(item.meal_id);
+
+          console.log(meal);
           if (!meal) {
             return null;
           }
