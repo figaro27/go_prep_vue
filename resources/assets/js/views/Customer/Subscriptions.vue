@@ -47,25 +47,6 @@ f<template>
           :options="options"
           v-show="!isLoading"
         >
-          <span slot="beforeLimit">
-            <b-btn
-              variant="primary"
-              @click="exportData('subscriptions', 'pdf', true)"
-            >
-              <i class="fa fa-print"></i>&nbsp; Print
-            </b-btn>
-            <b-dropdown class="mx-1" right text="Export as">
-              <b-dropdown-item @click="exportData('subscriptions', 'csv')"
-                >CSV</b-dropdown-item
-              >
-              <b-dropdown-item @click="exportData('subscriptions', 'xls')"
-                >XLS</b-dropdown-item
-              >
-              <b-dropdown-item @click="exportData('subscriptions', 'pdf')"
-                >PDF</b-dropdown-item
-              >
-            </b-dropdown>
-          </span>
           <div slot="interval" class="text-nowrap" slot-scope="props">
             {{ props.row.interval_title }}
           </div>
