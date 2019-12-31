@@ -72,7 +72,7 @@
               <!-- {{
                   ((props.row.balance / props.row.amount) * 100).toFixed(0)
                 }}% --->
-              {{ format.money(props.row.balance, storeSettings.currency) }}
+              {{ format.money(props.row.balance, store.settings.currency) }}
             </span>
             <span v-else>Paid in Full</span>
           </div>
