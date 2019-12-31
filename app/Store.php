@@ -949,9 +949,11 @@ class Store extends Model
     {
         // return true;
         $zip = strtoupper(strval($zip));
+        list($zip) = explode(' ', $zip);
         foreach ($this->settings->delivery_distance_zipcodes as $zipcode) {
             $zipcode = strtoupper(strval($zipcode));
-            if (strpos($zip, $zipcode) !== false) {
+            list($zipcode) = explode(' ', $zipcode);
+            if ($zip === $zipcode) {
                 return true;
             }
         }
