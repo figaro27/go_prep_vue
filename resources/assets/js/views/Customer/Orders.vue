@@ -187,25 +187,6 @@
             </div>
             <br />
             <br />
-            <div
-              class="d-inline"
-              v-if="order.balance !== null && order.balance != 0"
-            >
-              <b-btn
-                class="btn mb-2 d-inline mr-1"
-                variant="success"
-                @click="settle"
-                >Settle Balance</b-btn
-              >
-              <img
-                v-b-popover.hover="
-                  'This settles the balance on the order to $0 for your records without charging or refunding your customer.'
-                "
-                title="Settle Balance"
-                src="/images/store/popover.png"
-                class="popover-size d-inline"
-              />
-            </div>
           </div>
         </div>
 
