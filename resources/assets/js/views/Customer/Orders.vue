@@ -77,12 +77,12 @@
             <span v-else>Paid in Full</span>
           </div>
           <div slot="actions" class="text-nowrap" slot-scope="props">
-            <button
+            <!-- <button
               class="btn view btn-primary btn-sm"
               @click="viewOrder(props.row.id)"
             >
               View Order
-            </button>
+            </button> -->
           </div>
 
           <div slot="amount" slot-scope="props">

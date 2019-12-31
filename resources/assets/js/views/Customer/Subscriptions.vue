@@ -62,12 +62,12 @@ f<template>
             {{ moment(props.row.next_renewal_at).format("dddd") }}
           </div>
           <div slot="actions" class="text-nowrap" slot-scope="props">
-            <button
+            <!-- <button
               class="btn view btn-primary btn-sm"
               @click="viewSubscription(props.row.id)"
             >
               View
-            </button>
+            </button> -->
             <button
               class="btn btn-danger btn-sm"
               @click="cancelSubscription(props.row.id)"
