@@ -423,6 +423,7 @@ export default {
     getMealTableData() {
       let data = [];
       let order = this.order;
+      if (!this.initialized || !order.items) return [];
 
       order.meal_package_items.forEach(meal_package_item => {
         if (meal_package_item.meal_package_size === null) {
@@ -496,10 +497,8 @@ export default {
 
       order.items.forEach(item => {
         if (item.meal_package_order_id === null && !item.hidden) {
-          console.log(item.meal_id);
           const meal = this.getStoreMeal(item.meal_id);
 
-          console.log(meal);
           if (!meal) {
             return null;
           }

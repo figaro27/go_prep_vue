@@ -430,8 +430,9 @@ export default {
         };
       });
     },
-    getMealTableData(subscription) {
+    getMealTableData() {
       if (!this.initialized || !subscription.items) return [];
+      let subscription = this.subscription;
 
       let data = [];
 
