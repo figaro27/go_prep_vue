@@ -2631,7 +2631,8 @@ const getters = {
       } else {
         meal = _.find(state.viewed_store.meals, ["id", parseInt(id)]) || null;
       }
-      console.log(meal);
+      console.log(id);
+      console.log(state.viewed_store.meals);
       if (!meal) {
         return null;
       }
