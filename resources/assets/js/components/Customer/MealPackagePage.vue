@@ -682,8 +682,14 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       storeModules: "viewedStoreModules",
-      storeModuleSettings: "viewedStoreModuleSettings"
+      storeModuleSettings: "viewedStoreModuleSettings",
+      deliveryDays: "viewedStoreDeliveryDays",
+      deliveryDay: "viewedStoreDeliveryDay",
+      store: "viewedStore"
     }),
+    isMultipleDelivery() {
+      return this.store.modules.multipleDeliveryDays == 1 ? true : false;
+    },
     isStoreView() {
       if (this.$route.params.storeView || this.storeView) {
         return true;
@@ -861,14 +867,86 @@ export default {
         }
         /* Checking Special Instructions End */
 
-        this.addOne(
-          this.mealPackage,
-          true,
-          this.mealPackageSize,
-          components,
-          addons,
-          null
-        );
+        if (this.isMultipleDelivery) {
+          const deliveryDays = this.deliveryDays;
+          const deliveryDay = this.deliveryDay;
+
+          if (components && deliveryDays && deliveryDay) {
+            for (let i in components) {
+              if (i && !isNaN(i)) {
+                const component = this.getComponent(parseInt(i));
+                if (component && component.maximum) {
+                  const max = component.maximum;
+                  const dayLength = deliveryDays.length;
+                  const count = parseInt(max / dayLength);
+
+                  const deliveryDaysNew = [];
+                  deliveryDaysNew.push(deliveryDay);
+                  deliveryDays.forEach(day => {
+                    if (day.id != deliveryDay.id) {
+                      deliveryDaysNew.push(day);
+                    }
+                  });
+
+                  for (let option in components[i]) {
+                    const items = components[i][option];
+
+                    if (items && items.length > 0) {
+                      for (let index = 0; index < dayLength; index++) {
+                        const startIndex = count * index;
+                        const endIndex = count * (index + 1) - 1;
+                        if (i == dayLength - 1 || endIndex >= items.length) {
+                          endIndex = items.length - 1;
+                        }
+
+                        if (
+                          startIndex < items.length &&
+                          endIndex < items.length &&
+                          startIndex <= endIndex
+                        ) {
+                          const itemsNew = items.slice(
+                            startIndex,
+                            endIndex + 1
+                          );
+
+                          if (itemsNew && itemsNew.length > 0) {
+                            const mealPackageNew = JSON.parse(
+                              JSON.stringify(this.mealPackage)
+                            );
+                            const componentsNew = {};
+                            componentsNew[i] = {};
+                            componentsNew[i][option] = itemsNew;
+
+                            mealPackageNew.delivery_day =
+                              deliveryDaysNew[index];
+
+                            this.addOne(
+                              mealPackageNew,
+                              true,
+                              this.mealPackageSize,
+                              componentsNew,
+                              addons,
+                              null
+                            );
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        } else {
+          this.addOne(
+            this.mealPackage,
+            true,
+            this.mealPackageSize,
+            components,
+            addons,
+            null
+          );
+        }
 
         this.back();
         if (this.$parent.showBagClass.includes("hidden"))

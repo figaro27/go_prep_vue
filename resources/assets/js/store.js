@@ -2818,6 +2818,9 @@ const getters = {
   viewedStoreDeliveryDays: state => {
     return state.viewed_store.delivery_days || [];
   },
+  viewedStoreDeliveryDay: state => {
+    return state.viewed_store.delivery_day || {};
+  },
   isLoading(state) {
     return state.isLoading || !_.isEmpty(state.jobs);
   },
