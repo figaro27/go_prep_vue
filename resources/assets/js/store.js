@@ -2623,7 +2623,6 @@ const getters = {
     }
   },
   viewedStoreMeal: state => (id, defaultMeal = null) => {
-    console.log(state.viewed_store.meals);
     try {
       let meal = null;
       if (defaultMeal != null) {
@@ -2818,6 +2817,9 @@ const getters = {
   },
   viewedStoreDeliveryDays: state => {
     return state.viewed_store.delivery_days || [];
+  },
+  viewedStoreDeliveryDay: state => {
+    return state.viewed_store.delivery_day || {};
   },
   isLoading(state) {
     return state.isLoading || !_.isEmpty(state.jobs);

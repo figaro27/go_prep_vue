@@ -77,12 +77,12 @@
             <span v-else>Paid in Full</span>
           </div>
           <div slot="actions" class="text-nowrap" slot-scope="props">
-            <!-- <button
+            <button
               class="btn view btn-primary btn-sm"
               @click="viewOrder(props.row.id)"
             >
               View Order
-            </button> -->
+            </button>
           </div>
 
           <div slot="amount" slot-scope="props">
@@ -358,7 +358,8 @@ export default {
         "created_at",
         "delivery_date",
         "pickup",
-        "amount"
+        "amount",
+        "actions"
       ],
       options: {
         filterable: false,
@@ -371,8 +372,9 @@ export default {
           delivery_date: "Delivery Date",
           pickup: "Type",
           amount: "Total",
-          balance: "Balance"
+          balance: "Balance",
           // chargeType: "Charge Type",
+          actions: "Actions"
         }
       },
       columnsMeal: ["size", "meal", "quantity", "unit_price", "subtotal"],

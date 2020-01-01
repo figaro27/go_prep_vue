@@ -62,12 +62,12 @@ f<template>
             {{ moment(props.row.next_renewal_at).format("dddd") }}
           </div>
           <div slot="actions" class="text-nowrap" slot-scope="props">
-            <!-- <button
+            <button
               class="btn view btn-primary btn-sm"
               @click="viewSubscription(props.row.id)"
             >
               View
-            </button> -->
+            </button>
             <button
               class="btn btn-danger btn-sm"
               @click="cancelSubscription(props.row.id)"
@@ -305,7 +305,8 @@ export default {
         "created_at",
         "delivery_day",
         "charge_day",
-        "status"
+        "status",
+        "actions"
       ],
       columnsMeal: ["size", "meal", "quantity", "unit_price", "subtotal"],
       options: {
@@ -316,7 +317,8 @@ export default {
           created_at: "Subscription Placed",
           delivery_day: "Delivery Day",
           charge_day: "Charge Day",
-          status: "Status"
+          status: "Status",
+          actions: "Actions"
         },
         rowClassCallback: function(row) {
           let classes = `subscription-${row.id}`;
