@@ -920,6 +920,8 @@ export default {
                             mealPackageNew.delivery_day =
                               deliveryDaysNew[index];
 
+                            mealPackageNew.price = mealPackageNew.price / 2;
+
                             this.addOne(
                               mealPackageNew,
                               true,
