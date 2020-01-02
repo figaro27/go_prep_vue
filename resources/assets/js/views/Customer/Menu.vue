@@ -191,31 +191,13 @@
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
-            style="margin-right:200"
+            style="margin-right:100"
             to="/customer/bag"
             v-if="!subscriptionId || !adjustOrder"
           >
-            <div class="d-flex flex-column h-100">
-              <i class="fa fa-shopping-bag text-white"></i>
-              <i v-if="total" class="text-white mt-1">{{ total }}</i>
-            </div>
+            <div class="d-flex flex-column h-100"></div>
           </floating-action-button>
-          <floating-action-button
-            class="d-md-none"
-            :style="brandColor"
-            style="margin-right:100px;"
-            v-if="store.modules.multipleDeliveryDays && finalDeliveryDay"
-          >
-            <div
-              class="d-flex flex-column h-100"
-              @click="showDeliveryDayModal = true"
-            >
-              <!-- <i class="far fa-calendar-alt text-white"></i> -->
-              <span class="text-white mt-1" v-if="finalDeliveryDay">{{
-                moment(finalDeliveryDay.day_friendly).format("ddd")
-              }}</span>
-            </div>
-          </floating-action-button>
+
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
