@@ -192,7 +192,7 @@
             class="d-md-none"
             :style="brandColor"
             style="margin-right:100"
-            v-if="!subscriptionId || !adjustOrder"
+            to="/customer/bag"
           >
             <div class="d-flex flex-column h-100">
               <i class="fa fa-shopping-bag text-white"></i>
