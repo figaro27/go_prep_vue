@@ -203,6 +203,18 @@
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
+            style="margin-right:100"
+            to="/customer/bag"
+            v-if="!subscriptionId || !adjustOrder"
+          >
+            <div class="d-flex flex-column h-100">
+              <i class="fa fa-shopping-bag text-white"></i>
+              <i v-if="total" class="text-white mt-1">{{ total }}</i>
+            </div>
+          </floating-action-button>
+          <floating-action-button
+            class="d-md-none"
+            :style="brandColor"
             style="margin-right:165px;"
             v-if="store.modules.multipleDeliveryDays && finalDeliveryDay"
           >
