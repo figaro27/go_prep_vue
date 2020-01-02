@@ -188,35 +188,33 @@
             :storeView="storeView"
             ref="mealPackagePage"
           ></meal-package-page>
-          <div style="position:relative;right:100px">
-            <floating-action-button
-              class="d-md-none"
-              :style="brandColor"
-              to="/customer/bag"
-              v-if="!subscriptionId || !adjustOrder"
+          <floating-action-button
+            class="d-md-none"
+            :style="brandColor"
+            to="/customer/bag"
+            v-if="!subscriptionId || !adjustOrder"
+          >
+            <div class="d-flex flex-column h-100">
+              <i class="fa fa-shopping-bag text-white"></i>
+              <i v-if="total" class="text-white mt-1">{{ total }}</i>
+            </div>
+          </floating-action-button>
+          <floating-action-button
+            class="d-md-none"
+            :style="brandColor"
+            style="margin-right:65px;"
+            v-if="store.modules.multipleDeliveryDays && finalDeliveryDay"
+          >
+            <div
+              class="d-flex flex-column h-100"
+              @click="showDeliveryDayModal = true"
             >
-              <div class="d-flex flex-column h-100">
-                <i class="fa fa-shopping-bag text-white"></i>
-                <i v-if="total" class="text-white mt-1">{{ total }}</i>
-              </div>
-            </floating-action-button>
-            <floating-action-button
-              class="d-md-none"
-              :style="brandColor"
-              style="margin-right:65px;"
-              v-if="store.modules.multipleDeliveryDays && finalDeliveryDay"
-            >
-              <div
-                class="d-flex flex-column h-100"
-                @click="showDeliveryDayModal = true"
-              >
-                <!-- <i class="far fa-calendar-alt text-white"></i> -->
-                <span class="text-white mt-1" v-if="finalDeliveryDay">{{
-                  moment(finalDeliveryDay.day_friendly).format("ddd")
-                }}</span>
-              </div>
-            </floating-action-button>
-          </div>
+              <!-- <i class="far fa-calendar-alt text-white"></i> -->
+              <span class="text-white mt-1" v-if="finalDeliveryDay">{{
+                moment(finalDeliveryDay.day_friendly).format("ddd")
+              }}</span>
+            </div>
+          </floating-action-button>
 
           <!--<meal-packages-area :mealPackages="mealPackages"></meal-packages-area>!-->
         </div>
@@ -880,7 +878,7 @@ export default {
       else return false;
     },
     brandColor() {
-      let style = "background-color:";
+      let style = "position:relative;right:100px;background-color:";
       style += this.store.settings.color;
       return style;
     },
