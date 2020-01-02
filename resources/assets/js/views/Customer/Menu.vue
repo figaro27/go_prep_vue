@@ -194,7 +194,10 @@
             to="/customer/bag"
             v-if="!subscriptionId || !adjustOrder"
           >
-            <div class="d-flex flex-column h-100" style="align-items:left">
+            <div
+              class="d-flex flex-column h-100"
+              style="align-items:left;justify-content:left;float:left"
+            >
               <i class="fa fa-shopping-bag text-white"></i>
               <i v-if="total" class="text-white mt-1">{{ total }}</i>
             </div>
