@@ -191,6 +191,7 @@
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
+            style="margin-right:100"
             to="/customer/bag"
             v-if="!subscriptionId || !adjustOrder"
           >
@@ -202,7 +203,7 @@
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
-            style="margin-right:65px;"
+            style="margin-right:165px;"
             v-if="store.modules.multipleDeliveryDays && finalDeliveryDay"
           >
             <div
@@ -878,7 +879,7 @@ export default {
       else return false;
     },
     brandColor() {
-      let style = "position:relative;right:100px;background-color:";
+      let style = "background-color:";
       style += this.store.settings.color;
       return style;
     },
