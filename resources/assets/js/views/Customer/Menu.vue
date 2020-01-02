@@ -188,19 +188,19 @@
             :storeView="storeView"
             ref="mealPackagePage"
           ></meal-package-page>
-
-          <floating-action-button
-            class="d-md-none"
-            :style="brandColor"
-            to="/customer/bag"
-            v-if="!subscriptionId || !adjustOrder"
-          >
-            <div class="d-flex flex-column h-100">
-              <i class="fa fa-shopping-bag text-white"></i>
-              <i v-if="total" class="text-white mt-1">{{ total }}</i>
-            </div>
-          </floating-action-button>
-
+          <div style="float:left">
+            <floating-action-button
+              class="d-md-none"
+              :style="brandColor"
+              to="/customer/bag"
+              v-if="!subscriptionId || !adjustOrder"
+            >
+              <div class="d-flex flex-column h-100">
+                <i class="fa fa-shopping-bag text-white"></i>
+                <i v-if="total" class="text-white mt-1">{{ total }}</i>
+              </div>
+            </floating-action-button>
+          </div>
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
