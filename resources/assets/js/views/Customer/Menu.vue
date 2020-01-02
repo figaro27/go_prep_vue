@@ -191,7 +191,7 @@
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
-            style="margin-right:100"
+            style="margin-right:200"
             to="/customer/bag"
             v-if="!subscriptionId || !adjustOrder"
           >
