@@ -196,7 +196,7 @@
           >
             <div
               class="d-flex flex-column h-100"
-              style="align-items:left;justify-content:left;float:left"
+              style="position:relative;right:100px"
             >
               <i class="fa fa-shopping-bag text-white"></i>
               <i v-if="total" class="text-white mt-1">{{ total }}</i>
