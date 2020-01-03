@@ -98,7 +98,14 @@ class Hourly extends Command
                 $settings->enableNextWeekDay === $currentDay &&
                 $settings->enableNextWeekHour === $currentHour
             ) {
-                $store->enableNextWeekOrders();
+                // $store->enableNextWeekOrders();
+                // Testing
+                $settings = StoreSetting::where(
+                    'store_id',
+                    $store->id
+                )->first();
+                $settings->preventNextWeekOrders = 0;
+                $settings->update();
             }
         }
         $this->info($count . ' `Ready to Print` notifications sent');
