@@ -100,6 +100,7 @@ class CheckoutController extends UserController
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
+        $monthlyPrepay = $request->get('monthlyPrepay');
         $interval = $request->get('plan_interval', Constants::INTERVAL_WEEK);
         $period = Constants::PERIOD[$interval] ?? Constants::PERIOD_WEEKLY;
         //$stripeToken = $request->get('token');
@@ -731,6 +732,7 @@ class CheckoutController extends UserController
                 $userSubscription->currency = $storeSettings->currency;
                 $userSubscription->pickup = $request->get('pickup', 0);
                 $userSubscription->interval = $interval;
+                $userSubscription->monthlyPrepay = $monthlyPrepay;
                 $userSubscription->delivery_day = date(
                     'N',
                     strtotime($deliveryDay)

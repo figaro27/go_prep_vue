@@ -409,7 +409,8 @@
         v-if="
           deliveryDateOptions.length > 1 &&
             $route.params.subscriptionId === undefined &&
-            !$route.params.storeView && !storeOwner &&
+            !$route.params.storeView &&
+            !storeOwner &&
             (!bagDeliveryDate || !store.modules.category_restrictions) &&
             !isMultipleDelivery &&
             (pickup === 0 ||
@@ -478,7 +479,8 @@
         v-if="
           deliveryDateOptions.length === 1 &&
             $route.params.subscriptionId === undefined &&
-            !$route.params.storeView && !storeOwner &&
+            !$route.params.storeView &&
+            !storeOwner &&
             !isMultipleDelivery
         "
       >
@@ -563,7 +565,8 @@
           !willDeliver &&
             !manualOrder &&
             pickup != 1 &&
-            !$route.params.storeView && !storeOwner
+            !$route.params.storeView &&
+            !storeOwner
         "
       >
         <b-alert
@@ -617,7 +620,8 @@
               storeModules.cashOrders &&
                 !weeklySubscriptionValue &&
                 (storeModuleSettings.cashAllowedForCustomer ||
-                  $route.params.storeView || storeOwner)
+                  $route.params.storeView ||
+                  storeOwner)
             "
           >
             <b-form-checkbox
@@ -774,10 +778,12 @@
               $route.params.adjustOrder != true &&
               $route.params.subscriptionId === undefined &&
               (store.settings.open === true ||
-                $route.params.storeView || storeOwner) &&
+                $route.params.storeView ||
+                storeOwner) &&
               (willDeliver ||
                 pickup === 1 ||
-                $route.params.storeView || storeOwner) &&
+                $route.params.storeView ||
+                storeOwner) &&
               (customerModel != null || !$route.params.storeView || !storeOwner)
           "
           @click="checkout"
@@ -942,6 +948,7 @@ export default {
       form: {
         billingState: null
       },
+      subscriptionInterval: "week",
       dontAffectBalance: false,
       showBillingAddressModal: false,
       billingAddressVerified: false,
@@ -957,7 +964,6 @@ export default {
       couponCode: "",
       addCustomerModal: false,
       weeklySubscriptionValue: null,
-      subscriptionInterval: "week",
       customerModel: null,
       emailCustomer: true,
       selectedPickupLocation:
@@ -1061,6 +1067,22 @@ export default {
       bagDeliverySettings: "bagDeliverySettings",
       deliveryDays: "viewedStoreDeliveryDays"
     }),
+    hasSubscriptionOnlyItems() {
+      let bagContainSubscriptionItem = false;
+      this.bag.forEach(item => {
+        if (item.meal.subscriptionInterval !== null)
+          bagContainSubscriptionItem = true;
+      });
+      return bagContainSubscriptionItem;
+    },
+    monthlyPrepay() {
+      if (this.hasSubscriptionOnlyItems) {
+        // Assuming all are monthly prepay for now for Freshly Prepped. To be changed in the future.
+        return true;
+      } else {
+        return false;
+      }
+    },
     pickupLocationClass() {
       if (this.selectedPickupLocationAddress && this.selectedPickupLocation)
         return "checkout-item h-90";
@@ -1627,6 +1649,9 @@ use next_delivery_dates
       return "Meal";
     },
     weeklySubscription() {
+      if (this.hasSubscriptionOnlyItems) {
+        return true;
+      }
       if (this.store.modules.subscriptionOnly) {
         return true;
       }
@@ -2090,13 +2115,13 @@ use next_delivery_dates
         cardId = 0;
       }
 
-      let weeklySubscriptionValue = this.storeSettings.allowMealPlans
-        ? this.weeklySubscriptionValue
-        : 0;
-
       if (this.cashOrder === null) {
         this.cashOrder = 0;
       }
+
+      let weeklySubscriptionValue = this.storeSettings.allowMealPlans
+        ? this.weeklySubscriptionValue
+        : 0;
 
       axios
         .post(endPoint, {
@@ -2108,6 +2133,7 @@ use next_delivery_dates
           bag: this.bag,
           plan: weeklySubscriptionValue,
           plan_interval: this.subscriptionInterval,
+          monthlyPrepay: this.monthlyPrepay,
           pickup: this.pickup,
           isMultipleDelivery: this.isMultipleDelivery,
           delivery_day: this.bagDeliveryDate
