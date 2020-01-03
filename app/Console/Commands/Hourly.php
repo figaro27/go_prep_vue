@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Store;
 use App\Subscription;
 use App\Order;
+use App\StoreSetting;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 
@@ -84,7 +85,14 @@ class Hourly extends Command
                 $settings->disableNextWeekDay === $currentDay &&
                 $settings->disableNextWeekHour === $currentHour
             ) {
-                $store->disableNextWeekOrders();
+                // $store->disableNextWeekOrders();
+                // Testing
+                $settings = StoreSetting::where(
+                    'store_id',
+                    $store->id
+                )->first();
+                $settings->preventNextWeekOrders = 1;
+                $settings->update();
             }
             if (
                 $settings->enableNextWeekDay === $currentDay &&
