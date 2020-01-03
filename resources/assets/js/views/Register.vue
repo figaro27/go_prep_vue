@@ -855,7 +855,13 @@ export default {
       if (data.user.role === "store") {
         data.user_details = { ...data.store };
       }
-
+      if (
+        this.store.details.country === "GB" &&
+        !this.form[1].zip.includes(" ")
+      ) {
+        this.$toastr.w("Please include a space in your postal code.");
+        return;
+      }
       axios
         .post("/api/auth/register", data)
         .then(async response => {
