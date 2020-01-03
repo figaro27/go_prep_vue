@@ -26,7 +26,7 @@
       <b-row class="my-3" v-if="mealPackage.description != null">
         <b-col>
           <div>
-            <p>{{ mealPackage.description }}</p>
+            <p v-html="mealPackageDescription" class="mt-3 strong"></p>
           </div>
         </b-col>
       </b-row>
@@ -687,6 +687,9 @@ export default {
       deliveryDay: "viewedStoreDeliveryDay",
       store: "viewedStore"
     }),
+    mealPackageDescription() {
+      return this.mealPackage.description.replace(/(\r\n|\n|\r)/gm, "<br />");
+    },
     isMultipleDelivery() {
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
     },
