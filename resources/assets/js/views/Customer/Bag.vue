@@ -405,6 +405,7 @@ export default {
     }
   },
   mounted() {
+    $([document.documentElement, document.body]).scrollTop(0);
     if (this.$route.params.adjustOrder && this.order.coupon_id !== null) {
       let coupon = this.coupons.find(coupon => {
         return coupon.id === this.order.coupon_id;
@@ -435,7 +436,7 @@ export default {
       this.pickup = this.$route.params.pickup;
     } else if (
       this.storeModules.hideDeliveryOption &&
-      (!this.$route.params.storeView && !this.storeOwner)
+      !this.$route.params.storeView && !this.storeOwner
     ) {
       this.pickup = 1;
     } else {
