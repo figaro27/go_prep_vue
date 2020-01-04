@@ -1280,7 +1280,7 @@ export default {
         .post("/api/me/refundOrder", {
           orderId: this.orderId,
           refundAmount:
-            this.refundAmount == 0 ? this.order.amount : this.refundAmount,
+            this.refundAmount == null ? this.order.amount : this.refundAmount,
           applyToBalance: this.applyToBalanceRefund
         })
         .then(response => {
