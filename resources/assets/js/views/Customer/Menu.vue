@@ -193,7 +193,7 @@
             :style="brandColor"
             style="margin-right:200px"
             to="/customer/bag"
-            v-if="!subscriptionId || !adjustOrder"
+            v-if="(!subscriptionId || !adjustOrder) && !mealPackagePageView"
           >
             <div class="d-flex flex-column h-100">
               <i class="fa fa-shopping-bag text-white"></i>
@@ -205,16 +205,20 @@
             class="d-md-none"
             :style="brandColor"
             style="margin-right:265px;"
-            v-if="store.modules.multipleDeliveryDays && finalDeliveryDay"
+            v-if="
+              store.modules.multipleDeliveryDays &&
+                finalDeliveryDay &&
+                !mealPackagePageView
+            "
           >
             <div
               class="d-flex flex-column h-100"
               @click="showDeliveryDayModal = true"
             >
-              <!-- <i class="far fa-calendar-alt text-white"></i> -->
-              <span class="text-white mt-1" v-if="finalDeliveryDay">{{
+              <i class="fas fa-truck text-white"></i>
+              <!-- <span class="text-white mt-1" v-if="finalDeliveryDay">{{
                 moment(finalDeliveryDay.day_friendly).format("ddd")
-              }}</span>
+              }}</span> -->
             </div>
           </floating-action-button>
 
