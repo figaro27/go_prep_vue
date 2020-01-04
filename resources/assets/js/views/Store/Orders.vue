@@ -1279,7 +1279,8 @@ export default {
       axios
         .post("/api/me/refundOrder", {
           orderId: this.orderId,
-          refundAmount: this.refundAmount,
+          refundAmount:
+            this.refundAmount == 0 ? this.order.amount : this.refundAmount,
           applyToBalance: this.applyToBalanceRefund
         })
         .then(response => {
