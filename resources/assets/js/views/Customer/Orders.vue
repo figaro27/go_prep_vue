@@ -403,7 +403,7 @@ export default {
       if (orders) {
         orders.forEach(order => {
           if (order.balance && !this.columns.includes("balance")) {
-            this.columns.splice(9, 0, "balance");
+            this.columns.splice(10, 0, "balance");
             return;
           }
         });
