@@ -30,7 +30,7 @@ class StoreMealRequest extends FormRequest
             'category_ids' => 'required',
             'default_size_title' => '',
             'sizes.*.title' => 'required',
-            'sizes.*.price' => 'required|gte:0.1|lte:,6000',
+            'sizes.*.price' => 'required|numeric|between:0.01,6000',
             'sizes.*.multiplier' => 'required|gte:0.1|lte:20'
         ];
     }
