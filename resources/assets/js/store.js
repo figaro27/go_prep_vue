@@ -2153,7 +2153,15 @@ const actions = {
     const res = await axios.get("/api/refresh_inactive_meals");
     const { data } = await res;
 
-    state.viewed_store.meals = data.meals;
+    if (data.meals) {
+      data.meals.forEach(meal => {
+        let found =
+          _.find(state.viewed_store.meals, ["id", parseInt(meal.id)]) || null;
+        if (!found) {
+          state.viewed_store.meals.push(meal);
+        }
+      });
+    }
   },
 
   async refreshDeliveryDay({ state }, args = {}) {
@@ -3262,9 +3270,15 @@ const getters = {
       return {};
     }
   },
-  storeMeal: state => id => {
+  storeMeal: state => (id, defaultMeal = null) => {
     try {
-      let meal = _.find(state.store.meals.data, ["id", parseInt(id)]) || null;
+      let meal = null;
+
+      if (defaultMeal) {
+        meal = defaultMeal;
+      } else {
+        meal = _.find(state.store.meals.data, ["id", parseInt(id)]) || null;
+      }
 
       if (!meal) {
         return null;
