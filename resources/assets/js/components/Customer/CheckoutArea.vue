@@ -1070,7 +1070,10 @@ export default {
     hasSubscriptionOnlyItems() {
       let bagContainSubscriptionItem = false;
       this.bag.forEach(item => {
-        if (item.meal.subscriptionInterval !== null)
+        if (
+          item.meal.subscriptionInterval &&
+          item.meal.subscriptionInterval !== null
+        )
           bagContainSubscriptionItem = true;
       });
       return bagContainSubscriptionItem;
