@@ -28,7 +28,6 @@
         :style="brandColor"
         class="mobile-sticky-button btn btn-lg white-text"
         @click="done"
-        :disabled="getTotalRemainingMeals() > 0"
       >
         {{ addButtonText }}
       </button>
