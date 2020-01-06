@@ -708,7 +708,6 @@ export default {
       }
     },
     brandColor() {
-      return "background-color:#ff0000";
       if (this.store.settings) {
         let style = "background-color:";
         style += this.store.settings.color;
