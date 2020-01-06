@@ -40,7 +40,7 @@
       </b-row>
 
       <b-row v-if="components.length" class="my-3">
-        <p>{{ store.settings.color }}</p>
+        <p>{{ brandColor }}</p>
         <b-col>
           <div
             v-for="component in components"
