@@ -698,7 +698,7 @@ export default {
     addButtonText() {
       if (this.getTotalRemainingMeals() > 0) {
         return (
-          "Please select " +
+          "Please select at least " +
           this.getTotalRemainingMeals() +
           " more meals to continue."
         );
@@ -1045,14 +1045,14 @@ export default {
     },
     getRemainingMeals(componentId) {
       const component = this.getComponent(componentId);
-      const max = component.maximum;
+      const min = component.minimum;
       const choices = this.getComponentChoices(componentId);
       let remainingMeals = _.reduce(
         choices,
         (remaining, meals) => {
           return remaining - meals.length;
         },
-        max
+        min
       );
       this.$parent.remainingMeals = remainingMeals;
       return remainingMeals;
