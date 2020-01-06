@@ -25,7 +25,7 @@
     <div v-if="mealPackage">
       <b-btn
         size="lg"
-        style="background-color:#ff0000"
+        :style="brandColor"
         class="mobile-sticky-button white-text"
         @click="done"
         :disabled="getTotalRemainingMeals() > 0"
@@ -707,6 +707,7 @@ export default {
       }
     },
     brandColor() {
+      return "background-color:#ff0000";
       if (this.store.settings) {
         let style = "background-color:";
         style += this.store.settings.color;
