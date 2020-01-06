@@ -1516,8 +1516,10 @@ body.forgotresettoken {
   left: 40%;
   margin: 0 0 0 -20%;
   z-index: 1000;
+}
 
-  @media all and (max-width: 400px) {
+@media all and (max-width: 400px) {
+  .mobile-sticky-button {
     width: 100%;
     left: 0%;
   }
