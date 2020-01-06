@@ -698,7 +698,7 @@ export default {
     addButtonText() {
       if (this.getTotalRemainingMeals() > 0) {
         return (
-          "Please select at least " +
+          "Please select " +
           this.getTotalRemainingMeals() +
           " more meals to continue."
         );
