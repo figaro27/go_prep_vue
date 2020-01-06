@@ -1,7 +1,7 @@
 <template>
   <div
     class="main-customer-container menu-width box-shadow top-fill"
-    style="min-height: 100%;"
+    :style="fullHeight"
   >
     <div class="bag">
       <auth-modal :showAuthModal="showAuthModal"></auth-modal>
@@ -205,6 +205,9 @@ export default {
       user: "user",
       bagDeliverySettings: "bagDeliverySettings"
     }),
+    fullHeight() {
+      if (!this.mobile) return "height: 100vh";
+    },
     storeOwner() {
       let flag = false;
       if (this.user && this.user.storeOwner) {

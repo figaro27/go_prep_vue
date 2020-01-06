@@ -25,7 +25,7 @@
     <div v-if="mealPackage">
       <b-btn
         size="lg"
-        :style="brandColor"
+        style="background-color:#ff0000"
         class="mobile-sticky-button white-text"
         @click="done"
         :disabled="getTotalRemainingMeals() > 0"
