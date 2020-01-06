@@ -23,13 +23,15 @@
         @ok.prevent="onViewMealModalOk" -->
 
     <div v-if="mealPackage">
-      <b-btn
-        size="lg"
+      <button
+        type="button"
         :style="brandColor"
+        class="mobile-sticky-button btn btn-lg white-text"
         @click="done"
         :disabled="getTotalRemainingMeals() > 0"
-        >{{ addButtonText }}</b-btn
       >
+        {{ addButtonText }}
+      </button>
       <b-row class="my-3" v-if="mealPackage.description != null">
         <b-col>
           <div>
