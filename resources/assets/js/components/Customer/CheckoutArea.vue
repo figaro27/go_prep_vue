@@ -1627,7 +1627,16 @@ use next_delivery_dates
       return this.afterFees + this.tax;
     },
     hasCoupons() {
-      if (this.coupons.length > 0 || this.purchasedGiftCards.length > 0) {
+      let bagHasGiftCard = false;
+      this.bag.forEach(item => {
+        if (item.meal.gift_card) {
+          bagHasGiftCard = true;
+        }
+      });
+      if (
+        (this.coupons.length > 0 || this.purchasedGiftCards.length > 0) &&
+        !bagHasGiftCard
+      ) {
         return true;
       } else {
         return false;
