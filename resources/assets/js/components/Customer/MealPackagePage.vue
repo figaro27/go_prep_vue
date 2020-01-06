@@ -26,7 +26,6 @@
       <b-btn
         size="lg"
         :style="brandColor"
-        class="mobile-sticky-button white-text"
         @click="done"
         :disabled="getTotalRemainingMeals() > 0"
         >{{ addButtonText }}</b-btn
