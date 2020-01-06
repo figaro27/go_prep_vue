@@ -35,12 +35,12 @@
         <b-col>
           <div>
             <p v-html="mealPackageDescription" class="mt-3 strong"></p>
-            <p>{{ store.settings.color }}</p>
           </div>
         </b-col>
       </b-row>
 
       <b-row v-if="components.length" class="my-3">
+        <p>{{ store.settings.color }}</p>
         <b-col>
           <div
             v-for="component in components"
