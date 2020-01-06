@@ -1,5 +1,8 @@
 <template>
-  <div class="main-customer-container menu-width box-shadow top-fill">
+  <div
+    class="main-customer-container menu-width box-shadow top-fill"
+    :style="fullHeight"
+  >
     <div class="bag">
       <auth-modal :showAuthModal="showAuthModal"></auth-modal>
       <spinner v-if="loading" position="absolute"></spinner>
@@ -202,6 +205,9 @@ export default {
       user: "user",
       bagDeliverySettings: "bagDeliverySettings"
     }),
+    fullHeight() {
+      if (!this.mobile) return "height: 100%";
+    },
     storeOwner() {
       let flag = false;
       if (this.user && this.user.storeOwner) {
@@ -436,7 +442,8 @@ export default {
       this.pickup = this.$route.params.pickup;
     } else if (
       this.storeModules.hideDeliveryOption &&
-      !this.$route.params.storeView && !this.storeOwner
+      !this.$route.params.storeView &&
+      !this.storeOwner
     ) {
       this.pickup = 1;
     } else {

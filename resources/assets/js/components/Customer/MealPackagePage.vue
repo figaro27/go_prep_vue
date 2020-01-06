@@ -23,6 +23,15 @@
         @ok.prevent="onViewMealModalOk" -->
 
     <div v-if="mealPackage">
+      <button
+        type="button"
+        :style="brandColor"
+        class="mobile-sticky-button btn btn-lg white-text"
+        @click="done"
+        :disabled="getTotalRemainingMeals() > 0"
+      >
+        {{ addButtonText }}
+      </button>
       <b-row class="my-3" v-if="mealPackage.description != null">
         <b-col>
           <div>
@@ -633,7 +642,7 @@
       </b-row>
     </div>
 
-    <div class="modal-footer">
+    <!-- <div class="modal-footer">
       <button @click="back" type="button" class="btn btn-secondary btn-lg">
         Back
       </button>
@@ -644,7 +653,7 @@
       >
         Add
       </button>
-    </div>
+    </div> -->
     <!-- Content End !-->
   </div>
 </template>
@@ -687,6 +696,24 @@ export default {
       deliveryDay: "viewedStoreDeliveryDay",
       store: "viewedStore"
     }),
+    addButtonText() {
+      if (this.getTotalRemainingMeals() > 0) {
+        return (
+          "Please select " +
+          this.getTotalRemainingMeals() +
+          " more meals to continue."
+        );
+      } else {
+        return "Add To Bag";
+      }
+    },
+    brandColor() {
+      if (this.store.settings) {
+        let style = "background-color:";
+        style += this.store.settings.color;
+        return style;
+      }
+    },
     mealPackageDescription() {
       return this.mealPackage.description.replace(/(\r\n|\n|\r)/gm, "<br />");
     },
@@ -1030,6 +1057,13 @@ export default {
       );
       this.$parent.remainingMeals = remainingMeals;
       return remainingMeals;
+    },
+    getTotalRemainingMeals() {
+      let totalRemainingMeals = 0;
+      this.mealPackage.components.forEach(component => {
+        totalRemainingMeals += this.getRemainingMeals(component.id);
+      });
+      return totalRemainingMeals;
     },
     getComponentChoices(id) {
       return this.choices[id] ? this.choices[id] : [];

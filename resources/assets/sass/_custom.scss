@@ -1507,3 +1507,13 @@ body.forgotresettoken {
 .h-90 {
   height: 90px !important;
 }
+
+.mobile-sticky-button {
+  display: block;
+  width: 60%;
+  position: fixed;
+  bottom: 0;
+  left: 40%;
+  margin: 0 0 0 -20%;
+  z-index: 1000;
+}

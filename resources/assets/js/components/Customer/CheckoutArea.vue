@@ -1070,7 +1070,10 @@ export default {
     hasSubscriptionOnlyItems() {
       let bagContainSubscriptionItem = false;
       this.bag.forEach(item => {
-        if (item.meal.subscriptionInterval !== null)
+        if (
+          item.meal.subscriptionInterval &&
+          item.meal.subscriptionInterval !== null
+        )
           bagContainSubscriptionItem = true;
       });
       return bagContainSubscriptionItem;
@@ -1992,7 +1995,7 @@ use next_delivery_dates
           notes: this.orderNotes,
           publicOrderNotes: this.publicOrderNotes,
           orderId: this.$parent.orderId,
-          deliveryDate: this.bagDeliveryDate,
+          deliveryDate: this.deliveryDay,
           isMultipleDelivery: this.isMultipleDelivery,
           pickup: this.pickup,
           transferTime: this.transferTime,
