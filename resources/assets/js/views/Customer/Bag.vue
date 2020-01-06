@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="main-customer-container menu-width box-shadow top-fill full-height"
-  >
+  <div class="main-customer-container menu-width box-shadow top-fill">
     <div class="bag">
       <auth-modal :showAuthModal="showAuthModal"></auth-modal>
       <spinner v-if="loading" position="absolute"></spinner>
