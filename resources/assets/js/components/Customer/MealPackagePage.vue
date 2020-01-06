@@ -700,7 +700,7 @@ export default {
         return (
           "Please select " +
           this.getTotalRemainingMeals() +
-          " more meals to continue."
+          " more items to continue."
         );
       } else {
         return "Add To Bag";
@@ -838,7 +838,7 @@ export default {
 
       if (this.$v.$invalid) {
         this.$forceUpdate();
-        this.$toastr.e("Please select the minimum number of items required.");
+        this.$toastr.w("Please select the minimum number of items required.");
       } else {
         let components = {};
         let addons = {};
