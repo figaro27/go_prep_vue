@@ -1,6 +1,6 @@
 <template>
   <div
-    class="main-customer-container menu-width box-shadow top-fill full-height"
+    class="main-customer-container menu-width box-shadow top-fill"
     style="min-height: 100%;"
   >
     <div class="bag">

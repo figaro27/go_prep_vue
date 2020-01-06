@@ -25,8 +25,8 @@
     <div v-if="mealPackage">
       <b-btn
         size="lg"
-        class="mobile-sticky-button white-text"
         :style="brandColor"
+        class="mobile-sticky-button white-text"
         @click="done"
         :disabled="getTotalRemainingMeals() > 0"
         >{{ addButtonText }}</b-btn
@@ -40,7 +40,6 @@
       </b-row>
 
       <b-row v-if="components.length" class="my-3">
-        <p>{{ brandColor }}</p>
         <b-col>
           <div
             v-for="component in components"
@@ -708,9 +707,11 @@ export default {
       }
     },
     brandColor() {
-      let style = "background-color:";
-      style += this.store.settings.color;
-      return style;
+      if (this.store.settings) {
+        let style = "background-color:";
+        style += this.store.settings.color;
+        return style;
+      }
     },
     mealPackageDescription() {
       return this.mealPackage.description.replace(/(\r\n|\n|\r)/gm, "<br />");
