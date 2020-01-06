@@ -35,7 +35,7 @@
         <b-col>
           <div>
             <p v-html="mealPackageDescription" class="mt-3 strong"></p>
-            <p>{{ this.store.settings.color }}</p>
+            <p>{{ store.settings.color }}</p>
           </div>
         </b-col>
       </b-row>
