@@ -137,10 +137,6 @@
         <div :class="`col-md-12 main-menu-area menu-page`">
           <Spinner v-if="showSpinner || forceShow" position="fixed" />
 
-          <store-closed
-            v-if="!$route.params.storeView && !storeView"
-            :storeView="storeView"
-          ></store-closed>
           <outside-delivery-area
             v-if="
               !$route.params.storeView &&

@@ -8,6 +8,18 @@
         : 'left-right-box-shadow main-customer-container gray-background'
     "
   >
+    <b-alert
+      show
+      variant="danger"
+      v-if="store.settings.open === false && !$parent.storeView"
+    >
+      <h4 class="center-text">
+        We are currently not accepting orders.
+      </h4>
+      <p class="center-text mt-3">
+        {{ store.settings.closedReason }}
+      </p>
+    </b-alert>
     <meal-package-components-modal
       ref="packageComponentModal"
       :packageTitle="packageTitle"
