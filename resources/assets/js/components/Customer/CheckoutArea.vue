@@ -2135,6 +2135,8 @@ use next_delivery_dates
         ? this.weeklySubscriptionValue
         : 0;
 
+      if (this.hasSubscriptionOnlyItems) weeklySubscriptionValue = 1;
+
       axios
         .post(endPoint, {
           notes: this.orderNotes,
