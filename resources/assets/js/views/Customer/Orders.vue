@@ -2,7 +2,7 @@
   <div class="main-customer-container box-shadow top-fill">
     <div class="row">
       <div class="col-md-12">
-        <Spinner v-if="isLoading" />
+        <Spinner v-if="!_orders" />
         <!-- <b-alert
           v-if="_orders && _orders[0]"
           :show="!!$route.query.created || false"
