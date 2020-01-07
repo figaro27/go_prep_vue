@@ -185,6 +185,16 @@
                 Balance: {{ format.money(order.balance, order.currency) }}
               </p>
             </div>
+            <div
+              v-if="
+                order.subscription &&
+                  order.subscription.monthlyPrepay &&
+                  (order.subscription.weekCount !== 1 ||
+                    order.subscription.weekCount % 4 !== 1)
+              "
+            >
+              Prepaid
+            </div>
             <br />
             <br />
           </div>

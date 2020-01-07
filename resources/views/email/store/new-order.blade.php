@@ -451,6 +451,9 @@ $currency = $order->store->settings->currency_symbol
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
                             {{$currency}}{{number_format($order->balance, 2)}}</span>
                           @endif
+                          @if ($order->subscription && $order->subscription->monthlyPrepay && ($order->subscription->weekCount !== 1 || $order->subscription->weekCount % 4 !== 1))
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">Prepaid</span>
+                          @endif
                         </td>
                       </tr>
                   </td>
