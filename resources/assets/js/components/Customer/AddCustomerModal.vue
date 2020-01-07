@@ -155,7 +155,7 @@ export default {
       form: {
         state: null,
         email: null,
-        delivery: "Please call my phone when outside"
+        delivery: ""
       }
     };
   },

@@ -505,7 +505,7 @@ export default {
           state: null,
           zip: null,
           country: "US",
-          delivery: "Please call my phone when outside.",
+          delivery: "",
           accepted_tos: 0
         },
         2: {

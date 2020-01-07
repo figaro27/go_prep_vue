@@ -231,10 +231,6 @@
                 label="Delivery Instructions"
                 :state="state(1, 'delivery')"
               >
-                <b-form-checkbox v-model="noDeliveryInstructions" class="pt-1"
-                  >Picking Up. Delivery Instructions Not
-                  Needed.</b-form-checkbox
-                >
                 <b-input
                   v-if="!noDeliveryInstructions"
                   v-model="form[1].delivery"
@@ -598,7 +594,7 @@ export default {
           state: null,
           zip: null,
           country: "US",
-          delivery: "Please call my phone when outside.",
+          delivery: "",
           accepted_tos: 0
         },
         2: {
