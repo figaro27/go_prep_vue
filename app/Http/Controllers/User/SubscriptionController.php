@@ -80,6 +80,17 @@ class SubscriptionController extends UserController
             );
         }
 
+        if ($sub->monthlyPrepay) {
+            if ($sub->weekCount % 4 === 0) {
+                $sub->cancel();
+            } else {
+                $this->update([
+                    'cancelled_at' => Carbon::now('utc')
+                ]);
+            }
+            return;
+        }
+
         try {
             $sub->cancel();
         } catch (\Exception $e) {

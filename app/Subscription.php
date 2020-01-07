@@ -390,6 +390,21 @@ class Subscription extends Model
         $order_transaction->amount = $latestOrder->amount;
         $order_transaction->save();
 
+        // Increment the week count by 1
+        $this->update([
+            'weekCount' => $this->weekCount + 1
+        ]);
+
+        // Only charge once per month on monthly prepay subscriptions
+        if (
+            $this->monthlyPrepay &&
+            ($this->weekCount !== 1 || $this->weekCount % 4 !== 1)
+        ) {
+            $this->apply100offCoupon();
+        } else {
+            $this->remove100offCoupon();
+        }
+
         // Create new order for next delivery
         $newOrder = new Order();
         $newOrder->user_id = $this->user_id;
@@ -520,6 +535,16 @@ class Subscription extends Model
                     $mealOrder->save();
                 }
             }
+        }
+
+        // Cancelling the subscription for next month if cancelled_at is marked
+        if (
+            $this->monthlyPrepay &&
+            $this->cancelled_at !== null &&
+            $this->weekCount % 4 === 0
+        ) {
+            $this->cancel();
+            return;
         }
 
         // Store next charge time as reported by Stripe
@@ -863,5 +888,48 @@ class Subscription extends Model
                 $mealOrder->save();
             }
         }
+    }
+
+    public function apply100offCoupon()
+    {
+        try {
+            $coupon = \Stripe\Coupon::retrieve('subscription-paused', [
+                'stripe_account' => $this->store->settings->stripe_id
+            ]);
+        } catch (\Exception $e) {
+            $coupon = \Stripe\Coupon::create(
+                [
+                    'duration' => 'forever',
+                    'id' => 'subscription-paused',
+                    'percent_off' => 100
+                ],
+                [
+                    'stripe_account' => $this->store->settings->stripe_id
+                ]
+            );
+        }
+
+        $subscription = \Stripe\Subscription::retrieve(
+            'sub_' . $this->stripe_id,
+            [
+                'stripe_account' => $this->store->settings->stripe_id
+            ]
+        );
+        $subscription->coupon = 'subscription-paused';
+        $subscription->save();
+    }
+
+    public function remove100offCoupon()
+    {
+        $subscription = \Stripe\Subscription::retrieve(
+            'sub_' . $this->stripe_id,
+            [
+                'stripe_account' => $this->store->settings->stripe_id
+            ]
+        );
+        $subscription->coupon = null;
+        $subscription->save();
+
+        $this->store->clearCaches();
     }
 }
