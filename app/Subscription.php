@@ -14,7 +14,7 @@ use App\OrderTransaction;
 
 class Subscription extends Model
 {
-    protected $fillable = ['status', 'cancelled_at'];
+    protected $fillable = ['status', 'cancelled_at', 'weekCount'];
 
     protected $appends = [
         'store_name',
