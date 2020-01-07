@@ -16,6 +16,7 @@ class UserDetail extends Model
         'zip',
         'country',
         'delivery',
+        'companyname',
         'notifications',
         'billingAddress',
         'billingCity',

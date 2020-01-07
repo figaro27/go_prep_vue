@@ -81,6 +81,18 @@
         <div class="row light-background border-bottom mb-3">
           <div class="col-md-4 pt-4">
             <h4>Customer</h4>
+            <span v-if="customer.companyname">
+              <span v-if="editingCustomer">
+                <b-form-input
+                  v-model="customer.companyname"
+                  class="d-inline width-70 mb-3"
+                ></b-form-input>
+              </span>
+              <span v-else>
+                <p>{{ customer.companyname }}</p>
+              </span>
+            </span>
+
             <span v-if="editingCustomer">
               <b-form-input
                 v-model="customer.firstname"
