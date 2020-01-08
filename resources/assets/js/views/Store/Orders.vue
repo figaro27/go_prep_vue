@@ -1290,7 +1290,7 @@ export default {
         .then(response => {
           this.viewOrderModal = false;
           this.chargeAmount = 0;
-          this.refreshTable();
+          tthis.refreshResource("orders");
           this.$toastr.s(response.data);
           this.applyToBalanceCharge = false;
           this.applyToBalanceRefund = false;
@@ -1314,7 +1314,7 @@ export default {
           } else {
             this.viewOrderModal = false;
             this.refundAmount = 0;
-            this.refreshUpcomingOrders();
+            this.refreshResource("orders");
             this.$toastr.s(response.data);
             this.applyToBalanceCharge = false;
             this.applyToBalanceRefund = false;
@@ -1330,7 +1330,7 @@ export default {
         .then(response => {
           this.$toastr.s("Balance has been settled to 0");
           this.viewOrderModal = false;
-          this.refreshUpcomingOrders();
+          this.refreshResource("orders");
           this.applyToBalanceCharge = false;
           this.applyToBalanceRefund = false;
         });
@@ -1342,7 +1342,7 @@ export default {
         })
         .then(response => {
           this.viewOrderModal = false;
-          this.refreshUpcomingOrders();
+          this.refreshResource("orders");
           this.$toastr.s(response.data);
         });
     },
