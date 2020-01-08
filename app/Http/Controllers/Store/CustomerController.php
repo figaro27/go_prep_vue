@@ -6,6 +6,7 @@ use App\User;
 use App\UserDetail;
 use App\Customer;
 use App\Card;
+use App\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -164,20 +165,31 @@ class CustomerController extends StoreController
     {
         $customerId = $request->get('id');
         $customer = Customer::where('id', $customerId)->first();
+        $user = User::where('id', $customer->user_id)->first();
 
         $storeId = $this->store->id;
         $gateway = $this->store->settings->payment_gateway;
 
-        return $customer->user
-            ->cards()
-            ->where('payment_gateway', $gateway)
-            ->get()
-            ->filter(function ($card) use ($storeId, $gateway) {
-                if ($gateway === 'authorize') {
-                    return $card->store_id === $storeId;
-                } else {
-                    return true;
-                }
-            });
+        $orders = Order::where([
+            'user_id' => $user->id,
+            'store_id' => $storeId
+        ])->count();
+
+        // Only return cards if the store manually added the user or if the user has ordered from the store.
+        if ($user->added_by_store_id === $storeId || $orders > 0) {
+            return $customer->user
+                ->cards()
+                ->where('payment_gateway', $gateway)
+                ->get()
+                ->filter(function ($card) use ($storeId, $gateway) {
+                    if ($gateway === 'authorize') {
+                        return $card->store_id === $storeId;
+                    } else {
+                        return true;
+                    }
+                });
+        } else {
+            return [];
+        }
     }
 }
