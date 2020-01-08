@@ -476,8 +476,8 @@ class Subscription extends Model
             if ($isMultipleDelivery == 1 && $mealSub->delivery_date) {
                 $mealOrder->delivery_date =
                     $this->interval === 'week'
-                        ? $mealSub->delivery_date->addWeeks(1)->toDateString()
-                        : $mealSub->delivery_date->addDays(30)->toDateString();
+                        ? $mealSub->delivery_date->toDateString()->addWeeks(1)
+                        : $mealSub->delivery_date->toDateString()->addDays(30);
             }
 
             $mealOrder->save();
