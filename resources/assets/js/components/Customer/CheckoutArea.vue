@@ -2195,6 +2195,7 @@ use next_delivery_dates
           if (this.isManualOrder) {
             this.refreshResource("orders");
             this.refreshStoreCustomers();
+            this.refreshStorePurchasedGiftCards();
           }
 
           if (this.$route.params.manualOrder && weeklyDelivery) {
