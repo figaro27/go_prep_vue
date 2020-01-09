@@ -2121,9 +2121,9 @@ use next_delivery_dates
         this.cashOrder = 0;
       }
 
-      // let weeklySubscriptionValue = this.storeSettings.allowMealPlans
-      //   ? this.weeklySubscriptionValue
-      //   : 0;
+      let weeklySubscriptionValue = this.storeSettings.allowMealPlans
+        ? this.weeklySubscriptionValue
+        : 0;
 
       axios
         .post(endPoint, {
@@ -2133,7 +2133,7 @@ use next_delivery_dates
           mealPlanDiscount: this.mealPlanDiscount,
           afterDiscount: this.afterDiscount,
           bag: this.bag,
-          plan: this.weeklySubscriptionValue,
+          plan: weeklySubscriptionValue,
           plan_interval: this.subscriptionInterval,
           monthlyPrepay: this.hasMonthlyPrepaySubscriptionItems,
           pickup: this.pickup,
@@ -2206,7 +2206,7 @@ use next_delivery_dates
             });
             return;
           }
-          if (this.weeklySubscriptionValue) {
+          if (weeklySubscriptionValue) {
             await this.refreshSubscriptions();
             this.$router.push({
               path: "/customer/subscriptions",
