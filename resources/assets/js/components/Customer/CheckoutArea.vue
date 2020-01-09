@@ -2121,9 +2121,11 @@ use next_delivery_dates
         this.cashOrder = 0;
       }
 
-      let weeklySubscriptionValue = this.storeSettings.allowMealPlans
-        ? this.weeklySubscriptionValue
-        : 0;
+      // let weeklySubscriptionValue = this.storeSettings.allowMealPlans
+      //   ? this.weeklySubscriptionValue
+      //   : 0;
+
+      let weeklySubscriptionValue = this.weeklySubscriptionValue;
 
       axios
         .post(endPoint, {
