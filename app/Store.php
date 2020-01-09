@@ -1058,18 +1058,6 @@ class Store extends Model
             return true;
         }
 
-        if ($email) {
-            if ($bcc === true) {
-                Mail::to($this->user)
-                    ->bcc('orders@goprep.com')
-                    ->send($email);
-                return true;
-            } else {
-                Mail::to($this->user)->send($email);
-                return true;
-            }
-        }
-
         return false;
     }
 
