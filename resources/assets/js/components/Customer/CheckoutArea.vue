@@ -2133,7 +2133,7 @@ use next_delivery_dates
           mealPlanDiscount: this.mealPlanDiscount,
           afterDiscount: this.afterDiscount,
           bag: this.bag,
-          plan: weeklySubscriptionValue,
+          plan: this.weeklySubscriptionValue,
           plan_interval: this.subscriptionInterval,
           monthlyPrepay: this.hasMonthlyPrepaySubscriptionItems,
           pickup: this.pickup,
