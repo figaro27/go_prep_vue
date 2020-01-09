@@ -1455,7 +1455,7 @@ use next_delivery_dates
       var month = today.getMonth();
       var date = today.getDate();
 
-      for (var i = 0; i < 150; i++) {
+      for (var i = 0; i < 180; i++) {
         var day = new Date(year, month, date + i);
         options.push({
           value: moment(day).format("YYYY-MM-DD 00:00:00"),
