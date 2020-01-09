@@ -21,7 +21,11 @@
      <div class="delivery-part">
       @if ($delivery_dates)
         <h2>
-          Dates:
+          @if ($params['byOrderDate'])
+          Order Dates:
+          @else
+          Delivery Dates:
+          @endif
           {{ $delivery_dates['from']->format($params->date_format) }} -
           {{ $delivery_dates['to']->format($params->date_format) }}
         </h2>

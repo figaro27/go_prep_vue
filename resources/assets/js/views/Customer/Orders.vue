@@ -2,7 +2,7 @@
   <div class="main-customer-container box-shadow top-fill">
     <div class="row">
       <div class="col-md-12">
-        <Spinner v-if="isLoading" />
+        <Spinner v-if="!_orders" />
         <!-- <b-alert
           v-if="_orders && _orders[0]"
           :show="!!$route.query.created || false"
@@ -184,6 +184,16 @@
               <p class="d-inline">
                 Balance: {{ format.money(order.balance, order.currency) }}
               </p>
+            </div>
+            <div
+              v-if="
+                order.subscription &&
+                  order.subscription.monthlyPrepay &&
+                  (order.subscription.weekCount !== 1 ||
+                    order.subscription.weekCount % 4 !== 1)
+              "
+            >
+              Prepaid
             </div>
             <br />
             <br />

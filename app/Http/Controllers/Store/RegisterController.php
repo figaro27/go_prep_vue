@@ -59,6 +59,7 @@ class RegisterController extends StoreController
             ]);
 
             $userDetails = $user->details()->create([
+                'companyname' => $request->get('company_name'),
                 'firstname' => $request->get('first_name'),
                 'lastname' => $request->get('last_name'),
                 'phone' => $request->get('phone'),

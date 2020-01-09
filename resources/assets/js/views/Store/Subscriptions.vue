@@ -171,6 +171,7 @@
         <div class="row">
           <div class="col-md-4">
             <h4>Customer</h4>
+            <p v-if="user_detail.companyname">{{ user_detail.companyname }}</p>
             <p>{{ user_detail.firstname }} {{ user_detail.lastname }}</p>
           </div>
           <div class="col-md-4">

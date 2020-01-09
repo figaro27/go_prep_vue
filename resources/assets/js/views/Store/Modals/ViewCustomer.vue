@@ -12,6 +12,9 @@
       <div class="row">
         <div class="col-md-4">
           <h4>Customer</h4>
+          <p v-if="user.user_detail.companyname">
+            {{ user.user_detail.companyname }}
+          </p>
           <p>
             {{ user.user_detail.firstname }} {{ user.user_detail.lastname }}
           </p>

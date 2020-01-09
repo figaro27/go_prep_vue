@@ -110,6 +110,11 @@ $currency = $order->store->settings->currency_symbol
                         <td height="15"></td>
                       </tr>
                       <!-- company name -->
+                      @if ($order->user->details->companyname)
+                      <tr>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $order->user->details->companyname }}</td>
+                      </tr>
+                      @endif
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $order->store_name }}</td>
                       </tr>
@@ -449,6 +454,9 @@ $currency = $order->store->settings->currency_symbol
                             {{$order->store->settings->currency_symbol}}{{number_format($order->amount - $order->balance, 2)}}</span><br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
                             {{$order->store->settings->currency_symbol}}{{number_format($order->balance, 2)}}</span>
+                          @endif
+                          @if ($order->subscription && $order->subscription->monthlyPrepay && ($order->subscription->weekCount !== 1 || $order->subscription->weekCount % 4 !== 1))
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">Prepaid</span>
                           @endif
                         </td>
                       </tr>

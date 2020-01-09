@@ -168,6 +168,9 @@ class RegisterController extends Controller
 
         $userDetails = $user->details()->create([
             //'user_id' => $user->id,
+            'companyname' => isset($data['user']['company_name'])
+                ? $data['user']['company_name']
+                : null,
             'firstname' => $data['user']['first_name'],
             'lastname' => $data['user']['last_name'],
             'phone' => $data['user']['phone'],

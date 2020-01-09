@@ -531,12 +531,33 @@
                 class="popover-size d-inline"
               />
             </div>
+            <div
+              v-if="
+                order.subscription &&
+                  order.subscription.monthlyPrepay &&
+                  (order.subscription.weekCount !== 1 ||
+                    order.subscription.weekCount % 4 !== 1)
+              "
+            >
+              Prepaid
+            </div>
           </div>
         </div>
 
         <div class="row">
           <div class="col-md-4">
             <h4>Customer</h4>
+            <span v-if="user_detail.companyname">
+              <span v-if="editingCustomer">
+                <b-form-input
+                  v-model="user_detail.companyname"
+                  class="d-inline width-70 mb-3"
+                ></b-form-input>
+              </span>
+              <span v-else>
+                <p>{{ user_detail.companyname }}</p>
+              </span>
+            </span>
             <span v-if="editingCustomer">
               <b-form-input
                 v-model="user_detail.firstname"
@@ -1269,7 +1290,7 @@ export default {
         .then(response => {
           this.viewOrderModal = false;
           this.chargeAmount = 0;
-          this.refreshTable();
+          tthis.refreshResource("orders");
           this.$toastr.s(response.data);
           this.applyToBalanceCharge = false;
           this.applyToBalanceRefund = false;
@@ -1293,7 +1314,7 @@ export default {
           } else {
             this.viewOrderModal = false;
             this.refundAmount = 0;
-            this.refreshUpcomingOrders();
+            this.refreshResource("orders");
             this.$toastr.s(response.data);
             this.applyToBalanceCharge = false;
             this.applyToBalanceRefund = false;
@@ -1309,7 +1330,7 @@ export default {
         .then(response => {
           this.$toastr.s("Balance has been settled to 0");
           this.viewOrderModal = false;
-          this.refreshUpcomingOrders();
+          this.refreshResource("orders");
           this.applyToBalanceCharge = false;
           this.applyToBalanceRefund = false;
         });
@@ -1321,7 +1342,7 @@ export default {
         })
         .then(response => {
           this.viewOrderModal = false;
-          this.refreshUpcomingOrders();
+          this.refreshResource("orders");
           this.$toastr.s(response.data);
         });
     },

@@ -40,7 +40,7 @@ f<template>
           <p class="center-text mt-3">You have no active subscriptions.</p>
         </b-alert>
 
-        <Spinner v-if="isLoading" />
+        <Spinner v-if="!subscriptions" />
         <v-client-table
           :columns="columns"
           :data="tableData"

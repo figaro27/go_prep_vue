@@ -945,6 +945,9 @@ export default {
   },
   data() {
     return {
+      hasWeeklySubscriptionItems: false,
+      hasMonthlySubscriptionItems: false,
+      hasMonthlyPrepaySubscriptionItems: false,
       form: {
         billingState: null
       },
@@ -1067,25 +1070,6 @@ export default {
       bagDeliverySettings: "bagDeliverySettings",
       deliveryDays: "viewedStoreDeliveryDays"
     }),
-    hasSubscriptionOnlyItems() {
-      let bagContainSubscriptionItem = false;
-      this.bag.forEach(item => {
-        if (
-          item.meal.subscriptionInterval &&
-          item.meal.subscriptionInterval !== null
-        )
-          bagContainSubscriptionItem = true;
-      });
-      return bagContainSubscriptionItem;
-    },
-    monthlyPrepay() {
-      if (this.hasSubscriptionOnlyItems) {
-        // Assuming all are monthly prepay for now for Freshly Prepped. To be changed in the future.
-        return true;
-      } else {
-        return false;
-      }
-    },
     pickupLocationClass() {
       if (this.selectedPickupLocationAddress && this.selectedPickupLocation)
         return "checkout-item h-90";
@@ -2069,6 +2053,12 @@ use next_delivery_dates
       });
     },
     checkout() {
+      if (this.subscriptionItemsCheck() > 1) {
+        this.$toastr.w(
+          "You have multiple subscription types in your bag (e.g weekly & monthly). Please checkout one subscription type at a time."
+        );
+        return;
+      }
       if (
         this.pickup === 1 &&
         this.store.modules.pickupLocations &&
@@ -2145,7 +2135,7 @@ use next_delivery_dates
           bag: this.bag,
           plan: weeklySubscriptionValue,
           plan_interval: this.subscriptionInterval,
-          monthlyPrepay: this.monthlyPrepay,
+          monthlyPrepay: this.hasMonthlyPrepaySubscriptionItems,
           pickup: this.pickup,
           isMultipleDelivery: this.isMultipleDelivery,
           delivery_day: this.bagDeliveryDate
@@ -2189,10 +2179,11 @@ use next_delivery_dates
           this.setBagCoupon(null);
           this.setBagPurchasedGiftCard(null);
           this.clearBagDeliveryDate();
-          this.refreshStoreCustomers();
 
           if (this.isManualOrder) {
             this.refreshResource("orders");
+            this.refreshStoreCustomers();
+            this.refreshStorePurchasedGiftCards();
           }
 
           if (this.$route.params.manualOrder && weeklyDelivery) {
@@ -2215,7 +2206,7 @@ use next_delivery_dates
             });
             return;
           }
-          if (weeklyDelivery) {
+          if (weeklySubscriptionValue) {
             await this.refreshSubscriptions();
             this.$router.push({
               path: "/customer/subscriptions",
@@ -2275,6 +2266,31 @@ use next_delivery_dates
           this.billingAddressVerified = true;
           this.$toastr.s("Billing address added. Please add your credit card.");
         });
+    },
+    subscriptionItemsCheck() {
+      let subscriptionItemTypeCount = 0;
+      this.bag.forEach(item => {
+        if (item.meal.subscriptionInterval) {
+          switch (item.meal.subscriptionInterval) {
+            case "weekly":
+              this.hasWeeklySubscriptionItems = true;
+              subscriptionItemTypeCount += 1;
+              break;
+            case "monthly":
+              this.hasMonthlySubscriptionItems = true;
+              subscriptionItemTypeCount += 1;
+              break;
+            case "monthly-prepay":
+              this.hasMonthlyPrepaySubscriptionItems = true;
+              subscriptionItemTypeCount += 1;
+              break;
+          }
+        }
+      });
+      if (subscriptionItemTypeCount > 0) {
+        this.weeklySubscriptionValue = 1;
+      }
+      return subscriptionItemTypeCount;
     }
   }
 };

@@ -96,6 +96,9 @@ $brandColor = $order->store->settings->color;
 
 
       <div class="col-4 align-right">
+        @if ($order->user->details->companyname)
+          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">{{ $order->user->details->companyname }}</p>
+          @endif
         <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">{{$order->user->name}}</p>
         @if ($order->user->details->address !== 'N/A')
         <p>{{$order->user->details->address}}</p>
@@ -315,6 +318,9 @@ $brandColor = $order->store->settings->color;
             <td style="border:none"><b>Paid</b></td>
               <td style="border:none;text-align:right;position:relative;right:8px">{{$currency}}{{number_format($order->amount - $order->balance, 2)}}</td>
             </tr>
+            @endif
+            @if ($order->subscription && $order->subscription->monthlyPrepay && ($order->subscription->weekCount !== 1 || $order->subscription->weekCount % 4 !== 1))
+              <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">Prepaid</span>
             @endif
           </table>
         </td>

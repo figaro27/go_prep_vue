@@ -42,6 +42,13 @@
       </b-alert>
 
       <b-form @submit.prevent="addCustomer" class="mt-1">
+        <b-form-group horizontal label="Company Name">
+          <b-form-input
+            v-model="form.company_name"
+            type="text"
+            placeholder="Optional"
+          ></b-form-input>
+        </b-form-group>
         <b-form-group horizontal label="First Name">
           <b-form-input
             v-model="form.first_name"
@@ -155,7 +162,7 @@ export default {
       form: {
         state: null,
         email: null,
-        delivery: "Please call my phone when outside"
+        delivery: ""
       }
     };
   },
