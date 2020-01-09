@@ -2206,7 +2206,7 @@ use next_delivery_dates
             });
             return;
           }
-          if (weeklySubscriptionValue) {
+          if (this.weeklySubscriptionValue) {
             await this.refreshSubscriptions();
             this.$router.push({
               path: "/customer/subscriptions",
