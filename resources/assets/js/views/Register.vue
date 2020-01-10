@@ -738,10 +738,12 @@ export default {
     });
   },
   mounted() {
-    this.form[1].state = this.store.details.state;
-    this.form[1].country = this.store.details.country;
-    return;
+    // this.form[1].state = this.store.details.state;
+    // this.form[1].country = this.store.details.country;
+    // return;
     if (this.store.details) {
+      this.form[1].state = this.store.details.state;
+      this.form[1].country = this.store.details.country;
       let stateAbr = this.store.details.state;
       let state = this.stateNames.filter(stateName => {
         return stateName.value.toLowerCase() === stateAbr.toLowerCase();
