@@ -12,7 +12,8 @@ class MealOrder extends Pivot
 
     protected $casts = [
         'free' => 'boolean',
-        'meal_package' => 'boolean'
+        'meal_package' => 'boolean',
+        'delivery_date' => 'date:Y-m-d'
     ];
 
     protected $appends = [
