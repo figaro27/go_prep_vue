@@ -1381,10 +1381,18 @@ export default {
         return "Pickup Instructions";
     },
     transferTypeCheckDelivery() {
-      if (_.includes(this.transferType, "delivery")) return true;
+      if (
+        _.includes(this.transferType, "delivery") &&
+        this.storeSettings.next_orderable_delivery_dates.length > 0
+      )
+        return true;
     },
     transferTypeCheckPickup() {
-      if (_.includes(this.transferType, "pickup")) return true;
+      if (
+        _.includes(this.transferType, "pickup") &&
+        this.storeSettings.next_orderable_pickup_dates.length > 0
+      )
+        return true;
     },
     deliveryDateOptions() {
       let options = [];
