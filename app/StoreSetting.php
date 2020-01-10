@@ -32,7 +32,8 @@ class StoreSetting extends Model
         'open',
         'meal_packages',
         'currency',
-        'showMacros'
+        'showMacros',
+        'preventNextWeekOrders'
     ];
 
     /**
