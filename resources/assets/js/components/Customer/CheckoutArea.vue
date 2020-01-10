@@ -2039,6 +2039,11 @@ use next_delivery_dates
         });
     },
     mounted() {
+      // For Living Fit (Rework)
+      if (this.storeSettings.next_orderable_delivery_dates.length <= 0) {
+        this.pickup = 1;
+      }
+
       this.creditCardId = this.card;
 
       if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
