@@ -854,7 +854,7 @@ export default {
         data.user_details = { ...data.store };
       }
       if (
-        this.store &&
+        this.store.details &&
         this.store.details.country === "GB" &&
         !this.form[1].zip.includes(" ")
       ) {
