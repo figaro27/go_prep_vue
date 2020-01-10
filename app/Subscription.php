@@ -390,16 +390,6 @@ class Subscription extends Model
         $order_transaction->amount = $latestOrder->amount;
         $order_transaction->save();
 
-        // Only charge once per month on monthly prepay subscriptions
-        if (
-            $this->monthlyPrepay &&
-            ($this->weekCount !== 0 || $this->weekCount % 4 !== 0)
-        ) {
-            $this->apply100offCoupon();
-        } else {
-            $this->remove100offCoupon();
-        }
-
         // Create new order for next delivery
         $newOrder = new Order();
         $newOrder->user_id = $this->user_id;
@@ -536,6 +526,16 @@ class Subscription extends Model
         $this->update([
             'weekCount' => $this->weekCount + 1
         ]);
+
+        // Only charge once per month on monthly prepay subscriptions
+        if (
+            $this->monthlyPrepay &&
+            ($this->weekCount !== 0 || $this->weekCount % 4 !== 0)
+        ) {
+            $this->apply100offCoupon();
+        } else {
+            $this->remove100offCoupon();
+        }
 
         // Cancelling the subscription for next month if cancelled_at is marked
         if (
