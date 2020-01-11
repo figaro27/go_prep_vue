@@ -187,7 +187,6 @@
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
-            style="margin-right:200px"
             to="/customer/bag"
             v-if="(!subscriptionId || !adjustOrder) && !mealPackagePageView"
           >
@@ -200,7 +199,6 @@
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
-            style="margin-right:265px;"
             v-if="
               store.modules.multipleDeliveryDays &&
                 finalDeliveryDay &&
