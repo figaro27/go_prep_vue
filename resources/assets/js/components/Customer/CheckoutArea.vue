@@ -342,7 +342,7 @@
       <b-form-group>
         <b-form-radio-group v-model="pickup" v-on:input="changePickup">
           <b-form-radio
-            :value="0"
+            :value="pickupValue"
             v-if="
               storeSettings.next_orderable_delivery_dates.length > 0 ||
                 $route.params.storeView ||
@@ -352,7 +352,7 @@
             <strong>Delivery</strong>
           </b-form-radio>
           <b-form-radio
-            :value="1"
+            :value="deliveryValue"
             v-if="
               storeSettings.next_orderable_pickup_dates.length > 0 ||
                 $route.params.storeView ||
@@ -1080,6 +1080,26 @@ export default {
       bagDeliverySettings: "bagDeliverySettings",
       deliveryDays: "viewedStoreDeliveryDays"
     }),
+    deliveryValue() {
+      if (
+        this.storeSettings.next_orderable_delivery_dates.length === 0 &&
+        this.storeSettings.next_orderable_pickup_dates.length > 0
+      ) {
+        return 0;
+      } else {
+        return 1;
+      }
+    },
+    pickupValue() {
+      if (
+        this.storeSettings.next_orderable_delivery_dates.length === 0 &&
+        this.storeSettings.next_orderable_pickup_dates.length > 0
+      ) {
+        return 1;
+      } else {
+        return 0;
+      }
+    },
     pickupLocationClass() {
       if (this.selectedPickupLocationAddress && this.selectedPickupLocation)
         return "checkout-item h-90";
