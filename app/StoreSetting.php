@@ -54,7 +54,8 @@ class StoreSetting extends Model
         'subscribed_delivery_days', // Delivery days with active subscriptionss
         'stripe',
         'currency_symbol',
-        'date_format'
+        'date_format',
+        'menuReopening'
     ];
 
     public static function boot()
@@ -416,5 +417,41 @@ class StoreSetting extends Model
         } else {
             return 'D, d/m/Y';
         }
+    }
+
+    public function getMenuReopeningAttribute()
+    {
+        $day = '';
+        switch ($this->enableNextWeekDay) {
+            case 'Sun':
+                $day = 'Sunday';
+                break;
+            case 'Mon':
+                $day = 'Monday';
+                break;
+            case 'Tue':
+                $day = 'Tuesday';
+                break;
+            case 'Wed':
+                $day = 'Wednesday';
+                break;
+            case 'Thu':
+                $day = 'Thursday';
+                break;
+            case 'Fri':
+                $day = 'Friday';
+                break;
+            case 'Sat':
+                $day = 'Saturday';
+                break;
+        }
+
+        // Rework to get time zone difference.
+        $adjustedTime = (int) $this->enableNextWeekHour;
+        $adjustedTime = $adjustedTime - 5;
+
+        $time = date("g:i a", strtotime($adjustedTime . ':00'));
+
+        return $day . ' at ' . $time;
     }
 }

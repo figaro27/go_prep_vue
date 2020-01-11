@@ -329,6 +329,16 @@
             storeOwner)
       "
     >
+      <b-alert
+        v-if="
+          storeSettings.preventNextWeekOrders &&
+            storeSettings.next_orderable_delivery_dates.length === 0 &&
+            storeSettings.next_orderable_pickup_dates.length === 0
+        "
+        variant="warning center-text"
+        show
+        >Orders are closed until {{ storeSettings.menuReopening }}.</b-alert
+      >
       <b-form-group>
         <b-form-radio-group v-model="pickup" v-on:input="changePickup">
           <b-form-radio
