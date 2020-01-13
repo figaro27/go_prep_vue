@@ -190,6 +190,9 @@
               ></delivery-date-picker>
               <b-btn @click="clearPackingSlips()" class="ml-1">Clear</b-btn>
             </div>
+            <div class="alert alert-primary" role="alert">
+              Packing slips will print 25 orders per browser tab.
+            </div>
             <p class="mt-4 center-text">
               Show packing slips or order summaries to include in your bag to
               the customers.
@@ -426,9 +429,6 @@ export default {
                   win.print();
 
                   if (data.next_page && data.next_page !== page) {
-                    alert(
-                      "Packing slips will print 25 orders per browser tab. Please wait for all tabs to finish loading before printing."
-                    );
                     this.print(report, format, data.next_page);
                   }
                 },
