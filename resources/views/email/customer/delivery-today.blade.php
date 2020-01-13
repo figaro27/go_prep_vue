@@ -124,7 +124,7 @@ $currency = $order->store->settings->currency_symbol
                       </tr>
                       @if ($order->user->details->companyname)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $order->user->details->companyname }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">{{ $order->user->details->companyname }}</td>
                       </tr>
                       @endif
                       <tr>
