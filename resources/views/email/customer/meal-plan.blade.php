@@ -113,14 +113,14 @@ $currency = $subscription->store->settings->currency_symbol
                         <td height="15"></td>
                       </tr>
                       <!-- company name -->
-                      @if ($subscription->user->details->companyname)
-                      <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $subscription->user->details->companyname }}</td>
-                      </tr>
-                      @endif
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $subscription->store->details->name }}</td>
                       </tr>
+                      @if ($subscription->user->details->companyname)
+                      <tr>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">{{ $subscription->user->details->companyname }}</td>
+                      </tr>
+                      @endif
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $subscription->user->details->full_name }}</td>
                       </tr>
