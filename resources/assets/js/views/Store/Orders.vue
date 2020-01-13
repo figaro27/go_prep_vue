@@ -1401,7 +1401,9 @@ export default {
             );
 
             data.push({
-              delivery_date: moment(item.delivery_date).format("dddd, MMM Do"),
+              delivery_date: moment(item.delivery_date.date).format(
+                "dddd, MMM Do"
+              ),
               //meal: meal.title,
               size: size ? size.title : meal.default_size_title,
               meal: title,
@@ -1437,7 +1439,9 @@ export default {
           );
 
           data.push({
-            delivery_date: moment(item.delivery_date).format("dddd, MMM Do"),
+            delivery_date: moment(item.delivery_date.date).format(
+              "dddd, MMM Do"
+            ),
             //meal: meal.title,
             size: size ? size.title : meal.default_size_title,
             meal: title,
