@@ -426,6 +426,9 @@ export default {
                   win.print();
 
                   if (data.next_page && data.next_page !== page) {
+                    alert(
+                      "Packing slips will print 25 orders per browser tab. Please wait for all tabs to finish loading before printing."
+                    );
                     this.print(report, format, data.next_page);
                   }
                 },
