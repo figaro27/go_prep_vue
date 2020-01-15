@@ -199,7 +199,7 @@
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
-            style="margin-right:50px"
+            style="margin-right:65px"
             v-if="
               store.modules.multipleDeliveryDays &&
                 finalDeliveryDay &&
