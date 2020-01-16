@@ -2083,12 +2083,12 @@ use next_delivery_dates
       });
     },
     checkout() {
-      if (this.subscriptionItemsCheck() > 1) {
-        this.$toastr.w(
-          "You have multiple subscription types in your bag (e.g weekly & monthly). Please checkout one subscription type at a time."
-        );
-        return;
-      }
+      // if (this.subscriptionItemsCheck() > 1) {
+      //   this.$toastr.w(
+      //     "You have multiple subscription types in your bag (e.g weekly & monthly). Please checkout one subscription type at a time."
+      //   );
+      //   return;
+      // }
       if (
         this.pickup === 1 &&
         this.store.modules.pickupLocations &&
