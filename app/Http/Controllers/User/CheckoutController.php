@@ -704,7 +704,9 @@ class CheckoutController extends UserController
             $userSubscription->user_id = $user->id;
             $userSubscription->customer_id = $customer->id;
             $userSubscription->card_id = $cardId;
-            $userSubscription->stripe_customer_id = $storeCustomer->id;
+            $userSubscription->stripe_customer_id = $storeCustomer
+                ? $storeCustomer->id
+                : null;
             $userSubscription->store_id = $store->id;
             $userSubscription->name =
                 ucwords($period) .
