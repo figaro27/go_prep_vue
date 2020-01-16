@@ -1080,6 +1080,13 @@ export default {
       bagDeliverySettings: "bagDeliverySettings",
       deliveryDays: "viewedStoreDeliveryDays"
     }),
+    hasMultipleSubscriptionItems() {
+      let subscriptionItemTypes = 0;
+      if (this.hasWeeklySubscriptionItems) subscriptionItemTypes += 1;
+      if (this.hasMonthlySubscriptionItems) subscriptionItemTypes += 1;
+      if (this.hasMonthlyPrepaySubscriptionItems) subscriptionItemTypes += 1;
+      if (subscriptionItemTypes > 1) return true;
+    },
     deliveryValue() {
       if (
         this.storeSettings.next_orderable_delivery_dates.length === 0 &&
@@ -2083,12 +2090,12 @@ use next_delivery_dates
       });
     },
     checkout() {
-      // if (this.subscriptionItemsCheck() > 1) {
-      //   this.$toastr.w(
-      //     "You have multiple subscription types in your bag (e.g weekly & monthly). Please checkout one subscription type at a time."
-      //   );
-      //   return;
-      // }
+      if (this.hasMultipleSubscriptionItems) {
+        this.$toastr.w(
+          "You have multiple subscription types in your bag (e.g weekly & monthly). Please checkout one subscription type at a time."
+        );
+        return;
+      }
       this.subscriptionItemsCheck();
 
       if (
