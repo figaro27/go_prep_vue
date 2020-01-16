@@ -783,7 +783,7 @@
         <b-btn
           v-if="
             // Condense all this logic / put in computed prop
-            (card != null || cashOrder) &&
+            (card != null || cashOrder || grandTotal === 0) &&
               (minimumMet || $route.params.storeView || storeOwner) &&
               $route.params.adjustOrder != true &&
               $route.params.subscriptionId === undefined &&
@@ -2152,6 +2152,10 @@ use next_delivery_dates
       }
 
       let cardId = this.card;
+
+      if (this.grandTotal === 0) {
+        this.cashOrder = true;
+      }
 
       if (this.cashOrder === true) {
         cardId = 0;
