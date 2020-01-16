@@ -2090,8 +2090,7 @@ use next_delivery_dates
       //   return;
       // }
       this.subscriptionItemsCheck();
-      console.log("sub " + this.weeklySubscriptionValue);
-      console.log("bag " + this.bag);
+
       if (
         this.pickup === 1 &&
         this.store.modules.pickupLocations &&
