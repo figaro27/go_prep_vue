@@ -2315,6 +2315,9 @@ use next_delivery_dates
         });
     },
     subscriptionItemsCheck() {
+      this.hasWeeklySubscriptionItems = false;
+      this.hasMonthlySubscriptionItems = false;
+      this.hasMonthlyPrepaySubscriptionItems = false;
       let subscriptionItemTypeCount = 0;
       this.bag.forEach(item => {
         if (item.meal.subscriptionInterval) {
