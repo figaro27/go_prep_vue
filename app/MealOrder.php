@@ -100,7 +100,7 @@ class MealOrder extends Pivot
                 foreach ($this->addons as $addon) {
                     $title .=
                         '<li class="plus" style="font-size:14px;">' .
-                        isset($addon->addon)
+                        isset($addon->addon->title)
                             ? $addon->addon->title
                             : null . '</li>';
                 }
@@ -180,7 +180,7 @@ class MealOrder extends Pivot
             $comp = $this->addons
                 ->map(function ($addon) {
                     if (
-                        isset($addon->addon) &&
+                        isset($addon->addon->title) &&
                         $addon->addon != null &&
                         isset($addon->addon->title)
                     ) {
@@ -246,7 +246,9 @@ class MealOrder extends Pivot
         if (count($this->addons)) {
             $comp = $this->addons
                 ->map(function ($addon) {
-                    return isset($addon->addon) ? $addon->addon->title : null;
+                    return isset($addon->addon->title)
+                        ? $addon->addon->title
+                        : null;
                 })
                 ->implode(', ');
             $title .= ' - ' . $comp;
@@ -312,7 +314,7 @@ class MealOrder extends Pivot
                 foreach ($this->addons as $addon) {
                     $title .=
                         '<li class="plus" style="font-size:14px;">' .
-                        isset($addon->addon)
+                        isset($addon->addon->title)
                             ? $addon->addon->title
                             : null . '</li>';
                 }
@@ -372,7 +374,9 @@ class MealOrder extends Pivot
         }
         if ($this->meal->has('addons') && $this->addons) {
             foreach ($this->addons as $addon) {
-                $price += isset($addon->addon) ? $addon->addon->price : null;
+                $price += isset($addon->addon->title)
+                    ? $addon->addon->price
+                    : null;
             }
         }
 

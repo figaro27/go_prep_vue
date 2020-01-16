@@ -304,10 +304,10 @@ class Subscription extends Model
                     }),
                     'addons' => $mealSub->addons->map(function ($addon) {
                         return (object) [
-                            'meal_addon_id' => isset($addon->addon)
+                            'meal_addon_id' => isset($addon->addon->id)
                                 ? $addon->addon->id
                                 : null,
-                            'addon' => isset($addon->addon)
+                            'addon' => isset($addon->addon->title)
                                 ? $addon->addon->title
                                 : null
                         ];
