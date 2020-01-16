@@ -2092,11 +2092,6 @@ use next_delivery_dates
     checkout() {
       this.subscriptionItemsCheck();
 
-      console.log(this.hasMultipleSubscriptionItems);
-      console.log(this.hasWeeklySubscriptionItems);
-      console.log(this.hasMonthlySubscriptionItems);
-      console.log(this.hasMonthlyPrepaySubscriptionItems);
-
       if (this.hasMultipleSubscriptionItems) {
         this.$toastr.w(
           "You have multiple subscription types in your bag (e.g weekly & monthly). Please checkout one subscription type at a time."
