@@ -2323,6 +2323,7 @@ use next_delivery_dates
       });
       if (subscriptionItemTypeCount > 0) {
         this.weeklySubscriptionValue = 1;
+        this.plan = 1;
       }
       return subscriptionItemTypeCount;
     }
