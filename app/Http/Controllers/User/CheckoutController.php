@@ -221,14 +221,12 @@ class CheckoutController extends UserController
 
         $storeCustomer = null;
 
-        if (!$cashOrder) {
-            $storeCustomer = $user->getStoreCustomer(
-                $store->id,
-                $storeSettings->currency,
-                $gateway,
-                true
-            );
-        }
+        $storeCustomer = $user->getStoreCustomer(
+            $store->id,
+            $storeSettings->currency,
+            $gateway,
+            true
+        );
 
         $total = $request->get('grandTotal');
         // $total += $salesTax;
@@ -704,9 +702,7 @@ class CheckoutController extends UserController
             $userSubscription->user_id = $user->id;
             $userSubscription->customer_id = $customer->id;
             $userSubscription->card_id = $cardId;
-            $userSubscription->stripe_customer_id = $storeCustomer
-                ? $storeCustomer->id
-                : null;
+            $userSubscription->stripe_customer_id = $storeCustomer->id;
             $userSubscription->store_id = $store->id;
             $userSubscription->name =
                 ucwords($period) .
