@@ -501,41 +501,45 @@ class Store extends Model
                 $addons = collect($mealOrder->addons);
 
                 foreach ($addons as $addon) {
-                    foreach ($addon->addon->ingredients as $ingredient) {
-                        if (!$ingredient->attributes['hidden']) {
-                            $quantity_unit = $ingredient->pivot->quantity_unit;
-                            $quantity_base =
-                                $ingredient->pivot->quantity_base * $quantity;
-                            //* $multiplier;
+                    if ($addon->addon) {
+                        foreach ($addon->addon->ingredients as $ingredient) {
+                            if (!$ingredient->attributes['hidden']) {
+                                $quantity_unit =
+                                    $ingredient->pivot->quantity_unit;
+                                $quantity_base =
+                                    $ingredient->pivot->quantity_base *
+                                    $quantity;
+                                //* $multiplier;
 
-                            $key = $ingredient->id;
-                            if ($isMultipleDelivery) {
-                                $key =
-                                    $key .
-                                    '-' .
-                                    Carbon::parse(
-                                        $mealOrder->delivery_date
-                                    )->format('Y-m-d');
-                                $ingredient->food_name =
-                                    '(' .
-                                    Carbon::parse(
-                                        $mealOrder->delivery_date
-                                    )->format('D, m/d/y') .
-                                    ') ' .
-                                    $ingredient->food_name;
-                            }
+                                $key = $ingredient->id;
+                                if ($isMultipleDelivery) {
+                                    $key =
+                                        $key .
+                                        '-' .
+                                        Carbon::parse(
+                                            $mealOrder->delivery_date
+                                        )->format('Y-m-d');
+                                    $ingredient->food_name =
+                                        '(' .
+                                        Carbon::parse(
+                                            $mealOrder->delivery_date
+                                        )->format('D, m/d/y') .
+                                        ') ' .
+                                        $ingredient->food_name;
+                                }
 
-                            if (!isset($ingredients[$key])) {
-                                $ingredients[$key] = [
-                                    'id' => $ingredient->id,
-                                    'ingredient' => $ingredient,
-                                    'quantity' => $quantity_base,
-                                    'adjuster' => $adjuster
-                                ];
-                            } else {
-                                $ingredients[$key][
-                                    'quantity'
-                                ] += $quantity_base;
+                                if (!isset($ingredients[$key])) {
+                                    $ingredients[$key] = [
+                                        'id' => $ingredient->id,
+                                        'ingredient' => $ingredient,
+                                        'quantity' => $quantity_base,
+                                        'adjuster' => $adjuster
+                                    ];
+                                } else {
+                                    $ingredients[$key][
+                                        'quantity'
+                                    ] += $quantity_base;
+                                }
                             }
                         }
                     }

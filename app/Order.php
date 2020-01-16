@@ -390,8 +390,12 @@ class Order extends Model
                     }),
                     'addons' => $mealOrder->addons->map(function ($addon) {
                         return (object) [
-                            'meal_addon_id' => $addon->addon->id,
-                            'addon' => $addon->addon->title
+                            'meal_addon_id' => isset($addon->addon)
+                                ? $addon->addon->id
+                                : null,
+                            'addon' => isset($addon->addon)
+                                ? $addon->addon->title
+                                : null
                         ];
                     })
                 ];

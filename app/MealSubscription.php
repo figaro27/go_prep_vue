@@ -117,7 +117,9 @@ class MealSubscription extends Pivot
             if ($hasAddons) {
                 foreach ($this->addons as $addon) {
                     $title .=
-                        '<li class="plus">' . $addon->addon->title . '</li>';
+                        '<li class="plus">' . isset($addon->addon)
+                            ? $addon->addon->title
+                            : null . '</li>';
                 }
             }
 
