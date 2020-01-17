@@ -145,27 +145,6 @@
         </div>
       </li>
 
-      <li class="checkout-item" v-if="purchasedGiftCardApplied">
-        <div class="row">
-          <div class="col-6 col-md-4">
-            <span class="d-inline mr-2" @click="removePurchasedGiftCard">
-              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
-            </span>
-            <span class="text-success">({{ purchasedGiftCard.code }})</span>
-          </div>
-          <div class="col-6 col-md-3 offset-md-5">
-            <span class="text-success" v-if="purchasedGiftCardReduction > 0"
-              >({{
-                format.money(
-                  purchasedGiftCardReduction,
-                  storeSettings.currency
-                )
-              }})</span
-            >
-          </div>
-        </div>
-      </li>
-
       <li
         class="checkout-item"
         v-if="(weeklySubscription && applyMealPlanDiscount) || inSub"
@@ -282,6 +261,27 @@
           </div>
           <div class="col-6 col-md-3 offset-md-5">
             {{ format.money(processingFeeAmount, storeSettings.currency) }}
+          </div>
+        </div>
+      </li>
+
+      <li class="checkout-item" v-if="purchasedGiftCardApplied">
+        <div class="row">
+          <div class="col-6 col-md-4">
+            <span class="d-inline mr-2" @click="removePurchasedGiftCard">
+              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
+            </span>
+            <span class="text-success">({{ purchasedGiftCard.code }})</span>
+          </div>
+          <div class="col-6 col-md-3 offset-md-5">
+            <span class="text-success" v-if="purchasedGiftCardReduction > 0"
+              >({{
+                format.money(
+                  purchasedGiftCardReduction,
+                  storeSettings.currency
+                )
+              }})</span
+            >
           </div>
         </div>
       </li>
@@ -1538,22 +1538,10 @@ use next_delivery_dates
         return (coupon.amount / 100) * subtotal;
       }
     },
-    purchasedGiftCardReduction() {
-      if (!this.purchasedGiftCardApplied) {
-        return 0;
-      }
-      if (this.purchasedGiftCard.balance > this.subtotal) {
-        return this.subtotal;
-      }
-      return this.purchasedGiftCard.balance;
-    },
-    afterPromotion() {
+    afterCoupon() {
       let subtotal = this.subtotal;
       if (this.couponApplied) {
         subtotal -= this.couponReduction;
-      }
-      if (this.purchasedGiftCardApplied) {
-        subtotal -= this.purchasedGiftCardReduction;
       }
 
       return subtotal;
@@ -1570,8 +1558,8 @@ use next_delivery_dates
         (this.applyMealPlanDiscount && this.weeklySubscription) ||
         this.inSub
       ) {
-        return this.afterPromotion - this.mealPlanDiscount;
-      } else return this.afterPromotion;
+        return this.afterCoupon - this.mealPlanDiscount;
+      } else return this.afterCoupon;
     },
     deliveryFeeAmount() {
       if (!this.pickup) {
@@ -1647,8 +1635,17 @@ use next_delivery_dates
 
       return subtotal;
     },
+    purchasedGiftCardReduction() {
+      if (!this.purchasedGiftCardApplied) {
+        return 0;
+      }
+      if (this.purchasedGiftCard.balance > this.afterFees + this.tax) {
+        return this.afterFees + this.tax;
+      }
+      return this.purchasedGiftCard.balance;
+    },
     grandTotal() {
-      return this.afterFees + this.tax;
+      return this.afterFees + this.tax - this.purchasedGiftCardReduction;
     },
     hasCoupons() {
       let bagHasGiftCard = false;
@@ -1878,7 +1875,7 @@ use next_delivery_dates
     applyCoupon() {
       let coupons = this.coupons;
       if (this.$route.params.storeView) {
-        coupons = this.storeCoupons;
+        coupons = Object.values(this.storeCoupons);
       }
       coupons.forEach(coupon => {
         if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
@@ -1905,6 +1902,7 @@ use next_delivery_dates
           this.$toastr.s("Coupon Applied.", "Success");
         }
       });
+
       if (this.weeklySubscriptionValue) {
         this.$toastr.w("Gift cards are allowed on one time orders only.");
         return;
@@ -1914,7 +1912,7 @@ use next_delivery_dates
           this.couponCode.toUpperCase() === purchasedGiftCard.code.toUpperCase()
         ) {
           if (purchasedGiftCard.balance === "0.00") {
-            this.$toastr.e("There is no more funds left on this gift card.");
+            this.$toastr.e("There are no more funds left on this gift card.");
             return;
           }
           this.purchasedGiftCard = purchasedGiftCard;
