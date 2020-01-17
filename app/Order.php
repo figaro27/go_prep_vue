@@ -430,10 +430,11 @@ class Order extends Model
 
     public function getCutoffDate()
     {
-        return $this->store->getCutoffDate(
-            $this->delivery_date,
-            $this->delivery_day
-        );
+        // return $this->store->getCutoffDate(
+        //     $this->delivery_date,
+        //     $this->delivery_day
+        // );
+        return $this->store->getCutoffDate($this->delivery_date);
     }
 
     public static function updateOrder($id, $props)
