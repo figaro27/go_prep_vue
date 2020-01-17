@@ -342,7 +342,7 @@
       <b-form-group>
         <b-form-radio-group v-model="pickup" v-on:input="changePickup">
           <b-form-radio
-            value="0"
+            value="false"
             v-if="
               storeSettings.next_orderable_delivery_dates.length > 0 ||
                 $route.params.storeView ||
@@ -352,7 +352,7 @@
             <strong>Delivery</strong>
           </b-form-radio>
           <b-form-radio
-            value="1"
+            value="true"
             v-if="
               storeSettings.next_orderable_pickup_dates.length > 0 ||
                 $route.params.storeView ||
