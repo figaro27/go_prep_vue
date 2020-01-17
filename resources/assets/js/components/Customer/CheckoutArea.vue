@@ -1098,6 +1098,7 @@ export default {
       }
     },
     pickupValue() {
+      return 1;
       if (
         this.store.settings.next_orderable_delivery_dates.length === 0 &&
         this.store.settings.next_orderable_pickup_dates.length > 0
