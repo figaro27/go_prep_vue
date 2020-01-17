@@ -144,11 +144,6 @@
                 format.money(order.couponReduction, order.currency)
               }})
             </p>
-            <p class="text-success" v-if="order.purchasedGiftCardReduction > 0">
-              Gift Card {{ order.purchased_gift_card_code }} ({{
-                format.money(order.purchasedGiftCardReduction, order.currency)
-              }})
-            </p>
             <p v-if="order.mealPlanDiscount > 0" class="text-success">
               Subscription Discount: ({{
                 format.money(order.mealPlanDiscount, order.currency)
@@ -164,6 +159,11 @@
             <p v-if="order.processingFee > 0">
               Processing Fee:
               {{ format.money(order.processingFee, order.currency) }}
+            </p>
+            <p class="text-success" v-if="order.purchasedGiftCardReduction > 0">
+              Gift Card {{ order.purchased_gift_card_code }} ({{
+                format.money(order.purchasedGiftCardReduction, order.currency)
+              }})
             </p>
 
             <p class="strong">
