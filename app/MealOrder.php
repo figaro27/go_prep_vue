@@ -100,8 +100,7 @@ class MealOrder extends Pivot
                 foreach ($this->addons as $addon) {
                     $title .=
                         '<li class="plus" style="font-size:14px;">' .
-                            isset($addon->addon->title) &&
-                        $addon->addon->title != null
+                            isset($addon->addon->title) && $addon->addon != null
                             ? $addon->addon->title
                             : null . '</li>';
                 }
