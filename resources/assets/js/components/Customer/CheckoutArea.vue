@@ -352,7 +352,7 @@
             <strong>Delivery</strong>
           </b-form-radio>
           <b-form-radio
-            :value="pickupValue"
+            value="1"
             v-if="
               storeSettings.next_orderable_pickup_dates.length > 0 ||
                 $route.params.storeView ||
@@ -1098,7 +1098,6 @@ export default {
       }
     },
     pickupValue() {
-      return 1;
       if (
         this.store.settings.next_orderable_delivery_dates.length === 0 &&
         this.store.settings.next_orderable_pickup_dates.length > 0
