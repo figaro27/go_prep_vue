@@ -42,6 +42,7 @@ export default {
   methods: {
     ...mapActions(["refreshSubscriptions"]),
     async initBag() {
+      this.clearAll();
       await this.refreshSubscriptions();
       const subscription = _.find(this.subscriptions, {
         id: parseInt(this.subscriptionId)
@@ -51,9 +52,8 @@ export default {
         return;
       }
 
+      // Setting pickup here
       this.pickup = subscription.pickup;
-
-      this.clearAll();
 
       _.forEach(subscription.items, item => {
         const meal = this.getMeal(item.meal_id);
@@ -70,8 +70,17 @@ export default {
 
         let addons = _.map(item.addons, "meal_addon_id");
 
+        let special_instructions = item.special_instructions;
+
         for (let i = 0; i < item.quantity; i++) {
-          this.addOne(meal, false, item.meal_size_id, components, addons);
+          this.addOne(
+            meal,
+            false,
+            item.meal_size_id,
+            components,
+            addons,
+            special_instructions
+          );
         }
       });
     }
