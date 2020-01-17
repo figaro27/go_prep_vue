@@ -34,7 +34,6 @@ class SubscriptionController extends UserController
             'latest_paid_order',
             'latest_unpaid_order',
             'next_order',
-            'items',
             'meal_ids',
             'meal_quantities',
             'store',
