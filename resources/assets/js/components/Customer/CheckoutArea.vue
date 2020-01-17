@@ -1874,9 +1874,9 @@ use next_delivery_dates
     },
     applyCoupon() {
       let coupons = this.coupons;
-      if (this.$route.params.storeView) {
-        coupons = this.storeCoupons;
-      }
+      // if (this.$route.params.storeView) {
+      //   coupons = this.storeCoupons;
+      // }
       coupons.forEach(coupon => {
         if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
           if (coupon.oneTime) {
