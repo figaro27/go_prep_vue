@@ -395,9 +395,6 @@ $currency = $order->store->settings->currency_symbol
                         @if ($coupon > 0)
                         Coupon ({{ $couponCode }})<br>
                         @endif
-                        @if ($purchasedGiftCardReduction > 0)
-                        Gift Card ({{$purchasedGiftCard}})<br>
-                        @endif
                         @if ($mealPlanDiscount > 0)
                         Subscription Discount<br>
                         @endif
@@ -410,7 +407,9 @@ $currency = $order->store->settings->currency_symbol
                         @if ($processingFee > 0)
                         Processing Fee<br>
                         @endif
-                        
+                        @if ($purchasedGiftCardReduction > 0)
+                        Gift Card ({{$purchasedGiftCard}})<br>
+                        @endif
                         <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold;">Total</span><br>
                         @if ($balance > 0)
@@ -426,9 +425,6 @@ $currency = $order->store->settings->currency_symbol
                           @if ($coupon > 0)
                           ({{$currency}}{{ number_format($coupon, 2) }})<br>
                           @endif
-                          @if ($purchasedGiftCardReduction > 0)
-                          ({{$currency}}{{ number_format($purchasedGiftCardReduction, 2) }})<br>
-                          @endif
                           @if ($mealPlanDiscount > 0)
                           ({{$currency}}{{ number_format($mealPlanDiscount, 2) }})<br>
                           @endif
@@ -441,7 +437,9 @@ $currency = $order->store->settings->currency_symbol
                           @if ($processingFee > 0)
                           {{$currency}}{{ number_format($processingFee, 2) }}<br>
                           @endif
-                          
+                          @if ($purchasedGiftCardReduction > 0)
+                          ({{$currency}}{{ number_format($purchasedGiftCardReduction, 2) }})<br>
+                          @endif
                           <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold; ">{{$currency}}{{ number_format($order->amount, 2) }}
                             @if ($order->cashOrder)
