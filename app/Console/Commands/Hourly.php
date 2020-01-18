@@ -79,18 +79,12 @@ class Hourly extends Command
 
             $currentDay = date('D');
             $currentHour = date('H');
-            $settings = $store->settings;
+            $settings = StoreSetting::where('store_id', $store->id)->first();
 
             if (
                 $settings->disableNextWeekDay === $currentDay &&
                 $settings->disableNextWeekHour === $currentHour
             ) {
-                // $store->disableNextWeekOrders();
-                // Testing
-                $settings = StoreSetting::where(
-                    'store_id',
-                    $store->id
-                )->first();
                 $settings->preventNextWeekOrders = 1;
                 $settings->update();
             }
@@ -98,12 +92,6 @@ class Hourly extends Command
                 $settings->enableNextWeekDay === $currentDay &&
                 $settings->enableNextWeekHour === $currentHour
             ) {
-                // $store->enableNextWeekOrders();
-                // Testing
-                $settings = StoreSetting::where(
-                    'store_id',
-                    $store->id
-                )->first();
                 $settings->preventNextWeekOrders = 0;
                 $settings->update();
             }
