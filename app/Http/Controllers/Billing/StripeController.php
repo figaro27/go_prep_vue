@@ -23,11 +23,6 @@ class StripeController extends Controller
             $subId = $obj->get('subscription', null);
             $amountPaid = $obj->get('amount_paid', null);
 
-            // Subscription paused
-            if (!$amountPaid) {
-                return 'Amount paid = 0. Subscription paused. Skipping renewal';
-            }
-
             $subscription = null;
             if ($subId) {
                 $subId = substr($subId, 4);
@@ -35,6 +30,11 @@ class StripeController extends Controller
                     'stripe_id',
                     $subId
                 )->first();
+            }
+
+            // Subscription paused
+            if (!$amountPaid && !$subscription->monthlyPrepay) {
+                return 'Amount paid = 0. Subscription paused. Skipping renewal';
             }
 
             if ($subscription) {
