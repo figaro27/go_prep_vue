@@ -410,6 +410,8 @@ export default {
 
       params.pickupLocationId = this.selectedPickupLocation;
 
+      params.byOrderDate = 0;
+
       axios
         .get(`/api/me/print/${report}/${format}`, {
           params
