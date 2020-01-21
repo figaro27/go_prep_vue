@@ -577,6 +577,17 @@ export default {
         this.editingPrice[item.guid] = false;
       });
     }
+
+    let lineItemsOrder = [];
+
+    if (this.$route.params && this.$route.params.line_items_order) {
+      lineItemsOrder = this.$route.params.order.line_items_order;
+    }
+
+    lineItemsOrder.forEach(lineItemOrder => {
+      this.orderLineItems.push(lineItemOrder);
+    });
+    this.$emit("updateLineItems", this.orderLineItems);
   },
   methods: {
     loadDeliveryDayMenu(delivery_day) {
@@ -898,7 +909,7 @@ export default {
       this.$emit("passPublicOrderNotes", this.publicOrderNotes);
     },
     setOrderLineItems(lineItemOrders) {
-      this.orderLineItems = this.$parent.order.line_items_order;
+      this.orderLineItems = lineItemOrders;
       this.$emit("updateLineItems", this.orderLineItems);
     }
   }
