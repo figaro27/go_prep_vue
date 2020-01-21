@@ -58,12 +58,23 @@ class CheckoutController extends UserController
         $storeSettings = $store->settings;
         $bagItems = $request->get('bag');
         $bag = new Bag($bagItems, $store);
+        $weeklyPlan = $request->get('plan');
 
         // Checking all meals are in stock before proceeding
         if ($this->store->modules->stockManagement) {
             foreach ($bag->getItems() as $item) {
                 $meal = Meal::where('id', $item['meal']['id'])->first();
                 if ($meal && $meal->stock !== null) {
+                    if ($weeklyPlan) {
+                        return response()->json(
+                            [
+                                'message' =>
+                                    $meal->title .
+                                    ' is not allowed in subscriptions. Please remove from your bag and try again.'
+                            ],
+                            400
+                        );
+                    }
                     if ($meal->stock < $item['quantity']) {
                         return response()->json(
                             [
@@ -85,7 +96,6 @@ class CheckoutController extends UserController
             }
         }
 
-        $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
         $deliveryDay = $request->get('delivery_day');
         $weekIndex = (int) date('N', strtotime($deliveryDay));
