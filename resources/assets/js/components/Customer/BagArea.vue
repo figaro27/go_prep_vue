@@ -909,7 +909,7 @@ export default {
       this.$emit("passPublicOrderNotes", this.publicOrderNotes);
     },
     setOrderLineItems(lineItemOrders) {
-      this.orderLineItems = lineItemOrders;
+      this.orderLineItems = this.$parent.order.line_items_order;
       this.$emit("updateLineItems", this.orderLineItems);
     }
   }
