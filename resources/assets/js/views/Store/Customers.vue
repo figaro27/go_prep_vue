@@ -212,88 +212,62 @@
                   </p>
                 </div>
                 <div class="col-md-4">
-                  <span
-                    >Subtotal:
-                    {{
-                      format.money(order.preFeePreDiscount, order.currency)
-                    }}</span
-                  >
-                  <br />
-                  <span v-if="order.mealPlanDiscount > 0">
-                    Subscription Discount:
-                    <span class="text-success"
-                      >({{
-                        format.money(order.mealPlanDiscount, order.currency)
-                      }})</span
-                    >
-                    <br />
-                  </span>
-                  <span v-if="order.salesTax > 0"
-                    >Sales Tax:
-                    {{ format.money(order.salesTax, order.currency) }}</span
-                  >
-                  <br />
-                  <span v-if="order.deliveryFee > 0">
+                  <p>
+                    Subtotal:
+                    {{ format.money(order.preFeePreDiscount, order.currency) }}
+                  </p>
+                  <p class="text-success" v-if="order.couponReduction > 0">
+                    Coupon {{ order.couponCode }}: ({{
+                      format.money(order.couponReduction, order.currency)
+                    }})
+                  </p>
+                  <p v-if="order.mealPlanDiscount > 0" class="text-success">
+                    Subscription Discount: ({{
+                      format.money(order.mealPlanDiscount, order.currency)
+                    }})
+                  </p>
+                  <p v-if="order.salesTax > 0">
+                    Sales Tax:
+                    {{ format.money(order.salesTax, order.currency) }}
+                  </p>
+                  <p v-if="order.deliveryFee > 0">
                     Delivery Fee:
                     {{ format.money(order.deliveryFee, order.currency) }}
-                    <br />
-                  </span>
-                  <span v-if="order.processingFee > 0">
+                  </p>
+                  <p v-if="order.processingFee > 0">
                     Processing Fee:
                     {{ format.money(order.processingFee, order.currency) }}
-                    <br />
-                  </span>
+                  </p>
+                  <p
+                    class="text-success"
+                    v-if="order.purchasedGiftCardReduction > 0"
+                  >
+                    Gift Card {{ order.purchased_gift_card_code }} ({{
+                      format.money(
+                        order.purchasedGiftCardReduction,
+                        order.currency
+                      )
+                    }})
+                  </p>
 
-                  <span>
-                    <strong>
-                      <span v-if="order.couponReduction === null"
-                        >Total:
-                        {{ format.money(order.amount, order.currency) }}</span
-                      >
-                    </strong>
-                    <div v-if="order.couponReduction > 0">
-                      Pre-Coupon Total:
-                      {{ format.money(order.pre_coupon, order.currency) }}
-                      <br />
-                      <span class="text-success">
-                        (Coupon {{ order.couponCode }}:
-                        {{
-                          format.money(order.couponReduction, order.currency)
-                        }})
-                      </span>
-                      <br />
-                      <strong
-                        >Total:
-                        {{ format.money(order.amount, order.currency) }}</strong
-                      >
-                      <p v-if="order.balance !== null">
-                        Original Total:
-                        {{ format.money(order.originalAmount, order.currency) }}
-                      </p>
-                      <p v-if="order.chargedAmount">
-                        Additional Charges:
-                        {{ format.money(order.chargedAmount, order.currency) }}
-                      </p>
-                      <p v-if="order.refundedAmount">
-                        Refunded:
-                        {{ format.money(order.refundedAmount, order.currency) }}
-                      </p>
-                      <p v-if="order.balance !== null">
-                        Balance:
-                        {{ format.money(order.balance, order.currency) }}
-                      </p>
-                      <p
-                        v-if="
-                          order.subscription &&
-                            order.subscription.monthlyPrepay &&
-                            (order.subscription.weekCount !== 1 ||
-                              order.subscription.weekCount % 4 !== 1)
-                        "
-                      >
-                        Prepaid
-                      </p>
-                    </div>
-                  </span>
+                  <p class="strong">
+                    Total: {{ format.money(order.amount, order.currency) }}
+                  </p>
+                  <p v-if="order.balance !== null">
+                    Original Total:
+                    {{ format.money(order.originalAmount, order.currency) }}
+                  </p>
+                  <p v-if="order.chargedAmount">
+                    Additional Charges:
+                    {{ format.money(order.chargedAmount, order.currency) }}
+                  </p>
+                  <p v-if="order.refundedAmount">
+                    Refunded:
+                    {{ format.money(order.refundedAmount, order.currency) }}
+                  </p>
+                  <p>
+                    Balance: {{ format.money(order.balance, order.currency) }}
+                  </p>
                 </div>
                 <div class="col-md-1">
                   <img
