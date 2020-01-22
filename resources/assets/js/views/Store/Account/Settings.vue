@@ -1414,10 +1414,14 @@ export default {
 
       if (this.storeSettings.processingFee != null) {
         let processingFee = this.storeSettings.processingFee;
-        if (processingFee.toString().includes("$")) {
+        if (
+          processingFee.toString().includes("$") ||
+          processingFee.toString().includes("%")
+        ) {
           let intToString = processingFee.toString();
           let newFee = intToString.replace("$", "");
-          this.storeSettings.processingFee = newFee;
+          let finalFee = newFee.replace("%", "");
+          this.storeSettings.processingFee = finalFee;
         }
       }
 
