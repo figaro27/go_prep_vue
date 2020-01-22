@@ -312,11 +312,11 @@ class MealOrder extends Pivot
             }
             if ($hasAddons) {
                 foreach ($this->addons as $addon) {
-                    $title .=
-                        '<li class="plus" style="font-size:14px;">' .
-                            isset($addon->addon->title) && $addon->addon != null
-                            ? $addon->addon->title
-                            : null . '</li>';
+                    $title .= '<li class="plus" style="font-size:14px;">';
+                    if (isset($addon->addon->title) && $addon->addon != null) {
+                        $title .= $addon->addon->title;
+                    }
+                    $title .= '</li>';
                 }
             }
 

@@ -206,7 +206,7 @@ export default {
       bagDeliverySettings: "bagDeliverySettings"
     }),
     fullHeight() {
-      if (!this.mobile) return "min-height: 100%;";
+      if (!this.mobile && !this.storeOwner) return "height:100vh";
     },
     storeOwner() {
       let flag = false;
