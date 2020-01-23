@@ -118,9 +118,9 @@
 
           <tfoot>
             <tr>
-              <td colspan="5">
+              <td>
                 <b-btn
-                  variant="secondary"
+                  variant="success"
                   @click="
                     component.options.push({
                       //id: 100 + component.options.length,
@@ -131,6 +131,13 @@
                     })
                   "
                   >Add Option</b-btn
+                >
+                <b-btn
+                  variant="warning"
+                  v-if="meal.sizes.length > 0"
+                  @click="duplicateOptions(component)"
+                  :disabled="duplicated"
+                  >Duplicate Options for All Sizes</b-btn
                 >
               </td>
             </tr>
@@ -182,7 +189,8 @@ export default {
       ingredientComponentId: null,
       ingredientOptionId: null,
       ingredient_picker_id: null,
-      ingredient_picker_size: null
+      ingredient_picker_size: null,
+      duplicated: false
     };
   },
   computed: {
@@ -296,6 +304,20 @@ export default {
     save() {
       this.$emit("save", this.meal.components);
       this.$toastr.s("Meal variation saved.");
+    },
+    duplicateOptions(component) {
+      let options = [...component.options];
+      this.meal.sizes.forEach(size => {
+        options.forEach(option => {
+          component.options.push({
+            title: option.title,
+            price: option.price,
+            ingredients: option.ingredients,
+            meal_size_id: size.id
+          });
+        });
+      });
+      this.duplicated = true;
     }
   }
 };
