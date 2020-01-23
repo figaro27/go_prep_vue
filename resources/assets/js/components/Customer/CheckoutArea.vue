@@ -2339,6 +2339,16 @@ use next_delivery_dates
         this.plan = 1;
       }
       return subscriptionItemTypeCount;
+    },
+    checkPickup() {
+      if (
+        this.store.settings.next_orderable_delivery_dates.length === 0 &&
+        this.store.settings.next_orderable_pickup_dates.length > 0
+      ) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 };
