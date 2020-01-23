@@ -90,6 +90,13 @@
         <b-button variant="primary" @click="addAddon()"
           >Add Meal Package Addon</b-button
         >
+        <b-btn
+          variant="warning"
+          v-if="meal_package.sizes.length > 0"
+          @click="duplicateAddons(addon)"
+          :disabled="duplicated"
+          >Duplicate Addons for All Sizes</b-btn
+        >
         <b-button variant="primary" @click="save()" class="pull-right"
           >Save</b-button
         >
@@ -126,7 +133,8 @@ export default {
     return {
       meal_picker_addon_id: null,
       meal_picker_meals: [],
-      meal_picker_selectable: false
+      meal_picker_selectable: false,
+      duplicated: false
     };
   },
   computed: {
@@ -224,6 +232,22 @@ export default {
       this.meal_picker_meals = [];
       this.meal_picker_selectable = false;
       this.meal_picker_addon_id = null;
+    },
+    duplicateAddons(addon) {
+      let addons = [...this.meal_package.addons];
+      this.meal_package.sizes.forEach(size => {
+        addons.forEach(addon => {
+          this.meal_package.addons.push({
+            id: 1000000 + this.meal_package.addons.length, // push to the end of table
+            title: addon.title,
+            price: addon.price,
+            meals: addon.meals,
+            selectable: addon.selectable,
+            meal_package_size_id: size.id
+          });
+        });
+      });
+      this.duplicated = true;
     }
   }
 };
