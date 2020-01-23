@@ -29,45 +29,38 @@
         />
       </div>
 
-      <div v-for="(addon, i) in meal.addons" :key="addon.id" role="tablist">
-        <div class="addon-header mb-2">
+      <div v-for="(addon, i) in meal.addons" :key="addon.id">
+        <!-- <div class="addon-header mb-2">
           <h5 class="d-inline-block">#{{ i + 1 }}. {{ addon.title }}</h5>
-        </div>
-        <b-row>
+        </div> -->
+        <b-row class="mb-3">
           <b-col cols="6">
-            <b-form-group label="Title">
-              <b-input
-                v-model="addon.title"
-                placeholder="i.e. Extra Meat"
-              ></b-input>
-            </b-form-group>
+            <b-input
+              v-model="addon.title"
+              placeholder="i.e. Extra Meat"
+            ></b-input>
           </b-col>
           <b-col>
-            <b-form-group label="Price">
-              <money
-                :disabled="addon.id === -1"
-                required
-                v-model="addon.price"
-                :min="0.1"
-                :max="999.99"
-                class="form-control"
-                v-bind="{ prefix: storeCurrencySymbol }"
-              ></money>
-            </b-form-group>
+            <money
+              :disabled="addon.id === -1"
+              required
+              v-model="addon.price"
+              :min="0.1"
+              :max="999.99"
+              class="form-control"
+              v-bind="{ prefix: storeCurrencySymbol }"
+            ></money>
           </b-col>
           <b-col>
-            <b-form-group label="Meal Size">
-              <b-select
-                v-model="addon.meal_size_id"
-                :options="sizeOptions"
-              ></b-select>
-            </b-form-group>
+            <b-select
+              v-model="addon.meal_size_id"
+              :options="sizeOptions"
+            ></b-select>
           </b-col>
           <b-col>
             <b-btn
               variant="primary"
               @click="changeAddonIngredients(i, addon.meal_size_id)"
-              style="margin-top: 28px;"
               >Adjust</b-btn
             >
           </b-col>
@@ -75,18 +68,23 @@
             <b-btn
               variant="danger"
               @click="deleteAddon(addon.id)"
-              style="margin-top: 28px;"
               class="pull-right"
               >Delete</b-btn
             >
           </b-col>
         </b-row>
-        <hr v-if="i < meal.addons.length - 1" class="my-4" />
       </div>
 
       <div v-if="meal.addons.length" class="mt-4">
-        <b-button variant="primary" @click="addAddon()"
+        <b-button variant="success" @click="addAddon()"
           >Add Meal Addon</b-button
+        >
+        <b-btn
+          variant="warning"
+          v-if="meal.sizes.length > 0"
+          @click="duplicateAddons(addon)"
+          :disabled="duplicated"
+          >Duplicate Addons for All Sizes</b-btn
         >
         <b-button variant="primary" @click="save()" class="pull-right"
           >Save</b-button
@@ -125,7 +123,8 @@ export default {
     return {
       ingredientAddonId: null,
       ingredient_picker_id: null,
-      ingredient_picker_size: null
+      ingredient_picker_size: null,
+      duplicated: false
     };
   },
   computed: {
@@ -211,6 +210,21 @@ export default {
     save() {
       this.$emit("save", this.meal.addons);
       this.$toastr.s("Meal variation saved.");
+    },
+    duplicateAddons(addon) {
+      let addons = [...this.meal.addons];
+      this.meal.sizes.forEach(size => {
+        addons.forEach(addon => {
+          this.meal.addons.push({
+            id: 1000000 + this.meal.addons.length, // push to the end of table
+            title: addon.title,
+            price: addon.price,
+            ingredients: addon.ingredients,
+            meal_size_id: size.id
+          });
+        });
+      });
+      this.duplicated = true;
     }
   }
 };
