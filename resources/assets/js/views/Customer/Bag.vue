@@ -447,7 +447,7 @@ export default {
     ) {
       this.pickup = 1;
     } else {
-      this.pickup = 0;
+      this.setPickup();
     }
 
     if (this.$route.params.lineItemOrders != undefined) {
@@ -756,6 +756,11 @@ export default {
     },
     passPublicOrderNotes(notes) {
       this.publicOrderNotes = notes;
+    },
+    setPickup() {
+      if (this.$refs.checkoutArea.checkPickup() === true) {
+        this.pickup = 1;
+      }
     }
   }
 };
