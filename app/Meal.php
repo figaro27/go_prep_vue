@@ -78,7 +78,8 @@ class Meal extends Model implements HasMedia
         'item_price',
         'item_quantity',
         'in_package',
-        'meal_size_id'
+        'meal_size_id',
+        'hasVariations'
     ];
 
     protected $hidden = [
@@ -1364,5 +1365,13 @@ class Meal extends Model implements HasMedia
     public function getCreatedAtLocalAttribute()
     {
         return $this->localizeDate($this->created_at)->format('F d, Y');
+    }
+
+    public function getHasVariationsAttribute()
+    {
+        // Add component options
+        if ($this->sizes->count() > 0 || $this->addons->count() > 0) {
+            return true;
+        }
     }
 }
