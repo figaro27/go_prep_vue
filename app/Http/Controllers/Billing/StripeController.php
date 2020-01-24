@@ -33,9 +33,9 @@ class StripeController extends Controller
             }
 
             // Subscription paused
-            if (!$amountPaid && !$subscription->monthlyPrepay) {
-                return 'Amount paid = 0. Subscription paused. Skipping renewal';
-            }
+            // if (!$amountPaid && !$subscription->monthlyPrepay) {
+            //     return 'Amount paid = 0. Subscription paused. Skipping renewal';
+            // }
 
             if ($subscription) {
                 // Make sure status is set to 'active'
