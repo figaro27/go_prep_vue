@@ -235,6 +235,33 @@
           </div>
         </div>
       </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body m-sm-4">
+            <h4 class="center-text mb-4">Labels</h4>
+            <div class="report-date-picker">
+              <delivery-date-picker
+                v-model="delivery_dates.labels"
+                ref="deliveryRoutesDates"
+              ></delivery-date-picker>
+              <b-btn @click="clearLabels()" class="ml-1">Clear</b-btn>
+            </div>
+            <p class="mt-4 center-text">
+              Labels for your meal containers.
+            </p>
+            <div class="row">
+              <div class="col-md-12">
+                <button
+                  @click="print('labels', 'pdf')"
+                  class="btn btn-primary btn-md center mt-2 center"
+                >
+                  Print
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="row">
       <div class="col-md-12">
@@ -321,7 +348,8 @@ export default {
         orders_by_customer: [],
         packing_slips: [],
         delivery_routes: [],
-        payments: []
+        payments: [],
+        labels: []
       },
       selectedPickupLocation: null
     };
@@ -540,6 +568,11 @@ export default {
     clearPayments() {
       this.delivery_dates.delivery_routes.start = null;
       this.delivery_dates.delivery_routes.end = null;
+      this.$refs.payments.clearDates();
+    },
+    clearLabels() {
+      this.delivery_dates.labels.start = null;
+      this.delivery_dates.labels.end = null;
       this.$refs.payments.clearDates();
     }
   }
