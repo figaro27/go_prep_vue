@@ -2182,7 +2182,9 @@ use next_delivery_dates
           monthlyPrepay: this.hasMonthlyPrepaySubscriptionItems,
           pickup: this.pickup,
           isMultipleDelivery: this.isMultipleDelivery,
-          delivery_day: this.bagDeliveryDate
+          delivery_day: this.deliveryDay
+            ? this.deliveryDay
+            : this.bagDeliveryDate
             ? this.bagDeliveryDate
             : this.deliveryDateOptions[0].value,
           card_id: cardId,
