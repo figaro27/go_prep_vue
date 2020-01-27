@@ -290,6 +290,8 @@ export default {
         orders = this.ordersByDate;
       }
 
+      orders = orders.filter(order => order.voided === 0);
+
       // if (this.filters.byDeliveryDate) {
       //   orders = this.upcomingOrders;
       // }

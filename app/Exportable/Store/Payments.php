@@ -41,6 +41,7 @@ class Payments
                     $byOrderDate ? true : false,
                     $couponCode
                 )
+                ->where('voided', 0)
                 ->map(function ($payment) use (&$sums, $byOrderDate) {
                     $sums[2] += $payment->preFeePreDiscount;
                     $sums[4] += $payment->couponReduction;
@@ -84,6 +85,7 @@ class Payments
                     true,
                     $couponCode
                 )
+                ->where('voided', 0)
                 ->groupBy('order_day');
 
             $dailySums = [];
