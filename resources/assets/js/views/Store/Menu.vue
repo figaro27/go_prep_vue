@@ -775,32 +775,136 @@
           style="margin:0px 100px"
           class="mb-5"
         ></v-select>
-        <div v-if="deactivatingMeal.hasVariations">
+        <div
+          v-if="deactivatingMeal.hasVariations && substituteMeal"
+          :key="substitute_id"
+        >
           <p class="center-text">
             This meal has variations. Choose substitutes or keep them with the
             replacement meal by checking the box below.
           </p>
-          <div v-if="deactivatingMeal.sizes">
-            <strong>Sizes</strong>
-            <ul>
-              <li v-for="size in deactivatingMeal.sizes">
-                {{ size.title }}
-              </li>
-            </ul>
-          </div>
-          <div v-if="deactivatingMeal.addons">
-            <strong>Addons</strong>
-            <ul>
-              <li v-for="addon in deactivatingMeal.addons">
-                {{ addon.title }}
-              </li>
-            </ul>
-          </div>
+
+          <b-row>
+            <b-col cols="4" v-if="deactivatingMeal.sizes">
+              <h4>Sizes</h4>
+              <b-row>
+                <b-col
+                  v-for="size in deactivatingMeal.sizes"
+                  cols="12"
+                  :key="size.id"
+                  class="mb-2"
+                >
+                  <b-form-group :label="size.title">
+                    <v-select
+                      label="title"
+                      :options="substituteMeal.sizes"
+                      :reduce="size => size.id"
+                      v-model="substituteMealSizes[size.id]"
+                      style="margin:0px 100px"
+                      class="ml-0 w-100"
+                    ></v-select>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+            </b-col>
+
+            <b-col cols="4" v-if="deactivatingMeal.addons">
+              <h4>Addons</h4>
+              <b-row>
+                <b-col
+                  v-for="addon in deactivatingMeal.addons"
+                  cols="12"
+                  :key="addon.id"
+                  class="mb-2"
+                >
+                  <b-form-group
+                    :label="getSizedTitle(deactivatingMeal.sizes, addon, 1)"
+                  >
+                    <v-select
+                      label="title"
+                      :options="getSubstituteAddonOptions(addon.id)"
+                      :reduce="val => val.value"
+                      v-model="substituteMealAddons[addon.id]"
+                      style="margin:0px 100px"
+                      class="ml-0 w-100"
+                    ></v-select>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+            </b-col>
+
+            <b-col cols="8" v-if="deactivatingMeal.components">
+              <h4>Components</h4>
+              <b-row>
+                <b-col
+                  v-for="component in deactivatingMeal.components"
+                  cols="12"
+                  :key="component.id"
+                  class="mb-2"
+                >
+                  <b-row>
+                    <b-col cols="6">
+                      <b-form-group :label="component.title">
+                        <v-select
+                          label="title"
+                          :options="substituteMeal.components"
+                          :reduce="component => component.id"
+                          v-model="substituteMealComponents[component.id]"
+                          style="margin:0px 100px"
+                          class="ml-0 w-100"
+                        ></v-select>
+                      </b-form-group>
+                    </b-col>
+
+                    <b-col cols="6">
+                      <div v-if="substituteMealComponents[component.id]">
+                        <div
+                          v-for="option in component.options"
+                          :key="option.id"
+                          class="mb-2"
+                        >
+                          <b-form-group
+                            :label="
+                              getSizedTitle(deactivatingMeal.sizes, option, 1)
+                            "
+                          >
+                            <v-select
+                              label="title"
+                              :options="
+                                getSubstituteComponentOptionOptions(
+                                  component.id
+                                )
+                              "
+                              :reduce="val => val.value"
+                              v-model="
+                                substituteMealComponentOptions[option.id]
+                              "
+                              @input="$forceUpdate()"
+                              style="margin:0px 100px"
+                              class="ml-0 w-100"
+                            ></v-select>
+                          </b-form-group>
+                        </div>
+                      </div>
+                    </b-col>
+                  </b-row>
+                </b-col>
+              </b-row>
+            </b-col>
+          </b-row>
         </div>
         <button
-          v-if="substitute_id"
+          v-if="substitute_id && canDeactivateAndReplace"
           class="btn btn-primary btn-lg mt-3"
-          @click="deactivateAndReplace(deactivatingMeal.id, substitute_id)"
+          @click="
+            deactivateAndReplace(
+              deactivatingMeal.id,
+              substitute_id,
+              substituteMealSizes,
+              substituteMealAddons,
+              substituteMealComponentOptions
+            )
+          "
         >
           Deactivate & Replace
         </button>
@@ -889,6 +993,7 @@ import IngredientPicker from "../../components/IngredientPicker";
 import MealSizes from "../../components/Menu/MealSizes";
 import MealComponents from "../../components/Menu/MealComponents";
 import MealAddons from "../../components/Menu/MealAddons";
+import MealService from "../../services/meals";
 import CreateGiftCardModal from "./Modals/CreateGiftCard";
 import CreateMealModal from "./Modals/CreateMeal";
 import CreatePackageModal from "./Modals/CreateMealPackage";
@@ -926,6 +1031,16 @@ export default {
   },
   updated() {
     //$(window).trigger("resize");
+    console.log("a");
+  },
+  watch: {
+    async substitute_id(val, oldVal) {
+      this.substituteMealSizes = {};
+      this.substituteMealComponents = {};
+      this.substituteMealComponentOptions = {};
+      this.substituteMealAddons = {};
+      this.substituteMeal = await MealService.getMeal(val);
+    }
   },
   data() {
     return {
@@ -969,6 +1084,11 @@ export default {
       deletingMeal: {},
       deactivatingMeal: {},
       substitute_id: null,
+      substituteMeal: null,
+      substituteMealSizes: {},
+      substituteMealComponents: {},
+      substituteMealComponentOptions: {},
+      substituteMealAddons: {},
 
       newTags: [],
       ingredientSearch: "",
@@ -1172,6 +1292,33 @@ export default {
         prodGroupOptions.push({ text: prodGroup.title, value: prodGroup.id });
       });
       return prodGroupOptions;
+    },
+    canDeactivateAndReplace() {
+      if (!this.substituteMeal) {
+        return false;
+      }
+
+      if (this.deactivatingMeal.hasVariations) {
+        for (const size of this.deactivatingMeal.sizes) {
+          if (!this.substituteMealSizes[size.id]) {
+            return false;
+          }
+        }
+        for (const component of this.deactivatingMeal.components) {
+          for (const option of component.options) {
+            if (!this.substituteMealComponentOptions[option.id]) {
+              return false;
+            }
+          }
+        }
+        for (const addon of this.deactivatingMeal.addons) {
+          if (!this.substituteMealAddons[addon.id]) {
+            return false;
+          }
+        }
+      }
+
+      return true;
     }
   },
   created() {
@@ -1359,11 +1506,71 @@ export default {
 
       //this.refreshTable();
     },
-    deactivateAndReplace(mealId, substituteId) {
+    getSizedTitle(sizes, option, deb = 0) {
+      let title = option.title;
+      sizes = _.keyBy(sizes, "id");
+
+      if (deb) {
+        console.log("aa");
+      }
+
+      if (option.meal_size_id) {
+        const size = sizes[option.meal_size_id];
+
+        if (size) {
+          title += ` - ${size.title}`;
+        }
+      }
+      return title;
+    },
+    getSubstituteAddonOptions(addonId) {
+      const sizes = this.substituteMeal.sizes;
+      const addons = this.substituteMeal.addons;
+
+      return _.map(addons, addon => {
+        return {
+          title: this.getSizedTitle(sizes, addon),
+          value: addon.id
+        };
+      });
+    },
+    getSubstituteComponentOptionOptions(componentId) {
+      const sizes = this.substituteMeal.sizes;
+      const subComponentId = this.substituteMealComponents[componentId];
+      const subComponent = _.find(this.substituteMeal.components, {
+        id: subComponentId
+      });
+      const options = subComponent.options || [];
+
+      return _.map(options, option => {
+        return {
+          title: this.getSizedTitle(sizes, option),
+          value: option.id
+        };
+      });
+    },
+    deactivateAndReplace(
+      mealId,
+      substituteId,
+      substituteMealSizes,
+      substituteMealAddons,
+      substituteMealComponentOptions
+    ) {
+      if (!this.canDeactivateAndReplace) {
+        this.$toastr.w(
+          "Please choose variation substitutes, or transfer them to the substitute meal.",
+          "Cannot deactivate meal"
+        );
+        return false;
+      }
+
       axios
         .post("/api/me/deactivateAndReplace", {
           mealId: mealId,
-          substituteId: substituteId
+          substituteId: substituteId,
+          substituteMealSizes: substituteMealSizes,
+          substituteMealAddons: substituteMealAddons,
+          substituteMealComponentOptions: substituteMealComponentOptions
         })
         .then(resp => {
           this.deactivateMealModal = false;

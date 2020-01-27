@@ -22,6 +22,8 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 use App\Media\Utils as MediaUtils;
 use App\MealMealPackage;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class Meal extends Model implements HasMedia
 {
@@ -1292,8 +1294,19 @@ class Meal extends Model implements HasMedia
         ]);
     }
 
-    public static function deleteMeal($id, $subId = null, $replaceOnly = false)
-    {
+    /**
+     * @var Collection $substituteMealSizes
+     * @var Collection $substituteMealAddons
+     * @var Collection $substituteMealComponentOptions
+     */
+    public static function deleteMeal(
+        $id,
+        $subId = null,
+        $replaceOnly = false,
+        $substituteMealSizes = null,
+        $substituteMealAddons = null,
+        $substituteMealComponentOptions = null
+    ) {
         $meal = Meal::find($id);
         $sub = Meal::find($subId);
         $store = $meal->store;
@@ -1306,12 +1319,70 @@ class Meal extends Model implements HasMedia
             $subscriptionMeals->each(function ($subscriptionMeal) use (
                 $meal,
                 $sub,
-                $subId
+                $subId,
+                $store,
+                $substituteMealSizes,
+                $substituteMealAddons,
+                $substituteMealComponentOptions
             ) {
                 if (!$subscriptionMeal->subscription) {
                     return;
                 }
+
+                // Substitute size
+                if ($subscriptionMeal->meal_size_id) {
+                    $subSizeId = $substituteMealSizes->get(
+                        $subscriptionMeal->meal_size_id
+                    );
+                    $subSize = MealSize::find($subSizeId);
+                    if ($subSize->meal_id !== $subId) {
+                        throw new BadRequestHttpException(
+                            'Size doesn\'t belong to substitute meal'
+                        );
+                    }
+                    $subscriptionMeal->last_meal_size_id =
+                        $subscriptionMeal->meal_size_id;
+                    $subscriptionMeal->meal_size_id = $subSizeId;
+                }
+
+                // Substitute components
+                foreach ($subscriptionMeal->components as $component) {
+                    $option = $component->option;
+                    $subComponentOptionId = $substituteMealComponentOptions->get(
+                        $option->id
+                    );
+                    $subComponentOption = MealComponentOption::find(
+                        $subComponentOptionId
+                    );
+
+                    if ($subComponentOption) {
+                        $component->last_meal_component_id =
+                            $component->meal_component_id;
+                        $component->last_meal_component_option_id =
+                            $component->meal_component_option_id;
+                        $component->meal_component_id =
+                            $subComponentOption->meal_component_id;
+                        $component->meal_component_option_id = $subComponentOptionId;
+
+                        $component->save();
+                    }
+                }
+
+                // Substitute addons
+                foreach ($subscriptionMeal->addons as $addon) {
+                    if ($substituteMealAddons->has($addon->id)) {
+                        $subAddonId = $substituteMealAddons->get($addon->id);
+                        $subAddon = MealAddon::find($subAddonId);
+
+                        $addon->last_meal_addon_id = $addon->meal_addon_id;
+                        $addon->meal_addon_id = $subAddonId;
+                        $addon->save();
+                    }
+                }
+
+                $subscriptionMeal->last_meal_id = $subscriptionMeal->meal_id;
                 $subscriptionMeal->meal_id = $subId;
+
                 try {
                     $subscriptionMeal->save();
                 } catch (\Illuminate\Database\QueryException $e) {
@@ -1335,7 +1406,10 @@ class Meal extends Model implements HasMedia
                         $subscriptionMeal->save();
                     }
                 }
-                $subscriptionMeal->subscription->syncPrices();
+
+                dispatch(function () use ($subscriptionMeal) {});
+
+                $subscriptionMeal->fresh()->subscription->syncPrices();
 
                 $user = $subscriptionMeal->subscription->user;
 
@@ -1369,8 +1443,15 @@ class Meal extends Model implements HasMedia
 
     public function getHasVariationsAttribute()
     {
-        // Add component options
-        if ($this->sizes->count() > 0 || $this->addons->count() > 0) {
+        $hasComponents = $this->components()
+            ->whereHas('options')
+            ->count();
+
+        if (
+            $this->sizes->count() > 0 ||
+            $this->addons->count() > 0 ||
+            $hasComponents
+        ) {
             return true;
         }
     }
