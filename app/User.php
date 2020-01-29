@@ -294,10 +294,8 @@ class User extends Authenticatable implements JWTSubject
         $body = json_decode((string) $res->getBody());
 
         try {
-            if (isset($body->rows[0]) && isset($body->rows[0]->elements[0])) {
-                $distance = $body->rows[0]->elements[0]->distance->value;
-                return $distance * 0.000621371;
-            }
+            $distance = $body->rows[0]->elements[0]->distance->value;
+            return $distance * 0.000621371;
         } catch (\Exception $e) {
             return null;
         }
