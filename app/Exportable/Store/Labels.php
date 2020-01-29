@@ -23,9 +23,6 @@ class Labels
     {
         $this->store = $store;
         $this->params = collect($params);
-        if (!$this->params->has('group_by_date')) {
-            $this->params->put('group_by_date', false);
-        }
         $this->orientation = 'portrait';
     }
 
@@ -42,8 +39,6 @@ class Labels
         }
 
         $this->type = $type;
-
-        $groups = $this->store->productionGroups->toArray();
 
         $filename = 'public/' . md5(time()) . '.pdf';
 
@@ -79,26 +74,6 @@ class Labels
 
         $pdf = new Pdf($pdfConfig);
 
-        if ($groups && count($groups) > 0) {
-            foreach ($groups as $group) {
-                $productionGroupId = (int) $group['id'];
-                $data = $this->exportData($type, $productionGroupId);
-
-                if (!$data || count($data) == 0) {
-                    continue;
-                }
-
-                $vars['category_header'] =
-                    'Production Group: ' . $group['title'];
-                $vars['data'] = $data;
-                $vars = $this->filterVars($vars);
-
-                $html = view($this->exportPdfView(), $vars)->render();
-
-                $pdf->addPage($html);
-            }
-        }
-
         $output = $pdf->toString();
 
         Storage::disk('local')->put($filename, $output);
@@ -111,26 +86,10 @@ class Labels
         $mealQuantities = [];
         $lineItemQuantities = [];
         $dates = $this->getDeliveryDates();
-        $groupByDate = 'true' === $this->params->get('group_by_date', false);
         $store = $this->store;
         $params = $this->params;
         $params->date_format = $this->store->settings->date_format;
         $allDates = [];
-
-        $productionGroupId = $this->params->get('productionGroupId', null);
-        if ($default_productionGroupId != 0) {
-            $productionGroupId = $default_productionGroupId;
-        }
-
-        if ($productionGroupId != null) {
-            $productionGroupTitle = ProductionGroup::where(
-                'id',
-                $productionGroupId
-            )->first()->title;
-            $params->productionGroupTitle = $productionGroupTitle;
-        } else {
-            $params->productionGroupTitle = null;
-        }
 
         $orders = $this->store->getOrders(null, $dates, true);
         $orders = $orders->where('voided', 0);
@@ -138,10 +97,9 @@ class Labels
         $orders->map(function ($order) use (
             &$mealQuantities,
             &$lineItemQuantities,
-            $groupByDate,
             &$allDates,
-            $dates,
-            $productionGroupId
+            &$production,
+            $dates
         ) {
             $date = "";
             if ($order->delivery_date) {
@@ -181,67 +139,22 @@ class Labels
             $mealOrders = $order->meal_orders()->with('meal');
             $lineItemsOrders = $order->lineItemsOrders()->with('lineItem');
 
-            if ($productionGroupId) {
-                $mealOrders = $mealOrders->whereHas('meal', function (
-                    $query
-                ) use ($productionGroupId) {
-                    $query->where('production_group_id', $productionGroupId);
-                });
-
-                $lineItemsOrders = $lineItemsOrders->whereHas(
-                    'lineItem',
-                    function ($query) use ($productionGroupId) {
-                        $query->where(
-                            'production_group_id',
-                            $productionGroupId
-                        );
-                    }
-                );
-            }
-
             $mealOrders = $mealOrders->get();
             $lineItemsOrders = $lineItemsOrders->get();
 
             // Line Items
             foreach ($lineItemsOrders as $i => $lineItemsOrder) {
-                if (
-                    $productionGroupId &&
-                    $lineItemsOrder->lineItem->production_group_id !==
-                        intval($productionGroupId)
-                ) {
-                    return null;
-                }
-
                 $title = $lineItemsOrder->getTitleAttribute();
 
-                if ($groupByDate) {
-                    if (!isset($lineItemQuantities[$title])) {
-                        $lineItemQuantities[$title] = [];
-                    }
-                    if (!isset($lineItemQuantities[$title][$date])) {
-                        $lineItemQuantities[$title][$date] = 0;
-                    }
-                    $lineItemQuantities[$title][$date] +=
-                        $lineItemsOrder->quantity;
-                } else {
-                    if (!isset($lineItemQuantities[$title])) {
-                        $lineItemQuantities[$title] = 0;
-                    }
-
-                    $lineItemQuantities[$title] += $lineItemsOrder->quantity;
+                if (!isset($lineItemQuantities[$title])) {
+                    $lineItemQuantities[$title] = 0;
                 }
+
+                $lineItemQuantities[$title] += $lineItemsOrder->quantity;
             }
 
             // Meals
             foreach ($mealOrders as $i => $mealOrder) {
-                if (
-                    $productionGroupId &&
-                    $mealOrder->meal->production_group_id !==
-                        intval($productionGroupId)
-                ) {
-                    return null;
-                }
-
                 $newDate = $date;
                 if (
                     $mealOrder->delivery_date &&
@@ -286,22 +199,27 @@ class Labels
 
                 $title = $mealOrder->base_title;
                 $size = $mealOrder->base_size;
-                $title = $title . '<sep>' . $size;
+                $title = $size . ' - ' . $title;
 
-                if ($groupByDate) {
-                    if (!isset($mealQuantities[$title])) {
-                        $mealQuantities[$title] = [];
-                    }
-                    if (!isset($mealQuantities[$title][$newDate])) {
-                        $mealQuantities[$title][$newDate] = 0;
-                    }
-                    $mealQuantities[$title][$newDate] += $mealOrder->quantity;
-                } else {
-                    if (!isset($mealQuantities[$title])) {
-                        $mealQuantities[$title] = 0;
-                    }
+                if (!isset($mealQuantities[$title])) {
+                    $mealQuantities[$title] = 0;
+                }
 
-                    $mealQuantities[$title] += $mealOrder->quantity;
+                $mealQuantities[$title] += $mealOrder->quantity;
+            }
+            foreach ($mealOrders as $mealOrder) {
+                for ($i = 1; $i <= $mealOrder->quantity; $i++) {
+                    $production->push([
+                        '<h1>' .
+                            $mealOrder->html_title .
+                            '</h1><p>' .
+                            $mealOrder->meal->description .
+                            '</p><p>' .
+                            $mealOrder->meal->instructions .
+                            '</p><p>' .
+                            $mealOrder->store->details->name .
+                            '</p>'
+                    ]);
                 }
             }
         });
@@ -311,57 +229,15 @@ class Labels
             return Carbon::parse($date)->format('D, m/d/y');
         }, $allDates);
 
-        ksort($mealQuantities);
-        ksort($lineItemQuantities);
+        // ksort($mealQuantities);
+        // ksort($lineItemQuantities);
 
-        if (!$groupByDate) {
-            foreach ($mealQuantities as $title => $quantity) {
-                $temp = explode('<sep>', $title);
-                $title = $temp[0];
-                $size = $temp && isset($temp[1]) ? $temp[1] : "";
-                $production->push([$size, $title, $quantity]);
-            }
-
-            foreach ($lineItemQuantities as $title => $quantity) {
-                $production->push(['', $title, $quantity]);
-            }
-        } else {
-            foreach ($mealQuantities as $title => $mealDates) {
-                $temp = explode('<sep>', $title);
-                $size = $temp && isset($temp[0]) ? $temp[0] : "";
-                $title = $temp[1];
-
-                $row = [$title, $size];
-                foreach ($allDates as $date) {
-                    if (isset($mealDates[$date])) {
-                        $row[] = $mealDates[$date];
-                    } else {
-                        $row[] = 0;
-                    }
-                }
-                $production->push($row);
-            }
-
-            foreach ($lineItemQuantities as $title => $lineItemDates) {
-                $row = ['', $title];
-                foreach ($allDates as $date) {
-                    if (isset($lineItemDates[$date])) {
-                        $row[] = $lineItemDates[$date];
-                    } else {
-                        $row[] = 0;
-                    }
-                }
-                $production->push($row);
-            }
+        foreach ($lineItemQuantities as $title => $quantity) {
+            $production->push([$title]);
         }
 
         if ($type !== 'pdf') {
-            if (!$groupByDate) {
-                $production->prepend(['Size', 'Title', 'Orders']);
-            } else {
-                $headings = array_merge(['Title'], $this->allDates);
-                $production->prepend($headings);
-            }
+            $production->prepend(['Size', 'Title', 'Orders']);
         }
 
         return $production->toArray();
