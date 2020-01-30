@@ -2858,7 +2858,8 @@ const getters = {
     ) {
       return {
         finalCategories: state.viewed_store.finalCategories,
-        items: [...state.viewed_store.items, {}]
+        items: [...state.viewed_store.items, {}],
+        isRunningLazy: state.isLazyLoading
       };
     } else {
       const key = "dd_" + state.viewed_store.delivery_day.id;
@@ -2866,7 +2867,8 @@ const getters = {
       if (state.viewed_store.dataDD[key]) {
         return {
           finalCategories: state.viewed_store.dataDD[key].finalCategories,
-          items: state.viewed_store.dataDD[key].items
+          items: state.viewed_store.dataDD[key].items,
+          isRunningLazy: state.isLazyDDLoading[key]
         };
       }
 
