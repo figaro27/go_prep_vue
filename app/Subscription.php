@@ -763,10 +763,8 @@ class Subscription extends Model
         $items = $this->meal_subscriptions->map(function ($meal) {
             return [
                 'quantity' => $meal->quantity,
-                'meal' => [
-                    'id' => $meal->meal->id,
-                    'price' => $meal->meal->price
-                ]
+                'meal' => $meal->meal,
+                'price' => $meal->meal->price
             ];
         });
 
