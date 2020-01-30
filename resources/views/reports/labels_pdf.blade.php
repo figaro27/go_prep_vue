@@ -40,6 +40,15 @@
                   </p><p>
                   {!! $value->store->details->name !!}
                   </p>
+                  <h1>
+                    @if ($params['labelsNutrition'] === 'none')
+                    No Nutrition
+                    @elseif ($params['labelsNutrition'] === 'macros')
+                    Show Macros
+                    @else
+                    Show Full Nutrition
+                    @endif
+                  </h1>
               </td>
             @endforeach
           </tr>

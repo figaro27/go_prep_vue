@@ -251,10 +251,18 @@
               Labels for your meal containers.
             </p>
             <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-6">
+                <button
+                  class="btn btn-warning btn-md center mt-2 pull-right"
+                  @click="showSettings('labels')"
+                >
+                  Settings
+                </button>
+              </div>
+              <div class="col-md-6">
                 <button
                   @click="print('labels', 'pdf')"
-                  class="btn btn-primary btn-md center mt-2 center"
+                  class="btn btn-primary btn-md mt-2"
                 >
                   Print
                 </button>
@@ -318,6 +326,25 @@
         </div>
       </div>
     </div>
+    <b-modal
+      size="md"
+      title="Labels Settings"
+      v-model="showSettingsModal.labels"
+      v-if="showSettingsModal.labels"
+      no-fade
+    >
+      <b-form-group class="mt-3">
+        <b-form-radio v-model="labelsNutrition" value="none"
+          >Don't Show Nutrition</b-form-radio
+        >
+        <b-form-radio v-model="labelsNutrition" value="macros"
+          >Show Macros Only</b-form-radio
+        >
+        <b-form-radio v-model="labelsNutrition" value="nutrition"
+          >Show Full Nutrition Facts</b-form-radio
+        >
+      </b-form-group>
+    </b-modal>
   </div>
 </template>
 
@@ -352,6 +379,10 @@ export default {
         payments: [],
         labels: []
       },
+      showSettingsModal: {
+        labels: false
+      },
+      labelsNutrition: "none",
       selectedPickupLocation: null
     };
   },
@@ -440,6 +471,8 @@ export default {
       params.pickupLocationId = this.selectedPickupLocation;
 
       params.byOrderDate = 0;
+
+      params.labelsNutrition = this.labelsNutrition;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
@@ -575,6 +608,13 @@ export default {
       this.delivery_dates.labels.start = null;
       this.delivery_dates.labels.end = null;
       this.$refs.payments.clearDates();
+    },
+    showSettings(report) {
+      switch (report) {
+        case "labels":
+          this.showSettingsModal.labels = true;
+          break;
+      }
     }
   }
 };
