@@ -2182,7 +2182,9 @@ use next_delivery_dates
           monthlyPrepay: this.hasMonthlyPrepaySubscriptionItems,
           pickup: this.pickup,
           isMultipleDelivery: this.isMultipleDelivery,
-          delivery_day: this.bagDeliveryDate
+          delivery_day: this.deliveryDay
+            ? this.deliveryDay
+            : this.bagDeliveryDate
             ? this.bagDeliveryDate
             : this.deliveryDateOptions[0].value,
           card_id: cardId,
@@ -2213,11 +2215,9 @@ use next_delivery_dates
         .then(async resp => {
           //this.checkingOut = false;
           //return false;
-
           if (this.purchasedGiftCard !== null) {
             this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
           }
-          this.emptyBag();
           let weeklyDelivery = this.weeklySubscription;
           this.setBagMealPlan(false);
           this.setBagCoupon(null);
@@ -2257,7 +2257,7 @@ use next_delivery_dates
               query: { created: true, pickup: this.pickup }
             });
           } else {
-            await this.refreshCustomerOrders();
+            // await this.refreshCustomerOrders();
             this.$router.push({
               path: "/customer/orders",
               query: { created: true, pickup: this.pickup }
@@ -2269,7 +2269,9 @@ use next_delivery_dates
           this.$toastr.w(e.response.data.message, "Error");
         })
         .finally(() => {
+          this.refreshCustomerOrders();
           this.loading = false;
+          this.emptyBag();
         });
     },
     inputCustomer(id) {

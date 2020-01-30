@@ -427,6 +427,7 @@ export default {
     }
   },
   mounted() {},
+  updated() {},
   methods: {
     ...mapActions(["refreshCustomerOrders", "addJob", "removeJob"]),
     formatMoney: format.money,

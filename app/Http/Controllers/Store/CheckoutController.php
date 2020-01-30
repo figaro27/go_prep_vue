@@ -254,7 +254,13 @@ class CheckoutController extends StoreController
                                 $afterDiscountBeforeFees * $application_fee
                             )
                         ],
-                        ["stripe_account" => $storeSettings->stripe_id]
+                        ["stripe_account" => $storeSettings->stripe_id],
+                        [
+                            "idempotency_key" =>
+                                substr(uniqid(rand(10, 99), false), 0, 14) .
+                                chr(rand(65, 90)) .
+                                rand(0, 9)
+                        ]
                     );
                 }
             } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
