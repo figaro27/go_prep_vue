@@ -143,9 +143,9 @@ return [
         2 => ['name' => 'Standard', 'period' => 'month', 'value' => 29900],
         3 => ['name' => 'Premium', 'period' => 'month', 'value' => 49900],
         4 => ['name' => 'Enterprise', 'period' => 'month', 'value' => 74900],
-        5 => ['name' => 'Basic-2', 'period' => 'month', 'value' => 21900],
+        5 => ['name' => 'Basic-2', 'period' => 'month', 'value' => 22900],
         6 => ['name' => 'Standard-2', 'period' => 'month', 'value' => 39900],
-        7 => ['name' => 'Premium-2', 'period' => 'month', 'value' => 61900]
+        7 => ['name' => 'Premium-2', 'period' => 'month', 'value' => 62900]
     ],
 
     /*
