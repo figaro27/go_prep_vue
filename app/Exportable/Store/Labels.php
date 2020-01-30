@@ -80,11 +80,9 @@ class Labels
         return Storage::url($filename);
     }
 
-    public function exportData($type = null, $default_productionGroupId = 0)
+    public function exportData($type = null)
     {
         $production = collect();
-        $mealQuantities = [];
-        $lineItemQuantities = [];
         $dates = $this->getDeliveryDates();
         $store = $this->store;
         $params = $this->params;
@@ -94,46 +92,10 @@ class Labels
         $orders = $this->store->getOrders(null, $dates, true);
         $orders = $orders->where('voided', 0);
 
-        $orders->map(function ($order) use (
-            &$mealQuantities,
-            &$lineItemQuantities,
-            &$allDates,
-            &$production,
-            $dates
-        ) {
+        $orders->map(function ($order) use (&$allDates, &$production, $dates) {
             $date = "";
             if ($order->delivery_date) {
                 $date = $order->delivery_date->toDateString();
-            }
-
-            $dd_dates = $order->delivery_dates_array;
-
-            /*if (!in_array($date, $allDates)) {
-              $allDates[] = $date;
-            }*/
-
-            foreach ($dd_dates as $d) {
-                if (!in_array($d, $allDates)) {
-                    $isValid = true;
-
-                    if (isset($dates['from'])) {
-                        $from = Carbon::parse($dates['from'])->format('Y-m-d');
-                        if ($d < $from) {
-                            $isValid = false;
-                        }
-                    }
-
-                    if (isset($dates['to'])) {
-                        $to = Carbon::parse($dates['to'])->format('Y-m-d');
-                        if ($d > $to) {
-                            $isValid = false;
-                        }
-                    }
-
-                    if ($isValid) {
-                        $allDates[] = $d;
-                    }
-                }
             }
 
             $mealOrders = $order->meal_orders()->with('meal');
@@ -142,103 +104,18 @@ class Labels
             $mealOrders = $mealOrders->get();
             $lineItemsOrders = $lineItemsOrders->get();
 
-            // Line Items
-            foreach ($lineItemsOrders as $i => $lineItemsOrder) {
-                $title = $lineItemsOrder->getTitleAttribute();
-
-                if (!isset($lineItemQuantities[$title])) {
-                    $lineItemQuantities[$title] = 0;
-                }
-
-                $lineItemQuantities[$title] += $lineItemsOrder->quantity;
-            }
-
-            // Meals
-            foreach ($mealOrders as $i => $mealOrder) {
-                $newDate = $date;
-                if (
-                    $mealOrder->delivery_date &&
-                    $mealOrder->order->isMultipleDelivery
-                ) {
-                    $newDate = (new Carbon($mealOrder->delivery_date))->format(
-                        'Y-m-d'
-                    );
-                }
-
-                $isValid = true;
-
-                if (
-                    $mealOrder->order->isMultipleDelivery &&
-                    !$mealOrder->delivery_date
-                ) {
-                    $isValid = false;
-                }
-
-                if (isset($dates['from'])) {
-                    $from = Carbon::parse($dates['from'])->format('Y-m-d');
-                    if ($newDate < $from) {
-                        $isValid = false;
-                    }
-                }
-
-                if (isset($dates['to'])) {
-                    $to = Carbon::parse($dates['to'])->format('Y-m-d');
-                    if ($newDate > $to) {
-                        $isValid = false;
-                    }
-                }
-
-                if (!$isValid) {
-                    continue;
-                }
-
-                /*$title =
-                    $this->type !== 'pdf'
-                        ? $mealOrder->getTitle()
-                        : $mealOrder->html_title; */
-
-                $title = $mealOrder->base_title;
-                $size = $mealOrder->base_size;
-                $title = $size . ' - ' . $title;
-
-                if (!isset($mealQuantities[$title])) {
-                    $mealQuantities[$title] = 0;
-                }
-
-                $mealQuantities[$title] += $mealOrder->quantity;
-            }
             foreach ($mealOrders as $mealOrder) {
                 for ($i = 1; $i <= $mealOrder->quantity; $i++) {
-                    $production->push([
-                        '<h1>' .
-                            $mealOrder->html_title .
-                            '</h1><p>' .
-                            $mealOrder->meal->description .
-                            '</p><p>' .
-                            $mealOrder->meal->instructions .
-                            '</p><p>' .
-                            $mealOrder->store->details->name .
-                            '</p>'
-                    ]);
+                    $production->push([$mealOrder]);
+                }
+            }
+
+            foreach ($lineItemsOrders as $lineItemOrder) {
+                for ($i = 1; $i <= $lineItemOrder->quantity; $i++) {
+                    $production->push([$lineItemOrder]);
                 }
             }
         });
-
-        sort($allDates);
-        $this->allDates = array_map(function ($date) {
-            return Carbon::parse($date)->format('D, m/d/y');
-        }, $allDates);
-
-        // ksort($mealQuantities);
-        // ksort($lineItemQuantities);
-
-        foreach ($lineItemQuantities as $title => $quantity) {
-            $production->push([$title]);
-        }
-
-        if ($type !== 'pdf') {
-            $production->prepend(['Size', 'Title', 'Orders']);
-        }
 
         return $production->toArray();
     }

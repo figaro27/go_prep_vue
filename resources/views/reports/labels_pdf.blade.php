@@ -25,12 +25,22 @@
     </div>
 
     <div class="unbreakable">
-      <table border="0" width="100" class="light-border">
+      <table border="0" width="100">
         <tbody>
           @foreach($data as $i => $row)
-          <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
+          <tr>
             @foreach($row as $value)
-              <td>{!! $value !!}</td>
+              <td>
+                <h1>
+                  {!! $value->html_title !!}
+                  </h1><p>
+                  {!! $value->meal->description !!}
+                  </p><p>
+                  {!! $value->meal->instructions !!}
+                  </p><p>
+                  {!! $value->store->details->name !!}
+                  </p>
+              </td>
             @endforeach
           </tr>
           @endforeach
