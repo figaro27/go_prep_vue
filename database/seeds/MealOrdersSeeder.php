@@ -2,6 +2,8 @@
 
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use App\Meal;
 
 class MealOrdersSeeder extends Seeder
 {
@@ -15,14 +17,55 @@ class MealOrdersSeeder extends Seeder
         for ($order = 1; $order <= 20; $order++) {
             for ($i = 1; $i <= 5; $i++) {
                 try {
-                    DB::table('meal_orders')->insert([
+                    $meal = Meal::with([
+                        'components',
+                        'components.options'
+                    ])->find(rand(1, 23));
+                    $mealSizeId = count($meal->sizes)
+                        ? $meal->sizes->random()->id
+                        : null;
+
+                    $id = DB::table('meal_orders')->insertGetId([
                         'store_id' => 1,
                         'order_id' => $order,
-                        'meal_id' => rand(1, 23),
+                        'meal_id' => $meal->id,
+                        'meal_size_id' => $mealSizeId,
                         'quantity' => rand(1, 4),
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    foreach ($meal->components as $component) {
+                        $options = $component
+                            ->options()
+                            ->where(['meal_size_id' => $mealSizeId])
+                            ->get();
+                        $numOpts = count($options);
+                        echo $numOpts;
+
+                        foreach (
+                            $options->random(rand(0, $numOpts))
+                            as $option
+                        ) {
+                            DB::table('meal_order_components')->insert([
+                                'meal_order_id' => $id,
+                                'meal_component_id' => $component->id,
+                                'meal_component_option_id' => $option->id
+                            ]);
+                        }
+                    }
+
+                    $addons = $meal
+                        ->addons()
+                        ->where(['meal_size_id' => $mealSizeId])
+                        ->get();
+                    $numAddons = count($addons);
+                    foreach ($addons->random(rand(0, $numAddons)) as $addon) {
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => $id,
+                            'meal_addon_id' => $addon->id
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }

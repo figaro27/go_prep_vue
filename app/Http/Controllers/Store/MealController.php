@@ -214,6 +214,7 @@ class MealController extends StoreController
             $mealId,
             $subId,
             true,
+            $transferVariations,
             $substituteMealSizes,
             $substituteMealAddons,
             $substituteMealComponentOptions

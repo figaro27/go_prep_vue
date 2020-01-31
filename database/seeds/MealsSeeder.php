@@ -3,6 +3,7 @@
 use App\Meal;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MealsSeeder extends Seeder
 {
@@ -106,20 +107,64 @@ class MealsSeeder extends Seeder
                     'created_at' => $daysAgo[rand(0, 1)]
                 ]);
 
-                if ($i === 0) {
-                    DB::table('meal_sizes')->insert([
+                if ($i < 11) {
+                    $size1 = DB::table('meal_sizes')->insertGetId([
                         'meal_id' => $id,
                         'title' => 'Large',
                         'price' => mt_rand(80, 120) / 10,
                         'multiplier' => mt_rand(10, 20) / 10
                     ]);
 
-                    DB::table('meal_sizes')->insert([
+                    $size2 = DB::table('meal_sizes')->insertGetId([
                         'meal_id' => $id,
                         'title' => 'Extra Large',
                         'price' => mt_rand(80, 120) / 10,
                         'multiplier' => mt_rand(10, 20) / 10
                     ]);
+
+                    $cmpId = DB::table('meal_components')->insertGetId([
+                        'store_id' => $store,
+                        'meal_id' => $id,
+                        'title' => 'Choose your protein',
+                        'minimum' => 1,
+                        'maximum' => 3
+                    ]);
+
+                    foreach ([null, $size1, $size2] as $size) {
+                        DB::table('meal_addons')->insert([
+                            [
+                                'store_id' => $store,
+                                'meal_id' => $id,
+                                'meal_size_id' => $size,
+                                'title' => 'Extra meat',
+                                'price' => 1
+                            ]
+                        ]);
+
+                        DB::table('meal_component_options')->insert([
+                            [
+                                'store_id' => $store,
+                                'meal_component_id' => $cmpId,
+                                'meal_size_id' => $size,
+                                'title' => 'Chicken',
+                                'price' => 0
+                            ],
+                            [
+                                'store_id' => $store,
+                                'meal_component_id' => $cmpId,
+                                'meal_size_id' => $size,
+                                'title' => 'Beef',
+                                'price' => 1
+                            ],
+                            [
+                                'store_id' => $store,
+                                'meal_component_id' => $cmpId,
+                                'meal_size_id' => $size,
+                                'title' => 'Shrimp',
+                                'price' => 2
+                            ]
+                        ]);
+                    }
                 }
 
                 $meal = Meal::find($id);

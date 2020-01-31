@@ -1303,6 +1303,7 @@ class Meal extends Model implements HasMedia
         $id,
         $subId = null,
         $replaceOnly = false,
+        $transferVariations = false,
         $substituteMealSizes = null,
         $substituteMealAddons = null,
         $substituteMealComponentOptions = null
@@ -1312,6 +1313,81 @@ class Meal extends Model implements HasMedia
         $store = $meal->store;
 
         if ($sub) {
+            if ($transferVariations) {
+                foreach ($meal->sizes as $size) {
+                    $mealSize = $size->replicate();
+                    $mealSize->meal_id = $subId;
+                    $mealSize->push();
+
+                    $ing = IngredientMealSize::where(
+                        'meal_size_id',
+                        $size->id
+                    )->get();
+
+                    foreach ($size->ingredients as $ingredient) {
+                        $sizeIngredient = $ingredient->pivot->replicate();
+                        $sizeIngredient->meal_size_id = $mealSize->id;
+                        $sizeIngredient->push();
+                    }
+
+                    $substituteMealSizes->put($size->id, $mealSize->id);
+                }
+
+                foreach ($meal->addons as $addon) {
+                    $mealAddon = $addon->replicate();
+                    $mealAddon->meal_id = $subId;
+
+                    if ($addon->meal_size_id && $substituteMealSizes) {
+                        $mealAddon->meal_size_id = $substituteMealSizes->get(
+                            $addon->meal_size_id,
+                            null
+                        );
+                    }
+
+                    $mealAddon->push();
+
+                    foreach ($addon->ingredients as $ingredient) {
+                        $addonIngredient = $ingredient->pivot->replicate();
+                        $addonIngredient->meal_addon_id = $mealAddon->id;
+                        $addonIngredient->push();
+                    }
+
+                    $substituteMealAddons->put($addon->id, $mealAddon->id);
+                }
+
+                foreach ($meal->components as $component) {
+                    $mealComponent = $component->replicate();
+                    $mealComponent->meal_id = $subId;
+                    $mealComponent->push();
+
+                    foreach ($component->options as $option) {
+                        $mealComponentOption = $option->replicate();
+                        $mealComponentOption->meal_component_id =
+                            $mealComponent->id;
+
+                        if ($option->meal_size_id && $substituteMealSizes) {
+                            $mealComponentOption->meal_size_id = $substituteMealSizes->get(
+                                $option->meal_size_id,
+                                null
+                            );
+                        }
+
+                        $mealComponentOption->push();
+                        $substituteMealComponentOptions->put(
+                            $option->id,
+                            $mealComponentOption->id
+                        );
+
+                        foreach ($option->ingredients as $ingredient) {
+                            $optionIngredient = $ingredient->pivot->replicate();
+                            $optionIngredient->meal_component_option_id =
+                                $mealComponentOption->id;
+                            $optionIngredient->push();
+                        }
+                    }
+                }
+            }
+
             $subscriptionMeals = MealSubscription::where([
                 ['meal_id', $meal->id]
             ])->get();
@@ -1406,8 +1482,6 @@ class Meal extends Model implements HasMedia
                         $subscriptionMeal->save();
                     }
                 }
-
-                dispatch(function () use ($subscriptionMeal) {});
 
                 $subscriptionMeal->fresh()->subscription->syncPrices();
 

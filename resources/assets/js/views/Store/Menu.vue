@@ -784,8 +784,17 @@
             replacement meal by checking the box below.
           </p>
 
-          <b-row>
-            <b-col cols="4" v-if="deactivatingMeal.sizes">
+          <b-form-group>
+            <b-form-checkbox v-model="transferVariations">
+              Transfer varations to substitute meal
+            </b-form-checkbox>
+          </b-form-group>
+
+          <b-row v-if="!transferVariations">
+            <b-col
+              cols="4"
+              v-if="deactivatingMeal.sizes && deactivatingMeal.sizes.length"
+            >
               <h4>Sizes</h4>
               <b-row>
                 <b-col
@@ -808,7 +817,10 @@
               </b-row>
             </b-col>
 
-            <b-col cols="4" v-if="deactivatingMeal.addons">
+            <b-col
+              cols="4"
+              v-if="deactivatingMeal.addons && deactivatingMeal.addons.length"
+            >
               <h4>Addons</h4>
               <b-row>
                 <b-col
@@ -833,7 +845,13 @@
               </b-row>
             </b-col>
 
-            <b-col cols="8" v-if="deactivatingMeal.components">
+            <b-col
+              cols="8"
+              v-if="
+                deactivatingMeal.components &&
+                  deactivatingMeal.components.length
+              "
+            >
               <h4>Components</h4>
               <b-row>
                 <b-col
@@ -900,6 +918,7 @@
             deactivateAndReplace(
               deactivatingMeal.id,
               substitute_id,
+              transferVariations,
               substituteMealSizes,
               substituteMealAddons,
               substituteMealComponentOptions
@@ -1084,6 +1103,7 @@ export default {
       deletingMeal: {},
       deactivatingMeal: {},
       substitute_id: null,
+      transferVariations: false,
       substituteMeal: null,
       substituteMealSizes: {},
       substituteMealComponents: {},
@@ -1298,7 +1318,7 @@ export default {
         return false;
       }
 
-      if (this.deactivatingMeal.hasVariations) {
+      if (this.deactivatingMeal.hasVariations && !this.transferVariations) {
         for (const size of this.deactivatingMeal.sizes) {
           if (!this.substituteMealSizes[size.id]) {
             return false;
@@ -1525,7 +1545,12 @@ export default {
     },
     getSubstituteAddonOptions(addonId) {
       const sizes = this.substituteMeal.sizes;
-      const addons = this.substituteMeal.addons;
+      const selectedAddonIds = _.values(this.substituteMealAddons);
+
+      // Filter already selected addons
+      const addons = _.filter(this.substituteMeal.addons, addon => {
+        return !selectedAddonIds.includes(addon.id);
+      });
 
       return _.map(addons, addon => {
         return {
@@ -1540,7 +1565,12 @@ export default {
       const subComponent = _.find(this.substituteMeal.components, {
         id: subComponentId
       });
-      const options = subComponent.options || [];
+      const selectedOptionIds = _.values(this.substituteMealComponentOptions);
+
+      // Filter already selected options
+      const options = _.filter(subComponent.options || [], option => {
+        return !selectedOptionIds.includes(option.id);
+      });
 
       return _.map(options, option => {
         return {
@@ -1552,6 +1582,7 @@ export default {
     deactivateAndReplace(
       mealId,
       substituteId,
+      transferVariations,
       substituteMealSizes,
       substituteMealAddons,
       substituteMealComponentOptions
@@ -1568,6 +1599,7 @@ export default {
         .post("/api/me/deactivateAndReplace", {
           mealId: mealId,
           substituteId: substituteId,
+          transferVariations: transferVariations,
           substituteMealSizes: substituteMealSizes,
           substituteMealAddons: substituteMealAddons,
           substituteMealComponentOptions: substituteMealComponentOptions
