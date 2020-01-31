@@ -709,23 +709,23 @@ export default {
             return null;
           }
 
-          if (option.selectable) {
-            _.forEach(options[option.id], item => {
-              const mealId = item.meal_id;
-              const sizeId = item.meal_size_id;
-              const guid = JSON.stringify({ mealId, sizeId });
+          //if (option.selectable) {
+          _.forEach(options[option.id], item => {
+            const mealId = item.meal_id;
+            const sizeId = item.meal_size_id;
+            const guid = JSON.stringify({ mealId, sizeId });
 
-              if (mealQuantities[guid]) {
-                mealQuantities[guid].quantity += item.quantity;
-              } else if (item.meal) {
-                mealQuantities[guid] = {
-                  quantity: item.quantity,
-                  meal: item.meal,
-                  special_instructions: item.special_instructions
-                };
-              }
-            });
-          } else {
+            if (mealQuantities[guid]) {
+              mealQuantities[guid].quantity += item.quantity;
+            } else if (item.meal) {
+              mealQuantities[guid] = {
+                quantity: item.quantity,
+                meal: item.meal,
+                special_instructions: item.special_instructions
+              };
+            }
+          });
+          /*} else {
             _.forEach(option.meals, mealItem => {
               const mealId = mealItem.meal_id;
               const sizeId = mealItem.meal_size_id;
@@ -741,7 +741,7 @@ export default {
                 };
               }
             });
-          }
+          }*/
         });
       });
 
