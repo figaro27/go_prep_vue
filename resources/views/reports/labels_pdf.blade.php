@@ -3,6 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="{{ asset(mix('/css/print.css')) }}">
+  <link ref="nutritionFacts" href="{{ asset('nutrition-label-jquery-plugin') }}">
 </head>
 
 <body class="{{ $body_classes }}">
@@ -49,6 +50,7 @@
                     Show Full Nutrition
                     @endif
                   </h1>
+                <div id="nutritionFacts" ref="nutritionFacts"></div>
               </td>
             @endforeach
           </tr>

@@ -98,7 +98,9 @@ class Labels
                 $date = $order->delivery_date->toDateString();
             }
 
-            $mealOrders = $order->meal_orders()->with('meal');
+            $mealOrders = $order
+                ->meal_orders()
+                ->with('meal', 'meal.ingredients');
             $lineItemsOrders = $order->lineItemsOrders()->with('lineItem');
 
             $mealOrders = $mealOrders->get();
