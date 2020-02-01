@@ -48,6 +48,28 @@ class Hourly extends Command
         $count = 0;
 
         foreach ($stores as $store) {
+            $currentDay = date('D');
+            $currentHour = date('H');
+            $settings = StoreSetting::where('store_id', $store->id)->first();
+
+            if (
+                $settings->enableNextWeekDay === $currentDay &&
+                $settings->enableNextWeekHour === $currentHour &&
+                $settings->preventNextWeekOrders === 1
+            ) {
+                $settings->preventNextWeekOrders = 0;
+                $settings->update();
+            }
+
+            if (
+                $settings->disableNextWeekDay === $currentDay &&
+                $settings->disableNextWeekHour === $currentHour &&
+                $settings->preventNextWeekOrders === 0
+            ) {
+                $settings->preventNextWeekOrders = 1;
+                $settings->update();
+            }
+
             $date = $store->getNextDeliveryDate();
             $orders = $store
                 ->orders()
@@ -75,28 +97,6 @@ class Hourly extends Command
                     ->map(function ($order) {
                         return $order->subscription;
                     });
-            }
-
-            $currentDay = date('D');
-            $currentHour = date('H');
-            $settings = StoreSetting::where('store_id', $store->id)->first();
-
-            if (
-                $settings->enableNextWeekDay === $currentDay &&
-                $settings->enableNextWeekHour === $currentHour &&
-                $settings->preventNextWeekOrders === 1
-            ) {
-                $settings->preventNextWeekOrders = 0;
-                $settings->update();
-            }
-
-            if (
-                $settings->disableNextWeekDay === $currentDay &&
-                $settings->disableNextWeekHour === $currentHour &&
-                $settings->preventNextWeekOrders === 0
-            ) {
-                $settings->preventNextWeekOrders = 1;
-                $settings->update();
             }
         }
         $this->info($count . ' `Ready to Print` notifications sent');
