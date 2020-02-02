@@ -834,7 +834,7 @@
                   >
                     <v-select
                       label="title"
-                      :options="getSubstituteAddonOptions(addon.id)"
+                      :options="getSubstituteAddonOptions(addon)"
                       :reduce="val => val.value"
                       v-model="substituteMealAddons[addon.id]"
                       style="margin:0px 100px"
@@ -890,6 +890,7 @@
                               label="title"
                               :options="
                                 getSubstituteComponentOptionOptions(
+                                  option,
                                   component.id
                                 )
                               "
@@ -1543,23 +1544,31 @@ export default {
       }
       return title;
     },
-    getSubstituteAddonOptions(addonId) {
+    getSubstituteAddonOptions(addon) {
+      const addonId = addon.id;
       const sizes = this.substituteMeal.sizes;
       const selectedAddonIds = _.values(this.substituteMealAddons);
 
-      // Filter already selected addons
-      //const addons = _.filter(this.substituteMeal.addons, addon => {
-      //  return !selectedAddonIds.includes(addon.id);
-      //});
+      // Filter sizes
+      let addons = _.filter(this.substituteMeal.addons, subAddon => {
+        if (subAddon.meal_size_id) {
+          return (
+            this.substituteMealSizes[addon.meal_size_id] ===
+            subAddon.meal_size_id
+          );
+        } else {
+          return addon.meal_size_id === null;
+        }
+      });
 
-      return _.map(this.substituteMeal.addons, addon => {
+      return _.map(addons, addon => {
         return {
           title: this.getSizedTitle(sizes, addon),
           value: addon.id
         };
       });
     },
-    getSubstituteComponentOptionOptions(componentId) {
+    getSubstituteComponentOptionOptions(option, componentId) {
       const sizes = this.substituteMeal.sizes;
       const subComponentId = this.substituteMealComponents[componentId];
       const subComponent = _.find(this.substituteMeal.components, {
@@ -1567,12 +1576,17 @@ export default {
       });
       const selectedOptionIds = _.values(this.substituteMealComponentOptions);
 
-      // Filter already selected options
-      //const options = _.filter(subComponent.options || [], option => {
-      //  return !selectedOptionIds.includes(option.id);
-      //});
+      // Filter sizes
+      let options = _.filter(subComponent.options || [], subOption => {
+        if (option.meal_size_id) {
+          const subId = this.substituteMealSizes[option.meal_size_id];
+          return subId === subOption.meal_size_id;
+        } else {
+          return subOption.meal_size_id === null;
+        }
+      });
 
-      return _.map(subComponent.options, option => {
+      return _.map(options, option => {
         return {
           title: this.getSizedTitle(sizes, option),
           value: option.id
