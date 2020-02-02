@@ -23,7 +23,7 @@ mix.extract();
 
 mix
   .js("resources/assets/js/app.js", "public/js")
-  .version()
+  .js("resources/assets/js/print.js", "public/js")
   .sourceMaps(true)
   .version();
 
