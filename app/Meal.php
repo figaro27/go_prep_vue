@@ -1427,6 +1427,7 @@ class Meal extends Model implements HasMedia
                     $subComponentOptionId = $substituteMealComponentOptions->get(
                         $option->id
                     );
+
                     $subComponentOption = MealComponentOption::find(
                         $subComponentOptionId
                     );
@@ -1440,7 +1441,14 @@ class Meal extends Model implements HasMedia
                             $subComponentOption->meal_component_id;
                         $component->meal_component_option_id = $subComponentOptionId;
 
-                        $component->save();
+                        try {
+                            $component->save();
+                        } catch (\Exception $e) {
+                            // already has this component. Skip
+                            if ($e->getCode() === '23000') {
+                                $component->delete();
+                            }
+                        }
                     }
                 }
 
