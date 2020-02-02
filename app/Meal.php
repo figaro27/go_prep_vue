@@ -1324,13 +1324,13 @@ class Meal extends Model implements HasMedia
                         $size->id
                     )->get();
 
+                    $substituteMealSizes->put($size->id, $mealSize->id);
+
                     foreach ($size->ingredients as $ingredient) {
                         $sizeIngredient = $ingredient->pivot->replicate();
                         $sizeIngredient->meal_size_id = $mealSize->id;
                         $sizeIngredient->push();
                     }
-
-                    $substituteMealSizes->put($size->id, $mealSize->id);
                 }
 
                 foreach ($meal->addons as $addon) {

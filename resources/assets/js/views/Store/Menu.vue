@@ -769,7 +769,7 @@
 
         <v-select
           label="title"
-          :options="meals"
+          :options="meals.filter(meal => meal.id !== deactivatingMeal.id)"
           :reduce="meal => meal.id"
           v-model="substitute_id"
           style="margin:0px 100px"
@@ -1548,11 +1548,11 @@ export default {
       const selectedAddonIds = _.values(this.substituteMealAddons);
 
       // Filter already selected addons
-      const addons = _.filter(this.substituteMeal.addons, addon => {
-        return !selectedAddonIds.includes(addon.id);
-      });
+      //const addons = _.filter(this.substituteMeal.addons, addon => {
+      //  return !selectedAddonIds.includes(addon.id);
+      //});
 
-      return _.map(addons, addon => {
+      return _.map(this.substituteMeal.addons, addon => {
         return {
           title: this.getSizedTitle(sizes, addon),
           value: addon.id
@@ -1568,11 +1568,11 @@ export default {
       const selectedOptionIds = _.values(this.substituteMealComponentOptions);
 
       // Filter already selected options
-      const options = _.filter(subComponent.options || [], option => {
-        return !selectedOptionIds.includes(option.id);
-      });
+      //const options = _.filter(subComponent.options || [], option => {
+      //  return !selectedOptionIds.includes(option.id);
+      //});
 
-      return _.map(options, option => {
+      return _.map(subComponent.options, option => {
         return {
           title: this.getSizedTitle(sizes, option),
           value: option.id
