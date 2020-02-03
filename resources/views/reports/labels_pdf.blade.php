@@ -40,6 +40,8 @@
                   {!! $value->meal->instructions !!}
                   </p><p>
                   {!! $value->store->details->name !!}
+                  </p><p>
+                  {!! $value->store->settings->website !!}
                   </p>
                   <h1>
                     @if ($params['labelsNutrition'] === 'none')
