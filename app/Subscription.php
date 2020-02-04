@@ -348,7 +348,8 @@ class Subscription extends Model
             $this->orders()
                 // ->where('stripe_id', $stripeInvoice->get('id'))
                 ->where('stripe_id', $stripeInvoice->get('charge'))
-                ->count()
+                ->count() &&
+            !$this->monthlyPrepay
         ) {
             return;
         }
