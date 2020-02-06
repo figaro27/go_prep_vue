@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call(AllergiesSeeder::class);
         $this->call(IngredientsSeeder::class);
+        $this->call(MealOrdersSeeder::class);
         $this->call(MealsSeeder::class);
         $this->call(MealPackagesSeeder::class);
-        $this->call(MealOrdersSeeder::class);
 
         $this->call(OrdersSeeder::class);
         $this->call(SubscriptionsSeeder::class);
