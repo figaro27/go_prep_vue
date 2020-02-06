@@ -33,6 +33,9 @@ class DatabaseSeeder extends Seeder
         $this->call(CategoryMealSeeder::class);
         $this->call(AllergyMealSeeder::class);
         $this->call(IngredientMealSeeder::class);
+        $this->call(ProdGroupsSeeder::class);
+        $this->call(PickupLocationsSeeder::class);
+        $this->call(GiftCardsSeeder::class);
 
         Artisan::call('migrate:images');
     }
