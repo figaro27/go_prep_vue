@@ -12,6 +12,8 @@ class MealOrdersSeeder extends Seeder
      */
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
         for ($order = 1; $order <= 20; $order++) {
             for ($i = 1; $i <= 5; $i++) {
                 DB::table('meal_orders')->insert([
@@ -488,5 +490,7 @@ class MealOrdersSeeder extends Seeder
                 }
             }
         }
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 }
