@@ -15,13 +15,13 @@ class MealPackagesSeeder extends Seeder
     public function run()
     {
         $meals = Meal::where('store_id', 1)->get();
-
-        for ($i = 1; $i <= 5; $i++) {
+        $cat = 1;
+        for ($store = 1; $store <= 30; $store++) {
             $package = MealPackage::create([
-                'title' => 'Package ' . $i,
-                'description' => 'This is the description for package ' . $i,
-                'price' => rand(500, 20000) / 100,
-                'store_id' => 1,
+                'title' => 'Standard Preset Package',
+                'description' => 'This is the description for the package.',
+                'price' => 100,
+                'store_id' => $store,
                 'active' => 1
             ]);
 
@@ -34,16 +34,25 @@ class MealPackagesSeeder extends Seeder
             } catch (\Exception $e) {
             }
 
-            for ($m = 0; $m < rand(4, 10); $m++) {
+            for ($m = 0; $m <= 6; $m++) {
                 try {
                     MealPackageMeal::create([
                         'meal_id' => $meals->random()->id,
                         'meal_package_id' => $package->id,
-                        'quantity' => rand(1, 5)
+                        'quantity' => 2
                     ]);
                 } catch (\Exception $e) {
                 }
             }
+
+            $insertCategoryMealPackage = "
+            INSERT INTO `category_meal_package` 
+        (category_id, meal_package_id, created_at, updated_at)
+        VALUES 
+        ($cat,$store,NULL,NULL)
+        ";
+            DB::statement($insertCategoryMealPackage);
+            $cat += 3;
         }
     }
 }
