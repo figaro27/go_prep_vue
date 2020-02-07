@@ -1454,13 +1454,17 @@ class Meal extends Model implements HasMedia
 
                 // Substitute addons
                 foreach ($subscriptionMeal->addons as $addon) {
-                    if ($substituteMealAddons->has($addon->id)) {
-                        $subAddonId = $substituteMealAddons->get($addon->id);
+                    if ($substituteMealAddons->has($addon->meal_addon_id)) {
+                        $subAddonId = $substituteMealAddons->get(
+                            $addon->meal_addon_id
+                        );
                         $subAddon = MealAddon::find($subAddonId);
 
                         $addon->last_meal_addon_id = $addon->meal_addon_id;
                         $addon->meal_addon_id = $subAddonId;
                         $addon->save();
+                    } else {
+                        throw new \Exception('No addon substitute provided');
                     }
                 }
 
