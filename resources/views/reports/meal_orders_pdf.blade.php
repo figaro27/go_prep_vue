@@ -23,7 +23,7 @@
         <h2 style="font-size:30px">All Delivery Dates</h2>
       @endif
 
-      <h2 style="position:relative;top:5px">{{ date('m/d/Y h:i:a')}}</h2>
+      <h2>{{ date('m/d/Y h:i:a')}}</h2>
       <div style="clear:both"></div>
     </div>
 
