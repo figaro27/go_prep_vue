@@ -31,8 +31,6 @@
       <table border="1" width="100" class="light-border">
         <thead>
           <tr>
-            <th style="width:150px"><h4>Size</h4></th>
-            <th><h4>Item</h4></th>
             @if(!$params['group_by_date'] || $params['group_by_date'] === 'false')
             <th><h4>Orders</h4></th>
             @else
@@ -42,6 +40,8 @@
                 </th>
               @endforeach
             @endif
+            <th style="width:150px"><h4>Size</h4></th>
+            <th><h4>Item</h4></th>
             <!-- <th>Total Price</th> -->
           </tr>
         </thead>
