@@ -319,11 +319,11 @@ class MealOrders
                 $temp = explode('<sep>', $title);
                 $title = $temp[0];
                 $size = $temp && isset($temp[1]) ? $temp[1] : "";
-                $production->push([$size, $title, $quantity]);
+                $production->push([$quantity, $size, $title]);
             }
 
             foreach ($lineItemQuantities as $title => $quantity) {
-                $production->push(['', $title, $quantity]);
+                $production->push([$quantity, '', $title]);
             }
         } else {
             foreach ($mealQuantities as $title => $mealDates) {
@@ -357,7 +357,7 @@ class MealOrders
 
         if ($type !== 'pdf') {
             if (!$groupByDate) {
-                $production->prepend(['Size', 'Title', 'Orders']);
+                $production->prepend(['Orders', 'Size', 'Title']);
             } else {
                 $headings = array_merge(['Title'], $this->allDates);
                 $production->prepend($headings);

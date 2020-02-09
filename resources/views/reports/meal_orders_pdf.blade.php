@@ -15,13 +15,12 @@
 
     <div class="delivery-part">
       @if ($delivery_dates)
-        <h2>
-          Delivery Days:
+        <h2 style="font-size:30px">
           {{ $delivery_dates['from']->format($params->date_format) }} -
           {{ $delivery_dates['to']->format($params->date_format) }}
         </h2>
       @else
-        <h2>All Delivery Dates</h2>
+        <h2 style="font-size:30px">All Delivery Dates</h2>
       @endif
 
       <h2>{{ date('m/d/Y h:i:a')}}</h2>
@@ -32,8 +31,6 @@
       <table border="1" width="100" class="light-border">
         <thead>
           <tr>
-            <th style="width:150px"><h4>Size</h4></th>
-            <th><h4>Item</h4></th>
             @if(!$params['group_by_date'] || $params['group_by_date'] === 'false')
             <th><h4>Orders</h4></th>
             @else
@@ -43,6 +40,8 @@
                 </th>
               @endforeach
             @endif
+            <th style="width:150px"><h4>Size</h4></th>
+            <th><h4>Item</h4></th>
             <!-- <th>Total Price</th> -->
           </tr>
         </thead>
