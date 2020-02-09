@@ -393,7 +393,11 @@ $currency = $order->store->settings->currency_symbol
 
                         Subtotal: <br>
                         @if ($coupon > 0)
-                        Coupon ({{ $couponCode }})<br>
+                        Coupon 
+                        @if (!$order->manual)
+                        ({{ $couponCode }})
+                        @endif
+                        <br>
                         @endif
                         @if ($mealPlanDiscount > 0)
                         Subscription Discount<br>
