@@ -15,13 +15,13 @@
 
     <div class="delivery-part">
       @if ($delivery_dates)
-        <h1>
+        <h2 style="font-size:30px">
           Delivery Days:
           {{ $delivery_dates['from']->format($params->date_format) }} -
           {{ $delivery_dates['to']->format($params->date_format) }}
-        </h1>
+        </h2>
       @else
-        <h1>All Delivery Dates</h1>
+        <h2 style="font-size:30px">All Delivery Dates</h2>
       @endif
 
       <h2>{{ date('m/d/Y h:i:a')}}</h2>
