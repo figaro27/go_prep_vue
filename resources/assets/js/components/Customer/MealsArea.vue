@@ -904,10 +904,12 @@ export default {
       this.$parent.search = "";
     },
     async addMeal(meal, mealPackage, size) {
+      console.log(0);
       if (meal.gift_card) {
         this.addOne(meal);
         this.$parent.showBagClass = "shopping-cart show-right bag-area";
       }
+      console.log(1);
       if (meal.meal_package) {
         this.addMealPackage(meal, true);
       } else {
@@ -932,7 +934,7 @@ export default {
             this.addOne(meal, false, null, null, [], null);
           }
         }
-
+        console.log(2);
         if (
           (meal.components && meal.components.length > 0) ||
           (meal.addons && meal.addons.length > 0)
@@ -943,7 +945,7 @@ export default {
           if (size === undefined) {
             size = null;
           }
-
+          console.log(3);
           if (this.isAdjustOrder() || this.isManualOrder()) {
             //const items = this.getRelatedBagItems(meal, size);
             const items = this.getPackageBagItems();
@@ -958,7 +960,7 @@ export default {
             this.addOne(meal, false, size, null, [], null);
           }
         }
-
+        console.log(4);
         if (this.$parent.showBagClass.includes("hidden-right")) {
           this.$parent.showBagClass = "shopping-cart show-right bag-area";
         }
@@ -969,6 +971,7 @@ export default {
         }
       }
       this.$parent.search = "";
+      console.log(5);
     },
     showMealPackage(mealPackage, size) {
       $([document.documentElement, document.body]).scrollTop(0);
