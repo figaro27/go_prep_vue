@@ -446,6 +446,7 @@ const mutations = {
       free = null
     }
   ) {
+    console.log(0);
     /* Remove Mutation - This is temporary solution. Not professional code. */
     meal = JSON.parse(JSON.stringify(meal));
     size = JSON.parse(JSON.stringify(size));
@@ -457,7 +458,7 @@ const mutations = {
     if (!_.isNumber(mealId)) {
       mealId = meal.id;
     }
-
+    console.log(1);
     if (mealPackage || meal.meal_package) {
       //mealId = "package-" + mealId;
       mealPackage = true;
@@ -466,7 +467,7 @@ const mutations = {
     if (size) {
       //mealId = "size-" + mealId + "-" + size.id;
     }
-
+    console.log(2);
     if (components) {
       //mealId += JSON.stringify(components);
     }
@@ -475,7 +476,7 @@ const mutations = {
       meal.delivery_day = state.viewed_store.delivery_day;
     }
     const delivery_day = meal.delivery_day ? meal.delivery_day : null;
-
+    console.log(3);
     let guid = CryptoJS.MD5(
       JSON.stringify({
         meal: mealId,
@@ -487,7 +488,7 @@ const mutations = {
         delivery_day
       })
     ).toString();
-
+    console.log(4);
     let isNew = false;
     if (!_.has(state.bag.items, guid)) {
       isNew = true;
@@ -503,7 +504,7 @@ const mutations = {
         free
       });
     }
-
+    console.log(5);
     let item = {
       ...state.bag.items[guid]
     };
@@ -513,7 +514,7 @@ const mutations = {
     if (!item.added) {
       item.added = moment().unix();
     }
-
+    console.log(6);
     /* Adjustments */
     let price = item.size ? item.size.price : item.meal.price;
     if (item.components) {
@@ -548,7 +549,7 @@ const mutations = {
         }
       });
     } // End If
-
+    console.log(7);
     if (item.addons) {
       if (!item.meal_package) {
         _.forEach(item.addons, addonId => {
@@ -573,7 +574,7 @@ const mutations = {
         });
       }
     } // End IF
-
+    console.log(8);
     item.original_price = parseFloat(parseFloat(price).toFixed(2));
     item.price = item.original_price + 0;
     item.delivery_day = delivery_day;
@@ -585,6 +586,7 @@ const mutations = {
     /* Adjustments End */
 
     Vue.set(state.bag.items, guid, item);
+    console.log(9);
   },
   removeFromBagFromAdjust(state, order_bag) {
     let guid = order_bag.guid.toString();

@@ -81,7 +81,6 @@ export default {
       special_instructions = null,
       free = false
     ) {
-      console.log(0);
       if (meal.gift_card) {
         this.$store.commit("addToBag", {
           meal,
@@ -89,17 +88,16 @@ export default {
         });
         return;
       }
-      console.log(1);
       if (!mealPackage) {
         meal = this.getMeal(meal.id, meal);
       } else {
         meal = this.getMealPackage(meal.id, meal);
       }
-      console.log(2);
+
       if (!meal) {
         return;
       }
-      console.log(3);
+
       let sizeId = size;
 
       //if (!mealPackage) {
@@ -113,7 +111,7 @@ export default {
         size = null;
       }
       //}
-      console.log(4);
+
       let sizeCriteria = !mealPackage
         ? { meal_size_id: sizeId }
         : { meal_package_size_id: sizeId };
@@ -133,7 +131,7 @@ export default {
         if (this.mealPackageModal && this.hideMealPackageModal) {
           await this.hideMealPackageModal();
         }
-        console.log(5);
+
         const result = !mealPackage
           ? await this.$refs.componentModal.show(meal, mealPackage, size)
           : await this.$refs.packageComponentModal.show(meal, size);
@@ -141,7 +139,7 @@ export default {
         if (!result) {
           return;
         }
-        console.log(6);
+
         components = { ...result.components };
         addons = { ...result.addons };
       }
@@ -149,7 +147,7 @@ export default {
       if (free) {
         meal.price = 0;
       }
-      console.log(7);
+
       this.$store.commit("addToBag", {
         meal,
         quantity: 1,
@@ -162,7 +160,6 @@ export default {
       });
       this.mealModal = false;
       this.mealPackageModal = false;
-      console.log(8);
     },
     addOneFromAdjust(order_bag) {
       this.$store.commit("addToBagFromAdjust", order_bag);
