@@ -11,6 +11,8 @@ class IngredientMealSeeder extends Seeder
      */
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
         $createIngredientsMealsTable = "
     		CREATE TABLE IF NOT EXISTS `ingredient_meal` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -318,5 +320,7 @@ class IngredientMealSeeder extends Seeder
             DB::statement($insertIngredientAddon);
             $ingredient += 85;
         }
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 }
