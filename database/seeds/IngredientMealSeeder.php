@@ -31,7 +31,7 @@ class IngredientMealSeeder extends Seeder
         DB::statement($createIngredientsMealsTable);
 
         $m = 0;
-        for ($i = 0; $i <= 2059; $i += 71) {
+        for ($i = 0; $i <= 2550; $i += 85) {
             $insertIngredientsMeals = "
     		INSERT INTO `ingredient_meal` 
         (ingredient_id,meal_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
@@ -140,6 +140,183 @@ class IngredientMealSeeder extends Seeder
     	";
             DB::statement($insertIngredientsMeals);
             $m += 23;
+        }
+
+        // Large Sizes
+        $ingredient = 72;
+        for ($i = 1; $i <= 240; $i += 2) {
+            $insertIngredientsMealSizes = "
+            INSERT INTO `ingredient_meal_size` 
+        (ingredient_id,meal_size_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientsMealSizes);
+            $ingredient = +72;
+        }
+
+        // Family Sizes
+        $ingredient = 73;
+        for ($i = 2; $i <= 240; $i += 2) {
+            $insertIngredientsMealSizes = "
+            INSERT INTO `ingredient_meal_size` 
+        (ingredient_id,meal_size_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientsMealSizes);
+            $ingredient = +73;
+        }
+
+        // Default Components
+
+        $ingredient = 74;
+        for ($i = 1; $i <= 1080; $i += 9) {
+            $insertIngredientComponentOptions = "
+            INSERT INTO `ingredient_meal_component_option` 
+        (ingredient_id,meal_component_option_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientComponentOptions);
+            $ingredient += 85;
+        }
+
+        $ingredient = 77;
+        for ($i = 2; $i <= 1080; $i += 9) {
+            $insertIngredientComponentOptions = "
+            INSERT INTO `ingredient_meal_component_option` 
+        (ingredient_id,meal_component_option_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientComponentOptions);
+            $ingredient += 85;
+        }
+
+        $ingredient = 80;
+        for ($i = 3; $i <= 1080; $i += 9) {
+            $insertIngredientComponentOptions = "
+            INSERT INTO `ingredient_meal_component_option` 
+        (ingredient_id,meal_component_option_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientComponentOptions);
+            $ingredient += 85;
+        }
+
+        // Large Components
+        $ingredient = 75;
+        for ($i = 4; $i <= 1080; $i += 9) {
+            $insertIngredientComponentOptions = "
+            INSERT INTO `ingredient_meal_component_option` 
+        (ingredient_id,meal_component_option_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientComponentOptions);
+            $ingredient += 85;
+        }
+
+        $ingredient = 78;
+        for ($i = 5; $i <= 1080; $i += 9) {
+            $insertIngredientComponentOptions = "
+            INSERT INTO `ingredient_meal_component_option` 
+        (ingredient_id,meal_component_option_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientComponentOptions);
+            $ingredient += 85;
+        }
+
+        $ingredient = 81;
+        for ($i = 6; $i <= 1080; $i += 9) {
+            $insertIngredientComponentOptions = "
+            INSERT INTO `ingredient_meal_component_option` 
+        (ingredient_id,meal_component_option_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientComponentOptions);
+            $ingredient += 85;
+        }
+
+        // Family Size Components
+        $ingredient = 76;
+        for ($i = 7; $i <= 1080; $i += 9) {
+            $insertIngredientComponentOptions = "
+            INSERT INTO `ingredient_meal_component_option` 
+        (ingredient_id,meal_component_option_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientComponentOptions);
+            $ingredient += 85;
+        }
+
+        $ingredient = 79;
+        for ($i = 8; $i <= 1080; $i += 9) {
+            $insertIngredientComponentOptions = "
+            INSERT INTO `ingredient_meal_component_option` 
+        (ingredient_id,meal_component_option_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientComponentOptions);
+            $ingredient += 85;
+        }
+
+        $ingredient = 82;
+        for ($i = 9; $i <= 1080; $i += 9) {
+            $insertIngredientComponentOptions = "
+            INSERT INTO `ingredient_meal_component_option` 
+        (ingredient_id,meal_component_option_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientComponentOptions);
+            $ingredient += 85;
+        }
+
+        // Regular Addons
+        $ingredient = 83;
+        for ($i = 1; $i <= 360; $i += 3) {
+            $insertIngredientAddon = "
+            INSERT INTO `ingredient_meal_addon` 
+        (ingredient_id,meal_addon_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientAddon);
+            $ingredient += 85;
+        }
+
+        // Large Addons
+        $ingredient = 84;
+        for ($i = 2; $i <= 360; $i += 3) {
+            $insertIngredientAddon = "
+            INSERT INTO `ingredient_meal_addon` 
+        (ingredient_id,meal_addon_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientAddon);
+            $ingredient += 85;
+        }
+
+        // Family Size Addons
+        $ingredient = 85;
+        for ($i = 3; $i <= 360; $i += 3) {
+            $insertIngredientAddon = "
+            INSERT INTO `ingredient_meal_addon` 
+        (ingredient_id,meal_addon_id,quantity,quantity_unit,quantity_unit_display,created_at,updated_at)
+        VALUES 
+        ($ingredient,$i,1,'g','g',NULL,NULL);
+        ";
+            DB::statement($insertIngredientAddon);
+            $ingredient += 85;
         }
     }
 }
