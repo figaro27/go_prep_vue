@@ -70,7 +70,11 @@ f<template>
             </button>
             <button
               class="btn btn-danger btn-sm"
-              @click="cancelSubscription(props.row.id)"
+              @click="
+                {
+                  (cancelSubscriptionModal = true), (subId = props.row.id);
+                }
+              "
             >
               Cancel
             </button>
@@ -99,6 +103,25 @@ f<template>
         </v-client-table>
       </div>
     </div>
+
+    <b-modal
+      size="md"
+      title="Cancel Subscription"
+      v-model="cancelSubscriptionModal"
+      v-if="cancelSubscriptionModal"
+      hide-footer
+    >
+      <p class="center-text mt-3 mb-3">
+        Are you sure you want to cancel your subscription? If you want to change
+        your meals you can click "Edit" instead to edit this subscription.
+      </p>
+      <center>
+        <b-btn variant="danger" @click="cancelSubscription">Cancel</b-btn>
+        <router-link :to="`/customer/subscriptions/${subId}`">
+          <b-btn class="btn btn-success btn-md">Edit</b-btn>
+        </router-link>
+      </center>
+    </b-modal>
 
     <div class="modal-basic">
       <b-modal
@@ -294,6 +317,8 @@ export default {
       subscription: null,
       viewSubscriptionModal: false,
       isLoading: false,
+      subId: null,
+      cancelSubscriptionModal: false,
       filters: {
         delivery_days: ["All"]
       },
@@ -555,11 +580,9 @@ export default {
 
       this.refreshSubscriptions();
     },
-    async cancelSubscription(subscription) {
+    async cancelSubscription() {
       try {
-        const resp = await axios.delete(
-          `/api/me/subscriptions/${subscription}`
-        );
+        const resp = await axios.delete(`/api/me/subscriptions/${this.subId}`);
         this.$toastr.s("Subscription cancelled.");
       } catch (e) {
         this.$toastr.e(
@@ -567,7 +590,7 @@ export default {
           "Failed to cancel Subscription"
         );
       }
-
+      this.cancelSubscriptionModal = false;
       this.refreshSubscriptions();
     },
     getIntervalDays(subscription) {
