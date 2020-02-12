@@ -129,7 +129,7 @@ class OrdersByCustomer
                     return $mealOrder->order->delivery_date >=
                         $from->format('Y-m-d') &&
                         $mealOrder->order->delivery_date <=
-                            $to->format('Y-m-d');
+                            $to->addDays(1)->format('Y-m-d');
                 });
             $customerMealOrders = $mealOrders->map(function ($mealOrder) {
                 return [
