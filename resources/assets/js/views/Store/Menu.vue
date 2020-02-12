@@ -1051,7 +1051,6 @@ export default {
   },
   updated() {
     //$(window).trigger("resize");
-    console.log("a");
   },
   watch: {
     async substitute_id(val, oldVal) {

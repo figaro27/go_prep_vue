@@ -39,6 +39,7 @@
                     class="popover-size"
                   />
                 </b-form-group>
+
                 <b-modal
                   size="md"
                   v-model="showCutoffModal"
@@ -992,6 +993,7 @@
                     class="popover-size"
                   />
                 </p>
+
                 <b-form-group :state="true" class="mt-2">
                   <b-form-input
                     type="text"
@@ -1000,8 +1002,17 @@
                     required
                   ></b-form-input>
                 </b-form-group>
+
                 <b-button type="submit" variant="primary">Save</b-button>
               </b-form>
+              <p class="mt-2">Timezone</p>
+              <b-select
+                :options="timezoneOptions"
+                v-model="storeSettings.timezone"
+                class="d-inline w-auto mr-1"
+                @change.native="val => onChangeTimezone(val)"
+              >
+              </b-select>
               <b-form @submit.prevent="closeStore" v-if="canOpen">
                 <p class="mt-2">
                   <span class="mr-1 mt-2">Open</span>
