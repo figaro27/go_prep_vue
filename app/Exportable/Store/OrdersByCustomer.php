@@ -154,8 +154,12 @@ class OrdersByCustomer
                     'meal_size' => $mealOrder->meal_size
                         ? $mealOrder->meal_size->title
                         : null,
-                    // 'meal_components' => $mealOrder->components ? $mealOrder->components : null,
-                    // 'meal_addons' => $mealOrder->addons ? $mealOrder->addons : null,
+                    'meal_components' => $mealOrder->components
+                        ? $mealOrder->componentsFormat
+                        : null,
+                    'meal_addons' => $mealOrder->addons
+                        ? $mealOrder->addonsFormat
+                        : null,
                     'quantity' => $mealOrder->quantity,
                     'price' =>
                         '$' .
@@ -177,8 +181,8 @@ class OrdersByCustomer
                 'Delivery Instructions',
                 'Meal',
                 'Size',
-                // 'Components',
-                // 'Addons',
+                'Components',
+                'Addons',
                 'Quantity',
                 'Price'
             ]);
