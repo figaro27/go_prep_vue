@@ -35,6 +35,13 @@
                     :reduce="group => group.value"
                   >
                   </v-select>
+                  <button
+                    class="btn btn-warning btn-sm mb-2 col-md-2"
+                    @click="productionGroupModal = true"
+                    v-if="storeModules.productionGroups"
+                  >
+                    Edit Groups
+                  </button>
                 </div>
               </div>
             </div>
@@ -105,6 +112,60 @@
         </div>
       </div>
     </div>
+    <b-modal
+      size="md"
+      title="Production Groups"
+      v-model="productionGroupModal"
+      v-if="productionGroupModal"
+    >
+      <div
+        style="display:flex;align-items:center;justify-content:center"
+        class="mt-2"
+      >
+        <div style="max-width:100%">
+          <ol>
+            <li
+              v-for="group in storeProductionGroups"
+              :key="`group-${group.id}`"
+            >
+              <h5 v-if="editingId !== group.id">
+                <i
+                  @click="editingId = group.id"
+                  class="fa fa-edit text-warning mr-2"
+                ></i>
+                <span class="category-name">{{ group.title }}</span>
+              </h5>
+              <div v-if="editingId === group.id">
+                <div>
+                  <b-input
+                    v-model="groupTitle"
+                    placeholder="New name"
+                    class="w-50 mr-2"
+                  ></b-input>
+                  <b-btn
+                    @click.prevent="updateGroup"
+                    variant="primary"
+                    class="mb-1 mt-1"
+                    >Save</b-btn
+                  >
+                </div>
+              </div>
+            </li>
+          </ol>
+          <b-form class="mt-2 d-flex" @submit.prevent="onAddGroup">
+            <b-input
+              v-model="new_group"
+              type="text"
+              placeholder="New Group..."
+              class="d-inline"
+            ></b-input>
+            <b-button type="submit" variant="primary ml-2 d-inline"
+              >Create</b-button
+            >
+          </b-form>
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -125,7 +186,11 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      productionGroupModal: false,
+      groupTitle: null,
+      editingId: null,
       productionGroupId: null,
+      new_group: null,
       ordersByDate: [],
       filters: {
         delivery_dates: {
@@ -359,6 +424,9 @@ export default {
     document.head.appendChild(vue_select);
   },
   methods: {
+    ...mapActions({
+      refreshStoreProductionGroups: "refreshStoreProductionGroups"
+    }),
     formatMoney: format.money,
     async exportData(report, format = "pdf", print = false) {
       const warning = this.checkDateRange({ ...this.filters.delivery_dates });
@@ -429,6 +497,30 @@ export default {
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
       this.$refs.deliveryDates.clearDates();
+    },
+    updateGroup() {
+      axios
+        .post("/api/me/updateProdGroups", {
+          id: this.editingId,
+          title: this.groupTitle
+        })
+        .then(resp => {
+          this.editingId = null;
+          this.groupTitle = null;
+          this.refreshStoreProductionGroups();
+          this.$toastr.s("Group updated.");
+        });
+    },
+    onAddGroup() {
+      if (!this.new_group) {
+        return;
+      }
+      axios
+        .post("/api/me/productionGroups", { group: this.new_group })
+        .then(response => {
+          this.refreshStoreProductionGroups();
+          this.new_group = "";
+        });
     }
   }
 };
