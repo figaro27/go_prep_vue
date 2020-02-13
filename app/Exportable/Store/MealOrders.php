@@ -331,7 +331,7 @@ class MealOrders
                 $size = $temp && isset($temp[0]) ? $temp[0] : "";
                 $title = $temp[1];
 
-                $row = [$title, $size];
+                $row = [];
                 foreach ($allDates as $date) {
                     if (isset($mealDates[$date])) {
                         $row[] = $mealDates[$date];
@@ -339,11 +339,13 @@ class MealOrders
                         $row[] = 0;
                     }
                 }
+                $row[] = $title;
+                $row[] = $size;
                 $production->push($row);
             }
 
             foreach ($lineItemQuantities as $title => $lineItemDates) {
-                $row = ['', $title];
+                $row = [];
                 foreach ($allDates as $date) {
                     if (isset($lineItemDates[$date])) {
                         $row[] = $lineItemDates[$date];
@@ -351,6 +353,8 @@ class MealOrders
                         $row[] = 0;
                     }
                 }
+                $row[] = '';
+                $row[] = $title;
                 $production->push($row);
             }
         }
