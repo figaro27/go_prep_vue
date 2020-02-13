@@ -313,10 +313,15 @@ foreach (
                                 'PickupLocationController'
                             );
                             Route::resource('lineItems', 'LineItemController');
+                            Route::post(
+                                'updateProdGroups',
+                                'ProductionGroupController@updateProdGroups'
+                            );
                             Route::resource(
                                 'productionGroups',
                                 'ProductionGroupController'
                             );
+
                             Route::resource(
                                 'settings',
                                 'StoreSettingController'

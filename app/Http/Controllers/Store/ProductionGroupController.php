@@ -23,9 +23,8 @@ class ProductionGroupController extends StoreController
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
     }
 
     /**
@@ -36,7 +35,10 @@ class ProductionGroupController extends StoreController
      */
     public function store(Request $request)
     {
-        //
+        $newGroup = new ProductionGroup();
+        $newGroup->title = $request->get('group');
+        $newGroup->store_id = $this->store->id;
+        $newGroup->save();
     }
 
     /**
@@ -68,9 +70,17 @@ class ProductionGroupController extends StoreController
      * @param  \App\ProductionGroup  $productionGroup
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ProductionGroup $productionGroup)
+
+    public function update(ProductionGroup $productionGroup)
     {
-        //
+    }
+
+    public function updateProdGroups(Request $request)
+    {
+        $store = $this->store;
+        $group = $store->productionGroups()->findOrFail($request->get('id'));
+        $group->title = $request->get('title');
+        $group->update();
     }
 
     /**
