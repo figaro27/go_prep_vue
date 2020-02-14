@@ -9,86 +9,88 @@
     @hide="editing = false"
     no-fade
   >
-    <b-form-group :state="true">
-      <div class="categories">
-        <draggable
-          v-model="categories"
-          @change="onChangeCategories"
-          element="ol"
-          class="plain"
-        >
-          <li
-            v-for="category in categories"
-            :key="`category-${category.id}`"
-            class="category mb-3"
+    <div class="center-flex">
+      <b-form-group :state="true" style="max-width:100%">
+        <div class="categories">
+          <draggable
+            v-model="categories"
+            @change="onChangeCategories"
+            element="ol"
+            class="plain"
           >
-            <h5 v-if="!editing || editingId !== category.id" class="d-flex">
-              <span class="category-name">{{ category.category }}</span>
-              <i
-                v-if="category.id"
-                @click="editCategory(category)"
-                class="fa fa-edit text-warning"
-              ></i>
-              <i
-                v-if="category.id"
-                @click="deleteCategory(category.id)"
-                class="fa fa-minus-circle text-danger"
-              ></i>
-            </h5>
-            <div v-if="editing && editingId === category.id">
-              <div class="d-flex">
-                <b-input
-                  v-model="editing.category"
-                  placeholder="Enter updated category name."
-                  class="w-50 mr-2"
-                ></b-input>
-                <b-btn @click.prevent="updateCategory" variant="primary"
-                  >Save</b-btn
-                >
-              </div>
-
-              <div v-if="storeModules.category_restrictions" class="mt-3">
-                <b-form-group>
-                  <b-checkbox v-model="editing.date_range"
-                    >Enable category between dates</b-checkbox
+            <li
+              v-for="category in categories"
+              :key="`category-${category.id}`"
+              class="category mb-3"
+            >
+              <h5 v-if="!editing || editingId !== category.id" class="d-flex">
+                <span class="category-name">{{ category.category }}</span>
+                <i
+                  v-if="category.id"
+                  @click="editCategory(category)"
+                  class="fa fa-edit text-warning"
+                ></i>
+                <i
+                  v-if="category.id"
+                  @click="deleteCategory(category.id)"
+                  class="fa fa-minus-circle text-danger"
+                ></i>
+              </h5>
+              <div v-if="editing && editingId === category.id">
+                <div class="d-flex">
+                  <b-input
+                    v-model="editing.category"
+                    placeholder="Enter updated category name."
+                    class="w-50 mr-2"
+                  ></b-input>
+                  <b-btn @click.prevent="updateCategory" variant="primary"
+                    >Save</b-btn
                   >
-                </b-form-group>
-                <b-form-group v-if="editing.date_range">
-                  <v-date-picker
-                    mode="range"
-                    v-model="editing.range"
-                    is-inline
-                  />
-                </b-form-group>
-                <b-form-group v-if="editing.date_range">
-                  <b-checkbox v-model="editing.date_range_exclusive"
-                    >Disable other categories between dates</b-checkbox
-                  >
-                </b-form-group>
-                <b-form-group v-if="editing.date_range_exclusive">
-                  <v-date-picker
-                    mode="range"
-                    v-model="editing.range_exclusive"
-                    :min-date="editing.range.start"
-                    :max-date="editing.range.end"
-                    is-inline
-                  />
-                </b-form-group>
-              </div>
-            </div>
-          </li>
-        </draggable>
-      </div>
+                </div>
 
-      <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
-        <b-input
-          v-model="new_category"
-          type="text"
-          placeholder="New Category..."
-        ></b-input>
-        <b-button type="submit" variant="primary ml-2">Create</b-button>
-      </b-form>
-    </b-form-group>
+                <div v-if="storeModules.category_restrictions" class="mt-3">
+                  <b-form-group>
+                    <b-checkbox v-model="editing.date_range"
+                      >Enable category between dates</b-checkbox
+                    >
+                  </b-form-group>
+                  <b-form-group v-if="editing.date_range">
+                    <v-date-picker
+                      mode="range"
+                      v-model="editing.range"
+                      is-inline
+                    />
+                  </b-form-group>
+                  <b-form-group v-if="editing.date_range">
+                    <b-checkbox v-model="editing.date_range_exclusive"
+                      >Disable other categories between dates</b-checkbox
+                    >
+                  </b-form-group>
+                  <b-form-group v-if="editing.date_range_exclusive">
+                    <v-date-picker
+                      mode="range"
+                      v-model="editing.range_exclusive"
+                      :min-date="editing.range.start"
+                      :max-date="editing.range.end"
+                      is-inline
+                    />
+                  </b-form-group>
+                </div>
+              </div>
+            </li>
+          </draggable>
+        </div>
+
+        <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
+          <b-input
+            v-model="new_category"
+            type="text"
+            placeholder="New Category..."
+          ></b-input>
+          <b-button type="submit" variant="primary ml-2">Create</b-button>
+        </b-form>
+      </b-form-group>
+    </div>
   </b-modal>
 </template>
 
@@ -100,7 +102,7 @@ export default {
     return {
       visible: true,
       categories: [],
-      editing: null,
+      editing: {},
       editingId: null,
       new_category: "",
       newCategoryName: ""
@@ -197,7 +199,6 @@ export default {
           end: rangeExclusiveTo
         }
       };
-
       this.editingId = id;
     },
     updateCategory() {

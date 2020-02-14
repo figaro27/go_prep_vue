@@ -118,10 +118,7 @@
       v-model="productionGroupModal"
       v-if="productionGroupModal"
     >
-      <div
-        style="display:flex;align-items:center;justify-content:center"
-        class="mt-2"
-      >
+      <div class="center-flex mt-2">
         <div style="max-width:100%">
           <ol>
             <li
