@@ -1525,3 +1525,9 @@ body.forgotresettoken {
     right: 0%;
   }
 }
+
+.center-flex {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
