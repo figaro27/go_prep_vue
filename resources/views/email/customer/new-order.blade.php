@@ -170,7 +170,11 @@ $currency = $order->store->settings->currency_symbol
                       </tr>
                       @endif
                       <tr>
+                        @if ($order->manual)
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Manual Order ID {{ $order->order_number }}</td>
+                        @else
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Order ID {{ $order->order_number }}</td>
+                        @endif
                       </tr>
                       @if ($order->subscription)
                       <tr>
