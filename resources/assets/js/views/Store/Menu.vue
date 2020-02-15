@@ -1490,8 +1490,9 @@ export default {
       });
 
       if (
-        (substitute && this.deactivateMealModal === false) ||
-        this.deactivatingMeal.in_package
+        active &&
+        ((substitute && this.deactivateMealModal === false) ||
+          this.deactivatingMeal.in_package)
       ) {
         this.mealID = id;
         this.deactivateMealModal = true;
