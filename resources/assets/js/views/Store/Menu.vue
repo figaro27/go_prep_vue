@@ -1490,7 +1490,7 @@ export default {
       });
 
       if (
-        active &&
+        !active &&
         ((substitute && this.deactivateMealModal === false) ||
           this.deactivatingMeal.in_package)
       ) {
