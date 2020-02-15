@@ -326,6 +326,18 @@ foreach (
                                 'settings',
                                 'StoreSettingController'
                             );
+
+                            Route::post(
+                                'updateModules',
+                                'StoreModuleController@update'
+                            );
+                            Route::post(
+                                'updateModuleSettings',
+                                'StoreModuleSettingController@update'
+                            );
+
+                            Route::resource('modules', 'StoreModuleController');
+
                             Route::get(
                                 'getApplicationFee',
                                 'StoreSettingController@getApplicationFee'

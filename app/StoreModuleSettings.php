@@ -10,8 +10,12 @@ use App\Order;
 class StoreModuleSettings extends Model
 {
     protected $casts = [
-        'transferTimeRange' => 'boolean'
+        'transferTimeRange' => 'boolean',
+        'cashAllowedForCustomer' => 'boolean',
+        'specialInstructionsStoreOnly' => 'boolean'
     ];
+
+    protected $guarded = [];
 
     protected $appends = ['omittedTransferTimes'];
 

@@ -15,8 +15,13 @@ class StoreModule extends Model
     }
 
     protected $casts = [
-        'cashOrders' => 'boolean'
+        'cashOrders' => 'boolean',
+        'productionGroups' => 'boolean',
+        'specialInstructions' => 'boolean',
+        'cashOrderNoBalance' => 'boolean',
+        'stockManagement' => 'boolean',
+        'autoPrintPackingSlip' => 'boolean'
     ];
 
-    protected $fillable = ['cashOrders'];
+    protected $guarded = [];
 }
