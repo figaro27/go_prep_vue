@@ -196,9 +196,9 @@ export default {
       this.ingredient_picker_id = sizeId;
       this.ingredient_picker_size = _.find(this.meal.sizes, { id: sizeId });
 
-      if (!this.ingredient_picker_size.ingredients.length) {
-        this.ingredient_picker_size.ingredients = [...this.meal.ingredients];
-      }
+      // if (!this.ingredient_picker_size.ingredients.length) {
+      //   this.ingredient_picker_size.ingredients = [...this.meal.ingredients];
+      // }
     },
     onChangeIngredients(ingredients) {
       const index = _.findIndex(this.meal.sizes, {
