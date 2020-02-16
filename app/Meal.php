@@ -15,6 +15,7 @@ use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use PHPUnit\Framework\Constraint\Exception;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
@@ -1424,8 +1425,9 @@ class Meal extends Model implements HasMedia
                 // Substitute components
                 foreach ($subscriptionMeal->components as $component) {
                     $option = $component->option;
+                    $originalOptionId = $option->id;
                     $subComponentOptionId = $substituteMealComponentOptions->get(
-                        $option->id
+                        $originalOptionId
                     );
 
                     $subComponentOption = MealComponentOption::find(
@@ -1446,6 +1448,19 @@ class Meal extends Model implements HasMedia
                         } catch (\Exception $e) {
                             // already has this component. Skip
                             if ($e->getCode() === '23000') {
+                                Log::debug(
+                                    'Meal subscription already has component option',
+                                    [
+                                        'subscription_id' =>
+                                            $subscriptionMeal->subscription_id,
+                                        'meal_id' => $subscriptionMeal->meal_id,
+                                        'substitute_meal_id' => $subId,
+                                        'meal_component_option_id' => $originalOptionId,
+                                        'sub_meal_addon_id' => $subComponentOptionId,
+                                        'meal_subscription_id' =>
+                                            $subscriptionMeal->id
+                                    ]
+                                );
                                 $component->delete();
                             }
                         }
@@ -1455,16 +1470,50 @@ class Meal extends Model implements HasMedia
                 // Substitute addons
                 foreach ($subscriptionMeal->addons as $addon) {
                     if ($substituteMealAddons->has($addon->meal_addon_id)) {
+                        $originalMealAddonId = $addon->meal_addon_id;
                         $subAddonId = $substituteMealAddons->get(
-                            $addon->meal_addon_id
+                            $originalMealAddonId
                         );
                         $subAddon = MealAddon::find($subAddonId);
 
                         $addon->last_meal_addon_id = $addon->meal_addon_id;
                         $addon->meal_addon_id = $subAddonId;
-                        $addon->save();
+
+                        try {
+                            $addon->save();
+                        } catch (\Exception $e) {
+                            // already has this component. Skip
+                            if ($e->getCode() === '23000') {
+                                Log::debug(
+                                    'Meal subscription already has addon',
+                                    [
+                                        'subscription_id' =>
+                                            $subscriptionMeal->subscription_id,
+                                        'meal_id' => $subscriptionMeal->meal_id,
+                                        'substitute_meal_id' => $subId,
+                                        'meal_addon_id' => $originalMealAddonId,
+                                        'sub_meal_addon_id' => $subAddonId,
+                                        'meal_subscription_id' =>
+                                            $subscriptionMeal->id
+                                    ]
+                                );
+                                $addon->delete();
+                            }
+                        }
                     } else {
-                        throw new \Exception('No addon substitute provided');
+                        // We have no replacement for this addon.
+                        // Was the addon removed from the meal after the subscription created?
+                        // Delete it
+                        $addon->delete();
+
+                        Log::error('No addon substitute provided', [
+                            'subscription_id' =>
+                                $subscriptionMeal->subscription_id,
+                            'meal_id' => $subscriptionMeal->meal_id,
+                            'substitute_meal_id' => $subId,
+                            'meal_addon_id' => $addon->meal_addon_id,
+                            'meal_subscription_id' => $subscriptionMeal->id
+                        ]);
                     }
                 }
 
