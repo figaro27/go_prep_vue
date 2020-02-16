@@ -15,6 +15,7 @@ use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use PHPUnit\Framework\Constraint\Exception;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
@@ -1424,47 +1425,117 @@ class Meal extends Model implements HasMedia
                 // Substitute components
                 foreach ($subscriptionMeal->components as $component) {
                     $option = $component->option;
+                    $originalOptionId = $option->id;
                     $subComponentOptionId = $substituteMealComponentOptions->get(
-                        $option->id
+                        $originalOptionId
                     );
 
-                    $subComponentOption = MealComponentOption::find(
-                        $subComponentOptionId
-                    );
+                    if (
+                        $substituteMealComponentOptions->has($originalOptionId)
+                    ) {
+                        $subComponentOption = MealComponentOption::find(
+                            $subComponentOptionId
+                        );
 
-                    if ($subComponentOption) {
-                        $component->last_meal_component_id =
-                            $component->meal_component_id;
-                        $component->last_meal_component_option_id =
-                            $component->meal_component_option_id;
-                        $component->meal_component_id =
-                            $subComponentOption->meal_component_id;
-                        $component->meal_component_option_id = $subComponentOptionId;
+                        if ($subComponentOption) {
+                            $component->last_meal_component_id =
+                                $component->meal_component_id;
+                            $component->last_meal_component_option_id =
+                                $component->meal_component_option_id;
+                            $component->meal_component_id =
+                                $subComponentOption->meal_component_id;
+                            $component->meal_component_option_id = $subComponentOptionId;
 
-                        try {
-                            $component->save();
-                        } catch (\Exception $e) {
-                            // already has this component. Skip
-                            if ($e->getCode() === '23000') {
-                                $component->delete();
+                            try {
+                                $component->save();
+                            } catch (\Exception $e) {
+                                if ($e->getCode() === '23000') {
+                                    // already has this component. Skip
+                                    Log::debug(
+                                        'Meal subscription already has component option',
+                                        [
+                                            'subscription_id' =>
+                                                $subscriptionMeal->subscription_id,
+                                            'meal_id' =>
+                                                $subscriptionMeal->meal_id,
+                                            'substitute_meal_id' => $subId,
+                                            'meal_component_option_id' => $originalOptionId,
+                                            'sub_meal_addon_id' => $subComponentOptionId,
+                                            'meal_subscription_id' =>
+                                                $subscriptionMeal->id
+                                        ]
+                                    );
+                                    $component->delete();
+                                }
                             }
                         }
+                    } else {
+                        // We have no replacement for this component.
+                        // Was the component or option removed from the meal after the subscription created?
+                        // Delete it from the subscription
+                        $component->delete();
+
+                        Log::error('No component option substitute provided', [
+                            'subscription_id' =>
+                                $subscriptionMeal->subscription_id,
+                            'meal_id' => $subscriptionMeal->meal_id,
+                            'substitute_meal_id' => $subId,
+                            'meal_component_id' =>
+                                $component->meal_component_id,
+                            'meal_component_option_id' =>
+                                $component->meal_component_option_id,
+                            'meal_subscription_id' => $subscriptionMeal->id
+                        ]);
                     }
                 }
 
                 // Substitute addons
                 foreach ($subscriptionMeal->addons as $addon) {
                     if ($substituteMealAddons->has($addon->meal_addon_id)) {
+                        $originalMealAddonId = $addon->meal_addon_id;
                         $subAddonId = $substituteMealAddons->get(
-                            $addon->meal_addon_id
+                            $originalMealAddonId
                         );
                         $subAddon = MealAddon::find($subAddonId);
 
                         $addon->last_meal_addon_id = $addon->meal_addon_id;
                         $addon->meal_addon_id = $subAddonId;
-                        $addon->save();
+
+                        try {
+                            $addon->save();
+                        } catch (\Exception $e) {
+                            if ($e->getCode() === '23000') {
+                                // already has this component. Skip
+                                Log::debug(
+                                    'Meal subscription already has addon',
+                                    [
+                                        'subscription_id' =>
+                                            $subscriptionMeal->subscription_id,
+                                        'meal_id' => $subscriptionMeal->meal_id,
+                                        'substitute_meal_id' => $subId,
+                                        'meal_addon_id' => $originalMealAddonId,
+                                        'sub_meal_addon_id' => $subAddonId,
+                                        'meal_subscription_id' =>
+                                            $subscriptionMeal->id
+                                    ]
+                                );
+                                $addon->delete();
+                            }
+                        }
                     } else {
-                        throw new \Exception('No addon substitute provided');
+                        // We have no replacement for this addon.
+                        // Was the addon removed from the meal after the subscription created?
+                        // Delete it
+                        $addon->delete();
+
+                        Log::error('No addon substitute provided', [
+                            'subscription_id' =>
+                                $subscriptionMeal->subscription_id,
+                            'meal_id' => $subscriptionMeal->meal_id,
+                            'substitute_meal_id' => $subId,
+                            'meal_addon_id' => $addon->meal_addon_id,
+                            'meal_subscription_id' => $subscriptionMeal->id
+                        ]);
                     }
                 }
 
