@@ -1430,40 +1430,62 @@ class Meal extends Model implements HasMedia
                         $originalOptionId
                     );
 
-                    $subComponentOption = MealComponentOption::find(
-                        $subComponentOptionId
-                    );
+                    if (
+                        $substituteMealComponentOptions->has($originalOptionId)
+                    ) {
+                        $subComponentOption = MealComponentOption::find(
+                            $subComponentOptionId
+                        );
 
-                    if ($subComponentOption) {
-                        $component->last_meal_component_id =
-                            $component->meal_component_id;
-                        $component->last_meal_component_option_id =
-                            $component->meal_component_option_id;
-                        $component->meal_component_id =
-                            $subComponentOption->meal_component_id;
-                        $component->meal_component_option_id = $subComponentOptionId;
+                        if ($subComponentOption) {
+                            $component->last_meal_component_id =
+                                $component->meal_component_id;
+                            $component->last_meal_component_option_id =
+                                $component->meal_component_option_id;
+                            $component->meal_component_id =
+                                $subComponentOption->meal_component_id;
+                            $component->meal_component_option_id = $subComponentOptionId;
 
-                        try {
-                            $component->save();
-                        } catch (\Exception $e) {
-                            // already has this component. Skip
-                            if ($e->getCode() === '23000') {
-                                Log::debug(
-                                    'Meal subscription already has component option',
-                                    [
-                                        'subscription_id' =>
-                                            $subscriptionMeal->subscription_id,
-                                        'meal_id' => $subscriptionMeal->meal_id,
-                                        'substitute_meal_id' => $subId,
-                                        'meal_component_option_id' => $originalOptionId,
-                                        'sub_meal_addon_id' => $subComponentOptionId,
-                                        'meal_subscription_id' =>
-                                            $subscriptionMeal->id
-                                    ]
-                                );
-                                $component->delete();
+                            try {
+                                $component->save();
+                            } catch (\Exception $e) {
+                                if ($e->getCode() === '23000') {
+                                    // already has this component. Skip
+                                    Log::debug(
+                                        'Meal subscription already has component option',
+                                        [
+                                            'subscription_id' =>
+                                                $subscriptionMeal->subscription_id,
+                                            'meal_id' =>
+                                                $subscriptionMeal->meal_id,
+                                            'substitute_meal_id' => $subId,
+                                            'meal_component_option_id' => $originalOptionId,
+                                            'sub_meal_addon_id' => $subComponentOptionId,
+                                            'meal_subscription_id' =>
+                                                $subscriptionMeal->id
+                                        ]
+                                    );
+                                    $component->delete();
+                                }
                             }
                         }
+                    } else {
+                        // We have no replacement for this component.
+                        // Was the component or option removed from the meal after the subscription created?
+                        // Delete it from the subscription
+                        $component->delete();
+
+                        Log::error('No component option substitute provided', [
+                            'subscription_id' =>
+                                $subscriptionMeal->subscription_id,
+                            'meal_id' => $subscriptionMeal->meal_id,
+                            'substitute_meal_id' => $subId,
+                            'meal_component_id' =>
+                                $component->meal_component_id,
+                            'meal_component_option_id' =>
+                                $component->meal_component_option_id,
+                            'meal_subscription_id' => $subscriptionMeal->id
+                        ]);
                     }
                 }
 
@@ -1482,8 +1504,8 @@ class Meal extends Model implements HasMedia
                         try {
                             $addon->save();
                         } catch (\Exception $e) {
-                            // already has this component. Skip
                             if ($e->getCode() === '23000') {
+                                // already has this component. Skip
                                 Log::debug(
                                     'Meal subscription already has addon',
                                     [
