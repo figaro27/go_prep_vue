@@ -384,10 +384,14 @@ export default {
       let prodGroups = this.storeProductionGroups;
       let prodGroupOptions = [{ text: "All", value: null }];
 
-      prodGroups.forEach(prodGroup => {
-        prodGroupOptions.push({ text: prodGroup.title, value: prodGroup.id });
-      });
-      return prodGroupOptions;
+      if (prodGroups.length > 0) {
+        prodGroups.forEach(prodGroup => {
+          prodGroupOptions.push({ text: prodGroup.title, value: prodGroup.id });
+        });
+        return prodGroupOptions;
+      } else {
+        return [];
+      }
     },
     storeMeals() {
       return this.meals;
