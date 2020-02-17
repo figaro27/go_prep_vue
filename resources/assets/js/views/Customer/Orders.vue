@@ -2,7 +2,7 @@
   <div class="main-customer-container box-shadow top-fill">
     <div class="row">
       <div class="col-md-12">
-        <Spinner v-if="!_orders" />
+        <Spinner v-if="!_orders || loading" />
         <!-- <b-alert
           v-if="_orders && _orders[0]"
           :show="!!$route.query.created || false"
@@ -359,6 +359,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       order: null,
       viewOrderModal: false,
       columns: [
@@ -426,7 +427,11 @@ export default {
       return _.isArray(orders) ? orders : [];
     }
   },
-  mounted() {},
+  async mounted() {
+    this.loading = true;
+    await this.refreshCustomerOrders();
+    this.loading = false;
+  },
   updated() {},
   methods: {
     ...mapActions(["refreshCustomerOrders", "addJob", "removeJob"]),
