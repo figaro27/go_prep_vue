@@ -174,7 +174,7 @@
                             v-if="
                               !meal.meal_package &&
                                 !meal.gift_card &&
-                                meal.sizes.length === 0
+                                !meal.hasVariations
                             "
                           >
                             <i>-</i>
@@ -183,7 +183,7 @@
                             v-if="
                               !meal.meal_package &&
                                 !meal.gift_card &&
-                                meal.sizes.length === 0
+                                !meal.hasVariations
                             "
                             type="text"
                             name
@@ -197,7 +197,7 @@
                             v-if="
                               !meal.meal_package &&
                                 !meal.gift_card &&
-                                (!meal.sizes || meal.sizes.length === 0)
+                                !meal.hasVariations
                             "
                             @click.stop="addMeal(meal, null)"
                             class="menu-bag-btn plus-minus"
@@ -210,8 +210,7 @@
                             v-if="
                               !meal.meal_package &&
                                 !meal.gift_card &&
-                                meal.sizes &&
-                                meal.sizes.length > 0
+                                meal.hasVariations
                             "
                             toggle-class="brand-color"
                             :ref="

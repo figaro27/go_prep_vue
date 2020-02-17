@@ -2269,7 +2269,6 @@ use next_delivery_dates
           this.$toastr.w(e.response.data.message, "Error");
         })
         .finally(() => {
-          this.refreshCustomerOrders();
           this.loading = false;
           this.emptyBag();
         });
