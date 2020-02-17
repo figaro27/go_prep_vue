@@ -210,7 +210,8 @@
                             v-if="
                               !meal.meal_package &&
                                 !meal.gift_card &&
-                                meal.hasVariations
+                                meal.hasVariations &&
+                                meal.sizes.length > 0
                             "
                             toggle-class="brand-color"
                             :ref="
@@ -243,6 +244,21 @@
                               }}
                             </b-dropdown-item>
                           </b-dropdown>
+
+                          <b-btn
+                            v-if="
+                              !meal.meal_package &&
+                                !meal.gift_card &&
+                                meal.hasVariations &&
+                                meal.sizes.length === 0
+                            "
+                            @click.stop="addMeal(meal, null)"
+                            size="lg"
+                            class="mx-auto variation-dropdown brand-color white-text"
+                            style="height:45px"
+                          >
+                            Select
+                          </b-btn>
 
                           <!-- <b-btn
                             v-if="
