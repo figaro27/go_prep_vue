@@ -52,6 +52,7 @@ class Orders
                         $order->user->details->firstname,
                         $order->user->details->phone,
                         $order->transferTime,
+                        $order->amount,
                         '$' . number_format($order->balance, 2)
                     ];
                 } else {
@@ -85,6 +86,7 @@ class Orders
                     'First Name',
                     'Phone',
                     'Time',
+                    'Amount',
                     'Balance'
                 ]);
             } else {
