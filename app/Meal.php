@@ -1585,6 +1585,9 @@ class Meal extends Model implements HasMedia
 
         if (!$replaceOnly) {
             $meal->delete();
+        } else {
+            $meal->active = 0;
+            $meal->save();
         }
     }
 
