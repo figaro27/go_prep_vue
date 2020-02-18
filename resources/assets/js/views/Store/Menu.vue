@@ -183,7 +183,7 @@
                       ? deleteGiftCard(props.row.id)
                       : props.row.meal_package
                       ? deleteMealPackage(props.row.id)
-                      : deleteMeal(props.row.id)
+                      : deleteMealfromMenu(props.row.id)
                   "
                 >
                   Delete
@@ -625,96 +625,6 @@
 
     <b-modal
       title="Choose Replacement"
-      v-model="deleteMealModal"
-      v-if="deleteMealModal"
-      size="lg"
-      :hide-footer="true"
-      no-fade
-      no-close-on-backdrop
-    >
-      <p class="mt-5">
-        This meal is tied to one or more subscriptions or is found in one or
-        more meal packages. Please select a meal to replace this meal in all
-        existing subscriptions & packages.
-        <img
-          v-b-popover.hover="
-            'You currently have one or more subscriptions with your customers that contain this meal OR a meal package that contains this meal. Please select a substitute replacement meal. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of allergies, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'
-          "
-          title="Replacement Meal"
-          src="/images/store/popover.png"
-          class="popover-size"
-        />
-      </p>
-      <center>
-        <v-select
-          label="title"
-          :options="meals"
-          :reduce="meal => meal.id"
-          v-model="substitute_id"
-        ></v-select>
-        <button
-          v-if="substitute_id"
-          class="btn btn-danger btn-lg mt-3"
-          @click="destroyMeal(deletingMeal.id, substitute_id)"
-        >
-          Delete & Replace
-        </button>
-        <div
-          class="col-xs-12"
-          style="height:300px;"
-          v-if="mealSubstituteOptions(deletingMeal).length === 0"
-        ></div>
-        <div v-if="mealSubstituteOptions(deletingMeal).length > 0">
-          <h5 class="mt-3">Recommended Replacements</h5>
-          <b-list-group>
-            <b-list-group-item
-              v-for="meal in mealSubstituteOptions(deletingMeal)"
-              :active="substitute_id === meal.id"
-              @click="
-                () => {
-                  substitute_id = meal.id;
-                }
-              "
-              :key="meal.id"
-              class="mb-1"
-            >
-              <div class="d-flex align-items-center text-left">
-                <img
-                  class="mr-2"
-                  style="width:65px"
-                  :src="meal.image.thumb_url"
-                  v-if="meal.image != null && meal.image.thumb_url"
-                />
-                <div class="flex-grow-1 mr-2">
-                  <p>{{ meal.title }}</p>
-                  <p class="strong">
-                    {{ format.money(meal.price, storeSettings.currency) }}
-                  </p>
-                </div>
-                <b-btn variant="warning">Select</b-btn>
-              </div>
-            </b-list-group-item>
-          </b-list-group>
-
-          <!-- <div v-if="mealSubstituteOptions(deletingMeal).length <= 0">
-            There are currently no substitute options for this meal. Please add a
-            similar meal that 1) doesn't contain the same allergies, and 2) is
-            within the same meal category.
-          </div> -->
-
-          <!--<b-select v-model="deleteMeal.subtitute_id" :options="mealSubstituteOptions(deleteMeal)"></b-select>-->
-          <button
-            v-if="substitute_id"
-            class="btn btn-danger btn-lg mt-3"
-            @click="destroyMeal(deletingMeal.id, substitute_id)"
-          >
-            Delete & Replace
-          </button>
-        </div>
-      </center>
-    </b-modal>
-    <b-modal
-      title="Choose Replacement"
       v-model="deactivateMealModal"
       v-if="deactivateMealModal"
       :hide-footer="true"
@@ -749,12 +659,14 @@
           </button>
           <button
             class="btn btn-warning btn-lg mt-3 d-inline"
+            v-if="!deleteMeal"
             @click="updateActive(mealID, 0)"
           >
             Deactivate & Keep
           </button>
         </div>
         <img
+          v-if="!deleteMeal"
           v-b-popover.hover="
             'Deactivate the meal from your menu, but keep the meal in current subscriptions & meal packages.'
           "
@@ -763,8 +675,11 @@
           class="popover-size"
           style="position:relative;top:8px"
         />
-        <h5 class="mb-4 mt-4">
+        <h5 class="mb-4 mt-4" v-if="!deleteMeal">
           Or choose a replacement meal from the dropdown.
+        </h5>
+        <h5 class="mb-4 mt-4" v-if="deleteMeal">
+          Choose a replacement meal from the dropdown.
         </h5>
 
         <v-select
@@ -926,7 +841,8 @@
             )
           "
         >
-          Deactivate & Replace
+          <span v-if="!deleteMeal">Deactivate & Replace</span>
+          <span v-if="deleteMeal">Delete & Replace</span>
         </button>
         <div class="col-xs-12" style="height:300px;"></div>
         <!-- <div v-if="mealSubstituteOptions(deactivatingMeal).length > 0">
@@ -1093,7 +1009,7 @@ export default {
       createMealModal: false,
       createPackageModal: false,
       viewMealModal: false,
-      deleteMealModal: false,
+      deleteMeal: false,
       deleteMealModalNonSubstitute: false,
       deactivateMealModal: false,
       viewPackageModal: false,
@@ -1616,12 +1532,19 @@ export default {
           transferVariations: transferVariations,
           substituteMealSizes: substituteMealSizes,
           substituteMealAddons: substituteMealAddons,
-          substituteMealComponentOptions: substituteMealComponentOptions
+          substituteMealComponentOptions: substituteMealComponentOptions,
+          replaceOnly: !this.deleteMeal
         })
         .then(resp => {
           this.deactivateMealModal = false;
           this.refreshSubscriptions();
-          this.$toastr.s("Meal deactivated and replaced.");
+          this.refreshTable();
+          if (!this.deleteMeal) {
+            this.$toastr.s("Meal deactivated and replaced.");
+          } else {
+            this.$toastr.s("Meal deleted and replaced.");
+          }
+          this.deleteMeal = false;
         });
     },
     createMeal() {
@@ -1681,7 +1604,12 @@ export default {
         });
     },
 
-    deleteMeal: function(id) {
+    deleteMealfromMenu: function(id) {
+      axios.get(`/api/me/meals/${id}`).then(response => {
+        this.deactivatingMeal = response.data;
+      });
+
+      this.deleteMeal = true;
       this.deletingMeal = this.getMeal(id);
 
       if (!this.deletingMeal) {
@@ -1689,7 +1617,7 @@ export default {
       }
 
       if (this.deletingMeal.substitute || this.deletingMeal.in_package) {
-        this.deleteMealModal = true;
+        this.deactivateMealModal = true;
       } else {
         this.deleteMealModalNonSubstitute = true;
       }

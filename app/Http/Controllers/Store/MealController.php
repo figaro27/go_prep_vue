@@ -140,6 +140,7 @@ class MealController extends StoreController
     {
         $mealId = $request->get('mealId');
         $subId = $request->get('substituteId');
+        $replaceOnly = $request->get('replaceOnly');
         $transferVariations = (bool) $request->get('transferVariations', false);
         $substituteMealSizes = collect(
             $request->get('substituteMealSizes', [])
@@ -213,7 +214,7 @@ class MealController extends StoreController
         return Meal::deleteMeal(
             $mealId,
             $subId,
-            true,
+            $replaceOnly,
             $transferVariations,
             $substituteMealSizes,
             $substituteMealAddons,
