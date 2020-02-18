@@ -245,23 +245,37 @@ class CheckoutController extends StoreController
                         ["stripe_account" => $storeSettings->stripe_id]
                     );
 
-                    $charge = \Stripe\Charge::create(
-                        [
-                            "amount" => round($total * 100),
-                            "currency" => $storeSettings->currency,
-                            "source" => $storeSource,
-                            "application_fee" => round(
-                                $afterDiscountBeforeFees * $application_fee
-                            )
-                        ],
-                        ["stripe_account" => $storeSettings->stripe_id],
-                        [
-                            "idempotency_key" =>
-                                substr(uniqid(rand(10, 99), false), 0, 14) .
-                                chr(rand(65, 90)) .
-                                rand(0, 9)
-                        ]
-                    );
+                    try {
+                        $charge = \Stripe\Charge::create(
+                            [
+                                "amount" => round($total * 100),
+                                "currency" => $storeSettings->currency,
+                                "source" => $storeSource,
+                                "application_fee" => round(
+                                    $afterDiscountBeforeFees * $application_fee
+                                )
+                            ],
+                            ["stripe_account" => $storeSettings->stripe_id],
+                            [
+                                "idempotency_key" =>
+                                    substr(uniqid(rand(10, 99), false), 0, 14) .
+                                    chr(rand(65, 90)) .
+                                    rand(0, 9)
+                            ]
+                        );
+                    } catch (\Stripe\Error\Charge $e) {
+                        return response()->json(
+                            [
+                                'error' => trim(
+                                    json_encode(
+                                        $e->jsonBody['error']['message']
+                                    ),
+                                    '"'
+                                )
+                            ],
+                            400
+                        );
+                    }
                 }
             } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
                 $billing = Billing::init($gateway, $store);

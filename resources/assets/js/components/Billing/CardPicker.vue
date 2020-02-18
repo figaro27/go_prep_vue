@@ -198,14 +198,14 @@ export default {
             error =
               "Failed to add card. Does your billing address match the credit card? You can update your billing address in My Account. Click the icon on the top right.";
           } else {
-            error = "Failed to add card.";
+            error = resp;
           }
 
           if (!_.isEmpty(resp.response.data.error)) {
             error = resp.response.data.error;
           }
 
-          this.$toastr.e(error, "Error");
+          this.$toastr.w(error);
         })
         .finally(() => {
           this.$parent.loading = false;

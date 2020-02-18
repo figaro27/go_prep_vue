@@ -55,24 +55,26 @@ class CardController extends UserController
         $token = $request->get('token');
         $gateway = $request->get('payment_gateway');
         $card = $request->get('card');
-
         if ($gateway === Constants::GATEWAY_STRIPE) {
-            if (!$this->user->hasCustomer()) {
-                $customer = $this->user->createCustomer($token);
-            } else {
-                $customer = \Stripe\Customer::retrieve($this->user->stripe_id);
-
-                try {
-                    $this->user->createCard($token);
-                } catch (\Stripe\Error\Card $e) {
-                    return response()->json(
-                        [
-                            'error' =>
-                                'Your card was declined. Please verify the entered information and try again.'
-                        ],
-                        400
+            try {
+                if (!$this->user->hasCustomer()) {
+                    $customer = $this->user->createCustomer($token);
+                } else {
+                    $customer = \Stripe\Customer::retrieve(
+                        $this->user->stripe_id
                     );
+                    $this->user->createCard($token);
                 }
+            } catch (\Stripe\Error\Card $e) {
+                return response()->json(
+                    [
+                        'error' => trim(
+                            json_encode($e->jsonBody['error']['message']),
+                            '"'
+                        )
+                    ],
+                    400
+                );
             }
 
             $sources = $customer->sources->all();

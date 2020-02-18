@@ -1353,9 +1353,9 @@ export default {
 
           if (error) {
             error = error.join(" ");
-            this.$toastr.e(error, "Error");
+            this.$toastr.w(error);
           } else {
-            this.$toastr.e("Failed to update meal!", "Error");
+            this.$toastr.e("Failed to update meal.");
           }
         }
 
