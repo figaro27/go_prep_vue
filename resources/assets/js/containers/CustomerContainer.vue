@@ -129,6 +129,10 @@
 <style lang="scss" scoped>
 main.main {
   position: relative;
+
+  > .container-fluid {
+    height: 100%;
+  }
 }
 </style>
 
