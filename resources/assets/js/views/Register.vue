@@ -14,7 +14,7 @@
               <b-form-group
                 horizontal
                 label="Account Type"
-                v-if="!$route.params.customerRegister"
+                v-if="!$route.params.customerRegister && !$route.query.store"
               >
                 <b-form-radio-group
                   horizontal
@@ -28,7 +28,14 @@
                   >
                 </b-form-radio-group>
               </b-form-group>
-
+              <div v-if="$route.query.store" class="mb-3 center-text">
+                <h5>Not ready to sign up yet?</h5>
+                <a href="https://www.goprep.com/get-started/">
+                  <h6 v-if="$route.query.store">
+                    Get in touch with us here first for any questions.
+                  </h6>
+                </a>
+              </div>
               <b-form-group
                 horizontal
                 label="First Name"
@@ -750,6 +757,10 @@ export default {
       });
 
       this.form[1].state = state[0].value;
+    }
+
+    if (this.$route.query === "store") {
+      this.role = "store";
     }
   },
   methods: {
