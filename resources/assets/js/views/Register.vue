@@ -30,7 +30,7 @@
               </b-form-group>
               <div v-if="$route.query.store" class="mb-3 center-text">
                 <h5>Not ready to sign up yet?</h5>
-                <a href="https://www.goprep.com/get-started/">
+                <a href="https://www.goprep.com/get-started/" target="_blank">
                   <h6 v-if="$route.query.store">
                     Get in touch with us here first for any questions.
                   </h6>
