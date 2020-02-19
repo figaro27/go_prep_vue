@@ -9,6 +9,7 @@ use App\Mail\Customer\MealPLanPaused;
 use App\Mail\Customer\SubscriptionCancelled;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdateSettings;
 use Auth;
 
 class StoreSettingController extends StoreController
@@ -75,23 +76,8 @@ class StoreSettingController extends StoreController
      * @param  \App\StoreSetting  $storeSetting
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, StoreSetting $storeSetting)
+    public function update(UpdateSettings $request, StoreSetting $storeSetting)
     {
-        $validatedData = $request->validate([
-            'cutoff_type' => 'required|in:timed,single_day',
-            'mealPlanDiscount' =>
-                'required_if:applyMealPlanDiscount,true|integer|nullable|max:99',
-            'deliveryFee' => 'required_if:deliveryFeeType,flat|nullable',
-            'mileageBase' => 'required_if:deliveryFeeType,mileage|nullable',
-            'mileagePerMile' => 'required_if:deliveryFeeType,mileage|nullable',
-            'processingFee' => 'required_if:applyProcessingFee,true|nullable',
-            'minimumPrice' => 'required_if:minimumOption,price',
-            'minimumMeals' => 'required_if:minimumOption,meals',
-            'delivery_days' => 'required|min:1',
-            'meal_packages' => 'boolean'
-            //'closedReason' => 'required_if:open,false'
-        ]);
-
         $settings = StoreSetting::where('store_id', $this->store->id);
 
         $values = $request->except([
