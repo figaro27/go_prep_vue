@@ -241,7 +241,7 @@
                 <h4>Meal Description</h4>
                 <b-form-group label-for="meal-description" :state="true">
                   <textarea
-                    v-model.lazy="meal.description"
+                    v-model="meal.description"
                     id="meal-description"
                     class="form-control"
                     :rows="4"
