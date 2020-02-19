@@ -150,14 +150,12 @@ class Hourly extends Command
                     $currentHour = date('H');
 
                     if ($currentHour === 10) {
-                        if ($order->store->modules->hideTransferOptions === 0) {
-                            $order->user->sendNotification('delivery_today', [
-                                'user' => $order->user,
-                                'customer' => $order->customer,
-                                'order' => $order,
-                                'settings' => $order->store->settings
-                            ]);
-                        }
+                        $order->user->sendNotification('delivery_today', [
+                            'user' => $order->user,
+                            'customer' => $order->customer,
+                            'order' => $order,
+                            'settings' => $order->store->settings
+                        ]);
                     }
                 }
             } catch (\Exception $e) {
