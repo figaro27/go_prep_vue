@@ -7,6 +7,7 @@ use App\Billing\Constants;
 use App\Http\Controllers\User\UserController;
 use Http\Client\Exception\RequestException;
 use Illuminate\Http\Request;
+use App\Store;
 
 class CardController extends UserController
 {
@@ -17,8 +18,9 @@ class CardController extends UserController
      */
     public function index()
     {
-        $storeId = $this->store->id;
-        $gateway = $this->store->settings->payment_gateway;
+        $store = Store::where('id', $this->user->last_viewed_store_id)->first();
+        $storeId = $store->id;
+        $gateway = $store->settings->payment_gateway;
 
         return $this->user
             ->cards()
