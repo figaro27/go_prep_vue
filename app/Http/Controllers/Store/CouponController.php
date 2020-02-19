@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Store;
 use App\Store;
 use App\Coupon;
 use Illuminate\Http\Request;
+use App\Http\Requests\CouponRequest;
 
 class CouponController extends StoreController
 {
@@ -34,7 +35,7 @@ class CouponController extends StoreController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CouponRequest $request)
     {
         $props = collect($request->all());
         $props = $props->only([

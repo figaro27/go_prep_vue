@@ -914,6 +914,7 @@
                             id="coupon-code"
                             v-model="coupon.amount"
                             placeholder="Enter Amount"
+                            required
                           ></b-form-input>
                         </div>
                         <div class="col-md-2">
@@ -1522,7 +1523,9 @@ export default {
           this.$toastr.s("Coupon Added", "Success");
         })
         .catch(response => {
-          this.$toastr.e("Failed to add coupon.", "Error");
+          let error = _.first(Object.values(response.response.data.errors));
+          error = error.join(" ");
+          this.$toastr.w(error);
         })
         .finally(() => {
           this.refreshStoreCoupons();
