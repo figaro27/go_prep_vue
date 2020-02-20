@@ -135,7 +135,7 @@ class Hourly extends Command
 
         // Adjust for timezone in Store Settings
         //$currentHour = date('H') - 4;
-
+        $count = 0;
         foreach ($orders as $order) {
             try {
                 if (!$order->store->modules->hideTransferOptions) {
@@ -148,18 +148,19 @@ class Hourly extends Command
                     /* Timezone Set */
 
                     $currentHour = date('H');
-
-                    if ($currentHour === 10) {
+                    if ($currentHour === "09") {
                         $order->user->sendNotification('delivery_today', [
                             'user' => $order->user,
                             'customer' => $order->customer,
                             'order' => $order,
                             'settings' => $order->store->settings
                         ]);
+                        $count++;
                     }
                 }
             } catch (\Exception $e) {
             }
         }
+        $this->info($count . ' `Delivery Today` notifications sent');
     }
 }
