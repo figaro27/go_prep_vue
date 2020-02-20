@@ -431,6 +431,7 @@ export default {
     this.loading = true;
     await this.refreshCustomerOrders();
     this.loading = false;
+    window.scrollTo(0, 0);
   },
   updated() {},
   methods: {
