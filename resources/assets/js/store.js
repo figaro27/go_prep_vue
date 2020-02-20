@@ -123,6 +123,9 @@ const state = {
     customers: {
       data: {}
     },
+    leads: {
+      data: {}
+    },
     payments: {
       data: {}
     },
@@ -808,6 +811,10 @@ const mutations = {
     state.store.customers.data = customers;
   },
 
+  storeLeads(state, { leads }) {
+    state.store.leads.data = leads;
+  },
+
   storeOrders(state, { orders }) {
     state.orders.data = orders;
   },
@@ -1406,6 +1413,13 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.store.leads) && _.isObject(data.store.leads)) {
+        let leads = data.store.leads;
+        commit("storeLeads", { leads });
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.meals) && _.isObject(data.store.meals)) {
         let meals = data.store.meals;
         commit("storeMeals", { meals });
@@ -1495,6 +1509,7 @@ const actions = {
 
     dispatch("refreshInactiveMeals");
     dispatch("refreshStoreCustomers"),
+      dispatch("refreshStoreLeads"),
       dispatch("refreshOrderIngredients"),
       dispatch("refreshIngredients"),
       dispatch("refreshStoreSubscriptions");
@@ -2224,6 +2239,18 @@ const actions = {
       commit("storeCustomers", { customers });
     } else {
       throw new Error("Failed to retrieve customers");
+    }
+  },
+
+  async refreshStoreLeads({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/leads");
+    const { data } = await res;
+    const leads = data;
+
+    if (_.isArray(leads)) {
+      commit("storeLeads", { leads });
+    } else {
+      throw new Error("Failed to retrieve leads");
     }
   },
 
@@ -3399,6 +3426,13 @@ const getters = {
       return _.find(state.store.customers.data, { id }) || null;
     } catch (e) {
       return null;
+    }
+  },
+  storeLeads: state => {
+    try {
+      return state.store.leads.data || {};
+    } catch (e) {
+      return {};
     }
   },
   storeOrders: state => {

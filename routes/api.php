@@ -292,6 +292,8 @@ foreach (
                                 'SubscriptionController@resume'
                             );
                             Route::resource('customers', 'CustomerController');
+
+                            Route::get('leads', 'UserController@getLeads');
                             Route::get(
                                 'customersNoOrders',
                                 'CustomerController@customersNoOrders'

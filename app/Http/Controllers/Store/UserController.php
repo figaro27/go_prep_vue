@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Store\StoreController;
 use App\Order;
+use App\User;
 use Illuminate\Http\Request;
 
 class UserController extends StoreController
@@ -96,5 +97,12 @@ class UserController extends StoreController
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function getLeads()
+    {
+        return User::doesntHave('orders')
+            ->where('last_viewed_store_id', $this->store->id)
+            ->get();
     }
 }

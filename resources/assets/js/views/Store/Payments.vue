@@ -14,9 +14,7 @@
               <div class="table-before d-flex flex-wrap align-items-center">
                 <div class="d-inline-block mr-2 flex-grow-0">
                   <a :href="stripeUrl" target="_blank">
-                    <b-btn class="btn btn-success filter-btn"
-                      >Stripe Account</b-btn
-                    >
+                    <b-btn class="btn btn-success">Stripe Account</b-btn>
                   </a>
                 </div>
 
