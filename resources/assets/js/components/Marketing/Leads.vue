@@ -127,11 +127,7 @@ export default {
       leads: "storeLeads"
     }),
     tableData() {
-      return Object.values(
-        _.uniqBy(this.leads, lead => {
-          return lead.user_id;
-        })
-      );
+      return this.leads;
     }
   },
   methods: {
