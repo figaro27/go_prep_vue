@@ -9,12 +9,7 @@
         src="/images/store/popover.png"
         class="popover-size mb-3"
       />
-      <v-client-table
-        :columns="columns"
-        :data="tableData"
-        :options="options"
-        v-show="!isLoading"
-      >
+      <v-client-table :columns="columns" :data="tableData" :options="options">
         <span slot="beforeLimit">
           <b-btn variant="primary" @click="exportData('leads', 'pdf', true)">
             <i class="fa fa-print"></i>&nbsp; Print

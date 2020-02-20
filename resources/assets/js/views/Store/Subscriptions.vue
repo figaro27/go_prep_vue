@@ -23,7 +23,6 @@
             :columns="columns"
             :data="tableData"
             :options="options"
-            v-show="!isLoading"
           >
             <span slot="beforeLimit">
               <b-btn

@@ -15,7 +15,6 @@
               :columns="columns"
               :data="tableData"
               :options="options"
-              v-show="!isLoading"
             >
               <div slot="beforeTable" class="mb-2">
                 <button
