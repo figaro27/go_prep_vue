@@ -240,7 +240,7 @@ class CheckoutController extends UserController
             );
         }
 
-        $total = $request->get('grandTotal');
+        $total = $request->get('grandTotal') ? $request->get('grandTotal') : 0;
         // $total += $salesTax;
 
         if (!$weeklyPlan) {
