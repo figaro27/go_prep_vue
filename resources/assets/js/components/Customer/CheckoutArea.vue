@@ -2264,9 +2264,11 @@ use next_delivery_dates
             });
           }
         })
-        .catch(e => {
+        .catch(response => {
+          let error = _.first(Object.values(response.response.data.errors));
+          error = error.join(" ");
           this.checkingOut = false;
-          this.$toastr.w(e.response.data.message, "Error");
+          this.$toastr.w(error);
         })
         .finally(() => {
           this.loading = false;
