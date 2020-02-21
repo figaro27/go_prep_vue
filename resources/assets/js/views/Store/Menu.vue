@@ -701,7 +701,7 @@
             <b-form-radio
               v-model="transferVariations"
               class="mediumCheckbox mr-5"
-              @change="setTransferVariations(true)"
+              value="true"
             >
               <h6>
                 Transfer Variations
@@ -718,7 +718,7 @@
             <b-form-radio
               v-model="transferVariations"
               class="mediumCheckbox ml-2"
-              @change="setTransferVariations(false)"
+              value="false"
             >
               <h6>
                 Individually Replace Variations
@@ -1852,9 +1852,6 @@ export default {
         .finally(() => {
           this.removeJob(jobId);
         });
-    },
-    setTransferVariations(value) {
-      this.transferVariations = value;
     }
   }
 };
