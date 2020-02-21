@@ -732,7 +732,7 @@
             </b-form-checkbox>
           </b-form-group>
 
-          <b-row v-if="transferVariations === 'false'">
+          <b-row v-if="!transferVariations">
             <b-col
               cols="4"
               v-if="deactivatingMeal.sizes && deactivatingMeal.sizes.length"
