@@ -2263,16 +2263,16 @@ use next_delivery_dates
               query: { created: true, pickup: this.pickup }
             });
           }
+          this.emptyBag();
         })
-        .catch(response => {
-          let error = _.first(Object.values(response.response.data.errors));
-          error = error.join(" ");
+        .catch(async response => {
+          let error = response.response.data.message;
+
           this.checkingOut = false;
           this.$toastr.w(error);
         })
         .finally(() => {
           this.loading = false;
-          this.emptyBag();
         });
     },
     inputCustomer(id) {
