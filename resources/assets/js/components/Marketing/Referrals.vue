@@ -2,7 +2,39 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
+      <b-btn
+        variant="success"
+        size="md"
+        @click="showReferralRulesModal = true"
+        class="mb-3"
+        >Referral Rules</b-btn
+      >
+      <v-client-table
+        :columns="columns"
+        :data="tableData"
+        :options="{
+          headings: {
+            fullName: 'Name',
+            totalCustomers: 'Referred Customers',
+            totalOrders: 'Referred Orders',
+            totalRevenue: 'Total Revenue Generated',
+            referralURL: 'Referral URL',
+            redeemCode: 'Redeem Code'
+          }
+        }"
+      >
+      </v-client-table>
     </div>
+    <b-modal
+      size="lg"
+      title="Referral Rules"
+      v-model="showReferralRulesModal"
+      v-if="showReferralRulesModal"
+      @ok.prevent="onViewMealModalOk"
+      no-fade
+    >
+      <p>Referral Rules</p>
+    </b-modal>
   </div>
 </template>
 
@@ -21,7 +53,20 @@ export default {
   },
   mixins: [checkDateRange],
   data() {
-    return {};
+    return {
+      showReferralRulesModal: false,
+      columns: [
+        "fullName",
+        "email",
+        "totalCustomers",
+        "totalOrders",
+        "totalRevenue",
+        "referralURL",
+        "redeemCode",
+        "balance",
+        "actions"
+      ]
+    };
   },
   created() {},
   mounted() {},
@@ -31,7 +76,10 @@ export default {
       storeCoupons: "storeCoupons",
       isLoading: "isLoading",
       initialized: "initialized"
-    })
+    }),
+    tableData() {
+      return [];
+    }
   },
   methods: {
     ...mapActions({}),
