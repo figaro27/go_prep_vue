@@ -999,6 +999,7 @@ export default {
   updated() {
     console.log("Subtitute ID " + this.substitute_id);
     console.log("Can Deactivate & Replace: " + this.canDeactivateAndReplace);
+    console.log("Transfer Variations " + this.transferVariations);
     //$(window).trigger("resize");
   },
   watch: {
