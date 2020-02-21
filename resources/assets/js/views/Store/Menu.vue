@@ -696,6 +696,7 @@
           <h4 class="center-text mb-3">
             This meal has variations.
           </h4>
+          <h1>{{ transferVariations }}</h1>
           <b-form-radio-group>
             <b-form-radio
               v-model="transferVariations"
