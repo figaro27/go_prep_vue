@@ -591,7 +591,7 @@ class OrderController extends StoreController
                         ->meal_orders()
                         ->where('meal_id', $item['meal']['id'])
                         ->first();
-                    $quantity = $existingMealOrder->quantity
+                    $quantity = $existingMealOrder
                         ? $existingMealOrder->quantity
                         : 0;
                     if ($meal->stock + $quantity < $item['quantity']) {
