@@ -696,11 +696,11 @@
           <h4 class="center-text mb-3">
             This meal has variations.
           </h4>
-          <h1>{{ transferVariations }}</h1>
           <b-form-group>
             <b-form-checkbox
               v-model="transferVariations"
               class="mediumCheckbox mr-5"
+              @change="removeReplaceVariations"
             >
               <h6>
                 Transfer Variations
@@ -715,8 +715,9 @@
               </h6>
             </b-form-checkbox>
             <b-form-checkbox
-              v-model="transferVariations"
+              v-model="replaceVariations"
               class="mediumCheckbox ml-2"
+              @change="removeTransferVariations"
             >
               <h6>
                 Individually Replace Variations
@@ -732,7 +733,7 @@
             </b-form-checkbox>
           </b-form-group>
 
-          <b-row v-if="!transferVariations">
+          <b-row v-if="!transferVariations && replaceVariations">
             <b-col
               cols="4"
               v-if="deactivatingMeal.sizes && deactivatingMeal.sizes.length"
@@ -996,9 +997,6 @@ export default {
     vSelect
   },
   updated() {
-    console.log("Subtitute ID " + this.substitute_id);
-    console.log("Can Deactivate & Replace: " + this.canDeactivateAndReplace);
-    console.log("Transfer Variations " + this.transferVariations);
     //$(window).trigger("resize");
   },
   watch: {
@@ -1012,6 +1010,7 @@ export default {
   },
   data() {
     return {
+      replaceVariations: false,
       _,
       filter: {
         status: "active"
@@ -1850,6 +1849,13 @@ export default {
         .finally(() => {
           this.removeJob(jobId);
         });
+    },
+    // Radio buttons not working
+    removeTransferVariations() {
+      this.transferVariations = false;
+    },
+    removeReplaceVariations() {
+      this.replaceVariations = false;
     }
   }
 };
