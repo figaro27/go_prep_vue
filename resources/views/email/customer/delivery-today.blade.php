@@ -62,7 +62,7 @@ $currency = $order->store->settings->currency_symbol
                         @if (isset($logo_b64) && $logo_b64 != "")
                         <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px;" src="{{$logo_b64}}" alt="GoPrep" title="GoPrep" /></td>
                         @else
-                        <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px;" src="https://goprep.com/logo.png" alt="GoPrep" title="GoPrep"/></td>
+                        <td align="center" style="line-height:0px;"><img style="display:block;font-size:0px; border:0px; line-height:0px;" src="https://goprep.com/logo.png" alt="GoPrep" title="GoPrep" /></td>
                         @endif
                       </tr>
                       <!-- end logo -->
@@ -77,9 +77,6 @@ $currency = $order->store->settings->currency_symbol
                       </tr>
                       @endif
                       <!-- end address -->
-                      <tr>
-                        <td height="25"></td>
-                      </tr>
                     </table>
                   </td>
                 </tr>
@@ -90,7 +87,7 @@ $currency = $order->store->settings->currency_symbol
                   <td align="center">
                     <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td height="50"></td>
+                        <td height="25"></td>
                       </tr>
                       <!-- title -->
                       @if ($order->pickup === 0)
@@ -128,10 +125,11 @@ $currency = $order->store->settings->currency_symbol
                       </tr>
                       @endif
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $order->user->details->name }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $order->user->details->full_name }}</td>
                       </tr>
                       <!-- end company name -->
                       <!-- address -->
+                      @if ($order->user->details->address !== 'N/A')
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $order->user->details->address }}</td>
                       </tr>
@@ -140,23 +138,49 @@ $currency = $order->store->settings->currency_symbol
                           {{ $order->user->details->city }}, {{ $order->user->details->state }} {{ $order->user->details->zip }}
                           </td>
                       </tr>
+                      @endif
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
                           {{ $order->user->details->phone }}
                         </td>
                       </tr>
+                      @if ($order->store->modules->hideTransferOptions === 0 && $order->isMultipleDelivery === 0)
                       @if ($order->pickup === 0)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format($order->store->settings->date_format) }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format($order->store->settings->date_format) }}
+                          @if ($order->transferTime)
+                            - {{ $order->transferTime }}
+                          @endif
+                        </td>
                       </tr>
                       @else ($order->pickup === 1)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $order->delivery_date->format($order->store->settings->date_format) }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $order->delivery_date->format($order->store->settings->date_format) }}
+                          @if ($order->transferTime)
+                            - {{ $order->transferTime }}
+                          @endif
+                        </td>
+                      </tr>
+                      @endif
+                      @endif
+                      @if ($order->isMultipleDelivery === 1)
+                      <tr>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Dates - {{ $order->multipleDates }}
+                        </td>
                       </tr>
                       @endif
                       <!-- end address -->
+                      @if ($order->store->modules->dailyOrderNumbers)
                       <tr>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Daily Order #{{ $order->dailyOrderNumber }}</td>
+                      </tr>
+                      @endif
+                      <tr>
+                        @if ($order->manual)
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Manual Order ID {{ $order->order_number }}</td>
+                        @else
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Order ID {{ $order->order_number }}</td>
+                        @endif
                       </tr>
                       @if ($order->subscription)
                       <tr>
@@ -174,36 +198,26 @@ $currency = $order->store->settings->currency_symbol
     </tr>
   </table>
   <!-- end header -->
-
-
-   <table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
+  <!-- title -->
+  <table class="full" width="100%" align="center" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td align="center">
-        <table align="center" border="0" cellpadding="0" cellspacing="0">
+        <table align="center" width="600" style="max-width:600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
           <tr>
-            <td width="600" align="center">
-              <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                  <td height="20"></td>
-                </tr>
-                <!-- title -->
-                <tr>
+            <td height="15"></td>
+          </tr>
+           <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase"> 
-                  	Hi {{ $order->user->userDetail->firstname }},
+                    Hi {{ $order->user->userDetail->firstname }},
                   </td>
                 </tr>
-                <!-- end title -->
+          @if ($order->pickup === 0)
                 <tr>
-                  <td height="5"></td>
-                </tr>
-                <!-- content -->
-                @if ($order->pickup === 0)
-				        <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your delivery is coming today!</td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your delivery is coming today.</td>
                 </tr>
                 @else
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your pickup is scheduled for today!</td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your pickup is scheduled for today.</td>
                 </tr>
                 @if ($order->pickup_location_id != null)
                   <tr>
@@ -216,11 +230,12 @@ $currency = $order->store->settings->currency_symbol
                     </td>
                   </tr>
                 @endif
-				        @endif
-                <tr>
-                  <td height="15"></td><td bgcolor="#e1e6e7"></td>
-                </tr>
-                <tr>
+                @endif
+          <!-- header -->
+          <tr>
+            <td height="15"></td>
+          </tr>
+          <tr>
                   @if ($order->pickup === 0)
                   @if ($order->store->settings->deliveryInstructions)
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Delivery Instructions</td>
@@ -240,42 +255,22 @@ $currency = $order->store->settings->currency_symbol
                 @if ($order->store->settings->deliveryInstructions)
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
-                    {!! nl2br($order->store->settings->deliveryInstructions) !!} 
+                    {!! nl2br($order->store->settings->deliveryInstructions) !!}
                   </td>
                 </tr>
                 @endif
                 @else
                 @if ($order->store->settings->pickupInstructions)
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
                     {!! nl2br($order->store->settings->pickupInstructions) !!} 
                   </td>
                 </tr>
                 @endif
                 @endif
-                
-                <!-- end content -->
-              </table>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-
-
-
-
-
-  <!-- title -->
-  <table class="full" width="100%" align="center" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td align="center">
-        <table align="center" width="600" style="max-width:600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
           <tr>
-            <td height="50"></td>
+            <td height="15"></td>
           </tr>
-          <!-- header -->
           <tr>
             <td>
               <table class="table-inner" width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -330,7 +325,7 @@ $currency = $order->store->settings->currency_symbol
 
 
                 @foreach($order->items as $item)
-                @if ($item->meal_package_order_id === $mealPackageItem->id)
+                @if ($item->meal_package_order_id === $mealPackageItem->id && !$item->hidden)
                 <tr>
                   <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
@@ -338,7 +333,11 @@ $currency = $order->store->settings->currency_symbol
                     </td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;">
-                    In Package
+                    @if ($item->meal_package_variation && $item->price > 0)
+                      In Package <span style="font-size:11px">({{$currency}}{{$item->price}})</span>
+                    @else
+                      In Package
+                    @endif
                   </td>
                 </tr>
                 @endif
@@ -347,15 +346,23 @@ $currency = $order->store->settings->currency_symbol
               @endforeach
                 
                 @foreach($order->items as $item)
-                @if ($item->meal_package_order_id === null)
+                @if ($item->meal_package_order_id === null && !$item->hidden)
                 <tr>
                   <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
+                    @if ($item->attached || $item->free)
+                    Included
+                    @else
                     {{$currency}}{{ number_format($item->unit_price, 2) }}
+                    @endif
                     </td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;">
+                    @if ($item->attached || $item->free)
+                    Included
+                    @else
                     {{$currency}}{{ number_format($item->price, 2) }}
+                    @endif
                   </td>
                 </tr>
                 @endif
@@ -373,7 +380,23 @@ $currency = $order->store->settings->currency_symbol
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
                     {{$currency}}{{ number_format($lineItemOrder->price, 2) }}</td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->quantity }}</td>
-                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; font-weight: bold ">{{$currency}}{{ number_format($lineItemOrder->quantity * $lineItemOrder->price, 2) }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{$currency}}{{ number_format($lineItemOrder->quantity * $lineItemOrder->price, 2) }}</td>
+                </tr>
+              @endforeach
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td align="center">
+              <table width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
+                @foreach($order->purchased_gift_cards as $purchasedGiftCard)
+
+                <tr>
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">Gift Card Code: {{ $purchasedGiftCard->code }}</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
+                    {{$currency}}{{ number_format($purchasedGiftCard->amount, 2) }}</td>
+                  <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">1</td>
+                  <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{$currency}}{{ number_format($purchasedGiftCard->amount, 2) }}</td>
                 </tr>
               @endforeach
               </table>
@@ -394,7 +417,7 @@ $currency = $order->store->settings->currency_symbol
       <td align="center">
         <table width="600" class="table-full" style="max-width: 600px;" align="center" border="0" cellpadding="0" cellspacing="0">
           <tr>
-            <td height="20" style="border-bottom:3px solid #bcbcbc;"></td>
+            <td height="10" style="border-bottom:3px solid #BCBCBC;"></td>
           </tr>
         </table>
         <table align="center" width="600" style="max-width: 600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">
@@ -419,11 +442,19 @@ $currency = $order->store->settings->currency_symbol
                         $salesTax = $order->salesTax;
                         $coupon = $order->couponReduction;
                         $couponCode = $order->couponCode;
+                        $deposit = $order->deposit;
+                        $balance = $order->balance;
+                        $purchasedGiftCard = $order->purchased_gift_card_code;
+                        $purchasedGiftCardReduction = $order->purchasedGiftCardReduction;
                         @endphp
 
                         Subtotal: <br>
                         @if ($coupon > 0)
-                        Coupon ({{ $couponCode }})<br>
+                        Coupon 
+                        @if (!$order->manual)
+                        ({{ $couponCode }})
+                        @endif
+                        <br>
                         @endif
                         @if ($mealPlanDiscount > 0)
                         Subscription Discount<br>
@@ -437,8 +468,15 @@ $currency = $order->store->settings->currency_symbol
                         @if ($processingFee > 0)
                         Processing Fee<br>
                         @endif
+                        @if ($purchasedGiftCardReduction > 0)
+                        Gift Card ({{$purchasedGiftCard}})<br>
+                        @endif
                         <br>
-                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span>
+                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold;">Total</span><br>
+                        @if ($balance > 0)
+                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Paid</span><br>
+                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Balance</span>
+                        @endif
                       </td>
 
                     
@@ -460,18 +498,33 @@ $currency = $order->store->settings->currency_symbol
                           @if ($processingFee > 0)
                           {{$currency}}{{ number_format($processingFee, 2) }}<br>
                           @endif
-                          
+                          @if ($purchasedGiftCardReduction > 0)
+                          ({{$currency}}{{ number_format($purchasedGiftCardReduction, 2) }})<br>
+                          @endif
                           <br>
-                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">{{$currency}}{{ number_format($order->amount, 2) }}</span>
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold; ">{{$currency}}{{ number_format($order->amount, 2) }}
+                            @if ($order->cashOrder)
+                              {{$order->store->moduleSettings->cashOrderWording }}
+                            @endif
+                          </span><br>
+                          
+                          @if ($balance > 0)
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
+                            {{$order->store->settings->currency_symbol}}{{number_format($order->amount - $order->balance, 2)}}</span><br>
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
+                            {{$order->store->settings->currency_symbol}}{{number_format($order->balance, 2)}}</span>
+                          @endif
+                          @if ($order->subscription && $order->subscription->monthlyPrepay && ($order->subscription->weekCount !== 1 || $order->subscription->weekCount % 4 !== 1))
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">Prepaid</span>
+                          @endif
                         </td>
-                      </tr>
-                      <tr>
-                        <td height="20"></td><td bgcolor="#e1e6e7"></td>
                       </tr>
                   </td>
                       </tr>
                       
-                      
+                      <tr>
+                        <td height="15"></td><td bgcolor="#e1e6e7"></td>
+                      </tr>
                     </table>
                   </td>
                 </tr>
@@ -479,7 +532,6 @@ $currency = $order->store->settings->currency_symbol
 
             </td>
           </tr>
-        
         </table>
       </td>
     </tr>
@@ -494,17 +546,34 @@ $currency = $order->store->settings->currency_symbol
             <td width="600" align="center">
               <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td height="40"></td>
+                  <td height="20"></td>
                 </tr>
                 <!-- title -->
-               
-                
-                <!-- end content -->
+                @if ($order->publicNotes !== null)
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Order Notes</td>
+                </tr>
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                    {{ $order->publicNotes }}
+                  </td>
+                </tr>
                 <tr>
                   <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
                 </tr>
                 <tr>
-                  <td height="45" style="text-align: center;"><a href="https://goprep.com/customer/account/my-account">Unsubscribe</a></td>
+                  <td height="20"></td>
+                </tr>
+                @endif
+
+
+
+
+                
+                
+                <!-- end content -->
+                <tr>
+                  <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
                 </tr>
               </table>
             </td>
@@ -513,6 +582,121 @@ $currency = $order->store->settings->currency_symbol
       </td>
     </tr>
   </table>
+
+  <table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td align="center">
+        <table align="center" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td width="600" align="center">
+              <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td height="20"></td>
+                </tr>
+                <!-- title -->
+                @if ($order->store->settings->notesForCustomer)
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Notes from {{ $order->store->details->name }}</td>
+                </tr>
+                <!-- end title -->
+                <tr>
+                  <td height="5"></td>
+                </tr>
+                <!-- content -->
+                @if ($order->store->settings->notesForCustomer != null)
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                    {!! nl2br($order->store->settings->notesForCustomer) !!} 
+                  </td>
+                </tr>
+                @endif
+                <!-- end content -->
+                <tr>
+                  <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
+                </tr>
+                @endif
+                
+                
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  @php
+      $mealInstructions = 0
+    @endphp
+
+    @foreach ($order->items as $i => $item)
+          @if ($item->instructions)
+            @php
+              $mealInstructions = 1
+            @endphp
+          @endif
+    @endforeach
+
+  @if ($mealInstructions)
+
+  <table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td align="center">
+        <table align="center" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td width="600" align="center">
+              <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td height="20"></td>
+                </tr>
+                <!-- title -->
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Instructions</td>
+                </tr>
+                <!-- end title -->
+                <tr>
+                  <td height="15"></td>
+                </tr>
+                <!-- content -->
+                @php
+                  $titles = [];
+                @endphp
+                @foreach($order->items as $item)
+                  @if ($item->instructions && !in_array($item->short_title, $titles))
+                    <tr>
+                      <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                        <b>{{ $item->short_title }}</b> - {{ $item->instructions }}
+                      </td>
+                    </tr>
+                    <tr>
+                      @php
+                      array_push($titles, $item->short_title);
+                      @endphp
+                  <td height="10"></td>
+                </tr>
+                  @endif
+                @endforeach
+                
+                <!-- end content -->
+                <tr>
+                  <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  @endif
+
+  <table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td height="45" style="text-align: center;"><a href="https://goprep.com/customer/account/my-account">Unsubscribe</a></td>
+    </tr>
+  </table>
+
   <!-- end note -->
   <!-- footer -->
   <!-- end footer -->
