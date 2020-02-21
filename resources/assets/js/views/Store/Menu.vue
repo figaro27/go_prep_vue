@@ -697,11 +697,10 @@
             This meal has variations.
           </h4>
           <h1>{{ transferVariations }}</h1>
-          <b-form-radio-group>
-            <b-form-radio
+          <b-form-group>
+            <b-form-checkbox
               v-model="transferVariations"
               class="mediumCheckbox mr-5"
-              value="true"
             >
               <h6>
                 Transfer Variations
@@ -714,11 +713,10 @@
                   class="popover-size"
                 />
               </h6>
-            </b-form-radio>
-            <b-form-radio
+            </b-form-checkbox>
+            <b-form-checkbox
               v-model="transferVariations"
               class="mediumCheckbox ml-2"
-              value="false"
             >
               <h6>
                 Individually Replace Variations
@@ -731,10 +729,10 @@
                   class="popover-size"
                 />
               </h6>
-            </b-form-radio>
-          </b-form-radio-group>
+            </b-form-checkbox>
+          </b-form-group>
 
-          <b-row v-if="!transferVariations">
+          <b-row v-if="transferVariations === 'false'">
             <b-col
               cols="4"
               v-if="deactivatingMeal.sizes && deactivatingMeal.sizes.length"
