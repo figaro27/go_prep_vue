@@ -997,6 +997,8 @@ export default {
     vSelect
   },
   updated() {
+    console.log("Subtitute ID " + this.substitute_id);
+    console.log("Can Deactivate & Replace: " + this.canDeactivateAndReplace);
     //$(window).trigger("resize");
   },
   watch: {
