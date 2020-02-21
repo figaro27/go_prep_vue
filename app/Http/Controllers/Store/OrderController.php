@@ -606,8 +606,7 @@ class OrderController extends StoreController
                             400
                         );
                     }
-                    $meal->stock -=
-                        $item['quantity'] - $existingMealOrder->quantity;
+                    $meal->stock -= $item['quantity'] - $quantity;
                     if ($meal->stock === 0) {
                         $meal->active = 0;
                     }
