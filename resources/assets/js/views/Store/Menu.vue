@@ -628,18 +628,17 @@
       v-model="deactivateMealModal"
       v-if="deactivateMealModal"
       :hide-footer="true"
-      size="lg"
+      size="xl"
       no-fade
       no-close-on-backdrop
     >
-      <p class="mt-3">
-        This meal is tied to one or more subscriptions or is found in one or
-        more meal packages. Please select a replacement meal below. This will
-        automatically replace the old meal with the newly selected meal in ALL
-        current subscriptions and meal packages. Customers on a subscription
-        will receive an email notification about the replacement. They still
-        have the ability to edit their subscriptions after the fact and override
-        this change.
+      <p class="mt-3 featured strong">
+        This meal is in one or more active subscriptions or meal packages.
+        Please select a replacement meal below. This will automatically replace
+        the old meal with the newly selected meal in all subscriptions and meal
+        packages. Customers on a subscription will receive an email notification
+        about the replacement. They still have the ability to edit their
+        subscriptions if they don't want the replacement meal.
         <!-- <img
             v-b-popover.hover="
               'You currently have one or more subscriptions with your customers that contain this meal OR a meal package that contains this meal. Please select a substitute replacement meal. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of allergies, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'
@@ -688,24 +687,53 @@
           :reduce="meal => meal.id"
           v-model="substitute_id"
           style="margin:0px 100px"
-          class="mb-5"
+          class="mb-4"
         ></v-select>
         <div
           v-if="deactivatingMeal.hasVariations && substituteMeal"
           :key="substitute_id"
         >
-          <p class="center-text">
-            This meal has variations. Choose substitutes or keep them with the
-            replacement meal by checking the box below.
-          </p>
+          <h4 class="center-text mb-3">
+            This meal has variations.
+          </h4>
+          <b-form-radio-group>
+            <b-form-radio
+              v-model="transferVariations"
+              class="mediumCheckbox mr-5"
+              value="true"
+            >
+              <h6>
+                Transfer Variations
+                <img
+                  v-b-popover.hover="
+                    'Take the variations that are on the meal you are removing and pass them on to the replacement meal even if that variation isn\'t offered on the replacement meal on your menu. E.G. If one of your customers has a subscription with an \'Extra Protein\' addon on the meal you are removing, it will be transfered onto the replacement meal.'
+                  "
+                  title="Transfer Variations"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </h6>
+            </b-form-radio>
+            <b-form-radio
+              v-model="transferVariations"
+              class="mediumCheckbox ml-2"
+              value="false"
+            >
+              <h6>
+                Individually Replace Variations
+                <img
+                  v-b-popover.hover="
+                    'Go through each variation that exists on the meal you are removing and manually select the variation replacement found on the replacemnet meal.'
+                  "
+                  title="Replace Variations"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </h6>
+            </b-form-radio>
+          </b-form-radio-group>
 
-          <b-form-group>
-            <b-form-checkbox v-model="transferVariations">
-              Transfer varations to substitute meal
-            </b-form-checkbox>
-          </b-form-group>
-
-          <b-row v-if="!transferVariations">
+          <b-row v-if="transferVariations === 'false'">
             <b-col
               cols="4"
               v-if="deactivatingMeal.sizes && deactivatingMeal.sizes.length"
@@ -761,7 +789,7 @@
             </b-col>
 
             <b-col
-              cols="8"
+              cols="4"
               v-if="
                 deactivatingMeal.components &&
                   deactivatingMeal.components.length
@@ -776,8 +804,11 @@
                   class="mb-2"
                 >
                   <b-row>
-                    <b-col cols="6">
-                      <b-form-group :label="component.title">
+                    <b-col cols="12">
+                      <b-form-group
+                        :label="'Component: ' + component.title"
+                        class="strong"
+                      >
                         <v-select
                           label="title"
                           :options="substituteMeal.components"
@@ -789,7 +820,7 @@
                       </b-form-group>
                     </b-col>
 
-                    <b-col cols="6">
+                    <b-col cols="12">
                       <div v-if="substituteMealComponents[component.id]">
                         <div
                           v-for="option in component.options"
