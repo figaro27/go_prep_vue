@@ -173,7 +173,7 @@ class CheckoutController extends StoreController
         $customerUser = User::where('id', $userId)->first();
 
         // $total += $salesTax;
-        $total = $request->get('grandTotal');
+        $total = $request->get('grandTotal') ? $request->get('grandTotal') : 0;
 
         $cashOrder = $request->get('cashOrder');
         if ($cashOrder) {
