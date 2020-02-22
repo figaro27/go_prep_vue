@@ -881,10 +881,10 @@ class Subscription extends Model
             $order->save();
 
             // Replace order meals
-            foreach ($order->meal_orders->components as $component) {
+            foreach ($order->meal_orders()->components as $component) {
                 $component->delete();
             }
-            foreach ($order->meal_orders->addons as $addon) {
+            foreach ($order->meal_orders()->addons as $addon) {
                 $addon->delete();
             }
             $order->meal_orders()->delete();
