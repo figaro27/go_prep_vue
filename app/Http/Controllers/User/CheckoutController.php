@@ -65,16 +65,16 @@ class CheckoutController extends UserController
             foreach ($bag->getItems() as $item) {
                 $meal = Meal::where('id', $item['meal']['id'])->first();
                 if ($meal && $meal->stock !== null) {
-                    if ($weeklyPlan) {
-                        return response()->json(
-                            [
-                                'message' =>
-                                    $meal->title .
-                                    ' is not allowed in subscriptions. Please remove from your bag and try again.'
-                            ],
-                            400
-                        );
-                    }
+                    // if ($weeklyPlan) {
+                    //     return response()->json(
+                    //         [
+                    //             'message' =>
+                    //                 $meal->title .
+                    //                 ' is not allowed in subscriptions. Please remove from your bag and try again.'
+                    //         ],
+                    //         400
+                    //     );
+                    // }
                     if ($meal->stock < $item['quantity']) {
                         return response()->json(
                             [
