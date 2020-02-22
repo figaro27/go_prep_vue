@@ -1573,16 +1573,16 @@ class Meal extends Model implements HasMedia
 
                 $user = $subscriptionMeal->subscription->user;
 
-                if ($user) {
-                    $user->sendNotification('subscription_meal_substituted', [
-                        'user' => $user,
-                        'customer' => $subscriptionMeal->subscription->customer,
-                        'subscription' => $subscriptionMeal->subscription,
-                        'old_meal' => $meal,
-                        'sub_meal' => $sub,
-                        'store' => $subscriptionMeal->subscription->store
-                    ]);
-                }
+                // if ($user) {
+                //     $user->sendNotification('subscription_meal_substituted', [
+                //         'user' => $user,
+                //         'customer' => $subscriptionMeal->subscription->customer,
+                //         'subscription' => $subscriptionMeal->subscription,
+                //         'old_meal' => $meal,
+                //         'sub_meal' => $sub,
+                //         'store' => $subscriptionMeal->subscription->store
+                //     ]);
+                // }
             });
         }
 
