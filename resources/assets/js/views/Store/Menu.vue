@@ -1266,7 +1266,11 @@ export default {
         return false;
       }
 
-      if (!this.transferVariations && !this.replaceVariations) {
+      if (
+        !this.transferVariations &&
+        !this.replaceVariations &&
+        this.deactivatingMeal.hasVariations
+      ) {
         return false;
       }
 
