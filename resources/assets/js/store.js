@@ -114,6 +114,9 @@ const state = {
     module_settings: {
       data: {}
     },
+    referral_rules: {
+      data: {}
+    },
     meals: {
       data: {}
     },
@@ -775,6 +778,10 @@ const mutations = {
     state.store.module_settings.data = moduleSettings;
   },
 
+  storeReferralRules(state, { referralRules }) {
+    state.store.referral_rules.data = referralRules;
+  },
+
   storeCoupons(state, { coupons }) {
     state.store.coupons.data = coupons;
   },
@@ -1317,6 +1324,16 @@ const actions = {
       ) {
         let moduleSettings = data.store.module_settings;
         commit("storeModuleSettings", { moduleSettings });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.referral_rules) &&
+        _.isObject(data.store.referral_rules)
+      ) {
+        let referralRules = data.store.referral_rules;
+        commit("storeReferralRules", { referralRules });
       }
     } catch (e) {}
 
@@ -2254,6 +2271,18 @@ const actions = {
     }
   },
 
+  async refreshStoreReferralRules({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/referralRules");
+    const { data } = await res;
+    const referral_rules = data;
+
+    if (_.isArray(referral_rules)) {
+      commit("storeReferralRules", { referral_rules });
+    } else {
+      throw new Error("Failed to retrieve referral rules");
+    }
+  },
+
   async refreshCategories({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/categories");
     const { data } = await res;
@@ -2850,6 +2879,13 @@ const getters = {
       return {};
     }
   },
+  viewedStoreReferralRules: state => {
+    try {
+      return state.viewed_store.referral_rules || {};
+    } catch (e) {
+      return {};
+    }
+  },
   viewedStoreDeliveryDays: state => {
     return state.viewed_store.delivery_days || [];
   },
@@ -3246,6 +3282,13 @@ const getters = {
   storeModuleSettings: state => {
     try {
       return state.store.module_settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeReferralRules: state => {
+    try {
+      return state.store.referral_rules.data || {};
     } catch (e) {
       return {};
     }

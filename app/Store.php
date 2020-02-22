@@ -173,6 +173,11 @@ class Store extends Model
         return $this->hasMany('App\DeliveryDay');
     }
 
+    public function referralRules()
+    {
+        return $this->hasOne('App\ReferralRule');
+    }
+
     public function getDeliveryDayByWeekIndex($weekIndex)
     {
         return $this->deliveryDays->firstWhere('day', $weekIndex);

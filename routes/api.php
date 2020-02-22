@@ -345,6 +345,17 @@ foreach (
                                 'StoreSettingController@getApplicationFee'
                             );
                             Route::resource('cards', 'CardController');
+
+                            Route::resource(
+                                'referralRules',
+                                'ReferralRuleController'
+                            );
+
+                            Route::patch(
+                                'referralRules',
+                                'ReferralRuleController@update'
+                            );
+
                             Route::post(
                                 'pauseMealPlans',
                                 'StoreSettingController@pauseMealPlans'
