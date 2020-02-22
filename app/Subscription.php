@@ -889,8 +889,9 @@ class Subscription extends Model
                 foreach ($mealOrder->addons as $addon) {
                     $addon->delete();
                 }
+                $mealOrder->delete();
             }
-            $order->meal_orders()->delete();
+
             foreach ($bag->getItems() as $item) {
                 $mealOrder = new MealOrder();
                 $mealOrder->order_id = $order->id;
