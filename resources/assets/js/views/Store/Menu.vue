@@ -1266,6 +1266,10 @@ export default {
         return false;
       }
 
+      if (!this.transferVariations && !this.replaceVariations) {
+        return false;
+      }
+
       // if (this.deactivatingMeal.hasVariations && !this.transferVariations) {
       //   for (const size of this.deactivatingMeal.sizes) {
       //     if (!this.substituteMealSizes[size.id]) {
