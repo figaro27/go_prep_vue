@@ -860,6 +860,7 @@ class Subscription extends Model
 
         // Update future orders IF cutoff hasn't passed yet
         $futureOrders = $this->orders()
+            ->with('meal_orders')
             ->where([['fulfilled', 0], ['paid', 0]])
             ->whereDate('delivery_date', '>=', Carbon::now())
             ->get();
