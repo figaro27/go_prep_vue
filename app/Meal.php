@@ -1319,6 +1319,7 @@ class Meal extends Model implements HasMedia
                     $mealSize = $size->replicate();
                     $mealSize->meal_id = $subId;
                     $mealSize->push();
+                    $mealSize->delete();
 
                     $ing = IngredientMealSize::where(
                         'meal_size_id',
@@ -1346,6 +1347,7 @@ class Meal extends Model implements HasMedia
                     }
 
                     $mealAddon->push();
+                    $mealAddon->delete();
 
                     foreach ($addon->ingredients as $ingredient) {
                         $addonIngredient = $ingredient->pivot->replicate();
@@ -1360,6 +1362,7 @@ class Meal extends Model implements HasMedia
                     $mealComponent = $component->replicate();
                     $mealComponent->meal_id = $subId;
                     $mealComponent->push();
+                    $mealComponent->delete();
 
                     foreach ($component->options as $option) {
                         $mealComponentOption = $option->replicate();
