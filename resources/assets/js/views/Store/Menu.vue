@@ -1266,25 +1266,29 @@ export default {
         return false;
       }
 
-      if (this.deactivatingMeal.hasVariations && !this.transferVariations) {
-        for (const size of this.deactivatingMeal.sizes) {
-          if (!this.substituteMealSizes[size.id]) {
-            return false;
-          }
-        }
-        for (const component of this.deactivatingMeal.components) {
-          for (const option of component.options) {
-            if (!this.substituteMealComponentOptions[option.id]) {
-              return false;
-            }
-          }
-        }
-        for (const addon of this.deactivatingMeal.addons) {
-          if (!this.substituteMealAddons[addon.id]) {
-            return false;
-          }
-        }
+      if (!this.transferVariations && !this.replaceVariations) {
+        return false;
       }
+
+      // if (this.deactivatingMeal.hasVariations && !this.transferVariations) {
+      //   for (const size of this.deactivatingMeal.sizes) {
+      //     if (!this.substituteMealSizes[size.id]) {
+      //       return false;
+      //     }
+      //   }
+      //   for (const component of this.deactivatingMeal.components) {
+      //     for (const option of component.options) {
+      //       if (!this.substituteMealComponentOptions[option.id]) {
+      //         return false;
+      //       }
+      //     }
+      //   }
+      //   for (const addon of this.deactivatingMeal.addons) {
+      //     if (!this.substituteMealAddons[addon.id]) {
+      //       return false;
+      //     }
+      //   }
+      // }
 
       return true;
     }

@@ -881,7 +881,19 @@ class Subscription extends Model
             $order->save();
 
             // Replace order meals
-            $order->meal_orders()->delete();
+
+            foreach ($order->meal_orders() as $mealOrder) {
+                // foreach ($mealOrder->components as $component) {
+                //     $component->delete();
+                // }
+                // foreach ($mealOrder->addons as $addon) {
+                //     $addon->delete();
+                // }
+                $mealOrder->components->delete();
+                $mealOrder->addons->delete();
+                $mealOrder->delete();
+            }
+
             foreach ($bag->getItems() as $item) {
                 $mealOrder = new MealOrder();
                 $mealOrder->order_id = $order->id;

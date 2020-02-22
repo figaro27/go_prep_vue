@@ -26,6 +26,9 @@ class MealSubscriptionAddon extends Pivot
 
     public function addon()
     {
-        return $this->belongsTo('App\MealAddon', 'meal_addon_id');
+        return $this->belongsTo(
+            'App\MealAddon',
+            'meal_addon_id'
+        )->withTrashed();
     }
 }
