@@ -1415,7 +1415,7 @@ class Meal extends Model implements HasMedia
                         $subscriptionMeal->meal_size_id
                     );
                     $subSize = MealSize::find($subSizeId);
-                    if ($subSize && $subSize->meal_id !== $subId) {
+                    if ($subSize->meal_id !== $subId) {
                         throw new BadRequestHttpException(
                             'Size doesn\'t belong to substitute meal'
                         );
@@ -1573,16 +1573,16 @@ class Meal extends Model implements HasMedia
 
                 $user = $subscriptionMeal->subscription->user;
 
-                // if ($user) {
-                //     $user->sendNotification('subscription_meal_substituted', [
-                //         'user' => $user,
-                //         'customer' => $subscriptionMeal->subscription->customer,
-                //         'subscription' => $subscriptionMeal->subscription,
-                //         'old_meal' => $meal,
-                //         'sub_meal' => $sub,
-                //         'store' => $subscriptionMeal->subscription->store
-                //     ]);
-                // }
+                if ($user) {
+                    $user->sendNotification('subscription_meal_substituted', [
+                        'user' => $user,
+                        'customer' => $subscriptionMeal->subscription->customer,
+                        'subscription' => $subscriptionMeal->subscription,
+                        'old_meal' => $meal,
+                        'sub_meal' => $sub,
+                        'store' => $subscriptionMeal->subscription->store
+                    ]);
+                }
             });
         }
 
