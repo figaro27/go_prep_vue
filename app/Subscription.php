@@ -860,7 +860,6 @@ class Subscription extends Model
 
         // Update future orders IF cutoff hasn't passed yet
         $futureOrders = $this->orders()
-            ->with('meal_orders')
             ->where([['fulfilled', 0], ['paid', 0]])
             ->whereDate('delivery_date', '>=', Carbon::now())
             ->get();
@@ -882,12 +881,14 @@ class Subscription extends Model
             $order->save();
 
             // Replace order meals
-            $mealOrders = $order->meal_orders;
-            foreach ($mealOrders->components as $component) {
-                $component->delete();
-            }
-            foreach ($mealOrders->addons as $addon) {
-                $addon->delete();
+
+            foreach ($order->meal_orders() as $mealOrder) {
+                foreach ($mealOrder->components as $component) {
+                    $component->delete();
+                }
+                foreach ($mealOrder->addons as $addon) {
+                    $addon->delete();
+                }
             }
             $order->meal_orders()->delete();
             foreach ($bag->getItems() as $item) {
