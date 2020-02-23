@@ -338,10 +338,10 @@ class Subscription extends Model
                     $meal = Meal::where('id', $mealSub->meal_id)->first();
                     if ($meal && $meal->stock !== null) {
                         if ($meal->stock < $mealSub->quantity) {
-                            $meal->stock = 0;
-                            $meal->active = 0;
                             $mealSub->quantity = $meal->stock;
                             $mealSub->update();
+                            $meal->stock = 0;
+                            $meal->active = 0;
                             $this->syncPrices();
                         } else {
                             $meal->stock -= $mealSub->quantity;
@@ -814,7 +814,7 @@ class Subscription extends Model
             $afterDiscountBeforeFees = $total;
         }
 
-        if ($this->store->settings->applyDeliveryFee) {
+        if ($this->store->settings->applyDeliveryFee && !$this->pickup) {
             $total += $this->store->settings->deliveryFee;
             $deliveryFee += $this->store->settings->deliveryFee;
         }
