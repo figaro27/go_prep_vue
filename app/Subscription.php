@@ -332,7 +332,7 @@ class Subscription extends Model
         // Updating item stock
 
         // Testing on MQS store
-        if ($this->store->id === 13) {
+        if ($this->store->id === 13 || $this->store->id === 6) {
             if ($this->store->modules->stockManagement) {
                 foreach ($this->meal_subscriptions as $mealSub) {
                     $meal = Meal::where('id', $mealSub->meal_id)->first();
