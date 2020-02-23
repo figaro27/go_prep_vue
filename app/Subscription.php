@@ -820,8 +820,17 @@ class Subscription extends Model
         }
 
         if ($this->store->settings->applyProcessingFee) {
-            $total += $this->store->settings->processingFee;
-            $processingFee += $this->store->settings->processingFee;
+            if ($this->store->settings->processingFeeType === 'flat') {
+                $total += $this->store->settings->processingFee;
+                $processingFee += $this->store->settings->processingFee;
+            } else {
+                $total +=
+                    ($this->store->settings->processingFee / 100) *
+                    $preFeePreDiscount;
+                $processingFee +=
+                    ($this->store->settings->processingFee / 100) *
+                    $preFeePreDiscount;
+            }
         }
 
         $salesTax = $total * $salesTaxRate;
