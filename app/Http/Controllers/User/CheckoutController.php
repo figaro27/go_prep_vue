@@ -75,18 +75,18 @@ class CheckoutController extends UserController
                     //         400
                     //     );
                     // }
-                    // if ($meal->stock < $item['quantity']) {
-                    //     return response()->json(
-                    //         [
-                    //             'message' =>
-                    //                 $meal->title .
-                    //                 ' currently has ' .
-                    //                 $meal->stock .
-                    //                 ' left in stock. Please adjust your order and checkout again.'
-                    //         ],
-                    //         400
-                    //     );
-                    // }
+                    if ($meal->stock < $item['quantity']) {
+                        return response()->json(
+                            [
+                                'message' =>
+                                    $meal->title .
+                                    ' currently has ' .
+                                    $meal->stock .
+                                    ' left in stock. Please adjust your order and checkout again.'
+                            ],
+                            400
+                        );
+                    }
                     if (!$weeklyPlan) {
                         $meal->stock -= $item['quantity'];
                         if ($meal->stock === 0) {
