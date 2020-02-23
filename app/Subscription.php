@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Meal;
 use App\MealOrder;
 use App\MealPackageOrder;
 use App\MealPackageSubscription;
@@ -328,6 +329,30 @@ class Subscription extends Model
      */
     public function renew(Collection $stripeInvoice, Collection $stripeEvent)
     {
+        // Updating item stock
+
+        // Testing on MQS store
+        if ($this->store->id === 13) {
+            if ($this->store->modules->stockManagement) {
+                foreach ($this->meal_subscriptions as $mealSub) {
+                    $meal = Meal::where('id', $mealSub->meal_id)->first();
+                    if ($meal && $meal->stock !== null) {
+                        if ($meal->stock < $mealSub->quantity) {
+                            $difference = $mealSub->quantity - $meal->stock;
+                            $meal->stock = 0;
+                            $meal->active = 0;
+                            $mealSub->quantity = $difference;
+                            $mealSub->update();
+                            $this->syncPrices();
+                        } else {
+                            $meal->stock -= $mealSub->quantity;
+                        }
+                        $meal->update();
+                    }
+                }
+            }
+        }
+
         $isMultipleDelivery = (int) $this->isMultipleDelivery;
 
         $latestOrder = null;
