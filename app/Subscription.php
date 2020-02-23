@@ -824,18 +824,14 @@ class Subscription extends Model
                 $total += $this->store->settings->processingFee;
                 $processingFee += $this->store->settings->processingFee;
             } else {
-                $total +=
-                    Math .
-                    floor(
-                        ($this->store->settings->processingFee / 100) *
-                            $preFeePreDiscount
-                    );
-                $processingFee +=
-                    Math .
-                    floor(
-                        ($this->store->settings->processingFee / 100) *
-                            $preFeePreDiscount
-                    );
+                $total += floor(
+                    ($this->store->settings->processingFee / 100) *
+                        $preFeePreDiscount
+                );
+                $processingFee += floor(
+                    ($this->store->settings->processingFee / 100) *
+                        $preFeePreDiscount
+                );
             }
         }
 
