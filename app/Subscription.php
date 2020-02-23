@@ -345,8 +345,7 @@ class Subscription extends Model
                             $mealSub->update();
                             $this->syncPrices();
                         } else {
-                            // $meal->stock -= $mealSub->quantity;
-                            $meal->stock = 20;
+                            $meal->stock -= $mealSub->quantity;
                         }
                         $meal->update();
                     }
