@@ -338,10 +338,9 @@ class Subscription extends Model
                     $meal = Meal::where('id', $mealSub->meal_id)->first();
                     if ($meal && $meal->stock !== null) {
                         if ($meal->stock < $mealSub->quantity) {
-                            $difference = $mealSub->quantity - $meal->stock;
                             $meal->stock = 0;
                             $meal->active = 0;
-                            $mealSub->quantity = $difference;
+                            $mealSub->quantity = $meal->stock;
                             $mealSub->update();
                             $this->syncPrices();
                         } else {
