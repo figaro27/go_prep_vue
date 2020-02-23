@@ -838,6 +838,14 @@ const mutations = {
 
   categories(state, { categories }) {
     state.store.categories.data = units;
+  },
+
+  showSpinner(state, {}) {
+    state.isLoading = true;
+  },
+
+  hideSpinner(state, {}) {
+    state.isLoading = false;
   }
 };
 
@@ -2513,6 +2521,14 @@ const actions = {
     } else {
       throw new Error("Failed to retrieve orders");
     }
+  },
+
+  async showSpinner({ commit, state }, args = {}) {
+    commit("showSpinner", {});
+  },
+
+  async hideSpinner({ commit, state }, args = {}) {
+    commit("hideSpinner", {});
   }
 };
 

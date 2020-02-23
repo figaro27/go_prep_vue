@@ -652,7 +652,7 @@
         <div class="d-inline">
           <button
             class="btn btn-danger btn-lg mt-3 mr-2 d-inline"
-            @click="deactivateMealModal = false"
+            @click="(deactivateMealModal = false), refreshTable()"
           >
             Cancel
           </button>
@@ -693,6 +693,16 @@
           v-if="deactivatingMeal.hasVariations && substituteMeal"
           :key="substitute_id"
         >
+          <span v-if="!substituteMeal.active">
+            <b-form-checkbox
+              class="mediumCheckbox"
+              v-model="substituteMealActive"
+            >
+              <h5 class="center-text mb-3">
+                This substitute meal is currently inactive. Activate?
+              </h5>
+            </b-form-checkbox>
+          </span>
           <h4 class="center-text mb-3">
             This meal has variations.
           </h4>
@@ -1057,7 +1067,7 @@ export default {
       substituteMealComponents: {},
       substituteMealComponentOptions: {},
       substituteMealAddons: {},
-
+      substituteMealActive: true,
       newTags: [],
       ingredientSearch: "",
       ingredientResults: [],
@@ -1322,7 +1332,9 @@ export default {
       addJob: "addJob",
       removeJob: "removeJob",
       refreshSubscriptions: "refreshStoreSubscriptions",
-      refreshGiftCards: "refreshStoreGiftCards"
+      refreshGiftCards: "refreshStoreGiftCards",
+      showSpinner: "showSpinner",
+      hideSpinner: "hideSpinner"
     }),
     ...mapMutations({
       setBagMealPlan: "setBagMealPlan"
@@ -1330,9 +1342,14 @@ export default {
     updateCategories() {},
     formatMoney: format.money,
     refreshTable() {
-      this.refreshMeals();
-      this.refreshMealPackages();
-      this.refreshGiftCards();
+      Promise.all([
+        this.showSpinner(),
+        this.refreshMealPackages(),
+        this.refreshGiftCards(),
+        this.refreshMeals()
+      ]).then(() => {
+        this.hideSpinner();
+      });
     },
     getTableDataIndexById(id) {
       return _.findIndex(this.tableData, o => {
@@ -1487,9 +1504,10 @@ export default {
       let title = option.title;
       sizes = _.keyBy(sizes, "id");
 
-      if (deb) {
-        console.log("aa");
-      }
+      // ??
+      // if (deb) {
+      //   console.log("aa");
+      // }
 
       if (option.meal_size_id) {
         const size = sizes[option.meal_size_id];
@@ -1573,7 +1591,8 @@ export default {
           substituteMealSizes: substituteMealSizes,
           substituteMealAddons: substituteMealAddons,
           substituteMealComponentOptions: substituteMealComponentOptions,
-          replaceOnly: !this.deleteMeal
+          replaceOnly: !this.deleteMeal,
+          activateSubstituteMeal: this.substituteMealActive
         })
         .then(resp => {
           this.deactivateMealModal = false;
@@ -1585,6 +1604,13 @@ export default {
             this.$toastr.s("Meal deleted and replaced.");
           }
           this.deleteMeal = false;
+          this.substitute_id = null;
+          this.substituteMeal = null;
+          this.substituteMealSizes = {};
+          this.substituteMealComponents = {};
+          this.substituteMealComponentOptions = {};
+          this.substituteMealAddons = {};
+          (this.transferVariations = false), (this.replaceVariations = false);
         });
     },
     createMeal() {
