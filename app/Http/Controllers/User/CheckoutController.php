@@ -87,13 +87,13 @@ class CheckoutController extends UserController
                             400
                         );
                     }
-                    if (!$weeklyPlan) {
-                        $meal->stock -= $item['quantity'];
-                        if ($meal->stock === 0) {
-                            $meal->active = 0;
-                        }
-                        $meal->update();
-                    }
+                    // if (!$weeklyPlan) {
+                    //     $meal->stock -= $item['quantity'];
+                    //     if ($meal->stock === 0) {
+                    //         $meal->active = 0;
+                    //     }
+                    //     $meal->update();
+                    // }
                 }
             }
         }
