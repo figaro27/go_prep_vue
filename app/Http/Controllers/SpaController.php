@@ -611,6 +611,7 @@ class SpaController extends Controller
                 $packages = [];
                 if ($bypass_meal == 0) {
                     $meals = Meal::where('active', 1)
+                        ->where('subscription_count' > 0)
                         ->with([
                             'allergies',
                             'sizes',
