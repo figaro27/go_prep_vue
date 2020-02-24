@@ -49,9 +49,11 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         if ($user->hasRole('store')) {
-          return redirect()->intended($user->store->getUrl('/store/orders', $request->secure));
+            return redirect()->intended(
+                $user->store->getUrl('/store/orders', $request->secure)
+            );
         } else {
-            return redirect()->intended('/customer/home');
+            return redirect()->intended('/customer/menu');
         }
     }
 }
