@@ -1078,7 +1078,8 @@ export default {
       user: "user",
       storeCoupons: "storeCoupons",
       bagDeliverySettings: "bagDeliverySettings",
-      deliveryDays: "viewedStoreDeliveryDays"
+      deliveryDays: "viewedStoreDeliveryDays",
+      referrals: "viewedStoreReferrals"
     }),
     hasMultipleSubscriptionItems() {
       let subscriptionItemTypes = 0;
@@ -1921,6 +1922,20 @@ use next_delivery_dates
           this.$toastr.s("Gift Card Applied.", "Success");
         }
       });
+
+      this.referrals.forEach(referral => {
+        if (this.couponCode.toUpperCase() === referral.code.toUpperCase()) {
+          if (referral.balance === "0.00") {
+            this.$toastr.e("There are no balance remaining.");
+            return;
+          }
+          // Using the same name as purchasedGiftCard for now - rename to 'promotionalCode' in the future to include gift cards & referral codes
+          this.purchasedGiftCard = referral;
+          this.setBagPurchasedGiftCard(referral);
+          this.couponCode = "";
+          this.$toastr.s("Referral Code Applied.", "Success");
+        }
+      });
     },
     oneTimeCouponCheck(couponId) {
       if (this.$route.params.storeView || this.storeOwner) {
@@ -2210,7 +2225,8 @@ use next_delivery_dates
           transferTime: this.transferTime,
           lineItemsOrder: this.orderLineItems,
           grandTotal: this.grandTotal,
-          emailCustomer: this.emailCustomer
+          emailCustomer: this.emailCustomer,
+          referralUrl: this.$route.query.r
         })
         .then(async resp => {
           //this.checkingOut = false;

@@ -44,6 +44,9 @@
             inSub: inSub,
             weeklySubscriptionValue: weeklySubscriptionValue,
             lineItemOrders: lineItemOrders
+          },
+          query: {
+            r: $route.query.r
           }
         }"
         v-if="minimumMet && !storeView && !bagView"
@@ -78,10 +81,16 @@
         >NEXT</b-btn
       >
 
-      <router-link to="/customer/menu">
+      <router-link to="/customer/menu" query="$route.query">
         <b-btn
           v-if="$route.name === 'customer-bag' && !minimumMet"
           class="menu-bag-btn mb-2"
+          :to="{
+            name: 'customer-menu',
+            query: {
+              r: $route.query.r
+            }
+          }"
           >BACK</b-btn
         >
       </router-link>

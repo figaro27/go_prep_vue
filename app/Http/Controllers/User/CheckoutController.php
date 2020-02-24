@@ -27,6 +27,9 @@ use App\MealPackageSubscription;
 use App\MealPackage;
 use App\MealPackageSize;
 use App\PurchasedGiftCard;
+use App\ReferralRule;
+use App\Referral;
+use App\User;
 use App\Billing\Billing;
 use App\Billing\Constants;
 use App\Billing\Charge;
@@ -173,6 +176,48 @@ class CheckoutController extends UserController
                 $dailyOrderNumber = $max + 1;
             } else {
                 $dailyOrderNumber = 1;
+            }
+        }
+
+        // Referrals
+        $referralUrlCode = $request->get('referralUrl');
+        if ($referralUrlCode) {
+            $referralRules = ReferralRule::where('store_id', $storeId)->first();
+
+            $userId = User::where('referralUrlCode', $referralUrlCode)
+                ->pluck('id')
+                ->first();
+
+            $referralAmount = 0;
+            if ($referralRules->type === 'flat') {
+                $referralAmount = $referralRules->amount;
+            } else {
+                $referralAmount = ($referralRules->amount / 100) * $total;
+            }
+
+            $referral = Referral::where([
+                'user_id' => $userId,
+                'store_id' => $storeId
+            ])->first();
+            if (!$referral) {
+                // Create new referral
+                $newReferral = new Referral();
+                $newReferral->store_id = $storeId;
+                $newReferral->user_id = $user->id;
+                $newReferral->ordersReferred = 1;
+                $newReferral->amountReferred = $total;
+                $newReferral->code =
+                    'R' .
+                    strtoupper(substr(uniqid(rand(10, 99), false), -6)) .
+                    chr(rand(65, 90)) .
+                    rand(0, 9);
+                $newReferral->balance = $referralAmount;
+                $newReferral->save();
+            } else {
+                $referral->ordersReferred += 1;
+                $referral->amountReferred += $total;
+                $referral->balance += $referralAmount;
+                $referral->update();
             }
         }
 

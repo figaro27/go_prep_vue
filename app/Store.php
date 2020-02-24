@@ -173,6 +173,11 @@ class Store extends Model
         return $this->hasMany('App\DeliveryDay');
     }
 
+    public function referrals()
+    {
+        return $this->hasMany('App\Referral')->with('user');
+    }
+
     public function referralRules()
     {
         return $this->hasOne('App\ReferralRule');

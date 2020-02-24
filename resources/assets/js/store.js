@@ -114,6 +114,9 @@ const state = {
     module_settings: {
       data: {}
     },
+    referrals: {
+      data: {}
+    },
     referral_rules: {
       data: {}
     },
@@ -778,6 +781,10 @@ const mutations = {
     state.store.module_settings.data = moduleSettings;
   },
 
+  storeReferrals(state, { referrals }) {
+    state.store.referrals.data = referrals;
+  },
+
   storeReferralRules(state, { referralRules }) {
     state.store.referral_rules.data = referralRules;
   },
@@ -1324,6 +1331,16 @@ const actions = {
       ) {
         let moduleSettings = data.store.module_settings;
         commit("storeModuleSettings", { moduleSettings });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.referrals) &&
+        _.isObject(data.store.referrals)
+      ) {
+        let referrals = data.store.referrals;
+        commit("storeReferrals", { referrals });
       }
     } catch (e) {}
 
@@ -2271,6 +2288,18 @@ const actions = {
     }
   },
 
+  async refreshStoreReferrals({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/referrals");
+    const { data } = await res;
+    const referrals = data;
+
+    if (_.isArray(referrals)) {
+      commit("storeReferrals", { referrals });
+    } else {
+      throw new Error("Failed to retrieve referrals");
+    }
+  },
+
   async refreshStoreReferralRules({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/referralRules");
     const { data } = await res;
@@ -2879,6 +2908,13 @@ const getters = {
       return {};
     }
   },
+  viewedStoreReferrals: state => {
+    try {
+      return state.viewed_store.referrals || {};
+    } catch (e) {
+      return {};
+    }
+  },
   viewedStoreReferralRules: state => {
     try {
       return state.viewed_store.referral_rules || {};
@@ -3282,6 +3318,13 @@ const getters = {
   storeModuleSettings: state => {
     try {
       return state.store.module_settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeReferrals: state => {
+    try {
+      return state.store.referrals.data || {};
     } catch (e) {
       return {};
     }

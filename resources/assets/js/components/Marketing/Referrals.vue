@@ -14,15 +14,27 @@
         :data="tableData"
         :options="{
           headings: {
-            fullName: 'Name',
+            'user.name': 'Name',
+            'user.email': 'Email',
             totalCustomers: 'Referred Customers',
-            totalOrders: 'Referred Orders',
-            totalRevenue: 'Total Revenue Generated',
-            referralURL: 'Referral URL',
-            redeemCode: 'Redeem Code'
+            ordersReferred: 'Referred Orders',
+            amountReferred: 'Total Revenue Generated',
+            referralCode: 'Referral URL',
+            code: 'Redeem Code'
           }
         }"
       >
+        <div slot="amountReferred" slot-scope="props">
+          {{ formatMoney(props.row.amountReferred, store.settings.currency) }}
+        </div>
+        <div slot="balance" slot-scope="props">
+          {{ formatMoney(props.row.balance, store.settings.currency) }}
+        </div>
+        <div slot="referralCode" slot-scope="props">
+          <a :href="getFullReferralUrl(props.row.user.referralCode)"
+            >{{ storeReferralUrl }}{{ props.row.user.referralCode }}</a
+          >
+        </div>
       </v-client-table>
     </div>
     <b-modal
@@ -122,13 +134,13 @@ export default {
     return {
       showReferralRulesModal: false,
       columns: [
-        "fullName",
-        "email",
+        "user.name",
+        "user.email",
         "totalCustomers",
-        "totalOrders",
-        "totalRevenue",
-        "referralURL",
-        "redeemCode",
+        "ordersReferred",
+        "amountReferred",
+        "referralCode",
+        "code",
         "balance",
         "actions"
       ]
@@ -142,14 +154,19 @@ export default {
       storeCoupons: "storeCoupons",
       isLoading: "isLoading",
       initialized: "initialized",
+      referrals: "storeReferrals",
       referralRules: "storeReferralRules"
     }),
     tableData() {
-      return [];
+      return this.referrals;
+    },
+    storeReferralUrl() {
+      let host = this.store.details.host ? this.store.details.host : "goprep";
+      return "http://" + this.store.details.domain + "." + host + ".com/?r=";
     }
   },
   methods: {
-    ...mapActions(["refreshStoreReferralRules"]),
+    ...mapActions(["refereshStoreReferrals", "refreshStoreReferralRules"]),
     formatMoney: format.money,
     updateReferralRules() {
       let referralRules = { ...this.referralRules };
@@ -166,6 +183,9 @@ export default {
           error = error.join(" ");
           this.$toastr.w(error);
         });
+    },
+    getFullReferralUrl(referralUrlCode) {
+      return this.storeReferralUrl + referralUrlCode;
     }
   }
 };

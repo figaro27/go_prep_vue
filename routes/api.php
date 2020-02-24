@@ -356,6 +356,13 @@ foreach (
                                 'ReferralRuleController@update'
                             );
 
+                            Route::resource('referrals', 'ReferralController');
+
+                            Route::patch(
+                                'referrals',
+                                'ReferralController@update'
+                            );
+
                             Route::post(
                                 'pauseMealPlans',
                                 'StoreSettingController@pauseMealPlans'
