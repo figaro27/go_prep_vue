@@ -16,10 +16,10 @@
           headings: {
             'user.name': 'Name',
             'user.email': 'Email',
-            totalCustomers: 'Referred Customers',
+            referredCustomers: 'Referred Customers',
             ordersReferred: 'Referred Orders',
-            amountReferred: 'Total Revenue Generated',
-            referralCode: 'Referral URL',
+            amountReferred: 'Total Revenue',
+            referralUrlCode: 'Referral URL',
             code: 'Redeem Code'
           }
         }"
@@ -30,9 +30,26 @@
         <div slot="balance" slot-scope="props">
           {{ formatMoney(props.row.balance, store.settings.currency) }}
         </div>
-        <div slot="referralCode" slot-scope="props">
-          <a :href="getFullReferralUrl(props.row.user.referralCode)"
-            >{{ storeReferralUrl }}{{ props.row.user.referralCode }}</a
+        <div slot="referralUrlCode" slot-scope="props">
+          <a :href="getFullReferralUrl(props.row.user.referralUrlCode)"
+            >{{ storeReferralUrl }}{{ props.row.user.referralUrlCode }}</a
+          >
+        </div>
+        <div slot="actions" slot-scope="props" class="d-flex">
+          <img
+            v-b-popover.hover="
+              'You may wish to pay your affiliates their balance outside of the application instead of giving them store credit to order from you. Click this button to settle their balance to 0.'
+            "
+            title="Settle Balance"
+            src="/images/store/popover.png"
+            class="popover-size d-inline mr-1"
+          />
+          <b-btn
+            variant="success"
+            @click="settleBalance(props.row.id)"
+            class="d-inline"
+          >
+            Settle Balance</b-btn
           >
         </div>
       </v-client-table>
@@ -136,10 +153,10 @@ export default {
       columns: [
         "user.name",
         "user.email",
-        "totalCustomers",
+        "referredCustomers",
         "ordersReferred",
         "amountReferred",
-        "referralCode",
+        "referralUrlCode",
         "code",
         "balance",
         "actions"
@@ -166,7 +183,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["refereshStoreReferrals", "refreshStoreReferralRules"]),
+    ...mapActions(["refreshStoreReferrals", "refreshStoreReferralRules"]),
     formatMoney: format.money,
     updateReferralRules() {
       let referralRules = { ...this.referralRules };
@@ -186,6 +203,12 @@ export default {
     },
     getFullReferralUrl(referralUrlCode) {
       return this.storeReferralUrl + referralUrlCode;
+    },
+    settleBalance(id) {
+      axios.post("/api/me/settleReferralBalance", { id: id }).then(resp => {
+        this.$toastr.s("Balance Settled");
+        this.refreshStoreReferrals();
+      });
     }
   }
 };

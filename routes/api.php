@@ -364,6 +364,11 @@ foreach (
                             );
 
                             Route::post(
+                                'settleReferralBalance',
+                                'ReferralController@settleBalance'
+                            );
+
+                            Route::post(
                                 'pauseMealPlans',
                                 'StoreSettingController@pauseMealPlans'
                             );

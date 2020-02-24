@@ -32,7 +32,7 @@
             v-if="
               'id' in viewedStore && name != 'customer-subscription-changes'
             "
-            to="/customer/menu"
+            :to="menuURL"
             @click.prevent="backToMenu()"
             >Menu</b-nav-item
           >
@@ -40,7 +40,7 @@
             v-if="
               'id' in viewedStore && name != 'customer-subscription-changes'
             "
-            to="/customer/bag"
+            :to="bagURL"
             >Checkout</b-nav-item
           >
           <b-nav-item v-if="loggedIn" to="/customer/orders">Orders</b-nav-item>
@@ -196,6 +196,14 @@ export default {
       store: "viewedStore",
       total: "bagQuantity"
     }),
+    menuURL() {
+      let referralUrl = this.$route.query.r ? "?r=" + this.$route.query.r : "";
+      return "/customer/menu" + referralUrl;
+    },
+    bagURL() {
+      let referralUrl = this.$route.query.r ? "?r=" + this.$route.query.r : "";
+      return "/customer/bag" + referralUrl;
+    },
     storeSettings() {
       return this.store.settings;
     },

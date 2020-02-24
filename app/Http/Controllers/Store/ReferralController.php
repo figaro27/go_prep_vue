@@ -84,4 +84,11 @@ class ReferralController extends StoreController
     {
         //
     }
+
+    public function settleBalance(Request $request)
+    {
+        $referral = Referral::where('id', $request->get('id'))->first();
+        $referral->balance = 0;
+        $referral->update();
+    }
 }

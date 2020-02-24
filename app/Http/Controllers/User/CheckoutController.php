@@ -201,18 +201,18 @@ class CheckoutController extends UserController
             ])->first();
             if (!$referral) {
                 // Create new referral
-                $newReferral = new Referral();
-                $newReferral->store_id = $storeId;
-                $newReferral->user_id = $user->id;
-                $newReferral->ordersReferred = 1;
-                $newReferral->amountReferred = $total;
-                $newReferral->code =
+                $referral = new Referral();
+                $referral->store_id = $storeId;
+                $referral->user_id = $user->id;
+                $referral->ordersReferred = 1;
+                $referral->amountReferred = $total;
+                $referral->code =
                     'R' .
-                    strtoupper(substr(uniqid(rand(10, 99), false), -6)) .
+                    strtoupper(substr(uniqid(rand(10, 99), false), -3)) .
                     chr(rand(65, 90)) .
                     rand(0, 9);
-                $newReferral->balance = $referralAmount;
-                $newReferral->save();
+                $referral->balance = $referralAmount;
+                $referral->save();
             } else {
                 $referral->ordersReferred += 1;
                 $referral->amountReferred += $total;
@@ -397,6 +397,9 @@ class CheckoutController extends UserController
             // Assign custom delivery day
             if ($customDD) {
                 $order->delivery_day_id = $customDD->id;
+            }
+            if (isset($referral)) {
+                $order->referral_id = $referral->id;
             }
 
             $order->save();
@@ -858,6 +861,9 @@ class CheckoutController extends UserController
                 $order->originalAmount = $total * $deposit;
                 $order->cashOrder = $cashOrder;
                 $order->isMultipleDelivery = $isMultipleDelivery;
+                if (isset($referral)) {
+                    $order->referral_id = $referral->id;
+                }
                 $order->save();
 
                 foreach ($bag->getItems() as $item) {

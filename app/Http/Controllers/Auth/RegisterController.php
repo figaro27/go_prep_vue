@@ -163,7 +163,12 @@ class RegisterController extends Controller
             'password' => Hash::make($data['user']['password']),
             'timezone' => 'America/New_York',
             'remember_token' => Hash::make(str_random(10)),
-            'accepted_tos' => 1
+            'accepted_tos' => 1,
+            'referralUrlCode' =>
+                'R' .
+                strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
+                chr(rand(65, 90)) .
+                rand(0, 9)
         ]);
 
         $userDetails = $user->details()->create([

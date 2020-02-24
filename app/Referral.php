@@ -2,6 +2,7 @@
 
 namespace App;
 use App\User;
+use App\Order;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,6 +26,8 @@ class Referral extends Model
 
     public function getReferredCustomersAttribute()
     {
-        return 'turtles';
+        return Order::where('referral_id', $this->id)
+            ->groupBy('user_id')
+            ->count();
     }
 }

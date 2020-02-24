@@ -838,7 +838,7 @@
           <router-link
             :to="{
               path: '/login',
-              query: { redirect: '/customer/bag' }
+              query: { redirect: bagURL }
             }"
           >
             <b-btn class="menu-bag-btn">LOG IN</b-btn>
@@ -848,7 +848,7 @@
           <router-link
             :to="{
               name: 'register',
-              query: { redirect: '/customer/bag' },
+              query: { redirect: bagURL },
               params: { customerRegister: true }
             }"
           >
@@ -1081,6 +1081,10 @@ export default {
       deliveryDays: "viewedStoreDeliveryDays",
       referrals: "viewedStoreReferrals"
     }),
+    bagURL() {
+      let referralUrl = this.$route.query.r ? "?r=" + this.$route.query.r : "";
+      return "/customer/bag" + referralUrl;
+    },
     hasMultipleSubscriptionItems() {
       let subscriptionItemTypes = 0;
       if (this.hasWeeklySubscriptionItems) subscriptionItemTypes += 1;

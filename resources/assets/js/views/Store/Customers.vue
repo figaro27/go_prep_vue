@@ -241,7 +241,13 @@
                     class="text-success"
                     v-if="order.purchasedGiftCardReduction > 0"
                   >
-                    Gift Card {{ order.purchased_gift_card_code }} ({{
+                    <span v-if="order.purchased_gift_card_code.length > 5">
+                      Referral Code
+                    </span>
+                    <span v-else>
+                      Gift Card
+                    </span>
+                    {{ order.purchased_gift_card_code }} ({{
                       format.money(
                         order.purchasedGiftCardReduction,
                         order.currency
@@ -622,12 +628,17 @@ export default {
       });
       if (order.purchased_gift_cards && order.purchased_gift_cards.length > 0) {
         order.purchased_gift_cards.forEach(purchasedGiftCard => {
-          data.push({
-            meal: "Gift Card Code: " + purchasedGiftCard.code,
-            quantity: 1,
-            unit_price: format.money(purchasedGiftCard.amount, order.currency),
-            subtotal: format.money(purchasedGiftCard.amount, order.currency)
-          });
+          if (purchasedGiftCard.length === 5) {
+            data.push({
+              meal: "Gift Card Code: " + purchasedGiftCard.code,
+              quantity: 1,
+              unit_price: format.money(
+                purchasedGiftCard.amount,
+                order.currency
+              ),
+              subtotal: format.money(purchasedGiftCard.amount, order.currency)
+            });
+          }
         });
       }
 
