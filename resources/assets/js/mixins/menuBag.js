@@ -116,34 +116,32 @@ export default {
         ? { meal_size_id: sizeId }
         : { meal_package_size_id: sizeId };
 
-      if (meal.components) {
-        if (
-          (meal.components.length &&
-            _.maxBy(meal.components, "minimum") &&
-            _.find(meal.components, component => {
-              return _.find(component.options, sizeCriteria);
-            }) &&
-            !components) ||
-          (meal.addons.length && _.find(meal.addons, sizeCriteria) && !addons)
-        ) {
-          if (this.mealModal && this.hideMealModal) {
-            await this.hideMealModal();
-          }
-          if (this.mealPackageModal && this.hideMealPackageModal) {
-            await this.hideMealPackageModal();
-          }
-
-          const result = !mealPackage
-            ? await this.$refs.componentModal.show(meal, mealPackage, size)
-            : await this.$refs.packageComponentModal.show(meal, size);
-
-          if (!result) {
-            return;
-          }
-
-          components = { ...result.components };
-          addons = { ...result.addons };
+      if (
+        (meal.components.length &&
+          _.maxBy(meal.components, "minimum") &&
+          _.find(meal.components, component => {
+            return _.find(component.options, sizeCriteria);
+          }) &&
+          !components) ||
+        (meal.addons.length && _.find(meal.addons, sizeCriteria) && !addons)
+      ) {
+        if (this.mealModal && this.hideMealModal) {
+          await this.hideMealModal();
         }
+        if (this.mealPackageModal && this.hideMealPackageModal) {
+          await this.hideMealPackageModal();
+        }
+
+        const result = !mealPackage
+          ? await this.$refs.componentModal.show(meal, mealPackage, size)
+          : await this.$refs.packageComponentModal.show(meal, size);
+
+        if (!result) {
+          return;
+        }
+
+        components = { ...result.components };
+        addons = { ...result.addons };
       }
 
       if (free) {
