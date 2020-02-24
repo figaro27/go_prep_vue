@@ -656,15 +656,15 @@
           >
             Cancel
           </button>
-          <button
+          <!-- <button
             class="btn btn-warning btn-lg mt-3 d-inline"
             v-if="!deleteMeal"
             @click="updateActive(mealID, 0)"
           >
             Deactivate & Keep
-          </button>
+          </button> -->
         </div>
-        <img
+        <!-- <img
           v-if="!deleteMeal"
           v-b-popover.hover="
             'Deactivate the meal from your menu, but keep the meal in current subscriptions & meal packages.'
@@ -673,9 +673,9 @@
           src="/images/store/popover.png"
           class="popover-size"
           style="position:relative;top:8px"
-        />
+        /> -->
         <h5 class="mb-4 mt-4" v-if="!deleteMeal">
-          Or choose a replacement meal from the dropdown.
+          Choose a replacement meal from the dropdown.
         </h5>
         <h5 class="mb-4 mt-4" v-if="deleteMeal">
           Choose a replacement meal from the dropdown.
@@ -693,16 +693,10 @@
           v-if="deactivatingMeal.hasVariations && substituteMeal"
           :key="substitute_id"
         >
-          <span v-if="!substituteMeal.active">
-            <b-form-checkbox
-              class="mediumCheckbox"
-              v-model="substituteMealActive"
-            >
-              <h5 class="center-text mb-3">
-                This substitute meal is currently inactive. Activate?
-              </h5>
-            </b-form-checkbox>
-          </span>
+          <h4 class="center-text mb-4" v-if="!substituteMeal.active">
+            This substitute meal is currently inactive. Choosing this meal will
+            make it active on your menu.
+          </h4>
           <h4 class="center-text mb-3">
             This meal has variations.
           </h4>
@@ -1067,7 +1061,6 @@ export default {
       substituteMealComponents: {},
       substituteMealComponentOptions: {},
       substituteMealAddons: {},
-      substituteMealActive: true,
       newTags: [],
       ingredientSearch: "",
       ingredientResults: [],
@@ -1591,8 +1584,7 @@ export default {
           substituteMealSizes: substituteMealSizes,
           substituteMealAddons: substituteMealAddons,
           substituteMealComponentOptions: substituteMealComponentOptions,
-          replaceOnly: !this.deleteMeal,
-          activateSubstituteMeal: this.substituteMealActive
+          replaceOnly: !this.deleteMeal
         })
         .then(resp => {
           this.deactivateMealModal = false;

@@ -1307,18 +1307,16 @@ class Meal extends Model implements HasMedia
         $transferVariations = false,
         $substituteMealSizes = null,
         $substituteMealAddons = null,
-        $substituteMealComponentOptions = null,
-        $activateSubstituteMeal = false
+        $substituteMealComponentOptions = null
     ) {
         $meal = Meal::find($id);
         $sub = Meal::find($subId);
         $store = $meal->store;
 
         if ($sub) {
-            if ($activateSubstituteMeal) {
-                $sub->active = 1;
-                $sub->update();
-            }
+            $sub->active = 1;
+            $sub->update();
+
             if ($transferVariations) {
                 foreach ($meal->sizes as $size) {
                     $mealSize = $size->replicate();

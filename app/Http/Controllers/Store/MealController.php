@@ -152,8 +152,6 @@ class MealController extends StoreController
             $request->get('substituteMealComponentOptions', [])
         );
 
-        $activateSubstituteMeal = $request->get('activateSubstituteMeal');
-
         $meal = $this->store->meals()->find($mealId);
 
         if ($subId) {
@@ -220,8 +218,7 @@ class MealController extends StoreController
             $transferVariations,
             $substituteMealSizes,
             $substituteMealAddons,
-            $substituteMealComponentOptions,
-            $activateSubstituteMeal
+            $substituteMealComponentOptions
         );
     }
 
