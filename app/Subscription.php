@@ -337,16 +337,18 @@ class Subscription extends Model
                 foreach ($this->meal_subscriptions as $mealSub) {
                     $meal = Meal::where('id', $mealSub->meal_id)->first();
                     if ($meal && $meal->stock !== null) {
-                        if ($meal->stock < $mealSub->quantity) {
+                        if ($meal->stock === 0) {
+                            $mealSub->delete();
+                        } elseif ($meal->stock < $mealSub->quantity) {
                             $mealSub->quantity = $meal->stock;
                             $mealSub->update();
                             $meal->stock = 0;
                             $meal->active = 0;
-                            $this->syncPrices();
                         } else {
                             $meal->stock -= $mealSub->quantity;
                         }
                         $meal->update();
+                        $this->syncPrices();
                     }
                 }
             }
