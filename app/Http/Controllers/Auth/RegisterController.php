@@ -280,6 +280,14 @@ class RegisterController extends Controller
 
             $storeModuleSettings = $store->moduleSettings()->create();
 
+            $storeReferralRules = $store->referralRules()->create([
+                'signupEmail' => 0,
+                'showInNotifications' => 0,
+                'showInMenu' => 0,
+                'type' => 'percent',
+                'amount' => 5.0
+            ]);
+
             try {
                 $key = new \Cloudflare\API\Auth\APIKey(
                     config('services.cloudflare.user'),

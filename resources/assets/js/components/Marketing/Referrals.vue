@@ -7,7 +7,7 @@
         size="md"
         @click="showReferralRulesModal = true"
         class="mb-3"
-        >Referral Rules</b-btn
+        >Referral Settings</b-btn
       >
       <v-client-table
         :columns="columns"
@@ -55,8 +55,8 @@
       </v-client-table>
     </div>
     <b-modal
-      size="md"
-      title="Referral Rules"
+      size="lg"
+      title="Referral Settings"
       v-model="showReferralRulesModal"
       v-if="showReferralRulesModal"
       @ok.prevent="onViewMealModalOk"
@@ -125,6 +125,45 @@
               v-model="referralRules.amount"
               class="mt-1"
             ></b-form-input>
+
+            <div v-if="storeCoupons.length > 0" class="mt-3">
+              <p class="strong">
+                Link Coupons To Referrals
+                <img
+                  v-b-popover.hover="
+                    'You can attach one of your existing coupons to a referral user using the table below. If you create a unique coupon code for a certain affiliate individual or company, and a customer uses that coupon code, the referral bonus will be applied to that user. This is another way to get referral sales other than your affiliates giving out their URL.'
+                  "
+                  title="Link Coupons To Referrals"
+                  src="/images/store/popover.png"
+                  class="popover-size ml-1"
+                />
+              </p>
+              <v-client-table
+                :columns="couponColumns"
+                :data="couponTableData"
+                :options="{
+                  orderBy: {
+                    column: 'id',
+                    ascending: true
+                  },
+                  headings: {
+                    code: 'Coupon',
+                    referredUserName: 'User'
+                  },
+                  filterable: false
+                }"
+              >
+                <div slot="referredUserName" slot-scope="props">
+                  <v-select
+                    label="name"
+                    :options="users"
+                    :reduce="user => user.value"
+                    @input="assignCouponToUser(props.row.id)"
+                  >
+                  </v-select>
+                </div>
+              </v-client-table>
+            </div>
           </b-form-group>
           <b-button type="submit" variant="primary" class="mt-3">Save</b-button>
         </b-form>
@@ -160,7 +199,8 @@ export default {
         "code",
         "balance",
         "actions"
-      ]
+      ],
+      couponColumns: ["code", "referredUserName"]
     };
   },
   created() {},
@@ -172,10 +212,27 @@ export default {
       isLoading: "isLoading",
       initialized: "initialized",
       referrals: "storeReferrals",
-      referralRules: "storeReferralRules"
+      referralRules: "storeReferralRules",
+      leads: "storeLeads",
+      customers: "storeCustomers"
     }),
     tableData() {
       return this.referrals;
+    },
+    couponTableData() {
+      return this.storeCoupons;
+    },
+    users() {
+      let customers = this.customers;
+      let leads = this.leads;
+      let users = customers.concat(leads);
+
+      return _.map(users, user => {
+        return {
+          name: user.name,
+          value: user.id
+        };
+      });
     },
     storeReferralUrl() {
       let host = this.store.details.host ? this.store.details.host : "goprep";
@@ -209,6 +266,10 @@ export default {
         this.$toastr.s("Balance Settled");
         this.refreshStoreReferrals();
       });
+    },
+    assignCouponToUser(couponId) {
+      alert(couponId);
+      alert(this.referredUser);
     }
   }
 };

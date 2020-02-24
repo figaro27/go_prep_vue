@@ -106,6 +106,10 @@ class CheckoutController extends UserController
         $couponId = $request->get('coupon_id');
         $couponReduction = $request->get('couponReduction');
         $couponCode = $request->get('couponCode');
+        $couponReferralUserId = Coupon::where('id', $couponId)
+            ->pluck('referral_user_id')
+            ->first();
+
         $purchasedGiftCardId = $request->get('purchased_gift_card_id');
         $purchasedGiftCardReduction = $request->get(
             'purchasedGiftCardReduction'
@@ -181,12 +185,17 @@ class CheckoutController extends UserController
 
         // Referrals
         $referralUrlCode = $request->get('referralUrl');
-        if ($referralUrlCode) {
+        if ($referralUrlCode || $couponReferralUserId) {
             $referralRules = ReferralRule::where('store_id', $storeId)->first();
 
-            $userId = User::where('referralUrlCode', $referralUrlCode)
-                ->pluck('id')
-                ->first();
+            // If both URL code & referral coupon code exists, prioritize coupon code
+            if ($couponReferralUserId) {
+                $userId = $couponReferralUserId;
+            } else {
+                $userId = User::where('referralUrlCode', $referralUrlCode)
+                    ->pluck('id')
+                    ->first();
+            }
 
             $referralAmount = 0;
             if ($referralRules->type === 'flat') {
@@ -203,7 +212,7 @@ class CheckoutController extends UserController
                 // Create new referral
                 $referral = new Referral();
                 $referral->store_id = $storeId;
-                $referral->user_id = $user->id;
+                $referral->user_id = $userId;
                 $referral->ordersReferred = 1;
                 $referral->amountReferred = $total;
                 $referral->code =
