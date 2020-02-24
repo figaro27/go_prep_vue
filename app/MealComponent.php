@@ -43,6 +43,6 @@ class MealComponent extends Model
 
     public function options()
     {
-        return $this->hasMany('App\MealComponentOption');
+        return $this->hasMany('App\MealComponentOption')->withTrahsed();
     }
 }
