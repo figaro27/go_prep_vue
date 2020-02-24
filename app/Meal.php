@@ -490,16 +490,12 @@ class Meal extends Model implements HasMedia
 
     public function components()
     {
-        return $this->hasMany(
-            'App\MealComponent',
-            'meal_id',
-            'id'
-        )->withTrashed();
+        return $this->hasMany('App\MealComponent', 'meal_id', 'id');
     }
 
     public function addons()
     {
-        return $this->hasMany('App\MealAddon', 'meal_id', 'id')->withTrashed();
+        return $this->hasMany('App\MealAddon', 'meal_id', 'id');
     }
 
     public function attachments()
