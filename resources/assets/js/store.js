@@ -521,31 +521,30 @@ const mutations = {
         let component = _.find(item.meal.components, {
           id: parseInt(componentId)
         });
-        if (component) {
-          if (!item.meal_package) {
-            _.forEach(choices, optionId => {
-              let option = _.find(component.options, {
-                id: parseInt(optionId)
-              });
-              price += option.price;
-            });
-          } else {
-            if (component.price) {
-              price += component.price;
-            }
-            _.forEach(choices, (choices, optionId) => {
-              let option = _.find(component.options, {
-                id: parseInt(optionId)
-              });
-              price += option.price;
 
-              _.forEach(choices, choice => {
-                if (choice.price) {
-                  price += choice.price;
-                }
-              });
+        if (!item.meal_package) {
+          _.forEach(choices, optionId => {
+            let option = _.find(component.options, {
+              id: parseInt(optionId)
             });
+            price += option.price;
+          });
+        } else {
+          if (component.price) {
+            price += component.price;
           }
+          _.forEach(choices, (choices, optionId) => {
+            let option = _.find(component.options, {
+              id: parseInt(optionId)
+            });
+            price += option.price;
+
+            _.forEach(choices, choice => {
+              if (choice.price) {
+                price += choice.price;
+              }
+            });
+          });
         }
       });
     } // End If
