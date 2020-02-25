@@ -275,6 +275,11 @@ foreach (
                                 'subscriptions',
                                 'SubscriptionController'
                             );
+
+                            Route::get(
+                                'getSubscriptionsWithoutOrders',
+                                'SubscriptionController@getSubscriptionsWithoutOrders'
+                            );
                             // Route::post(
                             //     'subscriptions/{id}/meals',
                             //     'SubscriptionController@updateMeals'
