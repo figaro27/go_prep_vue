@@ -652,7 +652,7 @@
         <div class="d-inline">
           <button
             class="btn btn-danger btn-lg mt-3 mr-2 d-inline"
-            @click="(deactivateMealModal = false), refreshTable()"
+            @click="cancel()"
           >
             Cancel
           </button>
@@ -1923,6 +1923,12 @@ export default {
       });
     },
     removeReplaceVariations() {
+      this.replaceVariations = false;
+    },
+    cancel() {
+      this.deactivateMealModal = false;
+      this.refreshTable();
+      this.transferVariations = false;
       this.replaceVariations = false;
     }
   }
