@@ -109,6 +109,15 @@
           <div class="col-md-4">
             <h4>Subscription ID</h4>
             <p>{{ subscription.stripe_id }}</p>
+            <router-link :to="`/store/adjust-meal-plan/${subscription.id}`">
+              <b-btn class="btn btn-success btn-sm">Edit</b-btn>
+            </router-link>
+            <button
+              class="btn btn-danger btn-sm"
+              @click="deleteMealPlan(subscription.id)"
+            >
+              Cancel
+            </button>
           </div>
           <div class="col-md-4">
             <h4>Placed On</h4>

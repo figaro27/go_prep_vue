@@ -2512,27 +2512,6 @@ const actions = {
     }
   },
 
-  async refreshSubscriptionsWithoutOrders({ commit, state }, args = {}) {
-    const res = await axios.get("/api/me/getSubscriptionsWithoutOrders");
-    const { data } = await res;
-
-    if (_.isArray(data)) {
-      const subscriptions = _.map(data, subscription => {
-        subscription.created_at = moment.utc(subscription.created_at).local(); //.format('ddd, MMMM Do')
-        subscription.updated_at = moment.utc(subscription.updated_at).local(); //.format('ddd, MMMM Do')
-        subscription.next_delivery_date = moment.utc(
-          subscription.next_delivery_date.date
-        );
-        //.local(); //.format('ddd, MMMM Do')
-        return subscription;
-      });
-
-      commit("customerSubscriptions", { subscriptions });
-    } else {
-      throw new Error("Failed to retrieve orders");
-    }
-  },
-
   async refreshCustomerOrders({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/orders");
     const { data } = await res;

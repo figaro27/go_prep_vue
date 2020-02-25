@@ -32,21 +32,6 @@ class SubscriptionController extends StoreController
             ->get();
     }
 
-    public function getSubscriptionsWithoutOrders()
-    {
-        return $this->store
-            ->subscriptions()
-            ->where('status', 'active')
-            ->without([
-                'latest_order',
-                'latest_paid_order',
-                'latest_unpaid_order',
-                'next_order'
-            ])
-            ->orderBy('created_at')
-            ->get();
-    }
-
     /**
      * Display the specified resource.
      *
