@@ -44,7 +44,7 @@ export default {
   methods: {
     ...mapActions(["refreshSubscriptions"]),
     async initBag() {
-      await this.refreshSubscriptions();
+      // await this.refreshSubscriptions();
       const subscription = _.find(this.subscriptions, {
         id: parseInt(this.subscriptionId)
       });
