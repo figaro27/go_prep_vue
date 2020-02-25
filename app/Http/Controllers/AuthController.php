@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Request;
+use App\StoreDetail;
 
 class AuthController extends Controller
 {
@@ -27,7 +28,7 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (!($token = auth()->attempt($credentials))) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -77,24 +78,47 @@ class AuthController extends Controller
     {
         $user = auth('api')->user();
         $secure = Request::secure();
+        $storeDomain = StoreDetail::where(
+            'store_id',
+            $user->last_viewed_store_id
+        )
+            ->pluck('domain')
+            ->first();
 
-        $preg = '/https?:\/\/(?:www\.)?'.preg_quote(config('app.domain')).'/i';
+        $preg =
+            '/https?:\/\/(?:www\.)?' . preg_quote(config('app.domain')) . '/i';
         $url = Request::url();
 
         // If not accessing store subdomain
-        if(preg_match($preg, $url)) {
-          $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/orders', $secure) : config('app.front_url');
-        }
-        else {
-          $redirect = $user->hasRole('store') ? $user->store->getUrl('/store/orders', $secure) : '/customer/menu';
+        if (preg_match($preg, $url)) {
+            if ($storeDomain) {
+                $redirect = $user->hasRole('store')
+                    ? $user->store->getUrl('/store/orders', $secure)
+                    : 'http://' .
+                        $storeDomain .
+                        '.' .
+                        config('app.domain') .
+                        '/customer/menu';
+            } else {
+                $redirect = $user->hasRole('store')
+                    ? $user->store->getUrl('/store/orders', $secure)
+                    : config('app.front_url');
+            }
+        } else {
+            $redirect = $user->hasRole('store')
+                ? $user->store->getUrl('/store/orders', $secure)
+                : '/customer/menu';
         }
 
         return response()->json([
             'access_token' => $token,
             'user' => auth('api')->user(),
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'redirect' => $redirect,
+            'expires_in' =>
+                auth()
+                    ->factory()
+                    ->getTTL() * 60,
+            'redirect' => $redirect
         ]);
     }
 }
