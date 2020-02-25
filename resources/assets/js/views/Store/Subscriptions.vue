@@ -86,7 +86,7 @@
                 >Resume</b-btn
               > -->
               <router-link :to="`/store/adjust-meal-plan/${props.row.id}`">
-                <b-btn class="btn btn-success btn-sm">Edit</b-btn>
+                <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
               </router-link>
             </div>
 
@@ -110,7 +110,7 @@
             <h4>Subscription ID</h4>
             <p>{{ subscription.stripe_id }}</p>
             <router-link :to="`/store/adjust-meal-plan/${subscription.id}`">
-              <b-btn class="btn btn-success btn-sm">Edit</b-btn>
+              <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
             </router-link>
             <button
               class="btn btn-danger btn-sm"

@@ -93,7 +93,7 @@ f<template>
                 >Resume</b-btn
               > -->
             <router-link :to="`/customer/subscriptions/${props.row.id}`">
-              <b-btn class="btn btn-success btn-sm">Edit</b-btn>
+              <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
             </router-link>
           </div>
 
@@ -113,12 +113,13 @@ f<template>
     >
       <p class="center-text mt-3 mb-3">
         Are you sure you want to cancel your subscription? If you want to change
-        your meals you can click "Edit" instead to edit this subscription.
+        your meals you can click "Change Meals" instead to edit this
+        subscription.
       </p>
       <center>
         <b-btn variant="danger" @click="cancelSubscription">Cancel</b-btn>
         <router-link :to="`/customer/subscriptions/${subId}`">
-          <b-btn class="btn btn-success btn-md">Edit</b-btn>
+          <b-btn class="btn btn-success btn-md">Change Meals</b-btn>
         </router-link>
       </center>
     </b-modal>
@@ -136,7 +137,7 @@ f<template>
             <h4>Subscription ID</h4>
             <p>{{ subscription.stripe_id }}</p>
             <router-link :to="`/customer/subscriptions/${subscription.id}`">
-              <b-btn class="btn btn-success btn-sm">Edit</b-btn>
+              <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
             </router-link>
             <button
               class="btn btn-danger btn-sm"
