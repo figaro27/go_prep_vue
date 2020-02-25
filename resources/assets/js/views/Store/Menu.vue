@@ -1890,43 +1890,46 @@ export default {
     setReplacementVariations() {
       // Auto selecting variations if they have the same name.
 
-      this.deactivatingMeal.sizes.forEach(oldSize => {
-        this.substituteMeal.sizes.forEach(subSize => {
-          if (oldSize.title.toUpperCase() === subSize.title.toUpperCase()) {
-            this.substituteMealSizes[oldSize.id] = subSize.id;
-          }
+      if (this.deactivatingMeal && this.substituteMeal) {
+        this.deactivatingMeal.sizes.forEach(oldSize => {
+          this.substituteMeal.sizes.forEach(subSize => {
+            if (oldSize.title.toUpperCase() === subSize.title.toUpperCase()) {
+              this.substituteMealSizes[oldSize.id] = subSize.id;
+            }
+          });
         });
-      });
 
-      this.deactivatingMeal.addons.forEach(oldAddon => {
-        this.substituteMeal.addons.forEach(subAddon => {
-          if (oldAddon.title.toUpperCase() === subAddon.title.toUpperCase()) {
-            this.substituteMealAddons[oldAddon.id] = subAddon.id;
-          }
+        this.deactivatingMeal.addons.forEach(oldAddon => {
+          this.substituteMeal.addons.forEach(subAddon => {
+            if (oldAddon.title.toUpperCase() === subAddon.title.toUpperCase()) {
+              this.substituteMealAddons[oldAddon.id] = subAddon.id;
+            }
+          });
         });
-      });
 
-      this.deactivatingMeal.components.forEach(oldComponent => {
-        this.substituteMeal.components.forEach(subComponent => {
-          if (
-            oldComponent.title.toUpperCase() ===
-            subComponent.title.toUpperCase()
-          ) {
-            this.substituteMealComponents[oldComponent.id] = subComponent.id;
-          }
+        this.deactivatingMeal.components.forEach(oldComponent => {
+          this.substituteMeal.components.forEach(subComponent => {
+            if (
+              oldComponent.title.toUpperCase() ===
+              subComponent.title.toUpperCase()
+            ) {
+              this.substituteMealComponents[oldComponent.id] = subComponent.id;
+            }
 
-          oldComponent.options.forEach(oldOption => {
-            subComponent.options.forEach(subOption => {
-              if (
-                oldOption.title.toUpperCase() === subOption.title.toUpperCase()
-              ) {
-                this.substituteMealComponentOptions[oldOption.id] =
-                  subOption.id;
-              }
+            oldComponent.options.forEach(oldOption => {
+              subComponent.options.forEach(subOption => {
+                if (
+                  oldOption.title.toUpperCase() ===
+                  subOption.title.toUpperCase()
+                ) {
+                  this.substituteMealComponentOptions[oldOption.id] =
+                    subOption.id;
+                }
+              });
             });
           });
         });
-      });
+      }
     },
     cancel() {
       this.deactivateMealModal = false;
