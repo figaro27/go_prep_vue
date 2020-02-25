@@ -29,7 +29,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      subscriptions: "subscriptions",
+      subscriptions: "storeSubscriptions",
       store: "store",
       bag: "bag",
       getMeal: "viewedStoreMeal"
