@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Utils\Data\Format;
+use App\MealSubscriptionComponent;
 
 class MealComponentOption extends Model
 {
@@ -17,7 +18,7 @@ class MealComponentOption extends Model
         'created_at' => 'date:F d, Y'
     ];
 
-    protected $appends = [];
+    protected $appends = ['activeSubscriptions'];
 
     protected $hidden = [];
 
@@ -79,5 +80,25 @@ class MealComponentOption extends Model
         });
 
         $this->ingredients()->sync($syncIngredients);
+    }
+
+    public function getActiveSubscriptionsAttribute()
+    {
+        $mealSubs = MealSubscriptionComponent::where(
+            'meal_component_option_id',
+            $this->id
+        )
+            ->whereHas('mealSubscription', function ($mealSub) {
+                $mealSub->whereHas('subscription', function ($sub) {
+                    $sub->where('status', '=', 'active');
+                });
+            })
+            ->count();
+
+        if ($mealSubs > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
