@@ -1318,26 +1318,6 @@ class Meal extends Model implements HasMedia
             $sub->update();
 
             if ($transferVariations) {
-                foreach ($meal->sizes as $size) {
-                    $mealSize = $size->replicate();
-                    $mealSize->meal_id = $subId;
-                    $mealSize->push();
-                    $mealSize->delete();
-
-                    $ing = IngredientMealSize::where(
-                        'meal_size_id',
-                        $size->id
-                    )->get();
-
-                    $substituteMealSizes->put($size->id, $mealSize->id);
-
-                    foreach ($size->ingredients as $ingredient) {
-                        $sizeIngredient = $ingredient->pivot->replicate();
-                        $sizeIngredient->meal_size_id = $mealSize->id;
-                        $sizeIngredient->push();
-                    }
-                }
-
                 foreach ($meal->addons as $addon) {
                     $mealAddon = $addon->replicate();
                     $mealAddon->meal_id = $subId;
@@ -1391,6 +1371,26 @@ class Meal extends Model implements HasMedia
                                 $mealComponentOption->id;
                             $optionIngredient->push();
                         }
+                    }
+                }
+
+                foreach ($meal->sizes as $size) {
+                    $mealSize = $size->replicate();
+                    $mealSize->meal_id = $subId;
+                    $mealSize->push();
+                    $mealSize->delete();
+
+                    $ing = IngredientMealSize::where(
+                        'meal_size_id',
+                        $size->id
+                    )->get();
+
+                    $substituteMealSizes->put($size->id, $mealSize->id);
+
+                    foreach ($size->ingredients as $ingredient) {
+                        $sizeIngredient = $ingredient->pivot->replicate();
+                        $sizeIngredient->meal_size_id = $mealSize->id;
+                        $sizeIngredient->push();
                     }
                 }
             }
