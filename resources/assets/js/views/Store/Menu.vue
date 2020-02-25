@@ -753,7 +753,10 @@
                   :key="size.id"
                   class="mb-2"
                 >
-                  <b-form-group :label="size.title">
+                  <b-form-group
+                    :label="size.title"
+                    v-if="size.activeSubscriptionsOrPackage"
+                  >
                     <v-select
                       label="title"
                       :options="substituteMeal.sizes"
@@ -781,6 +784,7 @@
                 >
                   <b-form-group
                     :label="getSizedTitle(deactivatingMeal.sizes, addon, 1)"
+                    v-if="addon.activeSubscriptions"
                   >
                     <v-select
                       label="title"
@@ -815,6 +819,7 @@
                       <b-form-group
                         :label="'Component: ' + component.title"
                         class="strong"
+                        v-if="component.activeSubscriptions"
                       >
                         <v-select
                           label="title"

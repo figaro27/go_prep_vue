@@ -4,11 +4,13 @@ namespace App;
 
 use App\Meal;
 use Illuminate\Database\Eloquent\Model;
+use App\MealSubscription;
+use App\MealMealPackage;
 
 class MealSize extends Model
 {
     public $fillable = [];
-    public $appends = ['full_title'];
+    public $appends = ['full_title', 'activeSubscriptionsOrPackage'];
     public $hidden = ['meal'];
     protected $with = ['ingredients'];
 
@@ -65,5 +67,26 @@ class MealSize extends Model
         });
 
         $this->ingredients()->sync($syncIngredients);
+    }
+
+    public function getActiveSubscriptionsOrPackageAttribute()
+    {
+        $mealSubs = MealSubscription::where('meal_size_id', $this->id)
+            ->whereHas('subscription', function ($sub) {
+                $sub->where('status', '=', 'active');
+            })
+            ->count();
+
+        $mealPackages = MealMealPackage::where('meal_size_id', $this->id)
+            ->whereHas('meal_package', function ($pkg) {
+                $pkg->where('active', 1);
+            })
+            ->count();
+
+        if ($mealSubs > 0 || $mealPackages > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
