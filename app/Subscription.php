@@ -924,6 +924,7 @@ class Subscription extends Model
                 // foreach ($mealOrder->addons as $addon) {
                 //     $addon->delete();
                 // }
+                $mealOrder->sizes->delete();
                 $mealOrder->components->delete();
                 $mealOrder->addons->delete();
                 $mealOrder->delete();
