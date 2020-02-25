@@ -1930,6 +1930,11 @@ export default {
       this.refreshTable();
       this.transferVariations = false;
       this.replaceVariations = false;
+      this.substituteMeal = null;
+      this.substituteMealSizes = {};
+      this.substituteMealComponents = {};
+      this.substituteMealComponentOptions = {};
+      this.substituteMealAddons = {};
     }
   }
 };
