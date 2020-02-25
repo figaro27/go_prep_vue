@@ -1418,7 +1418,7 @@ class Meal extends Model implements HasMedia
                         $subscriptionMeal->meal_size_id
                     );
                     $subSize = MealSize::find($subSizeId);
-                    if ($subSize->meal_id !== $subId) {
+                    if ($subSize && $subSize->meal_id !== $subId) {
                         throw new BadRequestHttpException(
                             'Size doesn\'t belong to substitute meal'
                         );
