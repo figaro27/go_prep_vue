@@ -1891,6 +1891,7 @@ export default {
       // Auto selecting variations if they have the same name.
 
       if (this.deactivatingMeal && this.substituteMeal) {
+        console.log("run");
         this.deactivatingMeal.sizes.forEach(oldSize => {
           this.substituteMeal.sizes.forEach(subSize => {
             if (oldSize.title.toUpperCase() === subSize.title.toUpperCase()) {
