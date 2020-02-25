@@ -843,6 +843,7 @@
                             :label="
                               getSizedTitle(deactivatingMeal.sizes, option, 1)
                             "
+                            v-if="option.activeSubscriptions"
                           >
                             <v-select
                               label="title"
