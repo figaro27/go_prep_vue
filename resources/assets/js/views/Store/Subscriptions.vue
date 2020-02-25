@@ -48,7 +48,12 @@
               {{ props.row.interval_title }}
             </div>
             <div slot="delivery_day" class="text-nowrap" slot-scope="props">
-              {{ moment(props.row.next_delivery_date).format("dddd, MMM Do") }}
+              {{
+                moment(
+                  props.row.next_delivery_date,
+                  "ddd MMM DD YYYY HH:mm:ss"
+                ).format("dddd, MMM Do")
+              }}
             </div>
             <div
               slot="charge_day"
@@ -56,7 +61,12 @@
               slot-scope="props"
               v-if="storeSettings.timezone"
             >
-              {{ moment(props.row.next_renewal_at).format("dddd") }}
+              {{
+                moment(
+                  props.row.next_renewal_at,
+                  "ddd MMM DD YYYY HH:mm:ss"
+                ).format("dddd")
+              }}
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
@@ -122,7 +132,14 @@
           </div>
           <div class="col-md-4">
             <h4>Placed On</h4>
-            <p>{{ moment(subscription.created_at).format("dddd, MMM Do") }}</p>
+            <p>
+              {{
+                moment(
+                  subscription.created_at,
+                  "ddd MMM DD YYYY HH:mm:ss"
+                ).format("dddd, MMM Do")
+              }}
+            </p>
           </div>
           <div class="col-md-4">
             <p>
@@ -196,7 +213,12 @@
             <span v-if="!storeModules.hideTransferOptions">
               <h4 v-if="!subscription.pickup">Delivery Day</h4>
               <h4 v-if="subscription.pickup">Pickup Day</h4>
-              {{ moment(subscription.delivery_date).format("dddd, MMM Do") }}
+              {{
+                moment(
+                  subscription.delivery_date,
+                  "ddd MMM DD YYYY HH:mm:ss"
+                ).format("dddd, MMM Do")
+              }}
               <span v-if="subscription.transferTime">
                 {{ subscription.transferTime }}</span
               >
