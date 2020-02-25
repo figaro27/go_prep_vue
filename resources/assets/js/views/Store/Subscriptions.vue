@@ -65,12 +65,7 @@
               >
                 View
               </button>
-              <button
-                class="btn btn-danger btn-sm"
-                @click="deleteMealPlan(props.row.id)"
-              >
-                Cancel
-              </button>
+
               <!--Removing pause functionality for the time being -->
 
               <!-- <b-btn
@@ -88,6 +83,12 @@
               <router-link :to="`/store/adjust-meal-plan/${props.row.id}`">
                 <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
               </router-link>
+              <button
+                class="btn btn-danger btn-sm"
+                @click="deleteMealPlan(props.row.id)"
+              >
+                Cancel
+              </button>
             </div>
 
             <div slot="amount" slot-scope="props">

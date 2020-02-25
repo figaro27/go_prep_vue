@@ -68,6 +68,9 @@ f<template>
             >
               View
             </button>
+            <router-link :to="`/customer/subscriptions/${props.row.id}`">
+              <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
+            </router-link>
             <button
               class="btn btn-danger btn-sm"
               @click="
@@ -92,9 +95,6 @@ f<template>
                 @click.stop="() => resumeSubscription(props.row.id)"
                 >Resume</b-btn
               > -->
-            <router-link :to="`/customer/subscriptions/${props.row.id}`">
-              <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
-            </router-link>
           </div>
 
           <div slot="amount" slot-scope="props">
