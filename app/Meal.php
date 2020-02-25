@@ -1378,7 +1378,6 @@ class Meal extends Model implements HasMedia
                     $mealSize = $size->replicate();
                     $mealSize->meal_id = $subId;
                     $mealSize->push();
-                    $mealSize->delete();
 
                     $ing = IngredientMealSize::where(
                         'meal_size_id',
