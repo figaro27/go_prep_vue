@@ -6,9 +6,12 @@ use App\Meal;
 use Illuminate\Database\Eloquent\Model;
 use App\MealSubscription;
 use App\MealMealPackage;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MealSize extends Model
 {
+    use SoftDeletes;
+
     public $fillable = [];
     public $appends = ['full_title', 'activeSubscriptionsOrPackage'];
     public $hidden = ['meal'];
