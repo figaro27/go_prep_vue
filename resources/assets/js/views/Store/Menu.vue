@@ -690,7 +690,10 @@
           class="mb-4"
           @input="setReplacementVariations"
         ></v-select>
-        <h4 class="center-text mb-4" v-if="!substituteMeal.active">
+        <h4
+          class="center-text mb-4"
+          v-if="substituteMeal && !substituteMeal.active"
+        >
           This substitute meal is currently inactive. Choosing this meal will
           make it active on your menu.
         </h4>
