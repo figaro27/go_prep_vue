@@ -688,15 +688,16 @@
           v-model="substitute_id"
           style="margin:0px 100px"
           class="mb-4"
+          @input="setReplacementVariations"
         ></v-select>
+        <h4 class="center-text mb-4" v-if="!substituteMeal.active">
+          This substitute meal is currently inactive. Choosing this meal will
+          make it active on your menu.
+        </h4>
         <div
           v-if="deactivatingMeal.hasVariations && substituteMeal"
           :key="substitute_id"
         >
-          <h4 class="center-text mb-4" v-if="!substituteMeal.active">
-            This substitute meal is currently inactive. Choosing this meal will
-            make it active on your menu.
-          </h4>
           <h4 class="center-text mb-3">
             This meal has variations.
           </h4>
@@ -721,7 +722,7 @@
             <b-form-checkbox
               v-model="replaceVariations"
               class="mediumCheckbox ml-2"
-              @change="setVariationReplacements"
+              @change="removeTransferVariations"
             >
               <h6>
                 Individually Replace Variations
@@ -1877,11 +1878,13 @@ export default {
         });
     },
     // Radio buttons not working
-    setVariationReplacements() {
+    removeTransferVariations() {
       this.transferVariations = false;
-
-      let oldMeal = this.deactivatingMeal;
-
+    },
+    removeReplaceVariations() {
+      this.replaceVariations = false;
+    },
+    setReplacementVariations() {
       // Auto selecting variations if they have the same name.
 
       this.deactivatingMeal.sizes.forEach(oldSize => {
@@ -1921,9 +1924,6 @@ export default {
           });
         });
       });
-    },
-    removeReplaceVariations() {
-      this.replaceVariations = false;
     },
     cancel() {
       this.deactivateMealModal = false;
