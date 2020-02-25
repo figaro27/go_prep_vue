@@ -56,7 +56,11 @@
               slot-scope="props"
               v-if="storeSettings.timezone"
             >
-              {{ moment(props.row.next_renewal_at).format("dddd") }}
+              {{
+                moment(props.row.next_renewal_at)
+                  .add(1, "days")
+                  .format("dddd")
+              }}
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
