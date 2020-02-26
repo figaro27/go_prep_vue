@@ -91,7 +91,11 @@ class CouponController extends StoreController
      */
     public function update(Request $request, Coupon $coupon)
     {
-        //
+        $coupon = Coupon::where('id', $request->get('id'))->first();
+        $referredUser = $coupon->referral_user_id;
+        $coupon->referral_user_id = $request->get('referral_user_id');
+        $coupon->update();
+        return $referredUser;
     }
 
     /**
