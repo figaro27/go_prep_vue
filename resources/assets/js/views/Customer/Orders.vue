@@ -44,8 +44,8 @@
             />
           </div>
 
-          <div slot="paid_at" slot-scope="props">
-            {{ moment(props.row.paid_at).format("dddd, MMM Do") }}
+          <div slot="created_at" slot-scope="props">
+            {{ moment(props.row.created_at).format("dddd, MMM Do") }}
           </div>
           <div slot="delivery_date" slot-scope="props">
             <template v-if="!props.row.isMultipleDelivery">{{
@@ -366,7 +366,7 @@ export default {
         "order_number",
         "store_name",
         // "user.user_detail.phone",
-        "paid_at",
+        "created_at",
         "delivery_date",
         "pickup",
         "amount",
@@ -379,7 +379,7 @@ export default {
           order_number: "Order ID",
           store_name: "Store",
           // "user.user_detail.phone": "Phone",
-          paid_at: "Order Placed",
+          created_at: "Order Placed",
           delivery_date: "Delivery Date",
           pickup: "Type",
           amount: "Total",
