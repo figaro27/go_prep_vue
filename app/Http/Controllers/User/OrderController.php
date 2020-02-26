@@ -34,7 +34,6 @@ class OrderController extends UserController
             'originalAmount',
             'payment_gateway',
             'paid',
-            'paid_at',
             'pickup_location',
             'pickup_location_id',
             'purchasedGiftCardReduction',
