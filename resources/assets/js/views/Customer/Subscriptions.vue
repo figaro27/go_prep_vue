@@ -458,7 +458,7 @@ export default {
 
       return subscription.orders.map(order => {
         return {
-          date: order.created_at,
+          date: order.paid_at,
           delivery_date: order.delivery_date,
           delivered: order.fulfilled ? "Yes" : "No",
           meals: order.meals

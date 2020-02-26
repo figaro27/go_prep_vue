@@ -327,7 +327,7 @@ export default {
           };
 
           orderByDay.forEach(order => {
-            created_at = order.created_at;
+            created_at = order.paid_at;
             totalOrders += 1;
             sums.preFeePreDiscount += order.preFeePreDiscount;
             sums.mealPlanDiscount += order.mealPlanDiscount;
