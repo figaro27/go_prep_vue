@@ -708,7 +708,10 @@
           <h4 class="center-text mb-3">
             This meal has variations.
           </h4>
-          <b-form-group>
+
+          <!-- Hiding until Transfer Variations is fixed -->
+
+          <!-- <b-form-group>
             <b-form-checkbox
               v-model="transferVariations"
               class="mediumCheckbox mr-5"
@@ -743,7 +746,7 @@
                 />
               </h6>
             </b-form-checkbox>
-          </b-form-group>
+          </b-form-group> -->
 
           <b-row v-if="!transferVariations && replaceVariations">
             <b-col
@@ -1029,7 +1032,7 @@ export default {
   },
   data() {
     return {
-      replaceVariations: false,
+      replaceVariations: true,
       _,
       filter: {
         status: "active"

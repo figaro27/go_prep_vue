@@ -485,7 +485,7 @@ class Meal extends Model implements HasMedia
 
     public function sizes()
     {
-        return $this->hasMany('App\MealSize', 'meal_id', 'id')->withTrashed();
+        return $this->hasMany('App\MealSize', 'meal_id', 'id');
     }
 
     public function components()
