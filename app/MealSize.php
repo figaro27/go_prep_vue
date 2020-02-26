@@ -19,7 +19,7 @@ class MealSize extends Model
 
     public function meal()
     {
-        return $this->belongsTo('App\Meal')->withTrashed();
+        return $this->belongsTo('App\Meal');
     }
 
     public function ingredients()
