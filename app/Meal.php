@@ -460,7 +460,7 @@ class Meal extends Model implements HasMedia
 
     public function meal_orders()
     {
-        return $this->belongsTo('App\MealOrder');
+        return $this->belongsTo('App\MealOrder')->withTrashed();
     }
 
     public function orders()
