@@ -460,7 +460,7 @@ class Meal extends Model implements HasMedia
 
     public function meal_orders()
     {
-        return $this->belongsTo('App\MealOrder')->withTrashed();
+        return $this->belongsTo('App\MealOrder');
     }
 
     public function orders()
@@ -1417,7 +1417,7 @@ class Meal extends Model implements HasMedia
                     $subSizeId = $substituteMealSizes->get(
                         $subscriptionMeal->meal_size_id
                     );
-                    $subSize = MealSize::find($subSizeId)->withTrashed();
+                    $subSize = MealSize::find($subSizeId);
                     if ($subSize && $subSize->meal_id !== $subId) {
                         throw new BadRequestHttpException(
                             'Size doesn\'t belong to substitute meal'
