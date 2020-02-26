@@ -111,7 +111,8 @@
                         val,
                         props.row.meal_package,
                         props.row.gift_card,
-                        props.row.substitute
+                        props.row.substitute,
+                        props.row.in_package
                       )
                   "
                 ></b-form-checkbox>
@@ -656,13 +657,17 @@
           >
             Cancel
           </button>
-          <!-- <button
+          <button
             class="btn btn-warning btn-lg mt-3 d-inline"
-            v-if="!deleteMeal"
+            v-if="
+              !deleteMeal &&
+                deactivatingMeal.in_package &&
+                !deactivatingMeal.substitute
+            "
             @click="updateActive(mealID, 0)"
           >
             Deactivate & Keep
-          </button> -->
+          </button>
         </div>
         <!-- <img
           v-if="!deleteMeal"
@@ -1459,7 +1464,8 @@ export default {
       active,
       isMealPackage = false,
       isGiftCard = false,
-      substitute
+      substitute,
+      inPackage
     ) {
       axios.get(`/api/me/meals/${id}`).then(response => {
         this.deactivatingMeal = response.data;
@@ -1467,8 +1473,8 @@ export default {
 
       if (
         !active &&
-        ((substitute && this.deactivateMealModal === false) ||
-          this.deactivatingMeal.in_package)
+        this.deactivateMealModal === false &&
+        (substitute || inPackage)
       ) {
         this.mealID = id;
         this.deactivateMealModal = true;
