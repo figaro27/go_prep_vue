@@ -131,7 +131,7 @@ class Meal extends Model implements HasMedia
             $this->pivot->meal_size_id
             //&& $this->pivot->meal_size
         ) {
-            return MealSize::find($this->pivot->meal_size_id);
+            return MealSize::find($this->pivot->meal_size_id)->withTrashed();
         } else {
             return null;
         }
@@ -460,7 +460,7 @@ class Meal extends Model implements HasMedia
 
     public function meal_orders()
     {
-        return $this->belongsTo('App\MealOrder');
+        return $this->belongsTo('App\MealOrder')->withTrashed();
     }
 
     public function orders()
@@ -485,7 +485,7 @@ class Meal extends Model implements HasMedia
 
     public function sizes()
     {
-        return $this->hasMany('App\MealSize', 'meal_id', 'id');
+        return $this->hasMany('App\MealSize', 'meal_id', 'id')->withTrashed();
     }
 
     public function components()
@@ -1417,7 +1417,7 @@ class Meal extends Model implements HasMedia
                     $subSizeId = $substituteMealSizes->get(
                         $subscriptionMeal->meal_size_id
                     );
-                    $subSize = MealSize::find($subSizeId);
+                    $subSize = MealSize::find($subSizeId)->withTrashed();
                     if ($subSize && $subSize->meal_id !== $subId) {
                         throw new BadRequestHttpException(
                             'Size doesn\'t belong to substitute meal'
