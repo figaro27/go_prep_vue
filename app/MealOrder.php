@@ -43,7 +43,7 @@ class MealOrder extends Pivot
 
     public function meal_size()
     {
-        return $this->belongsTo('App\MealSize')->withTrashed();
+        return $this->belongsTo('App\MealSize');
     }
 
     public function orders()
