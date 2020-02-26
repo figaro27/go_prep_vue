@@ -824,14 +824,16 @@ class Subscription extends Model
         if ($this->store->settings->applyProcessingFee) {
             if ($this->store->settings->processingFeeType === 'flat') {
                 $total += $this->store->settings->processingFee;
-                $processingFee += $this->store->settings->processingFee;
+                $processingFee += ceil($this->store->settings->processingFee);
             } else {
-                $total +=
+                $total += ceil(
                     ($this->store->settings->processingFee / 100) *
-                    $preFeePreDiscount;
-                $processingFee +=
+                        $preFeePreDiscount
+                );
+                $processingFee += ceil(
                     ($this->store->settings->processingFee / 100) *
-                    $preFeePreDiscount;
+                        $preFeePreDiscount
+                );
             }
         }
 
