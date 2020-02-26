@@ -300,7 +300,7 @@
       </li>
 
       <!-- Coupon Area -->
-      <li v-if="hasCoupons">
+      <li v-if="hasCoupons && !$route.params.adjustMealPlan">
         <div class="row">
           <div class="col-xs-6 pl-3">
             <b-form-group id="coupon">
@@ -326,7 +326,8 @@
           transferTypeCheckPickup &&
           (!storeModules.hideDeliveryOption ||
             $route.params.storeView === true ||
-            storeOwner)
+            storeOwner) &&
+          !$route.params.adjustMealPlan
       "
     >
       <b-alert
@@ -397,7 +398,11 @@
     >
       <li
         class="checkout-item"
-        v-if="($route.params.storeView || storeOwner) && !isMultipleDelivery"
+        v-if="
+          ($route.params.storeView || storeOwner) &&
+            !isMultipleDelivery &&
+            !$route.params.adjustMealPlan
+        "
       >
         <div>
           <strong v-if="pickup === 0">Delivery Day</strong>
