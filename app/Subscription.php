@@ -329,31 +329,6 @@ class Subscription extends Model
      */
     public function renew(Collection $stripeInvoice, Collection $stripeEvent)
     {
-        // Updating item stock
-
-        // Testing on MQS store
-        if ($this->store->id === 13) {
-            if ($this->store->modules->stockManagement) {
-                foreach ($this->meal_subscriptions as $mealSub) {
-                    $meal = Meal::where('id', $mealSub->meal_id)->first();
-                    if ($meal && $meal->stock !== null) {
-                        if ($meal->stock === 0) {
-                            $mealSub->delete();
-                        } elseif ($meal->stock < $mealSub->quantity) {
-                            $mealSub->quantity = $meal->stock;
-                            $mealSub->update();
-                            $meal->stock = 0;
-                            $meal->active = 0;
-                        } else {
-                            $meal->stock -= $mealSub->quantity;
-                        }
-                        $meal->update();
-                        $this->syncPrices();
-                    }
-                }
-            }
-        }
-
         $isMultipleDelivery = (int) $this->isMultipleDelivery;
 
         $latestOrder = null;
@@ -378,6 +353,31 @@ class Subscription extends Model
             !$this->monthlyPrepay
         ) {
             return;
+        }
+
+        // Updating item stock
+
+        // Testing on MQS store
+        if ($this->store->id === 13) {
+            if ($this->store->modules->stockManagement) {
+                foreach ($this->meal_subscriptions as $mealSub) {
+                    $meal = Meal::where('id', $mealSub->meal_id)->first();
+                    if ($meal && $meal->stock !== null) {
+                        if ($meal->stock === 0) {
+                            $mealSub->delete();
+                        } elseif ($meal->stock < $mealSub->quantity) {
+                            $mealSub->quantity = $meal->stock;
+                            $mealSub->update();
+                            $meal->stock = 0;
+                            $meal->active = 0;
+                        } else {
+                            $meal->stock -= $mealSub->quantity;
+                        }
+                        $meal->update();
+                        $this->syncPrices();
+                    }
+                }
+            }
         }
 
         // Retrieve the subscription from Stripe
@@ -803,7 +803,7 @@ class Subscription extends Model
         $afterDiscountBeforeFees = $bag->getTotal();
         $preFeePreDiscount = $bag->getTotal();
 
-        $deliveryFee = 0;
+        $deliveryFee = $this->deliveryFee;
         $processingFee = 0;
         $mealPlanDiscount = 0;
         $salesTaxRate =
@@ -816,10 +816,10 @@ class Subscription extends Model
             $afterDiscountBeforeFees = $total;
         }
 
-        if ($this->store->settings->applyDeliveryFee && !$this->pickup) {
-            $total += $this->store->settings->deliveryFee;
-            $deliveryFee += $this->store->settings->deliveryFee;
-        }
+        // if ($this->store->settings->applyDeliveryFee && !$this->pickup) {
+        //     $total += $this->store->settings->deliveryFee;
+        //     $deliveryFee += $this->store->settings->deliveryFee;
+        // }
 
         if ($this->store->settings->applyProcessingFee) {
             if ($this->store->settings->processingFeeType === 'flat') {
@@ -835,7 +835,7 @@ class Subscription extends Model
             }
         }
 
-        $salesTax = $total * $salesTaxRate;
+        $salesTax = $afterDiscountBeforeFees * $salesTaxRate;
         $total += $salesTax;
 
         // Update subscription pricing
