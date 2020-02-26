@@ -178,8 +178,8 @@
                 ></i>
               </p>
             </div>
-            <div slot="created_at" slot-scope="props">
-              {{ moment(props.row.created_at).format("dddd, MMM Do") }}
+            <div slot="paid_at" slot-scope="props">
+              {{ moment(props.row.paid_at).format("dddd, MMM Do") }}
             </div>
             <div slot="delivery_date" slot-scope="props">
               <template v-if="!props.row.isMultipleDelivery">{{
@@ -436,7 +436,7 @@
           </div>
           <div class="col-md-3 pt-1">
             <h4>Placed On</h4>
-            <p>{{ moment(order.created_at).format("dddd, MMM Do") }}</p>
+            <p>{{ moment(order.paid_at).format("dddd, MMM Do") }}</p>
           </div>
           <div class="col-md-4 pt-1">
             <h4 v-if="order.cashOrder">
@@ -917,7 +917,7 @@ export default {
         "customer_address",
         "customer_zip",
         // "user.user_detail.phone",
-        "created_at",
+        "paid_at",
         "delivery_date",
         "pickup",
         "amount",
@@ -933,7 +933,7 @@ export default {
           customer_address: "Address",
           customer_zip: "Zip Code",
           // "user.user_detail.phone": "Phone",
-          created_at: "Order Placed",
+          paid_at: "Order Placed",
           delivery_date: "Delivery Date",
           pickup: "Type",
           amount: "Total",
@@ -947,10 +947,10 @@ export default {
           return classes;
         },
         customSorting: {
-          created_at: function(ascending) {
+          paid_at: function(ascending) {
             return function(a, b) {
-              a = a.created_at;
-              b = b.created_at;
+              a = a.paid_at;
+              b = b.paid_at;
 
               if (ascending) return a.isBefore(b, "day") ? 1 : -1;
               return a.isAfter(b, "day") ? 1 : -1;
