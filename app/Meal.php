@@ -131,7 +131,7 @@ class Meal extends Model implements HasMedia
             $this->pivot->meal_size_id
             //&& $this->pivot->meal_size
         ) {
-            return MealSize::find($this->pivot->meal_size_id)->withTrashed();
+            return MealSize::find($this->pivot->meal_size_id);
         } else {
             return null;
         }
@@ -485,7 +485,7 @@ class Meal extends Model implements HasMedia
 
     public function sizes()
     {
-        return $this->hasMany('App\MealSize', 'meal_id', 'id');
+        return $this->hasMany('App\MealSize', 'meal_id', 'id')->withTrashed();
     }
 
     public function components()
