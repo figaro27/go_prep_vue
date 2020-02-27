@@ -37,10 +37,8 @@ export default {
     }
   },
   mounted() {
-    if (!this.$route.params.id) {
+    if (this.$route.query.sub === true) {
       console.log("test");
-    } else {
-      console.log("test 2");
     }
     setTimeout(() => {
       this.initBag();
