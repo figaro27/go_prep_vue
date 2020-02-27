@@ -36,15 +36,18 @@ export default {
       return this.$route.params.id;
     }
   },
-  mounted() {
-    if (this.store.modules.subscriptionOnly) {
-      setTimeout(() => {
+  watch: {
+    store: function() {
+      if (this.store.modules.subscriptionOnly) {
+        setTimeout(() => {
+          this.initBag();
+        }, 4000);
+      } else {
         this.initBag();
-      }, 4000);
-    } else {
-      this.initBag();
+      }
     }
   },
+  mounted() {},
   methods: {
     ...mapActions(["refreshSubscriptions"]),
     async initBag() {
