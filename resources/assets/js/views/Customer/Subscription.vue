@@ -37,13 +37,16 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.params.subscriptionOnly) {
-      setTimeout(() => {
-        this.initBag();
-      }, 3000);
-    } else {
+    setTimeout(() => {
       this.initBag();
-    }
+    }, 3000);
+    // if (this.$route.params.subscriptionOnly) {
+    //   setTimeout(() => {
+    //     this.initBag();
+    //   }, 3000);
+    // } else {
+    //   this.initBag();
+    // }
   },
   methods: {
     ...mapActions(["refreshSubscriptions"]),
