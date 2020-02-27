@@ -77,13 +77,6 @@ class CheckoutController extends UserController
                             400
                         );
                     }
-                    if (!$weeklyPlan) {
-                        $meal->stock -= $item['quantity'];
-                        if ($meal->stock === 0) {
-                            $meal->active = 0;
-                        }
-                        $meal->update();
-                    }
                 }
             }
         }
@@ -421,6 +414,17 @@ class CheckoutController extends UserController
                         }
                     }
                 } else {
+                    if ($this->store->modules->stockManagement) {
+                        $meal = Meal::where('id', $item['meal']['id'])->first();
+                        if ($meal && $meal->stock !== null) {
+                            $meal->stock -= $item['quantity'];
+                            if ($meal->stock === 0) {
+                                $meal->active = 0;
+                            }
+                            $meal->update();
+                        }
+                    }
+
                     $mealOrder = new MealOrder();
                     $mealOrder->order_id = $order->id;
                     $mealOrder->store_id = $store->id;
@@ -826,6 +830,16 @@ class CheckoutController extends UserController
                 $order->save();
 
                 foreach ($bag->getItems() as $item) {
+                    if ($this->store->modules->stockManagement) {
+                        $meal = Meal::where('id', $item['meal']['id'])->first();
+                        if ($meal && $meal->stock !== null) {
+                            $meal->stock -= $item['quantity'];
+                            if ($meal->stock === 0) {
+                                $meal->active = 0;
+                            }
+                        }
+                        $meal->update();
+                    }
                     $mealOrder = new MealOrder();
                     $mealOrder->order_id = $order->id;
                     $mealOrder->store_id = $store->id;
