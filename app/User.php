@@ -13,6 +13,7 @@ use App\Mail\Customer\SubscriptionRenewing;
 use App\Mail\Customer\SubscriptionMealSubstituted;
 use App\Mail\Customer\SubscriptionCancelled;
 use App\Mail\Customer\AdjustedOrder;
+use App\Mail\Customer\NewReferral;
 use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -418,10 +419,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function notificationEnabled($notif)
     {
-        if (!$this->settings) {
+        if (!$this->details) {
             return false;
         }
-        return $this->settings->notificationEnabled($notif);
+        return $this->details->notificationEnabled($notif);
     }
 
     public function sendNotification($notif, $data = [])
@@ -505,6 +506,9 @@ class User extends Authenticatable implements JWTSubject
                 break;
             case 'adjusted_order':
                 $email = new AdjustedOrder($data);
+                break;
+            case 'new_referral':
+                $email = new NewReferral($data);
                 break;
         }
 

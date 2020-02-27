@@ -204,6 +204,19 @@
               @change.native="updateCustomer"
             />
           </b-form-group>
+          <b-form-group
+            label="New Referral"
+            :state="true"
+            v-if="store && store.referral_rules.enabled"
+          >
+            <c-switch
+              color="success"
+              variant="pill"
+              size="lg"
+              v-model="userDetail.notifications.new_referral"
+              @change.native="updateCustomer"
+            />
+          </b-form-group>
         </b-form>
 
         <p class="strong mt-4">Payment Methods</p>
