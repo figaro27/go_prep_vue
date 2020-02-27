@@ -20,6 +20,25 @@
         {{ store.settings.closedReason }}
       </p>
     </b-alert>
+
+    <b-alert
+      show
+      variant="success"
+      v-if="
+        store.modules.subscriptionOnly &&
+          $route.name === 'customer-subscription-changes'
+      "
+    >
+      <h5 class="center-text">
+        Weekly Subscription
+      </h5>
+      <p class="center-text">
+        Your bag is full of meals that are in your current subscription. You can
+        update these meals or leave them to receive the same order when the
+        subscription renews.
+      </p>
+    </b-alert>
+
     <meal-package-components-modal
       ref="packageComponentModal"
       :packageTitle="packageTitle"
@@ -594,7 +613,7 @@
 </template>
 <script>
 import MenuBag from "../../mixins/menuBag";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
@@ -619,7 +638,20 @@ export default {
     filteredView: false,
     adjustOrder: false
   },
-  mounted: function() {},
+  mounted() {},
+  watch: {
+    subscriptions: function() {
+      if (
+        this.user.id &&
+        this.store.modules.subscriptionOnly &&
+        this.subscriptions.length > 0
+      ) {
+        this.$router.push({
+          path: "/customer/subscriptions/" + this.subscriptions[0].id
+        });
+      }
+    }
+  },
   mixins: [MenuBag],
   computed: {
     ...mapGetters({
@@ -633,7 +665,9 @@ export default {
       bag: "bagItems",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
-      _categories: "viewedStoreCategories"
+      _categories: "viewedStoreCategories",
+      user: "user",
+      subscriptions: "subscriptions"
     }),
     isMultipleDelivery() {
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
@@ -650,6 +684,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["refreshSubscriptions"]),
     truncate(text, length, suffix) {
       if (text) {
         return text.substring(0, length) + suffix;

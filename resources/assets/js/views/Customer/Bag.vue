@@ -165,6 +165,17 @@ export default {
       if (!this.deliveryDay && val[0]) {
         // this.deliveryDay = val[0].value;
       }
+    },
+    subscriptions: function() {
+      if (
+        this.user.id &&
+        this.store.modules.subscriptionOnly &&
+        this.subscriptions.length > 0
+      ) {
+        this.$router.push({
+          path: "/customer/subscriptions/" + this.subscriptions[0].id
+        });
+      }
     }
   },
   created() {
@@ -203,7 +214,8 @@ export default {
       getMealPackage: "viewedStoreMealPackage",
       _orders: "orders",
       user: "user",
-      bagDeliverySettings: "bagDeliverySettings"
+      bagDeliverySettings: "bagDeliverySettings",
+      subscriptions: "subscriptions"
     }),
     fullHeight() {
       if (!this.mobile && !this.storeOwner) return "min-height:100%";
@@ -408,6 +420,19 @@ export default {
     },
     subscriptionId() {
       return this.$route.params.subscriptionId;
+    }
+  },
+  watch: {
+    subscriptions: function() {
+      if (
+        this.user.id &&
+        this.store.modules.subscriptionOnly &&
+        this.subscriptions.length > 0
+      ) {
+        this.$router.push({
+          path: "/customer/subscriptions/" + this.subscriptions[0].id
+        });
+      }
     }
   },
   mounted() {
