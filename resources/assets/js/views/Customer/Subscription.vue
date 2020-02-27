@@ -37,7 +37,7 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.params.subscriptionOnly) {
+    if (this.$route.query.sub) {
       setTimeout(() => {
         this.initBag();
       }, 3000);

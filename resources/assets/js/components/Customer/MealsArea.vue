@@ -648,7 +648,7 @@ export default {
       ) {
         this.$router.push({
           path: "/customer/subscriptions/" + this.subscriptions[0].id,
-          params: { subscriptionOnly: true }
+          query: { sub: true }
         });
       }
     }
