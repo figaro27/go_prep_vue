@@ -829,14 +829,12 @@ class Subscription extends Model
                 $total += $this->store->settings->processingFee;
                 $processingFee += ceil($this->store->settings->processingFee);
             } else {
-                $total += ceil(
+                $total +=
                     ($this->store->settings->processingFee / 100) *
-                        $preFeePreDiscount
-                );
-                $processingFee += ceil(
+                    $preFeePreDiscount;
+                $processingFee +=
                     ($this->store->settings->processingFee / 100) *
-                        $preFeePreDiscount
-                );
+                    $preFeePreDiscount;
             }
         }
 
