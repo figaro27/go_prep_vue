@@ -37,9 +37,13 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => {
+    if (this.store.modules.subscriptionOnly) {
+      setTimeout(() => {
+        this.initBag();
+      }, 4000);
+    } else {
       this.initBag();
-    }, 5000);
+    }
   },
   methods: {
     ...mapActions(["refreshSubscriptions"]),
