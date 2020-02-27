@@ -20,6 +20,20 @@
         {{ store.settings.closedReason }}
       </p>
     </b-alert>
+    <div
+      class="alert alert-success"
+      role="alert"
+      v-if="store && store.referral_rules.showInMenu && user.referralUrlCode"
+    >
+      <h5 class="center-text">Referral Program</h5>
+      <p class="center-text">
+        Give out your referral link to customers and if they order using your
+        link, you will receive {{ referralAmount }} on each order that comes in.
+      </p>
+      <p class="center-text">
+        Your referral link is <a :href="referralUrl">{{ referralUrl }}</a>
+      </p>
+    </div>
     <meal-package-components-modal
       ref="packageComponentModal"
       :packageTitle="packageTitle"
@@ -633,7 +647,8 @@ export default {
       bag: "bagItems",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
-      _categories: "viewedStoreCategories"
+      _categories: "viewedStoreCategories",
+      user: "user"
     }),
     isMultipleDelivery() {
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
@@ -647,6 +662,12 @@ export default {
       } else {
         return "categorySection customer-menu-container";
       }
+    },
+    referralAmount() {
+      return this.store.referral_rules.amountFormat;
+    },
+    referralUrl() {
+      return this.store.referral_rules.url + this.user.referralUrlCode;
     }
   },
   methods: {

@@ -4,6 +4,21 @@
     :style="fullHeight"
   >
     <div class="bag">
+      <div
+        class="alert alert-success"
+        role="alert"
+        v-if="store && store.referral_rules.showInMenu && user.referralUrlCode"
+      >
+        <h5 class="center-text">Referral Program</h5>
+        <p class="center-text">
+          Give out your referral link to customers and if they order using your
+          link, you will receive {{ referralAmount }} on each order that comes
+          in.
+        </p>
+        <p class="center-text">
+          Your referral link is <a :href="referralUrl">{{ referralUrl }}</a>
+        </p>
+      </div>
       <auth-modal :showAuthModal="showAuthModal"></auth-modal>
       <spinner v-if="loading" position="absolute"></spinner>
       <div class="row">
@@ -408,6 +423,12 @@ export default {
     },
     subscriptionId() {
       return this.$route.params.subscriptionId;
+    },
+    referralAmount() {
+      return this.store.referral_rules.amountFormat;
+    },
+    referralUrl() {
+      return this.store.referral_rules.url + this.user.referralUrlCode;
     }
   },
   mounted() {
