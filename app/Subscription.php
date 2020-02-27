@@ -372,6 +372,9 @@ class Subscription extends Model
                             $meal->active = 0;
                         } else {
                             $meal->stock -= $mealSub->quantity;
+                            if ($meal->stock === 0) {
+                                $meal->active = 0;
+                            }
                         }
                         $meal->update();
                         $this->syncPrices();
@@ -935,14 +938,14 @@ class Subscription extends Model
                 $mealOrder->delete();
             }
 
-            foreach ($bag->getItems() as $item) {
-                $mealOrder = new MealOrder();
-                $mealOrder->order_id = $order->id;
-                $mealOrder->store_id = $this->store->id;
-                $mealOrder->meal_id = $item['meal']['id'];
-                $mealOrder->quantity = $item['quantity'];
-                $mealOrder->save();
-            }
+            // foreach ($bag->getItems() as $item) {
+            //     $mealOrder = new MealOrder();
+            //     $mealOrder->order_id = $order->id;
+            //     $mealOrder->store_id = $this->store->id;
+            //     $mealOrder->meal_id = $item['meal']['id'];
+            //     $mealOrder->quantity = $item['quantity'];
+            //     $mealOrder->save();
+            // }
         }
     }
 
