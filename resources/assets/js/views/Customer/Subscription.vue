@@ -37,13 +37,13 @@ export default {
     }
   },
   mounted() {
-    // setTimeout(() => {
-    //   this.initBag();
-    // }, 5000);
-
-    this.$nextTick(() => {
+    if (this.store.modules.subscriptionOnly) {
+      setTimeout(() => {
+        this.initBag();
+      }, 4000);
+    } else {
       this.initBag();
-    });
+    }
   },
   methods: {
     ...mapActions(["refreshSubscriptions"]),
