@@ -20,6 +20,13 @@
         {{ store.settings.closedReason }}
       </p>
     </b-alert>
+
+    <b-alert show variant="success">
+      <h4 class="center-text">
+        Scroll Test
+      </h4>
+    </b-alert>
+
     <meal-package-components-modal
       ref="packageComponentModal"
       :packageTitle="packageTitle"
