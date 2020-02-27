@@ -38,18 +38,12 @@ export default {
   },
   mounted() {
     if (this.$route.query.sub) {
-      console.log("test");
-    }
-    setTimeout(() => {
+      setTimeout(() => {
+        this.initBag();
+      }, 3000);
+    } else {
       this.initBag();
-    }, 3000);
-    // if (this.$route.params.subscriptionOnly) {
-    //   setTimeout(() => {
-    //     this.initBag();
-    //   }, 3000);
-    // } else {
-    //   this.initBag();
-    // }
+    }
   },
   methods: {
     ...mapActions(["refreshSubscriptions"]),
