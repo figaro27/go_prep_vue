@@ -65,16 +65,6 @@ class CheckoutController extends UserController
             foreach ($bag->getItems() as $item) {
                 $meal = Meal::where('id', $item['meal']['id'])->first();
                 if ($meal && $meal->stock !== null) {
-                    // if ($weeklyPlan) {
-                    //     return response()->json(
-                    //         [
-                    //             'message' =>
-                    //                 $meal->title .
-                    //                 ' is not allowed in subscriptions. Please remove from your bag and try again.'
-                    //         ],
-                    //         400
-                    //     );
-                    // }
                     if ($meal->stock < $item['quantity']) {
                         return response()->json(
                             [
@@ -95,6 +85,24 @@ class CheckoutController extends UserController
                         $meal->update();
                     }
                 }
+            }
+        }
+
+        // Preventing checkout if the meal has been made inactive or deleted since the time it was added to the bag.
+
+        foreach ($bag->getItems() as $item) {
+            $meal = Meal::where('id', $item['meal']['id'])
+                ->withTrashed()
+                ->first();
+            if (!$meal->active || $meal->deleted_at !== null) {
+                return response()->json(
+                    [
+                        'message' =>
+                            $meal->title .
+                            ' has been removed from the menu since the time you added it to your bag. Please adjust your order and try again.'
+                    ],
+                    400
+                );
             }
         }
 
