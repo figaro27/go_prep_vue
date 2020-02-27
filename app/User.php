@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Mail;
 use Stripe;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Media\Utils as MediaUtils;
+use App\Referral;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -61,7 +62,7 @@ class User extends Authenticatable implements JWTSubject
         'stripe_account' => 'json'
     ];
 
-    protected $appends = ['name', 'cards', 'last_viewed_store'];
+    protected $appends = ['name', 'cards', 'last_viewed_store', 'referrals'];
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -131,6 +132,11 @@ class User extends Authenticatable implements JWTSubject
     public function store()
     {
         return $this->hasOne('App\Store');
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany('App\Referrals');
     }
 
     public function hasRole($role)
@@ -515,5 +521,10 @@ class User extends Authenticatable implements JWTSubject
         }
 
         return false;
+    }
+
+    public function getReferralsAttribute()
+    {
+        return Referral::where('user_id', $this->id)->get();
     }
 }

@@ -47,10 +47,7 @@
           <b-nav-item v-if="loggedIn" to="/customer/subscriptions"
             >Subscriptions</b-nav-item
           >
-          <b-nav-item
-            v-if="loggedIn"
-            to="/customer/account/my-account"
-            class="white-text d-sm-block d-md-none"
+          <b-nav-item v-if="loggedIn" to="/customer/account/my-account"
             >My Account</b-nav-item
           >
           <b-nav-item
