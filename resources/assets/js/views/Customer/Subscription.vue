@@ -37,7 +37,7 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.params.subscriptionOnly === true) {
+    if (!this.$route.params.id) {
       console.log("test");
     }
     setTimeout(() => {
