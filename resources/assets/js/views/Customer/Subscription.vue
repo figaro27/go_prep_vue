@@ -37,7 +37,7 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.query.sub === true) {
+    if (this.$route.query.sub) {
       console.log("test");
     }
     setTimeout(() => {
