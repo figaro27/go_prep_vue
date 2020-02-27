@@ -39,6 +39,8 @@ export default {
   mounted() {
     if (!this.$route.params.id) {
       console.log("test");
+    } else {
+      console.log("test 2");
     }
     setTimeout(() => {
       this.initBag();
