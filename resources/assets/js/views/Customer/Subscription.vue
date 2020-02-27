@@ -37,7 +37,9 @@ export default {
     }
   },
   mounted() {
-    setTimeout(this.initBag(), 5000);
+    setTimeout(() => {
+      this.initBag();
+    }, 5000);
   },
   methods: {
     ...mapActions(["refreshSubscriptions"]),
