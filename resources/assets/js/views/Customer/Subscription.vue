@@ -37,6 +37,9 @@ export default {
     }
   },
   mounted() {
+    if (this.$route.params.subscriptinOnly === true) {
+      console.log("test");
+    }
     setTimeout(() => {
       this.initBag();
     }, 3000);
