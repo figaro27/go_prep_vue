@@ -459,6 +459,7 @@ $currency = $subscription->store->settings->currency_symbol
     </tr>
   </table>
 
+
   <table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td align="center">
@@ -467,7 +468,7 @@ $currency = $subscription->store->settings->currency_symbol
             <td width="600" align="center">
               <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td height="40"></td>
+                  <td height="20"></td>
                 </tr>
                 <!-- title -->
                 @if ($subscription->store->settings->notesForCustomer)
@@ -489,9 +490,66 @@ $currency = $subscription->store->settings->currency_symbol
                 <tr>
                   <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
                 </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+  </table>
+
+
+
+
+@php
+$referralRules = $subscription->store->referralRules;
+$host = $subscription->store->details->host ? $subscription->store->details->host : '.goprep.';
+$referralURL = 'https://' . $subscription->store->details->domain . $host . 'com?r=' . $subscription->user->referralUrlCode;
+$percentAmount = trim($referralRules->amount, ".00");
+@endphp
+@if ($referralRules->enabled && $referralRules->showInNotifications)
+
+<table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td align="center">
+        <table align="center" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td width="600" align="center">
+              <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                  <td height="45" style="text-align: center;"><a href="https://goprep.com/customer/account/my-account">Unsubscribe</a></td>
+                  <td height="20"></td>
                 </tr>
+                <!-- title -->
+
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Referral Program</td>
+                </tr>
+                <!-- end title -->
+                <tr>
+                  <td height="5"></td>
+                </tr>
+                <!-- content -->
+
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
+                  Give out your referral link to customers and if they order using your link, you will receive 
+                  @if ($referralRules->type === 'flat')
+                    ${{ $referralRules->amount }}
+                  @else
+                    {{ $percentAmount }}%
+                  @endif
+                  on each order that comes in. Your referral link is: <a href="{{$referralURL}}">{{$referralURL}}</a>
+                  </td>
+                </tr>
+               
+                <!-- end content -->
+                <tr>
+                  <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
+                </tr>
+               
+                
+                
               </table>
             </td>
           </tr>
@@ -499,9 +557,14 @@ $currency = $subscription->store->settings->currency_symbol
       </td>
     </tr>
   </table>
+@endif
 
 
-
+<table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td height="45" style="text-align: center;"><a href="https://goprep.com/customer/account/my-account">Unsubscribe</a></td>
+    </tr>
+  </table>
   <!-- end note -->
   <!-- footer -->
   <!-- end footer -->

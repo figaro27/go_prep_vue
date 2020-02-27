@@ -94,7 +94,7 @@
                 /></p
             ></b-form-checkbox>
             <div v-if="referralRules.enabled">
-              <b-form-checkbox v-model="referralRules.signupEmail"
+              <!-- <b-form-checkbox v-model="referralRules.signupEmail"
                 ><p>
                   Send Signup Email
                   <img
@@ -105,7 +105,7 @@
                     src="/images/store/popover.png"
                     class="popover-size ml-1"
                   /></p
-              ></b-form-checkbox>
+              ></b-form-checkbox> -->
               <b-form-checkbox v-model="referralRules.showInNotifications"
                 ><p>
                   Show in Notifications

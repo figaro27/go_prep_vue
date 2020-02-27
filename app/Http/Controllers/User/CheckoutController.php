@@ -625,16 +625,13 @@ class CheckoutController extends UserController
                 ]);
             }
 
-            try {
-                $user->sendNotification('new_order', [
-                    'order' => $order ?? null,
-                    'pickup' => $pickup ?? null,
-                    'card' => $card ?? null,
-                    'customer' => $customer ?? null,
-                    'subscription' => null
-                ]);
-            } catch (\Exception $e) {
-            }
+            $user->sendNotification('new_order', [
+                'order' => $order ?? null,
+                'pickup' => $pickup ?? null,
+                'card' => $card ?? null,
+                'customer' => $customer ?? null,
+                'subscription' => null
+            ]);
         } else {
             $weekIndex = date('N', strtotime($deliveryDay));
 
@@ -1202,18 +1199,18 @@ class CheckoutController extends UserController
                     $referral->balance += $referralAmount;
                     $referral->update();
                 }
-            }
-        }
 
-        $referralUser = User::where('id', $referralUserId)->first();
-        if ($user->notificationEnabled('new_referral')) {
-            $referralUser->sendNotification('new_referral', [
-                'order' => $order ?? null,
-                'pickup' => $pickup ?? null,
-                'customer' => $customer ?? null,
-                'referral' => $referral,
-                'referralAmount' => $referralAmount
-            ]);
+                $referralUser = User::where('id', $referralUserId)->first();
+                if ($user->notificationEnabled('new_referral')) {
+                    $referralUser->sendNotification('new_referral', [
+                        'order' => $order ?? null,
+                        'pickup' => $pickup ?? null,
+                        'customer' => $customer ?? null,
+                        'referral' => $referral,
+                        'referralAmount' => $referralAmount
+                    ]);
+                }
+            }
         }
     }
 }
