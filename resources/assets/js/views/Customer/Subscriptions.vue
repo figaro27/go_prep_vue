@@ -156,9 +156,7 @@ f<template>
             <span v-if="!storeModules.hideTransferOptions" class="mt-2">
               <h4 v-if="!subscription.pickup">Delivery Day</h4>
               <h4 v-if="subscription.pickup">Pickup Day</h4>
-              {{
-                {{ moment(subscription.next_renewal_at).format("dddd") }}
-              }}
+              {{ moment(props.row.next_renewal_at).format("dddd") }}
               <span v-if="subscription.transferTime">
                 {{ subscription.transferTime }}</span
               >
