@@ -634,7 +634,9 @@ export default {
     filteredView: false,
     adjustOrder: false
   },
-  mounted() {},
+  mounted() {
+    window.scrollTo(0, 0);
+  },
   watch: {
     subscriptions: function() {
       if (
