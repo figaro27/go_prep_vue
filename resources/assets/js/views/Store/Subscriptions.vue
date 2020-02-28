@@ -200,11 +200,7 @@
             <span v-if="!storeModules.hideTransferOptions">
               <h4 v-if="!subscription.pickup">Delivery Day</h4>
               <h4 v-if="subscription.pickup">Pickup Day</h4>
-              {{
-                moment(subscription.next_order.delivery_date).format(
-                  "dddd, MMM Do"
-                )
-              }}
+              {{ moment(subscription.delivery_date).format("dddd, MMM Do") }}
               <span v-if="subscription.transferTime">
                 {{ subscription.transferTime }}</span
               >
