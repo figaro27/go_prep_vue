@@ -157,9 +157,7 @@ f<template>
               <h4 v-if="!subscription.pickup">Delivery Day</h4>
               <h4 v-if="subscription.pickup">Pickup Day</h4>
               {{
-                moment(subscription.next_order.delivery_date).format(
-                  "dddd, MMM Do"
-                )
+                {{ moment(subscription.next_renewal_at).format("dddd") }}
               }}
               <span v-if="subscription.transferTime">
                 {{ subscription.transferTime }}</span
