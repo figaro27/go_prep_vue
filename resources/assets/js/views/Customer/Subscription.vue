@@ -37,11 +37,7 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.query.sub) {
-      setTimeout(() => {
-        this.initBag();
-      }, 3000);
-    } else {
+    if (this.bag.items.length === 0 || !this.$route.query.sub) {
       this.initBag();
     }
   },
