@@ -21,21 +21,17 @@
       </p>
     </b-alert>
 
-    <b-alert
-      show
-      variant="success"
-      v-if="
-        store.modules.subscriptionOnly &&
-          $route.name === 'customer-subscription-changes'
-      "
-    >
+    <b-alert show variant="success" v-if="$route.query.sub === true">
       <h5 class="center-text">
         Weekly Subscription
       </h5>
       <p class="center-text">
-        Your bag is full of meals that are in your current subscription. You can
-        update these meals or leave them to receive the same order when the
-        subscription renews.
+        You have an active weekly subscription with us. Update your meals for
+        your next <span v-if="!subscriptions[0].pickup">delivery </span
+        ><span v-else>pickup</span> on
+        {{
+          moment(subscriptions[0].next_delivery_date).format("dddd, MMM Do")
+        }}.
       </p>
     </b-alert>
 
@@ -643,11 +639,12 @@ export default {
     subscriptions: function() {
       if (
         this.user.id &&
-        this.store.modules.subscriptionOnly &&
-        this.subscriptions.length > 0
+        this.subscriptions.length > 0 &&
+        !this.$route.params.id
       ) {
         this.$router.push({
           path: "/customer/subscriptions/" + this.subscriptions[0].id,
+          params: { subscriptionId: this.subscriptions[0].id },
           query: { sub: true }
         });
       }

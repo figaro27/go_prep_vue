@@ -734,14 +734,14 @@
           </b-form-group>
         </div>
 
-        <div
+        <!-- <div
           v-if="hasActiveSubscription && !$route.params.subscriptionId"
           class="alert alert-warning"
           role="alert"
         >
           You have an active weekly subscription with this company and may have
           already been charged for an order this week.
-        </div>
+        </div> -->
         <b-alert
           show
           variant="warning"
@@ -791,7 +791,7 @@
             (card != null || cashOrder || grandTotal === 0) &&
               (minimumMet || $route.params.storeView || storeOwner) &&
               $route.params.adjustOrder != true &&
-              $route.params.subscriptionId === undefined &&
+              subscriptionId === undefined &&
               (store.settings.open === true ||
                 $route.params.storeView ||
                 storeOwner) &&
@@ -1782,6 +1782,9 @@ use next_delivery_dates
       else return this.salesTax * taxableAmount;
     },
     subscriptionId() {
+      if (this.$route.query.subscriptionId) {
+        return this.$route.query.subscriptionId;
+      }
       return this.$route.params.subscriptionId;
     },
     minimumMet() {
