@@ -810,7 +810,9 @@ class Subscription extends Model
         $processingFee = 0;
         $mealPlanDiscount = 0;
         $salesTaxRate =
-            round(100 * ($this->salesTax / $this->amount)) / 100 ?? 0;
+            round(100 * ($this->salesTax / $this->afterDiscountBeforeFees), 2) /
+                100 ??
+            0;
 
         if ($this->store->settings->applyMealPlanDiscount) {
             $discount = $this->store->settings->mealPlanDiscount / 100;
@@ -823,23 +825,23 @@ class Subscription extends Model
         //     $total += $this->store->settings->deliveryFee;
         //     $deliveryFee += $this->store->settings->deliveryFee;
         // }
+        $total += $deliveryFee;
 
         if ($this->store->settings->applyProcessingFee) {
             if ($this->store->settings->processingFeeType === 'flat') {
                 $total += $this->store->settings->processingFee;
                 $processingFee += ceil($this->store->settings->processingFee);
             } else {
-                $total +=
-                    ($this->store->settings->processingFee / 100) *
-                    $preFeePreDiscount;
                 $processingFee +=
                     ($this->store->settings->processingFee / 100) *
-                    $preFeePreDiscount;
+                    $afterDiscountBeforeFees;
+                $total += $processingFee;
             }
         }
 
         $salesTax = $afterDiscountBeforeFees * $salesTaxRate;
         $total += $salesTax;
+        $total = round($total, 2);
 
         // Update subscription pricing
         $this->preFeePreDiscount = $preFeePreDiscount;

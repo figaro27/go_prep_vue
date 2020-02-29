@@ -1617,7 +1617,7 @@ use next_delivery_dates
         if (this.storeSettings.processingFeeType === "flat") {
           return this.storeSettings.processingFee;
         } else if (this.storeSettings.processingFeeType === "percent") {
-          return (this.storeSettings.processingFee / 100) * this.subtotal;
+          return (this.storeSettings.processingFee / 100) * this.afterDiscount;
         }
       }
     },
