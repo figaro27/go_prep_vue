@@ -27,11 +27,8 @@
       </h5>
       <p class="center-text">
         You have an active weekly subscription with us. Update your meals for
-        your next <span v-if="!subscriptions[0].pickup">delivery </span
-        ><span v-else>pickup</span> on
-        {{
-          moment(subscriptions[0].next_delivery_date).format("dddd, MMM Do")
-        }}.
+        your next renewal on
+        {{ moment(subscriptions[0].next_renewal).format("dddd, MMM Do") }}.
       </p>
     </b-alert>
 
