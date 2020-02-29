@@ -38,7 +38,6 @@ export default {
   },
   mounted() {
     if (this.bag.items.length === 0 || !this.$route.query.sub) {
-      console.log("test");
       this.initBag();
     }
   },
