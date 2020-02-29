@@ -30,19 +30,25 @@ export default {
       subscriptions: "subscriptions",
       store: "store",
       bag: "bag",
-      getMeal: "viewedStoreMeal"
+      getMeal: "viewedStoreMeal",
+      mealMixItems: "mealMixItems"
     }),
     subscriptionId() {
       return this.$route.params.id;
     }
   },
-  mounted() {
-    if (
-      this.bag.length === 0 ||
-      (this.bag.items && this.bag.items.length === 0) ||
-      !this.$route.query.sub
-    ) {
-      this.initBag();
+  mounted() {},
+  watch: {
+    mealMixItems: function() {
+      if (!this.mealMixItems.isRunningLazy) {
+        if (
+          this.bag.length === 0 ||
+          (this.bag.items && this.bag.items.length === 0) ||
+          !this.$route.query.sub
+        ) {
+          this.initBag();
+        }
+      }
     }
   },
   methods: {
