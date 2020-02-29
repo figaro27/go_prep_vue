@@ -37,7 +37,11 @@ export default {
     }
   },
   mounted() {
-    if (this.bag.items.length === 0 || !this.$route.query.sub) {
+    if (
+      this.bag.length === 0 ||
+      (this.bag.items && this.bag.items.length === 0) ||
+      !this.$route.query.sub
+    ) {
       this.initBag();
     }
   },
