@@ -831,7 +831,7 @@ class Subscription extends Model
         if ($this->store->settings->applyProcessingFee) {
             if ($this->store->settings->processingFeeType === 'flat') {
                 $total += $this->store->settings->processingFee;
-                $processingFee += ceil($this->store->settings->processingFee);
+                $processingFee += $this->store->settings->processingFee;
             } else {
                 $processingFee +=
                     ($this->store->settings->processingFee / 100) *
