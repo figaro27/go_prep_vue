@@ -2224,7 +2224,7 @@ use next_delivery_dates
           deposit: deposit,
           cashOrder: this.cashOrder,
           noBalance: this.noBalance,
-          hot: this.hot,
+          hot: this.hot ? this.hot : false,
           transferTime: this.transferTime,
           lineItemsOrder: this.orderLineItems,
           grandTotal: this.grandTotal,
