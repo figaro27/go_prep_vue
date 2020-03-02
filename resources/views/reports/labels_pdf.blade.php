@@ -3,6 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="{{ asset(mix('/css/print.css')) }}">
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+  <script src="{{ asset(mix('/js/manifest.js')) }}"></script>
+  <script src="{{ asset(mix('/js/vendor.js')) }}"></script>
   <script src="{{ asset(mix('/js/print.js')) }}"></script>
 </head>
 
@@ -52,7 +58,10 @@
                     Show Full Nutrition
                     @endif
                   </h1>
-                <div id="nutritionFacts" ref="nutritionFacts"></div>
+
+                  @if ($params['labelsNutrition'] === 'nutrition')
+                    <div class="nutritionFacts" data-meal="{{ $value->json }}"></div>
+                  @endif
               </td>
             @endforeach
           </tr>
@@ -61,6 +70,10 @@
       </table>
     </div>
   </div>
+
+  <script>
+    window.status = "ready";
+  </script>
 </body>
 
 </html>

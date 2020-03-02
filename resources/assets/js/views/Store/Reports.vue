@@ -334,15 +334,13 @@
       no-fade
     >
       <b-form-group class="mt-3">
-        <b-form-radio v-model="labelsNutrition" value="none"
-          >Don't Show Nutrition</b-form-radio
-        >
-        <b-form-radio v-model="labelsNutrition" value="macros"
-          >Show Macros Only</b-form-radio
-        >
-        <b-form-radio v-model="labelsNutrition" value="nutrition"
-          >Show Full Nutrition Facts</b-form-radio
-        >
+        <b-form-radio-group v-model="labelsNutrition">
+          <b-form-radio value="none">Don't Show Nutrition</b-form-radio>
+          <b-form-radio value="macros">Show Macros Only</b-form-radio>
+          <b-form-radio value="nutrition"
+            >Show Full Nutrition Facts</b-form-radio
+          >
+        </b-form-radio-group>
       </b-form-group>
     </b-modal>
   </div>

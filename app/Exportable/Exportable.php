@@ -140,7 +140,10 @@ trait Exportable
             //'margin-left' => 0,
             //'margin-right' => 0,
             //'binary' => '/usr/local/bin/wkhtmltopdf',
-            'disable-smart-shrinking'
+            'disable-smart-shrinking',
+            //'window-status' => 'ready',
+            'javascript-delay' => 200,
+            'debug-javascript'
         ];
 
         if (config('pdf.xserver')) {

@@ -24,60 +24,14 @@ class Labels
         $this->store = $store;
         $this->params = collect($params);
         $this->orientation = 'portrait';
+        $this->page = $params->get('page', 1);
+        $this->perPage = 10;
     }
 
     public function filterVars($vars)
     {
         $vars['dates'] = $this->allDates;
         return $vars;
-    }
-
-    public function exportAll($type = "pdf")
-    {
-        if (!in_array($type, ['pdf'])) {
-            return null;
-        }
-
-        $this->type = $type;
-
-        $filename = 'public/' . md5(time()) . '.pdf';
-
-        $vars = $this->filterVars([
-            'data' => null,
-            'params' => $this->params,
-            'delivery_dates' => $this->getDeliveryDates(),
-            'body_classes' => implode(' ', [$this->orientation]),
-            'category_header' => ''
-        ]);
-
-        $pdfConfig = [
-            'encoding' => 'utf-8',
-            'orientation' => $this->orientation,
-            'page-size' => 'Letter',
-            'no-outline',
-            //'margin-top' => 0,
-            //'margin-bottom' => 0,
-            //'margin-left' => 0,
-            //'margin-right' => 0,
-            //'binary' => '/usr/local/bin/wkhtmltopdf',
-            'disable-smart-shrinking'
-        ];
-
-        if (config('pdf.xserver')) {
-            $pdfConfig = array_merge($pdfConfig, [
-                'use-xserver',
-                'commandOptions' => array(
-                    'enableXvfb' => true
-                )
-            ]);
-        }
-
-        $pdf = new Pdf($pdfConfig);
-
-        $output = $pdf->toString();
-
-        Storage::disk('local')->put($filename, $output);
-        return Storage::url($filename);
     }
 
     public function exportData($type = null)
@@ -91,6 +45,18 @@ class Labels
 
         $orders = $this->store->getOrders(null, $dates, true);
         $orders = $orders->where('voided', 0);
+
+        $total = $orders->count();
+        $orders = $orders
+            ->slice(($this->page - 1) * $this->perPage)
+            ->take($this->perPage);
+        $numDone = $this->page * $this->perPage;
+
+        if ($numDone < $total) {
+            $this->page++;
+        } else {
+            $this->page = null;
+        }
 
         $orders->map(function ($order) use (&$allDates, &$production, $dates) {
             $date = "";
@@ -119,7 +85,26 @@ class Labels
             }
         });
 
-        return $production->toArray();
+        $output = $production
+            ->map(function ($row) {
+                $row = array_map(function ($item) {
+                    $meal = $item->meal;
+                    $item->json = json_encode(
+                        array_merge($meal->attributesToArray(), [
+                            'ingredients' => $meal->ingredients->map(function (
+                                $ingredient
+                            ) {
+                                return $ingredient->attributesToArray();
+                            })
+                        ])
+                    );
+                    return $item;
+                }, $row);
+                return $row;
+            })
+            ->toArray();
+
+        return $output;
     }
 
     public function exportPdfView()
