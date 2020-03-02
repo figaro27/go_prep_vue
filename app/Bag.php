@@ -122,122 +122,6 @@ class Bag
                 for ($i = 0; $i < $item['quantity']; $i++) {
                     // Add regular package meals
 
-                    if ($item['size'] === null) {
-                        foreach ($item['meal']['meals'] as $meal) {
-                            // if (!$meals[$meal['id']]->active) {
-                            //     //continue;
-                            // }
-
-                            $mealItem = [
-                                'meal_package_title' => $item['meal']['title'],
-                                'meal_package_id' => $item['meal']['id'],
-                                'meal_package_size_id' => $item['size']['id'],
-                                'meal' => [
-                                    'id' => $meal['id']
-                                ],
-                                'meal_package' => true,
-                                'package_price' => $item['price'],
-                                'package_quantity' => $item['quantity'],
-                                'quantity' => $meal['quantity'],
-                                'price' => $meal['price'],
-                                'size' => [
-                                    'id' => $meal['meal_size_id'] ?? null
-                                    // ? $meal['meal_size']['id']
-                                    // : null
-                                ],
-                                'quantity' => $meal['quantity'],
-                                'special_instructions' => isset(
-                                    $meal['special_instructions']
-                                )
-                                    ? $meal['special_instructions']
-                                    : null,
-                                'delivery_day' =>
-                                    isset($item['delivery_day']) &&
-                                    $item['delivery_day']
-                                        ? $item['delivery_day']
-                                        : null,
-                                'emailRecipient' => isset(
-                                    $item['emailRecipient']
-                                )
-                                    ? $item['emailRecipient']
-                                    : null,
-                                'meal_package_variation' => false,
-                                'mappingId' => $mappingId
-                            ];
-
-                            $mealItemId = $this->getItemId($mealItem);
-
-                            if (!isset($items[$mealItemId])) {
-                                $items[$mealItemId] = $mealItem;
-                            } else {
-                                $items[$mealItemId]['quantity'] +=
-                                    $mealItem['quantity'];
-                            }
-                        }
-                    } else {
-                        if (
-                            isset($item) &&
-                            isset($item['size']) &&
-                            isset($item['size']['meals'])
-                        ) {
-                            foreach ($item['size']['meals'] as $meal) {
-                                // if (!$meals[$meal['id']]->active) {
-                                //     //continue;
-                                // }
-
-                                $mealItem = [
-                                    'meal_package_title' =>
-                                        $item['meal']['title'] .
-                                        ' - ' .
-                                        $item['size']['title'],
-                                    'meal_package_id' => $item['meal']['id'],
-                                    'meal_package_size_id' =>
-                                        $item['size']['id'],
-                                    'meal' => [
-                                        'id' => $meal['id']
-                                    ],
-                                    'meal_package' => true,
-                                    'package_price' => $item['price'],
-                                    'package_quantity' => $item['quantity'],
-                                    'quantity' => $meal['quantity'],
-                                    'price' => 0,
-                                    'size' => [
-                                        'id' => $meal['meal_size_id']
-                                            ? $meal['meal_size_id']
-                                            : null
-                                    ],
-                                    'quantity' => $meal['quantity'],
-                                    'special_instructions' => isset(
-                                        $meal['special_instructions']
-                                    )
-                                        ? $meal['special_instructions']
-                                        : null,
-                                    'delivery_day' =>
-                                        isset($item['delivery_day']) &&
-                                        $item['delivery_day']
-                                            ? $item['delivery_day']
-                                            : null,
-                                    'emailRecipient' => isset(
-                                        $item['emailRecipient']
-                                    )
-                                        ? $item['emailRecipient']
-                                        : null,
-                                    'meal_package_variation' => false,
-                                    'mappingId' => $mappingId
-                                ];
-
-                                $mealItemId = $this->getItemId($mealItem);
-
-                                if (!isset($items[$mealItemId])) {
-                                    $items[$mealItemId] = $mealItem;
-                                } else {
-                                    $items[$mealItemId]['quantity'] +=
-                                        $mealItem['quantity'];
-                                }
-                            }
-                        }
-                    }
-
                     if (isset($item['components']) && $item['components']) {
                         foreach (
                             $item['components']
@@ -511,6 +395,121 @@ class Bag
                                 } else {
                                     $items[$mealItemId]['quantity'] +=
                                         $meal['quantity'];
+                                }
+                            }
+                        }
+                    }
+                    if ($item['size'] === null) {
+                        foreach ($item['meal']['meals'] as $meal) {
+                            // if (!$meals[$meal['id']]->active) {
+                            //     //continue;
+                            // }
+
+                            $mealItem = [
+                                'meal_package_title' => $item['meal']['title'],
+                                'meal_package_id' => $item['meal']['id'],
+                                'meal_package_size_id' => $item['size']['id'],
+                                'meal' => [
+                                    'id' => $meal['id']
+                                ],
+                                'meal_package' => true,
+                                'package_price' => $item['price'],
+                                'package_quantity' => $item['quantity'],
+                                'quantity' => $meal['quantity'],
+                                'price' => $meal['price'],
+                                'size' => [
+                                    'id' => $meal['meal_size_id'] ?? null
+                                    // ? $meal['meal_size']['id']
+                                    // : null
+                                ],
+                                'quantity' => $meal['quantity'],
+                                'special_instructions' => isset(
+                                    $meal['special_instructions']
+                                )
+                                    ? $meal['special_instructions']
+                                    : null,
+                                'delivery_day' =>
+                                    isset($item['delivery_day']) &&
+                                    $item['delivery_day']
+                                        ? $item['delivery_day']
+                                        : null,
+                                'emailRecipient' => isset(
+                                    $item['emailRecipient']
+                                )
+                                    ? $item['emailRecipient']
+                                    : null,
+                                'meal_package_variation' => false,
+                                'mappingId' => $mappingId
+                            ];
+
+                            $mealItemId = $this->getItemId($mealItem);
+
+                            if (!isset($items[$mealItemId])) {
+                                $items[$mealItemId] = $mealItem;
+                            } else {
+                                $items[$mealItemId]['quantity'] +=
+                                    $mealItem['quantity'];
+                            }
+                        }
+                    } else {
+                        if (
+                            isset($item) &&
+                            isset($item['size']) &&
+                            isset($item['size']['meals'])
+                        ) {
+                            foreach ($item['size']['meals'] as $meal) {
+                                // if (!$meals[$meal['id']]->active) {
+                                //     //continue;
+                                // }
+
+                                $mealItem = [
+                                    'meal_package_title' =>
+                                        $item['meal']['title'] .
+                                        ' - ' .
+                                        $item['size']['title'],
+                                    'meal_package_id' => $item['meal']['id'],
+                                    'meal_package_size_id' =>
+                                        $item['size']['id'],
+                                    'meal' => [
+                                        'id' => $meal['id']
+                                    ],
+                                    'meal_package' => true,
+                                    'package_price' => $item['price'],
+                                    'package_quantity' => $item['quantity'],
+                                    'quantity' => $meal['quantity'],
+                                    'price' => 0,
+                                    'size' => [
+                                        'id' => $meal['meal_size_id']
+                                            ? $meal['meal_size_id']
+                                            : null
+                                    ],
+                                    'quantity' => $meal['quantity'],
+                                    'special_instructions' => isset(
+                                        $meal['special_instructions']
+                                    )
+                                        ? $meal['special_instructions']
+                                        : null,
+                                    'delivery_day' =>
+                                        isset($item['delivery_day']) &&
+                                        $item['delivery_day']
+                                            ? $item['delivery_day']
+                                            : null,
+                                    'emailRecipient' => isset(
+                                        $item['emailRecipient']
+                                    )
+                                        ? $item['emailRecipient']
+                                        : null,
+                                    'meal_package_variation' => false,
+                                    'mappingId' => $mappingId
+                                ];
+
+                                $mealItemId = $this->getItemId($mealItem);
+
+                                if (!isset($items[$mealItemId])) {
+                                    $items[$mealItemId] = $mealItem;
+                                } else {
+                                    $items[$mealItemId]['quantity'] +=
+                                        $mealItem['quantity'];
                                 }
                             }
                         }
