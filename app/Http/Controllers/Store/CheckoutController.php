@@ -137,6 +137,7 @@ class CheckoutController extends StoreController
         $period = Constants::PERIOD[$interval] ?? Constants::PERIOD_WEEKLY;
         $notes = $request->get('notes');
         $publicOrderNotes = $request->get('publicOrderNotes');
+        $hot = $request->get('hot');
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
@@ -338,6 +339,7 @@ class CheckoutController extends StoreController
             $order->dailyOrderNumber = $dailyOrderNumber;
             $order->originalAmount = $deposit > 0 ? $deposit : $total;
             $order->isMultipleDelivery = $isMultipleDelivery;
+            $order->hot = $hot;
             $order->save();
 
             $orderId = $order->id;
@@ -812,6 +814,7 @@ class CheckoutController extends StoreController
             $order->cashOrder = $cashOrder;
             $order->originalAmount = $deposit > 0 ? $deposit : $total;
             $order->isMultipleDelivery = $isMultipleDelivery;
+            $order->hot = $hot;
             $order->save();
 
             $orderId = $order->id;

@@ -20,7 +20,8 @@ class StoreModule extends Model
         'specialInstructions' => 'boolean',
         'cashOrderNoBalance' => 'boolean',
         'stockManagement' => 'boolean',
-        'autoPrintPackingSlip' => 'boolean'
+        'autoPrintPackingSlip' => 'boolean',
+        'showHotCheckbox' => 'boolean'
     ];
 
     protected $guarded = [];

@@ -40,7 +40,8 @@ class Order extends Model
         'salesTax' => 'float',
         'mealPlanDiscount' => 'float',
         'couponReduction' => 'float',
-        'adjustedDifference' => 'float'
+        'adjustedDifference' => 'float',
+        'hot' => 'float'
         //'created_at' => 'date:F d, Y'
     ];
 
