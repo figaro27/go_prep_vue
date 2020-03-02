@@ -319,11 +319,11 @@ class MealOrders
                 $temp = explode('<sep>', $title);
                 $title = $temp[0];
                 $size = $temp && isset($temp[1]) ? $temp[1] : "";
-                $production->push([$size, $title, $quantity]);
+                $production->push([$quantity, $size, $title]);
             }
 
             foreach ($lineItemQuantities as $title => $quantity) {
-                $production->push(['', $title, $quantity]);
+                $production->push([$quantity, '', $title]);
             }
         } else {
             foreach ($mealQuantities as $title => $mealDates) {
@@ -331,7 +331,7 @@ class MealOrders
                 $size = $temp && isset($temp[0]) ? $temp[0] : "";
                 $title = $temp[1];
 
-                $row = [$title, $size];
+                $row = [];
                 foreach ($allDates as $date) {
                     if (isset($mealDates[$date])) {
                         $row[] = $mealDates[$date];
@@ -339,11 +339,13 @@ class MealOrders
                         $row[] = 0;
                     }
                 }
+                $row[] = $title;
+                $row[] = $size;
                 $production->push($row);
             }
 
             foreach ($lineItemQuantities as $title => $lineItemDates) {
-                $row = ['', $title];
+                $row = [];
                 foreach ($allDates as $date) {
                     if (isset($lineItemDates[$date])) {
                         $row[] = $lineItemDates[$date];
@@ -351,13 +353,15 @@ class MealOrders
                         $row[] = 0;
                     }
                 }
+                $row[] = '';
+                $row[] = $title;
                 $production->push($row);
             }
         }
 
         if ($type !== 'pdf') {
             if (!$groupByDate) {
-                $production->prepend(['Size', 'Title', 'Orders']);
+                $production->prepend(['Orders', 'Size', 'Title']);
             } else {
                 $headings = array_merge(['Title'], $this->allDates);
                 $production->prepend($headings);

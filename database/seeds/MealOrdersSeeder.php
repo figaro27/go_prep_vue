@@ -12,19 +12,18 @@ class MealOrdersSeeder extends Seeder
      */
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
         for ($order = 1; $order <= 20; $order++) {
             for ($i = 1; $i <= 5; $i++) {
-                try {
-                    DB::table('meal_orders')->insert([
-                        'store_id' => 1,
-                        'order_id' => $order,
-                        'meal_id' => rand(1, 23),
-                        'quantity' => rand(1, 4),
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now()
-                    ]);
-                } catch (\Exception $e) {
-                }
+                DB::table('meal_orders')->insert([
+                    'store_id' => 1,
+                    'order_id' => $order,
+                    'meal_id' => rand(1, 23),
+                    'quantity' => rand(1, 4),
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ]);
             }
         }
 
@@ -491,5 +490,7 @@ class MealOrdersSeeder extends Seeder
                 }
             }
         }
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 }

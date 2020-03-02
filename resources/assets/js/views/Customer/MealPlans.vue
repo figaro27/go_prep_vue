@@ -401,7 +401,7 @@ export default {
 
       return subscription.orders.map(order => {
         return {
-          date: order.created_at,
+          date: order.paid_at,
           delivery_date: order.delivery_date,
           delivered: order.fulfilled ? "Yes" : "No",
           meals: order.meals
@@ -501,9 +501,7 @@ export default {
       });
       this.addBagItems(items);
 
-      window.location = `${subscription.store.url}/customer/meal-plans/${
-        subscription.id
-      }`;
+      window.location = `${subscription.store.url}/customer/meal-plans/${subscription.id}`;
     }
   }
 };

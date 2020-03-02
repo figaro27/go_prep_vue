@@ -247,9 +247,7 @@
               ></delivery-date-picker>
               <b-btn @click="clearLabels()" class="ml-1">Clear</b-btn>
             </div>
-            <p class="mt-4 center-text">
-              Labels for your meal containers.
-            </p>
+            <p class="mt-4 center-text">Labels for your meal containers.</p>
             <div class="row">
               <div class="col-md-6">
                 <button
@@ -261,7 +259,7 @@
               </div>
               <div class="col-md-6">
                 <button
-                  @click="print('labels', 'pdf')"
+                  @click="print('labels', 'b64')"
                   class="btn btn-primary btn-md mt-2"
                 >
                   Print
@@ -334,15 +332,17 @@
       no-fade
     >
       <b-form-group class="mt-3">
-        <b-form-radio v-model="labelsNutrition" value="none"
-          >Don't Show Nutrition</b-form-radio
-        >
-        <b-form-radio v-model="labelsNutrition" value="macros"
-          >Show Macros Only</b-form-radio
-        >
-        <b-form-radio v-model="labelsNutrition" value="nutrition"
-          >Show Full Nutrition Facts</b-form-radio
-        >
+        <b-form-radio-group v-model="labelsNutrition">
+          <b-form-radio value="none">Don't Show Nutrition</b-form-radio>
+          <b-form-radio value="macros">Show Macros Only</b-form-radio>
+          <b-form-radio value="nutrition"
+            >Show Full Nutrition Facts</b-form-radio
+          >
+        </b-form-radio-group>
+      </b-form-group>
+
+      <b-form-group label="Label Size" class="mt-3">
+        <b-select v-model="labelSize" :options="labelSizeOptions"></b-select>
       </b-form-group>
     </b-modal>
   </div>
@@ -360,7 +360,9 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import vSelect from "vue-select";
 import Spinner from "../../components/Spinner";
 import checkDateRange from "../../mixins/deliveryDates";
+import printer from "../../mixins/printer";
 import { sleep } from "../../lib/utils";
+import { PrintJob, PrintSize } from "../../store/printer";
 
 export default {
   components: {
@@ -383,6 +385,54 @@ export default {
         labels: false
       },
       labelsNutrition: "none",
+      labelSize: {
+        width: 4,
+        height: 6
+      },
+      labelSizeOptions: [
+        {
+          text: "A4",
+          value: {
+            width: 8.3,
+            height: 11.7
+          }
+        },
+        {
+          text: "Letter",
+          value: {
+            width: 8.5,
+            height: 11
+          }
+        },
+        {
+          text: '4" x 6"',
+          value: {
+            width: 4,
+            height: 6
+          }
+        },
+        {
+          text: '4" x 8"',
+          value: {
+            width: 4,
+            height: 8
+          }
+        },
+        {
+          text: '6" x 4"',
+          value: {
+            width: 6,
+            height: 4
+          }
+        },
+        {
+          text: '8" x 11"',
+          value: {
+            width: 8,
+            height: 11
+          }
+        }
+      ],
       selectedPickupLocation: null
     };
   },
@@ -416,9 +466,11 @@ export default {
       return grouped;
     }
   },
-  mixins: [checkDateRange],
-  mounted() {},
+  mixins: [checkDateRange, printer],
+  async mounted() {},
   methods: {
+    ...mapActions(["printer/connect"]),
+
     async print(report, format = "pdf", page = 1) {
       let params = { page };
 
@@ -473,6 +525,8 @@ export default {
       params.byOrderDate = 0;
 
       params.labelsNutrition = this.labelsNutrition;
+      params.width = this.labelSize.width;
+      params.height = this.labelSize.height;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
@@ -480,7 +534,21 @@ export default {
         })
         .then(response => {
           const { data } = response;
-          if (!_.isEmpty(data.url)) {
+
+          if (format === "b64") {
+            const size = new PrintSize(
+              this.labelSize.width,
+              this.labelSize.height
+            );
+            const job = new PrintJob(data.url, size, {
+              top: 0.25,
+              right: 0.25,
+              bottom: 0.25,
+              left: 0.25
+            });
+
+            this.printerAddJob(job);
+          } else if (!_.isEmpty(data.url)) {
             let win = window.open(data.url);
             if (win) {
               win.addEventListener(

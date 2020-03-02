@@ -205,7 +205,7 @@
                   <p>
                     {{
                       moment
-                        .utc(order.created_at)
+                        .utc(order.paid_at)
                         .local()
                         .format("dddd, MMM Do, Y")
                     }}

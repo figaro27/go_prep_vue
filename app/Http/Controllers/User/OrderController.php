@@ -17,6 +17,7 @@ class OrderController extends UserController
         $orders = $this->user
             ->orders()
             ->with(['pickup_location', 'purchased_gift_cards'])
+            ->where(['paid' => 1])
             ->get();
 
         $orders->makeHidden([
@@ -33,7 +34,6 @@ class OrderController extends UserController
             'originalAmount',
             'payment_gateway',
             'paid',
-            'paid_at',
             'pickup_location',
             'pickup_location_id',
             'purchasedGiftCardReduction',

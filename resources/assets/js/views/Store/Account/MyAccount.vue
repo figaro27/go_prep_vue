@@ -234,6 +234,10 @@ export default {
     },
     updateStoreDetails() {
       let data = { ...this.storeDetails };
+
+      if (typeof data.logo !== "string") {
+        delete data.logo;
+      }
       this.spliceZip();
       axios
         .patch("/api/me/details", data)

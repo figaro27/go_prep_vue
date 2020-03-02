@@ -34,6 +34,6 @@ class MealSubscriptionComponent extends Pivot
         return $this->belongsTo(
             'App\MealComponentOption',
             'meal_component_option_id'
-        );
+        )->withTrashed();
     }
 }

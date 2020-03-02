@@ -7,6 +7,7 @@ use App\Billing\Constants;
 use App\Http\Controllers\User\UserController;
 use Http\Client\Exception\RequestException;
 use Illuminate\Http\Request;
+use App\Store;
 
 class CardController extends UserController
 {
@@ -17,8 +18,9 @@ class CardController extends UserController
      */
     public function index()
     {
-        $storeId = $this->store->id;
-        $gateway = $this->store->settings->payment_gateway;
+        $store = Store::where('id', $this->user->last_viewed_store_id)->first();
+        $storeId = $store->id;
+        $gateway = $store->settings->payment_gateway;
 
         return $this->user
             ->cards()
@@ -55,24 +57,26 @@ class CardController extends UserController
         $token = $request->get('token');
         $gateway = $request->get('payment_gateway');
         $card = $request->get('card');
-
         if ($gateway === Constants::GATEWAY_STRIPE) {
-            if (!$this->user->hasCustomer()) {
-                $customer = $this->user->createCustomer($token);
-            } else {
-                $customer = \Stripe\Customer::retrieve($this->user->stripe_id);
-
-                try {
-                    $this->user->createCard($token);
-                } catch (\Stripe\Error\Card $e) {
-                    return response()->json(
-                        [
-                            'error' =>
-                                'Your card was declined. Please verify the entered information and try again.'
-                        ],
-                        400
+            try {
+                if (!$this->user->hasCustomer()) {
+                    $customer = $this->user->createCustomer($token);
+                } else {
+                    $customer = \Stripe\Customer::retrieve(
+                        $this->user->stripe_id
                     );
+                    $this->user->createCard($token);
                 }
+            } catch (\Stripe\Error\Card $e) {
+                return response()->json(
+                    [
+                        'error' => trim(
+                            json_encode($e->jsonBody['error']['message']),
+                            '"'
+                        )
+                    ],
+                    400
+                );
             }
 
             $sources = $customer->sources->all();

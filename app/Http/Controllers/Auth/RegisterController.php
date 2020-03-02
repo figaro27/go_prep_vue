@@ -263,7 +263,15 @@ class RegisterController extends Controller
                 'category' => 'Entrees'
             ]);
 
-            $storeModules = $store->modules()->create();
+            $storeModules = $store->modules()->create([
+                'cashOrders' => 1,
+                'manualOrders' => 1,
+                'manualCustomers' => 1,
+                'deposits' => 1,
+                'lineItems' => 1,
+                'orderNotes' => 1,
+                'emailBranding' => 1
+            ]);
 
             $storeModuleSettings = $store->moduleSettings()->create();
 

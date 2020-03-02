@@ -305,7 +305,7 @@ $brandColor = $order->store->settings->color;
             </tr>@endif
             @if ($order->couponReduction > 0)<tr>
               <td style="border:none"><b>Coupon</b></td>
-              <td style="border:none;text-align:right;position:relative;right:8px">({{ $couponCode }}) {{ $coupon }}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">@if (!$order->manual)({{ $couponCode }}) @endif {{ $coupon }}</td>
             </tr>@endif
             @if ($order->purchasedGiftCardReduction > 0)<tr>
               <td style="border:none"><b>Coupon</b></td>

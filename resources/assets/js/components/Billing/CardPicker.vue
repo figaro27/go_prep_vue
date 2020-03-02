@@ -13,7 +13,11 @@
         @change="evt => onChangeNewCard(evt)"
       ></inline-credit-card-field>
     </b-form-group>
-    <b-btn variant="primary" @click="onClickCreateCard()" class="mb-3"
+    <b-btn
+      variant="primary"
+      @click="onClickCreateCard()"
+      class="mb-3"
+      :disabled="addingCard"
       >Add Card</b-btn
     >
     <div v-if="cards.length && !$route.params.manualOrder">
@@ -122,6 +126,7 @@ export default {
     return {
       stripeKey: window.app.stripe_key,
       // stripeOptions,
+      addingCard: false,
       card: null,
       newCard: null
     };
@@ -135,6 +140,7 @@ export default {
   methods: {
     ...mapActions(["refreshCards"]),
     async onClickCreateCard() {
+      this.addingCard = true;
       let token = null;
       let card = null;
 
@@ -191,6 +197,7 @@ export default {
           this.selectCard(resp.data.id);
           this.newCard = null;
           this.$toastr.s("Payment method saved.");
+          this.addingCard = false;
         })
         .catch(resp => {
           let error = "";
@@ -198,14 +205,14 @@ export default {
             error =
               "Failed to add card. Does your billing address match the credit card? You can update your billing address in My Account. Click the icon on the top right.";
           } else {
-            error = "Failed to add card.";
+            error = resp;
           }
 
           if (!_.isEmpty(resp.response.data.error)) {
             error = resp.response.data.error;
           }
 
-          this.$toastr.e(error, "Error");
+          this.$toastr.w(error);
         })
         .finally(() => {
           this.$parent.loading = false;

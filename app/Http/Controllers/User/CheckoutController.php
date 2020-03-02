@@ -65,16 +65,6 @@ class CheckoutController extends UserController
             foreach ($bag->getItems() as $item) {
                 $meal = Meal::where('id', $item['meal']['id'])->first();
                 if ($meal && $meal->stock !== null) {
-                    if ($weeklyPlan) {
-                        return response()->json(
-                            [
-                                'message' =>
-                                    $meal->title .
-                                    ' is not allowed in subscriptions. Please remove from your bag and try again.'
-                            ],
-                            400
-                        );
-                    }
                     if ($meal->stock < $item['quantity']) {
                         return response()->json(
                             [
@@ -87,12 +77,25 @@ class CheckoutController extends UserController
                             400
                         );
                     }
-                    $meal->stock -= $item['quantity'];
-                    if ($meal->stock === 0) {
-                        $meal->active = 0;
-                    }
-                    $meal->update();
                 }
+            }
+        }
+
+        // Preventing checkout if the meal has been made inactive or deleted since the time it was added to the bag.
+
+        foreach ($bag->getItems() as $item) {
+            $meal = Meal::where('id', $item['meal']['id'])
+                ->withTrashed()
+                ->first();
+            if (!$meal->active || $meal->deleted_at !== null) {
+                return response()->json(
+                    [
+                        'message' =>
+                            $meal->title .
+                            ' has been removed from the menu since the time you added it to your bag. Please adjust your order and try again.'
+                    ],
+                    400
+                );
             }
         }
 
@@ -240,7 +243,7 @@ class CheckoutController extends UserController
             );
         }
 
-        $total = $request->get('grandTotal');
+        $total = $request->get('grandTotal') ? $request->get('grandTotal') : 0;
         // $total += $salesTax;
 
         if (!$weeklyPlan) {
@@ -255,23 +258,37 @@ class CheckoutController extends UserController
                         ["stripe_account" => $storeSettings->stripe_id]
                     );
 
-                    $charge = \Stripe\Charge::create(
-                        [
-                            "amount" => round($total * 100),
-                            "currency" => $storeSettings->currency,
-                            "source" => $storeSource,
-                            "application_fee" => round(
-                                $afterDiscountBeforeFees * $application_fee
-                            )
-                        ],
-                        ["stripe_account" => $storeSettings->stripe_id],
-                        [
-                            "idempotency_key" =>
-                                substr(uniqid(rand(10, 99), false), 0, 14) .
-                                chr(rand(65, 90)) .
-                                rand(0, 9)
-                        ]
-                    );
+                    try {
+                        $charge = \Stripe\Charge::create(
+                            [
+                                "amount" => round($total * 100),
+                                "currency" => $storeSettings->currency,
+                                "source" => $storeSource,
+                                "application_fee" => round(
+                                    $afterDiscountBeforeFees * $application_fee
+                                )
+                            ],
+                            ["stripe_account" => $storeSettings->stripe_id],
+                            [
+                                "idempotency_key" =>
+                                    substr(uniqid(rand(10, 99), false), 0, 14) .
+                                    chr(rand(65, 90)) .
+                                    rand(0, 9)
+                            ]
+                        );
+                    } catch (\Stripe\Error\Charge $e) {
+                        return response()->json(
+                            [
+                                'error' => trim(
+                                    json_encode(
+                                        $e->jsonBody['error']['message']
+                                    ),
+                                    '"'
+                                )
+                            ],
+                            400
+                        );
+                    }
                 }
             } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
                 $billing = Billing::init($gateway, $store);
@@ -397,6 +414,17 @@ class CheckoutController extends UserController
                         }
                     }
                 } else {
+                    if ($this->store->modules->stockManagement) {
+                        $meal = Meal::where('id', $item['meal']['id'])->first();
+                        if ($meal && $meal->stock !== null) {
+                            $meal->stock -= $item['quantity'];
+                            if ($meal->stock === 0) {
+                                $meal->active = 0;
+                            }
+                            $meal->update();
+                        }
+                    }
+
                     $mealOrder = new MealOrder();
                     $mealOrder->order_id = $order->id;
                     $mealOrder->store_id = $store->id;
@@ -802,6 +830,16 @@ class CheckoutController extends UserController
                 $order->save();
 
                 foreach ($bag->getItems() as $item) {
+                    if ($this->store->modules->stockManagement) {
+                        $meal = Meal::where('id', $item['meal']['id'])->first();
+                        if ($meal && $meal->stock !== null) {
+                            $meal->stock -= $item['quantity'];
+                            if ($meal->stock === 0) {
+                                $meal->active = 0;
+                            }
+                        }
+                        $meal->update();
+                    }
                     $mealOrder = new MealOrder();
                     $mealOrder->order_id = $order->id;
                     $mealOrder->store_id = $store->id;

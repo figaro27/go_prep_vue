@@ -53,7 +53,7 @@ class LoginController extends Controller
                 $user->store->getUrl('/store/orders', $request->secure)
             );
         } else {
-            return redirect()->intended('/customer/home');
+            return redirect()->intended('/customer/menu');
         }
     }
 }

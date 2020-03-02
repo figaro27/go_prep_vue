@@ -39,6 +39,7 @@
                     class="popover-size"
                   />
                 </b-form-group>
+
                 <b-modal
                   size="md"
                   v-model="showCutoffModal"
@@ -487,9 +488,161 @@
                 <b-button type="submit" variant="primary" class="mt-3"
                   >Save</b-button
                 >
+
+                <b-form @submit.prevent="updateStoreSettings">
+                  <p class="mt-3">
+                    <span class="mr-1">Sales Tax</span>
+                    <img
+                      v-b-popover.hover="
+                        'Here you can turn sales tax on or off for your customers.'
+                      "
+                      title="Enable Sales Tax"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.enableSalesTax"
+                  />
+                  <div v-if="storeSettings.enableSalesTax">
+                    <p class="mt-3 mb-0 pb-0">
+                      <span class="mr-1">Sales Tax %</span>
+                      <img
+                        v-b-popover.hover="
+                          'Our system figures out your sales tax using the state you signed up with. You can override the number in the field below.'
+                        "
+                        title="Sales Tax"
+                        src="/images/store/popover.png"
+                        class="popover-size"
+                      />
+                    </p>
+                    <b-form-group :state="true">
+                      <b-form-input
+                        label="Sales Tax"
+                        class="mt-3"
+                        type="text"
+                        v-model="salesTax"
+                        required
+                      ></b-form-input>
+                    </b-form-group>
+                  </div>
+                  <p class="mt-2">
+                    <span class="mr-1">Google Analytics Code</span>
+                    <img
+                      v-b-popover.hover="
+                        'Create a Google Analytics account and paste in your tracking code below. You\'ll then be able to see all kinds of traffic reports about who viewed your menu page. Please follow the exact format that is shown to you which looks like this: UA-00000000-00. If you need help setting up your Google Analytics account, please contact us and we\'ll be glad to set it up for you.'
+                      "
+                      title="Google Analytics"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+
+                  <b-form-group :state="true" class="mt-2">
+                    <b-form-input
+                      type="text"
+                      v-model="storeSettings.gaCode"
+                      placeholder="UA-00000000-00"
+                      required
+                    ></b-form-input>
+                  </b-form-group>
+
+                  <b-button type="submit" variant="primary">Save</b-button>
+                </b-form>
+                <p class="mt-2">Timezone</p>
+                <b-select
+                  :options="timezoneOptions"
+                  v-model="storeSettings.timezone"
+                  class="d-inline w-auto mr-1"
+                  @change.native="val => onChangeTimezone(val)"
+                >
+                </b-select>
+                <div v-if="!storeSettings.stripe_id">
+                  <b-form-group :state="true">
+                    <b-button variant="primary" :href="stripeConnectUrl"
+                      >Connect Bank Account</b-button
+                    >
+                  </b-form-group>
+                </div>
+                <div v-else class="mt-2">
+                  <b-form-group :state="true"
+                    >ID: {{ storeSettings.stripe_id }}</b-form-group
+                  >
+                  <a :href="payments_url" target="_blank">
+                    <b-button type="submit" variant="primary"
+                      >View Stripe Account</b-button
+                    >
+                  </a>
+                </div>
+                <b-form @submit.prevent="closeStore" v-if="canOpen">
+                  <p class="mt-2">
+                    <span class="mr-1 mt-2">Open</span>
+                    <img
+                      v-b-popover.hover="
+                        'You can toggle this off to stop accepting new orders from customers for any reason. Please be sure to fill out the reason below to communicate to your customers.'
+                      "
+                      title="Open or Closed"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.open"
+                    @change.native="checkTOAforModal"
+                  />
+
+                  <b-form-input
+                    v-if="!storeSettings.open"
+                    type="text"
+                    v-model="storeSettings.closedReason"
+                    placeholder="Please include the reason to give to customers as to why you are currently not accepting new orders."
+                    required
+                  ></b-form-input>
+
+                  <div class="mt-3">
+                    <b-button type="submit" variant="primary">Save</b-button>
+                  </div>
+                </b-form>
+
+                <div v-else>
+                  Please enter all settings fields to open your store.
+                </div>
               </b-form>
             </b-tab>
             <b-tab title="Menu">
+              <b-form @submit.prevent="updateStoreSettings">
+                <p>https://{{ storeDetails.domain }}.goprep.com</p>
+                <b-form
+                  @submit.prevent="updateStoreLogo"
+                  v-if="!storeModules.hideBranding"
+                >
+                  <b-form-group label="Logo" :state="true">
+                    <picture-input
+                      :ref="`storeImageInput`"
+                      :prefill="logoPrefill"
+                      @prefill="$refs[`storeImageInput`].onResize()"
+                      :alertOnError="false"
+                      :autoToggleAspectRatio="true"
+                      margin="0"
+                      size="10"
+                      button-class="btn"
+                      style="width: 180px; height: auto; margin: 0;"
+                      @change="val => updateLogo(val)"
+                    ></picture-input>
+                  </b-form-group>
+                  <div class="mt-3">
+                    <b-button type="submit" variant="primary" class="mb-3"
+                      >Save</b-button
+                    >
+                  </div>
+                </b-form>
+              </b-form>
               <p>
                 <span class="mr-1">Show Nutrition Facts</span>
                 <img
@@ -761,6 +914,7 @@
                             id="coupon-code"
                             v-model="coupon.amount"
                             placeholder="Enter Amount"
+                            required
                           ></b-form-input>
                         </div>
                         <div class="col-md-2">
@@ -900,55 +1054,15 @@
                 </b-form-group>
               </b-form>
             </b-tab>
-            <b-tab title="Other">
-              <p>https://{{ storeDetails.domain }}.goprep.com</p>
-              <b-form
-                @submit.prevent="updateStoreLogo"
-                v-if="!storeModules.hideBranding"
-              >
-                <b-form-group label="Logo" :state="true">
-                  <picture-input
-                    :ref="`storeImageInput`"
-                    :prefill="logoPrefill"
-                    @prefill="$refs[`storeImageInput`].onResize()"
-                    :alertOnError="false"
-                    :autoToggleAspectRatio="true"
-                    margin="0"
-                    size="10"
-                    button-class="btn"
-                    style="width: 180px; height: auto; margin: 0;"
-                    @change="val => updateLogo(val)"
-                  ></picture-input>
-                </b-form-group>
-                <div class="mt-3">
-                  <b-button type="submit" variant="primary">Save</b-button>
-                </div>
-              </b-form>
-              <div v-if="!storeSettings.stripe_id">
-                <b-form-group :state="true">
-                  <b-button variant="primary" :href="stripeConnectUrl"
-                    >Connect Bank Account</b-button
-                  >
-                </b-form-group>
-              </div>
-              <div v-else class="mt-2">
-                <b-form-group :state="true"
-                  >ID: {{ storeSettings.stripe_id }}</b-form-group
-                >
-                <a :href="payments_url" target="_blank">
-                  <b-button type="submit" variant="primary"
-                    >View Stripe Account</b-button
-                  >
-                </a>
-              </div>
-              <b-form @submit.prevent="updateStoreSettings">
-                <p class="mt-3">
-                  <span class="mr-1">Sales Tax</span>
+            <b-tab title="Advanced">
+              <b-form @submit.prevent="updateStoreModules">
+                <p class="mt-2">
+                  <span class="mr-1 mt-2">Production Groups</span>
                   <img
                     v-b-popover.hover="
-                      'Here you can turn sales tax on or off for your customers.'
+                      'Divide up your production report into separate production groups. Add new groups on the Production page and then assign each meal to a group on the Menu page.'
                     "
-                    title="Enable Sales Tax"
+                    title="Production Groups"
                     src="/images/store/popover.png"
                     class="popover-size"
                   />
@@ -957,59 +1071,57 @@
                   color="success"
                   variant="pill"
                   size="lg"
-                  v-model="storeSettings.enableSalesTax"
+                  v-model="storeModules.productionGroups"
+                  @change.native="updateStoreModules"
                 />
-                <div v-if="storeSettings.enableSalesTax">
-                  <p class="mt-3 mb-0 pb-0">
-                    <span class="mr-1">Sales Tax %</span>
+
+                <p class="mt-2">
+                  <span class="mr-1 mt-2">Special Instructions</span>
+                  <img
+                    v-b-popover.hover="
+                      'Allow your customers to type in special instructions when ordering from you.'
+                    "
+                    title="Special Instructions"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeModules.specialInstructions"
+                  @change.native="updateStoreModules"
+                />
+                <span v-if="storeModules.specialInstructions">
+                  <p class="mt-2">
+                    <span class="mr-1 mt-2"
+                      >Store Only Special Instructions</span
+                    >
                     <img
                       v-b-popover.hover="
-                        'Our system figures out your sales tax using the state you signed up with. You can override the number in the field below.'
+                        'Make special instructions available on manual orders only - not for your customer\'s online orders.'
                       "
-                      title="Sales Tax"
+                      title="Store Only Special Instructions"
                       src="/images/store/popover.png"
                       class="popover-size"
                     />
                   </p>
-                  <b-form-group :state="true">
-                    <b-form-input
-                      label="Sales Tax"
-                      class="mt-3"
-                      type="text"
-                      v-model="salesTax"
-                      required
-                    ></b-form-input>
-                  </b-form-group>
-                </div>
-                <p class="mt-2">
-                  <span class="mr-1">Google Analytics Code</span>
-                  <img
-                    v-b-popover.hover="
-                      'Create a Google Analytics account and paste in your tracking code below. You\'ll then be able to see all kinds of traffic reports about who viewed your menu page. Please follow the exact format that is shown to you which looks like this: UA-00000000-00. If you need help setting up your Google Analytics account, please contact us and we\'ll be glad to set it up for you.'
-                    "
-                    title="Google Analytics"
-                    src="/images/store/popover.png"
-                    class="popover-size"
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeModuleSettings.specialInstructionsStoreOnly"
+                    @change.native="updateStoreModules"
                   />
-                </p>
-                <b-form-group :state="true" class="mt-2">
-                  <b-form-input
-                    type="text"
-                    v-model="storeSettings.gaCode"
-                    placeholder="UA-00000000-00"
-                    required
-                  ></b-form-input>
-                </b-form-group>
-                <b-button type="submit" variant="primary">Save</b-button>
-              </b-form>
-              <b-form @submit.prevent="closeStore" v-if="canOpen">
+                </span>
                 <p class="mt-2">
-                  <span class="mr-1 mt-2">Open</span>
+                  <span class="mr-1 mt-2">Stock Management</span>
                   <img
                     v-b-popover.hover="
-                      'You can toggle this off to stop accepting new orders from customers for any reason. Please be sure to fill out the reason below to communicate to your customers.'
+                      'Set the stock of each meal on the Menu page. When the item is out of stock, the meal will automatically become inactive until you activate it again and set the updated stock.'
                     "
-                    title="Open or Closed"
+                    title="Stock Management"
                     src="/images/store/popover.png"
                     class="popover-size"
                   />
@@ -1018,26 +1130,67 @@
                   color="success"
                   variant="pill"
                   size="lg"
-                  v-model="storeSettings.open"
-                  @change.native="checkTOAforModal"
+                  v-model="storeModules.stockManagement"
+                  @change.native="updateStoreModules"
                 />
 
-                <b-form-input
-                  v-if="!storeSettings.open"
-                  type="text"
-                  v-model="storeSettings.closedReason"
-                  placeholder="Please include the reason to give to customers as to why you are currently not accepting new orders."
-                  required
-                ></b-form-input>
+                <p class="mt-2">
+                  <span class="mr-1 mt-2">Auto Print Packing Slips</span>
+                  <img
+                    v-b-popover.hover="
+                      'After creating a manual order, this automatically pops up the packing slip prompt of the order so you can print it right away.'
+                    "
+                    title="Auto Print Packing Slips"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeModules.autoPrintPackingSlip"
+                  @change.native="updateStoreModules"
+                />
 
-                <div class="mt-3">
-                  <b-button type="submit" variant="primary">Save</b-button>
-                </div>
+                <p class="mt-2">
+                  <span class="mr-1 mt-2">Cash Orders for Customers</span>
+                  <img
+                    v-b-popover.hover="
+                      'Allow your customers to place cash on delivery orders.'
+                    "
+                    title="Cash Orders for Customers"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeModuleSettings.cashAllowedForCustomer"
+                  @change.native="updateStoreModules"
+                />
+
+                <p class="mt-2">
+                  <span class="mr-1 mt-2">No Balance on Cash Orders</span>
+                  <img
+                    v-b-popover.hover="
+                      'Enable this if you create manual cash on delivery orders but you don\'t want the order to show a balance due.'
+                    "
+                    title="No Balance on Cash Orders"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeModules.cashOrderNoBalance"
+                  @change.native="updateStoreModules"
+                />
               </b-form>
-
-              <div v-else>
-                Please enter all settings fields to open your store.
-              </div>
             </b-tab>
           </b-tabs>
         </b-col>
@@ -1159,6 +1312,7 @@ export default {
       storeSubscriptions: "storeSubscriptions",
       storeCoupons: "storeCoupons",
       storeModules: "storeModules",
+      storeModuleSettings: "storeModuleSettings",
       purchasedGiftCards: "storePurchasedGiftCards"
     }),
     tableData() {
@@ -1291,7 +1445,9 @@ export default {
     ...mapActions([
       "refreshCategories",
       "refreshStoreSettings",
-      "refreshStoreCoupons"
+      "refreshStoreCoupons",
+      "refreshStoreModules",
+      "refreshStoreModuleSettings"
     ]),
     updateStoreSettings() {
       this.spliceCharacters();
@@ -1322,8 +1478,37 @@ export default {
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors));
           error = error.join(" ");
+          this.$toastr.w(error);
+        });
+    },
+    updateStoreModules() {
+      let modules = { ...this.storeModules };
+
+      axios
+        .post("/api/me/updateModules", modules)
+        .then(response => {
+          this.refreshStoreModules();
+        })
+        .catch(response => {
+          let error = _.first(Object.values(response.response.data.errors));
+          error = error.join(" ");
           this.$toastr.e(error, "Error");
         });
+
+      let moduleSettings = { ...this.storeModuleSettings };
+
+      axios
+        .post("/api/me/updateModuleSettings", moduleSettings)
+        .then(response => {
+          this.refreshStoreModuleSettings();
+        })
+        .catch(response => {
+          let error = _.first(Object.values(response.response.data.errors));
+          error = error.join(" ");
+          this.$toastr.e(error, "Error");
+        });
+
+      this.$toastr.s("Your settings have been saved.", "Success");
     },
     saveCoupon() {
       this.spliceCharacters();
@@ -1338,7 +1523,9 @@ export default {
           this.$toastr.s("Coupon Added", "Success");
         })
         .catch(response => {
-          this.$toastr.e("Failed to add coupon.", "Error");
+          let error = _.first(Object.values(response.response.data.errors));
+          error = error.join(" ");
+          this.$toastr.w(error);
         })
         .finally(() => {
           this.refreshStoreCoupons();

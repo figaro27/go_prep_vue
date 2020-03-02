@@ -44,6 +44,10 @@
             inSub: inSub,
             weeklySubscriptionValue: weeklySubscriptionValue,
             lineItemOrders: lineItemOrders
+          },
+          query: {
+            r: $route.query.r,
+            sub: $route.query.sub
           }
         }"
         v-if="minimumMet && !storeView && !bagView"
@@ -80,7 +84,21 @@
 
       <router-link to="/customer/menu">
         <b-btn
-          v-if="$route.name === 'customer-bag' && !minimumMet"
+          v-if="
+            $route.name === 'customer-bag' && !minimumMet && subId === undefined
+          "
+          class="menu-bag-btn mb-2"
+          >BACK</b-btn
+        >
+      </router-link>
+      <router-link
+        :to="{
+          path: '/customer/subscriptions/' + subId,
+          query: { sub: this.$route.query.sub }
+        }"
+      >
+        <b-btn
+          v-if="$route.name === 'customer-bag' && !minimumMet && subId"
           class="menu-bag-btn mb-2"
           >BACK</b-btn
         >
@@ -149,6 +167,11 @@ export default {
       _orders: "orders",
       loggedIn: "loggedIn"
     }),
+    subId() {
+      return this.$route.params.subscriptionId
+        ? this.$route.params.subscriptionId
+        : this.$route.query.subscriptionId;
+    },
     isMultipleDelivery() {
       return this.storeModules.multipleDeliveryDays == 1 ? true : false;
     },

@@ -13,7 +13,7 @@ return [
         ]
     ],
     'basic' => [
-        'title' => 'Basic - 50 Orders Per Month',
+        'title' => 'Basic - Up to 50 Orders Per Month',
         'monthly' => [
             'price' => 14900,
             'stripe_id' => env('PLAN_BASIC_MONTHLY', 'plan_Fc4eOyFTAH2ZWn')
@@ -23,8 +23,19 @@ return [
             'stripe_id' => env('PLAN_BASIC_ANNUALLY')
         ]
     ],
+    'basic-2' => [
+        'title' => 'Basic 2 - Up to 100 Orders Per Month',
+        'monthly' => [
+            'price' => 22900,
+            'stripe_id' => env('PLAN_BASIC2_MONTHLY', 'plan_GdycLN1GI75HEg')
+        ],
+        'annually' => [
+            'price' => 219000,
+            'stripe_id' => env('PLAN_BASIC2_ANNUALLY')
+        ]
+    ],
     'standard' => [
-        'title' => 'Standard - 150 Orders Per Month',
+        'title' => 'Standard - Up to 150 Orders Per Month',
         'monthly' => [
             'price' => 29900,
             'stripe_id' => env('PLAN_STANDARD_MONTHLY', 'plan_GbnhRLKcDytQaE')
@@ -34,41 +45,8 @@ return [
             'stripe_id' => env('PLAN_STANDARD_ANNUALLY')
         ]
     ],
-    'premium' => [
-        'title' => 'Premium - 300 Orders Per Month',
-        'monthly' => [
-            'price' => 49900,
-            'stripe_id' => env('PLAN_PREMIUM_MONTHLY', 'plan_GbnhSdBkKyIZT4')
-        ],
-        'annually' => [
-            'price' => 478800,
-            'stripe_id' => env('PLAN_PREMIUM_ANNUALLY')
-        ]
-    ],
-    'enterprise' => [
-        'title' => 'Enterprise - 500 Orders Per Month',
-        'monthly' => [
-            'price' => 74900,
-            'stripe_id' => env('PLAN_ENTERPRISE_MONTHLY', 'plan_Fc4fKkp5DzxqU8')
-        ],
-        'annually' => [
-            'price' => 718800,
-            'stripe_id' => env('PLAN_ENTERPRISE_ANNUALLY')
-        ]
-    ],
-    'basic-2' => [
-        'title' => 'Basic - 50 Orders Per Month',
-        'monthly' => [
-            'price' => 21900,
-            'stripe_id' => env('PLAN_BASIC2_MONTHLY', 'plan_GbnnRReEpGCEHf')
-        ],
-        'annually' => [
-            'price' => 210000,
-            'stripe_id' => env('PLAN_BASIC2_ANNUALLY')
-        ]
-    ],
     'standard-2' => [
-        'title' => 'Standard - 150 Orders Per Month',
+        'title' => 'Standard 2 - Up to 225 Orders Per Month',
         'monthly' => [
             'price' => 39900,
             'stripe_id' => env('PLAN_STANDARD2_MONTHLY', 'plan_Gbnn0dqseBr1jq')
@@ -78,15 +56,37 @@ return [
             'stripe_id' => env('PLAN_STANDARD2_ANNUALLY')
         ]
     ],
-    'premium-2' => [
-        'title' => 'Premium - 300 Orders Per Month',
+    'premium' => [
+        'title' => 'Premium - Up to 300 Orders Per Month',
         'monthly' => [
-            'price' => 61900,
-            'stripe_id' => env('PLAN_PREMIUM2_MONTHLY', 'plan_GbnouMHiThsBuz')
+            'price' => 49900,
+            'stripe_id' => env('PLAN_PREMIUM_MONTHLY', 'plan_GbnhSdBkKyIZT4')
         ],
         'annually' => [
-            'price' => 594000,
+            'price' => 478800,
+            'stripe_id' => env('PLAN_PREMIUM_ANNUALLY')
+        ]
+    ],
+    'premium-2' => [
+        'title' => 'Premium 2 - Up to 400 Orders Per Month',
+        'monthly' => [
+            'price' => 62900,
+            'stripe_id' => env('PLAN_PREMIUM2_MONTHLY', 'plan_GdydgdxR0CuDuD')
+        ],
+        'annually' => [
+            'price' => 603000,
             'stripe_id' => env('PLAN_PREMIUM2_ANNUALLY')
+        ]
+    ],
+    'enterprise' => [
+        'title' => 'Enterprise - Up to 500 Orders Per Month',
+        'monthly' => [
+            'price' => 74900,
+            'stripe_id' => env('PLAN_ENTERPRISE_MONTHLY', 'plan_Fc4fKkp5DzxqU8')
+        ],
+        'annually' => [
+            'price' => 718800,
+            'stripe_id' => env('PLAN_ENTERPRISE_ANNUALLY')
         ]
     ]
 ];

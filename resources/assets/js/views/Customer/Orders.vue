@@ -2,7 +2,7 @@
   <div class="main-customer-container box-shadow top-fill">
     <div class="row">
       <div class="col-md-12">
-        <Spinner v-if="!_orders" />
+        <Spinner v-if="!_orders || loading" />
         <!-- <b-alert
           v-if="_orders && _orders[0]"
           :show="!!$route.query.created || false"
@@ -44,8 +44,8 @@
             />
           </div>
 
-          <div slot="created_at" slot-scope="props">
-            {{ moment(props.row.created_at).format("dddd, MMM Do") }}
+          <div slot="paid_at" slot-scope="props">
+            {{ moment(props.row.paid_at).format("dddd, MMM Do") }}
           </div>
           <div slot="delivery_date" slot-scope="props">
             <template v-if="!props.row.isMultipleDelivery">{{
@@ -112,7 +112,7 @@
           </div>
           <div class="col-md-3 pt-1">
             <h4>Placed On</h4>
-            <p>{{ moment(order.created_at).format("dddd, MMM Do") }}</p>
+            <p>{{ moment(order.paid_at).format("dddd, MMM Do") }}</p>
             <span v-if="!storeModules.hideTransferOptions" class="mt-2">
               <h4 v-if="!order.pickup">Delivery Day</h4>
               <h4 v-if="order.pickup">Pickup Day</h4>
@@ -359,13 +359,14 @@ export default {
   },
   data() {
     return {
+      loading: false,
       order: null,
       viewOrderModal: false,
       columns: [
         "order_number",
         "store_name",
         // "user.user_detail.phone",
-        "created_at",
+        "paid_at",
         "delivery_date",
         "pickup",
         "amount",
@@ -378,7 +379,7 @@ export default {
           order_number: "Order ID",
           store_name: "Store",
           // "user.user_detail.phone": "Phone",
-          created_at: "Order Placed",
+          paid_at: "Order Placed",
           delivery_date: "Delivery Date",
           pickup: "Type",
           amount: "Total",
@@ -426,7 +427,12 @@ export default {
       return _.isArray(orders) ? orders : [];
     }
   },
-  mounted() {},
+  async mounted() {
+    this.loading = true;
+    await this.refreshCustomerOrders();
+    this.loading = false;
+    window.scrollTo(0, 0);
+  },
   updated() {},
   methods: {
     ...mapActions(["refreshCustomerOrders", "addJob", "removeJob"]),

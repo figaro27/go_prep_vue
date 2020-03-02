@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Http\Controllers\Store;
 use App\StoreModule;
+
 use Illuminate\Http\Request;
 
-class StoreModuleController extends Controller
+class StoreModuleController extends StoreController
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class StoreModuleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\StoreModule  $storeModule
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(StoreModule $storeModule)
+    public function show($id)
     {
         //
     }
@@ -52,10 +52,10 @@ class StoreModuleController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\StoreModule  $storeModule
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(StoreModule $storeModule)
+    public function edit($id)
     {
         //
     }
@@ -64,21 +64,23 @@ class StoreModuleController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\StoreModule  $storeModule
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, StoreModule $storeModule)
+    public function update(Request $request)
     {
-        //
+        $modules = StoreModule::where('store_id', $this->store->id)->first();
+        $values = $request->all();
+        $modules->update($values);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\StoreModule  $storeModule
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(StoreModule $storeModule)
+    public function destroy($id)
     {
         //
     }

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Meal;
 use App\MealComponent;
 use App\MealComponentOption;
 use App\MealOrder;
@@ -15,6 +16,7 @@ use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use PHPUnit\Framework\Constraint\Exception;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
@@ -22,6 +24,8 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 use App\Media\Utils as MediaUtils;
 use App\MealMealPackage;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class Meal extends Model implements HasMedia
 {
@@ -78,7 +82,8 @@ class Meal extends Model implements HasMedia
         'item_price',
         'item_quantity',
         'in_package',
-        'meal_size_id'
+        'meal_size_id',
+        'hasVariations'
     ];
 
     protected $hidden = [
@@ -1291,13 +1296,106 @@ class Meal extends Model implements HasMedia
         ]);
     }
 
-    public static function deleteMeal($id, $subId = null, $replaceOnly = false)
-    {
+    /**
+     * @var Collection $substituteMealSizes
+     * @var Collection $substituteMealAddons
+     * @var Collection $substituteMealComponentOptions
+     */
+    public static function deleteMeal(
+        $id,
+        $subId = null,
+        $replaceOnly = false,
+        $transferVariations = false,
+        $substituteMealSizes = null,
+        $substituteMealAddons = null,
+        $substituteMealComponentOptions = null
+    ) {
         $meal = Meal::find($id);
         $sub = Meal::find($subId);
         $store = $meal->store;
 
         if ($sub) {
+            $sub->active = 1;
+            $sub->update();
+
+            // if ($transferVariations) {
+            //     foreach ($meal->addons as $addon) {
+            //         $mealAddon = $addon->replicate();
+            //         $mealAddon->meal_id = $subId;
+
+            //         if ($addon->meal_size_id && $substituteMealSizes) {
+            //             $mealAddon->meal_size_id = $substituteMealSizes->get(
+            //                 $addon->meal_size_id,
+            //                 null
+            //             );
+            //         }
+
+            //         $mealAddon->push();
+            //         $mealAddon->delete();
+
+            //         foreach ($addon->ingredients as $ingredient) {
+            //             $addonIngredient = $ingredient->pivot->replicate();
+            //             $addonIngredient->meal_addon_id = $mealAddon->id;
+            //             $addonIngredient->push();
+            //         }
+
+            //         $substituteMealAddons->put($addon->id, $mealAddon->id);
+            //     }
+
+            //     foreach ($meal->components as $component) {
+            //         $mealComponent = $component->replicate();
+            //         $mealComponent->meal_id = $subId;
+            //         $mealComponent->push();
+            //         $mealComponent->delete();
+
+            //         foreach ($component->options as $option) {
+            //             $mealComponentOption = $option->replicate();
+            //             $mealComponentOption->meal_component_id =
+            //                 $mealComponent->id;
+
+            //             if ($option->meal_size_id && $substituteMealSizes) {
+            //                 $mealComponentOption->meal_size_id = $substituteMealSizes->get(
+            //                     $option->meal_size_id,
+            //                     null
+            //                 );
+            //             }
+
+            //             $mealComponentOption->push();
+            //             $substituteMealComponentOptions->put(
+            //                 $option->id,
+            //                 $mealComponentOption->id
+            //             );
+
+            //             foreach ($option->ingredients as $ingredient) {
+            //                 $optionIngredient = $ingredient->pivot->replicate();
+            //                 $optionIngredient->meal_component_option_id =
+            //                     $mealComponentOption->id;
+            //                 $optionIngredient->push();
+            //             }
+            //         }
+            //     }
+
+            //     foreach ($meal->sizes as $size) {
+            //         $mealSize = $size->replicate();
+            //         $mealSize->meal_id = $subId;
+            //         $mealSize->push();
+            //         $mealSize->delete();
+
+            //         $ing = IngredientMealSize::where(
+            //             'meal_size_id',
+            //             $size->id
+            //         )->get();
+
+            //         $substituteMealSizes->put($size->id, $mealSize->id);
+
+            //         foreach ($size->ingredients as $ingredient) {
+            //             $sizeIngredient = $ingredient->pivot->replicate();
+            //             $sizeIngredient->meal_size_id = $mealSize->id;
+            //             $sizeIngredient->push();
+            //         }
+            //     }
+            // }
+
             $subscriptionMeals = MealSubscription::where([
                 ['meal_id', $meal->id]
             ])->get();
@@ -1305,12 +1403,157 @@ class Meal extends Model implements HasMedia
             $subscriptionMeals->each(function ($subscriptionMeal) use (
                 $meal,
                 $sub,
-                $subId
+                $subId,
+                $store,
+                $substituteMealSizes,
+                $substituteMealAddons,
+                $substituteMealComponentOptions
             ) {
                 if (!$subscriptionMeal->subscription) {
                     return;
                 }
+
+                // Substitute size
+                if ($subscriptionMeal->meal_size_id) {
+                    $subSizeId = $substituteMealSizes->get(
+                        $subscriptionMeal->meal_size_id
+                    );
+                    $subSize = MealSize::find($subSizeId);
+                    if ($subSize && $subSize->meal_id !== $subId) {
+                        throw new BadRequestHttpException(
+                            'Size doesn\'t belong to substitute meal'
+                        );
+                    }
+                    $subscriptionMeal->last_meal_size_id =
+                        $subscriptionMeal->meal_size_id;
+                    $subscriptionMeal->meal_size_id = $subSizeId;
+                }
+
+                // Substitute components
+                foreach ($subscriptionMeal->components as $component) {
+                    $option = $component->option;
+                    $originalOptionId = $option->id;
+                    $subComponentOptionId = $substituteMealComponentOptions->get(
+                        $originalOptionId
+                    );
+
+                    if (
+                        $substituteMealComponentOptions->has($originalOptionId)
+                    ) {
+                        $subComponentOption = MealComponentOption::find(
+                            $subComponentOptionId
+                        );
+
+                        if ($subComponentOption) {
+                            $component->last_meal_component_id =
+                                $component->meal_component_id;
+                            $component->last_meal_component_option_id =
+                                $component->meal_component_option_id;
+                            $component->meal_component_id =
+                                $subComponentOption->meal_component_id;
+                            $component->meal_component_option_id = $subComponentOptionId;
+
+                            try {
+                                $component->save();
+                            } catch (\Exception $e) {
+                                if ($e->getCode() === '23000') {
+                                    // already has this component. Skip
+                                    Log::debug(
+                                        'Meal subscription already has component option',
+                                        [
+                                            'subscription_id' =>
+                                                $subscriptionMeal->subscription_id,
+                                            'meal_id' =>
+                                                $subscriptionMeal->meal_id,
+                                            'substitute_meal_id' => $subId,
+                                            'meal_component_option_id' => $originalOptionId,
+                                            'sub_meal_addon_id' => $subComponentOptionId,
+                                            'meal_subscription_id' =>
+                                                $subscriptionMeal->id
+                                        ]
+                                    );
+                                    $component->delete();
+                                }
+                            }
+                        }
+                    } else {
+                        // We have no replacement for this component.
+                        // Was the component or option removed from the meal after the subscription created?
+                        // Delete it from the subscription
+                        $component->delete();
+
+                        Log::error('No component option substitute provided', [
+                            'subscription_id' =>
+                                $subscriptionMeal->subscription_id,
+                            'meal_id' => $subscriptionMeal->meal_id,
+                            'substitute_meal_id' => $subId,
+                            'meal_component_id' =>
+                                $component->meal_component_id,
+                            'meal_component_option_id' =>
+                                $component->meal_component_option_id,
+                            'meal_subscription_id' => $subscriptionMeal->id
+                        ]);
+                    }
+                }
+
+                // Substitute addons
+                foreach ($subscriptionMeal->addons as $addon) {
+                    if ($substituteMealAddons->has($addon->meal_addon_id)) {
+                        $originalMealAddonId = $addon->meal_addon_id;
+                        $subAddonId = $substituteMealAddons->get(
+                            $originalMealAddonId
+                        );
+                        $subAddon = MealAddon::find($subAddonId);
+
+                        $addon->last_meal_addon_id = $addon->meal_addon_id;
+                        $addon->meal_addon_id = $subAddonId;
+
+                        try {
+                            $addon->save();
+                        } catch (\Exception $e) {
+                            if ($e->getCode() === '23000') {
+                                // already has this component. Skip
+                                Log::debug(
+                                    'Meal subscription already has addon',
+                                    [
+                                        'subscription_id' =>
+                                            $subscriptionMeal->subscription_id,
+                                        'meal_id' => $subscriptionMeal->meal_id,
+                                        'substitute_meal_id' => $subId,
+                                        'meal_addon_id' => $originalMealAddonId,
+                                        'sub_meal_addon_id' => $subAddonId,
+                                        'meal_subscription_id' =>
+                                            $subscriptionMeal->id
+                                    ]
+                                );
+                                $addon->delete();
+                            }
+                        }
+                    } else {
+                        // We have no replacement for this addon.
+                        // Was the addon removed from the meal after the subscription created?
+                        // Delete it
+                        $addon->delete();
+
+                        Log::error('No addon substitute provided', [
+                            'subscription_id' =>
+                                $subscriptionMeal->subscription_id,
+                            'meal_id' => $subscriptionMeal->meal_id,
+                            'substitute_meal_id' => $subId,
+                            'meal_addon_id' => $addon->meal_addon_id,
+                            'meal_subscription_id' => $subscriptionMeal->id
+                        ]);
+                    }
+                }
+
+                $subscriptionMeal->last_meal_id = $subscriptionMeal->meal_id;
                 $subscriptionMeal->meal_id = $subId;
+                $subscriptionMeal->price = isset($subSize)
+                    ? $subSize->price
+                    : Meal::where('id', $subId)
+                        ->pluck('price')
+                        ->first();
+
                 try {
                     $subscriptionMeal->save();
                 } catch (\Illuminate\Database\QueryException $e) {
@@ -1334,7 +1577,8 @@ class Meal extends Model implements HasMedia
                         $subscriptionMeal->save();
                     }
                 }
-                $subscriptionMeal->subscription->syncPrices();
+
+                $subscriptionMeal->fresh()->subscription->syncPrices();
 
                 $user = $subscriptionMeal->subscription->user;
 
@@ -1353,6 +1597,9 @@ class Meal extends Model implements HasMedia
 
         if (!$replaceOnly) {
             $meal->delete();
+        } else {
+            $meal->active = 0;
+            $meal->save();
         }
     }
 
@@ -1364,5 +1611,20 @@ class Meal extends Model implements HasMedia
     public function getCreatedAtLocalAttribute()
     {
         return $this->localizeDate($this->created_at)->format('F d, Y');
+    }
+
+    public function getHasVariationsAttribute()
+    {
+        $hasComponents = $this->components()
+            ->whereHas('options')
+            ->count();
+
+        if (
+            $this->sizes->count() > 0 ||
+            $this->addons->count() > 0 ||
+            $hasComponents
+        ) {
+            return true;
+        }
     }
 }

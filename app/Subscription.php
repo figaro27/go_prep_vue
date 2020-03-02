@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Meal;
 use App\MealOrder;
 use App\MealPackageOrder;
 use App\MealPackageSubscription;
@@ -348,9 +349,38 @@ class Subscription extends Model
             $this->orders()
                 // ->where('stripe_id', $stripeInvoice->get('id'))
                 ->where('stripe_id', $stripeInvoice->get('charge'))
-                ->count()
+                ->count() &&
+            !$this->monthlyPrepay
         ) {
             return;
+        }
+
+        // Updating item stock
+
+        // Testing on MQS store
+        if ($this->store->id === 13) {
+            if ($this->store->modules->stockManagement) {
+                foreach ($this->meal_subscriptions as $mealSub) {
+                    $meal = Meal::where('id', $mealSub->meal_id)->first();
+                    if ($meal && $meal->stock !== null) {
+                        if ($meal->stock === 0) {
+                            $mealSub->delete();
+                        } elseif ($meal->stock < $mealSub->quantity) {
+                            $mealSub->quantity = $meal->stock;
+                            $mealSub->update();
+                            $meal->stock = 0;
+                            $meal->active = 0;
+                        } else {
+                            $meal->stock -= $mealSub->quantity;
+                            if ($meal->stock === 0) {
+                                $meal->active = 0;
+                            }
+                        }
+                        $meal->update();
+                        $this->syncPrices();
+                    }
+                }
+            }
         }
 
         // Retrieve the subscription from Stripe
@@ -401,9 +431,10 @@ class Subscription extends Model
         $newOrder->card_id = $this->card_id ? $this->card_id : null;
         $newOrder->store_id = $this->store->id;
         $newOrder->subscription_id = $this->id;
-        $newOrder->order_number = strtoupper(
-            substr(uniqid(rand(10, 99), false), 0, 6)
-        );
+        $newOrder->order_number =
+            strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
+            chr(rand(65, 90)) .
+            rand(0, 9);
         $newOrder->preFeePreDiscount = $this->preFeePreDiscount;
         $newOrder->mealPlanDiscount = $this->mealPlanDiscount;
         $newOrder->afterDiscountBeforeFees = $this->afterDiscountBeforeFees;
@@ -763,10 +794,8 @@ class Subscription extends Model
         $items = $this->meal_subscriptions->map(function ($meal) {
             return [
                 'quantity' => $meal->quantity,
-                'meal' => [
-                    'id' => $meal->meal->id,
-                    'price' => $meal->meal->price
-                ]
+                'meal' => $meal->meal,
+                'price' => $meal->meal->price
             ];
         });
 
@@ -778,11 +807,13 @@ class Subscription extends Model
         $afterDiscountBeforeFees = $bag->getTotal();
         $preFeePreDiscount = $bag->getTotal();
 
-        $deliveryFee = 0;
+        $deliveryFee = $this->deliveryFee;
         $processingFee = 0;
         $mealPlanDiscount = 0;
         $salesTaxRate =
-            round(100 * ($this->salesTax / $this->amount)) / 100 ?? 0;
+            round(100 * ($this->salesTax / $this->afterDiscountBeforeFees), 2) /
+                100 ??
+            0;
 
         if ($this->store->settings->applyMealPlanDiscount) {
             $discount = $this->store->settings->mealPlanDiscount / 100;
@@ -791,18 +822,27 @@ class Subscription extends Model
             $afterDiscountBeforeFees = $total;
         }
 
-        if ($this->store->settings->applyDeliveryFee) {
-            $total += $this->store->settings->deliveryFee;
-            $deliveryFee += $this->store->settings->deliveryFee;
-        }
+        // if ($this->store->settings->applyDeliveryFee && !$this->pickup) {
+        //     $total += $this->store->settings->deliveryFee;
+        //     $deliveryFee += $this->store->settings->deliveryFee;
+        // }
+        $total += $deliveryFee;
 
         if ($this->store->settings->applyProcessingFee) {
-            $total += $this->store->settings->processingFee;
-            $processingFee += $this->store->settings->processingFee;
+            if ($this->store->settings->processingFeeType === 'flat') {
+                $total += $this->store->settings->processingFee;
+                $processingFee += $this->store->settings->processingFee;
+            } else {
+                $processingFee +=
+                    ($this->store->settings->processingFee / 100) *
+                    $afterDiscountBeforeFees;
+                $total += $processingFee;
+            }
         }
 
-        $salesTax = $total * $salesTaxRate;
+        $salesTax = $afterDiscountBeforeFees * $salesTaxRate;
         $total += $salesTax;
+        $total = round($total, 2);
 
         // Update subscription pricing
         $this->preFeePreDiscount = $preFeePreDiscount;
@@ -882,15 +922,31 @@ class Subscription extends Model
             $order->save();
 
             // Replace order meals
-            $order->meal_orders()->delete();
-            foreach ($bag->getItems() as $item) {
-                $mealOrder = new MealOrder();
-                $mealOrder->order_id = $order->id;
-                $mealOrder->store_id = $this->store->id;
-                $mealOrder->meal_id = $item['meal']['id'];
-                $mealOrder->quantity = $item['quantity'];
-                $mealOrder->save();
+
+            foreach ($order->meal_orders() as $mealOrder) {
+                // foreach ($mealOrder->components as $component) {
+                //     $component->delete();
+                // }
+                // foreach ($mealOrder->addons as $addon) {
+                //     $addon->delete();
+                // }
+                $mealOrder->sizes->delete();
+                $mealOrder->components->delete();
+                foreach ($mealOrder->components as $component) {
+                    $component->options->delete();
+                }
+                $mealOrder->addons->delete();
+                $mealOrder->delete();
             }
+
+            // foreach ($bag->getItems() as $item) {
+            //     $mealOrder = new MealOrder();
+            //     $mealOrder->order_id = $order->id;
+            //     $mealOrder->store_id = $this->store->id;
+            //     $mealOrder->meal_id = $item['meal']['id'];
+            //     $mealOrder->quantity = $item['quantity'];
+            //     $mealOrder->save();
+            // }
         }
     }
 

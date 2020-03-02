@@ -6,6 +6,18 @@
     <div class="bag">
       <auth-modal :showAuthModal="showAuthModal"></auth-modal>
       <spinner v-if="loading" position="absolute"></spinner>
+
+      <b-alert show variant="success" v-if="$route.query.sub === true">
+        <h5 class="center-text">
+          Weekly Subscription
+        </h5>
+        <p class="center-text">
+          You have an active weekly subscription with us. Update your meals for
+          your next renewal on
+          {{ moment(subscriptions[0].next_renewal).format("dddd, MMM Do") }}.
+        </p>
+      </b-alert>
+
       <div class="row">
         <div class="col-md-5 mb-2 bag-actions">
           <above-bag
@@ -165,6 +177,17 @@ export default {
       if (!this.deliveryDay && val[0]) {
         // this.deliveryDay = val[0].value;
       }
+    },
+    subscriptions: function() {
+      if (
+        this.user.id &&
+        this.store.modules.subscriptionOnly &&
+        this.subscriptions.length > 0
+      ) {
+        this.$router.push({
+          path: "/customer/subscriptions/" + this.subscriptions[0].id
+        });
+      }
     }
   },
   created() {
@@ -203,7 +226,8 @@ export default {
       getMealPackage: "viewedStoreMealPackage",
       _orders: "orders",
       user: "user",
-      bagDeliverySettings: "bagDeliverySettings"
+      bagDeliverySettings: "bagDeliverySettings",
+      subscriptions: "subscriptions"
     }),
     fullHeight() {
       if (!this.mobile && !this.storeOwner) return "min-height:100%";
@@ -408,6 +432,21 @@ export default {
     },
     subscriptionId() {
       return this.$route.params.subscriptionId;
+    }
+  },
+  watch: {
+    subscriptions: function() {
+      if (
+        this.user.id &&
+        this.subscriptions.length > 0 &&
+        !this.$route.params.id
+      ) {
+        this.$router.push({
+          path: "/customer/bag",
+          params: { subscriptionId: this.subscriptions[0].id },
+          query: { sub: true, subscriptionId: this.subscriptions[0].id }
+        });
+      }
     }
   },
   mounted() {

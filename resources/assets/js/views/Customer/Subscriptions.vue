@@ -68,9 +68,16 @@ f<template>
             >
               View
             </button>
+            <router-link :to="`/customer/subscriptions/${props.row.id}`">
+              <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
+            </router-link>
             <button
               class="btn btn-danger btn-sm"
-              @click="cancelSubscription(props.row.id)"
+              @click="
+                {
+                  (cancelSubscriptionModal = true), (subId = props.row.id);
+                }
+              "
             >
               Cancel
             </button>
@@ -88,9 +95,6 @@ f<template>
                 @click.stop="() => resumeSubscription(props.row.id)"
                 >Resume</b-btn
               > -->
-            <router-link :to="`/customer/subscriptions/${props.row.id}`">
-              <b-btn class="btn btn-success btn-sm">Edit</b-btn>
-            </router-link>
           </div>
 
           <div slot="amount" slot-scope="props">
@@ -99,6 +103,26 @@ f<template>
         </v-client-table>
       </div>
     </div>
+
+    <b-modal
+      size="md"
+      title="Cancel Subscription"
+      v-model="cancelSubscriptionModal"
+      v-if="cancelSubscriptionModal"
+      hide-footer
+    >
+      <p class="center-text mt-3 mb-3">
+        Are you sure you want to cancel your subscription? If you want to change
+        your meals you can click "Change Meals" instead to edit this
+        subscription.
+      </p>
+      <center>
+        <b-btn variant="danger" @click="cancelSubscription">Cancel</b-btn>
+        <router-link :to="`/customer/subscriptions/${subId}`">
+          <b-btn class="btn btn-success btn-md">Change Meals</b-btn>
+        </router-link>
+      </center>
+    </b-modal>
 
     <div class="modal-basic">
       <b-modal
@@ -112,6 +136,19 @@ f<template>
           <div class="col-md-4">
             <h4>Subscription ID</h4>
             <p>{{ subscription.stripe_id }}</p>
+            <router-link :to="`/customer/subscriptions/${subscription.id}`">
+              <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
+            </router-link>
+            <button
+              class="btn btn-danger btn-sm"
+              @click="
+                {
+                  (cancelSubscriptionModal = true), (subId = subscription.id);
+                }
+              "
+            >
+              Cancel
+            </button>
           </div>
           <div class="col-md-4">
             <h4>Placed On</h4>
@@ -294,6 +331,8 @@ export default {
       subscription: null,
       viewSubscriptionModal: false,
       isLoading: false,
+      subId: null,
+      cancelSubscriptionModal: false,
       filters: {
         delivery_days: ["All"]
       },
@@ -419,7 +458,7 @@ export default {
 
       return subscription.orders.map(order => {
         return {
-          date: order.created_at,
+          date: order.paid_at,
           delivery_date: order.delivery_date,
           delivered: order.fulfilled ? "Yes" : "No",
           meals: order.meals
@@ -555,11 +594,9 @@ export default {
 
       this.refreshSubscriptions();
     },
-    async cancelSubscription(subscription) {
+    async cancelSubscription() {
       try {
-        const resp = await axios.delete(
-          `/api/me/subscriptions/${subscription}`
-        );
+        const resp = await axios.delete(`/api/me/subscriptions/${this.subId}`);
         this.$toastr.s("Subscription cancelled.");
       } catch (e) {
         this.$toastr.e(
@@ -567,7 +604,7 @@ export default {
           "Failed to cancel Subscription"
         );
       }
-
+      this.cancelSubscriptionModal = false;
       this.refreshSubscriptions();
     },
     getIntervalDays(subscription) {

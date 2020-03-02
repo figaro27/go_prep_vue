@@ -1092,6 +1092,7 @@ body.forgotresettoken {
 
 .main-customer-container {
   padding-top: 45px;
+  height: 100%;
 }
 
 @include media-breakpoint-up(md) {
@@ -1524,4 +1525,10 @@ body.forgotresettoken {
     left: 20%;
     right: 0%;
   }
+}
+
+.center-flex {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }

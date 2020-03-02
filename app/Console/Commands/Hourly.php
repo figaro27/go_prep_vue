@@ -48,6 +48,28 @@ class Hourly extends Command
         $count = 0;
 
         foreach ($stores as $store) {
+            $currentDay = date('D');
+            $currentHour = date('H');
+            $settings = StoreSetting::where('store_id', $store->id)->first();
+
+            if (
+                $settings->enableNextWeekDay === $currentDay &&
+                $settings->enableNextWeekHour === $currentHour &&
+                $settings->preventNextWeekOrders === 1
+            ) {
+                $settings->preventNextWeekOrders = 0;
+                $settings->update();
+            }
+
+            if (
+                $settings->disableNextWeekDay === $currentDay &&
+                $settings->disableNextWeekHour === $currentHour &&
+                $settings->preventNextWeekOrders === 0
+            ) {
+                $settings->preventNextWeekOrders = 1;
+                $settings->update();
+            }
+
             $date = $store->getNextDeliveryDate();
             $orders = $store
                 ->orders()
@@ -75,27 +97,6 @@ class Hourly extends Command
                     ->map(function ($order) {
                         return $order->subscription;
                     });
-            }
-
-            $currentDay = date('D');
-            $currentHour = date('H');
-            $settings = StoreSetting::where('store_id', $store->id)->first();
-
-            if (
-                $settings->disableNextWeekDay === $currentDay &&
-                $settings->disableNextWeekHour === $currentHour &&
-                $settings->preventNextWeekOrders === 0
-            ) {
-                $settings->preventNextWeekOrders = 1;
-                $settings->update();
-            }
-            if (
-                $settings->enableNextWeekDay === $currentDay &&
-                $settings->enableNextWeekHour === $currentHour &&
-                $settings->preventNextWeekOrders === 1
-            ) {
-                $settings->preventNextWeekOrders = 0;
-                $settings->update();
             }
         }
         $this->info($count . ' `Ready to Print` notifications sent');
@@ -134,7 +135,7 @@ class Hourly extends Command
 
         // Adjust for timezone in Store Settings
         //$currentHour = date('H') - 4;
-
+        $count = 0;
         foreach ($orders as $order) {
             try {
                 if (!$order->store->modules->hideTransferOptions) {
@@ -147,20 +148,19 @@ class Hourly extends Command
                     /* Timezone Set */
 
                     $currentHour = date('H');
-
-                    if ($currentHour === 10) {
-                        if ($order->store->modules->hideTransferOptions === 0) {
-                            $order->user->sendNotification('delivery_today', [
-                                'user' => $order->user,
-                                'customer' => $order->customer,
-                                'order' => $order,
-                                'settings' => $order->store->settings
-                            ]);
-                        }
+                    if ($currentHour === "09") {
+                        $order->user->sendNotification('delivery_today', [
+                            'user' => $order->user,
+                            'customer' => $order->customer,
+                            'order' => $order,
+                            'settings' => $order->store->settings
+                        ]);
+                        $count++;
                     }
                 }
             } catch (\Exception $e) {
             }
         }
+        $this->info($count . ' `Delivery Today` notifications sent');
     }
 }

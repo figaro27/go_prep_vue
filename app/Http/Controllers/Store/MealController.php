@@ -140,6 +140,17 @@ class MealController extends StoreController
     {
         $mealId = $request->get('mealId');
         $subId = $request->get('substituteId');
+        $replaceOnly = $request->get('replaceOnly');
+        $transferVariations = (bool) $request->get('transferVariations', false);
+        $substituteMealSizes = collect(
+            $request->get('substituteMealSizes', [])
+        );
+        $substituteMealAddons = collect(
+            $request->get('substituteMealAddons', [])
+        );
+        $substituteMealComponentOptions = collect(
+            $request->get('substituteMealComponentOptions', [])
+        );
 
         $meal = $this->store->meals()->find($mealId);
 
@@ -200,7 +211,15 @@ class MealController extends StoreController
             $this->store->save();
         }
 
-        return Meal::deleteMeal($mealId, $subId, true);
+        return Meal::deleteMeal(
+            $mealId,
+            $subId,
+            $replaceOnly,
+            $transferVariations,
+            $substituteMealSizes,
+            $substituteMealAddons,
+            $substituteMealComponentOptions
+        );
     }
 
     /**
