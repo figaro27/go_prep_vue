@@ -120,10 +120,7 @@
             <b-input
               v-model="form[0].phone"
               type="tel"
-              @input="
-                $v.form[0].phone.$touch();
-                clearFeedback(0, 'phone');
-              "
+              @input="asYouType()"
               :state="state(0, 'phone')"
               autocomplete="new-password"
             ></b-input>
@@ -470,6 +467,7 @@ import TermsOfAgreement from "../../views/TermsOfAgreement";
 import countries from "../../data/countries.js";
 import currencies from "../../data/currencies.js";
 import states from "../../data/states.js";
+import { AsYouType } from "libphonenumber-js";
 
 export default {
   components: {
@@ -528,6 +526,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      store: "viewedStore"
+    }),
     countryNames() {
       return countries.selectOptions();
     },
@@ -663,6 +664,8 @@ export default {
         return;
       }
 
+      this.asYouType();
+
       let data = {
         user: this.form[0],
         user_details: this.form[1],
@@ -710,6 +713,12 @@ export default {
     },
     changeCountry(country, formNumber) {
       this.form[formNumber].country = country;
+    },
+    asYouType() {
+      this.form[0].phone = this.form[0].phone.replace(/[^\d.-]/g, "");
+      this.form[0].phone = new AsYouType(this.store.details.country).input(
+        this.form[0].phone
+      );
     }
   }
 };

@@ -83,6 +83,7 @@
                 type="text"
                 v-model="storeDetail.phone"
                 placeholder="Phone"
+                @input="asYouType"
                 required
               ></b-form-input>
             </b-form-group>
@@ -183,6 +184,7 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
 import fs from "../../../lib/fs.js";
+import { AsYouType } from "libphonenumber-js";
 
 export default {
   components: {
@@ -234,6 +236,8 @@ export default {
     },
     updateStoreDetails() {
       let data = { ...this.storeDetails };
+
+      this.asYouType();
 
       if (typeof data.logo !== "string") {
         delete data.logo;
@@ -316,6 +320,12 @@ export default {
     },
     getDeliveryRoutes() {
       axios.get("/getDeliveryRoutes");
+    },
+    asYouType() {
+      this.storeDetail.phone = this.storeDetail.phone.replace(/[^\d.-]/g, "");
+      this.storeDetail.phone = new AsYouType(this.store.details.country).input(
+        this.storeDetail.phone
+      );
     }
   }
 };

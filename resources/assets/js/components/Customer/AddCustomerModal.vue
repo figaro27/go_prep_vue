@@ -71,6 +71,7 @@
             type="text"
             required
             placeholder="Phone"
+            @input="asYouType()"
           ></b-form-input>
         </b-form-group>
         <b-form-group horizontal label="Email">
@@ -148,6 +149,7 @@
 <script>
 import states from "../../data/states.js";
 import { mapGetters, mapActions } from "vuex";
+import { AsYouType } from "libphonenumber-js";
 
 export default {
   props: {
@@ -185,6 +187,8 @@ export default {
   methods: {
     ...mapActions(["refreshStoreCustomersNoOrders", "refreshStoreCustomers"]),
     addCustomer() {
+      this.asYouType();
+
       if (this.noAddress) {
         this.form.state = null;
       }
@@ -263,6 +267,12 @@ export default {
       (this.existingEmail = ""), (this.showExistingCustomerAlert = false);
       this.$parent.addCustomerModal = false;
       this.form.email = null;
+    },
+    asYouType() {
+      this.form.phone = this.form.phone.replace(/[^\d.-]/g, "");
+      this.form.phone = new AsYouType(this.store.details.country).input(
+        this.form.phone
+      );
     }
   }
 };

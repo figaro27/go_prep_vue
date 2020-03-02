@@ -21,6 +21,7 @@
             type="text"
             v-model="userDetail.phone"
             placeholder="Phone"
+            @input="asYouType()"
             required
           ></b-form-input>
           <hr />
@@ -210,8 +211,8 @@ import CardPicker from "../../../components/Billing/CardPicker";
 import { mapGetters, mapActions } from "vuex";
 import { Switch as cSwitch } from "@coreui/vue";
 import states from "../../../data/states.js";
-
 import toasts from "../../../mixins/toasts";
+import { AsYouType } from "libphonenumber-js";
 
 export default {
   mixins: [toasts],
@@ -250,6 +251,7 @@ export default {
   methods: {
     ...mapActions(["refreshUser", "refreshViewedStore"]),
     updateCustomer() {
+      this.asYouType();
       if (this.store.details.country === "US") {
         this.spliceZip();
       }
@@ -296,6 +298,12 @@ export default {
       axios.patch("/api/me/detail", this.userDetail).then(resp => {
         this.$toastr.s("Billing address updated.");
       });
+    },
+    asYouType() {
+      this.userDetail.phone = this.userDetail.phone.replace(/[^\d.-]/g, "");
+      this.userDetail.phone = new AsYouType(this.store.details.country).input(
+        this.userDetail.phone
+      );
     }
   }
 };
