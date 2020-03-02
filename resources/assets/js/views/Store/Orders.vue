@@ -176,6 +176,14 @@
                     'This order was created from an active subscription.'
                   "
                 ></i>
+                <i
+                  v-if="props.row.hot"
+                  class="fas fa-fire red"
+                  v-b-popover.hover.top="
+                    'This order needs to be hot upon delivery/pickup.'
+                  "
+                >
+                </i>
               </p>
             </div>
             <div slot="paid_at" slot-scope="props">
@@ -301,6 +309,14 @@
                     'This order was created from an active subscription.'
                   "
                 ></i>
+                <i
+                  v-if="order.hot"
+                  class="fas fa-fire red"
+                  v-b-popover.hover.top="
+                    'This order needs to be hot upon delivery/pickup.'
+                  "
+                >
+                </i>
               </p>
             </div>
           </div>
@@ -437,7 +453,6 @@
           <div class="col-md-3 pt-1">
             <h4>Placed On</h4>
             <p>{{ moment(order.paid_at).format("dddd, MMM Do") }}</p>
-            <h5 v-if="order.hot" class="red">HOT</h5>
           </div>
           <div class="col-md-4 pt-1">
             <h4 v-if="order.cashOrder">
