@@ -2061,7 +2061,8 @@ use next_delivery_dates
           grandTotal: this.grandTotal,
           emailCustomer: this.emailCustomer,
           customSalesTax: this.customSalesTax !== null ? 1 : 0,
-          dontAffectBalance: this.dontAffectBalance
+          dontAffectBalance: this.dontAffectBalance,
+          hot: this.hot
         })
         .then(resp => {
           if (this.purchasedGiftCard !== null) {
