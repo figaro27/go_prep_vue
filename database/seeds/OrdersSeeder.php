@@ -65,10 +65,6 @@ class OrdersSeeder extends Seeder
                         $startDate = '-6 days',
                         $endDate = 'now'
                     ),
-                    'paid_at' => $faker->dateTimeBetween(
-                        $startDate = '-6 days',
-                        $endDate = 'now'
-                    ),
                     'paid' => 1
                 ]);
             }

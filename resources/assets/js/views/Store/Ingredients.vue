@@ -189,22 +189,19 @@ export default {
       return units.mass.selectOptions();
     },
     displayUnits() {
-      return _.mapValues(
-        this.orderIngredientsSpecial,
-        (orderIngredient, id) => {
-          const unit = this.getIngredientUnit(id);
-          const ingredient = this.getIngredient(id);
+      return _.mapValues(this.orderIngredients, (orderIngredient, id) => {
+        const unit = this.getIngredientUnit(id);
+        const ingredient = this.getIngredient(id);
 
-          if (unit || !ingredient) {
-            return unit;
-          }
-
-          const baseUnit = units.base(ingredient.unit_type);
-          if (baseUnit !== "unit") {
-            return units.toBest(orderIngredient.quantity, baseUnit);
-          } else return "unit";
+        if (unit || !ingredient) {
+          return unit;
         }
-      );
+
+        const baseUnit = units.base(ingredient.unit_type);
+        if (baseUnit !== "unit") {
+          return units.toBest(orderIngredient.quantity, baseUnit);
+        } else return "unit";
+      });
     }
   },
   async created() {

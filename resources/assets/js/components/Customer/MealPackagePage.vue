@@ -992,26 +992,19 @@ export default {
     },
     toggleOption(componentId, optionId) {
       const option = this.getComponentOption(componentId, optionId);
-      let meals = option.selectable
-        ? []
-        : this.getMealOptionsPreset(option.meals);
+      let meals = option.selectable ? [] : option.meals;
 
       if (!this.choices[componentId]) {
         this.$set(this.choices, componentId, {});
       }
 
-      if (meals.length > this.getRemainingMeals(componentId)) {
-        if (this.choices[componentId][optionId]) {
-          this.$delete(this.choices[componentId], optionId);
-        } else {
-          // We can't select this item
-        }
+      if (
+        this.choices[componentId][optionId] ||
+        meals.length > this.getRemainingMeals(componentId)
+      ) {
+        this.$delete(this.choices[componentId], optionId);
       } else {
-        if (this.choices[componentId][optionId]) {
-          this.$delete(this.choices[componentId], optionId);
-        } else {
-          this.$set(this.choices[componentId], optionId, meals);
-        }
+        this.$set(this.choices[componentId], optionId, meals);
       }
     },
     selectOption(componentId, optionId) {
@@ -1131,24 +1124,6 @@ export default {
 
           const size = meal.getSize(mealOption.meal_size_id);
 
-          let title = size ? size.full_title : meal.full_title;
-
-          return {
-            ...mealOption,
-            meal,
-            size,
-            title
-          };
-        })
-        .value();
-    },
-    getMealOptionsPreset(mealOptions) {
-      return _(mealOptions)
-        .map(mealOption => {
-          const meal = this.getMeal(mealOption.meal_id);
-          if (!meal) return null;
-
-          const size = meal.getSize(mealOption.meal_size_id);
           let title = size ? size.full_title : meal.full_title;
 
           return {

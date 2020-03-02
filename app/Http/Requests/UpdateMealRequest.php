@@ -42,10 +42,10 @@ class UpdateMealRequest extends FormRequest
             ];
         } else {
             return [
-                    // 'title' => 'filled',
-                    // 'price' => 'filled',
-                    // 'category_ids' => 'filled'
-                ];
+                'title' => 'filled',
+                'price' => 'filled',
+                'category_ids' => 'filled'
+            ];
         }
     }
 
@@ -57,26 +57,15 @@ class UpdateMealRequest extends FormRequest
     public function messages()
     {
         return [
-            'title.required' => 'Please add a title for the meal.',
-            'price.*' => 'Please add the price of the meal.',
-            'category_ids.required' =>
-                'Please select at least one category to show the meal on your menu.',
-            'sizes.*.title.required' =>
-                'Please add a title for the size variation.',
-            'sizes.*.price.required' =>
-                'Please add a price for the size variation.',
-            'sizes.*.multiplier.required' =>
-                'Please add a multiplier for the size variation.',
-            'components.*.title.required' =>
-                'Please add a title for the component variation.',
-            'components.*.options.*.title.required' =>
-                'PLease add a title for the component option variation.',
-            'components.*.options.*.price.required' =>
-                'Please add a price for the component option variation.',
-            'addons.*.title.required' =>
-                'Please add a title for the addon variation.',
-            'addons.*.price.required' =>
-                'Please add a price for the addon variation.'
+            'sizes.*.title' => [
+                'required' => 'The meal size title is required'
+            ],
+            'sizes.*.price' => [
+                'required' => 'The meal size price is required'
+            ],
+            'sizes.*.multiplier' => [
+                'required' => 'The meal size price is required'
+            ]
         ];
     }
 

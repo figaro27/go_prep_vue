@@ -2,8 +2,6 @@
 
 namespace App;
 use Carbon\Carbon;
-use App\MealComponentOption;
-use App\MealAddon;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class MealOrder extends Pivot
@@ -25,9 +23,7 @@ class MealOrder extends Pivot
         'base_title',
         'base_size',
         'unit_price',
-        'instructions',
-        'componentsFormat',
-        'addonsFormat'
+        'instructions'
     ];
     protected $with = ['components', 'addons'];
 
@@ -394,34 +390,5 @@ class MealOrder extends Pivot
     public function getInstructionsAttribute()
     {
         return $this->meal->instructions;
-    }
-
-    public function getComponentsFormatAttribute()
-    {
-        $components = '';
-        foreach ($this->components as $component) {
-            $components .= MealComponentOption::where(
-                'id',
-                $component->meal_component_option_id
-            )
-                ->pluck('title')
-                ->first();
-            $components .= ', ';
-        }
-        $components = substr($components, 0, -2);
-        return $components;
-    }
-
-    public function getAddonsFormatAttribute()
-    {
-        $addons = '';
-        foreach ($this->addons as $addon) {
-            $addons .= MealAddon::where('id', $addon->meal_addon_id)
-                ->pluck('title')
-                ->first();
-            $addons .= ', ';
-        }
-        $addons = substr($addons, 0, -2);
-        return $addons;
     }
 }

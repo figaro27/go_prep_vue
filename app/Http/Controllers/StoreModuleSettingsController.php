@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Store;
-use App\StoreModuleSettings;
+namespace App\Http\Controllers;
 
+use App\StoreModuleSettings;
 use Illuminate\Http\Request;
 
-class StoreModuleSettingController extends StoreController
+class StoreModuleSettingsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class StoreModuleSettingController extends StoreController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\StoreModuleSettings  $storeModuleSettings
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(StoreModuleSettings $storeModuleSettings)
     {
         //
     }
@@ -52,10 +52,10 @@ class StoreModuleSettingController extends StoreController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\StoreModuleSettings  $storeModuleSettings
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(StoreModuleSettings $storeModuleSettings)
     {
         //
     }
@@ -64,26 +64,23 @@ class StoreModuleSettingController extends StoreController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\StoreModuleSettings  $storeModuleSettings
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
-    {
-        $moduleSetting = StoreModuleSettings::where(
-            'store_id',
-            $this->store->id
-        )->first();
-        $values = $request->except(['omittedTransferTimes', 'store']);
-        $moduleSetting->update($values);
+    public function update(
+        Request $request,
+        StoreModuleSettings $storeModuleSettings
+    ) {
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\StoreModuleSettings  $storeModuleSettings
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(StoreModuleSettings $storeModuleSettings)
     {
         //
     }

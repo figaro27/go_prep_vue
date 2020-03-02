@@ -20,9 +20,7 @@ class Category extends Model
 
     protected $casts = [
         'date_range' => 'boolean',
-        'date_range_exclusive' => 'boolean',
-        'active' => 'boolean',
-        'activeForStore' => 'boolean'
+        'date_range_exclusive' => 'boolean'
     ];
 
     public function store()

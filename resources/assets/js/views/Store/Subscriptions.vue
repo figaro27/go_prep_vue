@@ -56,11 +56,7 @@
               slot-scope="props"
               v-if="storeSettings.timezone"
             >
-              {{
-                moment(props.row.next_renewal_at)
-                  .add(1, "days")
-                  .format("dddd")
-              }}
+              {{ moment(props.row.next_renewal_at).format("dddd") }}
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
@@ -69,7 +65,12 @@
               >
                 View
               </button>
-
+              <button
+                class="btn btn-danger btn-sm"
+                @click="deleteMealPlan(props.row.id)"
+              >
+                Cancel
+              </button>
               <!--Removing pause functionality for the time being -->
 
               <!-- <b-btn
@@ -85,14 +86,8 @@
                 >Resume</b-btn
               > -->
               <router-link :to="`/store/adjust-meal-plan/${props.row.id}`">
-                <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
+                <b-btn class="btn btn-success btn-sm">Edit</b-btn>
               </router-link>
-              <button
-                class="btn btn-danger btn-sm"
-                @click="deleteMealPlan(props.row.id)"
-              >
-                Cancel
-              </button>
             </div>
 
             <div slot="amount" slot-scope="props">
@@ -114,15 +109,6 @@
           <div class="col-md-4">
             <h4>Subscription ID</h4>
             <p>{{ subscription.stripe_id }}</p>
-            <router-link :to="`/store/adjust-meal-plan/${subscription.id}`">
-              <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
-            </router-link>
-            <button
-              class="btn btn-danger btn-sm"
-              @click="deleteMealPlan(subscription.id)"
-            >
-              Cancel
-            </button>
           </div>
           <div class="col-md-4">
             <h4>Placed On</h4>
@@ -200,13 +186,7 @@
             <span v-if="!storeModules.hideTransferOptions">
               <h4 v-if="!subscription.pickup">Delivery Day</h4>
               <h4 v-if="subscription.pickup">Pickup Day</h4>
-              <span v-if="subscription.next_order">
-                {{
-                  moment(subscription.next_order.delivery_date).format(
-                    "dddd, MMM Do"
-                  )
-                }}
-              </span>
+              {{ moment(subscription.delivery_date).format("dddd, MMM Do") }}
               <span v-if="subscription.transferTime">
                 {{ subscription.transferTime }}</span
               >

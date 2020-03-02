@@ -85,16 +85,16 @@ class CheckoutController extends StoreController
             foreach ($bag->getItems() as $item) {
                 $meal = Meal::where('id', $item['meal']['id'])->first();
                 if ($meal && $meal->stock !== null) {
-                    // if ($weeklyPlan) {
-                    //     return response()->json(
-                    //         [
-                    //             'message' =>
-                    //                 $meal->title .
-                    //                 ' is not allowed in subscriptions. Please remove from your bag and try again.'
-                    //         ],
-                    //         400
-                    //     );
-                    // }
+                    if ($weeklyPlan) {
+                        return response()->json(
+                            [
+                                'message' =>
+                                    $meal->title .
+                                    ' is not allowed in subscriptions. Please remove from your bag and try again.'
+                            ],
+                            400
+                        );
+                    }
                     if ($meal->stock < $item['quantity']) {
                         return response()->json(
                             [
@@ -107,13 +107,11 @@ class CheckoutController extends StoreController
                             400
                         );
                     }
-                    if (!$weeklyPlan) {
-                        $meal->stock -= $item['quantity'];
-                        if ($meal->stock === 0) {
-                            $meal->active = 0;
-                        }
-                        $meal->update();
+                    $meal->stock -= $item['quantity'];
+                    if ($meal->stock === 0) {
+                        $meal->active = 0;
                     }
+                    $meal->update();
                 }
             }
         }
@@ -175,7 +173,7 @@ class CheckoutController extends StoreController
         $customerUser = User::where('id', $userId)->first();
 
         // $total += $salesTax;
-        $total = $request->get('grandTotal') ? $request->get('grandTotal') : 0;
+        $total = $request->get('grandTotal');
 
         $cashOrder = $request->get('cashOrder');
         if ($cashOrder) {
@@ -247,37 +245,23 @@ class CheckoutController extends StoreController
                         ["stripe_account" => $storeSettings->stripe_id]
                     );
 
-                    try {
-                        $charge = \Stripe\Charge::create(
-                            [
-                                "amount" => round($total * 100),
-                                "currency" => $storeSettings->currency,
-                                "source" => $storeSource,
-                                "application_fee" => round(
-                                    $afterDiscountBeforeFees * $application_fee
-                                )
-                            ],
-                            ["stripe_account" => $storeSettings->stripe_id],
-                            [
-                                "idempotency_key" =>
-                                    substr(uniqid(rand(10, 99), false), 0, 14) .
-                                    chr(rand(65, 90)) .
-                                    rand(0, 9)
-                            ]
-                        );
-                    } catch (\Stripe\Error\Charge $e) {
-                        return response()->json(
-                            [
-                                'error' => trim(
-                                    json_encode(
-                                        $e->jsonBody['error']['message']
-                                    ),
-                                    '"'
-                                )
-                            ],
-                            400
-                        );
-                    }
+                    $charge = \Stripe\Charge::create(
+                        [
+                            "amount" => round($total * 100),
+                            "currency" => $storeSettings->currency,
+                            "source" => $storeSource,
+                            "application_fee" => round(
+                                $afterDiscountBeforeFees * $application_fee
+                            )
+                        ],
+                        ["stripe_account" => $storeSettings->stripe_id],
+                        [
+                            "idempotency_key" =>
+                                substr(uniqid(rand(10, 99), false), 0, 14) .
+                                chr(rand(65, 90)) .
+                                rand(0, 9)
+                        ]
+                    );
                 }
             } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
                 $billing = Billing::init($gateway, $store);

@@ -41,71 +41,39 @@ class Orders
                 return true;
             })
             ->map(function ($order) {
-                if (
-                    $this->store->id === 108 ||
-                    $this->store->id === 109 ||
-                    $this->store->id === 110
-                ) {
-                    return [
-                        $order->dailyOrderNumber,
-                        $order->user->details->lastname,
-                        $order->user->details->firstname,
-                        $order->user->details->phone,
-                        $order->transferTime,
-                        '$' . number_format($order->amount, 2),
-                        '$' . number_format($order->balance, 2)
-                    ];
-                } else {
-                    return [
-                        $order->dailyOrderNumber,
-                        $order->order_number,
-                        $order->user->details->firstname,
-                        $order->user->details->lastname,
-                        $order->user->details->address,
-                        $order->user->details->zip,
-                        $order->user->details->phone,
-                        $order->user->email,
-                        '$' . number_format($order->amount, 2),
-                        '$' . number_format($order->balance, 2),
-                        $order->created_at->format('D, m/d/Y'),
-                        $order->delivery_date->format('D, m/d/Y'),
-                        $order->transferTime
-                    ];
-                }
+                return [
+                    $order->dailyOrderNumber,
+                    $order->order_number,
+                    $order->user->details->firstname,
+                    $order->user->details->lastname,
+                    $order->user->details->address,
+                    $order->user->details->zip,
+                    $order->user->details->phone,
+                    $order->user->email,
+                    '$' . number_format($order->amount, 2),
+                    '$' . number_format($order->balance, 2),
+                    $order->created_at->format('D, m/d/Y'),
+                    $order->delivery_date->format('D, m/d/Y'),
+                    $order->transferTime
+                ];
             });
 
         if ($type !== 'pdf') {
-            if (
-                $this->store->id === 108 ||
-                $this->store->id === 109 ||
-                $this->store->id === 110
-            ) {
-                $orders->prepend([
-                    'Daily Order #',
-                    'Last Name',
-                    'First Name',
-                    'Phone',
-                    'Time',
-                    'Amount',
-                    'Balance'
-                ]);
-            } else {
-                $orders->prepend([
-                    'Daily Order #',
-                    'Order ID',
-                    'First Name',
-                    'Last Name',
-                    'Address',
-                    'Zip',
-                    'Phone',
-                    'Email',
-                    'Total',
-                    'Balance',
-                    'Order Placed',
-                    'Delivery Day',
-                    'Time'
-                ]);
-            }
+            $orders->prepend([
+                'Daily Order #',
+                'Order ID',
+                'First Name',
+                'Last Name',
+                'Address',
+                'Zip',
+                'Phone',
+                'Email',
+                'Total',
+                'Balance',
+                'Order Placed',
+                'Delivery Day',
+                'Time'
+            ]);
         }
 
         return $orders->toArray();

@@ -591,10 +591,10 @@ class OrderController extends StoreController
                         ->meal_orders()
                         ->where('meal_id', $item['meal']['id'])
                         ->first();
-                    $quantity = $existingMealOrder
-                        ? $existingMealOrder->quantity
-                        : 0;
-                    if ($meal->stock + $quantity < $item['quantity']) {
+                    if (
+                        $meal->stock + $existingMealOrder->quantity <
+                        $item['quantity']
+                    ) {
                         return response()->json(
                             [
                                 'message' =>
@@ -606,7 +606,8 @@ class OrderController extends StoreController
                             400
                         );
                     }
-                    $meal->stock -= $item['quantity'] - $quantity;
+                    $meal->stock -=
+                        $item['quantity'] - $existingMealOrder->quantity;
                     if ($meal->stock === 0) {
                         $meal->active = 0;
                     }

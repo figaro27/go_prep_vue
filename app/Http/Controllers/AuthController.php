@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Request;
-use App\StoreDetail;
 
 class AuthController extends Controller
 {
@@ -78,12 +77,6 @@ class AuthController extends Controller
     {
         $user = auth('api')->user();
         $secure = Request::secure();
-        $storeDomain = StoreDetail::where(
-            'store_id',
-            $user->last_viewed_store_id
-        )
-            ->pluck('domain')
-            ->first();
 
         $preg =
             '/https?:\/\/(?:www\.)?' . preg_quote(config('app.domain')) . '/i';
@@ -91,19 +84,9 @@ class AuthController extends Controller
 
         // If not accessing store subdomain
         if (preg_match($preg, $url)) {
-            if ($storeDomain) {
-                $redirect = $user->hasRole('store')
-                    ? $user->store->getUrl('/store/orders', $secure)
-                    : 'http://' .
-                        $storeDomain .
-                        '.' .
-                        config('app.domain') .
-                        '/customer/menu';
-            } else {
-                $redirect = $user->hasRole('store')
-                    ? $user->store->getUrl('/store/orders', $secure)
-                    : config('app.front_url');
-            }
+            $redirect = $user->hasRole('store')
+                ? $user->store->getUrl('/store/orders', $secure)
+                : config('app.front_url');
         } else {
             $redirect = $user->hasRole('store')
                 ? $user->store->getUrl('/store/orders', $secure)

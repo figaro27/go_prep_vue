@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call(AllergiesSeeder::class);
         $this->call(IngredientsSeeder::class);
-        $this->call(MealOrdersSeeder::class);
         $this->call(MealsSeeder::class);
         $this->call(MealPackagesSeeder::class);
+        $this->call(MealOrdersSeeder::class);
 
         $this->call(OrdersSeeder::class);
         $this->call(SubscriptionsSeeder::class);
@@ -33,9 +33,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CategoryMealSeeder::class);
         $this->call(AllergyMealSeeder::class);
         $this->call(IngredientMealSeeder::class);
-        $this->call(ProdGroupsSeeder::class);
-        $this->call(PickupLocationsSeeder::class);
-        $this->call(GiftCardsSeeder::class);
 
         Artisan::call('migrate:images');
     }

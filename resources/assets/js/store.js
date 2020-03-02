@@ -8,7 +8,6 @@ import CryptoJS from "crypto-js";
 import getSymbolFromCurrency from "currency-symbol-map";
 // Paginated resources
 import ResourceStore from "./store/resources";
-import PrinterStore from "./store/printer";
 
 const Cookies = require("js-cookie");
 
@@ -839,14 +838,6 @@ const mutations = {
 
   categories(state, { categories }) {
     state.store.categories.data = units;
-  },
-
-  showSpinner(state, {}) {
-    state.isLoading = true;
-  },
-
-  hideSpinner(state, {}) {
-    state.isLoading = false;
   }
 };
 
@@ -2522,14 +2513,6 @@ const actions = {
     } else {
       throw new Error("Failed to retrieve orders");
     }
-  },
-
-  async showSpinner({ commit, state }, args = {}) {
-    commit("showSpinner", {});
-  },
-
-  async hideSpinner({ commit, state }, args = {}) {
-    commit("hideSpinner", {});
   }
 };
 
@@ -2875,8 +2858,7 @@ const getters = {
     ) {
       return {
         finalCategories: state.viewed_store.finalCategories,
-        items: [...state.viewed_store.items, {}],
-        isRunningLazy: state.isLazyLoading
+        items: [...state.viewed_store.items, {}]
       };
     } else {
       const key = "dd_" + state.viewed_store.delivery_day.id;
@@ -2884,8 +2866,7 @@ const getters = {
       if (state.viewed_store.dataDD[key]) {
         return {
           finalCategories: state.viewed_store.dataDD[key].finalCategories,
-          items: state.viewed_store.dataDD[key].items,
-          isRunningLazy: state.isLazyDDLoading[key]
+          items: state.viewed_store.dataDD[key].items
         };
       }
 
@@ -3500,7 +3481,7 @@ const getters = {
 
 const plugins = [
   createPersistedState({
-    paths: ["bag", "cards", "printer.device"]
+    paths: ["bag", "cards"]
     // paths: ["cards"]
   })
 ];
@@ -3514,7 +3495,6 @@ export default new Vuex.Store({
   mutations,
   plugins,
   modules: {
-    resources: ResourceStore,
-    printer: PrinterStore
+    resources: ResourceStore
   }
 });

@@ -300,7 +300,7 @@
       </li>
 
       <!-- Coupon Area -->
-      <li v-if="hasCoupons && !$route.params.adjustMealPlan">
+      <li v-if="hasCoupons">
         <div class="row">
           <div class="col-xs-6 pl-3">
             <b-form-group id="coupon">
@@ -326,8 +326,7 @@
           transferTypeCheckPickup &&
           (!storeModules.hideDeliveryOption ||
             $route.params.storeView === true ||
-            storeOwner) &&
-          !$route.params.adjustMealPlan
+            storeOwner)
       "
     >
       <b-alert
@@ -398,11 +397,7 @@
     >
       <li
         class="checkout-item"
-        v-if="
-          ($route.params.storeView || storeOwner) &&
-            !isMultipleDelivery &&
-            !$route.params.adjustMealPlan
-        "
+        v-if="($route.params.storeView || storeOwner) && !isMultipleDelivery"
       >
         <div>
           <strong v-if="pickup === 0">Delivery Day</strong>
@@ -734,14 +729,14 @@
           </b-form-group>
         </div>
 
-        <!-- <div
+        <div
           v-if="hasActiveSubscription && !$route.params.subscriptionId"
           class="alert alert-warning"
           role="alert"
         >
           You have an active weekly subscription with this company and may have
           already been charged for an order this week.
-        </div> -->
+        </div>
         <b-alert
           show
           variant="warning"
@@ -791,7 +786,7 @@
             (card != null || cashOrder || grandTotal === 0) &&
               (minimumMet || $route.params.storeView || storeOwner) &&
               $route.params.adjustOrder != true &&
-              subscriptionId === undefined &&
+              $route.params.subscriptionId === undefined &&
               (store.settings.open === true ||
                 $route.params.storeView ||
                 storeOwner) &&
@@ -1617,7 +1612,7 @@ use next_delivery_dates
         if (this.storeSettings.processingFeeType === "flat") {
           return this.storeSettings.processingFee;
         } else if (this.storeSettings.processingFeeType === "percent") {
-          return (this.storeSettings.processingFee / 100) * this.afterDiscount;
+          return (this.storeSettings.processingFee / 100) * this.subtotal;
         }
       }
     },
@@ -1782,9 +1777,6 @@ use next_delivery_dates
       else return this.salesTax * taxableAmount;
     },
     subscriptionId() {
-      if (this.$route.query.subscriptionId) {
-        return this.$route.query.subscriptionId;
-      }
       return this.$route.params.subscriptionId;
     },
     minimumMet() {
@@ -2271,16 +2263,15 @@ use next_delivery_dates
               query: { created: true, pickup: this.pickup }
             });
           }
-          this.emptyBag();
         })
-        .catch(async response => {
-          let error = response.response.data.message;
-
+        .catch(e => {
           this.checkingOut = false;
-          this.$toastr.w(error);
+          this.$toastr.w(e.response.data.message, "Error");
         })
         .finally(() => {
+          this.refreshCustomerOrders();
           this.loading = false;
+          this.emptyBag();
         });
     },
     inputCustomer(id) {

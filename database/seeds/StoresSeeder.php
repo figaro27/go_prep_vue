@@ -103,11 +103,6 @@ class StoresSeeder extends Seeder
                 'manualOrders' => 1,
                 'manualCustomers' => 1,
                 'monthlyPlans' => 1,
-                'productionGroups' => 1,
-                'deposits' => 1,
-                'lineItems' => 1,
-                'orderNotes' => 1,
-                'pickupLocations' => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]);

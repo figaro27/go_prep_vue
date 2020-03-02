@@ -75,7 +75,7 @@ class StoreDetailController extends StoreController
 
         $rules = [
             'name' => 'required|string',
-            // 'logo' => 'required|string',
+            'logo' => 'required|string',
             'phone' => 'required|string',
             'address' => 'required|string',
             'city' => 'required|string',

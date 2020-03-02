@@ -20,18 +20,6 @@
         {{ store.settings.closedReason }}
       </p>
     </b-alert>
-
-    <b-alert show variant="success" v-if="$route.query.sub === true">
-      <h5 class="center-text">
-        Weekly Subscription
-      </h5>
-      <p class="center-text">
-        You have an active weekly subscription with us. Update your meals for
-        your next renewal on
-        {{ moment(subscriptions[0].next_renewal).format("dddd, MMM Do") }}.
-      </p>
-    </b-alert>
-
     <meal-package-components-modal
       ref="packageComponentModal"
       :packageTitle="packageTitle"
@@ -186,7 +174,7 @@
                             v-if="
                               !meal.meal_package &&
                                 !meal.gift_card &&
-                                !meal.hasVariations
+                                meal.sizes.length === 0
                             "
                           >
                             <i>-</i>
@@ -195,7 +183,7 @@
                             v-if="
                               !meal.meal_package &&
                                 !meal.gift_card &&
-                                !meal.hasVariations
+                                meal.sizes.length === 0
                             "
                             type="text"
                             name
@@ -209,7 +197,7 @@
                             v-if="
                               !meal.meal_package &&
                                 !meal.gift_card &&
-                                !meal.hasVariations
+                                (!meal.sizes || meal.sizes.length === 0)
                             "
                             @click.stop="addMeal(meal, null)"
                             class="menu-bag-btn plus-minus"
@@ -222,7 +210,7 @@
                             v-if="
                               !meal.meal_package &&
                                 !meal.gift_card &&
-                                meal.hasVariations &&
+                                meal.sizes &&
                                 meal.sizes.length > 0
                             "
                             toggle-class="brand-color"
@@ -256,21 +244,6 @@
                               }}
                             </b-dropdown-item>
                           </b-dropdown>
-
-                          <b-btn
-                            v-if="
-                              !meal.meal_package &&
-                                !meal.gift_card &&
-                                meal.hasVariations &&
-                                meal.sizes.length === 0
-                            "
-                            @click.stop="addMeal(meal, null)"
-                            size="lg"
-                            class="mx-auto variation-dropdown brand-color white-text"
-                            style="height:45px"
-                          >
-                            Select
-                          </b-btn>
 
                           <!-- <b-btn
                             v-if="
@@ -606,7 +579,7 @@
 </template>
 <script>
 import MenuBag from "../../mixins/menuBag";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
@@ -631,24 +604,7 @@ export default {
     filteredView: false,
     adjustOrder: false
   },
-  mounted() {
-    window.scrollTo(0, 0);
-  },
-  watch: {
-    subscriptions: function() {
-      if (
-        this.user.id &&
-        this.subscriptions.length > 0 &&
-        !this.$route.params.id
-      ) {
-        this.$router.push({
-          path: "/customer/subscriptions/" + this.subscriptions[0].id,
-          params: { subscriptionId: this.subscriptions[0].id },
-          query: { sub: true }
-        });
-      }
-    }
-  },
+  mounted: function() {},
   mixins: [MenuBag],
   computed: {
     ...mapGetters({
@@ -662,9 +618,7 @@ export default {
       bag: "bagItems",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
-      _categories: "viewedStoreCategories",
-      user: "user",
-      subscriptions: "subscriptions"
+      _categories: "viewedStoreCategories"
     }),
     isMultipleDelivery() {
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
@@ -681,7 +635,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["refreshSubscriptions"]),
     truncate(text, length, suffix) {
       if (text) {
         return text.substring(0, length) + suffix;

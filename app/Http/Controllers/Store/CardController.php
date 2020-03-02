@@ -48,23 +48,22 @@ class CardController extends StoreController
         $card = $request->get('card');
 
         if ($gateway === Constants::GATEWAY_STRIPE) {
-            try {
-                if (!$user->hasCustomer()) {
-                    $customer = $user->createCustomer($token);
-                } else {
-                    $customer = \Stripe\Customer::retrieve($user->stripe_id);
+            if (!$user->hasCustomer()) {
+                $customer = $user->createCustomer($token);
+            } else {
+                $customer = \Stripe\Customer::retrieve($user->stripe_id);
+
+                try {
                     $user->createCard($token);
+                } catch (\Stripe\Error\Card $e) {
+                    return response()->json(
+                        [
+                            'error' =>
+                                'Your card was declined. Please verify the entered information and try again.'
+                        ],
+                        400
+                    );
                 }
-            } catch (\Stripe\Error\Card $e) {
-                return response()->json(
-                    [
-                        'error' => trim(
-                            json_encode($e->jsonBody['error']['message']),
-                            '"'
-                        )
-                    ],
-                    400
-                );
             }
 
             $sources = $customer->sources->all();

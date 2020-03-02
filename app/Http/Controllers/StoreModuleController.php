@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Store;
 
 use App\StoreModule;
 use Illuminate\Http\Request;
+use Auth;
 
-class StoreModuleController extends Controller
+class StoreModuleController extends StoreController
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +15,7 @@ class StoreModuleController extends Controller
      */
     public function index()
     {
-        //
+        return $this->store->modules;
     }
 
     /**
@@ -46,7 +47,9 @@ class StoreModuleController extends Controller
      */
     public function show(StoreModule $storeModule)
     {
-        //
+        $id = Auth::user()->id;
+        $modules = StoreModule::findOrFail($id);
+        return $modules;
     }
 
     /**
@@ -69,7 +72,6 @@ class StoreModuleController extends Controller
      */
     public function update(Request $request, StoreModule $storeModule)
     {
-        //
     }
 
     /**

@@ -42,16 +42,13 @@ import MenuBag from "../../../mixins/menuBag";
 export default {
   data() {
     return {
-      categories: []
-    };
-    /*return {
       showCategorySlider: false
-    };*/
+    };
   },
   mounted() {
-    /*setTimeout(() => {
+    setTimeout(() => {
       this.showCategorySlider = true;
-    }, 6000);*/
+    }, 6000);
   },
   mixins: [MenuBag],
   watch: {
@@ -75,24 +72,9 @@ export default {
       _categories: "viewedStoreCategories",
       store: "viewedStore",
       storeSettings: "viewedStoreSetting",
-      isLazy: "isLazy",
-      mealMixItems: "mealMixItems"
+      isLazy: "isLazy"
     }),
-    showCategorySlider() {
-      let { finalCategories, isRunningLazy } = this.mealMixItems;
-
-      this.categories = [];
-      if (finalCategories && finalCategories.length > 0) {
-        finalCategories.forEach((cat, index) => {
-          if (this.isCategoryVisible(cat) && cat.visible) {
-            this.categories.push(cat);
-          }
-        });
-      }
-
-      return !isRunningLazy;
-    },
-    categoriesOld() {
+    categories() {
       let sorting = {};
       this._categories.forEach(cat => {
         sorting[cat.id] = cat.order; //cat.order.toString() + cat.category;

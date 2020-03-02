@@ -33,7 +33,6 @@
           <DefaultHeaderDropdown/>
         </b-nav-item>-->
         <StoreDropdown />
-        <PrinterNav />
       </b-navbar-nav>
       <!-- <AsideToggler class="d-none d-lg-block" /> -->
       <!--<AsideToggler class="d-lg-none" mobile />-->
@@ -121,7 +120,6 @@ import DefaultHeaderDropdownAccnt from "./DefaultHeaderDropdownAccnt";
 import StoreDropdown from "./StoreDropdown";
 import DefaultHeaderDropdownMssgs from "./DefaultHeaderDropdownMssgs";
 import DefaultHeaderDropdownTasks from "./DefaultHeaderDropdownTasks";
-import PrinterNav from "./PrinterNav";
 
 export default {
   name: "DefaultContainer",
@@ -144,8 +142,7 @@ export default {
     SidebarToggler,
     SidebarHeader,
     SidebarNav,
-    SidebarMinimizer,
-    PrinterNav
+    SidebarMinimizer
   },
   data() {
     return {

@@ -275,7 +275,6 @@ foreach (
                                 'subscriptions',
                                 'SubscriptionController'
                             );
-
                             // Route::post(
                             //     'subscriptions/{id}/meals',
                             //     'SubscriptionController@updateMeals'
@@ -314,31 +313,14 @@ foreach (
                                 'PickupLocationController'
                             );
                             Route::resource('lineItems', 'LineItemController');
-                            Route::post(
-                                'updateProdGroups',
-                                'ProductionGroupController@updateProdGroups'
-                            );
                             Route::resource(
                                 'productionGroups',
                                 'ProductionGroupController'
                             );
-
                             Route::resource(
                                 'settings',
                                 'StoreSettingController'
                             );
-
-                            Route::post(
-                                'updateModules',
-                                'StoreModuleController@update'
-                            );
-                            Route::post(
-                                'updateModuleSettings',
-                                'StoreModuleSettingController@update'
-                            );
-
-                            Route::resource('modules', 'StoreModuleController');
-
                             Route::get(
                                 'getApplicationFee',
                                 'StoreSettingController@getApplicationFee'

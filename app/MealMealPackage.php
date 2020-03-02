@@ -7,11 +7,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class MealMealPackage extends Pivot
 {
-    public function meal_package()
-    {
-        return $this->belongsTo('App\MealPackage');
-    }
-
     public static function substituteMeal($mealId, $subId)
     {
         // Not being used

@@ -26,10 +26,7 @@ class MealOrderComponent extends Pivot
 
     public function component()
     {
-        return $this->belongsTo(
-            'App\MealComponent',
-            'meal_component_id'
-        )->withTrashed();
+        return $this->belongsTo('App\MealComponent', 'meal_component_id');
     }
 
     public function option()
@@ -37,6 +34,6 @@ class MealOrderComponent extends Pivot
         return $this->belongsTo(
             'App\MealComponentOption',
             'meal_component_option_id'
-        )->withTrashed();
+        );
     }
 }

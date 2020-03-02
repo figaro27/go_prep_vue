@@ -277,7 +277,7 @@ $currency = $subscription->store->settings->currency_symbol
       <td align="center">
         <table width="600" class="table-full" style="max-width: 600px;" align="center" border="0" cellpadding="0" cellspacing="0">
           <tr>
-            <td height="40" style="border-bottom:3px solid #bcbcbc;"></td>
+            <td height="40" style="border-bottom:3px solid #3b3b3b;"></td>
           </tr>
         </table>
         <table align="center" width="600" style="max-width: 600px;" class="table-full" border="0" cellspacing="0" cellpadding="0">

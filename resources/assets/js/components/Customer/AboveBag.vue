@@ -33,17 +33,10 @@ export default {
         };
       } else if (
         this.$route.path === "/customer/bag" &&
-        (this.$route.params.subscriptionId != null ||
-          this.$route.query.sub === true)
-      ) {
-        let subId = this.$route.params.subscriptionId
-          ? this.$route.params.subscriptionId
-          : this.$route.query.subscriptionId;
-        return {
-          path: "/customer/subscriptions/" + subId,
-          query: { sub: this.$route.query.sub }
-        };
-      } else if (
+        this.$route.params.subscriptionId != null
+      )
+        return "/customer/subscriptions/" + this.$route.params.subscriptionId;
+      else if (
         this.$route.path === "/store/bag" &&
         this.$route.params.subscriptionId != null
       )
