@@ -77,16 +77,16 @@ $hot = $order->hot;
   @endif
   @if ($order->balance > 0 || $hot)
   <div class="row">
-    <div class="col-6">
+
       @if ($hot)
-    <h1 class="bold-text red" style="float:left">HOT</h1>
+    <h1 class="bold-text red" style="float:right">HOT</h1>
     @endif
     </div>
-    <div class="col-6">
+
        @if ($order->balance > 0)
     <h1 class="bold-text red" style="float:right">BALANCE DUE</h1>
     @endif
-    </div>
+
     
    
   </div>
