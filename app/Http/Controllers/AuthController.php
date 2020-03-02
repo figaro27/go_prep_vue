@@ -83,6 +83,7 @@ class AuthController extends Controller
         $url = Request::url();
 
         // If not accessing store subdomain
+
         if (preg_match($preg, $url)) {
             $redirect = $user->hasRole('store')
                 ? $user->store->getUrl('/store/orders', $secure)
