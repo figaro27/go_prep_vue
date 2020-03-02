@@ -426,6 +426,17 @@ class Subscription extends Model
 
         // Create new order for next delivery
         $newOrder = new Order();
+
+        // Adjust the price of the subscription on renewal if a one time coupon code was used. (Remove coupon from subscription).
+        $coupon = Coupon::where('id', $this->couponId)->first();
+        if (isset($coupon) && $coupon->oneTime) {
+            $this->syncPrices();
+        } else {
+            $newOrder->coupon_id = $this->couponId;
+            $newOrder->couponReduction = $this->couponReduction;
+            $newOrder->couponCode = $this->couponCode;
+        }
+
         $newOrder->user_id = $this->user_id;
         $newOrder->customer_id = $this->customer_id;
         $newOrder->card_id = $this->card_id ? $this->card_id : null;
@@ -446,9 +457,7 @@ class Subscription extends Model
         $newOrder->currency = $this->currency;
         $newOrder->fulfilled = false;
         $newOrder->pickup = $this->pickup;
-        $newOrder->coupon_id = $this->couponId;
-        $newOrder->couponReduction = $this->couponReduction;
-        $newOrder->couponCode = $this->couponCode;
+
         $newOrder->purchased_gift_card_id = $this->purchasedGiftCardId;
         $newOrder->purchasedGiftCardReduction =
             $this->purchasedGiftCardReduction;
