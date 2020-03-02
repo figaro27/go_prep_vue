@@ -83,8 +83,8 @@ $hot = $order->hot;
     </h1>
     @endif
     @if ($order->balance > 0 && $hot)
-    <h1 class="bold-text red" style="float:right">
-    &nbsp &nbsp | &nbsp &nbsp
+    <h1 class="bold-text red" style="float:right;padding-left:20px;padding-right:20px">
+    |
     </h1>
     @endif
     @if ($hot)
