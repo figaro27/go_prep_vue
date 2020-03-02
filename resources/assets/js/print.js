@@ -6,56 +6,59 @@ import units from "./data/units";
 import Nutrition from "./data/nutrition";
 import format from "./lib/format";
 
-$(document).ready(() => {
-  $(".nutritionFacts").each(function() {
-    var el = $(this);
-    const meal = el.data("meal");
-    //$('body').html(meal);
+try {
+  $(document).ready(() => {
+    $(".nutritionFacts").each(function() {
+      var el = $(this);
+      const meal = el.data("meal");
 
-    const ingredients = meal.ingredients;
+      const ingredients = meal.ingredients;
 
-    const nutrition = Nutrition.getTotals(ingredients);
-    const ingredientList = Nutrition.getIngredientList(ingredients);
-    const servingsPerMeal = meal.servingsPerMeal ? meal.servingsPerMeal : 1;
-    const servingSizeUnit = meal.servingSizeUnit ? meal.servingSizeUnit : "";
-    const showIngredients = true;
+      const nutrition = Nutrition.getTotals(ingredients);
+      const ingredientList = Nutrition.getIngredientList(ingredients);
+      const servingsPerMeal = meal.servingsPerMeal ? meal.servingsPerMeal : 1;
+      const servingSizeUnit = meal.servingSizeUnit ? meal.servingSizeUnit : "";
+      const showIngredients = true;
 
-    el.nutritionLabel({
-      showItemName: false,
-      showServingUnitQuantity: true,
-      valueServingPerContainer: servingsPerMeal,
-      valueServingUnitQuantity: 1,
-      valueServingSizeUnit: servingSizeUnit,
-      showServingsPerContainer: true,
+      el.nutritionLabel({
+        showItemName: false,
+        showServingUnitQuantity: true,
+        valueServingPerContainer: servingsPerMeal,
+        valueServingUnitQuantity: 1,
+        valueServingSizeUnit: servingSizeUnit,
+        showServingsPerContainer: true,
 
-      itemName: meal.title ? meal.title : "",
-      ingredientList: ingredientList,
-      showIngredients: showIngredients,
-      decimalPlacesForQuantityTextbox: 2,
-      allowFDARounding: false,
-      decimalPlacesForNutrition: 0,
-      showPolyFat: false,
-      showMonoFat: false,
-      valueCalories: nutrition.calories / servingsPerMeal,
-      valueFatCalories: nutrition.fatCalories / servingsPerMeal,
-      valueTotalFat: nutrition.totalfat / servingsPerMeal,
-      valueSatFat: nutrition.satfat / servingsPerMeal,
-      valueTransFat: nutrition.transfat / servingsPerMeal,
-      valueCholesterol: nutrition.cholesterol / servingsPerMeal,
-      valueSodium: nutrition.sodium / servingsPerMeal,
-      valueTotalCarb: nutrition.totalcarb / servingsPerMeal,
-      valueFibers: nutrition.fibers / servingsPerMeal,
-      valueSugars: nutrition.sugars / servingsPerMeal,
-      valueProteins: nutrition.proteins / servingsPerMeal,
-      valueVitaminD: ((nutrition.vitamind / 20000) * 100) / servingsPerMeal,
-      valuePotassium_2018:
-        ((nutrition.potassium / 4700) * 100) / servingsPerMeal,
-      valueCalcium: ((nutrition.calcium / 1300) * 100) / servingsPerMeal,
-      valueIron: ((nutrition.iron / 18) * 100) / servingsPerMeal,
-      valueAddedSugars: nutrition.addedSugars / servingsPerMeal,
-      showLegacyVersion: false
+        itemName: meal.title ? meal.title : "",
+        ingredientList: ingredientList,
+        showIngredients: showIngredients,
+        decimalPlacesForQuantityTextbox: 2,
+        allowFDARounding: false,
+        decimalPlacesForNutrition: 0,
+        showPolyFat: false,
+        showMonoFat: false,
+        valueCalories: nutrition.calories / servingsPerMeal,
+        valueFatCalories: nutrition.fatCalories / servingsPerMeal,
+        valueTotalFat: nutrition.totalfat / servingsPerMeal,
+        valueSatFat: nutrition.satfat / servingsPerMeal,
+        valueTransFat: nutrition.transfat / servingsPerMeal,
+        valueCholesterol: nutrition.cholesterol / servingsPerMeal,
+        valueSodium: nutrition.sodium / servingsPerMeal,
+        valueTotalCarb: nutrition.totalcarb / servingsPerMeal,
+        valueFibers: nutrition.fibers / servingsPerMeal,
+        valueSugars: nutrition.sugars / servingsPerMeal,
+        valueProteins: nutrition.proteins / servingsPerMeal,
+        valueVitaminD: ((nutrition.vitamind / 20000) * 100) / servingsPerMeal,
+        valuePotassium_2018:
+          ((nutrition.potassium / 4700) * 100) / servingsPerMeal,
+        valueCalcium: ((nutrition.calcium / 1300) * 100) / servingsPerMeal,
+        valueIron: ((nutrition.iron / 18) * 100) / servingsPerMeal,
+        valueAddedSugars: nutrition.addedSugars / servingsPerMeal,
+        showLegacyVersion: false
+      });
     });
-  });
 
-  window.status = "ready";
-});
+    window.status = "ready";
+  });
+} catch (e) {
+  document.writeln(e);
+}

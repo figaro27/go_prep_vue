@@ -3,6 +3,8 @@ window.Popper = require("popper.js").default;
 window.Cookies = require("js-cookie");
 window.nl2br = require("locutus/php/strings/nl2br");
 window.sprintf = require("locutus/php/strings/sprintf");
+window.Sha256 = require("sha-256");
+window.RSVP = require("rsvp");
 
 const moment = require("moment");
 /*

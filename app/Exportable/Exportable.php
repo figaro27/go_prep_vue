@@ -30,7 +30,7 @@ trait Exportable
 
     public function export($type)
     {
-        if (!in_array($type, ['pdf', 'csv', 'xls'])) {
+        if (!in_array($type, ['pdf', 'csv', 'xls', 'b64'])) {
             return null;
         }
 
@@ -49,6 +49,10 @@ trait Exportable
 
             case 'pdf':
                 return $this->handlePdf($data);
+                break;
+
+            case 'b64':
+                return $this->handleB64($data);
                 break;
         }
     }
@@ -171,6 +175,58 @@ trait Exportable
 
         Storage::disk('local')->put($filename, $output);
         return Storage::url($filename);
+    }
+
+    /**
+     * Handles base64-encoded PDF
+     */
+    public function handleB64($data)
+    {
+        $filename = 'public/' . md5(time()) . '.pdf';
+
+        $vars = $this->filterVars([
+            'data' => $data,
+            'params' => $this->params,
+            'delivery_dates' => $this->getDeliveryDates(),
+            'body_classes' => implode(' ', [$this->orientation])
+        ]);
+
+        $html = view($this->exportPdfView(), $vars)->render();
+
+        $pdfConfig = [
+            'encoding' => 'utf-8',
+            'orientation' => $this->orientation,
+            'page-size' => 'Letter',
+            'no-outline',
+            //'margin-top' => 0,
+            //'margin-bottom' => 0,
+            //'margin-left' => 0,
+            //'margin-right' => 0,
+            //'binary' => '/usr/local/bin/wkhtmltopdf',
+            'disable-smart-shrinking',
+            'javascript-delay' => 200,
+            'debug-javascript'
+        ];
+
+        if (config('pdf.xserver')) {
+            $pdfConfig = array_merge($pdfConfig, [
+                'use-xserver',
+                'commandOptions' => array(
+                    'enableXvfb' => true
+                )
+            ]);
+        }
+
+        $pdf = new Pdf($pdfConfig);
+        $pdf->addPage($html);
+
+        $output = $pdf->toString();
+
+        if ($pdf->getError()) {
+            Log::error('PDF Error: ' . $pdf->getError());
+        }
+
+        return base64_encode($output);
     }
 
     public function getDeliveryDates($defaultFuture = true)

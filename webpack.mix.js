@@ -11,6 +11,8 @@ const mix = require("laravel-mix");
  |
  */
 
+mix.webpackConfig({ node: { fs: "empty" } });
+
 mix.options({
   postCss: [
     require("autoprefixer")({

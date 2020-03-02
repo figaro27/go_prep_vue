@@ -11,6 +11,7 @@ use App\Exportable\Exportable;
 use Illuminate\Support\Carbon;
 use mikehaertl\wkhtmlto\Pdf;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class Labels
 {
@@ -31,6 +32,7 @@ class Labels
     public function filterVars($vars)
     {
         $vars['dates'] = $this->allDates;
+        $vars['body_classes'] = implode(' ', [$this->orientation, 'label']);
         return $vars;
     }
 
@@ -74,41 +76,125 @@ class Labels
 
             foreach ($mealOrders as $mealOrder) {
                 for ($i = 1; $i <= $mealOrder->quantity; $i++) {
-                    $production->push([$mealOrder]);
+                    $production->push($mealOrder);
                 }
             }
 
             foreach ($lineItemsOrders as $lineItemOrder) {
                 for ($i = 1; $i <= $lineItemOrder->quantity; $i++) {
-                    $production->push([$lineItemOrder]);
+                    $production->push($lineItemOrder);
                 }
             }
         });
 
-        $output = $production
-            ->map(function ($row) {
-                $row = array_map(function ($item) {
-                    $meal = $item->meal;
-                    $item->json = json_encode(
-                        array_merge($meal->attributesToArray(), [
-                            'ingredients' => $meal->ingredients->map(function (
-                                $ingredient
-                            ) {
-                                return $ingredient->attributesToArray();
-                            })
-                        ])
-                    );
-                    return $item;
-                }, $row);
-                return $row;
-            })
-            ->toArray();
+        $output = $production->map(function ($item) {
+            $meal = $item->meal;
+            $item->json = json_encode(
+                array_merge($meal->attributesToArray(), [
+                    'ingredients' => $meal->ingredients->map(function (
+                        $ingredient
+                    ) {
+                        return $ingredient->attributesToArray();
+                    })
+                ])
+            );
+            return $item;
+        });
 
         return $output;
     }
 
+    public function export($type)
+    {
+        if (!in_array($type, ['pdf', 'b64'])) {
+            return null;
+        }
+
+        Log::info('Starting label print');
+
+        $mealOrders = $this->exportData();
+        Log::info('Found ' . count($mealOrders) . ' orders');
+
+        if (!count($mealOrders)) {
+            throw new \Exception('No meal orders');
+        }
+
+        $filename = 'public/' . md5(time()) . '.pdf';
+
+        $width = $this->params->get('width', 4);
+        $height = $this->params->get('height', 6);
+
+        $pdfConfig = [
+            'encoding' => 'utf-8',
+            'orientation' => $this->orientation,
+            'page-width' => $width . 'in',
+            'page-height' => $height . 'in',
+            'no-outline',
+            //'disable-smart-shrinking',
+            'no-pdf-compression',
+            'javascript-delay' => 1000,
+            'debug-javascript',
+            'margin-top' => 0,
+            'margin-bottom' => 0,
+            'margin-left' => 0,
+            'margin-right' => 0
+        ];
+
+        if (config('pdf.xserver')) {
+            $pdfConfig = array_merge($pdfConfig, [
+                'use-xserver',
+                'commandOptions' => array(
+                    'enableXvfb' => true
+                )
+            ]);
+        }
+
+        Log::info($pdfConfig);
+
+        $pdf = new Pdf($pdfConfig);
+        $pdf->ignoreWarnings = true;
+
+        $vars = [
+            'mealOrder' => null,
+            'params' => $this->params,
+            'delivery_dates' => $this->getDeliveryDates(),
+            'body_classes' => implode(' ', [$this->orientation])
+        ];
+
+        Log::info($vars);
+
+        foreach ($mealOrders as $i => $order) {
+            if ($i > 0) {
+                continue;
+            }
+            $vars['mealOrder'] = $order;
+            $html = view($this->exportPdfView(), $vars)->render();
+            Log::info('Page HTML: ' . $html);
+            $pdf->addPage($html);
+        }
+
+        $output = $pdf->toString();
+        $a = $pdf->getCommand()->getOutput(false);
+
+        Log::info('Output: ' . $output);
+
+        if ($pdf->getError()) {
+            Log::error('Error: ' . $pdf->getError());
+        }
+
+        Log::info('Saved to ' . $filename);
+
+        if ($type === 'pdf') {
+            // || $type === 'b64') {
+            Storage::disk('local')->put($filename, $output);
+            return Storage::url($filename);
+        } elseif ($type === 'b64') {
+            return base64_encode($output);
+        }
+    }
+
     public function exportPdfView()
     {
-        return 'reports.labels_pdf';
+        return 'reports.label_pdf';
     }
 }
