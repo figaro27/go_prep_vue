@@ -25,6 +25,12 @@
     <div>
     @foreach($data as $i => $row)
       <h5>{{$i + 1}}.</h5>
+      @if ($row['order']->dailyOrderNumber)
+      <h5>Daily Order Number{{$row['order']->dailyOrderNumber}}</h5>
+      @endif
+      @if ($row['order']->transferTime)
+      <h5>Delivery Time{{$row['order']->transferTime}}</h5>
+      @endif
       <h5>Order ID{{$row['order']->order_number}}</h5>
       <h5>{{$row['name']}}</h5>
       <h5>{{$row['address']}}</h5>

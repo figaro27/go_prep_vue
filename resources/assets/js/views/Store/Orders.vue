@@ -176,6 +176,14 @@
                     'This order was created from an active subscription.'
                   "
                 ></i>
+                <i
+                  v-if="props.row.hot"
+                  class="fas fa-fire red"
+                  v-b-popover.hover.top="
+                    'This order needs to be hot upon delivery/pickup.'
+                  "
+                >
+                </i>
               </p>
             </div>
             <div slot="paid_at" slot-scope="props">
@@ -301,6 +309,14 @@
                     'This order was created from an active subscription.'
                   "
                 ></i>
+                <i
+                  v-if="order.hot"
+                  class="fas fa-fire red"
+                  v-b-popover.hover.top="
+                    'This order needs to be hot upon delivery/pickup.'
+                  "
+                >
+                </i>
               </p>
             </div>
           </div>
@@ -624,7 +640,10 @@
           <div class="col-md-4">
             <h4>Phone</h4>
             <span v-if="editingCustomer">
-              <b-form-input v-model="user_detail.phone"></b-form-input>
+              <b-form-input
+                v-model="user_detail.phone"
+                @input="asYouType()"
+              ></b-form-input>
             </span>
             <span v-else>
               <p>{{ user_detail.phone }}</p>
@@ -863,6 +882,7 @@ import { createInstance } from "vuex-pagination";
 import checkDateRange from "../../mixins/deliveryDates";
 import { sidebarCssClasses } from "../../shared/classes";
 import store from "../../store";
+import { AsYouType } from "libphonenumber-js";
 
 export default {
   components: {
@@ -1501,6 +1521,12 @@ export default {
       axios.post("/api/me/emailCustomerReceipt", { id: id }).then(resp => {
         this.$toastr.s("Customer emailed.");
       });
+    },
+    asYouType() {
+      this.user_detail.phone = this.user_detail.phone.replace(/[^\d.-]/g, "");
+      this.user_detail.phone = new AsYouType(this.store.details.country).input(
+        this.user_detail.phone
+      );
     }
   }
 };

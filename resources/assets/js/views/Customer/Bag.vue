@@ -57,6 +57,7 @@
             :orderId="orderId"
             :cashOrder="cashOrder"
             :noBalance="noBalance"
+            :hot="hot"
             :creditCardId="creditCardId"
             :creditCardList="creditCardList"
             :salesTax="salesTax"
@@ -144,6 +145,7 @@ export default {
       transferTime: "",
       cashOrder: null,
       noBalance: null,
+      hot: null,
       addCustomerModal: false,
       deposit: 100,
       creditCardList: [],
@@ -472,6 +474,11 @@ export default {
     if (this.storeModules.cashOrderNoBalance) {
       this.noBalance = true;
     }
+
+    if (this.order && this.order.hot) {
+      this.hot = true;
+    }
+
     if (this.$route.params.adjustOrder) {
       this.deliveryDay = this.$route.params.deliveryDay;
       this.transferTime = this.$route.params.transferTime;
@@ -556,6 +563,10 @@ export default {
 
         if (newData.hasOwnProperty("noBalance")) {
           this.noBalance = newData.noBalance;
+        }
+
+        if (newData.hasOwnProperty("hot")) {
+          this.hot = newData.hot;
         }
 
         if (newData.hasOwnProperty("creditCardList")) {

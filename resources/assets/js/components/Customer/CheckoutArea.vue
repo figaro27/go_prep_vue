@@ -652,6 +652,7 @@
             >
               No Balance
             </b-form-checkbox>
+
             <!-- <p
               v-if="
                 storeModuleSettings.cashAllowedForCustomer && cashOrder && creditCardList.length === 0 && creditCardId === null
@@ -772,8 +773,15 @@
           "
         >
           <b-form-checkbox
-            v-model="emailCustomer"
+            v-if="store.modules.showHotCheckbox"
+            v-model="hot"
             class="pb-2 mediumCheckbox mt-1 mb-1"
+          >
+            Hot
+          </b-form-checkbox>
+          <b-form-checkbox
+            v-model="emailCustomer"
+            class="pb-2 mediumCheckbox mt-1 mb-1 pl-5"
           >
             Email Customer
           </b-form-checkbox>
@@ -1000,6 +1008,7 @@ export default {
     forceValue: false,
     cashOrder: false,
     noBalance: false,
+    hot: false,
     mobile: false,
     salesTax: 0,
     creditCardList: null,
@@ -2052,7 +2061,8 @@ use next_delivery_dates
           grandTotal: this.grandTotal,
           emailCustomer: this.emailCustomer,
           customSalesTax: this.customSalesTax !== null ? 1 : 0,
-          dontAffectBalance: this.dontAffectBalance
+          dontAffectBalance: this.dontAffectBalance,
+          hot: this.hot ? this.hot : 0
         })
         .then(resp => {
           if (this.purchasedGiftCard !== null) {
@@ -2215,6 +2225,7 @@ use next_delivery_dates
           deposit: deposit,
           cashOrder: this.cashOrder,
           noBalance: this.noBalance,
+          hot: this.hot ? this.hot : false,
           transferTime: this.transferTime,
           lineItemsOrder: this.orderLineItems,
           grandTotal: this.grandTotal,

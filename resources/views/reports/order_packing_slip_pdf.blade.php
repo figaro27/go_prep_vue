@@ -16,6 +16,7 @@ $deposit = $currency . number_format($order->deposit, 2);
 $cashOrder = $order->cashOrder;
 $balance = $order->balance;
 $brandColor = $order->store->settings->color;
+$hot = $order->hot;
 @endphp
 
 <head>
@@ -74,9 +75,24 @@ $brandColor = $order->store->settings->color;
   @if ($order->voided)
   <h1 class="center-text bold-text red">VOIDED</h1>
   @endif
-  @if ($order->balance > 0)
+  @if ($order->balance > 0 || $hot)
   <div class="row">
-    <h1 class="bold-text red" style="float:right">BALANCE DUE</h1>
+    @if ($order->balance > 0)
+    <h1 class="bold-text red" style="float:right">
+    BALANCE DUE
+    </h1>
+    @endif
+    @if ($order->balance > 0 && $hot)
+    <h1 class="bold-text red" style="float:right;padding-left:20px;padding-right:20px">
+    |
+    </h1>
+    @endif
+    @if ($hot)
+    <h1 class="bold-text red" style="float:right">HOT</h1>
+    @endif
+
+    
+   
   </div>
   @endif
   <div class="row">

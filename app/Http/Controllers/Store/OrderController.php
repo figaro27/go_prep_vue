@@ -646,6 +646,8 @@ class OrderController extends StoreController
             $request->get('customSalesTax') !== null
                 ? $request->get('customSalesTax')
                 : 0;
+
+        $hot = $request->get('hot');
         // $deposit =
         //     (($order->deposit * $order->amount) / 100 / $grandTotal) * 100;
         $originalDeliveryDate = $order->delivery_date;
@@ -676,6 +678,7 @@ class OrderController extends StoreController
         $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
         $order->pickup_location_id = $pickupLocation;
         $order->transferTime = $transferTime;
+        $order->hot = $hot;
 
         $dailyOrderNumber = 0;
         if (!$isMultipleDelivery) {
