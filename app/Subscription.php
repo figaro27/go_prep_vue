@@ -446,6 +446,14 @@ class Subscription extends Model
         $newOrder->currency = $this->currency;
         $newOrder->fulfilled = false;
         $newOrder->pickup = $this->pickup;
+        $newOrder->coupon_id = $this->couponId;
+        $newOrder->couponReduction = $this->couponReduction;
+        $newOrder->couponCode = $this->couponCode;
+        $newOrder->purchased_gift_card_id = $this->purchasedGiftCardId;
+        $newOrder->purchasedGiftCardReduction =
+            $this->purchasedGiftCardReduction;
+        $newOrder->pickup_location_id = $this->pickupLocation;
+        $newOrder->transferTime = $this->transferTime;
 
         // Refine this
         $newOrder->delivery_date =
