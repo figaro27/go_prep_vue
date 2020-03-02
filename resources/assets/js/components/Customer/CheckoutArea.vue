@@ -2062,7 +2062,7 @@ use next_delivery_dates
           emailCustomer: this.emailCustomer,
           customSalesTax: this.customSalesTax !== null ? 1 : 0,
           dontAffectBalance: this.dontAffectBalance,
-          hot: this.hot
+          hot: this.hot ? this.hot : 0
         })
         .then(resp => {
           if (this.purchasedGiftCard !== null) {
