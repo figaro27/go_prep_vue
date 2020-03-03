@@ -300,7 +300,7 @@
       </li>
 
       <!-- Coupon Area -->
-      <li v-if="hasCoupons && !$route.params.adjustMealPlan">
+      <li v-if="hasCoupons && !$route.params.adjustMealPlan && !subscriptionId">
         <div class="row">
           <div class="col-xs-6 pl-3">
             <b-form-group id="coupon">
