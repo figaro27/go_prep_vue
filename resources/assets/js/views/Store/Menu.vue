@@ -688,7 +688,12 @@
 
         <v-select
           label="title"
-          :options="meals.filter(meal => meal.id !== deactivatingMeal.id)"
+          :options="
+            meals.filter(
+              meal =>
+                meal.id !== deactivatingMeal.id && meal.deleted_at === null
+            )
+          "
           :reduce="meal => meal.id"
           v-model="substitute_id"
           style="margin:0px 100px"
@@ -702,7 +707,11 @@
           make it active on your menu.
         </h4>
         <div
-          v-if="deactivatingMeal.hasVariations && substituteMeal"
+          v-if="
+            deactivatingMeal.hasVariations &&
+              substituteMeal &&
+              mealSubsHaveVariations
+          "
           :key="substitute_id"
         >
           <h4 class="center-text mb-3">
@@ -1033,6 +1042,7 @@ export default {
   data() {
     return {
       replaceVariations: true,
+      mealSubsHaveVariations: false,
       _,
       filter: {
         status: "active"
@@ -1607,8 +1617,16 @@ export default {
         })
         .then(resp => {
           this.deactivateMealModal = false;
-          this.refreshSubscriptions();
           this.refreshTable();
+          this.refreshSubscriptions();
+          this.transferVariations = false;
+          this.substituteMeal = "";
+          this.mealSubsHaveVariations = false;
+          this.substitute_id = null;
+          this.substituteMealSizes = {};
+          this.substituteMealComponents = {};
+          this.substituteMealComponentOptions = {};
+          this.substituteMealAddons = {};
           if (!this.deleteMeal) {
             this.$toastr.s("Meal deactivated and replaced.");
           } else {
@@ -1907,50 +1925,74 @@ export default {
       let oldMeal = this.deactivatingMeal;
       let subMeal = this.substituteMeal;
 
-      oldMeal.sizes.forEach(oldSize => {
-        subMeal.sizes.forEach(subSize => {
-          if (oldSize.title.toUpperCase() === subSize.title.toUpperCase()) {
-            this.substituteMealSizes[oldSize.id] = subSize.id;
-          }
-        });
-      });
-
-      oldMeal.addons.forEach(oldAddon => {
-        subMeal.addons.forEach(subAddon => {
-          if (oldAddon.title.toUpperCase() === subAddon.title.toUpperCase()) {
-            this.substituteMealAddons[oldAddon.id] = subAddon.id;
-          }
-        });
-      });
-
-      oldMeal.components.forEach(oldComponent => {
-        subMeal.components.forEach(subComponent => {
-          if (
-            oldComponent.title.toUpperCase() ===
-            subComponent.title.toUpperCase()
-          ) {
-            this.substituteMealComponents[oldComponent.id] = subComponent.id;
-          }
-
-          oldComponent.options.forEach(oldOption => {
-            subComponent.options.forEach(subOption => {
-              if (
-                oldOption.title.toUpperCase() === subOption.title.toUpperCase()
-              ) {
-                this.substituteMealComponentOptions[oldOption.id] =
-                  subOption.id;
+      if (oldMeal.sizes) {
+        oldMeal.sizes.forEach(oldSize => {
+          if (subMeal.sizes) {
+            subMeal.sizes.forEach(subSize => {
+              if (oldSize.title.toUpperCase() === subSize.title.toUpperCase()) {
+                this.substituteMealSizes[oldSize.id] = subSize.id;
+                this.mealSubsHaveVariations = true;
               }
             });
-          });
+          }
         });
-      });
+      }
+
+      if (oldMeal.addons) {
+        oldMeal.addons.forEach(oldAddon => {
+          if (subMeal.addons) {
+            subMeal.addons.forEach(subAddon => {
+              if (
+                oldAddon.title.toUpperCase() === subAddon.title.toUpperCase()
+              ) {
+                this.substituteMealAddons[oldAddon.id] = subAddon.id;
+                this.mealSubsHaveVariations = true;
+              }
+            });
+          }
+        });
+      }
+
+      if (oldMeal.components) {
+        oldMeal.components.forEach(oldComponent => {
+          if (subMeal.components) {
+            subMeal.components.forEach(subComponent => {
+              if (
+                oldComponent.title.toUpperCase() ===
+                subComponent.title.toUpperCase()
+              ) {
+                this.substituteMealComponents[oldComponent.id] =
+                  subComponent.id;
+                this.mealSubsHaveVariations = true;
+              }
+              if (oldComponent.options) {
+                oldComponent.options.forEach(oldOption => {
+                  if (subComponent.options) {
+                    subComponent.options.forEach(subOption => {
+                      if (
+                        oldOption.title.toUpperCase() ===
+                        subOption.title.toUpperCase()
+                      ) {
+                        this.substituteMealComponentOptions[oldOption.id] =
+                          subOption.id;
+                        this.mealSubsHaveVariations = true;
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
     },
     cancel() {
       this.deactivateMealModal = false;
       this.refreshTable();
       this.transferVariations = false;
-      this.replaceVariations = false;
       this.substituteMeal = "";
+      this.mealSubsHaveVariations = false;
+      this.substitute_id = null;
       this.substituteMealSizes = {};
       this.substituteMealComponents = {};
       this.substituteMealComponentOptions = {};

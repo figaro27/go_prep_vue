@@ -431,6 +431,10 @@ class Subscription extends Model
         $coupon = Coupon::where('id', $this->coupon_id)->first();
         if (isset($coupon) && $coupon->oneTime) {
             $this->syncPrices();
+            $this->coupon_id = null;
+            $this->couponReduction = null;
+            $this->couponCode = null;
+            $this->update();
         } else {
             $newOrder->coupon_id = $this->coupon_id;
             $newOrder->couponReduction = $this->couponReduction;
@@ -859,7 +863,7 @@ class Subscription extends Model
 
         $salesTax = $afterDiscountBeforeFees * $salesTaxRate;
         $total += $salesTax;
-        $total = round($total, 2);
+        $total = floor($total * 100) / 100;
 
         // Update subscription pricing
         $this->preFeePreDiscount = $preFeePreDiscount;
