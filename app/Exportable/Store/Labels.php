@@ -164,9 +164,6 @@ class Labels
         Log::info($vars);
 
         foreach ($mealOrders as $i => $order) {
-            if ($i > 0) {
-                continue;
-            }
             $vars['mealOrder'] = $order;
             $html = view($this->exportPdfView(), $vars)->render();
             Log::info('Page HTML: ' . $html);
