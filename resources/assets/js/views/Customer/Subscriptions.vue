@@ -72,6 +72,7 @@ f<template>
               <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
             </router-link>
             <button
+              v-if="props.row.paid_order_count >= 2"
               class="btn btn-danger btn-sm"
               @click="
                 {
@@ -140,6 +141,7 @@ f<template>
               <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
             </router-link>
             <button
+              v-if="subscription.paid_order_count >= 2"
               class="btn btn-danger btn-sm"
               @click="
                 {

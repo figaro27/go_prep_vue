@@ -29,7 +29,8 @@ class Subscription extends Model
         'pre_coupon',
         'items',
         'meal_package_items',
-        'interval_title'
+        'interval_title',
+        'paid_order_count'
     ];
 
     protected $casts = [
@@ -1009,5 +1010,10 @@ class Subscription extends Model
         $subscription->save();
 
         $this->store->clearCaches();
+    }
+
+    public function getPaidOrderCountAttribute()
+    {
+        return $this->orders->where('paid', 1)->count();
     }
 }
