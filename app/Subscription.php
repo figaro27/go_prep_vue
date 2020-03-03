@@ -462,10 +462,7 @@ class Subscription extends Model
         $newOrder->fulfilled = false;
         $newOrder->pickup = $this->pickup;
 
-        $newOrder->purchased_gift_card_id = $this->purchasedGiftCardId;
-        $newOrder->purchasedGiftCardReduction =
-            $this->purchasedGiftCardReduction;
-        $newOrder->pickup_location_id = $this->pickupLocation;
+        $newOrder->pickup_location_id = $this->pickup_location_id;
         $newOrder->transferTime = $this->transferTime;
 
         // Refine this
