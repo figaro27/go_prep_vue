@@ -21,6 +21,19 @@ foreach (
     [config('app.domain'), '{store_slug}.' . config('app.domain')]
     as $domain
 ) {
+    Route::group(
+        [
+            'middleware' => ['api', 'store_slug'],
+            'prefix' => 'guest'
+        ],
+        function ($router) {
+            Route::resource('coupons', 'CouponController');
+            Route::resource(
+                'purchasedGiftCards',
+                'PurchasedGiftCardController'
+            );
+        }
+    );
     //Auth::routes();
     Route::get('test/mail', 'TestController@test_mail');
     Route::get('test/print', 'TestController@test_print');
@@ -429,6 +442,12 @@ foreach (
                         ],
                         function ($router) {
                             //Route::resource('stores', 'User\\StoreController');
+
+                            Route::resource('/me/coupons', 'CouponController');
+                            Route::resource(
+                                '/me/purchasedGiftCards',
+                                'PurchasedGiftCardController'
+                            );
 
                             Route::get(
                                 '/me/getCustomer',

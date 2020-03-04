@@ -279,9 +279,7 @@ class SpaController extends Controller
                     'modules',
                     'moduleSettings',
                     'details',
-                    'coupons',
                     'giftCards',
-                    'purchasedGiftCards',
                     'pickupLocations',
                     'lineItems',
                     'deliveryDays'

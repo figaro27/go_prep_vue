@@ -968,6 +968,8 @@ export default {
   },
   data() {
     return {
+      coupons: [],
+      purchasedGiftCards: [],
       hasWeeklySubscriptionItems: false,
       hasMonthlySubscriptionItems: false,
       hasMonthlyPrepaySubscriptionItems: false,
@@ -1056,6 +1058,9 @@ export default {
     });
 
     this.form.billingState = state[0];
+
+    this.setCoupons();
+    this.setPurchasedGiftCards();
   },
   mixins: [MenuBag],
   computed: {
@@ -1082,8 +1087,6 @@ export default {
       minOption: "minimumOption",
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
-      coupons: "viewedStoreCoupons",
-      purchasedGiftCards: "viewedStorePurchasedGiftCards",
       pickupLocations: "viewedStorePickupLocations",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
@@ -1094,6 +1097,13 @@ export default {
       bagDeliverySettings: "bagDeliverySettings",
       deliveryDays: "viewedStoreDeliveryDays"
     }),
+    prefix() {
+      if (this.loggedIn) {
+        return "/api/me/";
+      } else {
+        return "/api/guest/";
+      }
+    },
     hasMultipleSubscriptionItems() {
       let subscriptionItemTypes = 0;
       if (this.hasWeeklySubscriptionItems) subscriptionItemTypes += 1;
@@ -1890,10 +1900,10 @@ use next_delivery_dates
       return _.find(this.customers, ["value", id]);
     },
     applyCoupon() {
-      let coupons = this.coupons;
       if (this.$route.params.storeView) {
         coupons = Object.values(this.storeCoupons);
       }
+      let coupons = this.coupons;
       coupons.forEach(coupon => {
         if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
           if (coupon.oneTime) {
@@ -2371,6 +2381,20 @@ use next_delivery_dates
       } else {
         return false;
       }
+    },
+    setCoupons() {
+      axios
+        .post(this.prefix + "coupons", { store_id: this.store.id })
+        .then(resp => {
+          this.coupons = resp.data;
+        });
+    },
+    setPurchasedGiftCards() {
+      axios
+        .post(this.prefix + "purchasedGiftCards", { store_id: this.store.id })
+        .then(resp => {
+          this.purchasedGiftCards = resp.data;
+        });
     }
   }
 };
