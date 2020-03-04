@@ -19,9 +19,17 @@ class CouponController extends StoreController
         return $this->store->coupons;
     }
 
-    public function getViewedStoreCoupons(Request $request)
+    public function findCoupon(Request $request)
     {
-        return Coupon::where('store_id', $request->get('store_id'))->get();
+        $storeId = $request->get('store_id');
+        $couponCode = $request->get('couponCode');
+        $coupon = Coupon::where([
+            'store_id' => $storeId,
+            'code' => $couponCode
+        ])->first();
+        if (isset($coupon)) {
+            return $coupon;
+        }
     }
 
     /**

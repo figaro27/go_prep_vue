@@ -17,6 +17,19 @@ class PurchasedGiftCardController extends UserController
         //
     }
 
+    public function findPurchasedGiftCard(Request $request)
+    {
+        $storeId = $request->get('store_id');
+        $purchasedGiftCardCode = $request->get('purchasedGiftCardCode');
+        $purchasedGiftCard = PurchasedGiftCard::where([
+            'store_id' => $storeId,
+            'code' => $purchasedGiftCardCode
+        ])->first();
+        if (isset($purchasedGiftCard)) {
+            return $purchasedGiftCard;
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -33,7 +33,8 @@ class Store extends Model
         'cutoff_passed',
         'next_delivery_date',
         'next_cutoff_date',
-        'url'
+        'url',
+        'hasPromoCodes'
     ];
 
     protected $casts = [];
@@ -1183,5 +1184,14 @@ class Store extends Model
         $settings = StoreSetting::where('store_id', $this->id)->first();
         $settings->preventNextWeekOrders = 0;
         $settings->update();
+    }
+
+    public function getHasPromoCodesAttribute()
+    {
+        if (count($this->coupons) > 0 || count($this->purchasedGiftCards > 0)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
