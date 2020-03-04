@@ -2384,7 +2384,9 @@ use next_delivery_dates
     },
     setCoupons() {
       axios
-        .post(this.prefix + "coupons", { store_id: this.store.id })
+        .post(this.prefix + "getViewedStoreCoupons", {
+          store_id: this.store.id
+        })
         .then(resp => {
           this.coupons = resp.data;
         });

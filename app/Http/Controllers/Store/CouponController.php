@@ -19,6 +19,11 @@ class CouponController extends StoreController
         return $this->store->coupons;
     }
 
+    public function getViewedStoreCoupons(Request $request)
+    {
+        return Coupon::where('store_id', $request->get('store_id'))->get();
+    }
+
     /**
      * Show the form for creating a new resource.
      *

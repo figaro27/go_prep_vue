@@ -27,7 +27,10 @@ foreach (
             'prefix' => 'guest'
         ],
         function ($router) {
-            Route::resource('coupons', 'CouponController');
+            Route::post(
+                'getViewedStoreCoupons',
+                'CouponController@getViewedStoreCoupons'
+            );
             Route::resource(
                 'purchasedGiftCards',
                 'PurchasedGiftCardController'
@@ -317,6 +320,10 @@ foreach (
                             Route::resource('units', 'UnitController');
                             Route::resource('categories', 'CategoryController');
                             Route::resource('coupons', 'CouponController');
+                            Route::post(
+                                'getViewedStoreCoupons',
+                                'CouponController@getViewedStoreCoupons'
+                            );
                             Route::resource('giftCards', 'GiftCardController');
                             Route::resource(
                                 'purchasedGiftCards',
@@ -444,6 +451,10 @@ foreach (
                             //Route::resource('stores', 'User\\StoreController');
 
                             Route::resource('/me/coupons', 'CouponController');
+                            Route::post(
+                                '/me/getViewedStoreCoupons',
+                                'CouponController@getViewedStoreCoupons'
+                            );
                             Route::resource(
                                 '/me/purchasedGiftCards',
                                 'PurchasedGiftCardController'

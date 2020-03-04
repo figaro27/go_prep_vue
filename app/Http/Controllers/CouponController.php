@@ -17,6 +17,11 @@ class CouponController extends Controller
         //
     }
 
+    public function getViewedStoreCoupons(Request $request)
+    {
+        return Coupon::where('store_id', $request->get('store_id'))->get();
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -35,7 +40,6 @@ class CouponController extends Controller
      */
     public function store(Request $request)
     {
-        return Coupon::where('store_id', $request->get('store_id'))->get();
     }
 
     /**
