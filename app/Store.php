@@ -1188,10 +1188,11 @@ class Store extends Model
 
     public function getHasPromoCodesAttribute()
     {
-        if (count($this->coupons) > 0 || count($this->purchasedGiftCards > 0)) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
+        // if (count($this->coupons) > 0 || count($this->purchasedGiftCards > 0)) {
+        //     return true;
+        // } else {
+        //     return false;
+        // }
     }
 }
