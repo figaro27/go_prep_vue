@@ -21,6 +21,19 @@ foreach (
     [config('app.domain'), '{store_slug}.' . config('app.domain')]
     as $domain
 ) {
+    Route::group(
+        [
+            'middleware' => ['api', 'store_slug'],
+            'prefix' => 'guest'
+        ],
+        function ($router) {
+            Route::post('findCoupon', 'CouponController@findCoupon');
+            Route::post(
+                'findPurchasedGiftCard',
+                'PurchasedGiftCardController@findPurchasedGiftCard'
+            );
+        }
+    );
     //Auth::routes();
     Route::get('test/mail', 'TestController@test_mail');
     Route::get('test/print', 'TestController@test_print');
@@ -304,10 +317,18 @@ foreach (
                             Route::resource('units', 'UnitController');
                             Route::resource('categories', 'CategoryController');
                             Route::resource('coupons', 'CouponController');
+                            Route::post(
+                                'findCoupon',
+                                'CouponController@findCoupon'
+                            );
                             Route::resource('giftCards', 'GiftCardController');
                             Route::resource(
                                 'purchasedGiftCards',
                                 'PurchasedGiftCardController'
+                            );
+                            Route::post(
+                                'findPurchasedGiftCard',
+                                'PurchasedGiftCardController@findPurchasedGiftCard'
                             );
                             Route::resource(
                                 'pickupLocations',
@@ -429,6 +450,20 @@ foreach (
                         ],
                         function ($router) {
                             //Route::resource('stores', 'User\\StoreController');
+
+                            Route::resource('/me/coupons', 'CouponController');
+                            Route::post(
+                                '/me/findCoupon',
+                                'CouponController@findCoupon'
+                            );
+                            Route::resource(
+                                '/me/purchasedGiftCards',
+                                'PurchasedGiftCardController'
+                            );
+                            Route::post(
+                                '/me/findPurchasedGiftCard',
+                                'PurchasedGiftCardController@findPurchasedGiftCard'
+                            );
 
                             Route::get(
                                 '/me/getCustomer',

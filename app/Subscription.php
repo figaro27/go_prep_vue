@@ -4,6 +4,8 @@ namespace App;
 
 use App\Meal;
 use App\MealOrder;
+use App\MealOrderComponent;
+use App\MealOrderAddon;
 use App\MealPackageOrder;
 use App\MealPackageSubscription;
 use App\MealAttachment;
@@ -811,10 +813,19 @@ class Subscription extends Model
         }
 
         $items = $this->meal_subscriptions->map(function ($meal) {
+            $price = $meal->meal_size
+                ? $meal->meal_size->price
+                : $meal->meal->price;
+            foreach ($meal->components as $component) {
+                $price += $component->option->price;
+            }
+            foreach ($meal->addons as $addon) {
+                $price += $addon->addon->price;
+            }
             return [
                 'quantity' => $meal->quantity,
                 'meal' => $meal->meal,
-                'price' => $meal->meal->price
+                'price' => $price
             ];
         });
 
@@ -918,6 +929,16 @@ class Subscription extends Model
         $this->stripe_plan = $plan->id;
         $this->save();
 
+        $this->updateCurrentMealOrders();
+    }
+
+    public function updateCurrentMealOrders()
+    {
+        $items = $this->meal_subscriptions;
+
+        $store = $this->store;
+
+        $bag = new Bag($items, $store);
         // Update future orders IF cutoff hasn't passed yet
         $futureOrders = $this->orders()
             ->where([['fulfilled', 0], ['paid', 0]])
@@ -931,41 +952,59 @@ class Subscription extends Model
             }
 
             // Update order pricing
-            $order->preFeePreDiscount = $preFeePreDiscount;
-            $order->mealPlanDiscount = $mealPlanDiscount;
-            $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
-            $order->processingFee = $processingFee;
-            $order->deliveryFee = $deliveryFee;
-            $order->salesTax = $salesTax;
-            $order->amount = $total;
+            $order->preFeePreDiscount = $this->preFeePreDiscount;
+            $order->mealPlanDiscount = $this->mealPlanDiscount;
+            $order->afterDiscountBeforeFees = $this->afterDiscountBeforeFees;
+            $order->processingFee = $this->processingFee;
+            $order->deliveryFee = $this->deliveryFee;
+            $order->salesTax = $this->salesTax;
+            $order->amount = $this->amount;
             $order->save();
 
             // Replace order meals
+            $mealOrders = MealOrder::where('order_id', $order->id)->get();
 
-            foreach ($order->meal_orders() as $mealOrder) {
-                // foreach ($mealOrder->components as $component) {
-                //     $component->delete();
-                // }
-                // foreach ($mealOrder->addons as $addon) {
-                //     $addon->delete();
-                // }
-                $mealOrder->sizes->delete();
-                $mealOrder->components->delete();
+            // Remove old meal orders & variations
+            foreach ($mealOrders as $mealOrder) {
                 foreach ($mealOrder->components as $component) {
-                    $component->options->delete();
+                    $component->delete();
                 }
-                $mealOrder->addons->delete();
+                foreach ($mealOrder->addons as $addon) {
+                    $addon->delete();
+                }
                 $mealOrder->delete();
             }
 
-            // foreach ($bag->getItems() as $item) {
-            //     $mealOrder = new MealOrder();
-            //     $mealOrder->order_id = $order->id;
-            //     $mealOrder->store_id = $this->store->id;
-            //     $mealOrder->meal_id = $item['meal']['id'];
-            //     $mealOrder->quantity = $item['quantity'];
-            //     $mealOrder->save();
-            // }
+            // Add new meal orders & variations
+            foreach ($bag->getItems() as $item) {
+                $mealOrder = new MealOrder();
+                $mealOrder->order_id = $order->id;
+                $mealOrder->store_id = $this->store->id;
+                $mealOrder->meal_id = $item['meal']['id'];
+                $mealOrder->meal_size_id = $item['meal_size']['id'];
+                $mealOrder->price = $item['price'] * $item['quantity'];
+                $mealOrder->quantity = $item['quantity'];
+                $mealOrder->save();
+
+                if (isset($item['components']) && $item['components']) {
+                    foreach ($item['components'] as $component) {
+                        MealOrderComponent::create([
+                            'meal_order_id' => $mealOrder->id,
+                            'meal_component_id' => $component->id,
+                            'meal_component_option_id' => $component->option->id
+                        ]);
+                    }
+                }
+
+                if (isset($item['addons']) && $item['addons']) {
+                    foreach ($item['addons'] as $addon) {
+                        MealOrderAddon::create([
+                            'meal_order_id' => $mealOrder->id,
+                            'meal_addon_id' => $addon->addon->id
+                        ]);
+                    }
+                }
+            }
         }
     }
 

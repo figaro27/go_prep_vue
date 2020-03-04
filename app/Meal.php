@@ -1429,6 +1429,12 @@ class Meal extends Model implements HasMedia
                     $subscriptionMeal->meal_size_id = $subSizeId;
                 }
 
+                $price = isset($subSize)
+                    ? $subSize->price
+                    : Meal::where('id', $subId)
+                        ->pluck('price')
+                        ->first();
+
                 // Substitute components
                 foreach ($subscriptionMeal->components as $component) {
                     $option = $component->option;
@@ -1452,6 +1458,8 @@ class Meal extends Model implements HasMedia
                             $component->meal_component_id =
                                 $subComponentOption->meal_component_id;
                             $component->meal_component_option_id = $subComponentOptionId;
+
+                            $price += $subComponentOption->price;
 
                             try {
                                 $component->save();
@@ -1508,6 +1516,8 @@ class Meal extends Model implements HasMedia
                         $addon->last_meal_addon_id = $addon->meal_addon_id;
                         $addon->meal_addon_id = $subAddonId;
 
+                        $price += $subAddon->price;
+
                         try {
                             $addon->save();
                         } catch (\Exception $e) {
@@ -1548,11 +1558,7 @@ class Meal extends Model implements HasMedia
 
                 $subscriptionMeal->last_meal_id = $subscriptionMeal->meal_id;
                 $subscriptionMeal->meal_id = $subId;
-                $subscriptionMeal->price = isset($subSize)
-                    ? $subSize->price
-                    : Meal::where('id', $subId)
-                        ->pluck('price')
-                        ->first();
+                $subscriptionMeal->price = $price;
 
                 try {
                     $subscriptionMeal->save();

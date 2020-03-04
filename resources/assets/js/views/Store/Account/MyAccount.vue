@@ -131,7 +131,9 @@
             <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
 
-          <!--        
+          <!--
+            <p><b-btn @click="testDeleteMealOrders">TEST DELETE MEAL ORDERS</b-btn></p>
+
             <p><b-btn @click="getDeliveryRoutes">TEST DELIVERY ROUTE</b-btn></p>
 
             <p><b-btn @click="cancelledSubscription">cancelledSubscription</b-btn></p>
@@ -320,6 +322,9 @@ export default {
     },
     getDeliveryRoutes() {
       axios.get("/getDeliveryRoutes");
+    },
+    testDeleteMealOrders() {
+      axios.get("/testDeleteMealOrders");
     },
     asYouType() {
       this.storeDetail.phone = this.storeDetail.phone.replace(/[^\d.-]/g, "");

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Store;
+namespace App\Http\Controllers;
 
-use App\PurchasedGiftCard;
 use Illuminate\Http\Request;
+use App\PurchasedGiftCard;
 
-class PurchasedGiftCardController extends StoreController
+class PurchasedGiftCardController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class PurchasedGiftCardController extends StoreController
      */
     public function index()
     {
-        return $this->store->purchasedGiftCards;
+        //
     }
 
     public function findPurchasedGiftCard(Request $request)
@@ -48,16 +48,19 @@ class PurchasedGiftCardController extends StoreController
      */
     public function store(Request $request)
     {
-        //
+        return PurchasedGiftCard::where(
+            'store_id',
+            $request->get('store_id')
+        )->get();
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\GiftCard  $giftCard
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(PurchasedGiftCard $purchasedGiftCards)
+    public function show($id)
     {
         //
     }
@@ -65,10 +68,10 @@ class PurchasedGiftCardController extends StoreController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\GiftCard  $giftCard
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(PurchasedGiftCard $purchasedGiftCards)
+    public function edit($id)
     {
         //
     }
@@ -77,23 +80,21 @@ class PurchasedGiftCardController extends StoreController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\GiftCard  $giftCard
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(
-        Request $request,
-        PurchasedGiftCard $purchasedGiftCards
-    ) {
+    public function update(Request $request, $id)
+    {
         //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\GiftCard  $giftCard
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PurchasedGiftCard $purchasedGiftCards)
+    public function destroy($id)
     {
         //
     }

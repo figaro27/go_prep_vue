@@ -968,6 +968,8 @@ export default {
   },
   data() {
     return {
+      coupons: [],
+      purchasedGiftCards: [],
       hasWeeklySubscriptionItems: false,
       hasMonthlySubscriptionItems: false,
       hasMonthlyPrepaySubscriptionItems: false,
@@ -1082,8 +1084,6 @@ export default {
       minOption: "minimumOption",
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
-      coupons: "viewedStoreCoupons",
-      purchasedGiftCards: "viewedStorePurchasedGiftCards",
       pickupLocations: "viewedStorePickupLocations",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
@@ -1094,6 +1094,13 @@ export default {
       bagDeliverySettings: "bagDeliverySettings",
       deliveryDays: "viewedStoreDeliveryDays"
     }),
+    prefix() {
+      if (this.loggedIn) {
+        return "/api/me/";
+      } else {
+        return "/api/guest/";
+      }
+    },
     hasMultipleSubscriptionItems() {
       let subscriptionItemTypes = 0;
       if (this.hasWeeklySubscriptionItems) subscriptionItemTypes += 1;
@@ -1668,10 +1675,7 @@ use next_delivery_dates
           bagHasGiftCard = true;
         }
       });
-      if (
-        (this.coupons.length > 0 || this.purchasedGiftCards.length > 0) &&
-        !bagHasGiftCard
-      ) {
+      if (this.store.hasPromoCodes && !bagHasGiftCard) {
         return true;
       } else {
         return false;
@@ -1889,55 +1893,77 @@ use next_delivery_dates
     getCustomerObject(id) {
       return _.find(this.customers, ["value", id]);
     },
-    applyCoupon() {
-      let coupons = this.coupons;
-      if (this.$route.params.storeView) {
-        coupons = Object.values(this.storeCoupons);
-      }
-      coupons.forEach(coupon => {
-        if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
-          if (coupon.oneTime) {
-            let oneTimePass = this.oneTimeCouponCheck(coupon.id);
-            if (oneTimePass === "login") {
-              this.$toastr.e(
-                "This is a one-time coupon. Please log in or create an account to check if it has already been used."
-              );
-              return;
-            }
-            if (!oneTimePass) {
-              this.$toastr.e(
-                "This was a one-time coupon that has already been used.",
-                'Coupon Code: "' + this.couponCode + '"'
-              );
-              this.couponCode = "";
-              return;
-            }
+    async applyCoupon() {
+      let coupon = {};
+      await axios
+        .post(this.prefix + "findCoupon", {
+          store_id: this.store.id,
+          couponCode: this.couponCode
+        })
+        .then(resp => {
+          coupon = resp.data;
+        });
+
+      if (
+        coupon &&
+        this.couponCode.toUpperCase() === coupon.code.toUpperCase()
+      ) {
+        if (coupon.oneTime) {
+          let oneTimePass = this.oneTimeCouponCheck(coupon.id);
+          if (oneTimePass === "login") {
+            this.$toastr.e(
+              "This is a one-time coupon. Please log in or create an account to check if it has already been used."
+            );
+            return;
           }
-          this.coupon = coupon;
-          this.setBagCoupon(coupon);
-          this.couponCode = "";
-          this.$toastr.s("Coupon Applied.", "Success");
+          if (!oneTimePass) {
+            this.$toastr.e(
+              "This was a one-time coupon that has already been used.",
+              'Coupon Code: "' + this.couponCode + '"'
+            );
+            this.couponCode = "";
+            return;
+          }
         }
-      });
+        this.coupon = coupon;
+        this.setBagCoupon(coupon);
+        this.couponCode = "";
+        this.$toastr.s("Coupon Applied.", "Success");
+        return;
+      }
 
       if (this.weeklySubscriptionValue) {
         this.$toastr.w("Gift cards are allowed on one time orders only.");
         return;
       }
-      this.purchasedGiftCards.forEach(purchasedGiftCard => {
-        if (
-          this.couponCode.toUpperCase() === purchasedGiftCard.code.toUpperCase()
-        ) {
-          if (purchasedGiftCard.balance === "0.00") {
-            this.$toastr.e("There are no more funds left on this gift card.");
-            return;
-          }
-          this.purchasedGiftCard = purchasedGiftCard;
-          this.setBagPurchasedGiftCard(purchasedGiftCard);
-          this.couponCode = "";
-          this.$toastr.s("Gift Card Applied.", "Success");
+
+      let purchasedGiftCard = {};
+      await axios
+        .post(this.prefix + "findPurchasedGiftCard", {
+          store_id: this.store.id,
+          purchasedGiftCardCode: this.couponCode
+        })
+        .then(resp => {
+          purchasedGiftCard = resp.data;
+        });
+
+      if (
+        purchasedGiftCard &&
+        this.couponCode.toUpperCase() === purchasedGiftCard.code.toUpperCase()
+      ) {
+        if (purchasedGiftCard.balance === "0.00") {
+          this.$toastr.e("There are no more funds left on this gift card.");
+          return;
         }
-      });
+        this.purchasedGiftCard = purchasedGiftCard;
+
+        this.setBagPurchasedGiftCard(purchasedGiftCard);
+        this.couponCode = "";
+        this.$toastr.s("Gift Card Applied.", "Success");
+        return;
+      }
+      this.couponCode = "";
+      this.$toastr.w("Promo code not found.");
     },
     oneTimeCouponCheck(couponId) {
       if (this.$route.params.storeView || this.storeOwner) {

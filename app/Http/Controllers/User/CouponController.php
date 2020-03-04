@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Store;
-
-use App\Store;
+namespace App\Http\Controllers\User;
 use App\Coupon;
-use Illuminate\Http\Request;
-use App\Http\Requests\CouponRequest;
 
-class CouponController extends StoreController
+use Illuminate\Http\Request;
+
+class CouponController extends UserController
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +14,7 @@ class CouponController extends StoreController
      */
     public function index()
     {
-        return $this->store->coupons;
+        //
     }
 
     public function findCoupon(Request $request)
@@ -48,38 +46,18 @@ class CouponController extends StoreController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CouponRequest $request)
+    public function store(Request $request)
     {
-        $props = collect($request->all());
-        $props = $props->only([
-            'code',
-            'type',
-            'amount',
-            'freeDelivery',
-            'oneTime'
-        ]);
-        $amount = 0;
-        if ($props->get('amount') != null) {
-            $amount = $props->get('amount');
-        }
-
-        $coupon = new Coupon();
-        $coupon->store_id = $this->store->id;
-        $coupon->code = $props->get('code');
-        $coupon->type = $props->get('type');
-        $coupon->freeDelivery = $props->get('freeDelivery');
-        $coupon->oneTime = $props->get('oneTime');
-        $coupon->amount = $amount;
-        $coupon->save();
+        return Coupon::where('store_id', $request->get('store_id'))->get();
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Coupon  $coupon
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Coupon $coupon)
+    public function show($id)
     {
         //
     }
@@ -87,10 +65,10 @@ class CouponController extends StoreController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Coupon  $coupon
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Coupon $coupon)
+    public function edit($id)
     {
         //
     }
@@ -99,10 +77,10 @@ class CouponController extends StoreController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Coupon  $coupon
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Coupon $coupon)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -110,12 +88,11 @@ class CouponController extends StoreController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Coupon  $coupon
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $coupon = $this->store->coupons()->findOrFail($id);
-        $coupon->delete();
+        //
     }
 }
