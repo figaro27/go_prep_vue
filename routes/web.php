@@ -15,6 +15,7 @@
 //Route::get('/getDeliveryRoutes', 'DeliveryRouteController@getRoutes');
 
 Route::get('testDeleteMealOrders', 'TestController@testDeleteMealOrders');
+Route::get('testRenewSubscription', 'TestController@testRenewSubscription');
 
 Route::get(
     '/mail/cancelledSubscription',
