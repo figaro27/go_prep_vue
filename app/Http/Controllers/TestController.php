@@ -209,4 +209,10 @@ class TestController extends Controller
             // }
         }
     }
+
+    public function testRenewSubscription()
+    {
+        $sub = Subscription::where('id', 337)->first();
+        $sub->renew();
+    }
 }

@@ -359,29 +359,26 @@ class Subscription extends Model
         }
 
         // Updating item stock
-
-        // Testing on MQS store
-        if ($this->store->id === 13) {
-            if ($this->store->modules->stockManagement) {
-                foreach ($this->meal_subscriptions as $mealSub) {
-                    $meal = Meal::where('id', $mealSub->meal_id)->first();
-                    if ($meal && $meal->stock !== null) {
-                        if ($meal->stock === 0) {
-                            $mealSub->delete();
-                        } elseif ($meal->stock < $mealSub->quantity) {
-                            $mealSub->quantity = $meal->stock;
-                            $mealSub->update();
-                            $meal->stock = 0;
-                            $meal->active = 0;
-                        } else {
-                            $meal->stock -= $mealSub->quantity;
-                            if ($meal->stock === 0) {
-                                $meal->active = 0;
-                            }
-                        }
-                        $meal->update();
+        if ($this->store->modules->stockManagement) {
+            foreach ($this->meal_subscriptions as $mealSub) {
+                $meal = Meal::where('id', $mealSub->meal_id)->first();
+                if ($meal && $meal->stock !== null) {
+                    if ($meal->stock === 0) {
+                        $mealSub->delete();
                         $this->syncPrices();
+                    } elseif ($meal->stock < $mealSub->quantity) {
+                        $mealSub->quantity = $meal->stock;
+                        $mealSub->update();
+                        $meal->stock = 0;
+                        $meal->active = 0;
+                        $this->syncPrices();
+                    } else {
+                        $meal->stock -= $mealSub->quantity;
+                        if ($meal->stock === 0) {
+                            $meal->active = 0;
+                        }
                     }
+                    $meal->update();
                 }
             }
         }
@@ -490,7 +487,7 @@ class Subscription extends Model
         }
 
         // Assign subscription meals to new order
-        foreach ($this->meal_subscriptions as $mealSub) {
+        foreach ($this->fresh()->meal_subscriptions as $mealSub) {
             $mealOrder = new MealOrder();
             $mealOrder->order_id = $newOrder->id;
             $mealOrder->store_id = $this->store->id;
@@ -812,7 +809,7 @@ class Subscription extends Model
             return;
         }
 
-        $items = $this->meal_subscriptions->map(function ($meal) {
+        $items = $this->fresh()->meal_subscriptions->map(function ($meal) {
             $price = $meal->meal_size
                 ? $meal->meal_size->price
                 : $meal->meal->price;
@@ -934,7 +931,7 @@ class Subscription extends Model
 
     public function updateCurrentMealOrders()
     {
-        $items = $this->meal_subscriptions;
+        $items = $this->fresh()->meal_subscriptions;
 
         $store = $this->store;
 
@@ -982,7 +979,7 @@ class Subscription extends Model
                 $mealOrder->store_id = $this->store->id;
                 $mealOrder->meal_id = $item['meal']['id'];
                 $mealOrder->meal_size_id = $item['meal_size']['id'];
-                $mealOrder->price = $item['price'] * $item['quantity'];
+                $mealOrder->price = $item['price'];
                 $mealOrder->quantity = $item['quantity'];
                 $mealOrder->save();
 
