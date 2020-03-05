@@ -286,7 +286,9 @@ class SpaController extends Controller
                 ])->find(STORE_ID)
                 : $last_viewed_store;
 
-            $store = $store->makeHidden(['coupons']);
+            if ($store !== null) {
+                $store = $store->makeHidden(['coupons']);
+            }
 
             if ($store && $user) {
                 $distance = $user->distanceFrom($store);
