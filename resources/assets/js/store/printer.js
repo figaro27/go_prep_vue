@@ -218,7 +218,7 @@ const actions = {
     try {
       await qz.print(config, printData);
     } catch (e) {
-      console.error(err);
+      console.error(e);
     }
   }
 };
