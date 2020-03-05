@@ -246,7 +246,6 @@
             <div class="report-date-picker">
               <delivery-date-picker
                 v-model="delivery_dates.labels"
-                :rtl="true"
                 ref="deliveryRoutesDates"
               ></delivery-date-picker>
               <b-btn @click="clearLabels()" class="ml-1">Clear</b-btn>
