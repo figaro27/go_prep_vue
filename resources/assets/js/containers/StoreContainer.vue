@@ -32,8 +32,8 @@
         <b-nav-item class="d-md-down-none">
           <DefaultHeaderDropdown/>
         </b-nav-item>-->
-        <StoreDropdown />
         <PrinterNav />
+        <StoreDropdown />
       </b-navbar-nav>
       <!-- <AsideToggler class="d-none d-lg-block" /> -->
       <!--<AsideToggler class="d-lg-none" mobile />-->
