@@ -710,7 +710,10 @@
           v-if="
             deactivatingMeal.hasVariations &&
               substituteMeal &&
-              mealSubsHaveVariations
+              mealSubsHaveVariations &&
+              (inActiveSubscriptionsOrPackages(deactivatingMeal.sizes) ||
+                inActiveSubscriptions(deactivatingMeal.components) ||
+                inActiveSubscriptions(deactivatingMeal.addons))
           "
           :key="substitute_id"
         >
@@ -760,7 +763,11 @@
           <b-row v-if="!transferVariations && replaceVariations">
             <b-col
               cols="4"
-              v-if="deactivatingMeal.sizes && deactivatingMeal.sizes.length"
+              v-if="
+                deactivatingMeal.sizes &&
+                  deactivatingMeal.sizes.length &&
+                  inActiveSubscriptionsOrPackages(deactivatingMeal.sizes)
+              "
             >
               <h4>Sizes</h4>
               <b-row>
@@ -789,7 +796,11 @@
 
             <b-col
               cols="4"
-              v-if="deactivatingMeal.addons && deactivatingMeal.addons.length"
+              v-if="
+                deactivatingMeal.addons &&
+                  deactivatingMeal.addons.length &&
+                  inActiveSubscriptions(deactivatingMeal.addons)
+              "
             >
               <h4>Addons</h4>
               <b-row>
@@ -820,7 +831,8 @@
               cols="4"
               v-if="
                 deactivatingMeal.components &&
-                  deactivatingMeal.components.length
+                  deactivatingMeal.components.length &&
+                  inActiveSubscriptions(deactivatingMeal.components)
               "
             >
               <h4>Components</h4>
@@ -1617,6 +1629,8 @@ export default {
         })
         .then(resp => {
           this.deactivateMealModal = false;
+          this.deactivatingMeal = {};
+          this.deletingMeal = {};
           this.refreshTable();
           this.refreshSubscriptions();
           this.transferVariations = false;
@@ -1639,7 +1653,8 @@ export default {
           this.substituteMealComponents = {};
           this.substituteMealComponentOptions = {};
           this.substituteMealAddons = {};
-          (this.transferVariations = false), (this.replaceVariations = false);
+          this.transferVariations = false;
+          this.replaceVariations = true;
         });
     },
     createMeal() {
@@ -1997,6 +2012,22 @@ export default {
       this.substituteMealComponents = {};
       this.substituteMealComponentOptions = {};
       this.substituteMealAddons = {};
+    },
+    inActiveSubscriptionsOrPackages(variations) {
+      variations.forEach(variation => {
+        if (variation.activeSubscriptionsOrPackages) {
+          return true;
+        }
+      });
+      return false;
+    },
+    inActiveSubscriptions(variations) {
+      variations.forEach(variation => {
+        if (variation.activeSubscriptions) {
+          return true;
+        }
+      });
+      return false;
     }
   }
 };

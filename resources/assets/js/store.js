@@ -8,6 +8,7 @@ import CryptoJS from "crypto-js";
 import getSymbolFromCurrency from "currency-symbol-map";
 // Paginated resources
 import ResourceStore from "./store/resources";
+import PrinterStore from "./store/printer";
 
 const Cookies = require("js-cookie");
 
@@ -3499,7 +3500,7 @@ const getters = {
 
 const plugins = [
   createPersistedState({
-    paths: ["bag", "cards"]
+    paths: ["bag", "cards", "printer.device"]
     // paths: ["cards"]
   })
 ];
@@ -3513,6 +3514,7 @@ export default new Vuex.Store({
   mutations,
   plugins,
   modules: {
-    resources: ResourceStore
+    resources: ResourceStore,
+    printer: PrinterStore
   }
 });

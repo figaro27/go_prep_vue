@@ -208,11 +208,11 @@
       </div>
     </div>
     <!-- Showing report only for Livoti's who doesn't use the report for routes. Will add back when routes are fixed-->
-    <div
-      class="row"
-      v-if="store.id === 108 || store.id === 109 || store.id === 110"
-    >
-      <div class="col-md-6">
+    <div class="row">
+      <div
+        class="col-md-6"
+        v-if="store.id === 108 || store.id === 109 || store.id === 110"
+      >
         <div class="card">
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Delivery Routes</h4>
@@ -239,6 +239,39 @@
           </div>
         </div>
       </div>
+      <!-- <div class="col-md-6">
+        <div class="card">
+          <div class="card-body m-sm-4">
+            <h4 class="center-text mb-4">Labels</h4>
+            <div class="report-date-picker">
+              <delivery-date-picker
+                v-model="delivery_dates.labels"
+                ref="deliveryRoutesDates"
+              ></delivery-date-picker>
+              <b-btn @click="clearLabels()" class="ml-1">Clear</b-btn>
+            </div>
+            <p class="mt-4 center-text">Labels for your meal containers.</p>
+            <div class="row">
+              <div class="col-md-6">
+                <button
+                  class="btn btn-warning btn-md center mt-2 pull-right"
+                  @click="showSettings('labels')"
+                >
+                  Settings
+                </button>
+              </div>
+              <div class="col-md-6">
+                <button
+                  @click="print('labels', 'b64')"
+                  class="btn btn-primary btn-md mt-2"
+                >
+                  Print
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
     </div>
     <div class="row">
       <div class="col-md-12">
@@ -294,6 +327,27 @@
         </div>
       </div>
     </div>
+    <b-modal
+      size="md"
+      title="Labels Settings"
+      v-model="showSettingsModal.labels"
+      v-if="showSettingsModal.labels"
+      no-fade
+    >
+      <b-form-group class="mt-3">
+        <b-form-radio-group v-model="labelsNutrition">
+          <b-form-radio value="none">Don't Show Nutrition</b-form-radio>
+          <b-form-radio value="macros">Show Macros Only</b-form-radio>
+          <b-form-radio value="nutrition"
+            >Show Full Nutrition Facts</b-form-radio
+          >
+        </b-form-radio-group>
+      </b-form-group>
+
+      <b-form-group label="Label Size" class="mt-3">
+        <b-select v-model="labelSize" :options="labelSizeOptions"></b-select>
+      </b-form-group>
+    </b-modal>
   </div>
 </template>
 
@@ -309,7 +363,9 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import vSelect from "vue-select";
 import Spinner from "../../components/Spinner";
 import checkDateRange from "../../mixins/deliveryDates";
+import printer from "../../mixins/printer";
 import { sleep } from "../../lib/utils";
+import { PrintJob, PrintSize } from "../../store/printer";
 
 export default {
   components: {
@@ -325,8 +381,61 @@ export default {
         orders_by_customer: [],
         packing_slips: [],
         delivery_routes: [],
-        payments: []
+        payments: [],
+        labels: []
       },
+      showSettingsModal: {
+        labels: false
+      },
+      labelsNutrition: "none",
+      labelSize: {
+        width: 4,
+        height: 6
+      },
+      labelSizeOptions: [
+        {
+          text: "A4",
+          value: {
+            width: 8.3,
+            height: 11.7
+          }
+        },
+        {
+          text: "Letter",
+          value: {
+            width: 8.5,
+            height: 11
+          }
+        },
+        {
+          text: '4" x 6"',
+          value: {
+            width: 4,
+            height: 6
+          }
+        },
+        {
+          text: '4" x 8"',
+          value: {
+            width: 4,
+            height: 8
+          }
+        },
+        {
+          text: '6" x 4"',
+          value: {
+            width: 6,
+            height: 4
+          }
+        },
+        {
+          text: '8" x 11"',
+          value: {
+            width: 8,
+            height: 11
+          }
+        }
+      ],
       selectedPickupLocation: null
     };
   },
@@ -360,9 +469,11 @@ export default {
       return grouped;
     }
   },
-  mixins: [checkDateRange],
-  mounted() {},
+  mixins: [checkDateRange, printer],
+  async mounted() {},
   methods: {
+    ...mapActions(["printer/connect"]),
+
     async print(report, format = "pdf", page = 1) {
       let params = { page };
 
@@ -416,13 +527,31 @@ export default {
 
       params.byOrderDate = 0;
 
+      params.labelsNutrition = this.labelsNutrition;
+      params.width = this.labelSize.width;
+      params.height = this.labelSize.height;
+
       axios
         .get(`/api/me/print/${report}/${format}`, {
           params
         })
         .then(response => {
           const { data } = response;
-          if (!_.isEmpty(data.url)) {
+
+          if (format === "b64") {
+            const size = new PrintSize(
+              this.labelSize.width,
+              this.labelSize.height
+            );
+            const job = new PrintJob(data.url, size, {
+              top: 0.25,
+              right: 0.25,
+              bottom: 0.25,
+              left: 0.25
+            });
+
+            this.printerAddJob(job);
+          } else if (!_.isEmpty(data.url)) {
             let win = window.open(data.url);
             if (win) {
               win.addEventListener(
@@ -545,6 +674,18 @@ export default {
       this.delivery_dates.delivery_routes.start = null;
       this.delivery_dates.delivery_routes.end = null;
       this.$refs.payments.clearDates();
+    },
+    clearLabels() {
+      this.delivery_dates.labels.start = null;
+      this.delivery_dates.labels.end = null;
+      this.$refs.payments.clearDates();
+    },
+    showSettings(report) {
+      switch (report) {
+        case "labels":
+          this.showSettingsModal.labels = true;
+          break;
+      }
     }
   }
 };
