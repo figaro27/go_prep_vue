@@ -637,9 +637,9 @@
         This meal is in one or more active subscriptions or meal packages.
         Please select a replacement meal below. This will automatically replace
         the old meal with the newly selected meal in all subscriptions and meal
-        packages. Customers on a subscription will receive an email notification
-        about the replacement. They still have the ability to edit their
-        subscriptions if they don't want the replacement meal.
+        packages. Customers will see the updated meals in an email reminding
+        them of their subscription renewal the day before and have the ability
+        to edit their subscriptions if they don't want the replacement meal.
         <!-- <img
             v-b-popover.hover="
               'You currently have one or more subscriptions with your customers that contain this meal OR a meal package that contains this meal. Please select a substitute replacement meal. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of allergies, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'
@@ -2003,7 +2003,10 @@ export default {
     },
     cancel() {
       this.deactivateMealModal = false;
+      this.deactivatingMeal = {};
+      this.deletingMeal = {};
       this.refreshTable();
+      this.refreshSubscriptions();
       this.transferVariations = false;
       this.substituteMeal = "";
       this.mealSubsHaveVariations = false;
@@ -2012,6 +2015,15 @@ export default {
       this.substituteMealComponents = {};
       this.substituteMealComponentOptions = {};
       this.substituteMealAddons = {};
+      this.deleteMeal = false;
+      this.substitute_id = null;
+      this.substituteMeal = null;
+      this.substituteMealSizes = {};
+      this.substituteMealComponents = {};
+      this.substituteMealComponentOptions = {};
+      this.substituteMealAddons = {};
+      this.transferVariations = false;
+      this.replaceVariations = true;
     },
     inActiveSubscriptionsOrPackages(variations) {
       variations.forEach(variation => {
