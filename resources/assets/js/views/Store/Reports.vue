@@ -239,7 +239,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <!-- <div class="col-md-6">
         <div class="card">
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Labels</h4>
@@ -271,7 +271,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="row">
       <div class="col-md-12">
