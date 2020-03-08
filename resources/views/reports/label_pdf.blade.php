@@ -5,6 +5,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="{{ asset(mix('/css/print.css')) }}">
 
+  <script src="https://polyfill.io/v3/polyfill.min.js"></script>
+
   <script
   src="https://browser.sentry-cdn.com/5.13.0/bundle.min.js"
   integrity="sha384-ePH2Cp6F+/PJbfhDWeQuXujAbpil3zowccx6grtsxOals4qYqJzCjeIa7W2UqunJ"
@@ -14,7 +16,7 @@
     Sentry.init({ dsn: 'https://f4c0f997f48e43bb8842db6ee7bbefc9@sentry.io/1427294' });
   </script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.0.0/polyfill.min.js"></script>
+
   <script
   src="https://code.jquery.com/jquery-2.2.4.min.js"
   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
