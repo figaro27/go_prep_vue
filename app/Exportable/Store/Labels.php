@@ -172,8 +172,9 @@ class Labels
         }
 
         $output = $pdf->toString();
-        $a = $pdf->getCommand()->getOutput(false);
+        $consoleOutput = $pdf->getCommand()->getOutput(false);
 
+        Log::info('Console output: ' . $consoleOutput);
         //Log::info('Output: ' . $output);
 
         if ($pdf->getError()) {
