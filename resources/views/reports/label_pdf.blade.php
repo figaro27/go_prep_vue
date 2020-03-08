@@ -36,10 +36,6 @@
         @endif
     </div>
   </div>
-
-  <script>
-    window.status = "ready";
-  </script>
 </body>
 
 </html>
