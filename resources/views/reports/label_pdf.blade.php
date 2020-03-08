@@ -12,7 +12,6 @@
 
   <script>
     Sentry.init({ dsn: 'https://f4c0f997f48e43bb8842db6ee7bbefc9@sentry.io/1427294' });
-    Sentry.captureException(new Error("Something broke"));
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.0.0/polyfill.min.js"></script>

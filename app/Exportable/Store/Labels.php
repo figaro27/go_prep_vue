@@ -138,7 +138,11 @@ class Labels
             'margin-top' => 0,
             'margin-bottom' => 0,
             'margin-left' => 0,
-            'margin-right' => 0
+            'margin-right' => 0,
+            'enable-external-links',
+            'enable-internal-links',
+            'load-error-handling ignore',
+            'no-stop-slow-scripts'
         ];
 
         if (config('pdf.xserver')) {
