@@ -174,7 +174,7 @@ class Labels
         $output = $pdf->toString();
         $a = $pdf->getCommand()->getOutput(false);
 
-        Log::info('Output: ' . $output);
+        //Log::info('Output: ' . $output);
 
         if ($pdf->getError()) {
             Log::error('Error: ' . $pdf->getError());
