@@ -24,6 +24,10 @@
   <script src="{{ asset(mix('/js/manifest.js')) }}"></script>
   <script src="{{ asset(mix('/js/vendor.js')) }}"></script>
   <script src="{{ asset(mix('/js/print.js')) }}"></script>
+
+@php
+$reportSettings = $mealOrder->store->reportSettings;
+@endphp
 </head>
 
 <body class="{{ $body_classes }}">
@@ -33,7 +37,9 @@
         {!! $mealOrder->html_title !!}
         </h1>
         <p>
+          @if ($reportSettings->lab_description)
         {!! $mealOrder->meal->description !!}
+        @endif
         </p><p>
         {!! $mealOrder->meal->instructions !!}
         </p><p>
@@ -42,7 +48,7 @@
         {!! $mealOrder->store->settings->website !!}
         </p>
 
-        @if ($params['labelsNutrition'] === 'nutrition')
+        @if ($reportSettings->lab_nutrition)
           <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}"></div>
         @endif
     </div>

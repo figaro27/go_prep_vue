@@ -122,6 +122,11 @@ class Store extends Model
         return $this->hasOne('App\StoreModuleSettings');
     }
 
+    public function reportSettings()
+    {
+        return $this->hasOne('App\ReportSetting');
+    }
+
     public function categories()
     {
         return $this->hasMany('App\Category')

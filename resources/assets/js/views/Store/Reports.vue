@@ -328,24 +328,65 @@
       </div>
     </div>
     <b-modal
-      size="md"
+      size="lg"
       title="Labels Settings"
       v-model="showSettingsModal.labels"
       v-if="showSettingsModal.labels"
       no-fade
     >
-      <b-form-group class="mt-3">
-        <b-form-radio-group v-model="labelsNutrition">
-          <b-form-radio value="none">Don't Show Nutrition</b-form-radio>
-          <b-form-radio value="macros">Show Macros Only</b-form-radio>
-          <b-form-radio value="nutrition"
-            >Show Full Nutrition Facts</b-form-radio
-          >
-        </b-form-radio-group>
-      </b-form-group>
+      <p class="strong">Show the Following on the Label:</p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_nutrition"
+          >Nutrition</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_macros"
+          >Macros</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_logo"
+          >Logo</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_website"
+          >Website</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_social"
+          >Social Media Handle</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_customer"
+          >Customer Name</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_description"
+          >Meal Description</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_instructions"
+          >Meal Instructions</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_expiration"
+          >Meal Expiration</b-form-checkbox
+        >
+      </p>
 
+      <b-btn variant="primary" @click="updateReportSettings">Save</b-btn>
       <b-form-group label="Label Size" class="mt-3">
-        <b-select v-model="labelSize" :options="labelSizeOptions"></b-select>
+        <b-select
+          v-model="reportSettings.lab_size"
+          :options="labelSizeOptions"
+        ></b-select>
       </b-form-group>
     </b-modal>
   </div>
@@ -387,7 +428,6 @@ export default {
       showSettingsModal: {
         labels: false
       },
-      labelsNutrition: "none",
       labelSize: {
         width: 4,
         height: 6
@@ -444,7 +484,8 @@ export default {
       store: "viewedStore",
       orders: "storeOrders",
       isLoading: "isLoading",
-      pickupLocations: "viewedStorePickupLocations"
+      pickupLocations: "viewedStorePickupLocations",
+      reportSettings: "storeReportSettings"
     }),
     pickupLocationOptions() {
       return this.pickupLocations.map(loc => {
@@ -472,7 +513,7 @@ export default {
   mixins: [checkDateRange, printer],
   async mounted() {},
   methods: {
-    ...mapActions(["printer/connect"]),
+    ...mapActions(["printer/connect", "refreshStoreReportSettings"]),
 
     async print(report, format = "pdf", page = 1) {
       let params = { page };
@@ -686,6 +727,21 @@ export default {
           this.showSettingsModal.labels = true;
           break;
       }
+    },
+    updateReportSettings() {
+      let settings = { ...this.reportSettings };
+      console.log(settings);
+      axios
+        .post("/api/me/updateReportSettings", settings)
+        .then(response => {
+          this.refreshStoreReportSettings();
+          this.$toastr.s("Your settings have been saved.", "Success");
+        })
+        .catch(response => {
+          let error = _.first(Object.values(response.response.data.errors));
+          error = error.join(" ");
+          this.$toastr.w(error);
+        });
     }
   }
 };
