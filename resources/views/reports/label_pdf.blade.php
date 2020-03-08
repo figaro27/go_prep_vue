@@ -33,9 +33,9 @@ $reportSettings = $mealOrder->store->reportSettings;
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <div class="unbreakable">
-      <h1>
+      <h4>
         {!! $mealOrder->html_title !!}
-        </h1>
+        </h4>
         @if ($reportSettings->lab_description)
         <p>
         {!! $mealOrder->meal->description !!}
