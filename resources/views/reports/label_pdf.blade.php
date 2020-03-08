@@ -56,11 +56,11 @@ $reportSettings = $mealOrder->store->reportSettings;
         {!! $mealOrder->store->settings->website !!}
         </p>
         @endif
-        <!-- @if ($reportSettings->lab_social)
+        @if ($reportSettings->lab_social)
         <p>
         {!! $mealOrder->store->settings->social !!}
         </p>
-        @endif -->
+        @endif
         @if ($reportSettings->lab_expiration)
         <p>
         Consume Before: {!! $mealOrder->expirationDate !!}
