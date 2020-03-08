@@ -44,7 +44,8 @@ class Meal extends Model implements HasMedia
         'created_at',
         'production_group_id',
         'salesTax',
-        'stock'
+        'stock',
+        'expirationDays'
     ];
 
     protected $casts = [
@@ -52,7 +53,8 @@ class Meal extends Model implements HasMedia
         'active_orders_price' => 'decimal:2',
         'created_at' => 'date:F d, Y',
         'created_at_local' => 'date:F d, Y',
-        'substitute' => 'boolean'
+        'substitute' => 'boolean',
+        'expirationDays' => 'integer'
     ];
 
     protected $appends = [
@@ -641,7 +643,8 @@ class Meal extends Model implements HasMedia
             'macros',
             'production_group_id',
             'salesTax',
-            'stock'
+            'stock',
+            'expirationDays'
         ]);
 
         $meal = new Meal();
@@ -983,7 +986,8 @@ class Meal extends Model implements HasMedia
             'macros',
             'production_group_id',
             'salesTax',
-            'stock'
+            'stock',
+            'expirationDays'
         ]);
 
         if ($props->has('featured_image')) {

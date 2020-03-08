@@ -61,11 +61,11 @@ $reportSettings = $mealOrder->store->reportSettings;
         {!! $mealOrder->store->settings->social !!}
         </p>
         @endif -->
-        <!-- @if ($reportSettings->lab_expiration)
+        @if ($reportSettings->lab_expiration)
         <p>
-        {!! $mealOrder->meal->expiration !!}
+        {!! $mealOrder->expirationDate !!}
         </p>
-        @endif -->
+        @endif
         @if ($reportSettings->lab_macros)
           Calories: {!! $mealOrder->meal->macros->calories !!}
           Proten: {!! $mealOrder->meal->macros->protein !!}

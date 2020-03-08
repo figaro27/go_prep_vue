@@ -1173,6 +1173,25 @@
                 />
 
                 <p class="mt-2">
+                  <span class="mr-1 mt-2">Meal Expiration</span>
+                  <img
+                    v-b-popover.hover="
+                      'Set expiration periods on your meals and show expiration dates on your labels.'
+                    "
+                    title="Meal Expiration"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeModules.mealExpiration"
+                  @change.native="updateStoreModules"
+                />
+
+                <p class="mt-2">
                   <span class="mr-1 mt-2">No Balance on Cash Orders</span>
                   <img
                     v-b-popover.hover="

@@ -375,7 +375,7 @@
           >Meal Instructions</b-form-checkbox
         >
       </p>
-      <p>
+      <p v-if="store.modules.mealExpiration">
         <b-form-checkbox v-model="reportSettings.lab_expiration"
           >Meal Expiration</b-form-checkbox
         >

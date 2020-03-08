@@ -28,7 +28,7 @@ class CreateReportSettingsTable extends Migration
             $table->boolean('lab_customer')->default(1);
             $table->boolean('lab_description')->default(0);
             $table->boolean('lab_instructions')->default(1);
-            $table->boolean('lab_expiration')->default(1);
+            $table->boolean('lab_expiration')->default(0);
             $table->string('lab_size')->default('4" x 6"');
             $table->timestamps();
         });
