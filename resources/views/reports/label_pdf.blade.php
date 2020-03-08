@@ -63,7 +63,7 @@ $reportSettings = $mealOrder->store->reportSettings;
         @endif -->
         @if ($reportSettings->lab_expiration)
         <p>
-        {!! $mealOrder->expirationDate !!}
+        Consume Before: {!! $mealOrder->expirationDate !!}
         </p>
         @endif
         @if ($reportSettings->lab_macros)

@@ -431,7 +431,7 @@ class MealOrder extends Pivot
         $deliveryDate = new Carbon($this->order->delivery_date);
         $expirationDate = $deliveryDate
             ->addDays($this->meal->expirationDays)
-            ->format('Y-m-d');
+            ->format('D, m/d/Y');
         return $expirationDate;
     }
 }
